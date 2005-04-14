@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar
+	ns="http://www.w3.org/2001/XMLSchema"
+	xmlns:cc="http://www.xml.gr.jp/xmlns/relaxngcc"
+	xmlns="http://relaxng.org/ns/structure/1.0"
+	datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
+	>
+	
+
+
+  <!-- ################################################################## -->
+  <!--                                                                    -->
+  <!-- include/import/redefine                                            -->
+  <!--                                                                    -->
+  <!-- ################################################################## -->
+  <define name="includeDecl">
+    <element name="include">
+      <!--optional>
+        <attribute name="ID">
+          <data type="ID"/>
+        </attribute>
+      </optional-->
+      <attribute name="schemaLocation">
+        <data type="anyURI" cc:alias="schemaLocation" />
+      </attribute>
+      <!--ref name="foreignAttributes"/-->
+      <optional>
+        <ref name="annotation"/>(null,AnnotationContext.SCHEMA);
+      </optional>
+    </element>
+    <!-- parse this entity into this schema -->
+   	$runtime.includeSchema( schemaLocation );
+  </define>
+  
+  
+  
+  <define name="importDecl">
+    <element name="import">
+      <!--optional>
+        <attribute name="ID">
+          <data type="ID"/>
+        </attribute>
+      </optional-->
+      <optional>
+        <attribute name="namespace">
+          <data type="anyURI" cc:alias="ns" />
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="schemaLocation">
+          <data type="anyURI" cc:alias="schemaLocation" />
+        </attribute>
+      </optional>
+      <!--ref name="foreignAttributes"/-->
+      <optional>
+        <ref name="annotation"/>(null,AnnotationContext.SCHEMA);
+      </optional>
+    </element>
+    <!-- parse this schema -->
+		<cc:java>
+			if(ns==null)    ns="";
+    	$runtime.importSchema( ns,schemaLocation );
+		</cc:java>
+  </define>
+  
+  
+  
+  <define name="redefine">
+    <element name="redefine">
+      <!--optional>
+        <attribute name="ID">
+          <data type="ID"/>
+        </attribute>
+      </optional-->
+      <attribute name="schemaLocation">
+        schemaLocation = <data type="anyURI"/>
+		   	$runtime.includeSchema( schemaLocation );
+      </attribute>
+
+      <!--ref name="foreignAttributes"/-->
+      <zeroOrMore>
+        <choice>
+          <ref name="annotation"/>(null,AnnotationContext.SCHEMA);
+          <group>
+          	newSt = <ref name="simpleType"/>
+          	XSSimpleType oldSt = $runtime.currentSchema.getSimpleType(newSt.getName());
+          	// TODO: check oldSt==null and report an error
+          	newSt.redefine((SimpleTypeImpl)oldSt);
+            $runtime.currentSchema.addSimpleType(newSt);
+         	</group>
+         	<group>
+	          newCt = <ref name="complexType"/>
+	          XSComplexType oldCt = $runtime.currentSchema.getComplexType(newCt.getName());
+	          newCt.redefine((ComplexTypeImpl)oldCt);
+	          $runtime.currentSchema.addComplexType(newCt);
+         	</group>
+         	<group>
+	          newGrp = <ref name="group"/>
+	          XSModelGroupDecl oldGrp = $runtime.currentSchema.getModelGroupDecl(newGrp.getName());
+	          newGrp.redefine((ModelGroupDeclImpl)oldGrp);
+	          $runtime.currentSchema.addModelGroupDecl(newGrp);
+         	</group>
+          <group>
+          	newAg = <ref name="attributeGroupDecl"/>
+          	XSAttGroupDecl oldAg = $runtime.currentSchema.getAttGroupDecl(newAg.getName());
+          	newAg.redefine((AttGroupDeclImpl)oldAg);
+	          $runtime.currentSchema.addAttGroupDecl(newAg);
+          </group>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+
+
+</grammar>

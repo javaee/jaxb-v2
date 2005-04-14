@@ -1,0 +1,12 @@
+From 1.0 (2003/04/03)
+=====================
+
+- Fixed a bug in the parsing of:
+
+  <xs:element name="foo" substitutionGroup="bar" />
+  
+  (2003/04/04)
+
+- AnnotationParser was changed from an interface to an abstract class.
+  This allows future versions to add new methods without breaking
+  existing clients.
