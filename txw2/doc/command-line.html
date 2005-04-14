@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=us-ascii">
+	<TITLE>TXW Command Line Options</TITLE>
+	<link rel="stylesheet" type="text/css" href="txw.css" />
+</HEAD>
+<body>
+	<h1 style="text-align:center">
+		TXWC Command Line Options
+	</h1>
+	
+	<p>
+		To show the summary of the available command-line options,
+		simply execute TXWC without any parameter, as follows:
+	
+<pre class=cmd>
+java -jar txwc2.jar
+</pre>
+	
+	<h2>The -c/-x option</h2>
+	<p>
+		TXW supports both the XML syntax and the compact syntax of RELAX NG. By default, TXW looks at the file extension to decide the syntax. If it's ".rnc", it's assumed to be the compact syntax, and otherwise it's assumed to be the XML syntax.
+	<p>
+		Specifying the -x option causes TXW to assume the XML syntax, regardless of the file name. Similarly, specifying the -c option causes TXW to assume the compact syntax.
+	
+	
+	
+	
+	<h2>The -h option</h2>
+	<p>
+		Consider the example in <a href="getting-started.html">the getting started document</a>. By default, "leaf" methods like <tt>Address.name(String)</tt> and <tt>Address.email(String)</tt> return <tt>void</tt>. Therefore, you have to code like the follows to get the values written:
+<pre class=java>
+a = addr.address();
+a.name("Kohsuke Kawaguchi");
+a.email("kohsuke.kawaguchi@sun.com");
+a.email("kk@kohsuke.org");
+</pre>
+	<p>
+		When the -h option is turned on, those leaf methods will be generated to return the <tt>this</tt> object. Thus you can write the same code as:
+<pre class=java>
+addr.address().name("Kohsuke Kawaguchi").email("kohsuke.kawaguchi@sun.com").email("kk@kohsuke.org");
+</pre>
+	<p>
+		This eliminates the need of a local variable, and it also makes your code more compact, at the expense of the reduced readability. The similar coding style is also seen in <tt>StringBuffer</tt>.
+	<p>
+		If you prefer to code like this, use the -h option.
+	
+	
+	
+	
+	<h2>The -o/-p option</h2>
+	<p>
+		The -o option takes an argument and controls where the generated source files go. The -p option specifies the Java package name into which the source code is generated.
+		For example, if you specify <tt>-o build/src -p org.acme</tt>, then you'll see a lot of files generated into <tt>./build/src/org/acme</tt>.
+	
+	
+	
+	
+</body>
+</HTML>

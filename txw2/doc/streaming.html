@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=us-ascii">
+	<TITLE>Output Streaming</TITLE>
+	<link rel="stylesheet" type="text/css" href="txw.css" />
+</HEAD>
+<body>
+	<h1 style="text-align:center">
+		Output Streaming
+	</h1>
+	
+	<p>
+		TXW starts producing output even before the application commits the whole document.
+		This allows TXW to be more efficient (both in terms of memory and I/O utilization),
+		and it also allows TXW to be used to write a streaming XML-based protocol
+		(such as <a href="http://www.xmpp.org/">XMPP</a>.)
+	<p>
+		This document describes how the streaming is done.
+	
+<h2>Attribute and Child Element</h2>
+	<p>
+		The most crucial assumption that TXW makes is that a start tag is considered as committed once you write a child element in it. IOW, once you write a single child element, you will not be able to add attributes nor namespace declarations on the enclosing element. For example, the following call sequence is invalid
+<pre class=java><xmp
+>TypedXmlWriter x = TXW.create(new QName("root",...);   // OK
+x._attribute("foo","bar")                              // OK
+x._element("bar",true)                                 // OK
+
+// at this point <root foo="bar"><bar>true</bar> is printed
+
+x._attribute("test",5);                                // ERROR - no attribute can be declared on root any more
+x._namespace("http://foo.org/","foo");                 // ERROR - ditto
+</xmp></pre>
+	
+	<p>
+		You can block the start tag to be output by calling the TypedXmlWriter.block method.
+		If you calll this method before you write a child element, the above code can be modified to work:
+<pre class=java><xmp
+>TypedXmlWriter x = TXW.create(new QName("root",...);   // OK
+x.block();                                             // block the start tag
+x._attribute("foo","bar")                              // OK
+x._element("bar",true)                                 // OK
+
+// nothing is sent to output because the <root> is blocked
+
+x._attribute("test",5);                                // OK
+x._namespace("http://foo.org/","foo");                 // OK
+
+x.commit();
+
+// at this point <root foo="bar" test="5" xmlns:foo="http://foo.org/"><bar>true</bar></root>
+// is printed
+</xmp></pre>
+	
+	
+<h2>Child Elements</h2>
+	<p>
+		Child elements are output in the order they are written. But unlike attributes, writing a next element doesn't make the earlier element committed. See the following call sequence for example:
+<pre class=java><xmp
+>TypedXmlWriter x = TXW.create(new QName("root",...);   // OK
+f = x._element("first")                                 // OK
+// at this point <root> will be printed
+s = x._element("second")                                // OK
+
+// at this point f and s are both active
+// and elements/attributes can be added to them in any order
+
+f._attribute("aaa",1);                                  // OK
+s._attribute("bbb",2);                                  // OK
+s._element("ccc",3);                                    // OK
+s._attribute("ddd",4);                                  // OK, because the <second> tag has not yet written
+
+s.commit();
+
+// at this point you'll see
+// <first aaa="1"/><second bbb="2" ddd="4"><ccc>3</ccc></second></root>
+</xmp></pre>
+	
+<h2>Streaming Without Hassle</h2>
+	<p>
+		If you are writing a small document, do not worry about the streaming at all. If you need to write attributes totally out-of-order, you should just block the root start tag. This will allow you to write a document in any order without worrying about any of the above constraints.
+	<p>
+		If you use TXW like StAX, where you call the commit method instead of the endElement method, then you will achieve the same streaming performance as StAX does, at the expense of losing out-of-order writing completely. Normally, this is too much hassle.
+	<p>
+		A good streaming performance can be achieved by choosing the right place to commit. In many large document, you have an element that contains a lot of children, where each child forms an "island" of XML. An "island" is a subjective notion, but it can be thought as an unit of repetition.
+	<p>
+		You'd get a good performance by committing one island at a time. This would allow each island to be written out-of-order, yet you'll have only upto one island in memory. See the following code as an example:
+<pre class=java><xmp>
+	Root root = TXW.create(Root.class,...);
+	
+	// write attributes on root
+	// write other "header" elements
+	...
+	
+	for( Item i : largeCollection ) {
+		Island i = root.island();
+		
+		// write the contents of island here
+		...
+		
+		// commit this whole island
+		i.commit();
+	}
+	
+	//complete the writing
+	root.commit();
+</xmp></pre>
+</body>
+</HTML>

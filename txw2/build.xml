@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<project name="txw2" default="jar">
+  <path id="runtime.lib">
+    <fileset dir="lib" includes="runtime/*.jar"/>
+  </path>
+	
+  <target name="compile">
+    <mkdir dir="build/runtime-classes" />
+    <mkdir dir="build/compiler-classes" />
+    
+    <javac source="1.5" srcdir="src/runtime" destdir="build/runtime-classes" debug="on">
+    	<classpath refid="runtime.lib"/>
+    </javac>
+    
+    <javac source="1.5" srcdir="src/compiler" destdir="build/compiler-classes" debug="on">
+    	<classpath refid="runtime.lib"/>
+    	<classpath>
+    		<pathelement path="build/runtime-classes"/>
+    		<fileset dir="lib" includes="compiler/*.jar"/>
+    	</classpath>
+    </javac>
+  </target>
+  
+  <target name="test" depends="compile">
+    <mkdir dir="build/test-classes" />
+    <javac srcdir="src/test" destdir="build/test-classes">
+    	<classpath refid="runtime.lib"/>
+    	<classpath>
+        <pathelement path="build/runtime-classes"/>
+      </classpath>
+    </javac>
+    
+    <!-- TODO: design a test framework -->
+  </target>
+  
+  <target name="javadoc">
+    <mkdir dir="build/javadoc"/>
+    <javadoc locale="en_US" source="1.5" destdir="build/javadoc">
+      <packageset dir="src/runtime"/>
+      <classpath>
+        <fileset dir="lib" includes="**/*.jar"/>
+      </classpath>
+    </javadoc>
+  </target>
+  
+  <target name="jar" depends="compile">
+    <tstamp>
+      <format property="now" pattern="MM/dd/yyyy hh:mm" unit="hour"/>
+    </tstamp>
+    <property name="build.id" value="${now}(${user.name})" />
+    
+    <zip destfile="build/txw2-src.zip">
+      <fileset dir="src" includes="**/*" defaultexcludes="no"/>
+    </zip>
+    <jar destfile="build/txw2.jar">
+      <manifest>
+        <attribute name="Date" value="${TODAY}"/>
+        <attribute name="Build-Id" value="${build.id}"/>
+      </manifest>
+      <!--metainf dir="doc" includes="lib/*LICENSE.txt"/-->
+      
+      <fileset dir="build/runtime-classes" includes="**/*.class, **/*.properties"/>
+      <fileset dir="src" includes="**/*.properties"/>
+    </jar>
+    <jar destfile="build/txwc2.jar">
+      <manifest>
+        <attribute name="Date" value="${TODAY}"/>
+        <attribute name="Build-Id" value="${build.id}"/>
+        <attribute name="Class-Path" value="txw2.jar lib/relaxngDatatype.jar lib/rngom.jar lib/xsdlib.jar lib/commons-cli-1.0.jar"/>
+        <attribute name="Main-Class" value="com.sun.tools.txw2.Main"/>
+      </manifest>
+      <!--metainf dir="doc" includes="lib/*LICENSE.txt"/-->
+      
+      <fileset dir="build/compiler-classes" includes="**/*.class, **/*.properties"/>
+      <fileset dir="src" includes="**/*.properties"/>
+    </jar>
+  </target>
+  
+  <target name="dist" depends="clean, javadoc, jar">
+    <tstamp/>
+    <zip zipfile="build/txw2-${DSTAMP}.zip">
+      <zipfileset prefix="txw2-${DSTAMP}" dir="build"
+        includes="*.jar,*.zip"/>
+      <zipfileset prefix="txw2-${DSTAMP}" dir="build"
+        includes="javadoc/**/*"/>
+      <zipfileset prefix="txw2-${DSTAMP}/lib" dir="lib/compiler" includes="*.jar" excludes="ant.jar"/>
+      <zipfileset prefix="txw2-${DSTAMP}" dir="doc" includes="*.html, *.css"/>
+    </zip>
+  </target>
+  
+  <target name="clean">
+    <delete dir="build"/>
+  </target>
+</project>
