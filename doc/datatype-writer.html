@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=us-ascii">
+	<TITLE>Using Custom DatatypeWriter</TITLE>
+	<link rel="stylesheet" type="text/css" href="txw.css" />
+</HEAD>
+<body>
+	<h1 style="text-align:center">
+		Using Custom DatatypeWriter
+	</h1>
+	<div style="text-align:right; font-size:smaller">
+		By <a href="mailto:kohsuke.kawaguchi@kohsuke.org">Kohsuke Kawaguchi</a>
+	</div>
+	
+	<h2>Introduction</h2>
+	<p>
+		DatatypeWriter is an internal abstraction for converting Java objects into a string (so that they can be printed as attribute/element values.) For example, when you call the following method, the DatatypeWriter for <tt>java.lang.Integer</tt> is turning 1 into "1".
+<pre class=java><xmp
+>@XmlAttribute
+void version(int i);
+</xmp></pre>
+	<p>
+		TXW comes with a reasonable set of built-in DatatypeWriter implementations to cover the typical datatypes used for XML. But TXW also allows you to write your own DatatypeWriter and register that to a writer. This would allow you to use your application-specific data structure as attribute/element values, improving the type-safety and readability of your code.
+	
+	<h2>Writing Your Own DatatypeWriter</h2>
+	<p>
+		See <a href="javadoc/com/sun/xml/txw2/DatatypeWriter.html">javadoc</a> for more information about this class.
+		The following code shows how the built-in DatatypeWriter for QName is written:
+<pre class=java><xmp
+>new DatatypeWriter<QName>() {
+    public Class<QName> getType() {
+        return QName.class;
+    }
+    public void print(QName qn, NamespaceResolver resolver, StringBuilder buf) {
+        String p = resolver.getPrefix(qn.getNamespaceURI());
+        if(p.length()!=0)
+            buf.append(p).append(':');
+        buf.append(qn.getLocalPart());
+    }
+}
+</xmp></pre>
+</body>
+</HTML>

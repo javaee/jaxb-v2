@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<project name="xmlschema" default="compile">
+  <target name="clean">
+    <delete dir="build"/>
+  </target>
+  
+  <path id="txw">
+    <pathelement path="../build/compiler-classes"/>
+    <pathelement path="../build/runtime-classes"/>
+    <fileset dir="../lib/compiler" includes="*.jar"/>
+  </path>
+  
+  <target name="txwc">
+    <taskdef name="txwc" classname="com.sun.tools.txw2.TxwTask">
+      <classpath refid="txw"/>
+    </taskdef>
+    <mkdir dir="build/src"/>
+    <txwc destdir="build/src" schema="xmlschema-for-jaxb.rng"
+        package="com.sun.tools.jxc.gen.xmlschema" methodChaining="true" />
+  </target>
+  
+  <target name="compile" depends="txwc">
+    <mkdir dir="build/classes"/>
+    <javac srcdir="src:build/src" destdir="build/classes" debug="on">
+      <classpath refid="txw"/>
+    </javac>
+  </target>
+</project>

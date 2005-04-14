@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=us-ascii">
+	<TITLE>Getting Started</TITLE>
+	<link rel="stylesheet" type="text/css" href="txw.css" />
+</HEAD>
+<body>
+	<h1 style="text-align:center">
+		Getting Started
+	</h1>
+	
+	<h2>Introduction</h2>
+	<p>
+		Consider writing the following XML instance:
+<pre class=instance><xmp
+><addressBook>
+	<!-- GENERATED. DO NOT MODIFY. -->
+	<address age="27">
+		<name>Kohsuke Kawaguchi</name>
+		<e-mail>kohsuke.kawaguchi@sun.com</e-mail>
+		<e-mail>kk@kohsuke.org</e-mail>
+	</address>
+	<address>
+		<name>Hiroe Kawaguchi</name>
+	</address>
+	...
+</addressBook>
+</xmp></pre>
+	<p>
+		To write this XML with TXW, define the following Java interfaces:
+<pre class=java>
+import com.sun.xml.txw2.TypedXmlWriter;
+import com.sun.xml.txw2.annotation.*;
+
+interface AddressBook extends TypedXmlWriter {
+	Address address();
+}
+
+interface Address extends TypedXmlWriter {
+	void name(String name);
+	@XmlElement("e-mail")
+	void email(String email);
+	@XmlAttribute
+	void age(int age);
+}
+</pre>
+	<p>
+		You can then use those interfaces to write the above document like this:
+<pre class=java>
+AddressBook ab = TXW.create(AddressBook.class,new StreamSerializer(System.out));
+Address a;
+
+ab._comment("GENERATED. DO NOT MODIFY.");
+
+a = addr.address();
+a.age(27);
+a.name("Kohsuke Kawaguchi");
+a.email("kohsuke.kawaguchi@sun.com");
+a.email("kk@kohsuke.org");
+
+a = addr.address();
+a.name("Hiroe Kawaguchi");
+
+ab.commit();
+</pre>
+	
+	
+	<h2>Annotations</h2>
+	<p>
+		TXW looks at annotations to decide how a method invocation is interpreted as a writing operation.
+		In the above example, @XmlElement annotation is used to set the element name, and
+		@XmlAttribute annotation is used to produce an attribute.
+		Annotations are heavily defaulted, for example, the name and address methods are defaulted to the element of the same name.
+	<p>
+		Annotations are designed so that they can be placed manually.
+	
+	
+	<h2>Schema Compiler</h2>
+	<p>
+		Instead of writing those interfaces manually, you can use <tt>txwc</tt> to compile a schema into the interface definitions. You can then manually refactor the generated code to improve the usability.
+	
+	
+	<h2>Comments, PIs, and Undefined Attributes/Elements</h2>
+	<p>
+		XML writer interfaces eventually derive from <tt>TypedXmlWriter</tt>, which defines a series of methods to write arbitrary attributes, elements, PCDATA, comments, namespace declarations, and PIs.
+	<p>
+		The typed methods make it easy to write the "normal" elements/attributes/texts, while those low-level methods allow you to write additional things when you need to.
+</body>
+</HTML>

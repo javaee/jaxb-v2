@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=us-ascii">
+	<TITLE>TXWC Ant Task</TITLE>
+	<link rel="stylesheet" type="text/css" href="txw.css" />
+</HEAD>
+<body>
+	<h1 style="text-align:center">
+		TXWC Ant Task
+	</h1>
+	
+	<p>
+		TXW comes with a built-in Ant task to make the Ant integration easier. First you have to declare the task in the build task like this:
+<pre class=instance><xmp
+><taskdef name="txwc" classname="com.sun.tools.txw2.TxwTask">
+  <classpath>
+    <fileset dir="path/to/txw/installation" includes="**/*.jar" />
+  </classpath>
+</taskdef>
+</xmp></pre>
+  <p>
+  	Then use the task like this:
+<pre class=instance><xmp
+><target name="...">
+  ...
+  <txwc schema="src/foo.rng"
+    package="org.acme.foo"
+    destdir="build/src"
+    methodChaining="true" />
+</target>
+</xmp></pre>
+
+<h2>Synopsis</h2>
+	<p>
+		Many of the attributes have the equivalent command line options.
+	</p>
+	
+	<table border=1>
+		<tr><td>
+			Attribute
+		</td><td>
+			Description
+		</td><td>
+			Value
+		</td><td>
+			Required?
+		</td></tr>
+		
+		<tr><td>
+			methodChaining
+		</td><td>
+			Equivalent of the -h option.
+		</td><td>
+			"true" or "false". Defaults to true.
+		</td><td>
+			No
+		</td></tr>
+		
+		<tr><td>
+			package
+		</td><td>
+			The equivalent of the -p option.
+		</td><td>
+			A package name, such as "org.acme.foo"
+		</td><td>
+			Yes
+		</td></tr>
+		
+		<tr><td>
+			schema
+		</td><td>
+			The schema file to be compiled.
+		</td><td>
+			A file. relative to the base directory of the build.
+		</td><td>
+			Yes
+		</td></tr>
+		
+		<tr><td>
+			syntax
+		</td><td>
+			The format of the schema. Equivalent of the -x/-c option.
+		</td><td>
+			"xml" or "compact"
+		</td><td>
+			No. If missing, the format is guessed from the file extension.
+		</td></tr>
+		
+		<tr><td>
+			destdir
+		</td><td>
+			Equivalent of the -o option.
+		</td><td>
+			A directory. relative to the base directory of the build.
+		</td><td>
+			Yes
+		</td></tr>
+		
+		<!--
+		<tr><td>
+		</td><td>
+		</td><td>
+		</td><td>
+		</td></tr>
+		-->
+	</table>
+	<p>
+		At this point, the TXWC task defines no nested element.
+</body>
+</HTML>
