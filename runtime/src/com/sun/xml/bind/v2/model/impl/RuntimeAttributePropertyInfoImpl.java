@@ -1,5 +1,6 @@
 package com.sun.xml.bind.v2.model.impl;
 
+import static com.sun.xml.bind.v2.model.core.ID.IDREF;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -64,7 +65,7 @@ class RuntimeAttributePropertyInfoImpl extends AttributePropertyInfoImpl<Type,Cl
     // TODO: share this code with RuntimeValuePropertyInfoImpl
     private <BeanT,ItemT> void calcTransducedAccessor() {
         Transducer<ItemT> xducer = getType().getTransducer();
-        if(xducer==null) {
+        if(xducer==null && id()!=IDREF) {
             parent().builder.reportError(new IllegalAnnotationException(
                 Messages.ILLEGAL_TYPE_FOR_ATTRIBUTE.format(getType().getType()),
                 this
@@ -73,14 +74,14 @@ class RuntimeAttributePropertyInfoImpl extends AttributePropertyInfoImpl<Type,Cl
             return;
         }
         if(!isCollection()) {
-            if(id()==ID.IDREF) {
+            if(id()==IDREF) {
                 // IDREF uses a special transduced accessor
                 xacc = new IDHandler.IDREF(getAccessor().optimize());
             } else {
                 xacc = TransducedAccessor.get(this,xducer);
             }
         } else {
-            if(id()==ID.IDREF) {
+            if(id()==IDREF) {
                 xducer = (Transducer)RuntimeBuiltinLeafInfoImpl.STRING;
             }
             xacc = new ListTransducedAccessorImpl(xducer,acc,
