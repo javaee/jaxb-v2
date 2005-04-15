@@ -10,6 +10,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import com.sun.xml.bind.api.Bridge;
 import com.sun.xml.bind.api.BridgeContext;
+import com.sun.xml.bind.api.TypeReference;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
 
 import org.w3c.dom.Node;
@@ -63,6 +64,10 @@ final class BridgeAdapter<OnWire,InMemory> extends Bridge<InMemory> {
 
     public InMemory unmarshal(BridgeContext context, URL url) throws JAXBException {
         return adaptU(context, core.unmarshal(context,url));
+    }
+
+    public TypeReference getTypeReference() {
+        return core.getTypeReference();
     }
 
     private InMemory adaptU(BridgeContext context, OnWire v) throws JAXBException {
