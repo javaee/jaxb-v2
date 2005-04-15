@@ -43,7 +43,7 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
     /**
      * Non-null if this bean has an ID property.
      */
-    private final Property idProperty;
+    private Property idProperty;
 
     /**
      * Immutable configured unmarshaller for this class.
@@ -93,20 +93,19 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
         Collection<? extends RuntimePropertyInfo> ps = ci.getProperties();
         this.properties = new Property[ps.size()];
         int idx=0;
-        Property idp=null;
         boolean elementOnly = true;
         for( RuntimePropertyInfo info : ps ) {
             Property p = PropertyFactory.create(owner,info);
             if(p.isId())
-                idp = p;
+                idProperty = p;
             properties[idx++] = p;
             elementOnly &= info.elementOnlyContent();
         }
-        if(superClazz!=null && idp==null)
-            idp = superClazz.idProperty;
-        idProperty = idp;
+        // super class' idProperty might not be computed at this point,
+        // so check that later
 
-        hasElementOnlyContentModel( elementOnly && (superClazz==null || superClazz.hasElementOnlyContentModel()) );
+        hasElementOnlyContentModel( elementOnly );
+        // again update this value later when we know that of the super class
 
         if(ci.isElement())
             tagName = owner.nameBuilder.createElementName(ci.getElementName());
@@ -117,6 +116,9 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
     @Override
     protected void link(JAXBContextImpl grammar) {
         if(typeUnmarshaller!=null)      return; // avoid linkng twice.
+
+        if(superClazz!=null)
+            superClazz.link(grammar);
 
         // create unmarshaller. our unmarshaller is immutable
         typeUnmarshaller = createTypeUnmarshaller(grammar,Unmarshaller.REVERT_TO_PARENT);
@@ -135,6 +137,15 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
             elementUnmarshaller = te;
         } else {
             elementUnmarshaller = null;
+        }
+
+        // propagate values from super class
+        if(superClazz!=null) {
+            if(idProperty==null)
+                idProperty = superClazz.idProperty;
+
+            if(!superClazz.hasElementOnlyContentModel())
+                hasElementOnlyContentModel(false);
         }
     }
 
