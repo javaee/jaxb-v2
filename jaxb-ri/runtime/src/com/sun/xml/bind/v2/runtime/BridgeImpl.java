@@ -10,6 +10,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import com.sun.xml.bind.api.Bridge;
 import com.sun.xml.bind.api.BridgeContext;
+import com.sun.xml.bind.api.TypeReference;
 import com.sun.xml.bind.marshaller.SAX2DOMEx;
 import com.sun.xml.bind.v2.runtime.output.SAXOutput;
 import com.sun.xml.bind.v2.runtime.output.XMLStreamWriterOutput;
@@ -30,10 +31,12 @@ final class BridgeImpl<T> extends Bridge<T> {
      */
     private final Name tagName;
     private final JaxBeanInfo<T> bi;
+    private final TypeReference typeRef;
 
-    public BridgeImpl(Name tagName, JaxBeanInfo<T> bi) {
+    public BridgeImpl(Name tagName, JaxBeanInfo<T> bi,TypeReference typeRef) {
         this.tagName = tagName;
         this.bi = bi;
+        this.typeRef = typeRef;
     }
 
     public void marshal(BridgeContext context, T t, XMLStreamWriter output) throws JAXBException {
@@ -61,6 +64,10 @@ final class BridgeImpl<T> extends Bridge<T> {
         UnmarshallerImpl u = ((BridgeContextImpl)context).unmarshaller;
         u.setExpectedType(bi);
         return ((JAXBElement<T>)u.unmarshal(in)).getValue();
+    }
+
+    public TypeReference getTypeReference() {
+        return typeRef;
     }
 
 }

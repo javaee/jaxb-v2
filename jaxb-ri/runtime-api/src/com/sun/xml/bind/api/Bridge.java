@@ -82,4 +82,9 @@ public abstract class Bridge<T> {
      * @since 2.0 EA1
      */
     public abstract T unmarshal(BridgeContext context,URL url) throws JAXBException;
+
+    /**
+     * Gets the {@link TypeReference} from which this bridge was created.
+     */
+    public abstract TypeReference getTypeReference();
 }

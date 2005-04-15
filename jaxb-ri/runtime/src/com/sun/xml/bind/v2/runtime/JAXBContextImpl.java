@@ -5,9 +5,9 @@
 
 /*
 <<<<<<< JAXBContextImpl.java
- * @(#)$Id: JAXBContextImpl.java,v 1.1 2005-04-15 20:04:24 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.2 2005-04-15 23:26:39 kohsuke Exp $
 =======
- * @(#)$Id: JAXBContextImpl.java,v 1.1 2005-04-15 20:04:24 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.2 2005-04-15 23:26:39 kohsuke Exp $
 >>>>>>> 1.12.2.1
  */
 package com.sun.xml.bind.v2.runtime;
@@ -77,7 +77,7 @@ import org.xml.sax.SAXException;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -242,9 +242,9 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
             Bridge bridge;
             if(xl==null)
-                bridge = new BridgeImpl(name,getBeanInfo(erasedType,true));
+                bridge = new BridgeImpl(name,getBeanInfo(erasedType,true),tr);
             else
-                bridge = new BridgeImpl(name,new ValueListBeanInfoImpl(this,erasedType ));
+                bridge = new BridgeImpl(name,new ValueListBeanInfoImpl(this,erasedType),tr);
 
             if(a!=null)
                 bridge = new BridgeAdapter(bridge,xjta.value());
