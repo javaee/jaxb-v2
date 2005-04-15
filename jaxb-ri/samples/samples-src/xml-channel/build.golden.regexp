@@ -1,0 +1,20 @@
+
+compile\:
+     \[echo\] Compiling the schema\.\.\.
+    \[mkdir\] Created dir\: .*
+      \[xjc\] .* is not found and thus excluded from the dependency check
+      \[xjc\] Compiling .*
+      \[xjc\] Writing output to .*
+     \[echo\] Compiling the java source files\.\.\.
+    \[mkdir\] Created dir\: .*
+    \[javac\] Compiling \d+ source files to .*
+
+run\:
+     \[echo\] Running the sample application\.\.\.
+     \[java\] accepted connection from client
+     \[java\] Message\: 1st message
+     \[java\] Message\: 2nd message
+     \[java\] Bye\!
+
+BUILD SUCCESSFUL
+Total time\: .*

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry output="codemodel/build/classes" kind="src" path="codemodel/src"/>
+	<classpathentry output="codemodel/build/classes" kind="src" path="codemodel/test"/>
+	<classpathentry output="runtime/build/classes" kind="src" path="runtime/src"/>
+	<classpathentry output="runtime/build/classes" kind="src" path="runtime/test"/>
+	<classpathentry output="spec/build/classes" kind="src" path="spec/src"/>
+	<classpathentry output="test/build/classes" kind="src" path="test/src"/>
+	<classpathentry output="tools/webapp-commons/build/classes" kind="src" path="tools/webapp-commons/src"/>
+	<classpathentry output="tools/pretty-printer/build/classes" kind="src" path="tools/pretty-printer/src"/>
+	<classpathentry output="tools/servlet/bin" kind="src" path="tools/servlet/src"/>
+	<classpathentry output="xjc/build/classes" kind="src" path="xjc/src"/>
+	<classpathentry output="xjc/build/classes" kind="src" path="xjc/test"/>
+	<classpathentry output="samples/build/classes" kind="src" path="samples/src"/>
+	<classpathentry output="tools/jing-rnc-driver/build/classes" kind="src" path="tools/jing-rnc-driver/src"/>
+	<classpathentry output="tools/installer/build/classes" kind="src" path="tools/installer/src"/>
+	<classpathentry kind="src" path="tools/toc-processor/src"/>
+	<classpathentry kind="lib" path="tools/lib/util/activation.jar"/>
+	<classpathentry sourcepath="tools/lib/src/ant-src.zip" kind="lib" path="tools/lib/redist/ant.jar"/>
+	<classpathentry sourcepath="tools/lib/src/antlr.src.zip" kind="lib" path="tools/lib/util/antlr.jar"/>
+	<classpathentry sourcepath="tools/lib/src/args4j-1.0-RC-src.zip" kind="lib" path="tools/lib/util/args4j-1.0-RC.jar"/>
+	<classpathentry sourcepath="tools/lib/src/bsh-src.zip" kind="lib" path="tools/lib/util/bsh.jar"/>
+	<classpathentry kind="lib" path="tools/lib/util/commons-logging.jar"/>
+	<classpathentry sourcepath="tools/lib/src/xml-apis--src.zip" kind="lib" path="tools/lib/redist/dom.jar"/>
+	<classpathentry sourcepath="tools/lib/src/dom4j-src.zip" kind="lib" path="tools/lib/util/dom4j.jar"/>
+	<classpathentry sourcepath="tools/lib/src/gsc.src.zip" kind="lib" path="tools/lib/util/gsc.jar"/>
+	<classpathentry sourcepath="tools/highResTimer/src" kind="lib" path="tools/lib/util/highResTimer.jar"/>
+	<classpathentry exported="true" sourcepath="tools/lib/src/iso-relax-src.zip" kind="lib" path="tools/lib/rebundle/isorelax.jar"/>
+	<classpathentry sourcepath="spec/src" kind="lib" path="tools/lib/redist/jaxb-api.jar"/>
+	<classpathentry sourcepath="tools/lib/redist/jaxp-api.jar" kind="lib" path="tools/lib/redist/jaxp-api.jar"/>
+	<classpathentry kind="lib" path="tools/lib/util/jaxm-api.jar"/>
+	<classpathentry kind="lib" path="tools/lib/util/jaxm-runtime.jar"/>
+	<classpathentry exported="true" sourcepath="spec/src" kind="lib" path="tools/lib/redist/jax-qname.jar"/>
+	<classpathentry kind="lib" path="tools/lib/util/jcommon-0.8.5.jar"/>
+	<classpathentry sourcepath="tools/lib/src/jdom-src.zip" kind="lib" path="tools/lib/util/jdom.jar"/>
+	<classpathentry sourcepath="tools/lib/src/jfreechart-0.9.10.src.zip" kind="lib" path="tools/lib/util/jfreechart-0.9.10.jar"/>
+	<classpathentry exported="true" sourcepath="tools/lib/src/xsdlib-src.zip" kind="lib" path="tools/lib/redist/xsdlib.jar"/>
+	<classpathentry sourcepath="tools/lib/src/jing-src.zip" kind="lib" path="tools/lib/util/jing.jar"/>
+	<classpathentry sourcepath="tools/lib/src/junit-src.zip" kind="lib" path="tools/lib/util/junit.jar"/>
+	<classpathentry kind="lib" path="samples/samples-src/pull-parser/lib/kxml2.jar"/>
+	<classpathentry kind="lib" path="tools/lib/util/mailapi.jar"/>
+	<classpathentry kind="lib" path="spec/tools/lib/mif/mifdoclet.jar"/>
+	<classpathentry exported="true" sourcepath="tools/lib/src/msv-src.zip" kind="lib" path="tools/lib/rebundle/msv.jar"/>
+	<classpathentry sourcepath="spec/src" kind="lib" path="tools/lib/redist/namespace.jar"/>
+	<classpathentry sourcepath="tools/lib/src/ant-src.zip" kind="lib" path="tools/lib/util/optional.jar"/>
+	<classpathentry kind="lib" path="tools/lib/util/relaxngcc.jar"/>
+	<classpathentry exported="true" sourcepath="tools/lib/src/relaxngDatatype-src.zip" kind="lib" path="tools/lib/redist/relaxngDatatype.jar"/>
+	<classpathentry sourcepath="tools/lib/src/resolver-src.zip" kind="lib" path="tools/lib/rebundle/resolver.jar"/>
+	<classpathentry kind="lib" path="tools/lib/util/saaj-ri.jar"/>
+	<classpathentry sourcepath="tools/lib/src/relaxng.javadt.src.zip" kind="lib" path="tools/lib/rebundle/relaxng.javadt.jar"/>
+	<classpathentry sourcepath="tools/lib/src/xml-apis--src.zip" kind="lib" path="tools/lib/redist/sax.jar"/>
+	<classpathentry kind="lib" path="tools/lib/util/saaj-api.jar"/>
+	<classpathentry sourcepath="tools/lib/src/servlet-src.zip" kind="lib" path="tools/lib/util/servlet.jar"/>
+	<classpathentry kind="lib" path="tools/lib/util/smtp.jar"/>
+	<classpathentry sourcepath="tools/lib/src/vmtools-0.5.src.zip" kind="lib" path="tools/lib/util/vmtools-0.5.jar"/>
+	<classpathentry sourcepath="tools/lib/src/jaxp-xalan.jar.src.zip" kind="lib" path="tools/lib/redist/xalan.jar"/>
+	<classpathentry sourcepath="tools/lib/src/jaxp-xercesImpl.jar.src.zip" kind="lib" path="tools/lib/redist/xercesImpl.jar"/>
+	<classpathentry sourcepath="tools/lib/src/xsom-src.zip" kind="lib" path="tools/lib/rebundle/xsom.jar"/>
+	<classpathentry sourcepath="tools/profiler-wrapper/src" kind="lib" path="tools/lib/util/profiler-wrapper.jar"/>
+	<classpathentry sourcepath="tools/lib/src/forehead.src.zip" kind="lib" path="tools/lib/util/forehead.jar"/>
+	<classpathentry sourcepath="tools/lib/src/jsr173_1.0_src.jar" kind="lib" path="tools/lib/redist/jsr173_1.0_api.jar"/>
+	<classpathentry kind="lib" path="samples/samples-src/pull-parser/lib/xmlpull.jar"/>
+	<classpathentry kind="lib" path="tools/toc-processor/lib/nekohtml.jar"/>
+	<classpathentry kind="lib" path="tools/toc-processor/lib/nekohtmlXni.jar"/>
+	<classpathentry sourcepath="tools/lib/src/xalan-j_2_4_0-src.zip" kind="lib" path="tools/lib/util/xalan.jar"/>
+	<classpathentry sourcepath="tools/lib/src/Xerces-J-src.2.3.0.zip" kind="lib" path="tools/lib/util/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="tools/lib/util/parallel-junit.jar"/>
+	<classpathentry kind="lib" path="tools/lib/rebundle/stax-utils-20040621.jar"/>
+	<classpathentry kind="lib" path="test/schemas"/>
+	<classpathentry sourcepath="tools/lib/src/zephyr-src.zip" kind="lib" path="tools/lib/util/zephyr.jar"/>
+	<classpathentry sourcepath="tools/lib/src/commons-jexl-1.0-beta-1.src.zip" kind="lib" path="tools/lib/util/commons-jexl-1.0-beta-1.jar"/>
+	<classpathentry sourcepath="tools/lib/src/bsh-src.zip" kind="lib" path="tools/lib/util/bsh-classgen-2.0b1.jar"/>
+	<classpathentry kind="lib" path="tools/lib/util/bsh-reflect-2.0b1.jar"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>

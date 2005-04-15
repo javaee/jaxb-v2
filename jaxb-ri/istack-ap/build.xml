@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+
+<!--
+ Copyright 2004 Sun Microsystems, Inc. All rights reserved.
+ SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+-->
+
+<project name="istack-ap" basedir=".." default="compile">
+
+	<description>
+		I-Stack Annotation Processor Sub-Project
+		========================================
+		
+		see readme.txt for more details
+	</description>
+	
+    <!-- import build properties -->
+    <property file="${basedir}/build.properties" />
+
+   <!-- classpath -->
+   <path id="javac.classpath">
+        <pathelement path="${xjc.classes}" />
+        <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
+        <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
+        <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
+   </path>
+
+   <!-- compile Java source files -->
+    <target name="compile">
+        <mkdir dir="${istackap.classes}" />
+
+        <!-- always delete this prop file so that the latest build id can be set -->
+        <delete file="${istackap.classes}/com/sun/istack/Messages.properties"/>
+
+        <javac srcdir="${istackap.src}" destdir="${istackap.classes}"
+            debug="${compile.debug}" optimize="${compile.optimize}"
+            deprecation="${compile.deprecation}" >
+            <classpath refid="javac.classpath" />
+        </javac>
+        
+        <copy toDir="${istackap.classes}">
+            <fileset dir="${istackap.src}" includes="**/*.properties" />
+        </copy>
+
+        <!-- expose the build version to the DefaultJAXBContextImpl class so
+             that it is available to the generated ObjectFactory classes -->
+        <replace file="${istackap.classes}/com/sun/istack/Messages.properties">
+            <replacefilter token="@@BUILD_VERSION@@" value="${build.version}"/>
+        </replace>
+    </target>
+
+    <!-- generate javadoc -->
+    <target name="javadoc" depends="compile">
+        <mkdir dir="${istackap.root}/build/api" />
+        <javadoc
+            destdir="${istackap.root}/build/api"
+            use="true"
+            author="false"
+            version="false"
+            windowtitle="i-stack annotation processor">
+            <fileset dir="${istackap.src}" includes="**/*.java"/>
+            <classpath refid="javac.classpath" />
+        </javadoc>
+    </target>
+
+    <!-- remove all intermediate files -->
+    <target name="clean">
+        <delete dir="${istackap.root}/build" />
+    </target>
+    
+    
+    <!-- run unit test -->
+    <target name="test" 
+          depends="compile"
+          description="execute client unit tests - requires junit.jar on system classpath">
+      
+      <!-- no test at this point -->
+      <!--mkdir dir="${runtime.test.classes}" />
+      <javac srcdir="${runtime.test}" destdir="${runtime.test.classes}"
+        debug="true" optimize="true"
+        deprecation="${compile.deprecation}" >
+        
+        <classpath refid="javac.classpath" />
+        <classpath>
+          <pathelement path="${runtime.classes}" />
+          <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
+        </classpath>
+      </javac>
+      
+      <echo>running JUnit</echo>
+      <junit printsummary="yes" fork="yes"
+        haltonerror="no" haltonfailure="no">
+        
+        <formatter type="brief" usefile="false" />
+        
+        <classpath path="${runtime.classes}"/>
+        <classpath path="${runtime.test.classes}"/>
+        
+        <batchtest todir="${test.log}">
+          <fileset dir="${runtime.test.classes}" includes="**/*Test.class" />
+        </batchtest>
+      </junit-->
+    </target>
+</project>

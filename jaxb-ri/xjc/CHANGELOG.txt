@@ -1,0 +1,78 @@
+Changes since JAXB 1.0 FCS (JWSDP 1.1 FCS)
+------------------------------------------
+
+o Kohsuke 07.08.2003
+
+  javadoc generation now includes source file name + line number
+  where the schema fragment is taken from.
+
+o Kohsuke 05.12.2003
+
+  type-safe enum unmarshalling is made faster/more scalable.
+
+o Kohsuke 03.13.2003
+
+  changed the behaivor when @implClass is present. XJC continues to
+  generate the default implementation class so that it will be readily
+  sub-classed by an user-defined class.
+
+o Kohsuke 03.10.2003
+
+  type-safe enum were not generated as serializable even if the vendor
+  extension is turned on. (bug #4827369)
+
+o Kohsuke 02.28.2003
+
+  added the "-catalog" option that enables Norm Walsh's entity resolver.
+
+o Kohsuke 02.28.2003
+
+  The XJC ant task is now capable of avoiding unnecessary re-compilation
+  by comparing file timestamps. See the documentation for details.
+
+o Kohsuke
+
+  added the "-version" option to print out the XJC version.
+
+o Kohsuke
+
+  fixed a bug in mapping IDREF where XJC does too agressive optimization
+  to determine the type of IDREF.
+  
+  Added a symbol space vendor extension customization to better restrict
+  the type of IDREF.
+  
+  fixed bug 4817805: incorrect method signature generated for
+  choiceContentProperty="true"
+  
+  added an ability to compress the schema fragment string by using gzip.
+  this will automatically kick in when the schema fragment is larger than
+  the threshold.
+  
+  fixed bug 4817665: "typesafe enum class not generated for unreferenced global simpleType definition"
+  
+  fixed bug #4815671 "xjc failures when using schema namespaces and multiple files".
+  
+  fixed bug 4811455 "schema-derived Nested Element Interfaces do not extend javax.xml.bind.Element"
+  
+  fixed bug 4807591 "xjc generates a class containing two fields with the same name"
+  
+  fixed bug 4806642 "xjc can not generate a model group property name for repeating choice w/wildcard"
+  
+  fixed bug 4806326 "modelGroupBinding of top-level non-repeating choice model group to property set"
+  
+  fixed bug 4799840 "XJC doesn't reject standalone <javaType> at the point of reference"
+  
+  fixed bug 4817787 "Incorrect method signature for Bind choice group to a content interface"
+  
+  fixed bug #4825087 "Unable to handle <jaxb:property> attached to element reference"
+  
+  fixed bug 4817825: "constant customization name has "_" dropped"
+  
+  fixed a bug where the validator fails to recognize attributes defined in a base complex type when a complex type is derived by extension.
+  
+  RELAX NG support now has full external binding syntax support
+  
+  supported all name classes of RELAX NG (including <any> and <nsName>)
+  
+

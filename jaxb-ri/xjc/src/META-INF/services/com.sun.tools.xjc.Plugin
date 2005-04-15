@@ -1,0 +1,2 @@
+com.sun.tools.xjc.addon.locator.SourceLocationAddOn
+com.sun.tools.xjc.addon.sync.SynchronizedMethodAddOn

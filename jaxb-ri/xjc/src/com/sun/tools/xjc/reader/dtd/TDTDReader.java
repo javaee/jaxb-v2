@@ -1,0 +1,454 @@
+/*
+ * Copyright 2004 Sun Microsystems, Inc. All rights reserved.
+ * SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ */
+package com.sun.tools.xjc.reader.dtd;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
+
+import javax.xml.namespace.QName;
+
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JPackage;
+import com.sun.msv.reader.AbortException;
+import com.sun.msv.scanner.dtd.DTDHandlerBase;
+import com.sun.msv.scanner.dtd.DTDParser;
+import com.sun.msv.scanner.dtd.InputEntity;
+import com.sun.tools.xjc.ErrorReceiver;
+import com.sun.tools.xjc.Options;
+import com.sun.tools.xjc.model.CAttributePropertyInfo;
+import com.sun.tools.xjc.model.CClassInfo;
+import com.sun.tools.xjc.model.CBuiltinLeafInfo;
+import com.sun.tools.xjc.model.CPropertyInfo;
+import com.sun.tools.xjc.model.Model;
+import com.sun.tools.xjc.model.TypeUse;
+import com.sun.tools.xjc.model.TypeUseFactory;
+import com.sun.tools.xjc.reader.GrammarReaderControllerAdaptor;
+import com.sun.tools.xjc.reader.ModelChecker;
+import com.sun.tools.xjc.reader.Ring;
+import com.sun.tools.xjc.reader.dtd.bindinfo.BIAttribute;
+import com.sun.tools.xjc.reader.dtd.bindinfo.BIElement;
+import com.sun.tools.xjc.reader.dtd.bindinfo.BIInterface;
+import com.sun.tools.xjc.reader.dtd.bindinfo.BindInfo;
+import com.sun.tools.xjc.util.CodeModelClassFactory;
+import com.sun.tools.xjc.util.ErrorReceiverFilter;
+import com.sun.xml.bind.v2.NameConverter;
+
+import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.LocatorImpl;
+
+/**
+ * Parses DTD grammar along with binding information into BGM.
+ * 
+ * @author
+ *    <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
+public class TDTDReader extends DTDHandlerBase
+{
+    /**
+     * Parses DTD grammar and a binding information into BGM.
+     * 
+     * <p>
+     * This method is just a utility method that covers 80% of the use
+     * cases.
+     * 
+     * @param    bindingInfo
+     *        binding information file, if any. Can be null.
+     */
+    public static Model parse(
+        InputSource dtd,
+        InputSource bindingInfo,
+        ErrorReceiver errorReceiver,
+        Options opts) {
+
+        try {
+            // set up a ring
+            final Ring old = Ring.begin();
+            try {
+                ErrorReceiverFilter ef = new ErrorReceiverFilter(errorReceiver);
+
+                JCodeModel cm = new JCodeModel();
+                Model model = new Model(cm,NameConverter.standard,opts.classNameAllocator);
+
+                Ring.add(cm);
+                Ring.add(model);
+                Ring.add(ErrorReceiver.class,ef);
+
+                TDTDReader reader = new TDTDReader(
+                    new GrammarReaderControllerAdaptor(ef,opts.entityResolver),
+                    opts, bindingInfo);
+
+                DTDParser parser = new DTDParser();
+                parser.setDtdHandler(reader);
+                if( opts.entityResolver!=null )
+                    parser.setEntityResolver(opts.entityResolver);
+
+                try {
+                    parser.parse(dtd);
+                } catch (SAXParseException e) {
+                    return null; // this error was already handled by GrammarReaderController
+                }
+
+                Ring.get(ModelChecker.class).check();
+
+                if(ef.hadError())   return null;
+                else                return model;
+            } finally {
+                Ring.end(old);
+            }
+        } catch (IOException e) {
+            errorReceiver.error(new SAXParseException(e.getMessage(),null,e));
+            return null;
+        } catch (SAXException e) {
+            errorReceiver.error(new SAXParseException(e.getMessage(),null,e));
+            return null;
+        } catch (AbortException e) {
+            // parsing was aborted but the error was already reported
+            return null;
+        }
+    }
+    protected TDTDReader(GrammarReaderControllerAdaptor _controller, Options opts, InputSource _bindInfo)
+        throws AbortException {
+        this.controller = _controller;
+        this.opts = opts;
+        bindInfo = new BindInfo(model,_bindInfo, _controller, codeModel, opts );
+        this.errorReceiver = _controller;
+        classFactory = new CodeModelClassFactory(errorReceiver);
+    }
+
+    private final GrammarReaderControllerAdaptor controller;
+
+    private final Options opts;
+
+    /**
+     * binding information.
+     * 
+     * <p>
+     * This is always non-null even if no binding information was specified.
+     * (In that case, a dummy object will be provided.)
+     */
+    final BindInfo bindInfo;
+
+    private final JCodeModel codeModel = Ring.get(JCodeModel.class);
+
+    final Model model = Ring.get(Model.class);
+
+    private final CodeModelClassFactory classFactory;
+    
+    private final ErrorReceiver errorReceiver;
+
+    /**
+     * Element name to its content model definition.
+     */
+    private final Map<String,Element> elements = new HashMap<String,Element>();
+
+
+    public void startDTD(InputEntity entity) throws SAXException {
+    }
+    
+    public void endDTD() throws SAXException {
+
+        // bind them all.
+        // we need to know how elements are referencing each other before we do this,
+        // so this can be only done at the endDTD method
+        for( Element e : elements.values() )
+            e.bind();
+
+        // if there was an error by now, just abort.
+        if (controller.hadError())
+            return;
+
+        processInterfaceDeclarations();
+
+        // check XJC extensions and realize them
+        model.serialVersionUID = bindInfo.getSerialVersionUID();
+        model.rootClass = bindInfo.getSuperClass();
+        model.rootInterface = bindInfo.getSuperInterface();
+
+// TODO: do we need to reimplement them?
+//        // performs annotation
+//        Annotator.annotate(model, this);
+//        FieldCollisionChecker.check( model, this );
+        
+        
+        processConstructorDeclarations();
+    }
+
+    /** Processes interface declarations. */
+    private void processInterfaceDeclarations() {
+
+
+        Map<String,InterfaceAcceptor> fromName = new HashMap<String,InterfaceAcceptor>();
+
+        // first, create empty InterfaceItem declaration for all interfaces
+        Map<BIInterface,JClass> decls = new HashMap<BIInterface,JClass>();
+
+        for( BIInterface decl : bindInfo.interfaces() ) {
+            final JDefinedClass intf = classFactory.createInterface(
+                                getTargetPackage(), decl.name(), copyLocator() );
+            decls.put(decl,intf);
+            fromName.put(decl.name(),new InterfaceAcceptor() {
+                public void implement(JClass c) {
+                    intf._implements(c);
+                }
+            });
+        }
+
+        for( final CClassInfo ci : model.beans().values() ) {
+            fromName.put(ci.getName(),new InterfaceAcceptor() {
+                public void implement(JClass c) {
+                    ci._implements(c);
+                }
+            });
+        }
+
+        // traverse the interface declarations again
+        // and populate its expression according to the members attribute.
+        for( Map.Entry<BIInterface,JClass> e : decls.entrySet() ) {
+            BIInterface decl = e.getKey();
+            JClass c = e.getValue();
+            
+            String[] members = decl.members();
+            for( int i=0; i<members.length; i++ ) {
+                InterfaceAcceptor acc = fromName.get(members[i]);
+                if(acc==null) {
+                    // there is no such class/interface
+                    // TODO: error location
+                    error(
+                        decl.getSourceLocation(),
+                        Messages.ERR_BINDINFO_NON_EXISTENT_INTERFACE_MEMBER,
+                        members[i] );
+                    continue;
+                }
+
+                acc.implement(c);
+            }
+        }
+        
+        // TODO: check the cyclic interface definition
+    }
+
+    private static interface InterfaceAcceptor {
+        void implement( JClass c );
+    }
+
+
+    JPackage getTargetPackage() {
+        // "-p" takes precedence over everything else
+        if(opts.defaultPackage!=null)
+            return codeModel._package(opts.defaultPackage);
+        else
+            return bindInfo.getTargetPackage(); 
+    }
+    
+    
+    /**
+     * Creates constructor declarations as specified in the
+     * binding information.
+     * 
+     * <p>
+     * Also checks that the binding file does not contain
+     * declarations for non-existent elements.
+     */
+    private void processConstructorDeclarations() {
+        for( BIElement decl: bindInfo.elements() ) {
+            Element e = elements.get(decl.name());
+            if(e==null) {
+                error(decl.getSourceLocation(),
+                    Messages.ERR_BINDINFO_NON_EXISTENT_ELEMENT_DECLARATION,decl.name());
+                continue;   // continue to process next declaration
+            }
+            
+            if(!decl.isClass())
+                // only element-class declaration has constructor definitions
+                continue;
+            
+            decl.declareConstructors(e.getClassInfo());
+        }
+    }
+
+    public void attributeDecl(String elementName, String attributeName, String attributeType, String[] enumeration, short attributeUse, String defaultValue) throws SAXException {
+        getOrCreateElement(elementName).attributes.add(
+            createAttribute(elementName, attributeName, attributeType, enumeration, attributeUse, defaultValue)
+        );
+    }
+
+    protected CPropertyInfo createAttribute(
+        String elementName, String attributeName, String attributeType,
+        String[] enums, short attributeUse, String defaultValue )
+            throws SAXException {
+
+        boolean required = attributeUse==USE_REQUIRED;
+
+        // get the attribute-property declaration
+        BIElement edecl = bindInfo.element(elementName);
+        BIAttribute decl=null;
+        if(edecl!=null)     decl=edecl.attribute(attributeName);
+
+        String propName;
+        if(decl==null)  propName = model.getNameConverter().toPropertyName(attributeName);
+        else            propName = decl.getPropertyName();
+
+        QName qname = new QName("",attributeName);
+
+        // if no declaration is specified, just wrap it by
+        // a FieldItem and let the normalizer handle its content.
+        TypeUse use;
+
+        if(decl!=null && decl.getConversion()!=null)
+            use = decl.getConversion().getTransducer();
+        else
+            use = builtinConversions.get(attributeType);
+
+        CPropertyInfo r = new CAttributePropertyInfo(
+            propName, null/*TODO*/, copyLocator(), qname, use, required );
+
+        if(defaultValue!=null)
+            // TODO: what does it mean for us to require a cast here?
+            // is this an indication that our model is broken?
+            r.defaultValue = use.getInfo().createConstant(codeModel,defaultValue,null);
+
+        return r;
+    }
+
+
+
+    Element getOrCreateElement( String elementName ) {
+        Element r = elements.get(elementName);
+        if(r==null) {
+            r = new Element(this,elementName);
+            elements.put(elementName,r);
+        }
+
+        return r;
+    }
+
+
+    public void startContentModel(String elementName, short contentModelType) throws SAXException {
+        assert modelGroups.isEmpty();
+        modelGroups.push(new ModelGroup());
+    }
+
+    public void endContentModel(String elementName, short contentModelType) throws SAXException {
+        assert modelGroups.size()==1;
+        Term term = modelGroups.pop().wrapUp();
+
+        Element e = getOrCreateElement(elementName);
+        e.define( contentModelType, term, copyLocator() );
+    }
+
+
+    private final Stack<ModelGroup> modelGroups = new Stack<ModelGroup>();
+
+    public void startModelGroup() throws SAXException {
+        modelGroups.push(new ModelGroup());
+    }
+
+    public void endModelGroup(short occurence) throws SAXException {
+        Term t = Occurence.wrap( modelGroups.pop().wrapUp(), occurence );
+        modelGroups.peek().addTerm(t);
+    }
+
+    public void connector(short connectorType) throws SAXException {
+        modelGroups.peek().setKind(connectorType);
+    }
+
+    // TODO: for now, we just ignore all the content model specification
+    // and treat it as (A,B,C,....)
+
+    public void childElement(String elementName, short occurence) throws SAXException {
+        Element child = getOrCreateElement(elementName);
+        modelGroups.peek().addTerm( Occurence.wrap( child, occurence ) );
+        child.isReferenced = true;
+    }
+
+
+
+
+
+    /**
+     * Mutable {@link Locator} instance that points to
+     * the current source line.
+     * <p>
+     * Use {@link #copyLocator()} to get a immutable clone.
+     */
+    private Locator locator;
+
+    public void setDocumentLocator(Locator loc) {
+        this.locator = loc;
+    }
+
+    /**
+     * Creates a snapshot of the current {@link #locator} values.
+     */
+    private Locator copyLocator(){
+        return new LocatorImpl(locator);
+    }
+
+
+
+//
+//
+// builtin datatype handling
+//
+//
+
+    /** Transducers for the built-in types. Read-only. */
+    private static final Map<String,TypeUse> builtinConversions;
+
+
+    static {
+        // list of datatypes which have built-in conversions.
+        // note that although xs:token and xs:normalizedString are not
+        // specified in the spec, they need to be here because they
+        // have different whitespace normalization semantics.
+        Map<String,TypeUse> m = new HashMap<String,TypeUse>();
+
+        m.put("CDATA",      CBuiltinLeafInfo.NORMALIZED_STRING);
+        m.put("ENTITY",     CBuiltinLeafInfo.TOKEN);
+        m.put("ENTITIES",   CBuiltinLeafInfo.STRING.makeCollection());
+        m.put("NMTOKEN",    CBuiltinLeafInfo.TOKEN);
+        m.put("NMTOKENS",   CBuiltinLeafInfo.STRING.makeCollection());
+        m.put("ID",         CBuiltinLeafInfo.ID);
+        m.put("IDREF",      CBuiltinLeafInfo.IDREF);
+        m.put("IDREFS",     TypeUseFactory.makeCollection(CBuiltinLeafInfo.IDREF));
+        m.put("ENUMERATION",CBuiltinLeafInfo.TOKEN);
+
+        builtinConversions = Collections.unmodifiableMap(m);
+    }
+
+
+//
+//
+// error related utility methods
+//
+//
+    public void error(SAXParseException e) throws SAXException {
+        controller.error(e);
+    }
+
+    public void fatalError(SAXParseException e) throws SAXException {
+        controller.fatalError(e);
+    }
+
+    public void warning(SAXParseException e) throws SAXException {
+        controller.warning(e);
+    }
+
+    protected final void error( Locator loc, String prop, Object arg1 ) {
+        error( loc, prop, new Object[]{arg1} );
+    }
+    protected final void error( Locator loc, String prop, Object[] args ) {
+        Locator[] locs = new Locator[]{loc};
+        controller.error( locs, Messages.format(prop,args), null );
+    }
+}

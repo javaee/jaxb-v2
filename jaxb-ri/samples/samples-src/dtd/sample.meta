@@ -1,0 +1,21 @@
+<sample since="1.0.2">
+    <title>dtd</title>
+    <description><![CDATA[
+        This sample application illustrate some of the DTD support available in 
+        the JAXB RI's extension mode. Please refer to the <a href="vendor.html>
+        Vendor Extensions</a> page for more detail.
+    ]]></description>
+        
+    <project>
+        <xjc schema="nameCard.dtd" binding="nameCard.jaxb">
+          <arg value="-dtd" /> <!-- this option is required to compile DTD -->
+        </xjc>
+        
+        <javadoc/>
+        
+        <java mainClass="DTDSample">
+            <arg path="test.xml"/>
+        </java>
+    </project>
+    
+</sample>

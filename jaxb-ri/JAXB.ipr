@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4" relativePaths="true">
+  <component name="AntConfiguration">
+    <defaultAnt bundledAnt="true" />
+    <buildFile url="file://$PROJECT_DIR$/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <properties />
+    </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/codemodel/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <properties />
+    </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/istack-ap/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <properties />
+    </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/runtime/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <properties />
+    </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/runtime-deprecated/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <properties />
+    </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/samples/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <properties />
+    </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/tools/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <properties />
+    </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/xjc/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <properties />
+    </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/tools/etc/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <properties />
+    </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/tools/installer/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <properties />
+    </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/tools/installer-builder/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <properties />
+    </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/tools/jing-rnc-driver/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <properties />
+    </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/tools/pretty-printer/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <properties />
+    </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/tools/servlet/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <properties />
+    </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/tools/source-tidy/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <properties />
+    </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/tools/toc-processor/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <properties />
+    </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/tools/webapp-commons/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <properties />
+    </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/tools/xmllint/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <properties />
+    </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/schemagen/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <properties />
+    </buildFile>
+  </component>
+  <component name="CodeStyleSettingsManager">
+    <option name="PER_PROJECT_SETTINGS">
+      <value>
+        <option name="USE_SAME_INDENTS" value="false" />
+        <option name="XML_INDENT_OPTIONS">
+          <value>
+            <option name="INDENT_SIZE" value="2" />
+            <option name="CONTINUATION_INDENT_SIZE" value="8" />
+            <option name="TAB_SIZE" value="2" />
+            <option name="USE_TAB_CHARACTER" value="false" />
+            <option name="SMART_TABS" value="false" />
+          </value>
+        </option>
+        <option name="INDENT_CASE_FROM_SWITCH" value="false" />
+        <option name="USE_FQ_CLASS_NAMES_IN_JAVADOC" value="false" />
+        <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="999999" />
+        <option name="IMPORT_LAYOUT_TABLE">
+          <value>
+            <package name="java" withSubpackages="true" />
+            <emptyLine />
+            <package name="javax" withSubpackages="true" />
+            <emptyLine />
+            <package name="com.sun" withSubpackages="true" />
+            <emptyLine />
+            <package name="" withSubpackages="true" />
+            <emptyLine />
+          </value>
+        </option>
+      </value>
+    </option>
+    <option name="USE_PER_PROJECT_SETTINGS" value="true" />
+  </component>
+  <component name="CompilerConfiguration">
+    <option name="DEFAULT_COMPILER" value="Javac" />
+    <option name="CLEAR_OUTPUT_DIRECTORY" value="false" />
+    <option name="DEPLOY_AFTER_MAKE" value="0" />
+    <resourceExtensions>
+      <entry name=".+\.(properties|xml|html|dtd|tld)" />
+      <entry name=".+\.(gif|png|jpeg|jpg)" />
+    </resourceExtensions>
+    <wildcardResourcePatterns>
+      <entry name="?*.properties" />
+      <entry name="?*.xml" />
+      <entry name="?*.gif" />
+      <entry name="?*.png" />
+      <entry name="?*.jpeg" />
+      <entry name="?*.jpg" />
+      <entry name="?*.html" />
+      <entry name="?*.dtd" />
+      <entry name="?*.tld" />
+    </wildcardResourcePatterns>
+  </component>
+  <component name="DataSourceManagerImpl" />
+  <component name="DependencyValidationManager" />
+  <component name="EntryPointsManager">
+    <entry_points />
+  </component>
+  <component name="ExportToHTMLSettings">
+    <option name="PRINT_LINE_NUMBERS" value="false" />
+    <option name="OPEN_IN_BROWSER" value="false" />
+    <option name="OUTPUT_DIRECTORY" />
+  </component>
+  <component name="GUI Designer component loader factory" />
+  <component name="JavacSettings">
+    <option name="DEBUGGING_INFO" value="true" />
+    <option name="GENERATE_NO_WARNINGS" value="false" />
+    <option name="DEPRECATION" value="true" />
+    <option name="ADDITIONAL_OPTIONS_STRING" value="" />
+    <option name="MAXIMUM_HEAP_SIZE" value="128" />
+    <option name="USE_GENERICS_COMPILER" value="true" />
+  </component>
+  <component name="JavadocGenerationManager">
+    <option name="OUTPUT_DIRECTORY" />
+    <option name="OPTION_SCOPE" value="protected" />
+    <option name="OPTION_HIERARCHY" value="true" />
+    <option name="OPTION_NAVIGATOR" value="true" />
+    <option name="OPTION_INDEX" value="true" />
+    <option name="OPTION_SEPARATE_INDEX" value="true" />
+    <option name="OPTION_DOCUMENT_TAG_USE" value="false" />
+    <option name="OPTION_DOCUMENT_TAG_AUTHOR" value="false" />
+    <option name="OPTION_DOCUMENT_TAG_VERSION" value="false" />
+    <option name="OPTION_DOCUMENT_TAG_DEPRECATED" value="true" />
+    <option name="OPTION_DEPRECATED_LIST" value="true" />
+    <option name="OTHER_OPTIONS" value="" />
+    <option name="HEAP_SIZE" />
+    <option name="OPEN_IN_BROWSER" value="true" />
+  </component>
+  <component name="JikesSettings">
+    <option name="JIKES_PATH" value="" />
+    <option name="DEBUGGING_INFO" value="true" />
+    <option name="DEPRECATION" value="true" />
+    <option name="GENERATE_NO_WARNINGS" value="false" />
+    <option name="IS_EMACS_ERRORS_MODE" value="true" />
+    <option name="ADDITIONAL_OPTIONS_STRING" value="" />
+  </component>
+  <component name="Palette">
+    <group name="Swing">
+      <item class="com.intellij.uiDesigner.HSpacer" tooltip-text="Horizontal Spacer" icon="/com/intellij/uiDesigner/icons/hspacer.png" removable="true">
+        <default-constraints vsize-policy="1" hsize-policy="6" anchor="0" fill="1" />
+      </item>
+      <item class="com.intellij.uiDesigner.VSpacer" tooltip-text="Vertical Spacer" icon="/com/intellij/uiDesigner/icons/vspacer.png" removable="true">
+        <default-constraints vsize-policy="6" hsize-policy="1" anchor="0" fill="2" />
+      </item>
+      <item class="javax.swing.JPanel" tooltip-text="JPanel (javax.swing)" icon="/com/intellij/uiDesigner/icons/panel.png" removable="true">
+        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3" />
+      </item>
+      <item class="javax.swing.JScrollPane" tooltip-text="JScrollPane (javax.swing)" icon="/com/intellij/uiDesigner/icons/scrollPane.png" removable="true">
+        <default-constraints vsize-policy="7" hsize-policy="7" anchor="0" fill="3" />
+      </item>
+      <item class="javax.swing.JButton" tooltip-text="JButton (javax.swing)" icon="/com/intellij/uiDesigner/icons/button.png" removable="true">
+        <default-constraints vsize-policy="0" hsize-policy="3" anchor="0" fill="1" />
+        <initial-values>
+          <property name="text" value="Button" />
+        </initial-values>
+      </item>
+      <item class="javax.swing.JRadioButton" tooltip-text="JRadioButton (javax.swing)" icon="/com/intellij/uiDesigner/icons/radioButton.png" removable="true">
+        <default-constraints vsize-policy="0" hsize-policy="3" anchor="8" fill="0" />
+        <initial-values>
+          <property name="text" value="RadioButton" />
+        </initial-values>
+      </item>
+      <item class="javax.swing.JCheckBox" tooltip-text="JCheckBox (javax.swing)" icon="/com/intellij/uiDesigner/icons/checkBox.png" removable="true">
+        <default-constraints vsize-policy="0" hsize-policy="3" anchor="8" fill="0" />
+        <initial-values>
+          <property name="text" value="CheckBox" />
+        </initial-values>
+      </item>
+      <item class="javax.swing.JLabel" tooltip-text="JLabel (javax.swing)" icon="/com/intellij/uiDesigner/icons/label.png" removable="true">
+        <default-constraints vsize-policy="0" hsize-policy="0" anchor="8" fill="0" />
+        <initial-values>
+          <property name="text" value="Label" />
+        </initial-values>
+      </item>
+      <item class="javax.swing.JTextField" tooltip-text="JTextField (javax.swing)" icon="/com/intellij/uiDesigner/icons/textField.png" removable="true">
+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
+          <preferred-size width="150" height="150" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JPasswordField" tooltip-text="JPasswordField (javax.swing)" icon="/com/intellij/uiDesigner/icons/passwordField.png" removable="true">
+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
+          <preferred-size width="150" height="150" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JTextArea" tooltip-text="JTextArea (javax.swing)" icon="/com/intellij/uiDesigner/icons/textArea.png" removable="true">
+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
+          <preferred-size width="150" height="150" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JComboBox" tooltip-text="JComboBox (javax.swing)" icon="/com/intellij/uiDesigner/icons/comboBox.png" removable="true">
+        <default-constraints vsize-policy="0" hsize-policy="2" anchor="8" fill="1" />
+      </item>
+      <item class="javax.swing.JTable" tooltip-text="JTable (javax.swing)" icon="/com/intellij/uiDesigner/icons/table.png" removable="true">
+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
+          <preferred-size width="150" height="150" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JList" tooltip-text="JList (javax.swing)" icon="/com/intellij/uiDesigner/icons/list.png" removable="true">
+        <default-constraints vsize-policy="6" hsize-policy="2" anchor="0" fill="3">
+          <preferred-size width="150" height="150" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JTree" tooltip-text="JTree (javax.swing)" icon="/com/intellij/uiDesigner/icons/tree.png" removable="true">
+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
+          <preferred-size width="150" height="150" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JTabbedPane" tooltip-text="JTabbedPane (javax.swing)" icon="/com/intellij/uiDesigner/icons/tabbedPane.png" removable="true">
+        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3">
+          <preferred-size width="200" height="200" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JSplitPane" tooltip-text="JSplitPane (javax.swing)" icon="/com/intellij/uiDesigner/icons/splitPane.png" removable="true">
+        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3">
+          <preferred-size width="200" height="200" />
+        </default-constraints>
+      </item>
+    </group>
+  </component>
+  <component name="Palette2">
+    <group name="Swing">
+      <item class="com.intellij.uiDesigner.HSpacer" tooltip-text="Horizontal Spacer" icon="/com/intellij/uiDesigner/icons/hspacer.png" removable="false">
+        <default-constraints vsize-policy="1" hsize-policy="6" anchor="0" fill="1" />
+      </item>
+      <item class="com.intellij.uiDesigner.VSpacer" tooltip-text="Vertical Spacer" icon="/com/intellij/uiDesigner/icons/vspacer.png" removable="false">
+        <default-constraints vsize-policy="6" hsize-policy="1" anchor="0" fill="2" />
+      </item>
+      <item class="javax.swing.JPanel" icon="/com/intellij/uiDesigner/icons/panel.png" removable="false">
+        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3" />
+      </item>
+      <item class="javax.swing.JScrollPane" icon="/com/intellij/uiDesigner/icons/scrollPane.png" removable="false">
+        <default-constraints vsize-policy="7" hsize-policy="7" anchor="0" fill="3" />
+      </item>
+      <item class="javax.swing.JButton" icon="/com/intellij/uiDesigner/icons/button.png" removable="false">
+        <default-constraints vsize-policy="0" hsize-policy="3" anchor="0" fill="1" />
+        <initial-values>
+          <property name="text" value="Button" />
+        </initial-values>
+      </item>
+      <item class="javax.swing.JRadioButton" icon="/com/intellij/uiDesigner/icons/radioButton.png" removable="false">
+        <default-constraints vsize-policy="0" hsize-policy="3" anchor="8" fill="0" />
+        <initial-values>
+          <property name="text" value="RadioButton" />
+        </initial-values>
+      </item>
+      <item class="javax.swing.JCheckBox" icon="/com/intellij/uiDesigner/icons/checkBox.png" removable="false">
+        <default-constraints vsize-policy="0" hsize-policy="3" anchor="8" fill="0" />
+        <initial-values>
+          <property name="text" value="CheckBox" />
+        </initial-values>
+      </item>
+      <item class="javax.swing.JLabel" icon="/com/intellij/uiDesigner/icons/label.png" removable="false">
+        <default-constraints vsize-policy="0" hsize-policy="0" anchor="8" fill="0" />
+        <initial-values>
+          <property name="text" value="Label" />
+        </initial-values>
+      </item>
+      <item class="javax.swing.JTextField" icon="/com/intellij/uiDesigner/icons/textField.png" removable="false">
+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
+          <preferred-size width="150" height="-1" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JPasswordField" icon="/com/intellij/uiDesigner/icons/passwordField.png" removable="false">
+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
+          <preferred-size width="150" height="-1" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JFormattedTextField" icon="/com/intellij/uiDesigner/icons/formattedTextField.png" removable="false">
+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
+          <preferred-size width="150" height="-1" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JTextArea" icon="/com/intellij/uiDesigner/icons/textArea.png" removable="false">
+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
+          <preferred-size width="150" height="50" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JTextPane" icon="/com/intellij/uiDesigner/icons/textPane.png" removable="false">
+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
+          <preferred-size width="150" height="50" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JEditorPane" icon="/com/intellij/uiDesigner/icons/editorPane.png" removable="false">
+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
+          <preferred-size width="150" height="50" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JComboBox" icon="/com/intellij/uiDesigner/icons/comboBox.png" removable="false">
+        <default-constraints vsize-policy="0" hsize-policy="2" anchor="8" fill="1" />
+      </item>
+      <item class="javax.swing.JTable" icon="/com/intellij/uiDesigner/icons/table.png" removable="false">
+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
+          <preferred-size width="150" height="50" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JList" icon="/com/intellij/uiDesigner/icons/list.png" removable="false">
+        <default-constraints vsize-policy="6" hsize-policy="2" anchor="0" fill="3">
+          <preferred-size width="150" height="50" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JTree" icon="/com/intellij/uiDesigner/icons/tree.png" removable="false">
+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
+          <preferred-size width="150" height="50" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JTabbedPane" icon="/com/intellij/uiDesigner/icons/tabbedPane.png" removable="false">
+        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3">
+          <preferred-size width="200" height="200" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JSplitPane" icon="/com/intellij/uiDesigner/icons/splitPane.png" removable="false">
+        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3">
+          <preferred-size width="200" height="200" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JSpinner" icon="/com/intellij/uiDesigner/icons/spinner.png" removable="false">
+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1" />
+      </item>
+      <item class="javax.swing.JSlider" icon="/com/intellij/uiDesigner/icons/slider.png" removable="false">
+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1" />
+      </item>
+    </group>
+  </component>
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/codemodel/codemodel.iml" filepath="$PROJECT_DIR$/codemodel/codemodel.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tools/installer/installer.iml" filepath="$PROJECT_DIR$/tools/installer/installer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tools/installer-builder/installer-builder.iml" filepath="$PROJECT_DIR$/tools/installer-builder/installer-builder.iml" />
+      <module fileurl="file://$PROJECT_DIR$/istack-ap/istack-ap.iml" filepath="$PROJECT_DIR$/istack-ap/istack-ap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jaxb-ri.iml" filepath="$PROJECT_DIR$/jaxb-ri.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tools/pretty-printer/pretty-printer.iml" filepath="$PROJECT_DIR$/tools/pretty-printer/pretty-printer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/runtime/runtime.iml" filepath="$PROJECT_DIR$/runtime/runtime.iml" />
+      <module fileurl="file://$PROJECT_DIR$/runtime-api/runtime-api.iml" filepath="$PROJECT_DIR$/runtime-api/runtime-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/runtime-deprecated/runtime-deprecated.iml" filepath="$PROJECT_DIR$/runtime-deprecated/runtime-deprecated.iml" />
+      <module fileurl="file://$PROJECT_DIR$/samples/samples.iml" filepath="$PROJECT_DIR$/samples/samples.iml" />
+      <module fileurl="file://$PROJECT_DIR$/schemagen/schemagen.iml" filepath="$PROJECT_DIR$/schemagen/schemagen.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../jaxb-unit/test/test.iml" filepath="$PROJECT_DIR$/../jaxb-unit/test/test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xjc/xjc.iml" filepath="$PROJECT_DIR$/xjc/xjc.iml" />
+    </modules>
+  </component>
+  <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="JDK1.5" />
+  <component name="RmicSettings">
+    <option name="IS_EANABLED" value="false" />
+    <option name="DEBUGGING_INFO" value="true" />
+    <option name="GENERATE_NO_WARNINGS" value="false" />
+    <option name="GENERATE_IIOP_STUBS" value="false" />
+    <option name="ADDITIONAL_OPTIONS_STRING" value="" />
+  </component>
+  <component name="libraryTable">
+    <library name="util">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/tools/lib/util/ant-contrib-0.6.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/util/args4j-1.0-RC.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/util/jing-rnc-driver.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/util/jing.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/util/pretty-printer.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/util/relaxngcc.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/util/toc-processor.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/util/xercesImpl.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/util/sjsxp.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/util/ant-launcher.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/util/ant.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/util/sfx4j-1.0.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/emma.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/junit.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/parallel-junit.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/bsh.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/junit-format.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/dom4j.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/jdom.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/vmtools-0.5.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/forehead.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/jcommon-0.9.4.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/jfreechart-0.9.19.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/commons-jexl-1.0-beta-1.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/xalan.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/sfx4j-1.0-RC-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/relaxng.javadt.src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/ant-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/ant-contrib-0.6-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/xsom-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/jsr173_1.0_src.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/iso-relax-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/xsdlib-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/resolver-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/relaxngDatatype-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/msv-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/jsr173_1.0_javadoc.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/jing-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/args4j-1.0-RC-src.zip!/args4j-1.0-RC/src" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/sjsxp-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/txw2-src.zip!/compiler" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/junit-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/junit-format.src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/jfreechart-0.9.19.src.zip!/src" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/parallel-junit.src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/dom4j-src.zip!/src/java" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/jdom-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/vmtools-0.5.src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/forehead.src.zip!/src/java" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/xalan-j_2_6_0-src.zip!/xalan-j_2_6_0/src" />
+      </SOURCES>
+    </library>
+    <library name="runtime">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/tools/lib/redist/jaxb-api.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/redist/jsr173_1.0_api.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/util/sjsxp.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/redist/activation.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/txw2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/tools/lib/redist/jaxb-api-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/jsr173_1.0_src.jar!/src" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/txw2-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/activation-src.zip!/" />
+      </SOURCES>
+    </library>
+    <library name="compiler-libs">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/tools/lib/redist/xsdlib.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/util/sjsxp.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/util/args4j-1.0-RC.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/redist/relaxngDatatype.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/sfx4j-1.0-RC-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/ant-contrib-0.6-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/jsr173_1.0_src.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/iso-relax-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/args4j-1.0-RC-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/xsdlib-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/resolver-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/relaxngDatatype-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/jsr173_1.0_javadoc.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/jing-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/rngom-src.zip!/" />
+      </SOURCES>
+    </library>
+    <library name="JAM">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/tools/lib/util/jam.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/jam-src.zip!/" />
+      </SOURCES>
+    </library>
+    <library name="rebundle/runtime">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/runtime/isorelax.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/runtime/msv.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/msv-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/iso-relax-src.zip!/" />
+      </SOURCES>
+    </library>
+    <library name="deprecated runtime">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/runtime-deprecated/build/classes" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="file://$PROJECT_DIR$/runtime-deprecated/src" />
+      </SOURCES>
+    </library>
+    <library name="rebundle/compiler">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/resolver.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/txw2.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/xsom.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/rngom.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/relaxng.javadt.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/resolver-src.zip!/src" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/txw2-src.zip!/runtime" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/xsom-src.zip!/build/src" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/xsom-src.zip!/src" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/rngom-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/relaxng.javadt.src.zip!/" />
+      </SOURCES>
+    </library>
+    <library name="ant">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/tools/lib/util/ant-trax.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/util/ant.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/ant-src.zip!/apache-ant-1.6.2/src/main" />
+      </SOURCES>
+    </library>
+    <library name="schemagen">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/txw2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/txw2-src.zip!/" />
+      </SOURCES>
+    </library>
+  </component>
+  <component name="uidesigner-configuration">
+    <option name="INSTRUMENT_CLASSES" value="true" />
+    <option name="COPY_FORMS_RUNTIME_TO_OUTPUT" value="true" />
+  </component>
+</project>
+

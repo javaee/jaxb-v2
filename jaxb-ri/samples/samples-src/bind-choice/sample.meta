@@ -1,0 +1,17 @@
+<sample since="1.0" exclude="true">
+    <title>bind-choice (formerly part of SampleApp9)</title>
+    <description><![CDATA[
+        This sample application illustrates how a choice model group 
+        is bound to a Java interface by the <jaxb:globalBindings 
+        bindingStyle="modelGroupBinding"/> customization.
+    ]]></description>
+        
+    <project>
+        <xjc schema="example.xsd" binding="binding.xjb"/>
+        
+        <javadoc/>
+        
+        <java mainClass="Main"/>
+    </project>
+    
+</sample>

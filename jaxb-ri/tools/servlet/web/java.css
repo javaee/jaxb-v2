@@ -1,0 +1,30 @@
+/*
+ * Copyright 2004 Sun Microsystems, Inc. All rights reserved.
+ * SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ */
+
+.comment {
+	color: red;
+}
+
+.javadoc {
+	color: red;
+	font-weight: bold;
+}
+
+.keyword {
+	color: green;
+}
+
+.string {
+	color: darkred;
+}
+
+.type {
+	color: navy;
+}
+
+.lineNumber {
+	color: black;
+	font-weight: normal;
+}

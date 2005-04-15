@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<sample since="1.0.2">
+    <title>Type substitutoin support</title>
+    <description><![CDATA[
+      This sample app demonstrates type substitution using
+      the W3C XML Schema Part 0: Primer international purchase order schema.
+    ]]></description>
+        
+    <project>
+        <xjc catalog="catalog.cat">
+          <schema dir=".">
+             <include name="ipo.xsd"/>
+             <include name="ustaxexemptpo.xsd"/>
+          </schema>
+        </xjc>
+        <javadoc/>
+        <java mainClass="Main" />
+    </project>
+    
+</sample>

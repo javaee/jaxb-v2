@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<!--
+ Copyright 2004 Sun Microsystems, Inc. All rights reserved.
+ SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+-->
+
+<!--
+  build script for the source code bundle.
+-->
+<project name="test" default="build">
+  <target name="build">
+    <!-- check if dom4j.jar is there -->
+    <available file="lib/dom4j.jar" property="dom4j.available"/>
+    <fail unless="dom4j.available">download dom4j.jar from http://www.dom4j.org/ and place it to the lib directory</fail>
+    
+    <!-- compile -->
+    <mkdir dir="build"/>
+    <javac srcdir="src" destdir="build">
+      <classpath>
+        <fileset dir="lib" includes="**/*.jar"/>
+      </classpath>
+    </javac>
+  </target>
+</project>

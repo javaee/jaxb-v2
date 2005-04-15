@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+ Copyright 2004 Sun Microsystems, Inc. All rights reserved.
+ SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+-->
+
+
+<project name="go" basedir="." default="doit">
+
+    <!-- little utility build file for mimicking how the jwsdp
+         calls our main build.xml 'wspack' target -->
+
+    <property name="wspack.ws.dir" value="${basedir}/wspack"/>
+    
+    <target name="doit">
+        <mkdir dir="${wspack.ws.dir}"/>
+        <mkdir dir="${wspack.ws.dir}/build/jaxb"/>
+        <mkdir dir="${wspack.ws.dir}/dist/jaxb"/>
+        <mkdir dir="${wspack.ws.dir}/dist/jaxb-wspack"/>
+        
+        <ant antfile="build.xml" target="wspack">
+            <property name="build.home"  value="${wspack.ws.dir}/build/jaxb"/>
+            <property name="dist.home"   value="${wspack.ws.dir}/dist/jaxb"/>
+            <property name="wspack.home" value="${wspack.ws.dir}/dist/jaxb-wspack"/>
+        </ant>
+    </target>
+
+    <target name="clean">
+        <delete dir="${basedir}/wspack"/>
+    </target>
+
+</project>

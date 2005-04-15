@@ -1,0 +1,71 @@
+May 28, 2003
+
+JAXB RI Source Bundle README
+----------------------------
+
+This document describes the procedure for building the JAXB Reference
+Implementation.
+
+External Dependencies
+---------------------
+
+The following list of utilities are required to build JAXB, but are
+not included in this release.
+
+   o J2SE 1.4 or higher
+   
+     Description:
+     This release of the JAXB RI has been built and tested using J2SE 1.4
+     
+   o ant (http://ant.apache.org/index.html)
+
+     Description:
+     This release of the JAXB RI has been built and tested using Ant 1.5.4
+
+     Installation Instructions:
+     Download Ant and follow its installation instructions.  
+    
+   o dom4j (http://dom4j.org)
+
+     Description:
+     This release of the JAXB RI has been built and tested using dom4j v1.4.  
+
+     Installation Instructions:
+     Download dom4j and follow its installation instructions.  Then
+     copy $DOM4J_HOME/dom4j.jar into $JAXB_SRC/tools/lib/util
+
+   o SAXON (http://saxon.sourceforge.net/)
+
+     Description:
+     This release of the JAXB RI has been built and tested using SAXON
+     v6.3.
+
+     Installation Instructions:
+     Download SAXON v6.3 and follow its installation instructions.
+     Then copy $SAXON_HOME/saxon.jar into $JAXB_SRC/tools/lib/util
+
+Building the RI
+---------------
+
+   o unpack the src distribution
+   o export JAXB_SRC=<root of your jaxb source bundle>
+   o cd $JAXB_SRC
+   o $ANT_HOME/bin/ant dist
+
+   Running the 'dist' target will cause the entire source tree to be
+   built and organized in the $JAXB_SRC/dist directory.  The contents
+   of this directory is equivalent to what you would see if you
+   downloaded the JWSDP from java.sun.com/webservices and installed it.
+   There are a few differences to keep in mind.  Since the SCSL release
+   of JAXB is meant to be completely stand-alone and not depend on an
+   installation of the JWSDP, the shared jar files from the JWSDP are 
+   located within the JAXB tree.  Also, the Class-Path manifest entry
+   in jaxb-xjc.jar is customized to the SCSL release.
+
+   Run $ANT_HOME/bin/ant -projecthelp for more details about the build
+   process.  Please note, this source bundle is a derivative of the
+   master Sun repository, not a copy.  Several areas of the master
+   workspace have not been included in this bundle.  As a result, not
+   all of the ant build targets will work, but the basic compile,
+   clean, javadoc, and dist targets will.
+   

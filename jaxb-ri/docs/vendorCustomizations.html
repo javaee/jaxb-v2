@@ -1,0 +1,206 @@
+<html>
+  <head>
+    <title>
+        JAXB RI @@IMPL_VERSION@@ @@IMPL_VERSION_SUFFIX@@ -- Vendor Customizations
+    </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" type="text/css" href="style/default.css">
+  </head>
+  <body>
+    <center>
+    <h1>Java<sup><font size="-2">TM</font></sup> Architecture for XML Binding<br />
+      JAXB RI Vendor Extensions<br/>
+      Customizations
+    </h1>
+      <b>Specification Version:</b> @@SPEC_VERSION@@<br />
+      <b>Reference Implementation (RI) Version:</b> @@IMPL_VERSION@@ @@IMPL_VERSION_SUFFIX@@<br />
+      <JAXB-TOC/>
+    </center>
+
+	<h2>Customizations</h2>
+	
+	<p>
+	The JAXB RI provides additional customizations that are not defined
+	by the JAXB specification.  Note the following: </p>
+	
+	<ul>
+		<li>These features may only be used when the JAXB XJC binding compiler 
+		    is run in the <tt>&quot;-extension&quot;</tt> mode.</li>
+		<li>All of the JAXB RI vendor extensions are defined in the 
+		    <tt>&quot;http://java.sun.com/xml/ns/jaxb/xjc&quot;</tt> namespace.</li>
+		<li>The namespaces containing extension binding declarations are specified 
+			to a JAXB processor by the occurrence of the global attribute 
+			<tt>@jaxb:extensionBindingPrefixes</tt> within an instance of 
+			<tt>&lt;xs:schema></tt> element. The value of this attribute is a 
+			whitespace-separated list of namespace prefixes.  For more information, 
+			please refer to section 6.1.1 of the JAXB Specification.</li>
+	</ul>
+		
+	<h3>Index of Customizations</h3>
+	<ul>
+		<li><a href="#superclass">&lt;xjc:superClass></a> - Extending a Common Super Class</li>
+		<li><a href="#superinterface">&lt;xjc:superInterface></a> - Extending a Common Super Interface</li>
+		<!--li><a href="#dom">&lt;xjc:dom></a> - Mapping to DOM</li-->
+		<!--li><a href=""></a></li-->
+	</ul>
+	
+	
+	<a name="superclass"></a>
+	<h3>Extending a Common Super Class</h3>
+	<p>The <tt>&lt;xjc:superClass&gt;</tt> customization allows you to specify the
+	fully qualified name of the Java class that is to be used as the super class of all the generated implementation classes.
+	The  
+	<tt>&lt;xjc:superClass&gt;</tt> customization can only occur within your
+	<tt>&lt;jaxb:globalBindings&gt;</tt> customization on the <tt>&lt;xs:schema&gt;</tt> 
+	element and will only be allowed when xjc is run with the &quot;<tt>-extension</tt>&quot;
+	switch:</p>
+
+	<blockquote>
+		<pre>
+&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           <font color="red"
+          >xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+           jaxb:extensionBindingPrefixes="xjc"</font>
+           jaxb:version="1.0">
+
+    &lt;xs:annotation>
+       &lt;xs:appinfo>
+          &lt;jaxb:globalBindings>
+           <font color="red"
+             >&lt;xjc:superClass name="org.acme.RocketBooster"/></font>
+          &lt;/jaxb:globalBindings>
+       &lt;/xs:appinfo>
+    &lt;/xs:annotation>
+.
+.
+.
+&lt;/xs:schema>
+		</pre>
+	</blockquote>
+
+	<p>In the sample above, the <tt>&lt;xjc:superClass&gt;</tt> customization will
+	cause all of the generated implementation classes to extend the named class,
+	<tt>org.acme.RocketBooster</tt>.</p>
+  
+  
+  
+	
+	
+	<a name="superinterface"></a>
+	<h3>Extending a Common Super Interface</h3>
+	<p>The <tt>&lt;xjc:superInterface&gt;</tt> customization allows you to specify the
+	fully qualified name of the Java interface that is to be used as the root interface of all the generated interfaces. This customization has no effect unless you are specifically generating interfaces with the <tt>&lt;globalBindings generateValueClass="false"</tt> switch.
+	
+	The  
+	<tt>&lt;xjc:superInterface&gt;</tt> customization can only occur within your
+	<tt>&lt;jaxb:globalBindings&gt;</tt> customization on the <tt>&lt;xs:schema&gt;</tt> 
+	element and will only be allowed when xjc is run with the &quot;<tt>-extension</tt>&quot;
+	switch:</p>
+
+	<blockquote>
+		<pre>
+&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           <font color="red"
+          >xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+           jaxb:extensionBindingPrefixes="xjc"</font>
+           jaxb:version="1.0">
+
+    &lt;xs:annotation>
+       &lt;xs:appinfo>
+          &lt;jaxb:globalBindings generateValueClass="false">
+           <font color="red"
+             >&lt;xjc:superInterface name="org.acme.RocketBooster"/></font>
+          &lt;/jaxb:globalBindings>
+       &lt;/xs:appinfo>
+    &lt;/xs:annotation>
+.
+.
+.
+&lt;/xs:schema>
+		</pre>
+	</blockquote>
+
+	<p>In the sample above, the <tt>&lt;xjc:superInterface&gt;</tt> customization will
+	cause all of the generated interfaces to extend the named interface,
+	<tt>org.acme.RocketBooster</tt>.</p>
+
+<!-- NOT AVAILABLE FOR 2.0 EA
+	<a name="dom"></a>
+	<h3>Mapping to DOM</h3>
+	
+	<p>
+		This customization is not yet implemented in this early access.
+	
+<strike>
+	<p>The <tt>&lt;xjc:dom></tt> customization allows you to map a certain part of
+	the schema into a DOM tree. This customization can be attached to the following
+	schema components:</p>
+	
+	<ul>
+		<li>Wildcards (<tt>&lt;xs:any></tt>)
+		<li>Model groups (<tt>&lt;xs:choice>,&lt;xs:all>,&lt;xs:sequence></tt>)
+		<li>Model group declarations (<tt>&lt;xs:group></tt>)
+		<li>Particles
+		<li>Element declarations (<tt>&lt;xs:element</tt>)
+	</ul>
+	
+	<p>For example, in the following example, a wildcard is mapped
+	to a DOM node. Each element that matches to the wildcard will be
+	turned into a DOM tree.</p>
+	
+	<blockquote>
+		<pre>
+&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           <font color="red"
+          >xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+           jaxb:extensionBindingPrefixes="xjc"</font>
+           jaxb:version="1.0">
+
+    &lt;xs:element>
+       &lt;xs:complexType>
+          &lt;xs:sequence>
+             &lt;xs:any maxOccurs="unbounded" processContents="skip">
+                &lt;xs:annotation>&lt;xs:appinfo>
+                <font color="red">  &lt;xjc:dom /></font>
+                &lt;/xs:appinfo>&lt;/xs:annotation>
+             &lt;/xs:any>
+          &lt;/xs:sequence>
+       &lt;/xs:complexType>
+    &lt;/xs:element>
+.
+.
+.
+&lt;/xs:schema>
+		</pre>
+	</blockquote>
+	
+	<p>This extension can be used to access wildcard content or can be used to 
+	   process a part of a document by using other technologies that require 
+	   "raw" XML.  By default, JAXB generates a getObject() method for accessing
+	   wildcard content, but it only supports "lax" handling which means that
+	   unknown content is discarded.  Since this probably isn't the expected 
+	   behavior, you should use the <tt>&lt;xjc:dom /></tt> customization which
+	   will preserve all of the wildcard content.
+	   </p>
+	
+	<p>You can use the optional <tt>type</tt> attribute to specify the type 
+	   of DOM. By default, it is W3C DOM, but you can write 
+	   <tt>&lt;xjc:dom type="dom4j" /></tt> to map it to 
+	   <a href="http://www.dom4j.org/">dom4j</a>.</p>
+	   
+	<p>Unfortunately, due to the lack of JDOM's functionality to write a 
+	   single element to SAX events, at this moment JDOM is not supported.</p>
+</strike>
+-->
+
+
+	<hr>
+	<font size="-1">
+	  $Revision: 1.1 $<br>
+	  $Date: 2005-04-15 20:03:05 $
+	</font>
+  </body>
+ </html>

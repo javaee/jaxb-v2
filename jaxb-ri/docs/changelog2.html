@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <title>
+        JAXB RI @@IMPL_VERSION@@ @@IMPL_VERSION_SUFFIX@@ -- Changelog
+    </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" type="text/css" href="style/default.css"/>
+  </head>
+
+  <body>
+    <center>
+    <h1>Java<sup><font size="-2">TM</font></sup> Architecture for XML Binding<br />
+      2.0 CHANGELOG
+    </h1>
+      <b>Specification Version:</b> @@SPEC_VERSION@@<br />
+      <b>Reference Implementation (RI) Version:</b> @@IMPL_VERSION@@ @@IMPL_VERSION_SUFFIX@@<br />
+      <JAXB-TOC/>
+    </center>
+
+    <p>The JAXB 2.0 RI is a major reimplementation to meet the requirements of
+       the 2.0 specification.</p>
+
+    <p>Please refer to the <a href="changelog.html">JAXB 1.0.x changelog</a> for older releases.</p>
+
+    <a name="2.0ea"></a>
+    <h2>Notable Changes between 1.0.x FCS and 2.0 Early Access </h2>
+    <ul>
+      <li>Support for 100% W3C XML Schema (not all in EA, but planned for FCS)</li>
+      <li>Support for binding Java to XML</li>
+      <li>Addition of <tt>javax.xml.bind.annotation</tt> package for controling the binding from Java to XML</li>
+      <li>Significant reduction in the number of generated schema-derived classes
+	<ul>
+	<li>Per complex type definition, generate one value class instead of an interface and implementation class.</li>
+	<li>Per global element declaration, generate a factory method instead of generating a schema-derived interface and implementation class.</li>
+        </ul>
+      <li>Replaced the validation capabilities in 1.0 with JAXP 1.3 validation API's</li>
+      <li>Smaller runtime libraries</li>
+      <li>Numerous other changes...</li>
+  </body>
+</html>

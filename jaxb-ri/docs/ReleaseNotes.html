@@ -1,0 +1,129 @@
+<html>
+  <head>
+    <title>
+        JAXB RI @@IMPL_VERSION@@ @@IMPL_VERSION_SUFFIX@@ -- Release Notes
+    </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" type="text/css" href="style/default.css"/>
+  </head>
+
+  <body>
+    <center>
+    <h1>Java<sup><font size="-2">TM</font></sup> Architecture for XML Binding<br />
+      Release Notes
+    </h1>
+
+      <b>Specification Version:</b> @@SPEC_VERSION@@<br />
+      <b>Reference Implementation (RI) Version:</b> @@IMPL_VERSION@@ @@IMPL_VERSION_SUFFIX@@<br />
+      <JAXB-TOC/>
+    </center>
+
+    <p>This document contains information that should help you use this 
+       software library more effectively.  See the 
+       <a href="http://java.sun.com/xml/jaxb/faq.html">JAXB FAQ</a>
+       for additional information.
+    </p>
+    
+    <!--p>The most up-to-date version of this document can be found
+       <a href="http://java.sun.com/webservices/docs/1.4/jaxb/ReleaseNotes.html">
+       on-line</a>.</p-->
+    <p>The most up-to-date version of this document can be found
+       <a href="http://jaxb.dev.java.net/nonav/jaxb20-ea/docs/ReleaseNotes.html">
+       on-line</a>.</p>
+
+
+    <!--h2>Java<sup><font size="-2">TM</font></sup> WSDP Directory Structure</h2>
+       
+    <p>After installing the Java WSDP @@JWSDP_VERSION@@, you will find JAXB and its 
+       dependent JAR files in the following directories:</p>
+    <pre>
+         @@JWSDP_ROOTDIR@@
+             jaxb
+                 bin            &lt;-- contains scripts to run the binding compiler
+                 docs           &lt;-- contains release notes and useful information
+                 samples        &lt;-- contains sample applications
+                 lib            &lt;-- contains all of the JAXB specific jar files
+             jwsdp-shared
+                 lib            &lt;-- xsdlib.jar, relaxngDatatype.jar
+    </pre-->
+    
+    
+    
+    <h2>Java<sup><font size="-2">TM</font></sup> 2 Platform, Standard Edition
+        (J2SE<sup><font size="-2">TM</font></sup>) Requirements</h2>
+    <p>This release of the JAXB Reference Implementation requires J2SE 5.0 or higher.</p>
+
+
+    <a name="jars"></a>
+    <h2>Identifying the JAR Files</h2>
+    <blockquote>
+      <table bgcolor="white" border="1" cellspacing="1" cellpadding="2">
+        <tr bgcolor="lightGrey">
+          <th width="15%">Use</th>
+          <th width="40%">Description</th>
+          <th width="45%">Jars</th>
+        </tr>
+        <tr>
+          <td valign="top"><b>2.0 Runtime</b></td>
+          <td valign="top">Jars required to deploy a JAXB 2.0 client</td>
+          <td valign="top">jaxb-api.jar, jaxb-impl.jar, jsr173_0.1_api.jar</td>
+        </tr>
+        <tr>
+          <td valign="top"><b>1.0 Runtime<b></td>
+          <td valign="top">Jars required to deploy an older JAXB 1.0 client</td>
+          <td valign="top">2.0 Runtime + jaxb1-impl.jar</td>
+        </tr>
+      </table>
+    </blockquote>
+
+
+    <h2>Using the JAXB Tools (XJC, SchemaGen, Ant tasks)</h2>
+    <ul>
+      <li><a href="xjc.html">Binding Compiler(xjc) documentation</a></li>
+      <li><a href="schemagen.html">Schema Generator(schemagen) documentation</a></li>
+      <li>Ant Task documentation [<a href="xjcTask.html">XJC Task</a>,
+          <a href="schemagenTask.html">SchemaGen Task</a>]</li>
+    </ul>
+
+
+    <h2>Locating the Normative Binding Schema</h2>
+    <p>You may find information about the normative binding schema defined in
+       the JAXB Specification at <a href="http://java.sun.com/xml/ns/jaxb">
+       http://java.sun.com/xml/ns/jaxb</a>.
+
+    <a name="changes"></a>
+    <h2>Changelog</h2>
+    <ul>
+      <li><a href="changelog2.html">JAXB 2.0 changelog</a></li>
+      <li>Please refer to the <a href="jaxb-1_0.html#changes">JAXB 1.0.x Release Notes</a>
+         for a comprehensive list of changes in the 1.0.x releases.</li>
+    </ul>
+
+    <h2>Known Limitations of this Release</h2>
+    <p>The following list summarizes the known limitations of this release
+       of the JAXB Reference Implementation.
+    </p>
+    <table border="0" width="75%">
+        <tr>
+            <td>
+                <ul>
+                    <li>The JAXB 2.0 Early Access RI does not have support for 100% W3C XML Schema as required by the
+                        specification, but it will be present in the final FCS release.  For a list of other limitations,
+                        please refer to the <a href="vendorSchemaLangs.html#xschema">XML Schema page</a>.</li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+
+    <p>Think you've found a new bug?
+       <a href="https://jaxb.dev.java.net/servlets/ProjectIssues">File an
+       issue</a> on java.net!</p>
+
+
+    <hr/>
+    <font size="-1">
+      $Revision: 1.1 $<br/>
+      $Date: 2005-04-15 20:03:02 $
+    </font>
+  </body>
+</html>

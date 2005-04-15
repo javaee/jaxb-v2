@@ -1,0 +1,20 @@
+
+compile\:
+     \[echo\] Compiling the schema\.\.\.
+    \[mkdir\] Created dir\: .*
+      \[xjc\] .* is not found and thus excluded from the dependency check
+      \[xjc\] Compiling .*
+      \[xjc\] Writing output to .*
+     \[echo\] Compiling the java source files\.\.\.
+    \[mkdir\] Created dir\: .*
+    \[javac\] Compiling \d+ source files to .*
+
+run\:
+     \[echo\] Running the sample application\.\.\.
+     \[java\] NOTE\: This sample is working correctly if you see validation errors\!\!
+     \[java\] DefaultValidationEventHandler\: \[ERROR\]\: \"\-5\" does not satisfy the \"positiveInteger\" type 
+     \[java\]      Location\:  obj\: primer\.po\.impl\.ItemsImpl\$ItemTypeImpl@.*
+     \[java\] Caught ValidationException
+
+BUILD SUCCESSFUL
+Total time\: .*

@@ -1,0 +1,137 @@
+<html>
+  <head>
+    <title>
+        JAXB RI @@IMPL_VERSION@@ @@IMPL_VERSION_SUFFIX@@ -- Vendor Schema Languages
+    </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" type="text/css" href="style/default.css"/>
+  </head>
+
+  <body>
+    <center>
+    <h1>Java<sup><font size="-2">TM</font></sup> Architecture for XML Binding<br />
+      JAXB RI Vendor Extensions<br/>
+      Experimental Schema Languages
+    </h1>
+      <b>Specification Version:</b> @@SPEC_VERSION@@<br />
+      <b>Reference Implementation (RI) Version:</b> @@IMPL_VERSION@@ @@IMPL_VERSION_SUFFIX@@<br />
+      <JAXB-TOC/>
+    </center>
+
+	<p>The JAXB RI currently has experimental support for the schema languages
+	   listed on this page.  The features listed on this page are not described
+	   by the JAXB Specification - they are only available in the JAXB RI.</p>
+	   
+	<h3>Index</h3>
+	<ul>
+	  <li><a href="#xschema">W3C XML Schema</a></li>
+	  <li><a href="#relaxng">RELAX NG</a></li>
+	  <li><a href="#dtd">DTD</a></li>
+	</ul>
+	
+	<a name="xschema"></a>
+	<h3>W3C XML Schema</h3>
+	<blockquote>
+	<p>JAXB 2.0 RI FCS will contain 100% support for W3C XML Schema.  However, this is an Early Access
+	   release and is not functionally complete.  This section outlines areas that the RI deviates from
+	   the JAXB 2.0 Specification Early Draft 2.</p>
+
+      <blockquote>
+        <ul>
+	  <li>From Section 8: Java to XML
+	  <ul>
+          <li>The specification does not specify the default property order, <tt>@XmlType.propOrder()</tt>. JAXB RI would
+              like source code order.  While source code order is working for <tt>&#64;XmlAccessorType(AccessType.FIELD)</tt>,
+              the default <tt>&#64;XmlAccessorType(AccessType.PROPERTY)</tt> is not following source code order, but
+              rather Unicode code point alphabetical order.  This ordering issue is still open for discussion
+              and debate for future releases.  Since the default is <tt>&#64;XmlAccessorType.value()==AccessType.PROPERTY</tt>, the
+              alphabetical order could be suprising to users.</li>
+          <li>The specification states that if a property or a field has been marked with <tt>&#64;XmlValue</tt>
+              annotation, then the containing class must not extend another class (other than
+              <tt>java.lang.Object</tt>).  The RI currently does not enforce this.</li>
+          <li>The specification restricts <tt>&#64;XmlJavaTypeAdapter</tt> from being placed on a package and
+              the RI enforces this.  We may reconsider allowing this in the final version.</li>
+          <li>According to Table 8-4 in the specification "Mapping class to Complex Type Definition",
+              when a property/field is annotated with <tt>&#64;XmlValue</tt> annotation, the complex type to which
+              the class maps must derived from the schema type to which the property/field annotated
+              with <tt>&#64;XmlValue</tt> is mapped.  The RI does not currently bind this correctly.</li>
+          <li>The RI (schemagen) currently does not have support for generating anonymous complex types as described
+              in Sec 8.2.5 and in the javadoc for <tt>&#64;XmlType</tt> and <tt>&#64;XmlAttribute</tt></li>
+          <li>The RI (schemagen) does not have support for handling <tt>&#64;XmlIDREF</tt> in the schema generator</li>
+          <li>The RI (schemagen) does not have support for generating attribute references.</li>
+	  </ul></li>
+	  <li>Section 6, 7: Schema to Java Binding
+	  <ul>
+          <li>Binding of a simple element property (Sec 6.7.5) that is the head of an element substition
+              group or customization with <tt>&lt;jaxb:property generateElementProperty?="true"/></tt> (Sec 7.8.1).
+              The RI only generates an element setter/getter (Sec 5.5.5), it does not generate the additional
+              type setter/getter(Sec 5.1). The RI generates a raw <tt>JAXBElement</tt> instead of a <tt>JAXBElement</tt> with
+              an upper bound wildcard notation. (i.e. <tt>JAXBElement</tt> instead of <tt>JAXBElement&lt;? extends Base></tt>).</li>
+          <li>RI annotates the schema-derived class for a global element declaration's anonymous complex
+              type definition with <tt>&#64;XmlRootElement</tt> instead of generating an element instance factory
+              that returns <tt>javax.xml.bind.JAXBElement&lt;JAXBBindingOfAnonComplexTypeDef></tt> as specified in
+              Sec 6.7.3. Note that unmarshal methods do not return an instance of <tt>javax.xml.bind.JAXBElement</tt>
+              for instances bound in this manner.</li>
+          <li>RI does not generate schema derived enum methods, <tt>value()</tt> or <tt>fromValue(String)</tt>, as specified
+              in Section 6.2.3.3 "Enum Constant".</li>
+          <li>Section 7.12 <tt>&lt;jaxb:dom></tt> schema customization is not supported by RI.</li>
+          <li>The RI does not have support for marshalling fixed attributes bound with customization
+              <tt>&#64;fixedAttributesAsConstantProperty</tt>. Currently it fails to marshal the attributes.</li>
+	   </ul></li>
+          <li>Roundtripping documents with enum values not listed as part of xml schema results in broken xml.
+</li>
+        </ul>
+	  </blockquote>
+	</blockquote>
+
+
+
+	<a name="relaxng"></a>
+	<h3>RELAX NG</h3>
+	<blockquote>
+	<!--p>See <a href="relaxng.html">this document</a> for details of RELAX NG support.</p-->
+	<p>
+		The RELAX NG support is not yet implemented in this early access.
+	</p>
+	</blockquote>
+
+	
+	
+	<a name="DTD"></a>
+	<h3>DTD</h3>
+	<blockquote>
+	<p>
+		The JAXB RI is shipped with experimental DTD support, which lets you compile XML DTDs.
+	<p>
+		To compile a DTD <code>test.dtd</code>, run the XJC binding compiler as follows:
+<pre>
+$ xjc.sh -dtd test.dtd
+</pre>
+	<p>
+		All the other command-line options of the XJC binding compiler 
+		can be applied, no matter what schema language you use.
+		
+		Similarly, the <tt>XJC</tt> <a href="http://jakarta.apache.org/ant/">ant</a> task supports DTD.
+		No matter what schema language you use, the generated code will be no different. You'll use the same JAXB API to access the generated code.
+	
+	<h4>Customization</h4>
+	<p>
+		The customization syntax for DTD is roughly based on the ver.0.21 working draft of the JAXB specification, which is available at <a href="http://xml.coverpages.org/jaxb0530spec.pdf">xml.coverpages.org</a>. The deviations from this document are:
+	<ul>
+		<li>The <tt>whitespace</tt> attribute of the 
+		<tt>conversion</tt> element takes "<tt>preserve</tt>", 
+		"<tt>replace</tt>", and "<tt>collapse</tt>" instead of 
+		"<tt>preserve</tt>","<tt>normalize</tt>", and 
+		"<tt>collapse</tt>" as specified in the document.
+		<li>The <tt>interface</tt> customization just generates marker 
+		interfaces with no method.
+	</ul>
+	</blockquote>
+	
+	<hr/>
+	<font size="-1">
+	  $Revision: 1.1 $<br/>
+	  $Date: 2005-04-15 20:03:06 $
+	</font>
+  </body>
+</html>

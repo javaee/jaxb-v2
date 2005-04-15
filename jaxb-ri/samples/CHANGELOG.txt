@@ -1,0 +1,43 @@
+
+
+Changes since JAXB 1.0 FCS (JWSDP 1.1 FCS)
+------------------------------------------
+
+o Kohsuke 07.17.2003
+
+  Added "pull-parser" example.
+
+o Ryan 04.23.2003
+
+  Added "subclass-workaround-{inline|external}" examples for safe keeping.
+  These samples shouldn't be shipped with future versions of the pack since
+  it only applies to JAXB1.0/JWSDP1.1fcs
+
+o Kohsuke 03.28.2003
+  
+  Added character escape handler example
+
+o Ed 03.17.2003
+  ubl/OfficeSupply
+
+  Added first-cut UBL example.
+
+
+o Ryan 02.28.2003
+  users-guide/SampleApp4/Main.java
+
+  Switched from FileInputStream to File so that we have full
+  location info from the sax parser.
+
+
+o Kohsuke 02.27.2003
+
+  Added the "xml-channel" example that shows how one can utilize
+  one Input/OutputStream to send multiple XML messages by using JAXB
+
+
+o Kohsuke 03.03.2003
+
+  Added the "catalog-resolver" example to illustrate how one can
+  avoid modifying the schema files to just to resolve resources
+  correctly.

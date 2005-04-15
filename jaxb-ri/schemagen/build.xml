@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+
+<!--
+ Copyright 2004 Sun Microsystems, Inc. All rights reserved.
+ SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+-->
+
+<project name="schemagen" basedir=".." default="compile">
+
+  <description>
+		Schemagen Sub-Project
+		=====================
+
+    This module contains the reusable portion of the schema generator library.
+    The compile-time half of this library still resides under xjc/src/com.sun.tools.jxc.*
+  </description>
+
+  <!-- import build properties -->
+  <property file="${basedir}/build.properties"/>
+
+  <!-- libraries that are referenced when compiling Java source files -->
+  <path id="javac.classpath">
+    <pathelement path="${codemodel.classes}"/>
+    <pathelement path="${runtime.classes}"/>
+    <pathelement path="${jaxb.libs.compiler}/txw2.jar"/>
+    <pathelement path="${jaxb.libs.util}/jing.jar"/>
+  </path>
+
+  <path id="txw.classpath">
+    <path refid="javac.classpath"/>
+    <pathelement path="${jaxb.libs.compiler}/txw2.jar"/>
+    <pathelement path="${jaxb.libs.util}/txwc2.jar"/>
+    <pathelement path="${jaxb.libs.util}/args4j-1.0-RC.jar"/>
+    <pathelement path="${jaxb.libs.compiler}/rngom.jar"/>
+  </path>
+
+
+  <!-- convenience targets when building alone -->
+  <target name="compile"
+    depends="compile-schemagen"
+    description="compile all schemagen src into jaxb-ri/schemagen/build/classes"/>
+  <target name="clean"
+    depends="clean-schemagen"
+    description="clean jaxb-ri/schemagen/build and generated artifacts"/>
+
+  <target name="txw-check">
+    <!--TBD: shouldn't need this if we implement the up-to-date check in the TXWTask itself-->
+  </target>
+
+  <target name="txwc"
+    description="generate the s4s generator library code"
+    depends="txw-check">
+
+    <taskdef name="txwc" classname="com.sun.tools.txw2.TxwTask">
+      <classpath refid="txw.classpath"/>
+    </taskdef>
+    <mkdir dir="${schemagen.gensrc}" />
+    <txwc schema="${schemagen.src}/com/sun/tools/jxc/gen/xmlschema/xmlschema-for-jaxb.rng"
+      destdir="${schemagen.gensrc}"
+      package="com.sun.tools.jxc.gen.xmlschema"
+      methodChaining="true"/>
+  </target>
+
+
+  <!-- compile Java source files -->
+  <target name="compile-schemagen"
+    depends="txwc">
+
+    <mkdir dir="${schemagen.classes}"/>
+    <javac srcdir="${schemagen.src}:${schemagen.gensrc}"
+      destdir="${schemagen.classes}"
+      debug="${compile.debug}"
+      optimize="${compile.optimize}"
+      deprecation="${compile.deprecation}">
+
+      <classpath refid="javac.classpath" />
+    </javac>
+  </target>
+
+  <!-- remove all intermediate files -->
+  <target name="clean-schemagen">
+    <parallel>
+      <delete dir="${schemagen.root}/build"/>
+
+      <!-- delete all txw generated files -->
+      <!-- TODO: delete at some point. no longer necessary -->
+      <delete failonerror="false">
+        <fileset dir="${schemagen.src}/com/sun/tools/jxc/gen/xmlschema">
+          <exclude name="xmlschema-for-jaxb.rng"/>
+          <include name="**/*.java"/>
+        </fileset>
+      </delete>
+    </parallel>
+  </target>
+
+</project>
