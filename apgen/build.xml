@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!--
+ Copyright 2004 Sun Microsystems, Inc. All rights reserved.
+ SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+-->
+<project name="apgen" basedir=".." default="deploy">
+
+    <description>
+      Annotation Proxy Generator
+      ==========================
+      
+      Generates implementations of the Quick class for annotations.
+      This is a tool used to build the runtime module.
+    </description>
+    
+    <!-- import build properties -->
+    <property file="${basedir}/build.properties" />
+
+    <!-- compile Java source files -->
+    <target name="compile"
+           description="compile all classes">
+        <mkdir dir="${apgen.classes}" />
+
+        <javac srcdir="${apgen.src}" destdir="${apgen.classes}"
+            debug="${compile.debug}" optimize="${compile.optimize}"
+            deprecation="${compile.deprecation}" >
+            <classpath>
+              <pathelement path="${codemodel.classes}" />
+        <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <!-- remove all intermediate files -->
+    <target name="clean">
+        <parallel>
+            <delete dir="${apgen.root}/build" />
+        </parallel>
+    </target>
+</project>

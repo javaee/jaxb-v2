@@ -1,0 +1,17 @@
+<sample since="1.0">
+    <title>external-customize (formerly SampleApp8)</title>
+    <description><![CDATA[
+        This sample application is identical to the datatypeconverter sample 
+        application (formerly SampleApp7) except that the binding customizations 
+        are contained in an external binding file.
+    ]]></description>
+        
+    <project>
+        <xjc schema="po.xsd" binding="binding.xjb"/>
+        
+        <javadoc/>
+        
+        <java mainClass="Main"/>
+    </project>
+    
+</sample>

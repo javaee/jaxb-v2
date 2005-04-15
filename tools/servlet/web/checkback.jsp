@@ -1,0 +1,30 @@
+<%--
+ Copyright 2004 Sun Microsystems, Inc. All rights reserved.
+ SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+--%>
+
+<%@ taglib prefix="xjc" uri="http://java.sun.com/xml/ns/jaxb/xjc/ontheweb" %>
+<%
+	String comebackto = (String)request.getAttribute("comebackto");
+	String title = (String)request.getAttribute("title");
+	String message = (String)request.getAttribute("message");
+%>
+<html>
+<head>
+	<title><%= title %></title>
+	<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1"/>
+	<META HTTP-EQUIV=Refresh CONTENT="3; URL=<%=comebackto%>">
+	<script>
+	  // this will make the back button work correctly.
+	  // if the user disables JavaScript, the meta tag will refresh the page
+		setTimeout('self.location.replace("<%=comebackto%>")', 2800);
+	</script>
+</head>
+<body>
+<xjc:header title="<%= title %>">
+	<p>
+		<%= message %>
+	</p>
+</xjc:header>
+</body>
+</html>

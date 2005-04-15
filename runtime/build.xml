@@ -1,0 +1,207 @@
+<?xml version="1.0"?>
+
+<!--
+ Copyright 2004 Sun Microsystems, Inc. All rights reserved.
+ SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+-->
+
+<project name="runtime" basedir=".." default="deploy">
+
+  <description>
+    Runtime Sub-Project
+    ===================
+    
+    The runtime project implements all of the interfaces from the 
+    javax.xml.bind.* packages necessary to support marshalling,
+    unmarshalling, and validation.
+  </description>
+  
+    <!-- import build properties -->
+    <property file="${basedir}/build.properties" />
+
+    <!-- classpath -->
+    <path id="javac.classpath">
+        <pathelement path="${runtime-api.classes}" />
+        <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
+        <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
+        <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
+    </path>
+    
+    
+    <target name="generate-array-listers">
+        <macrodef name="generateCopiesForPrimitives">
+          <attribute name="srcdir"/>
+          <attribute name="destdir"/>
+          <attribute name="prefix" />
+          <sequential>
+            <!-- macro to replace one file -->
+            <macrodef name="generate">
+              <attribute name="primitive"/>
+              <attribute name="box"/>
+              <sequential>
+                <copy file="@{srcdir}/@{prefix}Byte.java" tofile="@{destdir}/@{prefix}@{box}.java"/>
+                <replace file="@{destdir}/@{prefix}@{box}.java">
+                  <replacefilter token="byte" value="@{primitive}"/>
+                  <replacefilter token="Byte" value="@{box}"/>
+                </replace>
+              </sequential>
+            </macrodef>
+            
+            <mkdir dir="@{destdir}"/>
+            <generate primitive="boolean" box="Boolean" />
+            <generate primitive="char"    box="Character" />
+            <generate primitive="short"   box="Short" />
+            <generate primitive="int"     box="Integer" />
+            <generate primitive="long"    box="Long" />
+            <generate primitive="float"   box="Float" />
+            <generate primitive="double"  box="Double" />
+          </sequential>
+        </macrodef>
+        
+        <!-- generate ArrayLister for other primitive types -->
+        <generateCopiesForPrimitives
+          srcdir=       "${runtime.root}/src/com/sun/xml/bind/v2/runtime/reflect"
+          destdir="${runtime.root}/build/src/com/sun/xml/bind/v2/runtime/reflect"
+          prefix="PrimitiveArrayLister" />
+
+        <!-- generate Accessor for fields -->
+        <generateCopiesForPrimitives
+          srcdir=       "${runtime.root}/src/com/sun/xml/bind/v2/runtime/reflect/opt"
+          destdir="${runtime.root}/build/src/com/sun/xml/bind/v2/runtime/reflect/opt"
+          prefix="FieldAccessor_" />
+
+        <!-- generate Accessor for methods -->
+        <generateCopiesForPrimitives
+          srcdir=       "${runtime.root}/src/com/sun/xml/bind/v2/runtime/reflect/opt"
+          destdir="${runtime.root}/build/src/com/sun/xml/bind/v2/runtime/reflect/opt"
+          prefix="MethodAccessor_" />
+
+        <!-- generate TransducedAccessor for fields -->
+        <generateCopiesForPrimitives
+          srcdir=       "${runtime.root}/src/com/sun/xml/bind/v2/runtime/reflect/opt"
+          destdir="${runtime.root}/build/src/com/sun/xml/bind/v2/runtime/reflect/opt"
+          prefix="TransducedAccessor_field_" />
+        <!-- the char version won't be correct. Don't use it. Char is rare anyway. -->
+        <delete file="${runtime.root}/build/src/com/sun/xml/bind/v2/runtime/reflect/opt/TransducedAccessor_field_Character.java"/>
+        <!-- integer version is also hand-coded. -->
+        <delete file="${runtime.root}/build/src/com/sun/xml/bind/v2/runtime/reflect/opt/TransducedAccessor_field_Integer.java"/>
+
+        <!-- generate TransducedAccessor for methods -->
+        <generateCopiesForPrimitives
+          srcdir=       "${runtime.root}/src/com/sun/xml/bind/v2/runtime/reflect/opt"
+          destdir="${runtime.root}/build/src/com/sun/xml/bind/v2/runtime/reflect/opt"
+          prefix="TransducedAccessor_method_" />
+        <!-- the char version won't be correct. Don't use it. Char is rare anyway. -->
+        <delete file="${runtime.root}/build/src/com/sun/xml/bind/v2/runtime/reflect/opt/TransducedAccessor_method_Character.java"/>
+        <!-- integer version is also hand-coded. -->
+        <delete file="${runtime.root}/build/src/com/sun/xml/bind/v2/runtime/reflect/opt/TransducedAccessor_method_Integer.java"/>
+    </target>
+    
+    <target name="generate-annotation-proxies"
+           description="generate annotation proxies">
+      <taskdef name="apgen" classname="com.sun.tools.GeneratorTask">
+        <classpath>
+          <pathelement path="${apgen.classes}" />
+          <pathelement path="${codemodel.classes}" />
+        </classpath>
+      </taskdef>
+      
+      <mkdir dir="${runtime.root}/build/src"/>
+      <apgen destdir="${runtime.root}/build/src"
+        package="com.sun.xml.bind.v2.model.annotation">
+        <classes includes="javax.xml.bind.annotation.*" />
+        <classpath>
+          <pathelement path="${jaxb.libs.redist}/jaxb-api.jar"/>
+        </classpath>
+      </apgen>
+    </target>
+    
+    <!-- compile Java source files -->
+    <target name="compile" depends="generate-array-listers,generate-annotation-proxies"
+                description="compile all runtime src into jaxb-ri/runtime/build/classes">
+        <mkdir dir="${runtime.classes}" />
+
+        <!-- always delete this prop file so that the latest build id can be set -->
+        <delete file="${runtime.classes}/com/sun/xml/bind/Messages.properties"/>
+
+        <javac srcdir="${runtime.src}:${runtime.root}/build/src" destdir="${runtime.classes}"
+            debug="${compile.debug}" optimize="${compile.optimize}"
+            deprecation="${compile.deprecation}" >
+            <classpath refid="javac.classpath" />
+        </javac>
+        
+        <copy toDir="${runtime.classes}">
+            <fileset dir="${runtime.src}" includes="**/*.properties" />
+        </copy>
+
+        <!-- expose the build version to the DefaultJAXBContextImpl class so
+             that it is available to the generated ObjectFactory classes -->
+        <!--replace file="${runtime.classes}/com/sun/xml/bind/Messages.properties">
+            <replacefilter token="@@BUILD_VERSION@@" value="${build.version}"/>
+        </replace-->
+    </target>
+
+    <!-- generate javadoc -->
+    <target name="javadoc">
+        <mkdir dir="${runtime.root}/build/api" />
+        <javadoc
+            destdir="${runtime.root}/build/api"
+            use="true"
+            author="false"
+            version="false"
+            windowtitle="JAXB RI runtime">
+            <fileset dir="${runtime.src}" includes="**/*.java"/>
+            <fileset dir="${runtime-api.src}" includes="**/*.java"/>
+            <classpath refid="javac.classpath" />
+        </javadoc>
+        <!-- javadoc should copy those files, but it doesn't seem to do that -->
+        <copy todir="${runtime.root}/build/api">
+          <fileset dir="${runtime.src}" includes="**/doc-files/**/*"/>
+        </copy>
+    </target>
+
+    <!-- remove all intermediate files -->
+    <target name="clean"
+            description="clean jaxb-ri/runtime/build">
+        <parallel>
+            <delete dir="${runtime.root}/build" />
+            <delete file="${runtime.root}/manifest.rt" />
+        </parallel>
+    </target>
+    
+    
+    <!-- run unit test -->
+    <target name="test-runtime" 
+          depends="compile"
+          description="execute client unit tests - requires junit.jar on system classpath">
+      
+      <mkdir dir="${runtime.test.classes}" />
+      <javac srcdir="${runtime.test}" destdir="${runtime.test.classes}"
+        debug="true" optimize="true"
+        deprecation="${compile.deprecation}" >
+        
+        <classpath refid="javac.classpath" />
+        <classpath>
+          <pathelement path="${runtime.classes}" />
+          <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
+        </classpath>
+      </javac>
+      
+      <echo>running JUnit</echo>
+      <junit printsummary="yes" fork="yes"
+        haltonerror="no" haltonfailure="no">
+        
+        <formatter type="brief" usefile="false" />
+        
+        <classpath path="${runtime.classes}"/>
+        <classpath path="${runtime.test.classes}"/>
+        <classpath>
+          <fileset dir="${jaxb.libs.util}" includes="*.jar" />
+        </classpath>
+        
+        <batchtest todir="${test.log}">
+          <fileset dir="${runtime.test.classes}" includes="**/*Test.class" />
+        </batchtest>
+      </junit>
+    </target>
+</project>

@@ -1,0 +1,1286 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD>
+
+<STYLE TYPE="text/css">
+body
+   {
+   font-family: "Times New Roman";
+   color: black;
+   }
+p, div
+   {
+   display: block;
+   font-size: 12pt;
+   margin-top: 6pt;
+   margin-bottom: 6pt;
+   margin-left: 24pt;
+   }
+ul, ol
+   {
+   display: block;
+   font-size: 12pt;
+   margin-top: 6pt;
+   margin-bottom: 6pt;
+   margin-left: 24pt;
+   padding-left: 24pt;
+   }
+li ul
+   {
+   margin-left: 0pt;
+   }
+li ol
+   {
+   margin-left: 0pt;
+   }
+li p
+   {
+   display: block;
+   margin-top: 6pt;
+   margin-bottom: 6pt;
+   margin-left: 0pt;
+   }
+dl
+   {
+   display: block;
+   font-size: 12pt;
+   margin-bottom: 6pt;
+   margin-top: 6pt;
+   }
+dt
+   {
+   display: block;
+   margin-top: 3pt;
+   margin-bottom: 0pt;
+   margin-left: 24pt;
+   }
+dd
+   {
+   display: block;
+   margin-top: 0pt;
+   margin-bottom: 0pt;
+   padding-left: 12pt;
+   }
+h1
+   {
+   display: block;
+   text-align: left;
+   font-family: arial, helvetica, sans-serif;
+   font-size: 24pt;
+   font-weight: bold;
+   margin-top: 18pt;
+   margin-bottom: 12pt;
+   }
+h2
+   {
+   display: block;
+   text-align: left;
+   font-family: arial, helvetica, sans-serif;
+   font-size: 20pt;
+   font-weight: bold;
+   margin-top: 15pt;
+   margin-bottom: 10pt;
+   }
+h3
+   {
+   display: block;
+   text-align: left;
+   font-family: arial, helvetica, sans-serif;
+   font-size: 18pt;
+   font-weight: bold;
+   margin-top: 8pt;
+   margin-bottom: 6pt;
+   }
+h4
+   {
+   display: block;
+   text-align: left;
+   font-family: arial, helvetica, sans-serif;
+   font-size: 14pt;
+   font-weight: bold;
+   margin-top: 6pt;
+   margin-bottom: 4pt;
+   margin-left: 24pt;
+   }
+h5
+   {
+   display: block;
+   text-align: left;
+   font-family: arial, helvetica, sans-serif;
+   font-size: 13pt;
+   margin-top: 3pt;
+   margin-bottom: 0pt;
+   margin-left: 24pt;
+   }
+h6
+   {
+   display: block;
+   text-align: left;
+   font-family: arial, helvetica, sans-serif;
+   font-size: 12pt;
+   font-style: italic;
+   margin-top: 2pt;
+   margin-bottom: 0pt;
+   margin-left: 24pt;
+   }
+address
+   {
+   display: block;
+   text-align: left;
+   font-size: 12pt;
+   font-style: italic;
+   margin-bottom: 12pt;
+   margin-top: 0pt;
+   margin-left: 0pt;
+   }
+</STYLE> 
+	 <TITLE>Universal Business Language &#x0097; Library Content &#x0097; 0p70 Public Review</TITLE></HEAD> 
+  <BODY> 
+	<img src="UBLlogo.jpg" alt=""> <H1>Universal Business Language &#x0097; Library Content &#x0097; <BR>0p70 Public Review</H1> 
+
+	 <H2>Introduction</H2> 
+
+	 <P>The Universal Business Language (UBL) Library is:</P> 
+	 <UL> 
+		<LI>An XML-based business language </LI> 
+		<LI>Built upon existing EDI and XML business-to-business vocabularies</LI> 
+		<LI>Applicable across all industry sectors and domains of electronic trade </LI> 
+		<LI>Designed to be modular, reusable, and extensible </LI> 
+		<LI>Non-proprietary and royalty-free </LI> 
+		<LI>Intended to become an international standard for electronic commerce</LI> 
+	 </UL> 
+
+	 <P>The Library has been designed as a collection of object classes and
+		associations expressed as a conceptual model. Specific document types are then
+		assembled from these business information entities (BIES) by organizing them
+		into a specific hierarchy. These hierarchical models are then transformed using
+		the UBL Naming and Design rules [NDR] into XML Schema syntax [XSD1][XSD2]. The
+		analysis and design processes developed by the UBL Library Content team are
+		described in Annex A. </P> 
+	 <P>The UBL library is intended for use in business data contexts beyond the
+		specific set of document types provided in this specification. For the purposes
+		of this release, Section 5 below describes the scenario and choreography used
+		in developing this set of documents. For example, the document Order Response
+		may have a limited application, but the re-usable components Party and Item will
+		have relevance to many applications.</P>
+	 <H3>Notes about this Release</H3>
+	 <UL>	
+		<LI>For more information about this release, please check the
+		  <A
+			HREF="UBL0p70_ReleaseNotes.html">Release Notes</A>.</LI>	
+		<LI>The downloadable version of this release is available here:
+		  <A
+			HREF="http://oasis-open.org/committees/ubl/lcsc/0p70/UBL0p70.zip">0p70
+		  Downloadable Release</A>. This is a zip file that will unpack to give you a
+		  replica of the online release directories.</LI>	
+		<LI>If there are any problems with the links in this document, you can
+		  find the full online version at
+		  <A
+			HREF="http://www.oasis-open.org/committees/ubl/lcsc/0p70/">http://www.oasis-open.org/committees/ubl/lcsc/0p70/</A>.</LI>
+	 </UL>
+
+<h3>Submitting Public Comments on this Release</h3>
+
+<p>The OASIS UBL Technical Committee invite interested parties to comment on this release directly to the Library Content Subcommittee Editor, <a href="mailto:bill.meadows@sun.com">Bill Meadows</a> using the recommended feedback form, <a href="http://www.oasis-open.org/committees/ubl/lcsc/0p70/UBL_Comment-0p1.rtf">UBL_Comment-0p1.rtf</a>.
+
+<p>This release comment period applies from Monday, January 27th until Monday, April 14th 2003. We welcome your comments and will ensure to advise you of our dispositions to any suggestions.
+
+	 <H3>General comments about OASIS UBL TC</H3>
+	 <DL>
+		<DT>The work of the OASIS UBL Technical Committee is open to public view
+		  through the mail archives linked from the UBL home page:</DT>
+		<DD><A
+		  HREF="http://oasis-open.org/committees/ubl/">http://oasis-open.org/committees/ubl/</A></DD>
+		<DT>Formal input to UBL from industry data exchange organizations is
+		  provided through the UBL Liaison Subcommittee:</DT>
+		<DD><A
+		  HREF="http://oasis-open.org/committees/ubl/lsc/">http://oasis-open.org/committees/ubl/lsc/</A></DD>
+		<DT>Input from the general public is accepted through the ubl-comment
+		  mail list:</DT>
+		<DD><A
+		  HREF="http://lists.oasis-open.org/archives/ubl-comment/">http://lists.oasis-open.org/archives/ubl-comment/</A></DD>
+		<DT>Interested parties are invited to comment on the work of the UBL TC
+		  by subscribing to the ubl-comment list using the OASIS list manager:</DT>
+		<DD><A
+		  HREF="http://lists.oasis-open.org/ob/adm.pl">http://lists.oasis-open.org/ob/adm.pl</A></DD>
+	 </DL>
+	 <H3>Disclaimer</H3>
+	 <P>This document and its associated components are Copyright &copy; 2003
+		OASIS and are protected by applicable law as works in progress within the OASIS
+		Universal Business Language Technical Committee. As works in progress, they do
+		not yet have the status of an OASIS Standard or an OASIS Committee
+		Specification. This draft and its associated components are provided on a
+		royalty-free basis and may be freely circulated for purposes of experimentation
+		and review. While the construction of experimental prototypes based on these
+		materials is encouraged for the purpose of generating input back to the
+		committee process, implementers are strongly advised against basing commercial
+		or mission-critical applications on the draft specifications contained in this
+		package. THESE MATERIALS ARE FURNISHED WITH NO WARRANTY, EXPRESS OR IMPLIED, AS
+		TO THEIR SUITABILITY FOR ANY APPLICATION.</P> 
+
+
+	 <H2>1. Scope</H2> 
+	 <P>The Library Content part of UBL specifies a library of business
+		information entities to be used in the construction of business documents
+		together with a set of common XML business documents assembled from those
+		entities.</P> 
+	 <P>This document contains normative and non-normative references used by
+		UBL: the context scenario and business rules used to construct the business
+		models and business documents; and the schema instances of the business
+		documents.</P> 
+	 <P>The annexes include the modeling approach used in the normalized model
+		and document descriptions.</P> 
+	 <H2>2. Normative References</H2> 
+	 <DL> 
+		<DT>[ISO11179] International Standards Organisation's Specification and
+		  Standardization of Data Elements for Information Technology </DT> 
+		<DD>
+		  <A
+		  HREF="http://www.iso.org/iso/en/CatalogueDetailPage.CatalogueDetail?CSNUMBER=19184&amp;ICS1= 35&amp;ICS2=40&amp;ICS3=" NAME="ISO11179">http://www.iso.org/iso/en/CatalogueDetailPage.CatalogueDetail?CSNUMBER=19184&amp;ICS1=
+		  35&amp;ICS2=40&amp;ICS3=</A></DD> 
+		<DT>[CCTS] UN/CEFACT ebXML Core Components Technical Specification
+		  1.90</DT> 
+		<DD><A CLASS="moz-txt-link-freetext"
+		  HREF="http://xml.coverpages.org/CCTSv190-2002.pdf">http://xml.coverpages.org/CCTSv190-2002.pdf</A>
+		  </DD> 
+		<DT>[NDR]&nbsp;&nbsp;Universal Business Language Naming and Design Rules</DT> 
+		<DD><A
+		  HREF="http://oasis-open.org/committees/ubl/ndrsc/release/">http://oasis-open.org/committees/ubl/ndrsc/release/</A>
+		  </DD> 
+		<DT>[UML]&nbsp; Unified Modeling Language&nbsp;1.4 (formal/01-09-67)</DT>
+		
+		<DD><A
+		  HREF="http://www.omg.org/cgi-bin/doc?formal/01-09-67">http://www.omg.org/cgi-bin/doc?formal/01-09-67</A></DD>
+		
+		<DT>[XML]&nbsp; Extensible Markup Language (XML) 1.0 (Second Edition),W3C
+		  Recommendation 6 October 2000</DT> 
+		<DD><A CLASS="moz-txt-link-freetext"
+		  HREF="http://www.w3.org/TR/2000/REC-xml-20001006">http://www.w3.org/TR/2000/REC-xml-20001006</A></DD>
+		
+		<DT>[XSD1] XML Schema Part 1: Structures, W3C Recommendation 2 May
+		  2001</DT> 
+		<DD><A CLASS="moz-txt-link-freetext"
+		  HREF="http://www.w3.org/TR/xmlschema-1/">http://www.w3.org/TR/xmlschema-1/</A></DD>
+		
+		<DT>[XSD2] XML Schema Part 2: Datatypes, W3C Recommendation 02 May
+		  2001</DT> 
+		<DD><A CLASS="moz-txt-link-freetext"
+		  HREF="http://www.w3.org/TR/xmlschema-2/">http://www.w3.org/TR/xmlschema-2/</A></DD>
+		
+	 </DL> 
+	 <H2>3. Terms and Definitions</H2> 
+	 <DL> 
+		<DT><B>Business Context</B></DT> 
+		<DD>The formal description of a specific business circumstance as
+		  identified by the values of a set of context categories, allowing different
+		  business circumstances to be uniquely distinguished.</DD> 
+		<DT><B>Class Diagram</B></DT> 
+		<DD>A graphical notation used by the UML [UML] to describe the static
+		  structure of a system, including object classes and their associations.</DD> 
+		<DT><B>Container</B></DT> 
+		<DD>A modular and self-contained group of data components.</DD> 
+		<DT><B>Containership</B></DT> 
+		<DD>Aggregating components (nested elements in an XML schema [XML]).</DD>
+		
+		<DT><B>Context</B></DT> 
+		<DD>The circumstance or events that form the environment within which
+		  something exists or takes place.</DD> 
+		<DT><B>Dependency Diagram</B></DT> 
+		<DD>A refinement of a class diagram that emphasises the dependent
+		  associations to between object classes.</DD> 
+		<DT><B>Document</B></DT> 
+		<DD>A set of information components that are interchanged as part of a
+		  business activity; for example placing an order.</DD> 
+		<DT><B>Document Assembly</B></DT> 
+		<DD>A description of an hierarchical pathway through a normalized model
+		  of information components.</DD> 
+		<DT><B>Hierarchical Model</B></DT> 
+		<DD>A tree-structured model that can be implemented as a document
+		  schema.</DD> 
+		<DT><B>Normalization</B></DT> 
+		<DD>A formal technique for identifying and defining functional
+		  dependencies.</DD> 
+		<DT><B>Normalized Model</B></DT> 
+		<DD>A representation of normalized data components.</DD> 
+		<DT><B>Schema</B></DT> 
+		<DD>An XML document definition based on the W3C XML Schema&nbsp;language
+		  [XSD1][XSD2].</DD> 
+		<DT><B>schema</B></DT> 
+		<DD>Any XML document definition.</DD> 
+		<DT><B>Spreadsheet Model</B></DT> 
+		<DD>A representation of a data model in tabular form.</DD> 
+	 </DL> 
+	 <P>The terms <I>Core Component</I> and <I>Business Information Entity</I>
+		are used in this specification with the meanings given in [CCTS].</P> 
+	 <P>The terms <I>Object Class, Property, Representation Term,</I> and
+		<I>Qualifier</I> are used in this specification with the meanings given in
+		[ISO11179].</P> 
+	 <H2>4. Symbols and Abbreviations</H2> 
+	 <DL> 
+		<DT><B>ABIE</B></DT> 
+		<DD>Aggregate Business Information Entity</DD> 
+		<DT><B>ACC</B></DT> 
+		<DD>Aggregate Core Component</DD> 
+		<DT><B>ASBIE</B></DT> 
+		<DD>Association Business Information Entity</DD> 
+		<DT><B>ASCC</B></DT> 
+		<DD>Association Core Component</DD> 
+		<DT><B>BBIE</B></DT> 
+		<DD>Basic Business Information Entity</DD> 
+		<DT><B>BCC</B></DT> 
+		<DD>Basic Core Component</DD> 
+		<DT><B>BIE</B></DT> 
+		<DD>Business Information Entity</DD> 
+		<DT><B>CC</B></DT> 
+		<DD>Core Component </DD> 
+		<DT><B>EAN</B></DT> 
+		<DD>European Article Numbering Association </DD> 
+		<DT><B>EDI</B></DT> 
+		<DD>Electronic Data Interchange </DD> 
+		<DT><B>ISO</B></DT> 
+		<DD>International Standards Organisation </DD> 
+		<DT><B>NDR</B></DT> 
+		<DD>UBL Naming and Design Rules [NDR] </DD> 
+		<DT><B>UML</B></DT> 
+		<DD>Unified Modeling Language [UML] </DD> 
+		<DT><B>UN/CEFACT</B></DT> 
+		<DD>United Nations Centre for Trade Facilitation and Electronic Business
+		  </DD> 
+		<DT><B>XML</B></DT> 
+		<DD>Extensible Markup Language [XML]</DD> 
+		<DT><B>XSD</B></DT> 
+		<DD>World Wide Web Consortium's XML Schema Language [XSD1][XSD2]</DD> 
+	 </DL> 
+	 <H2>5. Initial UBL Business Scenario</H2> 
+	 <P>The specific context adopted for UBL release 0p70 is based on a typical
+		trading cycle.&nbsp; This section describes the scenario and choreography as
+		well as highlighting some of the business rules used in developing this set of
+		documents.</P> 
+	 <P>The design of this particular set of UBL documents also allows it to be
+		used as a basis for extension to create more function-rich, but separately
+		defined, scenarios. When that occurs, it is expected that this section will
+		become one of a list of ALL available Scenarios from different, complementary
+		sources. Such a list and descriptions need to be constructed in such a way that
+		a newcomer will be able to readily identify the scenario that exactly, or most
+		closely, fits their requirement and manner of operation.</P> 
+	 <H3>5.1 Scenario &#x0097; The UBL Trading Cycle </H3> 
+	 <P>This model addresses the requirements of a basic, usable trading cycle
+		from Order to Invoice between Buyer and Seller. It includes specifications
+		for:</P> 
+	 <UL> 
+		<LI>Order</LI> 
+		<LI>Order Response (simple)</LI> 
+		<LI>Order Response (complex)</LI> 
+		<LI>Order Cancellation</LI> 
+		<LI>Despatch Advice</LI> 
+		<LI>Receipt Advice</LI> 
+		<LI>Invoice</LI> 
+	 </UL> 
+	 <P>It provides for: </P> 
+	 <UL> 
+		<LI>identification of each item according to a range of ID systems</LI> 
+		<LI>specification of delivery detail at item line level</LI> 
+		<LI>Specification of the packaging of the ordered items limited to: 
+		  <BR>(a) packaging when it is an inherent part of the Item identified by
+			 the Item Identifier
+		  <BR>(b) packaging of the whole delivery consignment in one way, e.g. all
+			 items palletised, containerised, etc.</LI> 
+	 </UL> 
+	 <P>It does not provide for:</P> 
+	 <UL> 
+		<LI>any sub-line facilities, because this is an area of diversity for
+		  which more industry-specific knowledge and input into creating a different
+		  business scenario is required.</LI> 
+		<LI>sophisticated packaging within packaging, which is seen as a
+		  different business scenario, and for which more business context-specific
+		  knowledge and input is required.</LI> 
+	 </UL> 
+	 <H3>5.2 Scenario &#x0097; Others</H3> 
+	 <P>Different business scenarios to meet different ways of trading cycle
+		operation can, and should, be developed by separate, appropriate teams of
+		business and modelling experts. Ideally they should take advantage of the basic
+		UBL model as a starting point and as an exemplar. They will then need to go
+		through an independent harmonisation review to encourage and to ensure
+		inter-operability, to reduce ambiguity, and to avoid unnecessary overlap.</P> 
+	 <P>Suggested other scenarios, for separate development, include situations
+		of:</P> 
+	 <UL> 
+		<LI>Vendor managed inventory</LI> 
+		<LI>Self-billing</LI> 
+		<LI>Master Order and Call-offs</LI> 
+		<LI>Prior Quote Request &amp; Quotation</LI> 
+		<LI>International Trade requiring Multi-party Transportation</LI> 
+		<LI>Hire Trade (e.g. tool hire, scaffolding hire)</LI> 
+		<LI>etc.</LI> 
+	 </UL> 
+	 <P>Other scenarios that are already in development and that should be
+		included in the catalogue of business scenarios include:</P> 
+	 <UL> 
+		<LI>EAN International FMCG (Fast Moving Consumer Goods) scenario </LI> 
+		<LI>UN/CEFACT's CCSD (Core Components Supplementary Documentation)
+		  &#x0097; Boeing Spare Parts Ordering scenario</LI> 
+	 </UL><HR> 
+	 <P><I><B>Editors' Notes:</B></I></P> 
+	 <P><I>It is expected that each of the above suggestions will become at
+		least one separate scenario with a carefully defined scope that describes what
+		the scenario does and does not cover. </I></P> 
+	 <P><I>It is also expected that wherever possible as much of each model and
+		'document' will be as common in design as is possible.</I></P> 
+	 <P><I>It is also expected that there will be a carefully judged balance
+		between, on the one hand, having too many separate and different scenarios and,
+		on the other hand, too few generic 'all-things-to-all-folks' scenarios.</I></P>
+	 <HR> 
+	 <H3>5.3 UBL v0p70 Trading Cycle Scenario</H3> 
+	 <P>Items are ordered by the Buyer from the Seller. The Buyer and Seller may
+		be in the same country, or in different countries. The Seller confirms with
+		either an Order Response (simple), or an Order Response (complex) if it is
+		necessary to provide the Buyer with additional information. The Seller fulfils
+		the order by sending a Despatch Advice and supplying the items requested. The
+		Buyer returns a Receipt Advice to confirm items have been received. The Seller
+		invoices the items that have been provided. The Buyer reconciles the invoice to
+		the despatch advice and order, and makes a payment which covers one or more
+		invoices within the payment period defined in the invoice payment terms. </P> 
+	 <P><BR></P> 
+	 <P></P> 
+	 <P><SPAN ID="Frame1"
+		STYLE="BORDER-RIGHT: #000000 1px solid; PADDING-RIGHT: 0.28cm; BORDER-TOP: #000000 1px solid; PADDING-LEFT: 0.28cm; BACKGROUND: #ffffff; FLOAT: left; PADDING-BOTTOM: 0.15cm; BORDER-LEFT: #000000 1px solid; WIDTH: 17.88cm; PADDING-TOP: 0.15cm; BORDER-BOTTOM: #000000 1px solid; HEIGHT: 12.49cm"><IMG
+		HEIGHT="452" SRC="context-fig01.jpg" WIDTH="655" ALIGN="bottom" BORDER="0"
+		ALT="Trade Cycle"></SPAN></P><BR CLEAR="left"> 
+	 <P STYLE="MARGIN-BOTTOM: 0.14cm" ALIGN="left"><FONT STYLE="FONT-SIZE: 9pt"
+		SIZE="2"><B>Figure 1. Trade Cycle</B></FONT></P> 
+	 <P>In the simplest of cases, it is anticipated that there will be no need
+		to change order details. Complete cancellation may be allowed. The Buyer may
+		indicate potential substitutes that are acceptable; the Seller may advise
+		substitutes which will be made, or changes necessary, using the Order Response
+		(complex).</P> 
+	 <P>The Order can subsequently be modified by the Buyer cancelling the
+		original Order and replacing it with a new Order.&nbsp;</P> 
+	 <H4>5.3.1 Order</H4> 
+	 <P>The Order may specify Charge Payment (e.g. freight, documentation etc)
+		instructions that identify the type of charge and who pays which charges. The
+		Order can be placed 'on account' against a trading credit account held by the
+		Seller, or against a credit/debit card account, or a direct debit agreement.
+		The Order overall allows only for specification of Currency (e.g. &pound;, $,
+		&#x0080; etc by ISO currency code) for Pricing, for Invoice presentation, for
+		Tax accounting. In the case of International freight/documentation charges, it
+		may also be necessary to specify the Currency.</P> 
+	 <P>Trade discount may be specified at Order Header level. The Buyer may not
+		know the trade discount, in which case it is not specified. This makes a
+		detailed Order Response (complex) necessary <I>[See Order Response
+		(Complex)]</I>.</P> 
+	 <P>The Order may specify delivery terms and constraints that apply for the
+		delivery location in relation to the following information that would normally
+		not appear until the Despatch Advice:</P> 
+	 <UL> 
+		<LI>Transport 
+		  <UL> 
+			 <LI>Means</LI> 
+			 <LI>Mode</LI> 
+			 <LI>One- to many-legged journey 
+				<UL> 
+				  <LI>Dates</LI> 
+				  <LI>Locations</LI> 
+				</UL> </LI> 
+			 <LI>Arrival 'window'</LI> 
+		  </UL> </LI> 
+		<LI>Consignment packaging 
+		  <UL> 
+			 <LI>Type, e.g. Container, Pallet</LI> 
+			 <LI>Identifier, e.g. SSCC, Shipping label (Despatch Advice)</LI> 
+		  </UL> </LI> 
+	 </UL> 
+	 <P>The Order provides for multiple Order Item Lines.</P> 
+	 <H5>5.3.1.1 Order Item Line</H5> 
+	 <P>Each Order Item Line provides for specification of a single place of
+		delivery, and a schedule of quantities and requested delivery dates. </P> 
+	 <P>The Order may specify delivery terms, while the Order Item Line may
+		provide instructions for delivery. Partial shipment indication is also allowed,
+		insofar as the only information needed is a yes/no 'partial shipment allowed'
+		indicator for each Order Item Line.</P> 
+	 <P>For each Order Item Line, an Allowable Substitute can be included. The
+		substitute item may be specified by any one of the range of Item identifiers.
+		The specified Quantity may change e.g. 20x6-packs substituting for
+		10x12-packs.</P> 
+	 <H5>5.3.1.2&nbsp;Item Specification</H5> 
+	 <P>An Item Identifier identifies each Item (e.g. a product identifier),
+		which shall be one of the following:</P> 
+	 <UL> 
+		<LI>Buyer's Item Identification, or</LI> 
+		<LI>Seller's Item Identification, or</LI> 
+		<LI>Manufacturer's Item Identification, or</LI> 
+		<LI>Catalogue Item Identification, or</LI> 
+		<LI>Item Identification according to a Standard body's system.</LI> 
+	 </UL> 
+	 <P>The Item Identification assumes that each different packaging of an Item
+		(e.g. a 6-pack and a 12-pack of the same item) has a different Item
+		Identifier.</P> 
+	 <P>The Item may be further distinguished by the specification of
+		Measurement(s) or Physical Attribute(s). This enables specification of the
+		following kinds of item:</P> 
+	 <H6>5.3.1.2.1 Item Requiring Description </H6> 
+	 <P>This is an item that is not identified by an unambiguous, machine
+		processable, product code and where it is necessary to provide additional
+		descriptive information about the item to precisely identify what is
+		required.</P> 
+	 <H6>5.3.1.2.2 Customer Defined Item</H6> 
+	 <P>This is an item that the customer describes according to his need, and
+		in the specification of which the customer may make some reference to
+		comparable "standard" items.</P> 
+	 <H6>5.3.1.2.3 Item Measurements</H6> 
+	 <P>This is an item in which it is necessary to specify one or more
+		measurements as part of the descriptive specification of the item.</P> 
+	 <H6>5.3.1.2.4 Other Item Details</H6> 
+	 <P>For an Item, price ranges by amount, quantity, etc. are not repeated
+		back to the Seller; only the active price is specified. The Buyer may not know
+		the Item Price, in which case it is not specified. This makes a detailed Order
+		Response (complex) necessary <I>[See Order Response (Complex)]</I>.</P> 
+	 <P>Ordered items may include Hazardous Material items, insofar as it is not
+		necessary to specify related information at the order stage. The Buyer may not
+		be aware of the nature of the Item. Indication of the Hazardous nature of the
+		Item, and any relevant information, would be indicated in the Despatch
+		Advice.</P> 
+	 <H4>5.3.2 Order Response (Simple)</H4> 
+	 <P>The Order Response (simple) is the means by which the Seller confirms
+		receipt of the Order, indicating commitment to fulfill without change, to the
+		Buyer. The Seller may also inform the Buyer, using this Order Response, that
+		the Order has been rejected.</P> 
+	 <H4>5.3.3 Order Response (Complex)</H4> 
+	 <P>The Order Response (complex) is a complete replacement of the Order. It
+		also is the means by which the Seller confirms or supplies Order-related
+		details to the Buyer that were not available to, or specified by, the Buyer at
+		the time of ordering. These may include:</P> 
+	 <UL> 
+		<LI>Delivery date, offered by the Seller if not specifically requested by
+		  the Buyer </LI> 
+		<LI>Prices </LI> 
+		<LI>Trade Discount </LI> 
+		<LI>Charges </LI> 
+		<LI>Customs Commodity Classification codes</LI> 
+	 </UL> 
+	 <H4>5.3.4 Changing an Order</H4> 
+	 <P>The Buyer can change an Order, subject to the legal contract or trading
+		partner agreement, by sending an Order Cancellation followed by a new, complete
+		replacement, Order. </P> 
+	 <P>Buyers can initiate a change to a previously accepted order. Buyers may
+		change an order for various reasons such as changing the ordered items,
+		quantity, delivery date, ship-to address, etc. Suppliers can accept or reject
+		the change order using the order response document.</P> 
+	 <P>Changes by the Seller would be accomplished through the OrderResponse
+		(Complex).</P> 
+	 <H4>5.3.5 Order Cancellation</H4> 
+	 <P>At any point of the process, a Buyer can cancel an order sent to a
+		Seller. Legal contracts, trading partner agreements and business rules would
+		restrict at what point a Order Cancellation would be ignored (e.g. at the point
+		of manufacture or delivery process initiation). Given the agreements and rules,
+		an Order Cancellation may or may not be an automated business transaction. The
+		terms and conditions of a contract formation for business commitments will
+		dictate what if any of these restrictions and/or guidelines will apply.</P> 
+	 <H4>5.3.6 Despatch Advice</H4> 
+	 <P>As described in the Order, the Item Identification within each Item Line
+		may be made by the Buyer's, Seller's, Manufacturer's, or Catalogue
+		identification of the item, or by an identification assigned by a Standards
+		organisation. It may also be accompanied by an indication of the Country of
+		Origin for the Item. Indication of the Hazardous nature of the Item, and any
+		relevant information, would be indicated in the Despatch Advice.</P> 
+	 <P>The following information may appear in the Despatch Advice:</P> 
+	 <UL> 
+		<LI> Transport 
+		  <UL> 
+			 <LI>Means </LI> 
+			 <LI>Mode </LI> 
+			 <LI>One- to many-legged journey 
+				<UL> 
+				  <LI>Dates </LI> 
+				  <LI>Locations</LI> 
+				</UL> </LI> 
+			 <LI>Arrival 'window'</LI> 
+		  </UL> </LI> 
+		<LI>Consignment packaging 
+		  <UL> 
+			 <LI>Type, e.g. Container, Pallet </LI> 
+			 <LI>Identifier, e.g. SSCC, Shipping label (Despatch Advice)</LI> 
+		  </UL></LI> 
+	 </UL> 
+	 <P>The Despatch Advice caters for two situations:</P> 
+	 <UL> 
+		<LI>Organisation of the delivery set of items by Logistics Unit(s) so
+		  that the Receiver can check Logistics Unit and then contained items. Quantities
+		  of the same item on the same Order Line may be separated into different
+		  Logistic Units, and hence appear on separate Despatch Lines within a Logistics
+		  Unit. </LI> 
+		<LI>Organisation of the delivery set of items by Despatch Line, annotated
+		  by the id of the Logistics Unit in which they are placed, to facilitate
+		  checking against the Order. For convenience, any Order Item Line split over
+		  multiple Logistics Units will result in a Despatch Line for each Logistic Unit
+		  they are contained in.</LI> 
+	 </UL> 
+	 <P>Additionally, in either case, the Despatch Advice can advise:</P> 
+	 <UL> 
+		<LI>Full Despatch &#x0097; Advising the Recipient and/or Buyer that the
+		  items ordered on the order will be, or is being, delivered in one complete
+		  consignment on a given date to the location specified in the order. </LI> 
+		<LI>Partial Despatch &#x0097; Advising the Recipient and/or Buyer that
+		  the items ordered on the order will be, or is being, partially delivered in a
+		  consignment on a given date to the location specified in the order. The Ship
+		  From, Seller party, issues it at the point of despatch. It will inform about
+		  the status of the residual part of the order.</LI> 
+	 </UL> 
+	 <P>Note: Item Lines of the Despatch Advice may not correspond one-to-one
+		with Order Item Lines, but each needs to be linked by reference to the Order
+		Item Line Id. The information structure of the Despatch Advice, geared to
+		physical considerations, may result in multiple Despatch Advice Item Lines from
+		one Order Item Line. Equally, partial despatch may result in some Order Item
+		Lines not being matched by any Item Line in a Despatch Advice.</P> 
+	 <H4>5.3.7 Receipt Advice</H4> 
+	 <P>The Receipt Advice is sent by the Receiver (Buyer) to the Seller to
+		confirm receipt of items, and is capable of reporting shortages and/or damaged
+		items.</P> 
+	 <P>The Receipt Advice caters for two situations. For ease of processing
+		claimed receipt against claimed delivery, it needs to be organised in the same
+		way as the matching Despatch Advice:</P> 
+	 <UL> 
+		<LI>Indication of receipt by Logistics Unit(s) and contained Receipt
+		  Lines one-to-one with the Despatch Advice as detailed by the Ship From or
+		  Seller party.</LI> 
+		<LI>Indication of receipt by Receipt Lines annotated by Logistics Unit,
+		  one-to-one with the Despatch Advice as detailed by the Ship From or Seller
+		  party.</LI> 
+	 </UL> 
+	 <P>The Receipt Advice allows the Receiver to state any shortages from the
+		claimed despatch quantity, to state any quantities rejected for a reason which
+		is given, and also to indicate cancellation of any 'to follow' quantity advised
+		by the Ship From or Seller party.</P> 
+	 <P>Note: As presently arranged the Receipt Line only allows for one
+		rejection quantity and reason. However, any rejection of quantities of same
+		item for different reasons could be achieved by subdividing the Receipt Line so
+		that there are multiple Receipt Lines to one Despatch Line. (How sophisticated,
+		or precise, do you want the reason for rejection to be? Advising the supplier
+		over the phone is generally more expressive than an electronic message!)</P> 
+	 <H4>5.3.8 Invoice</H4> 
+	 <P>The Invoice is normally issued on the basis of ONE despatch event
+		triggering ONE invoice. An Invoice may also be issued for pre-payment on a
+		whole or partial basis. The possibilities are:</P> 
+	 <UL> 
+		<LI>Pre-payment invoice (payment expected) </LI> 
+		<LI>Pro-forma invoice (pre advice, payment not expected) </LI> 
+		<LI>Normal Invoice, on despatch for despatched items </LI> 
+		<LI>Invoice after return of Receipt Advice</LI> 
+	 </UL> 
+	 <P>The invoice only contains the information that is necessary for
+		invoicing purposes. It does not re-iterate information already established in
+		the Order, Order Response (complex), Despatch Advice, or Receipt Advice that is
+		not necessary when invoicing. The Invoice refers to the Order, Order Response
+		(complex), Despatch Advice or Receipt Advice by the Identifier of those
+		documents.</P> 
+	 <P>Taxation on the Invoice allows for Compound Taxes, the sequence of
+		calculation implied by the sequence of information repeated in the data-stream.
+		(e.g., Energy tax, with VAT &#x0097; Value Added Tax &#x0097;
+		superimposed).</P> 
+	 <P>Charges can be specified either as a lump sum, or by percentage applied
+		to the whole Invoice value prior to calculation of taxes. Such charges
+		cover:</P> 
+	 <UL> 
+		<LI>Packaging </LI> 
+		<LI>Delivery/postage </LI> 
+		<LI>Freight </LI> 
+		<LI>Documentation</LI> 
+	 </UL> 
+	 <P>The present Invoice does not cover Debit and Credit Notes. Nor does the
+		cycle include a Customer Account Statement that summarises Invoices, Credit
+		Notes and Debit Notes to be paid.</P> 
+	 <H5>5.3.8.1 Invoice Item Line</H5> 
+	 <P>Each Invoice Item Line refers to the related Order Item Line and may
+		refer to the Despatch Advice Item Line and/or Receipt Advice Item Line.</P> 
+	 <H2>6. UBL Library</H2> 
+	 <H3>6.1 Description</H3> 
+	 <P>The UBL Library was developed as business information entities (BIEs)
+		expressed as a conceptual model. These are then assembled into hierarchical
+		document structures and transformed using the UBL Naming and Design rules into
+		XML Schema syntax.</P> 
+	 <P>The non-normative UBL document models contain enough meta-data to allow
+		the automatic generation of XML Schemas based on the UBL Naming and Design
+		Rules.</P> 
+
+
+	 <H2>7. UBL Document Schemas</H2> 
+
+	 <H3>7.1 Introduction</H3> 
+
+	 <P>The ultimate artifacts for the UBL Library are the XML Schemas
+		themselves. For this release (0p70), these represent the physical
+		implementation of the logical UBL models and are the normative representation
+		of the UBL Library.</P> 
+
+	 <H3> 7.2 XSD Schemas</H3> 
+
+	 <P>Normative XSD schemas for the UBL documents and core component types are referenced through the identifiers below.</P> 
+	 <DL> 
+		<DT>All Basic Business Information Entities are expressed as Core Component Types [CCTS] as defined in the schema for UBL Core Component Types:</DT> 
+		<DD><A
+		  HREF="xsd/CoreComponentTypes.xsd">xsd/CoreComponentTypes.xsd</A>
+		  </DD> 
+	 </DL> 
+	 <DL> 
+		<DT>All Aggregate Business Information Entities are expressed as complex data types as defined in the UBL Re-usable Component Library schema, which references the UBL Core Component Types.  This schema also defines all reused Basic Business Information Entities:</DT> 
+		<DD><A
+		  HREF="xsd/UBL_Library_0p70_Reusable.xsd">xsd/UBL_Library_0p70_Reusable.xsd</A></DD>
+		
+	 </DL> 
+	 <P>All Business Documents are defined in their individual schemas, which
+		reference the two previous schemas:</P> 
+	 <DL> 
+		<DT>UBL Order </DT> 
+		<DD><A
+		  HREF="xsd/UBL_Library_0p70_Order.xsd">xsd/UBL_Library_0p70_Order.xsd</A>
+		  </DD> 
+		<DT>UBL Order Response (Simple) </DT> 
+		<DD><A
+		  HREF="xsd/UBL_Library_0p70_OrderResponseSimple.xsd">xsd/UBL_Library_0p70_OrderResponseSimple.xsd</A>
+		  </DD> 
+		<DT>UBL Order Response (Complex) </DT> 
+		<DD><A
+		  HREF="xsd/UBL_Library_0p70_OrderResponse.xsd">xsd/UBL_Library_0p70_OrderResponse.xsd</A>
+		  </DD> 
+		<DT>UBL Order Cancellation </DT> 
+		<DD><A
+		  HREF="xsd/UBL_Library_0p70_OrderCancellation.xsd">xsd/UBL_Library_0p70_OrderCancellation.xsd</A>
+		  </DD> 
+		<DT>UBL Despatch Advice </DT> 
+		<DD><A
+		  HREF="xsd/UBL_Library_0p70_DespatchAdvice.xsd">xsd/UBL_Library_0p70_DespatchAdvice.xsd</A>
+		  </DD> 
+		<DT>UBL Receipt Advice </DT> 
+		<DD><A
+		  HREF="xsd/UBL_Library_0p70_ReceiptAdvice.xsd">xsd/UBL_Library_0p70_ReceiptAdvice.xsd</A>
+		  </DD> 
+		<DT>UBL Invoice </DT> 
+		<DD><A
+		  HREF="xsd/UBL_Library_0p70_Invoice.xsd">xsd/UBL_Library_0p70_Invoice.xsd</A></DD>
+		
+	 </DL> 
+
+	 <H2>Annex A: The UBL Library Methodology (informative)</H2> 
+	 <H3>A.1 Summary</H3> 
+	 <P>This annex describes the&nbsp;methodology used to identify and define
+		the UBL library content.</P> 
+	 <P>The UBL Library was developed as business information entities (BIEs)
+		expressed as a conceptual model. These are then assembled into hierarchical
+		document structures and transformed using the UBL Naming and Design rules into
+		XML Schema syntax.</P> 
+	 <P>Business Information Entities are Core Components of information used in
+		a specific context [CCTS].</P> 
+	 <P>UBL assumes each core component has neutral context, or is a
+		de-contextualized BIE. We can say that a Core Component is a BIE without any
+		context. For example, when we identified the BIE ShippingContact and
+		OrderContact, we also identified that these were two different contexts for a
+		Contact. This meant that we had also identified a de-contextualized BIE called
+		Contact. By doing this we avoid the need to define the &#x0091;core&#x0092;
+		components separately, they are just BIEs that can be used without any
+		context.</P> 
+	 <P> It is our intention to submit all de-contextualized BIEs as candidate
+		Core Components to the relevant UN/CEFACT group as soon as possible.</P> 
+	 <P>The UBL conceptual model helps analysts, modelers, domain experts, and
+		others better understand the Library. This formal and pragmatic approach to
+		library development based on analysis and design techniques we call "Document
+		Engineering". </P> 
+	 <P> To promote rapid and widespread adoption, UBL has been developed to
+		allow its workload to be distributed to sub-groups and industry verticals. This
+		requires a formalization of the approach UBL takes to identifying and
+		describing the content of its library. To this end the set of processes,
+		notations and UBL meta-model have been defined in such a way that they can be
+		used by a broad range of interested parties to understand, refine and extend
+		for their specific business contexts.</P> 
+	 <P>To synthesize a range of established vocabularies in both the XML and
+		EDI worlds, this approach also includes explicit steps to identify and reuse
+		design patterns and other artifacts of prior modeling efforts.</P> 
+	 <H3>A.2 Identifying Content Components</H3> 
+	 <P>Content components can be identified at three levels:</P> 
+	 <OL CLASS="arabic" TYPE="1"> 
+		<LI>"Atomic" components that hold individual pieces of information and
+		  that are typically represented by primitive data types (e.g., "string,"
+		  "Boolean," "date") or datatypes readily derived from these. </LI> 
+		<LI>"Aggregate" components that hold logically related groups of atomic
+		  components and sub-aggregates. </LI> 
+		<LI>"Document" components that assemble atomic and aggregate components
+		  to form a self-contained logical unit of work; the clearest examples are
+		  transactional messages within a business process. The business process context
+		  provides the requirements for which documents are to be assembled.</LI> 
+	 </OL> 
+	 <P>The hardest level at which to identify good components is at the
+		aggregate level. To do this on an ad hoc and intuitive basis might not identify
+		the optimal patterns for re-use. For example, it might "sound right" to group
+		Name, Address and DateOfBirth into an aggregate component of Person. But what
+		is it about the associations among these three components that makes them into
+		a good aggregate?</P> 
+	 <P>The answer comes from conventional data modeling practice, which
+		includes formal rules for designing logical structures and establishing what
+		data analysts call functional dependencies in order to create modular and
+		self-contained groups that lend themselves naturally to re-use. Such grouping
+		are referred to here as "containers".</P> 
+	 <P>Analysis has identified three types of containers that are relevant to
+		the design of UBL:</P> 
+	 <UL> 
+		<LI><B>List Containers</B> 
+		  <P>List containers provide a wrapper around sets of repeated data
+			 structures with differing values. They are, "containers of a series of like
+			 elements". For example Line Items in an Order; each Line Item has the same
+			 structure, such as item number, description, quantity, etc, and there can be
+			 many Line Item occurrences.</P> 
+		  <P>The list container serves to signal the bounds of the list for
+			 processing and display purposes. The criteria for list containership in such
+			 cases is technical rather than semantic. Whenever a data element is defined as
+			 repeatable in the logical model, it is possible to wrap it in list
+			 container.</P> 
+		  <P>We refer to these lists of repeated elements as &#x0091;List&#x0092;
+			 containers.</P> 
+		  <P></P></LI> 
+		<LI><B>Presentational Containers</B> 
+		  <P>Presentational containers such as Header and Summary echo the
+			 structure of traditional printed documents. Their use may be to simplify the
+			 processing required to display documents for human presentation. In most cases,
+			 they add no semantic value. </P> 
+		  <P></P></LI> 
+		<LI><B>Grouped Element Containers</B> 
+		  <P>Most common in any document are containers that wrap elements having
+			 an apparent logical connection to each other. These are &#x0091;Grouped
+			 Element&#x0092; containers.</P> 
+		  <P>Identifying logical groups allows us to minimize redundancy,
+			 localize dependencies, and ensure that information can be maintained in logical
+			 sets that reflect the constraints of the real world. </P> 
+		  <P>While the identification of logical groups can be done intuitively
+			 maximizes re-usability of common patterns demands&nbsp;a more formal and
+			 consistent approach for grouping elements.&nbsp;Data normalization provides
+			 such an approach.</P></LI> 
+	 </UL> 
+	 <H3>A.3 Functional Dependency and Normalization</H3> 
+	 <P>If the value of one component changes when another component's value
+		changes, then the former is said to be functionally dependent on the latter.
+		For example, each Person we identify is associated with a different Address and
+		DateOfBirth because the values of each of these components functionally depend
+		on the identity of the Person in question.</P> 
+	 <P>Technically, this can be defined as: </P> 
+	 <BLOCKQUOTE><I>"Given an ABIE, called E (e.g. Person), the BIE called Y
+		(e.g. DateofBirth) of E is functionally dependent on the BIE called X (e.g.
+		Name) of E if, and only if, whenever two instances of E agree on their X-value,
+		they also agree on their Y-value."</I></BLOCKQUOTE> 
+	 <P>The use a formal technique for identifying and defining these
+		dependencies is known as normalization. Normalization is a series of analytic
+		steps that:</P> 
+	 <OL> 
+		<LI>Ensures that all data elements in a group are discrete, i.e., can
+		  only take a single value. This means we won't find lists of repeating values in
+		  any logical group. </LI> 
+		<LI>Establishes the primary identifier of each logical group. </LI> 
+		<LI>Aggregates groups of components that are fully dependent on each
+		  value of the primary identifier, i.e., for each instance of the set. </LI> 
+		<LI>Ensures that all members apart from the primary identifier are
+		  independent of one another.</LI> 
+	 </OL> 
+	 <P>Normalization yields models that describe the network of associations
+		between logical groups of components in optimal ways that minimize redundancy
+		and prevent inadvertent errors or information loss when components are added or
+		deleted. These models are sometimes referred to as
+		Entity-Attribute-Relationship (EAR) models and can also be presented using the
+		UML's Class Diagram notation [UML].</P> 
+	 <P>For example, an Order may contain many Products (such as seen in a
+		PurchaseOrder document) or a Product may be on many Orders (such as seen in a
+		SalesReport). Normalization introduces a OrderLine component to reconcile these
+		two views.</P> 
+	 <P>UBL has developed a normalized model for objects in the trade
+		procurement business context.&nbsp; This model is represented by both a
+		spreadsheet and&nbsp;UML Class and Dependency Diagrams and is provided
+		as&nbsp;Annex B in this specification.</P> 
+
+	 <H3>A.4 Assembling Hierarchical Document Models</H3> 
+
+	 <P>Two-way association such as the one between Product and Order are common
+		in normalized data models and reflect the complex network or web of
+		associations that exist in the real world. The ontology they
+		describe&nbsp;provides great flexibility in the way we can maintain our
+		information.</P> 
+	 <P>But, in data exchange information flexibility amounts to ambiguity. We
+		do not want to show all the associations among the information components, only
+		those that are relevant to the business context. This context-specificity is
+		best achieved by creating (or assembling) a hierarchical view out of the
+		relational representation. Hierarchical views introduce grouped element
+		containers that impose a particular interpretation on the information to be
+		exchanged.</P> 
+	 <P>Multiple hierarchical views can be created from the same normalized
+		model, as seen with Order and Product (PurchaseOrder vs SalesReport). To create
+		a schema for a PurchaseOrder document type, we would start at Order and list
+		all LineItems and their associated Products. If we wanted a SalesReport
+		document type schema, we would start at Product and list all LineItems and
+		their associated Order. The contrasting document schemas reuse the same
+		components but assemble them in two different container structures, one the
+		inverse of the other.</P> 
+	 <P>It is at this stage that the many-to-many and bi-directional
+		associations of the normalized model are reconciled into one-to-many,
+		uni-directional pathways.</P> 
+	 <P>The hierarchical view enforces integrity rules and resolves ambiguity in
+		the meaning of the data. What we are saying when we assemble a hierarchical
+		view is "we want to emphasize one context in which you are to understand the
+		data this way."</P> 
+	 <P>Once it is assembled by following a uni-directional path through the
+		normalized model, the hierarchical document model can be directly implemented
+		as an XML schema. This document schema need not show all components and their
+		possible associations as described in the normalized model, only the ones
+		pertinent to the business context. Put another way, this means that logical
+		components are patterns that can be re-used by assembling them into document
+		schemas based on the context of their use. </P> 
+	 <P>UBL provides XML Schemas for several documents used in the trade
+		procurement business context.&nbsp; The hierarchical models used in
+		constructing each Schema is represented by both a spreadsheet and&nbsp;UML
+		Class and Dependency Diagrams.&nbsp; We have found that the combination of
+		these presentation forms is necessary to give a complete functional view of the
+		model.&nbsp; In addition,&nbsp;all sub-components of each document type have
+		been consolidated into a shared library to facilitate&nbsp;re-use of common
+		patterns.</P> 
+	 <P>These models are provided as Annex C of this specification.</P> 
+	 <P> The overall UBL design approach can be summarised in the following
+		illustration.</P> 
+	 <P CLASS="graphic" ALIGN="center"><SPAN><IMG HEIGHT="450"
+		ALT="methodology-fig03.jpg" SRC="methodology-fig03.jpg" WIDTH="600"></SPAN></P>
+	 
+	 <H3>A.5 The Role of Context</H3>
+
+	 <P>Context is the business environment within which something exists or
+		takes place. Recognition of context is an important factor in promoting the
+		re-use of common patterns using customized refinements. Where we have similar
+		circumstances or events, we can use similar patterns of components.</P> 
+	 <P>The business context and associated rules assumed by the current work of
+		UBL is described in Section 5 of this specification.&nbsp; A more formalised
+		approach for assembling UBL Schemas based on the CCTS Context Methodology[CCTS]
+		is scheduled for development as UBL Part 3: Context Methodology. </P> 
+
+	 <h2>Annex B: UBL Normalized Data Model (informative)</h2> 
+
+	 <h3>B.1 Introduction</h3> 
+
+	 <p>The normalized data model describes the Object Classes, Properties and
+		Associations involved in a general trade procurement process, as defined by
+		Section 5 of this Specification.</p> 
+
+	 <p>This data model is presented in both spreadsheet form and&nbsp;
+		graphically as Class diagrams.</p> 
+
+	 <p>Note that this model does not represent any specific document type.&nbsp; It
+		is a conceptual view of all the necessary information components involved in
+		any of the UBL document types.&nbsp; All the current UBL document types were
+		derived using object classes and associations&nbsp;taken from this model.</p> 
+
+	 <h3>B.2 Spreadsheet</h3> 
+
+	 <p>The current spreadsheet matrix used by UBL has proven the most versatile
+		and manageable in developing a logical model of the UBL Library. However, we
+		have also found it useful to have a view that encapsulates the big picture of
+		the structure of UBL. Therefore, we have included a graphical notation in the
+		form of UML Class Diagrams [UML]. Such a notation provides a top-level,
+		exploding view. </p> 
+	 <p>The spreadsheet for the normalized data model is referenced through 
+		<br><a href="xls/UBL_Library_0p70_normalized_components.xls">xls/UBL_Library_0p70_normalized_components.xls</a></p>
+	 
+	 <h3>B.3 UML Class Diagrams</h3> 
+	 <p>These UML class diagrams were automatically generated from the normalized data model spreadsheet(ref: B.2)included in this distribution.
+		Because of their inherent complexity alternative layouts and document formats are provided to aid viewing.</p>
+	 <p>The compressed file for the normalized UML diagrams is referenced through 
+		<br><a href="uml/UBL_Library_0p70_normalizedmodelUMLclassdiagrams.zip">uml/UBL_Library_0p70_normalizedmodelUMLclassdiagrams.zip</a></p>
+
+	 <H2> Annex C UBL Document Descriptions (informative)</H2>
+
+<H3>C.1 UBL Document Spreadsheets</H3> 
+
+
+<DL>
+	<DT>All Aggregate Business Information Entities are expressed in the UBL Re-usable Component Library spreadsheet.</DT>
+	<DD><A
+		  HREF="xls/UBL_Library_0p70_Reusable.xls">xls/UBL_Library_0p70_Reusable.xls</A></DD>
+
+</DL>
+ 
+<P>All Business Documents are defined in their individual spreadsheets, which reference the Re-usable Component Library spreadsheet:</P> 
+	 <DL> 
+		<DT>UBL Order </DT> 
+		<DD><A
+		  HREF="xls/UBL_Library_0p70_Order.xls">xls/UBL_Library_0p70_Order.xls</A>
+		  </DD> 
+		<DT>UBL Order Response (Simple) </DT> 
+		<DD><A
+		  HREF="xls/UBL_Library_0p70_OrderResponseSimple.xls">xls/UBL_Library_0p70_OrderResponseSimple.xls</A>
+		  </DD> 
+		<DT>UBL Order Response (Complex) </DT> 
+		<DD><A
+		  HREF="xls/UBL_Library_0p70_OrderResponse.xls">xls/UBL_Library_0p70_OrderResponse.xls</A>
+		  </DD> 
+		<DT>UBL Order Cancellation </DT> 
+		<DD><A
+		  HREF="xls/UBL_Library_0p70_OrderCancellation.xls">xls/UBL_Library_0p70_OrderCancellation.xls</A>
+		  </DD> 
+		<DT>UBL Despatch Advice </DT> 
+		<DD><A
+		  HREF="xls/UBL_Library_0p70_DespatchAdvice.xls">xls/UBL_Library_0p70_DespatchAdvice.xls</A>
+		  </DD> 
+		<DT>UBL Receipt Advice </DT> 
+		<DD><A
+		  HREF="xls/UBL_Library_0p70_ReceiptAdvice.xls">xls/UBL_Library_0p70_ReceiptAdvice.xls</A>
+		  </DD> 
+		<DT>UBL Invoice </DT> 
+		<DD><A
+		  HREF="xls/UBL_Library_0p70_Invoice.xls">xls/UBL_Library_0p70_Invoice.xls</A></DD>
+		
+	 </DL> 
+
+
+	 <H3>C.2 UML Class Diagrams</H3> 
+
+	 <P>These UML class diagrams were automatically reverse engineered 
+		and generated from the XML Schemas included in this distribution.
+		Note that an attribute in a UML class does not necessarily correspond to
+		an attribute in the XML Schema. When creating the diagram, any child element
+		within XML content is mapped to a UML attribute if either: (a) the element
+		has a simpleType primitive value, or (b) the element's type is a
+		complexType with simpleContent (i.e. the type extends a simpleType).
+		This produces the most useful diagram for reviewing the semantic
+		information model represented by the schema.</P>
+
+ 	 <P>Class diagrams for the UBL documents are referenced through the identifiers below. </P> 
+
+	 <H4>C.2.1 Root Document Schemas</H4>
+	 <DL> 
+		<DT>UBL Order </DT> 
+		<DD><A
+		  HREF="uml/UBL_Library_0p70_Order.gif">uml/UBL_Library_0p70_Order.gif</A>
+		  </DD> 
+		<DT>UBL Order Response </DT> 
+		<DD><A
+		  HREF="uml/UBL_Library_0p70_OrderResponse.gif">uml/UBL_Library_0p70_OrderResponse.gif</A>
+		  </DD> 
+		<DT>UBL Simple Order Response </DT> 
+		<DD><A
+		  HREF="uml/UBL_Library_0p70_OrderResponseSimple.gif">uml/UBL_Library_0p70_OrderResponseSimple.gif</A>
+		  </DD> 
+		<DT>UBL Order Cancellation </DT> 
+		<DD><A
+		  HREF="uml/UBL_Library_0p70_OrderCancellation.gif">uml/UBL_Library_0p70_OrderCancellation.gif</A>
+		  </DD> 
+		<DT>UBL Despatch Advice </DT> 
+		<DD><A
+		  HREF="uml/UBL_Library_0p70_DespatchAdvice.gif">uml/UBL_Library_0p70_DespatchAdvice.gif</A>
+		  </DD> 
+		<DT>UBL Receipt Advice </DT> 
+		<DD><A
+		  HREF="uml/UBL_Library_0p70_ReceiptAdvice.gif">uml/UBL_Library_0p70_ReceiptAdvice.gif</A>
+		  </DD> 
+		<DT>UBL Invoice </DT> 
+		<DD><A
+		  HREF="uml/UBL_Library_0p70_Invoice.gif">uml/UBL_Library_0p70_Invoice.gif</A></DD>
+	 </DL>
+
+	 <H4>C.2.2 Reusable Schema Components</H4>
+	 <DL>
+		<DT>InvoiceLine</DT> 
+		<DD><A
+		  HREF="uml/reusable/UBL_Library_0p70_InvoiceLine.gif">uml/reusable/UBL_Library_0p70_InvoiceLine.gif</A>
+		  </DD>
+		<DT>OrderLine</DT> 
+		<DD><A
+		  HREF="uml/reusable/UBL_Library_0p70_OrderLine.gif">uml/reusable/UBL_Library_0p70_OrderLine.gif</A>
+		  </DD>
+		<DT>Item</DT> 
+		<DD><A
+		  HREF="uml/reusable/UBL_Library_0p70_Item.gif">uml/reusable/UBL_Library_0p70_Item.gif</A>
+		  </DD>
+		<DT>OrderedShipment</DT> 
+		<DD><A
+		  HREF="uml/reusable/UBL_Library_0p70_OrderedShipment.gif">uml/reusable/UBL_Library_0p70_OrderedShipment.gif</A>
+		  </DD>
+		<DT>DeliveryRequirement</DT> 
+		<DD><A
+		  HREF="uml/reusable/UBL_Library_0p70_DeliveryRequirement.gif">uml/reusable/UBL_Library_0p70_DeliveryRequirement.gif</A>
+		  </DD>
+		<DT>HazardousItem</DT> 
+		<DD><A
+		  HREF="uml/reusable/UBL_Library_0p70_HazardousItem.gif">uml/reusable/UBL_Library_0p70_HazardousItem.gif</A>
+		  </DD>
+		<DT>AllowanceCharge</DT> 
+		<DD><A
+		  HREF="uml/reusable/UBL_Library_0p70_AllowanceCharge.gif">uml/reusable/UBL_Library_0p70_AllowanceCharge.gif</A>
+		  </DD>
+		<DT>BuyerParty</DT> 
+		<DD><A
+		  HREF="uml/reusable/UBL_Library_0p70_BuyerParty.gif">uml/reusable/UBL_Library_0p70_BuyerParty.gif</A>
+		  </DD>
+		<DT>SellerParty</DT> 
+		<DD><A
+		  HREF="uml/reusable/UBL_Library_0p70_SellerParty.gif">uml/reusable/UBL_Library_0p70_SellerParty.gif</A>
+		  </DD>
+		<DT>FreightForwarderParty</DT> 
+		<DD><A
+		  HREF="uml/reusable/UBL_Library_0p70_FreightForwarderParty.gif">uml/reusable/UBL_Library_0p70_FreightForwarderParty.gif</A>
+		  </DD>
+		<DT>DestinationParty</DT> 
+		<DD><A
+		  HREF="uml/reusable/UBL_Library_0p70_DestinationParty.gif">uml/reusable/UBL_Library_0p70_DestinationParty.gif</A>
+		  </DD>
+		<DT>PartyTaxScheme</DT> 
+		<DD><A
+		  HREF="uml/reusable/UBL_Library_0p70_PartyTaxScheme.gif">uml/reusable/UBL_Library_0p70_PartyTaxScheme.gif</A>
+		  </DD>
+
+	 </DL>
+
+	 <H4>C.2.3 Core Component Types</H4>
+	 <DL>
+		<DT>String Types </DT> 
+		<DD><A
+		  HREF="uml/cct/CoreComponentTypes_String.gif">uml/cct/CoreComponentTypes_String.gif</A>
+		  </DD> 
+		<DT>Decimal Types </DT> 
+		<DD><A
+		  HREF="uml/cct/CoreComponentTypes_Decimal.gif">uml/cct/CoreComponentTypes_Decimal.gif</A>
+		  </DD> 
+		<DT>Other Types </DT> 
+		<DD><A
+		  HREF="uml/cct/CoreComponentTypes_Other.gif">uml/cct/CoreComponentTypes_Other.gif</A>
+		  </DD> 
+	 </DL>
+
+
+<H2>Annex D: UBL Supplemental Materials (informative)</H2> 
+
+<H3>D.1 Introduction</H3> 
+
+<P>This section is a placeholder for supplemental materials.  In the current review cycle some are included below.  We expect others, such sample instances,  to be available in the near future.  
+
+<H3>D.2 Non-Normative References</H3> 
+
+	 <DL> 
+		<DT>[ASN.1] Abstract Syntax Notation One, W3C Recommendation 15 October 2001 </DT> 
+		<DD><A
+		  HREF="http://www.itu.int/ITU-T/studygroups/com17/languages/x680-x693_0702.pdf">http://www.itu.int/ITU-T/studygroups/com17/languages/x680-x693_0702.pdf</A>
+		  </DD> 
+		<DT>[XSL-FO] Extensible Stylesheet Language Version 1.0, W3C Recommendation 15 October 2001 </DT> 
+		<DD><A HREF="http://www.w3.org/TR/xsl">http://www.w3.org/TR/xsl</A>
+		  </DD> 
+		<DT>[XSLT] Extensible Stylesheet Language Transformations Version 1.0, W3C Recommendation 16 November 1999</DT> 
+		<DD><A HREF="http://www.w3.org/TR/xslt">http://www.w3.org/TR/xslt</A>
+		  </DD> 
+		
+	 </DL>
+
+
+<H3>D.3 ASN.1 Specification of UBL</H3>
+
+<P>The following is an ASN.1 specification of the UBL transfer formats using ASN.1.</P>
+
+<P>It provides an alternative XML Schema definition for the XML documents which defines the same valid XML documents as the XSD Schema, which is the primary definition of valid XML documents.</P>
+
+<P>Use of this Schema enables ASN.1 tools to be used for UBL transfers.</P>
+
+<P>This schema, in conjunction with the ASN.1 Packed Encoding Rules, provides an efficient encoding of the information in this specification, and is the definitive definition of such binary transfers.</P>
+
+<P>The following is the ASN.1 definition for the current release of UBL: <a href="asn/asn1spec.html">asn/asn1spec.html</a></P>
+
+
+<H3>D.4 Formatting specifications and stylesheets</H3> 
+
+<P>This section contains examples of formatting specifications and "stylesheets" that can be used to display instances of UBL schemas in human-readable form.  Presentational semantics have not been formalized in this version of the UBL schema library, and they may never be formalized due to differing international requirements and conventions for the presentation of information found in business documents.</P>
+
+<P>The formatting specifications referenced below are intended to conform to the UN Layout Key for printed business documents.  However, these specifications must not be considered as reference implementations of UBL or as normative components of the UBL specification; they are merely examples from one of what will probably be many available UBL stylesheet libraries.  Pointers to the source of these materials, and other published libraries of formatting specifications when they become available, will be found in a supplementary package linked from the UBL Library Content Subcommittee portal at <a href="http://oasis-open.org/committees/ubl/lcsc">http://oasis-open.org/committees/ubl/lcsc/</a>.</P>
+
+<P>Formatting specifications and sample XSLT and XSL-FO stylesheets for each of the UBL documents are referenced through the identifiers below:</P> 
+
+<DL> 
+		<DT>UBL Order </DT> 
+		<DD><A
+		  HREF="fs/FS_UBL_Order.html">fs/FS_UBL_Order.html</A>
+		  </DD> 
+		<DT>UBL Order Response </DT> 
+		<DD><A
+		  HREF="fs/FS_UBL_OrderResponse.html">fs/FS_UBL_OrderResponse.html</A>
+		  </DD> 
+		<DT>UBL Simple Order Response </DT> 
+		<DD><A
+		  HREF="fs/FS_UBL_OrderResponseSimple.html">fs/FS_UBL_OrderResponseSimple.html</A>
+		  </DD> 
+		<DT>UBL Order Cancellation </DT> 
+		<DD><A
+		  HREF="fs/FS_UBL_OrderCancellation.html">fs/FS_UBL_OrderCancellation.html</A>
+		  </DD> 
+		<DT>UBL Despatch Advice </DT> 
+		<DD><A
+		  HREF="fs/FS_UBL_DespatchAdvice.html">fs/FS_UBL_DespatchAdvice.html</A>
+		  </DD> 
+		<DT>UBL Receipt Advice </DT> 
+		<DD><A
+		  HREF="fs/FS_UBL_ReceiptAdvice.html">fs/FS_UBL_ReceiptAdvice.html</A>
+		  </DD> 
+		<DT>UBL Invoice </DT> 
+		<DD><A
+		  HREF="fs/FS_UBL_Invoice.html">fs/FS_UBL_Invoice.html</A></DD>
+	 </DL> 
+         <P>The formatting specification documentation conventions and summary of work in this area for this package is found in the <a href="fs/index.html">formatting specification index file</a>.</P>
+
+
+<h2>D. 5  &nbsp;Other Document Samples</h2>
+<p>The business transactions represented here focus on Order Management and are intended to be examples of how these documents can be used.  These samples were manually created by business experts and are only meant to show some possible ways to use these documents.  These are not the only way to create UBL compliant documents.   
+<p>There are two sets of examples.  
+<ul>
+	<li> The first example "Buying Office Supplies" goes through the process of ordering items from an office supply and the following transactions.  <br><img src="xml/stationery.gif" alt="">
+	<li> The second example "Buying Joinery", goes through purchasing items in the UK from Specialist Windows, PLC, and the following transactions.<br><img src="xml/joinery.gif" alt="">
+
+</ul>
+
+<h4>Example One Buying Office Supplies</h4>
+<DL>
+	<DT>The buyer, Bill's Microdevices, orders several different items from an office supply store. He knows the supplier's codes for the items and the price.</DT>
+
+<DD><A
+		  HREF="xml/OfficeSupplyOrderInstance.xml">Office Supply Order - XML instance</A>, <a href="xml/OfficeSupplyOrderInstance.pdf">Office Supply Order - printed version</a></DD>
+
+
+<DT>The seller, Joes Office Supply, replies with an Order Response (simple) so as to indicate the acceptance of the order. At the same time, the seller gives his reference number of the order, i.e. the sales order in his system, and also tells the buyer whom to contact if he has any queries.</DT>
+
+<DD><A
+		  HREF="xml/OfficeSupplyOrderRespSimInstance.xml">Office Supply Order Response - XML instance (simple)</A>, <a href="xml/OfficeSupplyOrderRespSimInstance.pdf">Office Supply Order Response - printed version</a></DD>
+
+
+<DT>The seller advises the buyer of the despatch of the items ordered.  The Despatch Advice travels with the delivery; a paper copy is signed and returned as proof of receipt. Hence the UBL Receipt Advice is not used.</DT>
+<DD><A
+		  HREF="xml/OfficeSupplyDespatchAdviceInstance.xml">Office Supply Despatch Advice - XML Instance</A>, <a href="xml/OfficeSupplyDespatchAdviceInstance.pdf">Office Supply Despatch Advice - printed version</a></DD>
+
+
+<DT>The Seller raises the Invoice automatically when the despatch occurs, and the resolution of any shortages etc would be handled post-invoicing. The Invoice show the tax amount The Seller notes that payment is due within 30 days of Invoice.</DT>
+<DD><A
+		  HREF="xml/OfficeSupplyInvoiceInstance.xml">Office Supply Invoice - XML Instance</A>, <a href="xml/OfficeSupplyInvoiceInstance.pdf">Office Supply Invoice - printed version</a></DD>
+
+</DL>
+
+<h4>Example Two Buying Joinery</h4>
+
+<DL>
+	<DT>The buyer, Jerry Builders, PLC. in the UK, orders a number of windows, a door set and some lengths of timber for delivery to a building site. He knows the supplier's codes for the items and that he must also specify a number of physical attributes to get the precise item that he wants. Some windows are asymmetric and are 'handed' left or right: most door sets are handed as they are hinged on one side. The wood and its finish, the 'fittings' are the handles, stays etc. Items can be glazed in different ways. Loose timber is coded according to its cross section and the length must be specified.  While the buyer knows these things from the catalogue he does not know the current prices or any discount rate he may get.</DT>
+
+<DD><A
+		  HREF="xml/JoineryOrderInstance1.xml">Joinery Order - XML Instance</A>, <A
+		  HREF="xml/JoineryOrderInstance1.pdf">Joinery Order - printed version</A></DD>
+<DT>The seller, Specialist Windows PLC, replies with an Order Response (complex) so as to indicate the unit price of each item and to inform the buyer of the trade discount that he will be given. At the same time, the seller gives his reference number of the order, i.e. the identity of the order in his system, and also tells the buyer whom to contact if he has any queries.</DT>
+<DD><A
+		  HREF="xml/JoineryOrderResponseInstance1.xml">Joinery Order Response - XML Instance</A>, <A
+		  HREF="xml/JoineryOrderResponseInstance1.pdf">Joinery Order Response - printed version</A></DD>
+
+<DT>The seller advises the buyer of the despatch of the items ordered, which will in fact be delivered on two pallets identified as "A" and "B" (i.e. transportation units). The Despatch Advice lists the items in order line sequence and refers to the pallet on which the item is delivered.</DT>
+<DD><A
+		  HREF="xml/JoineryDespatchAdviceInstance1.xml">Joinery Despatch Advice - XML Instance</A>, <A
+		  HREF="xml/JoineryDespatchAdviceInstance1.pdf">Joinery Despatch Advice - printed version</A></DD>
+
+<DT>The Despatch Advice travels with the delivery; a paper copy is signed and returned as proof of receipt. Hence the UBL Receipt Advice is not used.
+<BR>The Seller raises the Invoice automatically when the despatch occurs, and the resolution of any shortages would be handled post-invoicing. The Invoice has to show the tax point date, the VAT (Value Added Tax) category to which the item belongs and also to show the VAT rate and total for each tax category on the invoice. VAT is also applied to charges such as the delivery surcharge. In order to encourage speedy payment of the amount due, the Seller offers a discount for prompt settlement, which the buyer can deduct if paying within 30 days. (Note that VAT regulations assume it will be taken and so the tax is calculated on the trade discounted total of line items plus any charges and less the settlement discount amount.)</DT>
+<DD><A
+		  HREF="xml/JoineryInvoiceInstance1.xml">Joinery Invoice - XML Instance</A>, <A
+		  HREF="xml/JoineryInvoiceInstance1.pdf">Joinery Invoice - printed version</A></DD>
+<DT>This scenario is based on the products, product identification, business requirements and practices of a real UK joinery manufacturer and sales company. It operated its own specialised transport fleet delivering all over the United Kingdom and to offshore islands.</DT>
+</DL>
+
+<P><BR></P>
+<ADDRESS>Last modified 18 February 2003/5:29pm CST<BR>Copyright &copy; 2003 OASIS</ADDRESS> 
+</BODY>
+</HTML>

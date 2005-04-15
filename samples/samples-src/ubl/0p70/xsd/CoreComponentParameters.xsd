@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Gunther Stuhec (UBL) -->
+<xs:schema targetNamespace="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70" elementFormDefault="qualified" attributeFormDefault="qualified">
+	<xs:element name="ACC">
+		<xs:complexType>
+			<xs:attribute name="dictionaryEntryName" type="xs:token" use="required"/>
+			<xs:attribute name="objectClassTerm" type="xs:token" use="optional"/>
+			<xs:attribute name="propertyTerm" type="xs:token" use="required"/>
+			<xs:attribute name="representationTerm" type="xs:token" use="required"/>
+			<xs:attribute name="businessTerm" type="xs:token" use="optional"/>
+			<xs:attribute name="definition" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="BCC">
+		<xs:complexType>
+			<xs:attribute name="dictionaryEntryName" type="xs:token" use="required"/>
+			<xs:attribute name="objectClassTerm" type="xs:token" use="optional"/>
+			<xs:attribute name="propertyTerm" type="xs:token" use="required"/>
+			<xs:attribute name="representationTerm" type="xs:token" use="required"/>
+			<xs:attribute name="businessTerm" type="xs:token" use="optional"/>
+			<xs:attribute name="definition" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ASCC">
+		<xs:complexType>
+			<xs:attribute name="dictionaryEntryName" type="xs:token" use="required"/>
+			<xs:attribute name="qualifierObjectClassTerm" type="xs:token" use="optional"/>
+			<xs:attribute name="objectClassTerm" type="xs:token" use="optional"/>
+			<xs:attribute name="qualifierPropertyTerm" type="xs:token" use="optional"/>
+			<xs:attribute name="propertyTerm" type="xs:token" use="required"/>
+			<xs:attribute name="associatedObjectClassTerm" type="xs:token" use="required"/>
+			<xs:attribute name="businessTerm" type="xs:token" use="optional"/>
+			<xs:attribute name="definition" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ABIE">
+		<xs:complexType>
+			<xs:attribute name="dictionaryEntryName" type="xs:token" use="required"/>
+			<xs:attribute name="qualifierObjectClassTerm" type="xs:token" use="optional"/>
+			<xs:attribute name="objectClassTerm" type="xs:token" use="optional"/>
+			<xs:attribute name="qualifierPropertyTerm" type="xs:token" use="optional"/>
+			<xs:attribute name="propertyTerm" type="xs:token" use="required"/>
+			<xs:attribute name="representationTerm" type="xs:token" use="required"/>
+			<xs:attribute name="businessTerm" type="xs:token" use="optional"/>
+			<xs:attribute name="definition" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="BBIE">
+		<xs:complexType>
+			<xs:attribute name="dictionaryEntryName" type="xs:token" use="required"/>
+			<xs:attribute name="qualifierObjectClassTerm" type="xs:token" use="optional"/>
+			<xs:attribute name="objectClassTerm" type="xs:token" use="optional"/>
+			<xs:attribute name="qualifierPropertyTerm" type="xs:token" use="optional"/>
+			<xs:attribute name="propertyTerm" type="xs:token" use="required"/>
+			<xs:attribute name="representationTerm" type="xs:token" use="required"/>
+			<xs:attribute name="businessTerm" type="xs:token" use="optional"/>
+			<xs:attribute name="definition" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ASBIE">
+		<xs:complexType>
+			<xs:attribute name="dictionaryEntryName" type="xs:token" use="required"/>
+			<xs:attribute name="qualifierObjectClassTerm" type="xs:token" use="optional"/>
+			<xs:attribute name="objectClassTerm" type="xs:token" use="optional"/>
+			<xs:attribute name="qualifierPropertyTerm" type="xs:token" use="optional"/>
+			<xs:attribute name="propertyTerm" type="xs:token" use="required"/>
+			<xs:attribute name="associatedObjectClassTerm" type="xs:token" use="required"/>
+			<xs:attribute name="businessTerm" type="xs:token" use="optional"/>
+			<xs:attribute name="definition" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ContextCategories">
+		<xs:complexType>
+			<xs:attribute name="businessProcess" type="xs:token" use="optional"/>
+			<xs:attribute name="region" type="xs:token" use="optional"/>
+			<xs:attribute name="officialConstraints" type="xs:token" use="optional"/>
+			<xs:attribute name="product" type="xs:token" use="optional"/>
+			<xs:attribute name="industry" type="xs:token" use="optional"/>
+			<xs:attribute name="role" type="xs:token" use="optional"/>
+			<xs:attribute name="supportingRole" type="xs:token" use="optional"/>
+			<xs:attribute name="systemConstraints" type="xs:token" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

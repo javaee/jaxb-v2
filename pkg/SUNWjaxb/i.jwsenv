@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+#ident	"$Id: i.jwsenv,v 1.1 2005-04-15 20:03:12 kohsuke Exp $"
+#
+# Copyright 2004 Sun Microsystems, Inc.  All rights reserved.
+# Use is subject to license terms.
+#
+
+PATH=/usr/bin:/usr/sbin
+
+while read src dest
+do
+	sed \
+		-e "s,\%WEBSERVICES_LIB\%,${BASEDIR}/usr/share/lib," \
+		-e "s,\%WEBSERVICES_PRIVATE_LIB\%,${BASEDIR}/usr/share/lib," \
+		-e "s,//,/,g" \
+		< $src > $dest
+	echo $dest
+done
+exit 0

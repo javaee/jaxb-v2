@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 26 Aug 2002 - source: UBL_Library_0p70_OrderResponseSimple.xls -->
+<!-- Created by: Gunther Stuhec, SAP AG -->
+<!-- 16 Jan 2003 - source: UBL_Library_0p70_OrderResponseSimple.xls -->
+<!-- Edited by: Tim McGrath, UBL LC -->
+<!-- 21 Jan 2003 - source: UBL_Library_0p70_OrderResponseSimple.xls -->
+<!-- Edited by: Gunther Stuhec, UBL NDRSC, SAP AG -->
+<!-- 25 Jan 2003 - source: UBL_Library_0p70_OrderResponseSimple.xls -->
+<!-- Edited by: Tim McGrath, UBL LC -->
+<xsd:schema targetNamespace="urn:oasis:names:tc:ubl:OrderResponseSimple:1.0:0.70" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn:oasis:names:tc:ubl:OrderResponseSimple:1.0:0.70" 
+xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70" xmlns:cct="urn:oasis:names:tc:ubl:CoreComponentTypes:1.0:0.70" xmlns:cat="urn:oasis:names:tc:ubl:CommonAggregateTypes:1.0:0.70">
+	<xsd:import namespace="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70" schemaLocation="CoreComponentParameters.xsd"/>
+	<xsd:import namespace="urn:oasis:names:tc:ubl:CoreComponentTypes:1.0:0.70" schemaLocation="CoreComponentTypes.xsd"/>
+	<xsd:import namespace="urn:oasis:names:tc:ubl:CommonAggregateTypes:1.0:0.70" schemaLocation="UBL_Library_0p70_Reusable.xsd"/>
+	<xsd:element name="OrderResponseSimple" type="OrderResponseSimpleType"/>
+	<xsd:complexType name="OrderResponseSimpleType" id="UBL200001">
+		<xsd:annotation>
+			<xsd:documentation>
+				<ccts:ABIE dictionaryEntryName="Order Response Simple. Details" definition="information directly relating to the order response (simple)." qualifierTermObjectClassTerm="" objectClassTerm="Order Response Simple" qualifierTerm_PropertyTerm="" propertyTerm="Details" representationTerm="Details" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="cat:ID" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order Response Simple. Identifier" definition="The Order Response Id element is a unique number assigned to the OrderResponse by the Seller." qualifierTermObjectClassTerm="" objectClassTerm="Order Response Simple" qualifierTerm_PropertyTerm="" propertyTerm="Identification" representationTerm="Identifier" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:IssueDate" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order Response Simple. Issue_ Date" definition="a date (and potentially time) stamp denoting when the order response was issued." qualifierTermObjectClassTerm="" objectClassTerm="Order Response Simple" qualifierTerm_PropertyTerm="Issue" propertyTerm="Date" representationTerm="Date" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="AcceptedIndicator" id="UBL200004" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order Response Simple. Accepted. Indicator" definition="indicates whether the order was accepted or not." qualifierTermObjectClassTerm="" objectClassTerm="Order Response Simple" qualifierTerm_PropertyTerm="" propertyTerm="Accepted" representationTerm="Indicator" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="RejectionReasonCode" id="UBL200005" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order Response Simple. Rejection_ Reason. Code" definition="the reason for rejection if the order was not accepted." qualifierTermObjectClassTerm="" objectClassTerm="Order Response Simple" qualifierTerm_PropertyTerm="Rejection" propertyTerm="Reason" representationTerm="Code" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:Note" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order Response Simple. Note. Text" definition="a note containing any other relevant information. (Note to Users: this note can only be processed by human intervention)" qualifierTermObjectClassTerm="" objectClassTerm="Order Response Simple" qualifierTerm_PropertyTerm="" propertyTerm="Note" representationTerm="Text" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:ReferencedOrder" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Order Response Simple. Referenced_ Order" definition="associates the order response with the order for reference purposes." qualifierTermObjectClassTerm="" objectClassTerm="Order Response Simple" qualifierTerm_PropertyTerm="Referenced" propertyTerm="Order" representationTerm="Order" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="AcceptedIndicator" type="cct:IndicatorType"/>
+	<xsd:element name="RejectionReasonCode" type="cct:CodeType"/>
+</xsd:schema>

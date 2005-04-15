@@ -1,0 +1,159 @@
+package com.sun.xml.bind.v2.runtime.property;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+
+import com.sun.xml.bind.api.AccessorException;
+import com.sun.xml.bind.v2.QNameMap;
+import com.sun.xml.bind.v2.model.core.PropertyKind;
+import com.sun.xml.bind.v2.model.core.TypeRef;
+import com.sun.xml.bind.v2.model.runtime.RuntimeElementPropertyInfo;
+import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfo;
+import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
+import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
+import com.sun.xml.bind.v2.runtime.Name;
+import com.sun.xml.bind.v2.runtime.XMLSerializer;
+import com.sun.xml.bind.v2.runtime.reflect.Accessor;
+
+import org.xml.sax.SAXException;
+
+/**
+ * @author Kohsuke Kawaguchi (kk@kohsuke.org)
+ */
+final class SingleElementNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT> {
+
+    private final Accessor<BeanT,ValueT> acc;
+
+    private final boolean nillable;
+
+    private final QName[] acceptedElements;
+
+    private final Map<Class,TagAndType> typeNames = new HashMap<Class,TagAndType>();
+
+    private RuntimeElementPropertyInfo prop;
+
+    /**
+     * The tag name used to produce xsi:nil. The first one in the list.
+     */
+    private final Name nullTagName;
+
+    public SingleElementNodeProperty(JAXBContextImpl grammar, RuntimeElementPropertyInfo prop) {
+        super(grammar,prop);
+        acc = prop.getAccessor().optimize();
+        this.prop = prop;
+
+        QName nt = null;
+        boolean nil = false;
+
+        acceptedElements = new QName[prop.getTypes().size()];
+        for( int i=0; i<acceptedElements.length; i++ )
+            acceptedElements[i] = prop.getTypes().get(i).getTagName();
+
+        for (TypeRef<Type,Class> e : prop.getTypes()) {
+            JaxBeanInfo beanInfo = grammar.getOrCreate((RuntimeTypeInfo) e.getType());
+            if(nt==null)    nt = e.getTagName();
+            typeNames.put( beanInfo.jaxbType, new TagAndType(
+                grammar.nameBuilder.createElementName(e.getTagName()),beanInfo) );
+            nil |= e.isNillable();
+        }
+
+        nullTagName = grammar.nameBuilder.createElementName(nt);
+
+        nillable = nil;
+    }
+
+    public void wrapUp() {
+        super.wrapUp();
+        prop = null;
+    }
+
+    public void reset(BeanT bean) throws AccessorException {
+        acc.set(bean,null);
+    }
+
+    public String getIdValue(BeanT beanT) {
+        assert !isId(); // node property can never be an ID
+        return null;
+    }
+
+    public void serializeBody(BeanT o, XMLSerializer w) throws SAXException, AccessorException, IOException, XMLStreamException {
+        ValueT v = acc.get(o);
+        if(v!=null) {
+            Class vtype = v.getClass();
+            TagAndType tt=typeNames.get(vtype); // quick way that usually works
+
+            if(tt==null) {// slow way that always works
+                for (Map.Entry<Class,TagAndType> e : typeNames.entrySet()) {
+                    if(e.getKey().isAssignableFrom(vtype)) {
+                        tt = e.getValue();
+                        break;
+                    }
+                }
+            }
+
+            if(tt==null) {
+                // TODO: error check for tt==null
+                throw new UnsupportedOperationException();
+            }
+
+            w.startElement(tt.tagName,null);
+            w.childAsXsiType(v,fieldName,tt.beanInfo);
+            w.endElement();
+        } else
+        if(nillable) {
+            w.startElement(nullTagName,null);
+            w.writeXsiNilTrue();
+            w.endElement();
+        }
+    }
+
+    public Unmarshaller.Handler createUnmarshallerHandler(JAXBContextImpl grammar, Unmarshaller.Handler tail) {
+        tail = new Unmarshaller.LeaveElementHandler(Unmarshaller.ERROR,tail);
+
+        Unmarshaller.Handler head = tail;
+
+        for (TypeRef<Type,Class> e : prop.getTypes()) {
+            JaxBeanInfo bi = grammar.getOrCreate((RuntimeTypeInfo) e.getType());
+            Unmarshaller.Handler h = new Unmarshaller.SpawnChildSetHandler(bi,tail,false,acc);
+            if(nillable)
+                h = new Unmarshaller.SingleXsiNilHandler(h,tail,acc);
+            head = new Unmarshaller.EnterElementHandler(
+                grammar.nameBuilder.createElementName(e.getTagName()),false,e.getDefaultValue(),head,h);
+        }
+
+        return head;
+    }
+
+    public void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<Unmarshaller.Handler> handlers) {
+        final Unmarshaller.Handler tail = new Unmarshaller.LeaveElementHandler(Unmarshaller.ERROR,chain.tail);
+        JAXBContextImpl grammar = chain.context;
+
+        for (TypeRef<Type,Class> e : prop.getTypes()) {
+            JaxBeanInfo bi = grammar.getOrCreate((RuntimeTypeInfo) e.getType());
+            Unmarshaller.Handler h = new Unmarshaller.SpawnChildSetHandler(bi,tail,false,acc);
+            if(nillable)
+                h = new Unmarshaller.SingleXsiNilHandler(h,tail,acc);
+            handlers.put( e.getTagName(), new Unmarshaller.EnterElementHandler(
+                grammar.nameBuilder.createElementName(e.getTagName()),false,e.getDefaultValue(),Unmarshaller.ERROR,h));
+        }
+    }
+
+    public PropertyKind getKind() {
+        return PropertyKind.ELEMENT;
+    }
+
+    @Override
+    public Accessor getElementPropertyAccessor(String nsUri, String localName) {
+        for( QName n : acceptedElements) {
+            if(n.getNamespaceURI().equals(nsUri) && n.getLocalPart().equals(localName))
+                return acc;
+        }
+        return null;
+    }
+
+}

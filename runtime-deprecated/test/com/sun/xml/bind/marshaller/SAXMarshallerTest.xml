@@ -1,0 +1,227 @@
+<?xml version="1.0"?>
+
+<!--
+ Copyright 2004 Sun Microsystems, Inc. All rights reserved.
+ SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+-->
+
+<tests>
+	<!--
+		a naive test that doesn't use any namespace
+		
+		intended to check if the test framework accepts all commands and 
+		if it handles them properly
+	-->
+	<test>
+		<input>
+			<startElement local="root" />
+				<startAttribute />
+				<text>value1</text>
+				<endAttribute local="att1"/>
+				<startAttribute />
+				<text>abc</text>
+				<text>def</text>
+				<endAttribute local="att2"/>
+			<endAttributes/>
+				<text>content1</text>
+				<startElement local="child"/>
+				<endAttributes/>
+				<endElement />
+			<endElement />
+		</input>
+		<output>
+			<root att1="value1" att2="abc def">content1<child/></root>
+		</output>
+	</test>
+	
+	<!--
+		deeply nested XML
+		
+		intended to test the re-allocations of various internal buffers
+	-->
+	<test>
+		<input>
+			<startElement local="e1" />
+				<startAttribute />
+				<text>v1</text>
+				<endAttribute local="a1"/>
+			<endAttributes/>
+				<text>c1</text>
+				
+				<startElement local="e2" />
+					<startAttribute />
+					<text>v2</text>
+					<endAttribute local="a2"/>
+				<endAttributes/>
+					<text>c2</text>
+					
+					<startElement local="e3" />
+						<startAttribute />
+						<text>v3</text>
+						<endAttribute local="a3"/>
+					<endAttributes/>
+						<text>c3</text>
+						
+						<startElement local="e4" />
+							<startAttribute />
+							<text>v4</text>
+							<endAttribute local="a4"/>
+						<endAttributes/>
+							<text>c4</text>
+							
+							<startElement local="e5" />
+								<startAttribute />
+								<text>v5</text>
+								<endAttribute local="a5"/>
+							<endAttributes/>
+								<text>c5</text>
+								
+								<startElement local="e6" />
+									<startAttribute />
+									<text>v6</text>
+									<endAttribute local="a6"/>
+								<endAttributes/>
+									<text>c6</text>
+									
+									<startElement local="e7" />
+										<startAttribute />
+										<text>v7</text>
+										<endAttribute local="a7"/>
+									<endAttributes/>
+										<text>c7</text>
+										
+										<startElement local="e8" />
+											<startAttribute />
+											<text>v8</text>
+											<endAttribute local="a8"/>
+										<endAttributes/>
+											<text>c8</text>
+											
+											<startElement local="e9" />
+												<startAttribute />
+												<text>v9</text>
+												<endAttribute local="a9"/>
+											<endAttributes/>
+												<text>c9</text>
+												
+												<startElement local="e10" />
+													<startAttribute />
+													<text>v10</text>
+													<endAttribute local="a10"/>
+												<endAttributes/>
+													<text>c10</text>
+													
+													<startElement local="e11" />
+														<startAttribute />
+														<text>v11</text>
+														<endAttribute local="a11"/>
+													<endAttributes/>
+														<text>c11</text>
+														
+														<startElement local="e12" />
+															<startAttribute />
+															<text>v12</text>
+															<endAttribute local="a12"/>
+														<endAttributes/>
+															<text>c12</text>
+															
+															<startElement local="e13" />
+																<startAttribute />
+																<text>v13</text>
+																<endAttribute local="a13"/>
+															<endAttributes/>
+																<text>c13</text>
+																
+																<startElement local="e14" />
+																	<startAttribute />
+																	<text>v14</text>
+																	<endAttribute local="a14"/>
+																<endAttributes/>
+																	<text>c14</text>
+																	
+																	<startElement local="e15" />
+																		<startAttribute />
+																		<text>v15</text>
+																		<endAttribute local="a15"/>
+																	<endAttributes/>
+																		<text>c15</text>
+																		
+																		<startElement local="e16" />
+																			<startAttribute />
+																			<text>v16</text>
+																			<endAttribute local="a16"/>
+																		<endAttributes/>
+																			<text>c16</text>
+																			
+																			<text>d16</text>
+																		<endElement />
+																		<text>d15</text>
+																	<endElement />
+																	<text>d14</text>
+																<endElement />
+																<text>d13</text>
+															<endElement />
+															<text>d12</text>
+														<endElement />
+														<text>d11</text>
+													<endElement />
+													<text>d10</text>
+												<endElement />
+												<text>d9</text>
+											<endElement />
+											<text>d8</text>
+										<endElement />
+										<text>d7</text>
+									<endElement />
+									<text>d6</text>
+								<endElement />
+								<text>d5</text>
+							<endElement />
+							<text>d4</text>
+						<endElement />
+						<text>d3</text>
+					<endElement />
+					<text>d2</text>
+				<endElement />
+				<text>d1</text>
+			<endElement />
+		</input>
+		<output>
+			<e1 a1="v1"
+				>c1<e2 a2="v2"
+					>c2<e3 a3="v3"
+						>c3<e4 a4="v4"
+							>c4<e5 a5="v5"
+								>c5<e6 a6="v6"
+									>c6<e7 a7="v7"
+										>c7<e8 a8="v8"
+											>c8<e9 a9="v9"
+												>c9<e10 a10="v10"
+													>c10<e11 a11="v11"
+														>c11<e12 a12="v12"
+															>c12<e13 a13="v13"
+																>c13<e14 a14="v14"
+																	>c14<e15 a15="v15"
+																		>c15<e16 a16="v16"
+																			>c16 d16</e16
+																		>d15</e15
+																	>d14</e14
+																>d13</e13
+															>d12</e12
+														>d11</e11
+													>d10</e10
+												>d9</e9
+											>d8</e8
+										>d7</e7
+									>d6</e6
+								>d5</e5
+							>d4</e4
+						>d3</e3
+					>d2</e2
+				>d1</e1>
+		</output>
+	</test>
+	
+	
+	<!-- namespace related test -->
+</tests>

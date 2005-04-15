@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!--
+  The same as the "formula.rng" example but this one is using 
+-->
+<grammar xmlns="http://relaxng.org/ns/structure/1.0"
+         datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  
+  <start>
+    <ref name="expression"/>
+  </start>
+  
+  <define name="expression">
+    <choice>
+      <element name="add">
+        <ref name="binaryExpression"/>
+      </element>
+      <element name="sub">
+        <ref name="binaryExpression" />
+      </element>
+      <element name="neg">
+        <ref name="unaryExpression" />
+      </element>
+      <element name="number">
+        <data type="int"/>
+      </element>
+    </choice>
+  </define>
+  
+  <define name="binaryExpression">
+    <ref name="expression" />
+    <ref name="expression" />
+  </define>
+  
+  <define name="unaryExpression">
+    <ref name="expression"/>
+  </define>
+</grammar>

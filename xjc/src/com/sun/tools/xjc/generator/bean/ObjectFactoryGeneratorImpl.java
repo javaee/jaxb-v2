@@ -1,0 +1,308 @@
+package com.sun.tools.xjc.generator.bean;
+
+import java.util.Collection;
+import java.util.HashMap;
+
+import javax.xml.namespace.QName;
+
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JExpression;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JInvocation;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JPackage;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JVar;
+import com.sun.tools.xjc.generator.annotation.spec.XmlElementDeclWriter;
+import com.sun.tools.xjc.generator.annotation.spec.XmlRegistryWriter;
+import com.sun.tools.xjc.model.CElementInfo;
+import com.sun.tools.xjc.model.CPropertyInfo;
+import com.sun.tools.xjc.model.Constructor;
+import com.sun.tools.xjc.model.Model;
+import com.sun.tools.xjc.outline.Aspect;
+import com.sun.tools.xjc.outline.FieldAccessor;
+import com.sun.tools.xjc.outline.FieldOutline;
+import com.sun.xml.bind.v2.TODO;
+
+/**
+ * Generates <code>ObjectFactory</code> then wraps it and provides
+ * access to it.
+ *
+ * <p>
+ * The ObjectFactory contains
+ * factory methods for each schema derived content class
+ *
+ * @author
+ *      Ryan Shoemaker
+ */
+abstract class ObjectFactoryGeneratorImpl extends ObjectFactoryGenerator {
+
+    private final BeanGenerator outline;
+    private final Model model;
+    private final JCodeModel codeModel;
+    /**
+     * Ref to {@link Class}.
+     */
+    private final JClass classRef;
+
+    /**
+     * Reference to the generated ObjectFactory class.
+     */
+    private final JDefinedClass objectFactory;
+
+    /** map of qname to JInvocation */
+    private final HashMap<QName,JFieldVar> qnameMap = new HashMap<QName,JFieldVar>();
+
+    /**
+     * Returns a reference to the generated (public) ObjectFactory
+     */
+    public JDefinedClass getObjectFactory() {
+        return objectFactory;
+    }
+
+
+
+
+    public ObjectFactoryGeneratorImpl( BeanGenerator outline, Model model, JPackage targetPackage ) {
+        this.outline = outline;
+        this.model = model;
+        this.codeModel = this.model.codeModel;
+        this.classRef = codeModel.ref(Class.class);
+
+        // create the ObjectFactory class skeleton
+        objectFactory = this.outline.getClassFactory().createClass(
+                targetPackage, "ObjectFactory", null );
+        objectFactory.annotate2(XmlRegistryWriter.class);
+
+        // generate the default constructor
+        //
+        // m1 result:
+        //        public ObjectFactory() {}
+        JMethod m1 = objectFactory.constructor(JMod.PUBLIC);
+        m1.javadoc()
+            .setComment( "Create a new ObjectFactory that can be used to " +
+                         "create new instances of schema derived classes " +
+                         "for package: " + targetPackage.name() );
+
+        // add some class javadoc
+        objectFactory.javadoc().appendComment(
+            "This object contains factory methods for each \n" +
+            "Java content interface and Java element interface \n" +
+            "generated in the " + targetPackage.name() + " package. \n" +
+            "<p>An ObjectFactory allows you to programatically \n" +
+            "construct new instances of the Java representation \n" +
+            "for XML content. The Java representation of XML \n" +
+            "content can consist of schema derived interfaces \n" +
+            "and classes representing the binding of schema \n" +
+            "type definitions, element declarations and model \n" +
+            "groups.  Factory methods for each of these are \n" +
+            "provided in this class." );
+
+    }
+
+    /**
+     * Adds code for the given {@link CElementInfo} to ObjectFactory.
+     */
+    protected final void populate( CElementInfo ei, Aspect impl, Aspect exposed ) {
+        // temporarily returning the impl type to make the runtime work
+        TODO.prototype();
+        JType exposedElementType = ei.toType(outline,exposed);
+        JType exposedType = ei.getContentInMemoryType().toType(outline,exposed);
+        JType implType = ei.getContentInMemoryType().toType(outline,impl);
+        String namespaceURI = ei.getElementName().getNamespaceURI();
+        String localPart = ei.getElementName().getLocalPart();
+
+        JClass scope=null;
+        if(ei.getScope()!=null)
+            scope = outline.getClazz(ei.getScope()).implRef;
+
+
+        JMethod m;
+
+        if(ei.isAbstract()) {
+            // TODO: see the "Abstract elements and mighty IXmlElement" e-mail
+            // that I sent to jaxb-tech
+            TODO.checkSpec();
+        }
+
+        // no arg constructor
+        // [RESULT] if the element doesn't have its own class, something like:
+        //
+        //        @XmlElementMapping(uri = "", name = "foo")
+        //        public JAXBElement<Foo> createFoo( Foo value ) {
+        //            return new JAXBElement<Foo>(
+        //                new QName("","foo"),(Class)FooImpl.class,scope,(FooImpl)value);
+        //        }
+        //        NOTE: when we generate value classes Foo==FooImpl
+        //
+        // [RESULT] otherwise
+        //
+        //        @XmlElementMapping(uri = "", name = "foo")
+        //        public Foo createFoo( FooType value ) {
+        //            return new Foo((FooTypeImpl)value);
+        //        }
+        //        NOTE: when we generate value classes FooType==FooTypeImpl
+        //
+
+        m = objectFactory.method( JMod.PUBLIC, exposedElementType, "create" + ei.getSqueezedName() );
+        JVar $value = m.param(exposedType,"value");
+        JExpression declaredType = JExpr.cast(classRef,implType.boxify().dotclass()); // why do we have to cast?
+        JExpression scopeClass = scope==null?JExpr._null():scope.dotclass();
+
+        // build up the return extpression
+        JInvocation exp = JExpr._new(exposedElementType);
+        if(!ei.hasClass()) {
+            //JInvocation qnameArg = JExpr._new(codeModel.ref(QName.class)).arg(namespaceURI).arg(localPart);
+            JFieldVar qnameField = getQNameInvocation(ei);
+
+            exp.arg(qnameField);
+            exp.arg(declaredType);
+            exp.arg(scopeClass);
+        }
+        if(implType==exposedType)
+            exp.arg($value);
+        else
+            exp.arg(JExpr.cast(implType,$value));
+
+        m.body()._return( exp );
+
+        m.javadoc()
+            .appendComment( "Create an instance of {@link " + exposedElementType.fullName() + '}' );
+
+        XmlElementDeclWriter xemw = m.annotate2(XmlElementDeclWriter.class);
+        xemw.namespace(namespaceURI).name(localPart);
+        if(scope!=null)
+            xemw.scope(scope);
+
+        if(ei.getSubstitutionHead()!=null) {
+            QName n = ei.getSubstitutionHead().getElementName();
+            xemw.substitutionHeadNamespace(n.getNamespaceURI());
+            xemw.substitutionHeadName(n.getLocalPart());
+        }
+
+        if(ei.getDefaultValue()!=null)
+            xemw.defaultValue(ei.getDefaultValue());
+
+        // if the element is adapter, put that annotation on the factory method
+        outline.generateAdapterIfNecessary(ei.getProperty(),m);
+    }
+
+    /**
+     * return a JFieldVar that represents the QName field for the given information.
+     *
+     * if it doesn't exist, create a static field in the class and store a new JFieldVar.
+     */
+    private JFieldVar getQNameInvocation(CElementInfo ei) {
+        QName name = ei.getElementName();
+        if(qnameMap.containsKey(name)) {
+            return qnameMap.get(name);
+        }
+
+        // [RESULT]
+        // private static final QName _XYZ_NAME = new QName("uri", "local");
+        JFieldVar qnameField = objectFactory.field(
+            JMod.PRIVATE | JMod.STATIC | JMod.FINAL,
+            QName.class,
+            '_' + ei.getSqueezedName() + "_QNAME", createQName(name));
+
+        qnameMap.put(name, qnameField);
+
+        return qnameField;
+    }
+
+    /**
+     * Generates an expression that evaluates to "new QName(...)"
+     */
+    private JInvocation createQName(QName name) {
+        return JExpr._new(codeModel.ref(QName.class)).arg(name.getNamespaceURI()).arg(name.getLocalPart());
+    }
+
+    protected final void populate( ClassOutlineImpl cc, JClass sigType ) {
+        // add static factory method for this class to JAXBContext.
+        //
+        // generate methods like:
+        //     public static final SIGTYPE createFoo() {
+        //         return new FooImpl();
+        //     }
+
+        final String linkToClassName = "{@link "+cc.ref.fullName()+'}';
+
+        if(!cc.target.isAbstract()) {
+            TODO.prototype("the return type should be cc.ref, not cc.implRef, but" +
+                    "we need this to be a class for the runtime to work correctly.");
+            JMethod m = objectFactory.method(
+                JMod.PUBLIC, sigType, "create" + cc.target.getSqueezedName() );
+            m.body()._return( JExpr._new(cc.implRef) );
+
+            // add some jdoc to avoid javadoc warnings in jdk1.4
+            m.javadoc()
+                .appendComment( "Create an instance of " +linkToClassName );
+        }
+
+
+        // add static factory methods for all the other constructors.
+        Collection<? extends Constructor> consl = cc.target.getConstructors();
+        if(consl.size()!=0) {
+            // if we are going to add constructors with parameters,
+            // first we need to have a default constructor.
+            cc.implClass.constructor(JMod.PUBLIC);
+        }
+
+        for( Constructor cons : consl ) {
+            // method on ObjectFactory
+            // [RESULT]
+            // Foo createFoo( T1 a, T2 b, T3 c, ... ) throws JAXBException {
+            //    return new FooImpl(a,b,c,...);
+            // }
+            JMethod m = objectFactory.method( JMod.PUBLIC,
+                cc.ref, "create" + cc.target.getSqueezedName() );
+            JInvocation inv = JExpr._new(cc.implRef);
+            m.body()._return(inv);
+
+            // let's not throw this exception.
+            // m._throws(codeModel.ref(JAXBException.class));
+
+            // add some jdoc to avoid javadoc warnings in jdk1.4
+            m.javadoc()
+                .appendComment( "Create an instance of " + linkToClassName )
+                .addThrows( "JAXBException", "if an error occurs" );
+
+            // constructor
+            // [RESULT]
+            // FooImpl( T1 a, T2 b, T3 c, ... ) {
+            // }
+            JMethod c = cc.implClass.constructor(JMod.PUBLIC);
+
+            for( String fieldName : cons.fields ) {
+                CPropertyInfo field = cc.target.getProperty(fieldName);
+                if(field==null) {
+                    outline.getErrorReceiver().error(cc.target.location,
+                        Messages.ILLEGAL_CONSTRUCTOR_PARAM.format(fieldName));
+                    continue;
+                }
+
+                fieldName = camelize(fieldName);
+
+                FieldOutline fo = outline.getField(field);
+                FieldAccessor accessor = fo.create(JExpr._this());
+
+                // declare a parameter on this factory method and set
+                // it to the field
+                inv.arg(m.param( fo.getRawType(), fieldName ));
+
+                JVar $var = c.param( fo.getRawType(), fieldName );
+                accessor.fromRawValue(c.body(),'_'+fieldName,$var);
+            }
+        }
+    }
+
+
+    /** Change the first character to the lower case. */
+    private static String camelize( String s ) {
+        return Character.toLowerCase(s.charAt(0)) + s.substring(1);
+    }
+}

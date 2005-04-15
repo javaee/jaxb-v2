@@ -1,0 +1,122 @@
+package com.sun.xml.bind.v2.runtime.unmarshaller;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+
+/**
+ * {@link XmlVisitor} decorator that interns all string tokens.
+ *
+ * @author Kohsuke Kawaguchi
+ */
+public final class InterningXmlVisitor implements XmlVisitor {
+    private final XmlVisitor next;
+
+    private final AttributesImpl attributes = new AttributesImpl();
+
+    public InterningXmlVisitor(XmlVisitor next) {
+        this.next = next;
+    }
+
+    public void startDocument(LocatorEx locator) throws SAXException {
+        next.startDocument(locator);
+    }
+
+    public void endDocument() throws SAXException {
+        next.endDocument();
+    }
+
+    public void startElement( String nsUri, String localName, String qname, Attributes atts ) throws SAXException {
+        attributes.setAttributes(atts);
+        next.startElement(intern(nsUri), intern(localName), intern(qname), attributes);
+    }
+
+    public void endElement( String nsUri, String localName, String qname ) throws SAXException {
+        next.endElement(intern(nsUri), intern(localName), intern(qname));
+    }
+
+    public void startPrefixMapping( String prefix, String nsUri ) throws SAXException {
+        next.startPrefixMapping(intern(prefix),intern(nsUri));
+    }
+
+    public void endPrefixMapping( String prefix ) throws SAXException {
+        next.endPrefixMapping(intern(prefix));
+    }
+
+    public void text( CharSequence pcdata ) throws SAXException {
+        next.text(pcdata);
+    }
+
+    public boolean expectText() {
+        return next.expectText();
+    }
+
+    public UnmarshallingContext getContext() {
+        return next.getContext();
+    }
+
+    private static class AttributesImpl implements Attributes {
+        private Attributes core;
+
+        void setAttributes(Attributes att) {
+            this.core = att;
+        }
+
+        public int getIndex(String qName) {
+            return core.getIndex(qName);
+        }
+
+        public int getIndex(String uri, String localName) {
+            return core.getIndex(uri, localName);
+        }
+
+        public int getLength() {
+            return core.getLength();
+        }
+
+        public String getLocalName(int index) {
+            return intern(core.getLocalName(index));
+        }
+
+        public String getQName(int index) {
+            return intern(core.getQName(index));
+        }
+
+        public String getType(int index) {
+            return intern(core.getType(index));
+        }
+
+        public String getType(String qName) {
+            return intern(core.getType(qName));
+        }
+
+        public String getType(String uri, String localName) {
+            return intern(core.getType(uri, localName));
+        }
+
+        public String getURI(int index) {
+            return intern(core.getURI(index));
+        }
+
+        //
+        // since values may vary a lot,
+        // we don't (probably shouldn't) intern values.
+        //
+
+        public String getValue(int index) {
+            return core.getValue(index);
+        }
+
+        public String getValue(String qName) {
+            return core.getValue(qName);
+        }
+
+        public String getValue(String uri, String localName) {
+            return core.getValue(uri, localName);
+        }
+    }
+
+    private static String intern(String s) {
+        if(s==null)     return null;
+        else            return s.intern();
+    }
+}

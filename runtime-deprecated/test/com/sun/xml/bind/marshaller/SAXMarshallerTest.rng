@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<grammar xmlns="http://relaxng.org/ns/structure/1.0">
+	<start>
+		<!-- test set consists of a number of tests -->
+		<element name="tests">
+			<zeroOrMore>
+				<element name="test">
+					<!-- input to the test -->
+					<element name="input">
+						<zeroOrMore>
+							<choice>
+								
+								<element name="startElement">
+									<optional>
+										<!-- defaults to "" -->
+										<attribute name="uri"/>
+									</optional>
+									<attribute name="local"/>
+								</element>
+								<element name="endElement">
+									<empty/>
+								</element>
+								
+								<element name="endAttributes">
+									<empty/>
+								</element>
+								
+								<element name="startAttribute">
+									<empty/>
+								</element>
+								<element name="endAttribute">
+									<optional>
+										<!-- defaults to "" -->
+										<attribute name="uri"/>
+									</optional>
+									<attribute name="local"/>
+								</element>
+								
+								<element name="text">
+									<text/>
+								</element>
+							</choice>
+						</zeroOrMore>
+					</element>
+					
+					<!-- expected output -->
+					<element name="output">
+						<ref name="anyElement"/>
+					</element>
+				</element>
+			</zeroOrMore>
+		</element>
+	</start>
+	
+	<define name="anyElement">
+		<element>
+			<anyName/>
+			<zeroOrMore>
+				<choice>
+					<text/>
+					<attribute>
+						<anyName/>
+					</attribute>
+					<ref name="anyElement"/>
+				</choice>
+			</zeroOrMore>
+		</element>
+	</define>
+</grammar>

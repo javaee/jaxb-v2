@@ -1,0 +1,41 @@
+
+XJC unit tests are a series of developer tests for XJC.
+
+
+Test data
+=========
+Test schemas, instance documents, and other files necessary for test are stored in jaxb-ri/test/schemas directory.
+
+Usually, each test gets its own directory. Each such directory contains "Testspec.meta" file, which describes how that test should be run. A test case consists of a schema file, zero or more test instances, and zero or more test script written in ECMAScript.
+
+A test is executed by first compiling the schema, then running all (script,instance) pair.
+
+Multiple test cases can be stored in the suite format (.ssuite) for the ease of maintainance.
+
+
+Running All Tests
+=================
+Build the "run-xjc-test" target. This will run all the tests and dump the results to stdout.
+
+
+Running Selectively
+===================
+Build the "test-preparation" target to prepare everything for a test. Then, run "TestCaseRunner" as follows. This will run a single test case:
+
+$ java TestCaseRunner ../../test/schemas/Unmarshaller/list1/testspec.meta
+
+
+The following command will run all the tests under the specified directory (the "-r" option):
+
+$ java TestCaseRunner ../../test/schemas/Unmarshaller/ -r
+
+
+Debugging
+=========
+When you are tracking down a problem, oftentimes you want to enable some of the debug options of XJC (such as the "-trace-unmarshaller" option.) To do this, use the "-xjc" option.
+
+$ java TestCaseRunner ../../test/schemas/Unmarshaller/list1 -xjc -trace-unmarshaller
+
+Those additional options will be passed to XJC.
+
+

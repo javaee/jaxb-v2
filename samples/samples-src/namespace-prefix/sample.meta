@@ -1,0 +1,22 @@
+<sample since="1.0.1">
+    <title>namespace-prefix</title>
+    <description><![CDATA[
+        This sample application demonstrates how to use the new JAXB RI 
+        Marshaller property "com.sun.xml.bind.namespacePrefixMapper" to 
+        customize the namespace prefixes generated during marshalling.
+    ]]></description>
+        
+    <project>
+        <xjc schema="foo.xsd" package="foo" />
+        <xjc schema="bar.xsd" package="bar" />
+        
+        <javadoc/>
+        
+        <java mainClass="PrefixExample">
+            <arg path="test1.xml"/>
+            <arg path="test2.xml"/>
+            <arg path="test3.xml"/>
+        </java>
+    </project>
+    
+</sample>

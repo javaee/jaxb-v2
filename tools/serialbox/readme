@@ -1,0 +1,59 @@
+
+Sample usage model to just dump an existing stream.
+
+%java SerialBox Object -dTypeSafeEnum.ser -v
+
+*******************************BEGIN
+**Stream ObjectStreamClass Descriptor
+Class name      : TypeSafeEnum
+SerialVersionUID: -2469689662792081696
+ObjectStreamFields
+0. boolean verbose
+1. Ljava/util/ArrayList; list
+2. Ljava/lang/String; value
+# primitive fields:1 # object ref fields:2
+**Local JVM ObjectStreamClass Descriptor
+Class name      : TypeSafeEnum
+SerialVersionUID: -2469689662792081696
+ObjectStreamFields
+0. boolean verbose
+1. Ljava/util/ArrayList; list
+2. Ljava/lang/String; value
+# primitive fields:1 # object ref fields:2
+*******************************END
+*******************************BEGIN
+**Stream ObjectStreamClass Descriptor
+Class name      : java.util.ArrayList
+SerialVersionUID: 8683452581122892189
+ObjectStreamFields
+0. int size
+# primitive fields:1 # object ref fields:0
+**Local JVM ObjectStreamClass Descriptor
+Class name      : java.util.ArrayList
+SerialVersionUID: 8683452581122892189
+ObjectStreamFields
+0. int size
+# primitive fields:1 # object ref fields:0
+*******************************END
+@@resolveObject(First)
+TypeSafeEnum.readObject() TypeSafeEnum@7ffe01
+readResolve called on TypeSafeEnum@7ffe01
+@@resolveObject(TypeSafeEnum@fd13b5)
+@@resolveObject(Second)
+TypeSafeEnum.readObject() TypeSafeEnum@18f375
+readResolve called on TypeSafeEnum@18f375
+@@resolveObject(TypeSafeEnum@17a8bd)
+@@resolveObject(Third)
+TypeSafeEnum.readObject() TypeSafeEnum@471e30
+readResolve called on TypeSafeEnum@471e30
+@@resolveObject(TypeSafeEnum@ef90c)
+@@resolveObject([TypeSafeEnum@fd13b5, TypeSafeEnum@17a8bd, 
+TypeSafeEnum@ef90c, TypeSafeEnum@fd13b5, TypeSafeEnum@17a8bd, 
+TypeSafeEnum@ef90c])
+TypeSafeEnum.readObject() TypeSafeEnum@a32b
+readResolve called on TypeSafeEnum@a32b
+@@resolveObject(TypeSafeEnum@a32b)
+DeSerialize TypeSafeEnum@a32b
+Time 298 millisecs (0.298 secs)
+
+

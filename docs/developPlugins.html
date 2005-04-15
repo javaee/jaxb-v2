@@ -1,0 +1,62 @@
+<html>
+  <head>
+    <title>
+        JAXB RI @@IMPL_VERSION@@ @@IMPL_VERSION_SUFFIX@@ -- Developing JAXB RI Extensions
+    </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" type="text/css" href="style/default.css"/>
+  </head>
+
+  <body>
+    <center>
+    <h1>Java<sup><font size="-2">TM</font></sup> Architecture for XML Binding<br />
+      Developing JAXB RI Extensions
+    </h1>
+      <b>Specification Version:</b> @@SPEC_VERSION@@<br />
+      <b>Reference Implementation (RI) Version:</b> @@IMPL_VERSION@@ @@IMPL_VERSION_SUFFIX@@<br />
+      <JAXB-TOC/>
+    </center>
+
+    <p>
+      This document describes how to write a JAXB RI plugin to extend the code generation of the JAXB RI.
+    </p><p>
+    
+    <h3>What Can A Plugin Do?</h3>
+    <p>
+      A JAXB RI plugin participates in the code generation from a schema. It can define its own customizations that users can use to control it, it can access the code that the JAXB RI generates, and it can generate additional classes/methods/fields/annotations/comments.
+    </p><p>
+      As a show case of what a plugin can do, take a look at <a href="https://hyperjaxb.dev.java.net/">HyperJAXB</a> and <a href="https://jaxb-verification.dev.java.net/">JAXB-verification</a> projects.
+    </p>
+    
+    
+    <h3>Quick Start</h3>
+    <p>
+      To write a plugin, do the following simple steps.
+    </p>
+    <ol>
+      <li>Write a class, say, <tt>org.acme.MyPlugin</tt> by extending <tt>com.sun.tools.xjc.Plugin</tt>. See javadoc for how to implement methods.
+      <li>Write the name of your plugin class in a text file and put it as <tt>/META-INF/services/com.sun.tools.xjc.Plugin</tt> in your jar file.
+    </ol>
+    <p>
+      Users can then use your plugins by declaring an XJC ant task with your jar files.
+    </p>
+<pre><xmp>
+<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+  <classpath>
+    <fileset dir="jaxb-ri/lib" includes="*.jar" />
+    <fileset dir="your-plugin" includes="*.jar" />
+  </classpath>
+</taskdef>
+</xmp></pre>
+    
+    <h3>Resources</h3>
+    <ol>
+      <li><a href="jaxb-xjc.javadoc.zip">Javadoc of XJC</a></li>
+      <li><a href="jaxb-impl.javadoc.zip">Javadoc of JAXB RI runtime</a></li>
+      <li><a href="https://jaxb.dev.java.net/servlets/ProjectMailingListList">the JAXB users mailing list</a> for posting questions</li>
+    </ol>
+    <p>
+      Although we will do our best to maintain the compatibility of the interfaces, it is still subject to change at this point.
+    </p>
+  </body>
+</html>

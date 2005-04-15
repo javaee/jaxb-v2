@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+ Copyright 2004 Sun Microsystems, Inc. All rights reserved.
+ SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+-->
+
+<project name="tools" basedir=".." default="compile">
+    <!-- initialize build properties -->
+    <property file="${basedir}/build.properties" />
+
+    <target name="compile" 
+            description="build tools and deploy them into necessary locations">
+        <!--ant dir="${jaxb.root}/tools/webapp-commons"       target="dist" /-->
+        <ant dir="${jaxb.root}/tools/source-tidy"          target="compile" />
+        <ant dir="${jaxb.root}/tools/pretty-printer" />
+        <ant dir="${jaxb.root}/tools/jing-rnc-driver" />
+        <ant dir="${jaxb.root}/tools/xmllint" />
+        <ant dir="${jaxb.root}/tools/toc-processor" />
+        <!--ant dir="${jaxb.root}/tools/servlet"              target="war" /-->
+    </target>
+    
+    <target name="clean">
+        <ant dir="${jaxb.root}/tools/webapp-commons"       target="clean" />
+        <ant dir="${jaxb.root}/tools/pretty-printer"       target="clean"/>
+        <ant dir="${jaxb.root}/tools/jing-rnc-driver"      target="clean"/>
+        <ant dir="${jaxb.root}/tools/xmllint"              target="clean"/>
+        <ant dir="${jaxb.root}/tools/toc-processor"        target="clean"/>
+    </target>
+</project>
