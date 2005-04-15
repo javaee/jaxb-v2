@@ -563,7 +563,7 @@ public final class ConversionFinder extends BindingComponent {
         XSFacet pattern = initiatingType.getFacet(XSFacet.FACET_PATTERN);
         if(pattern!=null) {
             String v = pattern.getValue();
-            if(v.equals("0|1") || v.equals("1|0"))
+            if(v.equals("0|1") || v.equals("1|0") || v.equals("\\d"))
                 return true;
         }
         XSFacet enumf = initiatingType.getFacet(XSFacet.FACET_ENUMERATION);
