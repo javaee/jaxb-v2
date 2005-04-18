@@ -18,7 +18,7 @@ import javax.xml.bind.ValidationEventLocator;
 import javax.xml.bind.helpers.NotIdentifiableEventImpl;
 import javax.xml.bind.helpers.ValidationEventImpl;
 import javax.xml.bind.helpers.ValidationEventLocatorImpl;
-import javax.xml.bind.mtom.AttachmentMarshaller;
+import javax.xml.bind.attachment.AttachmentMarshaller;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.Source;

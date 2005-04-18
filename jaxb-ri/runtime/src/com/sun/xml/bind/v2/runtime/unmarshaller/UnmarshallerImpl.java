@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: UnmarshallerImpl.java,v 1.1 2005-04-15 20:04:42 kohsuke Exp $
+ * @(#)$Id: UnmarshallerImpl.java,v 1.2 2005-04-18 17:46:33 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -21,7 +21,7 @@ import javax.xml.bind.ValidationEventLocator;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.helpers.AbstractUnmarshallerImpl;
 import javax.xml.bind.helpers.ValidationEventLocatorImpl;
-import javax.xml.bind.mtom.AttachmentUnmarshaller;
+import javax.xml.bind.attachment.AttachmentUnmarshaller;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
