@@ -220,7 +220,7 @@ public final class RawTypeSet {
 
             // nillable and optional at the same time. needs an element wrapper to distinguish those
             // two states.
-            if(nillable && parent.mul.min==0)
+            if(nillable && parent.mul.isOptional())
                 return false;
 
             return true;
