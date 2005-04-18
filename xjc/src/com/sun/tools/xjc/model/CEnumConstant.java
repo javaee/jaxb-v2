@@ -20,12 +20,15 @@ public final class CEnumConstant implements EnumConstant<NType,NClass> {
 
     private CEnumLeafInfo parent;
 
+    private final Model model;
+
     /**
      * @param name
      *      can be null to be defaulted.
      */
-    public CEnumConstant(String name, String javadoc, String lexical) {
+    public CEnumConstant(Model model, String name, String javadoc, String lexical) {
         this.name = name;
+        this.model = model;
         this.javadoc = javadoc;
         this.lexical = lexical;
     }
@@ -44,7 +47,7 @@ public final class CEnumConstant implements EnumConstant<NType,NClass> {
 
     public String getName() {
         if(name==null) {
-            name = parent.model.getNameConverter().toConstantName(fixUnsafeCharacters(lexical));
+            name = model.getNameConverter().toConstantName(fixUnsafeCharacters(lexical));
             if(!JJavaName.isJavaIdentifier(name))
                 name = '_'+name;
         }

@@ -4,7 +4,6 @@
  */
 package com.sun.tools.xjc.reader.xmlschema;
 
-import static com.sun.xml.bind.v2.WellKnownNamespace.XML_MIME_URI;
 import java.io.StringWriter;
 import java.math.BigInteger;
 import java.text.ParseException;
@@ -12,14 +11,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import com.sun.codemodel.JJavaName;
 import com.sun.codemodel.util.JavadocEscapeWriter;
 import com.sun.tools.xjc.model.CBuiltinLeafInfo;
 import com.sun.tools.xjc.model.CClassInfoParent;
@@ -48,6 +45,8 @@ import com.sun.xml.xsom.visitor.XSSimpleTypeFunction;
 import com.sun.xml.xsom.visitor.XSVisitor;
 
 import org.xml.sax.Locator;
+
+import static com.sun.xml.bind.v2.WellKnownNamespace.XML_MIME_URI;
 
 /**
  * Finds {@link TypeUse} object that is attached to the nearest
@@ -173,8 +172,11 @@ public final class ConversionFinder extends BindingComponent {
 
             // see if this type should be mapped to a type-safe enumeration by default.
             // if so, built a EnumXDucer from it and return it.
-            if( shouldBeMappedToTypeSafeEnumByDefault(type) )
-                return bindToTypeSafeEnum(type,null,null,Collections.emptyMap(),null);
+            if( shouldBeMappedToTypeSafeEnumByDefault(type) ) {
+                token = bindToTypeSafeEnum(type,null,null,Collections.<String,BIEnumMember>emptyMap(),true,null);
+                if(token!=null)
+                    return token;
+            }
 
             return type.getSimpleBaseType().apply(this);
         }
@@ -198,7 +200,10 @@ public final class ConversionFinder extends BindingComponent {
             // it won't be mapped to a type-safe enum.
             return false;
 
-        // return true only when this type is derived from NCName.
+        // check for collisions among constant names. if a collision will happen,
+        // don't try to bind it to an enum.
+
+        // return true only when this type is derived from one of the "enum base type".
         XSSimpleType t = type;
         do {
             if( t.isGlobal() && builder.getGlobalBinding().canBeMappedToTypeSafeEnum(t) )
@@ -277,12 +282,17 @@ public final class ConversionFinder extends BindingComponent {
      *      if some of the value names need to be overrided.
      *      Cannot be null, but the map may not contain entries
      *      for all enumeration values.
+     * @param abortIfCollide
+     *      if true and there's a name collision among constants, this method returns null.
+     *      this is used when XJC is doing 'opportunistic type-safe binding'.
+     *      if false, a collision will cause the constants to have numbered names.
      * @param loc
      *      The source location where the above customizations are
      *      specified, or null if none is available.
      */
     private TypeUse bindToTypeSafeEnum( XSRestrictionSimpleType type,
-        String className, String javadoc, Map members, Locator loc ) {
+        String className, String javadoc, Map<String,BIEnumMember> members,
+        boolean abortIfCollide, Locator loc ) {
 
         if( loc==null )  // use the location of the simple type as the default
             loc = type.getLocator();
@@ -313,12 +323,6 @@ public final class ConversionFinder extends BindingComponent {
 
         }
 
-        boolean needsToGenerateMemberName =
-            checkIfMemberNamesNeedToBeGenerated( type, members );
-
-        List<CEnumConstant> memberList = new ArrayList<CEnumConstant>();
-        int idx=1;
-
         // build base type
         stb.refererStack.push(type.getSimpleBaseType());
         TypeUse use = stb.build(type.getSimpleBaseType());
@@ -327,33 +331,11 @@ public final class ConversionFinder extends BindingComponent {
         assert !use.isCollection(); // TODO: what shall we do if the type safe enum is a list type?
         CNonElement baseDt = (CNonElement)use.getInfo();   // for now just ignore that case
 
-        Iterator itr = type.iterateDeclaredFacets();
-        while(itr.hasNext()) {
-            XSFacet facet = (XSFacet)itr.next();
-            if(!facet.getName().equals(XSFacet.FACET_ENUMERATION))
-                continue;
-
-
-            String name=null;
-            String mdoc=null;
-
-            if( needsToGenerateMemberName ) {
-                // generate names for all member names.
-                // this will even override names specified by the user
-                name = "value"+(idx++);
-            } else {
-                BIEnumMember mem = (BIEnumMember)members.get(facet.getValue());
-                if( mem==null )
-                    // look at the one attached to the facet object
-                    mem = builder.getBindInfo(facet).get(BIEnumMember.class);
-
-                if( mem!=null ) {
-                    name = mem.getMemberName();
-                    mdoc = mem.getJavadoc();
-                }
-
-            }
-            memberList.add(new CEnumConstant(name,mdoc,facet.getValue()));
+        // if the member names collide, re-generate numbered constant names.
+        List<CEnumConstant> memberList = buildCEnumConstants(type, false, members);
+        if(checkMemberNameCollision(memberList)) {
+            if(abortIfCollide)  return null;
+            memberList = buildCEnumConstants(type,true,members);
         }
 
         QName typeName = null;
@@ -378,38 +360,43 @@ public final class ConversionFinder extends BindingComponent {
         return conv.getTypeUse(type);
     }
 
+    private List<CEnumConstant> buildCEnumConstants(XSRestrictionSimpleType type, boolean needsToGenerateMemberName, Map<String, BIEnumMember> members) {
+        List<CEnumConstant> memberList = new ArrayList<CEnumConstant>();
+        int idx=1;
+        for( XSFacet facet : type.getDeclaredFacets(XSFacet.FACET_ENUMERATION)) {
+            String name=null;
+            String mdoc=null;
+
+            if( needsToGenerateMemberName ) {
+                // generate names for all member names.
+                // this will even override names specified by the user. that's crazy.
+                name = "value"+(idx++);
+            } else {
+                BIEnumMember mem = members.get(facet.getValue());
+                if( mem==null )
+                    // look at the one attached to the facet object
+                    mem = builder.getBindInfo(facet).get(BIEnumMember.class);
+
+                if( mem!=null ) {
+                    name = mem.getMemberName();
+                    mdoc = mem.getJavadoc();
+                }
+
+            }
+            memberList.add(new CEnumConstant(model,name,mdoc,facet.getValue()));
+        }
+        return memberList;
+    }
 
     /**
-     * Checks if a type-safe enum class needs to use generated member names.
-     *
-     * @param members
-     *      Overrided names.
+     * Returns true if {@link CEnumConstant}s have name collisions among them.
      */
-    private boolean checkIfMemberNamesNeedToBeGenerated( XSRestrictionSimpleType type, Map members ) {
-
-        Iterator itr = type.iterateDeclaredFacets();
-        while(itr.hasNext()) {
-            XSFacet facet = (XSFacet)itr.next();
-            if(!facet.getName().equals(XSFacet.FACET_ENUMERATION))
-                continue;
-
-            String value = facet.getValue();
-
-            if( members.containsKey(value) )
-                continue;   // this name is overrided.
-
-            if( !JJavaName.isJavaIdentifier(
-                    builder.getNameConverter().toConstantName(facet.getValue()) )) {
-                // this enum value isn't overrided by the customization
-                // and it will not produce a correct Java identifier.
-                //
-                // we needs to generate member names if the global bindings says so.
-                return builder.getGlobalBinding().generateEnumMemberName;
-            }
+    private boolean checkMemberNameCollision( List<CEnumConstant> memberList ) {
+        Set<String> names = new HashSet<String>();
+        for (CEnumConstant c : memberList) {
+            if(!names.add(c.getName()))
+                return true;    // collision detected
         }
-
-        // enumeration values don't have any problem.
-        // no need to use generated names.
         return false;
     }
 
@@ -449,7 +436,7 @@ public final class ConversionFinder extends BindingComponent {
             // list and union cannot be mapped to a type-safe enum,
             // so in this stage we can safely cast it to XSRestrictionSimpleType
             return bindToTypeSafeEnum( (XSRestrictionSimpleType)type,
-        		en.getClassName(), en.getJavadoc(), en.getMembers(), en.getLocation() );
+        		en.getClassName(), en.getJavadoc(), en.getMembers(), false, en.getLocation() );
         }
 
 
