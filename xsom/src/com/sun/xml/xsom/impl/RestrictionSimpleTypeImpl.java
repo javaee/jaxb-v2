@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: RestrictionSimpleTypeImpl.java,v 1.1 2005-04-14 22:06:27 kohsuke Exp $
+ * @(#)$Id: RestrictionSimpleTypeImpl.java,v 1.2 2005-04-18 18:14:20 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -52,6 +52,14 @@ public class RestrictionSimpleTypeImpl extends SimpleTypeImpl implements XSRestr
                 return f;
         }
         return null;
+    }
+
+    public List<XSFacet> getDeclaredFacets(String name) {
+        List<XSFacet> r = new ArrayList<XSFacet>();
+        for( XSFacet f : facets )
+            if(f.getName().equals(name))
+                r.add(f);
+        return r;
     }
 
     public XSFacet getFacet( String name ) {

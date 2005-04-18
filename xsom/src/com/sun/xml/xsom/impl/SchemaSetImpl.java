@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: SchemaSetImpl.java,v 1.1 2005-04-14 22:06:27 kohsuke Exp $
+ * @(#)$Id: SchemaSetImpl.java,v 1.2 2005-04-18 18:14:20 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -276,6 +276,8 @@ public class SchemaSetImpl implements XSSchemaSet
         public XSVariety getVariety() { return XSVariety.ATOMIC; }
         public XSFacet getFacet(String name) { return null; }
         public XSFacet getDeclaredFacet(String name) { return null; }
+        public List<XSFacet> getDeclaredFacets(String name) { return Collections.EMPTY_LIST; }
+
         public boolean isRestriction() { return true; }
         public boolean isList() { return false; }
         public boolean isUnion() { return false; }

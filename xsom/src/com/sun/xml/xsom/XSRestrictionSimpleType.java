@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: XSRestrictionSimpleType.java,v 1.1 2005-04-14 22:06:21 kohsuke Exp $
+ * @(#)$Id: XSRestrictionSimpleType.java,v 1.2 2005-04-18 18:14:20 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -11,6 +11,7 @@ package com.sun.xml.xsom;
 
 import java.util.Iterator;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Restriction simple type.
@@ -26,7 +27,7 @@ public interface XSRestrictionSimpleType extends XSSimpleType {
 
     public Collection<? extends XSFacet> getDeclaredFacets();
 
-   /**
+    /**
      * Gets the declared facet object of the given name.
      * 
      * <p>
@@ -37,11 +38,21 @@ public interface XSRestrictionSimpleType extends XSSimpleType {
      * For those facets that can have multiple values
      * (pattern facets and enumeration facets), this method
      * will return only the first one.
-     * TODO: allow clients to access all of them by some means.
-     * 
+     *
      * @return
      *      Null if the facet is not specified in the last step
      *      of derivation.
      */
     XSFacet getDeclaredFacet( String name );
+
+    /**
+     * Gets the declared facets of the given name.
+     *
+     * This method is for those facets (such as 'pattern') that
+     * can be specified multiple times on a simple type.
+     *
+     * @return
+     *      can be empty but never be null.
+     */
+    List<XSFacet> getDeclaredFacets( String name );
 }
