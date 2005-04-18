@@ -7,27 +7,32 @@ import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.QNameMap;
+import com.sun.xml.bind.v2.TODO;
+import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementPropertyInfo;
+import com.sun.xml.bind.v2.runtime.IDHandler;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
+import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
 
 import org.xml.sax.SAXException;
 
 /**
- * {@link SingleLeafProperty} that contains a leaf value.
+ * {@link Property} that contains a leaf value.
  *
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
-final class SingleElementLeafProperty<BeanT> extends SingleLeafProperty<BeanT> {
+final class SingleElementLeafProperty<BeanT> extends PropertyImpl<BeanT> {
 
     private final Name tagName;
     private final boolean nillable;
     private final Accessor acc;
     private final String defaultValue;
+    private final TransducedAccessor<BeanT> xacc;
 
     public SingleElementLeafProperty(JAXBContextImpl context, RuntimeElementPropertyInfo prop) {
         super(context,prop);
@@ -37,6 +42,24 @@ final class SingleElementLeafProperty<BeanT> extends SingleLeafProperty<BeanT> {
         nillable = ref.isNillable();
         defaultValue = ref.getDefaultValue();
         this.acc = prop.getAccessor().optimize();
+
+        if(prop.id()==ID.IDREF) {
+            // IDREF uses a special transduced accessor
+            xacc = new IDHandler.IDREF(acc);
+        } else {
+            TODO.prototype();
+            xacc = TransducedAccessor.get(prop,prop.ref().iterator().next().getTransducer());
+        }
+        assert xacc!=null;
+    }
+
+    public void reset(BeanT o) {
+        // TODO: implement this method later
+        throw new UnsupportedOperationException();
+    }
+
+    public String getIdValue(BeanT bean) throws AccessorException, SAXException {
+        return xacc.print(bean).toString();
     }
 
     public void serializeBody(BeanT o, XMLSerializer w) throws SAXException, AccessorException, IOException, XMLStreamException {
