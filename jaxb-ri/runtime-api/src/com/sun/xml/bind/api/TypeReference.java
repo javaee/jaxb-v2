@@ -50,7 +50,7 @@ public final class TypeReference {
     public <A extends Annotation> A get( Class<A> annotationType ) {
         for (Annotation a : annotations) {
             if(a.annotationType()==annotationType)
-                return (A)a;
+                return annotationType.cast(a);
         }
         return null;
     }
