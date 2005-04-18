@@ -13,6 +13,7 @@ import com.sun.tools.xjc.model.CClassInfoParent;
 import com.sun.tools.xjc.model.CEnumConstant;
 import com.sun.tools.xjc.model.CEnumLeafInfo;
 import com.sun.tools.xjc.model.TypeUse;
+import com.sun.tools.xjc.model.Model;
 
 import org.w3c.dom.Element;
 
@@ -51,7 +52,7 @@ public final class BIEnumeration implements BIConversion
                 new CClassInfoParent.Package(parent.getTargetPackage()),
                 DOMUtil.getAttribute(dom,"name"),
                 CBuiltinLeafInfo.STRING,
-                buildMemberList(dom),
+                buildMemberList(parent.model,dom),
                 null/*TODO*/,
                 DOM4JLocator.getLocationInfo(dom)));
     }
@@ -67,12 +68,12 @@ public final class BIEnumeration implements BIConversion
                 parent.clazz,
                 DOMUtil.getAttribute(dom,"name"),
                 CBuiltinLeafInfo.STRING,
-                buildMemberList(dom),
+                buildMemberList(parent.parent.model,dom),
                 null/*TODO*/,
                 DOM4JLocator.getLocationInfo(dom) ));
     }
     
-    private static List<CEnumConstant> buildMemberList( Element dom ) {
+    private static List<CEnumConstant> buildMemberList( Model model, Element dom ) {
         List<CEnumConstant> r = new ArrayList<CEnumConstant>();
 
         String members = DOMUtil.getAttribute(dom,"members");
@@ -81,7 +82,7 @@ public final class BIEnumeration implements BIConversion
         StringTokenizer tokens = new StringTokenizer(members);
         while(tokens.hasMoreTokens()) {
             String token = tokens.nextToken();
-            r.add(new CEnumConstant(null,null,token));
+            r.add(new CEnumConstant(model,null,null,token));
         }
         
         return r;

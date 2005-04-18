@@ -4,7 +4,6 @@
  */
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -28,7 +27,7 @@ import org.xml.sax.Locator;
  */
 public final class BIEnum extends AbstractDeclarationImpl {
     
-    public BIEnum( Locator loc, String _className, String _javadoc, HashMap _members ) {
+    public BIEnum( Locator loc, String _className, String _javadoc, Map<String,BIEnumMember> _members ) {
         super(loc);
         this.className = _className;
         this.javadoc = _javadoc;
@@ -46,14 +45,14 @@ public final class BIEnum extends AbstractDeclarationImpl {
      */
     public String getJavadoc() { return javadoc; }
     
-    private final HashMap members;
+    private final Map<String,BIEnumMember> members;
     /**
      * Gets the map that contains XML value->BIEnumMember pairs.
      * This table is built from &lt;enumMember> customizations.
      * 
      * @return Always return non-null.
      */
-    public HashMap getMembers() { return members; }
+    public Map<String,BIEnumMember> getMembers() { return members; }
     
     public QName getName() { return NAME; }
     
