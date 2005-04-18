@@ -1,8 +1,8 @@
 package com.sun.xml.bind.api;
 
 import javax.xml.bind.ValidationEventHandler;
-import javax.xml.bind.mtom.AttachmentMarshaller;
-import javax.xml.bind.mtom.AttachmentUnmarshaller;
+import javax.xml.bind.attachment.AttachmentMarshaller;
+import javax.xml.bind.attachment.AttachmentUnmarshaller;
 
 /**
  * Holds thread specific state information for {@link Bridge}s,

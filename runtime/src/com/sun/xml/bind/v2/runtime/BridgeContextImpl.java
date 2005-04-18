@@ -2,9 +2,8 @@ package com.sun.xml.bind.v2.runtime;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.ValidationEventHandler;
-import javax.xml.bind.PropertyException;
-import javax.xml.bind.mtom.AttachmentMarshaller;
-import javax.xml.bind.mtom.AttachmentUnmarshaller;
+import javax.xml.bind.attachment.AttachmentMarshaller;
+import javax.xml.bind.attachment.AttachmentUnmarshaller;
 
 import com.sun.xml.bind.api.BridgeContext;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;

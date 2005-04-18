@@ -1,7 +1,7 @@
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
 import javax.activation.DataHandler;
-import javax.xml.bind.mtom.AttachmentUnmarshaller;
+import javax.xml.bind.attachment.AttachmentUnmarshaller;
 
 import com.sun.xml.bind.v2.WellKnownNamespace;
 

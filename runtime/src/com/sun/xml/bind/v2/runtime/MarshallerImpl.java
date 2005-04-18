@@ -20,7 +20,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.helpers.AbstractMarshallerImpl;
-import javax.xml.bind.mtom.AttachmentMarshaller;
+import javax.xml.bind.attachment.AttachmentMarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;

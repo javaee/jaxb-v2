@@ -69,7 +69,7 @@ public final class MTOMXmlOutput extends XmlOutput {
     public void text( CharSequence value, boolean needsSeparatingWhitespace ) throws IOException, SAXException, XMLStreamException {
         if(value instanceof Base64Data) {
             Base64Data b64d = (Base64Data) value;
-            String cid = serializer.attachmentMarshaller.addMtomAttachment(null,null,b64d.getExact());
+            String cid = serializer.attachmentMarshaller.addMtomAttachment(b64d.getExact(),null,null);
             if(cid!=null) {
                 nsContext.getCurrent().push();
                 int prefix = nsContext.declareNsUri(WellKnownNamespace.XOP,"xop",false);
