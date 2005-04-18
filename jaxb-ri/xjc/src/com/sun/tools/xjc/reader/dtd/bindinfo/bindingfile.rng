@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 DTD binding information file which is supported by this version of XJC.
-$Id: bindingfile.rng,v 1.1 2005-04-15 20:09:43 kohsuke Exp $
+$Id: bindingfile.rng,v 1.2 2005-04-18 19:11:07 kohsuke Exp $
 
 - Changes from the EA1 is marked by "CHANGE:"
 - "ref:key" and "ref:keyref" are used to specify cross-reference
@@ -140,73 +140,69 @@ $Id: bindingfile.rng,v 1.1 2005-04-15 20:09:43 kohsuke Exp $
         </zeroOrMore>
 
         <optional>
-          <grammar>
-            <start>
-              <element name="content">
-                <interleave>
-                  <choice>
-                    <!-- general content-property declaration -->
-                    <ref name="collection.particle.decl"/>
+          <element name="content">
+            <interleave>
+              <choice>
+                <!-- general content-property declaration -->
+                <ref name="collection.particle.decl"/>
 
-                    <!-- model-based content property declaration -->
-                    <group>
-                      <zeroOrMore>
+                <!-- model-based content property declaration -->
+                <group>
+                  <zeroOrMore>
+                    <choice>
+                      <element name="element-ref">
+                        <attribute name="name"/>
+                        <optional>
+                          <attribute name="property"/>
+                        </optional>
+                        <optional>
+                          <ref name="collection.att"/>
+                        </optional>
+                      </element>
+                      <element>
                         <choice>
-                          <element name="element-ref">
-                            <attribute name="name"/>
-                            <optional>
-                              <attribute name="property"/>
-                            </optional>
-                            <optional>
-                              <ref name="collection.att"/>
-                            </optional>
-                          </element>
-                          <element>
-                            <choice>
-                              <name>sequence</name>
-                              <name>choice</name>
-                            </choice>
-                            <ref name="collection.particle.decl"/>
-                          </element>
+                          <name>sequence</name>
+                          <name>choice</name>
                         </choice>
-                      </zeroOrMore>
-                      <optional><!-- followed by an optional <rest> -->
-                        <element name="rest">
-                          <ref name="collection.particle.decl"/>
-                        </element>
-                      </optional>
-                    </group>
-                  </choice>
-                </interleave>
-              </element>
-            </start>
-
-            <define name="collection.particle.decl">
-              <attribute name="property"/>
-              <optional>
-                <ref name="collection.att"/>
-              </optional>
-              <optional>
-                <attribute name="supertype"/>
-              </optional>
-            </define>
-
-            <define name="collection.att">
-              <attribute name="collection">
-                <!-- CHANGE: array is removed and set,vector are added -->
-                <choice>
-                  <value>list</value>
-                  <value>set</value>
-                  <value>vector</value>
-                </choice>
-              </attribute>
-            </define>
-          </grammar>
+                        <ref name="collection.particle.decl"/>
+                      </element>
+                    </choice>
+                  </zeroOrMore>
+                  <optional><!-- followed by an optional <rest> -->
+                    <element name="rest">
+                      <ref name="collection.particle.decl"/>
+                    </element>
+                  </optional>
+                </group>
+              </choice>
+            </interleave>
+          </element>
         </optional>
       </interleave>
     </element>
   </define>
- 
+
+  <define name="collection.particle.decl">
+    <attribute name="property"/>
+    <optional>
+      <ref name="collection.att"/>
+    </optional>
+    <optional>
+      <attribute name="supertype"/>
+    </optional>
+  </define>
+
+  <define name="collection.att">
+    <attribute name="collection">
+      <!-- CHANGE: array is removed and set,vector are added -->
+      <choice>
+        <value>list</value>
+        <value>set</value>
+        <value>vector</value>
+      </choice>
+    </attribute>
+  </define>
+
  
  
   <!-- conversion declaration -->
