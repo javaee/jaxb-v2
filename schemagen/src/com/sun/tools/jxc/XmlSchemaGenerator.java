@@ -497,7 +497,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> {
                     // handling for result 2
                     ValuePropertyInfo vp = (ValuePropertyInfo)c.getProperties().get(0);
                     SimpleType st = ((SimpleTypeHost)parent).simpleType().name(c.getTypeName().getLocalPart());
-                    st.restriction().base(vp.getType().getTypeName());
+                    st.restriction().base(vp.getTarget().getTypeName());
                     return;
                 } else {
                     // handling for result 1
@@ -508,14 +508,14 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> {
                         switch (p.kind()) {
                         case ATTRIBUTE:
                             AttributePropertyInfo ap = (AttributePropertyInfo) p;
-                            se.attribute().name(ap.getXmlName().getLocalPart()).type(ap.getType().getTypeName());
+                            se.attribute().name(ap.getXmlName().getLocalPart()).type(ap.getTarget().getTypeName());
                             break;
                         case VALUE:
                             TODO.checkSpec("what if vp.isCollection() == true?");
                             assert !valueProcessed;
                             if (valueProcessed) throw new IllegalStateException();
                             ValuePropertyInfo vp = (ValuePropertyInfo) p;
-                            se.base(vp.getType().getTypeName());
+                            se.base(vp.getTarget().getTypeName());
                             valueProcessed = true;
                             break;
                         case ELEMENT:   // error
@@ -662,7 +662,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> {
                 if (occurs == null) occurs = e;
                 QName tn = t.getTagName();
                 e.name(tn.getLocalPart());
-                writeTypeRef(e,t.getType());
+                writeTypeRef(e,t.getTarget());
                 if (t.isNillable()) {
                     e.nillable(true);
                 }
@@ -715,7 +715,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> {
             //   <attribute name="foo" type="xs:int"/>
             // </>
             LocalAttribute localAttribute = attr.attribute();
-            localAttribute.name(ap.getXmlName().getLocalPart()).type(ap.getType().getTypeName());
+            localAttribute.name(ap.getXmlName().getLocalPart()).type(ap.getTarget().getTypeName());
             if(ap.isRequired()) {
                 // TODO: not type safe
                 localAttribute.use("required");
