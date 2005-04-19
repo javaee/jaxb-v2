@@ -16,6 +16,11 @@ import javax.xml.transform.Source;
  * This annotation is used in conjunction with datatypes such as
  * {@link Image} or {@link Source} that are bound to base64-encoded binary in XML.
  *
+ * <p>
+ * If a property that has this annotation has a sibling property bound to
+ * the xmime:contentType attribute, and if in the instance the property has a value,
+ * the value of the attribute takes precedence and that will control the marshalling. 
+ *
  * @author Kohsuke Kawaguchi
  */
 @Retention(RUNTIME)
