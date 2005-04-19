@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Collections;
 
 import javax.xml.namespace.QName;
+import javax.activation.MimeType;
 
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
@@ -181,6 +182,10 @@ public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, 
 
     public ID idUse() {
         return ID.NONE;
+    }
+
+    public MimeType getExpectedMimeType() {
+        return null;
     }
 
     public Collection<CEnumConstant> getConstants() {

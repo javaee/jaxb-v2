@@ -3,17 +3,23 @@ package com.sun.xml.bind.v2.runtime.reflect;
 import java.io.IOException;
 
 import javax.xml.bind.annotation.XmlValue;
+import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
-import com.sun.xml.bind.v2.model.core.ID;
+import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
-import com.sun.xml.bind.v2.runtime.IDHandler;
+import com.sun.xml.bind.v2.model.runtime.RuntimeNonElementRef;
+import com.sun.xml.bind.v2.model.impl.RuntimeModelBuilder;
+import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.opt.OptimizedTransducedAccessorFactory;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Patcher;
+import com.sun.xml.bind.v2.TODO;
+import com.sun.xml.bind.WhiteSpaceProcessor;
 
 import org.xml.sax.SAXException;
 
@@ -99,17 +105,21 @@ public abstract class TransducedAccessor<BeanT> {
      * <p>
      * This allows the implementation to use an optimized code.
      */
-    public static TransducedAccessor get( RuntimePropertyInfo prop, Transducer xducer ) {
-        assert !prop.isCollection();
-        // TODO: explain why this assertion is true.
+    public static <T> TransducedAccessor<T> get(RuntimeNonElementRef ref) {
+        Transducer xducer = RuntimeModelBuilder.createTransducer(ref);
+        RuntimePropertyInfo prop = ref.getSource();
 
-        if(prop.id()==ID.ID)
-            xducer = new IDHandler.ID(xducer);
-        else {
-            if(xducer.isDefault()) {
-                TransducedAccessor xa = OptimizedTransducedAccessorFactory.get(prop);
-                if(xa!=null)    return xa;
-            }
+        if(prop.isCollection()) {
+            return new ListTransducedAccessorImpl(xducer,prop.getAccessor(),
+                    Lister.create(Navigator.REFLECTION.erasure(prop.getRawType()),prop.id()));
+        }
+
+        if(prop.id()==ID.IDREF)
+            return new IDREFTransducedAccessorImpl(prop.getAccessor());
+
+        if(xducer.isDefault()) {
+            TransducedAccessor xa = OptimizedTransducedAccessorFactory.get(prop);
+            if(xa!=null)    return xa;
         }
 
         if(xducer.useNamespace())
@@ -181,19 +191,78 @@ public abstract class TransducedAccessor<BeanT> {
     }
 
     /**
-     * Used to recover from errors.
+     * {@link TransducedAccessor} for IDREF.
+     *
+     * BeanT: the type of the bean that contains this the IDREF field.
+     * TargetT: the type of the bean pointed by IDREF.
      */
-    public static final TransducedAccessor ERROR = new TransducedAccessor() {
-        public CharSequence print(Object o) {
-            throw new UnsupportedOperationException();
+    private static final class IDREFTransducedAccessorImpl<BeanT,TargetT> extends TransducedAccessor<BeanT> {
+        private final Accessor<BeanT,TargetT> acc;
+        /**
+         * The object that an IDREF resolves to should be
+         * assignable to this type.
+         */
+        private final Class<TargetT> targetType;
+
+        public IDREFTransducedAccessorImpl(Accessor<BeanT, TargetT> acc) {
+            this.acc = acc;
+            this.targetType = acc.getValueType();
         }
 
-        public void parse(Object o, CharSequence lexical) {
-            throw new UnsupportedOperationException();
+        public String print(BeanT bean) throws AccessorException, SAXException {
+            TargetT target = acc.get(bean);
+            XMLSerializer w = XMLSerializer.getInstance();
+            try {
+                String id = w.grammar.getBeanInfo(target,true).getId(target,w);
+                if(id==null)
+                    w.errorMissingId(target);
+                return id;
+            } catch (JAXBException e) {
+                w.reportError(null,e);
+                return null;
+            }
         }
 
-        public boolean hasValue(Object o) {
-            throw new UnsupportedOperationException();
+        /**
+         * Resolves the ID and sets the resolved object to the field.
+         *
+         * @return true
+         *      if the resolution is successful. Otherwise false, in which case the
+         *      field is untouched.
+         */
+        private boolean resolveId(BeanT bean, String id, UnmarshallingContext context) throws AccessorException {
+            TargetT t = (TargetT)context.getObjectFromId(id);
+            if(t==null)     return false;
+
+            if(!targetType.isInstance(t)) {
+                // TODO: report an error to the context
+                TODO.prototype();
+            }
+            acc.set(bean,t);
+            return true;
         }
-    };
+
+        public void parse(final BeanT bean, CharSequence lexical) throws AccessorException {
+            final String idref = WhiteSpaceProcessor.trim(lexical).toString();
+            final UnmarshallingContext context = UnmarshallingContext.getInstance();
+            if(!resolveId(bean,idref,context)) {
+                // if we can't resolve it now, resolve it later
+                context.addPatcher(new Patcher() {
+                    public void run() throws SAXException {
+                        try {
+                            if(!resolveId(bean,idref,context)) {
+                                context.errorUnresolvedIDREF(bean,idref);
+                            }
+                        } catch (AccessorException e) {
+                            context.handleError(e);
+                        }
+                    }
+                });
+            }
+        }
+
+        public boolean hasValue(BeanT bean) throws AccessorException {
+            return acc.get(bean)!=null;
+        }
+    }
 }

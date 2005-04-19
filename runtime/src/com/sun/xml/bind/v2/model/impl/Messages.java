@@ -32,6 +32,7 @@ enum Messages {
     NO_IMAGE_WRITER, // 1 arg
 
     ILLEGAL_TYPE_FOR_ATTRIBUTE, // 1 arg
+    ILLEGAL_TYPE_FOR_VALUE, // 1 arg
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());

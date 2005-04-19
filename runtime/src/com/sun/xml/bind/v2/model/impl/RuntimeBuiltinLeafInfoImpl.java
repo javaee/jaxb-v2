@@ -24,9 +24,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.activation.DataHandler;
-import javax.activation.MimeTypeParseException;
-import javax.activation.MimeType;
 import javax.activation.DataSource;
+import javax.activation.MimeType;
+import javax.activation.MimeTypeParseException;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
 import javax.xml.bind.ValidationEvent;
@@ -217,7 +217,6 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
             classes that map to base64Binary / MTOM related classes.
             a part of the secondary binding.
         */
-        createMultipartLeafInfo(),
         new RuntimeBuiltinLeafInfoImpl<Image>(Image.class, createXS("base64Binary")) {
             public Image parse(CharSequence text) throws SAXException  {
                 try {
@@ -574,25 +573,6 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
         }
         // TODO: complete this table
     };
-
-    private static RuntimeBuiltinLeafInfoImpl<?> createMultipartLeafInfo() {
-        try {
-            // TODO: replace this with the real thing
-            return new RuntimeBuiltinLeafInfoImpl<Image>(Image.class, createXS("base64Binary"),createXS("hexBinary")) {
-                public Image parse(CharSequence text) {
-                    // TODO: implement this method later
-                    throw new UnsupportedOperationException();
-                }
-
-                public CharSequence print(Image v) {
-                    throw new UnsupportedOperationException();
-                }
-            };
-        } catch (Throwable e) {
-            // if JavaMail isn't present, don't die
-            return null;
-        }
-    }
 
     private static byte[] decodeBase64(CharSequence text) {
         if (text instanceof Base64Data) {

@@ -17,15 +17,15 @@ final class RuntimeArrayInfoImpl extends ArrayInfoImpl<Type,Class,Field,Method> 
         super(builder, upstream, arrayType);
     }
 
-    public Transducer getTransducer() {
-        return null;
-    }
-
     public Class getType() {
         return (Class)super.getType();
     }
 
     public RuntimeNonElement getItemType() {
         return (RuntimeNonElement)super.getItemType();
+    }
+
+    public Transducer getTransducer() {
+        return null;
     }
 }

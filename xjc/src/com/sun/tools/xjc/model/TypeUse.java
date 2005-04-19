@@ -1,5 +1,7 @@
 package com.sun.tools.xjc.model;
 
+import javax.activation.MimeType;
+
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JExpression;
 import com.sun.tools.xjc.model.nav.NType;
@@ -52,6 +54,11 @@ public interface TypeUse {
      * That's why we have this method in {@link TypeUse}.
      */
     ID idUse();
+
+    /**
+     * A {@link TypeUse} can have an associated MIME type.
+     */
+    MimeType getExpectedMimeType();
 
     /**
      * Creates a constant for the given lexical value.

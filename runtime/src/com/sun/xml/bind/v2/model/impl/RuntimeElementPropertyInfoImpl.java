@@ -5,6 +5,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementPropertyInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfo;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
@@ -36,5 +38,14 @@ class RuntimeElementPropertyInfoImpl extends ElementPropertyInfoImpl<Type,Class,
 
     public List<? extends RuntimeTypeInfo> ref() {
         return (List<? extends RuntimeTypeInfo>)super.ref();
+    }
+
+    @Override
+    protected RuntimeTypeRefImpl createTypeRef(QName name, Type type, boolean isNillable, String defaultValue) {
+        return new RuntimeTypeRefImpl(this,name,type,isNillable,defaultValue);
+    }
+
+    public List<RuntimeTypeRefImpl> getTypes() {
+        return (List<RuntimeTypeRefImpl>)super.getTypes();
     }
 }

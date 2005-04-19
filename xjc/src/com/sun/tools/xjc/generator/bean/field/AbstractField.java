@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AbstractField.java,v 1.1 2005-04-15 20:09:06 kohsuke Exp $
+ * @(#)$Id: AbstractField.java,v 1.2 2005-04-19 20:39:24 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -186,7 +186,7 @@ abstract class AbstractField implements FieldOutline {
             CTypeRef type = types.get(0);
             XmlElementWriter xew = field.annotate2(XmlElementWriter.class);
             xew.name(type.getTagName().getLocalPart())
-               .type(type.getType().toType(outline.parent(), IMPLEMENTATION))
+               .type(type.getTarget().toType(outline.parent(), IMPLEMENTATION))
                .namespace(type.getTagName().getNamespaceURI())
                .nillable(type.isNillable());
             if(type.getDefaultValue()!=null)

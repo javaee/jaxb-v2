@@ -13,7 +13,6 @@ import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.xml.bind.v2.NameConverter;
-import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.Util;
 
@@ -29,7 +28,6 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
     private final String privateName;
     private final String publicName;
     private final boolean isCollection;
-    private final ID id;
 
     @XmlTransient
     public final Locator locator;
@@ -56,8 +54,8 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
 
     private final List<CPluginCustomization> customizations;
 
-    protected CPropertyInfo(String name, boolean collection, ID id,
-                         List<CPluginCustomization> customizations, Locator locator) {
+    protected CPropertyInfo(String name, boolean collection,
+                            List<CPluginCustomization> customizations, Locator locator) {
         this.publicName = name;
         String n = NameConverter.standard.toVariableName(name);
         if(!JJavaName.isJavaIdentifier(n))
@@ -65,7 +63,6 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
         this.privateName = n;
 
         this.isCollection = collection;
-        this.id = id;
         this.locator = locator;
         if(customizations==null)
             this.customizations = Collections.emptyList();
@@ -140,9 +137,6 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
         return isCollection;
     }
 
-    public ID id() {
-        return id;
-    }
 
     public abstract Collection<? extends CTypeInfo> ref();
 

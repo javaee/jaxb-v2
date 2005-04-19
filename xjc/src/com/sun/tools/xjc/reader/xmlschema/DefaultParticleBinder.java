@@ -45,8 +45,8 @@ class DefaultParticleBinder extends ParticleBinder {
             // any name collision with that of the base class.
             CReferencePropertyInfo prop = new CReferencePropertyInfo(
                 getCurrentBean().getBaseClass()==null?"Content":"Rest",
-                true, false, ID.NONE,
-                builder.getBindInfo(p).toCustomizationList(),
+                true, false,
+                    builder.getBindInfo(p).toCustomizationList(),
                 p.getLocator() );
             RawTypeSetBuilder.build(p,false).addTo(prop);
             prop.javadoc = Messages.format( Messages.MSG_FALLBACK_JAVADOC,

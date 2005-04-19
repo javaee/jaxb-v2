@@ -1,7 +1,6 @@
 package com.sun.xml.bind.v2.runtime.property;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -9,8 +8,8 @@ import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.QNameMap;
 import com.sun.xml.bind.v2.model.core.ElementPropertyInfo;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
-import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementPropertyInfo;
+import com.sun.xml.bind.v2.model.runtime.RuntimeTypeRef;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.Transducer;
@@ -37,16 +36,16 @@ final class ListElementProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,L
     private final TransducedAccessor xacc;
 
     public ListElementProperty(JAXBContextImpl grammar, RuntimeElementPropertyInfo prop) {
-        super(grammar,prop);
+        super(grammar, prop);
 
         assert prop.isValueList();
         assert prop.getTypes().size()==1;   // required by the contract of isValueList
-        TypeRef<Type,Class> ref = prop.getTypes().get(0);
+        RuntimeTypeRef ref = prop.getTypes().get(0);
 
         tagName = grammar.nameBuilder.createElementName(ref.getTagName());
 
         // transducer for each item
-        Transducer xducer = createTransducerForLeaf(ref);
+        Transducer xducer = ref.getTransducer();
         // transduced accessor for the whole thing
         xacc = new ListTransducedAccessorImpl(xducer,acc,lister);
     }

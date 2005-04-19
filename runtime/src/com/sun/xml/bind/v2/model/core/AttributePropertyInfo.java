@@ -7,7 +7,7 @@ import javax.xml.namespace.QName;
  *
  * @author Kohsuke Kawaguchi
  */
-public interface AttributePropertyInfo<TypeT,ClassDeclT> extends PropertyInfo<TypeT,ClassDeclT> {
+public interface AttributePropertyInfo<TypeT,ClassDeclT> extends PropertyInfo<TypeT,ClassDeclT>, NonElementRef<TypeT,ClassDeclT> {
     /**
      * Gets the type of the attribute.
      *
@@ -18,7 +18,7 @@ public interface AttributePropertyInfo<TypeT,ClassDeclT> extends PropertyInfo<Ty
      * @return
      *      always non-null.
      */
-    NonElement<TypeT,ClassDeclT> getType();
+    NonElement<TypeT,ClassDeclT> getTarget();
 
     /**
      * Returns true if this attribute is mandatory.

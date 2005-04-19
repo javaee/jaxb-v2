@@ -33,11 +33,6 @@ public interface Property<BeanT> extends ChildElementUnmarshallerBuilder {
     void reset( BeanT o ) throws AccessorException;
 
     /**
-     * Returns true if this property is the ID property.
-     */
-    boolean isId();
-
-    /**
      * @see JaxBeanInfo#serializeBody(Object, XMLSerializer)
      *
      * @throws AccessorException

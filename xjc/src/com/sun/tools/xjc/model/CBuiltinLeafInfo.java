@@ -20,6 +20,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.activation.DataHandler;
+import javax.activation.MimeType;
 
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JExpr;
@@ -94,6 +95,13 @@ public abstract class CBuiltinLeafInfo extends BuiltinLeafInfoImpl<NType,NClass>
 
     public ID idUse() {
         return id;
+    }
+
+    /**
+     * {@link CBuiltinLeafInfo} never has a default associated MIME type.
+     */
+    public MimeType getExpectedMimeType() {
+        return null;
     }
 
     /**

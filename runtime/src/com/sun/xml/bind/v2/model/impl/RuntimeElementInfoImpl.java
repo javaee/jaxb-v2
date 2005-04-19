@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
+import java.util.Collections;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
@@ -12,13 +13,17 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.core.Adapter;
+import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.runtime.RuntimeClassInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementPropertyInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeNonElement;
+import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
+import com.sun.xml.bind.v2.model.runtime.RuntimeTypeRef;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
+import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -42,7 +47,7 @@ final class RuntimeElementInfoImpl extends ElementInfoImpl<Type,Class,Field,Meth
         return new RuntimePropertyImpl();
     }
 
-    class RuntimePropertyImpl extends PropertyImpl implements RuntimeElementPropertyInfo {
+    class RuntimePropertyImpl extends PropertyImpl implements RuntimeElementPropertyInfo, RuntimeTypeRef {
         public Type getRawType() {
             // TODO
             return Collection.class;
@@ -60,8 +65,24 @@ final class RuntimeElementInfoImpl extends ElementInfoImpl<Type,Class,Field,Meth
             return false;   // this method doesn't make sense here
         }
 
+        public List<? extends RuntimeTypeRef> getTypes() {
+            return Collections.singletonList(this);
+        }
+
         public List<? extends RuntimeNonElement> ref() {
             return (List<? extends RuntimeNonElement>)super.ref();
+        }
+
+        public RuntimeNonElement getTarget() {
+            return (RuntimeNonElement)super.getTarget();
+        }
+
+        public RuntimePropertyInfo getSource() {
+            return this;
+        }
+
+        public Transducer getTransducer() {
+            return RuntimeModelBuilder.createTransducer(this);
         }
     }
 
@@ -80,10 +101,6 @@ final class RuntimeElementInfoImpl extends ElementInfoImpl<Type,Class,Field,Meth
 
     public RuntimeClassInfo getScope() {
         return (RuntimeClassInfo)super.getScope();
-    }
-
-    public Transducer getTransducer() {
-        return null;
     }
 
     public RuntimeNonElement getContentType() {

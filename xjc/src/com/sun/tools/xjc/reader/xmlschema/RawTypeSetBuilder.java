@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
+import javax.activation.MimeType;
 
 import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CElement;
@@ -16,6 +17,7 @@ import com.sun.tools.xjc.model.CAdapter;
 import com.sun.tools.xjc.reader.RawTypeSet;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
+import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XSModelGroup;
 import com.sun.xml.xsom.XSModelGroupDecl;
@@ -119,8 +121,12 @@ public class RawTypeSetBuilder implements XSTermFunction<Multiplicity> {
             CElement elementBean = Ring.get(ClassSelector.class).bindToType(decl);
             if(elementBean==null)
                 refs.add(new RawTypeSet.XmlTypeRef(decl));
-            else
-                refs.add(new ElementClassRef(decl,elementBean));
+            else {
+                if(elementBean instanceof CClassInfo)
+                    refs.add(new CClassInfoRef(decl,(CClassInfo)elementBean));
+                else
+                    refs.add(new CElementInfoRef(decl,(CElementInfo)elementBean));
+            }
         }
 
         return Multiplicity.one;
@@ -165,32 +171,27 @@ public class RawTypeSetBuilder implements XSTermFunction<Multiplicity> {
         protected boolean isListOfValues() {
             return false;
         }
+
+        protected ID id() {
+            return ID.NONE;
+        }
     }
+
 
     /**
      * Reference to a class that maps from an element.
      */
-    public static final class ElementClassRef extends RawTypeSet.Ref {
-        public final CElement target;
+    public static final class CClassInfoRef extends RawTypeSet.Ref {
+        public final CClassInfo target;
         public final XSElementDecl decl;
 
-        ElementClassRef(XSElementDecl decl, CElement target) {
+        CClassInfoRef(XSElementDecl decl, CClassInfo target) {
             this.decl = decl;
             this.target = target;
         }
 
         protected CTypeRef toTypeRef(CElementPropertyInfo ep) {
-            if (target instanceof CClassInfo) {
-                CClassInfo ci = (CClassInfo) target;
-                return new CTypeRef(ci,target.getElementName(),decl.isNillable(),decl.getDefaultValue());
-            } else {
-                CElementInfo ei = (CElementInfo) target;
-                assert !target.isCollection();
-                CAdapter a = ei.getProperty().getAdapter();
-                if(a!=null && ep!=null) ep.setAdapter(a);
-
-                return new CTypeRef(ei.getContentType(),target.getElementName(),decl.isNillable(),decl.getDefaultValue());
-            }
+            return new CTypeRef(target,target.getElementName(),decl.isNillable(),decl.getDefaultValue());
         }
 
         protected void toElementRef(CReferencePropertyInfo prop) {
@@ -202,23 +203,65 @@ public class RawTypeSetBuilder implements XSTermFunction<Multiplicity> {
             if(decl.getSubstitutables().size()>1)
                 return false;
 
-            if (target instanceof CElementInfo) {
-                CElementInfo ei = (CElementInfo) target;
-                // we have no place to put an adater if this thing maps to a type
-                CElementPropertyInfo p = ei.getProperty();
-                if(p.getAdapter()!=null && (parent.refs.size()>1 || !parent.mul.isAtMostOnce()))
-                    return false;
-            }
+            return true;
+        }
+
+        protected boolean isListOfValues() {
+            return false;
+        }
+
+        protected ID id() {
+            return ID.NONE;
+        }
+    }
+
+    /**
+     * Reference to a class that maps from an element.
+     */
+    public static final class CElementInfoRef extends RawTypeSet.Ref {
+        public final CElementInfo target;
+        public final XSElementDecl decl;
+
+        CElementInfoRef(XSElementDecl decl, CElementInfo target) {
+            this.decl = decl;
+            this.target = target;
+        }
+
+        protected CTypeRef toTypeRef(CElementPropertyInfo ep) {
+            assert !target.isCollection();
+            CAdapter a = target.getProperty().getAdapter();
+            if(a!=null && ep!=null) ep.setAdapter(a);
+
+            return new CTypeRef(target.getContentType(),target.getElementName(),decl.isNillable(),decl.getDefaultValue());
+        }
+
+        protected void toElementRef(CReferencePropertyInfo prop) {
+            prop.getElements().add(target);
+        }
+
+        protected boolean canBeType(RawTypeSet parent) {
+            // if element substitution can occur, no way it can be mapped to a list of types
+            if(decl.getSubstitutables().size()>1)
+                return false;
+
+            // we have no place to put an adater if this thing maps to a type
+            CElementPropertyInfo p = target.getProperty();
+            if(p.getAdapter()!=null && (parent.refs.size()>1 || !parent.mul.isAtMostOnce()))
+                return false;
 
             return true;
         }
 
         protected boolean isListOfValues() {
-            if (target instanceof CElementInfo) {
-                CElementInfo ei = (CElementInfo) target;
-                return ei.getProperty().isValueList();
-            }
-            return false;
+            return target.getProperty().isValueList();
+        }
+
+        protected ID id() {
+            return target.getProperty().id();
+        }
+
+        protected MimeType getExpectedMimeType() {
+            return target.getProperty().getExpectedMimeType();
         }
     }
 }

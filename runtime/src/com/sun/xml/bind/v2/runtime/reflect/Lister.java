@@ -7,16 +7,22 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.WeakHashMap;
+
+import javax.xml.bind.JAXBException;
 
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.core.ID;
-import com.sun.xml.bind.v2.runtime.IDHandler;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Patcher;
+import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
+
+import org.xml.sax.SAXException;
 
 /**
  * Used to list individual values of a multi-value property, and
@@ -81,7 +87,7 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
             return null;
 
         if(idness==ID.IDREF)
-            l = new IDHandler.IDREFS(l);
+            l = new IDREFS(l);
 
         return l;
     }
@@ -258,6 +264,120 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
     };
 
     /**
+     * {@link Lister} for IDREFS.
+     */
+    private static final class IDREFS<BeanT,PropT> extends Lister<BeanT,PropT,String,IDREFS<BeanT,PropT>.Pack> {
+        private final Lister<BeanT,PropT,Object,Object> core;
+
+        public IDREFS(Lister<BeanT,PropT,Object,Object> core) {
+            this.core = core;
+        }
+
+        public ListIterator<String> iterator(PropT prop, XMLSerializer context) {
+            final ListIterator i = core.iterator(prop,context);
+
+            return new IDREFSIterator(i, context);
+        }
+
+        public Pack startPacking(BeanT bean, Accessor<BeanT, PropT> acc) {
+            return new Pack(bean,acc);
+        }
+
+        public void addToPack(Pack pack, String item) {
+            pack.add(item);
+        }
+
+        public void endPacking(Pack pack, BeanT bean, Accessor<BeanT, PropT> acc) {
+        }
+
+        public void reset(BeanT bean, Accessor<BeanT, PropT> acc) throws AccessorException {
+            core.reset(bean,acc);
+        }
+
+        /**
+         * PackT for this lister.
+         */
+        private class Pack implements Patcher {
+            private final BeanT bean;
+            private final List<String> idrefs = new ArrayList<String>();
+            private final UnmarshallingContext context;
+            private final Accessor<BeanT,PropT> acc;
+
+            public Pack(BeanT bean, Accessor<BeanT,PropT> acc) {
+                this.bean = bean;
+                this.acc = acc;
+                this.context = UnmarshallingContext.getInstance();
+                context.addPatcher(this);
+            }
+
+            public void add(String item) {
+                idrefs.add(item);
+            }
+
+            /**
+             * Resolves IDREFS and fill in the actual array.
+             */
+            public void run() throws SAXException {
+                try {
+                    Object pack = core.startPacking(bean,acc);
+
+                    for( String id : idrefs ) {
+                        Object t = context.getObjectFromId(id);
+                        if(t==null) {
+                            context.errorUnresolvedIDREF(bean,id);
+                        } else {
+                            TODO.prototype(); // TODO: check if the type of t is proper.
+                            core.addToPack(pack,t);
+                        }
+                    }
+
+                    core.endPacking(pack,bean,acc);
+                } catch (AccessorException e) {
+                    context.handleError(e);
+                }
+            }
+        }
+    }
+
+    /**
+     * {@link Iterator} for IDREFS lister.
+     *
+     * <p>
+     * Only in ArrayElementProperty we need to get the actual
+     * referenced object. This is a kind of ugly way to make that work.
+     */
+    public static final class IDREFSIterator implements ListIterator<String> {
+        private final ListIterator i;
+        private final XMLSerializer context;
+        private Object last;
+
+        private IDREFSIterator(ListIterator i, XMLSerializer context) {
+            this.i = i;
+            this.context = context;
+        }
+
+        public boolean hasNext() {
+            return i.hasNext();
+        }
+
+        /**
+         * Returns the last referenced object (not just its ID)
+         */
+        public Object last() {
+            return last;
+        }
+
+        public String next() throws SAXException, JAXBException {
+            last = i.next();
+            String id = context.grammar.getBeanInfo(last,true).getId(last,context);
+            if(id==null) {
+                context.errorMissingId(last);
+            }
+            return id;
+        }
+    }
+
+    /**
      * Special {@link Lister} used to recover from an error.
      */
     public static final Lister ERROR = new Lister() {
@@ -288,4 +408,5 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
             throw new IllegalStateException();
         }
     };
+
 }

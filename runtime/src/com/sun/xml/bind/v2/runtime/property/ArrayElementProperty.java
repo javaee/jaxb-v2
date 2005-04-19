@@ -12,12 +12,10 @@ import javax.xml.stream.XMLStreamException;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.QNameMap;
 import com.sun.xml.bind.v2.TODO;
-import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementPropertyInfo;
-import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfo;
-import com.sun.xml.bind.v2.runtime.IDHandler;
+import com.sun.xml.bind.v2.model.runtime.RuntimeTypeRef;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 import com.sun.xml.bind.v2.runtime.Name;
@@ -58,20 +56,20 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
         assert prop!=null;
         this.prop = prop;
 
-        List<? extends TypeRef<Type,Class>> types = prop.getTypes();
+        List<? extends RuntimeTypeRef> types = prop.getTypes();
 
         Name n = null;
 
-        for (TypeRef<Type,Class> typeRef : types) {
+        for (RuntimeTypeRef typeRef : types) {
             // TODO: fix me
             TODO.prototype();
 
             // TODO: consider more unified handling of primitive/boxed issue.
-            Class type = (Class)typeRef.getType().getType();
+            Class type = (Class)typeRef.getTarget().getType();
             if(type.isPrimitive())
                 type = Util.primitiveToBox.get(type);
 
-            JaxBeanInfo beanInfo = grammar.getOrCreate((RuntimeTypeInfo) typeRef.getType());
+            JaxBeanInfo beanInfo = grammar.getOrCreate(typeRef.getTarget());
             TagAndType tt = new TagAndType(
                                 grammar.nameBuilder.createElementName(typeRef.getTagName()),
                                 beanInfo);
@@ -103,7 +101,7 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
 
             ListIterator<ItemT> itr = lister.iterator(list, w);
 
-            boolean isIdref = itr instanceof IDHandler.IDREFSIterator;
+            boolean isIdref = itr instanceof Lister.IDREFSIterator;
 
             while(itr.hasNext()) {
                 try {
@@ -113,7 +111,7 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
                         if(isIdref)
                             // This should be the only place where we need to be aware
                             // that the iterator is iterating IDREFS.
-                            itemType = ((IDHandler.IDREFSIterator)itr).last().getClass();
+                            itemType = ((Lister.IDREFSIterator)itr).last().getClass();
 
                         // normally, this returns non-null
                         TagAndType tt = typeMap.get(itemType);
@@ -165,7 +163,7 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
 
         Unmarshaller.Handler leaveElement = new Unmarshaller.LeaveElementHandler(Unmarshaller.ERROR, tail);
 
-        for (TypeRef<Type,Class> typeRef : prop.getTypes()) {
+        for (RuntimeTypeRef typeRef : prop.getTypes()) {
 
             Name tagName = chain.context.nameBuilder.createElementName(typeRef.getTagName());
             Unmarshaller.Handler item = createItemUnmarshaller(typeRef,leaveElement,offset);
@@ -199,13 +197,13 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
      * @param typeRef
      *      the type of the child for which we are creating the unmarshaller.
      */
-    private final Unmarshaller.Handler createItemUnmarshaller(TypeRef<Type,Class> typeRef, Unmarshaller.Handler tail, final int offset) {
-        if(((RuntimeTypeInfo)typeRef.getType()).getTransducer()!=null || prop.id()==ID.IDREF) {
-            final Transducer<ItemT> _xducer = createTransducerForLeaf(typeRef);
+    private final Unmarshaller.Handler createItemUnmarshaller(RuntimeTypeRef typeRef, Unmarshaller.Handler tail, final int offset) {
+        final Transducer xducer = typeRef.getTransducer();
+        if(xducer!=null) {
             return new Unmarshaller.RawTextHandler(Unmarshaller.ERROR,tail) {
                 public void processText(UnmarshallingContext context, CharSequence s) throws SAXException {
                     try {
-                        context.getScope(offset).add(acc,lister,_xducer.parse(s));
+                        context.getScope(offset).add(acc,lister,xducer.parse(s));
                     } catch (AccessorException e) {
                         handleGenericException(e,true);
                     }

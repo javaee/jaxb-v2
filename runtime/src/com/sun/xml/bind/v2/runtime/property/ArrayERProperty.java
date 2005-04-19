@@ -6,6 +6,7 @@ import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.QNameMap;
 import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
+import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.unmarshaller.EventArg;

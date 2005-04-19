@@ -1,6 +1,7 @@
 package com.sun.tools.xjc.model;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+import javax.activation.MimeType;
 
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JExpr;
@@ -22,12 +23,14 @@ final class TypeUseImpl implements TypeUse {
     private final boolean collection;
     private final CAdapter adapter;
     private final ID id;
+    private final MimeType expectedMimeType;
 
 
-    public TypeUseImpl(CTypeInfo itemType, boolean collection, ID id, CAdapter adapter) {
+    public TypeUseImpl(CTypeInfo itemType, boolean collection, ID id, MimeType expectedMimeType, CAdapter adapter) {
         this.coreType = itemType;
         this.collection = collection;
         this.id = id;
+        this.expectedMimeType = expectedMimeType;
         this.adapter = adapter;
     }
 
@@ -45,6 +48,10 @@ final class TypeUseImpl implements TypeUse {
 
     public ID idUse() {
         return id;
+    }
+
+    public MimeType getExpectedMimeType() {
+        return expectedMimeType;
     }
 
     public boolean equals(Object o) {

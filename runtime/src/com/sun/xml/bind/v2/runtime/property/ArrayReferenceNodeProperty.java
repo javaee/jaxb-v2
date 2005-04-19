@@ -11,6 +11,7 @@ import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.QNameMap;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
+import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElement;
 import com.sun.xml.bind.v2.model.runtime.RuntimeReferencePropertyInfo;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;

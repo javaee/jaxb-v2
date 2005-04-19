@@ -26,7 +26,7 @@ import com.sun.xml.bind.v2.model.core.TypeRef;
  * @author Kohsuke Kawaguchi
  */
 class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
-    extends ERPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
+    extends PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     implements ElementPropertyInfo<TypeT,ClassDeclT>
 {
     /**
@@ -37,7 +37,7 @@ class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     private final List<TypeInfo<TypeT,ClassDeclT>> ref = new AbstractList<TypeInfo<TypeT,ClassDeclT>>() {
         public TypeInfo<TypeT,ClassDeclT> get(int index) {
-            return getTypes().get(index).getType();
+            return getTypes().get(index).getTarget();
         }
 
         public int size() {
@@ -69,7 +69,7 @@ class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         super(parent, propertySeed);
     }
 
-    public final List<TypeRefImpl<TypeT,ClassDeclT>> getTypes() {
+    public List<? extends TypeRefImpl<TypeT,ClassDeclT>> getTypes() {
         if(types==null) {
             types = new ArrayList<TypeRefImpl<TypeT,ClassDeclT>>();
             XmlElement[] ann=null;
@@ -125,7 +125,7 @@ class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     /**
      * Used by {@link PropertyInfoImpl} to create new instances of {@link TypeRef}
      */
-    private TypeRefImpl<TypeT,ClassDeclT> createTypeRef(QName name,TypeT type,boolean isNillable,String defaultValue) {
+    protected TypeRefImpl<TypeT,ClassDeclT> createTypeRef(QName name,TypeT type,boolean isNillable,String defaultValue) {
         return new TypeRefImpl<TypeT,ClassDeclT>(this,name,type,isNillable,defaultValue);
     }
 

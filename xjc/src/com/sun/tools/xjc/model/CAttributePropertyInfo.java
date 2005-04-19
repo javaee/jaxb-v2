@@ -1,6 +1,5 @@
 package com.sun.tools.xjc.model;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -17,36 +16,20 @@ import org.xml.sax.Locator;
  *
  * @author Kohsuke Kawaguchi
  */
-public final class CAttributePropertyInfo extends CPropertyInfo implements AttributePropertyInfo<NType,NClass> {
+public final class CAttributePropertyInfo extends CSingleTypePropertyInfo implements AttributePropertyInfo<NType,NClass> {
 
     private final QName attName;
-    private final TypeUse type;
     private final boolean isRequired;
 
     public CAttributePropertyInfo(String name, List<CPluginCustomization> customizations,
                                   Locator locator, QName attName, TypeUse type, boolean required ) {
-        super(name, type.isCollection(), type.idUse(), customizations, locator);
+        super(name, type, customizations, locator);
         isRequired = required;
-        this.type = type;
         this.attName = attName;
     }
 
     public boolean isRequired() {
         return isRequired;
-    }
-
-    public List<? extends CTypeInfo> ref() {
-        return Collections.singletonList(getType());
-    }
-
-    public CNonElement getType() {
-        CNonElement r = (CNonElement)type.getInfo();
-        assert r!=null;
-        return r;
-    }
-
-    public CAdapter getAdapter() {
-        return type.getAdapterUse();
     }
 
     public QName getXmlName() {

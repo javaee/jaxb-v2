@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
+import javax.activation.MimeType;
 
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
@@ -24,6 +25,7 @@ import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.model.core.TypeRef;
+import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
 
@@ -85,7 +87,7 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         //
         // TypeRef impl
         //
-        public NonElement getType() {
+        public NonElement getTarget() {
             return contentType;
         }
         public QName getTagName() {
@@ -157,6 +159,15 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
         public ID id() {
             return id;
+        }
+
+        public MimeType getExpectedMimeType() {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
+
+        public PropertyInfo<TypeT,ClassDeclT> getSource() {
+            return this;
         }
     };
 

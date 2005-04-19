@@ -6,6 +6,7 @@ import javax.xml.namespace.QName;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.xml.bind.v2.model.core.TypeRef;
+import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.Util;
 
 /**
@@ -35,7 +36,7 @@ public final class CTypeRef implements TypeRef<NType,NClass> {
         this.defaultValue = defaultValue;
     }
 
-    public CNonElement getType() {
+    public CNonElement getTarget() {
         return type;
     }
 
@@ -52,6 +53,11 @@ public final class CTypeRef implements TypeRef<NType,NClass> {
     }
 
     public boolean isLeaf() {
+        // TODO: implement this method later
+        throw new UnsupportedOperationException();
+    }
+
+    public PropertyInfo<NType, NClass> getSource() {
         // TODO: implement this method later
         throw new UnsupportedOperationException();
     }

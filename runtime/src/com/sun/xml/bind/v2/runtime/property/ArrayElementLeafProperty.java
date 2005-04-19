@@ -1,13 +1,11 @@
 package com.sun.xml.bind.v2.runtime.property;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.TODO;
-import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementPropertyInfo;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
@@ -36,7 +34,7 @@ final class ArrayElementLeafProperty<BeanT,ListT,ItemT> extends ArrayElementProp
         assert prop.getTypes().size()==1;
 //        assert prop.getTypes().get(0).getType().isLeaf(); // this assertion is incorrect in case it's IDREF
 
-        xducer = super.createTransducerForLeaf(prop.getTypes().get(0));
+        xducer = prop.getTypes().get(0).getTransducer();
         assert xducer!=null;
     }
 
@@ -47,14 +45,5 @@ final class ArrayElementLeafProperty<BeanT,ListT,ItemT> extends ArrayElementProp
         // TODO: think about the type substitution impact
         TODO.prototype();
         w.text(xducer.print(item), fieldName);
-    }
-
-    /**
-     * Reuse the same transducer instance.
-     */
-    protected Transducer<ItemT> createTransducerForLeaf(TypeRef<Type, Class> typeRef) {
-        assert typeRef==prop.getTypes().get(0);
-        assert xducer!=null;
-        return xducer;
     }
 }

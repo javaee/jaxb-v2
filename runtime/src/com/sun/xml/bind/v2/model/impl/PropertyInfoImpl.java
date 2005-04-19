@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
+import javax.activation.MimeType;
 
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
@@ -36,13 +37,6 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     private Boolean isCollection;
 
     private final ID id;
-
-    /**
-     * Computed lazily.
-     *
-     * @see {@link #getType()}.
-     */
-    private TypeInfo<TypeT,ClassDeclT> type;
 
     protected final ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> parent;
 
@@ -96,13 +90,9 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         }
     }
 
-
-    public TypeInfo<TypeT,ClassDeclT>  getType() {
-        if(type==null) {
-            assert parent.builder!=null : "this method must be called during the build stage";
-            type = parent.builder.getTypeInfo(_getType(),this);
-        }
-        return type;
+    public final MimeType getExpectedMimeType() {
+        // TODO: implement this method later
+        throw new UnsupportedOperationException();
     }
 
     /**

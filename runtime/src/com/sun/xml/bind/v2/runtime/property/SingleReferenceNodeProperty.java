@@ -57,7 +57,6 @@ final class SingleReferenceNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT
     }
 
     public String getIdValue(BeanT beanT) {
-        assert !isId(); // node property can never be an ID
         return null;
     }
 

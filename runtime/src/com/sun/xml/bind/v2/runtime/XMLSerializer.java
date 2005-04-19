@@ -15,16 +15,17 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.ValidationEventLocator;
+import javax.xml.bind.attachment.AttachmentMarshaller;
 import javax.xml.bind.helpers.NotIdentifiableEventImpl;
 import javax.xml.bind.helpers.ValidationEventImpl;
 import javax.xml.bind.helpers.ValidationEventLocatorImpl;
-import javax.xml.bind.attachment.AttachmentMarshaller;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.sax.SAXResult;
+import javax.activation.MimeType;
 
 import com.sun.xml.bind.annotation.DomHandler;
 import com.sun.xml.bind.api.AccessorException;
@@ -699,6 +700,26 @@ public final class XMLSerializer extends Coordinator implements ValidationEventH
         }
     }
 
+
+    private MimeType expectedMimeType;
+
+    /**
+     * This method is used by {@link MimeTypedTransducer} to set the expected MIME type
+     * for the encapsulated {@link Transducer}.
+     */
+    public MimeType setExpectedMimeType(MimeType expectedMimeType) {
+        MimeType old = this.expectedMimeType;
+        this.expectedMimeType = expectedMimeType;
+        return old;
+    }
+
+    /**
+     * Returns a non-null valid object if there's an expected MIME type in the current context.
+     */
+    public MimeType getExpectedMimeType() {
+        return expectedMimeType;
+    }
+
     void reconcileID() throws SAXException {
         // find objects that were not a part of the object graph
         idReferencedObjects.removeAll(objectsWithId);
@@ -748,6 +769,16 @@ public final class XMLSerializer extends Coordinator implements ValidationEventH
             Messages.MISSING_OBJECT.format(fieldName),
                 getCurrentLocation(fieldName),
             new NullPointerException() ));
+    }
+
+    /**
+     * Called when a referenced object doesn't have an ID.
+     */
+    public void errorMissingId(Object obj) throws SAXException {
+        reportError( new ValidationEventImpl(
+            ValidationEvent.ERROR,
+            Messages.MISSING_ID.format(obj),
+            new ValidationEventLocatorImpl(obj)) );
     }
 
     public ValidationEventLocator getCurrentLocation(String fieldName) {

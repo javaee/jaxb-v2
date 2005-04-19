@@ -17,8 +17,8 @@ import com.sun.xml.bind.v2.model.nav.Navigator;
  *
  * @author Kohsuke Kawaguchi
  */
-abstract class TypeInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> implements
-        TypeInfo<TypeT,ClassDeclT>, Locatable {
+abstract class TypeInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
+        implements TypeInfo<TypeT,ClassDeclT>, Locatable {
 
     /**
      * The Java class that caused this Java class to be a part of the JAXB processing.

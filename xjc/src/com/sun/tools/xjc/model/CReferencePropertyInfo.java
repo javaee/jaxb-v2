@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
+import javax.activation.MimeType;
 
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
@@ -34,9 +35,9 @@ public final class CReferencePropertyInfo extends CPropertyInfo implements Refer
     private final boolean isMixed;
     private WildcardMode wildcard;
 
-    public CReferencePropertyInfo(String name, boolean collection, boolean isMixed, ID id,
+    public CReferencePropertyInfo(String name, boolean collection, boolean isMixed,
                                   List<CPluginCustomization> customizations, Locator locator) {
-        super(name, collection||isMixed, id, customizations, locator );
+        super(name, collection||isMixed, customizations, locator );
         this.isMixed = isMixed;
     }
 
@@ -118,6 +119,14 @@ public final class CReferencePropertyInfo extends CPropertyInfo implements Refer
         return PropertyKind.REFERENCE;
     }
 
+    /**
+     * A reference property can never be ID/IDREF because they always point to
+     * other element classes.
+     */
+    public ID id() {
+        return ID.NONE;
+    }
+
     public WildcardMode getWildcard() {
         return wildcard;
     }
@@ -132,5 +141,9 @@ public final class CReferencePropertyInfo extends CPropertyInfo implements Refer
             return NavigatorImpl.create(W3CDomHandler.class);
         else
             return null;
+    }
+
+    public MimeType getExpectedMimeType() {
+        return null;
     }
 }

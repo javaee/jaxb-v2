@@ -34,7 +34,7 @@ final class ValueProperty<BeanT,ListT,ItemT> extends PropertyImpl<BeanT> {
 
     public ValueProperty(JAXBContextImpl grammar, RuntimeValuePropertyInfo prop) {
         super(grammar,prop);
-        xacc = prop.getTransducedAccessor();
+        xacc = TransducedAccessor.get(prop);
     }
 
     public final void serializeBody(BeanT o, XMLSerializer w) throws SAXException, AccessorException, IOException, XMLStreamException {

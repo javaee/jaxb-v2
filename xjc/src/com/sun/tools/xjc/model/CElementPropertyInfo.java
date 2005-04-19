@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
+import javax.activation.MimeType;
 
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
@@ -27,6 +28,7 @@ public final class CElementPropertyInfo extends CPropertyInfo implements Element
      */
     private final boolean required;
 
+    private final MimeType expectedMimeType;
     /**
      *
      * <p>
@@ -36,6 +38,9 @@ public final class CElementPropertyInfo extends CPropertyInfo implements Element
 
     private final boolean isValueList;
 
+    private ID id;
+
+
     /**
      * List of referenced types.
      */
@@ -43,18 +48,25 @@ public final class CElementPropertyInfo extends CPropertyInfo implements Element
 
     private final List<CNonElement> ref = new AbstractList<CNonElement>() {
         public CNonElement get(int index) {
-            return getTypes().get(index).getType();
+            return getTypes().get(index).getTarget();
         }
         public int size() {
             return getTypes().size();
         }
     };
 
-    public CElementPropertyInfo(String name, CollectionMode collection, ID id,
+    // TODO: shouldn't they get id and expectedMimeType from TypeUses of CTypeRef?
+    public CElementPropertyInfo(String name, CollectionMode collection, ID id, MimeType expectedMimeType,
                                 List<CPluginCustomization> customizations, Locator locator, boolean required) {
-        super(name, collection.col, id, customizations, locator);
+        super(name, collection.col, customizations, locator);
         this.required = required;
+        this.id = id;
+        this.expectedMimeType = expectedMimeType;
         this.isValueList = collection.val;
+    }
+
+    public ID id() {
+        return id;
     }
 
     public List<CTypeRef> getTypes() {
@@ -108,6 +120,10 @@ public final class CElementPropertyInfo extends CPropertyInfo implements Element
 
     public final PropertyKind kind() {
         return PropertyKind.ELEMENT;
+    }
+
+    public MimeType getExpectedMimeType() {
+        return expectedMimeType;
     }
 
     public static enum CollectionMode {
