@@ -43,6 +43,7 @@ import com.sun.tools.xjc.AbortException;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.generator.annotation.ri.XmlAnyAttributeWriter;
+import com.sun.tools.xjc.generator.annotation.ri.XmlMimeTypeWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlEnumValueWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlEnumWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlJavaTypeAdapterWriter;
@@ -71,6 +72,7 @@ import com.sun.tools.xjc.util.CodeModelClassFactory;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
+import com.sun.xml.bind.annotation.XmlMimeType;
 
 /**
  * Generates fields and accessors.
@@ -658,10 +660,11 @@ public final class BeanGenerator implements Outline
 
     /**
      * Generates {@link XmlJavaTypeAdapter} from {@link PropertyInfo} if necessary.
-     * Also generates {@link XmlID} and {@link XmlIDREF} if necessary.
+     * Also generates other per-property annotations
+     * (such as {@link XmlID}, {@link XmlIDREF}, and {@link XmlMimeType} if necessary.
      */
-    public final void generateAdapterIfNecessary(PropertyInfo<NType,NClass> adaptable, JAnnotatable field) {
-        Adapter<NType,NClass> adapter = adaptable.getAdapter();
+    public final void generateAdapterIfNecessary(PropertyInfo<NType,NClass> prop, JAnnotatable field) {
+        Adapter<NType,NClass> adapter = prop.getAdapter();
         if (adapter != null ) {
             TODO.prototype( "using the ri version of XmlJavaTypeAdapter, " +
                             "w/o print and parse methods, not the spec version" );
@@ -671,7 +674,7 @@ public final class BeanGenerator implements Outline
             xjtw.value(adapter.adapterType.toType(this,Aspect.EXPOSED));
         }
 
-        switch(adaptable.id()) {
+        switch(prop.id()) {
         case ID:
             field.annotate(XmlID.class);
             break;
@@ -679,6 +682,9 @@ public final class BeanGenerator implements Outline
             field.annotate(XmlIDREF.class);
             break;
         }
+
+        if(prop.getExpectedMimeType()!=null)
+            field.annotate2(XmlMimeTypeWriter.class).value(prop.getExpectedMimeType().toString());
     }
 
     public final JClass addRuntime(Class clazz) {
