@@ -26,7 +26,7 @@ import com.sun.xml.bind.v2.model.nav.Navigator;
  * @author Kohsuke Kawaguchi
  */
 class ReferencePropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
-    extends ERPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
+    extends PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     implements ReferencePropertyInfo<TypeT,ClassDeclT>
 {
     /**

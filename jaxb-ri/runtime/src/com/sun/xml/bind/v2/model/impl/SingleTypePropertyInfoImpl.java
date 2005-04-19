@@ -1,0 +1,92 @@
+package com.sun.xml.bind.v2.model.impl;
+
+import java.util.Collections;
+import java.util.List;
+
+import com.sun.xml.bind.v2.model.core.NonElement;
+import com.sun.xml.bind.v2.model.core.PropertyInfo;
+import com.sun.xml.bind.v2.model.runtime.RuntimeNonElementRef;
+import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
+import com.sun.xml.bind.v2.runtime.Transducer;
+import com.sun.xml.bind.v2.runtime.reflect.Accessor;
+import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
+
+/**
+ * {@link PropertyInfoImpl} that can only have one type.
+ *
+ * Specifically, {@link AttributePropertyInfoImpl} and {@link ValuePropertyInfoImpl}.
+ *
+ * @author Kohsuke Kawaguchi
+ */
+abstract class SingleTypePropertyInfoImpl<T,C,F,M>
+    extends PropertyInfoImpl<T,C,F,M> {
+
+    /**
+     * Computed lazily.
+     *
+     * @see {@link #getTarget()}.
+     */
+    private NonElement<T,C> type;
+
+    public SingleTypePropertyInfoImpl(ClassInfoImpl<T,C,F,M> classInfo, PropertySeed<T,C,F,M> propertySeed) {
+        super(classInfo, propertySeed);
+        if(seed instanceof RuntimeClassInfoImpl.RuntimePropertySeed)
+            this.acc = ((RuntimeClassInfoImpl.RuntimePropertySeed)seed).getAccessor();
+        else
+            this.acc = null;
+    }
+
+    public List<? extends NonElement<T,C>> ref() {
+        return Collections.singletonList(getTarget());
+    }
+
+    public NonElement<T,C> getTarget() {
+        if(type==null) {
+            assert parent.builder!=null : "this method must be called during the build stage";
+            type = parent.builder.getTypeInfo(_getType(),this);
+        }
+        return type;
+    }
+
+    public PropertyInfo<T,C> getSource() {
+        return this;
+    }
+
+
+//
+//
+// technically these code belong to runtime implementation, but moving the code up here
+// allows this to be shared between RuntimeValuePropertyInfoImpl and RuntimeAttributePropertyInfoImpl
+//
+//
+
+    private final Accessor acc;
+    /**
+     * Lazily created.
+     */
+    private Transducer xducer;
+
+    public T getRawType() {
+        return seed.getRawType();
+    }
+
+    public Accessor getAccessor() {
+        return acc;
+    }
+
+
+    public Transducer getTransducer() {
+        if(xducer==null) {
+            xducer = RuntimeModelBuilder.createTransducer((RuntimeNonElementRef)this);
+            if(xducer==null) {
+                parent().builder.reportError(new IllegalAnnotationException(
+                    Messages.ILLEGAL_TYPE_FOR_VALUE.format(getTarget().getType()),
+                    this
+                ));
+                // avoid repeating the same error by setting a xducer.
+                xducer = RuntimeBuiltinLeafInfoImpl.STRING;
+            }
+        }
+        return xducer;
+    }
+}

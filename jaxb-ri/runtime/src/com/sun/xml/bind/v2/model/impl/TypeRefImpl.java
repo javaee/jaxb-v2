@@ -3,20 +3,21 @@ package com.sun.xml.bind.v2.model.impl;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.model.core.NonElement;
+import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.model.core.TypeRef;
 
 /**
  * @author Kohsuke Kawaguchi
  */
-final class TypeRefImpl<TypeT,ClassDeclT> implements TypeRef<TypeT,ClassDeclT> {
+class TypeRefImpl<TypeT,ClassDeclT> implements TypeRef<TypeT,ClassDeclT> {
     private final QName elementName;
     private final TypeT type;
-    private ElementPropertyInfoImpl<TypeT,ClassDeclT,?,?> owner;
+    protected final ElementPropertyInfoImpl<TypeT,ClassDeclT,?,?> owner;
     private NonElement<TypeT,ClassDeclT> ref;
     private final boolean isNillable;
     private String defaultValue;
 
-    public TypeRefImpl( ElementPropertyInfoImpl<TypeT,ClassDeclT,?,?> owner, QName elementName, TypeT type, boolean isNillable, String defaultValue) {
+    public TypeRefImpl(ElementPropertyInfoImpl<TypeT, ClassDeclT, ?, ?> owner, QName elementName, TypeT type, boolean isNillable, String defaultValue) {
         this.owner = owner;
         this.elementName = elementName;
         this.type = type;
@@ -27,7 +28,7 @@ final class TypeRefImpl<TypeT,ClassDeclT> implements TypeRef<TypeT,ClassDeclT> {
         assert type!=null;
     }
 
-    public NonElement<TypeT,ClassDeclT> getType() {
+    public NonElement<TypeT,ClassDeclT> getTarget() {
         if(ref==null)
             calcRef();
         return ref;
@@ -54,5 +55,9 @@ final class TypeRefImpl<TypeT,ClassDeclT> implements TypeRef<TypeT,ClassDeclT> {
         // we can't do this eagerly because of a cyclic dependency
         ref = owner.parent.builder.getTypeInfo(type,owner);
         assert ref!=null;
+    }
+
+    public PropertyInfo<TypeT,ClassDeclT> getSource() {
+        return owner;
     }
 }

@@ -13,6 +13,7 @@ import javax.xml.stream.XMLStreamException;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.model.core.Element;
+import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.runtime.RuntimeClassInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
@@ -96,7 +97,7 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
         boolean elementOnly = true;
         for( RuntimePropertyInfo info : ps ) {
             Property p = PropertyFactory.create(owner,info);
-            if(p.isId())
+            if(info.id()==ID.ID)
                 idProperty = p;
             properties[idx++] = p;
             elementOnly &= info.elementOnlyContent();

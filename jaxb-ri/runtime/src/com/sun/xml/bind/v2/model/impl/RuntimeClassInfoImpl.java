@@ -19,6 +19,7 @@ import com.sun.xml.bind.v2.model.runtime.RuntimeClassInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElement;
 import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeValuePropertyInfo;
+import com.sun.xml.bind.v2.model.runtime.RuntimeNonElementRef;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
@@ -30,7 +31,8 @@ import org.xml.sax.SAXException;
 /**
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
-class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method> implements RuntimeClassInfo, RuntimeElement {
+class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
+        implements RuntimeClassInfo, RuntimeElement {
 
     protected final ReflectionNavigator nav;
 
@@ -115,7 +117,7 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method> implem
         if(valuep==null)
             return null;
 
-        return new TransducerImpl(getClazz(),valuep.getTransducedAccessor());
+        return new TransducerImpl(getClazz(),TransducedAccessor.get(valuep));
     }
 
     /**

@@ -80,7 +80,7 @@ abstract class AbstractMappingImpl<InfoT extends CElement> implements Mapping {
                     // content model like (A|B),C is not eligible
                     return null;
 
-                result.add(createPropertyImpl(ep,ref.get(0).getTagName(),ref.get(0).getType()));
+                result.add(createPropertyImpl(ep,ref.get(0).getTagName(),ref.get(0).getTarget()));
             } else
             if (p instanceof ReferencePropertyInfo) {
                 CReferencePropertyInfo rp = (CReferencePropertyInfo) p;

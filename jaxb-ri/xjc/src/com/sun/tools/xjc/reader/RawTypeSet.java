@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
+import javax.activation.MimeType;
 
 import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CElementInfo;
@@ -23,6 +24,7 @@ import com.sun.tools.xjc.reader.xmlschema.SimpleTypeBuilder;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIGlobalBinding;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.core.Element;
+import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XSType;
 
@@ -91,7 +93,7 @@ public final class RawTypeSet {
         for( Ref r : refs ) {
             if(!r.canBeType(this))
                 return false;   // veto
-            if(!types.add(r.toTypeRef(null).getType().getType()))
+            if(!types.add(r.toTypeRef(null).getTarget().getType()))
                 return false;   // collision
             if(r.isListOfValues()) {
                 if(refs.size()>1 || !mul.isAtMostOnce())
@@ -122,6 +124,22 @@ public final class RawTypeSet {
             t.toElementRef(prop);
     }
 
+    public ID id() {
+        for( Ref t : refs ) {
+            ID id = t.id();
+            if(id!=ID.NONE)    return id;
+        }
+        return ID.NONE;
+    }
+
+    public MimeType getExpectedMimeType() {
+        for( Ref t : refs ) {
+            MimeType mt = t.getExpectedMimeType();
+            if(mt!=null)    return mt;
+        }
+        return null;
+    }
+
 
     /**
      * A reference to something.
@@ -145,6 +163,17 @@ public final class RawTypeSet {
          */
         protected abstract boolean canBeType(RawTypeSet parent);
         protected abstract boolean isListOfValues();
+        /**
+         * When this {@link RawTypeSet} binds to a {@link CElementPropertyInfo},
+         * this method is used to determine if the property is ID or not.
+         */
+        protected abstract ID id();
+
+        /**
+         * When this {@link RawTypeSet} binds to a {@link CElementPropertyInfo},
+         * this method is used to determine if the property has an associated expected MIME type or not.
+         */
+        protected MimeType getExpectedMimeType() { return null; }
     }
 
     /**
@@ -228,6 +257,10 @@ public final class RawTypeSet {
 
         protected boolean isListOfValues() {
             return target.isCollection();
+        }
+
+        protected ID id() {
+            return target.idUse();
         }
     }
 

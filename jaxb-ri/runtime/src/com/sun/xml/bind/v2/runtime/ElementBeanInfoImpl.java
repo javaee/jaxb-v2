@@ -69,10 +69,6 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
                 throw new UnsupportedOperationException();
             }
 
-            public boolean isId() {
-                return false;
-            }
-
             public void serializeBody(JAXBElement e, XMLSerializer target) throws SAXException, IOException, XMLStreamException {
                 Class scope = e.getScope();
                 if(e.isGlobalScope())   scope = null;

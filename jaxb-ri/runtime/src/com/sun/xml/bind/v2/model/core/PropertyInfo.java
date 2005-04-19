@@ -2,9 +2,10 @@ package com.sun.xml.bind.v2.model.core;
 
 import java.util.Collection;
 
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlType;
+import javax.activation.MimeType;
 
 /**
  * Information about a JAXB-bound property.
@@ -81,4 +82,9 @@ public interface PropertyInfo<TypeT,ClassDeclT> {
      * @see XmlIDREF
      */
     ID id();
+
+    /**
+     * Expected MIME type, if any.
+     */
+    MimeType getExpectedMimeType();
 }

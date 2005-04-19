@@ -16,13 +16,13 @@ import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.helpers.ValidationEventImpl;
+import javax.xml.bind.helpers.ValidationEventLocatorImpl;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.ObjectLifeCycle;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
-import com.sun.xml.bind.unmarshaller.Messages;
 import com.sun.xml.bind.util.AttributesImpl;
 import com.sun.xml.bind.v2.AssociationMap;
 import com.sun.xml.bind.v2.runtime.Coordinator;
@@ -259,7 +259,7 @@ public final class UnmarshallingContext extends Coordinator
                     // the SAXParserFactory.setNamespaceAware(true). When this happens, you see
                     // the namespace URI is reported as empty whereas you expect something else.
                     throw new SAXParseException(
-                        Messages.format( Messages.UNEXPECTED_ROOT_ELEMENT2,
+                        Messages.UNEXPECTED_ROOT_ELEMENT.format(
                             uri, local, computeExpectedRootElements() ),
                         getLocator() );
                 }
@@ -1108,6 +1108,16 @@ public final class UnmarshallingContext extends Coordinator
      */
     public void handleError(Exception e) throws SAXException {
         handleEvent(new ValidationEventImpl(ValidationEvent.ERROR,e.getMessage(),locator.getLocation(),e),true);
+    }
+
+    /**
+     * Called when there's no corresponding ID value.
+     */
+    public void errorUnresolvedIDREF(Object bean, String idref) throws SAXException {
+        handleEvent( new ValidationEventImpl(
+            ValidationEvent.ERROR,
+            Messages.UNRESOLVED_IDREF.format(idref),
+            new ValidationEventLocatorImpl(bean)), true );
     }
 
 

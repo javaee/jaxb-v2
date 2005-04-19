@@ -43,7 +43,7 @@ public final class AttributeProperty<BeanT> extends PropertyImpl<BeanT> {
         super(p,prop);
         this.required = prop.isRequired();
         this.attName = p.nameBuilder.createAttributeName(prop.getXmlName());
-        this.xacc = prop.getTransducedAccessor();
+        this.xacc = TransducedAccessor.get(prop);
     }
 
     public void serializeAttributes(BeanT o, XMLSerializer w) throws SAXException, AccessorException, IOException, XMLStreamException {
@@ -73,7 +73,6 @@ public final class AttributeProperty<BeanT> extends PropertyImpl<BeanT> {
     public PropertyKind getKind() {
         return PropertyKind.ATTRIBUTE;
     }
-
 
     public void reset(BeanT o) {
         // TODO: implement this method later

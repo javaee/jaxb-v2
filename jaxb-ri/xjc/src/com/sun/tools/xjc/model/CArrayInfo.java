@@ -3,6 +3,7 @@ package com.sun.tools.xjc.model;
 import java.util.List;
 
 import javax.xml.namespace.QName;
+import javax.activation.MimeType;
 
 import com.sun.codemodel.JType;
 import com.sun.tools.xjc.model.nav.NClass;

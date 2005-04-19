@@ -1,9 +1,11 @@
 package com.sun.tools.xjc.model;
 
-import com.sun.xml.bind.v2.model.core.ID;
-import com.sun.xml.bind.v2.model.core.Adapter;
-import com.sun.xml.bind.v2.TODO;
+import javax.activation.MimeType;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+
+import com.sun.xml.bind.v2.TODO;
+import com.sun.xml.bind.v2.model.core.Adapter;
+import com.sun.xml.bind.v2.model.core.ID;
 
 /**
  * Factory methods to create a new {@link TypeUse} from an existing one.
@@ -18,7 +20,15 @@ public final class TypeUseFactory {
             // I don't think we let users tweak the idness, so
             // this error must indicate an inconsistency within the RI/spec.
             throw new IllegalStateException();
-        return new TypeUseImpl( t.getInfo(), t.isCollection(), id, t.getAdapterUse() );
+        return new TypeUseImpl( t.getInfo(), t.isCollection(), id, t.getExpectedMimeType(), t.getAdapterUse() );
+    }
+
+    public static TypeUse makeMimeTyped( TypeUse t, MimeType mt ) {
+        if(t.getExpectedMimeType()!=null)
+            // I don't think we let users tweak the idness, so
+            // this error must indicate an inconsistency within the RI/spec.
+            throw new IllegalStateException();
+        return new TypeUseImpl( t.getInfo(), t.isCollection(), t.idUse(), mt, t.getAdapterUse() );
     }
 
     public static TypeUse makeCollection( TypeUse t ) {
@@ -30,12 +40,12 @@ public final class TypeUseFactory {
             TODO.checkSpec();
             return CBuiltinLeafInfo.STRING_LIST;
         }
-        return new TypeUseImpl( t.getInfo(), true, t.idUse(), null );
+        return new TypeUseImpl( t.getInfo(), true, t.idUse(), t.getExpectedMimeType(), null );
     }
 
     public static TypeUse adapt(TypeUse t, CAdapter adapter) {
         assert t.getAdapterUse()==null;    // TODO: we don't know how to handle double adapters yet.
-        return new TypeUseImpl(t.getInfo(),t.isCollection(),t.idUse(),adapter);
+        return new TypeUseImpl(t.getInfo(),t.isCollection(),t.idUse(),t.getExpectedMimeType(),adapter);
     }
 
     /**

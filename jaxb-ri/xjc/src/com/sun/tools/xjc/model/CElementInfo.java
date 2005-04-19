@@ -97,7 +97,9 @@ public final class CElementInfo extends AbstractCTypeInfoImpl implements Element
         this.parent = parent;
         this.property = new CElementPropertyInfo("Value",
                 contentType.isCollection()?REPEATED_VALUE:NOT_REPEATED,
-                contentType.idUse(),null,location,true);
+                contentType.idUse(),
+                contentType.getExpectedMimeType(),
+                null,location,true);
         this.property.setAdapter(contentType.getAdapterUse());
         property.getTypes().add(new CTypeRef((CNonElement)contentType.getInfo(),tagName,true,defaultValue));
         this.type = NavigatorImpl.createParameterizedType(

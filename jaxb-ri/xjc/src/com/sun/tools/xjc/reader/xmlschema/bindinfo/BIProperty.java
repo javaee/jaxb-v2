@@ -250,7 +250,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
             name = defaultName;
 
         TODO.prototype(); // how do we handle ID?
-        return wrapUp(new CValuePropertyInfo(name,getCustomizations(source),source.getLocator(), tu ),source);
+        return wrapUp(new CValuePropertyInfo(name, /*TODO*/getCustomizations(source),source.getLocator(), tu ),source);
     }
 
     public CAttributePropertyInfo createAttributeProperty( XSAttributeUse use, TypeUse tu ) {
@@ -303,7 +303,9 @@ public final class BIProperty extends AbstractDeclarationImpl {
         TODO.prototype(); // how do we handle ID?
         CElementPropertyInfo prop = wrapUp(
             new CElementPropertyInfo(
-                name, types.getCollectionMode(), ID.NONE,
+                name, types.getCollectionMode(),
+                types.id(),
+                types.getExpectedMimeType(),
                 getCustomizations(source),
                 source.getLocator(), types.isRequired()),
             source);
@@ -332,8 +334,8 @@ public final class BIProperty extends AbstractDeclarationImpl {
             new CReferencePropertyInfo(
                 name,
                 types.getCollectionMode().isRepeated()||isMixed,
-                isMixed, ID.NONE,
-                getCustomizations(source), source.getLocator() ),
+                isMixed,
+                    getCustomizations(source), source.getLocator() ),
             source);
 
         types.addTo(prop);

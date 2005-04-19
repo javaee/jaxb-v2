@@ -3,6 +3,8 @@ package com.sun.tools.xjc.model;
 import java.util.List;
 import java.util.Collections;
 
+import javax.activation.MimeType;
+
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JCodeModel;
@@ -43,6 +45,13 @@ abstract class AbstractCTypeInfoImpl implements CTypeInfo {
 
     public final ID idUse() {
         return ID.NONE;
+    }
+
+    /**
+     * No default {@link MimeType}.
+     */
+    public MimeType getExpectedMimeType() {
+        return null;
     }
 
     public List<CPluginCustomization> getCustomizations() {

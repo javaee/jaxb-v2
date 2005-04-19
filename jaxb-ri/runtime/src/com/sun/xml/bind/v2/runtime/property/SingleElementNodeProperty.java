@@ -55,7 +55,7 @@ final class SingleElementNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT> 
             acceptedElements[i] = prop.getTypes().get(i).getTagName();
 
         for (TypeRef<Type,Class> e : prop.getTypes()) {
-            JaxBeanInfo beanInfo = grammar.getOrCreate((RuntimeTypeInfo) e.getType());
+            JaxBeanInfo beanInfo = grammar.getOrCreate((RuntimeTypeInfo) e.getTarget());
             if(nt==null)    nt = e.getTagName();
             typeNames.put( beanInfo.jaxbType, new TagAndType(
                 grammar.nameBuilder.createElementName(e.getTagName()),beanInfo) );
@@ -77,7 +77,6 @@ final class SingleElementNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT> 
     }
 
     public String getIdValue(BeanT beanT) {
-        assert !isId(); // node property can never be an ID
         return null;
     }
 
@@ -118,7 +117,7 @@ final class SingleElementNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT> 
         Unmarshaller.Handler head = tail;
 
         for (TypeRef<Type,Class> e : prop.getTypes()) {
-            JaxBeanInfo bi = grammar.getOrCreate((RuntimeTypeInfo) e.getType());
+            JaxBeanInfo bi = grammar.getOrCreate((RuntimeTypeInfo) e.getTarget());
             Unmarshaller.Handler h = new Unmarshaller.SpawnChildSetHandler(bi,tail,false,acc);
             if(nillable)
                 h = new Unmarshaller.SingleXsiNilHandler(h,tail,acc);
@@ -134,7 +133,7 @@ final class SingleElementNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT> 
         JAXBContextImpl grammar = chain.context;
 
         for (TypeRef<Type,Class> e : prop.getTypes()) {
-            JaxBeanInfo bi = grammar.getOrCreate((RuntimeTypeInfo) e.getType());
+            JaxBeanInfo bi = grammar.getOrCreate((RuntimeTypeInfo) e.getTarget());
             Unmarshaller.Handler h = new Unmarshaller.SpawnChildSetHandler(bi,tail,false,acc);
             if(nillable)
                 h = new Unmarshaller.SingleXsiNilHandler(h,tail,acc);

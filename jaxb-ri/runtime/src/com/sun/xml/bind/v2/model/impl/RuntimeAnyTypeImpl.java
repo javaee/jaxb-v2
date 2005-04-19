@@ -14,9 +14,9 @@ public final class RuntimeAnyTypeImpl extends AnyTypeImpl<Type,Class> implements
         super(Navigator.REFLECTION);
     }
 
-    public static final RuntimeNonElement theInstance = new RuntimeAnyTypeImpl();
-
     public Transducer getTransducer() {
         return null;
     }
+
+    public static final RuntimeNonElement theInstance = new RuntimeAnyTypeImpl();
 }

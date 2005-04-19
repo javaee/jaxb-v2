@@ -4,9 +4,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
-import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.runtime.RuntimeAttributePropertyInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementPropertyInfo;
+import com.sun.xml.bind.v2.model.runtime.RuntimeNonElement;
 import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeValuePropertyInfo;
@@ -86,11 +86,8 @@ public abstract class PropertyFactory {
     }
 
     private static boolean isLeaf(RuntimePropertyInfo info) {
-        if(info.id()==ID.IDREF)
-            return true;
-
         Collection<? extends RuntimeTypeInfo> types = info.ref();
-        if(types.size()==1 && types.iterator().next().getTransducer()!=null )
+        if(types.size()==1 && ((RuntimeNonElement)types.iterator().next()).getTransducer()!=null )
             return true;
 
         return false;

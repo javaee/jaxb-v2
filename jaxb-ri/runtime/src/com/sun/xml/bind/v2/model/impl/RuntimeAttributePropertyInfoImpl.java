@@ -7,10 +7,11 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 import com.sun.xml.bind.v2.model.core.ID;
+import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimeAttributePropertyInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeNonElement;
-import com.sun.xml.bind.v2.runtime.IDHandler;
+import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
 import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
@@ -24,73 +25,28 @@ import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
 class RuntimeAttributePropertyInfoImpl extends AttributePropertyInfoImpl<Type,Class,Field,Method>
     implements RuntimeAttributePropertyInfo {
 
-    private final Accessor acc;
-
-    /**
-     * Lazily created.
-     */
-    private TransducedAccessor xacc;
-
     RuntimeAttributePropertyInfoImpl(RuntimeClassInfoImpl classInfo, PropertySeed<Type,Class,Field,Method> seed) {
         super(classInfo, seed);
-        this.acc = ((RuntimeClassInfoImpl.RuntimePropertySeed)seed).getAccessor();
-    }
-
-    public Type getRawType() {
-        return seed.getRawType();
-    }
-
-    public Accessor getAccessor() {
-        return acc;
     }
 
     public boolean elementOnlyContent() {
         return true;
     }
 
-    public RuntimeNonElement getType() {
-        return (RuntimeNonElement) super.getType();
+    public RuntimeNonElement getTarget() {
+        return (RuntimeNonElement) super.getTarget();
     }
 
     public List<? extends RuntimeNonElement> ref() {
         return (List<? extends RuntimeNonElement>)super.ref();
     }
 
-    public TransducedAccessor getTransducedAccessor() {
-        if(xacc==null)
-            calcTransducedAccessor();
-        return xacc;
-    }
-
-    // TODO: share this code with RuntimeValuePropertyInfoImpl
-    private <BeanT,ItemT> void calcTransducedAccessor() {
-        Transducer<ItemT> xducer = getType().getTransducer();
-        if(xducer==null && id()!=IDREF) {
-            parent().builder.reportError(new IllegalAnnotationException(
-                Messages.ILLEGAL_TYPE_FOR_ATTRIBUTE.format(getType().getType()),
-                this
-            ));
-            xacc = TransducedAccessor.ERROR;
-            return;
-        }
-        if(!isCollection()) {
-            if(id()==IDREF) {
-                // IDREF uses a special transduced accessor
-                xacc = new IDHandler.IDREF(getAccessor().optimize());
-            } else {
-                xacc = TransducedAccessor.get(this,xducer);
-            }
-        } else {
-            if(id()==IDREF) {
-                xducer = (Transducer)RuntimeBuiltinLeafInfoImpl.STRING;
-            }
-            xacc = new ListTransducedAccessorImpl(xducer,acc,
-                    Lister.create(Navigator.REFLECTION.erasure(getRawType()),id()));
-        }
+    public RuntimePropertyInfo getSource() {
+        return this;
     }
 
     public void link() {
-        getTransducedAccessor();
+        getTransducer();
         super.link();
     }
 }

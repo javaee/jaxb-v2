@@ -1,18 +1,14 @@
 package com.sun.xml.bind.v2.runtime.property;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.QNameMap;
-import com.sun.xml.bind.v2.TODO;
-import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
-import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementPropertyInfo;
-import com.sun.xml.bind.v2.runtime.IDHandler;
+import com.sun.xml.bind.v2.model.runtime.RuntimeTypeRef;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
@@ -36,20 +32,14 @@ final class SingleElementLeafProperty<BeanT> extends PropertyImpl<BeanT> {
 
     public SingleElementLeafProperty(JAXBContextImpl context, RuntimeElementPropertyInfo prop) {
         super(context,prop);
-        TypeRef<Type,Class> ref = prop.getTypes().get(0);
+        RuntimeTypeRef ref = prop.getTypes().get(0);
         tagName = context.nameBuilder.createElementName(ref.getTagName());
         assert tagName!=null;
         nillable = ref.isNillable();
         defaultValue = ref.getDefaultValue();
         this.acc = prop.getAccessor().optimize();
 
-        if(prop.id()==ID.IDREF) {
-            // IDREF uses a special transduced accessor
-            xacc = new IDHandler.IDREF(acc);
-        } else {
-            TODO.prototype();
-            xacc = TransducedAccessor.get(prop,prop.ref().iterator().next().getTransducer());
-        }
+        xacc = TransducedAccessor.get(ref);
         assert xacc!=null;
     }
 
