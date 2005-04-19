@@ -32,6 +32,7 @@ import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import com.sun.xml.bind.util.ValidationEventLocatorExImpl;
 import com.sun.xml.bind.v2.WellKnownNamespace;
+import com.sun.xml.bind.v2.model.runtime.RuntimeBuiltinLeafInfo;
 import com.sun.xml.bind.v2.runtime.output.MTOMXmlOutput;
 import com.sun.xml.bind.v2.runtime.output.NamespaceContextImpl;
 import com.sun.xml.bind.v2.runtime.output.XmlOutput;
@@ -436,6 +437,13 @@ public final class XMLSerializer extends Coordinator implements ValidationEventH
     // TODO: think about the exception handling.
     // I suppose we don't want to use SAXException. -kk
 
+    public void childAsRoot(Object obj) throws JAXBException, IOException, SAXException, XMLStreamException {
+        Object old = currentTarget;
+        currentTarget = obj;
+        grammar.getBeanInfo(obj, true).serializeRoot(obj,this);
+        currentTarget = old;
+    }
+
     /**
      * The equivalent of:
      * 
@@ -652,11 +660,21 @@ public final class XMLSerializer extends Coordinator implements ValidationEventH
     }
 
     /**
+     * Gets the MIME type with which the binary content shall be printed.
+     *
+     * <p>
+     * This method shall be used from those {@link RuntimeBuiltinLeafInfo} that are
+     * bound to base64Binary.
      *
      * @see JAXBContextImpl#getXMIMEContentType(Object)
      */
     public String getXMIMEContentType() {
-        return grammar.getXMIMEContentType(currentTarget);
+        // xmime:contentType takes precedence
+        String v = grammar.getXMIMEContentType(currentTarget);
+        if(v!=null)     return v;
+
+        // then look for the current in-scope @XmlMimeType
+        return expectedMimeType.toString();
     }
 
     private void startElement() {
