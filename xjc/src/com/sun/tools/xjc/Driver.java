@@ -117,6 +117,10 @@ public class Driver {
             public Listener() {
                 super(out==null?new PrintStream(new NullStream()):out);
             }
+
+            public void generatedFile(String fileName) {
+                message(fileName);
+            }
             public void message(String msg) {
                 if(status!=null)
                     status.println(msg);
