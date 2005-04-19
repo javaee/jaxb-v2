@@ -217,7 +217,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
 
         try {
             prewrite(out,isFragment(),postInitAction);
-            context.getBeanInfo(obj, true).serializeRoot(obj,serializer);
+            serializer.childAsRoot(obj);
             postwrite(out);
         } catch( SAXException e ) {
             throw new MarshalException(e);
