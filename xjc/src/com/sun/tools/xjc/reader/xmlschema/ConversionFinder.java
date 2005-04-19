@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
+import javax.activation.MimeTypeParseException;
 
 import com.sun.codemodel.util.JavadocEscapeWriter;
 import com.sun.tools.xjc.model.CBuiltinLeafInfo;
@@ -509,21 +510,21 @@ public final class ConversionFinder extends BindingComponent {
                 MimeTypeRange mt = MimeTypeRange.merge(types);
 
                 if(mt.majorType.equals("image"))
-                    return CBuiltinLeafInfo.IMAGE;
-
-//                if(mt.majorType.equals("multipart"))
-//                    return CBuiltinLeafInfo.MIME_MULTIPART;
+                    return CBuiltinLeafInfo.IMAGE.makeMimeTyped(mt.toMimeType());
 
                 if(( mt.majorType.equals("application") || mt.majorType.equals("text"))
                         && isXml(mt.subType))
-                    return CBuiltinLeafInfo.XML_SOURCE;
+                    return CBuiltinLeafInfo.XML_SOURCE.makeMimeTyped(mt.toMimeType());
 
                 TODO.checkSpec();
-                return CBuiltinLeafInfo.DATA_HANDLER;
+                return CBuiltinLeafInfo.DATA_HANDLER.makeMimeTyped(mt.toMimeType());
             } catch (ParseException e) {
                 getErrorReporter().error( referer.getLocator(),
                     Messages.format(Messages.ERR_ILLEGAL_EXPECTED_MIME_TYPE,emt, e.getMessage()) );
                 // recover by using the default
+            } catch (MimeTypeParseException e) {
+                getErrorReporter().error( referer.getLocator(),
+                    Messages.format(Messages.ERR_ILLEGAL_EXPECTED_MIME_TYPE,emt, e.getMessage()) );
             }
         }
         // default

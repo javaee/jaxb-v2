@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AbstractField.java,v 1.2 2005-04-19 20:39:24 kohsuke Exp $
+ * @(#)$Id: AbstractField.java,v 1.3 2005-04-19 21:36:58 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -10,8 +10,8 @@
 package com.sun.tools.xjc.generator.bean.field;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collection;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlValue;
 import javax.xml.namespace.QName;
@@ -33,13 +33,13 @@ import com.sun.tools.xjc.generator.annotation.spec.XmlElementsWriter;
 import com.sun.tools.xjc.generator.bean.ClassOutlineImpl;
 import com.sun.tools.xjc.model.CAttributePropertyInfo;
 import com.sun.tools.xjc.model.CElement;
+import com.sun.tools.xjc.model.CElementInfo;
 import com.sun.tools.xjc.model.CElementPropertyInfo;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.model.CReferencePropertyInfo;
 import com.sun.tools.xjc.model.CTypeInfo;
 import com.sun.tools.xjc.model.CTypeRef;
 import com.sun.tools.xjc.model.CValuePropertyInfo;
-import com.sun.tools.xjc.model.CElementInfo;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.ClassOutline;

@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.text.ParseException;
 
+import javax.activation.MimeType;
+import javax.activation.MimeTypeParseException;
+
 /**
  * @author Kohsuke Kawaguchi
  */
@@ -42,10 +45,14 @@ public class MimeTypeRange {
         this(new StringCutter(s,true));
     }
 
+    /**
+     * Used only to produce the static constants within this class.
+     */
     private static MimeTypeRange create(String s) {
         try {
             return new MimeTypeRange(s);
         } catch (ParseException e) {
+            // we only use this method for known inputs
             throw new Error(e);
         }
     }
@@ -87,6 +94,12 @@ public class MimeTypeRange {
         }
 
         this.q = q;
+    }
+
+    public MimeType toMimeType() throws MimeTypeParseException {
+        // due to the additional error check done in the MimeType class,
+        // an error at this point is possible
+        return new MimeType(toString());
     }
 
     public String toString() {

@@ -130,6 +130,13 @@ public abstract class CBuiltinLeafInfo extends BuiltinLeafInfoImpl<NType,NClass>
     }
 
     /**
+     * Creates a {@link TypeUse} that represents a MIME-type assocaited version of this {@link CBuiltinLeafInfo}.
+     */
+    public final TypeUse makeMimeTyped( MimeType mt ) {
+        return TypeUseFactory.makeMimeTyped(this,mt);
+    }
+
+    /**
      * {@link CBuiltinLeafInfo} for Java classes that have
      * the spec defined built-in binding semantics.
      */
