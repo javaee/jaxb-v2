@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 import javax.activation.MimeType;
+import javax.activation.MimeTypeParseException;
 
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
@@ -28,6 +29,7 @@ import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
+import com.sun.xml.bind.annotation.XmlMimeType;
 
 /**
  * {@link ElementInfo} implementation.
@@ -79,6 +81,7 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     private final ID id;
 
     private final PropertyImpl property;
+    private final MimeType expectedMimeType;
 
     /**
      * Singleton instance of {@link ElementPropertyInfo} for this element.
@@ -162,8 +165,7 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         }
 
         public MimeType getExpectedMimeType() {
-            // TODO
-            throw new UnsupportedOperationException();
+            return expectedMimeType;
         }
 
         public PropertyInfo<TypeT,ClassDeclT> getSource() {
@@ -237,6 +239,21 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         id = calcId();
 
         property = createPropertyImpl();
+
+        // TODO: share with PropertyInfoImpl
+        XmlMimeType xmt = reader().getMethodAnnotation(XmlMimeType.class,method,this);
+        MimeType mt = null;
+        if(xmt!=null) {
+            try {
+                mt = new MimeType(xmt.value());
+            } catch (MimeTypeParseException e) {
+                builder.reportError(new IllegalAnnotationException(
+                    Messages.ILLEGAL_MIME_TYPE.format(xmt.value(),e.getMessage()),
+                    xmt
+                ));
+            }
+        }
+        this.expectedMimeType = mt;
     }
 
     final QName parseElementName(XmlElementDecl e) {

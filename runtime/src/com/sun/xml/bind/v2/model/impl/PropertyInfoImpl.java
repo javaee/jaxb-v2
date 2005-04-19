@@ -2,9 +2,10 @@ package com.sun.xml.bind.v2.model.impl;
 
 import java.util.Collection;
 
+import javax.activation.MimeType;
+import javax.activation.MimeTypeParseException;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
-import javax.activation.MimeType;
 
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
@@ -16,6 +17,8 @@ import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.Location;
+import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
+import com.sun.xml.bind.annotation.XmlMimeType;
 
 /**
  * Default partial implementation for {@link PropertyInfo}.
@@ -38,12 +41,28 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     private final ID id;
 
+    private final MimeType expectedMimeType;
+
     protected final ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> parent;
 
     protected PropertyInfoImpl(ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> parent, PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> spi) {
         this.seed = spi;
         this.parent = parent;
         this.id = calcId();
+
+        XmlMimeType xmt = seed.readAnnotation(XmlMimeType.class);
+        MimeType mt = null;
+        if(xmt!=null) {
+            try {
+                mt = new MimeType(xmt.value());
+            } catch (MimeTypeParseException e) {
+                parent.builder.reportError(new IllegalAnnotationException(
+                    Messages.ILLEGAL_MIME_TYPE.format(xmt.value(),e.getMessage()),
+                    xmt
+                ));
+            }
+        }
+        this.expectedMimeType = mt; 
     }
 
     public ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> parent() {
@@ -91,8 +110,7 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     }
 
     public final MimeType getExpectedMimeType() {
-        // TODO: implement this method later
-        throw new UnsupportedOperationException();
+        return expectedMimeType;
     }
 
     /**
