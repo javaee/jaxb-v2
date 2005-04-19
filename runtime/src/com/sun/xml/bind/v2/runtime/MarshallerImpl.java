@@ -191,9 +191,10 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
                 serializer.endNamespaceDecls();
                 serializer.endAttributes();
             } else { // normal cases
-                if( obj == null )
-                    throw new IllegalArgumentException(Messages.format(Messages.NOT_MARSHALLABLE));
-                serializer.childAsXsiType(obj,"root",bi);
+                if(obj==null)
+                    serializer.writeXsiNilTrue();
+                else
+                    serializer.childAsXsiType(obj,"root",bi);
             }
             serializer.endElement();
             postwrite(out);
