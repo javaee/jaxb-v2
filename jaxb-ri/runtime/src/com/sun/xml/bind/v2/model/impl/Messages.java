@@ -33,6 +33,7 @@ enum Messages {
 
     ILLEGAL_TYPE_FOR_ATTRIBUTE, // 1 arg
     ILLEGAL_TYPE_FOR_VALUE, // 1 arg
+    ILLEGAL_MIME_TYPE, // 2 args
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());
