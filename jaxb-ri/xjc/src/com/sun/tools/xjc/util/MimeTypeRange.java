@@ -103,7 +103,10 @@ public class MimeTypeRange {
     }
 
     public String toString() {
-        StringBuilder sb = new StringBuilder(majorType+'/'+subType+"; q="+q);
+        StringBuilder sb = new StringBuilder(majorType+'/'+subType);
+        if(q!=1)
+            sb.append("; q=").append(q);
+        
         for( Map.Entry<String,String> p : parameters.entrySet() ) {
             // I'm too lazy to quote the value
             sb.append("; ").append(p.getKey()).append('=').append(p.getValue());
