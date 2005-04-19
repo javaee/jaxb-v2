@@ -22,11 +22,11 @@ final class ProgressCodeWriter implements CodeWriter {
     private final XJCListener progress;
 
     public OutputStream open(JPackage pkg, String fileName) throws IOException {
-        if(pkg.isUnnamed()) progress.message(fileName);
-        else
-            progress.message(
-                pkg.name().replace('.',File.separatorChar)
-                    +File.separatorChar+fileName);
+        String name = pkg.name().replace('.',File.pathSeparatorChar);
+        if(name.length()!=0)    name +=     File.pathSeparatorChar;
+        name += fileName;
+
+        progress.generatedFile(name);
 
         return output.open(pkg,fileName);
     }
