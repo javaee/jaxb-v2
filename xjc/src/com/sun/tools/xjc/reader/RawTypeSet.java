@@ -262,6 +262,10 @@ public final class RawTypeSet {
         protected ID id() {
             return target.idUse();
         }
+
+        protected MimeType getExpectedMimeType() {
+            return target.getExpectedMimeType();
+        }
     }
 
     private static TypeUse bindToType(XSElementDecl decl) {
