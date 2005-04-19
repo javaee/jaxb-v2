@@ -266,10 +266,9 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
 
                 try {
                     String mimeType = xs.getXMIMEContentType();
-                    if(mimeType==null) {
+                    if(mimeType==null)
                         // because PNG is lossless, it's a good default
                         mimeType = "image/png";
-                    }
 
                     Iterator<ImageWriter> itr = ImageIO.getImageWritersByMIMEType(mimeType);
                     if(itr.hasNext()) {
