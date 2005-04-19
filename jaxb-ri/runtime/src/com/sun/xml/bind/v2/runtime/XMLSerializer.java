@@ -674,7 +674,10 @@ public final class XMLSerializer extends Coordinator implements ValidationEventH
         if(v!=null)     return v;
 
         // then look for the current in-scope @XmlMimeType
-        return expectedMimeType.toString();
+        if(expectedMimeType!=null)
+            return expectedMimeType.toString();
+
+        return null;
     }
 
     private void startElement() {
