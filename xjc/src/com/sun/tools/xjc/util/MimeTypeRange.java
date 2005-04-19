@@ -103,7 +103,12 @@ public class MimeTypeRange {
     }
 
     public String toString() {
-        return majorType+'/'+subType+"; q="+q+"; "+parameters.toString();
+        StringBuilder sb = new StringBuilder(majorType+'/'+subType+"; q="+q);
+        for( Map.Entry<String,String> p : parameters.entrySet() ) {
+            // I'm too lazy to quote the value
+            sb.append("; ").append(p.getKey()).append('=').append(p.getValue());
+        }
+        return sb.toString();
     }
 
     public static final MimeTypeRange ALL = create("*/*");
