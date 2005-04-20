@@ -4,11 +4,12 @@
  */
 
 /*
- * @(#)$Id: UnmarshallerImpl.java,v 1.2 2005-04-18 17:46:33 kohsuke Exp $
+ * @(#)$Id: UnmarshallerImpl.java,v 1.3 2005-04-20 19:03:13 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBContext;
@@ -19,9 +20,9 @@ import javax.xml.bind.UnmarshallerHandler;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.ValidationEventLocator;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+import javax.xml.bind.attachment.AttachmentUnmarshaller;
 import javax.xml.bind.helpers.AbstractUnmarshallerImpl;
 import javax.xml.bind.helpers.ValidationEventLocatorImpl;
-import javax.xml.bind.attachment.AttachmentUnmarshaller;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -326,6 +327,9 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl
             }
             return;
         }
+        if(name.equals(FACTORY)) {
+            coordinator.setFactories((Object[])value);
+        }
 
         super.setProperty(name, value);
     }
@@ -339,6 +343,7 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl
     }
 
     public static final String EXPECTED_TYPE = "com.sun.xml.bind.expectedType";
+    public static final String FACTORY = "com.sun.xml.bind.ObjectFactory";
 
     @Override
     public void setSchema(Schema schema) {

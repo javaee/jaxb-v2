@@ -9,6 +9,10 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBElement;
@@ -25,6 +29,7 @@ import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
 import com.sun.xml.bind.util.AttributesImpl;
 import com.sun.xml.bind.v2.AssociationMap;
+import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.runtime.Coordinator;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
@@ -89,6 +94,58 @@ public final class UnmarshallingContext extends Coordinator
      * This is used when we are building an association map.
      */
     private InfosetScanner scanner;
+
+    /**
+     * Stub to the user-specified factory method.
+     */
+    private static class Factory {
+        private final Object factorInstance;
+        private final Method method;
+
+        public Factory(Object factorInstance, Method method) {
+            this.factorInstance = factorInstance;
+            this.method = method;
+        }
+
+        public Object createInstance() throws SAXException {
+            try {
+                return method.invoke(factorInstance);
+            } catch (IllegalAccessException e) {
+                UnmarshallingContext.getInstance().handleError(e,false);
+            } catch (InvocationTargetException e) {
+                UnmarshallingContext.getInstance().handleError(e,false);
+            }
+            return null; // can never be executed
+        }
+    }
+
+    /**
+     * User-specified factory methods.
+     */
+    private final Map<Class,Factory> factories = new HashMap<Class, Factory>();
+
+    public void setFactories(Object[] factoryInstances) {
+        factories.clear();
+        if(factoryInstances==null) {
+            return;
+        }
+        for( Object factory : factoryInstances ) {
+            // look for all the public methods inlcuding derived ones
+            for( Method m : factory.getClass().getMethods() ) {
+                // look for methods whose signature is T createXXX()
+                if(!m.getName().startsWith("create"))
+                    continue;
+                if(m.getParameterTypes().length>0)
+                    continue;
+
+                Class type = m.getReturnType();
+
+                factories.put(type,new Factory(factory,m));
+            }
+        }
+    }
+
+
 
 //    /**
 //     * Debug flag. True to enable tracing.
@@ -168,6 +225,26 @@ public final class UnmarshallingContext extends Coordinator
         // more resetting is done in the startDocument method
     }
 
+    /**
+     * Creates a new instance of the specified class.
+     * In the unmarshaller, we need to check the user-specified factory class.
+     */
+    public Object createInstance( Class clazz ) throws SAXException {
+        if(!factories.isEmpty()) {
+            Factory factory = factories.get(clazz);
+            if(factory!=null)
+                return factory.createInstance();
+        }
+        return ClassFactory.create(clazz);
+    }
+
+    /**
+     * Creates a new instance of the specified class.
+     * In the unmarshaller, we need to check the user-specified factory class.
+     */
+    public Object createInstance( JaxBeanInfo beanInfo ) throws SAXException {
+        return createInstance(beanInfo.jaxbType);
+    }
 
     /**
      * Obtains a reference to the current grammar info.
@@ -1107,7 +1184,11 @@ public final class UnmarshallingContext extends Coordinator
      * {@link #handleEvent(ValidationEvent, boolean)}
      */
     public void handleError(Exception e) throws SAXException {
-        handleEvent(new ValidationEventImpl(ValidationEvent.ERROR,e.getMessage(),locator.getLocation(),e),true);
+        handleError(e,true);
+    }
+
+    public void handleError(Exception e,boolean canRecover) throws SAXException {
+        handleEvent(new ValidationEventImpl(ValidationEvent.ERROR,e.getMessage(),locator.getLocation(),e),canRecover);
     }
 
     /**
