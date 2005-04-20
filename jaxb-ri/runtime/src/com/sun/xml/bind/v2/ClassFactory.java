@@ -37,6 +37,9 @@ public final class ClassFactory {
         }
     };
 
+    /**
+     * Creates a new instance of the class but throw exceptions without catching it.
+     */
     public static <T> T create0( Class<T> clazz ) throws IllegalAccessException, InvocationTargetException, InstantiationException {
         Map<Class,Constructor> m = tls.get();
         Constructor<T> cons = m.get(clazz);
