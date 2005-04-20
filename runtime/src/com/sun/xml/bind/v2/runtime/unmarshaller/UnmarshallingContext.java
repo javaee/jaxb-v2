@@ -243,7 +243,21 @@ public final class UnmarshallingContext extends Coordinator
      * In the unmarshaller, we need to check the user-specified factory class.
      */
     public Object createInstance( JaxBeanInfo beanInfo ) throws SAXException {
-        return createInstance(beanInfo.jaxbType);
+        if(!factories.isEmpty()) {
+            Factory factory = factories.get(beanInfo.jaxbType);
+            if(factory!=null)
+                return factory.createInstance();
+        }
+        try {
+            return beanInfo.createInstance();
+        } catch (IllegalAccessException e) {
+            AbstractUnmarshallingEventHandlerImpl.reportError("Unable to create an instance of "+beanInfo.jaxbType.getName(),e,false);
+        } catch (InvocationTargetException e) {
+            AbstractUnmarshallingEventHandlerImpl.reportError("Unable to create an instance of "+beanInfo.jaxbType.getName(),e,false);
+        } catch (InstantiationException e) {
+            AbstractUnmarshallingEventHandlerImpl.reportError("Unable to create an instance of "+beanInfo.jaxbType.getName(),e,false);
+        }
+        return null;    // can never be here
     }
 
     /**
