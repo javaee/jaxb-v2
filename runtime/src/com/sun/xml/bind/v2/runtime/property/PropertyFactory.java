@@ -87,7 +87,12 @@ public abstract class PropertyFactory {
 
     private static boolean isLeaf(RuntimePropertyInfo info) {
         Collection<? extends RuntimeTypeInfo> types = info.ref();
-        if(types.size()==1 && ((RuntimeNonElement)types.iterator().next()).getTransducer()!=null )
+        if(types.size()!=1)     return false;
+
+        RuntimeTypeInfo rti = types.iterator().next();
+        if(!(rti instanceof RuntimeNonElement)) return false;
+
+        if(((RuntimeNonElement)rti).getTransducer()!=null )
             return true;
 
         return false;
