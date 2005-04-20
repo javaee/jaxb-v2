@@ -156,10 +156,7 @@ abstract class ObjectFactoryGeneratorImpl extends ObjectFactoryGenerator {
         // build up the return extpression
         JInvocation exp = JExpr._new(exposedElementType);
         if(!ei.hasClass()) {
-            //JInvocation qnameArg = JExpr._new(codeModel.ref(QName.class)).arg(namespaceURI).arg(localPart);
-            JFieldVar qnameField = getQNameInvocation(ei);
-
-            exp.arg(qnameField);
+            exp.arg(getQNameInvocation(ei));
             exp.arg(declaredType);
             exp.arg(scopeClass);
         }
@@ -196,11 +193,15 @@ abstract class ObjectFactoryGeneratorImpl extends ObjectFactoryGenerator {
      *
      * if it doesn't exist, create a static field in the class and store a new JFieldVar.
      */
-    private JFieldVar getQNameInvocation(CElementInfo ei) {
+    private JExpression getQNameInvocation(CElementInfo ei) {
         QName name = ei.getElementName();
         if(qnameMap.containsKey(name)) {
             return qnameMap.get(name);
         }
+
+        if(qnameMap.size()>1024)
+            // stop gap measure to avoid 'code too large' error in javac.
+            return createQName(name);
 
         // [RESULT]
         // private static final QName _XYZ_NAME = new QName("uri", "local");

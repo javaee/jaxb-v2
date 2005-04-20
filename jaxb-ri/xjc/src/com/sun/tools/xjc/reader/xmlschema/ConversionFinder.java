@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.namespace.QName;
 import javax.activation.MimeTypeParseException;
+import javax.xml.namespace.QName;
 
 import com.sun.codemodel.util.JavadocEscapeWriter;
 import com.sun.tools.xjc.model.CBuiltinLeafInfo;
@@ -196,10 +196,14 @@ public final class ConversionFinder extends BindingComponent {
             // we simply can't map this to an enumeration
             return false;
 
-        if( type.getDeclaredFacet(XSFacet.FACET_ENUMERATION)==null )
+        List<XSFacet> facets = type.getDeclaredFacets(XSFacet.FACET_ENUMERATION);
+        if( facets.isEmpty() || facets.size()>builder.getGlobalBinding().defaultEnumMemberSizeCap )
             // if the type itself doesn't have the enumeration facet,
             // it won't be mapped to a type-safe enum.
+            //
+            // if there are too many facets, it's not very useful
             return false;
+
 
         // check for collisions among constant names. if a collision will happen,
         // don't try to bind it to an enum.
