@@ -4,7 +4,6 @@
  */
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -27,43 +26,45 @@ import org.xml.sax.Locator;
  */
 public final class BIEnum extends AbstractDeclarationImpl {
     
-    public BIEnum( Locator loc, String _className, String _javadoc, Map<String,BIEnumMember> _members ) {
+    public BIEnum( Locator loc, boolean dontBind, String _className, String _javadoc, Map<String,BIEnumMember> _members ) {
         super(loc);
+        this.dontBind = dontBind;
         this.className = _className;
         this.javadoc = _javadoc;
         this.members = _members;
     }
-    
-    private final String className;
+
+    /**
+     * If true, it means not to bind to a type-safe enum.
+     *
+     * this takes precedence over all the other properties of this class.
+     */
+    public final boolean dontBind;
+
     /** Gets the specified class name, or null if not specified. */
-    public String getClassName() { return className; }
-    
-    private final String javadoc;
+    public final String className;
+
     /**
      * Gets the javadoc comment specified in the customization.
      * Can be null if none is specified.
      */
-    public String getJavadoc() { return javadoc; }
-    
-    private final Map<String,BIEnumMember> members;
+    public final String javadoc;
+
     /**
      * Gets the map that contains XML value->BIEnumMember pairs.
      * This table is built from &lt;enumMember> customizations.
-     * 
-     * @return Always return non-null.
+     *
+     * Always return non-null.
      */
-    public Map<String,BIEnumMember> getMembers() { return members; }
-    
+    public final Map<String,BIEnumMember> members;
+
     public QName getName() { return NAME; }
     
     public void setParent(BindInfo p) {
         super.setParent(p);
-        
-        Iterator itr = members.entrySet().iterator();
-        while(itr.hasNext()) {
-            BIEnumMember mem = (BIEnumMember)((Map.Entry)itr.next()).getValue();
+
+        for( BIEnumMember mem : members.values() )
             mem.setParent(p);
-        }
     }
     
     /** Name of this declaration. */

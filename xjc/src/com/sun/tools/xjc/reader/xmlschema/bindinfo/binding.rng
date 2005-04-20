@@ -643,36 +643,45 @@
     </cc:java-import>
     <cc:java-body>
       private HashMap members = new HashMap();
+      private boolean dontBind = false;
       private Locator loc,loc2;
       
       private BIEnum makeResult() {
-        return new BIEnum(loc,name,javadoc,members);
+        return new BIEnum(loc,dontBind,name,javadoc,members);
       }
     </cc:java-body>
     
     <element name="typesafeEnumClass">
       loc = $runtime.copyLocator();
-      <optional>
-        name = <attribute name="name"/>
-      </optional>
-      <optional>
-        javadoc = <ref name="javadoc" />
-      </optional>
-      <zeroOrMore>
-        jname = null;
-        javadoc = null;
-        <element name="typesafeEnumMember">
-          loc2 = $runtime.copyLocator();
+      <choice>
+        <attribute name="map">
+          <value>false</value>
+          dontBind = true;
+        </attribute>
+        <group>
           <optional>
-            jname = <attribute name="name"/>
+            name = <attribute name="name"/>
           </optional>
-          value = <attribute name="value"/>
           <optional>
             javadoc = <ref name="javadoc" />
           </optional>
-          members.put( value, new BIEnumMember(loc2,jname,javadoc) );
-        </element>
-      </zeroOrMore>
+          <zeroOrMore>
+            jname = null;
+            javadoc = null;
+            <element name="typesafeEnumMember">
+              loc2 = $runtime.copyLocator();
+              <optional>
+                jname = <attribute name="name"/>
+              </optional>
+              value = <attribute name="value"/>
+              <optional>
+                javadoc = <ref name="javadoc" />
+              </optional>
+              members.put( value, new BIEnumMember(loc2,jname,javadoc) );
+            </element>
+          </zeroOrMore>
+        </group>
+      </choice>
     </element>
   </define>
   
