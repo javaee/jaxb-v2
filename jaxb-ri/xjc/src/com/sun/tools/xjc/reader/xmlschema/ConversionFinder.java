@@ -428,6 +428,11 @@ public final class ConversionFinder extends BindingComponent {
         if( en!=null ) {
         	en.markAsAcknowledged();
 
+            if(en.dontBind) {
+                // just inherit the binding for the base type
+                return type.getSimpleBaseType().apply(functor);
+            }
+
             // if an enum customization is specified, make sure
             // the type is OK
             if( !canBeMappedToTypeSafeEnum(type) ) {
@@ -441,7 +446,7 @@ public final class ConversionFinder extends BindingComponent {
             // list and union cannot be mapped to a type-safe enum,
             // so in this stage we can safely cast it to XSRestrictionSimpleType
             return bindToTypeSafeEnum( (XSRestrictionSimpleType)type,
-        		en.getClassName(), en.getJavadoc(), en.getMembers(), false, en.getLocation() );
+                    en.className, en.javadoc, en.members, false, en.getLocation() );
         }
 
 
