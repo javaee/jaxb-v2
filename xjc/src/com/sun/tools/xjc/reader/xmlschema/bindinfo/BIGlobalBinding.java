@@ -130,6 +130,13 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
      */
     public final boolean generateElementClass;
 
+    /**
+     * Default cap to the number of constants in the enum.
+     * We won't attempt to produce a type-safe enum by default
+     * if there are more enumeration facets than specified in this field.
+     */
+    public final int defaultEnumMemberSizeCap;
+
     private static Set<QName> createSet() {
         return Collections.singleton(new QName(WellKnownNamespace.XML_SCHEMA,"string"));
     }
@@ -141,7 +148,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
         this(
             new HashMap<QName,BIConversion>(), NameConverter.standard,
             false, true, false, true, false, false, false,
-            createSet(),
+            createSet(), 256,
             null, null, null, null, false, false, null );
     }
     
@@ -156,6 +163,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
         boolean _needIsSetMethod,
         boolean _generateEnumMemberName,
         Set<QName> _enumBaseTypes,
+        int defaultEnumMemberSizeCap,
         FieldRenderer collectionFieldRenderer,   // default collection type. can be null.
         BISerializable _serializable,
         JDefinedClass _superClass,
@@ -179,6 +187,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
         this.superInterface = _superInterface;
         this.smartWildcardDefaultBinding = _smartWildcardDefaultBinding;
         this.simpleMode = simpleMode;
+        this.defaultEnumMemberSizeCap = defaultEnumMemberSizeCap;
 
         this.defaultProperty = new BIProperty(_loc,null,null,null,null,
             (collectionFieldRenderer==null)

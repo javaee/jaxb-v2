@@ -182,6 +182,7 @@
       private String fixedAttrToConstantProperty = "false";
       private String needIsSetMethod = "false";
       private Set enumBaseTypes = new HashSet();
+      private int defaultEnumSizeCap = 256;
       private boolean generateEnumMemberName = false;
       private boolean choiceContentPropertyWithModelGroupBinding = false;
       private boolean xSmartWildcardDefaultBinding = false;
@@ -203,6 +204,7 @@
           $runtime.parseBoolean(needIsSetMethod),
           generateEnumMemberName,
           enumBaseTypes,
+          defaultEnumSizeCap,
           ct,
           serializable,
           xSuperClass,
@@ -274,6 +276,18 @@
           </list>
         </attribute>
       </optional>
+
+      <optional>
+        <attribute name="typesafeEnumMaxMembers">
+          <list>
+            <oneOrMore>
+              value = <data type="int"/>
+              defaultEnumSizeCap = Integer.parseInt(value);
+            </oneOrMore>
+          </list>
+        </attribute>
+      </optional>
+
 
       <optional>
         <attribute name="choiceContentProperty">
