@@ -23,6 +23,7 @@ import com.sun.xml.bind.v2.model.runtime.RuntimeNonElementRef;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
+import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
 
@@ -243,7 +244,7 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
         }
 
         public BeanT parse(CharSequence lexical) throws AccessorException, SAXException {
-            BeanT inst = ClassFactory.create(ownerClass);
+            BeanT inst = (BeanT)UnmarshallingContext.getInstance().createInstance(ownerClass);
             xacc.parse(inst,lexical);
             return inst;
         }

@@ -5,14 +5,13 @@
 
 /*
 <<<<<<< JAXBContextImpl.java
- * @(#)$Id: JAXBContextImpl.java,v 1.2 2005-04-15 23:26:39 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.3 2005-04-20 19:03:13 kohsuke Exp $
 =======
- * @(#)$Id: JAXBContextImpl.java,v 1.2 2005-04-15 23:26:39 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.3 2005-04-20 19:03:13 kohsuke Exp $
 >>>>>>> 1.12.2.1
  */
 package com.sun.xml.bind.v2.runtime;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -38,13 +37,14 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import com.sun.xml.bind.annotation.Binder;
 import com.sun.xml.bind.annotation.XmlList;
+import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.Bridge;
 import com.sun.xml.bind.api.BridgeContext;
 import com.sun.xml.bind.api.JAXBRIContext;
 import com.sun.xml.bind.api.RawAccessor;
 import com.sun.xml.bind.api.TypeReference;
-import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
+import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.impl.RuntimeAnyTypeImpl;
 import com.sun.xml.bind.v2.model.impl.RuntimeBuiltinLeafInfoImpl;
@@ -58,14 +58,12 @@ import com.sun.xml.bind.v2.model.runtime.RuntimeLeafInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfoSet;
 import com.sun.xml.bind.v2.runtime.output.Encoded;
-import com.sun.xml.bind.v2.runtime.property.Property;
 import com.sun.xml.bind.v2.runtime.property.AttributeProperty;
+import com.sun.xml.bind.v2.runtime.property.Property;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
-import com.sun.xml.bind.v2.runtime.unmarshaller.AbstractUnmarshallingEventHandlerImpl;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingEventHandler;
-import com.sun.xml.bind.v2.WellKnownNamespace;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -77,7 +75,7 @@ import org.xml.sax.SAXException;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -436,15 +434,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
         }
 
         if(child==null)
-            try {
-                child = beanInfo.createInstance();
-            } catch (IllegalAccessException e) {
-                AbstractUnmarshallingEventHandlerImpl.reportError("Unable to create an instance of "+beanInfo.jaxbType.getName(),e,false);
-            } catch (InvocationTargetException e) {
-                AbstractUnmarshallingEventHandlerImpl.reportError("Unable to create an instance of "+beanInfo.jaxbType.getName(),e,false);
-            } catch (InstantiationException e) {
-                AbstractUnmarshallingEventHandlerImpl.reportError("Unable to create an instance of "+beanInfo.jaxbType.getName(),e,false);
-            }
+            child = context.createInstance(beanInfo);
 
         UnmarshallingEventHandler u = beanInfo.getUnmarshaller(true);
         context.pushContentHandler(u, child, beanInfo.implementsLifecycle());

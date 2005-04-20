@@ -4,11 +4,9 @@
  */
 
 /*
- * @(#)$Id: AbstractUnmarshallingEventHandlerImpl.java,v 1.1 2005-04-15 20:04:40 kohsuke Exp $
+ * @(#)$Id: AbstractUnmarshallingEventHandlerImpl.java,v 1.2 2005-04-20 19:03:13 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
-
-import java.lang.reflect.InvocationTargetException;
 
 import javax.xml.bind.Element;
 import javax.xml.bind.ValidationEvent;
@@ -154,15 +152,7 @@ public abstract class AbstractUnmarshallingEventHandlerImpl implements Unmarshal
                 beanInfo.reset(child,context);
 
             if(child==null)
-                try {
-                    child = beanInfo.createInstance();
-                } catch (IllegalAccessException e) {
-                    reportError("Unable to create an instance of "+beanInfo.jaxbType.getName(),e,false);
-                } catch (InvocationTargetException e) {
-                    reportError("Unable to create an instance of "+beanInfo.jaxbType.getName(),e,false);
-                } catch (InstantiationException e) {
-                    reportError("Unable to create an instance of "+beanInfo.jaxbType.getName(),e,false);
-                }
+                child = context.createInstance(beanInfo);
 
             if(!asElement)
                 // outer peer is recorded inside the getUnmarshaller invocation
