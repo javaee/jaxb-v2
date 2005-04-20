@@ -21,13 +21,6 @@ import com.sun.xml.bind.Util;
  * @author Kohsuke Kawaguchi
  */
 public final class ClassFactory {
-
-    static {
-        // TODO: this class is not supposed to be referenced directly from the generated code.
-        // as such, move this code to another package.
-        TODO.prototype();
-    }
-
     private static final Class[] emptyClass = new Class[0];
     private static final Object[] emptyObject = new Object[0];
 
