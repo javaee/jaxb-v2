@@ -4,12 +4,11 @@
  */
 
 /*
- * @(#)$Id: UnmarshallerImpl.java,v 1.3 2005-04-20 19:03:13 kohsuke Exp $
+ * @(#)$Id: UnmarshallerImpl.java,v 1.4 2005-04-20 19:07:39 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBContext;
@@ -329,6 +328,7 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl
         }
         if(name.equals(FACTORY)) {
             coordinator.setFactories((Object[])value);
+            return;
         }
 
         super.setProperty(name, value);
