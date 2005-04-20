@@ -4,11 +4,7 @@
  */
 
 /*
-<<<<<<< JAXBContextImpl.java
- * @(#)$Id: JAXBContextImpl.java,v 1.3 2005-04-20 19:03:13 kohsuke Exp $
-=======
- * @(#)$Id: JAXBContextImpl.java,v 1.3 2005-04-20 19:03:13 kohsuke Exp $
->>>>>>> 1.12.2.1
+ * @(#)$Id: JAXBContextImpl.java,v 1.4 2005-04-20 23:57:33 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -75,7 +71,7 @@ import org.xml.sax.SAXException;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
