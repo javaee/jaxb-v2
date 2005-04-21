@@ -124,24 +124,32 @@ public final class UnmarshallingContext extends Coordinator
      */
     private final Map<Class,Factory> factories = new HashMap<Class, Factory>();
 
-    public void setFactories(Object[] factoryInstances) {
+    public void setFactories(Object factoryInstances) {
         factories.clear();
         if(factoryInstances==null) {
             return;
         }
-        for( Object factory : factoryInstances ) {
-            // look for all the public methods inlcuding derived ones
-            for( Method m : factory.getClass().getMethods() ) {
-                // look for methods whose signature is T createXXX()
-                if(!m.getName().startsWith("create"))
-                    continue;
-                if(m.getParameterTypes().length>0)
-                    continue;
-
-                Class type = m.getReturnType();
-
-                factories.put(type,new Factory(factory,m));
+        if(factoryInstances instanceof Object[]) {
+            for( Object factory : (Object[])factoryInstances ) {
+                // look for all the public methods inlcuding derived ones
+                addFactory(factory);
             }
+        } else {
+            addFactory(factoryInstances);
+        }
+    }
+
+    private void addFactory(Object factory) {
+        for( Method m : factory.getClass().getMethods() ) {
+            // look for methods whose signature is T createXXX()
+            if(!m.getName().startsWith("create"))
+                continue;
+            if(m.getParameterTypes().length>0)
+                continue;
+
+            Class type = m.getReturnType();
+
+            factories.put(type,new Factory(factory,m));
         }
     }
 
