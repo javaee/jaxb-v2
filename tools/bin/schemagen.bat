@@ -33,7 +33,7 @@ set APT=apt
 goto LAUNCHSCHEMAGEN
 
 :USE_JAVA_HOME
-set APT=%JAVA_HOME%\bin\apt
+set APT="%JAVA_HOME%\bin\apt"
 goto SETCLASSPATH
 
 :SETCLASSPATH
