@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: Ref.java,v 1.1 2005-04-14 22:06:27 kohsuke Exp $
+ * @(#)$Id: Ref.java,v 1.2 2005-04-21 16:42:13 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -52,11 +52,11 @@ public abstract class Ref {
     }
     
     public static interface SimpleType extends Ref.Type {
-        public XSSimpleType getSimpleType();
+        public XSSimpleType getType();
     }
     
     public static interface ComplexType extends Ref.Type {
-        public XSComplexType getComplexType();
+        public XSComplexType getType();
     }
     
     public static interface Attribute {

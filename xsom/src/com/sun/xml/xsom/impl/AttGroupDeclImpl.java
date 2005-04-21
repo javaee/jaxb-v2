@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AttGroupDeclImpl.java,v 1.1 2005-04-14 22:06:23 kohsuke Exp $
+ * @(#)$Id: AttGroupDeclImpl.java,v 1.2 2005-04-21 16:42:12 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -9,16 +9,15 @@
  */
 package com.sun.xml.xsom.impl;
 
-import java.util.Iterator;
-
-import org.xml.sax.Locator;
-
 import com.sun.xml.xsom.XSAttGroupDecl;
 import com.sun.xml.xsom.XSAttributeUse;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.impl.parser.DelayedRef;
 import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSVisitor;
+import org.xml.sax.Locator;
+
+import java.util.Iterator;
 
 public class AttGroupDeclImpl extends AttributesHolder implements XSAttGroupDecl
 {
@@ -48,7 +47,7 @@ public class AttGroupDeclImpl extends AttributesHolder implements XSAttGroupDecl
         while(itr.hasNext() && o==null)
             o = ((XSAttGroupDecl)itr.next()).getAttributeUse(nsURI,localName);
         
-        if(o==null)     o = (XSAttributeUse)attributes.get(name);
+        if(o==null)     o = attributes.get(name);
         
         return o;
     }

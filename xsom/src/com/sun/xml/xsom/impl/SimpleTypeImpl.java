@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: SimpleTypeImpl.java,v 1.1 2005-04-14 22:06:27 kohsuke Exp $
+ * @(#)$Id: SimpleTypeImpl.java,v 1.2 2005-04-21 16:42:13 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -50,8 +50,8 @@ public abstract class SimpleTypeImpl extends DeclarationImpl
         baseType = st;
     }
     
-    public XSType getBaseType() { return baseType.getSimpleType(); }
-    public XSSimpleType getSimpleBaseType() { return baseType.getSimpleType(); }
+    public XSType getBaseType() { return baseType.getType(); }
+    public XSSimpleType getSimpleBaseType() { return baseType.getType(); }
 
     
     public final int getDerivationMethod() { return XSType.RESTRICTION; }
@@ -88,10 +88,8 @@ public abstract class SimpleTypeImpl extends DeclarationImpl
         return function.simpleType(this);
     }
     
-    // Ref.Type implementation
-    public XSType getType() { return this; }
     // Ref.ContentType implementation
     public XSContentType getContentType() { return this; }
     // Ref.SimpleType implementation
-    public XSSimpleType getSimpleType() { return this; }
+    public XSSimpleType getType() { return this; }
 }

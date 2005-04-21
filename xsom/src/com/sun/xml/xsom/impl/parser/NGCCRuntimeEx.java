@@ -88,7 +88,7 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
     
     public void checkDoubleDefError( XSDeclaration c ) throws SAXException {
         if(c==null) return;
-        reportError( Messages.format(Messages.ERR_DOUBLE_DEFINITION,c.getName()), getLocator() );
+        reportError( Messages.format(Messages.ERR_DOUBLE_DEFINITION,c.getName()) );
         reportError( Messages.format(Messages.ERR_DOUBLE_DEFINITION_ORIGINAL), c.getLocator() );
     }
     
@@ -101,7 +101,10 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
     public void reportError( String msg, Locator loc ) throws SAXException {
         parser.patcherManager.reportError(msg,loc);
     }
-    
+    public void reportError( String msg ) throws SAXException {
+        reportError(msg,getLocator());
+    }
+
     
     /**
      * Resolves relative URI found in the document.
@@ -366,7 +369,7 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
             if(uri==null) {
                 // prefix failed to resolve.
                 reportError(Messages.format(
-                    Messages.ERR_UNDEFINED_PREFIX,prefix),getLocator());
+                    Messages.ERR_UNDEFINED_PREFIX,prefix));
                 uri="undefined"; // replace with a dummy
             }
             return new UName( uri, qname.substring(idx+1), qname );

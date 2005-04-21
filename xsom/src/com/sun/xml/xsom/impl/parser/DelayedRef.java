@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: DelayedRef.java,v 1.1 2005-04-14 22:06:29 kohsuke Exp $
+ * @(#)$Id: DelayedRef.java,v 1.2 2005-04-21 16:42:12 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -123,9 +123,8 @@ public abstract class DelayedRef implements Patch {
         public SimpleType( PatcherManager manager, Locator loc, SchemaImpl schema, UName name ) {
             super(manager,loc,schema,name);
         }
-        public XSSimpleType getSimpleType() { return (XSSimpleType)_get(); }
-        public XSType getType()             { return (XSType)_get(); } 
-        
+        public XSSimpleType getType() { return (XSSimpleType)_get(); }
+
         protected Object resolveReference( UName name ) {
             return super.schema.getSimpleType(
                 name.getNamespaceURI(),
@@ -151,8 +150,7 @@ public abstract class DelayedRef implements Patch {
             return Messages.ERR_UNDEFINED_COMPLEXTYPE;
         }
     
-        public XSComplexType getComplexType() { return (XSComplexType)super._get(); }
-        public XSType getType() { return getComplexType(); }
+        public XSComplexType getType() { return (XSComplexType)super._get(); }
     }
 
     public static class Element extends DelayedRef implements Ref.Element {

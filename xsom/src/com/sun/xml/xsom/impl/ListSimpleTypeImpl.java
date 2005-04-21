@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: ListSimpleTypeImpl.java,v 1.1 2005-04-14 22:06:25 kohsuke Exp $
+ * @(#)$Id: ListSimpleTypeImpl.java,v 1.2 2005-04-21 16:42:12 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -32,7 +32,7 @@ public class ListSimpleTypeImpl extends SimpleTypeImpl implements XSListSimpleTy
     }
         
     private final Ref.SimpleType itemType;
-    public XSSimpleType getItemType() { return itemType.getSimpleType(); }
+    public XSSimpleType getItemType() { return itemType.getType(); }
     
     public void visit( XSSimpleTypeVisitor visitor ) {
         visitor.listSimpleType(this);

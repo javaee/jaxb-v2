@@ -24,8 +24,7 @@
       private static class BaseContentSimpleTypeRef implements Ref.SimpleType {
         private final Ref.Type baseType;
         private BaseContentSimpleTypeRef(Ref.Type _baseType ) { this.baseType = _baseType; }
-        public XSType getType() { return getSimpleType(); }
-        public XSSimpleType getSimpleType() {
+        public XSSimpleType getType() {
           return (XSSimpleType)((XSComplexType)baseType.getType()).getContentType();
         }
       };
@@ -309,9 +308,9 @@
                   return new ParticleImpl( currentSchema, null, new ModelGroupImpl(
                     currentSchema,
                       null, null, null, XSModelGroup.SEQUENCE,
-                      new XSParticle[]{
-                          (XSParticle)baseContentType,
-                          (XSParticle)expContent}), null );
+                      new ParticleImpl[]{
+                          (ParticleImpl)baseContentType,
+                          (ParticleImpl)expContent}), null );
           }
       };
       

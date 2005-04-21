@@ -52,8 +52,7 @@
         // @targetNamespace must be null or equal to the target namespace of the schema
         if(tns!=null &amp;&amp; expectedNamespace!=null &amp;&amp; !expectedNamespace.equals(tns)) {
           $runtime.reportError(
-            Messages.format("UnexpectedTargetnamespace.Include", tns, expectedNamespace, tns ),
-            $runtime.getLocator());
+            Messages.format("UnexpectedTargetnamespace.Include", tns, expectedNamespace, tns ) );
         }
         if(tns==null)
           $runtime.chameleonMode = true;

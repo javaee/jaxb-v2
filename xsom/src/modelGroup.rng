@@ -43,7 +43,7 @@
   	<cc:java-body>
   		private ModelGroupImpl result;
   		
-  		private final Vector particles = new Vector();
+  		private final List particles = new ArrayList();
   	</cc:java-body>
     <!--optional>
       <attribute name="ID">
@@ -72,7 +72,7 @@
         throw new InternalError("unable to process "+compositorName);
       
       result = new ModelGroupImpl( $runtime.currentSchema, annotation, locator, fa, compositor,
-            (XSParticle[])particles.toArray(new XSParticle[0]));
+            (ParticleImpl[])particles.toArray(new ParticleImpl[0]));
     </cc:java>
   </define>
   

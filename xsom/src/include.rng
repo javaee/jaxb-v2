@@ -84,27 +84,42 @@
           <group>
           	newSt = <ref name="simpleType"/>
           	XSSimpleType oldSt = $runtime.currentSchema.getSimpleType(newSt.getName());
-          	// TODO: check oldSt==null and report an error
-          	newSt.redefine((SimpleTypeImpl)oldSt);
-            $runtime.currentSchema.addSimpleType(newSt);
+            if(oldSt==null) {
+              $runtime.reportError( Messages.format(Messages.ERR_UNDEFINED_SIMPLETYPE,newSt.getName()) );
+            } else {
+              newSt.redefine((SimpleTypeImpl)oldSt);
+              $runtime.currentSchema.addSimpleType(newSt);
+            }
          	</group>
          	<group>
 	          newCt = <ref name="complexType"/>
 	          XSComplexType oldCt = $runtime.currentSchema.getComplexType(newCt.getName());
-	          newCt.redefine((ComplexTypeImpl)oldCt);
-	          $runtime.currentSchema.addComplexType(newCt);
+            if(oldCt==null) {
+              $runtime.reportError( Messages.format(Messages.ERR_UNDEFINED_COMPLEXTYPE,newCt.getName()) );
+            } else {
+              newCt.redefine((ComplexTypeImpl)oldCt);
+              $runtime.currentSchema.addComplexType(newCt);
+            }
          	</group>
          	<group>
 	          newGrp = <ref name="group"/>
 	          XSModelGroupDecl oldGrp = $runtime.currentSchema.getModelGroupDecl(newGrp.getName());
-	          newGrp.redefine((ModelGroupDeclImpl)oldGrp);
-	          $runtime.currentSchema.addModelGroupDecl(newGrp);
+            if(oldGrp==null) {
+              $runtime.reportError( Messages.format(Messages.ERR_UNDEFINED_MODELGROUP,newGrp.getName()) );
+            } else {
+              newGrp.redefine((ModelGroupDeclImpl)oldGrp);
+              $runtime.currentSchema.addModelGroupDecl(newGrp);
+            }
          	</group>
           <group>
           	newAg = <ref name="attributeGroupDecl"/>
           	XSAttGroupDecl oldAg = $runtime.currentSchema.getAttGroupDecl(newAg.getName());
-          	newAg.redefine((AttGroupDeclImpl)oldAg);
-	          $runtime.currentSchema.addAttGroupDecl(newAg);
+            if(oldAg==null) {
+              $runtime.reportError( Messages.format(Messages.ERR_UNDEFINED_ATTRIBUTEGROUP,newAg.getName()) );
+            } else {
+              newAg.redefine((AttGroupDeclImpl)oldAg);
+              $runtime.currentSchema.addAttGroupDecl(newAg);
+            }
           </group>
         </choice>
       </zeroOrMore>

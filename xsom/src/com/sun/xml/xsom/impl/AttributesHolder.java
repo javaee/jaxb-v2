@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AttributesHolder.java,v 1.1 2005-04-14 22:06:24 kohsuke Exp $
+ * @(#)$Id: AttributesHolder.java,v 1.2 2005-04-21 16:42:12 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -9,6 +9,10 @@
  */
 package com.sun.xml.xsom.impl;
 
+import com.sun.xml.xsom.XSAttGroupDecl;
+import com.sun.xml.xsom.XSAttributeUse;
+import org.xml.sax.Locator;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -16,11 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
-import org.xml.sax.Locator;
-
-import com.sun.xml.xsom.XSAttGroupDecl;
-import com.sun.xml.xsom.XSAttributeUse;
 
 public abstract class AttributesHolder extends DeclarationImpl {
     
@@ -38,12 +37,12 @@ public abstract class AttributesHolder extends DeclarationImpl {
      * It has to be {@link TreeMap} or otherwise we cannot guarantee
      * the order of iteration.
      */
-    protected final Map attributes = new TreeMap(UName.comparator);
+    protected final Map<UName,AttributeUseImpl> attributes = new TreeMap<UName,AttributeUseImpl>(UName.comparator);
     public void addAttributeUse( UName name, AttributeUseImpl a ) {
         attributes.put( name, a );
     }
     /** prohibited attributes. */
-    protected final Set prohibitedAtts = new HashSet();
+    protected final Set<UName> prohibitedAtts = new HashSet<UName>();
     public void addProhibitedAttribute( UName name ) {
         prohibitedAtts.add(name);
     }
@@ -61,7 +60,7 @@ public abstract class AttributesHolder extends DeclarationImpl {
     }
 
     public XSAttributeUse getDeclaredAttributeUse( String nsURI, String localName ) {
-        return (XSAttributeUse)attributes.get(new UName(nsURI,localName));
+        return attributes.get(new UName(nsURI,localName));
     }
     
     public Iterator iterateDeclaredAttributeUses() {
@@ -70,7 +69,7 @@ public abstract class AttributesHolder extends DeclarationImpl {
 
     
     /** {@link Ref.AttGroup}s that are directly refered from this. */
-    protected final Set attGroups = new HashSet();
+    protected final Set<Ref.AttGroup> attGroups = new HashSet<Ref.AttGroup>();
     
     public void addAttGroup( Ref.AttGroup a ) { attGroups.add(a); }
     

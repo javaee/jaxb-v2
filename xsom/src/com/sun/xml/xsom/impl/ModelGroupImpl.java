@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: ModelGroupImpl.java,v 1.1 2005-04-14 22:06:26 kohsuke Exp $
+ * @(#)$Id: ModelGroupImpl.java,v 1.2 2005-04-21 16:42:13 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -9,24 +9,22 @@
  */
 package com.sun.xml.xsom.impl;
 
-import org.xml.sax.Locator;
-
 import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XSModelGroup;
 import com.sun.xml.xsom.XSModelGroupDecl;
-import com.sun.xml.xsom.XSParticle;
 import com.sun.xml.xsom.XSTerm;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSTermFunction;
+import com.sun.xml.xsom.visitor.XSTermFunctionWithParam;
 import com.sun.xml.xsom.visitor.XSTermVisitor;
 import com.sun.xml.xsom.visitor.XSVisitor;
-import com.sun.xml.xsom.visitor.XSTermFunctionWithParam;
+import org.xml.sax.Locator;
 
 public class ModelGroupImpl extends ComponentImpl implements XSModelGroup, Ref.Term
 {
     public ModelGroupImpl( SchemaImpl owner, AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl _fa,
-        Compositor _compositor, XSParticle[] _children ) {
+        Compositor _compositor, ParticleImpl[] _children ) {
         
         super(owner,_annon,_loc,_fa);
         this.compositor = _compositor;
@@ -39,11 +37,11 @@ public class ModelGroupImpl extends ComponentImpl implements XSModelGroup, Ref.T
                 throw new IllegalArgumentException();
     }
     
-    private final XSParticle[] children;
-    public XSParticle getChild( int idx ) { return children[idx]; }
+    private final ParticleImpl[] children;
+    public ParticleImpl getChild( int idx ) { return children[idx]; }
     public int getSize() { return children.length; }
     
-    public XSParticle[] getChildren() { return children; }
+    public ParticleImpl[] getChildren() { return children; }
 
     
     private final Compositor compositor;
@@ -51,10 +49,8 @@ public class ModelGroupImpl extends ComponentImpl implements XSModelGroup, Ref.T
     
     
     public void redefine(ModelGroupDeclImpl oldMG) {
-        for( int i=0; i<children.length; i++ ) {
-            ParticleImpl p = (ParticleImpl)children[i];
+        for (ParticleImpl p : children)
             p.redefine(oldMG);
-        }
     }
 
 

@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: SchemaSetImpl.java,v 1.2 2005-04-18 18:14:20 kohsuke Exp $
+ * @(#)$Id: SchemaSetImpl.java,v 1.3 2005-04-21 16:42:13 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -284,9 +284,7 @@ public class SchemaSetImpl implements XSSchemaSet
         public XSRestrictionSimpleType asRestriction() { return this; }
         public XSListSimpleType asList() { return null; }
         public XSUnionSimpleType asUnion() { return null; }
-
-        public XSType getType() { return this; } // Ref.SimpleType implementation
-        public XSSimpleType getSimpleType() { return this; } // Ref.SimpleType implementation
+        public XSSimpleType getType() { return this; } // Ref.SimpleType implementation
 
         public XSType[] listSubstitutables() {
             return Util.listSubstitutables(this);
@@ -337,7 +335,7 @@ public class SchemaSetImpl implements XSSchemaSet
         
         private final WildcardImpl anyWildcard = new WildcardImpl.Any(null,null,null,null,XSWildcard.SKIP);
         private final XSContentType contentType = new ParticleImpl( null, null,
-                new ModelGroupImpl(null, null, null, null,XSModelGroup.SEQUENCE, new XSParticle[]{
+                new ModelGroupImpl(null, null, null, null,XSModelGroup.SEQUENCE, new ParticleImpl[]{
                     new ParticleImpl( null, null,
                         anyWildcard, null,
                         XSParticle.UNBOUNDED, 0 )

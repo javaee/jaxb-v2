@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: UnionSimpleTypeImpl.java,v 1.1 2005-04-14 22:06:27 kohsuke Exp $
+ * @(#)$Id: UnionSimpleTypeImpl.java,v 1.2 2005-04-21 16:42:13 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -32,7 +32,7 @@ public class UnionSimpleTypeImpl extends SimpleTypeImpl implements XSUnionSimple
     }
         
     private final Ref.SimpleType[] memberTypes;
-    public XSSimpleType getMember( int idx ) { return memberTypes[idx].getSimpleType(); }
+    public XSSimpleType getMember( int idx ) { return memberTypes[idx].getType(); }
     public int getMemberSize() { return memberTypes.length; }
     
     public void visit( XSSimpleTypeVisitor visitor ) {

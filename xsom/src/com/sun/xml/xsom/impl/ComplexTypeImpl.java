@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: ComplexTypeImpl.java,v 1.1 2005-04-14 22:06:24 kohsuke Exp $
+ * @(#)$Id: ComplexTypeImpl.java,v 1.2 2005-04-21 16:42:12 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -167,7 +167,7 @@ public class ComplexTypeImpl extends AttributesHolder implements XSComplexType, 
         
         if(prohibitedAtts.contains(name))       return null;
         
-        XSAttributeUse o = (XSAttributeUse)attributes.get(name);
+        XSAttributeUse o = attributes.get(name);
         
         
         if(o==null) {
@@ -217,6 +217,5 @@ public class ComplexTypeImpl extends AttributesHolder implements XSComplexType, 
     }
 
     // Ref.ComplexType implementation
-    public XSType getType() { return this; }
-    public XSComplexType getComplexType() { return this; }
+    public XSComplexType getType() { return this; }
 }

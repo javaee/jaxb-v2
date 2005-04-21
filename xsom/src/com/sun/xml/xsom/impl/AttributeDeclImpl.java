@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AttributeDeclImpl.java,v 1.1 2005-04-14 22:06:24 kohsuke Exp $
+ * @(#)$Id: AttributeDeclImpl.java,v 1.2 2005-04-21 16:42:12 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -37,7 +37,7 @@ public class AttributeDeclImpl extends DeclarationImpl implements XSAttributeDec
     }
     
     private final Ref.SimpleType type;
-    public XSSimpleType getType() { return type.getSimpleType(); }
+    public XSSimpleType getType() { return type.getType(); }
 
     private final ValidationContext context;
     public ValidationContext getContext() { return context; }
