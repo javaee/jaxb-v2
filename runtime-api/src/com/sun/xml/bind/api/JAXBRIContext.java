@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JAXBRIContext.java,v 1.1 2005-04-15 20:03:19 kohsuke Exp $
+ * @(#)$Id: JAXBRIContext.java,v 1.2 2005-04-21 19:26:24 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -19,6 +19,9 @@ import javax.xml.namespace.QName;
 
 /**
  * {@link JAXBContext} enhanced with JAXB RI specific functionalities.
+ *
+ * <p>
+ * <b>Subject to change without notice</b>.
  * 
  * @since 2.0 EA1
  * @author

@@ -8,6 +8,9 @@ import javax.xml.namespace.QName;
 /**
  * A reference to a JAXB-bound type.
  *
+ * <p>
+ * <b>Subject to change without notice</b>.
+ *
  * @since 2.0 EA1
  * @author Kohsuke Kawaguchi
  */

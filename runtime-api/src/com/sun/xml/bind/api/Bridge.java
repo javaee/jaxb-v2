@@ -21,6 +21,9 @@ import org.w3c.dom.Node;
  * Every marshalling/unmarshalling operation requires a {@link BridgeContext},
  * and a
  *
+ * <p>
+ * <b>Subject to change without notice</b>.
+ *
  * @since JAXB 2.0 EA1
  * @author Kohsuke Kawaguchi
  */

@@ -8,6 +8,9 @@ package com.sun.xml.bind.api;
  * <p>
  * This interface allows JAX-RPC to access an element property of a JAXB bean.
  *
+ * <p>
+ * <b>Subject to change without notice</b>.
+ *
  * @author Kohsuke Kawaguchi
  *
  * @since 2.0 EA1
