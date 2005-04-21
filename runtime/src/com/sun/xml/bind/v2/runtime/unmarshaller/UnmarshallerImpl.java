@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: UnmarshallerImpl.java,v 1.4 2005-04-20 19:07:39 kohsuke Exp $
+ * @(#)$Id: UnmarshallerImpl.java,v 1.5 2005-04-21 00:01:55 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -38,8 +38,8 @@ import com.sun.xml.bind.v2.runtime.BinderImpl;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 
-import javanet.staxutils.XMLEventReaderToContentHandler;
-import javanet.staxutils.XMLStreamReaderToContentHandler;
+import com.sun.xml.bind.v2.stax.XMLEventReaderToContentHandler;
+import com.sun.xml.bind.v2.stax.XMLStreamReaderToContentHandler;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

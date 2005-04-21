@@ -1,4 +1,4 @@
-/* $Id: StAXReaderToContentHandler.java,v 1.1 2005-04-15 20:04:44 kohsuke Exp $
+/* $Id: StAXReaderToContentHandler.java,v 1.1 2005-04-21 00:01:55 kohsuke Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -31,7 +31,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javanet.staxutils;
+package com.sun.xml.bind.v2.stax;
 
 import javax.xml.stream.XMLStreamException;
 
