@@ -12,6 +12,9 @@ package com.sun.xml.bind.api;
  * This exception happens primarily when JAXB accesses the getter/setter
  * method and it throws a checked exception.
  *
+ * <p>
+ * <b>Subject to change without notice</b>.
+ *
  * @author Kohsuke Kawaguchi
  *
  * @since 2.0 EA1

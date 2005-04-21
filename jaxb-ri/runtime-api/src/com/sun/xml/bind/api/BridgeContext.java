@@ -18,6 +18,9 @@ import javax.xml.bind.attachment.AttachmentUnmarshaller;
  * {@link BridgeContext} is relatively a heavy-weight object, and
  * therefore it is expected to be cached by the JAX-RPC RI.
  *
+ * <p>
+ * <b>Subject to change without notice</b>.
+ *
  * @author Kohsuke Kawaguchi
  * @since 2.0 EA1
  * @see Bridge
