@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: UnmarshallerImpl.java,v 1.5 2005-04-21 00:01:55 kohsuke Exp $
+ * @(#)$Id: UnmarshallerImpl.java,v 1.6 2005-04-21 17:14:33 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -327,7 +327,7 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl
             return;
         }
         if(name.equals(FACTORY)) {
-            coordinator.setFactories((Object[])value);
+            coordinator.setFactories(value);
             return;
         }
 
