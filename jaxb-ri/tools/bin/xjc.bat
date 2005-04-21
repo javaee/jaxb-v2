@@ -33,7 +33,7 @@ set JAVA=java
 goto LAUNCHXJC
 
 :USE_JAVA_HOME
-set JAVA=%JAVA_HOME%\bin\java
+set JAVA="%JAVA_HOME%\bin\java"
 goto LAUNCHXJC
 
 :LAUNCHXJC
