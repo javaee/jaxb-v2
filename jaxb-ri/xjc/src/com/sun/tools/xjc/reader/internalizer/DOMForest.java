@@ -33,7 +33,7 @@ import com.sun.tools.xjc.util.ErrorReceiverFilter;
 import com.sun.xml.xsom.parser.JAXPParser;
 import com.sun.xml.xsom.parser.XMLParser;
 
-import javanet.staxutils.XMLStreamReaderToContentHandler;
+import com.sun.xml.bind.v2.stax.XMLStreamReaderToContentHandler;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.ContentHandler;
