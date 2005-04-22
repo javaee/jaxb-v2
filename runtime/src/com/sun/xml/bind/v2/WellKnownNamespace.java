@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: WellKnownNamespace.java,v 1.1 2005-04-15 20:03:55 kohsuke Exp $
+ * @(#)$Id: WellKnownNamespace.java,v 1.2 2005-04-22 21:26:39 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -30,6 +30,9 @@ public abstract class WellKnownNamespace {
 
     public static final String XOP =
         "http://www.w3.org/2004/08/xop/include";
+    
+    public static final String SWA_URI =
+        "http://ws-i.org/profiles/basic/1.1/xsd";
     
     /**
      * TODO: be sure to update this URI.
