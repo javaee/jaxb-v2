@@ -36,17 +36,31 @@ public final class Base64Data implements CharSequence {
      */
     private int dataLen;
 
+    /**
+     * Fills in the data object by a portion of the byte[].
+     *
+     * @param len
+     *      data[0] to data[len-1] are treated as the data.
+     */
     public void set(byte[] data, int len) {
         this.data = data;
         this.dataLen = len;
         this.dataHandler = null;
     }
 
+    /**
+     * Fills in the data object by the byte[] of the exact length.
+     *
+     * @param data
+     *      this buffer may be owned directly by the unmarshaleld JAXB object.
+     */
     public void set(byte[] data) {
         set(data,data.length);
     }
 
-
+    /**
+     * Fills in the data object by a {@link DataHandler}.
+     */
     public void set(DataHandler data) {
         assert data!=null;
         this.dataHandler = data;
@@ -87,7 +101,7 @@ public final class Base64Data implements CharSequence {
     }
 
     /**
-     * Gets the raw data.
+     * Gets the raw data. The size of the byte array maybe larger than the actual length.
      */
     public byte[] get() {
         if(data==null) {
@@ -116,6 +130,10 @@ public final class Base64Data implements CharSequence {
         return data;
     }
 
+    /**
+     * Gets the number of characters needed to represent
+     * this binary data in the base64 encoding.
+     */
     public int length() {
         // for each 3 bytes you use 4 chars
         // if the remainder is 1 or 2 there will be 4 more
@@ -123,6 +141,10 @@ public final class Base64Data implements CharSequence {
         return ((dataLen+2)/3)*4;
     }
 
+    /**
+     * Encode this binary data in the base64 encoding
+     * and returns the character at the specified position.
+     */
     public char charAt(int index) {
         // we assume that the length() method is called before this method
         // (otherwise how would the caller know that the index is valid?)
@@ -180,6 +202,9 @@ public final class Base64Data implements CharSequence {
         return buf;
     }
 
+    /**
+     * Returns the base64 encoded string of this data.
+     */
     public String toString() {
         return subSequence(0,length()).toString();
     }
