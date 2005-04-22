@@ -157,7 +157,7 @@
 	
 	
 	
-	<target name="src-zip">
+	<target name="src-zip" depends="ngcc">
 		<tstamp />
 		<mkdir dir="build" />
 		<zip zipfile="build/xsom-src.zip" compress="true">
