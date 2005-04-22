@@ -29,7 +29,7 @@ import org.xml.sax.SAXException;
  *
  * @author Kohsuke Kawaguchi
  */
-interface XmlVisitor {
+public interface XmlVisitor {
     void startDocument(LocatorEx locator) throws SAXException;
     void endDocument() throws SAXException;
 
