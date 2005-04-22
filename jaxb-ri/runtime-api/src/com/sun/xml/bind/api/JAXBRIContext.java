@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JAXBRIContext.java,v 1.2 2005-04-21 19:26:24 kohsuke Exp $
+ * @(#)$Id: JAXBRIContext.java,v 1.3 2005-04-22 23:47:16 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -130,6 +130,23 @@ public abstract class JAXBRIContext extends JAXBContext {
      */
     public abstract <B,V> RawAccessor<B,V> getElementPropertyAccessor( Class<B> wrapperBean, String nsUri, String localName )
             throws JAXBException;
+
+    /**
+     * Gets the namespace URIs statically known to this {@link JAXBContext}.
+     *
+     * <p>
+     * When JAXB is used to marshal into sub-trees, it declares
+     * these namespace URIs at each top-level element that it marshals.
+     *
+     * To avoid repeated namespace declarations at sub-elements, the application
+     * may declare those namespaces at a higher level.
+     *
+     * @return
+     *      always non-null.
+     *
+     * @since 2.0 EA2
+     */
+    public abstract Collection<String> getKnownNamespaceURIs();
 
     /**
      * The property that you can specify to {@link JAXBContext#newInstance}
