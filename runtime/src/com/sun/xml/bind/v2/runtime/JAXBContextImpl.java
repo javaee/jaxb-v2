@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.4 2005-04-20 23:57:33 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.5 2005-04-22 23:47:16 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Arrays;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -71,7 +72,7 @@ import org.xml.sax.SAXException;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -596,6 +597,10 @@ public final class JAXBContextImpl extends JAXBRIContext {
                 return acc;
         }
         throw new JAXBException(new QName(nsUri,localName)+" is not a valid property on "+wrapperBean);
+    }
+
+    public Collection<String> getKnownNamespaceURIs() {
+        return Arrays.asList(nameList.namespaceURIs);
     }
 
     /**
