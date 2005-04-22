@@ -35,6 +35,7 @@ import com.sun.tools.xjc.util.MimeTypeRange;
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.WellKnownNamespace;
+import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
 import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XSFacet;
 import com.sun.xml.xsom.XSListSimpleType;
@@ -456,6 +457,14 @@ public final class ConversionFinder extends BindingComponent {
             if(name!=null)
                 return lookupBuiltin(name);
         }
+
+        // also check for swaRef
+        if(type.getTargetNamespace().equals(WellKnownNamespace.SWA_URI)) {
+            String name = type.getName();
+            if(name!=null && name.equals("swaRef"))
+                return CBuiltinLeafInfo.STRING.makeAdapted(SwaRefAdapter.class,false);
+        }
+
 
         return null;
     }
