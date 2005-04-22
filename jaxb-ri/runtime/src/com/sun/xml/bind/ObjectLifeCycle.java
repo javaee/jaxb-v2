@@ -62,7 +62,7 @@ public interface ObjectLifeCycle {
      * @param parent
      *      if this object is a child object of another object,
      *      this parameter points to the parent object to which
-     *      this object will be set.
+     *      this object will be  set.
      *
      *      this parameter is null when this object is the root object.
      */
