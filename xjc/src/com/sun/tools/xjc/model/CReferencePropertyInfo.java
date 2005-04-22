@@ -5,14 +5,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.namespace.QName;
 import javax.activation.MimeType;
+import javax.xml.namespace.QName;
 
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.tools.xjc.model.nav.NavigatorImpl;
 import com.sun.xml.bind.annotation.W3CDomHandler;
-import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.ReferencePropertyInfo;
@@ -111,7 +110,7 @@ public final class CReferencePropertyInfo extends CPropertyInfo implements Refer
         return false;
     }
 
-    public Adapter<NType,NClass> getAdapter() {
+    public CAdapter getAdapter() {
         return null;
     }
 

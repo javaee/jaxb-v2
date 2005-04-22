@@ -222,7 +222,7 @@ public final class SimpleTypeBuilder extends BindingComponent {
         }
 
         public TypeUse restrictionSimpleType(XSRestrictionSimpleType type) {
-            // if not just process the base type.
+            // just process the base type.
             return compose(type.getSimpleBaseType());
         }
     };

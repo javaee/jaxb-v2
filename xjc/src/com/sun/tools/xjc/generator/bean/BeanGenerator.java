@@ -50,6 +50,7 @@ import com.sun.tools.xjc.generator.annotation.spec.XmlJavaTypeAdapterWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlRootElementWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlTypeWriter;
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
+import com.sun.tools.xjc.model.CAdapter;
 import com.sun.tools.xjc.model.CAttributePropertyInfo;
 import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CClassInfoParent;
@@ -59,8 +60,6 @@ import com.sun.tools.xjc.model.CEnumLeafInfo;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.model.CTypeRef;
 import com.sun.tools.xjc.model.Model;
-import com.sun.tools.xjc.model.nav.NClass;
-import com.sun.tools.xjc.model.nav.NType;
 import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.ClassOutline;
 import com.sun.tools.xjc.outline.EnumConstantOutline;
@@ -69,10 +68,11 @@ import com.sun.tools.xjc.outline.FieldOutline;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.outline.PackageOutline;
 import com.sun.tools.xjc.util.CodeModelClassFactory;
-import com.sun.xml.bind.v2.TODO;
-import com.sun.xml.bind.v2.model.core.Adapter;
-import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.annotation.XmlMimeType;
+import com.sun.xml.bind.annotation.XmlSoapAttachment;
+import com.sun.xml.bind.v2.TODO;
+import com.sun.xml.bind.v2.model.core.PropertyInfo;
+import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
 
 /**
  * Generates fields and accessors.
@@ -663,15 +663,17 @@ public final class BeanGenerator implements Outline
      * Also generates other per-property annotations
      * (such as {@link XmlID}, {@link XmlIDREF}, and {@link XmlMimeType} if necessary.
      */
-    public final void generateAdapterIfNecessary(PropertyInfo<NType,NClass> prop, JAnnotatable field) {
-        Adapter<NType,NClass> adapter = prop.getAdapter();
+    public final void generateAdapterIfNecessary(CPropertyInfo prop, JAnnotatable field) {
+        CAdapter adapter = prop.getAdapter();
         if (adapter != null ) {
-            TODO.prototype( "using the ri version of XmlJavaTypeAdapter, " +
-                            "w/o print and parse methods, not the spec version" );
-            // [RESULT]
-            // @XmlJavaTypeAdapter( Foo.class )
-            XmlJavaTypeAdapterWriter xjtw = field.annotate2(XmlJavaTypeAdapterWriter.class);
-            xjtw.value(adapter.adapterType.toType(this,Aspect.EXPOSED));
+            if(adapter.getAdapterIfKnown()==SwaRefAdapter.class) {
+                field.annotate(XmlSoapAttachment.class);
+            } else {
+                // [RESULT]
+                // @XmlJavaTypeAdapter( Foo.class )
+                XmlJavaTypeAdapterWriter xjtw = field.annotate2(XmlJavaTypeAdapterWriter.class);
+                xjtw.value(adapter.adapterType.toType(this,Aspect.EXPOSED));
+            }
         }
 
         switch(prop.id()) {

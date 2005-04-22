@@ -81,6 +81,8 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
         return parent;
     }
 
+    public abstract CAdapter getAdapter();
+
     /**
      * Name of the property.
      *
