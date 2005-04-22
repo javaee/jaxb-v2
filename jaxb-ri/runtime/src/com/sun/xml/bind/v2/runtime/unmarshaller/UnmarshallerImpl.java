@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: UnmarshallerImpl.java,v 1.6 2005-04-21 17:14:33 kohsuke Exp $
+ * @(#)$Id: UnmarshallerImpl.java,v 1.7 2005-04-22 15:44:57 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -143,6 +143,13 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl
     private static final DefaultHandler dummyHandler = new DefaultHandler();
 
     public static XmlVisitor adapt( XMLReader reader, XmlVisitor visitor ) {
+        // attempt to set it to true, which could fail
+        try {
+            reader.setFeature("http://xml.org/sax/features/string-interning",true);
+        } catch (SAXException e) {
+            ;
+        }
+
         try {
             if( reader.getFeature("http://xml.org/sax/features/string-interning") )
                 return visitor;  // no need for wrapping
