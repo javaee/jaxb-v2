@@ -29,7 +29,9 @@ import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
+import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
 import com.sun.xml.bind.annotation.XmlMimeType;
+import com.sun.xml.bind.annotation.XmlSoapAttachment;
 
 /**
  * {@link ElementInfo} implementation.
@@ -196,13 +198,21 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         tagName = parseElementName(anno);
 
         // adapter
-        XmlJavaTypeAdapter adapter = null;
-        if(nav().getMethodParameters(m).length>0)
-            adapter = reader().getMethodAnnotation(XmlJavaTypeAdapter.class,m,this);
-        if(adapter!=null)
-            this.adapter = new Adapter<TypeT,ClassDeclT>(adapter,reader(),nav());
-        else
-            this.adapter = null;
+        {
+            Adapter<TypeT,ClassDeclT> a = null;
+            if(nav().getMethodParameters(m).length>0) {
+                XmlJavaTypeAdapter adapter = reader().getMethodAnnotation(XmlJavaTypeAdapter.class,m,this);
+                if(adapter!=null)
+                    a = new Adapter<TypeT,ClassDeclT>(adapter,reader(),nav());
+                else {
+                    XmlSoapAttachment xsa = reader().getMethodAnnotation(XmlSoapAttachment.class,m,this);
+                    if(xsa!=null)
+                        a = new Adapter<TypeT,ClassDeclT>(owner.nav.asDecl(SwaRefAdapter.class),owner.nav);
+                }
+            }
+
+            this.adapter = a;
+        }
 
         if(adapter==null) {
             // T of JAXBElement<T>

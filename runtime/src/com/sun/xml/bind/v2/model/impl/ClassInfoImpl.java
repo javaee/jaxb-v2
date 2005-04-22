@@ -30,6 +30,7 @@ import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.annotation.XmlAnyAttribute;
 import com.sun.xml.bind.annotation.XmlAnyElement;
+import com.sun.xml.bind.annotation.XmlSoapAttachment;
 import com.sun.xml.bind.v2.NameConverter;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
@@ -41,6 +42,7 @@ import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
+import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
 
 /**
  * A part of the {@link ClassInfo} that doesn't depend on a particular
@@ -312,10 +314,18 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     private PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> adaptIfNecessary(PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> seed) {
         XmlJavaTypeAdapter adapter = seed.readAnnotation(XmlJavaTypeAdapter.class);
-        
-        if(adapter==null)   return seed;
+        if(adapter!=null)
+            return createAdaptedSeed(seed,new Adapter<TypeT,ClassDeclT>(adapter,reader(),nav()));
 
-        return createAdaptedSeed(seed,new Adapter(adapter,reader(),nav()));
+        // this is actually incorrect because it's OK to have an adapter and the attachment
+        // at the same time.
+
+        XmlSoapAttachment xsa = seed.readAnnotation(XmlSoapAttachment.class);
+        if(xsa!=null)
+            return createAdaptedSeed(seed,
+                new Adapter<TypeT,ClassDeclT>(owner.nav.asDecl(SwaRefAdapter.class),owner.nav));
+
+        return seed;
     }
 
     public boolean hasProperties() {
