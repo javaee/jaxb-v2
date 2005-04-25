@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: WellKnownNamespace.java,v 1.2 2005-04-22 21:26:39 kohsuke Exp $
+ * @(#)$Id: WellKnownNamespace.java,v 1.3 2005-04-25 17:05:39 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -24,6 +24,9 @@ public abstract class WellKnownNamespace {
 
     public static final String XML_SCHEMA_INSTANCE =
         "http://www.w3.org/2001/XMLSchema-instance";
+
+    public static final Object XML_SCHEMA_DATATYPES =
+        "http://www.w3.org/2001/XMLSchema-datatypes";
 
     public static final String XML_NAMESPACE_URI =
         "http://www.w3.org/XML/1998/namespace";
