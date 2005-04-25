@@ -22,8 +22,8 @@ final class ProgressCodeWriter implements CodeWriter {
     private final XJCListener progress;
 
     public OutputStream open(JPackage pkg, String fileName) throws IOException {
-        String name = pkg.name().replace('.',File.pathSeparatorChar);
-        if(name.length()!=0)    name +=     File.pathSeparatorChar;
+        String name = pkg.name().replace('.',File.separatorChar);
+        if(name.length()!=0)    name +=     File.separatorChar;
         name += fileName;
 
         progress.generatedFile(name);
