@@ -6,7 +6,6 @@ package com.sun.codemodel;
 
 
 import java.lang.annotation.Annotation;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -31,8 +30,9 @@ public final class JAnnotationUse extends JAnnotationValue {
      *
      * <p>
      * Use ordered map to keep the code generation the same on any JVM.
+     * Lazily created.
      */
-    private final SortedMap<String,JAnnotationValue> memberValues = new TreeMap<String,JAnnotationValue>();
+    private SortedMap<String,JAnnotationValue> memberValues;
 
     JAnnotationUse(JClass clazz){
         this.clazz = clazz;
@@ -40,6 +40,12 @@ public final class JAnnotationUse extends JAnnotationValue {
 
     private JCodeModel owner() {
         return clazz.owner();
+    }
+
+    private void addValue(String name, JAnnotationValue annotationValue) {
+        if(memberValues==null)
+            memberValues = new TreeMap<String, JAnnotationValue>();
+        memberValues.put(name,annotationValue);
     }
 
     /**
@@ -56,9 +62,8 @@ public final class JAnnotationUse extends JAnnotationValue {
      *
      */
     public JAnnotationUse param(String name, boolean value){
-         JAnnotationValue annotationValue = new JAnnotationStringValue(JExpr.lit(value));
-         memberValues.put(name,annotationValue);
-         return this;
+        addValue(name, new JAnnotationStringValue(JExpr.lit(value)));
+        return this;
     }
 
     /**
@@ -74,9 +79,8 @@ public final class JAnnotationUse extends JAnnotationValue {
      *
      */
     public JAnnotationUse param(String name, int value){
-         JAnnotationValue annotationValue = new JAnnotationStringValue(JExpr.lit(value));
-         memberValues.put(name,annotationValue);
-         return this;
+        addValue(name, new JAnnotationStringValue(JExpr.lit(value)));
+        return this;
     }
 
     /**
@@ -94,8 +98,7 @@ public final class JAnnotationUse extends JAnnotationValue {
     public JAnnotationUse param(String name, String value){
         //Escape string values with quotes so that they can
         //be generated accordingly
-        JAnnotationValue annotationValue = new JAnnotationStringValue(JExpr.lit(value));
-        memberValues.put(name,annotationValue);
+        addValue(name, new JAnnotationStringValue(JExpr.lit(value)));
         return this;
     }
 
@@ -113,13 +116,13 @@ public final class JAnnotationUse extends JAnnotationValue {
      *         be added to it using the same or the overloaded methods.
      *
      */
-     public JAnnotationUse annotationParam(String name, Class <? extends Annotation> value){
-         JAnnotationUse annotationUse = new JAnnotationUse(owner().ref(value));
-         memberValues.put(name,annotationUse);
-         return annotationUse;
+    public JAnnotationUse annotationParam(String name, Class<? extends Annotation> value) {
+        JAnnotationUse annotationUse = new JAnnotationUse(owner().ref(value));
+        addValue(name, annotationUse);
+        return annotationUse;
     }
 
-     /**
+    /**
      * Adds a member value pair to this annotation
      * @param name
      *        The simple name for this annotation
@@ -131,13 +134,13 @@ public final class JAnnotationUse extends JAnnotationValue {
      *         be added to it using the same or the overloaded methods.
      *
      */
-     public JAnnotationUse param(String name, final Enum value){
-         memberValues.put (name, new JAnnotationValue() {
-             public void generate(JFormatter f) {
-                 f.t(owner().ref(value.getDeclaringClass())).p('.').p(value.name());
-             }
-         });
-         return this;
+    public JAnnotationUse param(String name, final Enum value) {
+        addValue(name, new JAnnotationValue() {
+                    public void generate(JFormatter f) {
+                        f.t(owner().ref(value.getDeclaringClass())).p('.').p(value.name());
+                    }
+                });
+        return this;
     }
 
     /**
@@ -152,37 +155,35 @@ public final class JAnnotationUse extends JAnnotationValue {
      *         be added to it using the same or the overloaded methods.
      *
      */
-     public JAnnotationUse param(String name, JEnumConstant value){
-         JAnnotationValue annotationValue = new JAnnotationStringValue(value);
-         memberValues.put (name, annotationValue);
-         return this;
+    public JAnnotationUse param(String name, JEnumConstant value){
+        addValue(name, new JAnnotationStringValue(value));
+        return this;
     }
 
      /**
-     * Adds a member value pair to this annotation
-     *  This can be used for e.g to specify
+      * Adds a member value pair to this annotation
+      *  This can be used for e.g to specify
       * <pre>
-     *        &#64;XmlCollectionItem(type=Integer.class);
+      *        &#64;XmlCollectionItem(type=Integer.class);
       * <pre>
-     * For adding a value of Class<? extends Annotation>
-     * @link
+      * For adding a value of Class<? extends Annotation>
+      * @link
       * #annotationParam(java.lang.String, java.lang.Class<? extends java.lang.annotation.Annotation>)
-     * @param name
-     *        The simple name for this annotation param
-     *
-     * @param value
-     *        The class type of the param
-     * @return
-     *         The JAnnotationUse. More member value pairs can
-     *         be added to it using the same or the overloaded methods.
+      * @param name
+      *        The simple name for this annotation param
+      *
+      * @param value
+      *        The class type of the param
+      * @return
+      *         The JAnnotationUse. More member value pairs can
+      *         be added to it using the same or the overloaded methods.
       *
       *
-     *
-     */
+      *
+      */
      public JAnnotationUse param(String name, Class value){
-        JAnnotationValue annotationValue = new JAnnotationStringValue(JExpr.lit(value.getName()));
-        memberValues.put(name,annotationValue);
-        return this;
+         addValue(name, new JAnnotationStringValue(JExpr.lit(value.getName())));
+         return this;
     }
 
     /**
@@ -196,8 +197,7 @@ public final class JAnnotationUse extends JAnnotationValue {
      */
     public JAnnotationUse param(String name, JType type){
         JClass clazz = type.boxify();
-        JAnnotationValue annotationValue = new JAnnotationStringValue ( clazz.dotclass() );
-        memberValues.put(name,annotationValue);
+        addValue(name, new JAnnotationStringValue ( clazz.dotclass() ));
         return this;
     }
 
@@ -213,7 +213,7 @@ public final class JAnnotationUse extends JAnnotationValue {
      */
     public JAnnotationArrayMember paramArray(String name){
         JAnnotationArrayMember arrayMember = new JAnnotationArrayMember(owner());
-        memberValues.put(name,arrayMember);
+        addValue(name, arrayMember);
         return arrayMember;
     }
 
@@ -254,25 +254,26 @@ public final class JAnnotationUse extends JAnnotationValue {
 
     public void generate(JFormatter f) {
         f.p('@').g(clazz);
-        boolean first;
-        if (memberValues.size() != 0 ) {
+        if(memberValues!=null) {
             f.p('(');
-            first = true;
+            boolean first = true;
 
-            for (Iterator iterator = memberValues.entrySet().iterator();iterator.hasNext();) {
-                Map.Entry mapEntry = (Map.Entry) iterator.next();
-                String membername = (String)mapEntry.getKey();
-                if (!first) {
-                    f.p(',');
+            if(isOptimizable()) {
+                // short form
+                f.g(memberValues.get("value"));
+            } else {
+                for (Map.Entry<String, JAnnotationValue> mapEntry : memberValues.entrySet()) {
+                    if (!first) f.p(',');
+                    f.p(mapEntry.getKey()).p('=').g(mapEntry.getValue());
+                    first = false;
                 }
-                f.p(membername).p('=');
-                JAnnotationValue memberVal = (JAnnotationValue) mapEntry.getValue();
-                f.g(memberVal);
-                first = false;
             }
             f.p(')');
         }
     }
 
+    private boolean isOptimizable() {
+        return memberValues.size()==1 && memberValues.firstKey().equals("value");
+    }
 }
 
