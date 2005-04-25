@@ -1,11 +1,23 @@
 package com.sun.tools.xjc.reader.relaxng;
 
+import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.REPEATED_ELEMENT;
+
+import javax.xml.namespace.QName;
+
 import com.sun.tools.xjc.model.CClassInfo;
+import com.sun.tools.xjc.model.CElementPropertyInfo;
+import com.sun.tools.xjc.model.CReferencePropertyInfo;
+import com.sun.tools.xjc.model.CAttributePropertyInfo;
+import com.sun.tools.xjc.reader.RawTypeSet;
+import com.sun.xml.bind.v2.model.core.ID;
 
 import org.kohsuke.rngom.digested.DChoicePattern;
 import org.kohsuke.rngom.digested.DMixedPattern;
 import org.kohsuke.rngom.digested.DPattern;
 import org.kohsuke.rngom.digested.DPatternWalker;
+import org.kohsuke.rngom.digested.DOptionalPattern;
+import org.kohsuke.rngom.digested.DOneOrMorePattern;
+import org.kohsuke.rngom.digested.DAttributePattern;
 
 /**
  * Recursively visits {@link DPattern} and
@@ -14,11 +26,14 @@ import org.kohsuke.rngom.digested.DPatternWalker;
  * @author Kohsuke Kawaguchi
  */
 final class ContentModelBinder extends DPatternWalker {
+    private final RELAXNGCompiler compiler;
     private final CClassInfo clazz;
 
     private boolean insideOptional = false;
+    private int iota=1;
 
-    public ContentModelBinder(CClassInfo clazz) {
+    public ContentModelBinder(RELAXNGCompiler compiler,CClassInfo clazz) {
+        this.compiler = compiler;
         this.clazz = clazz;
     }
 
@@ -34,20 +49,46 @@ final class ContentModelBinder extends DPatternWalker {
         return null;
     }
 
-//    public Void onOneOrMore(DOneOrMorePattern p) {
-//        RawTypeSet rts = RawTypeSetBuilder.build(p, insideOptional);
-//        if(rts.canBeTypeRefs) {
-//            CElementPropertyInfo prop = new CElementPropertyInfo(
-//                    calcName(p),true,ID.NONE,p.getLocation(),false,!insideOptional);
-//            rts.addTo(prop);
-//            clazz.addProperty(prop);
-//        } else {
-//            CReferencePropertyInfo prop = new CReferencePropertyInfo(
-//                    calcName(p),true,false/*TODO*/,ID.NONE,p.getLocation());
-//            rts.addTo(prop);
-//            clazz.addProperty(prop);
-//        }
-//
-//        return null;
-//    }
+    public Void onOptional(DOptionalPattern p) {
+        boolean old = insideOptional;
+        insideOptional = true;
+        super.onOptional(p);
+        insideOptional = old;
+        return null;
+    }
+
+    public Void onOneOrMore(DOneOrMorePattern p) {
+        RawTypeSet rts = RawTypeSetBuilder.build(p, insideOptional);
+        if(rts.canBeTypeRefs) {
+            CElementPropertyInfo prop = new CElementPropertyInfo(
+                    calcName(p),REPEATED_ELEMENT,ID.NONE,null,null,p.getLocation(),!insideOptional);
+            rts.addTo(prop);
+            clazz.addProperty(prop);
+        } else {
+            CReferencePropertyInfo prop = new CReferencePropertyInfo(
+                    calcName(p),true,false/*TODO*/,null,p.getLocation());
+            rts.addTo(prop);
+            clazz.addProperty(prop);
+        }
+
+        return null;
+    }
+
+    public Void onAttribute(DAttributePattern p) {
+        // TODO: support multiple names
+        QName name = p.getName().listNames().iterator().next();
+
+        CAttributePropertyInfo ap = new CAttributePropertyInfo(
+           calcName(p), null, p.getLocation(), name,
+                p.getChild().accept(compiler.typeUseBinder),
+                !insideOptional);
+        clazz.addProperty(ap);
+
+        return null;
+    }
+
+    private String calcName(DPattern p) {
+        // TODO
+        return "field"+(iota++);
+    }
 }
