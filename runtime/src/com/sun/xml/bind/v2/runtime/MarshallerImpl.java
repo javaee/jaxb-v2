@@ -100,11 +100,11 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     }
 
     public void marshal(Object obj, XMLStreamWriter writer) throws JAXBException {
-        write(obj, new XMLStreamWriterOutput(writer), null);
+        write(obj, new XMLStreamWriterOutput(writer), new StAXPostInitAction(writer,serializer));
     }
 
     public void marshal(Object obj, XMLEventWriter writer) throws JAXBException {
-        write(obj, new XMLEventWriterOutput(writer), null);
+        write(obj, new XMLEventWriterOutput(writer), new StAXPostInitAction(writer,serializer));
     }
 
     public void marshal(Object obj, XmlOutput output) throws JAXBException {

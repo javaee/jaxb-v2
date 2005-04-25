@@ -41,7 +41,7 @@ final class BridgeImpl<T> extends Bridge<T> {
 
     public void marshal(BridgeContext context, T t, XMLStreamWriter output) throws JAXBException {
         MarshallerImpl m = ((BridgeContextImpl)context).marshaller;
-        m.write(tagName,bi,t,new XMLStreamWriterOutput(output),null);
+        m.write(tagName,bi,t,new XMLStreamWriterOutput(output),new StAXPostInitAction(output,m.serializer));
     }
 
     public void marshal(BridgeContext context, T t, OutputStream output) throws JAXBException {
