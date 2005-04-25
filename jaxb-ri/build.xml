@@ -32,7 +32,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.2 2005-04-18 17:56:51 kohsuke Exp $
+       $Id: build.xml,v 1.3 2005-04-25 22:00:20 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -223,12 +223,13 @@
               <createManifest file="${xjc.root}/manifest.xjc" extensionName="com.sun.tools.xjc" />
 
               <!-- the manifest classpath isn't quite like any of the path structures
-                   supported by Ant, so build the list the old fashioned way -->
-              <!--
-                even though we don't distribute dom4j, we need to be able to find them
-                if they are in the classpath.
+                   supported by Ant, so build the list the old fashioned way.
+
+                   and yes, it's OK to have new lines and spaces inbetween.
               -->
-              <property name="manifest.classpath" value="jaxb-api.jar jaxb-impl.jar jaxb1-impl.jar xsdlib.jar relaxngDatatype.jar dom4j.jar jsr173_1.0_api.jar" />
+              <property name="manifest.classpath"
+                value="jaxb-api.jar jaxb-impl.jar jaxb1-impl.jar xsdlib.jar
+                relaxngDatatype.jar dom4j.jar jsr173_1.0_api.jar activation.jar" />
               <echo file="${xjc.root}/manifest.xjc" append="true"
 >Main-Class: com.sun.tools.xjc.XJCFacade
 Class-Path: ${manifest.classpath}
@@ -555,7 +556,25 @@ Class-Path: ${manifest.classpath}
         <property name="jes.svr4"           value="/usr/share/lib"/>
         <property name="jes.zip"            value="../../jwsdp-shared/lib"/>
 
-        <property name="manifest.classpath" value="jaxb-api.jar jaxb-impl.jar jaxb1-impl.jar xsdlib.jar ${jwsdp.shared}/xsdlib.jar ${jes.rpm.private}/xsdlib.jar ${jes.svr4}/xsdlib.jar ${jes.zip}/xsdlib.jar relaxngDatatype.jar ${jwsdp.shared}/relaxngDatatype.jar ${jes.rpm.private}/relaxngDatatype.jar ${jes.svr4}/relaxngDatatype.jar ${jes.zip}/relaxngDatatype.jar jax-qname.jar ${jwsdp.shared}/jax-qname.jar ${jes.rpm}/jax-qname.jar ${jes.svr4}/jax-qname.jar ${jes.zip}/jax-qname.jar namespace.jar ${jwsdp.shared}/namespace.jar ${jes.rpm}/namespace.jar ${jes.svr4}/namespace.jar ${jes.zip}/namespace.jar jaxp-api.jar ${jaxp.jars}/jaxp-api.jar sax.jar ${jaxp.jars}/endorsed/sax.jar dom.jar ${jaxp.jars}/endorsed/dom.jar xercesImpl.jar ${jaxp.jars}/endorsed/xercesImpl.jar ${jes.rpm}/xercesImpl.jar ${jes.svr4}/xercesImpl.jar ${jes.zip}/xercesImpl.jar xalan.jar ${jaxp.jars}/endorsed/xalan.jar ${jes.rpm}/xalan.jar ${jes.svr4}/xalan.jar ${jes.zip}/xalan.jar" />
+        <property name="manifest.classpath" value="jaxb-api.jar jaxb-impl.jar jaxb1-impl.jar
+          xsdlib.jar
+          ${jwsdp.shared}/xsdlib.jar
+          ${jes.rpm.private}/xsdlib.jar
+          ${jes.svr4}/xsdlib.jar
+          ${jes.zip}/xsdlib.jar
+
+          relaxngDatatype.jar
+          ${jwsdp.shared}/relaxngDatatype.jar
+          ${jes.rpm.private}/relaxngDatatype.jar
+          ${jes.svr4}/relaxngDatatype.jar
+          ${jes.zip}/relaxngDatatype.jar
+
+          activation.jar
+          ${jwsdp.shared}/activation.jar
+          ${jes.rpm.private}/activation.jar
+          ${jes.svr4}/activation.jar
+          ${jes.zip}/activation.jar
+          " />
         <echo file="${xjc.root}/manifest.xjc.jwsdp" 
               append="true"
               message="Main-Class: com.sun.tools.xjc.XJCFacade{line.separator}Class-Path: ${manifest.classpath}"/>
