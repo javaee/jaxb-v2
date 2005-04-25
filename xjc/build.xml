@@ -5,7 +5,7 @@
  SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 -->
 
-<!-- $Id: build.xml,v 1.1 2005-04-15 20:08:46 kohsuke Exp $ -->
+<!-- $Id: build.xml,v 1.2 2005-04-25 23:16:34 kohsuke Exp $ -->
 <project name="xjc" basedir=".." default="deploy">
 
   <description>
@@ -226,6 +226,7 @@
             <classpath path="${spec.classes}"/>
             <classpath>
               <fileset dir="${jaxb.libs.util}" includes="*.jar" />
+              <fileset dir="${jaxb.libs.test}" includes="*.jar" />
             </classpath>
         </javac>
     </target>
