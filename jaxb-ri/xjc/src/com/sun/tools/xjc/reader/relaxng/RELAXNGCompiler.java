@@ -14,12 +14,12 @@ import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.model.CBuiltinLeafInfo;
 import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CClassInfoParent;
+import com.sun.tools.xjc.model.CEnumConstant;
 import com.sun.tools.xjc.model.CEnumLeafInfo;
+import com.sun.tools.xjc.model.CNonElement;
 import com.sun.tools.xjc.model.CTypeInfo;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.model.TypeUse;
-import com.sun.tools.xjc.model.CEnumConstant;
-import com.sun.tools.xjc.model.CNonElement;
 import com.sun.xml.bind.v2.NameConverter;
 
 import org.kohsuke.rngom.digested.DChoicePattern;
@@ -40,7 +40,7 @@ public final class RELAXNGCompiler {
     final DPattern grammar;
 
     /**
-     * All {@link DDefine}s in this schema.
+     * All named patterns in this schema.
      */
     final Set<DDefine> defs;
 
@@ -59,7 +59,7 @@ public final class RELAXNGCompiler {
      * Patterns that are mapped to Java concepts.
      *
      * <p>
-     * The value is an array because we often map elements with finite names
+     * The value is an array because we map elements with finite names
      * to multiple classes.
      */
     final Map<DPattern,CTypeInfo[]> classes = new HashMap<DPattern,CTypeInfo[]>();
@@ -70,6 +70,8 @@ public final class RELAXNGCompiler {
      * The value is the content model to be bound.
      */
     final Map<CClassInfo,DPattern> bindQueue = new HashMap<CClassInfo,DPattern>();
+
+    final TypeUseBinder typeUseBinder = new TypeUseBinder(this);
 
     public static Model build(DPattern grammar, JCodeModel codeModel, Options opts ) {
         RELAXNGCompiler compiler = new RELAXNGCompiler(grammar, codeModel, opts);
@@ -101,10 +103,11 @@ public final class RELAXNGCompiler {
 
     private void compile() {
         // decide which patterns to map to classes
-        promoteElementDefsToClasse();
+        promoteElementDefsToClasses();
         promoteTypeSafeEnums();
         // TODO: promote patterns with <jaxb:class> to classes
         // TODO: promote 'type' patterns to classes
+        promoteTypePatternsToClasses();
 
         for (Map.Entry<CClassInfo,DPattern> e : bindQueue.entrySet())
             bindContentModel(e.getKey(),e.getValue());
@@ -114,8 +117,7 @@ public final class RELAXNGCompiler {
         // first we decide which patterns in it map to properties
         // then we process each of them by using RawTypeSetBuilder.
         // much like DefaultParticleBinder in XSD
-
-        //RawTypeSetBuilder.build(pattern).addTo();
+        pattern.accept(new ContentModelBinder(this,clazz));
     }
 
     private void promoteTypeSafeEnums() {
@@ -178,7 +180,7 @@ public final class RELAXNGCompiler {
     }
 
 
-    private void promoteElementDefsToClasse() {
+    private void promoteElementDefsToClasses() {
         for( DDefine def : defs ) {
             DPattern p = def.getPattern();
             if (p instanceof DElementPattern) {
@@ -208,5 +210,18 @@ public final class RELAXNGCompiler {
         }
 
         classes.put(p,types);
+    }
+
+    /**
+     * Looks for named patterns that are not bound to classes so far,
+     * but that can be bound to classes.
+     */
+    private void promoteTypePatternsToClasses() {
+
+//        for( DDefine def : defs ) {
+//        ;
+//
+//        def.getPattern().accept(new InheritanceChecker());
+//        }
     }
 }
