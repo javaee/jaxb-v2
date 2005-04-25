@@ -32,7 +32,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.3 2005-04-25 22:00:20 kohsuke Exp $
+       $Id: build.xml,v 1.4 2005-04-25 22:02:36 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -577,7 +577,10 @@ Class-Path: ${manifest.classpath}
           " />
         <echo file="${xjc.root}/manifest.xjc.jwsdp" 
               append="true"
-              message="Main-Class: com.sun.tools.xjc.XJCFacade{line.separator}Class-Path: ${manifest.classpath}"/>
+>Main-Class: com.sun.tools.xjc.XJCFacade
+Class-Path: ${manifest.classpath}
+
+</echo>
         <mkdir dir="${dist.home}/lib/tmp"/>
         <unjar src="${dist.home}/lib/jaxb-xjc.jar" dest="${dist.home}/lib/tmp"/>
         <move file="${dist.home}/lib/jaxb-xjc.jar" tofile="${dist.home}/lib/jaxb-xjc.jar.orig"/>
