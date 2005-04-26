@@ -73,22 +73,7 @@ public class ContextFactory {
      * Used from the JAXB RI runtime API, invoked via reflection.
      */
     public static JAXBContext createContext( Class[] classes, Collection<TypeReference> typeRefs, String defaultNsUri ) throws JAXBException {
-        if(defaultNsUri==null)      defaultNsUri="";    // fool-proof
-
-        // TODO: external bindings
-        RuntimeModelBuilder builder = new RuntimeModelBuilder(
-                new RuntimeInlineAnnotationReader(),
-                defaultNsUri);
-        IllegalAnnotationsException.Builder errorHandler = new IllegalAnnotationsException.Builder();
-        builder.setErrorHandler(errorHandler);
-
-        for( Class c : classes )
-            builder.getTypeInfo(new Ref<Type,Class>(c));
-
-        RuntimeTypeInfoSet r = builder.link();
-        errorHandler.check();
-        assert r!=null : "if no error was reported, the link must be a success";
-        return new JAXBContextImpl(r,typeRefs);
+        return new JAXBContextImpl(classes,typeRefs,defaultNsUri);
     }
 
     /**

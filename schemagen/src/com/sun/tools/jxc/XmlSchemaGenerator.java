@@ -33,10 +33,11 @@ import com.sun.tools.jxc.gen.xmlschema.SimpleType;
 import com.sun.tools.jxc.gen.xmlschema.SimpleTypeHost;
 import com.sun.tools.jxc.gen.xmlschema.TopLevelElement;
 import com.sun.tools.jxc.gen.xmlschema.TypeHost;
-import com.sun.tools.xjc.api.SchemaOutputResolver;
 import com.sun.xml.bind.Util;
+import com.sun.xml.bind.api.SchemaOutputResolver;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.WellKnownNamespace;
+import com.sun.xml.bind.v2.runtime.SchemaGenerator;
 import com.sun.xml.bind.v2.model.core.ArrayInfo;
 import com.sun.xml.bind.v2.model.core.AttributePropertyInfo;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
@@ -51,6 +52,7 @@ import com.sun.xml.bind.v2.model.core.ReferencePropertyInfo;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.core.ValuePropertyInfo;
+import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.txw2.TXW;
 import com.sun.xml.txw2.TxwException;
 import com.sun.xml.txw2.output.ResultFactory;
@@ -75,7 +77,7 @@ import static com.sun.tools.jxc.util.Util.*;
  * @author Ryan Shoemaker
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
-public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> {
+public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implements SchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> {
 
     private static final Logger logger = Util.getClassLogger();
 
@@ -89,6 +91,13 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> {
      * @see SchemaOutputResolver#createOutput(String, String)
      */
     private final Map<String,Namespace> namespaces = new TreeMap<String,Namespace>();
+
+    public void fill(TypeInfoSet<TypeT,ClassDeclT,FieldT,MethodT> types) {
+        addAllClasses(types.beans().values());
+        addAllElements(types.getElementMappings(null).values());
+        addAllEnums(types.enums().values());
+        addAllArrays(types.arrays().values());
+    }
 
     private Namespace getNamespace(String uri) {
         Namespace n = namespaces.get(uri);
@@ -853,7 +862,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> {
      * This protects the rest of the {@link XmlSchemaGenerator} from client programming
      * error.
      */
-    private static final class FoolProofResolver implements SchemaOutputResolver {
+    private static final class FoolProofResolver extends SchemaOutputResolver {
         private final SchemaOutputResolver resolver;
 
         public FoolProofResolver(SchemaOutputResolver resolver) {

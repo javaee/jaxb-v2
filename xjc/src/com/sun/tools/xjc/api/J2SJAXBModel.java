@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
-import com.sun.tools.xjc.api.SchemaOutputResolver;
+import com.sun.xml.bind.api.SchemaOutputResolver;
 
 /**
  * {@link JAXBModel} that exposes additional information available
@@ -31,9 +31,6 @@ public interface J2SJAXBModel extends JAXBModel {
 
     /**
      * Generates the schema documents from the model.
-     *
-     * <p>
-     * This method only works for a java-to-schema binding.
      *
      * <p>
      * The caller can use the additionalElementDecls parameter to

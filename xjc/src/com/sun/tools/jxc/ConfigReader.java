@@ -22,7 +22,7 @@ import com.sun.msv.verifier.jarv.RELAXNGFactoryImpl;
 import com.sun.tools.jxc.gen.config.Config;
 import com.sun.tools.jxc.gen.config.Schema;
 import com.sun.tools.xjc.api.Reference;
-import com.sun.tools.xjc.api.SchemaOutputResolver;
+import com.sun.xml.bind.api.SchemaOutputResolver;
 
 import org.iso_relax.verifier.Verifier;
 import org.iso_relax.verifier.VerifierConfigurationException;
@@ -204,7 +204,7 @@ public final class ConfigReader  {
      * @author
      *     Bhakti Mehta (bhakti.mehta@sun.com)
      */
-    private static final class SchemaOutputResolverImpl implements SchemaOutputResolver{
+    private static final class SchemaOutputResolverImpl extends SchemaOutputResolver{
 
         /**
          * Directory to which we put the rest of the files.

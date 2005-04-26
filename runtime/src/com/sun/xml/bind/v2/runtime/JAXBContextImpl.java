@@ -4,16 +4,18 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.5 2005-04-22 23:47:16 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.6 2005-04-26 20:35:48 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Arrays;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -39,12 +41,16 @@ import com.sun.xml.bind.api.Bridge;
 import com.sun.xml.bind.api.BridgeContext;
 import com.sun.xml.bind.api.JAXBRIContext;
 import com.sun.xml.bind.api.RawAccessor;
+import com.sun.xml.bind.api.SchemaOutputResolver;
 import com.sun.xml.bind.api.TypeReference;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.bind.v2.WellKnownNamespace;
+import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
 import com.sun.xml.bind.v2.model.core.Adapter;
+import com.sun.xml.bind.v2.model.core.Ref;
 import com.sun.xml.bind.v2.model.impl.RuntimeAnyTypeImpl;
 import com.sun.xml.bind.v2.model.impl.RuntimeBuiltinLeafInfoImpl;
+import com.sun.xml.bind.v2.model.impl.RuntimeModelBuilder;
 import com.sun.xml.bind.v2.model.nav.ReflectionNavigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimeArrayInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeBuiltinLeafInfo;
@@ -72,7 +78,7 @@ import org.xml.sax.SAXException;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -145,13 +151,27 @@ public final class JAXBContextImpl extends JAXBRIContext {
     public final NameList nameList;
 
     /**
+     * Input to the JAXBContext.newInstance, so that we can recreate
+     * {@link RuntimeTypeInfoSet} whenever we need.
+     */
+    private final String defaultNsUri;
+    private final Class[] classes;
+
+    /**
      *
-     * @param typeSet
-     *      controls where the annotations are read from.
      * @param typeRefs
      *      used to build {@link Bridge}s. Can be empty.
      */
-    public JAXBContextImpl( RuntimeTypeInfoSet typeSet, Collection<TypeReference> typeRefs ) throws JAXBException {
+    public JAXBContextImpl( Class[] classes, Collection<TypeReference> typeRefs, String defaultNsUri ) throws JAXBException {
+
+        if(defaultNsUri==null)      defaultNsUri="";    // fool-proof
+
+        this.defaultNsUri = defaultNsUri;
+        this.classes = new Class[classes.length];
+        System.arraycopy(classes,0,this.classes,0,classes.length);
+
+        RuntimeTypeInfoSet typeSet = getTypeInfoSet();
+
 
         // at least prepare the empty table so that we don't have to check for null later
         elements.put(null,new LinkedHashMap<QName, ElementBeanInfoImpl>());
@@ -256,6 +276,26 @@ public final class JAXBContextImpl extends JAXBRIContext {
         // no use for them now
         nameBuilder = null;
         beanInfos = null;
+    }
+
+    /**
+     * Creates a {@link RuntimeTypeInfoSet}.
+     */
+    private RuntimeTypeInfoSet getTypeInfoSet() throws IllegalAnnotationsException {
+        RuntimeModelBuilder builder = new RuntimeModelBuilder(
+                new RuntimeInlineAnnotationReader(),
+                defaultNsUri);
+        IllegalAnnotationsException.Builder errorHandler = new IllegalAnnotationsException.Builder();
+        builder.setErrorHandler(errorHandler);
+
+        for( Class c : classes )
+            builder.getTypeInfo(new Ref<Type,Class>(c));
+
+        RuntimeTypeInfoSet r = builder.link();
+        errorHandler.check();
+        assert r!=null : "if no error was reported, the link must be a success";
+
+        return r;
     }
 
 
@@ -541,6 +581,29 @@ public final class JAXBContextImpl extends JAXBRIContext {
         };
     }
 
+    public void generateSchema(SchemaOutputResolver outputResolver) throws IOException {
+        SchemaGenerator xsdgen;
+        try {
+            Class clazz = this.getClass().getClassLoader().loadClass("com.sun.tools.jxc.XmlSchemaGenerator");
+            xsdgen = (SchemaGenerator)clazz.newInstance();
+        } catch (ClassNotFoundException e) {
+            throw new UnsupportedOperationException(e);
+        } catch (InstantiationException e) {
+            throw new UnsupportedOperationException(e);
+        } catch (IllegalAccessException e) {
+            throw new UnsupportedOperationException(e);
+        }
+
+        try {
+            xsdgen.fill(getTypeInfoSet());
+        } catch (IllegalAnnotationsException e) {
+            // this shouldn't happen because we've already
+            throw new AssertionError(e);
+        }
+
+        xsdgen.write(outputResolver);
+    }
+
 
     public Binder<Node> createBinder() {
         return new BinderImpl<Node>(this,new DOMScanner());
@@ -599,7 +662,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
         throw new JAXBException(new QName(nsUri,localName)+" is not a valid property on "+wrapperBean);
     }
 
-    public Collection<String> getKnownNamespaceURIs() {
+    public List<String> getKnownNamespaceURIs() {
         return Arrays.asList(nameList.namespaceURIs);
     }
 

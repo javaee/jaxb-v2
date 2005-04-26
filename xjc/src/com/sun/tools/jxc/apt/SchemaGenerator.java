@@ -25,8 +25,8 @@ import com.sun.mirror.declaration.AnnotationTypeDeclaration;
 import com.sun.mirror.declaration.TypeDeclaration;
 import com.sun.tools.xjc.api.J2SJAXBModel;
 import com.sun.tools.xjc.api.Reference;
-import com.sun.tools.xjc.api.SchemaOutputResolver;
 import com.sun.tools.xjc.api.XJC;
+import com.sun.xml.bind.api.SchemaOutputResolver;
 
 /**
  * {@link AnnotationProcessorFactory} that implements the schema generator
