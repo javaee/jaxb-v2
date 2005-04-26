@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JAXBRIContext.java,v 1.3 2005-04-22 23:47:16 kohsuke Exp $
+ * @(#)$Id: JAXBRIContext.java,v 1.4 2005-04-26 20:35:47 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -12,6 +12,8 @@ package com.sun.xml.bind.api;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.List;
+import java.io.IOException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -146,7 +148,34 @@ public abstract class JAXBRIContext extends JAXBContext {
      *
      * @since 2.0 EA2
      */
-    public abstract Collection<String> getKnownNamespaceURIs();
+    public abstract List<String> getKnownNamespaceURIs();
+
+
+    /**
+     * Generates the schema documents from the model.
+     *
+     * <p>
+     * The caller can use the additionalElementDecls parameter to
+     * add element declarations to the generate schema.
+     * For example, if the JAX-RPC passes in the following entry:
+     *
+     * {foo}bar -> DeclaredType for java.lang.String
+     *
+     * then JAXB generates the following element declaration (in the schema
+     * document for the namespace "foo")"
+     *
+     * &lt;xs:element name="bar" type="xs:string" />
+     *
+     * This can be used for generating schema components necessary for WSDL.
+     *
+     * @param outputResolver
+     *      this object controls the output to which schemas
+     *      will be sent.
+     *
+     * @throws IOException
+     *      if {@link SchemaOutputResolver} throws an {@link IOException}.
+     */
+    public abstract void generateSchema(SchemaOutputResolver outputResolver) throws IOException;
 
     /**
      * The property that you can specify to {@link JAXBContext#newInstance}

@@ -18,7 +18,6 @@ import com.sun.tools.jxc.XmlSchemaGenerator;
 import com.sun.tools.xjc.api.ErrorListener;
 import com.sun.tools.xjc.api.J2SJAXBModel;
 import com.sun.tools.xjc.api.Reference;
-import com.sun.tools.xjc.api.SchemaOutputResolver;
 import com.sun.xml.bind.annotation.XmlList;
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
 import com.sun.xml.bind.v2.model.core.ArrayInfo;
@@ -30,6 +29,7 @@ import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.core.Element;
 import com.sun.xml.bind.v2.model.core.ElementInfo;
 import com.sun.xml.bind.v2.model.nav.Navigator;
+import com.sun.xml.bind.api.SchemaOutputResolver;
 
 /**
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
@@ -130,10 +130,8 @@ final class JAXBModelImpl implements J2SJAXBModel {
         XmlSchemaGenerator<TypeMirror,TypeDeclaration,FieldDeclaration,MethodDeclaration> xsdgen
             = new XmlSchemaGenerator<TypeMirror,TypeDeclaration,FieldDeclaration,MethodDeclaration>();
 
-        xsdgen.addAllClasses(types.beans().values());
-        xsdgen.addAllElements(types.getElementMappings(null).values());
-        xsdgen.addAllEnums(types.enums().values());
-        xsdgen.addAllArrays(types.arrays().values());
+        xsdgen.fill(types);
+
         for (Map.Entry<QName,Reference> e : additionalElementDecls.entrySet()) {
             Reference value = e.getValue();
             if(value!=null) {

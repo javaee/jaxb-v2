@@ -17,8 +17,8 @@ import com.sun.tools.jxc.ConfigReader;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.api.J2SJAXBModel;
 import com.sun.tools.xjc.api.Reference;
-import com.sun.tools.xjc.api.SchemaOutputResolver;
 import com.sun.tools.xjc.api.XJC;
+import com.sun.xml.bind.api.SchemaOutputResolver;
 
 import org.xml.sax.SAXException;
 

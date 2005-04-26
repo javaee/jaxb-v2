@@ -1,13 +1,4 @@
-/*
- * @(#)$Id: SchemaOutputResolver.java,v 1.1 2005-04-15 20:07:49 kohsuke Exp $
- *
- * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
- * 
- * This software is the proprietary information of Sun Microsystems, Inc.  
- * Use is subject to license terms.
- * 
- */
-package com.sun.tools.xjc.api;
+package com.sun.xml.bind.api;
 
 import java.io.IOException;
 
@@ -18,17 +9,21 @@ import javax.xml.transform.Result;
  * schema files.
  *
  * <p>
- * An implementation of this interface has to be provided by the calling
+ * An implementation of this abstract class has to be provided by the calling
  * application to generate schemas.
+ *
+ * <p>
+ * This is a class, not an interface so as to allow future versions to evolve
+ * without breaking the compatibility.
  *
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-public interface SchemaOutputResolver {
+public abstract class SchemaOutputResolver {
     /**
      * Decides where the schema file (of the given namespace URI)
      * will be written, and return it as a {@link Result} object.
-     * 
+     *
      * <p>
      * This method is called only once for any given namespace.
      * IOW, all the components in one namespace is always written
@@ -59,5 +54,5 @@ public interface SchemaOutputResolver {
      *      If {@code null} is returned, the schema generation for this
      *      namespace URI will be skipped.
      */
-    Result createOutput( String namespaceUri, String suggestedFileName ) throws IOException;
+    public abstract Result createOutput( String namespaceUri, String suggestedFileName ) throws IOException;
 }
