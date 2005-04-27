@@ -1,4 +1,4 @@
-/* $Id: XMLEventReaderToContentHandler.java,v 1.1 2005-04-21 00:01:56 kohsuke Exp $
+/* $Id: XMLEventReaderToContentHandler.java,v 1.2 2005-04-27 22:12:13 kohsuke Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -69,7 +69,10 @@ public class XMLEventReaderToContentHandler implements StAXReaderToContentHandle
 
     // SAX event sink
     private final ContentHandler saxHandler;
-    
+
+    /** Current event. */
+    private XMLEvent event;
+
     /**
      * Construct a new StAX to SAX adapter that will convert a StAX event
      * stream into a SAX event stream.
@@ -93,19 +96,19 @@ public class XMLEventReaderToContentHandler implements StAXReaderToContentHandle
             // remembers the nest level of elements to know when we are done.
             int depth=0;
 
-            XMLEvent event = staxEventReader.peek();
+            event = staxEventReader.peek();
 
             if( !event.isStartDocument() && !event.isStartElement() )
                 throw new IllegalStateException();
 
             // if the parser is on START_DOCUMENT, skip ahead to the first element
-            while( !event.isStartElement() ) {
-                event = staxEventReader.nextEvent();
-            }
-
-            handleStartDocument(event);
-
             do {
+                event = staxEventReader.nextEvent();
+            } while( !event.isStartElement() );
+
+            handleStartDocument();
+
+            while(true) {
                 // These are all of the events listed in the javadoc for
                 // XMLEvent.
                 // The spec only really describes 11 of them.
@@ -155,10 +158,13 @@ public class XMLEventReaderToContentHandler implements StAXReaderToContentHandle
                         throw new InternalError("processing event: " + event);
                 }
 
+                if(depth==0)    break;
+
                 event=staxEventReader.nextEvent();
-            } while (depth!=0);
+            }
 
             handleEndDocument();
+            event = null; // avoid keeping a stale reference
         } catch (SAXException e) {
             throw new XMLStreamException(e);
         }
@@ -168,7 +174,7 @@ public class XMLEventReaderToContentHandler implements StAXReaderToContentHandle
         saxHandler.endDocument();
     }
 
-    private void handleStartDocument(final XMLEvent event) throws SAXException {
+    private void handleStartDocument() throws SAXException {
         saxHandler.setDocumentLocator(new Locator() {
             public int getColumnNumber() {
                 return event.getLocation().getColumnNumber();
