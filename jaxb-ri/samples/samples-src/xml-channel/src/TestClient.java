@@ -31,6 +31,7 @@ public class TestClient implements Runnable {
         try {
 	    JAXBContext jc = JAXBContext.newInstance("message");
 	    marshaller = jc.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FRAGMENT,true);
 	    of = new ObjectFactory();
         } catch( JAXBException e ) {
             e.printStackTrace(); // impossible
