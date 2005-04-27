@@ -1,5 +1,5 @@
 /*
- * $Id: SampleProcessorDriver.java,v 1.2 2005-04-27 17:10:33 kohsuke Exp $
+ * $Id: SampleProcessorDriver.java,v 1.3 2005-04-27 17:11:28 kohsuke Exp $
  */
 
 /*
@@ -29,7 +29,7 @@ import processor.util.Util;
  * 
  * Ryan Shoemaker, Sun Microsystems, Inc.
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class SampleProcessorDriver {
 
@@ -71,9 +71,9 @@ public class SampleProcessorDriver {
         if(workDir.value == null) {
             final String pathname = rootDir.value.getPath()+"/../../work";
             workDir.value = new File(pathname);
-            if(!workDir.value.exists()) {
-                workDir.value.mkdirs();
-            }
+        }
+        if(!workDir.value.exists()) {
+            workDir.value.mkdirs();
         }
 
         // store the list of dirs with non-excluded samples
