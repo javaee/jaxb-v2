@@ -41,6 +41,11 @@
         <pathelement location="${env.JAVA_HOME}/lib/tools.jar"/>
     </path>
 
+    <path id="unittest-classpath">
+      <path refid="classpath"/>
+      <fileset dir="../../jaxb-unit/tools/lib/util/emma.jar"/>
+    </path>
+
     <!-- compile Java source files -->
     <target name="compile" description="compile sample app processor code">
         <mkdir dir="${samples.classes}" />
@@ -86,7 +91,7 @@
         <mkdir dir="${samples.work}" />
 
         <java classname="processor.SampleProcessorDriver" fork="true" failonerror="true">
-            <classpath refid="classpath" />
+            <classpath refid="unittest-classpath" />
             <jvmarg line="-Xmx512m" />
             <arg line="-dir ${samples.samples-src}" />
             <arg line="-work ${samples.work}" />
