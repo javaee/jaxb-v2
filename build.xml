@@ -32,7 +32,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.4 2005-04-25 22:02:36 kohsuke Exp $
+       $Id: build.xml,v 1.5 2005-04-27 22:17:12 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -747,4 +747,14 @@ Class-Path: ${manifest.classpath}
             description="target for Sun RE builds"
             depends="src-zip,bin-installer" />
 
+    
+    
+    <target name="integrate-jsr222">
+        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api.jar"
+             dest="tools/lib/redist/jaxb-api.jar" />
+        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-src.zip"
+             dest="tools/lib/redist/jaxb-api-src.zip" />
+        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-doc.zip"
+             dest="tools/lib/redist/jaxb-api-doc.zip" />
+     </target>
 </project>
