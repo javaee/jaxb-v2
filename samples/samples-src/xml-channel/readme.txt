@@ -7,15 +7,33 @@ of the stream (because a parser needs to handle documents like
 <root/><!-- post root comment -->). As a result, a naive attempt to
 keep one OutputStream open and marshal objects multiple times fails.
 
-In this example, two classes (OutputStreamMultiplexer and 
-InputStreamDemultiplexer) are used to split one stream into multiple
-sub-streams, and each sub-stream will carry one XML message.
+This example shows you how to work around this limitation. In this
+example, the data on the wire will look like the following:
 
-The client application uses JAXB to build an XML message, and send it
-to the socket. The server application then receives it, unmarshal it,
-and just print the contents.
+<conversation>
+  <!-- message 1 -->
+  <message>
+    ...
+  </message>
 
-This example can help you if you want to set up a persistent connection
-that transports XML. The downside of this multiplexing technique is that
-the actual data on the wire is not XML because it includes some
-out-of-band information.
+  <!-- message 2 -->
+  <message>
+    ...
+  </message>
+
+  ...
+</conversation>
+
+The <conversation> start tag is sent immediately after the socket
+is opened. This works as a container to send multiple "messages",
+and this is also an excellent opportunity to do the hand-shaking
+(e.g., protocol-version='1.0' attribute.)
+
+Once the <conversation> tag is written, multiple "documents" can
+be marshalled as a tree into the channel, possibility with a large
+time lag in between. In this example, each message is written by
+one marshaller invocation.
+
+When the client wants to disconnect the channel, it can do so by
+sending the </conversation> end tag, followed by the socket
+disconnection. 
