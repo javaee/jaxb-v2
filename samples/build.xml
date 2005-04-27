@@ -43,7 +43,7 @@
 
     <path id="unittest-classpath">
       <path refid="classpath"/>
-      <fileset dir="../../jaxb-unit/tools/lib/util/emma.jar"/>
+      <pathelement location="../../jaxb-unit/tools/lib/util/emma.jar"/>
     </path>
 
     <!-- compile Java source files -->
