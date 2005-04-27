@@ -3,7 +3,6 @@
  * SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 
-import java.io.IOException;
 import java.net.Socket;
 
 import javax.xml.bind.JAXBContext;
@@ -48,9 +47,12 @@ public class TestClient implements Runnable {
             xsw.writeStartDocument();
             xsw.writeStartElement("conversation");
 
-            sendMessage(xsw,"1st message");
+            for( int i=1; i<=10; i++ ) {
+                Thread.sleep(1000);
+                sendMessage(xsw,"message "+i);
+            }
+
             Thread.sleep(1000);
-            sendMessage(xsw,"2nd message");
 
             xsw.writeEndElement();
             xsw.writeEndDocument();
