@@ -11,6 +11,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
 
 import message.*;
 
@@ -21,6 +24,13 @@ import message.*;
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 public class TestServer implements Runnable {
+
+    private final XMLInputFactory xif;
+
+    public TestServer() {
+        this.xif = XMLInputFactory.newInstance();
+    }
+
 
     public void run() {
         try {
@@ -41,27 +51,31 @@ public class TestServer implements Runnable {
         }
     }
     
-    static class Worker extends Thread {
-        private final InputStreamDemultiplexer isd;
+    class Worker extends Thread {
+        private final XMLStreamReader xsr;
         private final Unmarshaller unmarshaller;
         
-        Worker( Socket socket, JAXBContext context ) throws IOException, JAXBException {
-            System.out.println("accepted connection from client");
-            this.isd = new InputStreamDemultiplexer(socket.getInputStream());
+        Worker( Socket socket, JAXBContext context ) throws IOException, JAXBException, XMLStreamException {
+            System.out.println("accepted a connection from a client");
+            synchronized(TestServer.this) {
+                xsr = xif.createXMLStreamReader(socket.getInputStream());
+            }
             this.unmarshaller = context.createUnmarshaller();
         }
         
         public void run() {
             try {
-                InputStream channel;
-                while( (channel=isd.openNextStream())!=null ) {
+                xsr.nextTag();  // get to the first <conversation> tag
+
+                xsr.next();     // wait for the first message to come
+
+                while( xsr.isStartElement() ) {
                     // unmarshal a new object
-                    JAXBElement<String> msg = (JAXBElement<String>)unmarshaller.unmarshal(channel);
+                    JAXBElement<String> msg = (JAXBElement<String>)unmarshaller.unmarshal(xsr);
                     System.out.println("Message: "+ msg.getValue());
-                    channel.close();
                 }
                 System.out.println("Bye!");
-                isd.close();
+                xsr.close();
 
                 // notify the driver that we are done processing
                 synchronized( Test.lock ) {
