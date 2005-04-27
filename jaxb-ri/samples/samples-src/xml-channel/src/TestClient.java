@@ -3,16 +3,16 @@
  * SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.Socket;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
+import javax.xml.stream.XMLStreamException;
 
 import message.*;
 
@@ -31,7 +31,7 @@ public class TestClient implements Runnable {
         try {
 	    JAXBContext jc = JAXBContext.newInstance("message");
 	    marshaller = jc.createMarshaller();
-	    of = new message.ObjectFactory();
+	    of = new ObjectFactory();
         } catch( JAXBException e ) {
             e.printStackTrace(); // impossible
         }
@@ -39,23 +39,29 @@ public class TestClient implements Runnable {
     
     public void run() {
         try {
-            // create a socket connection and multiplex it
+            // create a socket connection and start conversation
             Socket socket = new Socket("localhost",38247);
-            OutputStreamMultiplexer osm = new OutputStreamMultiplexer(socket.getOutputStream());
-            
-            sendMessage(osm,"1st message");
-            sendMessage(osm,"2nd message");
-            
-            osm.close();
+            XMLStreamWriter xsw = XMLOutputFactory.newInstance().createXMLStreamWriter(socket.getOutputStream());
+
+            // write the dummy start tag
+            xsw.writeStartDocument();
+            xsw.writeStartElement("conversation");
+
+            sendMessage(xsw,"1st message");
+            Thread.sleep(1000);
+            sendMessage(xsw,"2nd message");
+
+            xsw.writeEndElement();
+            xsw.writeEndDocument();
+            xsw.close();
         } catch( Exception e ) {
             e.printStackTrace();
         }
     }
     
-    private void sendMessage( OutputStreamMultiplexer osm, String msg ) throws JAXBException, IOException {
+    private void sendMessage( XMLStreamWriter xsw, String msg ) throws JAXBException, XMLStreamException {
         JAXBElement<String> m = of.createMessage(msg);
-        OutputStream sub = osm.openSubStream();
-        marshaller.marshal(m,sub);
-        sub.close();
+        marshaller.marshal(m,xsw);
+        xsw.flush();    // send it now
     }
 }
