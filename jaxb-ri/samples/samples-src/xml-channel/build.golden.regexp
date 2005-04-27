@@ -12,8 +12,16 @@ compile\:
 run\:
      \[echo\] Running the sample application\.\.\.
      \[java\] accepted a connection from a client
-     \[java\] Message\: 1st message
-     \[java\] Message\: 2nd message
+     \[java\] Message\: message 1
+     \[java\] Message\: message 2
+     \[java\] Message\: message 3
+     \[java\] Message\: message 4
+     \[java\] Message\: message 5
+     \[java\] Message\: message 6
+     \[java\] Message\: message 7
+     \[java\] Message\: message 8
+     \[java\] Message\: message 9
+     \[java\] Message\: message 10
      \[java\] Bye\!
 
 BUILD SUCCESSFUL

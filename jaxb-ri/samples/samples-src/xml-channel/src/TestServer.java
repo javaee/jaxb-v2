@@ -3,7 +3,6 @@
  * SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -11,11 +10,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
-
-import message.*;
 
 /**
  * Server program that displays the messages sent from clients.
@@ -52,30 +49,29 @@ public class TestServer implements Runnable {
     }
     
     class Worker extends Thread {
-        private final XMLStreamReader xsr;
+        private final XMLEventReader xer;
         private final Unmarshaller unmarshaller;
         
         Worker( Socket socket, JAXBContext context ) throws IOException, JAXBException, XMLStreamException {
             System.out.println("accepted a connection from a client");
             synchronized(TestServer.this) {
-                xsr = xif.createXMLStreamReader(socket.getInputStream());
+                xer = xif.createXMLEventReader(socket.getInputStream());
             }
             this.unmarshaller = context.createUnmarshaller();
         }
         
         public void run() {
             try {
-                xsr.nextTag();  // get to the first <conversation> tag
+                xer.nextEvent();    // read the start document
+                xer.nextTag(); // get to the first <conversation> tag, and skip
 
-                xsr.next();     // wait for the first message to come
-
-                while( xsr.isStartElement() ) {
+                while( xer.peek().isStartElement() ) {
                     // unmarshal a new object
-                    JAXBElement<String> msg = (JAXBElement<String>)unmarshaller.unmarshal(xsr);
+                    JAXBElement<String> msg = (JAXBElement<String>)unmarshaller.unmarshal(xer);
                     System.out.println("Message: "+ msg.getValue());
                 }
                 System.out.println("Bye!");
-                xsr.close();
+                xer.close();
 
                 // notify the driver that we are done processing
                 synchronized( Test.lock ) {
