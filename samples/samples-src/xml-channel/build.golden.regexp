@@ -11,7 +11,7 @@ compile\:
 
 run\:
      \[echo\] Running the sample application\.\.\.
-     \[java\] accepted connection from client
+     \[java\] accepted a connection from a client
      \[java\] Message\: 1st message
      \[java\] Message\: 2nd message
      \[java\] Bye\!
