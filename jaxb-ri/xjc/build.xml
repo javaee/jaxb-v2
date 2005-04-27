@@ -5,7 +5,7 @@
  SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 -->
 
-<!-- $Id: build.xml,v 1.2 2005-04-25 23:16:34 kohsuke Exp $ -->
+<!-- $Id: build.xml,v 1.3 2005-04-27 00:19:25 kohsuke Exp $ -->
 <project name="xjc" basedir=".." default="deploy">
 
   <description>
@@ -23,6 +23,7 @@
     <path id="javac.classpath">
       <pathelement path="${codemodel.classes}" />
       <pathelement path="${runtime.classes}" />
+      <pathelement path="${runtime-api.classes}" />
       <pathelement path="${schemagen.classes}" />
       <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
       <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
