@@ -22,6 +22,7 @@
   <path id="javac.classpath">
     <pathelement path="${codemodel.classes}"/>
     <pathelement path="${runtime.classes}"/>
+    <pathelement path="${runtime-api.classes}"/>
     <pathelement path="${jaxb.libs.compiler}/txw2.jar"/>
     <pathelement path="${jaxb.libs.util}/jing.jar"/>
   </path>
