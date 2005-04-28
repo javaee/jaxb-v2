@@ -197,6 +197,7 @@
         <classpath path="${runtime.test.classes}"/>
         <classpath>
           <fileset dir="${jaxb.libs.util}" includes="*.jar" />
+          <fileset dir="${jaxb.libs.test}" includes="*.jar"/>
         </classpath>
         
         <batchtest todir="${test.log}">
