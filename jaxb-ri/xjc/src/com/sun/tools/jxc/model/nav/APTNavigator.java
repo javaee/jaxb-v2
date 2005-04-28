@@ -415,6 +415,14 @@ public class APTNavigator implements Navigator<TypeMirror,TypeDeclaration,FieldD
         return f.getModifiers().contains(Modifier.STATIC);
     }
 
+    public boolean isPublicMethod(MethodDeclaration m) {
+        return m.getModifiers().contains(Modifier.PUBLIC);
+    }
+
+    public boolean isPublicField(FieldDeclaration f) {
+        return f.getModifiers().contains(Modifier.PUBLIC);
+    }
+
     public boolean isEnum(TypeDeclaration t) {
         return t instanceof EnumDeclaration;
     }

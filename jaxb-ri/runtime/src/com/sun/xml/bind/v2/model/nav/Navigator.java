@@ -250,6 +250,16 @@ public interface Navigator<TypeT,ClassDeclT,FieldT,MethodT> {
     boolean isStaticField(FieldT field);
 
     /**
+     * Returns true if the method is public.
+     */
+    boolean isPublicMethod(MethodT method);
+
+    /**
+     * Returns true if the field is public.
+     */
+    boolean isPublicField(FieldT field);
+
+    /**
      * Returns true if this is an enum class.
      */
     boolean isEnum(ClassDeclT clazz);

@@ -426,6 +426,14 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
         return Modifier.isStatic(field.getModifiers());
     }
 
+    public boolean isPublicMethod(Method method) {
+        return Modifier.isPublic(method.getModifiers());
+    }
+
+    public boolean isPublicField(Field field) {
+        return Modifier.isPublic(field.getModifiers());
+    }
+
     public boolean isEnum(Class c) {
         return Enum.class.isAssignableFrom(c);
     }
