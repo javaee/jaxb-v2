@@ -37,14 +37,7 @@ set JAVA="%JAVA_HOME%\bin\java"
 goto LAUNCHXJC
 
 :LAUNCHXJC
-if not "%XJC_OPTS%" == "" goto LAUNCHXJCWITHOPTS
-%JAVA% -jar %JAXB_HOME%\lib\jaxb-xjc.jar %*
-goto END
-
-:LAUNCHXJCWITHOPTS
 %JAVA% %XJC_OPTS% -jar %JAXB_HOME%\lib\jaxb-xjc.jar %*
-goto END
-
 
 :END
 %COMSPEC% /C exit %ERRORLEVEL%
