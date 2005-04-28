@@ -27,11 +27,21 @@ final class DOMUtil {
             Node n = l.item(i);
             if(n.getNodeType()==Node.ELEMENT_NODE) {
                 Element r = (Element)n;
-                if(r.getLocalName().equals(localName) && r.getNamespaceURI().equals(nsUri))
+                if(equals(r.getLocalName(),localName) && equals(r.getNamespaceURI(),nsUri))
                     return r;
             }
         }
         return null;
+    }
+
+    /**
+     * Used for defensive string comparisons, as many DOM methods often return null
+     * depending on how they are created.
+     */
+    private static boolean equals(String a,String b) {
+        if(a==b)    return true;
+        if(a==null || b==null)  return false;
+        return a.equals(b);
     }
 
     public static Element getElement(Element e, String localName) {
