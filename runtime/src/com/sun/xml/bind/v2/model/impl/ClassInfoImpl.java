@@ -197,7 +197,9 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         for( FieldT f : nav().getDeclaredFields(clazz) ) {
             if( nav().isStaticField(f) )
                 continue;
-            if(at==AccessType.FIELD || hasAnnotation(f))
+            if(at==AccessType.FIELD
+            ||(at==AccessType.PUBLIC_MEMBER && nav().isPublicField(f))
+            || hasAnnotation(f))
                 addProperty(adaptIfNecessary(createFieldSeed(f)));
         }
 
@@ -223,7 +225,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      */
     private AccessType getAccessType() {
         TODO.checkSpec();
-        AccessType at = AccessType.PROPERTY;
+        AccessType at = AccessType.PUBLIC_MEMBER;
         XmlAccessorType xat = reader().getClassAnnotation(XmlAccessorType.class,clazz,this);
         if(xat==null)
             // defaults to the package level
@@ -510,7 +512,9 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             // recognize getters/setters only when they have annotations
 
             // this looks OK
-            if (at==AccessType.PROPERTY || hasAnnotation(getter, setter))
+            if (at==AccessType.PROPERTY
+            || (at==AccessType.PUBLIC_MEMBER && nav().isPublicMethod(getter) && nav().isPublicMethod(setter))
+            || hasAnnotation(getter, setter))
                 addProperty(adaptIfNecessary(createAccessorSeed(getter, setter)));
         }
         // done with complete pairs

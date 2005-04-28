@@ -241,6 +241,14 @@ public final class NavigatorImpl implements Navigator<NType,NClass,Void,Void> {
         throw new IllegalStateException();
     }
 
+    public boolean isPublicMethod(Void aVoid) {
+        throw new IllegalStateException();
+    }
+
+    public boolean isPublicField(Void aVoid) {
+        throw new IllegalStateException();
+    }
+
     public boolean isEnum(NClass c) {
         return isSubClassOf(c,create(Enum.class));
     }
