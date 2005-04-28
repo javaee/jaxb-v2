@@ -351,6 +351,15 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                     schema._pcdata(newline);
                 }
                 for (ClassInfo<TypeT, ClassDeclT> c : classes) {
+                    Element<TypeT,ClassDeclT> e = c.asElement();
+                    if (e != null) {
+                        writeTopLevelClass(c, e, schema);
+                    }
+                    if (c.getTypeName() != null && c.getTypeName().getLocalPart().equals("")) {
+                        // don't generate anything if this is a top-level class that is going to
+                        // resolve to an anonymous type
+                        continue;
+                    }
                     writeClass(c, schema);
                     schema._pcdata(newline);
                 }
@@ -392,8 +401,8 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
          * type is not a global type.)
          */
         private void writeTypeRef( com.sun.tools.jxc.gen.xmlschema.Element e, NonElement<TypeT,ClassDeclT> type ) {
-            if(type.getTypeName()==null) {
-                writeClass( (ClassInfo<TypeT,ClassDeclT>)type, e );
+            if(type.getTypeName()==null || type.getTypeName().getLocalPart().equals("")) {
+               writeClass( (ClassInfo<TypeT,ClassDeclT>)type, e );
             } else {
                 e.type(type.getTypeName());
             }
@@ -438,6 +447,23 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             elem.commit();
         }
 
+        private void writeTopLevelClass(ClassInfo<TypeT, ClassDeclT> c, Element<TypeT, ClassDeclT> e, TypeHost schema) {
+            // ClassInfo objects only represent JAXB beans, not primitives or built-in types
+            // if the class is also mapped to an element (@XmlElement), generate such a decl.
+            //
+            // this processing only applies to top-level ClassInfos
+
+            QName ename = e.getElementName();
+            assert ename.getNamespaceURI().equals(uri);
+            // [RESULT]
+            // <element name="foo" type="int"/>
+            // not allowed to tweek min/max occurs on global elements
+            TopLevelElement elem = ((Schema) schema).element();
+            elem.name(ename.getLocalPart());
+            writeTypeRef(elem, c);
+            schema._pcdata(newline);
+        }
+
         /**
          * Writes the schema definition for the specified class to the schema writer.
          *
@@ -463,18 +489,18 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             // if the class is also mapped to an element (@XmlElement), generate such a decl.
             // TODO: move this portion out of this method because this processing only applies
             // to top-level ClassInfos
-            Element<TypeT,ClassDeclT> e = c.asElement();
-            if (e != null && parent instanceof Schema) {
-                QName ename = e.getElementName();
-                assert ename.getNamespaceURI().equals(uri);
-                // [RESULT]
-                // <element name="foo" type="int"/>
-                // not allowed to tweek min/max occurs on global elements
-                TopLevelElement elem = ((Schema)parent).element();
-                elem.name(ename.getLocalPart());
-                writeTypeRef(elem,c);
-                parent._pcdata(newline);
-            }
+//            Element<TypeT,ClassDeclT> e = c.asElement();
+//            if (e != null && parent instanceof Schema) {
+//                QName ename = e.getElementName();
+//                assert ename.getNamespaceURI().equals(uri);
+//                // [RESULT]
+//                // <element name="foo" type="int"/>
+//                // not allowed to tweek min/max occurs on global elements
+//                TopLevelElement elem = ((Schema)parent).element();
+//                elem.name(ename.getLocalPart());
+//                writeTypeRef(elem,c);
+//                parent._pcdata(newline);
+//            }
 
             // generate the complexType
             ComplexType ct = null;
@@ -546,7 +572,12 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             // we didn't fall into the special case for value props, so we
             // need to initialize the ct.
             if( ct == null ) {
-                ct = ((ComplexTypeHost)parent).complexType().name(c.getTypeName().getLocalPart());
+                final String name = c.getTypeName().getLocalPart();
+                if( !name.equals("")) {
+                    ct = ((ComplexTypeHost)parent).complexType().name(name);  // named ct
+                } else {
+                    ct = ((ComplexTypeHost)parent).complexType();  // anonymous ct
+                }
             }
 
             // either <sequence> or <all>
