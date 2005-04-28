@@ -26,7 +26,7 @@ then
             PRG="`dirname $PRG`/$link"
         fi
     done
-    
+
     JAXB_HOME=`dirname "$PRG"`/..
     
     # make it fully qualified
@@ -36,32 +36,16 @@ then
     cd $saveddir
 fi
 
-
-
-if [ -n "$CLASSPATH" ] ; then
-  LOCALCLASSPATH="$CLASSPATH"
-fi
-
-# add the jar files
-for i in "${JAXB_HOME}"/lib/*.jar
-do
-    if [ -z "$LOCALCLASSPATH" ] ; then
-        LOCALCLASSPATH=$i
-    else
-        LOCALCLASSPATH="$i":"$LOCALCLASSPATH"
-    fi
-done
-
 [ `expr \`uname\` : 'CYGWIN'` -eq 6 ] &&
 {
-    LOCALCLASSPATH=`cygpath -w -p ${LOCALCLASSPATH}`
+    JAXB_HOME=`cygpath -w "$JAXB_HOME"`
 }
 
 if [ -n "$JAVA_HOME" ]
 then
-    JAVA="$JAVA_HOME"/bin/java
+    JAVA="$JAVA_HOME/bin/java"
 else
     JAVA=java
 fi
 
-exec "$JAVA" $XJC_OPTS -classpath "$LOCALCLASSPATH" com.sun.tools.xjc.Driver "$@"
+exec "$JAVA" $XJC_OPTS -jar "$JAXB_HOME/jaxb-xjc.jar" "$@"
