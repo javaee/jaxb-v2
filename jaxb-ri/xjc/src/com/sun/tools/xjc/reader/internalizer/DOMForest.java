@@ -141,10 +141,32 @@ public final class DOMForest {
             // this extra check solves this problem.
             doc = core.get( "file://"+systemId.substring(5) );
         }
-        
+
+        if( doc==null && systemId.startsWith("file:") ) {
+            // on Windows, filenames are case insensitive.
+            // perform case-insensitive search for improved user experience
+            String systemPath = getPath(systemId);
+            for (String key : core.keySet()) {
+                if(key.startsWith("file:") && getPath(key).equalsIgnoreCase(systemPath)) {
+                    doc = core.get(key);
+                    break;
+                }
+            }
+        }
+
         return doc;
     }
-    
+
+    /**
+     * Strips off the leading 'file:///' portion from an URL.
+     */
+    private String getPath(String key) {
+        key = key.substring(5); // skip 'file:'
+        while(key.length()>0 && key.charAt(0)=='/')
+            key = key.substring(1);
+        return key;
+    }
+
     /**
      * Returns a read-only set of root document system IDs.
      */
@@ -334,7 +356,7 @@ public final class DOMForest {
 
     public Document parse( String systemId, XMLStreamReader parser, boolean root ) throws XMLStreamException {
         Document dom = documentBuilder.newDocument();
-        
+
         systemId = normalizeSystemId(systemId);
 
         if(root)
