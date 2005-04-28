@@ -435,6 +435,8 @@ public class APTNavigator implements Navigator<TypeMirror,TypeDeclaration,FieldD
         TODO.prototype();
         return new Location() {
             public String toString() {
+                if(sp==null)
+                    return name+" (Unknown Source)";
                 // just like stack trace, we just print the file name and
                 // not the whole path. The idea is that the pakage name should
                 // provide enough clue on which directory it lives.
