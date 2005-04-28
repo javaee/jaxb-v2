@@ -46,6 +46,7 @@ public class TestServer implements Runnable {
         } catch( Exception e ) {
             e.printStackTrace();
         }
+        die();
     }
     
     class Worker extends Thread {
@@ -73,14 +74,18 @@ public class TestServer implements Runnable {
                 System.out.println("Bye!");
                 xer.close();
 
-                // notify the driver that we are done processing
-                synchronized( Test.lock ) {
-                    Test.ready = true;
-                    Test.lock.notifyAll();
-                }
+                die();
             } catch( Exception e ) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void die() {
+        // notify the driver that we are done processing
+        synchronized( Test.lock ) {
+            Test.ready = true;
+            Test.lock.notifyAll();
         }
     }
 }
