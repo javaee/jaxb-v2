@@ -12,6 +12,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -209,7 +211,9 @@ public final class DOMForest {
      * @return the parsed DOM document object.
      */
     public Document parse( String systemId, boolean root ) throws SAXException, IOException {
-        
+
+        systemId = normalizeSystemId(systemId);
+
         if( core.containsKey(systemId) )
             // this document has already been parsed. Just ignore.
             return core.get(systemId);
@@ -294,7 +298,9 @@ public final class DOMForest {
     
     public Document parse( String systemId, InputSource inputSource, boolean root ) throws SAXException, IOException {
         Document dom = documentBuilder.newDocument();
-        
+
+        systemId = normalizeSystemId(systemId);
+
         // put into the map before growing a tree, to
         // prevent recursive reference from causing infinite loop.
         core.put( systemId, dom );
@@ -316,9 +322,20 @@ public final class DOMForest {
         
         return dom;
     }
-    
+
+    private String normalizeSystemId(String systemId) {
+        try {
+            systemId = new URI(systemId).normalize().toString();
+        } catch (URISyntaxException e) {
+            // leave the system ID untouched. In my experience URI is often too strict
+        }
+        return systemId;
+    }
+
     public Document parse( String systemId, XMLStreamReader parser, boolean root ) throws XMLStreamException {
         Document dom = documentBuilder.newDocument();
+        
+        systemId = normalizeSystemId(systemId);
 
         if(root)
             rootDocuments.add(systemId);
