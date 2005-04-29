@@ -7,17 +7,12 @@ package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 import javax.xml.validation.ValidatorHandler;
 
 import com.sun.codemodel.JCodeModel;
-import com.sun.msv.grammar.relaxng.datatype.BuiltinDatatypeLibrary;
-import com.sun.relaxng.javadt.DatatypeLibraryImpl;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.SchemaCache;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.parser.AnnotationState;
 import com.sun.xml.xsom.parser.AnnotationContext;
 import com.sun.xml.xsom.parser.AnnotationParser;
 
-import org.iso_relax.verifier.impl.ForkContentHandler;
-import org.relaxng.datatype.DatatypeLibrary;
-import org.relaxng.datatype.DatatypeLibraryFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
@@ -61,9 +56,10 @@ final class AnnotationParserImpl extends AnnotationParser {
         // set up validator
         ValidatorHandler validator = bindingFileSchema.newValidator();
         validator.setErrorHandler(errorHandler);
+        validator.setContentHandler(runtime);
 
         // the validator will receive events first, then the parser.
-        return new ForkContentHandler( validator, runtime );
+        return validator;
     }
 
     /**
@@ -83,18 +79,6 @@ final class AnnotationParserImpl extends AnnotationParser {
             return bie;
         } else
             return parser.bi;
-    }
-    
-    private static class DatatypeLibraryFactoryImpl implements DatatypeLibraryFactory {
-        public DatatypeLibrary createDatatypeLibrary(String namespaceURI) {
-            if( namespaceURI.equals("http://www.w3.org/2001/XMLSchema-datatypes") )
-                return new com.sun.msv.datatype.xsd.ngimpl.DataTypeLibraryImpl();
-            if( namespaceURI.equals("") )
-                return BuiltinDatatypeLibrary.theInstance;
-            if( namespaceURI.equals("http://java.sun.com/xml/ns/relaxng/java-datatypes") )
-                return new DatatypeLibraryImpl();
-            return null;
-        }
     }
 }
 

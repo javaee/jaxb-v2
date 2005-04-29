@@ -7,10 +7,6 @@ package com.sun.tools.xjc.reader.dtd.bindinfo;
 import java.util.ArrayList;
 
 import com.sun.codemodel.JClass;
-import com.sun.msv.grammar.ChoiceExp;
-import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.ReferenceExp;
-import com.sun.msv.grammar.SequenceExp;
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
 import com.sun.tools.xjc.generator.bean.field.UntypedListFieldRenderer;
 
@@ -20,7 +16,7 @@ import org.w3c.dom.Element;
  * Particles in the &lt;content> declaration in the binding file.
  * 
  */
-public abstract class BIContent
+public class BIContent
 {
     /**
      * Wraps a given particle.
@@ -100,11 +96,6 @@ public abstract class BIContent
         }
     }
 
-    /** Checks if the "core" matches the expected primitive. */
-    protected abstract boolean checkMatch( Expression core );
-    
-    public static final class MismatchException extends Exception {}
-    
     
     
     
@@ -116,48 +107,7 @@ public abstract class BIContent
      * This method should be only called by the BIElement class.
      */
     static BIContent create( Element e, BIElement _parent ) {
-        String tagName = e.getLocalName();
-
-        if( tagName.equals("element-ref") )
-            return new BIContent(e,_parent){
-                protected boolean checkMatch( Expression exp ) {
-                    // note that every element declaration is wrapped by
-                    // a ReferenceExp.
-                    return exp instanceof ReferenceExp;
-                }
-            };
-        
-        if( tagName.equals("choice") )
-            return new BIContent(e,_parent){
-                protected boolean checkMatch( Expression exp ) {
-                    return exp instanceof ChoiceExp;
-                }
-            };
-        
-        if( tagName.equals("sequence") )
-            return new BIContent(e,_parent){
-                protected boolean checkMatch( Expression exp ) {
-                    return exp instanceof SequenceExp;
-                }
-            };
-        
-        if( tagName.equals("rest")
-        ||  tagName.equals("content") )
-            // "content" will be treated as "rest",
-            // so that we can treat the general content-property declaration
-            // as a short-hand of model-based content-property declaration.
-            return new BIContent(e,_parent){
-                protected boolean checkMatch( Expression exp ) {
-                    // the "wrap" method of the "rest" declaration
-                    // shouldn't be called.
-                    // they have to be wrapped in a different way.
-                    throw new AssertionError();
-                }
-            };
-        
-        // illegal tag names should be rejected by the validator
-        // before we read it.
-        throw new AssertionError();
+        return new BIContent(e,_parent);
     }
     
     
