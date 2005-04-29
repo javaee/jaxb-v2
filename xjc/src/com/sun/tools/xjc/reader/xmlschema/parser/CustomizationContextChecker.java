@@ -8,7 +8,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 
-import com.sun.msv.util.StringPair;
+import javax.xml.namespace.QName;
+
 import com.sun.tools.xjc.reader.Const;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 
@@ -93,7 +94,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
 public class CustomizationContextChecker extends XMLFilterImpl {
     
     /** Keep names of all the ancestor elements. */
-    private final Stack<StringPair> elementNames = new Stack<StringPair>();
+    private final Stack<QName> elementNames = new Stack<QName>();
     
     private final ErrorHandler errorHandler;
     
@@ -123,22 +124,22 @@ public class CustomizationContextChecker extends XMLFilterImpl {
     
     
     /** Gets the stack top. */
-    private StringPair top() {
+    private QName top() {
         return elementNames.peek();
     }
     
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
-        StringPair newElement = new StringPair(namespaceURI,localName);
+        QName newElement = new QName(namespaceURI,localName);
         
-        if( newElement.namespaceURI.equals(Const.JAXB_NSURI)
-         && top().namespaceURI.equals(WellKnownNamespace.XML_SCHEMA) ) {
+        if( newElement.getNamespaceURI().equals(Const.JAXB_NSURI)
+         && top().getNamespaceURI().equals(WellKnownNamespace.XML_SCHEMA) ) {
             // we hit a JAXB customization. the stack top should be
             // <xs:appinfo>
             if( elementNames.size()>=3 ) {
                 // the above statement checks if the following statement doesn't
                 // cause an exception.
-                StringPair schemaElement = elementNames.get( elementNames.size()-3 );
-                if( prohibitedSchemaElementNames.contains(schemaElement.localName) ) {
+                QName schemaElement = elementNames.get( elementNames.size()-3 );
+                if( prohibitedSchemaElementNames.contains(schemaElement.getLocalPart()) ) {
                     // the owner schema element is in the wanted list.
                     errorHandler.error( new SAXParseException(
                         Messages.format(

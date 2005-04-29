@@ -8,9 +8,11 @@ import javax.xml.namespace.NamespaceContext;
 import org.relaxng.datatype.ValidationContext;
 
 /**
+ * Take a {@link ValidationContext} and make it look like a {@link NamespaceContext}.
+ *
  * @author Kohsuke Kawaguchi
  */
-public class NamespaceContextAdapter implements NamespaceContext {
+public final class NamespaceContextAdapter implements NamespaceContext {
     private ValidationContext context;
 
     public NamespaceContextAdapter(ValidationContext context) {

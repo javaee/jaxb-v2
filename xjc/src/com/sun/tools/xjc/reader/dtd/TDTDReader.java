@@ -16,20 +16,19 @@ import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JPackage;
-import com.sun.msv.reader.AbortException;
-import com.sun.msv.scanner.dtd.DTDHandlerBase;
-import com.sun.msv.scanner.dtd.DTDParser;
-import com.sun.msv.scanner.dtd.InputEntity;
+import com.sun.dtdparser.DTDHandlerBase;
+import com.sun.dtdparser.DTDParser;
+import com.sun.dtdparser.InputEntity;
+import com.sun.tools.xjc.AbortException;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.model.CAttributePropertyInfo;
-import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CBuiltinLeafInfo;
+import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.model.TypeUseFactory;
-import com.sun.tools.xjc.reader.GrammarReaderControllerAdaptor;
 import com.sun.tools.xjc.reader.ModelChecker;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.dtd.bindinfo.BIAttribute;
@@ -40,6 +39,7 @@ import com.sun.tools.xjc.util.CodeModelClassFactory;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
 import com.sun.xml.bind.v2.NameConverter;
 
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -83,8 +83,7 @@ public class TDTDReader extends DTDHandlerBase
                 Ring.add(model);
                 Ring.add(ErrorReceiver.class,ef);
 
-                TDTDReader reader = new TDTDReader(
-                    new GrammarReaderControllerAdaptor(ef,opts.entityResolver),
+                TDTDReader reader = new TDTDReader( ef, opts.entityResolver,
                     opts, bindingInfo);
 
                 DTDParser parser = new DTDParser();
@@ -116,16 +115,16 @@ public class TDTDReader extends DTDHandlerBase
             return null;
         }
     }
-    protected TDTDReader(GrammarReaderControllerAdaptor _controller, Options opts, InputSource _bindInfo)
+    protected TDTDReader(ErrorReceiver errorReceiver, EntityResolver entityResolver, Options opts, InputSource _bindInfo)
         throws AbortException {
-        this.controller = _controller;
+        this.entityResolver = entityResolver;
+        this.errorReceiver = new ErrorReceiverFilter(errorReceiver);
         this.opts = opts;
-        bindInfo = new BindInfo(model,_bindInfo, _controller, codeModel, opts );
-        this.errorReceiver = _controller;
+        bindInfo = new BindInfo(model,_bindInfo, this.errorReceiver, codeModel, opts );
         classFactory = new CodeModelClassFactory(errorReceiver);
     }
 
-    private final GrammarReaderControllerAdaptor controller;
+    private final EntityResolver entityResolver;
 
     private final Options opts;
 
@@ -144,7 +143,7 @@ public class TDTDReader extends DTDHandlerBase
 
     private final CodeModelClassFactory classFactory;
     
-    private final ErrorReceiver errorReceiver;
+    private final ErrorReceiverFilter errorReceiver;
 
     /**
      * Element name to its content model definition.
@@ -164,7 +163,7 @@ public class TDTDReader extends DTDHandlerBase
             e.bind();
 
         // if there was an error by now, just abort.
-        if (controller.hadError())
+        if (errorReceiver.hadError())
             return;
 
         processInterfaceDeclarations();
@@ -433,22 +432,20 @@ public class TDTDReader extends DTDHandlerBase
 //
 //
     public void error(SAXParseException e) throws SAXException {
-        controller.error(e);
+        errorReceiver.error(e);
     }
 
     public void fatalError(SAXParseException e) throws SAXException {
-        controller.fatalError(e);
+        errorReceiver.fatalError(e);
     }
 
     public void warning(SAXParseException e) throws SAXException {
-        controller.warning(e);
+        errorReceiver.warning(e);
     }
 
-    protected final void error( Locator loc, String prop, Object arg1 ) {
-        error( loc, prop, new Object[]{arg1} );
+    protected final void error( Locator loc, String prop, Object... args ) {
+        errorReceiver.error(loc,Messages.format(prop,args));
     }
-    protected final void error( Locator loc, String prop, Object[] args ) {
-        Locator[] locs = new Locator[]{loc};
-        controller.error( locs, Messages.format(prop,args), null );
-    }
+
+    
 }

@@ -8,10 +8,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.sun.msv.grammar.ChoiceNameClass;
-import com.sun.msv.grammar.NameClass;
-import com.sun.msv.grammar.SimpleNameClass;
-import com.sun.msv.grammar.util.NameClassCollisionChecker;
 import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.reader.xmlschema.WildcardNameClassBuilder;
 import com.sun.xml.xsom.XSAttributeUse;
@@ -25,6 +21,10 @@ import com.sun.xml.xsom.XSParticle;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.visitor.XSTermFunction;
+
+import org.kohsuke.rngom.nc.NameClass;
+import org.kohsuke.rngom.nc.ChoiceNameClass;
+import org.kohsuke.rngom.nc.SimpleNameClass;
 
 /**
  * Binds a complex type derived from another complex type by extension.
@@ -135,15 +135,14 @@ final class ExtendedComplexTypeBuilder extends CTBuilder {
         if(lastType==null)
             return true;    // no restriction in derivation chain
 
-        NameClass anc = NameClass.NONE;
+        NameClass anc = NameClass.NULL;
         // build name class for attributes in new complex type
         Iterator itr = thisType.iterateDeclaredAttributeUses();
         while( itr.hasNext() )
             anc = new ChoiceNameClass( anc, getNameClass(((XSAttributeUse)itr.next()).getDecl()) );
         // TODO: attribute wildcard
-        anc = anc.simplify();
 
-        NameClass enc = getNameClass(thisType.getExplicitContent()).simplify();
+        NameClass enc = getNameClass(thisType.getExplicitContent());
 
         // check against every base type ... except the root anyType
         while(lastType!=lastType.getBaseType()) {
@@ -176,7 +175,7 @@ final class ExtendedComplexTypeBuilder extends CTBuilder {
             chnc[0] = getNameClass(type.getContentType());
 
             // build attribute name classes
-            NameClass nc = NameClass.NONE;
+            NameClass nc = NameClass.NULL;
             Iterator itr = type.iterateAttributeUses();
             while( itr.hasNext() )
                 anc = new ChoiceNameClass( anc, getNameClass(((XSAttributeUse)itr.next()).getDecl()) );
@@ -188,7 +187,7 @@ final class ExtendedComplexTypeBuilder extends CTBuilder {
             characteristicNameClasses.put(type,chnc);
         }
 
-        return collisionChecker.check( chnc[0], enc ) || collisionChecker.check( chnc[1], anc );
+        return chnc[0].hasOverlapWith(enc) || chnc[1].hasOverlapWith(anc);
     }
 
     /**
@@ -196,9 +195,9 @@ final class ExtendedComplexTypeBuilder extends CTBuilder {
      * If t is not a particle, just return an empty name class.
      */
     private NameClass getNameClass( XSContentType t ) {
-        if(t==null) return NameClass.NONE;
+        if(t==null) return NameClass.NULL;
         XSParticle p = t.asParticle();
-        if(p==null) return NameClass.NONE;
+        if(p==null) return NameClass.NULL;
         else        return p.getTerm().apply(contentModelNameClassBuilder);
     }
 
@@ -209,7 +208,6 @@ final class ExtendedComplexTypeBuilder extends CTBuilder {
         return new SimpleNameClass(decl.getTargetNamespace(),decl.getName());
     }
 
-    private final NameClassCollisionChecker collisionChecker = new NameClassCollisionChecker();
     /**
      * Computes a name class that represents everything in a given content model.
      */
@@ -223,9 +221,9 @@ final class ExtendedComplexTypeBuilder extends CTBuilder {
         }
 
         public NameClass modelGroup(XSModelGroup group) {
-            NameClass nc = NameClass.NONE;
+            NameClass nc = NameClass.NULL;
             for( int i=0; i<group.getSize(); i++ )
-                nc = new ChoiceNameClass(nc,(NameClass)group.getChild(i).getTerm().apply(this));
+                nc = new ChoiceNameClass(nc,group.getChild(i).getTerm().apply(this));
             return nc;
         }
 

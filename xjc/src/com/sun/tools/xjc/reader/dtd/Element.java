@@ -10,7 +10,6 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import com.sun.msv.scanner.dtd.DTDEventListener;
 import com.sun.tools.xjc.model.CBuiltinLeafInfo;
 import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CElementPropertyInfo;
@@ -22,6 +21,7 @@ import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.reader.dtd.bindinfo.BIConversion;
 import com.sun.tools.xjc.reader.dtd.bindinfo.BIElement;
 import com.sun.xml.bind.v2.model.core.ID;
+import com.sun.dtdparser.DTDEventListener;
 
 import org.xml.sax.Locator;
 

@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: WhitespaceStripper.java,v 1.1 2005-04-15 20:09:47 kohsuke Exp $
+ * @(#)$Id: WhitespaceStripper.java,v 1.2 2005-04-29 19:56:57 kohsuke Exp $
  */
 
 /*
@@ -8,7 +8,7 @@
  */
 package com.sun.tools.xjc.reader.internalizer;
 
-import com.sun.xml.util.XmlChars;
+import com.sun.xml.bind.WhiteSpaceProcessor;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -68,7 +68,7 @@ class WhitespaceStripper extends XMLFilterImpl {
             // check if this is ignorable.
             int len = start+length;
             for( int i=start; i<len; i++ )
-                if( !XmlChars.isSpace(ch[i]) ) {
+                if( !WhiteSpaceProcessor.isWhiteSpace(ch[i]) ) {
                     super.characters(ch, start, length);
                     return;
                 }
@@ -97,7 +97,7 @@ class WhitespaceStripper extends XMLFilterImpl {
     private void processPendingText() throws SAXException {
         if(state==AFTER_START_ELEMENT) {
             for( int i=bufLen-1; i>=0; i-- )
-                if( !XmlChars.isSpace(buf[i]) ) {
+                if( !WhiteSpaceProcessor.isWhiteSpace(buf[i]) ) {
                     super.characters(buf, 0, bufLen);
                     return;
                }

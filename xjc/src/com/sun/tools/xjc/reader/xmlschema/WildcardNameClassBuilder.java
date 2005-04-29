@@ -6,12 +6,13 @@ package com.sun.tools.xjc.reader.xmlschema;
 
 import java.util.Iterator;
 
-import com.sun.msv.grammar.ChoiceNameClass;
-import com.sun.msv.grammar.DifferenceNameClass;
-import com.sun.msv.grammar.NameClass;
-import com.sun.msv.grammar.NamespaceNameClass;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.visitor.XSWildcardFunction;
+
+import org.kohsuke.rngom.nc.NameClass;
+import org.kohsuke.rngom.nc.ChoiceNameClass;
+import org.kohsuke.rngom.nc.NsNameClass;
+import org.kohsuke.rngom.nc.AnyNameExceptNameClass;
 
 /**
  * Builds a name class representation of a wildcard.
@@ -33,15 +34,14 @@ public final class WildcardNameClassBuilder implements XSWildcardFunction<NameCl
     }
 
     public NameClass any(XSWildcard.Any wc) {
-        return NameClass.ALL;
+        return NameClass.ANY;
     }
 
     public NameClass other(XSWildcard.Other wc) {
-        return new DifferenceNameClass(
-            NameClass.ALL,
+        return new AnyNameExceptNameClass(
             new ChoiceNameClass(
-                new NamespaceNameClass(""),
-                new NamespaceNameClass(wc.getOtherNamespace())));
+                new NsNameClass(""),
+                new NsNameClass(wc.getOtherNamespace())));
     }
 
     public NameClass union(XSWildcard.Union wc) {
@@ -49,9 +49,9 @@ public final class WildcardNameClassBuilder implements XSWildcardFunction<NameCl
         for (Iterator itr = wc.iterateNamespaces(); itr.hasNext();) {
             String ns = (String) itr.next();
 
-            if(nc==null)    nc = new NamespaceNameClass(ns);
+            if(nc==null)    nc = new NsNameClass(ns);
             else
-                nc = new ChoiceNameClass(nc,new NamespaceNameClass(ns));
+                nc = new ChoiceNameClass(nc,new NsNameClass(ns));
         }
 
         // there should be at least one.

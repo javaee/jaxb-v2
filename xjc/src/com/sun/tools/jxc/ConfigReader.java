@@ -25,7 +25,6 @@ import com.sun.tools.xjc.SchemaCache;
 import com.sun.tools.xjc.api.Reference;
 import com.sun.xml.bind.api.SchemaOutputResolver;
 
-import org.iso_relax.verifier.impl.ForkContentHandler;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -181,9 +180,10 @@ public final class ConfigReader  {
         // set up validator
         ValidatorHandler validator = configSchema.newValidator();
         validator.setErrorHandler(errorHandler);
+        validator.setContentHandler(runtime);
 
         // the validator will receive events first, then the parser.
-        reader.setContentHandler(new ForkContentHandler( validator, runtime ));
+        reader.setContentHandler(validator);
 
         reader.setErrorHandler(errorHandler);
         Config config = new Config(runtime);

@@ -19,10 +19,10 @@ import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JPackage;
-import com.sun.msv.reader.AbortException;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.SchemaCache;
+import com.sun.tools.xjc.AbortException;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.util.CodeModelClassFactory;
@@ -42,8 +42,6 @@ public class BindInfo
 {
     /** Controller object that can be used to report errors. */
     protected final ErrorReceiver errorReceiver;
-    
-    private final Options options;
 
     /*package*/ final Model model;
 
@@ -64,7 +62,6 @@ public class BindInfo
         this.model = model;
         this.dom = _dom.getDocumentElement();
         this.codeModel = _codeModel;
-        this.options = opts;
         this.errorReceiver = _errorReceiver;
         this.classFactory = new CodeModelClassFactory(_errorReceiver);
         // TODO: decide name converter from the binding file
@@ -267,7 +264,7 @@ public class BindInfo
 
             reader.parse(is);
             
-            if(controller.hadError())   throw AbortException.theInstance;
+            if(controller.hadError())   throw new AbortException();
             return (Document)builder.getDOM();
         } catch( IOException e ) {
             receiver.error( new SAXParseException(e.getMessage(),null,e) );
@@ -277,6 +274,6 @@ public class BindInfo
             receiver.error( new SAXParseException(e.getMessage(),null,e) );
         }
         
-        throw AbortException.theInstance;
+        throw new AbortException();
     }
 }

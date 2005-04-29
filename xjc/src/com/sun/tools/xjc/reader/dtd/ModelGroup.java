@@ -3,7 +3,8 @@ package com.sun.tools.xjc.reader.dtd;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sun.msv.scanner.dtd.DTDEventListener;
+import com.sun.dtdparser.DTDEventListener;
+
 
 /**
  * @author Kohsuke Kawaguchi
