@@ -22,6 +22,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -191,6 +192,20 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
             }
             public String print(URL v) {
                 return v.toExternalForm();
+            }
+        },
+        new RuntimeBuiltinLeafInfoImpl<UUID>(UUID.class, createXS("string")) {
+            public UUID parse(CharSequence text) throws SAXException {
+                TODO.checkSpec("JSR222 Issue #42");
+                try {
+                    return UUID.fromString(WhiteSpaceProcessor.trim(text).toString());
+                } catch (IllegalArgumentException e) {
+                    UnmarshallingContext.getInstance().handleError(e);
+                    return null;
+                }
+            }
+            public String print(UUID v) {
+                return v.toString();
             }
         },
         new RuntimeBuiltinLeafInfoImpl<Class>(Class.class, createXS("string")) {
