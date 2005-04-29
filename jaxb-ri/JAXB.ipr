@@ -471,6 +471,8 @@
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/jfreechart-0.9.19.jar!/" />
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/commons-jexl-1.0-beta-1.jar!/" />
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/xalan.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/bsh-reflect-2.0b1.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/bsh-classgen-2.0b1.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -499,6 +501,7 @@
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/vmtools-0.5.src.zip!/" />
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/forehead.src.zip!/src/java" />
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/xalan-j_2_6_0-src.zip!/xalan-j_2_6_0/src" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/bsh-src.zip!/src" />
       </SOURCES>
     </library>
     <library name="runtime">
@@ -519,9 +522,9 @@
     </library>
     <library name="compiler-libs">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/tools/lib/redist/xsdlib.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/util/sjsxp.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/util/args4j-1.0-RC.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/junit.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/redist/relaxngDatatype.jar!/" />
       </CLASSES>
       <JAVADOC />
@@ -537,6 +540,7 @@
         <root url="jar://$PROJECT_DIR$/tools/lib/src/jsr173_1.0_javadoc.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/jing-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/rngom-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/junit-src.zip!/" />
       </SOURCES>
     </library>
     <library name="JAM">
@@ -574,7 +578,7 @@
         <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/txw2.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/xsom.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/rngom.jar!/" />
-        <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/relaxng.javadt.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/dtd-parser-1.0.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -584,6 +588,7 @@
         <root url="jar://$PROJECT_DIR$/tools/lib/src/xsom-src.zip!/src" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/rngom-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/relaxng.javadt.src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/dtd-parser-1.0-src.zip!/dtd-parser-1.0/src" />
       </SOURCES>
     </library>
     <library name="ant">
