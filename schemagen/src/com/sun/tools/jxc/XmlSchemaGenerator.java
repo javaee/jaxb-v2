@@ -400,11 +400,14 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
          * or writes out the definition of the anonymous type in place (if the referenced
          * type is not a global type.)
          */
-        private void writeTypeRef( com.sun.tools.jxc.gen.xmlschema.Element e, NonElement<TypeT,ClassDeclT> type ) {
+        private void writeTypeRef( TypeHost th, NonElement<TypeT,ClassDeclT> type ) {
             if(type.getTypeName()==null || type.getTypeName().getLocalPart().equals("")) {
-               writeClass( (ClassInfo<TypeT,ClassDeclT>)type, e );
+               writeClass( (ClassInfo<TypeT,ClassDeclT>)type, th );
             } else {
-                e.type(type.getTypeName());
+                //e.type(type.getTypeName());
+                // ComplexTypeHost and SimpleTypeHost don't share an api for creating
+                // and attribute in a type-safe way, so we will compromise for now.
+                th._attribute("type",type.getTypeName());
             }
         }
 
@@ -531,7 +534,11 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 if (c.getProperties().size() == 1 && c.getProperties().get(0) instanceof ValuePropertyInfo) {
                     // handling for result 2
                     ValuePropertyInfo vp = (ValuePropertyInfo)c.getProperties().get(0);
-                    SimpleType st = ((SimpleTypeHost)parent).simpleType().name(c.getTypeName().getLocalPart());
+                    SimpleType st = ((SimpleTypeHost)parent).simpleType();
+                    final String name = c.getTypeName().getLocalPart();
+                    if(!name.equals("")) {
+                        st.name(name);  // named st
+                    }
                     st.restriction().base(vp.getTarget().getTypeName());
                     return;
                 } else {
@@ -543,7 +550,8 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                         switch (p.kind()) {
                         case ATTRIBUTE:
                             AttributePropertyInfo ap = (AttributePropertyInfo) p;
-                            se.attribute().name(ap.getXmlName().getLocalPart()).type(ap.getTarget().getTypeName());
+                            //se.attribute().name(ap.getXmlName().getLocalPart()).type(ap.getTarget().getTypeName());
+                            writeTypeRef((ComplexTypeHost)parent, ap.getTarget());
                             break;
                         case VALUE:
                             TODO.checkSpec("what if vp.isCollection() == true?");
@@ -755,7 +763,9 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             //   <attribute name="foo" type="xs:int"/>
             // </>
             LocalAttribute localAttribute = attr.attribute();
-            localAttribute.name(ap.getXmlName().getLocalPart()).type(ap.getTarget().getTypeName());
+//            localAttribute.name(ap.getXmlName().getLocalPart()).type(ap.getTarget().getTypeName());
+            localAttribute.name(ap.getXmlName().getLocalPart());
+            writeTypeRef(localAttribute, ap.getTarget());
             if(ap.isRequired()) {
                 // TODO: not type safe
                 localAttribute.use("required");
