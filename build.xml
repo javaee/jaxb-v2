@@ -32,7 +32,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.6 2005-04-29 20:14:42 kohsuke Exp $
+       $Id: build.xml,v 1.7 2005-04-29 20:23:50 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -228,8 +228,8 @@
                    and yes, it's OK to have new lines and spaces inbetween.
               -->
               <property name="manifest.classpath"
-                value="jaxb-api.jar jaxb-impl.jar jaxb1-impl.jar xsdlib.jar
-                relaxngDatatype.jar dom4j.jar jsr173_1.0_api.jar activation.jar" />
+                value="jaxb-api.jar jaxb-impl.jar
+                relaxngDatatype.jar jsr173_1.0_api.jar activation.jar" />
               <echo file="${xjc.root}/manifest.xjc" append="true"
 >Main-Class: com.sun.tools.xjc.XJCFacade
 Class-Path: ${manifest.classpath}
