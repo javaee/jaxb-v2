@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AbstractField.java,v 1.4 2005-04-29 21:20:22 kohsuke Exp $
+ * @(#)$Id: AbstractField.java,v 1.5 2005-04-29 21:49:56 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlList;
+import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlValue;
 import javax.xml.namespace.QName;
 
@@ -23,7 +25,7 @@ import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
-import com.sun.tools.xjc.generator.annotation.ri.XmlAnyElementWriter;
+import com.sun.tools.xjc.generator.annotation.spec.XmlAnyElementWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlAttributeWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlElementRefWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlElementRefsWriter;
@@ -46,8 +48,6 @@ import com.sun.tools.xjc.outline.ClassOutline;
 import com.sun.tools.xjc.outline.FieldAccessor;
 import com.sun.tools.xjc.outline.FieldOutline;
 import com.sun.tools.xjc.reader.TypeUtil;
-import javax.xml.bind.annotation.XmlList;
-import javax.xml.bind.annotation.XmlMixed;
 import com.sun.xml.bind.v2.TODO;
 
 import static com.sun.tools.xjc.outline.Aspect.IMPLEMENTATION;
