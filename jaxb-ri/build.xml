@@ -32,7 +32,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.5 2005-04-27 22:17:12 kohsuke Exp $
+       $Id: build.xml,v 1.6 2005-04-29 20:14:42 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -235,19 +235,20 @@
 Class-Path: ${manifest.classpath}
 
 </echo>
-              <copy todir="${xjc.classes}">
-                <fileset dir="${xjc.src}" includes="com/sun/tools/xjc/runtime/*.java" />
-                <mapper type="glob" from="*.java" to="*.java_" />
-              </copy>
-              
+              <mkdir dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
+              <unzip dest="${jaxb.root}/build/jaxb-xjc-rejar">
+                <fileset dir="${jaxb.libs.compiler}" includes="*.jar" />
+              </unzip>
               <jar jarfile="${jaxb.dist}/lib/jaxb-xjc.jar"
                    manifest="${xjc.root}/manifest.xjc"
                    duplicate="fail">
-                  <zipgroupfileset dir="${jaxb.libs.compiler}" includes="*.jar" />
+                  <!-- can't use zipgroupfileset because of the duplicate LICENSE.txt -->
+                  <fileset dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
                   <fileset dir="${xjc.classes}"/>
                   <fileset dir="${codemodel.classes}"/>
                   <fileset dir="${schemagen.classes}"/>
               </jar>
+              <delete dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
           </sequential>
           
           
@@ -728,11 +729,17 @@ Class-Path: ${manifest.classpath}
       <!-- make zip file -->
       <zip destfile="${zip.release.dir}/JAXB-${release.impl.version}.zip" basedir="${zip.build.dir}" />
     </target>
+    
+    
+    <target name="release-engineering"
+            description="target for Sun RE builds"
+            depends="src-zip,bin-installer" />
 
 
     <target name="project.dtd" description="create DTD for DTD-aware editing">
       <antstructure output="project.dtd"/>
     </target>
+
 
     <target name = "integrate-1.0-compiler">
       <mkdir dir="${xjc10.classes}"/>
@@ -743,12 +750,6 @@ Class-Path: ${manifest.classpath}
     </target>
     
     
-    <target name="release-engineering"
-            description="target for Sun RE builds"
-            depends="src-zip,bin-installer" />
-
-    
-    
     <target name="integrate-jsr222">
         <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api.jar"
              dest="tools/lib/redist/jaxb-api.jar" />
@@ -756,5 +757,13 @@ Class-Path: ${manifest.classpath}
              dest="tools/lib/redist/jaxb-api-src.zip" />
         <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-doc.zip"
              dest="tools/lib/redist/jaxb-api-doc.zip" />
+     </target>
+    
+    
+    <target name="integrate-xsom">
+        <get src="http://kohsuke.sfbay/hudson/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom.jar"
+             dest="tools/lib/rebundle/compiler/xsom.jar" />
+        <get src="http://kohsuke.sfbay/hudson/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom-src.zip"
+             dest="tools/lib/src/xsom-src.zip" />
      </target>
 </project>
