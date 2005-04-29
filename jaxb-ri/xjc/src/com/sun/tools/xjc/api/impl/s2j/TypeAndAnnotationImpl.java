@@ -15,7 +15,9 @@ import com.sun.tools.xjc.model.nav.NType;
 import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import com.sun.xml.bind.annotation.XmlList;
+import javax.xml.bind.annotation.XmlList;
+
+import javax.xml.bind.annotation.XmlList;
 
 /**
  * {@link TypeAndAnnotation} implementation.

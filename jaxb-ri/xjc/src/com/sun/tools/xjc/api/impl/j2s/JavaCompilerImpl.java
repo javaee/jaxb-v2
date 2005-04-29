@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javax.xml.bind.annotation.XmlList;
 import javax.xml.namespace.QName;
 
 import com.sun.mirror.apt.AnnotationProcessorEnvironment;
@@ -19,7 +20,7 @@ import com.sun.tools.jxc.model.nav.APTNavigator;
 import com.sun.tools.xjc.api.J2SJAXBModel;
 import com.sun.tools.xjc.api.JavaCompiler;
 import com.sun.tools.xjc.api.Reference;
-import com.sun.xml.bind.annotation.XmlList;
+import javax.xml.bind.annotation.XmlList;
 import com.sun.xml.bind.v2.model.core.ErrorHandler;
 import com.sun.xml.bind.v2.model.core.Ref;
 import com.sun.xml.bind.v2.model.core.TypeInfoSet;

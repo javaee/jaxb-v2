@@ -27,7 +27,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.sax.SAXResult;
 import javax.activation.MimeType;
 
-import com.sun.xml.bind.annotation.DomHandler;
+import javax.xml.bind.annotation.DomHandler;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import com.sun.xml.bind.util.ValidationEventLocatorExImpl;

@@ -18,7 +18,7 @@ import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
-import com.sun.xml.bind.annotation.XmlMimeType;
+import javax.xml.bind.annotation.XmlMimeType;
 
 /**
  * Default partial implementation for {@link PropertyInfo}.

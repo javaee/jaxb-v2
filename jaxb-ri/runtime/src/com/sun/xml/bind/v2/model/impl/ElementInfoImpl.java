@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchema;
+import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 import javax.activation.MimeType;
@@ -30,8 +31,10 @@ import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
-import com.sun.xml.bind.annotation.XmlMimeType;
-import com.sun.xml.bind.annotation.XmlSoapAttachment;
+import javax.xml.bind.annotation.XmlMimeType;
+import javax.xml.bind.annotation.XmlSoapAttachment;
+
+import javax.xml.bind.annotation.XmlSoapAttachment;
 
 /**
  * {@link ElementInfo} implementation.
