@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.validation.ValidatorHandler;
 
 import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JClass;
@@ -21,19 +22,18 @@ import com.sun.codemodel.JPackage;
 import com.sun.msv.reader.AbortException;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.Options;
+import com.sun.tools.xjc.SchemaCache;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.util.CodeModelClassFactory;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
 
-import org.iso_relax.verifier.VerifierConfigurationException;
-import org.iso_relax.verifier.VerifierFactory;
-import org.iso_relax.verifier.VerifierFilter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
 
 /**
  * Root of the binding information.
@@ -239,18 +239,19 @@ public class BindInfo
         return defaultValue;
     }
 
-    
+    /**
+     * Lazily parsed schema for the binding file.
+     */
+    private static SchemaCache bindingFileSchema = new SchemaCache(BindInfo.class.getResource("bindingfile.xsd"));
+
     /**
      * Parses an InputSource into dom4j Document.
      * Returns null in case of an exception.
      */
     private static Document parse( InputSource is, ErrorReceiver receiver ) throws AbortException {
         try {
-            // validate the bind info file
-            VerifierFactory factory = new com.sun.msv.verifier.jarv.RELAXNGFactoryImpl();
-            VerifierFilter verifier = factory.newVerifier(
-                BindInfo.class.getResourceAsStream("bindingfile.rng")).getVerifierFilter();
-            
+            ValidatorHandler validator = bindingFileSchema.newValidator();
+
             // set up the pipe line as :
             //   parser->validator->factory
             SAXParserFactory pf = SAXParserFactory.newInstance();
@@ -258,10 +259,13 @@ public class BindInfo
             DOMBuilder builder = new DOMBuilder();
 
             ErrorReceiverFilter controller = new ErrorReceiverFilter(receiver);
-            verifier.setContentHandler(builder);
-            verifier.setErrorHandler(controller);
-            verifier.setParent(pf.newSAXParser().getXMLReader());
-            verifier.parse(is);
+            validator.setContentHandler(builder);
+            validator.setErrorHandler(controller);
+            XMLReader reader = pf.newSAXParser().getXMLReader();
+            reader.setErrorHandler(controller);
+            reader.setContentHandler(validator);
+
+            reader.parse(is);
             
             if(controller.hadError())   throw AbortException.theInstance;
             return (Document)builder.getDOM();
@@ -269,8 +273,6 @@ public class BindInfo
             receiver.error( new SAXParseException(e.getMessage(),null,e) );
         } catch( SAXException e ) {
             receiver.error( new SAXParseException(e.getMessage(),null,e) );
-        } catch( VerifierConfigurationException ve ) {
-            ve.printStackTrace();
         } catch( ParserConfigurationException e ) {
             receiver.error( new SAXParseException(e.getMessage(),null,e) );
         }
