@@ -4,27 +4,23 @@
  */
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
-import java.io.IOException;
+import javax.xml.validation.ValidatorHandler;
 
 import com.sun.codemodel.JCodeModel;
 import com.sun.msv.grammar.relaxng.datatype.BuiltinDatatypeLibrary;
-import com.sun.msv.verifier.jarv.RELAXNGFactoryImpl;
 import com.sun.relaxng.javadt.DatatypeLibraryImpl;
 import com.sun.tools.xjc.Options;
+import com.sun.tools.xjc.SchemaCache;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.parser.AnnotationState;
 import com.sun.xml.xsom.parser.AnnotationContext;
 import com.sun.xml.xsom.parser.AnnotationParser;
 
-import org.iso_relax.verifier.Verifier;
-import org.iso_relax.verifier.VerifierConfigurationException;
-import org.iso_relax.verifier.VerifierFactory;
 import org.iso_relax.verifier.impl.ForkContentHandler;
 import org.relaxng.datatype.DatatypeLibrary;
 import org.relaxng.datatype.DatatypeLibraryFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
 
 /**
  * Implementation of {@link AnnotationParser} of XSOM that
@@ -52,38 +48,28 @@ final class AnnotationParserImpl extends AnnotationParser {
         
         // return a ContentHandler that validates the customization and also
         // parses them into the internal structure.
-        try {
-            if(parser!=null)
-                // interface contract violation.
-                // this method will be called only once.
-                throw new AssertionError();
-            
-            // set up the actual parser.
-            NGCCRuntimeEx runtime = new NGCCRuntimeEx(codeModel,options,errorHandler);
-            parser = new AnnotationState(runtime);
-            runtime.setRootHandler(parser);
-            
-            // set up validator
-            VerifierFactory factory = new RELAXNGFactoryImpl(); // we need to use a private property exposed.
-            factory.setProperty("datatypeLibraryFactory",new DatatypeLibraryFactoryImpl());
-            Verifier v = factory.newVerifier(AnnotationParserImpl.class.getResourceAsStream("binding.purified.rng"));
-            v.setErrorHandler(errorHandler);
+        if(parser!=null)
+            // interface contract violation.
+            // this method will be called only once.
+            throw new AssertionError();
 
-            // the validator will receive events first, then the parser.
-            return new ForkContentHandler( v.getVerifierHandler(), runtime );
-        } catch( VerifierConfigurationException e ) {
-            // there must be something wrong with the deployment.
-            e.printStackTrace();
-            throw new InternalError();
-        } catch( SAXException e ) {
-            e.printStackTrace();
-            throw new InternalError();
-        } catch( IOException e ) {
-            e.printStackTrace();
-            throw new InternalError();
-        }
-        
+        // set up the actual parser.
+        NGCCRuntimeEx runtime = new NGCCRuntimeEx(codeModel,options,errorHandler);
+        parser = new AnnotationState(runtime);
+        runtime.setRootHandler(parser);
+
+        // set up validator
+        ValidatorHandler validator = bindingFileSchema.newValidator();
+        validator.setErrorHandler(errorHandler);
+
+        // the validator will receive events first, then the parser.
+        return new ForkContentHandler( validator, runtime );
     }
+
+    /**
+     * Lazily parsed schema for the binding file.
+     */
+    private static SchemaCache bindingFileSchema = new SchemaCache(AnnotationParserImpl.class.getResource("binding.xsd"));
 
     public Object getResult( Object existing ) {
         if(parser==null)

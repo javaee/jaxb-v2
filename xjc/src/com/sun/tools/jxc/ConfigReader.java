@@ -15,18 +15,16 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.validation.ValidatorHandler;
 
 import com.sun.mirror.apt.AnnotationProcessorEnvironment;
 import com.sun.mirror.declaration.TypeDeclaration;
-import com.sun.msv.verifier.jarv.RELAXNGFactoryImpl;
 import com.sun.tools.jxc.gen.config.Config;
 import com.sun.tools.jxc.gen.config.Schema;
+import com.sun.tools.xjc.SchemaCache;
 import com.sun.tools.xjc.api.Reference;
 import com.sun.xml.bind.api.SchemaOutputResolver;
 
-import org.iso_relax.verifier.Verifier;
-import org.iso_relax.verifier.VerifierConfigurationException;
-import org.iso_relax.verifier.VerifierFactory;
 import org.iso_relax.verifier.impl.ForkContentHandler;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
@@ -154,6 +152,10 @@ public final class ConfigReader  {
 
 
 
+    /**
+     * Lazily parsed schema for the binding file.
+     */
+    private static SchemaCache configSchema = new SchemaCache(Config.class.getResource("config.xsd"));
 
 
     /**
@@ -165,7 +167,7 @@ public final class ConfigReader  {
      *        A non null Config object
      */
     private Config parseAndGetConfig (File xmlFile, ErrorHandler errorHandler) throws SAXException, IOException {
-        XMLReader reader = null;
+        XMLReader reader;
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             factory.setNamespaceAware(true);
@@ -177,18 +179,11 @@ public final class ConfigReader  {
         NGCCRuntimeEx runtime = new NGCCRuntimeEx(errorHandler);
 
         // set up validator
-        VerifierFactory factory = new RELAXNGFactoryImpl(); // we need to use a private property exposed.
-        Verifier v = null;
-        try {
-            v = factory.newVerifier(Config.class.getResourceAsStream("config.purified.rng"));
-        } catch (VerifierConfigurationException e) {
-            // in practice this will never happen, because we tightly control the classpath
-            throw new Error(e);
-        }
-        v.setErrorHandler(errorHandler);
+        ValidatorHandler validator = configSchema.newValidator();
+        validator.setErrorHandler(errorHandler);
 
         // the validator will receive events first, then the parser.
-        reader.setContentHandler(new ForkContentHandler( v.getVerifierHandler(), runtime ));
+        reader.setContentHandler(new ForkContentHandler( validator, runtime ));
 
         reader.setErrorHandler(errorHandler);
         Config config = new Config(runtime);
