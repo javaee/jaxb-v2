@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.bind.attachment.AttachmentMarshaller;
 import javax.xml.bind.attachment.AttachmentUnmarshaller;
 
-import com.sun.xml.bind.annotation.XmlSoapAttachment;
+import javax.xml.bind.annotation.XmlSoapAttachment;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 
 

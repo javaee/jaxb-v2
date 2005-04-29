@@ -3,9 +3,10 @@ package com.sun.xml.bind.v2.runtime.property;
 import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.annotation.DomHandler;
 import javax.xml.stream.XMLStreamException;
 
-import com.sun.xml.bind.annotation.DomHandler;
+import javax.xml.bind.annotation.DomHandler;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.QNameMap;

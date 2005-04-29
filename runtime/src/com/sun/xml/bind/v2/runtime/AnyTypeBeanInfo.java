@@ -4,8 +4,9 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.bind.annotation.W3CDomHandler;
 
-import com.sun.xml.bind.annotation.W3CDomHandler;
+import javax.xml.bind.annotation.W3CDomHandler;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
 import com.sun.xml.bind.v2.model.impl.RuntimeAnyTypeImpl;

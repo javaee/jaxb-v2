@@ -9,9 +9,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlSchema;
+import javax.xml.bind.annotation.XmlList;
 import javax.xml.namespace.QName;
 
-import com.sun.xml.bind.annotation.XmlList;
+import javax.xml.bind.annotation.XmlList;
 import com.sun.xml.bind.v2.NameConverter;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.core.ElementPropertyInfo;

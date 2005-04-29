@@ -28,9 +28,11 @@ import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
-import com.sun.xml.bind.annotation.XmlAnyAttribute;
-import com.sun.xml.bind.annotation.XmlAnyElement;
-import com.sun.xml.bind.annotation.XmlSoapAttachment;
+import javax.xml.bind.annotation.XmlAnyAttribute;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlAnyAttribute;
+
+import javax.xml.bind.annotation.XmlSoapAttachment;
 import com.sun.xml.bind.v2.NameConverter;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.Locatable;

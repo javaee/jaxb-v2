@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AbstractField.java,v 1.3 2005-04-19 21:36:58 kohsuke Exp $
+ * @(#)$Id: AbstractField.java,v 1.4 2005-04-29 21:20:22 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -46,8 +46,8 @@ import com.sun.tools.xjc.outline.ClassOutline;
 import com.sun.tools.xjc.outline.FieldAccessor;
 import com.sun.tools.xjc.outline.FieldOutline;
 import com.sun.tools.xjc.reader.TypeUtil;
-import com.sun.xml.bind.annotation.XmlList;
-import com.sun.xml.bind.annotation.XmlMixed;
+import javax.xml.bind.annotation.XmlList;
+import javax.xml.bind.annotation.XmlMixed;
 import com.sun.xml.bind.v2.TODO;
 
 import static com.sun.tools.xjc.outline.Aspect.IMPLEMENTATION;

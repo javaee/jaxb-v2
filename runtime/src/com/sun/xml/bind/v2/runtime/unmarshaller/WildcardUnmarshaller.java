@@ -4,14 +4,15 @@
  */
 
 /*
- * @(#)$Id: WildcardUnmarshaller.java,v 1.1 2005-04-15 20:04:43 kohsuke Exp $
+ * @(#)$Id: WildcardUnmarshaller.java,v 1.2 2005-04-29 21:20:19 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.bind.annotation.DomHandler;
 
-import com.sun.xml.bind.annotation.DomHandler;
+import javax.xml.bind.annotation.DomHandler;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.property.Unmarshaller;

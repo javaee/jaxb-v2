@@ -7,11 +7,12 @@ import java.util.Set;
 
 import javax.activation.MimeType;
 import javax.xml.namespace.QName;
+import javax.xml.bind.annotation.W3CDomHandler;
 
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.tools.xjc.model.nav.NavigatorImpl;
-import com.sun.xml.bind.annotation.W3CDomHandler;
+import javax.xml.bind.annotation.W3CDomHandler;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.ReferencePropertyInfo;

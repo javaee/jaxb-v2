@@ -68,8 +68,10 @@ import com.sun.tools.xjc.outline.FieldOutline;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.outline.PackageOutline;
 import com.sun.tools.xjc.util.CodeModelClassFactory;
-import com.sun.xml.bind.annotation.XmlMimeType;
-import com.sun.xml.bind.annotation.XmlSoapAttachment;
+import javax.xml.bind.annotation.XmlMimeType;
+import javax.xml.bind.annotation.XmlSoapAttachment;
+
+import javax.xml.bind.annotation.XmlSoapAttachment;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
