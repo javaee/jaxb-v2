@@ -37,7 +37,6 @@ import com.sun.xml.bind.Util;
 import com.sun.xml.bind.api.SchemaOutputResolver;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.WellKnownNamespace;
-import com.sun.xml.bind.v2.runtime.SchemaGenerator;
 import com.sun.xml.bind.v2.model.core.ArrayInfo;
 import com.sun.xml.bind.v2.model.core.AttributePropertyInfo;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
@@ -50,9 +49,10 @@ import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.model.core.ReferencePropertyInfo;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
+import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.core.ValuePropertyInfo;
-import com.sun.xml.bind.v2.model.core.TypeInfoSet;
+import com.sun.xml.bind.v2.runtime.SchemaGenerator;
 import com.sun.xml.txw2.TXW;
 import com.sun.xml.txw2.TxwException;
 import com.sun.xml.txw2.output.ResultFactory;
@@ -488,23 +488,6 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 writeClass(bc, parent);
             }
 
-            // ClassInfo objects only represent JAXB beans, not primitives or built-in types
-            // if the class is also mapped to an element (@XmlElement), generate such a decl.
-            // TODO: move this portion out of this method because this processing only applies
-            // to top-level ClassInfos
-//            Element<TypeT,ClassDeclT> e = c.asElement();
-//            if (e != null && parent instanceof Schema) {
-//                QName ename = e.getElementName();
-//                assert ename.getNamespaceURI().equals(uri);
-//                // [RESULT]
-//                // <element name="foo" type="int"/>
-//                // not allowed to tweek min/max occurs on global elements
-//                TopLevelElement elem = ((Schema)parent).element();
-//                elem.name(ename.getLocalPart());
-//                writeTypeRef(elem,c);
-//                parent._pcdata(newline);
-//            }
-
             // generate the complexType
             ComplexType ct = null;
 
@@ -762,8 +745,10 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             //   </>
             //   <attribute name="foo" type="xs:int"/>
             // </>
+            //
+            // or it could also be an in-lined type
+            //
             LocalAttribute localAttribute = attr.attribute();
-//            localAttribute.name(ap.getXmlName().getLocalPart()).type(ap.getTarget().getTypeName());
             localAttribute.name(ap.getXmlName().getLocalPart());
             writeTypeRef(localAttribute, ap.getTarget());
             if(ap.isRequired()) {
