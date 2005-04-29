@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.6 2005-04-26 20:35:48 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.7 2005-04-29 00:07:03 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -31,6 +31,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.Result;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -78,7 +80,7 @@ import org.xml.sax.SAXException;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -602,6 +604,19 @@ public final class JAXBContextImpl extends JAXBRIContext {
         }
 
         xsdgen.write(outputResolver);
+    }
+
+    /**
+     * Used for testing.
+     */
+    public SchemaOutputResolver createTestResolver() {
+        return new SchemaOutputResolver() {
+            public Result createOutput(String namespaceUri, String suggestedFileName) {
+                StreamResult r = new StreamResult(System.out);
+                r.setSystemId(suggestedFileName);
+                return r;
+            }
+        };
     }
 
 
