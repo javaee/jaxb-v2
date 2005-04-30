@@ -8,6 +8,8 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Map;
+import java.util.HashMap;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
@@ -74,13 +76,15 @@ public abstract class Accessor<BeanT,ValueT> extends RawAccessor<BeanT,ValueT> {
             }
 
             public void set(BeanT bean, T o) throws AccessorException {
-                if(o==null) extThis.set(bean,null);
-
-                XmlAdapter<T,ValueT> a = Coordinator._getInstance().getAdapter(adapter);
-                try {
-                    extThis.set(bean,a.unmarshal(o));
-                } catch (Exception e) {
-                    throw new AccessorException(e);
+                if(o==null)
+                    extThis.set(bean,null);
+                else {
+                    XmlAdapter<T,ValueT> a = Coordinator._getInstance().getAdapter(adapter);
+                    try {
+                        extThis.set(bean,a.unmarshal(o));
+                    } catch (Exception e) {
+                        throw new AccessorException(e);
+                    }
                 }
             }
         };
@@ -136,6 +140,8 @@ public abstract class Accessor<BeanT,ValueT> extends RawAccessor<BeanT,ValueT> {
 
         public void set(BeanT bean, ValueT value) {
             try {
+                if(value==null)
+                    value = (ValueT)uninitializedValues.get(valueType);
                 f.set(bean,value);
             } catch (IllegalAccessException e) {
                 throw new IllegalAccessError(e.getMessage());
@@ -199,6 +205,8 @@ public abstract class Accessor<BeanT,ValueT> extends RawAccessor<BeanT,ValueT> {
 
         public void set(BeanT bean, ValueT value) throws AccessorException {
             try {
+                if(value==null)
+                    value = (ValueT)uninitializedValues.get(valueType);
                 setter.invoke(bean,value);
             } catch (IllegalAccessException e) {
                 throw new IllegalAccessError(e.getMessage());
@@ -257,4 +265,30 @@ public abstract class Accessor<BeanT,ValueT> extends RawAccessor<BeanT,ValueT> {
             jaxbElement.setValue(o);
         }
     };
+
+    /**
+     * Uninitialized map keyed by their classes.
+     */
+    private static final Map<Class,Object> uninitializedValues = new HashMap<Class, Object>();
+
+    static {
+/*
+    static byte default_value_byte = 0;
+    static boolean default_value_boolean = false;
+    static char default_value_char = 0;
+    static float default_value_float = 0;
+    static double default_value_double = 0;
+    static int default_value_int = 0;
+    static long default_value_long = 0;
+    static short default_value_short = 0;
+*/
+        uninitializedValues.put(byte.class,Byte.valueOf((byte)0));
+        uninitializedValues.put(boolean.class,false);
+        uninitializedValues.put(char.class,Character.valueOf((char)0));
+        uninitializedValues.put(float.class,Float.valueOf(0));
+        uninitializedValues.put(double.class,Double.valueOf(0));
+        uninitializedValues.put(int.class,Integer.valueOf(0));
+        uninitializedValues.put(long.class,Long.valueOf(0));
+        uninitializedValues.put(short.class,Short.valueOf((short)0));
+    }
 }

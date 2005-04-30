@@ -13,6 +13,7 @@ import com.sun.xml.bind.v2.model.runtime.RuntimeValuePropertyInfo;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
+import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 
 import org.xml.sax.SAXException;
 
@@ -30,11 +31,13 @@ final class ValueProperty<BeanT,ListT,ItemT> extends PropertyImpl<BeanT> {
      * Heart of the conversion logic.
      */
     private final TransducedAccessor<BeanT> xacc;
+    private final Accessor acc;
 
 
     public ValueProperty(JAXBContextImpl grammar, RuntimeValuePropertyInfo prop) {
         super(grammar,prop);
         xacc = TransducedAccessor.get(prop);
+        acc = prop.getAccessor();   // we only use this for binder, so don't waste memory by optimizing
     }
 
     public final void serializeBody(BeanT o, XMLSerializer w) throws SAXException, AccessorException, IOException, XMLStreamException {
@@ -54,9 +57,8 @@ final class ValueProperty<BeanT,ListT,ItemT> extends PropertyImpl<BeanT> {
         return PropertyKind.VALUE;
     }
 
-    public void reset(BeanT o) {
-        // TODO: implement this method later
-        throw new UnsupportedOperationException();
+    public void reset(BeanT o) throws AccessorException {
+        acc.set(o,null);
     }
 
     public String getIdValue(BeanT bean) throws AccessorException, SAXException {

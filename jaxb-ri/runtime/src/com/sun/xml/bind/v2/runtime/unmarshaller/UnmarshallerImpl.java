@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: UnmarshallerImpl.java,v 1.7 2005-04-22 15:44:57 kohsuke Exp $
+ * @(#)$Id: UnmarshallerImpl.java,v 1.8 2005-04-30 00:19:11 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -17,11 +17,10 @@ import javax.xml.bind.PropertyException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.UnmarshallerHandler;
 import javax.xml.bind.ValidationEventHandler;
-import javax.xml.bind.ValidationEventLocator;
+import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.attachment.AttachmentUnmarshaller;
 import javax.xml.bind.helpers.AbstractUnmarshallerImpl;
-import javax.xml.bind.helpers.ValidationEventLocatorImpl;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -37,9 +36,9 @@ import com.sun.xml.bind.v2.AssociationMap;
 import com.sun.xml.bind.v2.runtime.BinderImpl;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
-
 import com.sun.xml.bind.v2.stax.XMLEventReaderToContentHandler;
 import com.sun.xml.bind.v2.stax.XMLStreamReaderToContentHandler;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -214,20 +213,9 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl
         try {
             final DOMScanner scanner = new DOMScanner();
 
-            class DOMLocator implements LocatorEx {
-                public String getPublicId() { return null; }
-                public String getSystemId() { return null; }
-                public int getLineNumber() { return -1; }
-                public int getColumnNumber() { return -1; }
-
-                public ValidationEventLocator getLocation() {
-                    return new ValidationEventLocatorImpl(scanner.getCurrentLocation());
-                }
-            };
-
             InterningXmlVisitor handler = new InterningXmlVisitor(createUnmarshallerHandler(null,false));
 
-            scanner.setContentHandler(new SAXConnector(handler,new DOMLocator()));
+            scanner.setContentHandler(new SAXConnector(handler,scanner));
 
             if(node instanceof Element)
                 scanner.scan((Element)node);
@@ -404,6 +392,11 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl
             return coordinator.getAdapter(type);
         else
             return null;
+    }
+
+    // opening up for public use
+    public UnmarshalException createUnmarshalException( SAXException e ) {
+        return super.createUnmarshalException(e);
     }
 
 }

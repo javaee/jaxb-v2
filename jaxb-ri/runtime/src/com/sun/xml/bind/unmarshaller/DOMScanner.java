@@ -7,6 +7,10 @@ package com.sun.xml.bind.unmarshaller;
 import java.util.Enumeration;
 
 import javax.xml.bind.helpers.AbstractUnmarshallerImpl;
+import javax.xml.bind.helpers.ValidationEventLocatorImpl;
+import javax.xml.bind.ValidationEventLocator;
+
+import com.sun.xml.bind.v2.runtime.unmarshaller.LocatorEx;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -30,10 +34,10 @@ import org.xml.sax.helpers.NamespaceSupport;
  * classes like this.
  *
  * @author <ul><li>Kohsuke Kawaguchi, Sun Microsystems, Inc.</li></ul>
- * @version $Revision: 1.1 $ $Date: 2005-04-15 20:03:48 $
+ * @version $Revision: 1.2 $ $Date: 2005-04-30 00:19:09 $
  * @since JAXB1.0
  */
-public class DOMScanner implements InfosetScanner/*<Node> --- but can't do this to protect 1.0 clients, or can I? */
+public class DOMScanner implements LocatorEx,InfosetScanner/*<Node> --- but can't do this to protect 1.0 clients, or can I? */
 {
     
     /** reference to the current node being scanned - used for determining
@@ -46,21 +50,11 @@ public class DOMScanner implements InfosetScanner/*<Node> --- but can't do this 
     /** This handler will receive SAX2 events. */
     private ContentHandler receiver=null;
 
-    private Locator locator=dummyLocator;
+    private Locator locator=this;
 
     public DOMScanner() {
     }
     
-    /**
-     * A dummy locator that doesn't provide any information - required
-     * by SAX, but not actually used for JAXB's location requirements.
-     */
-    private static Locator dummyLocator = new Locator() {
-        public int getLineNumber() { return -1; }
-        public int getColumnNumber() { return -1; }
-        public String getSystemId() { return null; }
-        public String getPublicId() { return null; }
-    };
 
     /**
      * Configures the locator object that the SAX {@link ContentHandler} will see.
@@ -121,7 +115,7 @@ public class DOMScanner implements InfosetScanner/*<Node> --- but can't do this 
         setCurrentLocation( e );
         receiver.startDocument();
         
-        receiver.setDocumentLocator(dummyLocator);
+        receiver.setDocumentLocator(locator);
         visit(e);
         
         setCurrentLocation( e );
@@ -277,11 +271,26 @@ public class DOMScanner implements InfosetScanner/*<Node> --- but can't do this 
         return currentNode;
     }
 
+    public LocatorEx getLocator() {
+        return this;
+    }
+
     public void setContentHandler(ContentHandler handler) {
         this.receiver = handler;
     }
 
     public ContentHandler getContentHandler() {
         return this.receiver;
+    }
+
+
+    // LocatorEx implementation
+    public String getPublicId() { return null; }
+    public String getSystemId() { return null; }
+    public int getLineNumber() { return -1; }
+    public int getColumnNumber() { return -1; }
+
+    public ValidationEventLocator getLocation() {
+        return new ValidationEventLocatorImpl(getCurrentLocation());
     }
 }

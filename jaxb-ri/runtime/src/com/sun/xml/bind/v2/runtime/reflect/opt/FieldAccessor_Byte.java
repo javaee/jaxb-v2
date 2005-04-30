@@ -20,6 +20,6 @@ public class FieldAccessor_Byte extends Accessor {
     }
 
     public void set(Object bean, Object value) {
-        ((Bean)bean).f_byte = (Byte)value;
+        ((Bean)bean).f_byte = value==null ? Const.default_value_byte : (Byte)value;
     }
 }

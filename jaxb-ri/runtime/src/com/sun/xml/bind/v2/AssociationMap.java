@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AssociationMap.java,v 1.1 2005-04-15 20:03:52 kohsuke Exp $
+ * @(#)$Id: AssociationMap.java,v 1.2 2005-04-30 00:19:11 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -101,7 +101,7 @@ public final class AssociationMap<XmlNode> {
     }
     
     public Entry<XmlNode> byPeer( Object o ) {
-        return byElement.get(o);
+        return byPeer.get(o);
     }
     
     public Object getInnerPeer( XmlNode element ) {
