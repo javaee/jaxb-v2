@@ -8,7 +8,6 @@ import javax.xml.validation.ValidatorHandler;
 
 import com.sun.codemodel.JCodeModel;
 import com.sun.tools.xjc.Options;
-import com.sun.tools.xjc.SchemaCache;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.parser.AnnotationState;
 import com.sun.xml.xsom.parser.AnnotationContext;
 import com.sun.xml.xsom.parser.AnnotationParser;
@@ -28,10 +27,10 @@ import org.xml.sax.ErrorHandler;
  *     Kohsuke Kawaguchi (kohsuke,kawaguchi@sun.com)
  */
 final class AnnotationParserImpl extends AnnotationParser {
-    AnnotationParserImpl( JCodeModel cm, Options opts ) {
+    AnnotationParserImpl( JCodeModel cm, Options opts, ValidatorHandler validator ) {
         this.codeModel=cm;
         this.options=opts;
-        validator = bindingFileSchema.newValidator();
+        this.validator = validator;
     }
 
     private AnnotationState parser = null;
@@ -62,11 +61,6 @@ final class AnnotationParserImpl extends AnnotationParser {
         // the validator will receive events first, then the parser.
         return validator;
     }
-
-    /**
-     * Lazily parsed schema for the binding file.
-     */
-    private static SchemaCache bindingFileSchema = new SchemaCache(AnnotationParserImpl.class.getResource("binding.xsd"));
 
     public Object getResult( Object existing ) {
         if(parser==null)
