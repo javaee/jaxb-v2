@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: InfosetScanner.java,v 1.1 2005-04-15 20:03:49 kohsuke Exp $
+ * @(#)$Id: InfosetScanner.java,v 1.2 2005-04-30 00:19:09 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -10,6 +10,7 @@
 package com.sun.xml.bind.unmarshaller;
 
 import com.sun.xml.bind.annotation.Binder;
+import com.sun.xml.bind.v2.runtime.unmarshaller.LocatorEx;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -75,4 +76,6 @@ public interface InfosetScanner<XmlNode> {
      *      never return null.
      */
     XmlNode getCurrentElement();
+
+    LocatorEx getLocator();
 }

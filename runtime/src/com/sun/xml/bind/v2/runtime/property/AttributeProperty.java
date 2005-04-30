@@ -13,6 +13,7 @@ import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
+import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 
 import org.xml.sax.SAXException;
@@ -39,11 +40,14 @@ public final class AttributeProperty<BeanT> extends PropertyImpl<BeanT> {
      */
     public final TransducedAccessor<BeanT> xacc;
 
+    private final Accessor acc;
+
     public AttributeProperty(JAXBContextImpl p, RuntimeAttributePropertyInfo prop) {
         super(p,prop);
         this.required = prop.isRequired();
         this.attName = p.nameBuilder.createAttributeName(prop.getXmlName());
         this.xacc = TransducedAccessor.get(prop);
+        this.acc = prop.getAccessor();   // we only use this for binder, so don't waste memory by optimizing
     }
 
     public void serializeAttributes(BeanT o, XMLSerializer w) throws SAXException, AccessorException, IOException, XMLStreamException {
@@ -74,9 +78,8 @@ public final class AttributeProperty<BeanT> extends PropertyImpl<BeanT> {
         return PropertyKind.ATTRIBUTE;
     }
 
-    public void reset(BeanT o) {
-        // TODO: implement this method later
-        throw new UnsupportedOperationException();
+    public void reset(BeanT o) throws AccessorException {
+        acc.set(o,null);
     }
 
     public String getIdValue(BeanT bean) throws AccessorException, SAXException {

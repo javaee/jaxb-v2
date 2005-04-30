@@ -43,9 +43,8 @@ final class SingleElementLeafProperty<BeanT> extends PropertyImpl<BeanT> {
         assert xacc!=null;
     }
 
-    public void reset(BeanT o) {
-        // TODO: implement this method later
-        throw new UnsupportedOperationException();
+    public void reset(BeanT o) throws AccessorException {
+        acc.set(o,null);
     }
 
     public String getIdValue(BeanT bean) throws AccessorException, SAXException {

@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: BinderImpl.java,v 1.1 2005-04-15 20:04:21 kohsuke Exp $
+ * @(#)$Id: BinderImpl.java,v 1.2 2005-04-30 00:19:11 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -86,11 +86,11 @@ public class BinderImpl<XmlNode> extends Binder<XmlNode> {
 
     private Object associativeUnmarshal(XmlNode xmlNode, boolean inplace) throws JAXBException {
         InterningXmlVisitor handler = new InterningXmlVisitor(getUnmarshaller().createUnmarshallerHandler(scanner, inplace ));
-        scanner.setContentHandler(new SAXConnector(handler,null));
+        scanner.setContentHandler(new SAXConnector(handler,scanner.getLocator()));
         try {
             scanner.scan(xmlNode);
         } catch( SAXException e ) {
-            throw new JAXBException(e);
+            throw unmarshaller.createUnmarshalException(e);
         }
         
         return handler.getContext().getResult();
