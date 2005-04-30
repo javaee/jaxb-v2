@@ -138,23 +138,31 @@ public class JDocComment implements JGenerable {
     
     private void format( JFormatter f, String key, String s ) {
         int idx;
-        f.p(" * "+key).nl();
+        f.p(" * ").p(key).nl();
         while( (idx=s.indexOf('\n'))!=-1 ) {
-            f.p(" *     "+ s.substring(0,idx)).nl();
+            f.p(" *     ");
+            String line = s.substring(0,idx);
+            if(line.length()>0)
+                f.p(line);
+            f.nl();
             s = s.substring(idx+1);
         }
         if(s.length()!=0)
-            f.p(" *     "+s).nl();
+            f.p(" *     ").p(s).nl();
     }
     
     private void format( JFormatter f, String s ) {
         int idx;
         while( (idx=s.indexOf('\n'))!=-1 ) {
-            f.p(" * "+ s.substring(0,idx)).nl();
+            f.p(" * ");
+            String line = s.substring(0,idx);
+            if(line.length()>0)
+                f.p(line);
+            f.nl();
             s = s.substring(idx+1);
         }
         if(s.length()!=0)
-            f.p(" * "+s).nl();
+            f.p(" * ").p(s).nl();
     }
 }
 
