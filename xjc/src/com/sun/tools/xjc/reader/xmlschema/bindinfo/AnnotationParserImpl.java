@@ -31,12 +31,14 @@ final class AnnotationParserImpl extends AnnotationParser {
     AnnotationParserImpl( JCodeModel cm, Options opts ) {
         this.codeModel=cm;
         this.options=opts;
+        validator = bindingFileSchema.newValidator();
     }
 
     private AnnotationState parser = null;
     private final JCodeModel codeModel;
     private final Options options;
-    
+    private final ValidatorHandler validator;
+
     public ContentHandler getContentHandler(
         AnnotationContext context, String parentElementName,
         ErrorHandler errorHandler, EntityResolver entityResolver ) {
@@ -54,7 +56,6 @@ final class AnnotationParserImpl extends AnnotationParser {
         runtime.setRootHandler(parser);
 
         // set up validator
-        ValidatorHandler validator = bindingFileSchema.newValidator();
         validator.setErrorHandler(errorHandler);
         validator.setContentHandler(runtime);
 
