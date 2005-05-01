@@ -451,6 +451,8 @@ public final class JPackage implements JDeclaration, JGenerable, JClassContainer
                 protected boolean requireEscaping(int ch) {
                     // control characters
                     if( ch<0x20 && " \t\r\n".indexOf(ch)==-1 )  return true;
+                    // check ASCII chars, for better performance
+                    if( ch<0x80 )       return true;
 
                     return !((CharsetEncoder)encoder).canEncode((char)ch);
                 }
