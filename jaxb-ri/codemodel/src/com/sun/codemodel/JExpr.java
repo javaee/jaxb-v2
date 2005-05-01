@@ -163,7 +163,8 @@ public abstract class JExpr {
         return new JAtom(Double.toString(d) + "D");
     }
 
-    static final String charEscape = "\bb\tt\nn\ff\rr\"\"\''\\\\";
+    static final String charEscape = "\b\t\n\f\r\"\'\\";
+    static final String charMacro  = "btnfr\"'\\";
     
     /**
      * Escapes the given string, then surrounds it by the specified
@@ -171,18 +172,15 @@ public abstract class JExpr {
      */
     public static String quotify(char quote, String s) {
         int n = s.length();
-        StringBuffer sb = new StringBuffer(n + 2);
+        StringBuilder sb = new StringBuilder(n + 2);
         sb.append(quote);
         for (int i = 0; i < n; i++) {
             char c = s.charAt(i);
-            int j;
-            for( j=0; j<8; j++ )
-                if(c==charEscape.charAt(j*2)) {
-                    sb.append('\\');
-                    sb.append(charEscape.charAt(j*2+1));
-                    break;
-                }
-            if(j==8) {
+            int j = charEscape.indexOf(c);
+            if(j>=0) {
+                sb.append('\\');
+                sb.append(charMacro.charAt(j));
+            } else {
                 // technically Unicode escape shouldn't be done here,
                 // for it's a lexical level handling.
                 // 
