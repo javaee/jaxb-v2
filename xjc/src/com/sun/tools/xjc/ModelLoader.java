@@ -315,7 +315,8 @@ public final class ModelLoader {
         DOMForest forest = buildDOMForest( new XMLSchemaInternalizationLogic() );
         
         // load XML Schema from DOMForest instead of loading from its original source.
-        
+        // so that we can take external annotations into account.
+
         return createXSOM(forest);
     }
     
@@ -372,7 +373,7 @@ public final class ModelLoader {
     }
     
     /**
-     * Parses a DOMForest into a {@link XSSchemaSet}.
+     * Parses a {@link DOMForest} into a {@link XSSchemaSet}.
      */
     public XSSchemaSet createXSOM(DOMForest forest) throws SAXException {
         // set up other parameters to XSOMParser
