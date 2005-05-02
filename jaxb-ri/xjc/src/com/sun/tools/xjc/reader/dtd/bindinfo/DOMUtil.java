@@ -10,7 +10,7 @@ import org.w3c.dom.Node;
 /**
  * @author Kohsuke Kawaguchi
  */
-final class DOMUtil {
+public final class DOMUtil {
     final static String getAttribute(Element e,String attName) {
         if(e.getAttributeNode(attName)==null)   return null;
         return e.getAttribute(attName);
@@ -27,7 +27,7 @@ final class DOMUtil {
             Node n = l.item(i);
             if(n.getNodeType()==Node.ELEMENT_NODE) {
                 Element r = (Element)n;
-                if(equals(r.getLocalName(),localName) && equals(r.getNamespaceURI(),nsUri))
+                if(equals(r.getLocalName(),localName) && equals(fixNull(r.getNamespaceURI()),nsUri))
                     return r;
             }
         }
@@ -42,6 +42,14 @@ final class DOMUtil {
         if(a==b)    return true;
         if(a==null || b==null)  return false;
         return a.equals(b);
+    }
+
+    /**
+     * DOM API returns null for the default namespace whereas it should return "".
+     */
+    private static String fixNull(String s) {
+        if(s==null) return "";
+        else        return s;
     }
 
     public static Element getElement(Element e, String localName) {
