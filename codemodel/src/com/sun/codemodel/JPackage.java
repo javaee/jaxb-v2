@@ -452,7 +452,7 @@ public final class JPackage implements JDeclaration, JGenerable, JClassContainer
                     // control characters
                     if( ch<0x20 && " \t\r\n".indexOf(ch)==-1 )  return true;
                     // check ASCII chars, for better performance
-                    if( ch<0x80 )       return true;
+                    if( ch<0x80 )       return false;
 
                     return !((CharsetEncoder)encoder).canEncode((char)ch);
                 }
