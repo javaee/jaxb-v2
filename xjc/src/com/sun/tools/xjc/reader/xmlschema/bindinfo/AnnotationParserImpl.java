@@ -72,8 +72,12 @@ final class AnnotationParserImpl extends AnnotationParser {
             BindInfo bie = (BindInfo)existing;
             bie.absorb(parser.bi);
             return bie;
-        } else
-            return parser.bi;
+        } else {
+            if(parser.bi.size()>0)
+                return parser.bi;   // just annotation. no meaningful customization
+            else
+                return null;
+        }
     }
 }
 
