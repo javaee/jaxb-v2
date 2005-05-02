@@ -27,6 +27,7 @@ import com.sun.tools.xjc.util.ErrorReceiverFilter;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.xsom.XSSchemaSet;
+import com.sun.xml.xsom.parser.JAXPParser;
 import com.sun.xml.xsom.parser.XMLParser;
 import com.sun.xml.xsom.parser.XSOMParser;
 
@@ -42,6 +43,7 @@ import org.kohsuke.rngom.xml.sax.XMLReaderCreator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
@@ -212,7 +214,6 @@ public final class ModelLoader {
         private final XMLParser forestParser;
         
         private XMLSchemaForestParser(DOMForest forest) {
-            super();
             forestParser = forest.createParser();
         }
         
@@ -304,19 +305,27 @@ public final class ModelLoader {
     /**
      * Parses a set of XML Schema files into an annotated grammar.
      */
-    private XSSchemaSet loadXMLSchema()
-        throws SAXException, IOException {
+    private XSSchemaSet loadXMLSchema() throws SAXException, IOException {
         
         if( opt.strictCheck && !SchemaConstraintChecker.check(opt.getGrammars(),errorReceiver,opt.entityResolver)) {
             // schema error. error should have been reported
             return null;
         }
 
-        DOMForest forest = buildDOMForest( new XMLSchemaInternalizationLogic() );
-        
-        // load XML Schema from DOMForest instead of loading from its original source.
-        // so that we can take external annotations into account.
+        if(opt.getBindFiles().length==0) {
+            // no external binding. try the speculative no DOMForest execution,
+            // which is faster if the speculation succeeds.
+            try {
+                return createXSOMSpeculative();
+            } catch( SpeculationFailure _ ) {
+                // failed. go the slow way
+                ;
+            }
+        }
 
+        // the default slower way is to parse everything into DOM first.
+        // so that we can take external annotations into account.
+        DOMForest forest = buildDOMForest( new XMLSchemaInternalizationLogic() );
         return createXSOM(forest);
     }
     
@@ -362,16 +371,72 @@ public final class ModelLoader {
         TODO.prototype("disabling XML Schema support");
         return BGMBuilder.build(xs, codeModel, errorReceiver, opt);
     }
-    
-    public XSOMParser createXSOMParser(DOMForest forest) {
+
+    public XSOMParser createXSOMParser(XMLParser parser) {
         // set up other parameters to XSOMParser
-        XSOMParser reader = new XSOMParser(new XMLSchemaForestParser(forest));
+        XSOMParser reader = new XSOMParser(parser);
         reader.setAnnotationParser(new AnnotationParserFactoryImpl(codeModel,opt));
         reader.setErrorHandler(errorReceiver);
-        
         return reader;
     }
-    
+
+    public XSOMParser createXSOMParser(DOMForest forest) {
+        return createXSOMParser(new XMLSchemaForestParser(forest));
+    }
+
+
+    private static final class SpeculationFailure extends Error {}
+
+    /**
+     * Parses schemas directly into XSOM by assuming that there's
+     * no external annotations.
+     * <p>
+     * When an external annotation is found, a {@link SpeculationFailure} is thrown,
+     * and we will do it all over again by using the slow way.
+     */
+    private XSSchemaSet createXSOMSpeculative() throws SAXException, SpeculationFailure {
+
+        // check if the schema contains external binding files. If so, speculation is a failure.
+        class SpeculationChecker extends XMLFilterImpl {
+            public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+                if(localName.equals("bindings") && uri.equals(Const.JAXB_NSURI))
+                    throw new SpeculationFailure();
+                super.startElement(uri,localName,qName,attributes);
+            }
+        }
+
+        XMLParser parser = new XMLParser() {
+            private final JAXPParser base = new JAXPParser();
+
+            public void parse(InputSource source, ContentHandler handler,
+                ErrorHandler errorHandler, EntityResolver entityResolver ) throws SAXException, IOException {
+                // set up the chain of handlers.
+                handler = wrapBy( new SpeculationChecker(), handler );
+
+                base.parse( source, handler, errorHandler, entityResolver );
+            }
+            /**
+             * Wraps the specified content handler by a filter.
+             * It is little awkward to use a helper implementation class like XMLFilterImpl
+             * as the method parameter, but this simplifies the code.
+             */
+            private ContentHandler wrapBy( XMLFilterImpl filter, ContentHandler handler ) {
+                filter.setContentHandler(handler);
+                return filter;
+            }
+        };
+
+        XSOMParser reader = new XSOMParser(parser);
+        reader.setAnnotationParser(new AnnotationParserFactoryImpl(codeModel,opt));
+        reader.setErrorHandler(errorReceiver);
+
+        // parse source grammars
+        for (InputSource value : opt.getGrammars())
+            reader.parse(value);
+
+        return reader.getResult();
+    }
+
     /**
      * Parses a {@link DOMForest} into a {@link XSSchemaSet}.
      */
