@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: AbstractUnmarshallingEventHandlerImpl.java,v 1.2 2005-04-20 19:03:13 kohsuke Exp $
+ * @(#)$Id: AbstractUnmarshallingEventHandlerImpl.java,v 1.3 2005-05-02 17:41:57 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -155,9 +155,9 @@ public abstract class AbstractUnmarshallingEventHandlerImpl implements Unmarshal
                 child = context.createInstance(beanInfo);
 
             if(!asElement)
-                // outer peer is recorded inside the getUnmarshaller invocation
-                // so that we can correctly mark the asElement element.
                 context.recordInnerPeer(child);
+            else
+                context.recordOuterPeer(child);
         }
 
         UnmarshallingEventHandler handler = beanInfo.getUnmarshaller(asElement);
