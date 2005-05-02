@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: UnmarshallerImpl.java,v 1.8 2005-04-30 00:19:11 kohsuke Exp $
+ * @(#)$Id: UnmarshallerImpl.java,v 1.9 2005-05-02 17:25:39 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -14,10 +14,10 @@ import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.PropertyException;
+import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.UnmarshallerHandler;
 import javax.xml.bind.ValidationEventHandler;
-import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.attachment.AttachmentUnmarshaller;
 import javax.xml.bind.helpers.AbstractUnmarshallerImpl;
@@ -33,7 +33,6 @@ import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
 import com.sun.xml.bind.unmarshaller.Messages;
 import com.sun.xml.bind.v2.AssociationMap;
-import com.sun.xml.bind.v2.runtime.BinderImpl;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 import com.sun.xml.bind.v2.stax.XMLEventReaderToContentHandler;
@@ -61,12 +60,6 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl
 {
     /** Owning {@link JAXBContext} */
     protected final JAXBContextImpl context;
-    
-    /**
-     * null if we are doing normal unmarshalling, but non-null
-     * if this is being used by {@link BinderImpl}.
-     */
-    private final AssociationMap assoc;
 
     /**
      * schema which will be used to validate during calls to unmarshal
@@ -94,9 +87,7 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl
      */
     private AttachmentUnmarshaller attachmentUnmarshaller;
 
-    public UnmarshallerImpl( JAXBContextImpl context, AssociationMap _assoc ) {
-        
-        this.assoc = _assoc;
+    public UnmarshallerImpl( JAXBContextImpl context, AssociationMap assoc ) {
         this.context = context;
         this.coordinator = new UnmarshallingContext( this, assoc );
 
