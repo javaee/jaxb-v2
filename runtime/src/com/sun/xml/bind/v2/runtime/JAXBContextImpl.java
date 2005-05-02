@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.8 2005-04-29 21:20:20 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.9 2005-05-02 17:42:19 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -22,23 +22,22 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBIntrospector;
 import javax.xml.bind.PropertyException;
 import javax.xml.bind.Validator;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.bind.annotation.XmlList;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.Result;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
 
 import com.sun.xml.bind.annotation.Binder;
-import javax.xml.bind.annotation.XmlList;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.Bridge;
 import com.sun.xml.bind.api.BridgeContext;
@@ -81,7 +80,7 @@ import org.xml.sax.SAXException;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -475,6 +474,8 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
         if(child==null)
             child = context.createInstance(beanInfo);
+
+        context.recordOuterPeer(child);
 
         UnmarshallingEventHandler u = beanInfo.getUnmarshaller(true);
         context.pushContentHandler(u, child, beanInfo.implementsLifecycle());
