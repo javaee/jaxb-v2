@@ -152,7 +152,8 @@
             windowtitle="JAXB RI runtime">
             <fileset dir="${runtime.src}" includes="**/*.java"/>
             <fileset dir="${runtime-api.src}" includes="**/*.java"/>
-            <classpath refid="javac.classpath" />
+            <classpath refid="javac.classpath"/>
+            <arg value="-quiet"/>
         </javadoc>
         <!-- javadoc should copy those files, but it doesn't seem to do that -->
         <copy todir="${runtime.root}/build/api">
