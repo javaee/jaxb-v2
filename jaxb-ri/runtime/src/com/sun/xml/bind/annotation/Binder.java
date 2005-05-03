@@ -159,18 +159,6 @@ public abstract class Binder<XmlNode> {
      * its associated JAXB object and its descendants.
      *
      * <p>
-     * This is a convenience method of:
-     * <pre>
-     * updateJava( xmlNode, getJavaNode(xmlNode) );
-     * </pre>
-     */
-    public abstract Object updateJava( XmlNode xmlNode ) throws JAXBException;
-
-    /**
-     * Takes an XML tree and updates
-     * its associated JAXB object and its descendants.
-     *
-     * <p>
      * This operation can be thought of as an "in-place" unmarshalling.
      * The difference is that instead of creating a whole new JAXB tree,
      * this operation updates an existing tree, reusing as much JAXB objects
@@ -182,11 +170,14 @@ public abstract class Binder<XmlNode> {
      *
      * @return
      *      Returns the updated JAXB object. Typically, this is the same
-     *      object you passed in as <i>jaxbObject</i>, but it maybe
+     *      object that was returned from earlier
+     *      {@link #bindFromXml(Object)} or
+     *      {@link #updateJava(Object)} method invocation,
+     *      but it maybe
      *      a different object, for example when the name of the XML
      *      element has changed.
      */
-    public abstract Object updateJava( XmlNode xmlNode, Object jaxbObject ) throws JAXBException;
+    public abstract Object updateJava( XmlNode xmlNode ) throws JAXBException;
 
 
     /**
