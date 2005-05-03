@@ -19,11 +19,9 @@ import javax.xml.bind.MarshalException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import javax.xml.bind.helpers.AbstractMarshallerImpl;
 import javax.xml.bind.attachment.AttachmentMarshaller;
+import javax.xml.bind.helpers.AbstractMarshallerImpl;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -86,11 +84,6 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
 
     protected final XMLSerializer serializer;
 
-    /**
-     * Lazily created DOM factory.
-     */
-    private DocumentBuilder domFactory;
-
     public MarshallerImpl( JAXBContextImpl c ) {
         // initialize datatype converter with ours
         DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
@@ -120,13 +113,9 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
             final Node node = ((DOMResult) result).getNode();
 
             if (node == null) {
-                try {
-                    Document doc = createDocument();
-                    ((DOMResult) result).setNode(doc);
-                    write(target, new SAXOutput(new SAX2DOMEx(doc)), null );
-                } catch (ParserConfigurationException pce) {
-                    throw new AssertionError(pce);
-                }
+                Document doc = JAXBContextImpl.createDom();
+                ((DOMResult) result).setNode(doc);
+                write(target, new SAXOutput(new SAX2DOMEx(doc)), null );
             } else {
                 write(target, new SAXOutput(new SAX2DOMEx(node)), new DomPostInitAction(node,serializer));
             }
@@ -168,15 +157,6 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         // unsupported parameter type
         throw new MarshalException( 
             Messages.format( Messages.UNSUPPORTED_RESULT ) );
-    }
-
-    private Document createDocument() throws ParserConfigurationException {
-        if(domFactory==null) {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(true);
-            domFactory = dbf.newDocumentBuilder();
-        }
-        return domFactory.newDocument();
     }
 
     /**
