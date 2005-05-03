@@ -109,7 +109,17 @@
       <mkdir dir="${runtime.root}/build/src"/>
       <apgen destdir="${runtime.root}/build/src"
         package="com.sun.xml.bind.v2.model.annotation">
-        <classes includes="javax.xml.bind.annotation.*" />
+        <classes includes="javax.xml.bind.annotation.XmlAttribute" />
+        <classes includes="javax.xml.bind.annotation.XmlElement" />
+        <classes includes="javax.xml.bind.annotation.XmlElementDecl" />
+        <classes includes="javax.xml.bind.annotation.XmlElementRef" />
+        <classes includes="javax.xml.bind.annotation.XmlElementRefs" />
+        <classes includes="javax.xml.bind.annotation.XmlEnum" />
+        <classes includes="javax.xml.bind.annotation.XmlRootElement" />
+        <classes includes="javax.xml.bind.annotation.XmlSchema" />
+        <classes includes="javax.xml.bind.annotation.XmlTransient" />
+        <classes includes="javax.xml.bind.annotation.XmlType" />
+        <classes includes="javax.xml.bind.annotation.XmlValue" />
         <classpath>
           <pathelement path="${jaxb.libs.redist}/jaxb-api.jar"/>
         </classpath>
