@@ -5,6 +5,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEventHandler;
+import javax.xml.validation.Schema;
 
 import org.w3c.dom.Node;
 
@@ -57,18 +58,6 @@ public abstract class Binder<XmlNode> {
      *      specified when creating a {@link Binder} instance.
      */
     public abstract void bindFromJava( Object jaxbObject, XmlNode xmlNode ) throws JAXBException;
-
-    /**
-     * Takes an JAXB object and binds it
-     * (and its descendants) to a new XML document.
-     *
-     * <p>
-     * Instead of adding the new child at the end of the parent node
-     * (as in {@link #bindFromJava(Object, Object)}, this operation
-     * adds the new child so that it will become the <i>n</i>-th child
-     * among the children of <i>xmlNode</i>.
-     */
-    public abstract void bindFromJava( Object jaxbObject, XmlNode xmlNode, int n ) throws JAXBException;
 
     /**
      * Gets the XML element associated with the given JAXB object.
@@ -181,41 +170,22 @@ public abstract class Binder<XmlNode> {
 
 
     /**
-     * Specifies whether or not the default validation mechanism of the
-     * <tt>Unmarshaller</tt> should validate during unmarshal operations.
-     * By default, the <tt>Unmarshaller</tt> does not validate.
-     * <p>
-     * This method may only be invoked before or after calling one of the
-     * unmarshal methods.
-     * <p>
-     * This method only controls the JAXB Provider's default unmarshal-time
-     * validation mechanism - it has no impact on clients that specify their
-     * own validating SAX 2.0 compliant parser.  Clients that specify their
-     * own unmarshal-time validation mechanism may wish to turn off the JAXB
-     * Provider's default validation mechanism via this API to avoid "double
-     * validation".
+     * Specifies whether or not the {@link #bindFromXml(Object)} and
+     * {@link #updateJava(XmlNode)} performs validation on the input XML.
      *
-     * @param validating true if the Unmarshaller should validate during
-     *        unmarshal, false otherwise
+     * @param set null if you don't want validation.
      * @throws JAXBException if an error occurred while enabling or disabling
-               validation at unmarshal time
+     *         validation at unmarshal time
+     *
+     * @see Unmarshaller#setSchema(Schema)
      */
-    public abstract void setValidating( boolean validating ) throws JAXBException;
+    public abstract void setSchema( Schema schema ) throws JAXBException;
 
     /**
-     * Indicates whether or not the <tt>Unmarshaller</tt> is configured to
-     * validate during unmarshal operations.
-     *
-     * <p>
-     * This API returns the state of the JAXB Provider's default unmarshal-time
-     * validation mechanism.
-     *
-     * @return true if the Unmarshaller is configured to validate during
-     *         unmarshal operations, false otherwise
-     * @throws JAXBException if an error occurs while retrieving the validating
-     *         flag
+     * Gets the last {@link Schema} object (including null) set by the
+     * {@link #setSchema(Schema)} method.
      */
-    public abstract boolean isValidating() throws JAXBException;
+    public abstract Schema getSchema() throws JAXBException;
 
     /**
      * Allow an application to register a <tt>ValidationEventHandler</tt>.

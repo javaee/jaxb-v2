@@ -92,7 +92,10 @@ public final class XMLSerializer extends Coordinator implements ValidationEventH
     public final JAXBContextImpl grammar;
 
     /** Object currently marshalling itself. */
-    private Object currentTarget;
+    public Object currentTarget;
+
+    /** The outer peer for the current element. */
+    public Object currentOuterPeer;
 
     /** The XML printer. */
     private XmlOutput out;
@@ -220,12 +223,14 @@ public final class XMLSerializer extends Coordinator implements ValidationEventH
     public void startElement(Name tagName, Object outerPeer) {
         startElement();
         nse.setTagName(tagName);
+        this.currentOuterPeer = outerPeer;
     }
 
     public void startElement(String nsUri, String localName, String preferredPrefix, Object outerPeer) {
         startElement();
         int idx = nsContext.declareNsUri(nsUri, preferredPrefix, false);
         nse.setTagName(idx,localName);
+        this.currentOuterPeer = outerPeer;
     }
 
     public void endNamespaceDecls() throws IOException, XMLStreamException {
@@ -661,6 +666,7 @@ public final class XMLSerializer extends Coordinator implements ValidationEventH
 
     public void endDocument() throws IOException, SAXException, XMLStreamException {
         out.endDocument(fragment);
+        currentOuterPeer = currentTarget = null; // avoid memory leak
     }
 
     public void close() {
