@@ -208,6 +208,30 @@ public class UTF8XmlOutput extends XmlOutput {
         textBuffer.write(out);
     }
 
+    @Override
+    public void text(int value) throws IOException, SAXException, XMLStreamException {
+        if(value==0) {
+            out.write((byte)'0');
+        } else {
+            // max is -2147483648 and 11 digits
+            boolean minus = (value<0);
+            textBuffer.ensureSize(11);
+            byte[] buf = textBuffer.buf;
+            int idx = 11;
+
+            do {
+                int r = value%10;
+                if(r<0) r = -r;
+                buf[--idx] = (byte)('0'|r);    // really measn 0x30+r but 0<=r<10, so bit-OR would do.
+                value /= 10;
+            } while(value!=0);
+
+            if(minus)   buf[--idx] = (byte)'-';
+
+            out.write(buf,idx,11-idx);
+        }
+    }
+
     public void flush() throws IOException {
         out.flush();
     }

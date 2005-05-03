@@ -88,6 +88,10 @@ public final class MTOMXmlOutput extends XmlOutput {
         next.text(buf, len);
     }
 
+    public void text(int value) throws IOException, SAXException, XMLStreamException {
+        next.text(value);
+    }
+
     public void flush() throws IOException, XMLStreamException {
         next.flush();
     }
