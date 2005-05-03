@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: BinderImpl.java,v 1.2 2005-04-30 00:19:11 kohsuke Exp $
+ * @(#)$Id: BinderImpl.java,v 1.3 2005-05-03 00:20:00 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -76,11 +76,6 @@ public class BinderImpl<XmlNode> extends Binder<XmlNode> {
     }
 
     public Object updateJava(XmlNode xmlNode) throws JAXBException {
-        return associativeUnmarshal(xmlNode,true);
-    }
-
-    public Object updateJava(XmlNode xmlNode, Object jaxbObject) throws JAXBException {
-        assoc.addOuter(xmlNode,jaxbObject); // ... so that this bean will be used to unmarshal this element.
         return associativeUnmarshal(xmlNode,true);
     }
 
