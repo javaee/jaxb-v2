@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 
+import com.sun.tools.jxc.gen.xmlschema.Any;
 import com.sun.tools.jxc.gen.xmlschema.AttrDecls;
 import com.sun.tools.jxc.gen.xmlschema.ComplexExtension;
 import com.sun.tools.jxc.gen.xmlschema.ComplexType;
@@ -52,6 +53,7 @@ import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.core.ValuePropertyInfo;
+import com.sun.xml.bind.v2.model.core.WildcardMode;
 import com.sun.xml.bind.v2.runtime.SchemaGenerator;
 import com.sun.xml.txw2.TXW;
 import com.sun.xml.txw2.TxwException;
@@ -802,12 +804,37 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             }
 
             if (rp.isCollection()) {
+                WildcardMode wc = rp.getWildcard();
+                if( wc != null ) {
+                    Any any = compositor.any();
+                    final String pcmode = getProcessContentsModeName(wc);
+                    if( pcmode != null ) any.processContents(pcmode);
+                    if( occurs == null ) occurs = any;
+                }
+
                 occurs.maxOccurs("unbounded");
             } // else maxOccurs defaults to 1
         }
     }
 
 
+    /**
+     * return the string representation of the processContents mode of the
+     * give wildcard, or null if it is the schema default "strict"
+     *
+     */
+    private static String getProcessContentsModeName(WildcardMode wc) {
+        switch(wc) {
+        case LAX:
+            return WildcardMode.LAX.name().toLowerCase();
+        case SKIP:
+            return WildcardMode.SKIP.name().toLowerCase();
+        case STRICT:
+            return null;
+        default:
+            throw new IllegalStateException();
+        }
+    }
 
 
     /**
