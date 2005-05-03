@@ -21,7 +21,6 @@ import javax.xml.bind.PropertyException;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.attachment.AttachmentMarshaller;
 import javax.xml.bind.helpers.AbstractMarshallerImpl;
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -47,6 +46,7 @@ import com.sun.xml.bind.v2.runtime.output.UTF8XmlOutput;
 import com.sun.xml.bind.v2.runtime.output.XMLEventWriterOutput;
 import com.sun.xml.bind.v2.runtime.output.XMLStreamWriterOutput;
 import com.sun.xml.bind.v2.runtime.output.XmlOutput;
+import com.sun.xml.bind.v2.AssociationMap;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -84,11 +84,18 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
 
     protected final XMLSerializer serializer;
 
-    public MarshallerImpl( JAXBContextImpl c ) {
+    private final AssociationMap assoc;
+
+    /**
+     * @param assoc
+     *      non-null if the marshaller is working inside {@link BinderImpl}.
+     */
+    public MarshallerImpl( JAXBContextImpl c, AssociationMap assoc ) {
         // initialize datatype converter with ours
         DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
         
         context = c;
+        this.assoc = assoc;
         serializer = new XMLSerializer(this);
     }
 

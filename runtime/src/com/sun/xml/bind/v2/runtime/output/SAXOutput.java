@@ -17,7 +17,7 @@ import org.xml.sax.helpers.LocatorImpl;
  * @author Kohsuke Kawaguchi
  */
 public class SAXOutput extends XmlOutput {
-    private final ContentHandler out;
+    protected final ContentHandler out;
 
     public SAXOutput(ContentHandler out) {
         this.out = out;
@@ -45,14 +45,14 @@ public class SAXOutput extends XmlOutput {
         super.endDocument(fragment);
     }
 
-    public void beginStartTag(int prefix, String localName) throws IOException {
+    public void beginStartTag(int prefix, String localName) {
         elementNsUri = nsContext.getNamespaceURI(prefix);
         elementLocalName = localName;
         elementQName = getQName(prefix,localName);
         atts.clear();
     }
 
-    public void attribute(int prefix, String localName, String value) throws IOException {
+    public void attribute(int prefix, String localName, String value) {
         String qname;
         String nsUri;
         if(prefix==-1) {
@@ -65,7 +65,7 @@ public class SAXOutput extends XmlOutput {
         atts.addAttribute( nsUri, localName, qname, "CDATA", value );
     }
 
-    public void endStartTag() throws IOException, SAXException {
+    public void endStartTag() throws SAXException {
         NamespaceContextImpl.Element ns = nsContext.getCurrent();
         if(ns!=null) {
             int sz = ns.count();
@@ -80,7 +80,7 @@ public class SAXOutput extends XmlOutput {
         out.startElement(elementNsUri,elementLocalName,elementQName,atts);
     }
 
-    public void endTag(int prefix, String localName) throws IOException, SAXException {
+    public void endTag(int prefix, String localName) throws SAXException {
         out.endElement(
             nsContext.getNamespaceURI(prefix),
             localName,
@@ -110,7 +110,7 @@ public class SAXOutput extends XmlOutput {
         return qname;
     }
 
-    public void text(CharSequence value, boolean needsSP) throws IOException, SAXException {
+    public void text(CharSequence value, boolean needsSP) throws SAXException {
         int vlen = value.length();
         if(buf.length<=vlen) {
             buf = new char[Math.max(buf.length*2,vlen+1)];
@@ -124,7 +124,7 @@ public class SAXOutput extends XmlOutput {
         out.characters(buf,0,vlen+(needsSP?1:0));
     }
 
-    public void text(char[] buf, int len) throws IOException, SAXException {
+    public void text(char[] buf, int len) throws SAXException {
         out.characters(buf,0,len);
     }
 }

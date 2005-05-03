@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: BinderImpl.java,v 1.3 2005-05-03 00:20:00 kohsuke Exp $
+ * @(#)$Id: BinderImpl.java,v 1.4 2005-05-03 22:31:41 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -11,6 +11,7 @@ package com.sun.xml.bind.v2.runtime;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.ValidationEventHandler;
+import javax.xml.validation.Schema;
 
 import com.sun.xml.bind.annotation.Binder;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
@@ -18,8 +19,10 @@ import com.sun.xml.bind.v2.AssociationMap;
 import com.sun.xml.bind.v2.runtime.unmarshaller.InterningXmlVisitor;
 import com.sun.xml.bind.v2.runtime.unmarshaller.SAXConnector;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
+import com.sun.xml.bind.v2.runtime.output.DOMOutput;
 
 import org.xml.sax.SAXException;
+import org.w3c.dom.Node;
 
 /**
  * Implementation of {@link Binder}.
@@ -39,11 +42,17 @@ public class BinderImpl<XmlNode> extends Binder<XmlNode> {
     private final JAXBContextImpl context;
     
     /**
-     * Lazily created unmarshaller to
-     * do XML->Java binding.
+     * Lazily created unmarshaller to do XML->Java binding.
+     * @see #getUnmarshaller()
      */
     private UnmarshallerImpl unmarshaller;
-    
+
+    /**
+     * Lazily create marshaller to do Java->XML binding.
+     * @see #getMarshaller()
+     */
+    private MarshallerImpl marshaller;
+
     private final InfosetScanner<XmlNode> scanner;
     
     /**
@@ -59,24 +68,40 @@ public class BinderImpl<XmlNode> extends Binder<XmlNode> {
     
     private UnmarshallerImpl getUnmarshaller() {
         if(unmarshaller==null)
-            unmarshaller = new UnmarshallerImpl( context, assoc );
+            unmarshaller = new UnmarshallerImpl(context,assoc);
         return unmarshaller;
     }
 
-    public void bindFromJava(Object jaxbObject, XmlNode xmlNode) throws JAXBException {
-        throw new UnsupportedOperationException();
+    private MarshallerImpl getMarshaller() {
+        if(marshaller==null)
+            marshaller = new MarshallerImpl(context,assoc);
+        return marshaller;
     }
 
-    public void bindFromJava(Object jaxbObject, XmlNode xmlNode, int n) throws JAXBException {
-        throw new UnsupportedOperationException();
+    public void bindFromJava(Object jaxbObject, XmlNode xmlNode) throws JAXBException {
+        getMarshaller().marshal(jaxbObject,createOutput(xmlNode));
     }
-    
+
+    // TODO move this to a sub class once we support something other than W3C DOM
+    private DOMOutput createOutput(XmlNode xmlNode) {
+        return new DOMOutput((Node)xmlNode,assoc);
+    }
+
+
     public Object bindFromXml( XmlNode xmlNode ) throws JAXBException {
         return associativeUnmarshal(xmlNode,false);
     }
 
     public Object updateJava(XmlNode xmlNode) throws JAXBException {
         return associativeUnmarshal(xmlNode,true);
+    }
+
+    public void setSchema(Schema schema) throws JAXBException {
+        getUnmarshaller().setSchema(schema);
+    }
+
+    public Schema getSchema() throws JAXBException {
+        return getUnmarshaller().getSchema();
     }
 
     private Object associativeUnmarshal(XmlNode xmlNode, boolean inplace) throws JAXBException {
@@ -114,16 +139,9 @@ public class BinderImpl<XmlNode> extends Binder<XmlNode> {
         throw new UnsupportedOperationException();
     }
 
-    public void setValidating(boolean validating) throws JAXBException {
-        getUnmarshaller().setValidating(true);
-    }
-
-    public boolean isValidating() throws JAXBException {
-        return getUnmarshaller().isValidating();
-    }
-
     public void setEventHandler(ValidationEventHandler handler) throws JAXBException {
         getUnmarshaller().setEventHandler(handler);
+        getMarshaller().setEventHandler(handler);
     }
 
     public ValidationEventHandler getEventHandler() {
