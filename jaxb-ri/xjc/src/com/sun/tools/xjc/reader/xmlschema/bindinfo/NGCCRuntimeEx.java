@@ -4,16 +4,14 @@
  */
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
-import java.util.StringTokenizer;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JType;
 import com.sun.tools.xjc.Options;
-import com.sun.tools.xjc.Plugin;
 import com.sun.tools.xjc.reader.TypeUtil;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.parser.NGCCRuntime;
 
@@ -44,15 +42,14 @@ public final class NGCCRuntimeEx extends NGCCRuntime {
     /**
      * Set of URIs that plug-ins recognize as extension bindings.
      */
-    private final Set<String> pluginURIs = new HashSet<String>();
+    private final Set<String> pluginURIs;
 
     public NGCCRuntimeEx( JCodeModel _codeModel, Options opts, ErrorHandler _errorHandler ) {
         this.codeModel=_codeModel;
         this.options = opts;
         this.errorHandler = _errorHandler;
 
-        for (Plugin plugin : options.activePlugins)
-            pluginURIs.addAll(plugin.getCustomizationURIs());
+        pluginURIs = options.pluginURIs;
     }
 
     public boolean isExtensionURI(String uri) {

@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import com.sun.tools.xjc.Options;
-import com.sun.tools.xjc.Plugin;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -89,11 +88,6 @@ public class ExtensionBindingChecker extends XMLFilterImpl {
     private final Options options;
 
     /**
-     * Lazily created set of URIs that plug-ins recognize as extension bindings.
-     */
-    private Set<String> pluginURIs;
-
-    /**
      * @param handler
      *      This error handler will receive detected errors.
      */
@@ -111,12 +105,7 @@ public class ExtensionBindingChecker extends XMLFilterImpl {
     protected boolean isSupportedExtension( String namespaceUri ) {
         if(namespaceUri.equals(Const.XJC_EXTENSION_URI))
             return true;
-        if(pluginURIs==null) {
-            pluginURIs = new HashSet<String>();
-            for (Plugin plugin : options.activePlugins)
-                pluginURIs.addAll(plugin.getCustomizationURIs());
-        }
-        return pluginURIs.contains(namespaceUri);
+        return options.pluginURIs.contains(namespaceUri);
     }
 
     /**

@@ -15,6 +15,8 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 import com.sun.tools.xjc.api.ClassNameAllocator;
 import com.sun.tools.xjc.reader.Util;
@@ -138,6 +140,11 @@ public class Options
      * All discovered {@link Plugin}s.
      */
     public static final List<Plugin> allPlugins = new ArrayList<Plugin>();
+
+    /**
+     * Set of URIs that plug-ins recognize as extension bindings.
+     */
+    public final Set<String> pluginURIs = new HashSet<String>();
 
     /**
      * This allocator has the final say on deciding the class name.
@@ -374,6 +381,7 @@ public class Options
         for( Plugin aug : allPlugins ) {
             if( ('-'+aug.getOptionName()).equals(args[i]) ) {
                 activePlugins.add(aug);
+                pluginURIs.addAll(aug.getCustomizationURIs());
                 return 1;
             }
                     
