@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.9 2005-05-02 17:42:19 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.10 2005-05-03 17:57:44 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -27,8 +27,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -80,7 +80,7 @@ import org.xml.sax.SAXException;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -93,24 +93,15 @@ public final class JAXBContextImpl extends JAXBRIContext {
      * Shared instance of {@link TransformerFactory}.
      * Lock before use, because a {@link TransformerFactory} is not thread-safe
      * whereas {@link JAXBContextImpl} is.
+     * Lazily created.
      */
-    private static final SAXTransformerFactory tf = (SAXTransformerFactory)TransformerFactory.newInstance();
+    private static SAXTransformerFactory tf;
 
     /**
      * Shared instance of {@link DocumentBuilder}.
-     * Lock before use.
+     * Lock before use. Lazily created.
      */
-    private static final DocumentBuilder db;
-    static {
-        try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(true);
-            db = dbf.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            // impossible
-            throw new FactoryConfigurationError(e);
-        }
-    }
+    private static DocumentBuilder db;
 
     private final Map<QName,JaxBeanInfo> rootMap = new LinkedHashMap<QName,JaxBeanInfo>();
     private final Map<QName,JaxBeanInfo> typeMap = new LinkedHashMap<QName,JaxBeanInfo>();
@@ -526,7 +517,9 @@ public final class JAXBContextImpl extends JAXBRIContext {
      */
     static Transformer createTransformer() {
         try {
-            synchronized(tf) {
+            synchronized(JAXBContextImpl.class) {
+                if(tf==null)
+                    tf = (SAXTransformerFactory)TransformerFactory.newInstance();
                 return tf.newTransformer();
             }
         } catch (TransformerConfigurationException e) {
@@ -539,7 +532,9 @@ public final class JAXBContextImpl extends JAXBRIContext {
      */
     public static TransformerHandler createTransformerHandler() {
         try {
-            synchronized(tf) {
+            synchronized(JAXBContextImpl.class) {
+                if(tf==null)
+                    tf = (SAXTransformerFactory)TransformerFactory.newInstance();
                 return tf.newTransformerHandler();
             }
         } catch (TransformerConfigurationException e) {
@@ -551,7 +546,17 @@ public final class JAXBContextImpl extends JAXBRIContext {
      * Creates a new DOM document.
      */
     static Document createDom() {
-        synchronized(db) {
+        synchronized(JAXBContextImpl.class) {
+            if(db==null) {
+                try {
+                    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                    dbf.setNamespaceAware(true);
+                    db = dbf.newDocumentBuilder();
+                } catch (ParserConfigurationException e) {
+                    // impossible
+                    throw new FactoryConfigurationError(e);
+                }
+            }
             return db.newDocument();
         }
     }
