@@ -36,7 +36,7 @@ final class AnnotationParserImpl extends AnnotationParser {
     private AnnotationState parser = null;
     private final JCodeModel codeModel;
     private final Options options;
-    private final ValidatorHandler validator;
+    /*package*/ final ValidatorHandler validator;
 
     public ContentHandler getContentHandler(
         AnnotationContext context, String parentElementName,
