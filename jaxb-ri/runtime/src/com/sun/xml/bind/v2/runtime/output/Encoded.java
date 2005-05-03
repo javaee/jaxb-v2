@@ -21,7 +21,7 @@ public final class Encoded {
         set(text);
     }
 
-    private void ensureSize(int size) {
+    public void ensureSize(int size) {
         if(buf==null || buf.length<size)
             buf = new byte[size];
     }

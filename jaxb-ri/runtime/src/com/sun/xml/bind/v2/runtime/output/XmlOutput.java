@@ -156,6 +156,9 @@ public abstract class XmlOutput {
      */
     public abstract void text( CharSequence value, boolean needsSeparatingWhitespace ) throws IOException, SAXException, XMLStreamException;
     public abstract void text( char[] buf, int len ) throws IOException, SAXException, XMLStreamException;
+    public void text( int value ) throws IOException, SAXException, XMLStreamException {
+        text(Integer.toString(value),false);
+    }
 
     /**
      * Flush the output.

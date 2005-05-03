@@ -3,7 +3,11 @@ package com.sun.xml.bind.v2.runtime.output;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import javax.xml.stream.XMLStreamException;
+
 import com.sun.xml.bind.v2.runtime.Name;
+
+import org.xml.sax.SAXException;
 
 /**
  * {@link UTF8XmlOutput} with indentation.
@@ -94,5 +98,11 @@ public class IndentingUTF8XmlOutput extends UTF8XmlOutput {
     public void text(char[] buf, int len) throws IOException {
         seenText = true;
         super.text(buf, len);
+    }
+
+    @Override
+    public void text(int value) throws IOException, SAXException, XMLStreamException {
+        seenText = true;
+        super.text(value);
     }
 }

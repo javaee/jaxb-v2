@@ -1,7 +1,16 @@
 package com.sun.xml.bind.v2.runtime.reflect.opt;
 
+import java.io.IOException;
+
+import javax.xml.stream.XMLStreamException;
+
 import com.sun.xml.bind.DatatypeConverterImpl;
+import com.sun.xml.bind.api.AccessorException;
+import com.sun.xml.bind.v2.runtime.Name;
+import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
+
+import org.xml.sax.SAXException;
 
 /**
  * Template {@link TransducedAccessor} for a byte field.
@@ -25,8 +34,9 @@ public final class TransducedAccessor_method_Integer extends TransducedAccessor 
     public boolean hasValue(Object o) {
         return true;
     }
-//
-//    public void writeLeafElement(Object o, QName tagName, String fieldName, XMLSerializer w) throws SAXException, AccessorException {
-//        w.leafElement(tagName, ((Bean)o).get_int(), fieldName );
-//    }
+
+    @Override
+    public void writeLeafElement(Object o, Name tagName, String fieldName, XMLSerializer w) throws SAXException, AccessorException, IOException, XMLStreamException {
+        w.leafElement(tagName, ((Bean)o).get_int(), fieldName );
+    }
 }

@@ -37,6 +37,7 @@ import com.sun.xml.bind.v2.runtime.output.MTOMXmlOutput;
 import com.sun.xml.bind.v2.runtime.output.NamespaceContextImpl;
 import com.sun.xml.bind.v2.runtime.output.XmlOutput;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Base64Data;
+import com.sun.xml.bind.DatatypeConverterImpl;
 
 import org.xml.sax.SAXException;
 
@@ -271,16 +272,25 @@ public final class XMLSerializer extends Coordinator implements ValidationEventH
             out.endTag(tagName);
             nse = nse.pop();
         } else {
-            // root elements have additional work, so we have to take the slow way
-            startElement(tagName,null);
-            endNamespaceDecls();
-            endAttributes();
-            out.text(data,false);
-            endElement();
+            leafElementSlow(tagName, data);
         }
     }
 
-    // TODO: consider these in future if we expand the writer to use something other than SAX
+    public void leafElement( Name tagName, int data, String fieldName ) throws SAXException, IOException, XMLStreamException {
+        if(seenRoot) {
+            textHasAlreadyPrinted = false;
+            nse = nse.push();
+            out.beginStartTag(tagName);
+            out.endStartTag();
+            out.text(data);
+            out.endTag(tagName);
+            nse = nse.pop();
+        } else {
+            leafElementSlow(tagName,DatatypeConverterImpl._printInt(data));
+        }
+    }
+
+    // TODO: consider some of these in future if we expand the writer to use something other than SAX
 //    void leafElement( QName tagName, byte value, String fieldName ) throws SAXException;
 //    void leafElement( QName tagName, char value, String fieldName ) throws SAXException;
 //    void leafElement( QName tagName, short value, String fieldName ) throws SAXException;
@@ -289,6 +299,18 @@ public final class XMLSerializer extends Coordinator implements ValidationEventH
 //    void leafElement( QName tagName, float value, String fieldName ) throws SAXException;
 //    void leafElement( QName tagName, double value, String fieldName ) throws SAXException;
 //    void leafElement( QName tagName, boolean value, String fieldName ) throws SAXException;
+
+    /**
+     * Root elements have additional work (such as producing xsi:schemaLocation or declaring namespaces),
+     * so we have to take the slow way.
+     */
+    private void leafElementSlow(Name tagName, CharSequence data) throws IOException, XMLStreamException, SAXException {
+        startElement(tagName,null);
+        endNamespaceDecls();
+        endAttributes();
+        out.text(data,false);
+        endElement();
+    }
 
 
     /**
