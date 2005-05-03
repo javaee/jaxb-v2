@@ -48,4 +48,4 @@ else
     JAVA=java
 fi
 
-exec "$JAVA" $XJC_OPTS -jar "$JAXB_HOME/jaxb-xjc.jar" "$@"
+exec "$JAVA" $XJC_OPTS -jar "$JAXB_HOME/lib/jaxb-xjc.jar" "$@"
