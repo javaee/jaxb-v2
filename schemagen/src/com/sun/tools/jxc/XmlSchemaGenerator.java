@@ -534,7 +534,8 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                         case ATTRIBUTE:
                             AttributePropertyInfo ap = (AttributePropertyInfo) p;
                             //se.attribute().name(ap.getXmlName().getLocalPart()).type(ap.getTarget().getTypeName());
-                            writeTypeRef((ComplexTypeHost)parent, ap.getTarget());
+                            LocalAttribute attr = se.attribute().name(ap.getXmlName().getLocalPart();
+                            writeTypeRef(attr, ap.getTarget());
                             break;
                         case VALUE:
                             TODO.checkSpec("what if vp.isCollection() == true?");
