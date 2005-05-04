@@ -366,6 +366,10 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                     schema._pcdata(newline);
                 }
                 for (EnumLeafInfo<TypeT, ClassDeclT> e : enums) {
+                    if (e.getTypeName() != null && e.getTypeName().getLocalPart().equals("")) {
+                        // don't generate anything if this is an in-lined enum
+                        continue;
+                    }
                     writeEnum(e,schema);
                     schema._pcdata(newline);
                 }
@@ -404,7 +408,12 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
          */
         private void writeTypeRef( TypeHost th, NonElement<TypeT,ClassDeclT> type ) {
             if(type.getTypeName()==null || type.getTypeName().getLocalPart().equals("")) {
-               writeClass( (ClassInfo<TypeT,ClassDeclT>)type, th );
+                if(type instanceof ClassInfo) {
+                    writeClass( (ClassInfo<TypeT,ClassDeclT>)type, th );
+                } else {
+                    // TODO: assert that the TypeHost cast is always going to work
+                    writeEnum( (EnumLeafInfo<TypeT,ClassDeclT>)type, (SimpleTypeHost)th);
+                }
             } else {
                 //e.type(type.getTypeName());
                 // ComplexTypeHost and SimpleTypeHost don't share an api for creating
@@ -427,12 +436,24 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
         }
 
         /**
-         * writes the schema definition for the specified type-safe enum to the schema writer
+         * writes the schema definition for the specified type-safe enum in the given TypeHost
          */
-        private void writeEnum(EnumLeafInfo<TypeT, ClassDeclT> e, Schema schema) {
-            // TODO: think about how anonymous enums are written
-            SimpleType st = schema.simpleType().name(e.getTypeName().getLocalPart());
-            SimpleRestrictionModel base = st.restriction().base(e.getBaseType().getTypeName());
+        private void writeEnum(EnumLeafInfo<TypeT, ClassDeclT> e, SimpleTypeHost th) {
+            SimpleType st = th.simpleType();
+            final QName typeName = e.getTypeName();
+            if( typeName != null && !typeName.getLocalPart().equals("")) {
+                st.name(typeName.getLocalPart()); // named st
+            }
+
+
+            SimpleRestrictionModel base = st.restriction();
+            final QName baseTypeName = e.getBaseType().getTypeName();
+            if( baseTypeName == null || baseTypeName.getLocalPart().equals("") ) {
+                writeTypeRef(base, e.getBaseType());
+            } else {
+                base.base(baseTypeName);
+            }
+
             for (EnumConstant c : e.getConstants()) {
                 base.enumeration().value(c.getLexicalValue());
             }
@@ -809,6 +830,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                     Any any = compositor.any();
                     final String pcmode = getProcessContentsModeName(wc);
                     if( pcmode != null ) any.processContents(pcmode);
+                    TODO.schemaGenerator("generate @namespace ???");
                     if( occurs == null ) occurs = any;
                 }
 
