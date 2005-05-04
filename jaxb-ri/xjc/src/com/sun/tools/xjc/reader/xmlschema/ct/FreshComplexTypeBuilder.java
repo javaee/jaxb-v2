@@ -11,6 +11,9 @@ import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSModelGroup;
 import com.sun.xml.xsom.XSTerm;
 import com.sun.xml.xsom.visitor.XSContentTypeVisitor;
+import com.sun.tools.xjc.model.TypeUse;
+import com.sun.tools.xjc.model.CPropertyInfo;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
 
 import static com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeBindingMode.FALLBACK_CONTENT;
 import static com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeBindingMode.NORMAL;
@@ -33,9 +36,15 @@ final class FreshComplexTypeBuilder extends CTBuilder {
 
         contentType.visit(new XSContentTypeVisitor() {
             public void simpleType(XSSimpleType st) {
-                // I don't think this is possible
-                assert false;
-                throw new IllegalStateException();
+                builder.recordBindingMode(ct,ComplexTypeBindingMode.NORMAL);
+
+                simpleTypeBuilder.refererStack.push(ct);
+                TypeUse use = simpleTypeBuilder.build(st);
+                simpleTypeBuilder.refererStack.pop();
+
+                BIProperty prop = BIProperty.getCustomization(ct);
+                CPropertyInfo p = prop.createValueProperty("Value",false,ct,use);
+                selector.getCurrentBean().addProperty(p);
             }
 
             public void particle(XSParticle p) {
