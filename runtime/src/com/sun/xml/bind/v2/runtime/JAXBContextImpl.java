@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.10 2005-05-03 17:57:44 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.11 2005-05-04 03:20:47 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -80,7 +80,7 @@ import org.xml.sax.SAXException;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -562,11 +562,11 @@ public final class JAXBContextImpl extends JAXBRIContext {
     }
 
     public MarshallerImpl createMarshaller() {
-        return new MarshallerImpl( this );
+        return new MarshallerImpl(this,null);
     }
 
     public UnmarshallerImpl createUnmarshaller() {
-        return new UnmarshallerImpl( this, null );
+        return new UnmarshallerImpl(this,null);
     }    
         
     public Validator createValidator() {
