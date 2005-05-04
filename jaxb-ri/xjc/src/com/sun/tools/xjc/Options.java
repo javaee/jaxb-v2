@@ -12,17 +12,18 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
 
 import com.sun.tools.xjc.api.ClassNameAllocator;
 import com.sun.tools.xjc.reader.Util;
 
-import org.apache.xml.resolver.tools.CatalogResolver;
 import org.apache.xml.resolver.CatalogManager;
+import org.apache.xml.resolver.tools.CatalogResolver;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
@@ -179,8 +180,33 @@ public class Options
     public void addGrammar( InputSource is ) {
         grammars.add(absolutize(is));
     }
-    
-    
+
+    public void addGrammar( File source ) {
+        try {
+            String url = source.toURL().toExternalForm();
+            addGrammar(new InputSource(Util.escapeSpace(url)));
+        } catch (MalformedURLException e) {
+            addGrammar(new InputSource(source.getPath()));
+        }
+    }
+
+    /**
+     * Recursively scan directories and add all XSD files in it.
+     */
+    public void addGrammarRecursive( File dir ) throws MalformedURLException {
+        File[] files = dir.listFiles();
+        if(files==null)     return; // work defensively
+
+        for( File f : files ) {
+            if(f.isDirectory())
+                addGrammarRecursive(f);
+            else
+            if(f.getPath().endsWith(".xsd"))
+                addGrammar(f);
+        }
+    }
+
+
     private InputSource absolutize(InputSource is) {
         // absolutize all the system IDs in the input,
         // so that we can map system IDs to DOM trees.
@@ -420,8 +446,19 @@ public class Options
                     throw new BadCommandLineException(
                         Messages.format(Messages.UNRECOGNIZED_PARAMETER, args[i]));
                 i += (j-1);
-            } else
-                addGrammar(Util.getInputSource(args[i]));
+            } else {
+                Object src = Util.getFileOrURL(args[i]);
+                if(src instanceof URL) {
+                    addGrammar(new InputSource(Util.escapeSpace(((URL)src).toExternalForm())));
+                } else {
+                    File fsrc = (File)src;
+                    if(fsrc.isDirectory()) {
+                        addGrammarRecursive(fsrc);
+                    } else {
+                        addGrammar(fsrc);
+                    }
+                }
+            }
         }
         
         // configure proxy
