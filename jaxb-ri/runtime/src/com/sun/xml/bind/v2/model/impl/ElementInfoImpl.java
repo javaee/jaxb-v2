@@ -32,9 +32,9 @@ import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
 import javax.xml.bind.annotation.XmlMimeType;
-import javax.xml.bind.annotation.XmlSoapAttachment;
+import javax.xml.bind.annotation.XmlAttachmentRef;
 
-import javax.xml.bind.annotation.XmlSoapAttachment;
+import javax.xml.bind.annotation.XmlAttachmentRef;
 
 /**
  * {@link ElementInfo} implementation.
@@ -208,7 +208,7 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
                 if(adapter!=null)
                     a = new Adapter<TypeT,ClassDeclT>(adapter,reader(),nav());
                 else {
-                    XmlSoapAttachment xsa = reader().getMethodAnnotation(XmlSoapAttachment.class,m,this);
+                    XmlAttachmentRef xsa = reader().getMethodAnnotation(XmlAttachmentRef.class,m,this);
                     if(xsa!=null)
                         a = new Adapter<TypeT,ClassDeclT>(owner.nav.asDecl(SwaRefAdapter.class),owner.nav);
                 }

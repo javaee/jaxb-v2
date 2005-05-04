@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlAnyAttribute;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAnyAttribute;
 
-import javax.xml.bind.annotation.XmlSoapAttachment;
+import javax.xml.bind.annotation.XmlAttachmentRef;
 import com.sun.xml.bind.v2.NameConverter;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
@@ -324,7 +324,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         // this is actually incorrect because it's OK to have an adapter and the attachment
         // at the same time.
 
-        XmlSoapAttachment xsa = seed.readAnnotation(XmlSoapAttachment.class);
+        XmlAttachmentRef xsa = seed.readAnnotation(XmlAttachmentRef.class);
         if(xsa!=null)
             return createAdaptedSeed(seed,
                 new Adapter<TypeT,ClassDeclT>(owner.nav.asDecl(SwaRefAdapter.class),owner.nav));
