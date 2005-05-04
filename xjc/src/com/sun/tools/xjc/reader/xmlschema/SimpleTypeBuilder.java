@@ -126,7 +126,7 @@ public final class SimpleTypeBuilder extends BindingComponent {
         } else
         if( top instanceof XSComplexType ) {
             XSComplexType tref = (XSComplexType)top;
-            assert tref.getBaseType()==type;
+            assert tref.getBaseType()==type || tref.getContentType()==type;
             detectJavaTypeCustomization();
         } else
         if( top == type ) {
