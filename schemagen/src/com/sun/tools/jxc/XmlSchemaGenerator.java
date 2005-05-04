@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
+import javax.activation.MimeType;
 
 import com.sun.tools.jxc.gen.xmlschema.Any;
 import com.sun.tools.jxc.gen.xmlschema.AttrDecls;
@@ -54,7 +55,11 @@ import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.core.ValuePropertyInfo;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
+import com.sun.xml.bind.v2.model.core.NonElementRef;
+import com.sun.xml.bind.v2.model.core.Adapter;
+import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.SchemaGenerator;
+import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
 import com.sun.xml.txw2.TXW;
 import com.sun.xml.txw2.TxwException;
 import com.sun.xml.txw2.output.ResultFactory;
@@ -91,6 +96,13 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
      * @see SchemaOutputResolver#createOutput(String, String)
      */
     private final Map<String,Namespace> namespaces = new TreeMap<String,Namespace>();
+
+    /** model navigator **/
+    private Navigator navigator;
+
+    public XmlSchemaGenerator( Navigator navigator) {
+        this.navigator = navigator;
+    }
 
     public void fill(TypeInfoSet<TypeT,ClassDeclT,FieldT,MethodT> types) {
         addAllClasses(types.beans().values());
@@ -328,7 +340,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             try {
                 Schema schema = TXW.create(Schema.class,ResultFactory.createSerializer(result));
 
-                schema._namespace("http://www.w3.org/2001/XMLSchema","xs");
+                schema._namespace(WellKnownNamespace.XML_SCHEMA,"xs");
                 schema.version("1.0");
 
                 if(uri.length()!=0)
@@ -403,6 +415,54 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
          * Writes a type attribute (if the referenced type is a global type)
          * or writes out the definition of the anonymous type in place (if the referenced
          * type is not a global type.)
+         *
+         * Also provides processing for ID/IDREF, MTOM @xmime, and swa:ref
+         *
+         * ComplexTypeHost and SimpleTypeHost don't share an api for creating
+         * and attribute in a type-safe way, so we will compromise for now and
+         * use _attribute().
+         */
+        private void writeTypeRef( TypeHost th, NonElementRef<TypeT,ClassDeclT> typeRef ) {
+            // ID / IDREF handling
+            switch(typeRef.getSource().id()) {
+            case ID:
+                th._attribute("type", new QName(WellKnownNamespace.XML_SCHEMA, "ID"));
+                return;
+            case IDREF:
+                th._attribute("type", new QName(WellKnownNamespace.XML_SCHEMA, "IDREF"));
+                return;
+            case NONE:
+                // no ID/IDREF, so continue on and generate the type
+                break;
+            default:
+                throw new IllegalStateException();
+            }
+
+            // MTOM handling
+            MimeType mimeType = typeRef.getSource().getExpectedMimeType();
+            if( mimeType != null ) {
+                th._attribute(new QName(WellKnownNamespace.XML_MIME_URI, "expectedContentTypes", "xmime"), mimeType.toString());
+            }
+
+            // ref:swaRef handling
+            final ClassDeclT adapterType = typeRef.getSource().getAdapter().adapterType;
+            if(navigator.asDecl(SwaRefAdapter.class).equals(adapterType)) {
+                th._attribute("type", new QName(WellKnownNamespace.SWA_URI, "swaRef", "ref"));
+                return;
+            }
+
+            // normal type generation
+            writeTypeRef(th, typeRef.getTarget());
+        }
+
+        /**
+         * Writes a type attribute (if the referenced type is a global type)
+         * or writes out the definition of the anonymous type in place (if the referenced
+         * type is not a global type.)
+         *
+         * ComplexTypeHost and SimpleTypeHost don't share an api for creating
+         * and attribute in a type-safe way, so we will compromise for now and
+         * use _attribute().
          */
         private void writeTypeRef( TypeHost th, NonElement<TypeT,ClassDeclT> type ) {
             if(type.getTypeName()==null || type.getTypeName().getLocalPart().equals("")) {
@@ -413,9 +473,6 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                     writeEnum( (EnumLeafInfo<TypeT,ClassDeclT>)type, (SimpleTypeHost)th);
                 }
             } else {
-                //e.type(type.getTypeName());
-                // ComplexTypeHost and SimpleTypeHost don't share an api for creating
-                // and attribute in a type-safe way, so we will compromise for now.
                 th._attribute("type",type.getTypeName());
             }
         }
@@ -556,7 +613,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                             AttributePropertyInfo ap = (AttributePropertyInfo) p;
                             //se.attribute().name(ap.getXmlName().getLocalPart()).type(ap.getTarget().getTypeName());
                             LocalAttribute attr = se.attribute().name(ap.getXmlName().getLocalPart());
-                            writeTypeRef(attr, ap.getTarget());
+                            writeTypeRef(attr, ap);
                             break;
                         case VALUE:
                             TODO.checkSpec("what if vp.isCollection() == true?");
@@ -713,7 +770,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 if (occurs == null) occurs = e;
                 QName tn = t.getTagName();
                 e.name(tn.getLocalPart());
-                writeTypeRef(e,t.getTarget());
+                writeTypeRef(e,t);
                 if (t.isNillable()) {
                     e.nillable(true);
                 }
@@ -770,7 +827,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             //
             LocalAttribute localAttribute = attr.attribute();
             localAttribute.name(ap.getXmlName().getLocalPart());
-            writeTypeRef(localAttribute, ap.getTarget());
+            writeTypeRef(localAttribute, ap);
             if(ap.isRequired()) {
                 // TODO: not type safe
                 localAttribute.use("required");
