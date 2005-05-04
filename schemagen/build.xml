@@ -25,6 +25,7 @@
     <pathelement path="${runtime-api.classes}"/>
     <pathelement path="${jaxb.libs.compiler}/txw2.jar"/>
     <pathelement path="${jaxb.libs.util}/jing.jar"/>
+    <pathelement path="${jaxb.libs.redist}/activation.jar"/>
   </path>
 
   <path id="txw.classpath">
