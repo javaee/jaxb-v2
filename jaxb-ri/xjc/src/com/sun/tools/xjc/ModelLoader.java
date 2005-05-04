@@ -123,7 +123,6 @@ public final class ModelLoader {
                 break;
 
             case WSDL:
-                checkTooManySchemaErrors();
                 grammar = annotateXMLSchema( loadWSDL() );
                 break;
 
@@ -338,13 +337,13 @@ public final class ModelLoader {
         XSOMParser xsomParser = createXSOMParser( forest );
         
         // find <xsd:schema>s and parse them individually
-        InputSource[] grammars = opt.getGrammars();
-        Document wsdlDom = forest.get( grammars[0].getSystemId() );
-        
-        NodeList schemas = wsdlDom.getElementsByTagNameNS(WellKnownNamespace.XML_SCHEMA,"schema");
-        for( int i=0; i<schemas.getLength(); i++ )
-            scanner.scan( (Element)schemas.item(i), xsomParser.getParserHandler() );
-        
+        for( InputSource grammar : opt.getGrammars() ) {
+            Document wsdlDom = forest.get( grammar.getSystemId() );
+
+            NodeList schemas = wsdlDom.getElementsByTagNameNS(WellKnownNamespace.XML_SCHEMA,"schema");
+            for( int i=0; i<schemas.getLength(); i++ )
+                scanner.scan( (Element)schemas.item(i), xsomParser.getParserHandler() );
+        }
         return xsomParser.getResult();
     }
     
