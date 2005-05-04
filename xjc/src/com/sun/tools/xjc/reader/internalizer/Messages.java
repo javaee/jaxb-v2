@@ -41,6 +41,6 @@ class Messages
         "Internalizer.TwoVersionAttributes";
     static final String ORPHANED_CUSTOMIZATION = // arg:1
         "Internalizer.OrphanedCustomization";
-    static final String ERR_UNABLE_TO_PARSE = // arg:1
+    static final String ERR_UNABLE_TO_PARSE = // arg:2
         "AbstractReferenceFinderImpl.UnableToParse";
 }

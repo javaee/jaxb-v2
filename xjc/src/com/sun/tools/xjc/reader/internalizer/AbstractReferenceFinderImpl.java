@@ -61,14 +61,14 @@ public abstract class AbstractReferenceFinderImpl extends XMLFilterImpl {
             parent.parse(ref,false);
         } catch( URISyntaxException e ) {
             SAXParseException spe = new SAXParseException(
-                Messages.format(Messages.ERR_UNABLE_TO_PARSE,relativeRef),
+                Messages.format(Messages.ERR_UNABLE_TO_PARSE,relativeRef,e.getMessage()),
                 locator, e );
                 
             fatalError(spe);
             throw spe;
         } catch( IOException e ) {
             SAXParseException spe = new SAXParseException(
-                Messages.format(Messages.ERR_UNABLE_TO_PARSE,relativeRef),
+                Messages.format(Messages.ERR_UNABLE_TO_PARSE,relativeRef,e.getMessage()),
                 locator, e );
 
             fatalError(spe);
