@@ -605,7 +605,6 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 ce.base(bc.getTypeName());
                 // ordered props go in a sequence, unordered go in an all
                 if( c.isOrdered() ) {
-                    TODO.prototype("ClassInfoImpl.calcOrder not implemented yet");
                     compositor = ce.sequence();
                 } else {
                     compositor = ce.all();
@@ -617,7 +616,6 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 if( compositor == null ) { // if there is no extension base, create a top level seq
                     // ordered props go in a sequence, unordered go in an all
                     if( c.isOrdered() ) {
-                        TODO.prototype("ClassInfoImpl.calcOrder not implemented yet");
                         compositor = ct.sequence();
                     } else {
                         compositor = ct.all();
