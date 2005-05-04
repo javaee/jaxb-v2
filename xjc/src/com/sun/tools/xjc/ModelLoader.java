@@ -163,17 +163,6 @@ public final class ModelLoader {
      * should abort.
      */
     private boolean sanityCheck() {
-//        if( opt.getSchemaLanguage()==Language.DTD ) {
-//            // DTD compilation requires dom4j. dom4j is not a part of JWSDP,
-//            // so let's check the existance of it and if not, ask the user
-//            // to download it manually
-//            try {
-//                new org.dom4j.DocumentFactory();
-//            } catch( NoClassDefFoundError e ) {
-//                errorReceiver.error(null,Messages.format(Messages.MISSING_DOM4J));
-//                return false;
-//            }
-//        }
         if( opt.getSchemaLanguage()==Language.XMLSCHEMA ) {
             Language guess = opt.guessSchemaLanguage();
             
