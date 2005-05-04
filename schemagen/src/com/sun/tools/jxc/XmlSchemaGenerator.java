@@ -74,8 +74,6 @@ import static com.sun.tools.jxc.util.Util.*;
  *  <li>Discard the object
  * </ol>
  *
- * TODO: anonymous type handling
- *
  * @author Ryan Shoemaker
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
