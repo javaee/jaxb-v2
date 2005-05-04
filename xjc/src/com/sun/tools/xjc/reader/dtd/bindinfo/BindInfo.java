@@ -27,6 +27,7 @@ import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.util.CodeModelClassFactory;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
+import com.sun.xml.bind.v2.runtime.ForkContentHandler;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -256,11 +257,10 @@ public class BindInfo
             DOMBuilder builder = new DOMBuilder();
 
             ErrorReceiverFilter controller = new ErrorReceiverFilter(receiver);
-            validator.setContentHandler(builder);
             validator.setErrorHandler(controller);
             XMLReader reader = pf.newSAXParser().getXMLReader();
             reader.setErrorHandler(controller);
-            reader.setContentHandler(validator);
+            reader.setContentHandler(new ForkContentHandler(validator,builder));
 
             reader.parse(is);
             
