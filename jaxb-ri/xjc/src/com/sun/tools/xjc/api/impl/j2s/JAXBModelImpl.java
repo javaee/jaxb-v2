@@ -129,7 +129,7 @@ final class JAXBModelImpl implements J2SJAXBModel {
 
     public void generateSchema(SchemaOutputResolver outputResolver, ErrorListener errorListener) throws IOException {
         XmlSchemaGenerator<TypeMirror,TypeDeclaration,FieldDeclaration,MethodDeclaration> xsdgen
-            = new XmlSchemaGenerator<TypeMirror,TypeDeclaration,FieldDeclaration,MethodDeclaration>();
+            = new XmlSchemaGenerator<TypeMirror,TypeDeclaration,FieldDeclaration,MethodDeclaration>( types.getNavigator() );
 
         xsdgen.fill(types);
 

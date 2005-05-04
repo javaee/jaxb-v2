@@ -473,11 +473,11 @@
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/xalan.jar!/" />
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/bsh-reflect-2.0b1.jar!/" />
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/bsh-classgen-2.0b1.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/jaxen-1.1-beta-4.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
         <root url="jar://$PROJECT_DIR$/tools/lib/src/sfx4j-1.0-RC-src.zip!/" />
-        <root url="jar://$PROJECT_DIR$/tools/lib/src/relaxng.javadt.src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/ant-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/ant-contrib-0.6-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/xsom-src.zip!/" />
@@ -604,6 +604,7 @@
     <library name="schemagen">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/txw2.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/redist/activation.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
