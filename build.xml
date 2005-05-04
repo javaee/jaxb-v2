@@ -32,7 +32,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.10 2005-05-04 14:08:11 kohsuke Exp $
+       $Id: build.xml,v 1.11 2005-05-04 14:10:16 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -253,7 +253,7 @@ Class-Path: ${manifest.classpath}
                   <fileset dir="${codemodel.classes}"/>
                   <fileset dir="${schemagen.classes}"/>
                   <!-- bundle the 1.0 compiler in the side directory -->
-                  <zipfileset dir="${xjc10.classes}" prefix="1.0" />
+                  <zipfileset dir="${xjc10.classes}/.." />
               </jar>
               <delete dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
           </sequential>
