@@ -84,6 +84,9 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
 
     protected final XMLSerializer serializer;
 
+    /**
+     * Non-null if we work inside a {@link BinderImpl}.
+     */
     private final AssociationMap assoc;
 
     /**
