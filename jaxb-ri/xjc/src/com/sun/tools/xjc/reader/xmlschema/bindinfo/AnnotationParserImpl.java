@@ -11,6 +11,7 @@ import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.parser.AnnotationState;
 import com.sun.xml.xsom.parser.AnnotationContext;
 import com.sun.xml.xsom.parser.AnnotationParser;
+import com.sun.xml.bind.v2.runtime.ForkContentHandler;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.EntityResolver;
@@ -56,10 +57,9 @@ final class AnnotationParserImpl extends AnnotationParser {
 
         // set up validator
         validator.setErrorHandler(errorHandler);
-        validator.setContentHandler(runtime);
 
         // the validator will receive events first, then the parser.
-        return validator;
+        return new ForkContentHandler(validator,runtime);
     }
 
     public Object getResult( Object existing ) {
