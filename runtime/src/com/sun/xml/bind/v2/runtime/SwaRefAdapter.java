@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.bind.attachment.AttachmentMarshaller;
 import javax.xml.bind.attachment.AttachmentUnmarshaller;
 
-import javax.xml.bind.annotation.XmlSoapAttachment;
+import javax.xml.bind.annotation.XmlAttachmentRef;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 
 
@@ -15,7 +15,7 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
  * {@link XmlAdapter} that binds the value as a SOAP attachment.
  *
  * <p>
- * On the user classes the SwA handling is done by using the {@link XmlSoapAttachment}
+ * On the user classes the SwA handling is done by using the {@link XmlAttachmentRef}
  * annotation, but internally we treat it as a {@link XmlJavaTypeAdapter} with this
  * adapter class. This is true with both XJC and the runtime.
  *

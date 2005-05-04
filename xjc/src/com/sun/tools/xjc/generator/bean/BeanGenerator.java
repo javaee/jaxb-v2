@@ -19,7 +19,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlMimeType;
-import javax.xml.bind.annotation.XmlSoapAttachment;
+import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
@@ -667,7 +667,7 @@ public final class BeanGenerator implements Outline
         CAdapter adapter = prop.getAdapter();
         if (adapter != null ) {
             if(adapter.getAdapterIfKnown()==SwaRefAdapter.class) {
-                field.annotate(XmlSoapAttachment.class);
+                field.annotate(XmlAttachmentRef.class);
             } else {
                 // [RESULT]
                 // @XmlJavaTypeAdapter( Foo.class )
