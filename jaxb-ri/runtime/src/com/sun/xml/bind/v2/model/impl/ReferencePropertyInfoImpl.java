@@ -5,13 +5,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementRefs;
-import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.namespace.QName;
 
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlMixed;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
@@ -102,13 +101,13 @@ class ReferencePropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             AnnotationReader<TypeT,ClassDeclT,FieldT,MethodT> reader = reader();
 
             final TypeT defaultType = nav.ref(XmlElementRef.DEFAULT.class);
-            final TypeT je = nav.ref(JAXBElement.class);
+            final ClassDeclT je = nav.asDecl(JAXBElement.class);
 
             for( XmlElementRef r : ann ) {
                 TypeT type = reader.getClassValue(r,"type");
                 if( type.equals(defaultType) )
                     type = nav.erasure(_getType());
-                if(nav.getBaseClass(type,nav.asDecl(JAXBElement.class))!=null)
+                if(nav.getBaseClass(type,je)!=null)
                     addGenericElement(r);
                 else
                     addAllSubtypes(type);
