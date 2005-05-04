@@ -32,7 +32,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.9 2005-05-02 21:32:44 kohsuke Exp $
+       $Id: build.xml,v 1.10 2005-05-04 14:08:11 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -252,6 +252,8 @@ Class-Path: ${manifest.classpath}
                   <fileset dir="${xjc.classes}"/>
                   <fileset dir="${codemodel.classes}"/>
                   <fileset dir="${schemagen.classes}"/>
+                  <!-- bundle the 1.0 compiler in the side directory -->
+                  <zipfileset dir="${xjc10.classes}" prefix="1.0" />
               </jar>
               <delete dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
           </sequential>
@@ -744,12 +746,11 @@ Class-Path: ${manifest.classpath}
     </target>
 
 
-    <target name = "integrate-1.0-compiler">
+    <target name = "integrate-1.0-compiler"
+            description="extract XJC 1.0">
       <mkdir dir="${xjc10.classes}"/>
       <unjar src="${jaxb.libs.compiler10}/jaxb1-xjc.jar" dest="${xjc10.classes}"/>
-      <!-- TODO check what about the addon in the META-INF/
-           services of jaxb-xjc.jar in release 1.0.x -->
-      <delete dir="${xjc10.classes}/META-INF"/>
+      <delete dir="${xjc10.classes}/META-INF/MANIFEST.MF"/>
     </target>
     
     
