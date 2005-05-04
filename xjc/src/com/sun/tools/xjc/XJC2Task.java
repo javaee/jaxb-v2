@@ -88,7 +88,7 @@ public class XJC2Task extends Task {
             options.addGrammar( getInputSource(new URL(schema)) );
         } catch( MalformedURLException e ) {
             File f = getProject().resolveFile(schema);
-            options.addGrammar( getInputSource(f) );
+            options.addGrammar(f);
             dependsSet.add(f);
         }
     }
