@@ -177,6 +177,9 @@ public final class ModelLoader {
             case RELAXNG_COMPACT:
                 msg = new String[]{"RELAX NG compact syntax","-relaxng-compact"};
                 break;
+            case WSDL:
+                msg = new String[]{"WSDL","-wsdl"};
+                break;
             }
             if( msg!=null )
                 errorReceiver.warning( null,
