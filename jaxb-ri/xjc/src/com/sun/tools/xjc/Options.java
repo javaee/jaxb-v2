@@ -490,9 +490,6 @@ public class Options
      * Guesses the schema language.
      */
     public Language guessSchemaLanguage() {
-        if (grammars.size() > 1)
-            return Language.XMLSCHEMA;
-
         // otherwise, use the file extension.
         // not a good solution, but very easy.
         String name = grammars.get(0).getSystemId().toLowerCase();
