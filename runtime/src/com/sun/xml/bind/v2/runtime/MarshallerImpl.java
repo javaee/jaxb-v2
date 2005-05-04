@@ -28,6 +28,8 @@ import javax.xml.transform.Result;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.validation.Schema;
+import javax.xml.validation.ValidatorHandler;
 
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
@@ -46,6 +48,7 @@ import com.sun.xml.bind.v2.runtime.output.UTF8XmlOutput;
 import com.sun.xml.bind.v2.runtime.output.XMLEventWriterOutput;
 import com.sun.xml.bind.v2.runtime.output.XMLStreamWriterOutput;
 import com.sun.xml.bind.v2.runtime.output.XmlOutput;
+import com.sun.xml.bind.v2.runtime.output.ForkXmlOutput;
 import com.sun.xml.bind.v2.AssociationMap;
 
 import org.w3c.dom.Document;
@@ -88,6 +91,11 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
      * Non-null if we work inside a {@link BinderImpl}.
      */
     private final AssociationMap assoc;
+
+    /**
+     * Non-null if we do the marshal-time validation.
+     */
+    private Schema schema;
 
     /**
      * @param assoc
@@ -199,11 +207,21 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         }
     }
 
+    /**
+     * All the marshal method invocation eventually comes down to this call.
+     */
     private void write(Object obj, XmlOutput out, Runnable postInitAction)
         throws JAXBException {
 
         if( obj == null )
             throw new IllegalArgumentException(Messages.format(Messages.NOT_MARSHALLABLE));
+
+        if( schema!=null ) {
+            // send the output to the validator as well
+            ValidatorHandler validator = schema.newValidatorHandler();
+            validator.setErrorHandler(serializer);
+            out = new ForkXmlOutput( new SAXOutput(validator), out );
+        }
 
         try {
             prewrite(out,isFragment(),postInitAction);
@@ -384,8 +402,17 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         serializer.attachmentMarshaller = am;
     }
 
+    @Override
     public AttachmentMarshaller getAttachmentMarshaller() {
         return serializer.attachmentMarshaller;
+    }
+
+    public Schema getSchema() {
+        return schema;
+    }
+
+    public void setSchema(Schema s) {
+        this.schema = s;
     }
 
 

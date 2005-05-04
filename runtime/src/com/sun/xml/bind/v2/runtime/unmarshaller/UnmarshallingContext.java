@@ -19,6 +19,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
+import javax.xml.bind.ValidationEventLocator;
 import javax.xml.bind.helpers.ValidationEventImpl;
 import javax.xml.bind.helpers.ValidationEventLocatorImpl;
 import javax.xml.namespace.NamespaceContext;
@@ -1010,50 +1011,8 @@ public final class UnmarshallingContext extends Coordinator
         return value;
     }
 
-//
-//
-// ErrorHandler implementation
-//
-//
-    public void error(SAXParseException exception)
-        throws SAXException {
-
-        propagateEvent( ValidationEvent.ERROR, exception );
-    }
-
-    public void warning(SAXParseException exception)
-        throws SAXException {
-
-        propagateEvent( ValidationEvent.WARNING, exception );
-    }
-
-    public void fatalError(SAXParseException exception)
-        throws SAXException {
-
-        propagateEvent( ValidationEvent.FATAL_ERROR, exception );
-    }
-
-    private void propagateEvent( int severity, SAXParseException saxException )
-        throws SAXException {
-
-        ValidationEventImpl ve =
-            new ValidationEventImpl( severity, saxException.getMessage(), locator.getLocation()  );
-
-        Exception e = saxException.getException();
-        if( e != null ) {
-            ve.setLinkedException( e );
-        } else {
-            ve.setLinkedException( saxException );
-        }
-
-        // call the client's event handler.  If it returns false, then bail-out
-        // and terminate the unmarshal operation.
-        boolean result = parent.getEventHandler().handleEvent( ve );
-        if( ! result ) {
-            // bail-out of the parse with a SAX exception, but convert it into
-            // an UnmarshalException back in in the AbstractUnmarshaller
-            throw saxException;
-        }
+    protected ValidationEventLocator getLocation() {
+        return locator.getLocation();
     }
 
 //

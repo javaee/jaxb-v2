@@ -10,11 +10,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.activation.MimeType;
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.ValidationEventLocator;
+import javax.xml.bind.annotation.DomHandler;
 import javax.xml.bind.attachment.AttachmentMarshaller;
 import javax.xml.bind.helpers.NotIdentifiableEventImpl;
 import javax.xml.bind.helpers.ValidationEventImpl;
@@ -25,9 +27,8 @@ import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.sax.SAXResult;
-import javax.activation.MimeType;
 
-import javax.xml.bind.annotation.DomHandler;
+import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import com.sun.xml.bind.util.ValidationEventLocatorExImpl;
@@ -37,7 +38,6 @@ import com.sun.xml.bind.v2.runtime.output.MTOMXmlOutput;
 import com.sun.xml.bind.v2.runtime.output.NamespaceContextImpl;
 import com.sun.xml.bind.v2.runtime.output.XmlOutput;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Base64Data;
-import com.sun.xml.bind.DatatypeConverterImpl;
 
 import org.xml.sax.SAXException;
 
@@ -88,13 +88,18 @@ import org.xml.sax.SAXException;
  *
  * @author  Kohsuke Kawaguchi
  */
-public final class XMLSerializer extends Coordinator implements ValidationEventHandler {
+public final class XMLSerializer extends Coordinator {
     public final JAXBContextImpl grammar;
 
     /** Object currently marshalling itself. */
     public Object currentTarget;
 
-    /** The outer peer for the current element. */
+    /**
+     * The outer peer for the current element.
+     *
+     * For better design, this field should be moved to {@link NamespaceContextImpl.Element}
+     * and remembered there with the tag name.
+     */
     public Object currentOuterPeer;
 
     /** The XML printer. */
@@ -832,6 +837,10 @@ public final class XMLSerializer extends Coordinator implements ValidationEventH
 
     public ValidationEventLocator getCurrentLocation(String fieldName) {
         return new ValidationEventLocatorExImpl(currentTarget,fieldName);
+    }
+
+    protected ValidationEventLocator getLocation() {
+        return getCurrentLocation(null);
     }
 
     /**
