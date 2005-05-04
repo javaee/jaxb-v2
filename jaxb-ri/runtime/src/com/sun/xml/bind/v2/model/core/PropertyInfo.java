@@ -80,6 +80,9 @@ public interface PropertyInfo<TypeT,ClassDeclT> {
      *
      * @see XmlID
      * @see XmlIDREF
+     *
+     * @return
+     *      always non-null
      */
     ID id();
 
