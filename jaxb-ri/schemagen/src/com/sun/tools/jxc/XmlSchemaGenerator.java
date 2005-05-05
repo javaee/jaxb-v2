@@ -100,7 +100,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
     /** model navigator **/
     private Navigator navigator;
 
-    public XmlSchemaGenerator( Navigator navigator) {
+    public XmlSchemaGenerator( Navigator<TypeT,ClassDeclT,FieldT,MethodT> navigator) {
         this.navigator = navigator;
     }
 
