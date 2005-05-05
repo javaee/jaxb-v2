@@ -26,7 +26,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-class VersionChecker extends XMLFilterImpl {
+public class VersionChecker extends XMLFilterImpl {
 
     /**
      * We store the value of the version attribute in this variable
