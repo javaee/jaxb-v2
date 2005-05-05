@@ -1,7 +1,5 @@
 package com.sun.tools.xjc.model;
 
-import java.util.List;
-
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
@@ -13,7 +11,7 @@ import org.xml.sax.Locator;
  * @author Kohsuke Kawaguchi
  */
 public final class CValuePropertyInfo extends CSingleTypePropertyInfo implements ValuePropertyInfo<NType,NClass> {
-    public CValuePropertyInfo(String name, List<CPluginCustomization> customizations, Locator locator, TypeUse type) {
+    public CValuePropertyInfo(String name, CCustomizations customizations, Locator locator, TypeUse type) {
         super(name, type, customizations, locator);
     }
 

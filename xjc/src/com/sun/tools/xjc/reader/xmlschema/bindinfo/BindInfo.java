@@ -7,10 +7,10 @@ package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Collections;
 
-import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
+import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.model.CPluginCustomization;
+import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.xml.xsom.XSComponent;
 
 import org.xml.sax.Locator;
@@ -166,21 +166,20 @@ public final class BindInfo implements Iterable<BIDeclaration> {
     /**
      * Gets the list of {@link CPluginCustomization}s from this.
      */
-    public List<CPluginCustomization> toCustomizationList() {
-        List<CPluginCustomization> r=null;
+    public CCustomizations toCustomizationList() {
+        CCustomizations r=null;
         for( BIDeclaration d : this ) {
             if(d instanceof BIXPluginCustomization) {
                 BIXPluginCustomization pc = (BIXPluginCustomization) d;
                 pc.markAsAcknowledged();
                 if(r==null)
-                    r = new ArrayList<CPluginCustomization>();
+                    r = new CCustomizations();
                 r.add(new CPluginCustomization(pc.element,pc.getLocation()));
             }
         }
 
-        if(r==null)     r = Collections.emptyList();
-
-        return r;
+        if(r==null)     r = CCustomizations.EMPTY;
+        return new CCustomizations(r);
     }
     /** An instance with the empty contents. */
     public final static BindInfo empty = new BindInfo(null);

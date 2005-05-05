@@ -1,7 +1,5 @@
 package com.sun.tools.xjc.model;
 
-import java.util.Collections;
-
 import com.sun.codemodel.JType;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
@@ -21,7 +19,7 @@ import org.w3c.dom.Element;
  */
 public final class CWildcardTypeInfo extends AbstractCTypeInfoImpl implements WildcardTypeInfo<NType,NClass> {
     private CWildcardTypeInfo() {
-        super(Collections.<CPluginCustomization>emptyList());
+        super(null);
     }
 
     public static final CWildcardTypeInfo INSTANCE = new CWildcardTypeInfo();

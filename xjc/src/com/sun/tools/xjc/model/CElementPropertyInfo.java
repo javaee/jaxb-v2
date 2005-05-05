@@ -57,7 +57,7 @@ public final class CElementPropertyInfo extends CPropertyInfo implements Element
 
     // TODO: shouldn't they get id and expectedMimeType from TypeUses of CTypeRef?
     public CElementPropertyInfo(String name, CollectionMode collection, ID id, MimeType expectedMimeType,
-                                List<CPluginCustomization> customizations, Locator locator, boolean required) {
+                                CCustomizations customizations, Locator locator, boolean required) {
         super(name, collection.col, customizations, locator);
         this.required = required;
         this.id = id;

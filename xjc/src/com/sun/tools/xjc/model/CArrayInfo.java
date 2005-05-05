@@ -1,9 +1,6 @@
 package com.sun.tools.xjc.model;
 
-import java.util.List;
-
 import javax.xml.namespace.QName;
-import javax.activation.MimeType;
 
 import com.sun.codemodel.JType;
 import com.sun.tools.xjc.model.nav.NClass;
@@ -23,7 +20,7 @@ public final class CArrayInfo extends AbstractCTypeInfoImpl implements ArrayInfo
 
     private final QName typeName;
 
-    public CArrayInfo(CNonElement itemType, List<CPluginCustomization> customizations) {
+    public CArrayInfo(CNonElement itemType, CCustomizations customizations) {
         super(customizations);
         this.itemType = itemType;
         assert itemType.getTypeName()!=null;

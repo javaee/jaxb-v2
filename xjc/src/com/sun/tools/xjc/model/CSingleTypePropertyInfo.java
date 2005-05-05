@@ -15,7 +15,7 @@ import org.xml.sax.Locator;
 abstract class CSingleTypePropertyInfo extends CPropertyInfo {
     protected final TypeUse type;
 
-    protected CSingleTypePropertyInfo(String name, TypeUse type, List<CPluginCustomization> customizations, Locator locator) {
+    protected CSingleTypePropertyInfo(String name, TypeUse type, CCustomizations customizations, Locator locator) {
         super(name, type.isCollection(), customizations, locator);
         this.type = type;
     }

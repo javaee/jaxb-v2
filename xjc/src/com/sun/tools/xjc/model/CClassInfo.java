@@ -97,11 +97,11 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
     private boolean hasAttributeWildcard;
 
 
-    public CClassInfo(Model model,JPackage pkg, String shortName, Locator location, QName typeName, QName elementName, List<CPluginCustomization> customizations) {
+    public CClassInfo(Model model,JPackage pkg, String shortName, Locator location, QName typeName, QName elementName, CCustomizations customizations) {
         this(model,model.getPackage(pkg),shortName,location,typeName,elementName,customizations);
     }
 
-    public CClassInfo(Model model,CClassInfoParent p, String shortName, Locator location, QName typeName, QName elementName, List<CPluginCustomization> customizations) {
+    public CClassInfo(Model model,CClassInfoParent p, String shortName, Locator location, QName typeName, QName elementName, CCustomizations customizations) {
         super(customizations);
         this.model = model;
         this.parent = p;
@@ -113,7 +113,7 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
         model.add(this);
     }
 
-    public CClassInfo(Model model,JCodeModel cm, String fullName, Locator location, QName typeName, QName elementName, List<CPluginCustomization> customizations) {
+    public CClassInfo(Model model,JCodeModel cm, String fullName, Locator location, QName typeName, QName elementName, CCustomizations customizations) {
         super(customizations);
         this.model = model;
         int idx = fullName.indexOf('.');

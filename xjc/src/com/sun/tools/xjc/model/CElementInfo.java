@@ -83,14 +83,14 @@ public final class CElementInfo extends AbstractCTypeInfoImpl implements Element
     /**
      * Creates an element in the given package.
      */
-    public CElementInfo(Model model,QName tagName, JPackage _package, TypeUse contentType, String defaultValue, List<CPluginCustomization> customizations, Locator location ) {
+    public CElementInfo(Model model,QName tagName, JPackage _package, TypeUse contentType, String defaultValue, CCustomizations customizations, Locator location ) {
         this(model,tagName,model.getPackage(_package),contentType,defaultValue, customizations, location);
     }
 
     /**
      * Creates an element in the given parent.
      */
-    public CElementInfo(Model model,QName tagName, CClassInfoParent parent, TypeUse contentType, String defaultValue, List<CPluginCustomization> customizations, Locator location ) {
+    public CElementInfo(Model model,QName tagName, CClassInfoParent parent, TypeUse contentType, String defaultValue, CCustomizations customizations, Locator location ) {
         super(customizations);
         this.tagName = tagName;
         this.model = model;
@@ -113,7 +113,7 @@ public final class CElementInfo extends AbstractCTypeInfoImpl implements Element
     /**
      * Creates an element with a class in th given parent.
      */
-    public CElementInfo(Model model,QName tagName, CClassInfoParent parent, String className, TypeUse contentType, String defaultValue, List<CPluginCustomization> customizations, Locator location ) {
+    public CElementInfo(Model model,QName tagName, CClassInfoParent parent, String className, TypeUse contentType, String defaultValue, CCustomizations customizations, Locator location ) {
         this(model,tagName,parent,contentType,defaultValue,customizations,location);
         this.className = className;
     }

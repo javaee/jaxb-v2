@@ -17,6 +17,7 @@ import com.sun.tools.xjc.model.CTypeRef;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.model.Multiplicity;
 import com.sun.tools.xjc.model.TypeUse;
+import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.tools.xjc.reader.xmlschema.ClassSelector;
@@ -183,11 +184,11 @@ public final class RawTypeSet {
         public final QName elementName;
         public final TypeUse target;
         public final Locator locator;
-        public final List<CPluginCustomization> custs;
+        public final CCustomizations custs;
         public final boolean nillable;
         public final String defaultValue;
 
-        public XmlTypeRef(QName elementName, TypeUse target, boolean nillable, String defaultValue, List<CPluginCustomization> custs, Locator loc) {
+        public XmlTypeRef(QName elementName, TypeUse target, boolean nillable, String defaultValue, CCustomizations custs, Locator loc) {
             assert elementName!=null;
             assert target!=null;
 
