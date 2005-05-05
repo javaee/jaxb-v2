@@ -4,12 +4,13 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.11 2005-05-04 03:20:47 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.12 2005-05-05 17:53:36 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -54,6 +55,7 @@ import com.sun.xml.bind.v2.model.impl.RuntimeAnyTypeImpl;
 import com.sun.xml.bind.v2.model.impl.RuntimeBuiltinLeafInfoImpl;
 import com.sun.xml.bind.v2.model.impl.RuntimeModelBuilder;
 import com.sun.xml.bind.v2.model.nav.ReflectionNavigator;
+import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimeArrayInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeBuiltinLeafInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeClassInfo;
@@ -80,7 +82,7 @@ import org.xml.sax.SAXException;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -591,24 +593,30 @@ public final class JAXBContextImpl extends JAXBRIContext {
     }
 
     public void generateSchema(SchemaOutputResolver outputResolver) throws IOException {
+        RuntimeTypeInfoSet tis;
+        try {
+            tis = getTypeInfoSet();
+        } catch (IllegalAnnotationsException e) {
+            // this shouldn't happen because we've already
+            throw new AssertionError(e);
+        }
+
         SchemaGenerator xsdgen;
         try {
             Class clazz = this.getClass().getClassLoader().loadClass("com.sun.tools.jxc.XmlSchemaGenerator");
-            xsdgen = (SchemaGenerator)clazz.newInstance();
+            xsdgen = (SchemaGenerator)clazz.getConstructor(Navigator.class).newInstance(tis.getNavigator());
         } catch (ClassNotFoundException e) {
             throw new UnsupportedOperationException(e);
         } catch (InstantiationException e) {
             throw new UnsupportedOperationException(e);
         } catch (IllegalAccessException e) {
             throw new UnsupportedOperationException(e);
+        } catch (NoSuchMethodException e) {
+            throw new UnsupportedOperationException(e);
+        } catch (InvocationTargetException e) {
+            throw new UnsupportedOperationException(e);
         }
-
-        try {
-            xsdgen.fill(getTypeInfoSet());
-        } catch (IllegalAnnotationsException e) {
-            // this shouldn't happen because we've already
-            throw new AssertionError(e);
-        }
+        xsdgen.fill(tis);
 
         xsdgen.write(outputResolver);
     }
