@@ -14,7 +14,7 @@ enum Messages {
     BASEDIR_DOESNT_EXIST, // 1 arg
     ;
 
-    private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());
+    private static final ResourceBundle rb = ResourceBundle.getBundle("com.sun.tools.jxc.MessageBundle");
 
     public String toString() {
         return format();
