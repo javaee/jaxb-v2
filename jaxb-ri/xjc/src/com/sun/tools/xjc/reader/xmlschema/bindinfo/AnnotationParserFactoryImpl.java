@@ -20,6 +20,7 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.helpers.XMLFilterImpl;
 
 /**
  * Implementation of XSOM {@link AnnotationParserFactory} that
@@ -78,7 +79,7 @@ public class AnnotationParserFactoryImpl implements AnnotationParserFactory {
                             if(validator==null)
                                 validator = bindingFileSchema.newValidator();
                             validator.setErrorHandler(errorHandler);
-                            startForking(uri,localName,qName,atts,validator);
+                            startForking(uri,localName,qName,atts,new ValidatorProtecter(validator));
                         }
                     }
                 };
@@ -102,5 +103,16 @@ public class AnnotationParserFactoryImpl implements AnnotationParserFactory {
                 }
             }
         };
+    }
+
+    private static final class ValidatorProtecter extends XMLFilterImpl {
+        public ValidatorProtecter(ContentHandler h) {
+            setContentHandler(h);
+        }
+
+        public void startPrefixMapping(String prefix, String uri) throws SAXException {
+            // work around a bug in the validator implementation in Tiger
+            super.startPrefixMapping(prefix.intern(),uri);
+        }
     }
 }
