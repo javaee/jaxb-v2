@@ -12,7 +12,7 @@ import org.xml.sax.Locator;
  *
  * @author Kohsuke Kawaguchi
  */
-public class BIXPluginCustomization extends AbstractDeclarationImpl {
+public final class BIXPluginCustomization extends AbstractDeclarationImpl {
 
     /**
      * Customization element.
