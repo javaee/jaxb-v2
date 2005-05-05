@@ -96,6 +96,11 @@ public interface NameConverter
         protected boolean isLetter(char c) {
             return super.isLetter(c) || c=='_';
         }
+
+        protected int classify(char c0) {
+            if(c0=='_') return OTHER_LETTER;
+            return super.classify(c0);
+        }
     };
 
     /**
