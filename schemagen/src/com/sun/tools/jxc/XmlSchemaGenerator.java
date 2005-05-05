@@ -14,9 +14,9 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.activation.MimeType;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
-import javax.activation.MimeType;
 
 import com.sun.tools.jxc.gen.xmlschema.Any;
 import com.sun.tools.jxc.gen.xmlschema.AttrDecls;
@@ -39,6 +39,7 @@ import com.sun.xml.bind.Util;
 import com.sun.xml.bind.api.SchemaOutputResolver;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.WellKnownNamespace;
+import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.ArrayInfo;
 import com.sun.xml.bind.v2.model.core.AttributePropertyInfo;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
@@ -48,6 +49,7 @@ import com.sun.xml.bind.v2.model.core.ElementPropertyInfo;
 import com.sun.xml.bind.v2.model.core.EnumConstant;
 import com.sun.xml.bind.v2.model.core.EnumLeafInfo;
 import com.sun.xml.bind.v2.model.core.NonElement;
+import com.sun.xml.bind.v2.model.core.NonElementRef;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.model.core.ReferencePropertyInfo;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
@@ -55,8 +57,6 @@ import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.core.ValuePropertyInfo;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
-import com.sun.xml.bind.v2.model.core.NonElementRef;
-import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.SchemaGenerator;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
@@ -445,8 +445,8 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             }
 
             // ref:swaRef handling
-            final ClassDeclT adapterType = typeRef.getSource().getAdapter().adapterType;
-            if(navigator.asDecl(SwaRefAdapter.class).equals(adapterType)) {
+            final Adapter<TypeT,ClassDeclT> adapter = typeRef.getSource().getAdapter();
+            if((adapter != null) && (navigator.asDecl(SwaRefAdapter.class).equals(adapter.adapterType))) {
                 th._attribute("type", new QName(WellKnownNamespace.SWA_URI, "swaRef", "ref"));
                 return;
             }
