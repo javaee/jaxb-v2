@@ -26,7 +26,7 @@ public class Util
      */
     public static Object getFileOrURL(String fileOrURL) throws IOException {
         try {
-            return new URL(fileOrURL).toExternalForm();
+            return new URL(fileOrURL);
         } catch (MalformedURLException e) {
             return new File(fileOrURL).getCanonicalFile();
         }
