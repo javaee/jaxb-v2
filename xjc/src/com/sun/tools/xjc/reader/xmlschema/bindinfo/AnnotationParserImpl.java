@@ -8,14 +8,16 @@ import javax.xml.validation.ValidatorHandler;
 
 import com.sun.codemodel.JCodeModel;
 import com.sun.tools.xjc.Options;
+import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.parser.AnnotationState;
 import com.sun.xml.xsom.parser.AnnotationContext;
 import com.sun.xml.xsom.parser.AnnotationParser;
-import com.sun.xml.bind.v2.runtime.ForkContentHandler;
 
+import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
 
 /**
  * Implementation of {@link AnnotationParser} of XSOM that
@@ -58,8 +60,16 @@ final class AnnotationParserImpl extends AnnotationParser {
         // set up validator
         validator.setErrorHandler(errorHandler);
 
-        // the validator will receive events first, then the parser.
-        return new ForkContentHandler(validator,runtime);
+        // configure so that the validator will receive events for JAXB islands
+        return new ForkingFilter(runtime) {
+            @Override
+            public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+                super.startElement(uri, localName, qName, atts);
+                if(uri.equals(Const.JAXB_NSURI) || uri.equals(Const.XJC_EXTENSION_URI) && getSideHandler()==null) {
+                    startForking(uri,localName,qName,atts,validator);
+                }
+            }
+        };
     }
 
     public Object getResult( Object existing ) {
