@@ -339,6 +339,7 @@ class DefaultClassBinder extends AbstractBinderImpl
 
         if (component instanceof XSElementDecl && !isCollapsable((XSElementDecl)component)) {
             XSElementDecl e = ((XSElementDecl)component);
+            selector.boudElements.put(e,true);
             stb.refererStack.push(component);    // referer is element
             TypeUse content = selector.bindToType(e.getType());
             stb.refererStack.pop();
