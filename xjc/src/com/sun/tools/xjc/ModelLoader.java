@@ -15,6 +15,7 @@ import com.sun.tools.xjc.reader.dtd.TDTDReader;
 import com.sun.tools.xjc.reader.internalizer.DOMForest;
 import com.sun.tools.xjc.reader.internalizer.DOMForestScanner;
 import com.sun.tools.xjc.reader.internalizer.InternalizationLogic;
+import com.sun.tools.xjc.reader.internalizer.VersionChecker;
 import com.sun.tools.xjc.reader.relaxng.RELAXNGCompiler;
 import com.sun.tools.xjc.reader.relaxng.RELAXNGInternalizationLogic;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
@@ -402,6 +403,7 @@ public final class ModelLoader {
                 ErrorHandler errorHandler, EntityResolver entityResolver ) throws SAXException, IOException {
                 // set up the chain of handlers.
                 handler = wrapBy( new SpeculationChecker(), handler );
+                handler = wrapBy( new VersionChecker(null,errorReceiver,entityResolver), handler );
 
                 base.parse( source, handler, errorHandler, entityResolver );
             }
