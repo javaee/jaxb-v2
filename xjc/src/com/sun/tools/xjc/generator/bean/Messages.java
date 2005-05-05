@@ -19,7 +19,7 @@ enum Messages {
     ILLEGAL_CONSTRUCTOR_PARAM, // 1 arg
     ;
 
-    private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());
+    private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getPackage().getName() + ".MessageBundle");
 
     public String toString() {
         return format();
