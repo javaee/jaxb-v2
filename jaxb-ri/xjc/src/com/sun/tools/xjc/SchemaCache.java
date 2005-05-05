@@ -57,6 +57,7 @@ public final class SchemaCache {
     private void fixValidatorBug6246922(ValidatorHandler handler) {
         try {
             Field f = handler.getClass().getDeclaredField("errorReporter");
+            f.setAccessible(true);
             Object errorReporter = f.get(handler);
 
             Method get = errorReporter.getClass().getDeclaredMethod("getMessageFormatter",String.class);
