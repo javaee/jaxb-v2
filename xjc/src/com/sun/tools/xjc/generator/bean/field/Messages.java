@@ -16,7 +16,7 @@ enum Messages {
     DEFAULT_SETTER_JAVADOC,     // 1 arg
     ;
 
-    private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());
+    private static final ResourceBundle rb = ResourceBundle.getBundle("com.sun.tools.xjc.generator.bean.field.MessageBundle");
 
     public String toString() {
         return format();

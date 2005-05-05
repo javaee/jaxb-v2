@@ -5,7 +5,7 @@
  SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 -->
 
-<!-- $Id: build.xml,v 1.5 2005-05-02 17:15:38 ryan_shoemaker Exp $ -->
+<!-- $Id: build.xml,v 1.6 2005-05-05 22:57:24 bhaktimehta Exp $ -->
 <project name="xjc" basedir=".." default="deploy">
 
   <description>
@@ -198,7 +198,7 @@
         <!-- insert the RI version number into the file prolog message that
              is placed at the head of every generated file and the output
              message for "xjc -version" -->
-        <replace file="${xjc.classes}/com/sun/tools/xjc/Messages.properties">
+        <replace file="${xjc.classes}/com/sun/tools/xjc/MessageBundle.properties">
             <replacefilter token="@@BUILD_VERSION@@" value="${build.version}"/>
         </replace>
         

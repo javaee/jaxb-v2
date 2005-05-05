@@ -25,7 +25,7 @@ enum Messages {
 
     ;
 
-    private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());
+    private static final ResourceBundle rb = ResourceBundle.getBundle("com.sun.tools.xjc.reader.MessageBundle");
 
     public String toString() {
         return format();
