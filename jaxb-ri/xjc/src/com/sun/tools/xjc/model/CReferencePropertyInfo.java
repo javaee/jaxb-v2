@@ -2,17 +2,15 @@ package com.sun.tools.xjc.model;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.activation.MimeType;
-import javax.xml.namespace.QName;
 import javax.xml.bind.annotation.W3CDomHandler;
+import javax.xml.namespace.QName;
 
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.tools.xjc.model.nav.NavigatorImpl;
-import javax.xml.bind.annotation.W3CDomHandler;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.ReferencePropertyInfo;
@@ -36,7 +34,7 @@ public final class CReferencePropertyInfo extends CPropertyInfo implements Refer
     private WildcardMode wildcard;
 
     public CReferencePropertyInfo(String name, boolean collection, boolean isMixed,
-                                  List<CPluginCustomization> customizations, Locator locator) {
+                                  CCustomizations customizations, Locator locator) {
         super(name, collection||isMixed, customizations, locator );
         this.isMixed = isMixed;
     }

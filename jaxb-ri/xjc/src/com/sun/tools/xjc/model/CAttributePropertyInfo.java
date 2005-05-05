@@ -1,7 +1,5 @@
 package com.sun.tools.xjc.model;
 
-import java.util.List;
-
 import javax.xml.namespace.QName;
 
 import com.sun.tools.xjc.model.nav.NClass;
@@ -21,7 +19,7 @@ public final class CAttributePropertyInfo extends CSingleTypePropertyInfo implem
     private final QName attName;
     private final boolean isRequired;
 
-    public CAttributePropertyInfo(String name, List<CPluginCustomization> customizations,
+    public CAttributePropertyInfo(String name, CCustomizations customizations,
                                   Locator locator, QName attName, TypeUse type, boolean required ) {
         super(name, type, customizations, locator);
         isRequired = required;

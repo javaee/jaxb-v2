@@ -3,17 +3,15 @@
  * SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 package com.sun.tools.xjc.reader.xmlschema;
-import java.util.List;
-
 import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JJavaName;
 import com.sun.codemodel.JPackage;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.model.CClassInfo;
+import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.model.CElement;
 import com.sun.tools.xjc.model.CElementInfo;
-import com.sun.tools.xjc.model.CPluginCustomization;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.reader.Ring;
@@ -79,7 +77,7 @@ class DefaultClassBinder extends AbstractBinderImpl
 
         // no customization is given -- do as the default binding.
 
-        List<CPluginCustomization> custs = builder.getBindInfo(type).toCustomizationList();
+        CCustomizations custs = builder.getBindInfo(type).toCustomizationList();
 
         if(type.isGlobal()) {
             // by default, global ones get their own classes.
@@ -103,6 +101,8 @@ class DefaultClassBinder extends AbstractBinderImpl
                 className = "Type";
             } else {
                 className = builder.getNameConverter().toClassName(type.getScope().getName());
+                // since the parent element isn't bound to a type, merge the customizations associated to it, too.
+                custs = CCustomizations.merge( custs, builder.getBindInfo(type.getScope()).toCustomizationList());
             }
 
             BISchemaBinding sb = builder.getBindInfo(
@@ -147,7 +147,7 @@ class DefaultClassBinder extends AbstractBinderImpl
 
         if(r==null) {
             QName tagName = new QName(decl.getTargetNamespace(),decl.getName());
-            List<CPluginCustomization> custs = builder.getBindInfo(decl).toCustomizationList();
+            CCustomizations custs = builder.getBindInfo(decl).toCustomizationList();
 
             if(decl.isGlobal()) {
                 if( getGlobalBinding().simpleMode || isCollapsable(decl)) {

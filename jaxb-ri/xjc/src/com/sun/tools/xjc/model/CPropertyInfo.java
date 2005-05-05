@@ -1,8 +1,6 @@
 package com.sun.tools.xjc.model;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -52,10 +50,10 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
     @XmlJavaTypeAdapter(Util.ToStringAdapter.class)
     public JExpression defaultValue;
 
-    private final List<CPluginCustomization> customizations;
+    private final CCustomizations customizations;
 
     protected CPropertyInfo(String name, boolean collection,
-                            List<CPluginCustomization> customizations, Locator locator) {
+                            CCustomizations customizations, Locator locator) {
         this.publicName = name;
         String n = NameConverter.standard.toVariableName(name);
         if(!JJavaName.isJavaIdentifier(n))
@@ -65,7 +63,7 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
         this.isCollection = collection;
         this.locator = locator;
         if(customizations==null)
-            this.customizations = Collections.emptyList();
+            this.customizations = CCustomizations.EMPTY;
         else
             this.customizations = customizations;
     }
@@ -181,7 +179,7 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
         return t.getType().isBoxedType();
     }
 
-    public List<CPluginCustomization> getCustomizations() {
+    public CCustomizations getCustomizations() {
         return customizations;
     }
 }

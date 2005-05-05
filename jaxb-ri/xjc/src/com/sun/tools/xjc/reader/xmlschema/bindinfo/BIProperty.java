@@ -4,8 +4,6 @@
  */
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
-import java.util.List;
-
 import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JType;
@@ -13,8 +11,8 @@ import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
 import com.sun.tools.xjc.generator.bean.field.IsSetFieldRenderer;
 import com.sun.tools.xjc.model.CAttributePropertyInfo;
+import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.model.CElementPropertyInfo;
-import com.sun.tools.xjc.model.CPluginCustomization;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.model.CReferencePropertyInfo;
 import com.sun.tools.xjc.model.CValuePropertyInfo;
@@ -25,7 +23,6 @@ import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.xml.bind.v2.NameConverter;
 import com.sun.xml.bind.v2.TODO;
-import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSAttGroupDecl;
 import com.sun.xml.xsom.XSAttributeDecl;
@@ -250,7 +247,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
             name = defaultName;
 
         TODO.prototype(); // how do we handle ID?
-        return wrapUp(new CValuePropertyInfo(name, /*TODO*/getCustomizations(source),source.getLocator(), tu ),source);
+        return wrapUp(new CValuePropertyInfo(name, getCustomizations(source),source.getLocator(), tu ),source);
     }
 
     public CAttributePropertyInfo createAttributeProperty( XSAttributeUse use, TypeUse tu ) {
@@ -373,7 +370,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
         return prop;
     }
 
-    private List<CPluginCustomization> getCustomizations( XSComponent src ) {
+    private CCustomizations getCustomizations( XSComponent src ) {
         return getBuilder().getBindInfo(src).toCustomizationList();
     }
 

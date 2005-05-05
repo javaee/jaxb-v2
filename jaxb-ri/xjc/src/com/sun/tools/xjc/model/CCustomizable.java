@@ -1,7 +1,5 @@
 package com.sun.tools.xjc.model;
 
-import java.util.List;
-
 import com.sun.tools.xjc.Plugin;
 
 /**
@@ -13,12 +11,11 @@ public interface CCustomizable {
     /**
      * Gets the list of customizations attached to this model component.
      *
-     *
      * @return
      *      can be an empty list but never be null. The returned list is read-only.
      *      Do not modify.
      *
      * @see Plugin#getCustomizationURIs()
      */
-    List<CPluginCustomization> getCustomizations();
+    CCustomizations getCustomizations();
 }

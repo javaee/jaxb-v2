@@ -152,8 +152,8 @@ public abstract class CBuiltinLeafInfo extends BuiltinLeafInfoImpl<NType,NClass>
         /**
          * No vendor customization in the built-in classes.
          */
-        public List<CPluginCustomization> getCustomizations() {
-            return Collections.emptyList();
+        public CCustomizations getCustomizations() {
+            return CCustomizations.EMPTY;
         }
     }
 

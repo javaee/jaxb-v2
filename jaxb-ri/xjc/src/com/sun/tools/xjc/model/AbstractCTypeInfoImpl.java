@@ -1,13 +1,10 @@
 package com.sun.tools.xjc.model;
 
-import java.util.List;
-import java.util.Collections;
-
 import javax.activation.MimeType;
 
-import com.sun.xml.bind.v2.model.core.ID;
-import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JExpression;
+import com.sun.xml.bind.v2.model.core.ID;
 
 import org.relaxng.datatype.ValidationContext;
 
@@ -23,11 +20,11 @@ import org.relaxng.datatype.ValidationContext;
  */
 abstract class AbstractCTypeInfoImpl implements CTypeInfo {
 
-    private final List<CPluginCustomization> customizations;
+    private final CCustomizations customizations;
 
-    protected AbstractCTypeInfoImpl(List<CPluginCustomization> customizations) {
+    protected AbstractCTypeInfoImpl(CCustomizations customizations) {
         if(customizations==null)
-            customizations = Collections.emptyList();
+            customizations = CCustomizations.EMPTY;
         this.customizations = customizations;
     }
 
@@ -54,7 +51,7 @@ abstract class AbstractCTypeInfoImpl implements CTypeInfo {
         return null;
     }
 
-    public List<CPluginCustomization> getCustomizations() {
+    public CCustomizations getCustomizations() {
         return customizations;
     }
 

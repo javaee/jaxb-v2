@@ -5,11 +5,9 @@
 package com.sun.tools.xjc.model;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Collections;
 
-import javax.xml.namespace.QName;
 import javax.activation.MimeType;
+import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
@@ -74,7 +72,7 @@ public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, 
      */
     public final Collection<CEnumConstant> members;
 
-    private final List<CPluginCustomization> customizations;
+    private final CCustomizations customizations;
     /**
      * Source line information that points to the place
      * where this type-safe enum is defined.
@@ -93,7 +91,7 @@ public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, 
                          String shortName,
                          CNonElement base,
                          Collection<CEnumConstant> _members,
-                         List<CPluginCustomization> customizations,
+                         CCustomizations customizations,
                          Locator _sourceLocator) {
         this.model = model;
         this.parent = container;
@@ -101,7 +99,7 @@ public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, 
         this.base = base;
         this.members = _members;
         if(customizations==null)
-            customizations = Collections.emptyList();
+            customizations = CCustomizations.EMPTY;
         this.customizations = customizations;
         this.sourceLocator = _sourceLocator;
         this.typeName = typeName;
@@ -196,7 +194,7 @@ public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, 
         return base;
     }
 
-    public List<CPluginCustomization> getCustomizations() {
+    public CCustomizations getCustomizations() {
         return customizations;
     }
 }
