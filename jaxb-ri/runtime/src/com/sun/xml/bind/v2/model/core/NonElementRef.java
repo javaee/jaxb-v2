@@ -12,11 +12,15 @@ package com.sun.xml.bind.v2.model.core;
 public interface NonElementRef<T,C> {
     /**
      * Target of the reference.
+     *
+     * @return never null
      */
     NonElement<T,C> getTarget();
 
     /**
      * Gets the property which is the source of this reference.
+     *
+     * @return never null
      */
     PropertyInfo<T,C> getSource();
 }
