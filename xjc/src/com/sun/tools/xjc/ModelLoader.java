@@ -191,8 +191,7 @@ public final class ModelLoader {
 
 
     /**
-     * {@link XMLParser} implementation that reads from {@link DOMForest}
-     * instead of its original source.
+     * {@link XMLParser} implementation that adds additional processors into the chain.
      * 
      * <p>
      * This parser will parse a DOM forest as:
@@ -201,11 +200,11 @@ public final class ModelLoader {
      *     ProhibitedFeatureFilter -->
      *       XSOMParser
      */
-    private class XMLSchemaForestParser implements XMLParser {
-        private final XMLParser forestParser;
+    private class XMLSchemaParser implements XMLParser {
+        private final XMLParser baseParser;
         
-        private XMLSchemaForestParser(DOMForest forest) {
-            forestParser = forest.createParser();
+        private XMLSchemaParser(XMLParser baseParser) {
+            this.baseParser = baseParser;
         }
         
         public void parse(InputSource source, ContentHandler handler,
@@ -216,7 +215,7 @@ public final class ModelLoader {
             handler = wrapBy( new CustomizationContextChecker(errorReceiver), handler );
 //          handler = wrapBy( new VersionChecker(controller), handler );
             
-            forestParser.parse( source, handler, errorHandler, entityResolver );
+            baseParser.parse( source, handler, errorHandler, entityResolver );
         }
         /**
          * Wraps the specified content handler by a filter.
@@ -365,14 +364,14 @@ public final class ModelLoader {
 
     public XSOMParser createXSOMParser(XMLParser parser) {
         // set up other parameters to XSOMParser
-        XSOMParser reader = new XSOMParser(parser);
+        XSOMParser reader = new XSOMParser(new XMLSchemaParser(parser));
         reader.setAnnotationParser(new AnnotationParserFactoryImpl(codeModel,opt));
         reader.setErrorHandler(errorReceiver);
         return reader;
     }
 
     public XSOMParser createXSOMParser(DOMForest forest) {
-        return createXSOMParser(new XMLSchemaForestParser(forest));
+        return createXSOMParser(forest.createParser());
     }
 
 
@@ -417,9 +416,7 @@ public final class ModelLoader {
             }
         };
 
-        XSOMParser reader = new XSOMParser(parser);
-        reader.setAnnotationParser(new AnnotationParserFactoryImpl(codeModel,opt));
-        reader.setErrorHandler(errorReceiver);
+        XSOMParser reader = createXSOMParser(parser);
 
         // parse source grammars
         for (InputSource value : opt.getGrammars())
