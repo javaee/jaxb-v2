@@ -32,7 +32,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.11 2005-05-04 14:10:16 kohsuke Exp $
+       $Id: build.xml,v 1.12 2005-05-06 23:00:52 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -63,7 +63,6 @@
         <ant dir="runtime-deprecated"  target="compile-runtime-deprecated" />
         <ant dir="schemagen"           target="compile" />
         <ant dir="xjc"                 target="compile" />
-        <ant dir="istack-ap"           target="compile" />
         <ant dir="tools"               target="compile" />
     </target>
     
@@ -259,21 +258,6 @@ Class-Path: ${manifest.classpath}
           </sequential>
           
           
-          <!-- generate istackp.jar -->
-          <sequential>
-              <createManifest file="${xjc.root}/build/manifest.istackp" extensionName="com.sun.istackp" />
-              <echo file="${xjc.root}/build/manifest.istackp" append="true"
->Class-Path: jaxb-xjc.jar
-
-</echo>
-              <jar file="${jaxb.dist}/lib/istackp.jar"
-                   manifest="${xjc.root}/build/manifest.istackp">
-                  <fileset dir="${istackap.classes}"/>
-                  <metainf dir="${istackap.src}/META-INF" excludes="**/CVS"/>
-              </jar>
-          </sequential>
-          
-          
           <!-- copy bin scripts -->
           <sequential>
               <copy file="${jaxb.root}/tools/bin/xjc.bat" todir="${jaxb.dist}/bin"/>
@@ -367,9 +351,6 @@ Class-Path: ${manifest.classpath}
           </zip>
           <delete dir="tmp" />
         </sequential>
-        <zip zipfile="${jaxb.dist}/lib/istackp.src.zip">
-          <fileset dir="${istackap.src}"/>
-        </zip>
       </parallel>
     </target>
     
@@ -520,7 +501,6 @@ Class-Path: ${manifest.classpath}
           <ant dir="xjc"                target="clean" />
           <ant dir="pkg"                target="clean-pkg" />
           <ant dir="samples"            target="clean-samples"/>
-          <ant dir="istack-ap"          target="clean"/>
           <ant dir="tools"              target="clean"/>
           <ant dir="apgen"              target="clean" />
           <ant dir="schemagen"          target="clean" />
