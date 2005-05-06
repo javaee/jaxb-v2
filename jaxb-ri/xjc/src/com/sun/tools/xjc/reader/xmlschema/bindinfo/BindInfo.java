@@ -165,6 +165,10 @@ public final class BindInfo implements Iterable<BIDeclaration> {
 
     /**
      * Gets the list of {@link CPluginCustomization}s from this.
+     *
+     * <p>
+     * Note that calling this method marks all those plug-in customizations
+     * as 'used'. So call it only when it's really necessary.
      */
     public CCustomizations toCustomizationList() {
         CCustomizations r=null;

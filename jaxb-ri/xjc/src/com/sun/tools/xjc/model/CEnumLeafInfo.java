@@ -73,12 +73,11 @@ public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, 
     public final Collection<CEnumConstant> members;
 
     private final CCustomizations customizations;
+
     /**
-     * Source line information that points to the place
-     * where this type-safe enum is defined.
-     * Used to report error messages.
+     * @see #getLocator()
      */
-    public final Locator sourceLocator;
+    private final Locator sourceLocator;
 
     public String javadoc;
 
@@ -110,6 +109,14 @@ public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, 
         model.add(this);
     }
 
+    /**
+     * Source line information that points to the place
+     * where this type-safe enum is defined.
+     * Used to report error messages.
+     */
+    public Locator getLocator() {
+        return sourceLocator;
+    }
 
     public QName getTypeName() {
         return typeName;

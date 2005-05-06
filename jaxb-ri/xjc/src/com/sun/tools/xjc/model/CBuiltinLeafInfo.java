@@ -1,13 +1,13 @@
 package com.sun.tools.xjc.model;
 
+import java.awt.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.awt.*;
 
+import javax.activation.DataHandler;
+import javax.activation.MimeType;
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
@@ -19,8 +19,6 @@ import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
-import javax.activation.DataHandler;
-import javax.activation.MimeType;
 
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JExpr;
@@ -39,6 +37,7 @@ import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.impl.BuiltinLeafInfoImpl;
 
 import org.relaxng.datatype.ValidationContext;
+import org.xml.sax.Locator;
 
 /**
  * Encapsulates the default handling for leaf classes (which are bound
@@ -113,6 +112,10 @@ public abstract class CBuiltinLeafInfo extends BuiltinLeafInfoImpl<NType,NClass>
 
     public final CBuiltinLeafInfo getInfo() {
         return this;
+    }
+
+    public Locator getLocator() {
+        return Model.EMPTY_LOCATOR;
     }
 
     /**

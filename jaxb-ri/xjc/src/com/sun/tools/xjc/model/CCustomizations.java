@@ -18,11 +18,44 @@ import com.sun.tools.xjc.Plugin;
  */
 public final class CCustomizations extends ArrayList<CPluginCustomization> {
 
+    /**
+     * All {@link CCustomizations} used by a {@link Model} form a single linked list
+     * so that we can look for unacknowledged customizations later.
+     *
+     * @see CPluginCustomization#markAsAcknowledged()
+     * @see #setParent(Model)
+     */
+    /*package*/ CCustomizations next;
+
+    /**
+     * The owner model component that carries these customizations.
+     */
+    private CCustomizable owner;
+
     public CCustomizations() {
     }
 
     public CCustomizations(Collection<? extends CPluginCustomization> cPluginCustomizations) {
         super(cPluginCustomizations);
+    }
+
+    /*package*/ void setParent(Model model,CCustomizable owner) {
+        if(this.next!=null)     return;
+
+        this.next = model.customizations;
+        model.customizations = this;
+        assert owner!=null;
+        this.owner = owner;
+    }
+
+    /**
+     * Gets the model component that carries this customization.
+     *
+     * @return never null.
+     */
+    public CCustomizable getOwner() {
+        assert owner!=null;
+        return owner;
     }
 
     /**

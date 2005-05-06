@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import com.sun.tools.xjc.Options;
+import com.sun.tools.xjc.Plugin;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -39,7 +40,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-public class ExtensionBindingChecker extends XMLFilterImpl {
+public final class ExtensionBindingChecker extends XMLFilterImpl {
     
     /** Remembers in-scope namespace bindings. */
     private final NamespaceSupport nsSupport = new NamespaceSupport();
@@ -49,9 +50,13 @@ public class ExtensionBindingChecker extends XMLFilterImpl {
      */
     private int count=0;
     
-    /** Set of namespace URIs that designates enabled extensions. */
+    /**
+     * Set of namespace URIs that designates enabled extensions.
+     */
     private final Set<String> enabledExtensions = new HashSet<String>();
-    
+
+    private final Set<String> recognizableExtensions = new HashSet<String>();
+
     private Locator locator;
     
     /**
@@ -96,16 +101,28 @@ public class ExtensionBindingChecker extends XMLFilterImpl {
         this.allowExtensions = options.compatibilityMode!=Options.STRICT;
         this.options = options;
         setErrorHandler(handler);
+
+        for (Plugin plugin : Options.allPlugins)
+            recognizableExtensions.addAll(plugin.getCustomizationURIs());
+        recognizableExtensions.add(Const.XJC_EXTENSION_URI);
     }
     
     /**
      * Checks if the given namespace URI is supported as the extension
      * bindings.
      */
-    protected boolean isSupportedExtension( String namespaceUri ) {
+    private boolean isSupportedExtension( String namespaceUri ) {
         if(namespaceUri.equals(Const.XJC_EXTENSION_URI))
             return true;
         return options.pluginURIs.contains(namespaceUri);
+    }
+
+    /**
+     * Checks if the given namespace URI can be potentially recognized
+     * by this XJC.
+     */
+    private boolean isRecognizableExtension( String namespaceUri ) {
+        return recognizableExtensions.contains(namespaceUri);
     }
 
     /**
@@ -124,7 +141,7 @@ public class ExtensionBindingChecker extends XMLFilterImpl {
         // the rest of the processor recognizes it as something special.
         // this allows us to send the documentation and other harmless
         // foreign XML fragments, which may be picked up as documents.
-        return isSupportedExtension(uri);
+        return isRecognizableExtension(uri);
     }
 
     
@@ -169,12 +186,34 @@ public class ExtensionBindingChecker extends XMLFilterImpl {
                     String uri = nsSupport.getURI(prefix);
                     if( uri==null ) {
                         // undeclared prefix
-                        error( Messages.ERR_UNDECLARED_PREFIX.format(prefix ) );
+                        error( Messages.ERR_UNDECLARED_PREFIX.format(prefix) );
                     } else {
-                        if( !isSupportedExtension(uri) )
-                            // we currently don't support any extension. report errors.
-                            error( Messages.ERR_UNSUPPORTED_EXTENSION.format(prefix ) );
-                        
+                        if( !isRecognizableExtension(uri) )
+                            // not the namespace URI we know of
+                            error( Messages.ERR_UNSUPPORTED_EXTENSION.format(prefix) );
+                        else
+                        if( !isSupportedExtension(uri) ) {
+                            // recognizable but not not supported, meaning
+                            // the plug-in isn't enabled
+
+                            // look for plug-in that handles this URI
+                            Plugin owner = null;
+                            for( Plugin p : Options.allPlugins ) {
+                                if(p.getCustomizationURIs().contains(uri)) {
+                                    owner = p;
+                                    break;
+                                }
+                            }
+                            if(owner!=null)
+                                // we know the plug-in that supports this namespace, but it's not enabled
+                                error( Messages.ERR_PLUGIN_NOT_ENABLED.format(owner.getOptionName(),uri));
+                            else {
+                                // this shouldn't happen, but be defensive...
+                                error( Messages.ERR_UNSUPPORTED_EXTENSION.format(prefix) );
+                            }
+                        }
+
+                        // as an error recovery enable this namespace URI anyway.
                         enabledExtensions.add(uri);
                     }
                 }
@@ -182,13 +221,29 @@ public class ExtensionBindingChecker extends XMLFilterImpl {
             
             if( needsToBePruned(namespaceURI) ) {
                 // start pruning the tree. Call the super class method directly.
-                if( isSupportedExtension(namespaceURI) ) {
+                if( isRecognizableExtension(namespaceURI) ) {
                     // but this is a supported customization.
                     // isn't the user forgetting @jaxb:extensionBindingPrefixes?
                     warning( Messages.ERR_SUPPORTED_EXTENSION_IGNORED.format(namespaceURI) );
                 }
                 super.setContentHandler(stub);
                 cutDepth=1;
+            }
+            else
+            if(options.pluginURIs.contains(namespaceURI)) {
+                // make sure that this is a valid tag name
+                boolean correct = false;
+                for( Plugin p : options.activePlugins ) {
+                    if(p.isCustomizationTagName(namespaceURI,localName)) {
+                        correct = true;
+                        break;
+                    }
+                }
+                if(!correct) {
+                    error( Messages.ERR_ILLEGAL_CUSTOMIZATION_TAGNAME.format(qName) );
+                    super.setContentHandler(stub);
+                    cutDepth=1;
+                }
             }
         } else
             cutDepth++;

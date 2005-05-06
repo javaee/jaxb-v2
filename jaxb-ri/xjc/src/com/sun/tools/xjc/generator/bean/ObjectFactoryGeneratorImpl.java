@@ -281,7 +281,7 @@ abstract class ObjectFactoryGeneratorImpl extends ObjectFactoryGenerator {
             for( String fieldName : cons.fields ) {
                 CPropertyInfo field = cc.target.getProperty(fieldName);
                 if(field==null) {
-                    outline.getErrorReceiver().error(cc.target.location,
+                    outline.getErrorReceiver().error(cc.target.getLocator(),
                         Messages.ILLEGAL_CONSTRUCTOR_PARAM.format(fieldName));
                     continue;
                 }

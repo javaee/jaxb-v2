@@ -10,6 +10,8 @@ import com.sun.tools.xjc.outline.Outline;
 import com.sun.xml.bind.v2.model.core.ArrayInfo;
 import com.sun.xml.bind.v2.model.impl.ArrayInfoImpl;
 
+import org.xml.sax.Locator;
+
 /**
  * TODO: Because s2j doesn't generate the array binding, this is unnecessary.
  * @author Kohsuke Kawaguchi
@@ -20,8 +22,8 @@ public final class CArrayInfo extends AbstractCTypeInfoImpl implements ArrayInfo
 
     private final QName typeName;
 
-    public CArrayInfo(CNonElement itemType, CCustomizations customizations) {
-        super(customizations);
+    public CArrayInfo(Model model,CNonElement itemType, CCustomizations customizations) {
+        super(model,customizations);
         this.itemType = itemType;
         assert itemType.getTypeName()!=null;
         this.typeName = ArrayInfoImpl.calcArrayTypeName(itemType.getTypeName());
@@ -49,5 +51,9 @@ public final class CArrayInfo extends AbstractCTypeInfoImpl implements ArrayInfo
 
     public String fullName() {
         return itemType.getType().fullName()+"[]";
+    }
+
+    public Locator getLocator() {
+        return Model.EMPTY_LOCATOR;
     }
 }

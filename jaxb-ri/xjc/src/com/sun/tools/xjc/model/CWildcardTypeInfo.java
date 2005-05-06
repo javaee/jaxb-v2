@@ -9,6 +9,7 @@ import com.sun.tools.xjc.outline.Outline;
 import com.sun.xml.bind.v2.model.core.WildcardTypeInfo;
 
 import org.w3c.dom.Element;
+import org.xml.sax.Locator;
 
 /**
  * {@link CTypeInfo} for the DOM node.
@@ -19,7 +20,7 @@ import org.w3c.dom.Element;
  */
 public final class CWildcardTypeInfo extends AbstractCTypeInfoImpl implements WildcardTypeInfo<NType,NClass> {
     private CWildcardTypeInfo() {
-        super(null);
+        super(null,null);
     }
 
     public static final CWildcardTypeInfo INSTANCE = new CWildcardTypeInfo();
@@ -30,5 +31,9 @@ public final class CWildcardTypeInfo extends AbstractCTypeInfoImpl implements Wi
 
     public NType getType() {
         return NavigatorImpl.create(Element.class);
+    }
+
+    public Locator getLocator() {
+        return Model.EMPTY_LOCATOR;
     }
 }

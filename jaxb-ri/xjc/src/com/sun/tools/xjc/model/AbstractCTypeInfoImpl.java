@@ -22,9 +22,11 @@ abstract class AbstractCTypeInfoImpl implements CTypeInfo {
 
     private final CCustomizations customizations;
 
-    protected AbstractCTypeInfoImpl(CCustomizations customizations) {
+    protected AbstractCTypeInfoImpl(Model model, CCustomizations customizations) {
         if(customizations==null)
             customizations = CCustomizations.EMPTY;
+        else
+            customizations.setParent(model,this);
         this.customizations = customizations;
     }
 

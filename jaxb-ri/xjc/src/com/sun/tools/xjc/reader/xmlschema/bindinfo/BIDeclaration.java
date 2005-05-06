@@ -59,5 +59,5 @@ public interface BIDeclaration {
      * Checks if this declaration was acknowledged.
      */
     boolean isAcknowledged();
-}
+    }
 

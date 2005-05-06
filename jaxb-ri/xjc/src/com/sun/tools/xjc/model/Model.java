@@ -17,6 +17,7 @@ import com.sun.codemodel.JPackage;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.Plugin;
+import com.sun.tools.xjc.reader.xmlschema.Messages;
 import com.sun.tools.xjc.api.ClassNameAllocator;
 import com.sun.tools.xjc.generator.bean.BeanGenerator;
 import com.sun.tools.xjc.generator.bean.ImplStructureStrategy;
@@ -30,6 +31,9 @@ import com.sun.xml.bind.v2.NameConverter;
 import com.sun.xml.bind.v2.model.core.Ref;
 import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.nav.Navigator;
+
+import org.xml.sax.Locator;
+import org.xml.sax.helpers.LocatorImpl;
 
 /**
  * Root of the object model that represents the code that needs to be generated.
@@ -79,6 +83,13 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void> {
      * {@link NameConverter} to be used.
      */
     private NameConverter nameConverter;
+
+    /**
+     * Single linked list that connects all {@link CCustomizations} that belong to this model.
+     *
+     * @see CCustomizations#next
+     */
+    /*package*/ CCustomizations customizations;
 
     /**
      * @param nc
@@ -198,9 +209,34 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void> {
         for( Plugin ma : opt.activePlugins )
             ma.run(o,opt,ehf);
 
+        // check for unused plug-in customizations.
+        // these can be only checked after the plug-ins run, so it's here.
+        // the JAXB bindings are checked by XMLSchema's builder.
+        for( CCustomizations c=customizations; c!=null; c=c.next ) {
+            for (CPluginCustomization p : c) {
+                if(!p.isAcknowledged()) {
+                    ehf.error(
+                        p.locator,
+                        Messages.format(
+                            Messages.ERR_UNACKNOWLEDGED_CUSTOMIZATION,
+                            p.element.getNodeName()
+                        ));
+                    ehf.error(
+                        c.getOwner().getLocator(),
+                        Messages.format(
+                            Messages.ERR_UNACKNOWLEDGED_CUSTOMIZATION_LOCATION));
+                }
+            }
+        }
+
         if(ehf.hadError())
             o = null;
         return o;
+    }
+
+    private String fixNull(String s) {
+        if(s==null) return "";
+        else        return s;
     }
 
     /**
@@ -323,4 +359,12 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void> {
         return r;
     }
 
+    /*package*/ static final Locator EMPTY_LOCATOR;
+
+    static {
+        LocatorImpl l = new LocatorImpl();
+        l.setColumnNumber(-1);
+        l.setLineNumber(-1);
+        EMPTY_LOCATOR = l;
+    }
 }

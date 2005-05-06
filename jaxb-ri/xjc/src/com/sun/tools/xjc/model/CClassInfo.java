@@ -70,7 +70,7 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
      * The location in the source file where this class was declared.
      */
     @XmlTransient
-    public final Locator location;
+    private final Locator location;
 
     private boolean isAbstract;
 
@@ -102,7 +102,7 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
     }
 
     public CClassInfo(Model model,CClassInfoParent p, String shortName, Locator location, QName typeName, QName elementName, CCustomizations customizations) {
-        super(customizations);
+        super(model,customizations);
         this.model = model;
         this.parent = p;
         this.shortName = model.allocator.assignClassName(parent,shortName);
@@ -114,7 +114,7 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
     }
 
     public CClassInfo(Model model,JCodeModel cm, String fullName, Locator location, QName typeName, QName elementName, CCustomizations customizations) {
-        super(customizations);
+        super(model,customizations);
         this.model = model;
         int idx = fullName.indexOf('.');
         if(idx<0) {
@@ -129,6 +129,10 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
         this.elementName = elementName;
 
         model.add(this);
+    }
+
+    public Locator getLocator() {
+        return location;
     }
 
     public boolean hasAttributeWildcard() {

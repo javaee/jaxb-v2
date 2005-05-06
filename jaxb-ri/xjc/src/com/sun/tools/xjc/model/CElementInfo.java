@@ -62,7 +62,7 @@ public final class CElementInfo extends AbstractCTypeInfoImpl implements Element
      * The location in the source file where this class was declared.
      */
     @XmlTransient
-    public final Locator location;
+    private final Locator location;
 
     private boolean isAbstract;
 
@@ -91,7 +91,7 @@ public final class CElementInfo extends AbstractCTypeInfoImpl implements Element
      * Creates an element in the given parent.
      */
     public CElementInfo(Model model,QName tagName, CClassInfoParent parent, TypeUse contentType, String defaultValue, CCustomizations customizations, Locator location ) {
-        super(customizations);
+        super(model,customizations);
         this.tagName = tagName;
         this.model = model;
         this.parent = parent;
@@ -236,5 +236,9 @@ public final class CElementInfo extends AbstractCTypeInfoImpl implements Element
      */
     public boolean hasClass() {
         return className!=null;
+    }
+
+    public Locator getLocator() {
+        return location;
     }
 }

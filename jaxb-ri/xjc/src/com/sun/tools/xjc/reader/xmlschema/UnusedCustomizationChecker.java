@@ -48,7 +48,9 @@ class UnusedCustomizationChecker extends BindingComponent implements XSVisitor, 
 
     private final Set<XSComponent> visitedComponents = new HashSet<XSComponent>();
 
-    /** Runs the check. */
+    /**
+     * Runs the check.
+     */
     void run() {
         for( XSSchema s : Ring.get(XSSchemaSet.class).getSchemas() ) {
             schema(s);
@@ -81,12 +83,12 @@ class UnusedCustomizationChecker extends BindingComponent implements XSVisitor, 
             if( !decl.isAcknowledged() ) {
                 getErrorReporter().error(
                     decl.getLocation(),
-                    ERR_UNACKNOWLEDGED_CUSTOMIZATION,
+                    Messages.ERR_UNACKNOWLEDGED_CUSTOMIZATION,
                     decl.getName().getLocalPart()
                     );
                 getErrorReporter().error(
                     c.getLocator(),
-                    ERR_UNACKNOWLEDGED_CUSTOMIZATION_LOCATION);
+                    Messages.ERR_UNACKNOWLEDGED_CUSTOMIZATION_LOCATION);
                 // mark it as acknowledged to avoid
                 // duplicated error messages.
                 decl.markAsAcknowledged();
@@ -212,11 +214,5 @@ class UnusedCustomizationChecker extends BindingComponent implements XSVisitor, 
     public void xpath(XSXPath xp) {
         check(xp);
     }
-
-
-    static final String ERR_UNACKNOWLEDGED_CUSTOMIZATION =
-        "UnusedCustomizationChecker.UnacknolwedgedCustomization"; // arg:1
-    static final String ERR_UNACKNOWLEDGED_CUSTOMIZATION_LOCATION =
-        "UnusedCustomizationChecker.UnacknolwedgedCustomization.Relevant"; // arg:0
 
 }

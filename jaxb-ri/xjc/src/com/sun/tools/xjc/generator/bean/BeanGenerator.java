@@ -568,7 +568,7 @@ public final class BeanGenerator implements Outline
 
 
         type = getClassFactory().createClass(
-            getContainer(e.parent,Aspect.EXPOSED),e.shortName,e.sourceLocator, ClassType.ENUM);
+            getContainer(e.parent,Aspect.EXPOSED),e.shortName,e.getLocator(), ClassType.ENUM);
         type.javadoc().appendComment(e.javadoc);
 
         XmlEnumWriter xew = type.annotate2(XmlEnumWriter.class);
@@ -591,12 +591,12 @@ public final class BeanGenerator implements Outline
 
             if(!JJavaName.isJavaIdentifier(constName)) {
                 // didn't produce a name.
-                getErrorReceiver().error( e.sourceLocator,
+                getErrorReceiver().error( e.getLocator(),
                     Messages.ERR_UNUSABLE_NAME.format(mem.getLexicalValue(), constName ) );
             }
 
             if( !enumFieldNames.add(constName) )
-                getErrorReceiver().error( e.sourceLocator, Messages.ERR_NAME_COLLISION.format(constName));
+                getErrorReceiver().error( e.getLocator(), Messages.ERR_NAME_COLLISION.format(constName));
 
             // [RESULT]
             // <Const>(...)

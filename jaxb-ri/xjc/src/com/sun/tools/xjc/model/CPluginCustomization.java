@@ -48,4 +48,8 @@ public class CPluginCustomization {
         this.element = element;
         this.locator = locator;
     }
+
+    public boolean isAcknowledged() {
+        return acknowledged;
+    }
 }
