@@ -15,7 +15,7 @@ class Messages
 {
     /** Loads a string resource and formats it with specified arguments. */
     static String format( String property, Object... args ) {
-        String text = ResourceBundle.getBundle(Messages.class.getName()).getString(property);
+        String text = ResourceBundle.getBundle(Messages.class.getPackage().getName() + ".MessageBundle").getString(property);
         return MessageFormat.format(text,args);
     }
     
