@@ -5,12 +5,7 @@
 package com.sun.codemodel;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.List;
-import java.util.Collections;
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * JavaDoc comment.
@@ -20,151 +15,88 @@ import java.util.Collection;
  * in the comment section), then the parameter parts (@param), the return part (@return),
  * and the throws parts (@throws).
  *
- * <p>
- * Each part can contain a free-form text. This text is modeled as a collection of 'values'
- * in this class. A value can be a {@link JType} (which will be prinited with a @link tag),
- * anything that can be turned into a {@link String} via the {@link Object#toString()} method,
- * or a {@link Collection}/array of those objects.
- *
- * <p>
- * Values can be added through the various append methods one by one or in a bulk.
- *
  * TODO: it would be nice if we have JComment class and we can derive this class from there.
  */
-public class JDocComment implements JGenerable {
-    /**
-     * The main part.
-     */
-    private Object comment;
+public class JDocComment extends JCommentPart implements JGenerable {
+
 
     /** list of @param tags */
-    private final Map atParams = new HashMap();
+    private final Map<String,JCommentPart> atParams = new HashMap<String,JCommentPart>();
     
     /** list of @throws tags */
-    private final Map atThrows = new HashMap();
+    private final Map<JClass,JCommentPart> atThrows = new HashMap<JClass,JCommentPart>();
     
     /**
-     * The @return tag. Follows the same rule as {@link #comment}
+     * The @return tag part.
      */
-    private Object atReturn = null;
+    private JCommentPart atReturn = null;
     
     /** The @deprecated tag */
-    private String atDeprecated = null;
+    private JCommentPart atDeprecated = null;
 
-    /**
-     * Gets the body of the comment.
-     */
-    public List<Object> getComment() {
-        return getInternal(comment);
+    private final JCodeModel owner;
+
+
+    public JDocComment(JCodeModel owner) {
+        this.owner = owner;
     }
 
-    /** Sets the body of the comment. */
-    public JDocComment setComment(String comment) {
-        this.comment = comment;
+    public JDocComment append(Object o) {
+        add(o);
         return this;
-    }
-    
-    /**
-     * Appends a text to the body of the comment.
-     */
-    public JDocComment append( Object content ) {
-        comment = appendInternal(comment,content);
-        return this;
-    }
-
-    /**
-     * Convenience method to update the heterogenous field.
-     */
-    private static Object appendInternal(Object field,Object value) {
-        if(field==null) {
-            field = value;
-        } else
-        if(field instanceof List) {
-            listAppend((List)field,value);
-        } else {
-            List l = new ArrayList();
-            l.add(field);
-            listAppend(l,value);
-            field = l;
-        }
-        return field;
-    }
-
-    private static void listAppend(List l, Object value) {
-        if(value instanceof Object[]) {
-            for( Object o : (Object[])value)
-                listAppend(l,o);
-        } else
-        if(value instanceof Collection) {
-            for( Object o : (Collection)value)
-                listAppend(l,o);
-        } else
-            l.add(value);
-    }
-
-    /**
-     * Convenience method to get the heterogenous field as a list.
-     */
-    private static List<Object> getInternal(Object field) {
-        if(field==null)   return Collections.emptyList();
-        if(field instanceof List)     return (List<Object>)field;
-        else    return Collections.singletonList(field);
     }
 
     /**
      * Append a text to a @param tag to the javadoc
      */
-    public JDocComment addParam( String param, Object value ) {
-        atParams.put( param, appendInternal( atParams.get(param), value ) );
-        return this;
+    public JCommentPart addParam( String param ) {
+        JCommentPart p = atParams.get(param);
+        if(p==null)
+            atParams.put(param,p=new JCommentPart());
+        return p;
     }
 
     /**
      * Append a text to an @param tag.
      */
-    public JDocComment addParam( JVar param, Object value ) {
-        return addParam( param.name, value );
+    public JCommentPart addParam( JVar param ) {
+        return addParam( param.name );
     }
 
 
     /**
      * add an @throws tag to the javadoc
      */
-    public JDocComment addThrows( String exception, String comment ) {
-        String s = (String)atThrows.get(exception);
-        if( s!=null )   comment = s+comment;
-        
-        atThrows.put( exception, comment );
-        return this;
+    public JCommentPart addThrows( Class exception ) {
+        return addThrows( owner.ref(exception) );
     }
     
     /**
      * add an @throws tag to the javadoc
      */
-    public JDocComment addThrows( Class exception, String comment ) {
-        return addThrows( exception.getName(), comment );
-    }
-    
-    /**
-     * add an @throws tag to the javadoc
-     */
-    public JDocComment addThrows( JClass exception, String comment ) {
-        return addThrows( exception.fullName(), comment );
+    public JCommentPart addThrows( JClass exception ) {
+        JCommentPart p = atThrows.get(exception);
+        if(p==null)
+            atThrows.put(exception,p=new JCommentPart());
+        return p;
     }
     
     /**
      * Appends a text to @return tag.
      */
-    public JDocComment addReturn( Object value ) {
-        atReturn = appendInternal(atReturn,comment);
-        return this;
+    public JCommentPart addReturn() {
+        if(atReturn==null)
+            atReturn = new JCommentPart();
+        return atReturn;
     }
 
     /**
      * add an @deprecated tag to the javadoc, with the associated message.
      */
-    public void setDeprecated( String comment ) {
-        atDeprecated = comment;
+    public JCommentPart addDeprecated() {
+        if(atDeprecated==null)
+            atDeprecated = new JCommentPart();
+        return atDeprecated;
     }
 
     public void generate(JFormatter f) {
@@ -173,69 +105,28 @@ public class JDocComment implements JGenerable {
 
         f.p("/**").nl();
 
-        format(f,getComment()," * ");
+        format(f," * ");
+
+        String INDENT = " *     ";
 
         f.p(" * ").nl();
-        for( Iterator i = atParams.entrySet().iterator(); i.hasNext(); ) {
-            Map.Entry e = (Map.Entry)i.next();
-            format( f, "@param "+e.getKey(), getInternal(e.getValue()) );
+        for (Map.Entry<String,JCommentPart> e : atParams.entrySet()) {
+            f.p(" * @param ").p(e.getKey()).nl();
+            e.getValue().format(f,INDENT);
         }
-        if( atReturn != null )
-            format( f, "@return", getInternal(atReturn) );
-        for( Iterator i = atThrows.entrySet().iterator(); i.hasNext(); ) {
-            Map.Entry e = (Map.Entry)i.next();
-            format( f, "@throws "+e.getKey(), getInternal(e.getValue()) );
+        if( atReturn != null ) {
+            f.p(" * @return").nl();
+            atReturn.format(f,INDENT);
         }
-        if( atDeprecated != null )
-            format( f, "@deprecated", getInternal(atDeprecated) );
+        for (Map.Entry<JClass,JCommentPart> e : atThrows.entrySet()) {
+            f.p(" * @throws ").t(e.getKey()).nl();
+            e.getValue().format(f,INDENT);
+        }
+        if( atDeprecated != null ) {
+            f.p(" * @deprecated").nl();
+            atDeprecated.format(f,INDENT);
+        }
         f.p(" */").nl();
-    }
-    
-    private void format( JFormatter f, String key, List<Object> comments ) {
-        f.p(" * ").p(key).nl();
-        format(f,comments," *     ");
-    }
-
-    private void format( JFormatter f, List<Object> comments, String indent ) {
-        if(!f.isPrinting()) {
-            // quickly pass the types to JFormatter
-            for( Object o : comments )
-                if(o instanceof JClass)
-                    f.t((JClass)o);
-            return;
-        }
-
-        if(!comments.isEmpty())
-            f.p(" * ");
-
-        Iterator itr = comments.iterator();
-        while(itr.hasNext()) {
-            Object o = itr.next();
-
-            if(o instanceof String) {
-                int idx;
-                String s = (String)o;
-                while( (idx=s.indexOf('\n'))!=-1 ) {
-                    String line = s.substring(0,idx);
-                    if(line.length()>0)
-                        f.p(line);
-                    s = s.substring(idx+1);
-                    f.nl().p(indent);
-                }
-                if(s.length()!=0)
-                    f.p(s);
-            } else
-            if(o instanceof JClass) {
-                f.p("{@link ").t((JClass)o).p('}');
-            } else
-            if(o instanceof JType) {
-                f.g((JType)o);
-            } else
-                throw new IllegalStateException();
-        }
-
-        if(!comments.isEmpty())
-            f.nl();
     }
 }
 

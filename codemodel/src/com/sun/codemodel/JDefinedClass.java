@@ -350,7 +350,7 @@ public class JDefinedClass
         JType type,
         String name,
         JExpression init) {
-        JFieldVar f = new JFieldVar(JMods.forField(mods), type, name, init);
+        JFieldVar f = new JFieldVar(owner(),JMods.forField(mods), type, name, init);
         fields.add(f);
 
         JFieldVar existing = (JFieldVar) fieldsByName.get(name);
@@ -631,7 +631,7 @@ public class JDefinedClass
      */
     public JDocComment javadoc() {
         if (jdoc == null)
-            jdoc = new JDocComment();
+            jdoc = new JDocComment(owner());
         return jdoc;
     }
 

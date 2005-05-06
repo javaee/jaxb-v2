@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import javax.xml.namespace.QName;
+import javax.xml.bind.JAXBException;
 
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
@@ -83,10 +84,9 @@ abstract class ObjectFactoryGeneratorImpl extends ObjectFactoryGenerator {
         // m1 result:
         //        public ObjectFactory() {}
         JMethod m1 = objectFactory.constructor(JMod.PUBLIC);
-        m1.javadoc()
-            .setComment( "Create a new ObjectFactory that can be used to " +
+        m1.javadoc().append("Create a new ObjectFactory that can be used to " +
                          "create new instances of schema derived classes " +
-                         "for package: " + targetPackage.name() );
+                         "for package: " + targetPackage.name());
 
         // add some class javadoc
         objectFactory.javadoc().append(
@@ -272,7 +272,7 @@ abstract class ObjectFactoryGeneratorImpl extends ObjectFactoryGenerator {
             m.javadoc()
                 .append( "Create an instance of " )
                 .append( cc.ref )
-                .addThrows( "JAXBException", "if an error occurs" );
+                .addThrows(JAXBException.class).append("if an error occurs");
 
             // constructor
             // [RESULT]

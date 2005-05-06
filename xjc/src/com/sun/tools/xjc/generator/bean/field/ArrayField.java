@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: ArrayField.java,v 1.2 2005-05-06 21:24:16 kohsuke Exp $
+ * @(#)$Id: ArrayField.java,v 1.3 2005-05-06 21:49:18 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -142,7 +142,7 @@ final class ArrayField extends AbstractListField {
         }
 
         List<Object> returnTypes = listPossibleTypes(prop);
-        writer.javadoc().addReturn("array of\n").addReturn(returnTypes);
+        writer.javadoc().addReturn().append("array of\n").append(returnTypes);
                         
         // [RESULT]
         // ET getX(int idx) {
@@ -169,7 +169,7 @@ final class ArrayField extends AbstractListField {
         writer.javadoc().append(prop.javadoc);
         $get.body()._return(acc.unbox(acc.ref(true).invoke("get").arg($idx) ));
 
-        writer.javadoc().addReturn("one of\n").addReturn(returnTypes);
+        writer.javadoc().addReturn().append("one of\n").append(returnTypes);
 
                         
         // [RESULT] int getXLength() {
@@ -213,9 +213,9 @@ final class ArrayField extends AbstractListField {
         _for.update( $i.incr() );
         _for.body().invoke(acc.ref(true),"add").arg(castToImplType(acc.box($value.component($i))));
 
-        writer.javadoc()
-                .addParam($value,"allowed objects are\n")
-                .addParam($value,returnTypes);
+        writer.javadoc().addParam($value)
+            .append("allowed objects are\n")
+            .append(returnTypes);
                         
         // [RESULT] ET setX(int,ET)
         JMethod $set = writer.declareMethod(
@@ -230,9 +230,9 @@ final class ArrayField extends AbstractListField {
         body._return( acc.unbox(
             acc.ref(true).invoke("set").arg($idx).arg(castToImplType(acc.box($value)))));
 
-        writer.javadoc()
-                .addParam($value,"allowed object is\n")
-                .addParam($value,returnTypes);
+        writer.javadoc().addParam($value)
+            .append("allowed object is\n")
+            .append(returnTypes);
     }
     
     protected JClass getCoreListType() {
