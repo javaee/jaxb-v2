@@ -108,6 +108,9 @@ public class JDocComment implements JGenerable {
     }
 
     public void generate(JFormatter f) {
+        if(!f.isPrinting())
+            return;
+        
         // I realized that we can't use StringTokenizer because
         // this will recognize multiple \n as one token.
 //        StringTokenizer tokens = new StringTokenizer(comment,"\n");
