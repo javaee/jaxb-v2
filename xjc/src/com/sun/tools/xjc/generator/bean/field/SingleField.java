@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: SingleField.java,v 1.1 2005-04-15 20:09:09 kohsuke Exp $
+ * @(#)$Id: SingleField.java,v 1.2 2005-05-06 21:24:16 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -8,6 +8,8 @@
  * 
  */
 package com.sun.tools.xjc.generator.bean.field;
+
+import java.util.List;
 
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JConditional;
@@ -78,7 +80,7 @@ class SingleField extends AbstractFieldWithVar {
         String javadoc = prop.javadoc;
         if(javadoc.length()==0)
             javadoc = Messages.DEFAULT_GETTER_JAVADOC.format(nc.toVariableName(prop.getName(true)));
-        writer.javadoc().appendComment(javadoc);
+        writer.javadoc().append(javadoc);
 
 
         if(defaultValue==null) {
@@ -89,8 +91,8 @@ class SingleField extends AbstractFieldWithVar {
             cond._else()._return(ref());
         }
 
-        writer.javadoc().addReturn(
-            "possible object is\n"+listPossibleTypes(prop));
+        List<Object> possibleTypes = listPossibleTypes(prop);
+        writer.javadoc().addReturn("possible object is\n").addReturn(possibleTypes);
          
         // [RESULT]
         // void setXXX(Type newVal) {
@@ -107,9 +109,10 @@ class SingleField extends AbstractFieldWithVar {
         javadoc = prop.javadoc;
         if(javadoc.length()==0)
             javadoc = Messages.DEFAULT_SETTER_JAVADOC.format(nc.toVariableName(prop.getName(true)));
-        writer.javadoc().appendComment(javadoc);
-        writer.javadoc().addParam( $value,
-            "allowed object is\n"+listPossibleTypes(prop));
+        writer.javadoc().append(javadoc);
+        writer.javadoc()
+            .addParam($value,"allowed object is\n")
+            .addParam($value,possibleTypes);
     }
 
     /**

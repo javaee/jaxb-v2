@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: UntypedListField.java,v 1.1 2005-04-15 20:09:10 kohsuke Exp $
+ * @(#)$Id: UntypedListField.java,v 1.2 2005-05-06 21:24:16 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -107,7 +107,7 @@ public class UntypedListField extends AbstractListField {
         //     return <ref>;
         // }
         $get = writer.declareMethod(listT,"get"+prop.getName(true));
-        writer.javadoc().appendComment(prop.javadoc);
+        writer.javadoc().append(prop.javadoc);
         body = $get.body();
         if($defValues!=null) {
             JBlock then = body._if(
@@ -124,7 +124,7 @@ public class UntypedListField extends AbstractListField {
 
 
         String pname = NameConverter.standard.toVariableName(prop.getName(true));
-        writer.javadoc().appendComment(
+        writer.javadoc().append(
             "Gets the value of the "+pname+" property.\n\n"+
             "<p>\n" +
             "This accessor method returns a reference to the live list,\n" +
@@ -140,12 +140,11 @@ public class UntypedListField extends AbstractListField {
             "\n\n"
         );
         
-        writer.javadoc().appendComment(
+        writer.javadoc().append(
             "<p>\n" +
-            "Objects of the following type(s) are allowed in the list\n"+
-            listPossibleTypes(prop));
-        
-        
+            "Objects of the following type(s) are allowed in the list\n")
+            .append(listPossibleTypes(prop));
+
         // [RESULT]
         // #ifdef default value
         // void deleteXXX() {

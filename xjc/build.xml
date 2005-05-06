@@ -5,7 +5,7 @@
  SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 -->
 
-<!-- $Id: build.xml,v 1.9 2005-05-06 15:56:51 ryan_shoemaker Exp $ -->
+<!-- $Id: build.xml,v 1.10 2005-05-06 21:24:17 kohsuke Exp $ -->
 <project name="xjc" basedir=".." default="compile">
 
   <description>

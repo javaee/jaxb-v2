@@ -105,7 +105,7 @@ public final class JFormatter {
      * Returns true if we are in the printing mode,
      * where we actually produce text.
      *
-     * The other mode is the "collecting mode' 
+     * The other mode is the "collecting mode'
      */
     public boolean isPrinting() {
         return mode == Mode.PRINTING;

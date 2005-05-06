@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: ConstField.java,v 1.1 2005-04-15 20:09:08 kohsuke Exp $
+ * @(#)$Id: ConstField.java,v 1.2 2005-05-06 21:24:16 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -10,14 +10,13 @@
 package com.sun.tools.xjc.generator.bean.field;
 
 import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JClass;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMod;
+import com.sun.codemodel.JPrimitiveType;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
-import com.sun.codemodel.JPrimitiveType;
 import com.sun.tools.xjc.generator.bean.ClassOutlineImpl;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.outline.FieldAccessor;
@@ -51,7 +50,7 @@ final class ConstField extends AbstractField {
         // generate the constant
         $ref = outline.ref.field(JMod.PUBLIC|JMod.STATIC|JMod.FINAL,
             ptype!=null?ptype:implType, prop.getName(false), prop.defaultValue );
-        $ref.javadoc().appendComment(prop.javadoc);
+        $ref.javadoc().append(prop.javadoc);
         
         annotate($ref);
     }

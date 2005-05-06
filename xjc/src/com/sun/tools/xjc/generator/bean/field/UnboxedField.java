@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: UnboxedField.java,v 1.1 2005-04-15 20:09:09 kohsuke Exp $
+ * @(#)$Id: UnboxedField.java,v 1.2 2005-05-06 21:24:16 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -8,8 +8,6 @@
  * 
  */
 package com.sun.tools.xjc.generator.bean.field;
-
-import javax.xml.bind.annotation.XmlTransient;
 
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JExpr;
@@ -21,8 +19,8 @@ import com.sun.codemodel.JVar;
 import com.sun.tools.xjc.generator.bean.ClassOutlineImpl;
 import com.sun.tools.xjc.generator.bean.MethodWriter;
 import com.sun.tools.xjc.model.CPropertyInfo;
-import com.sun.tools.xjc.outline.FieldAccessor;
 import com.sun.tools.xjc.outline.Aspect;
+import com.sun.tools.xjc.outline.FieldAccessor;
 import com.sun.xml.bind.v2.NameConverter;
 
 /**
@@ -70,7 +68,7 @@ class UnboxedField extends AbstractFieldWithVar {
         String javadoc = prop.javadoc;
         if(javadoc.length()==0)
             javadoc = Messages.DEFAULT_GETTER_JAVADOC.format(nc.toVariableName(prop.getName(true)));
-        writer.javadoc().appendComment(javadoc);
+        writer.javadoc().append(javadoc);
 
         $get.body()._return(ref());
 
@@ -88,7 +86,7 @@ class UnboxedField extends AbstractFieldWithVar {
         javadoc = prop.javadoc;
         if(javadoc.length()==0)
             javadoc = Messages.DEFAULT_SETTER_JAVADOC.format(nc.toVariableName(prop.getName(true)));
-        writer.javadoc().appendComment(javadoc);
+        writer.javadoc().append(javadoc);
 
     }
 
