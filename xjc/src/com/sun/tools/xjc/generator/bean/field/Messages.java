@@ -16,7 +16,7 @@ enum Messages {
     DEFAULT_SETTER_JAVADOC,     // 1 arg
     ;
 
-    private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getPackage().getName() +".MessageBundle");
+    private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName().substring(0, Messages.class.getName().lastIndexOf('.'))+ ".MessageBundle");
 
     public String toString() {
         return format();
