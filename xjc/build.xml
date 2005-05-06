@@ -5,8 +5,8 @@
  SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 -->
 
-<!-- $Id: build.xml,v 1.8 2005-05-06 04:17:40 kohsuke Exp $ -->
-<project name="xjc" basedir=".." default="deploy">
+<!-- $Id: build.xml,v 1.9 2005-05-06 15:56:51 ryan_shoemaker Exp $ -->
+<project name="xjc" basedir=".." default="compile">
 
   <description>
     XJC Sub-Project
@@ -211,7 +211,7 @@
         </java>
         
         <!-- version string used by the VersionGenerator -->
-        <replace dir="${xjc.classes}/com/sun/tools/xjc/generator/bean" incldues="MessageBundle*.properties">
+        <replace dir="${xjc.classes}/com/sun/tools/xjc/generator/bean" includes="MessageBundle*.properties">
             <replacefilter token="@@JAXB_VERSION@@" value="${release.impl.version}"/>
         </replace>
     </target>
