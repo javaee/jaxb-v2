@@ -37,7 +37,7 @@ public class JMethod extends JGenerifiableImpl implements JDeclaration, JAnnotat
 	/**
 	 * List of parameters for this method's declaration
 	 */
-	private final List params = new ArrayList();
+	private final List<JVar> params = new ArrayList<JVar>();
 
 	/**
 	 * Set of exceptions that this method may throw.
@@ -265,7 +265,7 @@ public class JMethod extends JGenerifiableImpl implements JDeclaration, JAnnotat
 	public JType[] listParamTypes() {
 		JType[] r = new JType[params.size()];
 		for (int i = 0; i < r.length; i++)
-			r[i] = ((JVar) params.get(i)).type();
+			r[i] = params.get(i).type();
 		return r;
 	}
 
@@ -287,7 +287,7 @@ public class JMethod extends JGenerifiableImpl implements JDeclaration, JAnnotat
 	 *      If there's no parameter, an empty array will be returned.
 	 */
 	public JVar[] listParams() {
-		return (JVar[]) params.toArray(new JVar[params.size()]);
+		return params.toArray(new JVar[params.size()]);
 	}
 
 	/**
@@ -343,7 +343,7 @@ public class JMethod extends JGenerifiableImpl implements JDeclaration, JAnnotat
 	 */
 	public JDocComment javadoc() {
 		if (jdoc == null)
-			jdoc = new JDocComment();
+			jdoc = new JDocComment(owner());
 		return jdoc;
 	}
 
@@ -364,19 +364,18 @@ public class JMethod extends JGenerifiableImpl implements JDeclaration, JAnnotat
 			f.g(type);
 		f.id(name).p('(');
 		boolean first = true;
-		for (Iterator i = params.iterator(); i.hasNext();) {
-			if (!first)
-				f.p(',');
-			f.b((JVar) (i.next()));
-			first = false;
-		}
+        for (JVar var : params) {
+            if (!first)
+                f.p(',');
+            f.b(var);
+            first = false;
+        }
 		if (hasVarArgs()) {
 			if (!first)
 				f.p(',');
 			f.g(varParam.type);
 			f.p("... ");
 			f.id(varParam.name());
-			first = false;
 		}
 
 		f.p(')');

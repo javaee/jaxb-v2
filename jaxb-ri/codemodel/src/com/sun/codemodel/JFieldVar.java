@@ -19,6 +19,8 @@ public class JFieldVar extends JVar {
      */
     private JDocComment jdoc = null;
 
+    private final JCodeModel owner;
+
 
     /**
      * JFieldVar constructor
@@ -32,8 +34,9 @@ public class JFieldVar extends JVar {
      * @param init
      *        Value to initialize this variable to
      */
-    JFieldVar(JMods mods, JType type, String name, JExpression init) {
+    JFieldVar(JCodeModel owner, JMods mods, JType type, String name, JExpression init) {
         super( mods, type, name, init );
+        this.owner = owner;
     }
     /**
      * Creates, if necessary, and returns the class javadoc for this
@@ -43,7 +46,7 @@ public class JFieldVar extends JVar {
      */
     public JDocComment javadoc() {
         if( jdoc == null ) 
-                jdoc = new JDocComment();
+                jdoc = new JDocComment(owner);
         return jdoc;
     }
 

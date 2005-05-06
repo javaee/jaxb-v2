@@ -78,7 +78,7 @@ public final class JEnumConstant extends JExpressionImpl implements JDeclaration
      */
     public JDocComment javadoc() {
         if (jdoc == null)
-            jdoc = new JDocComment();
+            jdoc = new JDocComment(type.owner());
         return jdoc;
     }
 

@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: SingleField.java,v 1.2 2005-05-06 21:24:16 kohsuke Exp $
+ * @(#)$Id: SingleField.java,v 1.3 2005-05-06 21:49:18 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -92,7 +92,9 @@ class SingleField extends AbstractFieldWithVar {
         }
 
         List<Object> possibleTypes = listPossibleTypes(prop);
-        writer.javadoc().addReturn("possible object is\n").addReturn(possibleTypes);
+        writer.javadoc().addReturn()
+            .append("possible object is\n")
+            .append(possibleTypes);
          
         // [RESULT]
         // void setXXX(Type newVal) {
@@ -110,9 +112,9 @@ class SingleField extends AbstractFieldWithVar {
         if(javadoc.length()==0)
             javadoc = Messages.DEFAULT_SETTER_JAVADOC.format(nc.toVariableName(prop.getName(true)));
         writer.javadoc().append(javadoc);
-        writer.javadoc()
-            .addParam($value,"allowed object is\n")
-            .addParam($value,possibleTypes);
+        writer.javadoc().addParam($value)
+            .append("allowed object is\n")
+            .append(possibleTypes);
     }
 
     /**
