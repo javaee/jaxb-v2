@@ -38,7 +38,7 @@ public enum ImplStructureStrategy {
             JDefinedClass impl = outline.getClassFactory().createClass(
                 parent,
                 JMod.PUBLIC|(parent.isPackage()?0:JMod.STATIC)|(bean.isAbstract()?JMod.ABSTRACT:0),
-                bean.shortName, bean.location );
+                bean.shortName, bean.getLocator() );
             impl.annotate2(XmlAccessorTypeWriter.class).value(AccessType.FIELD);
 
             return new Result(impl,impl);
@@ -87,13 +87,13 @@ public enum ImplStructureStrategy {
             JClassContainer parent = outline.getContainer( bean.parent(), Aspect.EXPOSED );
 
             JDefinedClass intf = outline.getClassFactory().createInterface(
-                parent, bean.shortName, bean.location );
+                parent, bean.shortName, bean.getLocator() );
 
             parent = outline.getContainer(bean.parent(), Aspect.IMPLEMENTATION);
             JDefinedClass impl = outline.getClassFactory().createClass(
                 parent,
                 JMod.PUBLIC|(parent.isPackage()?0:JMod.STATIC)|(bean.isAbstract()?JMod.ABSTRACT:0),
-                bean.shortName+"Impl", bean.location );
+                bean.shortName+"Impl", bean.getLocator() );
             impl.annotate2(XmlAccessorTypeWriter.class).value(AccessType.FIELD);
 
             impl._implements(intf);

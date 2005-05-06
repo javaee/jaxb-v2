@@ -77,7 +77,7 @@ class DefaultClassBinder extends AbstractBinderImpl
 
         // no customization is given -- do as the default binding.
 
-        CCustomizations custs = builder.getBindInfo(type).toCustomizationList();
+        BindInfo bi = builder.getBindInfo(type);
 
         if(type.isGlobal()) {
             // by default, global ones get their own classes.
@@ -86,7 +86,7 @@ class DefaultClassBinder extends AbstractBinderImpl
 
             QName typeName = new QName(type.getTargetNamespace(),type.getName());
 
-            return new CClassInfo(model,pkg,deriveName(type),type.getLocator(),typeName,null,custs);
+            return new CClassInfo(model,pkg,deriveName(type),type.getLocator(),typeName,null,bi.toCustomizationList());
         } else {
             boolean parentIsType = selector.isBound(type.getScope());
 
@@ -102,7 +102,7 @@ class DefaultClassBinder extends AbstractBinderImpl
             } else {
                 className = builder.getNameConverter().toClassName(type.getScope().getName());
                 // since the parent element isn't bound to a type, merge the customizations associated to it, too.
-                custs = CCustomizations.merge( custs, builder.getBindInfo(type.getScope()).toCustomizationList());
+//                custs = CCustomizations.merge( custs, builder.getBindInfo(type.getScope()).toCustomizationList());
             }
 
             BISchemaBinding sb = builder.getBindInfo(
@@ -110,7 +110,7 @@ class DefaultClassBinder extends AbstractBinderImpl
 
             if(sb!=null)    className = sb.mangleAnonymousTypeClassName(className);
 
-            return new CClassInfo(model, selector.getClassFactory(), className, type.getLocator(), ANONYMOUS, null, custs );
+            return new CClassInfo(model, selector.getClassFactory(), className, type.getLocator(), ANONYMOUS, null, bi.toCustomizationList() );
         }
     }
 

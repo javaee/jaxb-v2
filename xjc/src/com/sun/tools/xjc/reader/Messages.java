@@ -12,7 +12,7 @@ import java.util.ResourceBundle;
  * Formats error messages.
  */
 enum Messages {
-    DUPLICATE_PROPERTY, // 1 args
+    DUPLICATE_PROPERTY, // 1 arg
 
     ERR_UNDECLARED_PREFIX,
     ERR_UNEXPECTED_EXTENSION_BINDING_PREFIXES,
@@ -22,7 +22,8 @@ enum Messages {
     ERR_CLASS_NOT_FOUND,
     PROPERTY_CLASS_IS_RESERVED,
     ERR_VENDOR_EXTENSION_DISALLOWED_IN_STRICT_MODE,
-
+    ERR_ILLEGAL_CUSTOMIZATION_TAGNAME, // 1 arg
+    ERR_PLUGIN_NOT_ENABLED, // 2 args
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle("com.sun.tools.xjc.reader.MessageBundle");

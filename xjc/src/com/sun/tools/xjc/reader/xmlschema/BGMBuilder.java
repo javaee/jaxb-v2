@@ -101,7 +101,7 @@ public class BGMBuilder extends BindingComponent {
     private final BindGreen green = Ring.get(BindGreen.class);
     private final BindPurple purple = Ring.get(BindPurple.class);
 
-    private final Model model = Ring.get(Model.class);
+    public final Model model = Ring.get(Model.class);
 
 
 

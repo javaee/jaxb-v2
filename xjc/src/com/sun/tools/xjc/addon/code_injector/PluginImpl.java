@@ -28,6 +28,10 @@ public class PluginImpl extends Plugin {
         return Collections.singletonList(Const.NS);
     }
 
+    public boolean isCustomizationTagName(String nsUri, String localName) {
+        return nsUri.equals(Const.NS) && localName.equals("code");
+    }
+
     public String getUsage() {
         return "  -inject-code       :  inject specified Java code fragments into the generated code";
     }

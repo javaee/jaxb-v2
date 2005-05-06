@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Collections;
 
 import com.sun.tools.xjc.outline.Outline;
+import com.sun.tools.xjc.model.CPluginCustomization;
 
 import org.xml.sax.ErrorHandler;
 
@@ -82,6 +83,27 @@ public abstract class Plugin {
      */
     public List<String> getCustomizationURIs() {
         return Collections.emptyList();
+    }
+
+    /**
+     * Checks if the given tag name is a valid tag name for the customization element in this plug-in.
+     *
+     * <p>
+     * This method is invoked by XJC to determine if the user-specified customization element
+     * is really a customization or not. This information is used to pick the proper error message.
+     *
+     * <p>
+     * A plug-in is still encouraged to do the validation of the customization element in the
+     * {@link #run} method before using any {@link CPluginCustomization}, to make sure that it
+     * has proper child elements and attributes.
+     *
+     * @param nsUri
+     *      the namespace URI of the element. Never null.
+     * @param localName
+     *      the local name of the element. Never null.
+     */
+    public boolean isCustomizationTagName(String nsUri,String localName) {
+        return false;
     }
 
     /**

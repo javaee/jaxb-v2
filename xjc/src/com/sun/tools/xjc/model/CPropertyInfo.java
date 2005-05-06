@@ -22,7 +22,7 @@ import org.xml.sax.Locator;
 public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCustomizable {
 
     @XmlTransient
-    private CTypeInfo parent;
+    private CClassInfo parent;
     private final String privateName;
     private final String publicName;
     private final boolean isCollection;
@@ -69,14 +69,19 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
     }
 
     // called from CClassInfo when added
-    void setParent( CTypeInfo parent ) {
+    final void setParent( CClassInfo parent ) {
         assert this.parent==null;
         assert parent!=null;
         this.parent = parent;
+        customizations.setParent(parent.model,this);
     }
 
     public CTypeInfo parent() {
         return parent;
+    }
+
+    public Locator getLocator() {
+        return locator;
     }
 
     public abstract CAdapter getAdapter();

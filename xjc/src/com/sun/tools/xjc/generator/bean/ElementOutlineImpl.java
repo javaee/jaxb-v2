@@ -30,7 +30,7 @@ final class ElementOutlineImpl extends ElementOutline {
     /*package*/ ElementOutlineImpl(BeanGenerator parent, CElementInfo ei) {
         super(ei,
               parent.getClassFactory().createClass(
-                      parent.getContainer( ei.parent, Aspect.EXPOSED ), ei.shortName(), ei.location ));
+                      parent.getContainer( ei.parent, Aspect.EXPOSED ), ei.shortName(), ei.getLocator() ));
         this.parent = parent;
 
         JCodeModel cm = parent.getCodeModel();

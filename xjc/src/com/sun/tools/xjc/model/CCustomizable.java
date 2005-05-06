@@ -2,6 +2,8 @@ package com.sun.tools.xjc.model;
 
 import com.sun.tools.xjc.Plugin;
 
+import org.xml.sax.Locator;
+
 /**
  * Implemented by model components that can have customizations contributed by {@link Plugin}s.
  *
@@ -18,4 +20,11 @@ public interface CCustomizable {
      * @see Plugin#getCustomizationURIs()
      */
     CCustomizations getCustomizations();
+
+    /**
+     * Gets the source location in the schema from which this model component is created.
+     *
+     * @return never null.
+     */
+    Locator getLocator();
 }

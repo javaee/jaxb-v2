@@ -332,7 +332,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
                 name,
                 types.getCollectionMode().isRepeated()||isMixed,
                 isMixed,
-                    getCustomizations(source), source.getLocator() ),
+                getCustomizations(source), source.getLocator() ),
             source);
 
         types.addTo(prop);
