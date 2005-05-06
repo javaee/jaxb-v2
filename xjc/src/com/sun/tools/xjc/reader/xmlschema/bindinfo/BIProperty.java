@@ -365,7 +365,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
         assert prop.realization!=null;      // we can't allow null because sometimes
                                             // we need to wrap it by a IsSetFieldRenderer
         if( needIsSetMethod() )
-            prop.realization = new IsSetFieldRenderer( prop.realization, true, true );
+            prop.realization = new IsSetFieldRenderer( prop.realization, prop.isUnboxable(), true );
 
         return prop;
     }
