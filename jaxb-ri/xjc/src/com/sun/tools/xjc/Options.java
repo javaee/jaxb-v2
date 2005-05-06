@@ -116,21 +116,7 @@ public class Options
     // Proxy setting.
     String proxyHost = null;
     String proxyPort = null;
-    
-    /**
-     * Set to true to avoid generating the runtime.
-     * This option is useful in conjunction with the runtimePackage
-     * parameter to consolidate the runtime into one when the client
-     * compiles a lot of schemas separately.
-     */
-    public boolean generateRuntime = true;
 
-    /**
-     * The package name of the generated runtime. Set the field
-     * null to generate it into the default location.
-     */
-    public String runtimePackage = null;
-    
         
     /**
      * {@link Plugin}s that are enabled in this compilation.
@@ -293,14 +279,6 @@ public class Options
         if (args[i].equals("-nv")) {
             strictCheck = false;
             return 1;
-        }
-        if (args[i].equals("-use-runtime")) {
-            if (i == args.length - 1)
-                throw new BadCommandLineException(
-                    Messages.format(Messages.MISSING_RUNTIME_PACKAGENAME));
-            generateRuntime = false;
-            runtimePackage = args[++i];
-            return 2;
         }
         if (args[i].equals("-verbose")) {
             verbose = true;
