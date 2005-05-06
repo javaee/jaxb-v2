@@ -26,7 +26,7 @@ enum Messages {
     ERR_PLUGIN_NOT_ENABLED, // 2 args
     ;
 
-    private static final ResourceBundle rb = ResourceBundle.getBundle("com.sun.tools.xjc.reader.MessageBundle");
+    private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getPackage().getName() +".MessageBundle");
 
     public String toString() {
         return format();
