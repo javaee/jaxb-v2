@@ -14,6 +14,7 @@ import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
+import com.sun.codemodel.JClassAlreadyExistsException;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
@@ -171,12 +172,19 @@ public class TypeUtil {
             return codeModel.parseType(typeName);
         } catch( ClassNotFoundException ee ) {
 
-            errorHandler.error( new SAXParseException(
+            // make it a warning
+            errorHandler.warning( new SAXParseException(
                 Messages.ERR_CLASS_NOT_FOUND.format(typeName)
                 ,errorSource));
 
-            // recover by assuming some class.
-            return codeModel.ref(Object.class);
+            // recover by assuming that it's a class that derives from Object
+            try {
+                JDefinedClass cls = codeModel._class(typeName);
+                cls.hide();
+                return cls;
+            } catch (JClassAlreadyExistsException e) {
+                return e.getExistingClass();
+            }
         }
     }
     
