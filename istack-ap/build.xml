@@ -44,7 +44,7 @@
 
         <!-- expose the build version to the DefaultJAXBContextImpl class so
              that it is available to the generated ObjectFactory classes -->
-        <replace file="${istackap.classes}/com/sun/istack/Messages.properties">
+        <replace dir="${istackap.classes}/com/sun/istack" includes="Messages*.properties">
             <replacefilter token="@@BUILD_VERSION@@" value="${build.version}"/>
         </replace>
     </target>

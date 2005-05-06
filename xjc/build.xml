@@ -5,7 +5,7 @@
  SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 -->
 
-<!-- $Id: build.xml,v 1.7 2005-05-05 23:51:16 bhaktimehta Exp $ -->
+<!-- $Id: build.xml,v 1.8 2005-05-06 04:17:40 kohsuke Exp $ -->
 <project name="xjc" basedir=".." default="deploy">
 
   <description>
@@ -169,7 +169,7 @@
         <mkdir dir="${xjc.classes}" />
 
         <!-- always delete these prop files so that the latest build id can be set -->
-        <delete file="${xjc.classes}/com/sun/tools/xjc/MessageBundle.properties"/>
+        <delete file="${xjc.classes}/com/sun/tools/xjc/MessageBundle*.properties"/>
 
         <javac srcdir="${xjc.src}:${xjc.gensrc}" destdir="${xjc.classes}"
             debug="${compile.debug}" optimize="${compile.optimize}"
@@ -198,7 +198,7 @@
         <!-- insert the RI version number into the file prolog message that
              is placed at the head of every generated file and the output
              message for "xjc -version" -->
-        <replace file="${xjc.classes}/com/sun/tools/xjc/MessageBundle.properties">
+        <replace dir="${xjc.classes}/com/sun/tools/xjc" includes="MessageBundle*.properties">
             <replacefilter token="@@BUILD_VERSION@@" value="${build.version}"/>
         </replace>
         
@@ -211,7 +211,7 @@
         </java>
         
         <!-- version string used by the VersionGenerator -->
-        <replace file="${xjc.classes}/com/sun/tools/xjc/generator/bean/MessageBundle.properties">
+        <replace dir="${xjc.classes}/com/sun/tools/xjc/generator/bean" incldues="MessageBundle*.properties">
             <replacefilter token="@@JAXB_VERSION@@" value="${release.impl.version}"/>
         </replace>
     </target>
