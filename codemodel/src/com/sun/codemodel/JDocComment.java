@@ -107,8 +107,6 @@ public class JDocComment extends JCommentPart implements JGenerable {
 
         format(f," * ");
 
-        String INDENT = " *     ";
-
         f.p(" * ").nl();
         for (Map.Entry<String,JCommentPart> e : atParams.entrySet()) {
             f.p(" * @param ").p(e.getKey()).nl();
@@ -128,5 +126,7 @@ public class JDocComment extends JCommentPart implements JGenerable {
         }
         f.p(" */").nl();
     }
+
+    private static final String INDENT = " *     ";
 }
 
