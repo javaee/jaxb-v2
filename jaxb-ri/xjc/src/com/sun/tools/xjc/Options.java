@@ -18,6 +18,8 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import com.sun.tools.xjc.api.ClassNameAllocator;
 import com.sun.tools.xjc.reader.Util;
@@ -111,10 +113,11 @@ public class Options
     private final List<InputSource> bindFiles = new ArrayList<InputSource>();
     
     // Proxy setting.
-    String proxyHost = null;
-    String proxyPort = null;
+    private String proxyHost = null;
+    private String proxyPort = null;
+    private String proxyUser = null;
+    private String proxyPassword = null;
 
-        
     /**
      * {@link Plugin}s that are enabled in this compilation.
      */
@@ -316,24 +319,43 @@ public class Options
             compatibilityMode = EXTENSION;
             return 1;
         }
+        if (args[i].equals("-proxy")) {
+            if (i == args.length - 1 || args[i + 1].startsWith("-")) {
+                throw new BadCommandLineException(
+                    Messages.format(Messages.MISSING_PROXY));
+            }
+            // syntax is [user[:password]@]proxyHost[:proxyPort]
+            String token = "([^@:]+)";
+            Pattern p = Pattern.compile("(?:"+token+"(?:\\:"+token+")?\\@)?"+token+"(?:\\:"+token+")?");
+
+            String text = args[++i];
+            Matcher matcher = p.matcher(text);
+            if(!matcher.matches())
+                throw new BadCommandLineException(Messages.format(Messages.ILLEGAL_PROXY,text));
+
+            proxyUser = matcher.group(1);
+            proxyPassword = matcher.group(2);
+            proxyHost = matcher.group(3);
+            proxyPort = matcher.group(4);
+            try {
+                Integer.valueOf(proxyPort);
+            } catch (NumberFormatException e) {
+                throw new BadCommandLineException(Messages.format(Messages.ILLEGAL_PROXY,text));
+            }
+            return 2;
+        }
         if (args[i].equals("-host")) {
-            if (i == args.length - 1) {
+            // legacy option. we use -proxy for more control
+            if (i == args.length - 1 || args[i + 1].startsWith("-")) {
                 throw new BadCommandLineException(
                     Messages.format(Messages.MISSING_PROXYHOST));
             }
-            if (args[i + 1].startsWith("-")) {
-                throw new BadCommandLineException(
-                    Messages.format(Messages.MISSING_PROXYHOST));
-            }
-          proxyHost = args[++i];
-          return 2;
+            proxyHost = args[++i];
+            return 2;
         }
         if (args[i].equals("-port")) {
-            if (i == args.length - 1) {
-                throw new BadCommandLineException(
-                    Messages.format(Messages.MISSING_PROXYPORT));
-            }
-            if (args[i + 1].startsWith("-")) {
+            // legacy option. we use -proxy for more control
+            if (i == args.length - 1 || args[i + 1].startsWith("-")) {
                 throw new BadCommandLineException(
                     Messages.format(Messages.MISSING_PROXYPORT));
             }
@@ -446,6 +468,11 @@ public class Options
                 throw new BadCommandLineException(
                     Messages.format(Messages.MISSING_PROXYPORT));
             }
+            if(proxyUser!=null)
+                System.setProperty("http.proxyUser", proxyUser);
+            if(proxyPassword!=null)
+                System.setProperty("http.proxyPassword", proxyPassword);
+
         }
 
         if (grammars.size() == 0)

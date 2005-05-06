@@ -72,15 +72,18 @@ class Messages
     static final String MISSING_COMPATIBILITY_OPERAND = // 0 args
         "Driver.MissingCompatibilityOperand";
     
-    static final String MISSING_DOM4J = // 0 args
-        "Driver.MissingDOM4J";
-        
+    static final String MISSING_PROXY = // 0 args
+        "Driver.MISSING_PROXY";
+
+    static final String ILLEGAL_PROXY = // 1 arg
+        "Driver.ILLEGAL_PROXY";
+
     static final String MISSING_PROXYHOST = // 0 args
         "Driver.MissingProxyHost";
         
     static final String MISSING_PROXYPORT = // 0 args
         "Driver.MissingProxyPort";
-        
+
     static final String STACK_OVERFLOW = // 0 arg
         "Driver.StackOverflow";
         
