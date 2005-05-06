@@ -19,7 +19,7 @@ import java.util.Iterator;
  * This is a utility class for managing indentation and other basic
  * formatting for PrintWriter.
  */
-public class JFormatter {
+public final class JFormatter {
     /** all classes and ids encountered during the collection mode **/
     /** map from short type name to ReferenceList (list of JClass and ids sharing that name) **/
     private HashMap<String,ReferenceList> collectedReferences;
@@ -99,6 +99,16 @@ public class JFormatter {
      */
     public void close() {
         pw.close();
+    }
+
+    /**
+     * Returns true if we are in the printing mode,
+     * where we actually produce text.
+     *
+     * The other mode is the "collecting mode' 
+     */
+    public boolean isPrinting() {
+        return mode == Mode.PRINTING;
     }
 
     /**
