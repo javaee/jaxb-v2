@@ -569,7 +569,7 @@ public final class BeanGenerator implements Outline
 
         type = getClassFactory().createClass(
             getContainer(e.parent,Aspect.EXPOSED),e.shortName,e.getLocator(), ClassType.ENUM);
-        type.javadoc().appendComment(e.javadoc);
+        type.javadoc().append(e.javadoc);
 
         XmlEnumWriter xew = type.annotate2(XmlEnumWriter.class);
         xew.value(baseExposedType);
@@ -609,7 +609,7 @@ public final class BeanGenerator implements Outline
 
             // set javadoc
             if( mem!=null && mem.javadoc!=null )
-                constRef.javadoc().appendComment(mem.javadoc);
+                constRef.javadoc().append(mem.javadoc);
 
             enumOutline.constants.add(new EnumConstantOutline(mem,constRef){});
         }

@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AbstractField.java,v 1.5 2005-04-29 21:49:56 kohsuke Exp $
+ * @(#)$Id: AbstractField.java,v 1.6 2005-05-06 21:24:15 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -321,21 +321,21 @@ abstract class AbstractField implements FieldOutline {
     }
 
     /**
-     * Returns a string that represents a list of possible
-     * objects that can be in the given field.
+     * Returns contents to be added to javadoc.
      */
-    protected final String listPossibleTypes( CPropertyInfo prop ) {
-        StringBuilder buf = new StringBuilder();
-
+    protected final List<Object> listPossibleTypes( CPropertyInfo prop ) {
+        List<Object> r = new ArrayList<Object>();
         for( CTypeInfo tt : prop.ref() ) {
             JType t = tt.getType().toType(outline.parent(),Aspect.EXPOSED);
             if( t.isPrimitive() || t.isArray() )
-                buf.append(t.fullName());
-            else
-                buf.append("{@link "+t.fullName()+"}\n");
+                r.add(t.fullName());
+            else {
+                r.add(t);
+                r.add("\n");
+            }
         }
 
-        return buf.toString();
+        return r;
     }
 
     /**

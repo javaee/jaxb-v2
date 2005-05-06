@@ -89,7 +89,7 @@ abstract class ObjectFactoryGeneratorImpl extends ObjectFactoryGenerator {
                          "for package: " + targetPackage.name() );
 
         // add some class javadoc
-        objectFactory.javadoc().appendComment(
+        objectFactory.javadoc().append(
             "This object contains factory methods for each \n" +
             "Java content interface and Java element interface \n" +
             "generated in the " + targetPackage.name() + " package. \n" +
@@ -168,7 +168,9 @@ abstract class ObjectFactoryGeneratorImpl extends ObjectFactoryGenerator {
         m.body()._return( exp );
 
         m.javadoc()
-            .appendComment( "Create an instance of {@link " + exposedElementType.fullName() + '}' );
+            .append("Create an instance of ")
+            .append(exposedElementType)
+            .append("}");
 
         XmlElementDeclWriter xemw = m.annotate2(XmlElementDeclWriter.class);
         xemw.namespace(namespaceURI).name(localPart);
@@ -230,8 +232,6 @@ abstract class ObjectFactoryGeneratorImpl extends ObjectFactoryGenerator {
         //         return new FooImpl();
         //     }
 
-        final String linkToClassName = "{@link "+cc.ref.fullName()+'}';
-
         if(!cc.target.isAbstract()) {
             TODO.prototype("the return type should be cc.ref, not cc.implRef, but" +
                     "we need this to be a class for the runtime to work correctly.");
@@ -241,7 +241,8 @@ abstract class ObjectFactoryGeneratorImpl extends ObjectFactoryGenerator {
 
             // add some jdoc to avoid javadoc warnings in jdk1.4
             m.javadoc()
-                .appendComment( "Create an instance of " +linkToClassName );
+                .append("Create an instance of ")
+                .append(cc.ref);
         }
 
 
@@ -269,7 +270,8 @@ abstract class ObjectFactoryGeneratorImpl extends ObjectFactoryGenerator {
 
             // add some jdoc to avoid javadoc warnings in jdk1.4
             m.javadoc()
-                .appendComment( "Create an instance of " + linkToClassName )
+                .append( "Create an instance of " )
+                .append( cc.ref )
                 .addThrows( "JAXBException", "if an error occurs" );
 
             // constructor

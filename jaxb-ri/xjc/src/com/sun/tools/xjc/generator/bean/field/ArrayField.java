@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: ArrayField.java,v 1.1 2005-04-15 20:09:07 kohsuke Exp $
+ * @(#)$Id: ArrayField.java,v 1.2 2005-05-06 21:24:16 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -11,6 +11,7 @@ package com.sun.tools.xjc.generator.bean.field;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
@@ -92,7 +93,7 @@ final class ArrayField extends AbstractListField {
         //     return (T[]) <var>.toArray(new T[<var>.size()]);
         // }
         $getAll = writer.declareMethod( exposedType.array(),"get"+prop.getName(true));
-        writer.javadoc().appendComment(prop.javadoc);
+        writer.javadoc().append(prop.javadoc);
         body = $getAll.body();
         
         if($defValues!=null) {
@@ -139,8 +140,9 @@ final class ArrayField extends AbstractListField {
                 primitiveType.unwrap(acc.ref(true).invoke("get").arg($i)) );
             body._return($r);
         }
-        
-        writer.javadoc().addReturn("array of\n"+listPossibleTypes(prop));
+
+        List<Object> returnTypes = listPossibleTypes(prop);
+        writer.javadoc().addReturn("array of\n").addReturn(returnTypes);
                         
         // [RESULT]
         // ET getX(int idx) {
@@ -164,11 +166,10 @@ final class ArrayField extends AbstractListField {
                 ._throw(JExpr._new(codeModel.ref(IndexOutOfBoundsException.class)));
         }
                     
-        writer.javadoc().appendComment(prop.javadoc);
+        writer.javadoc().append(prop.javadoc);
         $get.body()._return(acc.unbox(acc.ref(true).invoke("get").arg($idx) ));
 
-        writer.javadoc().addReturn(
-            "one of\n"+listPossibleTypes(prop));
+        writer.javadoc().addReturn("one of\n").addReturn(returnTypes);
 
                         
         // [RESULT] int getXLength() {
@@ -201,7 +202,7 @@ final class ArrayField extends AbstractListField {
             codeModel.VOID,
             "set"+prop.getName(true));
         
-        writer.javadoc().appendComment(prop.javadoc);
+        writer.javadoc().append(prop.javadoc);
         
         $value = writer.addParameter(exposedType.array(),"values");
         $setAll.body().invoke(acc.ref(false),"clear");
@@ -212,8 +213,9 @@ final class ArrayField extends AbstractListField {
         _for.update( $i.incr() );
         _for.body().invoke(acc.ref(true),"add").arg(castToImplType(acc.box($value.component($i))));
 
-        writer.javadoc().addParam( $value,
-            "allowed objects are\n"+listPossibleTypes(prop));
+        writer.javadoc()
+                .addParam($value,"allowed objects are\n")
+                .addParam($value,returnTypes);
                         
         // [RESULT] ET setX(int,ET)
         JMethod $set = writer.declareMethod(
@@ -222,14 +224,15 @@ final class ArrayField extends AbstractListField {
         $idx = writer.addParameter( codeModel.INT, "idx" );
         $value = writer.addParameter( exposedType, "value" );
 
-        writer.javadoc().appendComment(prop.javadoc);
+        writer.javadoc().append(prop.javadoc);
                         
         body = $set.body();
         body._return( acc.unbox(
             acc.ref(true).invoke("set").arg($idx).arg(castToImplType(acc.box($value)))));
 
-        writer.javadoc().addParam( $value,
-            "allowed object is\n"+listPossibleTypes(prop));
+        writer.javadoc()
+                .addParam($value,"allowed object is\n")
+                .addParam($value,returnTypes);
     }
     
     protected JClass getCoreListType() {
