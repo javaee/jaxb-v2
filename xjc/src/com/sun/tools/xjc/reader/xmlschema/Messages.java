@@ -11,10 +11,10 @@ import java.util.ResourceBundle;
 /**
  * Formats error messages.
  */
-class Messages
+public class Messages
 {
     /** Loads a string resource and formats it with specified arguments. */
-    static String format( String property, Object... args ) {
+    public static String format( String property, Object... args ) {
         String text = ResourceBundle.getBundle(Messages.class.getPackage().getName() +".MessageBundle").getString(property);
         return MessageFormat.format(text,args);
     }
@@ -98,6 +98,12 @@ class Messages
     static final String MSG_FALLBACK_JAVADOC =
         "DefaultParticleBinder.FallbackJavadoc"; // arg:1
 
+
+    // they are shared from the model
+    public static final String ERR_UNACKNOWLEDGED_CUSTOMIZATION =
+        "UnusedCustomizationChecker.UnacknolwedgedCustomization"; // arg:1
+    public static final String ERR_UNACKNOWLEDGED_CUSTOMIZATION_LOCATION =
+        "UnusedCustomizationChecker.UnacknolwedgedCustomization.Relevant"; // arg:0
 
 
 
