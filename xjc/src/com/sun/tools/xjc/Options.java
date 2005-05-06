@@ -45,10 +45,7 @@ public class Options
     
     /** If the "-quiet" option is specified. */
     public boolean quiet;
-    
-    /** If "-trace-unmarshaller" is specfied. */
-    public boolean traceUnmarshaller;
-    
+
     /** If the -readOnly option is specified */
     public boolean readOnly;
     
@@ -270,10 +267,6 @@ public class Options
         }
         if (args[i].equals("-debug")) {
             debugMode = true;
-            return 1;
-        }
-        if (args[i].equals("-trace-unmarshaller")) {
-            traceUnmarshaller = true;
             return 1;
         }
         if (args[i].equals("-nv")) {
