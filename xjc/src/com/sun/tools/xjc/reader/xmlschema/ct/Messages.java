@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 enum Messages {
     ERR_NO_FURTHER_EXTENSION;
 
-    private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());
+    private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getPackage().getName() + ".MessageBundle");
 
     public String toString() {
         return format();
