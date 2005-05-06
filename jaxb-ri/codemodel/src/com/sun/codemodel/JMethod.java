@@ -7,7 +7,6 @@ package com.sun.codemodel;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -43,7 +42,7 @@ public class JMethod extends JGenerifiableImpl implements JDeclaration, JAnnotat
 	 * Set of exceptions that this method may throw.
      * A set instance lazily created.
 	 */
-	private Set _throws;
+	private Set<JClass> _throws;
 
 	/**
 	 * JBlock of statements that makes up the body this method
@@ -66,7 +65,7 @@ public class JMethod extends JGenerifiableImpl implements JDeclaration, JAnnotat
     /**
      * Annotations on this variable. Lazily created.
      */
-    private List annotations = null;
+    private List<JAnnotationUse> annotations = null;
 
 
 	private boolean isConstructor() {
@@ -114,9 +113,9 @@ public class JMethod extends JGenerifiableImpl implements JDeclaration, JAnnotat
 		this.outer = _class;
 	}
     
-    private Set getThrows() {
+    private Set<JClass> getThrows() {
         if(_throws==null)
-            _throws = new TreeSet(ClassNameComparator.theInstance);
+            _throws = new TreeSet<JClass>(ClassNameComparator.theInstance);
         return _throws;
     }
 
@@ -217,7 +216,7 @@ public class JMethod extends JGenerifiableImpl implements JDeclaration, JAnnotat
      */
     public JAnnotationUse annotate(JClass clazz){
         if(annotations==null)
-           annotations = new ArrayList();
+           annotations = new ArrayList<JAnnotationUse>();
         JAnnotationUse a = new JAnnotationUse(clazz);
         annotations.add(a);
         return a;
@@ -352,8 +351,8 @@ public class JMethod extends JGenerifiableImpl implements JDeclaration, JAnnotat
 			f.g(jdoc);
 
         if (annotations != null){
-            for( int i=0; i<annotations.size(); i++ )
-                f.g((JAnnotationUse)annotations.get(i)).nl();
+            for (JAnnotationUse a : annotations)
+                f.g(a).nl();
         }
 
 		// declare the generics parameters
@@ -382,10 +381,10 @@ public class JMethod extends JGenerifiableImpl implements JDeclaration, JAnnotat
 		if (_throws!=null && !_throws.isEmpty()) {
 			f.nl().i().p("throws");
 			first = true;
-			for (Iterator i = _throws.iterator(); i.hasNext();) {
+			for( JClass t : _throws ) {
 				if (!first)
 					f.p(',');
-				f.g((JClass) (i.next()));
+				f.g(t);
 				first = false;
 			}
 			f.nl().o();
