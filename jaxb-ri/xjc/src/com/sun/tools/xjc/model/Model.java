@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
@@ -212,7 +214,11 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void> {
         // check for unused plug-in customizations.
         // these can be only checked after the plug-ins run, so it's here.
         // the JAXB bindings are checked by XMLSchema's builder.
+        Set check = new HashSet();
         for( CCustomizations c=customizations; c!=null; c=c.next ) {
+            if(!check.add(c)) {
+                throw new AssertionError(); // detect a loop
+            }
             for (CPluginCustomization p : c) {
                 if(!p.isAcknowledged()) {
                     ehf.error(
