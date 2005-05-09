@@ -32,7 +32,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.13 2005-05-09 20:58:10 kohsuke Exp $
+       $Id: build.xml,v 1.14 2005-05-09 21:00:42 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -227,8 +227,7 @@
                    and yes, it's OK to have new lines and spaces inbetween.
               -->
               <property name="manifest.classpath"
-                value="jaxb-api.jar jaxb-impl.jar
-                relaxngDatatype.jar jsr173_1.0_api.jar activation.jar" />
+                value="jaxb-api.jar jaxb-impl.jar jsr173_1.0_api.jar activation.jar" />
               <echo file="${xjc.root}/manifest.xjc" append="true"
 >Main-Class: com.sun.tools.xjc.XJCFacade
 Class-Path: ${manifest.classpath}
@@ -543,12 +542,6 @@ Class-Path: ${manifest.classpath}
         <property name="jes.zip"            value="../../jwsdp-shared/lib"/>
 
         <property name="manifest.classpath" value="jaxb-api.jar jaxb-impl.jar jaxb1-impl.jar
-          relaxngDatatype.jar
-          ${jwsdp.shared}/relaxngDatatype.jar
-          ${jes.rpm.private}/relaxngDatatype.jar
-          ${jes.svr4}/relaxngDatatype.jar
-          ${jes.zip}/relaxngDatatype.jar
-
           activation.jar
           ${jwsdp.shared}/activation.jar
           ${jes.rpm.private}/activation.jar
@@ -580,8 +573,6 @@ Class-Path: ${manifest.classpath}
             <fileset dir="${dist.home}">
                 <exclude name="lib/jaxb-api-src.zip"/>   
                 <exclude name="lib/jaxp-api.jar"/>
-                <exclude name="lib/xsdlib.jar"/>
-                <exclude name="lib/relaxngDatatype.jar"/>
                 <exclude name="lib/jaxb-api-doc.zip"/>
                 <exclude name="**/api/"/>
             </fileset>
@@ -698,8 +689,6 @@ Class-Path: ${manifest.classpath}
         <copy todir="${zip.build.dir}/jaxb/lib">
           <fileset dir="${jaxb.dist}/lib">
             <exclude name="jaxb-api-src.zip"/>
-            <exclude name="relaxngDatatype.jar"/>
-            <exclude name="jaxb-api-doc.zip"/>
           </fileset>
         </copy>
       </parallel>
