@@ -81,7 +81,7 @@ public class JCommentPart extends ArrayList<Object> {
             } else
             if(o instanceof JClass) {
                 // TODO: this doesn't print the parameterized type properly
-                f.p("{@link ").t((JClass)o).p('}');
+                f.p("{@link ").g((JClass)o).p('}');
             } else
             if(o instanceof JType) {
                 f.g((JType)o);
