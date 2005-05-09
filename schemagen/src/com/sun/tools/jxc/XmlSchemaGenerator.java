@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import javax.activation.MimeType;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
+import javax.xml.bind.annotation.XmlSchema;
 
 import com.sun.tools.jxc.gen.xmlschema.Any;
 import com.sun.tools.jxc.gen.xmlschema.AttrDecls;
@@ -109,6 +110,9 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
         addAllElements(types.getElementMappings(null).values());
         addAllEnums(types.enums().values());
         addAllArrays(types.arrays().values());
+
+        for (Map.Entry<String, Namespace> e : namespaces.entrySet())
+            e.getValue().xmlNs.putAll( types.getXmlNs(e.getKey()) );
     }
 
     private Namespace getNamespace(String uri) {
@@ -289,6 +293,11 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
         private Map<String,NonElement<TypeT,ClassDeclT>> additionalElementDecls = new HashMap<String, NonElement<TypeT, ClassDeclT>>();
 
         /**
+         * Additional namespace declarations to be made. Taken from {@link XmlSchema#xmlns}.
+         */
+        private Map<String,String> xmlNs = new HashMap<String, String>();
+
+        /**
          * cache of visited ClassInfos
          */
         private final Set<ClassInfo> visited = new HashSet<ClassInfo>();
@@ -340,7 +349,15 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             try {
                 Schema schema = TXW.create(Schema.class,ResultFactory.createSerializer(result));
 
-                schema._namespace(WellKnownNamespace.XML_SCHEMA,"xs");
+                for (Map.Entry<String, String> e : xmlNs.entrySet()) {
+                    schema._namespace(e.getValue(),e.getKey());
+                }
+
+                // declare XML Schema namespace to be xs, but allow the user to override it.
+                // if 'xs' is used for other things, we'll just let TXW assign a random prefix
+                if(!xmlNs.containsValue(WellKnownNamespace.XML_SCHEMA)
+                && !xmlNs.containsKey("xs"))
+                    schema._namespace(WellKnownNamespace.XML_SCHEMA,"xs");
                 schema.version("1.0");
 
                 if(uri.length()!=0)
