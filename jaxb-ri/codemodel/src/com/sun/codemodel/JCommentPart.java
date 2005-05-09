@@ -55,7 +55,7 @@ public class JCommentPart extends ArrayList<Object> {
             // quickly pass the types to JFormatter
             for( Object o : this )
                 if(o instanceof JClass)
-                    f.t((JClass)o);
+                    f.g((JClass)o);
             return;
         }
 
