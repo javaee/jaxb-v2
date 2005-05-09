@@ -331,6 +331,13 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void> {
         return allElements;
     }
 
+    /**
+     * Not implemented in the compile-time model.
+     */
+    public Map<String, String> getXmlNs(String namespaceUri) {
+        return Collections.emptyMap();
+    }
+
     public void dump(Result out) {
         // TODO
         throw new UnsupportedOperationException();
