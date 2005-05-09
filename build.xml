@@ -32,7 +32,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.12 2005-05-06 23:00:52 kohsuke Exp $
+       $Id: build.xml,v 1.13 2005-05-09 20:58:10 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -543,12 +543,6 @@ Class-Path: ${manifest.classpath}
         <property name="jes.zip"            value="../../jwsdp-shared/lib"/>
 
         <property name="manifest.classpath" value="jaxb-api.jar jaxb-impl.jar jaxb1-impl.jar
-          xsdlib.jar
-          ${jwsdp.shared}/xsdlib.jar
-          ${jes.rpm.private}/xsdlib.jar
-          ${jes.svr4}/xsdlib.jar
-          ${jes.zip}/xsdlib.jar
-
           relaxngDatatype.jar
           ${jwsdp.shared}/relaxngDatatype.jar
           ${jes.rpm.private}/relaxngDatatype.jar
@@ -704,7 +698,6 @@ Class-Path: ${manifest.classpath}
         <copy todir="${zip.build.dir}/jaxb/lib">
           <fileset dir="${jaxb.dist}/lib">
             <exclude name="jaxb-api-src.zip"/>
-            <exclude name="xsdlib.jar"/>
             <exclude name="relaxngDatatype.jar"/>
             <exclude name="jaxb-api-doc.zip"/>
           </fileset>
