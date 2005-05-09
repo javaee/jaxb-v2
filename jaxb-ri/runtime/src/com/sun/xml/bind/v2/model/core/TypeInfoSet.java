@@ -103,11 +103,14 @@ public interface TypeInfoSet<TypeT,ClassDeclT,FieldT,MethodT> {
     /**
      * Gets all {@link XmlSchema#xmlns()} found in this context for the given namespace URI.
      *
+     * <p>
+     * This operation is expected to be only used in schema generator, so it can be slow.
+     *  
      * @return
      *      A map from prefixes to namespace URIs, which should be declared when generating a schema.
      *      Could be empty but never null.
      */
-    Map<String,String> getXmlNs(String namespaceUri); 
+    Map<String,String> getXmlNs(String namespaceUri);
 
     /**
      * Dumps this model into XML.
