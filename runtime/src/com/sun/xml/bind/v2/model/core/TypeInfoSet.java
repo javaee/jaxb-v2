@@ -3,6 +3,7 @@ package com.sun.xml.bind.v2.model.core;
 import java.util.Map;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 
@@ -97,6 +98,16 @@ public interface TypeInfoSet<TypeT,ClassDeclT,FieldT,MethodT> {
      * Returns all the {@link ElementInfo} known to this set.
      */
     Iterable<? extends ElementInfo<TypeT,ClassDeclT>> getAllElements();
+
+
+    /**
+     * Gets all {@link XmlSchema#xmlns()} found in this context for the given namespace URI.
+     *
+     * @return
+     *      A map from prefixes to namespace URIs, which should be declared when generating a schema.
+     *      Could be empty but never null.
+     */
+    Map<String,String> getXmlNs(String namespaceUri); 
 
     /**
      * Dumps this model into XML.

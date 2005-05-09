@@ -1,6 +1,7 @@
 package com.sun.xml.bind.v2.model.impl;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -8,7 +9,9 @@ import java.util.Map;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlNs;
 import javax.xml.bind.annotation.XmlRegistry;
+import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
@@ -97,6 +100,13 @@ class TypeInfoSetImpl<TypeT,ClassDeclT,FieldT,MethodT> implements
      * and accordingly it requires a lot of special casing.
      */
     private final NonElement<TypeT,ClassDeclT> anyType;
+
+    /**
+     * Lazily parsed set of {@link XmlNs}s.
+     *
+     * @see #getXmlNs(String)
+     */
+    private Map<String,Map<String,String>> xmlNsCache;
 
     public TypeInfoSetImpl(Navigator<TypeT,ClassDeclT,FieldT,MethodT> nav,
                            AnnotationReader<TypeT,ClassDeclT,FieldT,MethodT> reader,
@@ -261,6 +271,31 @@ class TypeInfoSetImpl<TypeT,ClassDeclT,FieldT,MethodT> implements
 
     public Iterable<? extends ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>> getAllElements() {
         return allElements;
+    }
+
+    public Map<String,String> getXmlNs(String namespaceUri) {
+        if(xmlNsCache==null) {
+            xmlNsCache = new HashMap<String,Map<String,String>>();
+
+            for (ClassInfoImpl<TypeT, ClassDeclT, FieldT, MethodT> ci : beans().values()) {
+                XmlSchema xs = reader.getPackageAnnotation( XmlSchema.class, ci.getClazz(), null );
+                if(xs==null)
+                    continue;
+
+                String uri = xs.namespace();
+                Map<String,String> m = xmlNsCache.get(uri);
+                if(m==null)
+                    xmlNsCache.put(uri,m=new HashMap<String, String>());
+
+                for( XmlNs xns : xs.xmlns() ) {
+                    m.put(xns.prefix(),xns.namespaceURI());
+                }
+            }
+        }
+
+        Map<String,String> r = xmlNsCache.get(namespaceUri);
+        if(r!=null)     return r;
+        else            return Collections.emptyMap();
     }
 
     /**
