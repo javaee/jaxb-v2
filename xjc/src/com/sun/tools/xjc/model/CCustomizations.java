@@ -23,7 +23,7 @@ public final class CCustomizations extends ArrayList<CPluginCustomization> {
      * so that we can look for unacknowledged customizations later.
      *
      * @see CPluginCustomization#markAsAcknowledged()
-     * @see #setParent(Model)
+     * @see #setParent(Model,CCustomizable)
      */
     /*package*/ CCustomizations next;
 
@@ -40,8 +40,12 @@ public final class CCustomizations extends ArrayList<CPluginCustomization> {
     }
 
     /*package*/ void setParent(Model model,CCustomizable owner) {
-        if(this.next!=null)     return;
+        if(this.owner!=null)     return;
 
+//        // loop check
+//        for( CCustomizations c = model.customizations; c!=null; c=c.next )
+//            assert c!=this;
+        
         this.next = model.customizations;
         model.customizations = this;
         assert owner!=null;
@@ -103,5 +107,13 @@ public final class CCustomizations extends ArrayList<CPluginCustomization> {
         CCustomizations r = new CCustomizations(lhs);
         r.addAll(rhs);
         return r;
+    }
+
+    public boolean equals(Object o) {
+        return this==o;
+    }
+
+    public int hashCode() {
+        return System.identityHashCode(this);
     }
 }
