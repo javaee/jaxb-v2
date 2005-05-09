@@ -181,6 +181,7 @@
       private String enableJavaNamingConvention = "true";
       private String fixedAttrToConstantProperty = "false";
       private String needIsSetMethod = "false";
+      private String simpleTypeSubstitution = "false";
       private Set enumBaseTypes = new HashSet();
       private int defaultEnumSizeCap = 256;
       private boolean generateEnumMemberName = false;
@@ -202,6 +203,7 @@
           $runtime.parseBoolean(enableJavaNamingConvention),
           $runtime.parseBoolean(fixedAttrToConstantProperty),
           $runtime.parseBoolean(needIsSetMethod),
+          $runtime.parseBoolean(simpleTypeSubstitution),
           generateEnumMemberName,
           enumBaseTypes,
           defaultEnumSizeCap,
@@ -244,6 +246,12 @@
       <optional>
         <attribute name="generateIsSetMethod">
           needIsSetMethod = <data type="boolean"/>
+        </attribute>
+      </optional>
+
+      <optional>
+        <attribute name="simpleTypeSubstitution">
+          simpleTypeSubstitution = <data type="boolean"/>
         </attribute>
       </optional>
 

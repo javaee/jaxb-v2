@@ -293,7 +293,7 @@ public class ClassSelector extends BindingComponent {
      *      cyclic binding problem.
      */
     // TODO: consider getting rid of "cannotBeDelayed"
-    private CTypeInfo _bindToClass( XSComponent sc, boolean cannotBeDelayed ) {
+    CTypeInfo _bindToClass( XSComponent sc, boolean cannotBeDelayed ) {
         // check if this class is already built.
         if(!bindMap.containsKey(sc)) {
             // craete a bind task

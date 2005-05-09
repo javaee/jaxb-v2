@@ -207,7 +207,7 @@ public final class SimpleTypeBuilder extends BindingComponent {
         return t.apply(composer);
     }
 
-    private final XSSimpleTypeFunction<TypeUse> composer = new XSSimpleTypeFunction<TypeUse>() {
+    public final XSSimpleTypeFunction<TypeUse> composer = new XSSimpleTypeFunction<TypeUse>() {
 
         public TypeUse listSimpleType(XSListSimpleType type) {
             // flatten nested list
