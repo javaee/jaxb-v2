@@ -175,8 +175,9 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
      */
     public boolean isUnboxable() {
         Collection<? extends CTypeInfo> ts = ref();
-        if(ts.size()>1)
+        if(ts.size()!=1)
             // if the property is heterogeneous, no way.
+            // ts.size()==0 is a special case that can happen for wildcards.
             return false;
 
         CTypeInfo t = ts.iterator().next();
