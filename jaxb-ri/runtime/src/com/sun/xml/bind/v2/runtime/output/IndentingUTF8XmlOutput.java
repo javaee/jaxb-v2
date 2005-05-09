@@ -20,9 +20,16 @@ public class IndentingUTF8XmlOutput extends UTF8XmlOutput {
 
     /**
      * Null if the writer should perform no indentation.
-     * Otherwise this will keep the string for indentation.
+     *
+     * Otherwise this will keep the 8 copies of the string for indentation.
+     * (so that we can write 8 indentation at once.)
      */
-    private final Encoded indent;
+    private final Encoded indent8;
+
+    /**
+     * Length of one indentation.
+     */
+    private final int unitLen;
 
     private int depth = 0;
 
@@ -38,9 +45,15 @@ public class IndentingUTF8XmlOutput extends UTF8XmlOutput {
         super(out, localNames);
 
         if(indentStr!=null) {
-            this.indent = new Encoded(indentStr);
+            Encoded e = new Encoded(indentStr);
+            indent8 = new Encoded();
+            indent8.ensureSize(e.len*8);
+            unitLen = e.len;
+            for( int i=0; i<8; i++ )
+                System.arraycopy(e.buf, 0, indent8.buf, unitLen*i, unitLen);
         } else {
-            this.indent = null;
+            this.indent8 = null;
+            this.unitLen = 0;
         }
     }
 
@@ -84,8 +97,14 @@ public class IndentingUTF8XmlOutput extends UTF8XmlOutput {
 
     private void printIndent() throws IOException {
         out.write('\n');
-        for( int i=depth; i>0; i-- )
-            indent.write(out);
+        int i = depth%8;
+
+        out.write( indent8.buf, 0, i*unitLen );
+
+        i>>=3;  // really i /= 8;
+
+        for( ; i>0; i-- )
+            indent8.write(out);
     }
 
     @Override
