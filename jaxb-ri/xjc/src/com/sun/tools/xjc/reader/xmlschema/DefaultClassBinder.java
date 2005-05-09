@@ -84,9 +84,7 @@ class DefaultClassBinder extends AbstractBinderImpl
 
             JPackage pkg = selector.getPackage(type.getTargetNamespace());
 
-            QName typeName = new QName(type.getTargetNamespace(),type.getName());
-
-            return new CClassInfo(model,pkg,deriveName(type),type.getLocator(),typeName,null,bi.toCustomizationList());
+            return new CClassInfo(model,pkg,deriveName(type),type.getLocator(),getTypeName(type),null,bi.toCustomizationList());
         } else {
             boolean parentIsType = selector.isBound(type.getScope());
 
@@ -112,6 +110,10 @@ class DefaultClassBinder extends AbstractBinderImpl
 
             return new CClassInfo(model, selector.getClassFactory(), className, type.getLocator(), ANONYMOUS, null, bi.toCustomizationList() );
         }
+    }
+
+    private QName getTypeName(XSType type) {
+        return new QName(type.getTargetNamespace(),type.getName());
     }
 
     /**
@@ -208,14 +210,14 @@ class DefaultClassBinder extends AbstractBinderImpl
         return never();
     }
 
-    public CClassInfo simpleType(XSSimpleType type) {
-        // UGLY CODE WARNING
-        //owner.simpleTypeBuilder.referer = type;
-        SimpleTypeBuilder stb = Ring.get(SimpleTypeBuilder.class);
+    public CElement simpleType(XSSimpleType type) {
+        CElement c = allow(type,type.getName());
+        if(c!=null) return c;
 
-        stb.refererStack.push(type);
-        stb.build(type);
-        stb.refererStack.pop();
+        if(getGlobalBinding().simpleTypeSubstitution && type.isGlobal()) {
+            return new CClassInfo(model,selector.getClassFactory(),
+                    deriveName(type), type.getLocator(), getTypeName(type), null, null );
+        }
 
         return never();
     }

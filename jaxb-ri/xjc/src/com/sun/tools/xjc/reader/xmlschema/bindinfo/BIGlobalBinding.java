@@ -67,6 +67,11 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
     /*package*/ final boolean isJavaNamingConventionEnabled;
 
     /**
+     * True to generate classes for every simple type. 
+     */
+    public final boolean simpleTypeSubstitution;
+
+    /**
      * Gets the default defaultProperty customization.
      */
     public final BIProperty defaultProperty;
@@ -147,7 +152,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
     public BIGlobalBinding() {
         this(
             new HashMap<QName,BIConversion>(), NameConverter.standard,
-            false, true, false, true, false, false, false,
+            false, true, false, true, false, false, false, false,
             createSet(), 256,
             null, null, null, null, false, false, null );
     }
@@ -161,6 +166,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
         boolean _enableJavaNamingConvention,
         boolean _fixedAttrToConstantProperty,
         boolean _needIsSetMethod,
+        boolean _simpleTypeSubstitution,
         boolean _generateEnumMemberName,
         Set<QName> _enumBaseTypes,
         int defaultEnumMemberSizeCap,
@@ -179,6 +185,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
         this.isChoiceContentPropertyModelGroupBinding = _choiceContentPropertyWithModelGroupBinding;
         this.codeGenerationStrategy = _generateValueClass?ImplStructureStrategy.BEAN_ONLY:ImplStructureStrategy.INTF_AND_IMPL;
         this.isJavaNamingConventionEnabled = _enableJavaNamingConvention;
+        this.simpleTypeSubstitution = _simpleTypeSubstitution;
         this.generateElementClass = _generateElementType;
         this.generateEnumMemberName = _generateEnumMemberName;
         this.enumBaseTypes = _enumBaseTypes;
