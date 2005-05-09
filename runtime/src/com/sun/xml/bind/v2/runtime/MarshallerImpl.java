@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.io.ByteArrayOutputStream;
 
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBException;
@@ -314,8 +315,8 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     }
     
     public XmlOutput createWriter( OutputStream os, String encoding ) throws JAXBException {
-        // buffering improves the performance
-        if(!(os instanceof BufferedOutputStream))
+        // buffering improves the performance, but not always
+        if(!(os instanceof BufferedOutputStream) || !(os instanceof ByteArrayOutputStream))
             os = new BufferedOutputStream(os);
 
         if(encoding.equals("UTF-8")) {
