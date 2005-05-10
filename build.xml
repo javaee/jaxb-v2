@@ -32,7 +32,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.14 2005-05-09 21:00:42 kohsuke Exp $
+       $Id: build.xml,v 1.15 2005-05-10 20:57:35 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -731,5 +731,23 @@ Class-Path: ${manifest.classpath}
              dest="tools/lib/rebundle/compiler/xsom.jar" />
         <get src="http://kohsuke.sfbay/hudson/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom-src.zip"
              dest="tools/lib/src/xsom-src.zip" />
+     </target>
+    
+    
+    <target name="integrate-txw2">
+        <get src="http://kohsuke.sfbay/hudson/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2.jar"
+             dest="tools/lib/rebundle/compiler/txw2.jar" />
+        <get src="http://kohsuke.sfbay/hudson/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txwc2.jar"
+             dest="tools/lib/util/txwc2.jar" />
+        <get src="http://kohsuke.sfbay/hudson/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2-src.zip"
+             dest="tools/lib/src/txw2-src.zip" />
+     </target>
+    
+    
+    <target name="integrate-rngom">
+        <get src="http://kohsuke.sfbay/hudson/job/rngom/lastSuccessfulBuild/artifact/rngom/rngom/build/rngom.jar"
+             dest="tools/lib/rebundle/compiler/rngom.jar" />
+        <get src="http://kohsuke.sfbay/hudson/job/rngom/lastSuccessfulBuild/artifact/rngom/rngom/build/rngom-src.zip"
+             dest="tools/lib/src/rngom-src.zip" />
      </target>
 </project>
