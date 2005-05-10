@@ -19,13 +19,12 @@ import com.sun.xml.bind.v2.model.runtime.RuntimeClassInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElement;
 import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeValuePropertyInfo;
-import com.sun.xml.bind.v2.model.runtime.RuntimeNonElementRef;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
-import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
+import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 
 import org.xml.sax.SAXException;
 
@@ -244,7 +243,15 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
         }
 
         public BeanT parse(CharSequence lexical) throws AccessorException, SAXException {
-            BeanT inst = (BeanT)UnmarshallingContext.getInstance().createInstance(ownerClass);
+            UnmarshallingContext ctxt = UnmarshallingContext.getInstance();
+            BeanT inst;
+            if(ctxt!=null)
+                inst = (BeanT)ctxt.createInstance(ownerClass);
+            else
+                // when this runs for parsing enum constants,
+                // there's no UnmarshallingContext.
+                inst = ClassFactory.create(ownerClass);
+
             xacc.parse(inst,lexical);
             return inst;
         }
