@@ -4,6 +4,8 @@
  */
 package com.sun.tools.xjc.outline;
 
+import java.util.Set;
+
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JPackage;
 import com.sun.tools.xjc.generator.bean.ObjectFactoryGenerator;
@@ -42,4 +44,10 @@ public interface PackageOutline {
      * Generates an ObjectFactory class for this package.
      */
     ObjectFactoryGenerator objectFactoryGenerator();
+
+    /**
+     * Gets {@link ClassOutline}s whose {@link ClassOutline#_package()}
+     * points to this object.
+     */
+    Set<? extends ClassOutline> getClasses();
 }
