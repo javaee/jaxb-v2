@@ -1,0 +1,50 @@
+# RELAX NG Schema for WSDL 1.1 SOAP Binding
+#
+#                   Written by Kohsuke Kawaguchi
+#                   $Id: soapBindings.rnc,v 1.1 2005-05-10 19:46:23 kohsuke Exp $
+#
+# This schema is in public domain. Feel free to use it in anyway you can.
+# If you find a bug, please let me know.
+namespace local = ""
+namespace txw = "http://java.sun.com/txw"
+default namespace soap = "http://schemas.xmlsoap.org/wsdl/soap/"
+
+binding = element binding {
+	attribute transport {xsd:anyURI}?,
+	attribute style {styleChoice}?
+}
+
+styleChoice = "rpc"|"document"
+
+operation = element operation {
+	attribute soapAction {xsd:anyURI}?,
+	attribute style {styleChoice}?
+}
+
+body = element body { bodyType }
+
+bodyType =
+	attribute encodingStyle {xsd:anyURI}?,
+	attribute parts {xsd:NMTOKENS}?,
+	attribute use {useChoice}?,
+	attribute namespace {xsd:anyURI}?
+
+useChoice = "literal"|"encoded"
+
+fault = element fault { bodyType }
+
+header = element header {
+	attribute message {xsd:QName},
+	bodyType,
+	element headerFault {
+		attribute message {xsd:QName},
+		bodyType
+	}
+}
+
+address = element address {
+	attribute location {xsd:anyURI}
+}
+
+# dummy
+start = address|header|fault|body|operation|binding

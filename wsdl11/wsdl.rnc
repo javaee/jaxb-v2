@@ -1,0 +1,154 @@
+# RELAX NG Schema for WSDL 1.1
+#
+#                   Written by Kohsuke Kawaguchi
+#                   $Id: wsdl.rnc,v 1.1 2005-05-10 19:46:23 kohsuke Exp $
+#
+# This schema is in public domain. Feel free to use it in anyway you can.
+# If you find a bug, please let me know.
+default namespace wsdl = "http://schemas.xmlsoap.org/wsdl/"
+namespace local = ""
+namespace txw = "http://java.sun.com/txw"
+
+start = definitions
+
+documentation = element documentation {
+		mixed {
+			otherElement*
+		},
+		attribute * {text}*
+	}
+
+[txw:mode="inherit"]
+documented = documentation?
+
+[txw:mode="inherit"]
+openAtts = documented, attribute * - local:* {text}*
+
+definitions = element definitions {
+		documented,
+		import*,
+		types*,
+		message*,
+		portType*,
+		binding*,
+		service*,
+		otherElement*,
+		attribute targetNamespace {xsd:anyURI}?,
+		attribute name {xsd:NMTOKEN}?
+	}
+
+import = element import {
+	documented,
+	attribute namespace {xsd:anyURI},
+	attribute location {xsd:anyURI}
+}
+
+types = element types {
+	documented,
+	otherElement*
+}
+
+message = element message {
+	documented,
+	part*,
+	attribute name {xsd:NMTOKEN}
+}
+
+part = element part {
+	openAtts,
+	attribute name {xsd:NMTOKEN},
+	( attribute type {xsd:QName} | attribute element {xsd:QName} )
+}
+
+portType = element portType {
+	documented,
+	operation*,
+	attribute name {xsd:NCName}
+}
+
+operation = element operation {
+	documented,
+	attribute name {xsd:NCName},
+	
+	(
+		element one-way-operation {
+			input
+		} |
+		element request-response-operation {
+			input, output, fault*
+		} |
+		element solicit-response-operation {
+			output, input, fault*
+		} |
+		element notification-operation {
+			output
+		}
+	)
+}
+
+input = element input { paramType }
+output = element output { paramType }
+fault = element fault { faultType }
+
+[txw:mode="inherit"]
+paramType =
+	documented,
+	attribute name {xsd:NMTOKEN}?,
+	attribute message {xsd:QName}
+
+[txw:mode="inherit"]
+faultType =
+	documented,
+	attribute name {xsd:NMTOKEN},
+	attribute message {xsd:QName}
+
+[txw:mode="inherit"]
+startWithExtensionsType =
+	documented,
+	otherElement*
+
+binding = element binding {
+	startWithExtensionsType,
+	element operation { binding_operationType }*,
+	attribute name {xsd:NCName},
+	attribute type {xsd:QName}
+}
+
+binding_operationType =
+	attribute name {xsd:NCName},
+	startWithExtensionsType,
+	element input {startWithExtensionsType}?,
+	element output {startWithExtensionsType}?,
+	element fault {
+		attribute name {xsd:NMTOKEN},
+		startWithExtensionsType
+	}*
+
+service = element service {
+	attribute name {xsd:NCName},
+	documented,
+	port*
+}
+
+port = element port {
+	attribute name {xsd:NCName},
+	attribute binding {xsd:QName},
+	attribute arrayType {text}?,
+	documented,
+	otherElement?
+}
+
+otherElement = element * - wsdl:* {
+	mixed {
+		anyElement*
+	},
+	attribute * {text}*
+}
+
+anyElement = element * {
+	mixed {
+		anyElement*
+	},
+	attribute * {text}*
+ }
+
