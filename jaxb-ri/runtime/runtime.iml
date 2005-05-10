@@ -14,7 +14,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="util" level="project" />
-    <orderEntry type="library" name="runtime" level="project" />
+    <orderEntry type="library" exported="" name="runtime" level="project" />
     <orderEntry type="module" module-name="runtime-api" exported="" />
     <orderEntryProperties />
   </component>
