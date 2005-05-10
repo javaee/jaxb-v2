@@ -85,7 +85,7 @@ public final class BeanGenerator implements Outline
     private final ErrorReceiver errorReceiver;
 
     /** all {@link PackageOutline}s keyed by their {@link PackageOutline#_package}. */
-    private final Map<JPackage,PackageOutline> packageContexts = new HashMap<JPackage,PackageOutline>();
+    private final Map<JPackage,PackageOutlineImpl> packageContexts = new HashMap<JPackage,PackageOutlineImpl>();
     
     /** all {@link ClassOutline}s keyed by their {@link ClassOutline#target}. */
     private final Map<CClassInfo,ClassOutlineImpl> classes = new HashMap<CClassInfo,ClassOutlineImpl>();
@@ -162,8 +162,13 @@ public final class BeanGenerator implements Outline
         }
 
         // create the class definitions for all the beans first.
+        // this should also fill in PackageContext#getClasses
         for( CClassInfo bean : model.beans().values() )
             getClazz(bean);
+
+        // compute the package-level setting
+        for (PackageOutlineImpl p : packageContexts.values())
+            p.calcDefaultValues();
 
         // fill in implementation classes
         for( ClassOutlineImpl co : getClasses() )
@@ -214,7 +219,7 @@ public final class BeanGenerator implements Outline
             case INTF_AND_IMPL:
                 {
                     StringBuilder buf = new StringBuilder();
-                    for( PackageOutline po : packageContexts.values() ) {
+                    for( PackageOutlineImpl po : packageContexts.values() ) {
                         if(buf.length()>0)  buf.append(':');
                         buf.append(po._package().name());
                     }
@@ -224,7 +229,7 @@ public final class BeanGenerator implements Outline
             case BEAN_ONLY:
                 for( ClassOutlineImpl cc : getClasses() )
                     inv.arg(cc.implRef.dotclass());
-                for( PackageOutline po : packageContexts.values() )
+                for( PackageOutlineImpl po : packageContexts.values() )
                     inv.arg(po.objectFactory().dotclass());
                 break;
             default:
@@ -326,7 +331,7 @@ public final class BeanGenerator implements Outline
     
     public CodeModelClassFactory getClassFactory() { return codeModelClassFactory; }
 
-    public PackageOutline getPackageContext( JPackage p ) {
+    public PackageOutlineImpl getPackageContext( JPackage p ) {
         return packageContexts.get(p);
     }
 
