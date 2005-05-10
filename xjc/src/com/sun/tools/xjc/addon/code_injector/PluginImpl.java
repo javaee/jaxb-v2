@@ -21,7 +21,7 @@ import org.xml.sax.ErrorHandler;
  */
 public class PluginImpl extends Plugin {
     public String getOptionName() {
-        return "inject-code";
+        return "Xinject-code";
     }
 
     public List<String> getCustomizationURIs() {
@@ -33,7 +33,7 @@ public class PluginImpl extends Plugin {
     }
 
     public String getUsage() {
-        return "  -inject-code       :  inject specified Java code fragments into the generated code";
+        return "  -Xinject-code      :  inject specified Java code fragments into the generated code";
     }
 
     // meat of the processing
