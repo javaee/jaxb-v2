@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: ClassOutlineImpl.java,v 1.1 2005-04-15 20:09:04 kohsuke Exp $
+ * @(#)$Id: ClassOutlineImpl.java,v 1.2 2005-05-10 22:51:07 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -41,6 +41,7 @@ public final class ClassOutlineImpl extends ClassOutline {
         CClassInfo _target, JDefinedClass exposedClass, JDefinedClass _implClass, JClass _implRef ) {
         super(_target,exposedClass,_implRef,_implClass);
         this._parent = _parent;
+        _package().classes.add(this);
     }
 
     public BeanGenerator parent() {

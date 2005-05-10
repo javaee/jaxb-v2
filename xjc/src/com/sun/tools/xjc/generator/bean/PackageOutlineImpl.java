@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: PackageOutlineImpl.java,v 1.1 2005-04-15 20:09:05 kohsuke Exp $
+ * @(#)$Id: PackageOutlineImpl.java,v 1.2 2005-05-10 22:51:08 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -8,6 +8,10 @@
  * 
  */
 package com.sun.tools.xjc.generator.bean;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JPackage;
@@ -25,12 +29,19 @@ final class PackageOutlineImpl implements PackageOutline {
     private final JPackage _package;
     private final ObjectFactoryGenerator objectFactoryGenerator;
 
+    /*package*/ final Set<ClassOutlineImpl> classes = new HashSet<ClassOutlineImpl>();
+    private final Set<ClassOutlineImpl> classesView = Collections.unmodifiableSet(classes);
+
     public JPackage _package() {
         return _package;
     }
 
     public ObjectFactoryGenerator objectFactoryGenerator() {
         return objectFactoryGenerator;
+    }
+
+    public Set<ClassOutlineImpl> getClasses() {
+        return classesView;
     }
 
     public JDefinedClass objectFactory() {
