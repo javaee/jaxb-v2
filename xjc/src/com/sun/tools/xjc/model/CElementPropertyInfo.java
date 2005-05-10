@@ -109,6 +109,10 @@ public final class CElementPropertyInfo extends CPropertyInfo implements Element
         return super.isUnboxable();
     }
 
+    public <V> V accept(CPropertyVisitor<V> visitor) {
+        return visitor.onElement(this);
+    }
+
     public CAdapter getAdapter() {
         return adapter;
     }
