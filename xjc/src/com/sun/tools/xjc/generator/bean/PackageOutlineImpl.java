@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: PackageOutlineImpl.java,v 1.3 2005-05-10 23:07:22 kohsuke Exp $
+ * @(#)$Id: PackageOutlineImpl.java,v 1.4 2005-05-10 23:12:33 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -18,13 +18,15 @@ import javax.xml.bind.annotation.XmlSchema;
 
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JPackage;
+import com.sun.tools.xjc.model.CAttributePropertyInfo;
 import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CElementPropertyInfo;
 import com.sun.tools.xjc.model.CPropertyInfo;
+import com.sun.tools.xjc.model.CPropertyVisitor;
 import com.sun.tools.xjc.model.CReferencePropertyInfo;
+import com.sun.tools.xjc.model.CValuePropertyInfo;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.outline.PackageOutline;
-import com.sun.xml.bind.v2.model.core.PropertyKind;
 
 /**
  * {@link PackageOutline} enhanced with schema2java specific
@@ -105,21 +107,36 @@ final class PackageOutlineImpl implements PackageOutline {
      */
     public void calcDefaultValues() {
         // TODO for Ryan to compute those values properly
+
+        // used to visit properties
+        CPropertyVisitor<Void> propVisitor = new CPropertyVisitor<Void>() {
+            public Void onElement(CElementPropertyInfo p) {
+                // TODO
+                return null;
+            }
+
+            public Void onReference(CReferencePropertyInfo p) {
+                // TODO
+                return null;
+            }
+
+            public Void onAttribute(CAttributePropertyInfo p) {
+                return null;
+            }
+
+            public Void onValue(CValuePropertyInfo p) {
+                return null;
+            }
+        };
+
+
         for (ClassOutlineImpl co : classes) {
             CClassInfo ci = co.target;
             // things you can look at
             ci.getTypeName();
             ci.getElementName();
-            for( CPropertyInfo p : ci.getProperties() ) {
-                if(p.kind()==PropertyKind.ELEMENT) {
-                    CElementPropertyInfo ep = (CElementPropertyInfo) p;
-                    // TODO
-                }
-                if(p.kind()==PropertyKind.REFERENCE) {
-                    CReferencePropertyInfo rp = (CReferencePropertyInfo) p;
-                    // TODO
-                }
-            }
+            for( CPropertyInfo p : ci.getProperties() )
+                p.accept(propVisitor);
         }
         mostUsedNamespaceURI = null;
         elementFormDefault = XmlNsForm.QUALIFIED;
