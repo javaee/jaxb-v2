@@ -92,6 +92,15 @@ final class ParallelWorldClassLoader extends ClassLoader {
                 baos.write(buf,0,len);
 
             buf = baos.toByteArray();
+            int packIndex = name.lastIndexOf('.');
+            if (packIndex != -1) {
+                String pkgname = name.substring(0, packIndex);
+                // Check if package already loaded.
+                Package pkg = getPackage(pkgname);
+                if (pkg == null) {
+                    definePackage(pkgname, null, null, null, null, null, null, null);
+                }
+            }
             return defineClass(name,buf,0,buf.length);
         } catch (IOException e) {
             throw new ClassNotFoundException(name,e);
