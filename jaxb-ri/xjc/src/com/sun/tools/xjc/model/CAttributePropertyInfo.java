@@ -43,6 +43,10 @@ public final class CAttributePropertyInfo extends CSingleTypePropertyInfo implem
         return super.isUnboxable();
     }
 
+    public <V> V accept(CPropertyVisitor<V> visitor) {
+        return visitor.onAttribute(this);
+    }
+
     public final PropertyKind kind() {
         return  PropertyKind.ATTRIBUTE;
     }

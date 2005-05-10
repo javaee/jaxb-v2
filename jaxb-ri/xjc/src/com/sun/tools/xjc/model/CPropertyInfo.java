@@ -188,4 +188,6 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
     public CCustomizations getCustomizations() {
         return customizations;
     }
+
+    public abstract <V> V accept( CPropertyVisitor<V> visitor );
 }

@@ -18,4 +18,8 @@ public final class CValuePropertyInfo extends CSingleTypePropertyInfo implements
     public final PropertyKind kind() {
         return  PropertyKind.VALUE;
     }
+
+    public <V> V accept(CPropertyVisitor<V> visitor) {
+        return visitor.onValue(this);
+    }
 }

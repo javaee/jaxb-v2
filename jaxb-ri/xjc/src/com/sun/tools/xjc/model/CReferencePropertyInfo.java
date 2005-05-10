@@ -109,6 +109,10 @@ public final class CReferencePropertyInfo extends CPropertyInfo implements Refer
         return false;
     }
 
+    public <V> V accept(CPropertyVisitor<V> visitor) {
+        return visitor.onReference(this);
+    }
+
     public CAdapter getAdapter() {
         return null;
     }
