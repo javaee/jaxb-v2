@@ -177,6 +177,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/txw2.iml" filepath="$PROJECT_DIR$/txw2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/wsdl11/wsdl11.iml" filepath="$PROJECT_DIR$/wsdl11/wsdl11.iml" />
       <module fileurl="file://$PROJECT_DIR$/xmlschema/xmlschema.iml" filepath="$PROJECT_DIR$/xmlschema/xmlschema.iml" />
     </modules>
   </component>
