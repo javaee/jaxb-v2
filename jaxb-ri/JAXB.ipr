@@ -16,13 +16,6 @@
       <maximumHeapSize value="128" />
       <properties />
     </buildFile>
-    <buildFile url="file://$PROJECT_DIR$/istack-ap/build.xml">
-      <additionalClassPath />
-      <antReference projectDefault="true" />
-      <customJdkName value="" />
-      <maximumHeapSize value="128" />
-      <properties />
-    </buildFile>
     <buildFile url="file://$PROJECT_DIR$/runtime/build.xml">
       <additionalClassPath />
       <antReference projectDefault="true" />
@@ -129,6 +122,20 @@
       <properties />
     </buildFile>
     <buildFile url="file://$PROJECT_DIR$/schemagen/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <properties />
+    </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/../jaxb-unit/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <properties />
+    </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/../jaxb-unit/test/build.xml">
       <additionalClassPath />
       <antReference projectDefault="true" />
       <customJdkName value="" />
@@ -423,7 +430,6 @@
       <module fileurl="file://$PROJECT_DIR$/codemodel/codemodel.iml" filepath="$PROJECT_DIR$/codemodel/codemodel.iml" />
       <module fileurl="file://$PROJECT_DIR$/tools/installer/installer.iml" filepath="$PROJECT_DIR$/tools/installer/installer.iml" />
       <module fileurl="file://$PROJECT_DIR$/tools/installer-builder/installer-builder.iml" filepath="$PROJECT_DIR$/tools/installer-builder/installer-builder.iml" />
-      <module fileurl="file://$PROJECT_DIR$/istack-ap/istack-ap.iml" filepath="$PROJECT_DIR$/istack-ap/istack-ap.iml" />
       <module fileurl="file://$PROJECT_DIR$/jaxb-ri.iml" filepath="$PROJECT_DIR$/jaxb-ri.iml" />
       <module fileurl="file://$PROJECT_DIR$/tools/pretty-printer/pretty-printer.iml" filepath="$PROJECT_DIR$/tools/pretty-printer/pretty-printer.iml" />
       <module fileurl="file://$PROJECT_DIR$/runtime/runtime.iml" filepath="$PROJECT_DIR$/runtime/runtime.iml" />
@@ -605,10 +611,12 @@
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/txw2.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/redist/activation.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/redist/jaxb-api.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
         <root url="jar://$PROJECT_DIR$/tools/lib/src/txw2-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/redist/jaxb-api-src.zip!/" />
       </SOURCES>
     </library>
   </component>
