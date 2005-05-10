@@ -722,6 +722,12 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
 
                 compositor.commit();
             }
+
+            // look for wildcard attributes
+            if( c.hasAttributeWildcard()) {
+                // TODO: not type safe
+                ct.anyAttribute().namespace("##all").processContents("skip");
+            }
         }
 
         private boolean containsValueProp(ClassInfo<TypeT, ClassDeclT> c) {
