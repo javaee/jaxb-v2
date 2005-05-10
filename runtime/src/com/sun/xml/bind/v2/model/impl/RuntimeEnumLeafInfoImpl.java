@@ -46,7 +46,7 @@ final class RuntimeEnumLeafInfoImpl<T extends Enum<T>,B> extends EnumLeafInfoImp
 
     @Override
     public RuntimeEnumConstantImpl createEnumConstant(String name, String literal, Field constant, EnumConstantImpl<Type,Class,Field,Method> last) {
-        T t = null;
+        T t;
         try {
             try {
                 constant.setAccessible(true);
