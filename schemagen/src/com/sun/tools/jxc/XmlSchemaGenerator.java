@@ -15,9 +15,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.activation.MimeType;
+import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
-import javax.xml.bind.annotation.XmlSchema;
 
 import com.sun.tools.jxc.gen.xmlschema.Any;
 import com.sun.tools.jxc.gen.xmlschema.AttrDecls;
@@ -462,14 +462,26 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             }
 
             // ref:swaRef handling
-            final Adapter<TypeT,ClassDeclT> adapter = typeRef.getSource().getAdapter();
-            if((adapter != null) && (navigator.asDecl(SwaRefAdapter.class).equals(adapter.adapterType))) {
+            if(generateSwaRefAdapter(typeRef)) {
                 th._attribute("type", new QName(WellKnownNamespace.SWA_URI, "swaRef", "ref"));
                 return;
             }
 
             // normal type generation
             writeTypeRef(th, typeRef.getTarget());
+        }
+
+        /**
+         * Examine the specified element ref and determine if a swaRef attribute needs to be generated
+         * @param typeRef
+         * @return
+         */
+        private boolean generateSwaRefAdapter(NonElementRef<TypeT,ClassDeclT> typeRef) {
+            final Adapter<TypeT,ClassDeclT> adapter = typeRef.getSource().getAdapter();
+            if (adapter == null) return false;
+            final Object o = navigator.asDecl(SwaRefAdapter.class);
+            if (o == null) return false;
+            return (o.equals(adapter.adapterType));
         }
 
         /**
