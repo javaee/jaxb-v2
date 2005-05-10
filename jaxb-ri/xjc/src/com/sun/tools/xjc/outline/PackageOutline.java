@@ -40,8 +40,6 @@ public interface PackageOutline {
 
     /**
      * Generates an ObjectFactory class for this package.
-     * 
-     * TODO: does this still make sense even if we generate value classes?
      */
     ObjectFactoryGenerator objectFactoryGenerator();
 }
