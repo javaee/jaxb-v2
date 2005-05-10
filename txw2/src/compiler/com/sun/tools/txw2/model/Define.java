@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * @author Kohsuke Kawaguchi
  */
-public final class Define extends WriterNode {
+public class Define extends WriterNode {
     public final Grammar scope;
     public final String name;
 
@@ -19,16 +19,20 @@ public final class Define extends WriterNode {
 
     public Define(Grammar scope, String name) {
         super(null,null);
+        if(scope==null)     scope = (Grammar)this;  // hack for start pattern
         this.scope = scope;
         this.name = name;
     }
 
     /**
      * Returns true if this define only contains
-     * one child (and thus considered inlinable)
+     * one child (and thus considered inlinable.)
+     *
+     * A pattern definition is also inlineable if
+     * it's the start of the grammar (because "start" isn't a meaningful name) 
      */
     public boolean isInline() {
-        return hasOneChild();
+        return hasOneChild() || name==Grammar.START;
     }
 
     void declare(NodeSet nset) {

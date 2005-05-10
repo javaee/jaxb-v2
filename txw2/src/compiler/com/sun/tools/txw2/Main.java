@@ -42,7 +42,7 @@ public class Main {
         System.exit(run(args));
     }
 
-    private static class Options {
+    public static class Options {
         public StringOption output = new StringOption("-o");
         public StringOption pkg = new StringOption("-p");
         public BooleanOption compact = new BooleanOption("-c");

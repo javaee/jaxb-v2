@@ -75,8 +75,14 @@ public class NodeSet extends LinkedHashSet<WriterNode> {
                     addAll((Element)l);
             if(l instanceof Ref) {
                 Ref r = ((Ref)l);
-                if(add(r.def))
-                    addAll(r.def);
+                Define def = r.def;
+//                if(def instanceof Grammar) {
+//                    for( Define d : ((Grammar)def).getDefinitions() )
+//                        if(add(d))
+//                            addAll(d);
+//                }
+                if(add(def))
+                    addAll(def);
             }
         }
     }
