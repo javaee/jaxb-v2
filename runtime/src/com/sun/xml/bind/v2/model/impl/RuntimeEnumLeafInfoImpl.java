@@ -66,7 +66,7 @@ final class RuntimeEnumLeafInfoImpl<T extends Enum<T>,B> extends EnumLeafInfoImp
             b = baseXducer.parse(literal);
         } catch (Exception e) {
             builder.reportError(new IllegalAnnotationException(
-                Messages.INVALID_XML_ENUM_VALUE.format(name,baseType.getType().toString()), e,
+                Messages.INVALID_XML_ENUM_VALUE.format(literal,baseType.getType().toString()), e,
                     new FieldLocatable<Field>(this,constant,nav()) ));
         }
 
