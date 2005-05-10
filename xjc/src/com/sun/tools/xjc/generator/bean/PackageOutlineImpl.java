@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: PackageOutlineImpl.java,v 1.4 2005-05-10 23:12:33 kohsuke Exp $
+ * @(#)$Id: PackageOutlineImpl.java,v 1.5 2005-05-10 23:21:33 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -107,6 +107,8 @@ final class PackageOutlineImpl implements PackageOutline {
      */
     public void calcDefaultValues() {
         // TODO for Ryan to compute those values properly
+        // if possible, we should also have a switch that tells XJC not to use a package-level
+        // annotation, so that people can have self-contained classes.
 
         // used to visit properties
         CPropertyVisitor<Void> propVisitor = new CPropertyVisitor<Void>() {
