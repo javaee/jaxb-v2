@@ -48,6 +48,8 @@ public interface PackageOutline {
     /**
      * Gets {@link ClassOutline}s whose {@link ClassOutline#_package()}
      * points to this object.
+     *
+     * @return can be empty but never null.
      */
     Set<? extends ClassOutline> getClasses();
 }
