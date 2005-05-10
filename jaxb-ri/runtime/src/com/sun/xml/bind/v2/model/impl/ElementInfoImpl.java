@@ -5,16 +5,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import javax.activation.MimeType;
+import javax.activation.MimeTypeParseException;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlMimeType;
+import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
-import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
 
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
@@ -24,17 +25,13 @@ import com.sun.xml.bind.v2.model.core.ElementInfo;
 import com.sun.xml.bind.v2.model.core.ElementPropertyInfo;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.NonElement;
+import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.model.core.TypeRef;
-import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
-import javax.xml.bind.annotation.XmlMimeType;
-import javax.xml.bind.annotation.XmlAttachmentRef;
-
-import javax.xml.bind.annotation.XmlAttachmentRef;
 
 /**
  * {@link ElementInfo} implementation.
@@ -209,8 +206,10 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
                     a = new Adapter<TypeT,ClassDeclT>(adapter,reader(),nav());
                 else {
                     XmlAttachmentRef xsa = reader().getMethodAnnotation(XmlAttachmentRef.class,m,this);
-                    if(xsa!=null)
+                    if(xsa!=null) {
+                        TODO.prototype("in APT swaRefAdapter isn't avaialble, so this returns null");
                         a = new Adapter<TypeT,ClassDeclT>(owner.nav.asDecl(SwaRefAdapter.class),owner.nav);
+                    }
                 }
             }
 
