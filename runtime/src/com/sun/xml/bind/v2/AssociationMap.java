@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AssociationMap.java,v 1.2 2005-04-30 00:19:11 kohsuke Exp $
+ * @(#)$Id: AssociationMap.java,v 1.3 2005-05-11 23:13:40 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -11,6 +11,8 @@ package com.sun.xml.bind.v2;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * Bi-directional map between elements, inner peers,
@@ -46,7 +48,8 @@ public final class AssociationMap<XmlNode> {
     
     private final Map<XmlNode,Entry<XmlNode>> byElement = new HashMap<XmlNode,Entry<XmlNode>>();
     private final Map<Object,Entry<XmlNode>> byPeer = new HashMap<Object,Entry<XmlNode>>();
-    
+    private final Set<XmlNode> usedNodes = new HashSet<XmlNode>();
+
     /** Records the new element&lt;->inner peer association. */
     public void addInner( XmlNode element, Object inner ) {
         Entry<XmlNode> e = byElement.get(element);
@@ -95,7 +98,11 @@ public final class AssociationMap<XmlNode> {
                 byElement.remove(old.element);
         }
     }
-    
+
+    public void addUsed( XmlNode n ) {
+        usedNodes.add(n);
+    }
+
     public Entry<XmlNode> byElement( Object e ) {
         return byElement.get(e);
     }

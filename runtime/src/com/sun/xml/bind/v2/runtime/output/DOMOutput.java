@@ -8,10 +8,10 @@ import org.xml.sax.SAXException;
 
 
 /**
- * {@link XmlOutput} implementation that writes to DOM.
+ * {@link XmlOutput} implementation that does associative marshalling to DOM.
  *
  * <p>
- * This is used to perform the associative marshalling.
+ * This is used for binder.
  *
  * @author Kohsuke Kawaguchi
  */
@@ -21,6 +21,7 @@ public final class DOMOutput extends SAXOutput {
     public DOMOutput(Node node, AssociationMap assoc) {
         super(new SAX2DOMEx(node));
         this.assoc = assoc;
+        assert assoc!=null;
     }
 
     private SAX2DOMEx getBuilder() {
