@@ -213,7 +213,7 @@ public abstract class Unmarshaller {
          *      throw an AccessorException.
          */
         public abstract void processValue(UnmarshallingContext context,
-            String nsUri, String local, String qname, String value) throws AccessorException, SAXException;
+            String nsUri, String local, String qname, CharSequence value) throws AccessorException, SAXException;
     }
 
     /**
@@ -221,7 +221,7 @@ public abstract class Unmarshaller {
      *
      * <p>
      * This can be either used as a {@link Handler} and combined into a bigger
-     * unmarshaller graph, or the caller can just invoke {@link #processValue(UnmarshallingContext,String,String,String,String)}
+     * unmarshaller graph, or the caller can just invoke {@link #processValue(UnmarshallingContext,String,String,String,CharSequence)}
      * to unmarshal the value of the attribute.
      */
     public abstract static class SingleAttributeHandler extends AttributeHandler {
@@ -241,7 +241,7 @@ public abstract class Unmarshaller {
             int idx = context.getAttribute(name);
             if(idx!=-1) {
                 String qname = context.getUnconsumedAttributes().getQName(idx);
-                String value = context.eatAttribute(idx);
+                CharSequence value = context.eatAttribute(idx);
                 try {
                     processValue(context,name.nsUri,name.localName,qname,value);
                 } catch (AccessorException e) {
@@ -289,7 +289,7 @@ public abstract class Unmarshaller {
             return false;
         }
 
-        public void processValue(UnmarshallingContext context, String nsUri, String local, String qname, String value) throws AccessorException {
+        public void processValue(UnmarshallingContext context, String nsUri, String local, String qname, CharSequence value) throws AccessorException {
             Object o = context.getTarget();
             Map<QName,Object> map = (Map<QName,Object>)acc.get(o);
             if(map==null) {
@@ -499,7 +499,7 @@ public abstract class Unmarshaller {
             JaxBeanInfo beanInfo = targetBeanInfo;
 
             if(idx>=0) {
-                String value = context.eatAttribute(idx);
+                CharSequence value = context.eatAttribute(idx);
                 QName type = DatatypeConverterImpl._parseQName(value,context);
                 if(type==null) {
                     reportError(Messages.NOT_A_QNAME.format(value),true);
@@ -567,7 +567,7 @@ public abstract class Unmarshaller {
         protected void handle(UnmarshallingContext context) throws SAXException {
             int idx = context.getAttribute(WellKnownNamespace.XML_SCHEMA_INSTANCE,"nil");
             if(idx!=-1) {
-                String value = context.eatAttribute(idx);
+                CharSequence value = context.eatAttribute(idx);
                 if(DatatypeConverterImpl._parseBoolean(value)) {
                     setToNull(context);
                     context.resetCurrentElementDefaultValue();

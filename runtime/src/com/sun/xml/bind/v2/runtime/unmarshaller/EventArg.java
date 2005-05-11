@@ -40,6 +40,8 @@ public class EventArg {
     /**
      * Used only for the enterElement event.
      * Otherwise the value is undefined.
+     *
+     * This might be {@link AttributesEx}.
      */
     public Attributes atts;
 

@@ -7,7 +7,7 @@
 // http://www.saxproject.org
 // Written by David Megginson
 // NO WARRANTY!  This class is in the public domain.
-// $Id: AttributesImpl.java,v 1.1 2005-04-15 20:03:50 kohsuke Exp $
+// $Id: AttributesImpl.java,v 1.2 2005-05-11 19:44:28 kohsuke Exp $
 package com.sun.xml.bind.util;
 
 import org.xml.sax.Attributes;
@@ -48,7 +48,7 @@ import org.xml.sax.Attributes;
  * @author David Megginson
  * @version 2.0.1 (sax2r2)
  */
-public final class AttributesImpl implements Attributes
+public class AttributesImpl implements Attributes
 {
 
 

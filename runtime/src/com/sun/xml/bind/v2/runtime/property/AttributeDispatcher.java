@@ -17,9 +17,9 @@ import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.QNameMap;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
+import com.sun.xml.bind.v2.runtime.unmarshaller.AttributesExImpl;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 
-import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 /**
@@ -68,11 +68,11 @@ public class AttributeDispatcher extends Unmarshaller.ForkHandler {
 
 
     public void activate(UnmarshallingContext context) throws SAXException {
-        Attributes atts = context.getUnconsumedAttributes();
+        AttributesExImpl atts = context.getUnconsumedAttributes();
         for (int i = 0; i < atts.getLength(); i ++){
             String auri = atts.getURI(i);
             String alocal = atts.getLocalName(i);
-            String avalue = atts.getValue(i);
+            CharSequence avalue = atts.getData(i);
             TransducedAccessor xacc = attUnmarshallers.get(auri,alocal);
 
             try {
@@ -92,7 +92,7 @@ public class AttributeDispatcher extends Unmarshaller.ForkHandler {
      * Dummy {@link Unmarshaller.AttributeHandler} that just discards the value.
      */
     private static final Unmarshaller.AttributeHandler DUMMY_CATCH_ALL = new Unmarshaller.AttributeHandler(null,null) {
-        public void processValue(UnmarshallingContext context, String nsUri, String local, String qname, String value) {
+        public void processValue(UnmarshallingContext context, String nsUri, String local, String qname, CharSequence value) {
             ; // noop
         }
 

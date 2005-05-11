@@ -4,15 +4,15 @@
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBElement;
@@ -28,7 +28,6 @@ import javax.xml.namespace.QName;
 import com.sun.xml.bind.ObjectLifeCycle;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
-import com.sun.xml.bind.util.AttributesImpl;
 import com.sun.xml.bind.v2.AssociationMap;
 import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.runtime.Coordinator;
@@ -829,7 +828,7 @@ public final class UnmarshallingContext extends Coordinator
     /**
      * Attributes stack.
      */
-    private AttributesImpl[] attStack = new AttributesImpl[16];
+    private AttributesExImpl[] attStack = new AttributesExImpl[16];
     /**
      * Element nesting level.
      */
@@ -867,7 +866,7 @@ public final class UnmarshallingContext extends Coordinator
         
         if( attStack.length==elementDepth ) {
             // reallocate the buffer
-            AttributesImpl[] buf1 = new AttributesImpl[attStack.length*2];
+            AttributesExImpl[] buf1 = new AttributesExImpl[attStack.length*2];
             System.arraycopy(attStack,0,buf1,0,attStack.length);
             attStack = buf1;
             
@@ -883,9 +882,9 @@ public final class UnmarshallingContext extends Coordinator
         elementDepth++;
         stackTop++;
         // push the stack
-        AttributesImpl a = attStack[stackTop];
+        AttributesExImpl a = attStack[stackTop];
         if( a==null )
-            attStack[stackTop] = a = new AttributesImpl();
+            attStack[stackTop] = a = new AttributesExImpl();
         else
             a.clear();
         
@@ -893,6 +892,7 @@ public final class UnmarshallingContext extends Coordinator
         // to make a copy.
         // also symbolize attribute names
         for( int i=0; i<atts.getLength(); i++ ) {
+            // TODO: implement AttributesEx support
             String auri = atts.getURI(i);
             String alocal = atts.getLocalName(i);
             String avalue = atts.getValue(i);
@@ -969,7 +969,7 @@ public final class UnmarshallingContext extends Coordinator
      * If you need to find attributes based on more complex filter,
      * you need to use this method.
      */
-    public Attributes getUnconsumedAttributes() {
+    public AttributesExImpl getUnconsumedAttributes() {
         return attStack[stackTop];
     }
     /**
@@ -1000,8 +1000,8 @@ public final class UnmarshallingContext extends Coordinator
     /**
      * Marks the attribute as "used" and return the value of the attribute.
      */
-    public String eatAttribute( int idx ) {
-        AttributesImpl a = attStack[stackTop];
+    public CharSequence eatAttribute( int idx ) {
+        AttributesExImpl a = attStack[stackTop];
         
         String value = a.getValue(idx);
 

@@ -64,7 +64,7 @@ public final class AttributeProperty<BeanT> extends PropertyImpl<BeanT> {
         return new Unmarshaller.SingleAttributeHandler(attName,
             required?Unmarshaller.ERROR:tail,tail) {
 
-            public void processValue(UnmarshallingContext context, String nsUri, String localName, String qname, String value) throws AccessorException, SAXException {
+            public void processValue(UnmarshallingContext context, String nsUri, String localName, String qname, CharSequence value) throws AccessorException, SAXException {
                 xacc.parse((BeanT)context.getTarget(),value);
             }
         };
