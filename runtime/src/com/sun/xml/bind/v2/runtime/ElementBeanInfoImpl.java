@@ -73,32 +73,26 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
                 Class scope = e.getScope();
                 if(e.isGlobalScope())   scope = null;
                 QName n = e.getName();
-                ElementBeanInfoImpl bi = grammar.getElement(scope,n);
+                JaxBeanInfo bi = grammar.getElement(scope,n);
+                Object value = e.getValue();
                 if(bi==null) {
                     // infer what to do from the type
-                    JaxBeanInfo tbi;
                     try {
-                        tbi = grammar.getBeanInfo(e.getDeclaredType(),true);
+                        bi = grammar.getBeanInfo(e.getDeclaredType(),true);
                     } catch (JAXBException x) {
                         // if e.getDeclaredType() isn't known to this JAXBContext
                         target.reportError(null,x);
                         return;
                     }
-                    Object value = e.getValue();
-                    target.startElement(n.getNamespaceURI(),n.getLocalPart(),n.getPrefix(),null);
-                    if(value==null) {
-                        target.writeXsiNilTrue();
-                    } else {
-                        target.childAsXsiType(value,"value",tbi);
-                    }
-                    target.endElement();
-                } else {
-                    try {
-                        bi.property.serializeBody(e,target);
-                    } catch (AccessorException x) {
-                        target.reportError(null,x);
-                    }
                 }
+
+                target.startElement(n.getNamespaceURI(),n.getLocalPart(),n.getPrefix(),e);
+                if(value==null) {
+                    target.writeXsiNilTrue();
+                } else {
+                    target.childAsXsiType(value,"value",bi);
+                }
+                target.endElement();
             }
 
             public void serializeAttributes(JAXBElement o, XMLSerializer target) {
