@@ -155,11 +155,8 @@ public final class BeanGenerator implements Outline
         JPackage[] packages = getUsedPackages(Aspect.EXPOSED);
 
         // generates per-package code and remember the results as contexts.
-        for( JPackage pkg : packages ) {
-            packageContexts.put(
-                pkg,
-                new PackageOutlineImpl(this,model,pkg));
-        }
+        for( JPackage pkg : packages )
+            getPackageContext(pkg);
 
         // create the class definitions for all the beans first.
         // this should also fill in PackageContext#getClasses
@@ -332,7 +329,12 @@ public final class BeanGenerator implements Outline
     public CodeModelClassFactory getClassFactory() { return codeModelClassFactory; }
 
     public PackageOutlineImpl getPackageContext( JPackage p ) {
-        return packageContexts.get(p);
+        PackageOutlineImpl r = packageContexts.get(p);
+        if(r==null) {
+            r=new PackageOutlineImpl(this,model,p);
+            packageContexts.put(p,r);
+        }
+        return r;
     }
 
     /**
