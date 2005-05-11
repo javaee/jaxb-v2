@@ -30,11 +30,12 @@ public final class DOMOutput extends SAXOutput {
     public void endStartTag() throws SAXException {
         super.endStartTag();
 
-        if(serializer.currentOuterPeer!=null) {
-            assoc.addOuter( getBuilder().getCurrentElement(), serializer.currentOuterPeer );
-            serializer.currentOuterPeer = null;
-        }
-        if(serializer.currentTarget!=null)
-            assoc.addInner( getBuilder().getCurrentElement(), serializer.currentTarget );
+        Object op = nsContext.getCurrent().getOuterPeer();
+        if(op!=null)
+            assoc.addOuter( getBuilder().getCurrentElement(), op );
+
+        Object ip = nsContext.getCurrent().getInnerPeer();
+        if(ip!=null)
+            assoc.addInner( getBuilder().getCurrentElement(), ip );
     }
 }

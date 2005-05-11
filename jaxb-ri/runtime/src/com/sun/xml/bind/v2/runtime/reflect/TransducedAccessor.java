@@ -156,7 +156,7 @@ public abstract class TransducedAccessor<BeanT> {
         public void writeLeafElement(BeanT o, Name tagName, String fieldName, XMLSerializer w) throws SAXException, AccessorException, IOException, XMLStreamException {
             w.startElement(tagName,null);
             declareNamespace(o,w);
-            w.endNamespaceDecls();
+            w.endNamespaceDecls(null);
             w.endAttributes();
             w.text(print(o),fieldName);
             w.endElement();

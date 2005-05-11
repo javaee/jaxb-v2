@@ -94,14 +94,6 @@ public final class XMLSerializer extends Coordinator {
     /** Object currently marshalling itself. */
     public Object currentTarget;
 
-    /**
-     * The outer peer for the current element.
-     *
-     * For better design, this field should be moved to {@link NamespaceContextImpl.Element}
-     * and remembered there with the tag name.
-     */
-    public Object currentOuterPeer;
-
     /** The XML printer. */
     private XmlOutput out;
 
@@ -189,7 +181,7 @@ public final class XMLSerializer extends Coordinator {
         reportMissingObjectError(fieldName);
         // as a marshaller, we should be robust, so we'll continue to marshal
         // this document by skipping this missing object.
-        endNamespaceDecls();
+        endNamespaceDecls(null);
         endAttributes();
     }
 
@@ -227,20 +219,18 @@ public final class XMLSerializer extends Coordinator {
 
     public void startElement(Name tagName, Object outerPeer) {
         startElement();
-        nse.setTagName(tagName);
-        this.currentOuterPeer = outerPeer;
+        nse.setTagName(tagName,outerPeer);
     }
 
     public void startElement(String nsUri, String localName, String preferredPrefix, Object outerPeer) {
         startElement();
         int idx = nsContext.declareNsUri(nsUri, preferredPrefix, false);
-        nse.setTagName(idx,localName);
-        this.currentOuterPeer = outerPeer;
+        nse.setTagName(idx,localName,outerPeer);
     }
 
-    public void endNamespaceDecls() throws IOException, XMLStreamException {
+    public void endNamespaceDecls(Object innerPeer) throws IOException, XMLStreamException {
         nsContext.collectionMode = false;
-        nse.startElement(out);
+        nse.startElement(out,innerPeer);
     }
 
     /**
@@ -316,7 +306,7 @@ public final class XMLSerializer extends Coordinator {
      */
     private void leafElementSlow(Name tagName, CharSequence data) throws IOException, XMLStreamException, SAXException {
         startElement(tagName,null);
-        endNamespaceDecls();
+        endNamespaceDecls(null);
         endAttributes();
         out.text(data,false);
         endElement();
@@ -501,7 +491,7 @@ public final class XMLSerializer extends Coordinator {
             } catch (JAXBException e) {
                 reportError(fieldName,e);
                 // recover by ignore
-                endNamespaceDecls();
+                endNamespaceDecls(null);
                 endAttributes();
                 return;
             }
@@ -510,7 +500,7 @@ public final class XMLSerializer extends Coordinator {
             currentTarget = child;
 
             beanInfo.serializeURIs(child,this);
-            endNamespaceDecls();
+            endNamespaceDecls(child);
             beanInfo.serializeAttributes(child,this);
             endAttributes();
             beanInfo.serializeBody(child,this);
@@ -558,7 +548,7 @@ public final class XMLSerializer extends Coordinator {
                     actual = grammar.getBeanInfo(child,true);
                 } catch (JAXBException e) {
                     reportError(fieldName,e);
-                    endNamespaceDecls();
+                    endNamespaceDecls(null);
                     endAttributes();
                     return; // recover by ignore
                 }
@@ -570,7 +560,7 @@ public final class XMLSerializer extends Coordinator {
                 }
             }
             actual.serializeURIs(child,this);
-            endNamespaceDecls();
+            endNamespaceDecls(child);
             if(!asExpected) {
                 attribute(WellKnownNamespace.XML_SCHEMA_INSTANCE,"type",
                     DatatypeConverter.printQName(actual.typeName,getNamespaceContext()));
@@ -614,7 +604,7 @@ public final class XMLSerializer extends Coordinator {
      */
     public final void writeXsiNilTrue() throws SAXException, IOException, XMLStreamException {
         getNamespaceContext().declareNamespace(WellKnownNamespace.XML_SCHEMA_INSTANCE,"xsi",true);
-        endNamespaceDecls();
+        endNamespaceDecls(null);
         attribute(WellKnownNamespace.XML_SCHEMA_INSTANCE,"nil","true");
         endAttributes();
     }
@@ -671,7 +661,7 @@ public final class XMLSerializer extends Coordinator {
 
     public void endDocument() throws IOException, SAXException, XMLStreamException {
         out.endDocument(fragment);
-        currentOuterPeer = currentTarget = null; // avoid memory leak
+        currentTarget = null; // avoid memory leak
     }
 
     public void close() {

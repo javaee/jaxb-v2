@@ -302,6 +302,12 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
          */
         private Name elementName;
 
+        /**
+         * Used for the binder. The JAXB object that corresponds to this element.
+         */
+        private Object outerPeer;
+        private Object innerPeer;
+
 
         private Element(NamespaceContextImpl context,Element prev) {
             this.context = context;
@@ -339,19 +345,22 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
             return prev==null;
         }
 
-        public void setTagName( int prefix, String localName ) {
+        public void setTagName( int prefix, String localName, Object outerPeer ) {
             assert localName!=null;
             this.elementNamePrefix = prefix;
             this.elementLocalName = localName;
             this.elementName = null;
+            this.outerPeer = outerPeer;
         }
 
-        public void setTagName( Name tagName ) {
+        public void setTagName( Name tagName, Object outerPeer ) {
             assert tagName!=null;
             this.elementName = tagName;
+            this.outerPeer = outerPeer;
         }
 
-        public void startElement(XmlOutput out) throws IOException, XMLStreamException {
+        public void startElement(XmlOutput out, Object innerPeer) throws IOException, XMLStreamException {
+            this.innerPeer = innerPeer;
             if(elementName!=null) {
                 out.beginStartTag(elementName);
             } else {
@@ -397,6 +406,14 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
 
         public int getBase() {
             return baseIndex;
+        }
+
+        public Object getOuterPeer() {
+            return outerPeer;
+        }
+
+        public Object getInnerPeer() {
+            return innerPeer;
         }
     }
 

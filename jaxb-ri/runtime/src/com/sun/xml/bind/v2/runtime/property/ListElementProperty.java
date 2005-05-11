@@ -74,7 +74,7 @@ final class ListElementProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,L
             if(xacc.useNamespace()) {
                 w.startElement(tagName,null);
                 xacc.declareNamespace(o,w);
-                w.endNamespaceDecls();
+                w.endNamespaceDecls(list);
                 w.endAttributes();
                 w.text(xacc.print(o),fieldName);
                 w.endElement();

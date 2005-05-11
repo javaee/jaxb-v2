@@ -187,7 +187,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
             serializer.startElement(rootTagName,null);
             if(bi.jaxbType==Void.class || bi.jaxbType==void.class) {
                 // special case for void
-                serializer.endNamespaceDecls();
+                serializer.endNamespaceDecls(null);
                 serializer.endAttributes();
             } else { // normal cases
                 if(obj==null)

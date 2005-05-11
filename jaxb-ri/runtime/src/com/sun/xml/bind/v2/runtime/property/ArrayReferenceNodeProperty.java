@@ -66,7 +66,7 @@ class ArrayReferenceNodeProperty<BeanT,ListT,ItemT> extends ArrayERProperty<Bean
         if(list!=null) {
             if(tagName!=null) {
                 w.startElement(tagName,null);
-                w.endNamespaceDecls();
+                w.endNamespaceDecls(list);
                 w.endAttributes();
             }
 
