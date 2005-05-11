@@ -36,7 +36,7 @@
       <xs:attribute name="enableJavaNamingConventions" type="xs:boolean"/>
       <xs:attribute name="fixedAttributeAsConstantProperty" type="xs:boolean"/>
       <xs:attribute name="generateIsSetMethod" type="xs:boolean"/>
-      <xs:attribute name="simpleTypeSubstitution" type="xs:boolean"/>
+      <xs:attribute name="mapSimpleTypeDef" type="xs:boolean"/>
       <xs:attribute name="collectionType" type="jaxb:collectionType"/>
       <xs:attribute name="typesafeEnumMemberName">
         <xs:simpleType>
