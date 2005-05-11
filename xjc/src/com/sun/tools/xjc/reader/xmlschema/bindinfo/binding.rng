@@ -250,7 +250,7 @@
       </optional>
 
       <optional>
-        <attribute name="simpleTypeSubstitution">
+        <attribute name="mapSimpleTypeDef">
           simpleTypeSubstitution = <data type="boolean"/>
         </attribute>
       </optional>
