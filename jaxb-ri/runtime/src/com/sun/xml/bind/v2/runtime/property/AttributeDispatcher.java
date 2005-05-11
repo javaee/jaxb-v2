@@ -72,7 +72,7 @@ public class AttributeDispatcher extends Unmarshaller.ForkHandler {
         for (int i = 0; i < atts.getLength(); i ++){
             String auri = atts.getURI(i);
             String alocal = atts.getLocalName(i);
-            String avalue = atts.getValue(auri,alocal);
+            String avalue = atts.getValue(i);
             TransducedAccessor xacc = attUnmarshallers.get(auri,alocal);
 
             try {

@@ -276,7 +276,7 @@ public abstract class Unmarshaller {
                 String auri = atts.getURI(i);
                 String alocal = atts.getLocalName(i);
                 String aqname = atts.getQName(i);
-                String avalue = atts.getValue(auri,alocal);
+                String avalue = atts.getValue(i);
 
                 try {
                     processValue(context,auri,alocal,aqname,avalue);
