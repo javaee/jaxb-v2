@@ -96,12 +96,16 @@ final class SingleElementNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT> 
             }
 
             if(tt==null) {
-                // TODO: error check for tt==null
-                throw new UnsupportedOperationException();
+                // actually this is an error, because the actual type was not a sub-type
+                // of any of the types specified in the annotations,
+                // but for the purpose of experimenting with simple type substitution,
+                // it's convenient to marshal this anyway.
+                w.startElement(typeNames.values().iterator().next().tagName,null);
+                w.childAsXsiType(v,fieldName,w.grammar.getBeanInfo(Object.class));
+            } else {
+                w.startElement(tt.tagName,null);
+                w.childAsXsiType(v,fieldName,tt.beanInfo);
             }
-
-            w.startElement(tt.tagName,null);
-            w.childAsXsiType(v,fieldName,tt.beanInfo);
             w.endElement();
         } else
         if(nillable) {

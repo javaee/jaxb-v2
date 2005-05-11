@@ -92,9 +92,9 @@ public abstract class PropertyFactory {
         RuntimeTypeInfo rti = types.iterator().next();
         if(!(rti instanceof RuntimeNonElement)) return false;
 
-        if(((RuntimeNonElement)rti).getTransducer()!=null )
-            return true;
+        if(((RuntimeNonElement)rti).getTransducer()==null )
+            return false;
 
-        return false;
+        return true;
     }
 }
