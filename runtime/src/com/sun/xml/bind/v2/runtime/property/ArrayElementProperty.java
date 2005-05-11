@@ -95,7 +95,7 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
         if(list!=null) {
             if(tagName!=null) {
                 w.startElement(tagName,null);
-                w.endNamespaceDecls();
+                w.endNamespaceDecls(list);
                 w.endAttributes();
             }
 

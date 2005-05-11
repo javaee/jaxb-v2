@@ -40,7 +40,7 @@ final class ArrayElementLeafProperty<BeanT,ListT,ItemT> extends ArrayElementProp
 
     public void serializeItem(JaxBeanInfo bi, ItemT item, XMLSerializer w) throws SAXException, AccessorException, IOException, XMLStreamException {
         xducer.declareNamespace(item,w);
-        w.endNamespaceDecls();
+        w.endNamespaceDecls(item);
         w.endAttributes();
         // TODO: think about the type substitution impact
         TODO.prototype();

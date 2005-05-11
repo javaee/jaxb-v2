@@ -70,7 +70,7 @@ final class ContentHandlerAdaptor extends DefaultHandler {
                     prefix.length()!=0 );
             }
 
-            serializer.endNamespaceDecls();
+            serializer.endNamespaceDecls(null);
             // fire attribute events
             for( int i=0; i<len; i++ ) {
                 // be defensive.
