@@ -40,7 +40,6 @@ import com.sun.xml.bind.v2.model.core.Element;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
-import com.sun.xml.bind.v2.model.core.AdapterException;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
@@ -318,27 +317,15 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     private PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> adaptIfNecessary(PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> seed) {
         XmlJavaTypeAdapter adapter = seed.readAnnotation(XmlJavaTypeAdapter.class);
         if(adapter!=null)
-            try {
-                return createAdaptedSeed(seed,new Adapter<TypeT,ClassDeclT>(adapter,reader(),nav()));
-            } catch (AdapterException e) {
-                builder.reportError(new IllegalAnnotationException(
-                    Messages.NOT_AN_ADAPTER_CLASS.format(e.getMessage()), seed
-                ));
-                return seed;
-            }
+            return createAdaptedSeed(seed,new Adapter<TypeT,ClassDeclT>(adapter,reader(),nav()));
 
         // this is actually incorrect because it's OK to have an adapter and the attachment
         // at the same time.
 
         XmlAttachmentRef xsa = seed.readAnnotation(XmlAttachmentRef.class);
         if(xsa!=null)
-            try {
-                return createAdaptedSeed(seed,
-                    new Adapter<TypeT,ClassDeclT>(owner.nav.asDecl(SwaRefAdapter.class),owner.nav));
-            } catch (AdapterException e) {
-                // impossible because SwaRefAdapter is our class
-                throw new AssertionError(e);
-            }
+            return createAdaptedSeed(seed,
+                new Adapter<TypeT,ClassDeclT>(owner.nav.asDecl(SwaRefAdapter.class),owner.nav));
 
         return seed;
     }

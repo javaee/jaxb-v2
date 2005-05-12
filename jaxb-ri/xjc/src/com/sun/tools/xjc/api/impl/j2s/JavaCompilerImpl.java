@@ -20,7 +20,6 @@ import com.sun.tools.jxc.model.nav.APTNavigator;
 import com.sun.tools.xjc.api.J2SJAXBModel;
 import com.sun.tools.xjc.api.JavaCompiler;
 import com.sun.tools.xjc.api.Reference;
-import com.sun.xml.bind.v2.model.core.AdapterException;
 import com.sun.xml.bind.v2.model.core.ErrorHandler;
 import com.sun.xml.bind.v2.model.core.Ref;
 import com.sun.xml.bind.v2.model.core.TypeInfoSet;
@@ -52,13 +51,7 @@ public class JavaCompilerImpl implements JavaCompiler {
             XmlJavaTypeAdapter xjta = ref.annotations.getAnnotation(XmlJavaTypeAdapter.class);
             XmlList xl = ref.annotations.getAnnotation(XmlList.class);
 
-            try {
-                builder.getTypeInfo(new Ref<TypeMirror,TypeDeclaration>(builder,t,xjta,xl));
-            } catch (AdapterException e) {
-                env.getMessager().printError(
-                    ref.annotations.getPosition(),
-                        Messages.NOT_AN_ADAPTER_CLASS.format(e.getMessage()));
-            }
+            builder.getTypeInfo(new Ref<TypeMirror,TypeDeclaration>(builder,t,xjta,xl));
         }
 
         TypeInfoSet r = builder.link();

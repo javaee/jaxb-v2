@@ -43,13 +43,13 @@ public final class Ref<TypeT,ClassDeclT> {
         this.valueList = valueList;
     }
 
-    public Ref(ModelBuilder<TypeT,ClassDeclT,?,?> builder, TypeT type, XmlJavaTypeAdapter xjta, XmlList xl ) throws AdapterException {
+    public Ref(ModelBuilder<TypeT,ClassDeclT,?,?> builder, TypeT type, XmlJavaTypeAdapter xjta, XmlList xl ) {
         this(builder.reader,builder.nav,type,xjta,xl);
     }
     
     public Ref(AnnotationReader<TypeT,ClassDeclT,?,?> reader,
                Navigator<TypeT,ClassDeclT,?,?> nav,
-               TypeT type, XmlJavaTypeAdapter xjta, XmlList xl ) throws AdapterException {
+               TypeT type, XmlJavaTypeAdapter xjta, XmlList xl ) {
         Adapter<TypeT,ClassDeclT> adapter=null;
         if(xjta!=null) {
             adapter = new Adapter<TypeT,ClassDeclT>(xjta,reader,nav);
