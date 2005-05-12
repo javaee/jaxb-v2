@@ -6,7 +6,6 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.ID;
-import com.sun.xml.bind.v2.model.core.AdapterException;
 
 /**
  * Factory methods to create a new {@link TypeUse} from an existing one.
@@ -53,12 +52,6 @@ public final class TypeUseFactory {
      * Creates a new adapter {@link TypeUse} by using the existing {@link Adapter} class.
      */
     public static TypeUse adapt( TypeUse t, Class<? extends XmlAdapter> adapter, boolean copy ) {
-        try {
-            return adapt( t, new CAdapter(adapter,copy) );
-        } catch (AdapterException e) {
-            // given the paramterization of the type,
-            // it isn't possible for the adapter not to extend XmlAdapter
-            throw new AssertionError(e);
-        }
+        return adapt( t, new CAdapter(adapter,copy) );
     }
 }

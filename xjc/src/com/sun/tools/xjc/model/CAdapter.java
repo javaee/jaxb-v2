@@ -13,7 +13,6 @@ import com.sun.tools.xjc.model.nav.NavigatorImpl;
 import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.xml.bind.v2.model.core.Adapter;
-import com.sun.xml.bind.v2.model.core.AdapterException;
 
 /**
  * Extended {@link Adapter} for use within XJC.
@@ -40,7 +39,7 @@ public final class CAdapter extends Adapter<NType,NClass> {
      *      or otherwise just refer to the class specified via the
      *      adapter parameter.
      */
-    public CAdapter(Class<? extends XmlAdapter> adapter, boolean copy) throws AdapterException {
+    public CAdapter(Class<? extends XmlAdapter> adapter, boolean copy) {
         super(getRef(adapter,copy),NavigatorImpl.theInstance);
         this.adapterClass1 = null;
         this.adapterClass2 = adapter;
@@ -65,7 +64,7 @@ public final class CAdapter extends Adapter<NType,NClass> {
         }
     }
 
-    public CAdapter(JClass adapter) throws AdapterException {
+    public CAdapter(JClass adapter) {
         super( NavigatorImpl.theInstance.ref(adapter), NavigatorImpl.theInstance);
         this.adapterClass1 = adapter;
         this.adapterClass2 = null;

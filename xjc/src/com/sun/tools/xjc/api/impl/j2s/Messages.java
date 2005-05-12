@@ -7,7 +7,6 @@ import java.util.ResourceBundle;
  * @author Kohsuke Kawaguchi
  */
 enum Messages {
-    NOT_AN_ADAPTER_CLASS, // 1 arg
     ;
 
 

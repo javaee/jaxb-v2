@@ -38,17 +38,17 @@ public class Adapter<TypeT,ClassDeclT> {
     public Adapter(
         XmlJavaTypeAdapter spec,
         AnnotationReader<TypeT,ClassDeclT,?,?> reader,
-        Navigator<TypeT,ClassDeclT,?,?> nav) throws AdapterException {
+        Navigator<TypeT,ClassDeclT,?,?> nav) {
 
         this( nav.asDecl(reader.getClassValue(spec,"value")), nav );
     }
 
-    public Adapter(ClassDeclT adapterType,Navigator<TypeT,ClassDeclT,?,?> nav) throws AdapterException {
+    public Adapter(ClassDeclT adapterType,Navigator<TypeT,ClassDeclT,?,?> nav) {
         this.adapterType = adapterType;
         TypeT baseClass = nav.getBaseClass(nav.use(adapterType), nav.asDecl(XmlAdapter.class));
 
-        if(baseClass==null)
-            throw new AdapterException(nav.getClassName(adapterType));
+        // because the parameterization of XmlJavaTypeAdapter requires that the class derives from XmlAdapter.
+        assert baseClass!=null;
 
         if(nav.isParameterizedType(baseClass))
             defaultType = nav.getTypeArgument(baseClass,0);

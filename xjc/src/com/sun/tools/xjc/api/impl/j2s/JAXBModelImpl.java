@@ -22,7 +22,6 @@ import com.sun.tools.xjc.api.J2SJAXBModel;
 import com.sun.tools.xjc.api.Reference;
 import com.sun.xml.bind.api.SchemaOutputResolver;
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
-import com.sun.xml.bind.v2.model.core.AdapterException;
 import com.sun.xml.bind.v2.model.core.ArrayInfo;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
 import com.sun.xml.bind.v2.model.core.Element;
@@ -90,28 +89,22 @@ final class JAXBModelImpl implements J2SJAXBModel {
             Map.Entry<QName, Reference> entry = itr.next();
             if(entry.getValue()==null)      continue;
 
-            try {
-                NonElement<TypeMirror,TypeDeclaration> xt = getXmlType(entry.getValue());
-                
-                assert xt!=null;
-                refMap.put(entry.getValue(),xt);
-                if(xt instanceof ClassInfo) {
-                    ClassInfo<TypeMirror,TypeDeclaration> xct = (ClassInfo<TypeMirror,TypeDeclaration>) xt;
-                    Element<TypeMirror,TypeDeclaration> elem = xct.asElement();
-                    if(elem!=null && elem.getElementName().equals(entry.getKey())) {
-                        itr.remove();
-                        continue;
-                    }
-                }
-                ElementInfo<TypeMirror,TypeDeclaration> ei = types.getElementInfo(null,entry.getKey());
-                if(ei!=null && ei.getContentType()==xt) {
+            NonElement<TypeMirror,TypeDeclaration> xt = getXmlType(entry.getValue());
+
+            assert xt!=null;
+            refMap.put(entry.getValue(),xt);
+            if(xt instanceof ClassInfo) {
+                ClassInfo<TypeMirror,TypeDeclaration> xct = (ClassInfo<TypeMirror,TypeDeclaration>) xt;
+                Element<TypeMirror,TypeDeclaration> elem = xct.asElement();
+                if(elem!=null && elem.getElementName().equals(entry.getKey())) {
                     itr.remove();
                     continue;
                 }
-            } catch (AdapterException e) {
-                env.getMessager().printError(
-                    entry.getValue().annotations.getPosition(),
-                        Messages.NOT_AN_ADAPTER_CLASS.format(e.getMessage()));
+            }
+            ElementInfo<TypeMirror,TypeDeclaration> ei = types.getElementInfo(null,entry.getKey());
+            if(ei!=null && ei.getContentType()==xt) {
+                itr.remove();
+                continue;
             }
         }
     }
@@ -129,7 +122,7 @@ final class JAXBModelImpl implements J2SJAXBModel {
         return null;
     }
 
-    private NonElement<TypeMirror,TypeDeclaration> getXmlType(Reference r) throws AdapterException {
+    private NonElement<TypeMirror,TypeDeclaration> getXmlType(Reference r) {
         if(r==null)
             throw new IllegalArgumentException();
 

@@ -29,7 +29,6 @@ import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.model.core.TypeRef;
-import com.sun.xml.bind.v2.model.core.AdapterException;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
@@ -200,23 +199,17 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
         // adapter
         Adapter<TypeT,ClassDeclT> a = null;
-        try {
-            if(nav().getMethodParameters(m).length>0) {
-                XmlJavaTypeAdapter adapter = reader().getMethodAnnotation(XmlJavaTypeAdapter.class,m,this);
-                if(adapter!=null)
-                    a = new Adapter<TypeT,ClassDeclT>(adapter,reader(),nav());
-                else {
-                    XmlAttachmentRef xsa = reader().getMethodAnnotation(XmlAttachmentRef.class,m,this);
-                    if(xsa!=null) {
-                        TODO.prototype("in APT swaRefAdapter isn't avaialble, so this returns null");
-                        a = new Adapter<TypeT,ClassDeclT>(owner.nav.asDecl(SwaRefAdapter.class),owner.nav);
-                    }
+        if(nav().getMethodParameters(m).length>0) {
+            XmlJavaTypeAdapter adapter = reader().getMethodAnnotation(XmlJavaTypeAdapter.class,m,this);
+            if(adapter!=null)
+                a = new Adapter<TypeT,ClassDeclT>(adapter,reader(),nav());
+            else {
+                XmlAttachmentRef xsa = reader().getMethodAnnotation(XmlAttachmentRef.class,m,this);
+                if(xsa!=null) {
+                    TODO.prototype("in APT swaRefAdapter isn't avaialble, so this returns null");
+                    a = new Adapter<TypeT,ClassDeclT>(owner.nav.asDecl(SwaRefAdapter.class),owner.nav);
                 }
             }
-        } catch( AdapterException e ) {
-            builder.reportError(new IllegalAnnotationException(
-                Messages.NOT_AN_ADAPTER_CLASS.format(e.getMessage()), this
-            ));
         }
         this.adapter = a;
 
