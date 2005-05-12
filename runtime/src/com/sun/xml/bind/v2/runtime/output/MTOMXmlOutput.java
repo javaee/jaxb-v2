@@ -3,6 +3,7 @@ package com.sun.xml.bind.v2.runtime.output;
 import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
+import javax.xml.bind.attachment.AttachmentMarshaller;
 
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.runtime.Name;
@@ -20,6 +21,12 @@ public final class MTOMXmlOutput extends XmlOutput {
 
     private final XmlOutput next;
 
+    /**
+     * Remembers the last namespace URI and local name so that we can pass them to
+     * {@link AttachmentMarshaller}.
+     */
+    private String nsUri,localName;
+
     public MTOMXmlOutput(XmlOutput next) {
         this.next = next;
     }
@@ -36,10 +43,14 @@ public final class MTOMXmlOutput extends XmlOutput {
 
     public void beginStartTag(Name name) throws IOException, XMLStreamException {
         next.beginStartTag(name);
+        this.nsUri = name.nsUri;
+        this.localName = name.localName;
     }
 
     public void beginStartTag(int prefix, String localName) throws IOException, XMLStreamException {
         next.beginStartTag(prefix, localName);
+        this.nsUri = nsContext.getNamespaceURI(prefix);
+        this.localName = localName;
     }
 
     public void attribute( Name name, String value ) throws IOException, XMLStreamException {
@@ -69,7 +80,7 @@ public final class MTOMXmlOutput extends XmlOutput {
     public void text( CharSequence value, boolean needsSeparatingWhitespace ) throws IOException, SAXException, XMLStreamException {
         if(value instanceof Base64Data) {
             Base64Data b64d = (Base64Data) value;
-            String cid = serializer.attachmentMarshaller.addMtomAttachment(b64d.getExact(),null,null);
+            String cid = serializer.attachmentMarshaller.addMtomAttachment(b64d.getExact(),nsUri,localName);
             if(cid!=null) {
                 nsContext.getCurrent().push();
                 int prefix = nsContext.declareNsUri(WellKnownNamespace.XOP,"xop",false);
