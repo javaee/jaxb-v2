@@ -92,7 +92,7 @@ public class ClassSelector extends BindingComponent {
      * {@link CClassInfoParent}s that determines where a new class
      * should be created.
      */
-    private final Stack<CClassInfoParent> classFactories = new Stack<CClassInfoParent>();
+    private final Stack<CClassInfoParent> classScopes = new Stack<CClassInfoParent>();
 
     /**
      * The component that is being bound to {@link #currentBean}.
@@ -155,7 +155,10 @@ public class ClassSelector extends BindingComponent {
                 addSchemaFragmentJavadoc(bean,sc);
 
             // build the body
-            pushClassFactory(bean);
+            if(!builder.getGlobalBinding().flattenClasses)
+                pushClassScope(bean);
+            else
+                pushClassScope(bean.parent());
             XSComponent oldRoot = currentRoot;
             CClassInfo oldBean = currentBean;
             currentRoot = sc;
@@ -163,7 +166,7 @@ public class ClassSelector extends BindingComponent {
             sc.visit(Ring.get(BindRed.class));
             currentBean = oldBean;
             currentRoot = oldRoot;
-            popClassFactory();
+            popClassScope();
 
             // acknowledge property customization on this schema component,
             // since it is OK to have a customization at the point of declaration
@@ -200,26 +203,25 @@ public class ClassSelector extends BindingComponent {
         classBinder = new Abstractifier(new DefaultClassBinder());
         Ring.add(ClassBinder.class,classBinder);
 
-        classFactories.push(null);  // so that the getClassFactory method returns null
+        classScopes.push(null);  // so that the getClassFactory method returns null
 
         XSComplexType anyType = Ring.get(XSSchemaSet.class).getComplexType(WellKnownNamespace.XML_SCHEMA,"anyType");
         bindMap.put(anyType,new Binding(anyType,CBuiltinLeafInfo.ANYTYPE));
     }
 
-    /** Gets the current class factory. */
-    // TODO: rename appropriately
-    public final CClassInfoParent getClassFactory() {
-        return classFactories.peek();
+    /** Gets the current class scope. */
+    public final CClassInfoParent getClassScope() {
+        assert !classScopes.isEmpty();
+        return classScopes.peek();
     }
 
-    // TODO: rename appropriately
-    public final void pushClassFactory( CClassInfoParent clsFctry ) {
-        classFactories.push(clsFctry);
+    public final void pushClassScope( CClassInfoParent clsFctry ) {
+        assert clsFctry!=null;
+        classScopes.push(clsFctry);
     }
 
-    // TODO: rename appropriately
-    public final void popClassFactory() {
-        classFactories.pop();
+    public final void popClassScope() {
+        classScopes.pop();
     }
 
     public XSComponent getCurrentRoot() {
@@ -304,7 +306,7 @@ public class ClassSelector extends BindingComponent {
             if( sc instanceof XSDeclaration ) {
                 isGlobal = ((XSDeclaration)sc).isGlobal();
                 if( isGlobal )
-                    pushClassFactory( new CClassInfoParent.Package(
+                    pushClassScope( new CClassInfoParent.Package(
                         getPackage(((XSDeclaration)sc).getTargetNamespace())) );
             }
 
@@ -312,7 +314,7 @@ public class ClassSelector extends BindingComponent {
             CElement bean = sc.apply(classBinder);
 
             if( isGlobal )
-                popClassFactory();
+                popClassScope();
 
             if(bean==null)
                 return null;

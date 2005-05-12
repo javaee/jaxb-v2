@@ -108,7 +108,7 @@ class DefaultClassBinder extends AbstractBinderImpl
 
             if(sb!=null)    className = sb.mangleAnonymousTypeClassName(className);
 
-            return new CClassInfo(model, selector.getClassFactory(), className, type.getLocator(), ANONYMOUS, null, bi.toCustomizationList() );
+            return new CClassInfo(model, selector.getClassScope(), className, type.getLocator(), ANONYMOUS, null, bi.toCustomizationList() );
         }
     }
 
@@ -159,7 +159,7 @@ class DefaultClassBinder extends AbstractBinderImpl
                     // in the conforming mode, if a global element contains
                     // a collpsable complex type, we bind this element to a named one
                     // and collapses element and complex type.
-                    r = new CClassInfo( model, selector.getClassFactory(),
+                    r = new CClassInfo( model, selector.getClassScope(),
                         deriveName(decl), decl.getLocator(),
                         ANONYMOUS, tagName, custs );
                 } else {
@@ -172,7 +172,7 @@ class DefaultClassBinder extends AbstractBinderImpl
 
                     // otherwise map global elements to JAXBElement
                     stb.refererStack.push(decl);    // referer is element
-                    r = new CElementInfo(model, tagName, selector.getClassFactory(), className,
+                    r = new CElementInfo(model, tagName, selector.getClassScope(), className,
                             selector.bindToType(decl.getType()), decl.getDefaultValue(),
                             custs, decl.getLocator());
                     stb.refererStack.pop();
@@ -215,7 +215,7 @@ class DefaultClassBinder extends AbstractBinderImpl
         if(c!=null) return c;
 
         if(getGlobalBinding().simpleTypeSubstitution && type.isGlobal()) {
-            return new CClassInfo(model,selector.getClassFactory(),
+            return new CClassInfo(model,selector.getClassScope(),
                     deriveName(type), type.getLocator(), getTypeName(type), null, null );
         }
 
@@ -347,12 +347,12 @@ class DefaultClassBinder extends AbstractBinderImpl
             stb.refererStack.pop();
 
             return new CElementInfo(model, elementName,
-                    selector.getClassFactory(), clsName, content,
+                    selector.getClassScope(), clsName, content,
                     e.getDefaultValue(),
                     bindInfo.toCustomizationList(), decl.getLocation() );
             // TODO: support javadoc and userSpecifiedImplClass
         } else {
-            CClassInfo bt = new CClassInfo(model,selector.getClassFactory(),
+            CClassInfo bt = new CClassInfo(model,selector.getClassScope(),
                     clsName, decl.getLocation(), typeName, elementName, bindInfo.toCustomizationList() );
 
             // set javadoc class comment.

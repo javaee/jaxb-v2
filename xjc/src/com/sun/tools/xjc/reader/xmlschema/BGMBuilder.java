@@ -219,7 +219,7 @@ public class BGMBuilder extends BindingComponent {
         SimpleTypeBuilder stb = Ring.get(SimpleTypeBuilder.class);
 
         for( XSSchema s : Ring.get(XSSchemaSet.class).getSchemas() ) {
-            getClassSelector().pushClassFactory( new CClassInfoParent.Package(
+            getClassSelector().pushClassScope( new CClassInfoParent.Package(
                 getClassSelector().getPackage(s.getTargetNamespace())) );
 
             if(!s.getTargetNamespace().equals(WellKnownNamespace.XML_SCHEMA)) {
@@ -238,7 +238,7 @@ public class BGMBuilder extends BindingComponent {
                 stb.refererStack.pop();
             }
 
-            getClassSelector().popClassFactory();
+            getClassSelector().popClassScope();
         }
     }
 

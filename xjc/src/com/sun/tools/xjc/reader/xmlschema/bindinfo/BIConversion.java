@@ -136,7 +136,7 @@ public abstract class BIConversion extends AbstractDeclarationImpl {
             int id = 1;
             while(adapter==null) {
                 try {
-                    JPackage pkg = Ring.get(ClassSelector.class).getClassFactory().getOwnerPackage();
+                    JPackage pkg = Ring.get(ClassSelector.class).getClassScope().getOwnerPackage();
                     adapter = pkg._class("Adapter"+id);
                 } catch (JClassAlreadyExistsException e) {
                     // try another name in search for an unique name.

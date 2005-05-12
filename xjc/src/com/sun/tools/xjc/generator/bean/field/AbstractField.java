@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AbstractField.java,v 1.6 2005-05-06 21:24:15 kohsuke Exp $
+ * @(#)$Id: AbstractField.java,v 1.7 2005-05-12 21:12:44 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -181,7 +181,7 @@ abstract class AbstractField implements FieldOutline {
             assert(eName==null); // illegal to have a single value prop with a wrapper
 
             // [RESULT]
-            // @XmlElement(name=Foo.class, isNillable=false, targetNamespace="bar://baz"
+            // @XmlElement(name=Foo.class, isNillable=false, namespace="bar://baz")
 
             CTypeRef type = types.get(0);
             XmlElementWriter xew = field.annotate2(XmlElementWriter.class);
