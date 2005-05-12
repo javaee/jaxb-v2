@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: SchemaSetImpl.java,v 1.3 2005-04-21 16:42:13 kohsuke Exp $
+ * @(#)$Id: SchemaSetImpl.java,v 1.4 2005-05-12 03:59:18 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -307,6 +307,9 @@ public class SchemaSetImpl implements XSSchemaSet
         public XSAttributeUse getDeclaredAttributeUse( String nsURI, String localName ) { return null; }
         public Iterator iterateDeclaredAttributeUses() { return emptyIterator; }
         public Iterator iterateAttGroups() { return emptyIterator; }
+        public Collection<XSAttributeUse> getAttributeUses() { return Collections.EMPTY_LIST; }
+        public Collection<? extends XSAttributeUse> getDeclaredAttributeUses() { return Collections.EMPTY_LIST; }
+        public Collection<? extends XSAttGroupDecl> getAttGroups() { return Collections.EMPTY_LIST; }
         public boolean isFinal( int i ) { return false; }
         public boolean isSubstitutionProhibited( int i ) { return false; }
         public boolean isMixed() { return true; }

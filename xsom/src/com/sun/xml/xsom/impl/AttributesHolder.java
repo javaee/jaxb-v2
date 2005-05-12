@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AttributesHolder.java,v 1.2 2005-04-21 16:42:12 kohsuke Exp $
+ * @(#)$Id: AttributesHolder.java,v 1.3 2005-05-12 03:59:18 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.Collection;
+import java.util.AbstractSet;
 
 public abstract class AttributesHolder extends DeclarationImpl {
     
@@ -46,28 +48,33 @@ public abstract class AttributesHolder extends DeclarationImpl {
     public void addProhibitedAttribute( UName name ) {
         prohibitedAtts.add(name);
     }
-    public Iterator iterateAttributeUses() {
+    public List<XSAttributeUse> getAttributeUses() {
         // TODO: this is fairly inefficient
-        List v = new ArrayList();
+        List<XSAttributeUse> v = new ArrayList<XSAttributeUse>();
         v.addAll(attributes.values());
-        Iterator itr = iterateAttGroups();
-        while(itr.hasNext()) {
-            Iterator jtr = ((XSAttGroupDecl)itr.next()).iterateAttributeUses();
-            while(jtr.hasNext())
-                v.add(jtr.next());
-        }
-        return v.iterator();
+        for( XSAttGroupDecl agd : getAttGroups() )
+            v.addAll(agd.getAttributeUses());
+        return v;
     }
+    public Iterator<XSAttributeUse> iterateAttributeUses() {
+        return getAttributeUses().iterator();
+    }
+
+
 
     public XSAttributeUse getDeclaredAttributeUse( String nsURI, String localName ) {
         return attributes.get(new UName(nsURI,localName));
     }
     
-    public Iterator iterateDeclaredAttributeUses() {
+    public Iterator<AttributeUseImpl> iterateDeclaredAttributeUses() {
         return attributes.values().iterator();
     }
 
-    
+    public Collection<AttributeUseImpl> getDeclaredAttributeUses() {
+        return attributes.values();
+    }
+
+
     /** {@link Ref.AttGroup}s that are directly refered from this. */
     protected final Set<Ref.AttGroup> attGroups = new HashSet<Ref.AttGroup>();
     
@@ -75,14 +82,26 @@ public abstract class AttributesHolder extends DeclarationImpl {
     
     // Iterates all AttGroups which are directly referenced from this component
     // this does not iterate att groups referenced from the base type
-    public Iterator iterateAttGroups() {
-        return new Iterator() {
-            private final Iterator itr = attGroups.iterator();
+    public Iterator<XSAttGroupDecl> iterateAttGroups() {
+        return new Iterator<XSAttGroupDecl>() {
+            private final Iterator<Ref.AttGroup> itr = attGroups.iterator();
             public boolean hasNext() { return itr.hasNext(); }
-            public Object next() {
-                return ((Ref.AttGroup)itr.next()).get();
+            public XSAttGroupDecl next() {
+                return itr.next().get();
             }
             public void remove() { itr.remove(); }
         };
-    }    
+    }
+
+    public Set<XSAttGroupDecl> getAttGroups() {
+        return new AbstractSet<XSAttGroupDecl>() {
+            public Iterator<XSAttGroupDecl> iterator() {
+                return iterateAttGroups();
+            }
+
+            public int size() {
+                return attGroups.size();
+            }
+        };
+    }
 }

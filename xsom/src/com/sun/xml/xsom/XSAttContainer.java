@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: XSAttContainer.java,v 1.1 2005-04-14 22:06:18 kohsuke Exp $
+ * @(#)$Id: XSAttContainer.java,v 1.2 2005-05-12 03:59:19 kohsuke Exp $
  *
  * Copyright 2002 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -10,6 +10,7 @@
 package com.sun.xml.xsom;
 
 import java.util.Iterator;
+import java.util.Collection;
 
 /**
  * Common aspect of {@link XSComplexType} and {@link XSAttGroupDecl}
@@ -40,8 +41,13 @@ public interface XSAttContainer extends XSDeclaration {
      * This is the exact implementation of the "attribute use"
      * schema component.
      */
-    Iterator iterateAttributeUses();
-    
+    Iterator<? extends XSAttributeUse> iterateAttributeUses();
+
+    /**
+     * Gets all the attribute uses.
+     */
+    Collection<? extends XSAttributeUse> getAttributeUses();
+
     /**
      * Looks for the attribute use with the specified name from
      * the attribute uses which are declared in this complex type.
@@ -55,11 +61,23 @@ public interface XSAttContainer extends XSDeclaration {
     /**
      * Lists all the attribute uses that are declared in this complex type.
      */
-    Iterator iterateDeclaredAttributeUses();
-    
+    Iterator<? extends XSAttributeUse> iterateDeclaredAttributeUses();
+
+    /**
+     * Lists all the attribute uses that are declared in this complex type.
+     */
+    Collection<? extends XSAttributeUse> getDeclaredAttributeUses();
+
+
     /**
      * Iterates all AttGroups which are directly referenced from
      * this component.
      */
-    Iterator iterateAttGroups();
+    Iterator<? extends XSAttGroupDecl> iterateAttGroups();
+
+    /**
+     * Iterates all AttGroups which are directly referenced from
+     * this component.
+     */
+    Collection<? extends XSAttGroupDecl> getAttGroups();
 }
