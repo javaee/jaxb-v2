@@ -37,6 +37,7 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
     private final QName tagName;
     private final Class expectedType;
     private final Class scope;
+    private final JaxBeanInfo expectedBeanInfo;
 
     ElementBeanInfoImpl(JAXBContextImpl grammar, RuntimeElementInfo rei) {
         super(grammar,rei,(Class<JAXBElement>)rei.getType(),null,true,false);
@@ -48,6 +49,7 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
         tagName = rei.getElementName();
         expectedType = Navigator.REFLECTION.erasure(rei.getContentInMemoryType());
         scope = rei.getScope()==null ? JAXBElement.GlobalScope.class : rei.getScope().getClazz();
+        expectedBeanInfo = grammar.getBeanInfo(expectedType);
     }
 
     /**
@@ -63,6 +65,7 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
         tagName = null;
         expectedType = null;
         scope = null;
+        expectedBeanInfo = null;
 
         this.property = new Property<JAXBElement>() {
             public void reset(JAXBElement o) {
@@ -73,7 +76,7 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
                 Class scope = e.getScope();
                 if(e.isGlobalScope())   scope = null;
                 QName n = e.getName();
-                JaxBeanInfo bi = grammar.getElement(scope,n);
+                JaxBeanInfo bi = grammar.getElement(scope,n).expectedBeanInfo;
                 Object value = e.getValue();
                 if(bi==null) {
                     // infer what to do from the type
