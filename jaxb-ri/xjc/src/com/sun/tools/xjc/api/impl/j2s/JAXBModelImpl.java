@@ -2,12 +2,13 @@ package com.sun.tools.xjc.api.impl.j2s;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Iterator;
 
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.bind.annotation.XmlList;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 import com.sun.mirror.apt.AnnotationProcessorEnvironment;
@@ -19,18 +20,18 @@ import com.sun.tools.jxc.XmlSchemaGenerator;
 import com.sun.tools.xjc.api.ErrorListener;
 import com.sun.tools.xjc.api.J2SJAXBModel;
 import com.sun.tools.xjc.api.Reference;
-import javax.xml.bind.annotation.XmlList;
+import com.sun.xml.bind.api.SchemaOutputResolver;
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
+import com.sun.xml.bind.v2.model.core.AdapterException;
 import com.sun.xml.bind.v2.model.core.ArrayInfo;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
+import com.sun.xml.bind.v2.model.core.Element;
+import com.sun.xml.bind.v2.model.core.ElementInfo;
 import com.sun.xml.bind.v2.model.core.EnumLeafInfo;
 import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.Ref;
 import com.sun.xml.bind.v2.model.core.TypeInfoSet;
-import com.sun.xml.bind.v2.model.core.Element;
-import com.sun.xml.bind.v2.model.core.ElementInfo;
 import com.sun.xml.bind.v2.model.nav.Navigator;
-import com.sun.xml.bind.api.SchemaOutputResolver;
 
 /**
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
@@ -46,6 +47,13 @@ final class JAXBModelImpl implements J2SJAXBModel {
     private final TypeInfoSet<TypeMirror,TypeDeclaration,FieldDeclaration,MethodDeclaration> types;
 
     private final AnnotationReader<TypeMirror,TypeDeclaration,FieldDeclaration,MethodDeclaration> reader;
+
+    /**
+     * Look up table from an externally visible {@link Reference} object
+     * to our internal format.
+     */
+    private final Map<Reference,NonElement<TypeMirror,TypeDeclaration>> refMap =
+        new HashMap<Reference, NonElement<TypeMirror,TypeDeclaration>>();
 
     public JAXBModelImpl(AnnotationProcessorEnvironment env,
                          TypeInfoSet<TypeMirror,TypeDeclaration,FieldDeclaration,MethodDeclaration> types,
@@ -81,21 +89,29 @@ final class JAXBModelImpl implements J2SJAXBModel {
         while(itr.hasNext()) {
             Map.Entry<QName, Reference> entry = itr.next();
             if(entry.getValue()==null)      continue;
-            
-            NonElement<TypeMirror,TypeDeclaration> xt = getXmlType(entry.getValue());
-            assert xt!=null;
-            if(xt instanceof ClassInfo) {
-                ClassInfo<TypeMirror,TypeDeclaration> xct = (ClassInfo<TypeMirror,TypeDeclaration>) xt;
-                Element<TypeMirror,TypeDeclaration> elem = xct.asElement();
-                if(elem!=null && elem.getElementName().equals(entry.getKey())) {
+
+            try {
+                NonElement<TypeMirror,TypeDeclaration> xt = getXmlType(entry.getValue());
+                
+                assert xt!=null;
+                refMap.put(entry.getValue(),xt);
+                if(xt instanceof ClassInfo) {
+                    ClassInfo<TypeMirror,TypeDeclaration> xct = (ClassInfo<TypeMirror,TypeDeclaration>) xt;
+                    Element<TypeMirror,TypeDeclaration> elem = xct.asElement();
+                    if(elem!=null && elem.getElementName().equals(entry.getKey())) {
+                        itr.remove();
+                        continue;
+                    }
+                }
+                ElementInfo<TypeMirror,TypeDeclaration> ei = types.getElementInfo(null,entry.getKey());
+                if(ei!=null && ei.getContentType()==xt) {
                     itr.remove();
                     continue;
                 }
-            }
-            ElementInfo<TypeMirror,TypeDeclaration> ei = types.getElementInfo(null,entry.getKey());
-            if(ei!=null && ei.getContentType()==xt) {
-                itr.remove();
-                continue;
+            } catch (AdapterException e) {
+                env.getMessager().printError(
+                    entry.getValue().annotations.getPosition(),
+                        Messages.NOT_AN_ADAPTER_CLASS.format(e.getMessage()));
             }
         }
     }
@@ -105,7 +121,7 @@ final class JAXBModelImpl implements J2SJAXBModel {
     }
 
     public QName getXmlTypeName(Reference javaType) {
-        NonElement<TypeMirror,TypeDeclaration> ti = getXmlType(javaType);
+        NonElement<TypeMirror,TypeDeclaration> ti = refMap.get(javaType);
 
         if(ti!=null)
             return ti.getTypeName();
@@ -113,7 +129,7 @@ final class JAXBModelImpl implements J2SJAXBModel {
         return null;
     }
 
-    private NonElement<TypeMirror,TypeDeclaration> getXmlType(Reference r) {
+    private NonElement<TypeMirror,TypeDeclaration> getXmlType(Reference r) throws AdapterException {
         if(r==null)
             throw new IllegalArgumentException();
 
@@ -136,7 +152,7 @@ final class JAXBModelImpl implements J2SJAXBModel {
         for (Map.Entry<QName,Reference> e : additionalElementDecls.entrySet()) {
             Reference value = e.getValue();
             if(value!=null) {
-                NonElement<TypeMirror, TypeDeclaration> typeInfo = getXmlType(value);
+                NonElement<TypeMirror, TypeDeclaration> typeInfo = refMap.get(value);
                 if(typeInfo==null)
                     throw new IllegalArgumentException(e.getValue()+" was not specified to JavaCompiler.bind");
                 xsdgen.add(e.getKey(),typeInfo);

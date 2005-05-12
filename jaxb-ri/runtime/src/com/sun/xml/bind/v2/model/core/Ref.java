@@ -1,9 +1,8 @@
 package com.sun.xml.bind.v2.model.core;
 
+import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javax.xml.bind.annotation.XmlList;
 
-import javax.xml.bind.annotation.XmlList;
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
 import com.sun.xml.bind.v2.model.impl.ModelBuilder;
 import com.sun.xml.bind.v2.model.nav.Navigator;
@@ -44,13 +43,13 @@ public final class Ref<TypeT,ClassDeclT> {
         this.valueList = valueList;
     }
 
-    public Ref(ModelBuilder<TypeT,ClassDeclT,?,?> builder, TypeT type, XmlJavaTypeAdapter xjta, XmlList xl ) {
+    public Ref(ModelBuilder<TypeT,ClassDeclT,?,?> builder, TypeT type, XmlJavaTypeAdapter xjta, XmlList xl ) throws AdapterException {
         this(builder.reader,builder.nav,type,xjta,xl);
     }
     
     public Ref(AnnotationReader<TypeT,ClassDeclT,?,?> reader,
                Navigator<TypeT,ClassDeclT,?,?> nav,
-               TypeT type, XmlJavaTypeAdapter xjta, XmlList xl ) {
+               TypeT type, XmlJavaTypeAdapter xjta, XmlList xl ) throws AdapterException {
         Adapter<TypeT,ClassDeclT> adapter=null;
         if(xjta!=null) {
             adapter = new Adapter<TypeT,ClassDeclT>(xjta,reader,nav);

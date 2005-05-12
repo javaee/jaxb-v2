@@ -3,7 +3,6 @@ package com.sun.xml.bind.v2.model.core;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 
@@ -39,17 +38,17 @@ public class Adapter<TypeT,ClassDeclT> {
     public Adapter(
         XmlJavaTypeAdapter spec,
         AnnotationReader<TypeT,ClassDeclT,?,?> reader,
-        Navigator<TypeT,ClassDeclT,?,?> nav) {
+        Navigator<TypeT,ClassDeclT,?,?> nav) throws AdapterException {
 
         this( nav.asDecl(reader.getClassValue(spec,"value")), nav );
     }
 
-    public Adapter(ClassDeclT adapterType,Navigator<TypeT,ClassDeclT,?,?> nav) {
+    public Adapter(ClassDeclT adapterType,Navigator<TypeT,ClassDeclT,?,?> nav) throws AdapterException {
         this.adapterType = adapterType;
         TypeT baseClass = nav.getBaseClass(nav.use(adapterType), nav.asDecl(XmlAdapter.class));
 
-        // TODO: prepare for baseClass==null. who's responsible for reporting that error?
-        TODO.prototype();
+        if(baseClass==null)
+            throw new AdapterException(nav.getClassName(adapterType));
 
         if(nav.isParameterizedType(baseClass))
             defaultType = nav.getTypeArgument(baseClass,0);
