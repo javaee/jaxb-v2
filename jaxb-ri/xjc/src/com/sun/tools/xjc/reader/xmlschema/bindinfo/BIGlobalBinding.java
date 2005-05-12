@@ -142,6 +142,14 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
      */
     public final int defaultEnumMemberSizeCap;
 
+    /**
+     * If true, interfaces/classes that are normally generated as a nested interface/class
+     * will be generated into the package, allowing the generated classes to be flat.
+     *
+     * See <a href="http://monaco.sfbay/detail.jsf?cr=4969415">Bug 4969415</a> for the motivation.
+     */
+    public final boolean flattenClasses;
+
     private static Set<QName> createSet() {
         return Collections.singleton(new QName(WellKnownNamespace.XML_SCHEMA,"string"));
     }
@@ -152,7 +160,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
     public BIGlobalBinding() {
         this(
             new HashMap<QName,BIConversion>(), NameConverter.standard,
-            false, true, false, true, false, false, false, false,
+            false, true, false, true, false, false, false, false, false,
             createSet(), 256,
             null, null, null, null, false, false, null );
     }
@@ -168,6 +176,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
         boolean _needIsSetMethod,
         boolean _simpleTypeSubstitution,
         boolean _generateEnumMemberName,
+        boolean _flattenClasses,
         Set<QName> _enumBaseTypes,
         int defaultEnumMemberSizeCap,
         FieldRenderer collectionFieldRenderer,   // default collection type. can be null.
@@ -195,6 +204,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
         this.smartWildcardDefaultBinding = _smartWildcardDefaultBinding;
         this.simpleMode = simpleMode;
         this.defaultEnumMemberSizeCap = defaultEnumMemberSizeCap;
+        this.flattenClasses = _flattenClasses;
 
         this.defaultProperty = new BIProperty(_loc,null,null,null,null,
             (collectionFieldRenderer==null)

@@ -37,6 +37,7 @@
       <xs:attribute name="fixedAttributeAsConstantProperty" type="xs:boolean"/>
       <xs:attribute name="generateIsSetMethod" type="xs:boolean"/>
       <xs:attribute name="mapSimpleTypeDef" type="xs:boolean"/>
+      <xs:attribute name="flattenClasses" type="xs:boolean"/>
       <xs:attribute name="collectionType" type="jaxb:collectionType"/>
       <xs:attribute name="typesafeEnumMemberName">
         <xs:simpleType>

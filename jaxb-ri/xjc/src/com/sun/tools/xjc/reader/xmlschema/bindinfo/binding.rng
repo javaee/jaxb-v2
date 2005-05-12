@@ -205,6 +205,7 @@
           $runtime.parseBoolean(needIsSetMethod),
           $runtime.parseBoolean(simpleTypeSubstitution),
           generateEnumMemberName,
+          $runtime.parseBoolean(flattenClasses),
           enumBaseTypes,
           defaultEnumSizeCap,
           ct,
@@ -252,6 +253,12 @@
       <optional>
         <attribute name="mapSimpleTypeDef">
           simpleTypeSubstitution = <data type="boolean"/>
+        </attribute>
+      </optional>
+
+      <optional>
+        <attribute name="flattenClasses">
+          flattenClasses = <data type="boolean"/>
         </attribute>
       </optional>
 
