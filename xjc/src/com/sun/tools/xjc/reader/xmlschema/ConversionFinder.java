@@ -112,6 +112,7 @@ public final class ConversionFinder extends BindingComponent {
         // TODO: this is too dumb
         m.put("anySimpleType",  CBuiltinLeafInfo.ANYTYPE);
         m.put("string",         CBuiltinLeafInfo.STRING);
+        m.put("anyURI",         CBuiltinLeafInfo.STRING);
         m.put("boolean",        CBuiltinLeafInfo.BOOLEAN);
         // we'll also look at the expected media type, so don't just add this to the map
         // m.put("base64Binary",   CBuiltinLeafInfo.BASE64_BYTE_ARRAY);
