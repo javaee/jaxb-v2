@@ -29,6 +29,7 @@ import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.model.core.TypeRef;
+import com.sun.xml.bind.v2.model.core.AdapterException;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
@@ -198,8 +199,8 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         tagName = parseElementName(anno);
 
         // adapter
-        {
-            Adapter<TypeT,ClassDeclT> a = null;
+        Adapter<TypeT,ClassDeclT> a = null;
+        try {
             if(nav().getMethodParameters(m).length>0) {
                 XmlJavaTypeAdapter adapter = reader().getMethodAnnotation(XmlJavaTypeAdapter.class,m,this);
                 if(adapter!=null)
@@ -212,9 +213,12 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
                     }
                 }
             }
-
-            this.adapter = a;
+        } catch( AdapterException e ) {
+            builder.reportError(new IllegalAnnotationException(
+                Messages.NOT_AN_ADAPTER_CLASS.format(e.getMessage()), this
+            ));
         }
+        this.adapter = a;
 
         if(adapter==null) {
             // T of JAXBElement<T>

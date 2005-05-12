@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.12 2005-05-05 17:53:36 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.13 2005-05-12 22:34:11 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -51,9 +51,8 @@ import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.Ref;
-import com.sun.xml.bind.v2.model.impl.RuntimeAnyTypeImpl;
-import com.sun.xml.bind.v2.model.impl.RuntimeBuiltinLeafInfoImpl;
-import com.sun.xml.bind.v2.model.impl.RuntimeModelBuilder;
+import com.sun.xml.bind.v2.model.core.AdapterException;
+import com.sun.xml.bind.v2.model.impl.*;
 import com.sun.xml.bind.v2.model.nav.ReflectionNavigator;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimeArrayInfo;
@@ -82,7 +81,7 @@ import org.xml.sax.SAXException;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -244,8 +243,12 @@ public final class JAXBContextImpl extends JAXBRIContext {
             Class erasedType = nav.erasure(tr.type);
 
             if(xjta!=null) {
-                a = new Adapter<Type,Class>(xjta.value(),nav);
-                erasedType = nav.erasure(a.defaultType);
+                try {
+                    a = new Adapter<Type,Class>(xjta.value(),nav);
+                    erasedType = nav.erasure(a.defaultType);
+                } catch (AdapterException e) {
+                    throw new JAXBException(e);
+                }
             }
 
             Name name = nameBuilder.createElementName(tr.tagName);

@@ -1,21 +1,19 @@
 package com.sun.tools.xjc.model;
 
-import com.sun.tools.xjc.model.nav.NClass;
-import com.sun.tools.xjc.model.nav.NType;
-import com.sun.tools.xjc.model.nav.NavigatorImpl;
-import com.sun.tools.xjc.model.nav.EagerNClass;
-import com.sun.tools.xjc.outline.Outline;
-import com.sun.tools.xjc.outline.Aspect;
-import com.sun.xml.bind.v2.model.core.Adapter;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
-
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
+import com.sun.tools.xjc.model.nav.EagerNClass;
+import com.sun.tools.xjc.model.nav.NClass;
+import com.sun.tools.xjc.model.nav.NType;
+import com.sun.tools.xjc.model.nav.NavigatorImpl;
+import com.sun.tools.xjc.outline.Aspect;
+import com.sun.tools.xjc.outline.Outline;
+import com.sun.xml.bind.v2.model.core.Adapter;
+import com.sun.xml.bind.v2.model.core.AdapterException;
 
 /**
  * Extended {@link Adapter} for use within XJC.
@@ -42,7 +40,7 @@ public final class CAdapter extends Adapter<NType,NClass> {
      *      or otherwise just refer to the class specified via the
      *      adapter parameter.
      */
-    public CAdapter(Class<? extends XmlAdapter> adapter, boolean copy) {
+    public CAdapter(Class<? extends XmlAdapter> adapter, boolean copy) throws AdapterException {
         super(getRef(adapter,copy),NavigatorImpl.theInstance);
         this.adapterClass1 = null;
         this.adapterClass2 = adapter;
@@ -67,7 +65,7 @@ public final class CAdapter extends Adapter<NType,NClass> {
         }
     }
 
-    public CAdapter(JClass adapter) {
+    public CAdapter(JClass adapter) throws AdapterException {
         super( NavigatorImpl.theInstance.ref(adapter), NavigatorImpl.theInstance);
         this.adapterClass1 = adapter;
         this.adapterClass2 = null;
