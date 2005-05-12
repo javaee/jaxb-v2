@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,11 +17,6 @@ import javax.xml.bind.JAXBException;
 
 import com.sun.xml.bind.api.JAXBRIContext;
 import com.sun.xml.bind.api.TypeReference;
-import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
-import com.sun.xml.bind.v2.model.core.Ref;
-import com.sun.xml.bind.v2.model.impl.RuntimeModelBuilder;
-import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfoSet;
-import com.sun.xml.bind.v2.runtime.IllegalAnnotationsException;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 
 /**
