@@ -36,7 +36,8 @@ public abstract class RawAccessor<B,V> {
      * @param bean
      *      must not be null.
      * @param value
-     *      the value to be set.
+     *      the value to be set. Setting value to null means resetting
+     *      to the VM default value (even for primitive properties.)
      * @throws AccessorException
      *      if failed to set a value. For example, the setter method
      *      may throw an exception.
