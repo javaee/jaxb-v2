@@ -612,7 +612,6 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         String local = e.name();
         if(local.equals("##default")) {
             // if defaulted...
-            TODO.prototype();   // TODO
             local = NameConverter.standard.toVariableName(nav().getClassShortName(clazz));
         }
         String nsUri = e.namespace();
