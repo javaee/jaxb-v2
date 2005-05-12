@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: BinderImpl.java,v 1.4 2005-05-03 22:31:41 kohsuke Exp $
+ * @(#)$Id: BinderImpl.java,v 1.5 2005-05-12 16:41:36 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -23,6 +23,7 @@ import com.sun.xml.bind.v2.runtime.output.DOMOutput;
 
 import org.xml.sax.SAXException;
 import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 
 /**
  * Implementation of {@link Binder}.
@@ -130,13 +131,25 @@ public class BinderImpl<XmlNode> extends Binder<XmlNode> {
     }
 
     public XmlNode updateXml(Object jaxbObject) throws JAXBException {
-        // TODO
-        throw new UnsupportedOperationException();
+        return updateXml(jaxbObject,getXmlNode(jaxbObject));
     }
 
     public XmlNode updateXml(Object jaxbObject, XmlNode xmlNode) throws JAXBException {
+        if(jaxbObject==null || xmlNode==null)   throw new IllegalArgumentException();
+
         // TODO
-        throw new UnsupportedOperationException();
+        // for now just marshal
+        // TODO: object model independenc
+        Element e = (Element)xmlNode;
+        Node ns = e.getNextSibling();
+        Node p = e.getParentNode();
+        p.removeChild(e);
+        getMarshaller().marshal(jaxbObject,p);
+        Node newNode = p.getLastChild();
+        p.removeChild(newNode);
+        p.insertBefore(newNode,ns);
+
+        return (XmlNode)newNode;
     }
 
     public void setEventHandler(ValidationEventHandler handler) throws JAXBException {
