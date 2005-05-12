@@ -1,10 +1,10 @@
 package com.sun.xml.bind.v2.model.impl;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.NameConverter;
-import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.core.AttributePropertyInfo;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 
@@ -33,22 +33,33 @@ class AttributePropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     }
 
     private QName calcXmlName(XmlAttribute att) {
-        TODO.prototype();       // TODO: handle defaulting
-        TODO.checkSpec();       // TODO: name mangling
-
         String uri;
         String local;
 
-        TODO.checkSpec();
         uri = att.namespace();
         local = att.name();
 
         // compute the default
-        TODO.checkSpec();
         if(local.equals("##default"))
             local = NameConverter.standard.toVariableName(getName());
-        if(uri.equals("##default"))
-            uri = "";
+        if(uri.equals("##default")) {
+            XmlSchema xs = reader().getPackageAnnotation( XmlSchema.class, parent.getClazz(), this );
+            // JAX-RPC doesn't want the default namespace URI swapping to take effect to
+            // local "unqualified" elements. UGLY.
+            if(xs!=null) {
+                switch(xs.attributeFormDefault()) {
+                case QUALIFIED:
+                    uri = parent.getTypeName().getNamespaceURI();
+                    if(uri.length()==0)
+                        uri = parent.builder.defaultNsUri;
+                    break;
+                case UNQUALIFIED:
+                case UNSET:
+                    uri = "";
+                }
+            } else
+                uri = "";
+        }
 
         return new QName(uri.intern(),local.intern());
     }
