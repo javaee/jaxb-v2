@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: UnionSimpleTypeImpl.java,v 1.2 2005-04-21 16:42:13 kohsuke Exp $
+ * @(#)$Id: UnionSimpleTypeImpl.java,v 1.3 2005-05-12 04:11:36 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -18,6 +18,8 @@ import com.sun.xml.xsom.XSVariety;
 import com.sun.xml.xsom.visitor.XSSimpleTypeFunction;
 import com.sun.xml.xsom.visitor.XSSimpleTypeVisitor;
 
+import java.util.Iterator;
+
 public class UnionSimpleTypeImpl extends SimpleTypeImpl implements XSUnionSimpleType
 {
     public UnionSimpleTypeImpl( SchemaImpl _parent,
@@ -34,7 +36,24 @@ public class UnionSimpleTypeImpl extends SimpleTypeImpl implements XSUnionSimple
     private final Ref.SimpleType[] memberTypes;
     public XSSimpleType getMember( int idx ) { return memberTypes[idx].getType(); }
     public int getMemberSize() { return memberTypes.length; }
-    
+
+    public Iterator<XSSimpleType> iterator() {
+        return new Iterator<XSSimpleType>() {
+            int idx=0;
+            public boolean hasNext() {
+                return idx<memberTypes.length;
+            }
+
+            public XSSimpleType next() {
+                return memberTypes[idx++].getType();
+            }
+
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
+
     public void visit( XSSimpleTypeVisitor visitor ) {
         visitor.unionSimpleType(this);
     }

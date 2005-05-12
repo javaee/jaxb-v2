@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: XSUnionSimpleType.java,v 1.1 2005-04-14 22:06:22 kohsuke Exp $
+ * @(#)$Id: XSUnionSimpleType.java,v 1.2 2005-05-12 04:11:37 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -15,7 +15,7 @@ package com.sun.xml.xsom;
  * @author
  *  Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-public interface XSUnionSimpleType extends XSSimpleType
+public interface XSUnionSimpleType extends XSSimpleType, Iterable<XSSimpleType>
 {
     XSSimpleType getMember(int idx);
     int getMemberSize();
