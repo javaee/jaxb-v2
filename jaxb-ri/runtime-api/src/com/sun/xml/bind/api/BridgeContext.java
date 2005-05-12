@@ -51,4 +51,20 @@ public abstract class BridgeContext {
      * @since 2.0 EA1
      */
     public abstract void setAttachmentUnmarshaller(AttachmentUnmarshaller m);
+
+    /**
+     * Gets the last {@link AttachmentMarshaller} set through
+     * {@link AttachmentMarshaller}.
+     *
+     * @since 2.0 EA2
+     */
+    public abstract AttachmentMarshaller getAttachmentMarshaller();
+
+    /**
+     * Gets the last {@link AttachmentUnmarshaller} set through
+     * {@link AttachmentUnmarshaller}.
+     *
+     * @since 2.0 EA2
+     */
+    public abstract AttachmentUnmarshaller getAttachmentUnmarshaller();
 }

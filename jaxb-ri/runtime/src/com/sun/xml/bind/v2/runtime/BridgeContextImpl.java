@@ -40,4 +40,12 @@ final class BridgeContextImpl extends BridgeContext {
     public void setAttachmentUnmarshaller(AttachmentUnmarshaller u) {
         unmarshaller.setAttachmentUnmarshaller(u);
     }
+
+    public AttachmentMarshaller getAttachmentMarshaller() {
+        return marshaller.getAttachmentMarshaller();
+    }
+
+    public AttachmentUnmarshaller getAttachmentUnmarshaller() {
+        return unmarshaller.getAttachmentUnmarshaller();
+    }
 }
