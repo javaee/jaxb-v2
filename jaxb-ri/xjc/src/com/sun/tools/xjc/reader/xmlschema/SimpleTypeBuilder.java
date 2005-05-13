@@ -178,7 +178,7 @@ public final class SimpleTypeBuilder extends BindingComponent {
      * it and return. Otherwise null.
      */
     private TypeUse checkConversion( XSSimpleType type ) {
-        TypeUse t = conversionFinder.find(type);
+        TypeUse t = conversionFinder.find(type,getReferer());
 
         if(t!=null) {
             // if the conversion is found, follow it.
