@@ -42,6 +42,7 @@ import com.sun.xml.xsom.XSListSimpleType;
 import com.sun.xml.xsom.XSRestrictionSimpleType;
 import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSUnionSimpleType;
+import com.sun.xml.xsom.XSAttributeDecl;
 import com.sun.xml.xsom.impl.util.SchemaWriter;
 import com.sun.xml.xsom.visitor.XSSimpleTypeFunction;
 import com.sun.xml.xsom.visitor.XSVisitor;
@@ -97,6 +98,11 @@ public final class ConversionFinder extends BindingComponent {
      */
     private XSSimpleType initiatingType;
 
+    /**
+     * The component that refers to the initiating type.
+     */
+    private XSComponent referer;
+
 
 
     ConversionFinder() {
@@ -109,8 +115,7 @@ public final class ConversionFinder extends BindingComponent {
         // have different whitespace normalization semantics.
         Map<String,TypeUse> m = builtinConversions;
 
-        // TODO: this is too dumb
-        m.put("anySimpleType",  CBuiltinLeafInfo.ANYTYPE);
+        // TODO: this is so dumb
         m.put("string",         CBuiltinLeafInfo.STRING);
         m.put("anyURI",         CBuiltinLeafInfo.STRING);
         m.put("boolean",        CBuiltinLeafInfo.BOOLEAN);
@@ -149,12 +154,15 @@ public final class ConversionFinder extends BindingComponent {
 
 
     /** Public entry point. */
-    public TypeUse find( XSSimpleType type ) {
+    public TypeUse find( XSSimpleType type, XSComponent referer ) {
         XSSimpleType old = initiatingType;
         initiatingType = type;
+        XSComponent oldr = referer;
+        this.referer = referer;
         TypeUse r = type.apply(functor);
         assert initiatingType == type;
         initiatingType = old;
+        this.referer = oldr;
 
         if(r==null)
             r = getClassSelector()._bindToClass(type,false);
@@ -511,9 +519,15 @@ public final class ConversionFinder extends BindingComponent {
         if(typeLocalName.equals("boolean") && isRestrictedTo0And1()) {
             // this is seen in the SOAP schema and too common to ignore
             return CBuiltinLeafInfo.BOOLEAN_ZERO_OR_ONE;
-        }
+        } else
         if(typeLocalName.equals("base64Binary")) {
             return lookupBinaryTypeBinding();
+        } else
+        if(typeLocalName.equals("anySimpleType")) {
+            if(referer instanceof XSAttributeDecl)
+                return CBuiltinLeafInfo.STRING;
+            else
+                return CBuiltinLeafInfo.ANYTYPE;
         }
         return builtinConversions.get(typeLocalName);
     }
