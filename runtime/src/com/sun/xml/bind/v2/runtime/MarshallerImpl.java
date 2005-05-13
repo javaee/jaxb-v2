@@ -109,6 +109,12 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         context = c;
         this.assoc = assoc;
         serializer = new XMLSerializer(this);
+
+        try {
+            setEventHandler(context);
+        } catch (JAXBException e) {
+            throw new AssertionError(e);    // impossible
+        }
     }
 
     public void marshal(Object obj, XMLStreamWriter writer) throws JAXBException {

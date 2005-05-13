@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: UnmarshallerImpl.java,v 1.9 2005-05-02 17:25:39 kohsuke Exp $
+ * @(#)$Id: UnmarshallerImpl.java,v 1.10 2005-05-13 22:04:23 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -93,6 +93,12 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl
 
         // initialize datatype converter with ours
         DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
+
+        try {
+            setEventHandler(context);
+        } catch (JAXBException e) {
+            throw new AssertionError(e);    // impossible
+        }
     }
     
     public UnmarshallerHandler getUnmarshallerHandler() {

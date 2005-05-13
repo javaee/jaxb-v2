@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.14 2005-05-12 22:53:06 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.15 2005-05-13 22:04:23 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -23,6 +23,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBIntrospector;
 import javax.xml.bind.PropertyException;
 import javax.xml.bind.Validator;
+import javax.xml.bind.ValidationEventHandler;
+import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
@@ -80,9 +82,13 @@ import org.xml.sax.SAXException;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.14 $
+ * <p>
+ * This is ugly, but this class implements {@link ValidationEventHandler}
+ * and always return true. This {@link ValidationEventHandler} is the default for 2.0.
+ *
+ * @version $Revision: 1.15 $
  */
-public final class JAXBContextImpl extends JAXBRIContext {
+public final class JAXBContextImpl extends JAXBRIContext implements ValidationEventHandler {
 
     /**
      * All the bridge classes.
