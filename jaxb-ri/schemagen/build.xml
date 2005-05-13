@@ -23,14 +23,14 @@
     <pathelement path="${codemodel.classes}"/>
     <pathelement path="${runtime.classes}"/>
     <pathelement path="${runtime-api.classes}"/>
-    <pathelement path="${jaxb.libs.compiler}/txw2.jar"/>
+    <pathelement path="${jaxb.libs.runtime2}/txw2.jar"/>
     <pathelement path="${jaxb.libs.util}/jing.jar"/>
     <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
   </path>
 
   <path id="txw.classpath">
     <path refid="javac.classpath"/>
-    <pathelement path="${jaxb.libs.compiler}/txw2.jar"/>
+    <pathelement path="${jaxb.libs.runtime2}/txw2.jar"/>
     <pathelement path="${jaxb.libs.util}/txwc2.jar"/>
     <pathelement path="${jaxb.libs.util}/args4j-1.0-RC.jar"/>
     <pathelement path="${jaxb.libs.compiler}/rngom.jar"/>
