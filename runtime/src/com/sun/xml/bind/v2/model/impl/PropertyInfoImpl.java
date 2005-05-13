@@ -76,6 +76,9 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         return parent.reader();
     }
 
+    public TypeT getRawType() {
+        return seed.getRawType();
+    }
 
     public final String getName() {
         return seed.getName();

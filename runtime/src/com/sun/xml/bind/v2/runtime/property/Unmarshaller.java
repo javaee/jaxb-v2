@@ -499,13 +499,18 @@ public abstract class Unmarshaller {
             JaxBeanInfo beanInfo = targetBeanInfo;
 
             if(idx>=0) {
-                CharSequence value = context.eatAttribute(idx);
+                // we'll consume the value only when it's a recognized value,
+                // so don't consume it just yet.
+                CharSequence value = context.getAttributeValue(idx);
+
                 QName type = DatatypeConverterImpl._parseQName(value,context);
                 if(type==null) {
                     reportError(Messages.NOT_A_QNAME.format(value),true);
                 } else {
                     beanInfo =  context.getJAXBContext().getGlobalType(type);
-                    if(beanInfo==null) {
+                    if(beanInfo!=null) {
+                        context.eatAttribute(idx);
+                    } else {
                         reportError(Messages.UNRECOGNIZED_TYPE_NAME.format(value),true);
                         beanInfo = targetBeanInfo;  // try to recover by using the default target type.
                     }

@@ -30,10 +30,6 @@ class RuntimeReferencePropertyInfoImpl extends ReferencePropertyInfoImpl<Type,Cl
         return (Set<? extends RuntimeElement>)super.ref();
     }
 
-    public Type getRawType() {
-        return seed.getRawType();
-    }
-
     public Accessor getAccessor() {
         return acc;
     }

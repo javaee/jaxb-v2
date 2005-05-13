@@ -67,7 +67,7 @@ public abstract class PropertyFactory {
         boolean isCollection = info.isCollection();
         boolean isLeaf = isLeaf(info);
 
-        Constructor<? extends Property> c = propImpls[(isLeaf?0:4)+(isCollection?2:0)+(isElement?0:1)];
+        Constructor<? extends Property> c = propImpls[/*(isLeaf?0:4)*/4+(isCollection?2:0)+(isElement?0:1)];
         try {
             return c.newInstance( grammar, info );
         } catch (InstantiationException e) {

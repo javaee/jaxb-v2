@@ -2,11 +2,10 @@ package com.sun.xml.bind.v2.runtime;
 
 import java.io.IOException;
 
+import javax.xml.bind.annotation.W3CDomHandler;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.bind.annotation.W3CDomHandler;
 
-import javax.xml.bind.annotation.W3CDomHandler;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
 import com.sun.xml.bind.v2.model.impl.RuntimeAnyTypeImpl;
@@ -115,6 +114,9 @@ final class AnyTypeBeanInfo extends JaxBeanInfo<Object> {
                 context.declareNamespace( a.getValue(), "", false );
                 continue;
             }
+            String nsUri = a.getNamespaceURI();
+            if(nsUri!=null && nsUri.length()>0)
+                context.declareNamespace( nsUri, a.getPrefix(), true );
         }
     }
 
