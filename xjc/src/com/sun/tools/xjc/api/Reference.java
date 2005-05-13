@@ -74,4 +74,17 @@ public final class Reference {
     public SourcePosition getPosition() {
         return annotations.getPosition();
     }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Reference)) return false;
+
+        final Reference that = (Reference) o;
+
+        return annotations.equals(that.annotations) && type.equals(that.type);
+    }
+
+    public int hashCode() {
+        return 29 * type.hashCode() + annotations.hashCode();
+    }
 }
