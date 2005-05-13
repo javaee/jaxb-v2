@@ -30,7 +30,7 @@ echo   to the installation directory of java.
 echo.
 
 set APT=apt
-goto LAUNCHSCHEMAGEN
+goto SETCLASSPATH
 
 :USE_JAVA_HOME
 set APT="%JAVA_HOME%\bin\apt"
