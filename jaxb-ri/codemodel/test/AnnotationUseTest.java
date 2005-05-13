@@ -9,15 +9,14 @@ import java.lang.annotation.Target;
 
 import com.sun.codemodel.JAnnotationArrayMember;
 import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JAnnotationWriter;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JEnumConstant;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
-import com.sun.codemodel.JAnnotationWriter;
 import com.sun.codemodel.writer.SingleStreamCodeWriter;
-import com.sun.xml.txw2.annotation.XmlElement;
 
 
 
@@ -91,6 +90,11 @@ public class AnnotationUseTest {
 
 
         cm.build(new SingleStreamCodeWriter(System.out));
+    }
+
+    @interface XmlElement {
+        String value();
+        String ns();
     }
 
     interface XmlElementW extends JAnnotationWriter<XmlElement> {
