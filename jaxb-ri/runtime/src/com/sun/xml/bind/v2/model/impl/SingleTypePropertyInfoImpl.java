@@ -43,7 +43,7 @@ abstract class SingleTypePropertyInfoImpl<T,C,F,M>
     public NonElement<T,C> getTarget() {
         if(type==null) {
             assert parent.builder!=null : "this method must be called during the build stage";
-            type = parent.builder.getTypeInfo(_getType(),this);
+            type = parent.builder.getTypeInfo(getIndividualType(),this);
         }
         return type;
     }

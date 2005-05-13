@@ -48,11 +48,6 @@ final class RuntimeElementInfoImpl extends ElementInfoImpl<Type,Class,Field,Meth
     }
 
     class RuntimePropertyImpl extends PropertyImpl implements RuntimeElementPropertyInfo, RuntimeTypeRef {
-        public Type getRawType() {
-            // TODO
-            return Collection.class;
-        }
-
         public Accessor getAccessor() {
             if(adapterType==null)
                 return Accessor.JAXB_ELEMENT_VALUE;

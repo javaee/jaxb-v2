@@ -41,4 +41,30 @@ public interface RuntimePropertyInfo extends PropertyInfo<Type,Class> {
      * Returns true if this property has an element-only content. False otherwise.
      */
     public boolean elementOnlyContent();
+
+    /**
+     * Gets the "raw" type of the field.
+     *
+     * The raw type is the actual signature of the property.
+     * For example, if the field is the primitive int, this will be the primitive int.
+     * If the field is Object, this will be Object.
+     * If the property is the collection and typed as {@code Collection<Integer>},
+     * this method returns {@code Collection<Integer>}.
+     *
+     * @return always non-null.
+     */
+    Type getRawType();
+
+    /**
+     * Gets the type of the individual item.
+     *
+     * The individual type is the signature of the property used to store individual
+     * values. For a non-collection field, this is the same as {@link #getRawType()}.
+     * For acollection property, this is the type used to store individual value.
+     * So if {@link #getRawType()} is {@code Collection<Integer>}, this method will
+     * return {@link Integer}.
+     *
+     * @return always non-null.
+     */
+    Type getIndividualType();
 }
