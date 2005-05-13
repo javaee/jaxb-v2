@@ -26,8 +26,7 @@ class AttributePropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
         if(att.required())
             isRequired = true;
-        else
-            isRequired = nav().isPrimitive(_getType());
+        else isRequired = nav().isPrimitive(getIndividualType());
 
         this.xmlName = calcXmlName(att);
     }

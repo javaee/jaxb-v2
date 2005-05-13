@@ -76,8 +76,24 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         return parent.reader();
     }
 
-    public TypeT getRawType() {
+    public final TypeT getRawType() {
         return seed.getRawType();
+    }
+
+    public final TypeT getIndividualType() {
+        TypeT raw = getRawType();
+        if(!isCollection()) {
+            return raw;
+        } else {
+            if(nav().isArrayButNotByteArray(raw))
+                return nav().getComponentType(raw);
+
+            TypeT bt = nav().getBaseClass(raw, nav().asDecl(Collection.class) );
+            if(nav().isParameterizedType(bt))
+                return nav().getTypeArgument(bt,0);
+            else
+                return nav().ref(Object.class);
+        }
     }
 
     public final String getName() {
@@ -114,32 +130,6 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     public final MimeType getExpectedMimeType() {
         return expectedMimeType;
-    }
-
-    /**
-     * Returns the type of the property computed from the signature.
-     *
-     * <p>
-     * When the property is a collection, this method returns
-     * the type of the collection item, not that of the collection itself.
-     */
-    protected final TypeT _getType() {
-        TypeT rt = seed.getRawType();
-        if(!isCollection())
-            return rt;
-        else {
-            if(nav().isArrayButNotByteArray(rt)) {
-                return nav().getComponentType(rt);
-            } else {
-                // look for the type parameter
-                TypeT t = nav().getBaseClass(rt,nav().asDecl(Collection.class));
-                if(nav().isParameterizedType(t))
-                    return nav().getTypeArgument(t,0);
-                else
-                    // default
-                    return nav().ref(Object.class);
-            }
-        }
     }
 
     public final boolean isCollection() {

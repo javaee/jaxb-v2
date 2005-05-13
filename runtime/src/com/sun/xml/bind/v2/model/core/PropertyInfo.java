@@ -90,17 +90,4 @@ public interface PropertyInfo<TypeT,ClassDeclT> {
      * Expected MIME type, if any.
      */
     MimeType getExpectedMimeType();
-
-    /**
-     * Gets the "raw" type of the field.
-     *
-     * The raw type is the actual signature of the property.
-     * For example, if the field is the primitive int, this will be the primitive int.
-     * If the field is Object, this will be Object.
-     * If the property is the collection and typed as {@code Collection<Integer>},
-     * this method returns {@code Collection<Integer>}.
-     *
-     * @return always non-null.
-     */
-    TypeT getRawType();
 }

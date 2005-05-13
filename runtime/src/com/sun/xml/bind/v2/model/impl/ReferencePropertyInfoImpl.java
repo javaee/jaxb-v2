@@ -105,8 +105,7 @@ class ReferencePropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
             for( XmlElementRef r : ann ) {
                 TypeT type = reader.getClassValue(r,"type");
-                if( type.equals(defaultType) )
-                    type = nav.erasure(_getType());
+                if( type.equals(defaultType) ) type = nav.erasure(getIndividualType());
                 if(nav.getBaseClass(type,je)!=null)
                     addGenericElement(r);
                 else

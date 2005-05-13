@@ -95,7 +95,7 @@ class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             if(ann==null) {
                 // default
                 //TODO check with spec later
-                TypeT t = _getType();
+                TypeT t = getIndividualType();
                 if(!nav().isPrimitive(t)) isRequired = false;
                 // nillableness defaults to true if it's collection
                 types.add(createTypeRef(calcXmlName((XmlElement)null),t,isCollection(),null));
@@ -104,8 +104,7 @@ class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
                     // TODO: handle defaulting in names.
                     QName name = calcXmlName(item);
                     TypeT type = reader().getClassValue(item, "type");
-                    if(type.equals(nav().ref(XmlElement.DEFAULT.class)))
-                        type = _getType();
+                    if(type.equals(nav().ref(XmlElement.DEFAULT.class))) type = getIndividualType();
                     if(!nav().isPrimitive(type)) isRequired = false;
                     types.add(createTypeRef(name, type, item.nillable(), getDefaultValue(item.defaultValue()) ));
                 }
