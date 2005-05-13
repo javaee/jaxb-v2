@@ -24,10 +24,6 @@ class RuntimeElementPropertyInfoImpl extends ElementPropertyInfoImpl<Type,Class,
         this.acc = ((RuntimeClassInfoImpl.RuntimePropertySeed)seed).getAccessor();
     }
 
-    public Type getRawType() {
-        return seed.getRawType();
-    }
-
     public Accessor getAccessor() {
         return acc;
     }

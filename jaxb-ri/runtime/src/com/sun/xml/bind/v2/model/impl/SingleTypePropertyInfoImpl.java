@@ -66,10 +66,6 @@ abstract class SingleTypePropertyInfoImpl<T,C,F,M>
      */
     private Transducer xducer;
 
-    public T getRawType() {
-        return seed.getRawType();
-    }
-
     public Accessor getAccessor() {
         return acc;
     }

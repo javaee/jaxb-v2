@@ -13,13 +13,6 @@ import com.sun.xml.bind.v2.runtime.reflect.Accessor;
  */
 public interface RuntimePropertyInfo extends PropertyInfo<Type,Class> {
 
-    /**
-     * Gets the raw type.
-     *
-     * TODO: we need to clarify those semantics.
-     */
-    Type getRawType();
-
     /** {@inheritDoc} */
     Collection<? extends RuntimeTypeInfo> ref();
 

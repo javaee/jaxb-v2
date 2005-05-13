@@ -998,12 +998,19 @@ public final class UnmarshallingContext extends Coordinator
     }
 
     /**
+     * Reads the attribute value without consuming it. Use with care.
+     */
+    public CharSequence getAttributeValue( int idx ) {
+        return attStack[stackTop].getData(idx);
+    }
+
+    /**
      * Marks the attribute as "used" and return the value of the attribute.
      */
     public CharSequence eatAttribute( int idx ) {
         AttributesExImpl a = attStack[stackTop];
         
-        String value = a.getValue(idx);
+        CharSequence value = a.getData(idx);
 
         // mark the attribute as consumed
         a.removeAttribute(idx);
