@@ -76,11 +76,11 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         return parent.reader();
     }
 
-    public final TypeT getRawType() {
+    public TypeT getRawType() {
         return seed.getRawType();
     }
 
-    public final TypeT getIndividualType() {
+    public TypeT getIndividualType() {
         TypeT raw = getRawType();
         if(!isCollection()) {
             return raw;
