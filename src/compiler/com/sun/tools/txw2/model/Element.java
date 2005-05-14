@@ -18,6 +18,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * Element declaration.
+ * 
  * @author Kohsuke Kawaguchi
  */
 public class Element extends XmlNode {

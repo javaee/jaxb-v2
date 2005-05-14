@@ -91,4 +91,11 @@
   <target name="clean">
     <delete dir="build"/>
   </target>
+
+  <target name="integrate-xsom">
+    <get src="http://kohsuke.sfbay/hudson/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom.jar"
+         dest="lib/compiler/xsom.jar" />
+    <get src="http://kohsuke.sfbay/hudson/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom-src.zip"
+         dest="lib/compiler/xsom-src.zip" />
+   </target>
 </project>

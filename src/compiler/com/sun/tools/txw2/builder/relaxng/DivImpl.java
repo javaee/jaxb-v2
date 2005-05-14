@@ -1,4 +1,4 @@
-package com.sun.tools.txw2.builder;
+package com.sun.tools.txw2.builder.relaxng;
 
 import com.sun.tools.txw2.model.Grammar;
 import com.sun.tools.txw2.model.Leaf;

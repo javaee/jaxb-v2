@@ -16,6 +16,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
+ * Root of the model.
+ * 
  * @author Kohsuke Kawaguchi
  */
 public class NodeSet extends LinkedHashSet<WriterNode> {
@@ -73,18 +75,29 @@ public class NodeSet extends LinkedHashSet<WriterNode> {
             if(l instanceof Element)
                 if(add((Element)l))
                     addAll((Element)l);
+            if(l instanceof Grammar) {
+                Grammar g = (Grammar)l;
+                for( Define d : g.getDefinitions() )
+                    add(d);
+            }
             if(l instanceof Ref) {
-                Ref r = ((Ref)l);
+                Ref r = (Ref)l;
                 Define def = r.def;
 //                if(def instanceof Grammar) {
 //                    for( Define d : ((Grammar)def).getDefinitions() )
 //                        if(add(d))
 //                            addAll(d);
 //                }
-                if(add(def))
-                    addAll(def);
+                add(def);
             }
         }
+    }
+
+    private boolean add(Define def) {
+        boolean b = super.add(def);
+        if(b)
+            addAll(def);
+        return b;
     }
 
     public <T extends WriterNode> Collection<T> subset(Class<T> t) {

@@ -16,6 +16,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * Attribute declaration.
+ * 
  * @author Kohsuke Kawaguchi
  */
 public class Attribute extends XmlNode {

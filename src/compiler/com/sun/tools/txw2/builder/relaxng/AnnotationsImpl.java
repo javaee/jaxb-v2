@@ -1,4 +1,4 @@
-package com.sun.tools.txw2.builder;
+package com.sun.tools.txw2.builder.relaxng;
 
 import org.kohsuke.rngom.ast.builder.Annotations;
 import org.kohsuke.rngom.ast.builder.BuildException;
