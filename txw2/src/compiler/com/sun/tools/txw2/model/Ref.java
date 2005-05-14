@@ -7,6 +7,8 @@ import org.xml.sax.Locator;
 import java.util.Set;
 
 /**
+ * A reference to a named pattern.
+ *
  * @author Kohsuke Kawaguchi
  */
 public final class Ref extends Leaf {
@@ -15,6 +17,11 @@ public final class Ref extends Leaf {
     public Ref(Locator location, Grammar scope, String name) {
         super(location);
         this.def = scope.get(name);
+    }
+
+    public Ref(Locator location, Define def) {
+        super(location);
+        this.def = def;
     }
 
     public boolean isInline() {

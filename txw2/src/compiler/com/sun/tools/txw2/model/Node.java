@@ -7,6 +7,8 @@ import java.util.Iterator;
 /**
  * {@link Node} is a {@link Leaf} that has children.
  *
+ * Children are orderless.
+ *
  * @author Kohsuke Kawaguchi
  */
 public abstract class Node extends Leaf implements Iterable<Leaf> {
@@ -33,6 +35,16 @@ public abstract class Node extends Leaf implements Iterable<Leaf> {
      */
     public final boolean hasOneChild() {
         return leaf==leaf.getNext();
+    }
+
+    /**
+     * Adds the given {@link Leaf} and their sibling as children of this {@link Node}.
+     */
+    public final void addChild(Leaf child) {
+        if(this.leaf==null)
+            leaf = child;
+        else
+            leaf.merge(child);
     }
 
 }

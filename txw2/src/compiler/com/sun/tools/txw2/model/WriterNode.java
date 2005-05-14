@@ -3,6 +3,8 @@ package com.sun.tools.txw2.model;
 import org.xml.sax.Locator;
 
 /**
+ * The {@link Node} that maps to the program element.
+ *
  * @author Kohsuke Kawaguchi
  */
 public abstract class WriterNode extends Node {

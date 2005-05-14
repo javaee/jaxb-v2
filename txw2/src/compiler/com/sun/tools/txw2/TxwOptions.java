@@ -3,12 +3,7 @@ package com.sun.tools.txw2;
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.ClassType;
 import com.sun.xml.txw2.annotation.XmlNamespace;
-import org.kohsuke.rngom.parse.Parseable;
 
 /**
  * Controls the various aspects of the TXW generation.
@@ -40,7 +35,7 @@ public class TxwOptions {
     /**
      * Schema file.
      */
-    Parseable source;
+    SchemaBuilder source;
 
     /**
      * If true, generate attribute/value methods that

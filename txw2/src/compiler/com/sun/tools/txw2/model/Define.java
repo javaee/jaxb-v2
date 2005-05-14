@@ -9,6 +9,8 @@ import java.util.Set;
 
 
 /**
+ * A named pattern.
+ *
  * @author Kohsuke Kawaguchi
  */
 public class Define extends WriterNode {
@@ -22,6 +24,7 @@ public class Define extends WriterNode {
         if(scope==null)     scope = (Grammar)this;  // hack for start pattern
         this.scope = scope;
         this.name = name;
+        assert name!=null;
     }
 
     /**
@@ -29,7 +32,7 @@ public class Define extends WriterNode {
      * one child (and thus considered inlinable.)
      *
      * A pattern definition is also inlineable if
-     * it's the start of the grammar (because "start" isn't a meaningful name) 
+     * it's the start of the grammar (because "start" isn't a meaningful name)
      */
     public boolean isInline() {
         return hasOneChild() || name==Grammar.START;

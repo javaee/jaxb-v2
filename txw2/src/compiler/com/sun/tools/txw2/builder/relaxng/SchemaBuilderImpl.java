@@ -1,4 +1,4 @@
-package com.sun.tools.txw2.builder;
+package com.sun.tools.txw2.builder.relaxng;
 
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
@@ -28,36 +28,20 @@ import org.kohsuke.rngom.parse.Parseable;
 import javax.xml.namespace.QName;
 
 /**
+ * Builds a model from a RELAX NG grammar.
+ *
  * @author Kohsuke Kawaguchi
  */
 public final class SchemaBuilderImpl implements SchemaBuilder<NameClass,Leaf,ParsedElementAnnotation,LocatorImpl,AnnotationsImpl,CommentListImpl> {
-    private final JCodeModel codeModel;
     private final NameClassBuilderImpl ncb = new NameClassBuilderImpl();
     private final JClass string;
+    private final DatatypeFactory dtf;
 
     public SchemaBuilderImpl(JCodeModel codeModel) {
-        this.codeModel = codeModel;
         string = codeModel.ref(String.class);
+        dtf = new DatatypeFactory(codeModel);
     }
 
-
-    /**
-     * Decides the Java datatype from XML datatype.
-     */
-    private JType getType(String datatypeLibrary, String type) {
-        if(datatypeLibrary.equals("http://www.w3.org/2001/XMLSchema-datatypes")) {
-            type = type.intern();
-
-            if(type=="boolean")
-                return codeModel.BOOLEAN;
-            if(type=="int" || type=="nonNegativeInteger" || type=="positiveInteger")
-                return codeModel.INT;
-            if(type=="QName")
-                return codeModel.ref(QName.class);
-        }
-
-        return codeModel.ref(String.class);
-    }
 
     public Leaf expandPattern(Leaf leaf) throws BuildException {
         return leaf;
@@ -144,11 +128,17 @@ public final class SchemaBuilderImpl implements SchemaBuilder<NameClass,Leaf,Par
     }
 
     public DataPatternBuilder makeDataPatternBuilder(String datatypeLibrary, String type, LocatorImpl locator) throws BuildException {
-        return new DataPatternBuilderImpl(getType(datatypeLibrary,type));
+        return new DataPatternBuilderImpl(getType(datatypeLibrary, type));
+    }
+
+    private JType getType(String datatypeLibrary, String type) {
+        JType t = dtf.getType(datatypeLibrary,type);
+        if(t==null) t = string;
+        return t;
     }
 
     public Leaf makeValue(String datatypeLibrary, String type, String value, Context c, String ns, LocatorImpl locator, AnnotationsImpl annotations) throws BuildException {
-        return new Value(locator,getType(datatypeLibrary,type),value);
+        return new Value(locator,getType(datatypeLibrary, type),value);
     }
 
     public Grammar<Leaf,ParsedElementAnnotation,LocatorImpl,AnnotationsImpl,CommentListImpl> makeGrammar(Scope<Leaf,ParsedElementAnnotation,LocatorImpl,AnnotationsImpl,CommentListImpl> scope) {

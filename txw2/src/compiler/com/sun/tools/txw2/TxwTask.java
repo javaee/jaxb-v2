@@ -25,10 +25,10 @@ public class TxwTask extends org.apache.tools.ant.Task {
     private File schemaFile;
 
     // syntax style of RELAX NG source schema - "xml" or "compact"
-    private static final String COMPACT = "compact";
-    private static final String XML = "xml";
-    private static final String AUTO_DETECT = "detect";
-    private String style = AUTO_DETECT;
+    private static enum Style {
+        COMPACT, XML, XMLSCHEMA, AUTO_DETECT
+    }
+    private Style style = Style.AUTO_DETECT;
 
     public TxwTask() {
         // default package
@@ -58,13 +58,7 @@ public class TxwTask extends org.apache.tools.ant.Task {
      * for RELAX NG xml syntax
      */
     public void setSyntax( String style ) {
-        if (!COMPACT.equals(style) && !XML.equals(style)) {
-            // if style is specified incorrectly, then die
-            // if style isn't specified, guess the syntax based on the file extension
-            throw new BuildException("'@syntax' must be set to either 'compact' or 'xml'");
-        }
-
-        this.style = style;
+        this.style = Style.valueOf(style.toUpperCase());
     }
 
     /**
@@ -111,17 +105,28 @@ public class TxwTask extends org.apache.tools.ant.Task {
             String msg = "Compiling: " + in.getSystemId();
             log( msg, Project.MSG_INFO );
 
-            if(AUTO_DETECT.equals(style)) {
-                if(schemaFile.getPath().toLowerCase().endsWith("rnc"))
-                    style = COMPACT;
+            if(style==Style.AUTO_DETECT) {
+                String fileName = schemaFile.getPath().toLowerCase();
+                if(fileName.endsWith("rnc"))
+                    style = Style.COMPACT;
                 else
-                    style = XML;
+                if(fileName.endsWith("xsd"))
+                    style = Style.XMLSCHEMA;
+                else
+                    style = Style.XML;
             }
 
-            if(COMPACT.equals(style))
-                options.source = new CompactParseable(in,options.errorListener);
-            if(XML.equals(style))
-                options.source = new SAXParseable(in,options.errorListener);
+            switch(style) {
+            case COMPACT:
+                options.source = new RELAXNGLoader(new CompactParseable(in,options.errorListener));
+                break;
+            case XML:
+                options.source = new RELAXNGLoader(new SAXParseable(in,options.errorListener));
+                break;
+            case XMLSCHEMA:
+                options.source = new XmlSchemaLoader(in);
+                break;
+            }
         } catch (MalformedURLException e) {
             throw new BuildException(e);
         }

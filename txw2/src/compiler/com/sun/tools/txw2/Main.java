@@ -2,23 +2,18 @@ package com.sun.tools.txw2;
 
 import com.sun.codemodel.writer.FileCodeWriter;
 import com.sun.codemodel.writer.SingleStreamCodeWriter;
-import com.sun.tools.txw2.builder.SchemaBuilderImpl;
-import com.sun.tools.txw2.model.Leaf;
 import com.sun.tools.txw2.model.NodeSet;
-import org.kohsuke.rngom.ast.util.CheckingSchemaBuilder;
-import org.kohsuke.rngom.dt.CascadingDatatypeLibraryFactory;
-import org.kohsuke.rngom.dt.builtin.BuiltinDatatypeLibraryFactory;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.opts.BooleanOption;
+import org.kohsuke.args4j.opts.StringOption;
 import org.kohsuke.rngom.parse.IllegalSchemaException;
 import org.kohsuke.rngom.parse.Parseable;
 import org.kohsuke.rngom.parse.compact.CompactParseable;
 import org.kohsuke.rngom.parse.xml.SAXParseable;
-import org.kohsuke.args4j.opts.StringOption;
-import org.kohsuke.args4j.opts.BooleanOption;
-import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.CmdLineException;
-import org.relaxng.datatype.helpers.DatatypeLibraryLoader;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import java.io.File;
@@ -47,6 +42,7 @@ public class Main {
         public StringOption pkg = new StringOption("-p");
         public BooleanOption compact = new BooleanOption("-c");
         public BooleanOption xml = new BooleanOption("-x");
+        public BooleanOption xsd = new BooleanOption("-xsd");
         public BooleanOption chain = new BooleanOption("-h");
     }
 
@@ -109,10 +105,30 @@ public class Main {
      * Parses the command line and makes a {@link Parseable} object
      * out of the specified schema file.
      */
-    private static Parseable makeSourceSchema(CmdLineParser parser, Options opts, ErrorHandler eh) throws MalformedURLException {
+    private static SchemaBuilder makeSourceSchema(CmdLineParser parser, Options opts, ErrorHandler eh) throws MalformedURLException {
         File f = new File((String)parser.getArguments().get(0));
-        InputSource in = new InputSource(f.toURL().toExternalForm());
+        final InputSource in = new InputSource(f.toURL().toExternalForm());
 
+        if(opts.xsd.isOff() && opts.xml.isOff() && opts.compact.isOff()) {
+            // auto detect
+            if(in.getSystemId().endsWith(".rnc"))
+                opts.compact.value=true;
+            else
+            if(in.getSystemId().endsWith(".rng"))
+                opts.xml.value=true;
+            else
+                opts.xsd.value=true;
+        }
+
+        if(opts.xsd.isOn())
+            return new XmlSchemaLoader(in);
+
+        final Parseable parseable = makeRELAXNGSource(opts, in, eh, f);
+
+        return new RELAXNGLoader(parseable);
+    }
+
+    private static Parseable makeRELAXNGSource(Options opts, final InputSource in, ErrorHandler eh, File f) {
         if(opts.compact.isOn())
             return new CompactParseable(in,eh);
 
@@ -134,17 +150,10 @@ public class Main {
             " -p <pkg>   : Specify the Java package to put the generated classes into\n"+
             " -c         : The input schema is written in the RELAX NG compact syntax\n"+
             " -x         : The input schema is written in the RELAX NG XML syntax\n"+
+            " -xsd       : The input schema is written in the XML SChema\n"+
             " -h         : Generate code that allows method invocation chaining\n"
         );
     }
-//        // TODO: i18n
-//        opts.addOption("o","output",true,"Specify the directory to place generated source files");
-//        opts.addOption("p","package",true,"Specify the Java package to put the generated classes into");
-//        opts.addOption("c","compact",false,"The input schema is written in the RELAX NG compact syntax");
-//        opts.addOption("x","xml",false,"The input schema is written in the RELAX NG XML syntax");
-//        opts.addOption("h","chain",false,"Generate code that allows method invocation chaining.");
-//        opts.addOption("t","target",true,"Specify the target JDK version that the generated code will run (1.2/1.4/5.0).");
-//        CommandLine line;
 
     public static int run(TxwOptions opts) {
         return new Main(opts).run();
@@ -152,7 +161,7 @@ public class Main {
 
     private int run() {
         try {
-            NodeSet ns = parseSchema(opts.source);
+            NodeSet ns = opts.source.build(opts);
             ns.write(opts);
             opts.codeModel.build(opts.codeWriter);
             return 0;
@@ -162,19 +171,15 @@ public class Main {
         } catch (IllegalSchemaException e) {
             opts.errorListener.error(new SAXParseException(e.getMessage(),null,e));
             return 1;
+        } catch (SAXParseException e) {
+            opts.errorListener.error(e);
+            return 1;
+        } catch (SAXException e) {
+            opts.errorListener.error(new SAXParseException(e.getMessage(),null,e));
+            return 1;
         }
     }
 
-    private NodeSet parseSchema( Parseable source ) throws IllegalSchemaException {
-        // parse
-        SchemaBuilderImpl stage1 = new SchemaBuilderImpl(opts.codeModel);
-        Leaf pattern = (Leaf)source.parse(new CheckingSchemaBuilder(stage1,opts.errorListener,
-            new CascadingDatatypeLibraryFactory(
-                new BuiltinDatatypeLibraryFactory(new DatatypeLibraryLoader()),
-                new DatatypeLibraryLoader())));
-
-        return new NodeSet(opts,pattern);
-    }
 
     /**
      * Gets the version number of TXW.
@@ -188,4 +193,5 @@ public class Main {
             return "unknown";
         }
     }
+
 }
