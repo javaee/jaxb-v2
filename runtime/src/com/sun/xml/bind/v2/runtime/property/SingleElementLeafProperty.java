@@ -51,7 +51,7 @@ final class SingleElementLeafProperty<BeanT> extends PropertyImpl<BeanT> {
         return xacc.print(bean).toString();
     }
 
-    public void serializeBody(BeanT o, XMLSerializer w) throws SAXException, AccessorException, IOException, XMLStreamException {
+    public void serializeBody(BeanT o, XMLSerializer w, Object outerPeer) throws SAXException, AccessorException, IOException, XMLStreamException {
         boolean hasValue = xacc.hasValue(o);
         if(hasValue) {
             xacc.writeLeafElement(o,tagName,fieldName,w);

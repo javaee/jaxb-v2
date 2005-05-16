@@ -67,7 +67,7 @@ final class ListElementProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,L
         handlers.put(tagName, createUnmarshallerHandler(chain.context, chain.tail));
     }
 
-    public void serializeBody(BeanT o, XMLSerializer w) throws SAXException, AccessorException, IOException, XMLStreamException {
+    public void serializeBody(BeanT o, XMLSerializer w, Object outerPeer) throws SAXException, AccessorException, IOException, XMLStreamException {
         ListT list = acc.get(o);
 
         if(list!=null) {
