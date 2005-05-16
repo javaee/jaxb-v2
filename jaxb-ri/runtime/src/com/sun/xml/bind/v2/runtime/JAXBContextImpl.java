@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.16 2005-05-14 00:39:32 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.17 2005-05-16 21:21:12 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -86,7 +86,7 @@ import org.xml.sax.SAXException;
  * This is ugly, but this class implements {@link ValidationEventHandler}
  * and always return true. This {@link ValidationEventHandler} is the default for 2.0.
  *
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public final class JAXBContextImpl extends JAXBRIContext implements ValidationEventHandler {
 
@@ -729,6 +729,6 @@ public final class JAXBContextImpl extends JAXBRIContext implements ValidationEv
     }
 
     public boolean handleEvent(ValidationEvent event) {
-        return true;
+        return event.getSeverity()!=ValidationEvent.FATAL_ERROR;
     }
 }
