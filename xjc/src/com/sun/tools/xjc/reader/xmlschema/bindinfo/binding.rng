@@ -182,6 +182,7 @@
       private String fixedAttrToConstantProperty = "false";
       private String needIsSetMethod = "false";
       private String simpleTypeSubstitution = "false";
+      private String flattenClasses = "false";
       private Set enumBaseTypes = new HashSet();
       private int defaultEnumSizeCap = 256;
       private boolean generateEnumMemberName = false;
