@@ -182,7 +182,7 @@
       private String fixedAttrToConstantProperty = "false";
       private String needIsSetMethod = "false";
       private String simpleTypeSubstitution = "false";
-      private String flattenClasses = "false";
+      private boolean flattenClasses = false;
       private Set enumBaseTypes = new HashSet();
       private int defaultEnumSizeCap = 256;
       private boolean generateEnumMemberName = false;
@@ -206,7 +206,7 @@
           $runtime.parseBoolean(needIsSetMethod),
           $runtime.parseBoolean(simpleTypeSubstitution),
           generateEnumMemberName,
-          $runtime.parseBoolean(flattenClasses),
+          flattenClasses,
           enumBaseTypes,
           defaultEnumSizeCap,
           ct,
@@ -258,8 +258,17 @@
       </optional>
 
       <optional>
-        <attribute name="flattenClasses">
-          flattenClasses = <data type="boolean"/>
+        <attribute name="localScoping">
+          <choice>
+            <group>
+              <value>nested</value>
+              flattenClasses = false;
+            </group>
+            <group>
+              <value>flatten</value>
+              flattenClasses = true;
+            </group>
+          </choice>
         </attribute>
       </optional>
 
