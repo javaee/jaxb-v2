@@ -51,6 +51,7 @@ import com.sun.xml.bind.v2.runtime.output.XMLStreamWriterOutput;
 import com.sun.xml.bind.v2.runtime.output.XmlOutput;
 import com.sun.xml.bind.v2.runtime.output.ForkXmlOutput;
 import com.sun.xml.bind.v2.AssociationMap;
+import com.sun.xml.bind.v2.FatalAdapter;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -226,7 +227,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         if( schema!=null ) {
             // send the output to the validator as well
             ValidatorHandler validator = schema.newValidatorHandler();
-            validator.setErrorHandler(serializer);
+            validator.setErrorHandler(new FatalAdapter(serializer));
             out = new ForkXmlOutput( new SAXOutput(validator), out );
         }
 
@@ -322,7 +323,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     
     public XmlOutput createWriter( OutputStream os, String encoding ) throws JAXBException {
         // buffering improves the performance, but not always
-        if(!(os instanceof BufferedOutputStream) || !(os instanceof ByteArrayOutputStream))
+        if(!(os instanceof BufferedOutputStream) && !(os instanceof ByteArrayOutputStream))
             os = new BufferedOutputStream(os);
 
         if(encoding.equals("UTF-8")) {
