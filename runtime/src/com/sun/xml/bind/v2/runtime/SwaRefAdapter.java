@@ -22,8 +22,7 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
  * <p>
  * the model builder code and the code generator does the conversion and
  * shield the rest of the RI from this mess.
- *
- * @see http://webservices.xml.com/pub/a/ws/2003/09/16/wsbp.html?page=2
+ * Also see {@linkplain http://webservices.xml.com/pub/a/ws/2003/09/16/wsbp.html?page=2}.
  *
  * @author Kohsuke Kawaguchi
  */
