@@ -7,6 +7,8 @@ package com.sun.xml.bind.v2.runtime.unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.ValidatorHandler;
 
+import com.sun.xml.bind.v2.FatalAdapter;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -28,7 +30,9 @@ final class ValidatingUnmarshaller implements XmlVisitor {
     public ValidatingUnmarshaller( Schema schema, XmlVisitor next ) {
         this.validator = schema.newValidatorHandler();
         this.next = next;
-        validator.setErrorHandler(getContext());
+        // if the user bothers to use a validator, make validation errors fatal
+        // so that it will abort unmarshalling.
+        validator.setErrorHandler(new FatalAdapter(getContext()));
     }
 
     public void startDocument(LocatorEx locator) throws SAXException {
