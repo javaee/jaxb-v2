@@ -32,7 +32,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.16 2005-05-13 01:37:44 kohsuke Exp $
+       $Id: build.xml,v 1.17 2005-05-16 17:16:16 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -442,7 +442,8 @@ Class-Path: ${manifest.classpath}
                 fullpath="jaxb-ri-${DSTAMP}/build.xml"/>
             <!-- additional jar files -->
             <zipfileset dir="${jaxb.libs.runtime}" includes="*.jar" prefix="jaxb-ri-${DSTAMP}/lib" />
-            <zipfileset dir="${jaxb.libs.compiler}" includes="*.jar" prefix="jaxb-ri-${DSTAMP}/lib" />
+            <zipfileset dir="${jaxb.libs.runtime2}" includes="*.jar" prefix="jaxb-ri-${DSTAMP}/lib" />
+            <zipfileset dir="${jaxb.libs.compiler}" includes="*.jar" prefix="jaxb-ri-${DSTAMP}/lib" excludes="relaxngDatatype.jar" />
             <zipfileset dir="${jaxb.libs}/redist"  includes="*.jar" prefix="jaxb-ri-${DSTAMP}/lib" />
             <zipfileset dir="${jaxb.libs}/src" prefix="jaxb-ri-${DSTAMP}/lib">
                 <include name="xsom-src.zip"/>
