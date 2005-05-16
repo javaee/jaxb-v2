@@ -25,7 +25,7 @@ abstract class PropertyImpl<BeanT> implements Property<BeanT> {
         fieldName = prop.getName();
     }
 
-    public void serializeBody(BeanT o, XMLSerializer w) throws SAXException, AccessorException, IOException, XMLStreamException {
+    public void serializeBody(BeanT o, XMLSerializer w, Object outerPeer) throws SAXException, AccessorException, IOException, XMLStreamException {
     }
 
     public void serializeAttributes(BeanT o, XMLSerializer w) throws SAXException, AccessorException, IOException, XMLStreamException {

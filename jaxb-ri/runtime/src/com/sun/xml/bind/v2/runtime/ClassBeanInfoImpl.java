@@ -276,7 +276,7 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
             superClazz.serializeBody(bean,target);
         try {
             for( Property p : properties )
-                p.serializeBody(bean,target);
+                p.serializeBody(bean,target, null);
         } catch (AccessorException e) {
             target.reportError(null,e);
         }

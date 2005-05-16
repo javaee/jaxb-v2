@@ -37,7 +37,6 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
     private final QName tagName;
     private final Class expectedType;
     private final Class scope;
-    private final JaxBeanInfo expectedBeanInfo;
 
     ElementBeanInfoImpl(JAXBContextImpl grammar, RuntimeElementInfo rei) {
         super(grammar,rei,(Class<JAXBElement>)rei.getType(),null,true,false);
@@ -49,7 +48,6 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
         tagName = rei.getElementName();
         expectedType = Navigator.REFLECTION.erasure(rei.getContentInMemoryType());
         scope = rei.getScope()==null ? JAXBElement.GlobalScope.class : rei.getScope().getClazz();
-        expectedBeanInfo = grammar.getBeanInfo(expectedType);
     }
 
     /**
@@ -65,37 +63,42 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
         tagName = null;
         expectedType = null;
         scope = null;
-        expectedBeanInfo = null;
 
         this.property = new Property<JAXBElement>() {
             public void reset(JAXBElement o) {
                 throw new UnsupportedOperationException();
             }
 
-            public void serializeBody(JAXBElement e, XMLSerializer target) throws SAXException, IOException, XMLStreamException {
+            public void serializeBody(JAXBElement e, XMLSerializer target, Object outerPeer) throws SAXException, IOException, XMLStreamException {
                 Class scope = e.getScope();
                 if(e.isGlobalScope())   scope = null;
                 QName n = e.getName();
-                JaxBeanInfo bi = grammar.getElement(scope,n).expectedBeanInfo;
-                Object value = e.getValue();
+                ElementBeanInfoImpl bi = grammar.getElement(scope,n);
                 if(bi==null) {
                     // infer what to do from the type
+                    JaxBeanInfo tbi;
                     try {
-                        bi = grammar.getBeanInfo(e.getDeclaredType(),true);
+                        tbi = grammar.getBeanInfo(e.getDeclaredType(),true);
                     } catch (JAXBException x) {
                         // if e.getDeclaredType() isn't known to this JAXBContext
                         target.reportError(null,x);
                         return;
                     }
-                }
-
-                target.startElement(n.getNamespaceURI(),n.getLocalPart(),n.getPrefix(),e);
-                if(value==null) {
-                    target.writeXsiNilTrue();
+                    Object value = e.getValue();
+                    target.startElement(n.getNamespaceURI(),n.getLocalPart(),n.getPrefix(),null);
+                    if(value==null) {
+                        target.writeXsiNilTrue();
+                    } else {
+                        target.childAsXsiType(value,"value",tbi);
+                    }
+                    target.endElement();
                 } else {
-                    target.childAsXsiType(value,"value",bi);
+                    try {
+                        bi.property.serializeBody(e,target,e);
+                    } catch (AccessorException x) {
+                        target.reportError(null,x);
+                    }
                 }
-                target.endElement();
             }
 
             public void serializeAttributes(JAXBElement o, XMLSerializer target) {
@@ -165,7 +168,7 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
 
     public void serializeBody(JAXBElement element, XMLSerializer target) throws SAXException, IOException, XMLStreamException {
         try {
-            property.serializeBody(element,target);
+            property.serializeBody(element,target,null);
         } catch (AccessorException x) {
             target.reportError(null,x);
         }

@@ -40,7 +40,7 @@ final class ValueProperty<BeanT,ListT,ItemT> extends PropertyImpl<BeanT> {
         acc = prop.getAccessor();   // we only use this for binder, so don't waste memory by optimizing
     }
 
-    public final void serializeBody(BeanT o, XMLSerializer w) throws SAXException, AccessorException, IOException, XMLStreamException {
+    public final void serializeBody(BeanT o, XMLSerializer w, Object outerPeer) throws SAXException, AccessorException, IOException, XMLStreamException {
         if(xacc.hasValue(o)) {
             w.text(xacc.print(o),fieldName);
         }
