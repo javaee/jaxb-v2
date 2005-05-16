@@ -52,87 +52,65 @@ public final class Encoded {
     }
 
     /**
-     * Fill in the buffer by encoding the specified characters
-     * while escaping characters like &lt;
+     * The meat of {@link #setEscape}. The VM should be able to inline this.
      */
-    public final void setEscape(char[] text, int length) {
-        ensureSize(length*6+1);     // in the worst case the text is like """""", so we need 6 bytes per char
-
-        int ptr = 0;
-
-        for (int i = 0; i < length; i++) {
-            final char chr = text[i];
-            if (chr > 0x7F) {
-                if (chr > 0x7FF) {
-                    buf[ptr++] = (byte)(0xE0 + (chr >> 12));
-                    buf[ptr++] = (byte)(0x80 + ((chr >> 6) & 0x3F));
-                } else {
-                    buf[ptr++] = (byte)(0xC0 + (chr >> 6));
-                }
-                buf[ptr++] = (byte)(0x80 + (chr & 0x3F));
+    private final int escapeChar(boolean isAttribute, final char chr, int ptr) {
+        if (chr > 0x7F) {
+            if (chr > 0x7FF) {
+                buf[ptr++] = (byte)(0xE0 + (chr >> 12));
+                buf[ptr++] = (byte)(0x80 + ((chr >> 6) & 0x3F));
             } else {
-                switch(chr) {
-                case '&':
-                    ptr = writeEntity(AMP_ENTITY,ptr);
-                    break;
-                case '<':
-                    ptr = writeEntity(AMP_LT,ptr);
-                    break;
-                case '>':
-                    ptr = writeEntity(AMP_GT,ptr);
-                    break;
-                case '"':
-                    ptr = writeEntity(AMP_QUOT,ptr);
-                    break;
-                default:
-                    buf[ptr++] = (byte)chr;
-                }
+                buf[ptr++] = (byte)(0xC0 + (chr >> 6));
             }
-        }
+            buf[ptr++] = (byte)(0x80 + (chr & 0x3F));
+        } else {
+            byte[] ent;
 
-        len = ptr;
+            if((ent=attributeEntities[chr])!=null) {
+                // the majority of the case is just printed as a char,
+                // so it's very important to reject them as quickly as possible
+
+                // check again to see if this really needs to be escaped
+                if(isAttribute || entities[chr]!=null)
+                    ptr = writeEntity(ent,ptr);
+                else
+                    buf[ptr++] = (byte)chr;
+            } else
+                buf[ptr++] = (byte)chr;
+        }
+        return ptr;
     }
 
     /**
      * Fill in the buffer by encoding the specified characters
      * while escaping characters like &lt;
      */
-    public final void setEscape(CharSequence text) {
+    public final void setEscape(char[] text, int length, boolean isAttribute) {
+        ensureSize(length*6+1);     // in the worst case the text is like """""", so we need 6 bytes per char
+
+        int ptr = 0;
+
+        for (int i = 0; i < length; i++)
+            ptr = escapeChar(isAttribute,text[i],ptr);
+        len = ptr;
+    }
+
+
+    /**
+     * Fill in the buffer by encoding the specified characters
+     * while escaping characters like &lt;
+     *
+     * @param isAttribute
+     *      if true, characters like \t, \r, and \n are also escaped.
+     */
+    public final void setEscape(CharSequence text, boolean isAttribute) {
         int length = text.length();
         ensureSize(length*6+1);     // in the worst case the text is like """""", so we need 6 bytes per char
 
         int ptr = 0;
 
-        for (int i = 0; i < length; i++) {
-            final char chr = text.charAt(i);
-            if (chr > 0x7F) {
-                if (chr > 0x7FF) {
-                    buf[ptr++] = (byte)(0xE0 + (chr >> 12));
-                    buf[ptr++] = (byte)(0x80 + ((chr >> 6) & 0x3F));
-                } else {
-                    buf[ptr++] = (byte)(0xC0 + (chr >> 6));
-                }
-                buf[ptr++] = (byte)(0x80 + (chr & 0x3F));
-            } else {
-                switch(chr) {
-                case '&':
-                    ptr = writeEntity(AMP_ENTITY,ptr);
-                    break;
-                case '<':
-                    ptr = writeEntity(AMP_LT,ptr);
-                    break;
-                case '>':
-                    ptr = writeEntity(AMP_GT,ptr);
-                    break;
-                case '"':
-                    ptr = writeEntity(AMP_QUOT,ptr);
-                    break;
-                default:
-                    buf[ptr++] = (byte)chr;
-                }
-            }
-        }
-
+        for (int i = 0; i < length; i++)
+            ptr = escapeChar(isAttribute,text.charAt(i),ptr);
         len = ptr;
     }
 
@@ -166,8 +144,29 @@ public final class Encoded {
         buf = b;
     }
 
-    private static final byte[] AMP_ENTITY = UTF8XmlOutput.toBytes("&amp;");
-    private static final byte[] AMP_GT = UTF8XmlOutput.toBytes("&gt;");
-    private static final byte[] AMP_LT = UTF8XmlOutput.toBytes("&lt;");
-    private static final byte[] AMP_QUOT = UTF8XmlOutput.toBytes("&quot;");
+    /**
+     * UTF-8 encoded entities keyed by their character code.
+     * e.g., entities['&'] == AMP_ENTITY.
+     *
+     * In attributes we need to encode more characters.
+     */
+    private static final byte[][] entities = new byte[0x80][];
+    private static final byte[][] attributeEntities = new byte[0x80][];
+
+    static {
+        add('&',"&amp;",false);
+        add('<',"&lt;",false);
+        add('>',"&gt;",false);
+        add('"',"&quot;",false);
+        add('\t',"&#x9;",true);
+        add('\r',"&#xD;",true);
+        add('\n',"&#xA;",true);
+    }
+
+    private static void add(char c, String s, boolean attOnly) {
+        byte[] image = UTF8XmlOutput.toBytes(s);
+        attributeEntities[c] = image;
+        if(!attOnly)
+            entities[c] = image;
+    }
 }

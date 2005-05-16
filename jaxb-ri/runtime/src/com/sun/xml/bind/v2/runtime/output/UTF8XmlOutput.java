@@ -117,7 +117,7 @@ public class UTF8XmlOutput extends XmlOutput {
                 out.write(e.buf,0,e.len-1); // skip the trailing ':'
                 out.write(EQUALS);
             }
-            text(ns.getNsUri(i));
+            doText(ns.getNsUri(i),true);
             out.write('\"');
         }
     }
@@ -146,7 +146,7 @@ public class UTF8XmlOutput extends XmlOutput {
         } else
             writeName(name);
         out.write(EQUALS);
-        text(value);
+        doText(value,true);
         out.write('\"');
     }
 
@@ -158,7 +158,7 @@ public class UTF8XmlOutput extends XmlOutput {
         } else
             writeName(prefix,localName);
         out.write(EQUALS);
-        text(value);
+        doText(value,true);
         out.write('\"');
     }
 
@@ -171,7 +171,8 @@ public class UTF8XmlOutput extends XmlOutput {
         } else
             writeName(name);
         out.write(EQUALS);
-        text(buf,len);
+        textBuffer.setEscape(buf,len,true);
+        textBuffer.write(out);
         out.write('\"');
     }
 
@@ -195,16 +196,16 @@ public class UTF8XmlOutput extends XmlOutput {
     public void text(CharSequence value, boolean needSP) throws IOException {
         if(needSP)
             out.write(' ');
-        text(value);
+        doText(value,false);
     }
 
-    private void text(CharSequence value) throws IOException {
-        textBuffer.setEscape(value);
+    private void doText(CharSequence value,boolean isAttribute) throws IOException {
+        textBuffer.setEscape(value,isAttribute);
         textBuffer.write(out);
     }
 
     public void text(char[] buf, int len) throws IOException {
-        textBuffer.setEscape(buf,len);
+        textBuffer.setEscape(buf,len,false);
         textBuffer.write(out);
     }
 
