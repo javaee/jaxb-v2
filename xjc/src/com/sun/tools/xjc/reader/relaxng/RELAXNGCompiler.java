@@ -27,6 +27,8 @@ import org.kohsuke.rngom.digested.DDefine;
 import org.kohsuke.rngom.digested.DElementPattern;
 import org.kohsuke.rngom.digested.DPattern;
 import org.kohsuke.rngom.digested.DValuePattern;
+import org.kohsuke.rngom.digested.DPatternWalker;
+import org.kohsuke.rngom.digested.DRefPattern;
 import org.kohsuke.rngom.nc.NameClass;
 import org.kohsuke.rngom.xml.util.WellKnownNamespaces;
 
@@ -61,6 +63,9 @@ public final class RELAXNGCompiler {
      * <p>
      * The value is an array because we map elements with finite names
      * to multiple classes.
+     *
+     * TODO: depending on the type of the key, the type of the values can be further
+     * restricted. Make this into its own class to represent those constraints better.
      */
     final Map<DPattern,CTypeInfo[]> classes = new HashMap<DPattern,CTypeInfo[]>();
 
@@ -181,6 +186,7 @@ public final class RELAXNGCompiler {
 
 
     private void promoteElementDefsToClasses() {
+        // look for elements among named patterns
         for( DDefine def : defs ) {
             DPattern p = def.getPattern();
             if (p instanceof DElementPattern) {
@@ -189,6 +195,18 @@ public final class RELAXNGCompiler {
                 mapToClass(ep);
             }
         }
+
+        // also look for root elements
+        grammar.accept(new DPatternWalker() {
+            public Void onRef(DRefPattern p) {
+                return null;    // stop recursion
+            }
+
+            public Void onElement(DElementPattern p) {
+                mapToClass(p);
+                return null;
+            }
+        });
     }
 
     private void mapToClass(DElementPattern p) {

@@ -166,5 +166,10 @@ public final class Multiplicity {
         if(min==0)    return this;
         return create(0,max);
     }
+
+    public Multiplicity makeRepeated() {
+        if(max==null || max==0)  return this;   // (0,0)* = (0,0)  and (n,unbounded)* = (n,unbounded)
+        return create(min,null);
+    }
 }
     
