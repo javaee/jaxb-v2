@@ -8,11 +8,11 @@ import javax.xml.bind.annotation.XmlEnumValue;
  * <p>
  * Javadoc in this class uses the following sample to explain the semantics:
  * <pre>
- * @@XmlEnum(Integer.class)
+ * &#64;XmlEnum(Integer.class)
  * enum Foo {
- *   @@XmlEnumValue("1")
+ *   &#64;XmlEnumValue("1")
  *   ONE,
- *   @@XmlEnumValue("2")
+ *   &#64;XmlEnumValue("2")
  *   TWO
  * }
  * </pre>
