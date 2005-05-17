@@ -215,9 +215,6 @@ public final class SimpleTypeBuilder extends BindingComponent {
         }
 
         public TypeUse unionSimpleType(XSUnionSimpleType type) {
-            // TODO: proper union handling requires us to generate
-            // a sophisticated type adapter
-            TODO.prototype();
             return CBuiltinLeafInfo.STRING;
         }
 
