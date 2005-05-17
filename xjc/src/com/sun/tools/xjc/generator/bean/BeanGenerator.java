@@ -545,7 +545,7 @@ public final class BeanGenerator implements Outline
      * Generates an attribute wildcard property on a class.
      */
     private void generateAttributeWildcard( ClassOutlineImpl cc ) {
-        String FIELD_NAME = "otherAttributes";  TODO.checkSpec(); // is this name right?
+        String FIELD_NAME = "otherAttributes";
         String METHOD_SEED = model.getNameConverter().toClassName(FIELD_NAME);
 
         JClass mapType = codeModel.ref(Map.class).narrow(QName.class,String.class);
