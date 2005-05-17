@@ -22,6 +22,7 @@ import com.sun.xml.xsom.XSListSimpleType;
 import com.sun.xml.xsom.XSRestrictionSimpleType;
 import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSUnionSimpleType;
+import com.sun.xml.xsom.XSVariety;
 import com.sun.xml.xsom.visitor.XSSimpleTypeFunction;
 
 /**
@@ -215,7 +216,17 @@ public final class SimpleTypeBuilder extends BindingComponent {
         }
 
         public TypeUse unionSimpleType(XSUnionSimpleType type) {
-            return CBuiltinLeafInfo.STRING;
+            boolean isCollection = false;
+            for( int i=0; i<type.getMemberSize(); i++ )
+                if(type.getMember(i).getVariety()==XSVariety.LIST) {
+                    isCollection = true;
+                    break;
+                }
+
+            TypeUse r = CBuiltinLeafInfo.STRING;
+            if(isCollection)
+                r = TypeUseFactory.makeCollection(r);
+            return r;
         }
 
         public TypeUse restrictionSimpleType(XSRestrictionSimpleType type) {
