@@ -1179,6 +1179,10 @@ public final class UnmarshallingContext extends Coordinator
         handleEvent(new ValidationEventImpl(ValidationEvent.ERROR,e.getMessage(),locator.getLocation(),e),canRecover);
     }
 
+    public void handleError(String msg) throws SAXException {
+        handleEvent(new ValidationEventImpl(ValidationEvent.ERROR,msg,locator.getLocation()));
+    }
+
     /**
      * Called when there's no corresponding ID value.
      */
