@@ -108,8 +108,6 @@ abstract class ObjectFactoryGeneratorImpl extends ObjectFactoryGenerator {
      * Adds code for the given {@link CElementInfo} to ObjectFactory.
      */
     protected final void populate( CElementInfo ei, Aspect impl, Aspect exposed ) {
-        // temporarily returning the impl type to make the runtime work
-        TODO.prototype();
         JType exposedElementType = ei.toType(outline,exposed);
         JType exposedType = ei.getContentInMemoryType().toType(outline,exposed);
         JType implType = ei.getContentInMemoryType().toType(outline,impl);
