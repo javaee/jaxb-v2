@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.namespace.QName;
@@ -41,12 +40,6 @@ class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             return getTypes().size();
         }
     };
-
-    /**
-     * Lazily computed.
-     * @see #isCollectionNillable()
-     */
-    private Boolean isNillable;
 
     /**
      * Lazily computed.
@@ -125,22 +118,10 @@ class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         return new TypeRefImpl<TypeT,ClassDeclT>(this,name,type,isNillable,defaultValue);
     }
 
-    public boolean isCollectionNillable() {
-        if(isNillable==null)
-            isNillable = calcCollectionNillable();
-        return isNillable;
-    }
-
     public boolean isValueList() {
         if(isValueList==null)
             getTypes(); // compute the value
         return isValueList;
-    }
-
-    private boolean calcCollectionNillable() {
-        XmlElementWrapper e = seed.readAnnotation(XmlElementWrapper.class);
-        if(e==null) return false;
-        return e.nillable();
     }
 
     public boolean isRequired() {
@@ -159,7 +140,6 @@ class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     protected void link() {
         super.link();
-        getXmlName();
         for (TypeRefImpl<TypeT, ClassDeclT> ref : getTypes() ) {
             ref.link();
         }

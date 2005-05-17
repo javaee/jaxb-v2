@@ -52,6 +52,15 @@ public interface ReferencePropertyInfo<TypeT,ClassDeclT> extends PropertyInfo<Ty
     QName getXmlName();
 
     /**
+     * Returns true if this property is nillable
+     * (meaning the absence of the value is treated as nil='true')
+     *
+     * <p>
+     * This method is only used when this property is a collection.
+     */
+    boolean isCollectionNillable();
+
+    /**
      * Returns true if this property can hold {@link String}s to represent
      * mixed content model.
      */
