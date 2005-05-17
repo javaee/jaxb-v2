@@ -4,20 +4,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.namespace.QName;
 import javax.activation.MimeType;
+import javax.xml.namespace.QName;
 
 import com.sun.tools.xjc.model.CClassInfo;
+import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.model.CElementInfo;
 import com.sun.tools.xjc.model.CElementPropertyInfo;
 import com.sun.tools.xjc.model.CNonElement;
-import com.sun.tools.xjc.model.CPluginCustomization;
 import com.sun.tools.xjc.model.CReferencePropertyInfo;
 import com.sun.tools.xjc.model.CTypeRef;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.model.Multiplicity;
 import com.sun.tools.xjc.model.TypeUse;
-import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.tools.xjc.reader.xmlschema.ClassSelector;
@@ -276,31 +275,4 @@ public final class RawTypeSet {
         stb.refererStack.pop();
         return r;
     }
-
-    static {
-        TODO.prototype("for now, we just handle XmlTypeRef");
-    }
-
-
-
-    static {
-        // TODO: worry about the wildcard later
-        TODO.prototype();
-    }
-//
-//    /**
-//     * Reference to a wildcard.
-//     */
-//    public static final class Wildcard extends Ref {
-//        public final XSWildcard names;
-//
-//        public Wildcard(XSWildcard names) {
-//            this.names = names;
-//        }
-//
-//        protected CTypeRef toTypeRef() {
-//            // TODO: implement this method later
-//            throw new UnsupportedOperationException();
-//        }
-//    }
 }

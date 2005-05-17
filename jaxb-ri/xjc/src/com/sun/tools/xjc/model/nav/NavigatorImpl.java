@@ -3,12 +3,17 @@ package com.sun.tools.xjc.model.nav;
 import java.lang.reflect.Type;
 import java.util.Collection;
 
-import com.sun.xml.bind.v2.TODO;
+import com.sun.codemodel.JClass;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.Location;
-import com.sun.codemodel.JClass;
 
 /**
+ * {@link Navigator} implementation for XJC.
+ *
+ * Most of the Navigator methods are used for parsing the model, which doesn't happen
+ * in XJC. So Most of the methods aren't really implemented. Implementations should
+ * be filled in as needed.
+ *
  * @author Kohsuke Kawaguchi
  */
 public final class NavigatorImpl implements Navigator<NType,NClass,Void,Void> {
@@ -18,7 +23,6 @@ public final class NavigatorImpl implements Navigator<NType,NClass,Void,Void> {
     }
 
     public NClass getSuperClass(NClass nClass) {
-        // TODO
         throw new UnsupportedOperationException();
     }
 
@@ -40,12 +44,10 @@ public final class NavigatorImpl implements Navigator<NType,NClass,Void,Void> {
             }
         }
 
-        // TODO
         throw new UnsupportedOperationException();
     }
 
     public String getClassName(NClass nClass) {
-        // TODO
         throw new UnsupportedOperationException();
     }
 
@@ -54,62 +56,50 @@ public final class NavigatorImpl implements Navigator<NType,NClass,Void,Void> {
     }
 
     public String getClassShortName(NClass nClass) {
-        // TODO
         throw new UnsupportedOperationException();
     }
 
     public Collection<? extends Void> getDeclaredFields(NClass nClass) {
-        // TODO
         throw new UnsupportedOperationException();
     }
 
     public Collection<? extends Void> getDeclaredMethods(NClass nClass) {
-        // TODO
         throw new UnsupportedOperationException();
     }
 
     public NClass getDeclaringClassForField(Void aVoid) {
-        // TODO
         throw new UnsupportedOperationException();
     }
 
     public NClass getDeclaringClassForMethod(Void aVoid) {
-        // TODO
         throw new UnsupportedOperationException();
     }
 
     public NType getFieldType(Void aVoid) {
-        // TODO
         throw new UnsupportedOperationException();
     }
 
     public String getFieldName(Void aVoid) {
-        // TODO
         throw new UnsupportedOperationException();
     }
 
     public String getMethodName(Void aVoid) {
-        // TODO
         throw new UnsupportedOperationException();
     }
 
     public NType getReturnType(Void aVoid) {
-        // TODO
         throw new UnsupportedOperationException();
     }
 
     public NType[] getMethodParameters(Void aVoid) {
-        // TODO
         throw new UnsupportedOperationException();
     }
 
     public boolean isStaticMethod(Void aVoid) {
-        // TODO
         throw new UnsupportedOperationException();
     }
 
     public boolean isSubClassOf(NType sub, NType sup) {
-        // TODO
         throw new UnsupportedOperationException();
     }
 
@@ -138,18 +128,15 @@ public final class NavigatorImpl implements Navigator<NType,NClass,Void,Void> {
     }
 
     public boolean isArray(NType nType) {
-        // TODO
         throw new UnsupportedOperationException();
     }
 
     public boolean isArrayButNotByteArray(NType t) {
-        // TODO
         throw new UnsupportedOperationException();
     }
 
 
     public NType getComponentType(NType nType) {
-        // TODO
         throw new UnsupportedOperationException();
     }
 
@@ -163,7 +150,6 @@ public final class NavigatorImpl implements Navigator<NType,NClass,Void,Void> {
             return ref(nnt.clazz.getTypeParameter(i));
         }
 
-        // TODO
         throw new UnsupportedOperationException();
     }
 
@@ -177,7 +163,6 @@ public final class NavigatorImpl implements Navigator<NType,NClass,Void,Void> {
             return nnt.clazz.isParameterized();
         }
 
-        // TODO
         throw new UnsupportedOperationException();
     }
 
@@ -216,8 +201,7 @@ public final class NavigatorImpl implements Navigator<NType,NClass,Void,Void> {
     }
 
     public Location getClassLocation(final NClass c) {
-        TODO.prototype();
-        // TODO: but do we use this inside XJC?
+        // not really needed for XJC but doesn't hurt to have one
         return new Location() {
             public String toString() {
                 return c.fullName();
