@@ -8,7 +8,6 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
-import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 
 /**
@@ -151,9 +150,6 @@ public class IllegalAnnotationException extends JAXBException {
      */
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
-
-        // TODO consider eliminating the common roots from locations.
-        TODO.prototype();
 
         for( List<Location> locs : pos ) {
             sb.append("\n\tthis problem is related to the following location:");

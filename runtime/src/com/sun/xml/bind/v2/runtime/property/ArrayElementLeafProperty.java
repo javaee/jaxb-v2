@@ -42,7 +42,8 @@ final class ArrayElementLeafProperty<BeanT,ListT,ItemT> extends ArrayElementProp
         xducer.declareNamespace(item,w);
         w.endNamespaceDecls(item);
         w.endAttributes();
-        // TODO: think about the type substitution impact
+        // this is leaf, so by definition there's no type substitution
+        // if there's, we'll be using ArrayElementNodeProperty
         TODO.prototype();
         w.text(xducer.print(item), fieldName);
     }
