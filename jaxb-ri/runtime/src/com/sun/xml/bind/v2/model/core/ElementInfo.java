@@ -37,7 +37,7 @@ public interface ElementInfo<TypeT,ClassDeclT> extends Element<TypeT,ClassDeclT>
     NonElement<TypeT,ClassDeclT> getContentType();
 
     /**
-     * T of {@code IXmlElement<T>}.
+     * T of {@code JAXBElement<T>}.
      *
      * <p>
      * This is tied to the in-memory representation.

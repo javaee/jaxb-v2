@@ -8,11 +8,10 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlList;
+import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.namespace.QName;
 
-import javax.xml.bind.annotation.XmlList;
 import com.sun.xml.bind.v2.NameConverter;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.core.ElementPropertyInfo;
@@ -187,9 +186,6 @@ class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     }
 
     protected final QName calcXmlName(XmlElement e) {
-        TODO.prototype();       // TODO: handle defaulting
-        TODO.checkSpec();       // TODO: name mangling
-
         if(e!=null)
             return calcXmlName(e.namespace(),e.name());
         else
@@ -197,9 +193,6 @@ class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     }
 
     protected final QName calcXmlName(XmlElementWrapper e) {
-        TODO.prototype();       // TODO: handle defaulting
-        TODO.checkSpec();       // TODO: name mangling
-
         if(e!=null)
             return calcXmlName(e.namespace(),e.name());
         else

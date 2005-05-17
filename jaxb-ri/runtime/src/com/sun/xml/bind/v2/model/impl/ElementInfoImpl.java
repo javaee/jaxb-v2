@@ -307,7 +307,6 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     public TypeT getContentInMemoryType() {
         if(adapter==null) {
-            TODO.prototype();   // what about collection?
             return contentType.getType();
         } else {
             return adapter.customType;
