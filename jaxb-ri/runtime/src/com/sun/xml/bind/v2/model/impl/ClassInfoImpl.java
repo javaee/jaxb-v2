@@ -224,7 +224,6 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      * annotations.
      */
     private AccessType getAccessType() {
-        TODO.checkSpec();
         AccessType at = AccessType.PUBLIC_MEMBER;
         XmlAccessorType xat = reader().getClassAnnotation(XmlAccessorType.class,clazz,this);
         if(xat==null)
