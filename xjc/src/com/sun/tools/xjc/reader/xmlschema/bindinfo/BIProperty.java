@@ -246,7 +246,6 @@ public final class BIProperty extends AbstractDeclarationImpl {
         if(name==null)
             name = defaultName;
 
-        TODO.prototype(); // how do we handle ID?
         return wrapUp(new CValuePropertyInfo(name, getCustomizations(source),source.getLocator(), tu ),source);
     }
 
@@ -270,7 +269,6 @@ public final class BIProperty extends AbstractDeclarationImpl {
         markAsAcknowledged();
         constantPropertyErrorCheck();
 
-        TODO.prototype(); // how do we handle ID?
         return wrapUp(new CAttributePropertyInfo(name,getCustomizations(use),use.getLocator(), n, tu, use.isRequired() ),use);
     }
 
