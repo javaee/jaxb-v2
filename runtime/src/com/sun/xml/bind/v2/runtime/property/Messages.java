@@ -10,6 +10,7 @@ enum Messages {
     NOT_A_QNAME,    // 1 arg
     UNRECOGNIZED_TYPE_NAME, // 1 arg
     UNSUBSTITUTABLE_TYPE, // 3 args
+    UNEXPECTED_JAVA_TYPE, // 2 args
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());

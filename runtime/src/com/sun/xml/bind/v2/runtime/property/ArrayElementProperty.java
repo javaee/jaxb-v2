@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.helpers.ValidationEventImpl;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
@@ -61,10 +63,6 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
         Name n = null;
 
         for (RuntimeTypeRef typeRef : types) {
-            // TODO: fix me
-            TODO.prototype();
-
-            // TODO: consider more unified handling of primitive/boxed issue.
             Class type = (Class)typeRef.getTarget().getType();
             if(type.isPrimitive())
                 type = Util.primitiveToBox.get(type);
@@ -92,6 +90,7 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
     public final void serializeBody(BeanT o, XMLSerializer w, Object outerPeer) throws SAXException, AccessorException, IOException, XMLStreamException {
         ListT list = acc.get(o);
 
+        TODO.prototype("support nillable wrapper"); // TODO
         if(list!=null) {
             if(tagName!=null) {
                 w.startElement(tagName,null);
@@ -101,7 +100,7 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
 
             ListIterator<ItemT> itr = lister.iterator(list, w);
 
-            boolean isIdref = itr instanceof Lister.IDREFSIterator;
+            boolean isIdref = itr instanceof Lister.IDREFSIterator; // UGLY
 
             while(itr.hasNext()) {
                 try {
@@ -116,14 +115,19 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
                         // normally, this returns non-null
                         TagAndType tt = typeMap.get(itemType);
                         while(tt==null && itemType!=null) {
-                            // otherwise we'll just have to try the hard way
+                            // otherwise we'll just have to try the slow way
                             itemType = itemType.getSuperclass();
                             tt = typeMap.get(itemType);
                         }
 
                         if(tt==null) {
                             // item is not of the expected type.
-                            TODO.prototype();   // TODO: error report
+                            w.reportError(new ValidationEventImpl(ValidationEvent.ERROR,
+                                Messages.UNEXPECTED_JAVA_TYPE.format(
+                                    item.getClass().getName(),
+                                    getExpectedClassNameList()
+                                ),
+                                w.getCurrentLocation(fieldName)));
                             continue;
                         }
 
@@ -146,6 +150,18 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
             if(tagName!=null)
                 w.endElement();
         }
+    }
+
+    /**
+     * Compute the list of the expected class names. Used for error diagnosis.
+     */
+    private String getExpectedClassNameList() {
+        StringBuilder buf = new StringBuilder();
+        for (Class c : typeMap.keySet()) {
+            if(buf.length()>0)  buf.append(',');
+            buf.append(c.getName());
+        }
+        return buf.toString();
     }
 
     /**
