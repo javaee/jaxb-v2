@@ -323,7 +323,6 @@ public final class BIProperty extends AbstractDeclarationImpl {
         if(name==null)
             name = defaultName;
 
-        TODO.prototype(); // how do we handle ID?
         CReferencePropertyInfo prop = wrapUp(
             new CReferencePropertyInfo(
                 name,
