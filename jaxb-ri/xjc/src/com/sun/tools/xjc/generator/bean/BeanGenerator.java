@@ -458,88 +458,11 @@ public final class BeanGenerator implements Outline
         for( CPropertyInfo prop : target.getProperties() )
             generateFieldDecl(cc,prop);
 
-        // TODO: think about choice content handling
-//        if( target.hasGetContentMethod )
-//            generateChoiceContentField(cc);
-
         if( target.declaresAttributeWildcard() )
             generateAttributeWildcard(cc);
 
         cc._package().objectFactoryGenerator().populate(cc);
     }
-
-    /**
-     * Generate the getContent method that returns the currently set field.
-     */
-//    private void generateChoiceContentField( ClassOutlineImpl cc ) {
-//        final FieldUse[] fus = cc.target.getDeclaredFieldUses();
-//
-//        // create accessors for those FieldUses.
-//        FieldAccessor[] fas = new FieldAccessor[fus.length];
-//        for( int i=0; i<fus.length; i++ )
-//            fas[i] = getField(fus[i]).create(JExpr._this());
-//
-//        // find the common base type of all fields
-//        JType[] types = new JType[fus.length];
-//        for( int i=0; i<fus.length; i++ ) {
-//            FieldOutline f = getField(fus[i]);
-//            types[i] = f.getContentValueType();
-//        }
-//        JType returnType = TypeUtil.getCommonBaseType(codeModel,types);
-//
-//
-//        // [RESULT]
-//        // <RETTYPE> getContent()
-//        MethodWriter helper = cc.createMethodWriter();
-//        JMethod $get = helper.declareMethod(returnType,"getContent");
-//
-//
-//
-//        for( int i=0; i<fus.length; i++ ) {
-//            FieldAccessor fa = fas[i];
-//
-//            // [RESULT]
-//            // if( <hasSetValue>() )
-//            //    return <get>();
-//
-//
-//            JBlock then = $get.body()._if( fa.hasSetValue() )._then();
-//            then._return(fa.getContentValue());
-//
-//
-//        }
-//
-//        $get.body()._return(JExpr._null());
-//
-//
-//
-//        // [RESULT]
-//        // boolean isSetContent()
-//        JMethod $isSet = helper.declareMethod(codeModel.BOOLEAN,"isSetContent");
-//        JExpression exp = JExpr.FALSE;
-//        for( int i=0; i<fus.length; i++ ) {
-//            exp = exp.cor(fas[i].hasSetValue());
-//        }
-//        $isSet.body()._return(exp);
-//
-//        // [RESULT]
-//        // void unsetContent()
-//        JMethod $unset = helper.declareMethod(codeModel.VOID,"unsetContent");
-//        for( int i=0; i<fus.length; i++ )
-//            fas[i].unsetValues($unset.body());
-//
-//
-//        // install onSet hooks to realize
-//        // "set one field to unset everything else" semantics.
-//        for( int i=0; i<fus.length; i++ ) {
-//            JBlock handler = getField(fus[i]).getOnSetEventHandler();
-//            for( int j=0; j<fus.length; j++ ) {
-//                if(i==j)    continue;
-//                fas[j].unsetValues(handler);
-//            }
-//        }
-//    }
-
 
     /**
      * Generates an attribute wildcard property on a class.
@@ -560,7 +483,15 @@ public final class BeanGenerator implements Outline
         MethodWriter writer = cc.createMethodWriter();
 
         JMethod $get = writer.declareMethod( mapType, "get"+METHOD_SEED );
-        TODO.prototype();   // TODO: add javadoc
+        $get.javadoc().append(
+            "Gets a map that contains attributes that aren't bound to any typed property on this class.\n\n" +
+            "<p>\n" +
+            "the map is keyed by the name of the attribute and \n" +
+            "the value is the string value of the attribute.\n" +
+            "\n" +
+            "the map returned by this method is live, and you can add new attribute\n" +
+            "by updating the map directly. Because of this design, there's no setter.\n");
+        $get.javadoc().addReturn().append("always non-null");
 
         $get.body()._return($ref);
     }
