@@ -16,10 +16,10 @@ import java.util.TreeSet;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlMimeType;
-import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
@@ -70,7 +70,6 @@ import com.sun.tools.xjc.outline.FieldOutline;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.outline.PackageOutline;
 import com.sun.tools.xjc.util.CodeModelClassFactory;
-import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
 
@@ -430,7 +429,6 @@ public final class BeanGenerator implements Outline
         XmlTypeWriter xtw = cc.implClass.annotate2(XmlTypeWriter.class);
         QName typeName = cc.target.getTypeName();
         if(typeName==null) {
-            TODO.checkSpec();
             xtw.name("");
         } else {
             xtw.name(typeName.getLocalPart()).namespace(typeName.getNamespaceURI());
