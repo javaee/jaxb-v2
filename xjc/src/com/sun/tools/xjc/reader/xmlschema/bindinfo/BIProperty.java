@@ -295,7 +295,6 @@ public final class BIProperty extends AbstractDeclarationImpl {
         if(name==null)
             name = defaultName;
 
-        TODO.prototype(); // how do we handle ID?
         CElementPropertyInfo prop = wrapUp(
             new CElementPropertyInfo(
                 name, types.getCollectionMode(),
