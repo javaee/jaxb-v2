@@ -30,9 +30,4 @@ public abstract class TODO {
      * unimplemeted portion of the spec in the schema generator.
      */
     public static void schemaGenerator(String comment) {}
-
-    /**
-     * Optimization idea
-     */
-    public static void optimization(String comment) {}
 }
