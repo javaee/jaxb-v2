@@ -33,16 +33,15 @@ import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIEnumMember;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BindInfo;
 import com.sun.tools.xjc.util.MimeTypeRange;
 import com.sun.xml.bind.DatatypeConverterImpl;
-import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
+import com.sun.xml.xsom.XSAttributeDecl;
 import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XSFacet;
 import com.sun.xml.xsom.XSListSimpleType;
 import com.sun.xml.xsom.XSRestrictionSimpleType;
 import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSUnionSimpleType;
-import com.sun.xml.xsom.XSAttributeDecl;
 import com.sun.xml.xsom.impl.util.SchemaWriter;
 import com.sun.xml.xsom.visitor.XSSimpleTypeFunction;
 import com.sun.xml.xsom.visitor.XSVisitor;
@@ -538,7 +537,6 @@ public final class ConversionFinder extends BindingComponent {
      * This method checks the expected media type.
      */
     private TypeUse lookupBinaryTypeBinding() {
-        // look for the
         XSComponent referer = stb.getReferer();
         String emt = referer.getForeignAttribute(XML_MIME_URI,"expectedContentTypes");
         if(emt!=null) {
@@ -554,7 +552,6 @@ public final class ConversionFinder extends BindingComponent {
                         && isXml(mt.subType))
                     return CBuiltinLeafInfo.XML_SOURCE.makeMimeTyped(mt.toMimeType());
 
-                TODO.checkSpec();
                 return CBuiltinLeafInfo.DATA_HANDLER.makeMimeTyped(mt.toMimeType());
             } catch (ParseException e) {
                 getErrorReporter().error( referer.getLocator(),
