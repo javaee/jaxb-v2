@@ -1,8 +1,8 @@
 package com.sun.xml.bind.v2.model.impl;
 
 import java.lang.annotation.Annotation;
+import java.beans.Introspector;
 
-import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.Location;
@@ -60,9 +60,7 @@ class GetterSetterPropertySeed<TypeT,ClassDeclT,FieldT,MethodT> implements
 
 
     private static String camelize(String s) {
-        // is this what the spec is going to use?
-        TODO.checkSpec();
-        return Character.toLowerCase(s.charAt(0)) + s.substring(1);
+        return Introspector.decapitalize(s);
     }
 
     /**
