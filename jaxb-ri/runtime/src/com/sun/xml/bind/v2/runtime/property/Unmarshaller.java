@@ -306,9 +306,6 @@ public abstract class Unmarshaller {
             if(idx<0)   prefix="";
             else        prefix=qname.substring(0,idx);
 
-            // TODO: convert the value to typed values
-            TODO.prototype();
-
             map.put(new QName(nsUri,local,prefix),value);
         }
     }
