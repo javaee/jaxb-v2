@@ -6,13 +6,10 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.DomHandler;
 import javax.xml.stream.XMLStreamException;
 
-import javax.xml.bind.annotation.DomHandler;
-import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.QNameMap;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
-import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElement;
 import com.sun.xml.bind.v2.model.runtime.RuntimeReferencePropertyInfo;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
@@ -42,7 +39,7 @@ class ArrayReferenceNodeProperty<BeanT,ListT,ItemT> extends ArrayERProperty<Bean
     private final WildcardMode wcMode;
 
     public ArrayReferenceNodeProperty(JAXBContextImpl p, RuntimeReferencePropertyInfo prop) {
-        super(p, prop, prop.getXmlName());
+        super(p, prop, prop.getXmlName(), prop.isCollectionNillable());
 
         for (RuntimeElement e : prop.getElements()) {
             JaxBeanInfo bi = p.getOrCreate(e);
@@ -60,40 +57,27 @@ class ArrayReferenceNodeProperty<BeanT,ListT,ItemT> extends ArrayERProperty<Bean
         }
     }
 
-    public void serializeBody(BeanT o, XMLSerializer w, Object outerPeer) throws SAXException, AccessorException, IOException, XMLStreamException {
-        ListT list = acc.get(o);
+    protected final void serializeListBody(BeanT o, XMLSerializer w, ListT list) throws IOException, XMLStreamException, SAXException {
+        ListIterator<ItemT> itr = lister.iterator(list, w);
 
-        if(list!=null) {
-            if(tagName!=null) {
-                w.startElement(tagName,null);
-                w.endNamespaceDecls(list);
-                w.endAttributes();
-            }
-
-            ListIterator<ItemT> itr = lister.iterator(list, w);
-
-            while(itr.hasNext()) {
-                try {
-                    ItemT item = itr.next();
-                    if (item != null) {
-                        if(isMixed && item.getClass()==String.class) {
-                            w.text((String)item,null);
-                        } else {
-                            JaxBeanInfo bi = w.grammar.getBeanInfo(item,domHandler==null);
-                            if(bi!=null)
-                                bi.serializeRoot(item,w);
-                            else
-                                w.writeDom(item,domHandler,o,fieldName);
-                        }
+        while(itr.hasNext()) {
+            try {
+                ItemT item = itr.next();
+                if (item != null) {
+                    if(isMixed && item.getClass()==String.class) {
+                        w.text((String)item,null);
+                    } else {
+                        JaxBeanInfo bi = w.grammar.getBeanInfo(item,domHandler==null);
+                        if(bi!=null)
+                            bi.serializeRoot(item,w);
+                        else
+                            w.writeDom(item,domHandler,o,fieldName);
                     }
-                } catch (JAXBException e) {
-                    w.reportError(fieldName,e);
-                    // recover by ignoring this item
                 }
+            } catch (JAXBException e) {
+                w.reportError(fieldName,e);
+                // recover by ignoring this item
             }
-
-            if(tagName!=null)
-                w.endElement();
         }
     }
 
@@ -157,8 +141,8 @@ class ArrayReferenceNodeProperty<BeanT,ListT,ItemT> extends ArrayERProperty<Bean
 
     @Override
     public Accessor getElementPropertyAccessor(String nsUri, String localName) {
-        if(tagName!=null) {
-            if(tagName.equals(nsUri,localName))
+        if(wrapperTagName!=null) {
+            if(wrapperTagName.equals(nsUri,localName))
                 return acc;
         } else {
             if(expectedElements.containsKey(nsUri,localName))
