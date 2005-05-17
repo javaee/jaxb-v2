@@ -2,24 +2,23 @@ package com.sun.xml.bind.v2.runtime.reflect;
 
 import java.io.IOException;
 
-import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.annotation.XmlValue;
 import javax.xml.stream.XMLStreamException;
 
+import com.sun.xml.bind.WhiteSpaceProcessor;
 import com.sun.xml.bind.api.AccessorException;
-import com.sun.xml.bind.v2.model.nav.Navigator;
-import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
-import com.sun.xml.bind.v2.model.runtime.RuntimeNonElementRef;
-import com.sun.xml.bind.v2.model.impl.RuntimeModelBuilder;
 import com.sun.xml.bind.v2.model.core.ID;
+import com.sun.xml.bind.v2.model.impl.RuntimeModelBuilder;
+import com.sun.xml.bind.v2.model.nav.Navigator;
+import com.sun.xml.bind.v2.model.runtime.RuntimeNonElementRef;
+import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.opt.OptimizedTransducedAccessorFactory;
-import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Patcher;
-import com.sun.xml.bind.v2.TODO;
-import com.sun.xml.bind.WhiteSpaceProcessor;
+import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 
 import org.xml.sax.SAXException;
 
@@ -226,23 +225,22 @@ public abstract class TransducedAccessor<BeanT> {
         /**
          * Resolves the ID and sets the resolved object to the field.
          *
-         * @return true
-         *      if the resolution is successful. Otherwise false, in which case the
-         *      field is untouched.
+         * @return false
+         *      if the resolution needs to be deferred, in which case it will be retried
+         *      after the unmarshalling is completed.
          */
-        private boolean resolveId(BeanT bean, String id, UnmarshallingContext context) throws AccessorException {
+        private boolean resolveId(BeanT bean, String id, UnmarshallingContext context) throws AccessorException, SAXException {
             TargetT t = (TargetT)context.getObjectFromId(id);
             if(t==null)     return false;
 
-            if(!targetType.isInstance(t)) {
-                // TODO: report an error to the context
-                TODO.prototype();
-            }
-            acc.set(bean,t);
+            if(!targetType.isInstance(t))
+                context.handleError(Messages.UNASSIGNABLE_TYPE.format(targetType,t.getClass()));
+            else
+                acc.set(bean,t);
             return true;
         }
 
-        public void parse(final BeanT bean, CharSequence lexical) throws AccessorException {
+        public void parse(final BeanT bean, CharSequence lexical) throws AccessorException, SAXException {
             final String idref = WhiteSpaceProcessor.trim(lexical).toString();
             final UnmarshallingContext context = UnmarshallingContext.getInstance();
             if(!resolveId(bean,idref,context)) {
