@@ -62,6 +62,8 @@ public abstract class AptBasedTask extends Javac {
                         new Object[] {createFactory(),cmd.getArguments()}))
                     .intValue ();
                 return result == 0;
+            } catch (BuildException e) {
+                throw e;
             } catch (Exception ex) {
                 throw new BuildException("Error starting apt",ex, location);
             }
