@@ -1,14 +1,17 @@
 package com.sun.xml.bind.v2.runtime.property;
 
+import java.io.IOException;
 import java.util.Collections;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 
+import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.QNameMap;
 import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
-import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.Name;
+import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.unmarshaller.EventArg;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 
@@ -26,21 +29,28 @@ abstract class ArrayERProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,Li
     /**
      * Wrapper tag name if any, or null.
      */
-    protected final Name tagName;
+    protected final Name wrapperTagName;
 
-    protected ArrayERProperty(JAXBContextImpl grammar, RuntimePropertyInfo prop, QName tagName) {
+    /**
+     * True if the wrapper tag name is nillable.
+     * Always false if {@link #wrapperTagName}==null.
+     */
+    protected final boolean isWrapperNillable;
+
+    protected ArrayERProperty(JAXBContextImpl grammar, RuntimePropertyInfo prop, QName tagName, boolean isWrapperNillable) {
         super(grammar,prop);
         if(tagName==null)
-            this.tagName = null;
+            this.wrapperTagName = null;
         else
-            this.tagName = grammar.nameBuilder.createElementName(tagName);
+            this.wrapperTagName = grammar.nameBuilder.createElementName(tagName);
+        this.isWrapperNillable = isWrapperNillable;
     }
 
     public final Unmarshaller.Handler createUnmarshallerHandler(JAXBContextImpl grammar, Unmarshaller.Handler tail) {
         final Unmarshaller.Handler end = tail;
 
         // handle </items>
-        if(tagName==null) {
+        if(wrapperTagName==null) {
             final Unmarshaller.Handler next = tail;
             tail = new Unmarshaller.EpsilonHandler() {
                 protected void handle(UnmarshallingContext context) throws SAXException {
@@ -75,7 +85,7 @@ abstract class ArrayERProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,Li
                 tail);
 
         // handle <items>
-        if(tagName==null) {
+        if(wrapperTagName==null) {
             final Unmarshaller.Handler next = tail;
             tail = new Unmarshaller.EpsilonHandler() {
                 protected void handle(UnmarshallingContext context) throws SAXException {
@@ -86,7 +96,7 @@ abstract class ArrayERProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,Li
         } else {
             tail = new Unmarshaller.ForkHandler(end,tail) {
                 public void enterElement(UnmarshallingContext context, EventArg arg) throws SAXException {
-                    if(arg.matches(tagName)) {
+                    if(arg.matches(wrapperTagName)) {
                         context.pushAttributes(arg.atts,false,null);
                         context.startScope(1);
                         context.setCurrentHandler(next);
@@ -107,6 +117,39 @@ abstract class ArrayERProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,Li
         return tail;
     }
 
+    public final void serializeBody(BeanT o, XMLSerializer w, Object outerPeer) throws SAXException, AccessorException, IOException, XMLStreamException {
+        ListT list = acc.get(o);
+
+        if(list!=null) {
+            if(wrapperTagName!=null) {
+                w.startElement(wrapperTagName,null);
+                w.endNamespaceDecls(list);
+                w.endAttributes();
+            }
+
+            serializeListBody(o,w,list);
+
+            if(wrapperTagName!=null)
+                w.endElement();
+        } else {
+            // list is null
+            if(isWrapperNillable) {
+                w.startElement(wrapperTagName,null);
+                w.writeXsiNilTrue();
+                w.endElement();
+            } // otherwise don't print the wrapper tag name
+        }
+    }
+
+    /**
+     * Serializses the items of the list.
+     * This method is invoked after the necessary wrapper tag is produced (if necessary.)
+     *
+     * @param list
+     *      always non-null.
+     */
+    protected abstract void serializeListBody(BeanT o, XMLSerializer w, ListT list) throws IOException, XMLStreamException, SAXException, AccessorException;
+
     /**
      * Creates the unmarshaller to unmarshal the body.
      */
@@ -114,9 +157,9 @@ abstract class ArrayERProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,Li
 
 
     public final void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<Unmarshaller.Handler> handlers) {
-        if(tagName!=null) {
+        if(wrapperTagName!=null) {
             chain.tail = createUnmarshallerHandler(chain.context, chain.tail);
-            handlers.put(tagName,chain.tail);
+            handlers.put(wrapperTagName,chain.tail);
         } else {
             createBodyUnmarshaller(chain,handlers);
         }

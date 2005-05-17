@@ -13,7 +13,6 @@ import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.QNameMap;
-import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementPropertyInfo;
@@ -54,7 +53,7 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
     private final Name nillableTagName;
 
     protected ArrayElementProperty(JAXBContextImpl grammar, RuntimeElementPropertyInfo prop) {
-        super(grammar, prop, prop.getXmlName());
+        super(grammar, prop, prop.getXmlName(), prop.isCollectionNillable());
         assert prop!=null;
         this.prop = prop;
 
@@ -87,68 +86,54 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
         prop = null;    // avoid keeping model objects live
     }
 
-    public final void serializeBody(BeanT o, XMLSerializer w, Object outerPeer) throws SAXException, AccessorException, IOException, XMLStreamException {
-        ListT list = acc.get(o);
+    protected void serializeListBody(BeanT beanT, XMLSerializer w, ListT list) throws IOException, XMLStreamException, SAXException, AccessorException {
+        ListIterator<ItemT> itr = lister.iterator(list, w);
 
-        TODO.prototype("support nillable wrapper"); // TODO
-        if(list!=null) {
-            if(tagName!=null) {
-                w.startElement(tagName,null);
-                w.endNamespaceDecls(list);
-                w.endAttributes();
-            }
+        boolean isIdref = itr instanceof Lister.IDREFSIterator; // UGLY
 
-            ListIterator<ItemT> itr = lister.iterator(list, w);
+        while(itr.hasNext()) {
+            try {
+                ItemT item = itr.next();
+                if (item != null) {
+                    Class itemType = item.getClass();
+                    if(isIdref)
+                        // This should be the only place where we need to be aware
+                        // that the iterator is iterating IDREFS.
+                        itemType = ((Lister.IDREFSIterator)itr).last().getClass();
 
-            boolean isIdref = itr instanceof Lister.IDREFSIterator; // UGLY
-
-            while(itr.hasNext()) {
-                try {
-                    ItemT item = itr.next();
-                    if (item != null) {
-                        Class itemType = item.getClass();
-                        if(isIdref)
-                            // This should be the only place where we need to be aware
-                            // that the iterator is iterating IDREFS.
-                            itemType = ((Lister.IDREFSIterator)itr).last().getClass();
-
-                        // normally, this returns non-null
-                        TagAndType tt = typeMap.get(itemType);
-                        while(tt==null && itemType!=null) {
-                            // otherwise we'll just have to try the slow way
-                            itemType = itemType.getSuperclass();
-                            tt = typeMap.get(itemType);
-                        }
-
-                        if(tt==null) {
-                            // item is not of the expected type.
-                            w.reportError(new ValidationEventImpl(ValidationEvent.ERROR,
-                                Messages.UNEXPECTED_JAVA_TYPE.format(
-                                    item.getClass().getName(),
-                                    getExpectedClassNameList()
-                                ),
-                                w.getCurrentLocation(fieldName)));
-                            continue;
-                        }
-
-                        w.startElement(tt.tagName,null);
-                        serializeItem(tt.beanInfo,item,w);
-                        w.endElement();
-                    } else {
-                        if(nillableTagName!=null) {
-                            w.startElement(nillableTagName,null);
-                            w.writeXsiNilTrue();
-                            w.endElement();
-                        }
+                    // normally, this returns non-null
+                    TagAndType tt = typeMap.get(itemType);
+                    while(tt==null && itemType!=null) {
+                        // otherwise we'll just have to try the slow way
+                        itemType = itemType.getSuperclass();
+                        tt = typeMap.get(itemType);
                     }
-                } catch (JAXBException e) {
-                    w.reportError(fieldName,e);
-                    // recover by ignoring this item
-                }
-            }
 
-            if(tagName!=null)
-                w.endElement();
+                    if(tt==null) {
+                        // item is not of the expected type.
+                        w.reportError(new ValidationEventImpl(ValidationEvent.ERROR,
+                            Messages.UNEXPECTED_JAVA_TYPE.format(
+                                item.getClass().getName(),
+                                getExpectedClassNameList()
+                            ),
+                            w.getCurrentLocation(fieldName)));
+                        continue;
+                    }
+
+                    w.startElement(tt.tagName,null);
+                    serializeItem(tt.beanInfo,item,w);
+                    w.endElement();
+                } else {
+                    if(nillableTagName!=null) {
+                        w.startElement(nillableTagName,null);
+                        w.writeXsiNilTrue();
+                        w.endElement();
+                    }
+                }
+            } catch (JAXBException e) {
+                w.reportError(fieldName,e);
+                // recover by ignoring this item
+            }
         }
     }
 
@@ -235,8 +220,8 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
     }
 
     public Accessor getElementPropertyAccessor(String nsUri, String localName) {
-        if(tagName!=null) {
-            if(tagName.equals(nsUri,localName))
+        if(wrapperTagName!=null) {
+            if(wrapperTagName.equals(nsUri,localName))
                 return acc;
         } else {
             for (TagAndType tt : typeMap.values()) {
