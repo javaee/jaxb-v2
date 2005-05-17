@@ -30,7 +30,6 @@ class GetterSetterPropertySeed<TypeT,ClassDeclT,FieldT,MethodT> implements
     }
 
     public TypeT getRawType() {
-        TODO.prototype();   // handle the case where setter is null
         return parent.nav().getReturnType(getter);
     }
 
