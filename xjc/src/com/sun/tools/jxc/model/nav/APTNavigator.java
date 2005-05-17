@@ -1,25 +1,25 @@
 package com.sun.tools.jxc.model.nav;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Comparator;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.sun.mirror.apt.AnnotationProcessorEnvironment;
 import com.sun.mirror.declaration.ClassDeclaration;
 import com.sun.mirror.declaration.ConstructorDeclaration;
+import com.sun.mirror.declaration.Declaration;
+import com.sun.mirror.declaration.EnumConstantDeclaration;
+import com.sun.mirror.declaration.EnumDeclaration;
 import com.sun.mirror.declaration.FieldDeclaration;
 import com.sun.mirror.declaration.MemberDeclaration;
 import com.sun.mirror.declaration.MethodDeclaration;
 import com.sun.mirror.declaration.Modifier;
 import com.sun.mirror.declaration.ParameterDeclaration;
 import com.sun.mirror.declaration.TypeDeclaration;
-import com.sun.mirror.declaration.EnumDeclaration;
-import com.sun.mirror.declaration.Declaration;
-import com.sun.mirror.declaration.EnumConstantDeclaration;
 import com.sun.mirror.type.ArrayType;
 import com.sun.mirror.type.ClassType;
 import com.sun.mirror.type.DeclaredType;
@@ -32,7 +32,6 @@ import com.sun.mirror.type.WildcardType;
 import com.sun.mirror.util.SourcePosition;
 import com.sun.mirror.util.TypeVisitor;
 import com.sun.mirror.util.Types;
-import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.Location;
 
@@ -432,7 +431,6 @@ public class APTNavigator implements Navigator<TypeMirror,TypeDeclaration,FieldD
     }
 
     private Location getLocation(final String name, final SourcePosition sp) {
-        TODO.prototype();
         return new Location() {
             public String toString() {
                 if(sp==null)
