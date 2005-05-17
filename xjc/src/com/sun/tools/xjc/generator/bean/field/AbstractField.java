@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AbstractField.java,v 1.7 2005-05-12 21:12:44 kohsuke Exp $
+ * @(#)$Id: AbstractField.java,v 1.8 2005-05-17 23:20:41 ryan_shoemaker Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -15,6 +15,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlMixed;
+import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlValue;
 import javax.xml.namespace.QName;
 
@@ -182,15 +183,8 @@ abstract class AbstractField implements FieldOutline {
 
             // [RESULT]
             // @XmlElement(name=Foo.class, isNillable=false, namespace="bar://baz")
-
             CTypeRef type = types.get(0);
-            XmlElementWriter xew = field.annotate2(XmlElementWriter.class);
-            xew.name(type.getTagName().getLocalPart())
-               .type(type.getTarget().toType(outline.parent(), IMPLEMENTATION))
-               .namespace(type.getTagName().getNamespaceURI())
-               .nillable(type.isNillable());
-            if(type.getDefaultValue()!=null)
-                xew.defaultValue(type.getDefaultValue());
+            writeXmlElementAnnotation(field, type, type.getTarget().toType(outline.parent(), IMPLEMENTATION), false, true, false );
         } else { // multi prop
             if( eName!=null ) { // wrapper
                 XmlElementWrapperWriter xcw = field.annotate2(XmlElementWrapperWriter.class);
@@ -200,22 +194,92 @@ abstract class AbstractField implements FieldOutline {
 
             if (types.size() == 1) {
                 CTypeRef t = types.get(0);
-                XmlElementWriter xew = field.annotate2(XmlElementWriter.class);
-                xew.name(t.getTagName().getLocalPart())
-                   .namespace(t.getTagName().getNamespaceURI())
-                   .type(resolve(t,IMPLEMENTATION));
+                writeXmlElementAnnotation(field, t, resolve(t,IMPLEMENTATION), false, false, false);
             } else {
-                XmlElementsWriter xesw = field.annotate2(XmlElementsWriter.class);
                 for (CTypeRef t : types) {
-                    XmlElementWriter xew = xesw.value();
-                    xew.name(t.getTagName().getLocalPart())
-                       .namespace(t.getTagName().getNamespaceURI())
-                       .type(resolve(t,IMPLEMENTATION));
-                    if(t.getDefaultValue()!=null)
-                        xew.defaultValue(t.getDefaultValue());
+                    writeXmlElementAnnotation(field, t, resolve(t,IMPLEMENTATION), true, true, true);
                 }
+                xesw = null;
             }
         }
+    }
+
+    // ugly hack to lazily create
+    private XmlElementsWriter xesw = null;
+
+    /**
+     * Generate the simplest XmlElement annotation possible taking all semantic optimizations
+     * into account.  This method is essentially equivalent to:
+     *
+     *     xew.name(ctype.getTagName().getLocalPart())
+     *        .namespace(ctype.getTagName().getNamespaceURI())
+     *        .type(jtype)
+     *        .defaultValue(ctype.getDefaultValue());
+     *
+     * @param field
+     * @param ctype
+     * @param jtype
+     * @param generateType true iff there is more than one type ref in the property
+     * @param checkDefault true if the method might need to generate the defaultValue property
+     * @param checkWrapper true if the method might need to generate XmlElements
+     */
+    private void writeXmlElementAnnotation( JAnnotatable field, CTypeRef ctype, JType jtype,
+                                            boolean generateType, boolean checkDefault, boolean checkWrapper ) {
+
+        // lazily create - we don't know if we need to generate anything yet
+        XmlElementWriter xew = null;
+
+        // these values are used to determine how to optimize the generated annotation
+        XmlNsForm formDefault = parent()._package().getElementFormDefault();
+        String mostUsedURI = parent()._package().getMostUsedNamespaceURI();
+        String propName = prop.getName(false);
+
+        // generate the name property?
+        String generatedName = ctype.getTagName().getLocalPart();
+        if(!generatedName.equals(propName)) {
+            if(xew == null) xew = getXew(checkWrapper, field);
+            xew.name(generatedName);
+        }
+
+        // generate the namespace property?
+        String generatedNS = ctype.getTagName().getNamespaceURI();
+        if (((formDefault == XmlNsForm.QUALIFIED) && !generatedNS.equals(mostUsedURI)) ||
+                ((formDefault == XmlNsForm.UNQUALIFIED) && !generatedNS.equals(""))) {
+            if(xew == null) xew = getXew(checkWrapper, field);
+            xew.namespace(generatedNS);
+        }
+
+        // generate the type property?
+        if( generateType ) {
+            if(xew == null) xew = getXew(checkWrapper, field);
+            xew.type(jtype);
+        }
+
+        // generate defaultValue property?
+        final String defaultValue = ctype.getDefaultValue();
+        if (checkDefault && defaultValue!=null) {
+            if(xew == null) xew = getXew(checkWrapper, field);
+            xew.defaultValue(defaultValue);
+        }
+
+        // generate the nillable property?
+        if (ctype.isNillable()) {
+            if(xew == null) xew = getXew(checkWrapper, field);
+            xew.nillable(true);
+        }
+    }
+
+    private XmlElementWriter getXew(boolean checkWrapper, JAnnotatable field) {
+        XmlElementWriter xew;
+        if(checkWrapper) {
+            if(xesw==null) {
+                xesw = field.annotate2(XmlElementsWriter.class);
+            }
+            xew = xesw.value();
+        } else {
+            xew = field.annotate2(XmlElementWriter.class);
+        }
+        return xew;
     }
 
     /**
@@ -227,10 +291,33 @@ abstract class AbstractField implements FieldOutline {
 
         // [RESULT]
         // @XmlAttribute(name="foo", required=true, targetNamespace="bar://baz")
-        XmlAttributeWriter xaw = field.annotate2(XmlAttributeWriter.class);
-        xaw.name(attName.getLocalPart())
-           .namespace(attName.getNamespaceURI())
-           .required(ap.isRequired());
+        XmlAttributeWriter xaw = null;
+
+
+        field.annotate2(XmlAttributeWriter.class);
+        final String generatedName = attName.getLocalPart();
+        final String generatedNS = attName.getNamespaceURI();
+
+        // generate name property?
+        if(!generatedName.equals(ap.getName(false))) {
+            if (xaw==null) xaw = field.annotate2(XmlAttributeWriter.class);
+            xaw.name(generatedName);
+        }
+
+        // generate namespace property?
+        if(!generatedNS.equals("")) { // assume attributeFormDefault == unqualified
+            if (xaw==null) xaw = field.annotate2(XmlAttributeWriter.class);
+            xaw.namespace(generatedNS);
+        }
+
+        // generate required property?
+        // even though txw is smart enough not to generate the annotation if
+        // (ap.required()==false), we still have to check so we don't create
+        // the annoation writer if it isn't needed
+        if(ap.isRequired()) {
+            if (xaw==null) xaw = field.annotate2(XmlAttributeWriter.class);
+            xaw.required(true);
+        }
     }
 
     /**

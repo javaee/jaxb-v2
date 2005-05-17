@@ -6,6 +6,9 @@ package com.sun.tools.xjc.outline;
 
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlSchema;
+import javax.xml.bind.annotation.XmlNsForm;
+
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JPackage;
 import com.sun.tools.xjc.generator.bean.ObjectFactoryGenerator;
@@ -52,4 +55,21 @@ public interface PackageOutline {
      * @return can be empty but never null.
      */
     Set<? extends ClassOutline> getClasses();
+
+    /**
+     * The namespace URI most commonly used in classes in this package.
+     * This should be used as the namespace URI for {@link XmlSchema#namespace()}.
+     *
+     * <p>
+     * Null if no default
+     */
+    public String getMostUsedNamespaceURI();
+
+    /**
+     * The element form default for this package.
+     * <p>
+     * The value is computed by examining what would yield the smallest generated code.
+     */
+    public XmlNsForm getElementFormDefault();
+
 }

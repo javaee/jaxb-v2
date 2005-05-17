@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: PackageOutlineImpl.java,v 1.5 2005-05-10 23:21:33 kohsuke Exp $
+ * @(#)$Id: PackageOutlineImpl.java,v 1.6 2005-05-17 23:20:42 ryan_shoemaker Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -12,9 +12,11 @@ package com.sun.tools.xjc.generator.bean;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.HashMap;
 
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlSchema;
+import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JPackage;
@@ -106,19 +108,18 @@ final class PackageOutlineImpl implements PackageOutline {
      * This method is called after {@link #classes} field is filled up.
      */
     public void calcDefaultValues() {
-        // TODO for Ryan to compute those values properly
         // if possible, we should also have a switch that tells XJC not to use a package-level
         // annotation, so that people can have self-contained classes.
 
         // used to visit properties
         CPropertyVisitor<Void> propVisitor = new CPropertyVisitor<Void>() {
             public Void onElement(CElementPropertyInfo p) {
-                // TODO
+                countURI(propUriCountMap, p.getXmlName());
                 return null;
             }
 
             public Void onReference(CReferencePropertyInfo p) {
-                // TODO
+                countURI(propUriCountMap, p.getXmlName());
                 return null;
             }
 
@@ -134,13 +135,81 @@ final class PackageOutlineImpl implements PackageOutline {
 
         for (ClassOutlineImpl co : classes) {
             CClassInfo ci = co.target;
-            // things you can look at
-            ci.getTypeName();
-            ci.getElementName();
+            countURI(uriCountMap, ci.getTypeName());
+            countURI(uriCountMap, ci.getElementName());
+
             for( CPropertyInfo p : ci.getProperties() )
                 p.accept(propVisitor);
         }
-        mostUsedNamespaceURI = null;
-        elementFormDefault = XmlNsForm.QUALIFIED;
+        mostUsedNamespaceURI = getMostUsedURI(uriCountMap);
+        elementFormDefault = getFormDefault();
+
+        // debug code
+        // System.out.println(uriCountMap.size() + ": " + _package.name() + ": " + mostUsedNamespaceURI);
+        // System.out.println(elementFormDefault);
+    }
+
+    // Map to keep track of how often each type or element uri is used in this package
+    // mostly used to calculate mostUsedNamespaceURI
+    private HashMap<String, Integer> uriCountMap = new HashMap<String, Integer>();
+
+    // Map to keep track of how often each property uri is used in this package
+    // used to calculate elementFormDefault
+    private HashMap<String, Integer> propUriCountMap = new HashMap<String, Integer>();
+
+    /**
+     * pull the uri out of the specified QName and keep track of it in the
+     * specified hash map
+     *
+     * @param qname
+     */
+    private void countURI(HashMap<String, Integer> map, QName qname) {
+        if (qname == null) return;
+
+        String uri = qname.getNamespaceURI();
+
+        if (map.containsKey(uri)) {
+            map.put(uri, map.get(uri).intValue() + 1);
+        } else {
+            map.put(uri, 1);
+        }
+    }
+
+    /**
+     * Iterate through the hash map looking for the namespace used
+     * most frequently.  Ties are arbitrarily broken by the order
+     * in which the map keys are iterated over.
+     */
+    private String getMostUsedURI(HashMap<String, Integer> map) {
+        String mostPopular = null;
+        int count = 0;
+
+        for (String uri : map.keySet()) {
+            int uriCount = map.get(uri);
+            if (mostPopular == null) {
+                mostPopular = uri;
+                count = uriCount;
+            } else {
+                if (uriCount > count) {
+                    mostPopular = uri;
+                    count = uriCount;
+                }
+            }
+        }
+
+        if (mostPopular == null) return "";
+        return mostPopular;
+    }
+
+    /**
+     * Calculate the element form defaulting.
+     *
+     * Compare the most frequently used property URI to the most frequently used
+     * element/type URI.  If they match, then return QUALIFIED
+     * @return
+     */
+    private XmlNsForm getFormDefault() {
+        if (getMostUsedURI(propUriCountMap).equals("")) return XmlNsForm.UNQUALIFIED;
+        else return XmlNsForm.QUALIFIED;
     }
 }

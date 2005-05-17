@@ -425,13 +425,20 @@ public final class BeanGenerator implements Outline
             }
         }
 
+        // used to simplify the generated annotations
+        String mostUsedNamespaceURI = cc._package().getMostUsedNamespaceURI();
 
+        // [RESULT]
+        // @XmlType(name="foo", targetNamespace="bar://baz")
         XmlTypeWriter xtw = cc.implClass.annotate2(XmlTypeWriter.class);
         QName typeName = cc.target.getTypeName();
         if(typeName==null) {
             xtw.name("");
         } else {
-            xtw.name(typeName.getLocalPart()).namespace(typeName.getNamespaceURI());
+            xtw.name(typeName.getLocalPart());
+            final String typeNameURI = typeName.getNamespaceURI();
+            if(!typeNameURI.equals(mostUsedNamespaceURI)) // only generate if necessary
+                xtw.namespace(typeNameURI);
         }
 
 
@@ -442,7 +449,9 @@ public final class BeanGenerator implements Outline
             // [RESULT]
             // @XmlRootElement(name="foo", targetNamespace="bar://baz")
             XmlRootElementWriter xrew = cc.implClass.annotate2(XmlRootElementWriter.class);
-            xrew.name(localPart).namespace(namespaceURI);
+            xrew.name(localPart);
+            if(!namespaceURI.equals(mostUsedNamespaceURI)) // only generate if necessary
+                xrew.namespace(namespaceURI);
 
             // [RESULT]
             // @XmlType(name="foo", targetNamespace="bar://baz", propOrder={"p1", "p2", ...})
