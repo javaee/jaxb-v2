@@ -25,7 +25,6 @@ import com.sun.tools.xjc.reader.xmlschema.parser.IncorrectNamespaceURIChecker;
 import com.sun.tools.xjc.reader.xmlschema.parser.SchemaConstraintChecker;
 import com.sun.tools.xjc.reader.xmlschema.parser.XMLSchemaInternalizationLogic;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
-import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.xsom.XSSchemaSet;
 import com.sun.xml.xsom.parser.JAXPParser;
@@ -357,9 +356,6 @@ public final class ModelLoader {
     public Model annotateXMLSchema(XSSchemaSet xs) {
         if (xs == null)
             return null;
-
-        // TODO: implement this method later
-        TODO.prototype("disabling XML Schema support");
         return BGMBuilder.build(xs, codeModel, errorReceiver, opt);
     }
 
