@@ -13,7 +13,6 @@ import java.lang.reflect.WildcardType;
 import java.util.Arrays;
 import java.util.Collection;
 
-import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.runtime.Location;
 
 /**
@@ -389,7 +388,6 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
     }
 
     public Location getClassLocation(final Class clazz) {
-        TODO.prototype();   //
         return new Location() {
             public String toString() {
                 return clazz.getName();

@@ -5,7 +5,6 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.NameConverter;
-import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
@@ -86,11 +85,9 @@ abstract class TypeInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             local = t.name();
         }
 
-        if(local.equals("##default")) {
+        if(local.equals("##default"))
             // if defaulted ...
-            TODO.prototype();   // TODO
             local = NameConverter.standard.toVariableName(nav().getClassShortName(clazz));
-        }
 
         if(nsUri.equals("##default")) {
             // if defaulted ...

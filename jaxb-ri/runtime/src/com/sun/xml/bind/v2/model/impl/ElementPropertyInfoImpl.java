@@ -9,11 +9,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlList;
-import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.namespace.QName;
 
-import com.sun.xml.bind.v2.NameConverter;
-import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.core.ElementPropertyInfo;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
@@ -26,7 +23,7 @@ import com.sun.xml.bind.v2.model.core.TypeRef;
  * @author Kohsuke Kawaguchi
  */
 class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
-    extends PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
+    extends ERPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     implements ElementPropertyInfo<TypeT,ClassDeclT>
 {
     /**
@@ -158,72 +155,6 @@ class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     public final PropertyKind kind() {
         return PropertyKind.ELEMENT;
-    }
-
-    /**
-     * Lazily computed. See {@link #getXmlName()}.
-     */
-    private QName xmlName;
-    private boolean xmlNameComputed;
-
-    public final QName getXmlName() {
-        if(!isCollection())
-            return null;
-
-        if(!xmlNameComputed) {
-            xmlNameComputed = true;
-
-            XmlElementWrapper e = seed.readAnnotation(XmlElementWrapper.class);
-            if(e!=null)
-                xmlName = calcXmlName(e);
-            else
-                xmlName = null;
-
-            // TODO: we need to remember if the wrapper is nillable or not
-        }
-
-        return xmlName;
-    }
-
-    protected final QName calcXmlName(XmlElement e) {
-        if(e!=null)
-            return calcXmlName(e.namespace(),e.name());
-        else
-            return calcXmlName("##default","##default");
-    }
-
-    protected final QName calcXmlName(XmlElementWrapper e) {
-        if(e!=null)
-            return calcXmlName(e.namespace(),e.name());
-        else
-            return calcXmlName("##default","##default");
-    }
-
-    protected final QName calcXmlName(String uri,String local) {
-        // compute the default
-        TODO.checkSpec();
-        if(local.length()==0 || local.equals("##default"))
-            local = NameConverter.standard.toVariableName(getName());
-        if(uri.equals("##default")) {
-            XmlSchema xs = reader().getPackageAnnotation( XmlSchema.class, parent.getClazz(), this );
-            // JAX-RPC doesn't want the default namespace URI swapping to take effect to
-            // local "unqualified" elements. UGLY.
-            if(xs!=null) {
-                switch(xs.elementFormDefault()) {
-                case QUALIFIED:
-                    uri = parent.getTypeName().getNamespaceURI();
-                    if(uri.length()==0)
-                        uri = parent.builder.defaultNsUri;
-                    break;
-                case UNQUALIFIED:
-                case UNSET:
-                    uri = "";
-                }
-            } else {
-                uri = "";
-            }
-        }
-        return new QName(uri.intern(),local.intern());
     }
 
     protected void link() {

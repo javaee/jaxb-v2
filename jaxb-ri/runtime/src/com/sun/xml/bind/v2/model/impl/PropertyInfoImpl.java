@@ -7,6 +7,10 @@ import javax.activation.MimeTypeParseException;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlMimeType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlSchema;
+import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
@@ -19,6 +23,8 @@ import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
+import com.sun.xml.bind.v2.TODO;
+import com.sun.xml.bind.v2.NameConverter;
 
 /**
  * Default partial implementation for {@link PropertyInfo}.

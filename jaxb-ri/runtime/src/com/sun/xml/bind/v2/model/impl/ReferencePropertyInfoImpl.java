@@ -11,7 +11,6 @@ import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.namespace.QName;
 
-import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
 import com.sun.xml.bind.v2.model.core.Element;
@@ -26,7 +25,7 @@ import com.sun.xml.bind.v2.model.nav.Navigator;
  * @author Kohsuke Kawaguchi
  */
 class ReferencePropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
-    extends PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
+    extends ERPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     implements ReferencePropertyInfo<TypeT,ClassDeclT>
 {
     /**
@@ -170,11 +169,6 @@ class ReferencePropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     }
 
-    public QName getXmlName() {
-        // TODO: define a new annotation. still under discussion with Sekhar.
-        TODO.prototype();
-        return null;
-    }
 
     public final boolean isMixed() {
         return isMixed;
