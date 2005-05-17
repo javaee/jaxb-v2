@@ -5,7 +5,6 @@ import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
-import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.runtime.RuntimeLeafInfo;
 import com.sun.xml.bind.v2.runtime.property.Unmarshaller;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
@@ -83,10 +82,9 @@ final class LeafBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
     }
 
     public final void serializeBody(BeanT bean, XMLSerializer w) throws SAXException, IOException, XMLStreamException {
-        // TODO: instead of turning a value to a string and then send it to output,
-        // it might be faster if we let the XMLSerializer accept common values.
-        // this avoids unnecessary String creation.
-        TODO.optimization(null);
+        // most of the times leaves are printed as leaf element/attribute property,
+        // so this code is only used for example when you have multiple XmlElement on a property
+        // and some of them are leaves. Hence this doesn't need to be super-fast.
         try {
             w.text(xducer.print(bean),null);
         } catch (AccessorException e) {
