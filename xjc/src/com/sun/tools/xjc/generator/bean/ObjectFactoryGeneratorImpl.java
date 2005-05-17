@@ -231,8 +231,6 @@ abstract class ObjectFactoryGeneratorImpl extends ObjectFactoryGenerator {
         //     }
 
         if(!cc.target.isAbstract()) {
-            TODO.prototype("the return type should be cc.ref, not cc.implRef, but" +
-                    "we need this to be a class for the runtime to work correctly.");
             JMethod m = objectFactory.method(
                 JMod.PUBLIC, sigType, "create" + cc.target.getSqueezedName() );
             m.body()._return( JExpr._new(cc.implRef) );
