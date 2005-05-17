@@ -4,25 +4,36 @@
  */
 package com.sun.tools.xjc.reader.dtd.bindinfo;
 
-import java.util.Map;
-import java.io.StringReader;
 import java.io.IOException;
+import java.io.StringReader;
+import java.util.Map;
 
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JExpression;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JPrimitiveType;
 import com.sun.codemodel.JType;
+import com.sun.codemodel.JVar;
+import com.sun.tools.xjc.model.CAdapter;
 import com.sun.tools.xjc.model.CBuiltinLeafInfo;
 import com.sun.tools.xjc.model.TypeUse;
-import com.sun.xml.bind.v2.TODO;
+import com.sun.tools.xjc.model.TypeUseFactory;
+import com.sun.tools.xjc.reader.Ring;
+import com.sun.tools.xjc.reader.xmlschema.ClassSelector;
 
 import org.w3c.dom.Element;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
 /**
@@ -117,22 +128,80 @@ public class BIUserConversion implements BIConversion
             }
         }
 
-        try {
-            TODO.prototype("adapter support");  // TODO
-            throw new UnsupportedOperationException();
-//            // TODO: properly handling whitespace requires
-//            // a sophisticated parse method generation
-//            return new XducedTypeToken(
-//                attValue("parse","new"),
-//                attValue("print","toString"),
-//                t, CBuiltinLeafInfo.STRING );
-              // ws
-        } catch( IllegalArgumentException e ) {
-            // if the type is a primitive type and print/parse methods are incorrect
-            owner.errorReceiver.error( new SAXParseException(
-                e.getMessage(),getSourceLocation(),e) );
-            // recover from this error
-            return CBuiltinLeafInfo.STRING;
+        String parse = DOMUtil.getAttribute(e,"parse");
+        if(parse==null)  parse="new";
+
+        String print = DOMUtil.getAttribute(e,"print");
+        if(print==null)  parse="toString";
+
+        JDefinedClass adapter = generateAdapter(owner.codeModel, parse, print, t.boxify());
+
+        // XmlJavaType customization always converts between string and an user-defined type.
+        return TypeUseFactory.adapt(CBuiltinLeafInfo.STRING,new CAdapter(adapter));
+    }
+
+    // TODO: anyway to reuse this code between XML Schema compiler?
+    private JDefinedClass generateAdapter(JCodeModel cm, String parseMethod, String printMethod, JClass inMemoryType) {
+        JDefinedClass adapter = null;
+
+        int id = 1;
+        while(adapter==null) {
+            try {
+                JPackage pkg = Ring.get(ClassSelector.class).getClassScope().getOwnerPackage();
+                adapter = pkg._class("Adapter"+id);
+            } catch (JClassAlreadyExistsException e) {
+                // try another name in search for an unique name.
+                // this isn't too efficient, but we expect people to usually use
+                // a very small number of adapters.
+                id++;
+            }
         }
+
+        adapter._extends(cm.ref(XmlAdapter.class).narrow(String.class).narrow(inMemoryType));
+
+        JMethod unmarshal = adapter.method(JMod.PUBLIC, inMemoryType, "unmarshal");
+        JVar $value = unmarshal.param(String.class, "value");
+
+        JExpression inv;
+
+        if( parseMethod.equals("new") ) {
+            // "new" indicates that the constructor of the target type
+            // will do the unmarshalling.
+
+            // RESULT: new <type>()
+            inv = JExpr._new(inMemoryType).arg($value);
+        } else {
+            int idx = parseMethod.lastIndexOf('.');
+            if(idx<0) {
+                // parseMethod specifies the static method of the target type
+                // which will do the unmarshalling.
+
+                // because of an error check at the constructor,
+                // we can safely assume that this cast works.
+                inv = inMemoryType.staticInvoke(parseMethod).arg($value);
+            } else {
+                inv = JExpr.direct(parseMethod+"(value)");
+            }
+        }
+        unmarshal.body()._return(inv);
+
+
+        JMethod marshal = adapter.method(JMod.PUBLIC, String.class, "marshal");
+        $value = marshal.param(inMemoryType,"value");
+
+        int idx = printMethod.lastIndexOf('.');
+        if(idx<0) {
+            // printMethod specifies a method in the target type
+            // which performs the serialization.
+
+            // RESULT: <value>.<method>()
+            inv = $value.invoke(printMethod);
+        } else {
+            // RESULT: <className>.<method>(<value>)
+            inv = JExpr.direct(printMethod+"(value)");
+        }
+        marshal.body()._return(inv);
+
+        return adapter;
     }
 }
