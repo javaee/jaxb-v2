@@ -211,9 +211,7 @@ public final class XMLSerializer extends Coordinator {
      */
     public final void reportError(String fieldName, Throwable t) throws SAXException {
         ValidationEvent ve = new ValidationEventImpl(ValidationEvent.ERROR,
-            t.getMessage(),
-                getCurrentLocation(fieldName),
-            t);
+            t.getMessage(), getCurrentLocation(fieldName), t);
         reportError(ve);
     }
 
