@@ -291,8 +291,7 @@ public class APTNavigator implements Navigator<TypeMirror,TypeDeclaration,FieldD
      */
     private static final TypeMirror DUMMY = new TypeMirror() {
         public void accept(TypeVisitor v) {
-            // TODO: implement this method later
-            throw new UnsupportedOperationException();
+            throw new IllegalStateException();
         }
     };
 
