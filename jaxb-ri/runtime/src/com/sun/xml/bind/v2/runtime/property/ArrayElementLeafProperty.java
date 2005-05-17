@@ -5,7 +5,6 @@ import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
-import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementPropertyInfo;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
@@ -44,7 +43,6 @@ final class ArrayElementLeafProperty<BeanT,ListT,ItemT> extends ArrayElementProp
         w.endAttributes();
         // this is leaf, so by definition there's no type substitution
         // if there's, we'll be using ArrayElementNodeProperty
-        TODO.prototype();
         w.text(xducer.print(item), fieldName);
     }
 }

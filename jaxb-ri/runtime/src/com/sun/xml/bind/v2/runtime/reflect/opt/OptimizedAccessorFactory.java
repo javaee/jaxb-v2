@@ -7,7 +7,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.xml.bind.Util;
-import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 
 import static com.sun.xml.bind.v2.bytecode.ClassTailor.toVMClassName;
@@ -40,8 +39,6 @@ public abstract class OptimizedAccessorFactory {
      *      if for some reason it fails to create an optimized version.
      */
     public static final Accessor get(Method getter, Method setter) {
-        TODO.prototype();   // TODO: complete the templates for all the types
-
         // make sure the method signatures are what we expect
         if(getter.getParameterTypes().length!=0)
             return null;
