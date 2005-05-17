@@ -18,33 +18,39 @@ abstract class ERPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     public ERPropertyInfoImpl(ClassInfoImpl<TypeT, ClassDeclT, FieldT, MethodT> classInfo, PropertySeed<TypeT, ClassDeclT, FieldT, MethodT> propertySeed) {
         super(classInfo, propertySeed);
-    }
 
-    /**
-     * Lazily computed. See {@link #getXmlName()}.
-     */
-    private QName xmlName;
-    private boolean xmlNameComputed;
-
-    public final QName getXmlName() {
+        boolean nil = false;
         if(!isCollection())
-            return null;
-
-        if(!xmlNameComputed) {
-            xmlNameComputed = true;
-
+            xmlName = null;
+        else {
             XmlElementWrapper e = seed.readAnnotation(XmlElementWrapper.class);
             if(e!=null)
                 xmlName = calcXmlName(e);
             else
                 xmlName = null;
-
-            // TODO: we need to remember if the wrapper is nillable or not
-            TODO.prototype();
         }
 
+        wrapperNillable = nil;
+    }
+
+    private final QName xmlName;
+
+    /**
+     * True if the wrapper tag name is nillable.
+     */
+    private final boolean wrapperNillable;
+
+    /**
+     * Gets the wrapper element name.
+     */
+    public final QName getXmlName() {
         return xmlName;
     }
+
+    public final boolean isCollectionNillable() {
+        return wrapperNillable;
+    }
+
 
     /**
      * Computes the tag name from a {@link XmlElement} by taking the defaulting into account.
@@ -91,5 +97,11 @@ abstract class ERPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             }
         }
         return new QName(uri.intern(),local.intern());
+    }
+
+    @Override
+    protected void link() {
+        super.link();
+        getXmlName();
     }
 }

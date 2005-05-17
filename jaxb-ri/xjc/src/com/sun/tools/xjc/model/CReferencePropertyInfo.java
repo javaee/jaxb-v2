@@ -148,4 +148,9 @@ public final class CReferencePropertyInfo extends CPropertyInfo implements Refer
     public MimeType getExpectedMimeType() {
         return null;
     }
+    
+    public boolean isCollectionNillable() {
+        // in XJC, we never recognize a nillable collection pattern, so this is always false.
+        return false;
+    }
 }
