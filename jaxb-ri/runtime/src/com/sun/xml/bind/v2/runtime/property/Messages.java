@@ -11,6 +11,7 @@ enum Messages {
     UNRECOGNIZED_TYPE_NAME, // 1 arg
     UNSUBSTITUTABLE_TYPE, // 3 args
     UNEXPECTED_JAVA_TYPE, // 2 args
+    UNABLE_TO_CREATE_MAP, // 1 arg
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());

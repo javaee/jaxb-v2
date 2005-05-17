@@ -8,7 +8,6 @@ import javax.xml.namespace.QName;
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.WhiteSpaceProcessor;
 import com.sun.xml.bind.api.AccessorException;
-import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 import com.sun.xml.bind.v2.runtime.Name;
@@ -289,15 +288,19 @@ public abstract class Unmarshaller {
             return false;
         }
 
-        public void processValue(UnmarshallingContext context, String nsUri, String local, String qname, CharSequence value) throws AccessorException {
+        public void processValue(UnmarshallingContext context, String nsUri, String local, String qname, CharSequence value) throws AccessorException, SAXException {
             Object o = context.getTarget();
-            Map<QName,Object> map = (Map<QName,Object>)acc.get(o);
+            Map<QName,String> map = (Map<QName,String>)acc.get(o);
             if(map==null) {
                 // if null, create a new map.
-                // TODO: we need to find out the implementation class that is assignable to
-                // the field type, but generally that's not possible.
-                TODO.checkSpec("Is this behavior described in the spec?");
-                map = new HashMap<QName,Object>();
+                if(HashMap.class.isAssignableFrom(acc.valueType))
+                    map = new HashMap<QName,String>();
+                else {
+                    // we don't know how to create a map for this.
+                    // report an error and back out
+                    context.handleError(Messages.UNABLE_TO_CREATE_MAP.format(acc.valueType));
+                    return;
+                }
                 acc.set(o,map);
             }
 
@@ -306,7 +309,7 @@ public abstract class Unmarshaller {
             if(idx<0)   prefix="";
             else        prefix=qname.substring(0,idx);
 
-            map.put(new QName(nsUri,local,prefix),value);
+            map.put(new QName(nsUri,local,prefix),value.toString());
         }
     }
 
