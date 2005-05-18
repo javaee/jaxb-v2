@@ -265,7 +265,7 @@
               flattenClasses = false;
             </group>
             <group>
-              <value>flatten</value>
+              <value>toplevel</value>
               flattenClasses = true;
             </group>
           </choice>
