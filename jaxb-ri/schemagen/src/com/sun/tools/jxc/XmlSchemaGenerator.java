@@ -856,13 +856,15 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             if( ap.getXmlName().getNamespaceURI().equals(uri)) {
                 localAttribute.name(ap.getXmlName().getLocalPart());
                 writeTypeRef(localAttribute, ap, "type");
-                if(ap.isRequired()) {
-                    // TODO: not type safe
-                    localAttribute.use("required");
-                }
             } else { // generate an attr ref
                 localAttribute.ref(ap.getXmlName());
             }
+
+            if(ap.isRequired()) {
+                // TODO: not type safe
+                localAttribute.use("required");
+            }
+            
             // TODO: handle collection inside attribute
         }
 
