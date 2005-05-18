@@ -342,10 +342,10 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     }
 
     private static final class ConflictException extends Exception {
-        final Annotation one;
+        final List<Annotation> annotations;
 
-        public ConflictException(Annotation one) {
-            this.one = one;
+        public ConflictException(List<Annotation> one) {
+            this.annotations = one;
         }
     }
 
@@ -370,7 +370,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         try {
             if(count>1) {
                 List<Annotation> err = makeSet(a,v,e,r1,r2,t,aa);
-                throw new ConflictException(err.get(0));
+                throw new ConflictException(err);
             }
 
             if(t!=null) {
@@ -421,15 +421,13 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
                 properties.add(createElementProperty(seed));
         } catch( ConflictException x ) {
             // report a conflicting annotation
-            List<Annotation> err = makeSet(a,v,e,r1,r2,t,aa);
-            err.remove(x.one);
-            assert !err.isEmpty();
+            List<Annotation> err = x.annotations;
 
             builder.reportError(new IllegalAnnotationException(
                 Messages.MUTUALLY_EXCLUSIVE_ANNOTATIONS.format(
                     nav().getClassName(getClazz())+'#'+seed.getName(),
-                    x.one.annotationType(), err.get(1).annotationType()),
-                x.one, err.get(1) ));
+                    err.get(0).annotationType().getName(), err.get(1).annotationType().getName()),
+                    err.get(0), err.get(1) ));
 
             // recover by ignoring this property
         }
