@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AbstractField.java,v 1.8 2005-05-17 23:20:41 ryan_shoemaker Exp $
+ * @(#)$Id: AbstractField.java,v 1.9 2005-05-18 01:57:07 ryan_shoemaker Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -290,11 +290,9 @@ abstract class AbstractField implements FieldOutline {
         QName attName = ap.getXmlName();
 
         // [RESULT]
-        // @XmlAttribute(name="foo", required=true, targetNamespace="bar://baz")
+        // @XmlAttribute(name="foo", required=true, namespace="bar://baz")
         XmlAttributeWriter xaw = null;
 
-
-        field.annotate2(XmlAttributeWriter.class);
         final String generatedName = attName.getLocalPart();
         final String generatedNS = attName.getNamespaceURI();
 
