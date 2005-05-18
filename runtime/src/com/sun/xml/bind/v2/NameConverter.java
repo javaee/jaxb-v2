@@ -72,7 +72,12 @@ public interface NameConverter
             return toClassName(token);
         }
         public String toPropertyName(String s) {
-            return toClassName(s);
+            String prop = toClassName(s);
+            // property name "Class" with collide with Object.getClass,
+            // so escape this.
+            if(prop.equals("Class"))
+                prop = "Clazz";
+            return prop;
         }
         public String toConstantName( String token ) {
             return super.toConstantName(token);
