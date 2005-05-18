@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Collection;
 
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -57,6 +58,7 @@ final class JAXBModelImpl implements J2SJAXBModel {
     public JAXBModelImpl(AnnotationProcessorEnvironment env,
                          TypeInfoSet<TypeMirror,TypeDeclaration,FieldDeclaration,MethodDeclaration> types,
                          AnnotationReader<TypeMirror,TypeDeclaration,FieldDeclaration,MethodDeclaration> reader,
+                         Collection<Reference> rootClasses,
                          Map<QName,Reference> additionalElementDecls) {
         this.types = types;
         this.reader = reader;
@@ -81,6 +83,9 @@ final class JAXBModelImpl implements J2SJAXBModel {
                 classList.add(javaName);
             }
         }
+
+        for (Reference ref : rootClasses)
+            refMap.put(ref,getXmlType(ref));
 
         // check for collision between "additional" ones and the ones given to JAXB
         // and eliminate duplication
