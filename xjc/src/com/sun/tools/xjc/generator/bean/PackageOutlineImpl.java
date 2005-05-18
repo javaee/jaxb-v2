@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: PackageOutlineImpl.java,v 1.6 2005-05-17 23:20:42 ryan_shoemaker Exp $
+ * @(#)$Id: PackageOutlineImpl.java,v 1.7 2005-05-18 19:14:03 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -29,6 +29,7 @@ import com.sun.tools.xjc.model.CReferencePropertyInfo;
 import com.sun.tools.xjc.model.CValuePropertyInfo;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.outline.PackageOutline;
+import com.sun.tools.xjc.generator.annotation.spec.XmlSchemaWriter;
 
 /**
  * {@link PackageOutline} enhanced with schema2java specific
@@ -46,6 +47,7 @@ final class PackageOutlineImpl implements PackageOutline {
 
     private String mostUsedNamespaceURI;
     private XmlNsForm elementFormDefault;
+    private final BeanGenerator outline;
 
     /**
      * The namespace URI most commonly used in classes in this package.
@@ -87,6 +89,7 @@ final class PackageOutlineImpl implements PackageOutline {
     }
 
     protected PackageOutlineImpl( BeanGenerator outline, Model model, JPackage _pkg ) {
+        this.outline = outline;
         this._package = _pkg;
         switch(model.strategy) {
         case BEAN_ONLY:
@@ -144,9 +147,18 @@ final class PackageOutlineImpl implements PackageOutline {
         mostUsedNamespaceURI = getMostUsedURI(uriCountMap);
         elementFormDefault = getFormDefault();
 
+
         // debug code
         // System.out.println(uriCountMap.size() + ": " + _package.name() + ": " + mostUsedNamespaceURI);
         // System.out.println(elementFormDefault);
+
+        if(!mostUsedNamespaceURI.equals("") || elementFormDefault==XmlNsForm.QUALIFIED) {
+            XmlSchemaWriter w = _package.annotate2(XmlSchemaWriter.class);
+            if(!mostUsedNamespaceURI.equals(""))
+                w.namespace(mostUsedNamespaceURI);
+            if(elementFormDefault==XmlNsForm.QUALIFIED)
+                w.elementFormDefault(elementFormDefault);
+        }
     }
 
     // Map to keep track of how often each type or element uri is used in this package
