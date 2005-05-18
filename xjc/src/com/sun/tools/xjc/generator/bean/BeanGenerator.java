@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlMimeType;
-import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
@@ -428,7 +427,6 @@ public final class BeanGenerator implements Outline
 
         // used to simplify the generated annotations
         String mostUsedNamespaceURI = cc._package().getMostUsedNamespaceURI();
-        XmlNsForm formDefault = cc._package().getElementFormDefault();
 
         // [RESULT]
         // @XmlType(name="foo", targetNamespace="bar://baz")
@@ -452,10 +450,8 @@ public final class BeanGenerator implements Outline
             // @XmlRootElement(name="foo", targetNamespace="bar://baz")
             XmlRootElementWriter xrew = cc.implClass.annotate2(XmlRootElementWriter.class);
             xrew.name(localPart);
-            if (((formDefault == XmlNsForm.QUALIFIED) && !namespaceURI.equals(mostUsedNamespaceURI)) ||
-                    ((formDefault == XmlNsForm.UNQUALIFIED) && !namespaceURI.equals(""))) {
+            if(!namespaceURI.equals(mostUsedNamespaceURI)) // only generate if necessary
                 xrew.namespace(namespaceURI);
-            }
 
             // [RESULT]
             // @XmlType(name="foo", targetNamespace="bar://baz", propOrder={"p1", "p2", ...})
