@@ -633,10 +633,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                     for (PropertyInfo p : c.getProperties()) {
                         switch (p.kind()) {
                         case ATTRIBUTE:
-                            AttributePropertyInfo ap = (AttributePropertyInfo) p;
-                            //se.attribute().name(ap.getXmlName().getLocalPart()).type(ap.getTarget().getTypeName());
-                            LocalAttribute attr = se.attribute().name(ap.getXmlName().getLocalPart());
-                            writeTypeRef(attr, ap, "type");
+                            handleAttributeProp((AttributePropertyInfo) p,se);
                             break;
                         case VALUE:
                             TODO.checkSpec("what if vp.isCollection() == true?");
@@ -855,6 +852,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             // or it could also be an in-lined type
             //
             LocalAttribute localAttribute = attr.attribute();
+            // TODO: correct @form handling
             if( ap.getXmlName().getNamespaceURI().equals(uri)) {
                 localAttribute.name(ap.getXmlName().getLocalPart());
                 writeTypeRef(localAttribute, ap, "type");
