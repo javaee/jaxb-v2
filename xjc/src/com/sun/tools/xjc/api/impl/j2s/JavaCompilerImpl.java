@@ -66,7 +66,7 @@ public class JavaCompilerImpl implements JavaCompiler {
                     throw new IllegalArgumentException("nulls in additionalElementDecls");
             }
         }
-        return new JAXBModelImpl(env,r,builder.reader,new HashMap(additionalElementDecls));
+        return new JAXBModelImpl(env,r,builder.reader,rootClasses,new HashMap(additionalElementDecls));
     }
 
     private static final class ErrorHandlerImpl implements ErrorHandler {
