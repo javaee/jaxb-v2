@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AbstractField.java,v 1.10 2005-05-18 17:18:18 ryan_shoemaker Exp $
+ * @(#)$Id: AbstractField.java,v 1.11 2005-05-18 18:31:21 ryan_shoemaker Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -197,15 +197,13 @@ abstract class AbstractField implements FieldOutline {
                 writeXmlElementAnnotation(field, t, resolve(t,IMPLEMENTATION), false, false, false);
             } else {
                 for (CTypeRef t : types) {
+                    // generate @XmlElements
                     writeXmlElementAnnotation(field, t, resolve(t,IMPLEMENTATION), true, true, true);
                 }
                 xesw = null;
             }
         }
     }
-
-    // ugly hack to lazily create
-    private XmlElementsWriter xesw = null;
 
     /**
      * Generate the simplest XmlElement annotation possible taking all semantic optimizations
@@ -268,6 +266,9 @@ abstract class AbstractField implements FieldOutline {
             xew.nillable(true);
         }
     }
+
+    // ugly hack to lazily create
+    private XmlElementsWriter xesw = null;
 
     private XmlElementWriter getXew(boolean checkWrapper, JAnnotatable field) {
         XmlElementWriter xew;
