@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AbstractField.java,v 1.9 2005-05-18 01:57:07 ryan_shoemaker Exp $
+ * @(#)$Id: AbstractField.java,v 1.10 2005-05-18 17:18:18 ryan_shoemaker Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -291,29 +291,23 @@ abstract class AbstractField implements FieldOutline {
 
         // [RESULT]
         // @XmlAttribute(name="foo", required=true, namespace="bar://baz")
-        XmlAttributeWriter xaw = null;
+        XmlAttributeWriter xaw = field.annotate2(XmlAttributeWriter.class);
 
         final String generatedName = attName.getLocalPart();
         final String generatedNS = attName.getNamespaceURI();
 
         // generate name property?
         if(!generatedName.equals(ap.getName(false))) {
-            if (xaw==null) xaw = field.annotate2(XmlAttributeWriter.class);
             xaw.name(generatedName);
         }
 
         // generate namespace property?
         if(!generatedNS.equals("")) { // assume attributeFormDefault == unqualified
-            if (xaw==null) xaw = field.annotate2(XmlAttributeWriter.class);
             xaw.namespace(generatedNS);
         }
 
         // generate required property?
-        // even though txw is smart enough not to generate the annotation if
-        // (ap.required()==false), we still have to check so we don't create
-        // the annoation writer if it isn't needed
         if(ap.isRequired()) {
-            if (xaw==null) xaw = field.annotate2(XmlAttributeWriter.class);
             xaw.required(true);
         }
     }
