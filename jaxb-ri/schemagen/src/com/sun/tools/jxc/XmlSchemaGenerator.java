@@ -593,30 +593,14 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             ComplexType ct = null;
 
             // special handling for value properties
-            //
-            // [RESULT 1 - complexType with simpleContent]
-            //
-            // <complexType name="foo">
-            //   <simpleContent>
-            //     <extension base="xs:int"/>
-            //       <attribute name="b" type="xs:boolean"/>
-            //     </>
-            //   </>
-            // </>
-            // ...
-            //   <element name="f" type="foo"/>
-            // ...
-            //
-            // [RESULT 2 - simpleType if the value prop is the only prop]
-            //
-            // <simpleType name="foo">
-            //   <xs:restriction base="xs:int"/>
-            // </>
-            //
             if (containsValueProp(c)) {
                 boolean valueProcessed = false;
                 if (c.getProperties().size() == 1 && c.getProperties().get(0) instanceof ValuePropertyInfo) {
-                    // handling for result 2
+                    // [RESULT 2 - simpleType if the value prop is the only prop]
+                    //
+                    // <simpleType name="foo">
+                    //   <xs:restriction base="xs:int"/>
+                    // </>
                     ValuePropertyInfo vp = (ValuePropertyInfo)c.getProperties().get(0);
                     SimpleType st = ((SimpleTypeHost)parent).simpleType();
                     final String name = c.getTypeName().getLocalPart();
@@ -626,7 +610,18 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                     st.restriction().base(vp.getTarget().getTypeName());
                     return;
                 } else {
-                    // handling for result 1
+                    // [RESULT 1 - complexType with simpleContent]
+                    //
+                    // <complexType name="foo">
+                    //   <simpleContent>
+                    //     <extension base="xs:int"/>
+                    //       <attribute name="b" type="xs:boolean"/>
+                    //     </>
+                    //   </>
+                    // </>
+                    // ...
+                    //   <element name="f" type="foo"/>
+                    // ...
                     // TODO: Sekhar needs to update table 8-4.  Make sure to generate the proper derivation
                     ct = ((ComplexTypeHost)parent).complexType().name(c.getTypeName().getLocalPart());
                     SimpleExtension se = ct.simpleContent().extension();
@@ -852,10 +847,20 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             // or it could also be an in-lined type
             //
             LocalAttribute localAttribute = attr.attribute();
+
             // TODO: correct @form handling
             if( ap.getXmlName().getNamespaceURI().equals(uri)) {
                 localAttribute.name(ap.getXmlName().getLocalPart());
-                writeTypeRef(localAttribute, ap, "type");
+
+                TypeHost th; String refAtt;
+                if( ap.isCollection() ) {
+                    th = localAttribute.simpleType().list();
+                    refAtt = "itemType";
+                } else {
+                    th = localAttribute;
+                    refAtt = "type";
+                }
+                writeTypeRef(th, ap, refAtt);
             } else { // generate an attr ref
                 localAttribute.ref(ap.getXmlName());
             }
@@ -864,8 +869,6 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 // TODO: not type safe
                 localAttribute.use("required");
             }
-            
-            // TODO: handle collection inside attribute
         }
 
         /**
