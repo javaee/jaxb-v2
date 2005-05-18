@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: PackageOutlineImpl.java,v 1.7 2005-05-18 19:14:03 kohsuke Exp $
+ * @(#)$Id: PackageOutlineImpl.java,v 1.8 2005-05-18 19:14:45 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -47,7 +47,6 @@ final class PackageOutlineImpl implements PackageOutline {
 
     private String mostUsedNamespaceURI;
     private XmlNsForm elementFormDefault;
-    private final BeanGenerator outline;
 
     /**
      * The namespace URI most commonly used in classes in this package.
@@ -89,7 +88,6 @@ final class PackageOutlineImpl implements PackageOutline {
     }
 
     protected PackageOutlineImpl( BeanGenerator outline, Model model, JPackage _pkg ) {
-        this.outline = outline;
         this._package = _pkg;
         switch(model.strategy) {
         case BEAN_ONLY:
