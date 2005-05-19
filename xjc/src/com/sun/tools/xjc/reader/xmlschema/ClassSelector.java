@@ -151,7 +151,7 @@ public class ClassSelector extends BindingComponent {
 
 
 
-            if(bean.javadoc!=null)
+            if(bean.javadoc==null)
                 addSchemaFragmentJavadoc(bean,sc);
 
             // build the body
@@ -398,9 +398,12 @@ public class ClassSelector extends BindingComponent {
             lineNumber = String.valueOf(loc.getLineNumber());
 
         String componentName = sc.apply( new ComponentNameFunction() );
-        bean.javadoc +=
-            Messages.format( Messages.JAVADOC_HEADING,
-                componentName, fileName, lineNumber );
+        final String jdoc = Messages.format( Messages.JAVADOC_HEADING, componentName, fileName, lineNumber );
+        if(bean.javadoc==null) {
+            bean.javadoc = jdoc;
+        } else {
+            bean.javadoc += jdoc;
+        }
 
         if(doc!=null && !bi.hasTitleInDocumentation()) {
             bean.javadoc += '\n'+doc+'\n';
