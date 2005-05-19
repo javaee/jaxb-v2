@@ -4,13 +4,13 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.17 2005-05-16 21:21:12 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.18 2005-05-19 23:12:40 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -22,16 +22,16 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBIntrospector;
 import javax.xml.bind.PropertyException;
-import javax.xml.bind.Validator;
-import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.ValidationEventHandler;
+import javax.xml.bind.Validator;
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -53,9 +53,11 @@ import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.Ref;
-import com.sun.xml.bind.v2.model.impl.*;
-import com.sun.xml.bind.v2.model.nav.ReflectionNavigator;
+import com.sun.xml.bind.v2.model.impl.RuntimeAnyTypeImpl;
+import com.sun.xml.bind.v2.model.impl.RuntimeBuiltinLeafInfoImpl;
+import com.sun.xml.bind.v2.model.impl.RuntimeModelBuilder;
 import com.sun.xml.bind.v2.model.nav.Navigator;
+import com.sun.xml.bind.v2.model.nav.ReflectionNavigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimeArrayInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeBuiltinLeafInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeClassInfo;
@@ -86,7 +88,7 @@ import org.xml.sax.SAXException;
  * This is ugly, but this class implements {@link ValidationEventHandler}
  * and always return true. This {@link ValidationEventHandler} is the default for 2.0.
  *
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public final class JAXBContextImpl extends JAXBRIContext implements ValidationEventHandler {
 
