@@ -36,6 +36,7 @@ public class JCommentPart extends ArrayList<Object> {
     }
 
     private void flattenAppend(Object value) {
+        if(value==null) return;
         if(value instanceof Object[]) {
             for( Object o : (Object[])value)
                 flattenAppend(o);
