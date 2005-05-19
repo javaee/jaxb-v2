@@ -30,7 +30,10 @@ class GetterSetterPropertySeed<TypeT,ClassDeclT,FieldT,MethodT> implements
     }
 
     public TypeT getRawType() {
-        return parent.nav().getReturnType(getter);
+        if(getter!=null)
+            return parent.nav().getReturnType(getter);
+        else
+            return parent.nav().getMethodParameters(setter)[0];
     }
 
     public <A extends Annotation> A readAnnotation(Class<A> annotation) {
