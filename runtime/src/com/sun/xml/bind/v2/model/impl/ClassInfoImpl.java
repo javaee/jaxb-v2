@@ -34,6 +34,7 @@ import javax.xml.namespace.QName;
 import com.sun.xml.bind.v2.NameConverter;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
+import com.sun.xml.bind.v2.model.annotation.MethodLocatable;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
 import com.sun.xml.bind.v2.model.core.Element;
@@ -199,7 +200,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
                 continue;
             if(at==AccessType.FIELD
             ||(at==AccessType.PUBLIC_MEMBER && nav().isPublicField(f))
-            || hasAnnotation(f))
+            || hasFieldAnnotation(f))
                 addProperty(adaptIfNecessary(createFieldSeed(f)));
         }
 
@@ -237,19 +238,16 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     /**
      * Returns true if the given field has a JAXB annotation
      */
-    private boolean hasAnnotation(FieldT f) {
+    private boolean hasFieldAnnotation(FieldT f) {
         for (Class<? extends Annotation> a : jaxbAnnotations)
             if(reader().hasFieldAnnotation(a,f))
                 return true;
         return false;
     }
 
-    /**
-     * Returns true if the given methods have a JAXB annotation
-     */
-    private boolean hasAnnotation(MethodT getter, MethodT setter) {
+    private boolean hasMethodAnnotation(MethodT m) {
         for (Class<? extends Annotation> a : jaxbAnnotations)
-            if (reader().hasMethodAnnotation(a,getter) || reader().hasMethodAnnotation(a,setter))
+            if(reader().hasMethodAnnotation(a,m))
                 return true;
         return false;
     }
@@ -463,11 +461,14 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
         Collection<? extends MethodT> methods = nav().getDeclaredMethods(clazz);
         for( MethodT method : methods ) {
+            boolean used = false;   // if this method is added to getters or setters
             String name = nav().getMethodName(method);
             int arity = nav().getMethodParameters(method).length;
 
-            if(nav().isStaticMethod(method))
+            if(nav().isStaticMethod(method)) {
+                ensureNoAnnotation(method);
                 continue;
+            }
 
             // don't look at XmlTransient. We'll deal with that later.
 
@@ -478,6 +479,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             if(propName!=null) {
                 if(arity==0) {
                     getters.put(propName,method);
+                    used = true;
                 }
                 // TODO: do we support indexed property?
             }
@@ -488,14 +490,22 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
                 if(arity==1) {
                     // TODO: we should check collisions like setFoo(int) and setFoo(String)
                     setters.put(propName,method);
+                    used = true;
                 }
                 // TODO: do we support indexed property?
             }
+
+            if(!used)
+                ensureNoAnnotation(method);
         }
 
+        // compute the intersection
         Set<String> complete = new TreeSet<String>();
         complete.addAll(getters.keySet());
         complete.retainAll(setters.keySet());
+
+        resurrect(getters, complete);
+        resurrect(setters, complete);
 
         // then look for read/write properties.
         for (String name : complete) {
@@ -503,15 +513,25 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             MethodT setter = setters.get(name);
 
             // make sure that the type is consistent
-            if (!nav().getReturnType(getter).equals(nav().getMethodParameters(setter)[0]))
+            if(getter!=null && setter!=null
+            && !nav().getReturnType(getter).equals(nav().getMethodParameters(setter)[0])) {
+                // inconsistent
+                builder.reportError(new IllegalAnnotationException(
+                    Messages.GETTER_SETTER_INCOMPATIBLE_TYPE.format(
+                        nav().getTypeName(nav().getReturnType(getter)),
+                        nav().getTypeName(nav().getMethodParameters(setter)[0])
+                    ),
+                    new MethodLocatable<MethodT>( this, getter, nav()),
+                    new MethodLocatable<MethodT>( this, setter, nav())));
                 continue;
+            }
 
-            // recognize getters/setters only when they have annotations
+            boolean getterHasAnnotation = getter!=null && hasMethodAnnotation(getter);
+            boolean setterHasAnnotation = setter!=null && hasMethodAnnotation(setter);
 
-            // this looks OK
             if (at==AccessType.PROPERTY
-            || (at==AccessType.PUBLIC_MEMBER && nav().isPublicMethod(getter) && nav().isPublicMethod(setter))
-            || hasAnnotation(getter, setter))
+            || (at==AccessType.PUBLIC_MEMBER && (getter==null || nav().isPublicMethod(getter)) && (setter==null || nav().isPublicMethod(setter)))
+            || getterHasAnnotation || setterHasAnnotation)
                 addProperty(adaptIfNecessary(createAccessorSeed(getter, setter)));
         }
         // done with complete pairs
@@ -532,6 +552,32 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         //   void setFoo(int x);
         // }
         // and how it will be XML-ized.
+    }
+
+    /**
+     * If the method has an explicit annotation, allow it to participate
+     * to the processing even if it lacks the setter or the getter.
+     */
+    private void resurrect(Map<String, MethodT> methods, Set<String> complete) {
+        for (Map.Entry<String, MethodT> e : methods.entrySet()) {
+            if(complete.contains(e.getKey()))
+                continue;
+            if(hasMethodAnnotation(e.getValue()))
+                complete.add(e.getKey());
+        }
+    }
+
+    /**
+     * Makes sure that the method doesn't have any annotation, if it does,
+     * report it as an error
+     */
+    private void ensureNoAnnotation(MethodT method) {
+        for (Class<? extends Annotation> a : jaxbAnnotations)
+            if(reader().hasMethodAnnotation(a,method)) {
+                builder.reportError(new IllegalAnnotationException(
+                    Messages.ANNOTATION_ON_WRONG_METHOD.format(),
+                    reader().getMethodAnnotation(a,method,this)));
+            }
     }
 
 
