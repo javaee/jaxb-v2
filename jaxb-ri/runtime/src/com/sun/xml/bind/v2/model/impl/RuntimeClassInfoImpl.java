@@ -15,6 +15,7 @@ import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.nav.ReflectionNavigator;
+import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimeClassInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElement;
 import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
@@ -149,7 +150,8 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
             (AdaptedPropertySeed<Type,Class,Field,Method>)super.createAdaptedSeed(seed.core,a);
 
         return new RuntimePropertySeed(cp,seed.getAccessor().adapt(
-            (Class)cp.adapter.defaultType, (Class)cp.adapter.adapterType));
+            Navigator.REFLECTION.erasure(cp.adapter.defaultType),
+            cp.adapter.adapterType));
     }
 
     static final class RuntimePropertySeed implements PropertySeed<Type,Class,Field,Method> {
