@@ -32,7 +32,8 @@ public class IllegalAnnotationsException extends JAXBException {
 
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
-
+        sb.append('\n');
+        
         for( IllegalAnnotationException error : errors )
             sb.append(error.toString()).append('\n');
 
