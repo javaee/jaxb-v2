@@ -169,12 +169,17 @@ public abstract class Accessor<BeanT,ValueT> extends RawAccessor<BeanT,ValueT> {
         private static final Logger logger = Logger.getLogger(FieldReflection.class.getName());
 
         public GetterSetterReflection(Method getter, Method setter) {
-            super((Class<ValueT>)getter.getReturnType());
+            super(
+                (Class<ValueT>)( getter!=null ?
+                    getter.getReturnType() :
+                    setter.getParameterTypes()[0] ));
             this.getter = getter;
             this.setter = setter;
 
-            makeAccessible(getter);
-            makeAccessible(setter);
+            if(getter!=null)
+                makeAccessible(getter);
+            if(setter!=null)
+                makeAccessible(setter);
         }
 
         private void makeAccessible(Method m) {
@@ -233,6 +238,10 @@ public abstract class Accessor<BeanT,ValueT> extends RawAccessor<BeanT,ValueT> {
 
         @Override
         public Accessor<BeanT, ValueT> optimize() {
+            if(getter==null || setter==null)
+                // if we aren't complete, OptimizedAccessor won't always work
+                return this;
+
             Accessor acc = OptimizedAccessorFactory.get(getter,setter);
             if(acc!=null)
                 return acc;
