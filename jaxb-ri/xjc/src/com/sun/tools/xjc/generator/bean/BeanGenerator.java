@@ -462,11 +462,17 @@ public final class BeanGenerator implements Outline
             }
         }
 
-        for( CPropertyInfo prop : target.getProperties() )
+        for( CPropertyInfo prop : target.getProperties() ) {
             generateFieldDecl(cc,prop);
+        }
 
-        if( target.declaresAttributeWildcard() )
+        if( target.declaresAttributeWildcard() ) {
             generateAttributeWildcard(cc);
+        }
+
+        // generate some class level javadoc
+        // TODO: add more elaborate javadoc
+        cc.ref.javadoc().append(target.javadoc);
 
         cc._package().objectFactoryGenerator().populate(cc);
     }
