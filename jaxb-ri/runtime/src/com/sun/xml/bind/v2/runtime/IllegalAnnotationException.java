@@ -149,7 +149,7 @@ public class IllegalAnnotationException extends JAXBException {
      * inside other exceptions.
      */
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder(getMessage());
 
         for( List<Location> locs : pos ) {
             sb.append("\n\tthis problem is related to the following location:");
