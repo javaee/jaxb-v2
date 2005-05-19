@@ -584,7 +584,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     private static final Class<? extends Annotation>[] jaxbAnnotations = new Class[]{
         XmlElement.class, XmlAttribute.class, XmlValue.class, XmlElementRef.class,
         XmlElements.class, XmlElementRefs.class, XmlElementWrapper.class,
-        XmlJavaTypeAdapter.class
+        XmlJavaTypeAdapter.class, XmlAnyElement.class
     };
 
     /**
