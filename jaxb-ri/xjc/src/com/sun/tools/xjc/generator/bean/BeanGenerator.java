@@ -471,7 +471,6 @@ public final class BeanGenerator implements Outline
         }
 
         // generate some class level javadoc
-        // TODO: add more elaborate javadoc
         cc.ref.javadoc().append(target.javadoc);
 
         cc._package().objectFactoryGenerator().populate(cc);
