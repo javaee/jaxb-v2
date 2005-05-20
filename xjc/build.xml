@@ -5,7 +5,7 @@
  SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 -->
 
-<!-- $Id: build.xml,v 1.11 2005-05-20 04:44:05 kohsuke Exp $ -->
+<!-- $Id: build.xml,v 1.12 2005-05-20 20:39:45 kohsuke Exp $ -->
 <project name="xjc" basedir=".." default="compile">
 
   <description>
@@ -275,10 +275,6 @@
             description="clean jaxb-ri/xjc/build">
       <!-- delete all RelaxNGCC-generated files -->
       <delete failonerror="false">
-        <fileset dir="${xjc.src}/com/sun/tools/xjc/reader/xmlschema/bindinfo">
-          <include name="automata/*.gif"/>
-          <include name="parser/*.java"/>
-        </fileset>
         <fileset dir="${xjc.src}/com/sun/tools/jxc/gen/config" includes="**/*.java"/>
       </delete>
 
