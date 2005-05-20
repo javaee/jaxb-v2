@@ -114,7 +114,8 @@ public abstract class Accessor<BeanT,ValueT> extends RawAccessor<BeanT,ValueT> {
         }
 
         public Void run() {
-            if(!Modifier.isPublic(f.getModifiers()) || !Modifier.isPublic(f.getDeclaringClass().getModifiers())) {
+            int mod = f.getModifiers();
+            if(!Modifier.isPublic(mod) || Modifier.isFinal(mod) || !Modifier.isPublic(f.getDeclaringClass().getModifiers())) {
                 try {
                     f.setAccessible(true);
                 } catch( SecurityException e ) {
