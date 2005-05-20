@@ -13,12 +13,11 @@ import javax.xml.bind.UnmarshallerHandler;
 import javax.xml.bind.helpers.DefaultValidationEventHandler;
 import javax.xml.validation.ValidatorHandler;
 
-import com.sun.codemodel.JCodeModel;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.SchemaCache;
 import com.sun.tools.xjc.reader.Const;
-import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.api.TypeReference;
+import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.xsom.parser.AnnotationContext;
 import com.sun.xml.xsom.parser.AnnotationParser;
 import com.sun.xml.xsom.parser.AnnotationParserFactory;
@@ -38,12 +37,10 @@ import org.xml.sax.helpers.XMLFilterImpl;
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 public class AnnotationParserFactoryImpl implements AnnotationParserFactory {
-    public AnnotationParserFactoryImpl( JCodeModel cm, Options opts ) {
-        this.codeModel=cm;
+    public AnnotationParserFactoryImpl(Options opts) {
         this.options=opts;
     }
-    
-    private final JCodeModel codeModel;
+
     private final Options options;
     /**
      * Lazily created validator, so that the schema for binding won't be
