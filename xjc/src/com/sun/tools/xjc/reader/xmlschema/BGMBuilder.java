@@ -63,7 +63,7 @@ public class BGMBuilder extends BindingComponent {
 
             Ring.add(XSSchemaSet.class,_schemas);
             Ring.add(codeModel);
-            Model model = new Model(codeModel, null/*set later*/, opts.classNameAllocator);
+            Model model = new Model(opts, codeModel, null/*set later*/, opts.classNameAllocator);
             Ring.add(model);
             Ring.add(ErrorReceiver.class,ef);
             Ring.add(CodeModelClassFactory.class,new CodeModelClassFactory(ef));

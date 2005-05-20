@@ -98,7 +98,8 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void> {
      *      Usually this should be set in the constructor, but we do allow this parameter
      *      to be initially null, and then set later.
      */
-    public Model( JCodeModel cm, NameConverter nc, ClassNameAllocator allocator ) {
+    public Model( Options opts, JCodeModel cm, NameConverter nc, ClassNameAllocator allocator ) {
+        this.options = opts;
         this.codeModel = cm;
         this.nameConverter = nc;
         this.defaultSymbolSpace = new SymbolSpace(codeModel);
@@ -129,6 +130,11 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void> {
      */
     @XmlTransient
     public final JCodeModel codeModel;
+
+    /**
+     * Command-line options used for building this model.
+     */
+    public final Options options;
 
     /**
      * True to generate serializable classes.
@@ -205,7 +211,7 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void> {
     public Outline generateCode(Options opt,ErrorReceiver receiver) {
         ErrorReceiverFilter ehf = new ErrorReceiverFilter(receiver);
 
-        Outline o = BeanGenerator.generate(this,opt,ehf);
+        Outline o = BeanGenerator.generate(this, ehf);
 
         // run extensions
         for( Plugin ma : opt.activePlugins )
