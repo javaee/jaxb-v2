@@ -77,7 +77,7 @@ public class TDTDReader extends DTDHandlerBase
                 ErrorReceiverFilter ef = new ErrorReceiverFilter(errorReceiver);
 
                 JCodeModel cm = new JCodeModel();
-                Model model = new Model(cm,NameConverter.standard,opts.classNameAllocator);
+                Model model = new Model(opts,cm,NameConverter.standard,opts.classNameAllocator);
 
                 Ring.add(cm);
                 Ring.add(model);
@@ -120,7 +120,7 @@ public class TDTDReader extends DTDHandlerBase
         this.entityResolver = entityResolver;
         this.errorReceiver = new ErrorReceiverFilter(errorReceiver);
         this.opts = opts;
-        bindInfo = new BindInfo(model,_bindInfo, this.errorReceiver, codeModel, opts );
+        bindInfo = new BindInfo(model,_bindInfo, this.errorReceiver);
         classFactory = new CodeModelClassFactory(errorReceiver);
     }
 

@@ -87,7 +87,7 @@ public final class RELAXNGCompiler {
     public RELAXNGCompiler(DPattern grammar, JCodeModel codeModel, Options opts) {
         this.grammar = grammar;
         this.opts = opts;
-        this.model = new Model(codeModel,NameConverter.smart,opts.classNameAllocator);
+        this.model = new Model(opts,codeModel,NameConverter.smart,opts.classNameAllocator);
 
         datatypes.put("",DatatypeLib.BUILTIN);
         datatypes.put(WellKnownNamespaces.XML_SCHEMA_DATATYPES,DatatypeLib.XMLSCHEMA);

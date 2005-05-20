@@ -43,7 +43,6 @@ import com.sun.codemodel.JVar;
 import com.sun.codemodel.fmt.JStaticJavaFile;
 import com.sun.tools.xjc.AbortException;
 import com.sun.tools.xjc.ErrorReceiver;
-import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.generator.annotation.spec.XmlAnyAttributeWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlEnumValueWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlEnumWriter;
@@ -121,26 +120,24 @@ public final class BeanGenerator implements Outline
      * @param _errorReceiver
      *      This object will receive all the errors discovered
      *      during the back-end stage.
-     * 
+     *
      * @return
      *      returns a {@link Outline} which will in turn
      *      be used to further generate marshaller/unmarshaller,
      *      or null if the processing fails (errors should have been
      *      reported to the error recevier.)
      */
-    public static Outline generate(
-        Model model, Options opt, ErrorReceiver _errorReceiver ) {
+    public static Outline generate(Model model, ErrorReceiver _errorReceiver) {
         
         try {
-            return new BeanGenerator(model,opt,_errorReceiver);
+            return new BeanGenerator(model, _errorReceiver);
         } catch( AbortException e ) {
             return null;
         }
     }
     
     
-    private BeanGenerator(
-        Model _model, Options opt, ErrorReceiver _errorReceiver ) {
+    private BeanGenerator(Model _model, ErrorReceiver _errorReceiver) {
 
         this.model = _model;
         this.codeModel = model.codeModel;
@@ -191,7 +188,7 @@ public final class BeanGenerator implements Outline
             }
         }
 
-        if(opt.debugMode)
+        if(model.options.debugMode)
             generateClassList();
     }
 

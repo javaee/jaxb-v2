@@ -19,10 +19,9 @@ import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JPackage;
-import com.sun.tools.xjc.ErrorReceiver;
-import com.sun.tools.xjc.Options;
-import com.sun.tools.xjc.SchemaCache;
 import com.sun.tools.xjc.AbortException;
+import com.sun.tools.xjc.ErrorReceiver;
+import com.sun.tools.xjc.SchemaCache;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.util.CodeModelClassFactory;
@@ -53,21 +52,20 @@ public class BindInfo
      */
     private final String defaultPackage;
     
-    public BindInfo( Model model, InputSource source, ErrorReceiver _errorReceiver,
-        JCodeModel _codeModel, Options opts ) throws AbortException {
+    public BindInfo(Model model, InputSource source, ErrorReceiver _errorReceiver) throws AbortException {
         
-        this( model, parse(source,_errorReceiver), _errorReceiver, _codeModel, opts );
+        this( model, parse(source,_errorReceiver), _errorReceiver);
     }
     
-    public BindInfo( Model model, Document _dom, ErrorReceiver _errorReceiver, JCodeModel _codeModel, Options opts ) {
+    public BindInfo(Model model, Document _dom, ErrorReceiver _errorReceiver) {
         this.model = model;
         this.dom = _dom.getDocumentElement();
-        this.codeModel = _codeModel;
+        this.codeModel = model.codeModel;
         this.errorReceiver = _errorReceiver;
         this.classFactory = new CodeModelClassFactory(_errorReceiver);
         // TODO: decide name converter from the binding file
 
-        this.defaultPackage = opts.defaultPackage;
+        this.defaultPackage = model.options.defaultPackage;
         
         // process element declarations
         for( Element ele : DOMUtil.getChildElements(dom,"element")) {
