@@ -97,8 +97,13 @@ public final class BindInfo implements Iterable<BIDeclaration> {
                 if(o instanceof BIDeclaration)
                     bi.addDecl((BIDeclaration)o);
                 // this is really PITA! I can't get the source location
-                if(o instanceof Element)
-                    bi.addDecl(new BIXPluginCustomization((Element)o,null/*TODO*/));
+                if(o instanceof Element) {
+                    Element e = (Element)o;
+                    if(e.getNamespaceURI()==null || e.getNamespaceURI().equals("")
+                    || e.getNamespaceURI().equals(WellKnownNamespace.XML_SCHEMA))
+                        continue;   // this is definitely not a customization
+                    bi.addDecl(new BIXPluginCustomization(e,null/*TODO*/));
+                }
             }
         }
     }
