@@ -93,6 +93,10 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
         return isJavaNamingConventionEnabled;
     }
 
+    public BISerializable getSerializable() {
+        return serializable;
+    }
+
     private static enum UnderscoreBinding {
         @XmlEnumValue("asWordSeparator")
         WORD_SEPARATOR(NameConverter.standard),
@@ -179,7 +183,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
      * or null otherwise.
      */
     @XmlElement
-    public final BISerializable serializable = null;
+    private BISerializable serializable = null;
 
     /**
      * If &lt;xjc:superClass> extension is specified,
@@ -247,6 +251,17 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
     String noValidatingUnmarshaller = null;
     @XmlElement(namespace=Const.XJC_EXTENSION_URI)
     TypeSubstitutionElement typeSubstitution = null;
+
+    /**
+     * Another 1.0 compatibility customization (but we accept it
+     * and treat it as {@link #serializable})
+     */
+    @XmlElement(name="serializable",namespace=Const.XJC_EXTENSION_URI)
+    void setXjcSerializable(BISerializable s) {
+        this.serializable = s;
+    }
+
+
 
     private static final class TypeSubstitutionElement {
         @XmlAttribute
