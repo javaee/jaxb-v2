@@ -89,6 +89,10 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
         return defaultProperty;
     }
 
+    public boolean isJavaNamingConventionEnabled() {
+        return isJavaNamingConventionEnabled;
+    }
+
     private static enum UnderscoreBinding {
         @XmlEnumValue("asWordSeparator")
         WORD_SEPARATOR(NameConverter.standard),
@@ -113,7 +117,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
      * IOW, the reader.xmlschema package shouldn't be aware of this switch.
      */
     @XmlAttribute(name="enableJavaNamingConventions")
-    /*package*/ final boolean isJavaNamingConventionEnabled = true;
+    /*package*/ boolean isJavaNamingConventionEnabled = true;
 
     /**
      * True to generate classes for every simple type. 
