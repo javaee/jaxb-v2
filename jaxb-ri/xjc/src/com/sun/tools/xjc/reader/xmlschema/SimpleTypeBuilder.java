@@ -82,7 +82,7 @@ public final class SimpleTypeBuilder extends BindingComponent {
         BindInfo info = builder.getBindInfo(getReferer());
         BIProperty prop = info.get(BIProperty.class);
         if(prop==null)  return null;
-        return prop.conv;
+        return prop.getConv();
     }
 
     public XSComponent getReferer() {

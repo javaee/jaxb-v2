@@ -397,8 +397,8 @@ public final class ConversionFinder extends BindingComponent {
                     mem = builder.getBindInfo(facet).get(BIEnumMember.class);
 
                 if( mem!=null ) {
-                    name = mem.getMemberName();
-                    mdoc = mem.getJavadoc();
+                    name = mem.name;
+                    mdoc = mem.javadoc;
                 }
 
             }
@@ -442,7 +442,7 @@ public final class ConversionFinder extends BindingComponent {
         if( en!=null ) {
         	en.markAsAcknowledged();
 
-            if(en.dontBind) {
+            if(!en.map) {
                 // just inherit the binding for the base type
                 return type.getSimpleBaseType().apply(functor);
             }

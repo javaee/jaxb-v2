@@ -11,14 +11,13 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.sun.codemodel.JClass;
+import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
-import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.tools.xjc.ErrorReceiver;
 
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -166,7 +165,7 @@ public class TypeUtil {
      * a reference to {@link Object} will be returned.
      */
     public static JType getType( JCodeModel codeModel,
-        String typeName, ErrorHandler errorHandler, Locator errorSource ) throws SAXException {
+        String typeName, ErrorReceiver errorHandler, Locator errorSource ) {
 
         try {
             return codeModel.parseType(typeName);

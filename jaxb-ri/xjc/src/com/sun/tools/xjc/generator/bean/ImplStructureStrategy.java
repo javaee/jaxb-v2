@@ -5,18 +5,19 @@ package com.sun.tools.xjc.generator.bean;
 
 import javax.xml.bind.annotation.AccessType;
 
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JClassContainer;
-import com.sun.codemodel.JMod;
-import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JVar;
-import com.sun.codemodel.JType;
+import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocComment;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JPackage;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JVar;
+import com.sun.tools.xjc.generator.annotation.spec.XmlAccessorTypeWriter;
 import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
-import com.sun.tools.xjc.generator.annotation.spec.XmlAccessorTypeWriter;
+import com.sun.tools.xjc.util.ReadOnlyAdapter;
 
 /**
  * Decides how a bean token is mapped to the generated classes.
@@ -181,6 +182,13 @@ public enum ImplStructureStrategy {
         public Result(JDefinedClass exposed, JDefinedClass implementation) {
             this.exposed = exposed;
             this.implementation = implementation;
+        }
+    }
+
+    public static final class BooleanAdapter extends ReadOnlyAdapter<Boolean,ImplStructureStrategy> {
+        public ImplStructureStrategy unmarshal(Boolean b) throws Exception {
+            if(b.booleanValue())    return BEAN_ONLY;
+            else                    return INTF_AND_IMPL;
         }
     }
 }

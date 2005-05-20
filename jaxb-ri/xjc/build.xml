@@ -5,7 +5,7 @@
  SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 -->
 
-<!-- $Id: build.xml,v 1.10 2005-05-06 21:24:17 kohsuke Exp $ -->
+<!-- $Id: build.xml,v 1.11 2005-05-20 04:44:05 kohsuke Exp $ -->
 <project name="xjc" basedir=".." default="compile">
 
   <description>
@@ -59,27 +59,11 @@
 
     <!-- check if RelaxNGCC needs to be run -->
     <target name="ngcc-check">
-      <!-- generate a schema for validation -->
-      <style
-          in ="${xjc.src}/com/sun/tools/xjc/reader/xmlschema/bindinfo/binding.rng"
-          out="${xjc.src}/com/sun/tools/xjc/reader/xmlschema/bindinfo/binding.purified.rng"
-          style="${xjc.src}/purify.xsl" />
-      <style
-          in ="${xjc.src}/com/sun/tools/jxc/gen/config/config.rng"
-          out="${xjc.src}/com/sun/tools/jxc/gen/config/config.purified.rng"
-          style="${xjc.src}/purify.xsl" />
-      
       <condition property="ngcc.notrequired">
-        <and>
-          <uptodate
-            targetfile="${xjc.src}/com/sun/tools/xjc/reader/xmlschema/bindinfo/parser/Root.java">
-            <srcfiles dir="${xjc.src}/com/sun/tools/xjc/reader/xmlschema/bindinfo" includes="binding.rng"/>
-          </uptodate>
-          <uptodate
-            targetfile="${xjc.src}/com/sun/tools/jxc/gen/config/Config.java">
-            <srcfiles dir="${xjc.src}/com/sun/tools/jxc/gen/config" includes="config.rng"/>
-          </uptodate>
-        </and>
+        <uptodate
+          targetfile="${xjc.src}/com/sun/tools/jxc/gen/config/Config.java">
+          <srcfiles dir="${xjc.src}/com/sun/tools/jxc/gen/config" includes="config.rng"/>
+        </uptodate>
       </condition>
     </target>
     
@@ -91,43 +75,20 @@
 
       <delete dir="${xjc.gensrc}/com/sun/tools/jxc/gen/config" />
       <mkdir  dir="${xjc.gensrc}/com/sun/tools/jxc/gen/config"/>
-      <delete dir="${xjc.gensrc}/com/sun/tools/xjc/reader/xmlschema/bindinfo/parser" />
-      <mkdir  dir="${xjc.gensrc}/com/sun/tools/xjc/reader/xmlschema/bindinfo/parser"/>
-      <parallel>
-        <java classname="relaxngcc.RelaxNGCC" fork="true">
-          <classpath refid="javac.classpath" />
-          <classpath path="${jaxb.libs.util}/relaxngcc.jar"/>
+      <java classname="relaxngcc.RelaxNGCC" fork="true">
+        <classpath refid="javac.classpath" />
+        <classpath path="${jaxb.libs.util}/relaxngcc.jar"/>
 
-          <!-- enable debug statements -->
-          <!--arg value="-d"/-->
+        <!-- enable debug statements -->
+        <!--arg value="-d"/-->
 
-          <!-- dump automata -->
-          <!--arg value="- -print-automata"/>
-          <arg path="${xjc.src}/com/sun/tools/xjc/reader/xmlschema/bindinfo/automata"/-->
+        <!-- specify output directory -->
+        <arg value="--target"/>
+        <arg path="${xjc.gensrc}/com/sun/tools/jxc/gen/config" />
 
-          <!-- specify output directory -->
-          <arg value="--target"/>
-          <arg path="${xjc.gensrc}/com/sun/tools/xjc/reader/xmlschema/bindinfo/parser" />
-
-          <!-- source file -->
-          <arg path="${xjc.src}/com/sun/tools/xjc/reader/xmlschema/bindinfo/binding.rng"/>
-        </java>
-
-        <java classname="relaxngcc.RelaxNGCC" fork="true">
-          <classpath refid="javac.classpath" />
-          <classpath path="${jaxb.libs.util}/relaxngcc.jar"/>
-
-          <!-- enable debug statements -->
-          <!--arg value="-d"/-->
-
-          <!-- specify output directory -->
-          <arg value="--target"/>
-          <arg path="${xjc.gensrc}/com/sun/tools/jxc/gen/config" />
-
-          <!-- source file -->
-          <arg path="${xjc.src}/com/sun/tools/jxc/gen/config/config.rng"/>
-        </java>
-      </parallel>
+        <!-- source file -->
+        <arg path="${xjc.src}/com/sun/tools/jxc/gen/config/config.rng"/>
+      </java>
     </target>
 
   <target name="annotation-writers"

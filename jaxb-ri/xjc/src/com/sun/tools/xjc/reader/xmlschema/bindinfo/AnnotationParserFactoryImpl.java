@@ -4,21 +4,29 @@
  */
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
+import java.util.Collections;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.UnmarshallerHandler;
+import javax.xml.bind.helpers.DefaultValidationEventHandler;
 import javax.xml.validation.ValidatorHandler;
 
 import com.sun.codemodel.JCodeModel;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.SchemaCache;
-import com.sun.tools.xjc.reader.xmlschema.bindinfo.parser.AnnotationState;
 import com.sun.tools.xjc.reader.Const;
+import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
+import com.sun.xml.bind.api.TypeReference;
+import com.sun.xml.xsom.parser.AnnotationContext;
 import com.sun.xml.xsom.parser.AnnotationParser;
 import com.sun.xml.xsom.parser.AnnotationParserFactory;
-import com.sun.xml.xsom.parser.AnnotationContext;
 
-import org.xml.sax.ContentHandler;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.EntityResolver;
 import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLFilterImpl;
 
@@ -46,11 +54,41 @@ public class AnnotationParserFactoryImpl implements AnnotationParserFactory {
     /**
      * Lazily parsed schema for the binding file.
      */
-    private static SchemaCache bindingFileSchema = new SchemaCache(AnnotationParserFactoryImpl.class.getResource("binding.xsd"));
+    private static final SchemaCache bindingFileSchema = new SchemaCache(AnnotationParserFactoryImpl.class.getResource("binding.xsd"));
+
+    /**
+     * Lazily prepared {@link JAXBContext}.
+     */
+    private static JAXBContextImpl customizationContext;
+
+    private static JAXBContextImpl getJAXBContext() {
+        synchronized(AnnotationParserFactoryImpl.class) {
+            try {
+                if(customizationContext==null)
+                    customizationContext = new JAXBContextImpl(
+                        new Class[] {
+                            BindInfo.class, // for xs:annotation
+                            BIClass.class,
+                            BIConversion.User.class,
+                            BIEnum.class,
+                            BIEnumMember.class,
+                            BIGlobalBinding.class,
+                            BIProperty.class,
+                            BISchemaBinding.class
+                        }, Collections.<TypeReference>emptyList(), null
+                    );
+                return customizationContext;
+            } catch (JAXBException e) {
+                throw new AssertionError(e);
+            }
+        }
+    }
 
     public AnnotationParser create() {
         return new AnnotationParser() {
-            private AnnotationState parser = null;
+            private Unmarshaller u = getJAXBContext().createUnmarshaller();
+
+            private UnmarshallerHandler handler;
 
             public ContentHandler getContentHandler(
                 AnnotationContext context, String parentElementName,
@@ -58,18 +96,22 @@ public class AnnotationParserFactoryImpl implements AnnotationParserFactory {
 
                 // return a ContentHandler that validates the customization and also
                 // parses them into the internal structure.
-                if(parser!=null)
+                if(handler!=null)
                     // interface contract violation.
                     // this method will be called only once.
                     throw new AssertionError();
 
-                // set up the actual parser.
-                NGCCRuntimeEx runtime = new NGCCRuntimeEx(codeModel,options,errorHandler);
-                parser = new AnnotationState(runtime);
-                runtime.setRootHandler(parser);
+                if(options.debugMode)
+                    try {
+                        u.setEventHandler(new DefaultValidationEventHandler());
+                    } catch (JAXBException e) {
+                        throw new AssertionError(e);    // ridiculous!
+                    }
+
+                handler = u.getUnmarshallerHandler();
 
                 // configure so that the validator will receive events for JAXB islands
-                return new ForkingFilter(runtime) {
+                return new ForkingFilter(handler) {
                     @Override
                     public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
                         super.startElement(uri, localName, qName, atts);
@@ -86,20 +128,26 @@ public class AnnotationParserFactoryImpl implements AnnotationParserFactory {
             }
 
             public Object getResult( Object existing ) {
-                if(parser==null)
+                if(handler==null)
                     // interface contract violation.
                     // the getContentHandler method must have been called.
                     throw new AssertionError();
 
-                if(existing!=null) {
-                    BindInfo bie = (BindInfo)existing;
-                    bie.absorb(parser.bi);
-                    return bie;
-                } else {
-                    if(parser.bi.size()>0)
-                        return parser.bi;   // just annotation. no meaningful customization
-                    else
-                        return null;
+                try {
+                    BindInfo result = (BindInfo)handler.getResult();
+
+                    if(existing!=null) {
+                        BindInfo bie = (BindInfo)existing;
+                        bie.absorb(result);
+                        return bie;
+                    } else {
+                        if(result.size()>0)
+                            return result;   // just annotation. no meaningful customization
+                        else
+                            return null;
+                    }
+                } catch (JAXBException e) {
+                    throw new AssertionError(e);
                 }
             }
         };

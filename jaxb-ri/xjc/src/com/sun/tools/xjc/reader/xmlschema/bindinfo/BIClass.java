@@ -5,6 +5,9 @@
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
 import javax.xml.namespace.QName;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import com.sun.tools.xjc.reader.Const;
 
@@ -22,6 +25,7 @@ import org.xml.sax.Locator;
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
+@XmlRootElement(name="class")
 public final class BIClass extends AbstractDeclarationImpl {
     
     public BIClass( Locator loc, String _className, String _implClass, String _javadoc ) {
@@ -30,8 +34,12 @@ public final class BIClass extends AbstractDeclarationImpl {
         this.javadoc = _javadoc;
         this.userSpecifiedImplClass = _implClass;
     }
-    
-    private final String className;
+
+    protected BIClass() {
+    }
+
+    @XmlAttribute(name="name")
+    private String className;
     
     /**
      * Gets the specified class name, or null if not specified.
@@ -52,7 +60,8 @@ public final class BIClass extends AbstractDeclarationImpl {
             return className;
     }
     
-    private final String userSpecifiedImplClass;
+    @XmlAttribute(name="implClass")
+    private String userSpecifiedImplClass;
     
     /**
      * Gets the fully qualified name of the
@@ -63,8 +72,8 @@ public final class BIClass extends AbstractDeclarationImpl {
         return userSpecifiedImplClass;
     }
     
-    
-    private final String javadoc;
+    @XmlElement
+    private String javadoc;
     /**
      * Gets the javadoc comment specified in the customization.
      * Can be null if none is specified.

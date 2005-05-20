@@ -155,15 +155,15 @@ public class BGMBuilder extends BindingComponent {
             // no global customization is present.
             // use the default one
             globalBinding = new BIGlobalBinding();
-            BindInfo big = new BindInfo(null);
+            BindInfo big = new BindInfo();
             big.addDecl(globalBinding);
             big.setOwner(this,null);
         }
 
         // code generation mode
         model.strategy = globalBinding.codeGenerationStrategy;
-        model.rootClass = globalBinding.superClass;
-        model.rootInterface = globalBinding.superInterface;
+        model.rootClass = globalBinding.getSuperClass();
+        model.rootInterface = globalBinding.getSuperInterface();
 
         // check XJC extensions and realize them
 
@@ -281,6 +281,7 @@ public class BGMBuilder extends BindingComponent {
         BISchemaBinding cust = getBindInfo(s).get(BISchemaBinding.class);
         if(cust==null)      return; // not present
 
+        cust.markAsAcknowledged();
         if( cust.getJavadoc()==null )   return;     // no javadoc customization
 
         // produce a HTML file
@@ -310,7 +311,7 @@ public class BGMBuilder extends BindingComponent {
         // XSOM is read-only, so we cannot add new annotations.
         // for components that didn't have annotations,
         // we maintain an external map.
-        bi = new BindInfo(null);
+        bi = new BindInfo();
         bi.setOwner(this,schemaComponent);
         externalBindInfos.put(schemaComponent,bi);
         return bi;
@@ -320,7 +321,7 @@ public class BGMBuilder extends BindingComponent {
     /**
      * Used as a constant instance to represent the empty {@link BindInfo}.
      */
-    private final BindInfo emptyBindInfo = new BindInfo(null);
+    private final BindInfo emptyBindInfo = new BindInfo();
 
     /**
      * Gets the BindInfo object associated to a schema component.

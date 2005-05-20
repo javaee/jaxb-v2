@@ -26,6 +26,7 @@ import com.sun.tools.xjc.reader.Util;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BISchemaBinding;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BindInfo;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.LocalScoping;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSComponent;
@@ -155,7 +156,7 @@ public class ClassSelector extends BindingComponent {
                 addSchemaFragmentJavadoc(bean,sc);
 
             // build the body
-            if(!builder.getGlobalBinding().flattenClasses)
+            if(builder.getGlobalBinding().flattenClasses==LocalScoping.NESTED)
                 pushClassScope(bean);
             else
                 pushClassScope(bean.parent());
@@ -376,10 +377,6 @@ public class ClassSelector extends BindingComponent {
         BindInfo bi = builder.getBindInfo(sc);
         String doc = bi.getDocumentation();
 
-        if(doc!=null && bi.hasTitleInDocumentation()/**otherwise add it later*/) {
-            bean.javadoc += doc+'\n';
-        }
-
         StringWriter out = new StringWriter();
         SchemaWriter sw = new SchemaWriter(new JavadocEscapeWriter(out));
         sc.visit(sw);
@@ -405,7 +402,7 @@ public class ClassSelector extends BindingComponent {
             bean.javadoc += jdoc;
         }
 
-        if(doc!=null && !bi.hasTitleInDocumentation()) {
+        if(doc!=null) {
             bean.javadoc += '\n'+doc+'\n';
         }
 

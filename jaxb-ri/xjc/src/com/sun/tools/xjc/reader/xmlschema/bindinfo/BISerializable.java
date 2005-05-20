@@ -4,6 +4,8 @@
  */
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
+import javax.xml.bind.annotation.XmlAttribute;
+
 
 /**
  * This customization will enable serialization support on XJC.
@@ -13,12 +15,9 @@ package com.sun.tools.xjc.reader.xmlschema.bindinfo;
  * @author
  *  Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-public class BISerializable {
+public final class BISerializable {
 
     /** serial version UID, or null to avoid generating the serialVersionUID field. */
-    public final Long uid;
-    
-    public BISerializable( Long _uid ) {
-        uid = _uid;
-    }
+    @XmlAttribute
+    public Long uid;
 }

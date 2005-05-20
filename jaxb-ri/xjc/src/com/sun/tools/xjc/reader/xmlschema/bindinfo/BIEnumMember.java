@@ -4,11 +4,12 @@
  */
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
 import com.sun.tools.xjc.reader.Const;
-
-import org.xml.sax.Locator;
 
 /**
  * Enumeration member customization.
@@ -16,29 +17,26 @@ import org.xml.sax.Locator;
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
+@XmlRootElement(name="typesafeEnumMember")
 public class BIEnumMember extends AbstractDeclarationImpl {
-    
-    public BIEnumMember( Locator loc, String _memberName, String _javadoc ) {
-        super(loc);
-        this.memberName = _memberName;
-        this.javadoc = _javadoc;
+    protected BIEnumMember() {
+        name = null;
+        javadoc = null;
     }
-    
-    private final String memberName;
+
     /** Gets the specified class name, or null if not specified. */
-    public String getMemberName() {
-        // regardless of the BIGlobalBinding.isJavaNamingConventionEnabled flag,
-        // we don't modify the constant name.
-        return memberName;
-    }
-    
-    private final String javadoc;
+    // regardless of the BIGlobalBinding.isJavaNamingConventionEnabled flag,
+    // we don't modify the constant name.
+    @XmlAttribute
+    public final String name;
+
     /**
      * Gets the javadoc comment specified in the customization.
      * Can be null if none is specified.
      */
-    public String getJavadoc() { return javadoc; }
-    
+    @XmlElement
+    public final String javadoc;
+
     public QName getName() { return NAME; }
 
     /** Name of this declaration. */

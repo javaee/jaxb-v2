@@ -4,6 +4,10 @@
  */
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import com.sun.tools.xjc.reader.Const;
@@ -14,25 +18,44 @@ import com.sun.xml.xsom.XSModelGroup;
 import com.sun.xml.xsom.XSModelGroupDecl;
 import com.sun.xml.xsom.XSType;
 
-import org.xml.sax.Locator;
-
 /**
  * Schema-wide binding customization.
  * 
  * @author
  *  Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
+@XmlRootElement(name="schemaBindings")
 public final class BISchemaBinding extends AbstractDeclarationImpl {
 
-    // naming rules
-    private final NamingRule typeNamingRule;
-    private final NamingRule elementNamingRule;
-    private final NamingRule attributeNamingRule;
-    private final NamingRule modelGroupNamingRule;
-    private final NamingRule anonymousTypeNamingRule;
-    
-    private String packageName;
-    private final String javadoc;
+    /**
+     * Name conversion rules. All defaults to {@link BISchemaBinding#defaultNamingRule}.
+     */
+    @XmlType(propOrder={})
+    private static final class NameRules {
+        @XmlElement
+        NamingRule typeName = defaultNamingRule;
+        @XmlElement
+        NamingRule elementName = defaultNamingRule;
+        @XmlElement
+        NamingRule attributeName = defaultNamingRule;
+        @XmlElement
+        NamingRule modelGroupName = defaultNamingRule;
+        @XmlElement
+        NamingRule anonymousTypeName = new NamingRule("","Type");
+    }
+
+    @XmlElement
+    private NameRules nameXmlTransform = new NameRules();
+
+    private static final class PackageInfo {
+        @XmlAttribute
+        String name;
+        @XmlElement
+        String javadoc;
+    }
+
+    @XmlElement(name="package")
+    private PackageInfo packageInfo = new PackageInfo();
 
     /**
      * Default naming rule, that doesn't change the name.
@@ -48,44 +71,24 @@ public final class BISchemaBinding extends AbstractDeclarationImpl {
      * done.
      */
     public static final class NamingRule {
-        private final String prefix;
-        private final String suffix;
+        @XmlAttribute
+        private String prefix;
+        @XmlAttribute
+        private String suffix;
         
         public NamingRule( String _prefix, String _suffix ) {
             this.prefix = _prefix;
             this.suffix = _suffix;
         }
-        
+
+        public NamingRule() {
+        }
+
         /** Changes the name according to the rule. */
         public String mangle( String originalName ) {
             return prefix+originalName+suffix;
         }
     }
-    
-    public BISchemaBinding( String _packageName, String _javadoc,
-        NamingRule rType, NamingRule rElement, NamingRule rAttribute,
-        NamingRule rModelGroup, NamingRule rAnonymousType, Locator _loc ) {
-            
-        super(_loc);
-        this.packageName = _packageName;
-        this.javadoc = _javadoc;
-        
-        if(rType==null)             rType           = defaultNamingRule;
-        if(rElement==null)          rElement        = defaultNamingRule;
-        if(rAttribute==null)        rAttribute      = defaultNamingRule;
-        if(rModelGroup==null)       rModelGroup     = defaultNamingRule;
-        if(rAnonymousType==null)    rAnonymousType  = new NamingRule("","Type");
-        
-        this.typeNamingRule = rType;
-        this.elementNamingRule = rElement;
-        this.attributeNamingRule = rAttribute;
-        this.modelGroupNamingRule = rModelGroup;
-        this.anonymousTypeNamingRule = rAnonymousType;
-        
-        // schema-wide customizations are always considered as acknowledged.
-        markAsAcknowledged();
-    }
-    
     
     /**
      * Transforms the default name produced from XML name
@@ -99,27 +102,26 @@ public final class BISchemaBinding extends AbstractDeclarationImpl {
      */
     public String mangleClassName( String name, XSComponent cmp ) {
         if( cmp instanceof XSType )
-            return typeNamingRule.mangle(name);
+            return nameXmlTransform.typeName.mangle(name);
         if( cmp instanceof XSElementDecl )
-            return elementNamingRule.mangle(name);
+            return nameXmlTransform.elementName.mangle(name);
         if( cmp instanceof XSAttributeDecl )
-            return attributeNamingRule.mangle(name);
+            return nameXmlTransform.attributeName.mangle(name);
         if( cmp instanceof XSModelGroup || cmp instanceof XSModelGroupDecl )
-            return modelGroupNamingRule.mangle(name);
+            return nameXmlTransform.modelGroupName.mangle(name);
         
         // otherwise no modification
         return name;
     }
     
     public String mangleAnonymousTypeClassName( String name ) {
-        return anonymousTypeNamingRule.mangle(name);
+        return nameXmlTransform.anonymousTypeName.mangle(name);
     }
     
     
-    public void setPackageName( String val ) { packageName=val; }
-    public String getPackageName() { return packageName; }
+    public String getPackageName() { return packageInfo.name; }
     
-    public String getJavadoc() { return javadoc; }
+    public String getJavadoc() { return packageInfo.javadoc; }
     
     public QName getName() { return NAME; }
     public static final QName NAME = new QName(

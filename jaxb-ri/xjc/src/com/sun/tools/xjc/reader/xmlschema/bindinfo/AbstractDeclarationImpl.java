@@ -6,6 +6,7 @@ package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.xml.xsom.XSComponent;
+import com.sun.xml.bind.annotation.XmlLocation;
 
 import org.xml.sax.Locator;
 
@@ -17,11 +18,16 @@ import org.xml.sax.Locator;
  */
 abstract class AbstractDeclarationImpl implements BIDeclaration {
 
-    protected AbstractDeclarationImpl( Locator _loc ) {
-        this.loc = _loc;
+    @Deprecated // eventually delete this in favor of using JAXB    
+    protected AbstractDeclarationImpl(Locator loc) {
+        this.loc = loc;
     }
-    
-    private final Locator loc;
+
+    protected AbstractDeclarationImpl() {}
+
+
+    @XmlLocation
+    Locator loc;    // set by JAXB
     public Locator getLocation() { return loc; }
     
     protected BindInfo parent;
