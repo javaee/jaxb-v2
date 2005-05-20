@@ -72,10 +72,16 @@ class AccessorInjector {
      *      replacement string.
      */
     private static final byte[] tailor( String templateClassName, String newClassName, String... replacements ) {
-        InputStream resource = AccessorInjector.class.getClassLoader().getResourceAsStream(templateClassName+".class");
+        InputStream resource;
+        if(CLASS_LOADER!=null)
+            resource = CLASS_LOADER.getResourceAsStream(templateClassName+".class");
+        else
+            resource = ClassLoader.getSystemResourceAsStream(templateClassName+".class");
         if(resource==null)
             return null;
 
         return ClassTailor.tailor(resource,templateClassName,newClassName,replacements);
     }
+
+    private static final ClassLoader CLASS_LOADER = AccessorInjector.class.getClassLoader();
 }
