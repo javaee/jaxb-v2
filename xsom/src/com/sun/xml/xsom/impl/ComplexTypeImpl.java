@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: ComplexTypeImpl.java,v 1.2 2005-04-21 16:42:12 kohsuke Exp $
+ * @(#)$Id: ComplexTypeImpl.java,v 1.3 2005-05-20 23:14:38 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -50,6 +50,18 @@ public class ComplexTypeImpl extends AttributesHolder implements XSComplexType, 
     }
     
     public XSComplexType asComplexType(){ return this; }
+
+    public boolean isDerivedFrom(XSType t) {
+        while(true) {
+            if(t==this)
+                return true;
+            XSType s = t.getBaseType();
+            if(s==t)
+                return false;
+            t = s;
+        }
+    }
+
     public XSSimpleType  asSimpleType()    { return null; }
     public final boolean isSimpleType() { return false; }
     public final boolean isComplexType(){ return true; }

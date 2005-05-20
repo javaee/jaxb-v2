@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: SimpleTypeImpl.java,v 1.2 2005-04-21 16:42:13 kohsuke Exp $
+ * @(#)$Id: SimpleTypeImpl.java,v 1.3 2005-05-20 23:14:38 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -59,6 +59,18 @@ public abstract class SimpleTypeImpl extends DeclarationImpl
     
     public final XSSimpleType asSimpleType()  { return this; }
     public final XSComplexType asComplexType(){ return null; }
+
+    public boolean isDerivedFrom(XSType t) {
+        while(true) {
+            if(t==this)
+                return true;
+            XSType s = t.getBaseType();
+            if(s==t)
+                return false;
+            t = s;
+        }
+    }
+
     public final boolean isSimpleType()       { return true; }
     public final boolean isComplexType()      { return false; }
     public final XSParticle asParticle()      { return null; }

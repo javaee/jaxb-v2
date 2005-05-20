@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: SchemaSetImpl.java,v 1.4 2005-05-12 03:59:18 kohsuke Exp $
+ * @(#)$Id: SchemaSetImpl.java,v 1.5 2005-05-20 23:14:38 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -258,6 +258,11 @@ public class SchemaSetImpl implements XSSchemaSet
         }
         public XSSimpleType asSimpleType() { return this; }
         public XSComplexType asComplexType() { return null; }
+
+        public boolean isDerivedFrom(XSType t) {
+            return t==this || t==anyType;
+        }
+
         public boolean isSimpleType()       { return true; }
         public boolean isComplexType()      { return false; }
         public XSContentType asEmpty() { return null; }
@@ -318,6 +323,11 @@ public class SchemaSetImpl implements XSSchemaSet
         public XSType getBaseType() { return this; }
         public XSSimpleType asSimpleType() { return null; }
         public XSComplexType asComplexType() { return this; }
+
+        public boolean isDerivedFrom(XSType t) {
+            return t==this;
+        }
+
         public boolean isSimpleType()       { return false; }
         public boolean isComplexType()      { return true; }
         public XSContentType asEmpty() { return null; }

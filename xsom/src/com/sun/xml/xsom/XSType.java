@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: XSType.java,v 1.1 2005-04-14 22:06:22 kohsuke Exp $
+ * @(#)$Id: XSType.java,v 1.2 2005-05-20 23:14:39 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -15,8 +15,15 @@ package com.sun.xml.xsom;
  * @author
  *  Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-public interface XSType extends XSDeclaration
-{
+public interface XSType extends XSDeclaration {
+    /**
+     * Returns the base type of this type.
+     *
+     * Note that if this type represents <tt>xs:anyType</tt>, this method returns itself.
+     * This is awkward as an API, but it follows the schema specification.
+     *
+     * @return  always non-null.
+     */
     XSType getBaseType();
 
     final static int EXTENSION = 1;
@@ -43,4 +50,12 @@ public interface XSType extends XSDeclaration
     XSSimpleType asSimpleType();
     /** Casts this object to XSComplexType if possible, otherwise returns null. */
     XSComplexType asComplexType();
+
+    /**
+     * Returns true if this type is derived from the specified type.
+     *
+     * <p>
+     * Note that <tt>t.isDerivedFrom(t)</tt> returns true.
+     */
+    boolean isDerivedFrom( XSType t );
 }
