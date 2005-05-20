@@ -134,8 +134,12 @@ public final class ModelLoader {
                 throw new AssertionError(); // assertion failed
             }
 
-            if (errorReceiver.hadError())
+            if (errorReceiver.hadError()) {
                 grammar = null;
+            } else {
+                grammar.setPackageLevelAnnotations(opt.packageLevelAnnotations);
+            }
+
             return grammar;
 
         } catch (SAXException e) {

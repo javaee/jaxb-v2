@@ -94,6 +94,11 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void> {
     /*package*/ CCustomizations customizations;
 
     /**
+     * This field controls the generation of package level annotations for s2j
+     */
+    private boolean packageLevelAnnotations = true;
+
+    /**
      * @param nc
      *      Usually this should be set in the constructor, but we do allow this parameter
      *      to be initially null, and then set later.
@@ -123,6 +128,14 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void> {
         // if this is null, the model builder must have botched the job.
         assert nameConverter!=null;
         return nameConverter;
+    }
+
+    public boolean isPackageLevelAnnotations() {
+        return packageLevelAnnotations;
+    }
+
+    public void setPackageLevelAnnotations(boolean packageLevelAnnotations) {
+        this.packageLevelAnnotations = packageLevelAnnotations;
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: PackageOutlineImpl.java,v 1.8 2005-05-18 19:14:45 kohsuke Exp $
+ * @(#)$Id: PackageOutlineImpl.java,v 1.9 2005-05-20 20:58:54 ryan_shoemaker Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -39,6 +39,7 @@ import com.sun.tools.xjc.generator.annotation.spec.XmlSchemaWriter;
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 final class PackageOutlineImpl implements PackageOutline {
+    private final Model _model;
     private final JPackage _package;
     private final ObjectFactoryGenerator objectFactoryGenerator;
 
@@ -88,6 +89,7 @@ final class PackageOutlineImpl implements PackageOutline {
     }
 
     protected PackageOutlineImpl( BeanGenerator outline, Model model, JPackage _pkg ) {
+        this._model = model;
         this._package = _pkg;
         switch(model.strategy) {
         case BEAN_ONLY:
@@ -109,8 +111,13 @@ final class PackageOutlineImpl implements PackageOutline {
      * This method is called after {@link #classes} field is filled up.
      */
     public void calcDefaultValues() {
-        // if possible, we should also have a switch that tells XJC not to use a package-level
-        // annotation, so that people can have self-contained classes.
+        // short-circuit if xjc was told not to generate package level annotations in
+        // package-info.java
+        if(!_model.isPackageLevelAnnotations()) {
+            mostUsedNamespaceURI = "";
+            elementFormDefault = XmlNsForm.UNQUALIFIED;
+            return;
+        }
 
         // used to visit properties
         CPropertyVisitor<Void> propVisitor = new CPropertyVisitor<Void>() {
@@ -145,11 +152,8 @@ final class PackageOutlineImpl implements PackageOutline {
         mostUsedNamespaceURI = getMostUsedURI(uriCountMap);
         elementFormDefault = getFormDefault();
 
-
-        // debug code
-        // System.out.println(uriCountMap.size() + ": " + _package.name() + ": " + mostUsedNamespaceURI);
-        // System.out.println(elementFormDefault);
-
+        // generate package-info.java
+        // we won't get this far if the user specified -npa
         if(!mostUsedNamespaceURI.equals("") || elementFormDefault==XmlNsForm.QUALIFIED) {
             XmlSchemaWriter w = _package.annotate2(XmlSchemaWriter.class);
             if(!mostUsedNamespaceURI.equals(""))
