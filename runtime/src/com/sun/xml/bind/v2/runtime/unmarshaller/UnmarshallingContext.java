@@ -1275,7 +1275,19 @@ public final class UnmarshallingContext extends Coordinator
      * @see JAXBContextImpl#getXMIMEContentType(Object)
      */
     public String getXMIMEContentType() {
-        return getJAXBContext().getXMIMEContentType(getTarget());
+        /*
+            this won't work when the class is like
+
+            class Foo {
+                @XmlValue Image img;
+            }
+
+            because the target will return Foo, not the class enclosing Foo
+            which will have xmime:contentType
+        */
+        Object t = getTarget();
+        if(t==null)     return null;
+        return getJAXBContext().getXMIMEContentType(t);
     }
 
     /**
