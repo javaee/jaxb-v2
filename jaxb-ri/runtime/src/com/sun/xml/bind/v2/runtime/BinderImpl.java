@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: BinderImpl.java,v 1.5 2005-05-12 16:41:36 kohsuke Exp $
+ * @(#)$Id: BinderImpl.java,v 1.6 2005-05-20 20:57:19 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -11,9 +11,10 @@ package com.sun.xml.bind.v2.runtime;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.ValidationEventHandler;
+import javax.xml.bind.Binder;
 import javax.xml.validation.Schema;
 
-import com.sun.xml.bind.annotation.Binder;
+import javax.xml.bind.Binder;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
 import com.sun.xml.bind.v2.AssociationMap;
 import com.sun.xml.bind.v2.runtime.unmarshaller.InterningXmlVisitor;

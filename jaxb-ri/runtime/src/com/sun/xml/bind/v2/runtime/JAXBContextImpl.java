@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.18 2005-05-19 23:12:40 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.19 2005-05-20 20:57:20 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -25,6 +25,7 @@ import javax.xml.bind.PropertyException;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.Validator;
+import javax.xml.bind.Binder;
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
@@ -40,7 +41,7 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
-import com.sun.xml.bind.annotation.Binder;
+import javax.xml.bind.Binder;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.Bridge;
 import com.sun.xml.bind.api.BridgeContext;
@@ -88,7 +89,7 @@ import org.xml.sax.SAXException;
  * This is ugly, but this class implements {@link ValidationEventHandler}
  * and always return true. This {@link ValidationEventHandler} is the default for 2.0.
  *
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public final class JAXBContextImpl extends JAXBRIContext implements ValidationEventHandler {
 
