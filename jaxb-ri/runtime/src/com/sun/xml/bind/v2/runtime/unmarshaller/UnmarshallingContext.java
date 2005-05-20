@@ -257,7 +257,7 @@ public final class UnmarshallingContext extends Coordinator
                 return factory.createInstance();
         }
         try {
-            return beanInfo.createInstance();
+            return beanInfo.createInstance(this);
         } catch (IllegalAccessException e) {
             AbstractUnmarshallingEventHandlerImpl.reportError("Unable to create an instance of "+beanInfo.jaxbType.getName(),e,false);
         } catch (InvocationTargetException e) {
@@ -1110,7 +1110,7 @@ public final class UnmarshallingContext extends Coordinator
 
     /**
      * Gets the current source location information in SAX {@link Locator}.
-     *
+     * <p>
      * Sometimes the unmarshaller works against a different kind of XML source,
      * making this information meaningless.
      */
@@ -1179,7 +1179,7 @@ public final class UnmarshallingContext extends Coordinator
         handleEvent(new ValidationEventImpl(ValidationEvent.ERROR,e.getMessage(),locator.getLocation(),e),canRecover);
     }
 
-    public void handleError(String msg) throws SAXException {
+    public void handleError(String msg) {
         handleEvent(new ValidationEventImpl(ValidationEvent.ERROR,msg,locator.getLocation()));
     }
 

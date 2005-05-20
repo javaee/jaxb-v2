@@ -91,7 +91,7 @@ final class ArrayBeanInfoImpl  extends JaxBeanInfo {
         throw new UnsupportedOperationException();
     }
 
-    public final Object createInstance() {
+    public final Object createInstance(UnmarshallingContext context) {
         // we first create a List and then later convert it to an array
         return new ArrayList();
     }

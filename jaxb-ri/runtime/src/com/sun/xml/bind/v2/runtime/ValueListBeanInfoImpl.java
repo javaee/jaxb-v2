@@ -114,7 +114,7 @@ final class ValueListBeanInfoImpl extends JaxBeanInfo {
         throw new UnsupportedOperationException();
     }
 
-    public final Object createInstance() {
+    public final Object createInstance(UnmarshallingContext context) {
         throw new UnsupportedOperationException();
     }
 

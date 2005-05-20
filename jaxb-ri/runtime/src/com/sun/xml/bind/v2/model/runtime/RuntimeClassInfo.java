@@ -8,6 +8,9 @@ import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.model.core.ClassInfo;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
+import com.sun.xml.bind.annotation.XmlLocation;
+
+import org.xml.sax.Locator;
 
 /**
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
@@ -29,4 +32,12 @@ public interface RuntimeClassInfo extends ClassInfo<Type,Class>, RuntimeNonEleme
      * @see Accessor#optimize()
      */
     Accessor<?,Map<QName,Object>> getAttributeWildcard();
+
+    /**
+     * If this JAXB bean has a property annotated with {@link XmlLocation},
+     * this method returns it.
+     *
+     * @return may be null.
+     */
+    <BeanT> Accessor<BeanT,Locator> getLocatorField();
 }

@@ -144,7 +144,7 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
         return unmarshaller;
     }
 
-    public final JAXBElement createInstance() {
+    public final JAXBElement createInstance(UnmarshallingContext context) {
         return new JAXBElement(tagName,expectedType,scope,null );
     }
 

@@ -28,6 +28,8 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingEventHandler;
 
 import org.xml.sax.SAXException;
+import org.xml.sax.Locator;
+import org.xml.sax.helpers.LocatorImpl;
 
 /**
  * {@ link JaxBeanInfo} implementation for j2s bean.
@@ -72,6 +74,8 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
     private final Transducer xducer;
     protected final ClassBeanInfoImpl superClazz;
 
+    private final Accessor<BeanT,Locator> xmlLocatorField;
+
     private final Name tagName;
 
 
@@ -89,6 +93,11 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
             this.superClazz = null;
         else
             this.superClazz = owner.getOrCreate(ci.getBaseClass());
+
+        if(superClazz!=null && superClazz.xmlLocatorField!=null)
+            xmlLocatorField = superClazz.xmlLocatorField;
+        else
+            xmlLocatorField = ci.getLocatorField();
 
         // create property objects
         Collection<? extends RuntimePropertyInfo> ps = ci.getProperties();
@@ -233,8 +242,16 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
         return tagName.localName;
     }
 
-    public BeanT createInstance() throws IllegalAccessException, InvocationTargetException, InstantiationException {
-        return ClassFactory.create0(jaxbType);
+    public BeanT createInstance(UnmarshallingContext context) throws IllegalAccessException, InvocationTargetException, InstantiationException, SAXException {
+        BeanT bean = ClassFactory.create0(jaxbType);
+        if(xmlLocatorField!=null)
+            // need to copy because Locator is mutable
+            try {
+                xmlLocatorField.set(bean,new LocatorImpl(context.getLocator()));
+            } catch (AccessorException e) {
+                context.handleError(e);
+            }
+        return bean;
     }
 
     public boolean reset(BeanT bean, UnmarshallingContext context) throws SAXException {

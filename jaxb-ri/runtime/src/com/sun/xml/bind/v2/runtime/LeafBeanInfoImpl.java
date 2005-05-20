@@ -69,7 +69,7 @@ final class LeafBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
         throw new UnsupportedOperationException();
     }
 
-    public BeanT createInstance() {
+    public BeanT createInstance(UnmarshallingContext context) {
         throw new UnsupportedOperationException();
     }
 

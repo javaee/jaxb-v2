@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JaxBeanInfo.java,v 1.1 2005-04-15 20:04:24 kohsuke Exp $
+ * @(#)$Id: JaxBeanInfo.java,v 1.2 2005-05-20 18:39:38 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -175,8 +175,12 @@ public abstract class JaxBeanInfo<BeanT> {
      *
      * <p>
      * This operation is only supported when {@link #isImmutable} is false.
+     *
+     * @param context
+     *      Sometimes the created bean remembers the corresponding source location,
+     *      and this information is used to obtain that information.
      */
-    public abstract BeanT createInstance() throws IllegalAccessException, InvocationTargetException, InstantiationException;
+    public abstract BeanT createInstance(UnmarshallingContext context) throws IllegalAccessException, InvocationTargetException, InstantiationException, SAXException;
 
     /**s
      * Resets the object to the initial state, as if the object
