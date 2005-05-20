@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
 import com.sun.tools.xjc.generator.bean.field.UntypedListFieldRenderer;
+import com.sun.tools.xjc.generator.bean.field.DefaultFieldRenderer;
 import com.sun.tools.xjc.model.Model;
 
 /**
@@ -32,11 +33,11 @@ final class CollectionTypeAttribute {
             return FieldRenderer.DEFAULT;
 
         if (collectionType.equals("indexed"))
-            return FieldRenderer.ARRAY;
+            return new DefaultFieldRenderer(FieldRenderer.ARRAY);
 
         try {
-            return new UntypedListFieldRenderer(
-                m.codeModel.ref(collectionType));
+            return new DefaultFieldRenderer(new UntypedListFieldRenderer(
+                m.codeModel.ref(collectionType)));
         } catch (ClassNotFoundException e) {
             throw new NoClassDefFoundError(e.getMessage());
         }
