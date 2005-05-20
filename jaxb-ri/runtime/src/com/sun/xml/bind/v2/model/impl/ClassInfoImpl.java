@@ -549,12 +549,6 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         getters.keySet().removeAll(complete);
         setters.keySet().removeAll(complete);
 
-        // TODO: allow incomplete getter/setter to participate.
-        // especialyl with JAXB annotations.
-        // e.g., List getFoo()
-        //
-        // or sometimes users just want to marshal it and may not have a setter.
-
         // TODO: think about
         // class Foo {
         //   int getFoo();
