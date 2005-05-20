@@ -8,10 +8,12 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JType;
 import com.sun.tools.xjc.ErrorReceiver;
+import com.sun.tools.xjc.util.ReadOnlyAdapter;
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
 import com.sun.tools.xjc.generator.bean.field.IsSetFieldRenderer;
 import com.sun.tools.xjc.model.CAttributePropertyInfo;
@@ -99,6 +101,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
      * the simple type mapping at the point of reference.
      */
     @XmlElementRef
+    @XmlJavaTypeAdapter(BaseTypeAdapter.class)
     private BIConversion.User conv = null;
 
 
@@ -149,7 +152,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
         if(name!=null) {
             BIGlobalBinding gb = getBuilder().getGlobalBinding();
 
-            if( gb.isJavaNamingConventionEnabled && !forConstant )
+            if( gb.isJavaNamingConventionEnabled() && !forConstant )
                 // apply XML->Java conversion
                 return gb.nameConverter.toPropertyName(name);
             else
@@ -565,6 +568,18 @@ public final class BIProperty extends AbstractDeclarationImpl {
 
     public BIConversion.User getConv() {
         return conv;
+    }
+
+    @XmlRootElement(name="baseType")
+    private static final class BaseTypeBean {
+        @XmlElementRef
+        BIConversion.User conv;
+    }
+
+    private static final class BaseTypeAdapter extends ReadOnlyAdapter<BaseTypeBean,BIConversion.User> {
+        public BIConversion.User unmarshal(BaseTypeBean btb) throws Exception {
+            return btb.conv;
+        }
     }
 }
 

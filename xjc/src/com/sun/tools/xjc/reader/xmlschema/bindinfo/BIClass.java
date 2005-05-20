@@ -54,7 +54,7 @@ public final class BIClass extends AbstractDeclarationImpl {
         
         BIGlobalBinding gb = getBuilder().getGlobalBinding();
 
-        if(gb.isJavaNamingConventionEnabled) return gb.nameConverter.toClassName(className);
+        if(gb.isJavaNamingConventionEnabled()) return gb.nameConverter.toClassName(className);
         else
             // don't change it
             return className;
