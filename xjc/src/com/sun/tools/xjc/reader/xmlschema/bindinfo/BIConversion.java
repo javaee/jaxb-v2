@@ -109,7 +109,7 @@ public abstract class BIConversion extends AbstractDeclarationImpl {
         private String parseMethod;
         @XmlAttribute
         private String printMethod;
-        @XmlAttribute(name="type")
+        @XmlAttribute(name="name")
         private String type = "java.lang.String";
 
         /**
