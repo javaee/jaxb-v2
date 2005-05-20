@@ -362,7 +362,7 @@ public final class ModelLoader {
     public XSOMParser createXSOMParser(XMLParser parser) {
         // set up other parameters to XSOMParser
         XSOMParser reader = new XSOMParser(new XMLSchemaParser(parser));
-        reader.setAnnotationParser(new AnnotationParserFactoryImpl(codeModel,opt));
+        reader.setAnnotationParser(new AnnotationParserFactoryImpl(opt));
         reader.setErrorHandler(errorReceiver);
         return reader;
     }
