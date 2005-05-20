@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
+import com.sun.xml.bind.annotation.XmlLocation;
 import com.sun.xml.bind.v2.NameConverter;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
@@ -202,6 +203,8 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             ||(at==AccessType.PUBLIC_MEMBER && nav().isPublicField(f))
             || hasFieldAnnotation(f))
                 addProperty(adaptIfNecessary(createFieldSeed(f)));
+            else
+                checkFieldXmlLocation(f);
         }
 
         findGetterSetterProperties(at);
@@ -218,6 +221,13 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         }
 
         return properties;
+    }
+
+    /**
+     * This hook is used by {@link RuntimeClassInfoImpl} to look for {@link XmlLocation}.
+     */
+    protected void checkFieldXmlLocation(FieldT f) {
+        // TODO
     }
 
     /**
@@ -512,27 +522,28 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             MethodT getter = getters.get(name);
             MethodT setter = setters.get(name);
 
-            // make sure that the type is consistent
-            if(getter!=null && setter!=null
-            && !nav().getReturnType(getter).equals(nav().getMethodParameters(setter)[0])) {
-                // inconsistent
-                builder.reportError(new IllegalAnnotationException(
-                    Messages.GETTER_SETTER_INCOMPATIBLE_TYPE.format(
-                        nav().getTypeName(nav().getReturnType(getter)),
-                        nav().getTypeName(nav().getMethodParameters(setter)[0])
-                    ),
-                    new MethodLocatable<MethodT>( this, getter, nav()),
-                    new MethodLocatable<MethodT>( this, setter, nav())));
-                continue;
-            }
-
             boolean getterHasAnnotation = getter!=null && hasMethodAnnotation(getter);
             boolean setterHasAnnotation = setter!=null && hasMethodAnnotation(setter);
 
             if (at==AccessType.PROPERTY
             || (at==AccessType.PUBLIC_MEMBER && (getter==null || nav().isPublicMethod(getter)) && (setter==null || nav().isPublicMethod(setter)))
-            || getterHasAnnotation || setterHasAnnotation)
+            || getterHasAnnotation || setterHasAnnotation) {
+                // make sure that the type is consistent
+                if(getter!=null && setter!=null
+                && !nav().getReturnType(getter).equals(nav().getMethodParameters(setter)[0])) {
+                    // inconsistent
+                    builder.reportError(new IllegalAnnotationException(
+                        Messages.GETTER_SETTER_INCOMPATIBLE_TYPE.format(
+                            nav().getTypeName(nav().getReturnType(getter)),
+                            nav().getTypeName(nav().getMethodParameters(setter)[0])
+                        ),
+                        new MethodLocatable<MethodT>( this, getter, nav()),
+                        new MethodLocatable<MethodT>( this, setter, nav())));
+                    continue;
+                }
+
                 addProperty(adaptIfNecessary(createAccessorSeed(getter, setter)));
+            }
         }
         // done with complete pairs
         getters.keySet().removeAll(complete);
