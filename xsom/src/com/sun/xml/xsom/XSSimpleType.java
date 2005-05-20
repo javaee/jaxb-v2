@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: XSSimpleType.java,v 1.1 2005-04-14 22:06:21 kohsuke Exp $
+ * @(#)$Id: XSSimpleType.java,v 1.2 2005-05-20 23:27:26 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -29,6 +29,12 @@ public interface XSSimpleType extends XSType, XSContentType
      * </code>
      * Since this is a simple type, we know that the base type
      * is also a simple type.
+     *
+     * The only exception is xs:anySimpleType, which has xs:anyType
+     * as the base type.
+     *
+     * @return
+     *      null if this is xs:anySimpleType. Otherwise non-null.
      */
     XSSimpleType getSimpleBaseType();
     

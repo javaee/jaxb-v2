@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: SchemaSetImpl.java,v 1.5 2005-05-20 23:14:38 kohsuke Exp $
+ * @(#)$Id: SchemaSetImpl.java,v 1.6 2005-05-20 23:27:26 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -267,7 +267,7 @@ public class SchemaSetImpl implements XSSchemaSet
         public boolean isComplexType()      { return false; }
         public XSContentType asEmpty() { return null; }
         public XSParticle asParticle() { return null; }
-        public XSType getBaseType() { return null; }
+        public XSType getBaseType() { return anyType; }
         public XSSimpleType getSimpleBaseType() { return null; }
         public int getDerivationMethod() { return RESTRICTION; }
         public Iterator iterateDeclaredFacets() { return emptyIterator; }
