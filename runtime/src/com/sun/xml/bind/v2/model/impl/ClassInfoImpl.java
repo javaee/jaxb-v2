@@ -227,7 +227,6 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      * This hook is used by {@link RuntimeClassInfoImpl} to look for {@link XmlLocation}.
      */
     protected void checkFieldXmlLocation(FieldT f) {
-        // TODO
     }
 
     /**
@@ -466,6 +465,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
         // in the first step we accumulate getters and setters
         // into this map keyed by the property name.
+        // TODO: allocating three maps seem to be redundant
         Map<String,MethodT> getters = new LinkedHashMap<String,MethodT>();
         Map<String,MethodT> setters = new LinkedHashMap<String,MethodT>();
 

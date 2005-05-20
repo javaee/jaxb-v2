@@ -41,7 +41,7 @@ final class AnyTypeBeanInfo extends JaxBeanInfo<Object> {
         throw new UnsupportedOperationException();
     }
 
-    public Object createInstance() {
+    public Object createInstance(UnmarshallingContext context) {
         throw new UnsupportedOperationException();
         // return JAXBContextImpl.createDom().createElementNS("","noname");
     }

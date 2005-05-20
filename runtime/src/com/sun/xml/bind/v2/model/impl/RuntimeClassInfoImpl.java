@@ -26,8 +26,10 @@ import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
+import com.sun.xml.bind.annotation.XmlLocation;
 
 import org.xml.sax.SAXException;
+import org.xml.sax.Locator;
 
 /**
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
@@ -36,6 +38,14 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
         implements RuntimeClassInfo, RuntimeElement {
 
     protected final ReflectionNavigator nav;
+
+    /**
+     * If this class has a property annotated with {@link XmlLocation},
+     * this field will get the accessor for it.
+     *
+     * TODO: support method based XmlLocation
+     */
+    private Accessor<?,Locator> xmlLocationAccessor;
 
     public RuntimeClassInfoImpl(RuntimeModelBuilder modelBuilder, Locatable upstream, Class clazz) {
         super(modelBuilder, upstream, clazz);
@@ -152,6 +162,18 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
         return new RuntimePropertySeed(cp,seed.getAccessor().adapt(
             Navigator.REFLECTION.erasure(cp.adapter.defaultType),
             cp.adapter.adapterType));
+    }
+
+    @Override
+    protected void checkFieldXmlLocation(Field f) {
+        if(reader().hasFieldAnnotation(XmlLocation.class,f))
+            // TODO: check for XmlLocation signature
+            // TODO: check a collision with the super class
+            xmlLocationAccessor = new Accessor.FieldReflection<Object,Locator>(f);
+    }
+
+    public Accessor<?,Locator> getLocatorField() {
+        return xmlLocationAccessor;
     }
 
     static final class RuntimePropertySeed implements PropertySeed<Type,Class,Field,Method> {
