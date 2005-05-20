@@ -138,6 +138,11 @@ public class Options
      */
     public ClassNameAllocator classNameAllocator;
 
+    /**
+     * This switch controls whether or not xjc will generate package level annotations
+     */
+    public boolean packageLevelAnnotations = true;
+
     static {
         for( Plugin aug : findServices(Plugin.class) )
             allPlugins.add(aug);
@@ -274,6 +279,10 @@ public class Options
         }
         if (args[i].equals("-nv")) {
             strictCheck = false;
+            return 1;
+        }
+        if( args[i].equals("-npa")) {
+            packageLevelAnnotations = false;
             return 1;
         }
         if (args[i].equals("-verbose")) {
