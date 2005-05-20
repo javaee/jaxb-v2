@@ -59,7 +59,7 @@ public final class BIEnum extends AbstractDeclarationImpl {
      */
     @XmlElement(name="typesafeEnumMember")
     @XmlJavaTypeAdapter(AdapterImpl.class)
-    public final Map<String,BIEnumMember> members = null;
+    public final Map<String,BIEnumMember> members = new HashMap<String,BIEnumMember>();
 
     public QName getName() { return NAME; }
     
