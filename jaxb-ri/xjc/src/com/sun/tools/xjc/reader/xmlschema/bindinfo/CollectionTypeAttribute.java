@@ -31,7 +31,7 @@ final class CollectionTypeAttribute {
         if (collectionType==null)
             return FieldRenderer.DEFAULT;
 
-        if (collectionType.equals("index"))
+        if (collectionType.equals("indexed"))
             return FieldRenderer.ARRAY;
 
         try {
