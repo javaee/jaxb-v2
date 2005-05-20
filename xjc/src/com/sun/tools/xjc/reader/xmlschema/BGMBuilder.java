@@ -167,7 +167,7 @@ public class BGMBuilder extends BindingComponent {
 
         // check XJC extensions and realize them
 
-        BISerializable serial = globalBinding.serializable;
+        BISerializable serial = globalBinding.getSerializable();
         if(serial!=null) {
             model.serializable = true;
             model.serialVersionUID = serial.uid;
