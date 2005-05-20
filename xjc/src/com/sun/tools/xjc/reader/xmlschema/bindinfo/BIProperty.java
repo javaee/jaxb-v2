@@ -4,6 +4,10 @@
  */
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JType;
@@ -22,7 +26,6 @@ import com.sun.tools.xjc.reader.RawTypeSet;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.xml.bind.v2.NameConverter;
-import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSAttGroupDecl;
 import com.sun.xml.xsom.XSAttributeDecl;
@@ -69,17 +72,25 @@ import org.xml.sax.Locator;
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
+@XmlRootElement(name="property")
 public final class BIProperty extends AbstractDeclarationImpl {
     
     // can be null
-    private final String propName;
+    @XmlAttribute
+    private String name = null;
     
     // can be null
-    private final String javadoc;
+    @XmlElement
+    private String javadoc = null;
     
     // can be null
-    private final JType baseType;
-    
+    // TODO: JAXB-ify
+    private JType baseType = null;
+
+    // TODO: report 'unsupported' error if this is true
+    @XmlAttribute
+    private boolean generateFailFastSetterMethod = false;
+
     /**
      * If there's a nested javaType customization, this field
      * will keep that customization. Otherwise null.
@@ -87,25 +98,28 @@ public final class BIProperty extends AbstractDeclarationImpl {
      * This customization, if present, is used to customize
      * the simple type mapping at the point of reference.
      */
-    public final BIConversion conv;
+    @XmlElementRef
+    private BIConversion.User conv = null;
 
 
     public BIProperty( Locator loc, String _propName, String _javadoc,
-        JType _baseType, BIConversion _conv,
-        FieldRenderer real, Boolean isConst, Boolean isSet, Boolean genElemProp ) {
+        JType _baseType, BIConversion.User _conv,
+        CollectionTypeAttribute collectionType, Boolean isConst, Boolean isSet, Boolean genElemProp ) {
         super(loc);
-        
-        this.propName = _propName;
+
+        this.name = _propName;
         this.javadoc = _javadoc;
         this.baseType = _baseType;
-        this.realization = real;
+        this.collectionType = collectionType;
         this.isConstantProperty = isConst;
         this.needIsSetMethod = isSet;
         this.generateElementProperty = genElemProp;
         this.conv = _conv;
     }
 
-    
+    protected BIProperty() {}
+
+
     public void setParent( BindInfo parent ) {
         super.setParent(parent);
         if(conv!=null)
@@ -132,14 +146,14 @@ public final class BIProperty extends AbstractDeclarationImpl {
      *      specify the name.
      */
     public String getPropertyName( boolean forConstant ) {
-        if(propName!=null) {
+        if(name!=null) {
             BIGlobalBinding gb = getBuilder().getGlobalBinding();
 
             if( gb.isJavaNamingConventionEnabled && !forConstant )
                 // apply XML->Java conversion
-                return gb.nameConverter.toPropertyName(propName);
+                return gb.nameConverter.toPropertyName(name);
             else
-                return propName;    // ... or don't change the value
+                return name;    // ... or don't change the value
         }
         BIProperty next = getDefault();
         if(next!=null)  return next.getPropertyName(forConstant);
@@ -166,13 +180,15 @@ public final class BIProperty extends AbstractDeclarationImpl {
     
     
     // can be null
-    private final FieldRenderer realization;
+    @XmlAttribute
+    private CollectionTypeAttribute collectionType = null;
+
     /**
      * Gets the realization of this field.
      * @return Always return non-null.
      */
     public FieldRenderer getRealization() {
-        if(realization!=null)   return realization;
+        if(collectionType!=null)   return collectionType.get(getBuilder().model);
         BIProperty next = getDefault();
         if(next!=null)  return next.getRealization();
         
@@ -183,7 +199,8 @@ public final class BIProperty extends AbstractDeclarationImpl {
     
     
     // true, false, or null.
-    private final Boolean needIsSetMethod;
+    @XmlAttribute(name="generateIsSetMethod")
+    private Boolean needIsSetMethod = null;
     public boolean needIsSetMethod() {
         if(needIsSetMethod!=null)   return needIsSetMethod;
         BIProperty next = getDefault();
@@ -195,7 +212,8 @@ public final class BIProperty extends AbstractDeclarationImpl {
     }
 
     // null if delegated
-    private final Boolean generateElementProperty;
+    @XmlAttribute
+    private Boolean generateElementProperty = null;
     /**
      * If true, the property will automatically be a reference property.
      * (Talk about confusing names!)
@@ -212,6 +230,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
 
 
     // true, false, or null (which means the value should be inherited.)
+    @XmlAttribute(name="fixedAttributeAsConstantProperty")
     private Boolean isConstantProperty;
     /**
      * Gets the inherited value of the "fixedAttrToConstantProperty" customization.
@@ -448,7 +467,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
         }
         
         // default to the global one
-        return builder.getGlobalBinding().defaultProperty;
+        return builder.getGlobalBinding().getDefaultProperty();
     }
     
     
@@ -543,5 +562,9 @@ public final class BIProperty extends AbstractDeclarationImpl {
 
     private static final String ERR_ILLEGAL_FIXEDATTR =
         "BIProperty.IllegalFixedAttributeAsConstantProperty";
+
+    public BIConversion.User getConv() {
+        return conv;
+    }
 }
 

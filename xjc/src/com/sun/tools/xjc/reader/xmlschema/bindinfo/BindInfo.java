@@ -8,37 +8,108 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlMixed;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.Marshaller;
+
 import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.model.CPluginCustomization;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
+import com.sun.xml.bind.v2.WellKnownNamespace;
+import com.sun.xml.bind.annotation.XmlLocation;
+import com.sun.xml.bind.ObjectLifeCycle;
 import com.sun.xml.xsom.XSComponent;
+import com.sun.codemodel.JDocComment;
 
 import org.xml.sax.Locator;
+import org.w3c.dom.Element;
 
 /**
  * Container for customization declarations.
- * 
+ *
+ * We use JAXB ourselves and parse this object from "xs:annotation".
+ *
  * @author
  *     Kohsuke Kawaguchi (kohsuke,kawaguchi@sun.com)
  */
+@XmlRootElement(namespace=WellKnownNamespace.XML_SCHEMA,name="annotation")
+@XmlType(namespace=WellKnownNamespace.XML_SCHEMA,name="foobar")
 public final class BindInfo implements Iterable<BIDeclaration> {
-    public BindInfo( Locator loc ) {
-        this.location = loc;
-    }
-    
-    private final Locator location;
+
+    private BGMBuilder builder;
+
+    @XmlLocation
+    private Locator location;
     
     /**
      * Documentation taken from &lt;xs:documentation>s. 
      */
-    private String documentation;
-    
-    private boolean _hasTitleInDocumentation=false;
+    @XmlElement
+    private Documentation documentation;
+
+    private static final class Documentation implements ObjectLifeCycle{
+        @XmlAnyElement
+        @XmlMixed
+        List<Object> contents;
+
+        public void beforeUnmarshalling(Unmarshaller unmarshaller, Object parent) {
+        }
+
+        public void afterUnmarshalling(Unmarshaller unmarshaller, Object parent) {
+            // TODO: transform DOM in contents to String
+        }
+
+        public void beforeMarshalling(Marshaller marshaller) {
+        }
+
+        public void afterMarshalling(Marshaller marshaller) {
+        }
+
+        void addAll(Documentation rhs) {
+            if(rhs==null)   return;
+
+            if(contents==null)
+                contents = new ArrayList<Object>();
+            if(!contents.isEmpty())
+                contents.add("\n\n");
+            contents.addAll(rhs.contents);
+        }
+    }
 
     /** list of individual declarations. */
     private final List<BIDeclaration> decls = new ArrayList<BIDeclaration>();
 
-    private BGMBuilder builder;
+    private static final class AppInfo {
+        /**
+         * Receives {@link BIDeclaration}s and other DOMs.
+         */
+        @XmlAnyElement(lax=true)
+        List<Object> contents = new ArrayList<Object>();
+
+        public void addTo(BindInfo bi) {
+            if(contents==null)  return;
+
+            for (Object o : contents) {
+                if(o instanceof BIDeclaration)
+                    bi.addDecl((BIDeclaration)o);
+                // this is really PITA! I can't get the source location
+                if(o instanceof Element)
+                    bi.addDecl(new BIXPluginCustomization((Element)o,null/*TODO*/));
+            }
+        }
+    }
+
+
+    // only used by JAXB
+    @XmlElement
+    void setAppinfo(AppInfo aib) {
+        aib.addTo(this);
+    }
+
 
 
     /**
@@ -97,52 +168,18 @@ public final class BindInfo implements Iterable<BIDeclaration> {
     public BIDeclaration[] getDecls() {
         return decls.toArray(new BIDeclaration[decls.size()]);
     }
-    
-    /**
-     * Returns true if the string returned from {@link #getDocumentation()}
-     * probably contains the "title text" (a human readable text that
-     * ends with '.')
-     * 
-     * <p>
-     * The code generator can use this information to decide if it
-     * should generate the title text by itself or use the user-specified one.
-     * 
-     * <p>
-     * Since we don't do any semantic analysis this is a guess at the best.
-     */
-    public boolean hasTitleInDocumentation() {
-        return _hasTitleInDocumentation;
-    }
-    
+
     /**
      * Gets the documentation parsed from &lt;xs:documentation>s.
+     * The returned collection is to be added to {@link JDocComment#append(Object)}.
      * @return  maybe null.
      */
     public String getDocumentation() {
-        return documentation;
+        // TODO: FIXME: correctly turn individual items to String including DOM
+        if(documentation==null) return null;
+        return documentation.contents.toString();
     }
-    
-    /**
-     * Adds a new chunk of text to the documentation.
-     * 
-     * @param hasTitleInDocumentation
-     *      true if the caller is guessing that the title text
-     *      is included in this fragment. false if not.
-     *      to avoid frustrating users, pass in true if
-     *      the caller is unsure (true will put precedence to the
-     *      user-specified text)
-     */
-    public void appendDocumentation( String fragment, boolean hasTitleInDocumentation ) {
-        // insert space between each fragment
-        // so that the combined result is easier to see.
-        if(documentation==null) {
-            documentation = fragment;
-            this._hasTitleInDocumentation = hasTitleInDocumentation;
-        } else {
-            documentation += "\n\n"+fragment;
-        }
-    }
-    
+
     /**
      * Merges all the declarations inside the given BindInfo
      * to this BindInfo.
@@ -150,9 +187,13 @@ public final class BindInfo implements Iterable<BIDeclaration> {
     public void absorb( BindInfo bi ) {
         for( BIDeclaration d : bi )
             d.setParent(this);
-        this.decls.addAll( bi.decls ); 
-        appendDocumentation(bi.documentation,bi.hasTitleInDocumentation());
-    } 
+        this.decls.addAll( bi.decls );
+
+        if(this.documentation==null)
+            this.documentation = bi.documentation;
+        else
+            this.documentation.addAll(bi.documentation);
+    }
     
     /** Gets the number of declarations. */
     public int size() { return decls.size(); }
@@ -186,7 +227,7 @@ public final class BindInfo implements Iterable<BIDeclaration> {
         return new CCustomizations(r);
     }
     /** An instance with the empty contents. */
-    public final static BindInfo empty = new BindInfo(null);
+    public final static BindInfo empty = new BindInfo();
 
 }
 

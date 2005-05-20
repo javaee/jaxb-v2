@@ -5,6 +5,8 @@
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
 import javax.xml.bind.DatatypeConverter;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.namespace.QName;
 
@@ -19,6 +21,7 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
+import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.model.CAdapter;
 import com.sun.tools.xjc.model.CBuiltinLeafInfo;
 import com.sun.tools.xjc.model.Model;
@@ -26,6 +29,7 @@ import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.model.TypeUseFactory;
 import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.reader.Ring;
+import com.sun.tools.xjc.reader.TypeUtil;
 import com.sun.tools.xjc.reader.xmlschema.ClassSelector;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.xsom.XSSimpleType;
@@ -46,8 +50,12 @@ import org.xml.sax.Locator;
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 public abstract class BIConversion extends AbstractDeclarationImpl {
+    @Deprecated
     public BIConversion( Locator loc ) {
         super(loc);
+    }
+
+    protected BIConversion() {
     }
 
     /**
@@ -95,16 +103,29 @@ public abstract class BIConversion extends AbstractDeclarationImpl {
      * and their default values are determined based on the
      * owner of the token.
      */
-    public static final class User extends BIConversion {
-        private final String parseMethod;
-        private final String printMethod;
-        private final JType inMemoryType;
+    @XmlRootElement(name="javaType")
+    public static class User extends BIConversion {
+        @XmlAttribute
+        private String parseMethod;
+        @XmlAttribute
+        private String printMethod;
+        @XmlAttribute(name="type")
+        private String type = "java.lang.String";
+
+        /**
+         * If null, computed from {@link #type}.
+         * Sometimes this can be set instead of {@link #type}.
+         */
+        private JType inMemoryType;
 
         public User(Locator loc, String parseMethod, String printMethod, JType inMemoryType) {
             super(loc);
             this.parseMethod = parseMethod;
             this.printMethod = printMethod;
             this.inMemoryType = inMemoryType;
+        }
+
+        public User() {
         }
 
         /**
@@ -117,8 +138,11 @@ public abstract class BIConversion extends AbstractDeclarationImpl {
                 return typeUse;
 
             Model model = Ring.get(Model.class);
-
             JCodeModel cm = model.codeModel;
+
+            if(inMemoryType==null)
+                inMemoryType = TypeUtil.getType(cm,type,Ring.get(ErrorReceiver.class),getLocation());
+
             JDefinedClass adapter = generateAdapter(cm,parseMethodFor(owner),printMethodFor(owner),owner);
 
             // XmlJavaType customization always converts between string and an user-defined type.

@@ -6,25 +6,34 @@ package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlEnumValue;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
+import com.sun.codemodel.ClassType;
+import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.generator.bean.ImplStructureStrategy;
-import com.sun.tools.xjc.generator.bean.field.DefaultFieldRenderer;
-import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
 import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.reader.Ring;
+import com.sun.tools.xjc.util.ReadOnlyAdapter;
 import com.sun.xml.bind.v2.NameConverter;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.xsom.XSDeclaration;
 import com.sun.xml.xsom.XSSchemaSet;
 import com.sun.xml.xsom.XSSimpleType;
 
-import org.xml.sax.Locator;
+import static com.sun.tools.xjc.generator.bean.ImplStructureStrategy.BEAN_ONLY;
 
 /**
  * Global binding customization. The code is highly temporary.
@@ -37,6 +46,7 @@ import org.xml.sax.Locator;
  * @author
  *  Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
+@XmlRootElement(name="globalBindings")
 public final class BIGlobalBinding extends AbstractDeclarationImpl {
     
 
@@ -52,7 +62,45 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
      * <p>
      * Always non-null.
      */
-    public final NameConverter nameConverter;
+    @XmlTransient
+    public NameConverter nameConverter = NameConverter.standard;
+
+    // JAXB will use this property to set nameConverter
+    @XmlAttribute
+    void setUnderscoreBinding( UnderscoreBinding ub ) {
+        nameConverter = ub.nc;
+    }
+
+    UnderscoreBinding getUnderscoreBinding() {
+        throw new IllegalStateException();  // no need for this
+    }
+
+    public JDefinedClass getSuperClass() {
+        if(superClass==null)    return null;
+        return superClass.getClazz(ClassType.CLASS);
+    }
+
+    public JDefinedClass getSuperInterface() {
+        if(superInterface==null)    return null;
+        return superInterface.getClazz(ClassType.INTERFACE);
+    }
+
+    public BIProperty getDefaultProperty() {
+        return defaultProperty;
+    }
+
+    private static enum UnderscoreBinding {
+        @XmlEnumValue("asWordSeparator")
+        WORD_SEPARATOR(NameConverter.standard),
+        @XmlEnumValue("asCharInWord")
+        CHAR_IN_WORD(NameConverter.jaxrpcCompatible);
+
+        final NameConverter nc;
+
+        UnderscoreBinding(NameConverter nc) {
+            this.nc = nc;
+        }
+    }
 
     /**
      * Returns true if the "isJavaNamingConventionEnabled" option is turned on.
@@ -64,83 +112,105 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
      * The effect of this switch should be hidden inside this package.
      * IOW, the reader.xmlschema package shouldn't be aware of this switch.
      */
-    /*package*/ final boolean isJavaNamingConventionEnabled;
+    @XmlAttribute(name="enableJavaNamingConventions")
+    /*package*/ final boolean isJavaNamingConventionEnabled = true;
 
     /**
      * True to generate classes for every simple type. 
      */
-    public final boolean simpleTypeSubstitution;
+    @XmlAttribute(name="mapSimpleTypeDef")
+    public final boolean simpleTypeSubstitution = false;
 
     /**
      * Gets the default defaultProperty customization.
      */
-    public final BIProperty defaultProperty;
+    @XmlTransient
+    private BIProperty defaultProperty;
+
+    /*
+        Three properties used to construct a default property
+    */
+    @XmlAttribute
+    private boolean fixedAttributeAsConstantProperty = false;
+    @XmlAttribute
+    private boolean generateIsSetMethod = false;
+    @XmlAttribute
+    private CollectionTypeAttribute collectionType = new CollectionTypeAttribute();
+
 
     /**
      * Returns true if the compiler needs to generate type-safe enum
      * member names when enumeration values cannot be used as constant names.
      */
-    public final boolean generateEnumMemberName;
+    @XmlAttribute(name="typesafeEnumMemberName")
+    @XmlJavaTypeAdapter(GenerateEnumMemberNameAdapter.class)
+    public final boolean generateEnumMemberName = false;
 
-    /**
-     * Returns true if the "choiceContentProperty" option is turned on.
-     * This option takes effect only in the model group binding mode.
-     */
-    public final boolean isChoiceContentPropertyModelGroupBinding;
+    private static final class GenerateEnumMemberNameAdapter extends ReadOnlyAdapter<String,Boolean> {
+        public Boolean unmarshal(String s) throws Exception {
+            if(s.equals("generateName"))    return true;
+            if(s.equals("generateError"))   return false;
+            throw new IllegalArgumentException(s);
+        }
+    }
 
     /**
      * The code generation strategy.
      */
-    public final ImplStructureStrategy codeGenerationStrategy;
+    @XmlAttribute(name="generateValueClass")
+    @XmlJavaTypeAdapter(ImplStructureStrategy.BooleanAdapter.class)
+    public final ImplStructureStrategy codeGenerationStrategy = BEAN_ONLY;
 
     /**
      * Set of datatype names. For a type-safe enum class
      * to be generated, the underlying XML datatype must be derived from
      * one of the types in this set.
      */
-    private final Set<QName> enumBaseTypes;
+    // default value is set in the post-init action
+    @XmlAttribute(name="typesafeEnumBase")
+    private Set<QName> enumBaseTypes;
 
     /**
      * Returns {@link BISerializable} if the extension is specified,
      * or null otherwise.
      */
-    public final BISerializable serializable;
+    @XmlElement
+    public final BISerializable serializable = null;
 
     /**
      * If &lt;xjc:superClass> extension is specified,
      * returns the specified root class. Otherwise null.
      */
-    public final JDefinedClass superClass;
+    @XmlElement(namespace=Const.XJC_EXTENSION_URI)
+    final ClassNameBean superClass = null;
 
     /**
      * If &lt;xjc:superInterface> extension is specified,
      * returns the specified root class. Otherwise null.
      */
-    public final JDefinedClass superInterface;
-
-    /**
-     * True if the default binding of the wildcard should use DOM.
-     * This feature is not publicly available.
-     */
-    public final boolean smartWildcardDefaultBinding;
+    @XmlElement(namespace=Const.XJC_EXTENSION_URI)
+    final ClassNameBean superInterface = null;
 
     /**
      * Generate the simpler optimized code, but not necessarily
      * conforming to the spec.
      */
-    public final boolean simpleMode;
+    @XmlElement(name="simpleMode",namespace=Const.XJC_EXTENSION_URI)
+    public final boolean simpleMode = false;
 
     /**
      * True to generate a class for elements by default.
      */
-    public final boolean generateElementClass;
+    @XmlAttribute
+    public final boolean generateElementClass = false;
 
     /**
      * Default cap to the number of constants in the enum.
      * We won't attempt to produce a type-safe enum by default
      * if there are more enumeration facets than specified in this field.
      */
-    public final int defaultEnumMemberSizeCap;
+    @XmlAttribute(name="typesafeEnumMaxMembers")
+    public final int defaultEnumMemberSizeCap = 256;
 
     /**
      * If true, interfaces/classes that are normally generated as a nested interface/class
@@ -148,75 +218,54 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
      *
      * See <a href="http://monaco.sfbay/detail.jsf?cr=4969415">Bug 4969415</a> for the motivation.
      */
-    public final boolean flattenClasses;
+    @XmlAttribute(name="localScoping")
+    public final LocalScoping flattenClasses = LocalScoping.NESTED;
 
-    private static Set<QName> createSet() {
-        return Collections.singleton(new QName(WellKnownNamespace.XML_SCHEMA,"string"));
+    /**
+     * Globally-defined conversion customizations.
+     */
+    @XmlElement(name="javaType")
+    @XmlJavaTypeAdapter(GlobalConversionsAdapter.class)
+    private final Map<QName,BIConversion> globalConversions = Collections.emptyMap();
+
+    //
+    // these customizations were valid in 1.0, but in 2.0 we don't
+    // use them. OTOH, we don't want to issue an error for them,
+    // so we just define a mapping and ignore the value.
+    //
+    @XmlElement(namespace=Const.XJC_EXTENSION_URI)
+    String noMarshaller = null;
+    @XmlElement(namespace=Const.XJC_EXTENSION_URI)
+    String noUnmarshaller = null;
+    @XmlElement(namespace=Const.XJC_EXTENSION_URI)
+    String noValidator = null;
+    @XmlElement(namespace=Const.XJC_EXTENSION_URI)
+    String noValidatingUnmarshaller = null;
+    @XmlElement(namespace=Const.XJC_EXTENSION_URI)
+    TypeSubstitutionElement typeSubstitution = null;
+
+    private static final class TypeSubstitutionElement {
+        @XmlAttribute
+        String type;
     }
-    
+
     /**
      * Creates a bind info object with the default values
      */
     public BIGlobalBinding() {
-        this(
-            new HashMap<QName,BIConversion>(), NameConverter.standard,
-            false, true, false, true, false, false, false, false, false,
-            createSet(), 256,
-            null, null, null, null, false, false, null );
     }
     
-    public BIGlobalBinding(
-        Map<QName,BIConversion> _globalConvs,
-        NameConverter nconv,
-        boolean _choiceContentPropertyWithModelGroupBinding,
-        boolean _generateValueClass,
-        boolean _generateElementType,
-        boolean _enableJavaNamingConvention,
-        boolean _fixedAttrToConstantProperty,
-        boolean _needIsSetMethod,
-        boolean _simpleTypeSubstitution,
-        boolean _generateEnumMemberName,
-        boolean _flattenClasses,
-        Set<QName> _enumBaseTypes,
-        int defaultEnumMemberSizeCap,
-        FieldRenderer collectionFieldRenderer,   // default collection type. can be null.
-        BISerializable _serializable,
-        JDefinedClass _superClass,
-        JDefinedClass _superInterface,
-        boolean simpleMode,
-        boolean _smartWildcardDefaultBinding,
-        Locator _loc ) {
-
-        super(_loc);
-
-        this.globalConversions = _globalConvs;
-        this.nameConverter = nconv;
-        this.isChoiceContentPropertyModelGroupBinding = _choiceContentPropertyWithModelGroupBinding;
-        this.codeGenerationStrategy = _generateValueClass?ImplStructureStrategy.BEAN_ONLY:ImplStructureStrategy.INTF_AND_IMPL;
-        this.isJavaNamingConventionEnabled = _enableJavaNamingConvention;
-        this.simpleTypeSubstitution = _simpleTypeSubstitution;
-        this.generateElementClass = _generateElementType;
-        this.generateEnumMemberName = _generateEnumMemberName;
-        this.enumBaseTypes = _enumBaseTypes;
-        this.serializable = _serializable;
-        this.superClass = _superClass;
-        this.superInterface = _superInterface;
-        this.smartWildcardDefaultBinding = _smartWildcardDefaultBinding;
-        this.simpleMode = simpleMode;
-        this.defaultEnumMemberSizeCap = defaultEnumMemberSizeCap;
-        this.flattenClasses = _flattenClasses;
-
-        this.defaultProperty = new BIProperty(_loc,null,null,null,null,
-            (collectionFieldRenderer==null)
-                ?FieldRenderer.DEFAULT
-                :new DefaultFieldRenderer(collectionFieldRenderer),
-            _fixedAttrToConstantProperty, _needIsSetMethod, false );
-    }
-
     public void setParent(BindInfo parent) {
         super.setParent(parent);
+        // fill in the remaining default values
+        if(enumBaseTypes==null)
+            enumBaseTypes = Collections.singleton(new QName(WellKnownNamespace.XML_SCHEMA,"string"));
+
+
+
+        this.defaultProperty = new BIProperty(getLocation(),null,null,null,null,
+            collectionType, fixedAttributeAsConstantProperty, generateIsSetMethod, false );
         defaultProperty.setParent(parent); // don't forget to initialize the defaultProperty
-        
     }
     
     /**
@@ -261,13 +310,60 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
         return canBeMappedToTypeSafeEnum( decl.getTargetNamespace(), decl.getName() );
     }
 
-    /**
-     * Globally-defined conversion customizations.
-     */
-    private final Map<QName,BIConversion> globalConversions;
-    
 
     public QName getName() { return NAME; }
     public static final QName NAME = new QName(
         Const.JAXB_NSURI, "globalBindings" );
+
+
+    /**
+     * Used to unmarshal
+     * <xmp>
+     * <[element] name="className" />
+     * </xmp>
+     */
+    static final class ClassNameBean {
+        @XmlAttribute(required=true)
+        String name;
+
+        /**
+         * Computed from {@link #name} on demand.
+         */
+        @XmlTransient
+        JDefinedClass clazz;
+
+        JDefinedClass getClazz(ClassType t) {
+            if (clazz != null) return clazz;
+            try {
+                JCodeModel codeModel = Ring.get(JCodeModel.class);
+                clazz = codeModel._class(name, t);
+                clazz.hide();
+                return clazz;
+            } catch (JClassAlreadyExistsException e) {
+                return e.getExistingClass();
+            }
+        }
+    }
+
+    static final class ClassNameAdapter extends ReadOnlyAdapter<ClassNameBean,String> {
+        public String unmarshal(ClassNameBean bean) throws Exception {
+            return bean.name;
+        }
+    }
+
+    static final class GlobalConversion extends BIConversion.User {
+        @XmlAttribute
+        QName xmlType;
+    }
+
+    static final class GlobalConversionsAdapter
+        extends ReadOnlyAdapter<List<GlobalConversion>,Map<QName,BIConversion>> {
+        public Map<QName,BIConversion> unmarshal(List<GlobalConversion> users) throws Exception {
+            Map<QName,BIConversion> r = new HashMap<QName, BIConversion>();
+            for (GlobalConversion u : users) {
+                r.put(u.xmlType,u);
+            }
+            return r;
+        }
+    }
 }
