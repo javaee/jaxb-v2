@@ -42,6 +42,7 @@ import com.sun.xml.xsom.XSListSimpleType;
 import com.sun.xml.xsom.XSRestrictionSimpleType;
 import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSUnionSimpleType;
+import com.sun.xml.xsom.XSSchemaSet;
 import com.sun.xml.xsom.impl.util.SchemaWriter;
 import com.sun.xml.xsom.visitor.XSSimpleTypeFunction;
 import com.sun.xml.xsom.visitor.XSVisitor;
@@ -91,11 +92,7 @@ public final class ConversionFinder extends BindingComponent {
 
     private final Model model = Ring.get(Model.class);
 
-    /**
-     * The type that was originally passed to this {@link ConversionFinder}.
-     * Never null.
-     */
-    private XSSimpleType initiatingType;
+    private final XSSimpleType booleanType = Ring.get(XSSchemaSet.class).getSimpleType(WellKnownNamespace.XML_SCHEMA,"boolean");
 
     /**
      * The component that refers to the initiating type.
@@ -154,13 +151,9 @@ public final class ConversionFinder extends BindingComponent {
 
     /** Public entry point. */
     public TypeUse find( XSSimpleType type, XSComponent referer ) {
-        XSSimpleType old = initiatingType;
-        initiatingType = type;
         XSComponent oldr = referer;
         this.referer = referer;
         TypeUse r = type.apply(functor);
-        assert initiatingType == type;
-        initiatingType = old;
         this.referer = oldr;
 
         if(r==null)
@@ -442,7 +435,7 @@ public final class ConversionFinder extends BindingComponent {
         if( en!=null ) {
         	en.markAsAcknowledged();
 
-            if(!en.map) {
+            if(!en.isMapped()) {
                 // just inherit the binding for the base type
                 return type.getSimpleBaseType().apply(functor);
             }
@@ -468,7 +461,7 @@ public final class ConversionFinder extends BindingComponent {
         if(type.getTargetNamespace().equals(WellKnownNamespace.XML_SCHEMA)) {
             String name = type.getName();
             if(name!=null)
-                return lookupBuiltin(name);
+                return lookupBuiltin(type,name);
         }
 
         // also check for swaRef
@@ -478,11 +471,16 @@ public final class ConversionFinder extends BindingComponent {
                 return CBuiltinLeafInfo.STRING.makeAdapted(SwaRefAdapter.class,false);
         }
 
+        // check for 0|1 restricted boolean
+        if(type.isDerivedFrom(booleanType) && isRestrictedTo0And1(type)) {
+            // this is seen in the SOAP schema and too common to ignore
+            return CBuiltinLeafInfo.BOOLEAN_ZERO_OR_ONE;
+        } else
 
         return null;
     }
 
-    private TypeUse lookupBuiltin( String typeLocalName ) {
+    private TypeUse lookupBuiltin( XSSimpleType type, String typeLocalName ) {
         if(typeLocalName.equals("integer") || typeLocalName.equals("long")) {
             /*
                 attempt an optimization so that we can
@@ -497,13 +495,13 @@ public final class ConversionFinder extends BindingComponent {
                 ... to int, not BigInteger.
             */
 
-            BigInteger xe = readFacet(XSFacet.FACET_MAXEXCLUSIVE,-1);
-            BigInteger xi = readFacet(XSFacet.FACET_MAXINCLUSIVE,0);
+            BigInteger xe = readFacet(type,XSFacet.FACET_MAXEXCLUSIVE,-1);
+            BigInteger xi = readFacet(type,XSFacet.FACET_MAXINCLUSIVE,0);
             BigInteger max = min(xe,xi);    // most restrictive one takes precedence
 
             if(max!=null) {
-                BigInteger ne = readFacet(XSFacet.FACET_MINEXCLUSIVE,+1);
-                BigInteger ni = readFacet(XSFacet.FACET_MININCLUSIVE,0);
+                BigInteger ne = readFacet(type,XSFacet.FACET_MINEXCLUSIVE,+1);
+                BigInteger ni = readFacet(type,XSFacet.FACET_MININCLUSIVE,0);
                 BigInteger min = max(ne,ni);
 
                 if(min!=null) {
@@ -514,10 +512,6 @@ public final class ConversionFinder extends BindingComponent {
                         typeLocalName = "long";
                 }
             }
-        } else
-        if(typeLocalName.equals("boolean") && isRestrictedTo0And1()) {
-            // this is seen in the SOAP schema and too common to ignore
-            return CBuiltinLeafInfo.BOOLEAN_ZERO_OR_ONE;
         } else
         if(typeLocalName.equals("base64Binary")) {
             return lookupBinaryTypeBinding();
@@ -578,18 +572,18 @@ public final class ConversionFinder extends BindingComponent {
     }
 
     /**
-     * Returns true if the {@link #initiatingType} is restricted
+     * Returns true if the type is restricted
      * to '0' and '1'. This logic is not complete, but it at least
      * finds the such definition in SOAP @mustUnderstand.
      */
-    private boolean isRestrictedTo0And1() {
-        XSFacet pattern = initiatingType.getFacet(XSFacet.FACET_PATTERN);
+    private boolean isRestrictedTo0And1(XSSimpleType type) {
+        XSFacet pattern = type.getFacet(XSFacet.FACET_PATTERN);
         if(pattern!=null) {
             String v = pattern.getValue();
             if(v.equals("0|1") || v.equals("1|0") || v.equals("\\d"))
                 return true;
         }
-        XSFacet enumf = initiatingType.getFacet(XSFacet.FACET_ENUMERATION);
+        XSFacet enumf = type.getFacet(XSFacet.FACET_ENUMERATION);
         if(enumf!=null) {
             String v = enumf.getValue();
             if(v.equals("0") || v.equals("1"))
@@ -598,8 +592,8 @@ public final class ConversionFinder extends BindingComponent {
         return false;
     }
 
-    private BigInteger readFacet(String facetName,int offset) {
-        XSFacet me = initiatingType.getFacet(facetName);
+    private BigInteger readFacet(XSSimpleType type, String facetName,int offset) {
+        XSFacet me = type.getFacet(facetName);
         if(me==null)
             return null;
         BigInteger bi = DatatypeConverterImpl._parseInteger(me.getValue());
