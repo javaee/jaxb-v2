@@ -38,7 +38,7 @@ public final class BIEnum extends AbstractDeclarationImpl {
      * this takes precedence over all the other properties of this class.
      */
     @XmlAttribute(name="map")
-    public final boolean map = true;
+    private boolean map = true;
 
     /** Gets the specified class name, or null if not specified. */
     @XmlAttribute(name="name")
@@ -50,6 +50,10 @@ public final class BIEnum extends AbstractDeclarationImpl {
      */
     @XmlElement
     public final String javadoc = null;
+
+    public boolean isMapped() {
+        return map;
+    }
 
     /**
      * Gets the map that contains XML value->BIEnumMember pairs.
@@ -72,6 +76,7 @@ public final class BIEnum extends AbstractDeclarationImpl {
     /** Name of this declaration. */
     public static final QName NAME = new QName(
         Const.JAXB_NSURI, "enum" );
+
 
 
     /**
