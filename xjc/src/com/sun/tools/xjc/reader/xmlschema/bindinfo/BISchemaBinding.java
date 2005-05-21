@@ -72,9 +72,9 @@ public final class BISchemaBinding extends AbstractDeclarationImpl {
      */
     public static final class NamingRule {
         @XmlAttribute
-        private String prefix;
+        private String prefix = "";
         @XmlAttribute
-        private String suffix;
+        private String suffix = "";
         
         public NamingRule( String _prefix, String _suffix ) {
             this.prefix = _prefix;
