@@ -143,19 +143,19 @@ class Surrogate {
 	 * @param  in   The source buffer, from which one more character
 	 *              will be consumed if c is a high surrogate
 	 *
-	 * @returns  Either a parsed UCS-4 character, in which case the isPair()
+	 * @return   Either a parsed UCS-4 character, in which case the isPair()
 	 *           and increment() methods will return meaningful values, or
 	 *           -1, in which case error() will return a descriptive result
 	 *           object
 	 */
 	public int parse(char c, CharBuffer in) {
-	    if (Surrogate.isHigh(c)) {
+	    if (isHigh(c)) {
 		if (!in.hasRemaining()) {
 		    error = CoderResult.UNDERFLOW;
 		    return -1;
 		}
 		char d = in.get();
-		if (Surrogate.isLow(d)) {
+		if (isLow(d)) {
 		    character = toUCS4(c, d);
 		    isPair = true;
 		    error = null;
@@ -164,7 +164,7 @@ class Surrogate {
 		error = CoderResult.malformedForLength(1);
 		return -1;
 	    }
-	    if (Surrogate.isLow(c)) {
+	    if (isLow(c)) {
 		error = CoderResult.malformedForLength(1);
 		return -1;
 	    }
@@ -184,19 +184,19 @@ class Surrogate {
 	 * @param  ip   The input index
 	 * @param  il   The input limit
 	 *
-	 * @returns  Either a parsed UCS-4 character, in which case the isPair()
+	 * @return   Either a parsed UCS-4 character, in which case the isPair()
 	 *           and increment() methods will return meaningful values, or
 	 *           -1, in which case error() will return a descriptive result
 	 *           object
 	 */
 	public int parse(char c, char[] ia, int ip, int il) {
-	    if (Surrogate.isHigh(c)) {
+	    if (isHigh(c)) {
 		if (il - ip < 2) {
 		    error = CoderResult.UNDERFLOW;
 		    return -1;
 		}
 		char d = ia[ip + 1];
-		if (Surrogate.isLow(d)) {
+		if (isLow(d)) {
 		    character = toUCS4(c, d);
 		    isPair = true;
 		    error = null;
@@ -205,7 +205,7 @@ class Surrogate {
 		error = CoderResult.malformedForLength(1);
 		return -1;
 	    }
-	    if (Surrogate.isLow(c)) {
+	    if (isLow(c)) {
 		error = CoderResult.malformedForLength(1);
 		return -1;
 	    }
@@ -246,13 +246,13 @@ class Surrogate {
 	 * @param  dst  The destination buffer, to which one or two UTF-16
 	 *              characters will be written
 	 *
-	 * @returns  Either a positive count of the number of UTF-16 characters
+	 * @return   Either a positive count of the number of UTF-16 characters
 	 *           written to the destination buffer, or -1, in which case
 	 *           error() will return a descriptive result object
 	 */
 	public int generate(int uc, int len, CharBuffer dst) {
 	    if (uc <= 0xffff) {
-		if (Surrogate.is(uc)) {
+		if (is(uc)) {
 		    error = CoderResult.malformedForLength(len);
 		    return -1;
 		}
@@ -264,17 +264,17 @@ class Surrogate {
 		error = null;
 		return 1;
 	    }
-	    if (uc < Surrogate.UCS4_MIN) {
+	    if (uc < UCS4_MIN) {
 		error = CoderResult.malformedForLength(len);
 		return -1;
 	    }
-	    if (uc <= Surrogate.UCS4_MAX) {
+	    if (uc <= UCS4_MAX) {
 		if (dst.remaining() < 2) {
 		    error = CoderResult.OVERFLOW;
 		    return -1;
 		}
-		dst.put(Surrogate.high(uc));
-		dst.put(Surrogate.low(uc));
+		dst.put(high(uc));
+		dst.put(low(uc));
 		error = null;
 		return 2;
 	    }
@@ -294,13 +294,13 @@ class Surrogate {
 	 * @param  dp   The destination position
 	 * @param  dl   The destination limit
 	 *
-	 * @returns  Either a positive count of the number of UTF-16 characters
+	 * @return   Either a positive count of the number of UTF-16 characters
 	 *           written to the destination buffer, or -1, in which case
 	 *           error() will return a descriptive result object
 	 */
 	public int generate(int uc, int len, char[] da, int dp, int dl) {
 	    if (uc <= 0xffff) {
-		if (Surrogate.is(uc)) {
+		if (is(uc)) {
 		    error = CoderResult.malformedForLength(len);
 		    return -1;
 		}
@@ -312,17 +312,17 @@ class Surrogate {
 		error = null;
 		return 1;
 	    }
-	    if (uc < Surrogate.UCS4_MIN) {
+	    if (uc < UCS4_MIN) {
 		error = CoderResult.malformedForLength(len);
 		return -1;
 	    }
-	    if (uc <= Surrogate.UCS4_MAX) {
+	    if (uc <= UCS4_MAX) {
 		if (dl - dp < 2) {
 		    error = CoderResult.OVERFLOW;
 		    return -1;
 		}
-		da[dp] = Surrogate.high(uc);
-		da[dp + 1] = Surrogate.low(uc);
+		da[dp] = high(uc);
+		da[dp + 1] = low(uc);
 		error = null;
 		return 2;
 	    }

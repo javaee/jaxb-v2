@@ -107,7 +107,7 @@ public abstract class JClass extends JType
     /**
      * Checks the relationship between two classes.
      * <p>
-     * This method works in the same way as {@link Class#isAssignableFrom(java.lang.Class)}
+     * This method works in the same way as {@link Class#isAssignableFrom(Class)}
      * works. For example, baseClass.isAssignableFrom(derivedClass)==true.
      */
     public final boolean isAssignableFrom( JClass derived ) {

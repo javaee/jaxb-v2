@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: EncoderFactory.java,v 1.1 2005-04-15 20:02:58 kohsuke Exp $
+ * @(#)$Id: EncoderFactory.java,v 1.2 2005-05-22 03:12:24 kohsuke Exp $
  */
 
 /*
@@ -13,7 +13,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 
 /**
- * Creates {@link java.nio.charset.CharsetEncoder} from a charset name.
+ * Creates {@link CharsetEncoder} from a charset name.
  * 
  * Fixes a MS1252 handling bug in JDK1.4.2.
  * 

@@ -9,7 +9,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import com.sun.codemodel.CodeWriter;
@@ -30,7 +29,7 @@ public class FileCodeWriter implements CodeWriter {
     private final boolean readOnly;
 
     /** Files that shall be marked as read only. */
-    private final Set readonlyFiles = new HashSet();
+    private final Set<File> readonlyFiles = new HashSet<File>();
     
     public FileCodeWriter( File target ) throws IOException {
         this(target,false);
@@ -71,14 +70,12 @@ public class FileCodeWriter implements CodeWriter {
 
     public void close() throws IOException {
         // mark files as read-onnly if necessary
-        for (Iterator itr = readonlyFiles.iterator(); itr.hasNext();) {
-            File f = (File) itr.next();
+        for (File f : readonlyFiles)
             f.setReadOnly();
-        }
     }
     
     /** Converts a package name to the directory name. */
-    private String toDirName( JPackage pkg ) {
+    private static String toDirName( JPackage pkg ) {
         return pkg.name().replace('.',File.separatorChar);
     }
 

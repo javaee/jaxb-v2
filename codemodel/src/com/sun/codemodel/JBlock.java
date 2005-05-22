@@ -6,7 +6,6 @@
 package com.sun.codemodel;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -361,8 +360,7 @@ public final class JBlock implements JGenerable, JStatement {
     }
 
     void generateBody(JFormatter f) {
-        for (Iterator i = content.iterator(); i.hasNext();) {
-            Object o = i.next();
+        for (Object o : content) {
             if (o instanceof JDeclaration)
                 f.d((JDeclaration) o);
             else

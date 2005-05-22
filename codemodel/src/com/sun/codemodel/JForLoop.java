@@ -6,7 +6,6 @@
 package com.sun.codemodel;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 
@@ -18,7 +17,7 @@ public class JForLoop implements JStatement {
 
     private List inits = new ArrayList();
     private JExpression test = null;
-    private List updates = new ArrayList();
+    private List<JExpression> updates = new ArrayList<JExpression>();
     private JBlock body = null;
 
     public JVar init(int mods, JType type, String var, JExpression e) {
@@ -49,29 +48,28 @@ public class JForLoop implements JStatement {
     }
 
     public void state(JFormatter f) {
-	f.p("for (");
-	boolean first = true;
-	for (Iterator i = inits.iterator(); i.hasNext();) {
-	    if (!first) f.p(',');
-	    Object o = i.next();
-	    if (o instanceof JVar)
-		f.b((JVar)o);
-	    else
-		f.g((JExpression)o);
-	    first = false;
-	}
-	f.p(';').g(test).p(';');
-	first = true;
-	for (Iterator i = updates.iterator(); i.hasNext();) {
-	    if (!first) f.p(',');
-	    f.g((JExpression)(i.next()));
-	    first = false;
-	}
-	f.p(')');
-	if (body != null)
-	    f.g(body).nl();
-	else
-	    f.p(';').nl();
+        f.p("for (");
+        boolean first = true;
+        for (Object o : inits) {
+            if (!first) f.p(',');
+            if (o instanceof JVar)
+                f.b((JVar) o);
+            else
+                f.g((JExpression) o);
+            first = false;
+        }
+        f.p(';').g(test).p(';');
+        first = true;
+        for (JExpression e : updates) {
+            if (!first) f.p(',');
+            f.g(e);
+            first = false;
+        }
+        f.p(')');
+        if (body != null)
+            f.g(body).nl();
+        else
+            f.p(';').nl();
     }
 
 }

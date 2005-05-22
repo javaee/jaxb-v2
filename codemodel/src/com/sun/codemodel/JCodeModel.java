@@ -337,9 +337,9 @@ public final class JCodeModel {
 
             String r = null;
 
-            for (int j = 0; j < primitives.length; j++) {
-                if (primitives[j].charAt(0) == name.charAt(i))
-                    r = primitives[j].substring(1);
+            for (String p : primitives) {
+                if (p.charAt(0) == name.charAt(i))
+                    r = p.substring(1);
             }
             if (r == null) {
                 // ASSERT: it must be Lclassname;

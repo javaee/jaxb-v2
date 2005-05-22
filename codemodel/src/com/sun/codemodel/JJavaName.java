@@ -112,7 +112,7 @@ public class JJavaName {
             // and 5.0 keywords
             "enum"
             };
-        for( int i=0; i<words.length; i++ )
-            reservedKeywords.add(words[i]);
+        for (String w : words)
+            reservedKeywords.add(w);
     }
 }

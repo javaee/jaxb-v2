@@ -105,7 +105,7 @@ public final class JAnnotationUse extends JAnnotationValue {
     /**
      * Adds a member value pair to this annotation
      * For adding class values as param
-     * @see #param(java.lang.String, java.lang.Class)
+     * @see #param(String, Class)
      * @param name
      *        The simple name for this annotation
      *

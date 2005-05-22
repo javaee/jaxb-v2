@@ -6,7 +6,6 @@
 package com.sun.codemodel;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 
@@ -31,7 +30,7 @@ public final class JInvocation extends JExpressionImpl implements JStatement {
     /**
      * List of argument expressions for this method invocation
      */
-    private List args = new ArrayList();
+    private List<JExpression> args = new ArrayList<JExpression>();
 
     /**
      * If isConstructor==true, this field keeps the type to be created.
@@ -118,13 +117,8 @@ public final class JInvocation extends JExpressionImpl implements JStatement {
                 f.id(name).p('(');
         }
                 
-        boolean first = true;
-        for (Iterator i = args.iterator(); i.hasNext();) {
-            if (!first) f.p(',');
-            f.g((JExpression)(i.next()));
-            first = false;
-        }
-        
+        f.g(args);
+
         if (isConstructor && type.isArray())
             f.p('}');
         else 

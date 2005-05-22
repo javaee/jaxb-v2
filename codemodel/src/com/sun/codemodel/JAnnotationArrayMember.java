@@ -5,10 +5,9 @@
 package com.sun.codemodel;
 
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents an arrays as annotation members
@@ -21,7 +20,7 @@ import java.lang.annotation.Annotation;
  *     Bhakti Mehta (bhakti.mehta@sun.com)
  */
 public final class JAnnotationArrayMember extends JAnnotationValue implements JAnnotatable {
-    private final List values = new ArrayList();
+    private final List<JAnnotationValue> values = new ArrayList<JAnnotationValue>();
     private final JCodeModel owner;
 
     JAnnotationArrayMember(JCodeModel owner) {
@@ -127,11 +126,9 @@ public final class JAnnotationArrayMember extends JAnnotationValue implements JA
         f.p('{').nl().i();
 
         boolean first = true;
-        for (Iterator i = values.iterator(); i.hasNext();) {
+        for (JAnnotationValue aValue : values) {
             if (!first)
                 f.p(',').nl();
-
-            JAnnotationValue aValue = (JAnnotationValue) i.next();
             f.g(aValue);
             first = false;
         }
