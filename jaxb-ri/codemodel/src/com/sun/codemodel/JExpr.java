@@ -107,7 +107,7 @@ public abstract class JExpr {
      *      The type of the array component. 'T' or {@code new T[size]}.
      */
     public static JArray newArray(JType type, int size) {
-        return newArray(type,JExpr.lit(size));
+        return newArray(type,lit(size));
     }
     
     

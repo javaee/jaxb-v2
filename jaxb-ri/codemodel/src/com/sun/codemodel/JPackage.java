@@ -44,12 +44,12 @@ public final class JPackage implements JDeclaration, JGenerable, JClassContainer
     /**
      * List of classes contained within this package keyed by their name.
      */
-    private final Map classes = new TreeMap();
+    private final Map<String,JDefinedClass> classes = new TreeMap<String,JDefinedClass>();
 
     /**
      * List of resources files inside this package.
      */
-    private final Set resources = new HashSet();
+    private final Set<JResourceFile> resources = new HashSet<JResourceFile>();
     
     /**
      * All {@link JClass}s in this package keyed the upper case class name.
@@ -162,7 +162,7 @@ public final class JPackage implements JDeclaration, JGenerable, JClassContainer
     
     public JDefinedClass _class( int mods, String name, ClassType classTypeVal ) throws JClassAlreadyExistsException {
         if(classes.containsKey(name))
-            throw new JClassAlreadyExistsException((JDefinedClass)classes.get(name));
+            throw new JClassAlreadyExistsException(classes.get(name));
         else {
             // XXX problems caught in the NC constructor
             JDefinedClass c = new JDefinedClass(this, mods, name, classTypeVal);
@@ -193,7 +193,7 @@ public final class JPackage implements JDeclaration, JGenerable, JClassContainer
      */
     public JDefinedClass _getClass(String name) {
         if(classes.containsKey(name))
-            return (JDefinedClass)classes.get(name);
+            return classes.get(name);
         else
             return null;
     }
@@ -266,11 +266,9 @@ public final class JPackage implements JDeclaration, JGenerable, JClassContainer
      * Checks if a resource of the given name exists.
      */
     public boolean hasResourceFile(String name) {
-        for (Iterator itr = resources.iterator(); itr.hasNext();) {
-            JResourceFile r = (JResourceFile)itr.next();
-            if( r.name().equals(name) )
+        for (JResourceFile r : resources)
+            if (r.name().equals(name))
                 return true;
-        }
         return false;
     }
     
@@ -403,13 +401,11 @@ public final class JPackage implements JDeclaration, JGenerable, JClassContainer
     void build( CodeWriter src, CodeWriter res ) throws IOException {
 
         // write classes
-        for (Iterator i = classes.values().iterator(); i.hasNext();) {
-            JDefinedClass c = (JDefinedClass)(i.next());
-            
-            if( c.isHidden() )
+        for (JDefinedClass c : classes.values()) {
+            if (c.isHidden())
                 continue;   // don't generate this file
 
-            JFormatter f = createJavaSourceFileWriter(src,c.name());
+            JFormatter f = createJavaSourceFileWriter(src, c.name());
             f.write(c);
             f.close();
         }
@@ -428,14 +424,12 @@ public final class JPackage implements JDeclaration, JGenerable, JClassContainer
         }
 
         // write resources
-        for( Iterator i = resources.iterator(); i.hasNext();) {
-            JResourceFile rsrc = (JResourceFile)i.next();
-
-            CodeWriter cw = rsrc.isResource()?res:src;
-            OutputStream os = new BufferedOutputStream(cw.open(this,rsrc.name()));
+        for (JResourceFile rsrc : resources) {
+            CodeWriter cw = rsrc.isResource() ? res : src;
+            OutputStream os = new BufferedOutputStream(cw.open(this, rsrc.name()));
             rsrc.build(os);
             os.close();
-        }    
+        }
     }
 
     private JFormatter createJavaSourceFileWriter(CodeWriter src, String className) throws IOException {

@@ -4,8 +4,9 @@
  */
 package com.sun.codemodel;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 /**
  * Switch statement
@@ -20,7 +21,7 @@ public final class JSwitch implements JStatement {
     /**
      * vector of JCases.
      */
-    private Vector cases = new Vector();
+    private List<JCase> cases = new ArrayList<JCase>();
     
     /**
      * a single default case
@@ -58,9 +59,8 @@ public final class JSwitch implements JStatement {
         } else {
             f.p("switch (").g(test).p(')').p(" {").nl();
         }
-        Iterator itr = cases();
-        while(itr.hasNext())
-            f.s((JCase)itr.next());
+        for( JCase c : cases )
+            f.s(c);
         if( defaultCase != null )
             f.s( defaultCase );
         f.p('}').nl();

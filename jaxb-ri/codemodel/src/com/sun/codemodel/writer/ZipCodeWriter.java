@@ -45,7 +45,7 @@ public class ZipCodeWriter implements CodeWriter {
     }
 
     /** Converts a package name to the directory name. */
-    private String toDirName( JPackage pkg ) {
+    private static String toDirName( JPackage pkg ) {
         return pkg.name().replace('.','/')+'/';
     }
 

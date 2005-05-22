@@ -33,13 +33,10 @@ public class JDefinedClass
     private JClass superClass;
 
     /** List of interfaces that this class implements */
-    private final Set interfaces = new TreeSet();
-
-    /** Set of fields that are members of this class */
-    private final List fields = new ArrayList();
+    private final Set<JClass> interfaces = new TreeSet<JClass>();
 
     /** Fields keyed by their names. */
-    private final Map fieldsByName = new HashMap();
+    private final Map<String,JFieldVar> fields = new HashMap<String,JFieldVar>();
 
     /** Static initializer, if this class has one */
     private JBlock init = null;
@@ -48,16 +45,17 @@ public class JDefinedClass
     private JDocComment jdoc = null;
 
     /** Set of constructors for this class, if any */
-    private final List constructors = new ArrayList();
+    private final List<JMethod> constructors = new ArrayList<JMethod>();
 
     /** Set of methods that are members of this class */
-    private final List methods = new ArrayList();
+    private final List<JMethod> methods = new ArrayList<JMethod>();
 
-    /** Nested classes as a map from name to JDefinedClass */
-    private final Map classes = new TreeMap();
-
-    /** Null, or a {@link #classes} keyed by the upper-case class name. */
-    private final Map upperCaseClassMap;
+    /**
+     * Nested classes as a map from name to JDefinedClass.
+     * The name is all capitalized in a case sensitive file system
+     * ({@link JCodeModel#isCaseSensitiveFileSystem}) to avoid conflicts.
+     */
+    private final Map<String,JDefinedClass> classes = new TreeMap<String,JDefinedClass>();
 
     /**
      * Flag that controls whether this class should be really generated or not.
@@ -100,7 +98,7 @@ public class JDefinedClass
 //    private List enumValues = new ArrayList();
     
     /** Set of enum constants that are keyed by names */
-    private final Map enumConstantsByName = new HashMap();
+    private final Map<String,JEnumConstant> enumConstantsByName = new HashMap<String,JEnumConstant>();
 
     /**
      * Annotations on this variable. Lazily created.
@@ -155,11 +153,6 @@ public class JDefinedClass
         JCodeModel owner,
 		ClassType classTypeVal) {
         super(owner);
-
-        if (JCodeModel.isCaseSensitiveFileSystem)
-            upperCaseClassMap = null;
-        else
-            upperCaseClassMap = new HashMap();
 
         if(name!=null) {
             if (name.trim().length() == 0)
@@ -351,12 +344,8 @@ public class JDefinedClass
         String name,
         JExpression init) {
         JFieldVar f = new JFieldVar(owner(),JMods.forField(mods), type, name, init);
-        fields.add(f);
 
-        JFieldVar existing = (JFieldVar) fieldsByName.get(name);
-        if (existing != null)
-            fields.remove(existing);
-        fieldsByName.put(name, f);
+        fields.put(name, f);
 
         return f;
     }
@@ -435,7 +424,7 @@ public class JDefinedClass
      * Returns an iterator that walks the fields defined in this class.
      */
     public Iterator fields() {
-        return fields.iterator();
+        return fields.values().iterator();
     }
 
     /**
@@ -477,9 +466,7 @@ public class JDefinedClass
      *      null if not found.
      */
     public JMethod getConstructor(JType[] argTypes) {
-        for (Iterator itr = constructors.iterator(); itr.hasNext();) {
-            JMethod m = (JMethod) itr.next();
-
+        for (JMethod m : constructors) {
             if (m.hasSignature(argTypes))
                 return m;
         }
@@ -526,8 +513,8 @@ public class JDefinedClass
      *      null if not found.
      */
     public JMethod getMethod(String name, JType[] argTypes) {
-        outer : for (Iterator itr = methods.iterator(); itr.hasNext();) {
-            JMethod m = (JMethod) itr.next();
+        outer :
+        for (JMethod m : methods) {
             if (!m.name().equals(name))
                 continue;
 
@@ -573,20 +560,18 @@ public class JDefinedClass
     public JDefinedClass _class(int mods, String name, ClassType classTypeVal)
         throws JClassAlreadyExistsException {
 
-        if (classes.containsKey(name))
-            throw new JClassAlreadyExistsException(
-                (JDefinedClass) classes.get(name));
+        String NAME;
+        if (JCodeModel.isCaseSensitiveFileSystem)
+            NAME = name.toUpperCase();
+        else
+            NAME = name;
+
+        if (classes.containsKey(NAME))
+            throw new JClassAlreadyExistsException(classes.get(NAME));
         else {
             // XXX problems caught in the NC constructor
             JDefinedClass c = new JDefinedClass(this, mods, name, classTypeVal);
-            if (upperCaseClassMap != null) {
-                JDefinedClass dc =
-                    (JDefinedClass) upperCaseClassMap.get(name.toUpperCase());
-                if (dc != null)
-                    throw new JClassAlreadyExistsException(dc);
-                upperCaseClassMap.put(name.toUpperCase(), c);
-            }
-            classes.put(name, c);
+            classes.put(NAME,c);
             return c;
         }
     }
@@ -663,8 +648,7 @@ public class JDefinedClass
      * Returns all the nested classes defined in this class.
      */
     public final JClass[] listClasses() {
-        return (JClass[]) classes.values().toArray(
-            new JClass[classes.values().size()]);
+        return classes.values().toArray(new JClass[classes.values().size()]);
     }
 
     /**
@@ -704,10 +688,10 @@ public class JDefinedClass
             if (superClass == null)
                 f.nl();
             f.i().p(classType.equals(ClassType.INTERFACE) ? "extends" : "implements");
-            for (Iterator i = interfaces.iterator(); i.hasNext();) {
+            for (JClass intf : interfaces) {
                 if (!first)
                     f.p(',');
-                f.g((JClass) (i.next()));
+                f.g(intf);
                 first = false;
             }
             f.nl().o();
@@ -723,27 +707,26 @@ public class JDefinedClass
         boolean first = true;
 
         if (!enumConstantsByName.isEmpty()) {
-            for (Iterator i = enumConstantsByName.values().iterator(); i.hasNext();) {
+            for (JEnumConstant c : enumConstantsByName.values()) {
                 if (!first) f.p(',').nl();
-                f.d((JEnumConstant)i.next());
+                f.d(c);
                 first = false;
             }
         	f.p(';').nl();
         }
 
-        for (Iterator i = fields.iterator(); i.hasNext();) {
-            f.d((JVar) (i.next()));
-        }
+        for( JFieldVar field : fields.values() )
+            f.d(field);
         if (init != null)
             f.nl().p("static").s(init);
-        for (Iterator i = constructors.iterator(); i.hasNext();) {
-            f.nl().d((JMethod) (i.next()));
+        for (JMethod m : constructors) {
+            f.nl().d(m);
         }
-        for (Iterator i = methods.iterator(); i.hasNext();) {
-            f.nl().d((JMethod) (i.next()));
+        for (JMethod m : methods) {
+            f.nl().d(m);
         }
-        for (Iterator i = classes.values().iterator(); i.hasNext();) {
-            f.nl().d((JDefinedClass) (i.next()));
+        for (JDefinedClass dc : classes.values()) {
+            f.nl().d(dc);
         }
         
         

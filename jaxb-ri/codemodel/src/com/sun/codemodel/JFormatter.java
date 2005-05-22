@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Iterator;
+import java.util.Collection;
 
 
 /**
@@ -293,6 +294,20 @@ public final class JFormatter {
      */
     public JFormatter g(JGenerable g) {
         g.generate(this);
+        return this;
+    }
+
+    /**
+     * Produces {@link JGenerable}s separated by ','
+     */
+    public JFormatter g(Collection<? extends JGenerable> list) {
+        boolean first = true;
+        for (JGenerable item : list) {
+            if (!first)
+                p(',');
+            g(item);
+            first = false;
+        }
         return this;
     }
 

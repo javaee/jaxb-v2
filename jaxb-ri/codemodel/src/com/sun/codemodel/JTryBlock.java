@@ -6,7 +6,6 @@
 package com.sun.codemodel;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 
@@ -17,33 +16,34 @@ import java.util.List;
 public class JTryBlock implements JStatement {
 
     private JBlock body = new JBlock();
-    private List catches = new ArrayList();
+    private List<JCatchBlock> catches = new ArrayList<JCatchBlock>();
     private JBlock _finally = null;
 
-    JTryBlock() { }
+    JTryBlock() {
+    }
 
     public JBlock body() {
-	return body;
+        return body;
     }
 
     public JCatchBlock _catch(JClass exception) {
-	JCatchBlock cb = new JCatchBlock(exception);
-	catches.add(cb);
-	return cb;
+        JCatchBlock cb = new JCatchBlock(exception);
+        catches.add(cb);
+        return cb;
     }
 
     public JBlock _finally() {
-	if (_finally == null) _finally = new JBlock();
-	return _finally;
+        if (_finally == null) _finally = new JBlock();
+        return _finally;
     }
 
     public void state(JFormatter f) {
-	f.p("try").g(body);
-	for (Iterator i = catches.iterator(); i.hasNext();)
-	    f.g((JCatchBlock)(i.next()));
-	if (_finally != null)
-	    f.p("finally").g(_finally);
-	f.nl();
+        f.p("try").g(body);
+        for (JCatchBlock cb : catches)
+            f.g(cb);
+        if (_finally != null)
+            f.p("finally").g(_finally);
+        f.nl();
     }
 
 }
