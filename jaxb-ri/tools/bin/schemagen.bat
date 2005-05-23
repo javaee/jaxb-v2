@@ -22,13 +22,6 @@ goto END
 :CHECKJAVAHOME
 if not "%JAVA_HOME%" == "" goto USE_JAVA_HOME
 
-echo.
-echo Warning: JAVA_HOME environment variable is not set.
-echo   If build fails because sun.* classes could not be found
-echo   you will need to set the JAVA_HOME environment variable
-echo   to the installation directory of java.
-echo.
-
 set APT=apt
 goto SETCLASSPATH
 
