@@ -56,15 +56,7 @@ public class JArray extends JExpressionImpl {
         if ((size == null) || (exprs != null))
             f.p('{');
         if (exprs != null) {
-            boolean first = true;
-            if (exprs.size() > 0) {
-                for (JExpression exp : exprs) {
-                    if (!first)
-                        f.p(',');
-                    f.g(exp);
-                    first = false;
-                }
-            }
+            f.g(exprs);
         } else {
             f.p(' ');
         }

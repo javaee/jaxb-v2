@@ -39,7 +39,7 @@ public class JVar extends JExpressionImpl implements JDeclaration, JAssignmentTa
     /**
      * Annotations on this variable. Lazily created.
      */
-    private List annotations = null;
+    private List<JAnnotationUse> annotations = null;
 
 
 
@@ -122,7 +122,7 @@ public class JVar extends JExpressionImpl implements JDeclaration, JAssignmentTa
     public void bind(JFormatter f) {
         if (annotations != null){
             for( int i=0; i<annotations.size(); i++ )
-                f.g((JAnnotationUse)annotations.get(i)).nl();
+                f.g(annotations.get(i)).nl();
         }
         f.g(mods).g(type).id(name);
         if (init != null)

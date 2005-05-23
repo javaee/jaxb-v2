@@ -62,7 +62,7 @@ public final class JPackage implements JDeclaration, JGenerable, JClassContainer
     /**
      * Lazily created list of package annotations.
      */
-    private List annotations = null;
+    private List<JAnnotationUse> annotations = null;
 
     /**
      * JPackage constructor
@@ -365,7 +365,7 @@ public final class JPackage implements JDeclaration, JGenerable, JClassContainer
         if(isUnnamed())
             throw new IllegalArgumentException("the root package cannot be annotated");
         if(annotations==null)
-           annotations = new ArrayList();
+           annotations = new ArrayList<JAnnotationUse>();
         JAnnotationUse a = new JAnnotationUse(clazz);
         annotations.add(a);
         return a;
@@ -416,7 +416,7 @@ public final class JPackage implements JDeclaration, JGenerable, JClassContainer
             // TODO: think about importing
             if (annotations != null){
                 for( int i=0; i<annotations.size(); i++ )
-                    f.g((JAnnotationUse)annotations.get(i)).nl();
+                    f.g(annotations.get(i)).nl();
             }
             f.d(this);
 

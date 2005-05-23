@@ -379,15 +379,7 @@ public class JMethod extends JGenerifiableImpl implements JDeclaration, JAnnotat
 
 		f.p(')');
 		if (_throws!=null && !_throws.isEmpty()) {
-			f.nl().i().p("throws");
-			first = true;
-			for( JClass t : _throws ) {
-				if (!first)
-					f.p(',');
-				f.g(t);
-				first = false;
-			}
-			f.nl().o();
+			f.nl().i().p("throws").g(_throws).nl().o();
 		}
         
         if (defaultValue != null) {

@@ -58,14 +58,7 @@ public class JForLoop implements JStatement {
                 f.g((JExpression) o);
             first = false;
         }
-        f.p(';').g(test).p(';');
-        first = true;
-        for (JExpression e : updates) {
-            if (!first) f.p(',');
-            f.g(e);
-            first = false;
-        }
-        f.p(')');
+        f.p(';').g(test).p(';').g(updates).p(')');
         if (body != null)
             f.g(body).nl();
         else

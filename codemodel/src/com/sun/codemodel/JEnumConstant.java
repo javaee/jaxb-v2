@@ -34,14 +34,14 @@ public final class JEnumConstant extends JExpressionImpl implements JDeclaration
     /**
      * Annotations on this variable. Lazily created.
      */
-    private List annotations = null;
+    private List<JAnnotationUse> annotations = null;
 
 
     /**
      * List of the constructor argument expressions.
      * Lazily constructed.
      */
-    private List args = null;
+    private List<JExpression> args = null;
 
     JEnumConstant(JDefinedClass type,String name) {
         this.name = name;
@@ -57,7 +57,7 @@ public final class JEnumConstant extends JExpressionImpl implements JDeclaration
     public JEnumConstant arg(JExpression arg) {
         if(arg==null)   throw new IllegalArgumentException();
         if(args==null)
-            args = new ArrayList();
+            args = new ArrayList<JExpression>();
         args.add(arg);
         return this;
     }
@@ -89,7 +89,7 @@ public final class JEnumConstant extends JExpressionImpl implements JDeclaration
      */
     public JAnnotationUse annotate(JClass clazz){
         if(annotations==null)
-           annotations = new ArrayList();
+           annotations = new ArrayList<JAnnotationUse>();
         JAnnotationUse a = new JAnnotationUse(clazz);
         annotations.add(a);
         return a;
@@ -114,16 +114,11 @@ public final class JEnumConstant extends JExpressionImpl implements JDeclaration
             f.nl().g( jdoc );
         if (annotations != null) {
             for( int i=0; i<annotations.size(); i++ )
-                f.g((JAnnotationUse)annotations.get(i)).nl();
+                f.g(annotations.get(i)).nl();
         }
         f.id(name);
         if(args!=null) {
-            f.p('(');
-            for( int i=0; i<args.size(); i++ ) {
-                if(i!=0) f.p(',');
-                f.g((JExpression)args.get(i));
-            }
-            f.p(')');
+            f.p('(').g(args).p(')');
         }
     }
 
