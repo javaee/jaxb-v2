@@ -293,7 +293,7 @@ public abstract class Unmarshaller {
             Map<QName,String> map = (Map<QName,String>)acc.get(o);
             if(map==null) {
                 // if null, create a new map.
-                if(HashMap.class.isAssignableFrom(acc.valueType))
+                if(acc.valueType.isAssignableFrom(HashMap.class))
                     map = new HashMap<QName,String>();
                 else {
                     // we don't know how to create a map for this.
