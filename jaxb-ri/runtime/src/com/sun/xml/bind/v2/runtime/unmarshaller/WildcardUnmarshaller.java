@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: WildcardUnmarshaller.java,v 1.3 2005-05-23 15:15:32 kohsuke Exp $
+ * @(#)$Id: WildcardUnmarshaller.java,v 1.4 2005-05-23 16:30:44 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -101,7 +101,7 @@ public class WildcardUnmarshaller<ResultT extends Result> extends Unmarshaller.H
         context.endState();
     }
 
-    private static State getState(UnmarshallingContext context) {
+    private State getState(UnmarshallingContext context) {
         return context.getState();
     }
 
