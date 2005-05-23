@@ -302,11 +302,13 @@ public final class JFormatter {
      */
     public JFormatter g(Collection<? extends JGenerable> list) {
         boolean first = true;
-        for (JGenerable item : list) {
-            if (!first)
-                p(',');
-            g(item);
-            first = false;
+        if(!list.isEmpty()) {
+            for (JGenerable item : list) {
+                if (!first)
+                    p(',');
+                g(item);
+                first = false;
+            }
         }
         return this;
     }

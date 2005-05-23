@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JTypeVar.java,v 1.1 2005-04-15 20:02:55 kohsuke Exp $
+ * @(#)$Id: JTypeVar.java,v 1.2 2005-05-23 14:34:37 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -33,7 +33,7 @@ public final class JTypeVar extends JClass implements JDeclaration {
     
     private JClass classBound;
     
-    private List interfaceBounds;
+    private List<JClass> interfaceBounds;
     
     JTypeVar(JCodeModel owner, String _name) {
         super(owner);
@@ -60,7 +60,7 @@ public final class JTypeVar extends JClass implements JDeclaration {
     public JTypeVar bound( JClass c ) {
         if( c.isInterface() ) {
             if(interfaceBounds==null)
-                interfaceBounds = new ArrayList(1);
+                interfaceBounds = new ArrayList<JClass>(1);
             interfaceBounds.add(c);
         } else {
             if(classBound!=null)
@@ -109,8 +109,7 @@ public final class JTypeVar extends JClass implements JDeclaration {
             f.p("extends");
             for(int i=0;i<interfaceBounds.size();i++) {
                 if(i!=0)    f.p('&');
-                JClass c = (JClass)interfaceBounds.get(i);
-                f.g(c);
+                f.g(interfaceBounds.get(i));
             }
         }
     }

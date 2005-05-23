@@ -26,16 +26,16 @@ public class JWhileLoop implements JStatement {
      * Construct a While statment
      */
     JWhileLoop(JExpression test) {
-	this.test = test;
+        this.test = test;
     }
 
     public JExpression test() {
-	return test;
+        return test;
     }
 
     public JBlock body() {
-	if (body == null) body = new JBlock();
-	return body;
+        if (body == null) body = new JBlock();
+        return body;
     }
 
     public void state(JFormatter f) {
@@ -44,10 +44,10 @@ public class JWhileLoop implements JStatement {
         } else {
             f.p("while (").g(test).p(')');
         }
-	if (body != null)
-	    f.s(body);
-	else
-	    f.p(';').nl();
+        if (body != null)
+            f.s(body);
+        else
+            f.p(';').nl();
     }
 
 }
