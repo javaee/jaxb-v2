@@ -782,6 +782,9 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 }
             }
 
+
+            boolean allNillable = true; // remain true after the next for loop if all TypeRefs are nillable
+
             // fill in the content model
             for (TypeRef t : (List<TypeRef>) ep.getTypes()) {
                 LocalElement e = compositor.element();
@@ -791,6 +794,8 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 writeTypeRef(e,t, "type");
                 if (t.isNillable()) {
                     e.nillable(true);
+                } else {
+                    allNillable = false;
                 }
                 if(tn.getNamespaceURI().length()>0)
                     e.form("qualified");
@@ -801,11 +806,8 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 occurs.maxOccurs("unbounded");
                 occurs.minOccurs(0);
             } else {
-                if (!ep.isRequired()) {
-                    // removed "!ep.isNillable() && ...", but maybe we need to check
-                    // whether any one of t has t.isNillable()==true in the above and use it.
-                    // or maybe we should revisit the semantics of the isRequired method.
-                    // see Spec table 8-8
+                if (!ep.isRequired() && !allNillable) {
+                    // see Spec table 8-13
                     occurs.minOccurs(0);
                 } // else minOccurs defaults to 1
             }
