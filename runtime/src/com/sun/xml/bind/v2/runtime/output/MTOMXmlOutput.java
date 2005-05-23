@@ -61,10 +61,6 @@ public final class MTOMXmlOutput extends XmlOutput {
         next.attribute(prefix, localName, value);
     }
 
-    public void attribute( Name name, char[] buf, int len, boolean needEscape ) throws IOException, XMLStreamException {
-        next.attribute(name, buf, len, needEscape);
-    }
-
     public void endStartTag() throws IOException, SAXException {
         next.endStartTag();
     }
@@ -93,10 +89,6 @@ public final class MTOMXmlOutput extends XmlOutput {
             }
         }
         next.text(value, needsSeparatingWhitespace);
-    }
-
-    public void text( char[] buf, int len ) throws IOException, SAXException, XMLStreamException {
-        next.text(buf, len);
     }
 
     public void text(int value) throws IOException, SAXException, XMLStreamException {

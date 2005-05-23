@@ -1,4 +1,4 @@
-/* $Id: XMLStreamReaderToContentHandler.java,v 1.1 2005-04-21 00:01:56 kohsuke Exp $
+/* $Id: XMLStreamReaderToContentHandler.java,v 1.2 2005-05-23 15:15:34 kohsuke Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -53,7 +53,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * @author Ryan.Shoemaker@Sun.COM
  * @version 1.0
  */
-public class XMLStreamReaderToContentHandler implements StAXReaderToContentHandler {
+public class XMLStreamReaderToContentHandler {
 
     // StAX event source
     private final XMLStreamReader staxStreamReader;

@@ -4,15 +4,14 @@
  */
 
 /*
- * @(#)$Id: WildcardUnmarshaller.java,v 1.2 2005-04-29 21:20:19 kohsuke Exp $
+ * @(#)$Id: WildcardUnmarshaller.java,v 1.3 2005-05-23 15:15:32 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
+import javax.xml.bind.annotation.DomHandler;
 import javax.xml.transform.Result;
 import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.bind.annotation.DomHandler;
 
-import javax.xml.bind.annotation.DomHandler;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.property.Unmarshaller;
@@ -102,7 +101,7 @@ public class WildcardUnmarshaller<ResultT extends Result> extends Unmarshaller.H
         context.endState();
     }
 
-    private State getState(UnmarshallingContext context) {
+    private static State getState(UnmarshallingContext context) {
         return context.getState();
     }
 
@@ -170,7 +169,7 @@ public class WildcardUnmarshaller<ResultT extends Result> extends Unmarshaller.H
         }
     }
     
-    private void error( UnmarshallingContext context, SAXException e ) throws SAXException {
+    private static void error( UnmarshallingContext context, SAXException e ) throws SAXException {
         context.handleError(e);
         throw e;
     }

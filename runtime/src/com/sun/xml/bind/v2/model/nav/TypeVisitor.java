@@ -12,8 +12,6 @@ import java.lang.reflect.WildcardType;
 abstract class TypeVisitor<T,P> {
     public final T visit( Type t, P param ) {
         assert t!=null;
-        if(t==null)
-            throw new NullPointerException();
 
         if (t instanceof Class)
             return onClass((Class)t,param);

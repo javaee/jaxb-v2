@@ -37,8 +37,6 @@ import org.xml.sax.Locator;
 class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
         implements RuntimeClassInfo, RuntimeElement {
 
-    protected final ReflectionNavigator nav;
-
     /**
      * If this class has a property annotated with {@link XmlLocation},
      * this field will get the accessor for it.
@@ -49,7 +47,6 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
 
     public RuntimeClassInfoImpl(RuntimeModelBuilder modelBuilder, Locatable upstream, Class clazz) {
         super(modelBuilder, upstream, clazz);
-        this.nav = modelBuilder.getNavigator();
     }
 
     public final RuntimeClassInfoImpl getBaseClass() {
@@ -211,14 +208,6 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
 
         public Locatable getUpstream() {
             return core.getUpstream();
-        }
-
-        public String generateSetValue(String $bean, String $var) {
-            return core.generateSetValue($bean, $var);
-        }
-
-        public String generateGetValue(String $bean) {
-            return core.generateGetValue($bean);
         }
 
         public Accessor getAccessor() {

@@ -162,20 +162,6 @@ public class UTF8XmlOutput extends XmlOutput {
         out.write('\"');
     }
 
-    @Override
-    public void attribute(Name name, char[] buf, int len, boolean needEscape) throws IOException {
-        out.write(' ');
-        if(name.nsUriIndex==-1) {
-            textBuffer.set(name.localName);
-            textBuffer.write(out);
-        } else
-            writeName(name);
-        out.write(EQUALS);
-        textBuffer.setEscape(buf,len,true);
-        textBuffer.write(out);
-        out.write('\"');
-    }
-
     public void endStartTag() throws IOException {
         out.write('>');
     }
@@ -201,11 +187,6 @@ public class UTF8XmlOutput extends XmlOutput {
 
     private void doText(CharSequence value,boolean isAttribute) throws IOException {
         textBuffer.setEscape(value,isAttribute);
-        textBuffer.write(out);
-    }
-
-    public void text(char[] buf, int len) throws IOException {
-        textBuffer.setEscape(buf,len,false);
         textBuffer.write(out);
     }
 

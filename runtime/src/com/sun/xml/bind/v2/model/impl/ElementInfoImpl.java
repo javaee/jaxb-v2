@@ -99,17 +99,6 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             return tagName;
         }
 
-        public TypeT getRawType() {
-            // TODO
-            return nav().ref(Collection.class);
-        }
-
-        public TypeT getIndividualType() {
-            // TODO
-             return nav().ref(Object.class);
-        }
-
-
         public List<? extends TypeRef<TypeT,ClassDeclT>> getTypes() {
             return Collections.singletonList(this);
         }

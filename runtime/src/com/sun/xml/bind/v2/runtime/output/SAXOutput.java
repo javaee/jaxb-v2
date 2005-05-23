@@ -124,7 +124,4 @@ public class SAXOutput extends XmlOutput {
         out.characters(buf,0,vlen+(needsSP?1:0));
     }
 
-    public void text(char[] buf, int len) throws SAXException {
-        out.characters(buf,0,len);
-    }
 }

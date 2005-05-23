@@ -5,7 +5,6 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.v2.model.runtime.RuntimeArrayInfo;
@@ -25,14 +24,12 @@ final class ArrayBeanInfoImpl  extends JaxBeanInfo {
 
     protected final Class itemType;
     protected final JaxBeanInfo itemBeanInfo;
-    protected final QName itemTypeName;
     protected final Unmarshaller.Handler unmarshaller;
 
     public ArrayBeanInfoImpl(JAXBContextImpl owner, RuntimeArrayInfo rai) {
         super(owner,rai,rai.getType(), rai.getTypeName(), false, true);
         this.itemType = jaxbType.getComponentType();
         this.itemBeanInfo = owner.getOrCreate(rai.getItemType());
-        this.itemTypeName = rai.getItemType().getTypeName();
 
         unmarshaller = createUnmarshaller(owner);
     }

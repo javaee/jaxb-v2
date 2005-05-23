@@ -111,9 +111,9 @@ public final class UnmarshallingContext extends Coordinator
             try {
                 return method.invoke(factorInstance);
             } catch (IllegalAccessException e) {
-                UnmarshallingContext.getInstance().handleError(e,false);
+                getInstance().handleError(e,false);
             } catch (InvocationTargetException e) {
-                UnmarshallingContext.getInstance().handleError(e,false);
+                getInstance().handleError(e,false);
             }
             return null; // can never be executed
         }

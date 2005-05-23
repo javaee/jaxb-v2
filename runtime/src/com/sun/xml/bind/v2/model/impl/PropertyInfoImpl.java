@@ -7,14 +7,9 @@ import javax.activation.MimeTypeParseException;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlMimeType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlSchema;
-import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
-import com.sun.xml.bind.v2.model.core.AccessibleProperty;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
@@ -23,8 +18,6 @@ import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
-import com.sun.xml.bind.v2.TODO;
-import com.sun.xml.bind.v2.NameConverter;
 
 /**
  * Default partial implementation for {@link PropertyInfo}.
@@ -32,7 +25,7 @@ import com.sun.xml.bind.v2.NameConverter;
  * @author Kohsuke Kawaguchi
  */
 abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
-    implements PropertyInfo<TypeT,ClassDeclT>, AccessibleProperty, Locatable {
+    implements PropertyInfo<TypeT,ClassDeclT>, Locatable {
 
     /**
      * Object that reads annotations.
@@ -148,14 +141,6 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
                 isCollection = false;
         }
         return isCollection;
-    }
-
-    public final String generateSetValue(String $bean, String $var, String uniqueName) {
-        return seed.generateSetValue($bean,$var);
-    }
-
-    public final String generateGetValue(String $bean, String $var, String uniqueName) {
-        return $var + '=' + seed.generateGetValue($bean) + ';';
     }
 
     /**

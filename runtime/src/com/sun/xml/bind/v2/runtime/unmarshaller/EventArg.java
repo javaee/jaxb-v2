@@ -1,7 +1,5 @@
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
-import javax.xml.namespace.QName;
-
 import com.sun.xml.bind.v2.runtime.Name;
 
 import org.xml.sax.Attributes;
@@ -56,13 +54,6 @@ public class EventArg {
     }
 
     /**
-     * Creates a {@link QName} object from the name triplet.
-     */
-    public final QName createQName() {
-        return new QName(uri,local,getPrefix());
-    }
-
-    /**
      * Checks if the given name pair matches this name.
      */
     public final boolean matches( String nsUri, String local ) {
@@ -72,10 +63,6 @@ public class EventArg {
     /**
      * Checks if the given name pair matches this name.
      */
-    public final boolean matches( QName name ) {
-        return this.local==name.getLocalPart() && this.uri==name.getNamespaceURI();
-    }
-
     public final boolean matches( Name name ) {
         return this.local==name.localName && this.uri==name.nsUri;
     }

@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.19 2005-05-20 20:57:20 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.20 2005-05-23 15:15:33 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -18,14 +18,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.bind.Binder;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBIntrospector;
-import javax.xml.bind.PropertyException;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.Validator;
-import javax.xml.bind.Binder;
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
@@ -41,7 +40,6 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
-import javax.xml.bind.Binder;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.Bridge;
 import com.sun.xml.bind.api.BridgeContext;
@@ -89,7 +87,7 @@ import org.xml.sax.SAXException;
  * This is ugly, but this class implements {@link ValidationEventHandler}
  * and always return true. This {@link ValidationEventHandler} is the default for 2.0.
  *
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public final class JAXBContextImpl extends JAXBRIContext implements ValidationEventHandler {
 
@@ -646,35 +644,11 @@ public final class JAXBContextImpl extends JAXBRIContext implements ValidationEv
         return new BinderImpl<Node>(this,new DOMScanner());
     }
 
-    /**
-     * There are no required properties, so simply throw an exception.  Other
-     * providers may have support for properties on Validator, but the RI doesn't
-     */
-    public void setProperty( String name, Object value )
-        throws PropertyException {
-        
-        throw new PropertyException(name, value);
-    }
-    
-    /**
-     * There are no required properties, so simply throw an exception.  Other
-     * providers may have support for properties on Validator, but the RI doesn't
-     */
-    public Object getProperty( String name )
-        throws PropertyException {
-            
-        throw new PropertyException(name);
-    }
-    
     public QName getElementName(Object o) throws JAXBException {
         JaxBeanInfo bi = getBeanInfo(o,true);
         if(!bi.isElement())
             return null;
         return new QName(bi.getElementNamespaceURI(o),bi.getElementLocalName(o));
-    }
-
-    public boolean isElement(Object o) {
-        return getBeanInfo(o)!=null;
     }
 
     public Bridge createBridge(TypeReference ref) {

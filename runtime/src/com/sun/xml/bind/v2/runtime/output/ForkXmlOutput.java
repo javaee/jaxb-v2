@@ -47,12 +47,6 @@ public final class ForkXmlOutput extends XmlOutput {
     }
 
     @Override
-    public void attribute(Name name, char[] buf, int len, boolean needEscape) throws IOException, XMLStreamException {
-        lhs.attribute(name, buf, len, needEscape);
-        rhs.attribute(name, buf, len, needEscape);
-    }
-
-    @Override
     public void endTag(Name name) throws IOException, SAXException, XMLStreamException {
         lhs.endTag(name);
         rhs.endTag(name);
@@ -95,8 +89,4 @@ public final class ForkXmlOutput extends XmlOutput {
         rhs.text(value,needsSeparatingWhitespace);
     }
 
-    public void text(char[] buf, int len) throws IOException, SAXException, XMLStreamException {
-        lhs.text(buf,len);
-        rhs.text(buf,len);
-    }
 }

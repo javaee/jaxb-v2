@@ -95,10 +95,6 @@ public class XMLEventWriterOutput extends XmlOutput {
         out.add(ef.createCharacters(value.toString()));
     }
 
-    public void text(char[] buf, int len) throws IOException, SAXException, XMLStreamException {
-        out.add(ef.createCharacters(new String(buf,0,len)));
-    }
-
     public void flush() throws IOException, XMLStreamException {
         out.flush();
     }

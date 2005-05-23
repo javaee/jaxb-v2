@@ -337,14 +337,6 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
             context.current = this;
         }
 
-        /**
-         * Returns true if this {@link Element} is the root of the stack.
-         * The root is used to keep track of the implicit bindings.
-         */
-        public boolean isRoot() {
-            return prev==null;
-        }
-
         public void setTagName( int prefix, String localName, Object outerPeer ) {
             assert localName!=null;
             this.elementNamePrefix = prefix;
