@@ -46,20 +46,4 @@ class FieldPropertySeed<TypeT,ClassDeclT,FieldT,MethodT> implements
     public Location getLocation() {
         return parent.nav().getFieldLocation(field);
     }
-//
-//
-// AccessibleProperty implementation
-//
-//
-    private String lvalue(String $bean) {
-        return $bean+'.'+parent.nav().getFieldName(field);
-    }
-
-    public String generateSetValue(String $bean, String $var) {
-        return lvalue($bean)+'='+$var+';';
-    }
-
-    public String generateGetValue(String $bean) {
-        return lvalue($bean);
-    }
 }

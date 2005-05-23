@@ -77,7 +77,4 @@ public class XMLStreamWriterOutput extends XmlOutput {
         out.writeCharacters(value.toString());
     }
 
-    public void text(char[] buf, int len) throws IOException, SAXException, XMLStreamException {
-        out.writeCharacters(buf,0,len);
-    }
 }

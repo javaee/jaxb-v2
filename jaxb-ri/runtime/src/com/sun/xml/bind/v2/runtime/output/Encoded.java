@@ -84,21 +84,6 @@ public final class Encoded {
     /**
      * Fill in the buffer by encoding the specified characters
      * while escaping characters like &lt;
-     */
-    public final void setEscape(char[] text, int length, boolean isAttribute) {
-        ensureSize(length*6+1);     // in the worst case the text is like """""", so we need 6 bytes per char
-
-        int ptr = 0;
-
-        for (int i = 0; i < length; i++)
-            ptr = escapeChar(isAttribute,text[i],ptr);
-        len = ptr;
-    }
-
-
-    /**
-     * Fill in the buffer by encoding the specified characters
-     * while escaping characters like &lt;
      *
      * @param isAttribute
      *      if true, characters like \t, \r, and \n are also escaped.

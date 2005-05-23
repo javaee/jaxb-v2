@@ -136,10 +136,6 @@ public abstract class XmlOutput {
      */
     public abstract void attribute( int prefix, String localName, String value ) throws IOException, XMLStreamException;
 
-    public void attribute( Name name, char[] buf, int len, boolean needEscape ) throws IOException, XMLStreamException {
-        attribute(name,new String(buf,0,len));
-    }
-
     public abstract void endStartTag() throws IOException, SAXException;
 
     public void endTag(Name name) throws IOException, SAXException, XMLStreamException {
@@ -155,7 +151,7 @@ public abstract class XmlOutput {
      * @param needsSeparatingWhitespace
      */
     public abstract void text( CharSequence value, boolean needsSeparatingWhitespace ) throws IOException, SAXException, XMLStreamException;
-    public abstract void text( char[] buf, int len ) throws IOException, SAXException, XMLStreamException;
+
     public void text( int value ) throws IOException, SAXException, XMLStreamException {
         text(Integer.toString(value),false);
     }
@@ -190,10 +186,4 @@ public abstract class XmlOutput {
     protected NamespaceContextImpl nsContext;
 
     protected XMLSerializer serializer;
-
-
-
-
-
-    protected static final String[] EMPTY_STRING_ARRAY = new String[0];
 }

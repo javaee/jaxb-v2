@@ -56,6 +56,15 @@ final class RuntimeElementInfoImpl extends ElementInfoImpl<Type,Class,Field,Meth
                         (Class)getAdapter().defaultType,(Class)adapterType);
         }
 
+        public Type getRawType() {
+            return Collection.class;
+        }
+
+        public Type getIndividualType() {
+             return Object.class;
+        }
+
+
         public boolean elementOnlyContent() {
             return false;   // this method doesn't make sense here
         }

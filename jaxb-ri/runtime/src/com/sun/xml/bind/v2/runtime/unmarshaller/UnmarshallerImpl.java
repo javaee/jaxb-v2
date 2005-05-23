@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: UnmarshallerImpl.java,v 1.10 2005-05-13 22:04:23 kohsuke Exp $
+ * @(#)$Id: UnmarshallerImpl.java,v 1.11 2005-05-23 15:15:31 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -283,7 +283,7 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl
         }
     }
 
-    private JAXBException handleStreamException(XMLStreamException e) {
+    private static JAXBException handleStreamException(XMLStreamException e) {
         // XMLStreamReaderToContentHandler wraps SAXException to XMLStreamException.
         // XMLStreamException doesn't print its nested stack trace when it prints
         // its stack trace, so if we wrap XMLStreamException in JAXBException,

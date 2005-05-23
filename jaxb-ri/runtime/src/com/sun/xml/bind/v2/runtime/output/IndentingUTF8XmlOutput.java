@@ -14,9 +14,11 @@ import org.xml.sax.SAXException;
  *
  * TODO: not sure if it's a good idea to move the indenting functionality to another class.
  *
+ * Doesn't have to be final, but it helps the JVM.
+ *
  * @author Kohsuke Kawaguchi
  */
-public class IndentingUTF8XmlOutput extends UTF8XmlOutput {
+public final class IndentingUTF8XmlOutput extends UTF8XmlOutput {
 
     /**
      * Null if the writer should perform no indentation.
@@ -111,12 +113,6 @@ public class IndentingUTF8XmlOutput extends UTF8XmlOutput {
     public void text(CharSequence value, boolean needSP) throws IOException {
         seenText = true;
         super.text(value, needSP);
-    }
-
-    @Override
-    public void text(char[] buf, int len) throws IOException {
-        seenText = true;
-        super.text(buf, len);
     }
 
     @Override

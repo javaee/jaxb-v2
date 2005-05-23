@@ -46,19 +46,4 @@ interface PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> extends Locatable {
      * but this method returns the actual collection type.
      */
     TypeT getRawType();
-
-
-    /**
-     * Returns a Java statement that sets the value to a property.
-     *
-     * @see com.sun.tools.xjc.api.Property#generateSetValue(String, String, String)
-     */
-    String generateSetValue(String $bean, String $var);
-
-    /**
-     * Returns a Java expression that evaluates to the value of the property.
-     *
-     * @see com.sun.tools.xjc.api.Property#generateGetValue(String, String, String)
-     */
-    String generateGetValue(String $bean);
 }

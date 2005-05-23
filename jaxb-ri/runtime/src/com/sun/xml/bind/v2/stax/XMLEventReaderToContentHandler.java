@@ -1,4 +1,4 @@
-/* $Id: XMLEventReaderToContentHandler.java,v 1.2 2005-04-27 22:12:13 kohsuke Exp $
+/* $Id: XMLEventReaderToContentHandler.java,v 1.3 2005-05-23 15:15:34 kohsuke Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -62,7 +62,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * @author Ryan.Shoemaker@Sun.COM
  * @version 1.0
  */
-public class XMLEventReaderToContentHandler implements StAXReaderToContentHandler {
+public class XMLEventReaderToContentHandler {
 
     // StAX event source
     private final XMLEventReader staxEventReader;
@@ -275,7 +275,7 @@ public class XMLEventReaderToContentHandler implements StAXReaderToContentHandle
      *
      * @return the StAX attributes converted to an org.xml.sax.Attributes
      */
-    private Attributes getAttributes(StartElement event) {
+    private static Attributes getAttributes(StartElement event) {
         AttributesImpl attrs = new AttributesImpl();
 
         if ( !event.isStartElement() ) {

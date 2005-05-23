@@ -48,19 +48,6 @@ final class LeafBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
         };
     }
 
-    public final boolean isDefault() {
-        return true;
-    }
-
-    public boolean useNamespace() {
-        return false;
-    }
-
-    public void declareNamespace( BeanT o, XMLSerializer w ) throws AccessorException {
-        xducer.declareNamespace(o,w);
-        // most of the leaf values don't need a namespace
-    }
-
     public final String getElementNamespaceURI(BeanT _) {
         throw new UnsupportedOperationException();
     }

@@ -58,7 +58,7 @@ import org.xml.sax.SAXException;
  * 
  * NSDECL       :=  "declareNamespace"
  * 
- * ATTRIBUTE    :=  "startAttribute" ATTVALUES "endAttribute"
+ * ATTRIBUTE    :=  "attribute"
  * ATTVALUES    :=  "text"*
  * 
  * 
@@ -142,7 +142,6 @@ public final class XMLSerializer extends Coordinator {
 
     private int textBufLen = 0;
 
-    private boolean inAttribute;
     private boolean fragment;
 
     /**
@@ -356,53 +355,11 @@ public final class XMLSerializer extends Coordinator {
             return;
         }
 
-        if(inAttribute) {
-    //        if(textBuf.length()!=0)
-    //            textBuf.append(' ');
-    //        textBuf.append(text);
-            int len = text.length();
-            if(textBufLen>0) {
-                ensureTextBuffer(len+1);
-                textBuf[textBufLen++] = ' ';
-            } else {
-                ensureTextBuffer(len);
-            }
-            text.toString().getChars(0,len,textBuf,textBufLen);
-            textBufLen += len;
-        } else {
-            out.text(text,textHasAlreadyPrinted);
-            textHasAlreadyPrinted = true;
-        }
+        out.text(text,textHasAlreadyPrinted);
+        textHasAlreadyPrinted = true;
     }
     
     
-    /**
-     * Starts marshalling of an attribute.
-     *
-     * The marshalling of an attribute will be done by
-     * <ol>
-     *  <li>call the startAttribute method
-     *  <li>call the text method (several times if necessary)
-     *  <li>call the endAttribute method
-     * </ol>
-     *
-     * No two attributes can be marshalled at the same time.
-     * Note that the whole attribute marshalling must be happened
-     * after the startElement method and before the endAttributes method.
-     */
-    public void startAttribute() {
-        // initialize the buffer to collect attribute value
-        textBufLen = 0;
-        assert !inAttribute;
-        inAttribute = true;
-    }
-
-    public void endAttribute( Name name) throws IOException, XMLStreamException {
-        assert inAttribute;
-        inAttribute = false;
-        out.attribute(name,textBuf,textBufLen,true);
-    }
-
     public void attribute(String uri, String local, String value) throws SAXException {
         int prefix;
         if(uri.length()==0) {
@@ -648,7 +605,6 @@ public final class XMLSerializer extends Coordinator {
         idReferencedObjects.clear();
         textBufLen = 0;
         textHasAlreadyPrinted = false;
-        inAttribute = false;
         seenRoot = false;
         this.schemaLocation = schemaLocation;
         this.noNsSchemaLocation = noNsSchemaLocation;

@@ -42,14 +42,4 @@ class AdaptedPropertySeed<TypeT,ClassDeclT,FieldT,MethodT> implements PropertySe
     public Locatable getUpstream() {
         return core.getUpstream();
     }
-
-    // those getters/setters should work with the in-memory type.
-    // thus they shouldn't invole in the adapting process.
-    public String generateSetValue(String $bean, String $var) {
-        return core.generateSetValue($bean, $var);
-    }
-
-    public String generateGetValue(String $bean) {
-        return core.generateGetValue($bean);
-    }
 }

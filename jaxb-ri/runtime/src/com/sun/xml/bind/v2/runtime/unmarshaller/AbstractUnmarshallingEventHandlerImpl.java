@@ -4,11 +4,10 @@
  */
 
 /*
- * @(#)$Id: AbstractUnmarshallingEventHandlerImpl.java,v 1.3 2005-05-02 17:41:57 kohsuke Exp $
+ * @(#)$Id: AbstractUnmarshallingEventHandlerImpl.java,v 1.4 2005-05-23 15:15:31 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
-import javax.xml.bind.Element;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.helpers.ValidationEventImpl;
 
@@ -106,7 +105,7 @@ public abstract class AbstractUnmarshallingEventHandlerImpl implements Unmarshal
         
         reportError(Messages.format(Messages.UNEXPECTED_TEXT, str ), true );
     }
-    protected final void unexpectedLeaveChild() {
+    protected static final void unexpectedLeaveChild() {
         // I believe this is really a bug of the compiler,
         // since when an object spawns a child object, it must be "prepared"
         // to receive this event.
@@ -165,26 +164,5 @@ public abstract class AbstractUnmarshallingEventHandlerImpl implements Unmarshal
         if(beanInfo.hasElementOnlyContentModel())
             context.disableTextCollection();
         return handler;
-    }
-    
-    protected final Element spawnWildcard( UnmarshallingContext context, EventArg arg )
-            throws SAXException {
-        UnmarshallingEventHandler ueh = context.getJAXBContext().pushUnmarshaller(arg.uri,arg.local,context);
-        
-        if(ueh!=null) {
-            ueh.enterElement(context,arg);
-            return context.getTarget();
-        } else {
-            // if no class is available to unmarshal this element, discard
-            // the sub-tree by feeding events to discarder.
-            context.pushContentHandler( new Discarder(), null, false );
-            context.getCurrentHandler().enterElement(context,arg);
-            return null;    // return null so that the discarder will be ignored
-        }
-    }
-
-    protected static final UnmarshallingEventHandler revertToParent(UnmarshallingContext context) throws SAXException {
-        context.popContentHandler();
-        return context.getCurrentHandler();
     }
 }

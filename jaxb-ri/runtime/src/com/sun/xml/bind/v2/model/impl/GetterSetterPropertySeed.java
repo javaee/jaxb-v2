@@ -79,17 +79,4 @@ class GetterSetterPropertySeed<TypeT,ClassDeclT,FieldT,MethodT> implements
         else
             return parent.nav().getMethodLocation(setter);
     }
-
-//
-//
-// AccessibleProperty implementation
-//
-//
-    public String generateSetValue(String $bean, String $var) {
-        return $bean+'.'+parent.nav().getMethodName(setter)+'('+$var+");";
-    }
-
-    public String generateGetValue(String $bean) {
-        return $bean+'.'+parent.nav().getMethodName(getter)+"()";
-    }
 }
