@@ -134,7 +134,7 @@ public class MimeTypeRange {
     }
 
     public static void main(String[] args) throws ParseException {
-        for( MimeTypeRange m : MimeTypeRange.parseRanges(args[0]))
+        for( MimeTypeRange m : parseRanges(args[0]))
             System.out.println(m.toString());
     }
 }

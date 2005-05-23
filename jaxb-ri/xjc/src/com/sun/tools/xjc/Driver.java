@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -25,6 +26,8 @@ import com.sun.tools.xjc.reader.xmlschema.parser.XMLSchemaInternalizationLogic;
 import com.sun.tools.xjc.util.Util;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
 import com.sun.tools.xjc.util.NullStream;
+import com.sun.tools.xjc.writer.SignatureWriter;
+import com.sun.tools.xjc.generator.bean.BeanGenerator;
 
 import org.xml.sax.SAXParseException;
 
@@ -223,11 +226,12 @@ public class Driver {
                     // dump the model
                     model.dump(new StreamResult(System.out));
                     break;
-    
+
                 case SIGNATURE :
-//                    SignatureWriter.write(model, new OutputStreamWriter(out));
-                    // TODO: implement this method later
-                    throw new UnsupportedOperationException();
+                    SignatureWriter.write(
+                        BeanGenerator.generate(model,receiver),
+                        new OutputStreamWriter(System.out));
+                    break;
 
                 case CODE :
                 case DRYRUN :
@@ -252,7 +256,7 @@ public class Driver {
                                 os = System.out;
                             else
                                 os = new FileOutputStream(opt.targetDir);
-                            
+
                             cw = createCodeWriter(new ZipCodeWriter(os));
                         } else
                             cw = createCodeWriter(opt.targetDir,opt.readOnly);

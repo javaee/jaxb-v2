@@ -94,9 +94,4 @@ public final class CodeModelClassFactory {
             }
         }
     }
-    
-    public void setErrorHandler(ErrorReceiver errorReceiver) {
-        this.errorReceiver = errorReceiver;
-    }
-
 }
