@@ -542,6 +542,7 @@ public final class XMLSerializer extends Coordinator {
     }
 
     public void attWildcardAsAttributes(Map<QName, Object> attributes, String fieldName) throws SAXException {
+        if(attributes==null)    return;
         for( Map.Entry<QName,Object> e : attributes.entrySet() ) {
             QName n = e.getKey();
             attribute(n.getNamespaceURI(),n.getLocalPart(),e.getValue().toString());
