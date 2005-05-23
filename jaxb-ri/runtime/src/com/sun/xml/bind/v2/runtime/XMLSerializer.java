@@ -529,6 +529,7 @@ public final class XMLSerializer extends Coordinator {
     }
 
     public void attWildcardAsURIs(Map<QName, Object> attributes, String fieldName) {
+        if(attributes==null)    return;
         for( Map.Entry<QName,Object> e : attributes.entrySet() ) {
             QName n = e.getKey();
             String nsUri = n.getNamespaceURI();
