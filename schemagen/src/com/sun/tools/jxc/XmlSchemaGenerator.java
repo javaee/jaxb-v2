@@ -412,7 +412,6 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 // close the schema
                 schema.commit();
             } catch( TxwException e ) {
-                // TODO: how should we handle this?
                 logger.log(Level.INFO,e.getMessage(),e);
                 throw new IOException(e.getMessage());
             }
@@ -497,7 +496,6 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 if(type instanceof ClassInfo) {
                     writeClass( (ClassInfo<TypeT,ClassDeclT>)type, th );
                 } else {
-                    // TODO: assert that the TypeHost cast is always going to work
                     writeEnum( (EnumLeafInfo<TypeT,ClassDeclT>)type, (SimpleTypeHost)th);
                 }
             } else {
@@ -622,7 +620,6 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                     // ...
                     //   <element name="f" type="foo"/>
                     // ...
-                    // TODO: Sekhar needs to update table 8-4.  Make sure to generate the proper derivation
                     ct = ((ComplexTypeHost)parent).complexType().name(c.getTypeName().getLocalPart());
                     SimpleExtension se = ct.simpleContent().extension();
                     for (PropertyInfo p : c.getProperties()) {
