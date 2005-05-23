@@ -383,7 +383,11 @@ public final class BIProperty extends AbstractDeclarationImpl {
         assert prop.realization!=null;      // we can't allow null because sometimes
                                             // we need to wrap it by a IsSetFieldRenderer
         if( needIsSetMethod() )
-            prop.realization = new IsSetFieldRenderer( prop.realization, prop.isUnboxable(), true );
+            // if the property is a primitive type, we need an explicit unset because
+            // we can't overload the meaning of set(null).
+            // if it's a collection, we need to be able to unset it so that we can distinguish
+            // null list and empty list.
+            prop.realization = new IsSetFieldRenderer( prop.realization, prop.isUnboxable()||prop.isCollection(), true );
 
         return prop;
     }
