@@ -814,8 +814,6 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             }
         }
 
-        // generalize these for handling element refs - pull them out into a new class or interface or something
-        // e.name(t.getTagName().getLocalPart()).type(t.getType().getTypeName());
 
         /**
          * Generate an attribute for the specified property on the specified complexType
