@@ -6,7 +6,6 @@ package com.sun.tools.xjc.reader.xmlschema.ct;
 
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.reader.Ring;
-import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.tools.xjc.reader.xmlschema.BindGreen;
 import com.sun.tools.xjc.reader.xmlschema.ClassSelector;
 import com.sun.tools.xjc.reader.xmlschema.ParticleBinder;
@@ -40,10 +39,6 @@ abstract class CTBuilder {
      */
     abstract void build(XSComplexType ct);
 
-    //
-    // various binding components that can be used by derived classes
-    //
-    protected final BGMBuilder bgmBuilder = Ring.get(BGMBuilder.class);
     protected final ComplexTypeFieldBuilder builder = Ring.get(ComplexTypeFieldBuilder.class);
     protected final ClassSelector selector = Ring.get(ClassSelector.class);
     protected final SimpleTypeBuilder simpleTypeBuilder = Ring.get(SimpleTypeBuilder.class);

@@ -34,20 +34,4 @@ public final class Util {
     public static final String getSystemProperty( Class clazz, String name ) {
         return getSystemProperty( clazz.getName()+'.'+name );
     }
-    
-    /** 
-     * Calculate an appropriate initialCapacity for a HashMap to avoid 
-     * rehashing at runtime.
-     * @param count the number of expected items in the HashMap
-     * @param loadFactor the desired loadFactor of the HahsMap 
-     */
-    public static int calculateInitialHashMapCapacity(int count, float loadFactor) {
-        int initialCapacity = (int)Math.ceil( count / loadFactor ) + 1;
-        
-        if( initialCapacity < 16 ) {
-            return 16; // default hashmap capacity
-        } else {
-            return initialCapacity; 
-        }
-    }
 }

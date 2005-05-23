@@ -22,9 +22,10 @@ import com.sun.mirror.declaration.TypeDeclaration;
 import com.sun.tools.jxc.gen.config.Config;
 import com.sun.tools.jxc.gen.config.Schema;
 import com.sun.tools.xjc.SchemaCache;
+import com.sun.tools.xjc.util.ForkContentHandler;
 import com.sun.tools.xjc.api.Reference;
 import com.sun.xml.bind.api.SchemaOutputResolver;
-import com.sun.xml.bind.v2.runtime.ForkContentHandler;
+import com.sun.tools.xjc.util.ForkContentHandler;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
