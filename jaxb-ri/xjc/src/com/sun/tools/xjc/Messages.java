@@ -149,4 +149,7 @@ class Messages
 
     static final String DEFAULT_VERSION = // 0 args
         "Driver.DefaultVersion";
+
+    static final String DEFAULT_PACKAGE_WARNING = // 0 args
+        "Driver.DefaultPackageWarning";
 }

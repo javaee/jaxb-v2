@@ -271,6 +271,11 @@ public class Options
                 throw new BadCommandLineException(
                     Messages.format(Messages.MISSING_PACKAGENAME));
             defaultPackage = args[++i];
+            if(defaultPackage.length()==0) { // user specified default package
+                // there won't be any package to annotate, so disable them
+                // automatically as a usability feature
+                packageLevelAnnotations = false;
+            }
             return 2;
         }
         if (args[i].equals("-debug")) {

@@ -176,7 +176,11 @@ public class Driver {
         opt.setSchemaLanguage(Language.XMLSCHEMA);  // disable auto-guessing
         opt.parseArguments(args);
 
-        
+        // display a warning if the user specified the default package
+        // this should work, but is generally a bad idea
+        listener.message(Messages.format(Messages.WARNING_MSG, Messages.format(Messages.DEFAULT_PACKAGE_WARNING)));
+
+
         // set up the context class loader so that the user-specified classes
         // can be loaded from there
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
