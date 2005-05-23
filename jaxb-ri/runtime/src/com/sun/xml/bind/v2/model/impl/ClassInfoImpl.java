@@ -276,7 +276,11 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         PropertySorter() {
             super(propOrder.length);
             for( String name : propOrder )
-                put(name,size());
+                if(put(name,size())!=null) {
+                    // two properties with the same name
+                    builder.reportError(new IllegalAnnotationException(
+                        Messages.DUPLICATE_ENTRY_IN_PROP_ORDER.format(name),ClassInfoImpl.this));
+                }
         }
 
         public int compare(PropertyInfoImpl o1, PropertyInfoImpl o2) {
