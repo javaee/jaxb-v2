@@ -271,7 +271,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         /**
          * Mark property names that are used, so that we can report unused property names in the propOrder array.
          */
-        boolean[] used = new boolean[propOrder.length];
+        PropertyInfoImpl[] used = new PropertyInfoImpl[propOrder.length];
 
         PropertySorter() {
             super(propOrder.length);
@@ -305,8 +305,13 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
             // mark the used field
             int ii = i;
-            if(ii<used.length)
-                used[ii] = true;
+            if(ii<used.length) {
+                if(used[ii]!=null) {
+                    builder.reportError(new IllegalAnnotationException(
+                        Messages.DUPLICATE_PROPERTIES.format(p.getName()),p,used[ii]));
+                }
+                used[ii] = p;
+            }
 
             return i;
         }
@@ -316,7 +321,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
          */
         public void checkUnusedProperties() {
             for( int i=0; i<used.length; i++ )
-                if(!used[i]) {
+                if(used[i]==null) {
                     String unusedName = propOrder[i];
                     builder.reportError(new IllegalAnnotationException(
                         Messages.PROPERTY_ORDER_CONTAINS_UNUSED_ENTRY.format(unusedName),ClassInfoImpl.this));
