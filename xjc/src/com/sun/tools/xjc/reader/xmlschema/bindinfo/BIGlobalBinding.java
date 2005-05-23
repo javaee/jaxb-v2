@@ -166,7 +166,6 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
      * The code generation strategy.
      */
     @XmlAttribute(name="generateValueClass")
-    @XmlJavaTypeAdapter(ImplStructureStrategy.BooleanAdapter.class)
     public final ImplStructureStrategy codeGenerationStrategy = BEAN_ONLY;
 
     /**
