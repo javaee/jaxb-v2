@@ -4,6 +4,8 @@
 package com.sun.tools.xjc.generator.bean;
 
 import javax.xml.bind.annotation.AccessType;
+import javax.xml.bind.annotation.XmlEnum;
+import javax.xml.bind.annotation.XmlEnumValue;
 
 import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JDefinedClass;
@@ -17,7 +19,6 @@ import com.sun.tools.xjc.generator.annotation.spec.XmlAccessorTypeWriter;
 import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
-import com.sun.tools.xjc.util.ReadOnlyAdapter;
 
 /**
  * Decides how a bean token is mapped to the generated classes.
@@ -28,10 +29,12 @@ import com.sun.tools.xjc.util.ReadOnlyAdapter;
  *
  * @author Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
+@XmlEnum(Boolean.class)
 public enum ImplStructureStrategy {
     /**
      * Generates beans only. The simplest code generation.
      */
+    @XmlEnumValue("true")
     BEAN_ONLY() {
         protected Result createClasses(Outline outline, CClassInfo bean) {
             JClassContainer parent = outline.getContainer( bean.parent(), Aspect.EXPOSED );
@@ -83,6 +86,7 @@ public enum ImplStructureStrategy {
      *
      * Similar to JAXB 1.0.
      */
+    @XmlEnumValue("false")
     INTF_AND_IMPL() {
         protected Result createClasses( Outline outline, CClassInfo bean ) {
             JClassContainer parent = outline.getContainer( bean.parent(), Aspect.EXPOSED );
@@ -182,13 +186,6 @@ public enum ImplStructureStrategy {
         public Result(JDefinedClass exposed, JDefinedClass implementation) {
             this.exposed = exposed;
             this.implementation = implementation;
-        }
-    }
-
-    public static final class BooleanAdapter extends ReadOnlyAdapter<Boolean,ImplStructureStrategy> {
-        public ImplStructureStrategy unmarshal(Boolean b) throws Exception {
-            if(b.booleanValue())    return BEAN_ONLY;
-            else                    return INTF_AND_IMPL;
         }
     }
 }
