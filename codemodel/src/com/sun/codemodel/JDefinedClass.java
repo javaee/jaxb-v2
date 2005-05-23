@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.LinkedHashMap;
 
 /**
  * A generated Java class.
@@ -36,7 +37,7 @@ public class JDefinedClass
     private final Set<JClass> interfaces = new TreeSet<JClass>();
 
     /** Fields keyed by their names. */
-    private final Map<String,JFieldVar> fields = new HashMap<String,JFieldVar>();
+    private final Map<String,JFieldVar> fields = new LinkedHashMap<String,JFieldVar>();
 
     /** Static initializer, if this class has one */
     private JBlock init = null;
@@ -98,12 +99,12 @@ public class JDefinedClass
 //    private List enumValues = new ArrayList();
     
     /** Set of enum constants that are keyed by names */
-    private final Map<String,JEnumConstant> enumConstantsByName = new HashMap<String,JEnumConstant>();
+    private final Map<String,JEnumConstant> enumConstantsByName = new TreeMap<String,JEnumConstant>();
 
     /**
      * Annotations on this variable. Lazily created.
      */
-    private List annotations = null;
+    private List<JAnnotationUse> annotations = null;
 
 
     /**
@@ -668,7 +669,7 @@ public class JDefinedClass
 
         if (annotations != null){
             for( int i=0; i<annotations.size(); i++ )
-                f.g((JAnnotationUse)annotations.get(i)).nl();
+                f.g(annotations.get(i)).nl();
         }
 
         if ((classType.equals(ClassType.ANNOTATION_TYPE_DECL))) {
@@ -688,12 +689,7 @@ public class JDefinedClass
             if (superClass == null)
                 f.nl();
             f.i().p(classType.equals(ClassType.INTERFACE) ? "extends" : "implements");
-            for (JClass intf : interfaces) {
-                if (!first)
-                    f.p(',');
-                f.g(intf);
-                first = false;
-            }
+            f.g(interfaces);
             f.nl().o();
         }
         declareBody(f);
