@@ -137,11 +137,6 @@ public final class XMLSerializer extends Coordinator {
     /** Lazily created. */
     private ContentHandlerAdaptor contentHandlerAdapter;
 
-    /** Buffer for collecting attribute value. */
-    private char[] textBuf = new char[128];
-
-    private int textBufLen = 0;
-
     private boolean fragment;
 
     /**
@@ -605,7 +600,6 @@ public final class XMLSerializer extends Coordinator {
         this.out = out;
         objectsWithId.clear();
         idReferencedObjects.clear();
-        textBufLen = 0;
         textHasAlreadyPrinted = false;
         seenRoot = false;
         this.schemaLocation = schemaLocation;
@@ -686,20 +680,6 @@ public final class XMLSerializer extends Coordinator {
         nsContext.collectionMode = true;
         textHasAlreadyPrinted = false;
     }
-
-    /**
-     * Ensures that {@link #textBuf} has enough capacity to add {@code cap} more characters.
-     */
-    private void ensureTextBuffer( int cap ) {
-        int sz = textBufLen+cap;
-        if(sz>textBuf.length) {
-            sz = Math.max(sz,textBuf.length*2);
-            char[] buf = new char[sz];
-            System.arraycopy(textBuf,0,buf,0,textBufLen);
-            textBuf = buf;
-        }
-    }
-
 
     private MimeType expectedMimeType;
 
