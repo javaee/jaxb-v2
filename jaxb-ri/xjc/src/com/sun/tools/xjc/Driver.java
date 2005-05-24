@@ -8,8 +8,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -20,14 +20,14 @@ import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.writer.FileCodeWriter;
 import com.sun.codemodel.writer.PrologCodeWriter;
 import com.sun.codemodel.writer.ZipCodeWriter;
+import com.sun.tools.xjc.generator.bean.BeanGenerator;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.internalizer.DOMForest;
 import com.sun.tools.xjc.reader.xmlschema.parser.XMLSchemaInternalizationLogic;
-import com.sun.tools.xjc.util.Util;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
 import com.sun.tools.xjc.util.NullStream;
+import com.sun.tools.xjc.util.Util;
 import com.sun.tools.xjc.writer.SignatureWriter;
-import com.sun.tools.xjc.generator.bean.BeanGenerator;
 
 import org.xml.sax.SAXParseException;
 
@@ -178,7 +178,9 @@ public class Driver {
 
         // display a warning if the user specified the default package
         // this should work, but is generally a bad idea
-        listener.message(Messages.format(Messages.WARNING_MSG, Messages.format(Messages.DEFAULT_PACKAGE_WARNING)));
+        if(opt.defaultPackage.length()==0) {
+            listener.message(Messages.format(Messages.WARNING_MSG, Messages.format(Messages.DEFAULT_PACKAGE_WARNING)));
+        }
 
 
         // set up the context class loader so that the user-specified classes
