@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AbstractField.java,v 1.11 2005-05-18 18:31:21 ryan_shoemaker Exp $
+ * @(#)$Id: AbstractField.java,v 1.12 2005-05-25 23:32:31 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -178,30 +178,21 @@ abstract class AbstractField implements FieldOutline {
             field.annotate(XmlList.class);
         }
 
-        if( types.size() == 1 ) { // single prop
-            assert(eName==null); // illegal to have a single value prop with a wrapper
+        if( eName!=null ) { // wrapper
+            XmlElementWrapperWriter xcw = field.annotate2(XmlElementWrapperWriter.class);
+            xcw.name(eName.getLocalPart())
+               .namespace(eName.getNamespaceURI());
+        }
 
-            // [RESULT]
-            // @XmlElement(name=Foo.class, isNillable=false, namespace="bar://baz")
-            CTypeRef type = types.get(0);
-            writeXmlElementAnnotation(field, type, type.getTarget().toType(outline.parent(), IMPLEMENTATION), false, true, false );
-        } else { // multi prop
-            if( eName!=null ) { // wrapper
-                XmlElementWrapperWriter xcw = field.annotate2(XmlElementWrapperWriter.class);
-                xcw.name(eName.getLocalPart())
-                   .namespace(eName.getNamespaceURI());
+        if (types.size() == 1) {
+            CTypeRef t = types.get(0);
+            writeXmlElementAnnotation(field, t, resolve(t,IMPLEMENTATION), false, false, false);
+        } else {
+            for (CTypeRef t : types) {
+                // generate @XmlElements
+                writeXmlElementAnnotation(field, t, resolve(t,IMPLEMENTATION), true, true, true);
             }
-
-            if (types.size() == 1) {
-                CTypeRef t = types.get(0);
-                writeXmlElementAnnotation(field, t, resolve(t,IMPLEMENTATION), false, false, false);
-            } else {
-                for (CTypeRef t : types) {
-                    // generate @XmlElements
-                    writeXmlElementAnnotation(field, t, resolve(t,IMPLEMENTATION), true, true, true);
-                }
-                xesw = null;
-            }
+            xesw = null;
         }
     }
 
