@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AbstractField.java,v 1.14 2005-05-25 23:36:54 kohsuke Exp $
+ * @(#)$Id: AbstractField.java,v 1.15 2005-05-25 23:47:59 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -186,11 +186,11 @@ abstract class AbstractField implements FieldOutline {
 
         if (types.size() == 1) {
             CTypeRef t = types.get(0);
-            writeXmlElementAnnotation(field, t, resolve(t,IMPLEMENTATION), false, false, false);
+            writeXmlElementAnnotation(field, t, resolve(t,IMPLEMENTATION), false, false);
         } else {
             for (CTypeRef t : types) {
                 // generate @XmlElements
-                writeXmlElementAnnotation(field, t, resolve(t,IMPLEMENTATION), true, true, true);
+                writeXmlElementAnnotation(field, t, resolve(t,IMPLEMENTATION), true, true);
             }
             xesw = null;
         }
@@ -208,12 +208,11 @@ abstract class AbstractField implements FieldOutline {
      * @param field
      * @param ctype
      * @param jtype
-     * @param generateType true iff there is more than one type ref in the property
      * @param checkDefault true if the method might need to generate the defaultValue property
      * @param checkWrapper true if the method might need to generate XmlElements
      */
     private void writeXmlElementAnnotation( JAnnotatable field, CTypeRef ctype, JType jtype,
-                                            boolean generateType, boolean checkDefault, boolean checkWrapper ) {
+                                            boolean checkDefault, boolean checkWrapper ) {
 
         // lazily create - we don't know if we need to generate anything yet
         XmlElementWriter xew = null;
@@ -239,7 +238,7 @@ abstract class AbstractField implements FieldOutline {
         }
 
         // generate the type property?
-        if( generateType ) {
+        if( !jtype.equals(exposedType) ) {
             if(xew == null) xew = getXew(checkWrapper, field);
             xew.type(jtype);
         }
