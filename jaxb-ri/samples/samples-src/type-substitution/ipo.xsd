@@ -15,8 +15,7 @@
  </annotation>
 
  <!-- include address constructs -->
- <include
-  schemaLocation="http://www.example.com/schemas/address.xsd"/>
+ <include schemaLocation="address.xsd"/>
 
  <element name="purchaseOrder" type="ipo:PurchaseOrderType"/>
 
