@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AbstractField.java,v 1.12 2005-05-25 23:32:31 kohsuke Exp $
+ * @(#)$Id: AbstractField.java,v 1.13 2005-05-25 23:36:07 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -226,7 +226,7 @@ abstract class AbstractField implements FieldOutline {
         // generate the name property?
         String generatedName = ctype.getTagName().getLocalPart();
         if(!generatedName.equals(propName)) {
-            if(xew == null) xew = getXew(checkWrapper, field);
+            xew = getXew(checkWrapper, field);
             xew.name(generatedName);
         }
 
