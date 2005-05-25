@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.HashSet;
 
 import javax.xml.bind.annotation.AccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -273,6 +274,12 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
          */
         PropertyInfoImpl[] used = new PropertyInfoImpl[propOrder.length];
 
+        /**
+         * If any name collides, it will be added to this set.
+         * This is used to avoid repeating the same error message.
+         */
+        private Set<String> collidedNames;
+
         PropertySorter() {
             super(propOrder.length);
             for( String name : propOrder )
@@ -306,9 +313,13 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             // mark the used field
             int ii = i;
             if(ii<used.length) {
-                if(used[ii]!=null) {
-                    builder.reportError(new IllegalAnnotationException(
-                        Messages.DUPLICATE_PROPERTIES.format(p.getName()),p,used[ii]));
+                if(used[ii]!=null && used[ii]!=p) {
+                    if(collidedNames==null) collidedNames = new HashSet<String>();
+
+                    if(collidedNames.add(p.getName()))
+                        // report the error only on the first time
+                        builder.reportError(new IllegalAnnotationException(
+                            Messages.DUPLICATE_PROPERTIES.format(p.getName()),p,used[ii]));
                 }
                 used[ii] = p;
             }
