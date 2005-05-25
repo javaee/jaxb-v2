@@ -28,6 +28,7 @@ import com.sun.tools.xjc.util.ErrorReceiverFilter;
 import com.sun.tools.xjc.util.NullStream;
 import com.sun.tools.xjc.util.Util;
 import com.sun.tools.xjc.writer.SignatureWriter;
+import com.sun.tools.xjc.outline.Outline;
 
 import org.xml.sax.SAXParseException;
 
@@ -116,10 +117,8 @@ public class Driver {
     public static int run(String[] args, final PrintStream status, final PrintStream out)
         throws Exception {
 
-        class Listener extends ConsoleErrorReporter implements XJCListener {
-            public Listener() {
-                super(out==null?new PrintStream(new NullStream()):out);
-            }
+        class Listener extends XJCListener {
+            ConsoleErrorReporter cer = new ConsoleErrorReporter(out==null?new PrintStream(new NullStream()):out);
 
             public void generatedFile(String fileName) {
                 message(fileName);
@@ -127,6 +126,22 @@ public class Driver {
             public void message(String msg) {
                 if(status!=null)
                     status.println(msg);
+            }
+
+            public void error(SAXParseException exception) {
+                cer.error(exception);
+            }
+
+            public void fatalError(SAXParseException exception) {
+                cer.fatalError(exception);
+            }
+
+            public void warning(SAXParseException exception) {
+                cer.warning(exception);
+            }
+
+            public void info(SAXParseException exception) {
+                cer.info(exception);
             }
         };
 
@@ -245,10 +260,15 @@ public class Driver {
                     {
                         // generate actual code
                         receiver.debug("generating code");
-                        if(model.generateCode(opt,receiver)==null) {
-                            listener.message(
-                                Messages.format(Messages.FAILED_TO_GENERATE_CODE));
-                            return -1;
+                        {// don't want to hold outline in memory for too long.
+                            Outline outline = model.generateCode(opt,receiver);
+                            if(outline==null) {
+                                listener.message(
+                                    Messages.format(Messages.FAILED_TO_GENERATE_CODE));
+                                return -1;
+                            }
+
+                            listener.compiled(outline);
                         }
 
                         if( opt.mode == Mode.DRYRUN )
