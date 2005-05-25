@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: WellKnownNamespace.java,v 1.3 2005-04-25 17:05:39 kohsuke Exp $
+ * @(#)$Id: WellKnownNamespace.java,v 1.4 2005-05-25 21:39:12 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -37,12 +37,7 @@ public abstract class WellKnownNamespace {
     public static final String SWA_URI =
         "http://ws-i.org/profiles/basic/1.1/xsd";
     
-    /**
-     * TODO: be sure to update this URI.
-     *
-     * http://dev.w3.org/cvsweb/~checkout~/2002/ws/desc/media-types/xml-media-types.html?content-type=text/html;%20charset=utf-8#static
-     */
-    public static final String XML_MIME_URI = "http://www.w3.org/@@@@/@@/xmlmime";
+    public static final String XML_MIME_URI = "http://www.w3.org/2005/05/xmlmime";
             
 
 //    public static final QName XSI_NIL = new QName(XML_SCHEMA_INSTANCE,"nil");
