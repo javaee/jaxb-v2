@@ -24,9 +24,10 @@ abstract class ERPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             xmlName = null;
         else {
             XmlElementWrapper e = seed.readAnnotation(XmlElementWrapper.class);
-            if(e!=null)
+            if(e!=null) {
                 xmlName = calcXmlName(e);
-            else
+                nil = e.nillable();
+            } else
                 xmlName = null;
         }
 
