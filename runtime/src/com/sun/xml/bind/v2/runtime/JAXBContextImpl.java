@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.24 2005-05-27 21:55:23 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.25 2005-05-27 23:10:46 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -39,6 +39,7 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 
 import com.sun.xml.bind.api.AccessorException;
@@ -79,6 +80,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * This class provides the implementation of JAXBContext.  It
@@ -89,7 +91,7 @@ import org.xml.sax.SAXException;
  * This is ugly, but this class implements {@link ValidationEventHandler}
  * and always return true. This {@link ValidationEventHandler} is the default for 2.0.
  *
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  */
 public final class JAXBContextImpl extends JAXBRIContext implements ValidationEventHandler {
 
@@ -663,7 +665,7 @@ public final class JAXBContextImpl extends JAXBRIContext implements ValidationEv
     public SchemaOutputResolver createTestResolver() {
         return new SchemaOutputResolver() {
             public Result createOutput(String namespaceUri, String suggestedFileName) {
-                StreamResult r = new StreamResult(System.out);
+                SAXResult r = new SAXResult(new DefaultHandler());
                 r.setSystemId(suggestedFileName);
                 return r;
             }
