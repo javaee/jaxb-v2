@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.22 2005-05-27 20:39:04 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.23 2005-05-27 20:40:08 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -51,8 +51,8 @@ import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
 import com.sun.xml.bind.v2.model.core.Adapter;
-import com.sun.xml.bind.v2.model.core.Ref;
 import com.sun.xml.bind.v2.model.core.NonElement;
+import com.sun.xml.bind.v2.model.core.Ref;
 import com.sun.xml.bind.v2.model.impl.RuntimeAnyTypeImpl;
 import com.sun.xml.bind.v2.model.impl.RuntimeBuiltinLeafInfoImpl;
 import com.sun.xml.bind.v2.model.impl.RuntimeModelBuilder;
@@ -88,7 +88,7 @@ import org.xml.sax.SAXException;
  * This is ugly, but this class implements {@link ValidationEventHandler}
  * and always return true. This {@link ValidationEventHandler} is the default for 2.0.
  *
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public final class JAXBContextImpl extends JAXBRIContext implements ValidationEventHandler {
 
@@ -598,7 +598,6 @@ public final class JAXBContextImpl extends JAXBRIContext implements ValidationEv
         };
     }
 
-<<<<<<< JAXBContextImpl.java
     private NonElement<Type,Class> getXmlType(RuntimeTypeInfoSet tis, TypeReference tr) {
         if(tr==null)
             throw new IllegalArgumentException();
@@ -613,12 +612,9 @@ public final class JAXBContextImpl extends JAXBRIContext implements ValidationEv
     }
 
     public void generateSchema(SchemaOutputResolver outputResolver, Collection<TypeReference> additionalElements ) throws IOException {
-=======
-    public void generateSchema(SchemaOutputResolver outputResolver) throws IOException {
         if(outputResolver==null) {
             throw new IOException(Messages.NULL_OUTPUT_RESOLVER.format());
         }
->>>>>>> 1.21
         RuntimeTypeInfoSet tis;
         try {
             tis = getTypeInfoSet();
