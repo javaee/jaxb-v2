@@ -13,7 +13,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEvent;
-import javax.xml.bind.util.ValidationEventCollector;
+import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.ValidationEventLocator;
 
 import org.w3c.dom.Node;
@@ -26,7 +26,7 @@ import javax.xml.validation.Schema;
 import primer.po.*;
 
 /*
- * $Id: Main.java,v 1.1 2005-04-15 20:07:35 kohsuke Exp $
+ * $Id: Main.java,v 1.2 2005-05-27 20:18:53 ryan_shoemaker Exp $
  *
  * Copyright 2003 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -42,8 +42,6 @@ public class Main {
     
     public static void main( String[] args ) {
         try {
-	    ValidationEventCollector ech = new ValidationEventCollector();
-
             // create a JAXBContext capable of handling classes generated into
             // the primer.po package
             JAXBContext jc = JAXBContext.newInstance( "primer.po" );
@@ -51,50 +49,43 @@ public class Main {
             // create an Unmarshaller
             Unmarshaller u = jc.createUnmarshaller();
 
-	    SchemaFactory sf = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
-	    try { 
-		Schema schema = sf.newSchema(new File("po.xsd"));
-		u.setSchema(schema);
-		u.setEventHandler(ech);
-	    } catch (org.xml.sax.SAXException se) {
-		System.out.println("Unable to validate due to following error.");
-		se.printStackTrace();
-	    }
+            SchemaFactory sf = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
+            try {
+                Schema schema = sf.newSchema(new File("po.xsd"));
+                u.setSchema(schema);
+                u.setEventHandler(
+                    new ValidationEventHandler() {
+                        // allow unmarshalling to continue even if there are errors
+                        public boolean handleEvent(ValidationEvent ve) {
+                            // ignore warnings
+                            if (ve.getSeverity() != ValidationEvent.WARNING) {
+                                ValidationEventLocator vel = ve.getLocator();
+                                System.out.println("Line:Col[" + vel.getLineNumber() +
+                                    ":" + vel.getColumnNumber() +
+                                    "]:" + ve.getMessage());
+                            }
+                            return true;
+                        }
+                    }
+                );
+            } catch (org.xml.sax.SAXException se) {
+                System.out.println("Unable to validate due to following error.");
+                se.printStackTrace();
+            }
             
-            // in this example, we use the ValidationEventCollector
-            // that allows unmarshalling to proceed despite validation
-	    // warn and error events.
-            
-            // unmarshal an invalid po instance document into a tree of Java 
+            // unmarshal an invalid po instance document into a tree of Java
             // content objects composed of classes from the primer.po package.
             System.out.println("NOTE: This sample is working correctly if you see validation errors!!");
             Object poe = 
                 u.unmarshal( new File( "po.xml" ) );
-	    
-	    ValidationEvent[] events = ech.getEvents();
-	    if (events.length > 0) {
-		System.out.println(events.length + 
-				   " validation events during unmarshal");
-		System.out.println("Errors in " + events[0].getLocator().getURL());
-		for (ValidationEvent ve : events ) {
-		    if (ve.getSeverity() == ValidationEvent.ERROR) {
-			ValidationEventLocator vel = ve.getLocator();
-			System.out.println("Line:Col[" + vel.getLineNumber() + 
-					   ":" + vel.getColumnNumber() + 
-					   "]:" + ve.getMessage());
-		    } 
-		}
-		// skipped working with ValidationEvent.WARNING.
-	    }
 
-	    // even though document was determined to be invalid unmarshalling,
-	    // marshal out result.
-	    System.out.println("");
-	    System.out.println("Still able to marshal invalid document");
+            // even though document was determined to be invalid unmarshalling,
+            // marshal out result.
+            System.out.println("");
+            System.out.println("Still able to marshal invalid document");
             Marshaller m = jc.createMarshaller();
             m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-	    m.marshal(poe, System.out);
-
+            m.marshal(poe, System.out);
         } catch( UnmarshalException ue ) {
             // The JAXB specification does not mandate how the JAXB provider
             // must behave when attempting to unmarshal invalid XML data.  In
