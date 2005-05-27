@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.23 2005-05-27 20:40:08 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.24 2005-05-27 21:55:23 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -13,6 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +89,7 @@ import org.xml.sax.SAXException;
  * This is ugly, but this class implements {@link ValidationEventHandler}
  * and always return true. This {@link ValidationEventHandler} is the default for 2.0.
  *
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  */
 public final class JAXBContextImpl extends JAXBRIContext implements ValidationEventHandler {
 
@@ -615,6 +616,9 @@ public final class JAXBContextImpl extends JAXBRIContext implements ValidationEv
         if(outputResolver==null) {
             throw new IOException(Messages.NULL_OUTPUT_RESOLVER.format());
         }
+        if(additionalElements==null)
+            additionalElements = Collections.emptyList();
+
         RuntimeTypeInfoSet tis;
         try {
             tis = getTypeInfoSet();
