@@ -1,4 +1,6 @@
 
+jar-check:
+
 compile\:
      \[echo\] Compiling the schema\.\.\.
     \[mkdir\] Created dir\: .*
