@@ -12,8 +12,6 @@ compile\:
 run\:
      \[echo\] Running the sample application\.\.\.
      \[java\] NOTE\: This sample is working correctly if you see validation errors\!\!
-     \[java\] 8 validation events during unmarshal
-     \[java\] Errors in file\:.*
      \[java\] Line\:Col\[7\:14\]\:http\:\/\/www\.w3\.org\/TR\/xml\-schema\-1#cvc\-complex\-type\.2\.4\.a\?zip\&\{\"\"\:state\}
      \[java\] Line\:Col\[14\:14\]\:http\:\/\/www\.w3\.org\/TR\/xml\-schema\-1#cvc\-complex\-type\.2\.4\.a\?zip\&\{\"\"\:state\}
      \[java\] Line\:Col\[19\:30\]\:http\:\/\/www\.w3\.org\/TR\/xml\-schema\-1#cvc\-minInclusive\-valid\?\-1\&1\&null
