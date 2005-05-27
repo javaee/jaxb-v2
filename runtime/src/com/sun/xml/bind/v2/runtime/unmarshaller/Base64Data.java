@@ -8,6 +8,7 @@ import javax.activation.DataHandler;
 
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
+import com.sun.xml.bind.v2.ByteArrayOutputStreamEx;
 
 /**
  * Fed to unmarshaller when the 'text' data is actually
@@ -106,22 +107,12 @@ public final class Base64Data implements CharSequence {
     public byte[] get() {
         if(data==null) {
             try {
-                data = new byte[1024];
+                ByteArrayOutputStreamEx baos = new ByteArrayOutputStreamEx(1024);
                 InputStream is = dataHandler.getDataSource().getInputStream();
-                int offset=0;
-                dataLen=0;
-
-                while(true) {
-                    int len = is.read(data,offset,data.length-offset);
-                    if(len<0)   break;
-
-                    dataLen += len;
-                    if(dataLen==data.length) {
-                        byte[] buf = new byte[data.length*2];
-                        System.arraycopy(data,0,buf,0,data.length);
-                        data = buf;
-                    }
-                }
+                baos.readFrom(is);
+                is.close();
+                data = baos.getBuffer();
+                dataLen = baos.size();
             } catch (IOException e) {
                 // TODO: report the error to the unmarshaller
                 dataLen = 0;    // recover by assuming length-0 data

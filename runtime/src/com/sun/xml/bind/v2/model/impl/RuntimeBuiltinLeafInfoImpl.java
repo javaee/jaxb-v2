@@ -48,6 +48,7 @@ import com.sun.xml.bind.v2.ByteArrayDataSource;
 import com.sun.xml.bind.v2.DataSourceSource;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.WellKnownNamespace;
+import com.sun.xml.bind.v2.ByteArrayOutputStreamEx;
 import com.sun.xml.bind.v2.model.runtime.RuntimeBuiltinLeafInfo;
 import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
@@ -630,15 +631,4 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
 //        add( leaves, factory, nav.getPrimitive(Double.TYPE), "double" );
 //        TODO.checkSpec("default mapping for char is not defined yet");
 //        add( leaves, factory, nav.getPrimitive(Character.TYPE), "unsignedShort" );
-
-
-
-    /**
-     * {@link ByteArrayOutputStream} with access to its raw buffer.
-     */
-    static final class ByteArrayOutputStreamEx extends ByteArrayOutputStream {
-        public void set(Base64Data dt) {
-            dt.set(buf,count);
-        }
-    }
 }
