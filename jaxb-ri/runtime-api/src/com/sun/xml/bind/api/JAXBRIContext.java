@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JAXBRIContext.java,v 1.4 2005-04-26 20:35:47 kohsuke Exp $
+ * @(#)$Id: JAXBRIContext.java,v 1.5 2005-05-27 20:39:04 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -13,6 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.io.IOException;
 
 import javax.xml.bind.JAXBContext;
@@ -175,7 +176,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @throws IOException
      *      if {@link SchemaOutputResolver} throws an {@link IOException}.
      */
-    public abstract void generateSchema(SchemaOutputResolver outputResolver) throws IOException;
+    public abstract void generateSchema(SchemaOutputResolver outputResolver, Collection<TypeReference> additionalElements) throws IOException;
 
     /**
      * The property that you can specify to {@link JAXBContext#newInstance}
