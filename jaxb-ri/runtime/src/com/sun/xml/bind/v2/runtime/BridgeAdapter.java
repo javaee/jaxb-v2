@@ -50,12 +50,14 @@ final class BridgeAdapter<OnWire,InMemory> extends Bridge<InMemory> {
         MarshallerImpl m = getImpl(context).marshaller;
         XmlAdapter<OnWire,InMemory> a = m.serializer.getAdapter(adapter);
         m.serializer.setThreadAffinity();
+        m.serializer.pushCoordinator();
         try {
             return a.marshal(v);
         } catch (Exception e) {
             m.serializer.handleError(e,v,null);
             throw new JAXBException(e);
         } finally {
+            m.serializer.popCoordinator();
             m.serializer.resetThreadAffinity();
         }
     }
@@ -77,6 +79,7 @@ final class BridgeAdapter<OnWire,InMemory> extends Bridge<InMemory> {
         UnmarshallerImpl u = getImpl(context).unmarshaller;
         XmlAdapter<OnWire,InMemory> a = u.coordinator.getAdapter(adapter);
         u.coordinator.setThreadAffinity();
+        u.coordinator.pushCoordinator();
         try {
             return a.unmarshal(v);
         } catch (Exception e) {
@@ -87,6 +90,7 @@ final class BridgeAdapter<OnWire,InMemory> extends Bridge<InMemory> {
             }
             throw new JAXBException(e);
         } finally {
+            u.coordinator.popCoordinator();
             u.coordinator.resetThreadAffinity();
         }
     }
