@@ -10,6 +10,7 @@ import com.sun.xml.bind.v2.model.runtime.RuntimeNonElement;
 import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeValuePropertyInfo;
+import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 
 /**
@@ -86,7 +87,8 @@ public abstract class PropertyFactory {
     }
 
     /**
-     * Look for the case
+     * Look for the case that can be optimized as a leaf,
+     * which is a kind of type whose XML representation is just PCDATA.
      */
     private static boolean isLeaf(RuntimePropertyInfo info) {
         Collection<? extends RuntimeTypeInfo> types = info.ref();
@@ -95,7 +97,10 @@ public abstract class PropertyFactory {
         RuntimeTypeInfo rti = types.iterator().next();
         if(!(rti instanceof RuntimeNonElement)) return false;
 
-        if(((RuntimeNonElement)rti).getTransducer()==null )
+        if(((RuntimeNonElement)rti).getTransducer()==null && info.id()!=ID.IDREF)
+            // Transducer!=null means definitely binds to PCDATA.
+            // even if transducer==null, a referene might be IDREF,
+            // in which case it will still produce PCDATA in this reference.
             return false;
 
         if(!info.getIndividualType().equals(rti.getType()))
