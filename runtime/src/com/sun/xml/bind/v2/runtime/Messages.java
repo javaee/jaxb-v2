@@ -16,6 +16,7 @@ enum Messages {
     MISSING_OBJECT, // 1 arg
     NOT_IDENTIFIABLE, // 0 args
     DANGLING_IDREF, // 1 arg
+    NULL_OUTPUT_RESOLVER, // 0 args
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());
