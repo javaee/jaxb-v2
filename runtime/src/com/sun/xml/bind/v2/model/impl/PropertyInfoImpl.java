@@ -52,13 +52,20 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         XmlMimeType xmt = seed.readAnnotation(XmlMimeType.class);
         MimeType mt = null;
         if(xmt!=null) {
-            try {
-                mt = new MimeType(xmt.value());
-            } catch (MimeTypeParseException e) {
+            if(!kind().canHaveXmlMimeType) {
                 parent.builder.reportError(new IllegalAnnotationException(
-                    Messages.ILLEGAL_MIME_TYPE.format(xmt.value(),e.getMessage()),
+                    Messages.ILLEGAL_ANNOTATION.format(XmlMimeType.class.getName()),
                     xmt
                 ));
+            } else {
+                try {
+                    mt = new MimeType(xmt.value());
+                } catch (MimeTypeParseException e) {
+                    parent.builder.reportError(new IllegalAnnotationException(
+                        Messages.ILLEGAL_MIME_TYPE.format(xmt.value(),e.getMessage()),
+                        xmt
+                    ));
+                }
             }
         }
         this.expectedMimeType = mt; 

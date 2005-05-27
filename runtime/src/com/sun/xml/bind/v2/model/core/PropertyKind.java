@@ -1,6 +1,6 @@
 package com.sun.xml.bind.v2.model.core;
 
-
+import javax.xml.bind.annotation.XmlMimeType;
 
 
 /**
@@ -12,8 +12,19 @@ package com.sun.xml.bind.v2.model.core;
  * @author Bhakti Mehta (bhakti.mehta@sun.com)
  */
 public enum PropertyKind {
-    VALUE,
-    ATTRIBUTE,
-    ELEMENT,
-    REFERENCE
+    VALUE(true),
+    ATTRIBUTE(false),
+    ELEMENT(true),
+    REFERENCE(false)
+
+    ;
+
+    /**
+     * This kind of property can have {@link XmlMimeType} annotation with it.
+     */
+    public final boolean canHaveXmlMimeType;
+
+    PropertyKind(boolean canHaveExpectedContentType) {
+        this.canHaveXmlMimeType = canHaveExpectedContentType;
+    }
 }
