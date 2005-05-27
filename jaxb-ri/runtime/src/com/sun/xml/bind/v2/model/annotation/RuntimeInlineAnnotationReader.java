@@ -74,7 +74,7 @@ public final class RuntimeInlineAnnotationReader extends AbstractInlineAnnotatio
 
     public Class getClassValue(Annotation a, String name) {
         try {
-            return (Class)a.getClass().getMethod(name).invoke(a);
+            return (Class)a.annotationType().getMethod(name).invoke(a);
         } catch (IllegalAccessException e) {
             // impossible
             throw new IllegalAccessError(e.getMessage());
