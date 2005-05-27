@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JAXBRIContext.java,v 1.5 2005-05-27 20:39:04 kohsuke Exp $
+ * @(#)$Id: JAXBRIContext.java,v 1.6 2005-05-27 21:56:30 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -173,10 +173,16 @@ public abstract class JAXBRIContext extends JAXBContext {
      *      this object controls the output to which schemas
      *      will be sent.
      *
+     * @param additionalElementDecls
+     *      Add element declarations for the specified element names to
+     *      the XML types mapped from the corresponding {@link TypeReference}s.
+     *      This parameter can be null, in which case the method behaves as if the empty map is given.
+     *
+     *
      * @throws IOException
      *      if {@link SchemaOutputResolver} throws an {@link IOException}.
      */
-    public abstract void generateSchema(SchemaOutputResolver outputResolver, Collection<TypeReference> additionalElements) throws IOException;
+    public abstract void generateSchema(SchemaOutputResolver outputResolver, Collection<TypeReference> additionalElementDecls) throws IOException;
 
     /**
      * The property that you can specify to {@link JAXBContext#newInstance}
