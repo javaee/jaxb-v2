@@ -18,6 +18,7 @@ import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.RawAccessor;
 import com.sun.xml.bind.v2.runtime.Coordinator;
 import com.sun.xml.bind.v2.runtime.reflect.opt.OptimizedAccessorFactory;
+import com.sun.xml.bind.v2.ClassFactory;
 
 /**
  * Accesses a particular property of a bean.
@@ -67,7 +68,7 @@ public abstract class Accessor<BeanT,ValueT> extends RawAccessor<BeanT,ValueT> {
                 ValueT v = extThis.get(bean);
                 if(v==null) return null;
 
-                XmlAdapter<T,ValueT> a = Coordinator._getInstance().getAdapter(adapter);
+                XmlAdapter<T,ValueT> a = getAdapter();
                 try {
                     return a.marshal(v);
                 } catch (Exception e) {
@@ -75,11 +76,31 @@ public abstract class Accessor<BeanT,ValueT> extends RawAccessor<BeanT,ValueT> {
                 }
             }
 
+            /**
+             * Sometimes Adapters are used directly by JAX-WS outside any
+             * {@link Coordinator}. Use this lazily-created cached
+             * {@link XmlAdapter} in such cases.
+             */
+            private XmlAdapter<T, ValueT> staticAdapter;
+
+            private XmlAdapter<T, ValueT> getAdapter() {
+                Coordinator coordinator = Coordinator._getInstance();
+                if(coordinator!=null)
+                    return coordinator.getAdapter(adapter);
+                else {
+                    synchronized(this) {
+                        if(staticAdapter==null)
+                            staticAdapter = ClassFactory.create(adapter);
+                    }
+                    return staticAdapter;
+                }
+            }
+
             public void set(BeanT bean, T o) throws AccessorException {
                 if(o==null)
                     extThis.set(bean,null);
                 else {
-                    XmlAdapter<T,ValueT> a = Coordinator._getInstance().getAdapter(adapter);
+                    XmlAdapter<T, ValueT> a = getAdapter();
                     try {
                         extThis.set(bean,a.unmarshal(o));
                     } catch (Exception e) {
@@ -150,7 +171,7 @@ public abstract class Accessor<BeanT,ValueT> extends RawAccessor<BeanT,ValueT> {
         }
 
         @Override
-        public Accessor<BeanT, ValueT> optimize() {
+        public Accessor<BeanT,ValueT> optimize() {
             Accessor acc = OptimizedAccessorFactory.get(f);
             if(acc!=null)
                 return acc;
