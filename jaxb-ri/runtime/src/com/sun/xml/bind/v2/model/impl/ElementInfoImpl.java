@@ -312,11 +312,10 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     private ID calcId() {
         // TODO: share code with PropertyInfoImpl
-        XmlID ida = reader().getMethodAnnotation(XmlID.class,method,this);
-        if(ida!=null) {
+        if(reader().hasMethodAnnotation(XmlID.class,method)) {
             return ID.ID;
         } else
-        if(reader().getMethodAnnotation(XmlIDREF.class,method,this)!=null) {
+        if(reader().hasMethodAnnotation(XmlIDREF.class,method)) {
             return ID.IDREF;
         } else {
             return ID.NONE;
