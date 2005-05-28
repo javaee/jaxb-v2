@@ -61,7 +61,7 @@ final class RuntimeElementInfoImpl extends ElementInfoImpl<Type,Class,Field,Meth
         }
 
         public Type getIndividualType() {
-             return Object.class;
+             return getContentType().getType();
         }
 
 
