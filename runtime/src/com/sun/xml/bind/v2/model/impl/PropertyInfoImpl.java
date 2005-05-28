@@ -123,11 +123,10 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     }
 
     private ID calcId() {
-        XmlID ida = seed.readAnnotation(XmlID.class);
-        if(ida!=null) {
+        if(seed.hasAnnotation(XmlID.class)) {
             return ID.ID;
         } else
-        if(seed.readAnnotation(XmlIDREF.class)!=null) {
+        if(seed.hasAnnotation(XmlIDREF.class)) {
             return ID.IDREF;
         } else {
             return ID.NONE;
