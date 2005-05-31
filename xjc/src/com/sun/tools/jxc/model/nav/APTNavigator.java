@@ -59,6 +59,8 @@ public class APTNavigator implements Navigator<TypeMirror,TypeDeclaration,FieldD
             ClassType sup = c.getSuperclass();
             if(sup!=null)
                 return sup.getDeclaration();
+            else
+                return null;
         }
         return env.getTypeDeclaration(Object.class.getName());
     }
