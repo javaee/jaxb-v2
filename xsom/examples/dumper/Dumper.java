@@ -1,11 +1,11 @@
-import java.io.File;
-import java.io.OutputStreamWriter;
-
-import org.xml.sax.SAXException;
-
 import com.sun.xml.xsom.XSSchemaSet;
 import com.sun.xml.xsom.impl.util.SchemaWriter;
 import com.sun.xml.xsom.parser.XSOMParser;
+import com.sun.xml.xsom.util.DomAnnotationParserFactory;
+import org.xml.sax.SAXException;
+
+import java.io.File;
+import java.io.OutputStreamWriter;
 
 /**
  * Parses all the schemas specified as the command line arguments,
@@ -16,7 +16,9 @@ public class Dumper {
         XSOMParser reader = new XSOMParser();
         // set an error handler so that you can receive error messages
         reader.setErrorHandler(new ErrorReporter(System.out));
-        
+        // DomAnnotationParserFactory is a convenient default to use
+        reader.setAnnotationParser(new DomAnnotationParserFactory());
+
         try {
             // the parse method can by called many times
             for( int i=0; i<args.length; i++ )
