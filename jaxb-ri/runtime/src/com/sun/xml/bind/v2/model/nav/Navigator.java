@@ -200,7 +200,7 @@ public interface Navigator<TypeT,ClassDeclT,FieldT,MethodT> {
     /**
      * Gets the i-th type argument from a parameterized type.
      *
-     * For example, {@code getTypeArgument([Map<Integer,String>],0)=Integer
+     * For example, {@code getTypeArgument([Map<Integer,String>],0)=Integer}
      *
      * @throws IllegalArgumentException
      *      If t is not a parameterized type

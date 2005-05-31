@@ -69,7 +69,7 @@ public final class ClassTailor {
      *      The image of the template class.
      * @param replacements
      *      A list of pair of strings that specify the substitution
-     *      {@code String[]{search_0, replace_0, search_1, replace_1, ..., search_n, replace_n }
+     *      {@code String[]{search_0, replace_0, search_1, replace_1, ..., search_n, replace_n }}
      *
      *      The search strings found in the constant pool will be replaced by the corresponding
      *      replacement string.

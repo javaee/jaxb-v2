@@ -5,7 +5,7 @@
  SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 -->
 
-<!-- $Id: build.xml,v 1.12 2005-05-20 20:39:45 kohsuke Exp $ -->
+<!-- $Id: build.xml,v 1.13 2005-05-31 19:08:03 ryan_shoemaker Exp $ -->
 <project name="xjc" basedir=".." default="compile">
 
   <description>
@@ -228,8 +228,10 @@
         <pathelement path="${xjc.classes}" />
         <pathelement path="${codemodel.classes}" />
         <pathelement path="${runtime.classes}" />
+        <pathelement path="${runtime-api.classes}" />
+        <pathelement path="${schemagen.classes}" />
         <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
-        <fileset dir="${jaxb.libs.rebundle}" includes="*.jar"/>
+        <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
         <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
     </path>
 
@@ -244,7 +246,8 @@
             author="false"
             version="false"
             windowtitle="XJC"
-            doctitle="XJC">
+            doctitle="XJC"
+            access="package">
         <classpath refid="javadoc.classpath" />
         <arg value="-quiet"/>        
       </javadoc>

@@ -119,7 +119,6 @@ public final class ConfigReader  {
 
     /**
      * This returns the SchemaOutputResolver to generate the schemas
-     * @return
      */
     public SchemaOutputResolver getSchemaOutputResolver(){
         return schemaOutputResolver;

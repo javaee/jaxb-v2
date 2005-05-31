@@ -159,7 +159,8 @@
             use="true"
             author="false"
             version="false"
-            windowtitle="JAXB RI runtime">
+            windowtitle="JAXB RI runtime"
+            access="package">
             <fileset dir="${runtime.src}" includes="**/*.java"/>
             <fileset dir="${runtime-api.src}" includes="**/*.java"/>
             <classpath refid="javac.classpath"/>
