@@ -662,6 +662,9 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 }
             }
 
+            // hold the ct open in case we need to generate @mixed below...
+            ct.block();
+
             // either <sequence> or <all>
             ExplicitGroup compositor = null;
 
@@ -696,6 +699,10 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 compositor.block();
 
                 for (PropertyInfo p : c.getProperties()) {
+                    // handling for <complexType @mixed='true' ...>
+                    if(p instanceof ReferencePropertyInfo && ((ReferencePropertyInfo)p).isMixed()) {
+                        ct.mixed(true);
+                    }
                     if( ce != null ) {
                         writeProperty(p, ce, compositor);
                     } else {
@@ -711,6 +718,9 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 // TODO: not type safe
                 ct.anyAttribute().namespace("##all").processContents("skip");
             }
+
+            // finally commit the ct
+            ct.commit();
         }
 
         private boolean containsValueProp(ClassInfo<TypeT, ClassDeclT> c) {
