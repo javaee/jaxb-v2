@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.26 2005-05-28 01:10:22 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.27 2005-05-31 21:23:20 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -13,7 +13,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +89,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * This is ugly, but this class implements {@link ValidationEventHandler}
  * and always return true. This {@link ValidationEventHandler} is the default for 2.0.
  *
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  */
 public final class JAXBContextImpl extends JAXBRIContext implements ValidationEventHandler {
 
@@ -613,12 +612,10 @@ public final class JAXBContextImpl extends JAXBRIContext implements ValidationEv
         return tis.getTypeInfo(ref);
     }
 
-    public void generateSchema(SchemaOutputResolver outputResolver, Collection<TypeReference> additionalElements ) throws IOException {
+    public void generateSchema(SchemaOutputResolver outputResolver) throws IOException {
         if(outputResolver==null) {
             throw new IOException(Messages.NULL_OUTPUT_RESOLVER.format());
         }
-        if(additionalElements==null)
-            additionalElements = Collections.emptyList();
 
         RuntimeTypeInfoSet tis;
         try {
@@ -644,7 +641,7 @@ public final class JAXBContextImpl extends JAXBRIContext implements ValidationEv
             throw new UnsupportedOperationException(e);
         }
 
-        for (TypeReference tr : additionalElements) {
+        for (TypeReference tr : bridges.keySet()) {
             if(tr.type==void.class || tr.type==Void.class) {
                 xsdgen.add(tr.tagName,null);
             } else {
