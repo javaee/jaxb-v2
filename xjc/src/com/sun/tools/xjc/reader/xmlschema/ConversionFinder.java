@@ -437,7 +437,7 @@ public final class ConversionFinder extends BindingComponent {
 
             if(!en.isMapped()) {
                 // just inherit the binding for the base type
-                return type.getSimpleBaseType().apply(functor);
+                return stb.compose(type.getSimpleBaseType());
             }
 
             // if an enum customization is specified, make sure
