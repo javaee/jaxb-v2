@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AbstractField.java,v 1.15 2005-05-25 23:47:59 kohsuke Exp $
+ * @(#)$Id: AbstractField.java,v 1.16 2005-05-31 21:59:20 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -186,11 +186,11 @@ abstract class AbstractField implements FieldOutline {
 
         if (types.size() == 1) {
             CTypeRef t = types.get(0);
-            writeXmlElementAnnotation(field, t, resolve(t,IMPLEMENTATION), false, false);
+            writeXmlElementAnnotation(field, t, resolve(t,IMPLEMENTATION), false);
         } else {
             for (CTypeRef t : types) {
                 // generate @XmlElements
-                writeXmlElementAnnotation(field, t, resolve(t,IMPLEMENTATION), true, true);
+                writeXmlElementAnnotation(field, t, resolve(t,IMPLEMENTATION), true);
             }
             xesw = null;
         }
@@ -208,11 +208,10 @@ abstract class AbstractField implements FieldOutline {
      * @param field
      * @param ctype
      * @param jtype
-     * @param checkDefault true if the method might need to generate the defaultValue property
      * @param checkWrapper true if the method might need to generate XmlElements
      */
     private void writeXmlElementAnnotation( JAnnotatable field, CTypeRef ctype, JType jtype,
-                                            boolean checkDefault, boolean checkWrapper ) {
+                                            boolean checkWrapper ) {
 
         // lazily create - we don't know if we need to generate anything yet
         XmlElementWriter xew = null;
@@ -245,7 +244,7 @@ abstract class AbstractField implements FieldOutline {
 
         // generate defaultValue property?
         final String defaultValue = ctype.getDefaultValue();
-        if (checkDefault && defaultValue!=null) {
+        if (defaultValue!=null) {
             if(xew == null) xew = getXew(checkWrapper, field);
             xew.defaultValue(defaultValue);
         }
