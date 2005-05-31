@@ -18,9 +18,11 @@ import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.model.CTypeRef;
 import com.sun.tools.xjc.model.CValuePropertyInfo;
 import com.sun.tools.xjc.model.TypeUse;
+import com.sun.tools.xjc.model.CReferencePropertyInfo;
 import com.sun.tools.xjc.reader.dtd.bindinfo.BIConversion;
 import com.sun.tools.xjc.reader.dtd.bindinfo.BIElement;
 import com.sun.xml.bind.v2.model.core.ID;
+import com.sun.xml.bind.v2.model.core.WildcardMode;
 import com.sun.dtdparser.DTDEventListener;
 
 import org.xml.sax.Locator;
@@ -198,8 +200,10 @@ final class Element extends Term implements Comparable<Element> {
 
         switch(contentModelType) {
         case DTDEventListener.CONTENT_MODEL_ANY:
-            // TODO: implement this method later
-            throw new UnsupportedOperationException();
+            CReferencePropertyInfo rp = new CReferencePropertyInfo("content",true,true,null/*TODO*/,locator);
+            rp.setWildcard(WildcardMode.SKIP);
+            ci.addProperty(rp);
+            return;
         case DTDEventListener.CONTENT_MODEL_CHILDREN:
             break;  // handling follows
         case DTDEventListener.CONTENT_MODEL_MIXED:
