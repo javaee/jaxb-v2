@@ -38,8 +38,8 @@ public final class ByteArrayOutputStreamEx extends ByteArrayOutputStream {
             }
 
             int sz = is.read(buf,count,buf.length-count);
+            if(sz<0)     return;
             count += sz;
-            if(count<0)     return;
         }
     }
 }
