@@ -23,7 +23,7 @@ final class RuntimeTypeRefImpl extends TypeRefImpl<Type,Class> implements Runtim
     }
 
     public Transducer getTransducer() {
-        return getTarget().getTransducer();
+        return RuntimeModelBuilder.createTransducer(this);
     }
 
     public RuntimePropertyInfo getSource() {

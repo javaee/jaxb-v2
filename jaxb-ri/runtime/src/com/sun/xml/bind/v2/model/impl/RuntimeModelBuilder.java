@@ -82,6 +82,9 @@ public class RuntimeModelBuilder extends ModelBuilder<Type,Class,Field,Method> {
     /**
      * Creates a {@link Transducer} given a reference.
      *
+     * Used to implement {@link RuntimeNonElementRef#getTransducer()}.
+     * Shouldn't be called from anywhere else.
+     *
      * TODO: this is not the proper place for this class to be in.
      */
     public static Transducer createTransducer(RuntimeNonElementRef ref) {
