@@ -126,6 +126,7 @@ class ReferencePropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     private void addGenericElement(ElementInfo<TypeT,ClassDeclT> ei) {
         if(ei==null)
             // this can happen when we don't have the whole TypeInfos.
+            // TODO: it is an error if this condition holds during the link phase
             return;
         types.add(ei);
         for( ElementInfo<TypeT,ClassDeclT> subst : ei.getSubstitutionMembers() )
