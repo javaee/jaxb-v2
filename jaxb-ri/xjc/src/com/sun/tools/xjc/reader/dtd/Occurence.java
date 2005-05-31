@@ -2,7 +2,7 @@ package com.sun.tools.xjc.reader.dtd;
 
 import java.util.List;
 
-import com.sun.dtdparser.DTDEventListener;
+import com.sun.xml.dtdparser.DTDEventListener;
 
 
 /**

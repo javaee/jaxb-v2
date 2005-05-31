@@ -23,7 +23,7 @@ import com.sun.tools.xjc.reader.dtd.bindinfo.BIConversion;
 import com.sun.tools.xjc.reader.dtd.bindinfo.BIElement;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
-import com.sun.dtdparser.DTDEventListener;
+import com.sun.xml.dtdparser.DTDEventListener;
 
 import org.xml.sax.Locator;
 
