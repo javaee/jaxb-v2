@@ -67,7 +67,7 @@ public class Messages
     
     /**
      * @deprecated
-     *  use {@link com.sun.xml.bind.serializer.Util#createMissingObjectError(JAXBObject, String)}
+     *  use {@link com.sun.xml.bind.v2.runtime.XMLSerializer#reportMissingObjectError(String)} 
      */
     public static final String ERR_MISSING_OBJECT2 = // 1 arg
         "SAXMarshaller.MissingObject2";

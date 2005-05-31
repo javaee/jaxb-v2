@@ -22,11 +22,11 @@ public interface EnumLeafInfo<TypeT,ClassDeclT> extends LeafInfo<TypeT,ClassDecl
      * returns {@link BuiltinLeafInfo} for {@link Integer}.
      *
      * <pre>
-     * @@XmlEnum(Integer.class)
+     * &amp;XmlEnum(Integer.class)
      * enum Foo {
-     *   @@XmlEnumValue("1")
+     *   &amp;XmlEnumValue("1")
      *   ONE,
-     *   @@XmlEnumValue("2")
+     *   &amp;XmlEnumValue("2")
      *   TWO
      * }
      * </pre>

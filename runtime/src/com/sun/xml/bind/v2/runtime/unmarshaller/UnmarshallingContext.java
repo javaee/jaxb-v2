@@ -204,7 +204,7 @@ public final class UnmarshallingContext extends Coordinator
     }
 
     /**
-     * Returns the finished {@link EventArgImpl} object.
+     * Returns the finished EventArgImpl object.
      */
     public final void free( EventArgImpl a ) {
         a.next = eventArg;

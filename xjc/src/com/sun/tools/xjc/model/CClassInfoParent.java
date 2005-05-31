@@ -10,7 +10,7 @@ import com.sun.codemodel.JPackage;
  *
  * TODO: rename
  *
- * Either {@link CClassInfo} or {@link CClassInfo.Package}.
+ * Either {@link CClassInfo} or {@link CClassInfoParent.Package}.
  */
 public interface CClassInfoParent {
     /**

@@ -32,7 +32,7 @@ import org.xml.sax.Locator;
 import org.xml.sax.helpers.LocatorImpl;
 
 /**
- * {@ link JaxBeanInfo} implementation for j2s bean.
+ * {@link JaxBeanInfo} implementation for j2s bean.
  *
  * @author Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */

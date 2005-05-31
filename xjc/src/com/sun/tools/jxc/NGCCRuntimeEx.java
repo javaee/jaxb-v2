@@ -61,11 +61,11 @@ public final class NGCCRuntimeEx extends NGCCRuntime {
 
     /**
      * This takes the include list provided by the user in the config file
-     * It converts the user values to {@link Pattern)
+     * It converts the user values to {@link Pattern}
      * @param includeContent
      *        The include list specified by the user
      * @return
-     *        A list of regular expression patterns {@link Pattern)
+     *        A list of regular expression patterns {@link Pattern}
      */
     public List<Pattern> getIncludePatterns(List includeContent ) {
         List<Pattern> includeRegexList = new ArrayList<Pattern>();
@@ -81,11 +81,11 @@ public final class NGCCRuntimeEx extends NGCCRuntime {
 
     /**
      * This takes the exclude list provided by the user in the config file
-     * It converts the user values to {@link Pattern)
+     * It converts the user values to {@link Pattern}
      * @param excludeContent
      *        The exclude list specified by the user
      * @return
-     *        A list of regular expression patterns {@link Pattern)
+     *        A list of regular expression patterns {@link Pattern}
      */
     public List getExcludePatterns(List excludeContent ) {
         List excludeRegexList = new ArrayList();

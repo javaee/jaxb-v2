@@ -24,7 +24,7 @@ import org.xml.sax.SAXException;
 public interface Transducer<ValueT> {
 
     /**
-     * If this {@link Transducer} is the default transducer for the {@link ValueT},
+     * If this {@link Transducer} is the default transducer for the <code>ValueT</code>,
      * this method returns true.
      *
      * Used exclusively by {@link OptimizedTransducedAccessorFactory#get(RuntimePropertyInfo)}
