@@ -232,7 +232,7 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
         // scope
         TypeT s = reader().getClassValue(anno,"scope");
-        if(s==nav().ref(XmlElementDecl.GLOBAL.class))
+        if(s.equals(nav().ref(XmlElementDecl.GLOBAL.class)))
             scope = null;
         else {
             // TODO: what happens if there's an error?
