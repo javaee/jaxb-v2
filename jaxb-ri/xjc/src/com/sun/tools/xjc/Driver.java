@@ -325,9 +325,6 @@ public class Driver {
         // normal mode. compile the code
         CODE,
 
-        // dump the BGM
-        BGM,
-
         // dump the signature of the generated code
         SIGNATURE,
 
