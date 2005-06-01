@@ -537,6 +537,9 @@ public class Options
         
         String serviceId = "META-INF/services/" + clazz.getName();
 
+        // used to avoid creating the same instance twice
+        Set<String> classNames = new HashSet<String>();
+
         if(debug) {
             System.out.println("Looking for "+serviceId+" for add-ons");
         }
@@ -561,11 +564,13 @@ public class Options
                     while((impl = reader.readLine())!=null ) {
                         // try to instanciate the object
                         impl = impl.trim();
-                        if(debug) {
-                            System.out.println("Attempting to instanciate "+impl);
+                        if(classNames.add(impl)) {
+                            if(debug) {
+                                System.out.println("Attempting to instanciate "+impl);
+                            }
+                            Class implClass = classLoader.loadClass(impl);
+                            a.add((T)implClass.newInstance());
                         }
-                        Class implClass = classLoader.loadClass(impl);
-                        a.add((T)implClass.newInstance());
                     }
                     reader.close();
                 } catch( Exception ex ) {
