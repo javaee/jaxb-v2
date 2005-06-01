@@ -73,7 +73,7 @@ public class SAXOutput extends XmlOutput {
                 String p = ns.getPrefix(i);
                 String uri = ns.getNsUri(i);
                 if(uri.length()==0 && ns.getBase()==1)
-                    continue;   // no point in definint xmlns='' on the root
+                    continue;   // no point in defining xmlns='' on the root
                 out.startPrefixMapping(p,uri);
             }
         }
