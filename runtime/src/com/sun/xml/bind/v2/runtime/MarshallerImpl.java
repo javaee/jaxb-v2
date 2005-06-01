@@ -56,6 +56,7 @@ import com.sun.xml.bind.v2.FatalAdapter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
+import org.xml.sax.helpers.XMLFilterImpl;
 
 /**
  * Implementation of {@link Marshaller} interface for the JAXB RI.
@@ -228,7 +229,14 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
             // send the output to the validator as well
             ValidatorHandler validator = schema.newValidatorHandler();
             validator.setErrorHandler(new FatalAdapter(serializer));
-            out = new ForkXmlOutput( new SAXOutput(validator), out );
+            // work around a bug in JAXP validator in Tiger
+            XMLFilterImpl f = new XMLFilterImpl() {
+                public void startPrefixMapping(String prefix, String uri) throws SAXException {
+                    super.startPrefixMapping(prefix.intern(), uri.intern());
+                }
+            };
+            f.setContentHandler(validator);
+            out = new ForkXmlOutput( new SAXOutput(f), out );
         }
 
         try {
