@@ -8,25 +8,25 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlMixed;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlMixed;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
+import com.sun.codemodel.JDocComment;
 import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.model.CPluginCustomization;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
-import com.sun.xml.bind.v2.WellKnownNamespace;
-import com.sun.xml.bind.annotation.XmlLocation;
 import com.sun.xml.bind.ObjectLifeCycle;
+import com.sun.xml.bind.annotation.XmlLocation;
+import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.xsom.XSComponent;
-import com.sun.codemodel.JDocComment;
 
-import org.xml.sax.Locator;
 import org.w3c.dom.Element;
+import org.xml.sax.Locator;
 
 /**
  * Container for customization declarations.
@@ -99,10 +99,10 @@ public final class BindInfo implements Iterable<BIDeclaration> {
                 // this is really PITA! I can't get the source location
                 if(o instanceof Element) {
                     Element e = (Element)o;
-                    if(e.getNamespaceURI()==null || e.getNamespaceURI().equals("")
-                    || e.getNamespaceURI().equals(WellKnownNamespace.XML_SCHEMA))
+                    String nsUri = e.getNamespaceURI();
+                    if(nsUri==null || nsUri.equals("")
+                    || nsUri.equals(WellKnownNamespace.XML_SCHEMA))
                         continue;   // this is definitely not a customization
-                    bi.addDecl(new BIXPluginCustomization(e,null/*TODO*/));
                 }
             }
         }
