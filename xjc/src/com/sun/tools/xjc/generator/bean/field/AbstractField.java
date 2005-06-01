@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AbstractField.java,v 1.16 2005-05-31 21:59:20 kohsuke Exp $
+ * @(#)$Id: AbstractField.java,v 1.17 2005-06-01 18:34:37 ryan_shoemaker Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.xml.bind.annotation.W3CDomHandler;
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlNsForm;
@@ -20,6 +21,7 @@ import javax.xml.bind.annotation.XmlValue;
 import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JAnnotatable;
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
@@ -161,7 +163,11 @@ abstract class AbstractField implements FieldOutline {
         if(dh!=null) {
             XmlAnyElementWriter xaew = field.annotate2(XmlAnyElementWriter.class);
             xaew.lax(rp.getWildcard().allowTypedObject);
-            xaew.value(dh.toType(outline.parent(),IMPLEMENTATION));
+
+            final JClass value = dh.toType(outline.parent(),IMPLEMENTATION);
+            if(!value.equals(codeModel.ref(W3CDomHandler.class))) {
+                xaew.value(value);
+            }
         }
 
     }
