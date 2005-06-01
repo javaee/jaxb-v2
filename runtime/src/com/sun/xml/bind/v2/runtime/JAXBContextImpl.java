@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.28 2005-06-01 01:11:39 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.29 2005-06-01 01:36:05 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.HashSet;
 
 import javax.xml.bind.Binder;
 import javax.xml.bind.JAXBElement;
@@ -89,7 +90,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * This is ugly, but this class implements {@link ValidationEventHandler}
  * and always return true. This {@link ValidationEventHandler} is the default for 2.0.
  *
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  */
 public final class JAXBContextImpl extends JAXBRIContext implements ValidationEventHandler {
 
@@ -641,9 +642,20 @@ public final class JAXBContextImpl extends JAXBRIContext implements ValidationEv
             throw new UnsupportedOperationException(e);
         }
 
+        // JAX-RPC uses Bridge objects that collide with
+        // @XmlRootElement.
+        // we will avoid collision here
+        Set<QName> rootTagNames = new HashSet<QName>();
+        for (RuntimeElementInfo ei : tis.getAllElements()) {
+            rootTagNames.add(ei.getElementName());
+        }
+        for (RuntimeClassInfo ci : tis.beans().values()) {
+            if(ci.isElement())
+                rootTagNames.add(ci.asElement().getElementName());
+        }
+
         for (TypeReference tr : bridges.keySet()) {
-            // avoid collision with the model's ElmentInfo
-            if(tis.getElementInfo(null,tr.tagName)!=null)
+            if(rootTagNames.contains(tr.tagName))
                 continue;
 
             if(tr.type==void.class || tr.type==Void.class) {
