@@ -6,14 +6,15 @@ package com.sun.tools.xjc.reader.internalizer;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -26,16 +27,17 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.sax.SAXResult;
 import javax.xml.validation.SchemaFactory;
 
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.reader.xmlschema.parser.SchemaConstraintChecker;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
+import com.sun.xml.bind.marshaller.DataWriter;
+import com.sun.xml.bind.v2.stax.XMLStreamReaderToContentHandler;
 import com.sun.xml.xsom.parser.JAXPParser;
 import com.sun.xml.xsom.parser.XMLParser;
 
-import com.sun.xml.bind.v2.stax.XMLStreamReaderToContentHandler;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.ContentHandler;
@@ -433,13 +435,14 @@ public final class DOMForest {
         try {
             // create identity transformer
             Transformer it = TransformerFactory.newInstance().newTransformer();
-            
-            for( Iterator itr=core.entrySet().iterator(); itr.hasNext(); ) {
-                Map.Entry e = (Map.Entry)itr.next();
-                
+
+            for (Map.Entry<String, Document> e : core.entrySet()) {
                 out.write( ("---<< "+e.getKey()+'\n').getBytes() );
-                
-                it.transform( new DOMSource((Document)e.getValue()), new StreamResult(out) );
+
+                DataWriter dw = new DataWriter(new OutputStreamWriter(out),null);
+                dw.setIndentStep("  ");
+                it.transform( new DOMSource(e.getValue()),
+                    new SAXResult(dw));
                 
                 out.write( "\n\n\n".getBytes() );
             }
