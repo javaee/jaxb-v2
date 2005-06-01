@@ -3,7 +3,6 @@ package com.sun.xml.bind.v2.model.impl;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,10 +44,10 @@ import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.WhiteSpaceProcessor;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.ByteArrayDataSource;
+import com.sun.xml.bind.v2.ByteArrayOutputStreamEx;
 import com.sun.xml.bind.v2.DataSourceSource;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.WellKnownNamespace;
-import com.sun.xml.bind.v2.ByteArrayOutputStreamEx;
 import com.sun.xml.bind.v2.model.runtime.RuntimeBuiltinLeafInfo;
 import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
@@ -282,8 +281,12 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
 
                 try {
                     String mimeType = xs.getXMIMEContentType();
-                    if(mimeType==null)
+                    if(mimeType==null || mimeType.startsWith("image/*"))
                         // because PNG is lossless, it's a good default
+                        //
+                        // mime type can be a range, in which case we can't just pass that
+                        // to ImageIO.getImageWritersByMIMEType, so here I'm just assuming
+                        // the default of PNG. Not sure if this is complete.
                         mimeType = "image/png";
 
                     Iterator<ImageWriter> itr = ImageIO.getImageWritersByMIMEType(mimeType);
@@ -299,7 +302,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                             Messages.NO_IMAGE_WRITER.format(mimeType),
                             xs.getCurrentLocation(null) ));
                         // TODO: proper error reporting
-                        throw new RuntimeException();
+                        throw new RuntimeException("no encoder for MIME type "+mimeType);
                     }
                 } catch (IOException e) {
                     xs.handleError(e);
