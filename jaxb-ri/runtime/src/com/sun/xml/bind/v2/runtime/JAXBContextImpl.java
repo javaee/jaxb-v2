@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.27 2005-05-31 21:23:20 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.28 2005-06-01 01:11:39 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -89,7 +89,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * This is ugly, but this class implements {@link ValidationEventHandler}
  * and always return true. This {@link ValidationEventHandler} is the default for 2.0.
  *
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public final class JAXBContextImpl extends JAXBRIContext implements ValidationEventHandler {
 
@@ -642,6 +642,10 @@ public final class JAXBContextImpl extends JAXBRIContext implements ValidationEv
         }
 
         for (TypeReference tr : bridges.keySet()) {
+            // avoid collision with the model's ElmentInfo
+            if(tis.getElementInfo(null,tr.tagName)!=null)
+                continue;
+
             if(tr.type==void.class || tr.type==Void.class) {
                 xsdgen.add(tr.tagName,null);
             } else {
