@@ -716,7 +716,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             // look for wildcard attributes
             if( c.hasAttributeWildcard()) {
                 // TODO: not type safe
-                ct.anyAttribute().namespace("##all").processContents("skip");
+                ct.anyAttribute().namespace("##any").processContents("skip");
             }
 
             // finally commit the ct
