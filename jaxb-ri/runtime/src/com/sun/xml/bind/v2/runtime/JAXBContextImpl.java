@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.29 2005-06-01 01:36:05 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.30 2005-06-02 00:12:31 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -90,7 +90,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * This is ugly, but this class implements {@link ValidationEventHandler}
  * and always return true. This {@link ValidationEventHandler} is the default for 2.0.
  *
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  */
 public final class JAXBContextImpl extends JAXBRIContext implements ValidationEventHandler {
 
@@ -715,7 +715,7 @@ public final class JAXBContextImpl extends JAXBRIContext implements ValidationEv
             if(acc!=null)
                 return acc;
         }
-        throw new JAXBException(new QName(nsUri,localName)+" is not a valid property on "+wrapperBean);
+        throw new JAXBException(wrapperBean+" does not have a property that matches "+new QName(nsUri,localName));
     }
 
     public List<String> getKnownNamespaceURIs() {
