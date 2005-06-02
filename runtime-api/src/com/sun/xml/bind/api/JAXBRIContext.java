@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JAXBRIContext.java,v 1.7 2005-05-31 21:23:20 kohsuke Exp $
+ * @(#)$Id: JAXBRIContext.java,v 1.8 2005-06-02 17:52:22 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -177,6 +177,23 @@ public abstract class JAXBRIContext extends JAXBContext {
      *      if {@link SchemaOutputResolver} throws an {@link IOException}.
      */
     public abstract void generateSchema(SchemaOutputResolver outputResolver) throws IOException;
+
+    /**
+     * Returns the name of the XML Type bound to the
+     * specified Java type.
+     *
+     * @param tr
+     *      must not be null. This must be one of the {@link TypeReference}s specified
+     *      in the {@link JAXBRIContext#newInstance} method.
+     *
+     * @throws IllegalArgumentException
+     *      if the parameter is null or not a part of the {@link TypeReference}s specified
+     *      in the {@link JAXBRIContext#newInstance} method.
+     *
+     * @return null
+     *      if the referenced type is an anonymous and therefore doesn't have a name. 
+     */
+    public abstract QName getTypeName(TypeReference tr);
 
     /**
      * The property that you can specify to {@link JAXBContext#newInstance}
