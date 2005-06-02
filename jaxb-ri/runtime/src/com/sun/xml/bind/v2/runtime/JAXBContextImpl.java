@@ -4,13 +4,14 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.30 2005-06-02 00:12:31 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.31 2005-06-02 17:52:22 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -90,7 +91,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * This is ugly, but this class implements {@link ValidationEventHandler}
  * and always return true. This {@link ValidationEventHandler} is the default for 2.0.
  *
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  */
 public final class JAXBContextImpl extends JAXBRIContext implements ValidationEventHandler {
 
@@ -159,6 +160,8 @@ public final class JAXBContextImpl extends JAXBRIContext implements ValidationEv
      */
     private final String defaultNsUri;
     private final Class[] classes;
+
+    private WeakReference<RuntimeTypeInfoSet> typeInfoSetCache;
 
     /**
      *
@@ -285,6 +288,14 @@ public final class JAXBContextImpl extends JAXBRIContext implements ValidationEv
      * Creates a {@link RuntimeTypeInfoSet}.
      */
     private RuntimeTypeInfoSet getTypeInfoSet() throws IllegalAnnotationsException {
+
+        // check cache
+        if(typeInfoSetCache!=null) {
+            RuntimeTypeInfoSet r = typeInfoSetCache.get();
+            if(r!=null)
+                return r;
+        }
+
         RuntimeModelBuilder builder = new RuntimeModelBuilder(
                 new RuntimeInlineAnnotationReader(),
                 defaultNsUri);
@@ -297,6 +308,8 @@ public final class JAXBContextImpl extends JAXBRIContext implements ValidationEv
         RuntimeTypeInfoSet r = builder.link();
         errorHandler.check();
         assert r!=null : "if no error was reported, the link must be a success";
+        
+        typeInfoSetCache = new WeakReference<RuntimeTypeInfoSet>(r);
 
         return r;
     }
@@ -671,6 +684,17 @@ public final class JAXBContextImpl extends JAXBRIContext implements ValidationEv
         xsdgen.write(outputResolver);
     }
 
+    public QName getTypeName(TypeReference tr) {
+        try {
+            NonElement<Type,Class> xt = getXmlType(getTypeInfoSet(),tr);
+            if(xt==null)    throw new IllegalArgumentException();
+            return xt.getTypeName();
+        } catch (IllegalAnnotationsException e) {
+            // impossible given that JAXBRIContext has been successfully built in the first place
+            throw new AssertionError(e);
+        }
+    }
+
     /**
      * Used for testing.
      */
@@ -715,7 +739,7 @@ public final class JAXBContextImpl extends JAXBRIContext implements ValidationEv
             if(acc!=null)
                 return acc;
         }
-        throw new JAXBException(wrapperBean+" does not have a property that matches "+new QName(nsUri,localName));
+        throw new JAXBException(new QName(nsUri,localName)+" is not a valid property on "+wrapperBean);
     }
 
     public List<String> getKnownNamespaceURIs() {
