@@ -13,8 +13,6 @@ import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.xml.transform.stream.StreamResult;
-
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.writer.FileCodeWriter;
@@ -22,13 +20,13 @@ import com.sun.codemodel.writer.PrologCodeWriter;
 import com.sun.codemodel.writer.ZipCodeWriter;
 import com.sun.tools.xjc.generator.bean.BeanGenerator;
 import com.sun.tools.xjc.model.Model;
+import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.reader.internalizer.DOMForest;
 import com.sun.tools.xjc.reader.xmlschema.parser.XMLSchemaInternalizationLogic;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
 import com.sun.tools.xjc.util.NullStream;
 import com.sun.tools.xjc.util.Util;
 import com.sun.tools.xjc.writer.SignatureWriter;
-import com.sun.tools.xjc.outline.Outline;
 
 import org.xml.sax.SAXParseException;
 
@@ -243,11 +241,6 @@ public class Driver {
             }
 
             switch (opt.mode) {
-                case BGM:
-                    // dump the model
-                    model.dump(new StreamResult(System.out));
-                    break;
-
                 case SIGNATURE :
                     SignatureWriter.write(
                         BeanGenerator.generate(model,receiver),
