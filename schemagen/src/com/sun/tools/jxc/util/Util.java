@@ -6,6 +6,8 @@ package com.sun.tools.jxc.util;
 
 
 /**
+ * TODO: JAX-WS dependes on this class - consider moving it somewhere more stable, Notify JAX-WS before modifying anything...
+ *
  * Other miscellaneous utility methods. 
  * 
  * @author
