@@ -52,7 +52,7 @@ public class XJCTask extends Task implements DynamicConfigurator {
         Class driver;
         try {
             if (source.equals("2.0")) {
-                cl = new ParallelWorldClassLoader(XJCTask.class.getClassLoader(),source);
+                cl = XJCTask.class.getClassLoader();
                 driver = cl.loadClass("com.sun.tools.xjc.XJC2Task");
             } else {
                 cl = new ParallelWorldClassLoader(MaskingClassLoader.class.getClassLoader(),source);
