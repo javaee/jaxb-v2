@@ -958,6 +958,8 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
 
 
     /**
+     * TODO: JAX-WS dependency on this method - consider moving this method into com.sun.tools.jxc.util.Util
+     * 
      * Relativizes a URI by using another URI (base URI.)
      *
      * <p>
