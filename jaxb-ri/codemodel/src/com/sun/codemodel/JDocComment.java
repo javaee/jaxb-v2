@@ -23,6 +23,9 @@ public class JDocComment extends JCommentPart implements JGenerable {
     /** list of @param tags */
     private final Map<String,JCommentPart> atParams = new HashMap<String,JCommentPart>();
     
+    /** list of xdoclets */
+    private final Map<String,Map<String,String>> atXdoclets = new HashMap<String,Map<String,String>>();
+    
     /** list of @throws tags */
     private final Map<JClass,JCommentPart> atThrows = new HashMap<JClass,JCommentPart>();
     
@@ -99,6 +102,38 @@ public class JDocComment extends JCommentPart implements JGenerable {
         return atDeprecated;
     }
 
+    /**
+     * add an xdoclet.
+     */
+    public Map<String,String> addXdoclet(String name) {
+        Map<String,String> p = atXdoclets.get(name);
+        if(p==null)
+            atXdoclets.put(name,p=new HashMap<String,String>());
+        return p;
+    }
+
+    /**
+     * add an xdoclet.
+     */
+    public Map<String,String> addXdoclet(String name, Map<String,String> attributes) {
+        Map<String,String> p = atXdoclets.get(name);
+        if(p==null)
+            atXdoclets.put(name,p=new HashMap<String,String>());
+        p.putAll(attributes);
+        return p;
+    }
+
+    /**
+     * add an xdoclet.
+     */
+    public Map<String,String> addXdoclet(String name, String attribute, String value) {
+        Map<String,String> p = atXdoclets.get(name);
+        if(p==null)
+            atXdoclets.put(name,p=new HashMap<String,String>());
+        p.put(attribute, value);
+        return p;
+    }
+
     public void generate(JFormatter f) {
         // I realized that we can't use StringTokenizer because
         // this will recognize multiple \n as one token.
@@ -123,6 +158,15 @@ public class JDocComment extends JCommentPart implements JGenerable {
         if( atDeprecated != null ) {
             f.p(" * @deprecated").nl();
             atDeprecated.format(f,INDENT);
+        }
+        for (Map.Entry<String,Map<String,String>> e : atXdoclets.entrySet()) {
+            f.p(" * @").p(e.getKey());
+            if (e.getValue() != null) {
+                for (Map.Entry<String,String> a : e.getValue().entrySet()) {
+                    f.p(" ").p(a.getKey()).p("= \"").p(a.getValue()).p("\"");
+                }
+            }
+            f.nl();
         }
         f.p(" */").nl();
     }
