@@ -2,6 +2,7 @@ package com.sun.xml.bind.v2.runtime;
 
 /**
  * Namespace URIs and local names sorted by their indices.
+ * Number of Names used for EIIs and AIIs
  *
  * @author Kohsuke Kawaguchi
  */
@@ -18,8 +19,20 @@ public final class NameList {
      */ 
     public final String[] localNames;
 
-    public NameList(String[] namespaceURIs, String[] localNames) {
+    /**
+     * Number of Names for elements
+     */
+    public final int numberOfElementNames;
+    
+    /**
+     * Number of Names for attributes
+     */
+    public final int numberOfAttributeNames;
+    
+    public NameList(String[] namespaceURIs, String[] localNames, int numberElementNames, int numberAttributeNames) {
         this.namespaceURIs = namespaceURIs;
         this.localNames = localNames;
+        this.numberOfElementNames = numberElementNames;
+        this.numberOfAttributeNames = numberAttributeNames;
     }
 }

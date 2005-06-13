@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.31 2005-06-02 17:52:22 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.32 2005-06-13 15:02:51 sandoz Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -91,7 +91,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * This is ugly, but this class implements {@link ValidationEventHandler}
  * and always return true. This {@link ValidationEventHandler} is the default for 2.0.
  *
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  */
 public final class JAXBContextImpl extends JAXBRIContext implements ValidationEventHandler {
 
@@ -534,7 +534,18 @@ public final class JAXBContextImpl extends JAXBRIContext implements ValidationEv
         return utf8nameTable;
     }
 
-
+    public int getNumberOfLocalNames() {
+        return nameList.localNames.length;
+    }
+    
+    public int getNumberOfElementNames() {
+        return nameList.numberOfElementNames;
+    }
+    
+    public int getNumberOfAttributeNames() {
+        return nameList.numberOfAttributeNames;
+    }
+    
     /**
      * Creates a new identity transformer.
      */

@@ -16,7 +16,7 @@ import org.xml.sax.helpers.LocatorImpl;
  *
  * @author Kohsuke Kawaguchi
  */
-public class SAXOutput extends XmlOutput {
+public class SAXOutput extends XmlOutputAbstractImpl {
     protected final ContentHandler out;
 
     public SAXOutput(ContentHandler out) {

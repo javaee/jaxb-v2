@@ -13,7 +13,7 @@ import org.xml.sax.SAXException;
  * {@link XmlOutput} that writes to two {@link XmlOutput}s.
  * @author Kohsuke Kawaguchi
  */
-public final class ForkXmlOutput extends XmlOutput {
+public final class ForkXmlOutput extends XmlOutputAbstractImpl {
     private final XmlOutput lhs;
     private final XmlOutput rhs;
 

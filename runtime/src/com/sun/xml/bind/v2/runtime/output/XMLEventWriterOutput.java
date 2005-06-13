@@ -17,7 +17,7 @@ import org.xml.sax.SAXException;
  *
  * @author Kohsuke Kawaguchi
  */
-public class XMLEventWriterOutput extends XmlOutput {
+public class XMLEventWriterOutput extends XmlOutputAbstractImpl {
     private final XMLEventWriter out;
     private final XMLEventFactory ef;
 

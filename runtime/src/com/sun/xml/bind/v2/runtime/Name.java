@@ -27,11 +27,23 @@ public final class Name {
     public final short nsUriIndex;
     public final short localNameIndex;
 
-    Name(int nsIndex, String nsUri, int localIndex, String localName) {
+    /**
+     * Index of the Name for an EII or AII
+     */
+    public final short qNameIndex;
+            
+    /**
+     * Specifies if the Name is associated with an EII or AII
+     */
+    public final boolean isAttribute;
+    
+    Name(int qNameIndex, int nsUriIndex, String nsUri, int localIndex, String localName, boolean isAttribute) {
+        this.qNameIndex = (short)qNameIndex;
         this.nsUri = nsUri;
         this.localName = localName;
-        this.nsUriIndex = (short)nsIndex;
+        this.nsUriIndex = (short)nsUriIndex;
         this.localNameIndex = (short)localIndex;
+        this.isAttribute = isAttribute;
     }
 
     public String toString() {

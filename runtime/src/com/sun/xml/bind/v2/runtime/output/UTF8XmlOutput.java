@@ -15,7 +15,7 @@ import org.xml.sax.SAXException;
  *
  * @author Kohsuke Kawaguchi
  */
-public class UTF8XmlOutput extends XmlOutput {
+public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     protected final OutputStream out;
 
     /** prefixes encoded. */
