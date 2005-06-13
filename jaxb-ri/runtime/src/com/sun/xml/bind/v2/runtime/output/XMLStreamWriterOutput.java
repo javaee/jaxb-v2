@@ -14,7 +14,7 @@ import org.xml.sax.SAXException;
  *
  * @author Kohsuke Kawaguchi
  */
-public class XMLStreamWriterOutput extends XmlOutput {
+public class XMLStreamWriterOutput extends XmlOutputAbstractImpl {
     private final XMLStreamWriter out;
 
     public XMLStreamWriterOutput(XMLStreamWriter out) {

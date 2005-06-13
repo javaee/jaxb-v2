@@ -17,7 +17,7 @@ import org.xml.sax.SAXException;
  *
  * @author Kohsuke Kawaguchi
  */
-public final class MTOMXmlOutput extends XmlOutput {
+public final class MTOMXmlOutput extends XmlOutputAbstractImpl {
 
     private final XmlOutput next;
 
