@@ -1,12 +1,13 @@
 package com.sun.xml.bind.v2.model.impl;
 
-import javax.xml.namespace.QName;
-import javax.xml.bind.annotation.XmlElementWrapper;
+import java.beans.Introspector;
+
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSchema;
+import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.TODO;
-import com.sun.xml.bind.v2.NameConverter;
 
 /**
  * Common part of {@link ElementPropertyInfoImpl} and {@link ReferencePropertyInfoImpl}.
@@ -77,7 +78,7 @@ abstract class ERPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         // compute the default
         TODO.checkSpec();
         if(local.length()==0 || local.equals("##default"))
-            local = NameConverter.standard.toVariableName(getName());
+            local = Introspector.decapitalize(getName());
         if(uri.equals("##default")) {
             XmlSchema xs = reader().getPackageAnnotation( XmlSchema.class, parent.getClazz(), this );
             // JAX-RPC doesn't want the default namespace URI swapping to take effect to
