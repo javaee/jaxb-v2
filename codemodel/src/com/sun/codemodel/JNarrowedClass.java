@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JNarrowedClass.java,v 1.1 2005-04-15 20:02:52 kohsuke Exp $
+ * @(#)$Id: JNarrowedClass.java,v 1.2 2005-06-14 01:15:24 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -86,6 +86,21 @@ class JNarrowedClass extends JClass {
             f.g(args[i]);
         }
         f.p(JFormatter.CLOSE_TYPE_ARGS);
+    }
+
+    @Override
+    void printLink(JFormatter f) {
+        f.p("{@code ");
+        basis.printLink(f);
+        f.p('<');
+        boolean first = true;
+        for( JClass p : args ) {
+            if(first)
+                first = false;
+            else
+                f.p('.');
+        }
+        f.p(">}");
     }
 
     public JPackage _package() {
