@@ -286,4 +286,11 @@ public abstract class JClass extends JType
     public void generate(JFormatter f) {
         f.t(this);
     }
+
+    /**
+     * Prints the class name in javadoc @link format.
+     */
+    void printLink(JFormatter f) {
+        f.p("{@link ").g(this).p('}');
+    }
 }
