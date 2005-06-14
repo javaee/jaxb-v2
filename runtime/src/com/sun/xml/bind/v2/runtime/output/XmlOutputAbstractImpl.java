@@ -3,11 +3,9 @@ package com.sun.xml.bind.v2.runtime.output;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.v2.runtime.Name;
-import com.sun.xml.bind.v2.runtime.NameList;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 
 import org.xml.sax.SAXException;
@@ -121,6 +119,9 @@ public abstract class XmlOutputAbstractImpl implements XmlOutput {
      *
      * This array is shared with {@link XMLSerializer} and
      * is updated by it automatically.
+     *
+     * This allows {@link Name#nsUriIndex} to be converted to prefix index
+     * (for {@link NamespaceContextImpl}) quickly.
      */
     protected int[] nsUriIndex2prefixIndex;
 
