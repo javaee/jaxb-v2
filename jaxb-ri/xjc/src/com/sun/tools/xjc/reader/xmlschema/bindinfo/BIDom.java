@@ -4,11 +4,11 @@
  */
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.namespace.QName;
 
 import com.sun.tools.xjc.reader.Const;
-
-import org.xml.sax.Locator;
 
 /**
  * DOM customization.
@@ -18,13 +18,15 @@ import org.xml.sax.Locator;
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-public class BIXDom extends AbstractDeclarationImpl {
-    public BIXDom( Locator _loc) {
-        super(_loc);
-    }
+@XmlRootElement(name="dom")
+public class BIDom extends AbstractDeclarationImpl {
+
+    // unsupported yet
+    @XmlAttribute
+    String type;
 
     public final QName getName() { return NAME; }
     
     /** Name of the conversion declaration. */
-    public static final QName NAME = new QName(Const.XJC_EXTENSION_URI, "dom");
+    public static final QName NAME = new QName(Const.JAXB_NSURI,"dom");
 }
