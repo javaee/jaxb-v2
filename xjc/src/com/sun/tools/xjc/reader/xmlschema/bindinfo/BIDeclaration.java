@@ -6,6 +6,8 @@ package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
 import javax.xml.namespace.QName;
 
+import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
+
 import org.xml.sax.Locator;
 
 /**
@@ -59,5 +61,13 @@ public interface BIDeclaration {
      * Checks if this declaration was acknowledged.
      */
     boolean isAcknowledged();
-    }
+
+    /**
+     * Called when the parent {@link BindInfo} got its owner set.
+     *
+     * This is when declarations are connected to {@link BGMBuilder} and
+     * its sibling components.
+     */
+    void onSetOwner();
+}
 
