@@ -304,7 +304,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
      * @param source
      *      Source schema component from which a field is built.
      */
-    public CElementPropertyInfo createElementProperty(String defaultName, boolean forConstant, XSComponent source,
+    public CElementPropertyInfo createElementProperty(String defaultName, boolean forConstant, XSParticle source,
                                                       RawTypeSet types) {
 
         if(!types.refs.isEmpty())
@@ -359,7 +359,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
     }
 
     public CPropertyInfo createElementOrReferenceProperty(
-        String defaultName, boolean forConstant, XSComponent source,
+        String defaultName, boolean forConstant, XSParticle source,
         RawTypeSet types, boolean isNillable ) {
 
         if(!types.canBeTypeRefs || generateElementProperty()) {
@@ -394,6 +394,50 @@ public final class BIProperty extends AbstractDeclarationImpl {
 
     private CCustomizations getCustomizations( XSComponent src ) {
         return getBuilder().getBindInfo(src).toCustomizationList();
+    }
+
+    private CCustomizations getCustomizations( XSComponent... src ) {
+        CCustomizations c = null;
+        for (XSComponent s : src) {
+            CCustomizations r = getCustomizations(s);
+            if(c==null)     c = r;
+            else            c = CCustomizations.merge(c,r);
+        }
+        return c;
+    }
+
+    private CCustomizations getCustomizations( XSAttributeUse src ) {
+        // customizations for an attribute use should include those defined in the local attribute.
+        // this is so that the schema like:
+        //
+        // <xs:attribute name="foo" type="xs:int">
+        //   <xs:annotation><xs:appinfo>
+        //     <hyperjaxb:... />
+        //
+        // would be picked up
+        if(src.getDecl().isLocal())
+            return getCustomizations(src,src.getDecl());
+        else
+            return getCustomizations((XSComponent)src);
+    }
+
+    private CCustomizations getCustomizations( XSParticle src ) {
+        // customizations for a particle  should include those defined in the term unless it's global
+        // this is so that the schema like:
+        //
+        // <xs:sequence>
+        //   <xs:element name="foo" type="xs:int">
+        //     <xs:annotation><xs:appinfo>
+        //       <hyperjaxb:... />
+        //
+        // would be picked up
+        if(src.getTerm().isElementDecl()) {
+            XSElementDecl xed = src.getTerm().asElementDecl();
+            if(xed.isGlobal())
+                return getCustomizations((XSComponent)src);
+        }
+
+        return getCustomizations(src,src.getTerm());
     }
 
 
