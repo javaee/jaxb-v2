@@ -25,7 +25,6 @@ import com.sun.xml.bind.annotation.XmlLocation;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.xsom.XSComponent;
 
-import org.w3c.dom.Element;
 import org.xml.sax.Locator;
 
 /**
@@ -87,7 +86,7 @@ public final class BindInfo implements Iterable<BIDeclaration> {
         /**
          * Receives {@link BIDeclaration}s and other DOMs.
          */
-        @XmlAnyElement(lax=true)
+        @XmlAnyElement(lax=true,value=DomHandlerEx.class)
         List<Object> contents = new ArrayList<Object>();
 
         public void addTo(BindInfo bi) {
@@ -97,12 +96,13 @@ public final class BindInfo implements Iterable<BIDeclaration> {
                 if(o instanceof BIDeclaration)
                     bi.addDecl((BIDeclaration)o);
                 // this is really PITA! I can't get the source location
-                if(o instanceof Element) {
-                    Element e = (Element)o;
-                    String nsUri = e.getNamespaceURI();
+                if(o instanceof DomHandlerEx.DomAndLocation) {
+                    DomHandlerEx.DomAndLocation e = (DomHandlerEx.DomAndLocation)o;
+                    String nsUri = e.element.getNamespaceURI();
                     if(nsUri==null || nsUri.equals("")
                     || nsUri.equals(WellKnownNamespace.XML_SCHEMA))
                         continue;   // this is definitely not a customization
+                    bi.addDecl(new BIXPluginCustomization(e.element,e.loc));
                 }
             }
         }
