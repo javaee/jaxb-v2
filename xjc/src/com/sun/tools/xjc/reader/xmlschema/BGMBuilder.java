@@ -21,6 +21,7 @@ import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIGlobalBinding;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BISchemaBinding;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BISerializable;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BindInfo;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIDom;
 import com.sun.tools.xjc.util.CodeModelClassFactory;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
 import com.sun.xml.bind.DatatypeConverterImpl;
@@ -37,6 +38,8 @@ import com.sun.xml.xsom.XSSchemaSet;
 import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSWildcard;
+import com.sun.xml.xsom.XSParticle;
+import com.sun.xml.xsom.XSTerm;
 import com.sun.xml.xsom.util.XSFinder;
 import com.sun.xml.xsom.visitor.XSTermVisitor;
 
@@ -365,6 +368,28 @@ public class BGMBuilder extends BindingComponent {
      * A map that stores binding declarations augmented by XJC.
      */
     private final Map<XSComponent,BindInfo> externalBindInfos = new HashMap<XSComponent,BindInfo>();
+
+    /**
+     * Gets the {@link BIDom} object that applies to the given particle.
+     */
+    protected final BIDom getLocalDomCustomization( XSParticle p ) {
+        BIDom dom = getBindInfo(p).get(BIDom.class);
+        if(dom!=null)  return dom;
+
+        // if not, the term might have one.
+        dom = getBindInfo(p.getTerm()).get(BIDom.class);
+        if(dom!=null)  return dom;
+
+        XSTerm t = p.getTerm();
+        // type could also have one, in case of the dom customization
+        if(t.isElementDecl())
+            return getBindInfo(t.asElementDecl().getType()).get(BIDom.class);
+        // similarly the model group in a model group definition may have one.
+        if(t.isModelGroupDecl())
+            return getBindInfo(t.asModelGroupDecl().getModelGroup()).get(BIDom.class);
+
+        return null;
+    }
 
     /**
      * Computes a name from unnamed model group by following the spec.

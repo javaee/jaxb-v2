@@ -69,7 +69,7 @@ final class ContentModelBinder extends DPatternWalker {
     }
 
     private Void onRepeated(DPattern p,boolean optional) {
-        RawTypeSet rts = RawTypeSetBuilder.build(compiler, p, optional? Multiplicity.star : Multiplicity.plus);
+        RawTypeSet rts = RawTypeSetBuilder.build(compiler, p, optional? Multiplicity.STAR : Multiplicity.PLUS);
         if(rts.canBeTypeRefs) {
             CElementPropertyInfo prop = new CElementPropertyInfo(
                     calcName(p),REPEATED_ELEMENT,ID.NONE,null,null,p.getLocation(),!optional);

@@ -24,12 +24,12 @@ public final class Multiplicity {
     public final Integer max;    // null is used to represent "unbounded".
 
     public static Multiplicity create( int min, Integer max ) {
-        if(min==0 && max==null) return star;
-        if(min==1 && max==null) return plus;
+        if(min==0 && max==null) return STAR;
+        if(min==1 && max==null) return PLUS;
         if(max!=null) {
-            if(min==0 && max==0)    return zero;
-            if(min==0 && max==1)    return optional;
-            if(min==1 && max==1)    return one;
+            if(min==0 && max==0)    return ZERO;
+            if(min==0 && max==1)    return OPTIONAL;
+            if(min==1 && max==1)    return ONE;
         }
         return new Multiplicity(min,max);
     }
@@ -110,19 +110,19 @@ public final class Multiplicity {
     }
     
     /** the constant representing the (0,0) multiplicity. */
-    public static final Multiplicity zero = new Multiplicity(0,0);
+    public static final Multiplicity ZERO = new Multiplicity(0,0);
     
     /** the constant representing the (1,1) multiplicity. */
-    public static final Multiplicity one = new Multiplicity(1,1);
+    public static final Multiplicity ONE = new Multiplicity(1,1);
     
     /** the constant representing the (0,1) multiplicity. */
-    public static final Multiplicity optional = new Multiplicity(0,1);
+    public static final Multiplicity OPTIONAL = new Multiplicity(0,1);
 
     /** the constant representing the (0,unbounded) multiplicity. */
-    public static final Multiplicity star = new Multiplicity(0,null);
+    public static final Multiplicity STAR = new Multiplicity(0,null);
 
     /** the constant representing the (1,unbounded) multiplicity. */
-    public static final Multiplicity plus = new Multiplicity(1,null);
+    public static final Multiplicity PLUS = new Multiplicity(1,null);
 
 // arithmetic methods
 //============================

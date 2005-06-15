@@ -6,7 +6,9 @@ package com.sun.tools.xjc.reader.xmlschema;
 
 import java.text.ParseException;
 
+import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.reader.Ring;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIDeclaration;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
 import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XSParticle;
@@ -22,9 +24,9 @@ import com.sun.xml.xsom.XSTerm;
  */
 public abstract class ParticleBinder extends BindingComponent {
     /**
-     * Builds a BGM fragment from a particle.
-     * The fragment will have a FieldItem as its top-level
-     * binding primitive.
+     * Builds the {@link CPropertyInfo}s from the given particle
+     * (and its descendants), and set them to the class returned by
+     * {@link ClassSelector#getCurrentBean()}.
      */
     public abstract void build( XSParticle p );
 
@@ -69,15 +71,18 @@ public abstract class ParticleBinder extends BindingComponent {
      * Gets the BIProperty object that applies to the given particle.
      */
     protected final BIProperty getLocalPropCustomization( XSParticle p ) {
+        return getLocalCustomization(p,BIProperty.class);
+    }
+
+    private final <T extends BIDeclaration> T getLocalCustomization( XSParticle p, Class<T> type ) {
         // check the property customization of this component first
-        BIProperty cust = builder.getBindInfo(p).get(BIProperty.class);
+        T cust = builder.getBindInfo(p).get(type);
         if(cust!=null)  return cust;
 
         // if not, the term might have one.
-        cust = builder.getBindInfo(p.getTerm()).get(BIProperty.class);
+        cust = builder.getBindInfo(p.getTerm()).get(type);
         if(cust!=null)  return cust;
 
-        // TODO: look for the schema default
         return null;
     }
 
