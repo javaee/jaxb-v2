@@ -4,13 +4,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
+import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.runtime.RuntimeAttributePropertyInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementPropertyInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeNonElement;
 import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeValuePropertyInfo;
-import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 
 /**
@@ -90,7 +90,7 @@ public abstract class PropertyFactory {
      * Look for the case that can be optimized as a leaf,
      * which is a kind of type whose XML representation is just PCDATA.
      */
-    private static boolean isLeaf(RuntimePropertyInfo info) {
+    static boolean isLeaf(RuntimePropertyInfo info) {
         Collection<? extends RuntimeTypeInfo> types = info.ref();
         if(types.size()!=1)     return false;
 

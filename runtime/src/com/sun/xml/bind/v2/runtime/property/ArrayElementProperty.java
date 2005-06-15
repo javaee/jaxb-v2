@@ -199,8 +199,8 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
      *      the type of the child for which we are creating the unmarshaller.
      */
     private final Unmarshaller.Handler createItemUnmarshaller(RuntimeTypeRef typeRef, Unmarshaller.Handler tail, final int offset) {
-        final Transducer xducer = typeRef.getTransducer();
-        if(xducer!=null) {
+        if(PropertyFactory.isLeaf(typeRef.getSource())) {
+            final Transducer xducer = typeRef.getTransducer();
             return new Unmarshaller.RawTextHandler(Unmarshaller.ERROR,tail) {
                 public void processText(UnmarshallingContext context, CharSequence s) throws SAXException {
                     try {
