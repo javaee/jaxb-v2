@@ -67,6 +67,7 @@ public class AnnotationParserFactoryImpl implements AnnotationParserFactory {
                             BindInfo.class, // for xs:annotation
                             BIClass.class,
                             BIConversion.User.class,
+                            BIDom.class,
                             BIEnum.class,
                             BIEnumMember.class,
                             BIGlobalBinding.class,
