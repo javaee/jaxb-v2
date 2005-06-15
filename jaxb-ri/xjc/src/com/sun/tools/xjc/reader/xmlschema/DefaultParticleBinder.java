@@ -86,9 +86,7 @@ class DefaultParticleBinder extends ParticleBinder {
 
 
     /**
-     * Checks whether the infoset binding is possible or not.
-     *
-     * It also marks particles that need to be mapped to properties,
+     * Marks particles that need to be mapped to properties,
      * by reading customization info.
      */
     private class Checker implements XSTermVisitor {
@@ -112,8 +110,8 @@ class DefaultParticleBinder extends ParticleBinder {
 
         public void particle( XSParticle p ) {
 
-            BIProperty cust = getLocalPropCustomization(p);
-            if(cust!=null) {
+            if(getLocalPropCustomization(p)!=null
+            || builder.getLocalDomCustomization(p)!=null) {
                 // if a property customization is specfied,
                 // check that value and turn around.
                 check(p);
@@ -125,7 +123,7 @@ class DefaultParticleBinder extends ParticleBinder {
 
             if(p.getMaxOccurs()!=1
             &&(t.isModelGroup() || t.isModelGroupDecl())) {
-                // this particle gets its own property
+                // a repeated model group gets its own property
                 mark(p);
                 return;
             }
@@ -146,21 +144,12 @@ class DefaultParticleBinder extends ParticleBinder {
         }
 
         public void modelGroup(XSModelGroup mg) {
-
-            if(getClassSelector().bindToType(mg)!=null) {
-                mark(outerParticle);
-            } else {
-                for( XSParticle child : mg.getChildren() )
-                    particle(child);
-            }
+            for( XSParticle child : mg.getChildren() )
+                particle(child);
         }
 
         public void modelGroupDecl(XSModelGroupDecl decl) {
-            if(getClassSelector().bindToType(decl)!=null) {
-                mark(outerParticle);
-            } else {
-                modelGroup(decl.getModelGroup());
-            }
+            modelGroup(decl.getModelGroup());
         }
 
         public void wildcard(XSWildcard wc) {
@@ -293,15 +282,15 @@ class DefaultParticleBinder extends ParticleBinder {
 
 
     /**
-     * Builds a expression by using the result computed by Checker
+     * Builds properties by using the result computed by Checker
      */
     private final class Builder implements XSTermVisitor {
         Builder( Map<XSParticle,String> markedParticles ) {
             this.markedParticles = markedParticles;
         }
 
-        /** All marked particles. A map from XSParticle to its label. */
-        private final Map<XSParticle,String> markedParticles;
+        /** All marked particles. */
+        private final Map<XSParticle,String/*label*/> markedParticles;
 
         /**
          * When we are visiting inside an optional particle, this flag
