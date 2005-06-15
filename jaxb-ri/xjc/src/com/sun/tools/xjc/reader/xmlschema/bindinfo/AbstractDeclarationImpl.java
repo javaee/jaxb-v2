@@ -43,6 +43,10 @@ abstract class AbstractDeclarationImpl implements BIDeclaration {
     private boolean isAcknowledged = false;
     
     public final boolean isAcknowledged() { return isAcknowledged; }
+
+    public void onSetOwner() {
+    }
+
     public void markAsAcknowledged() {
         isAcknowledged = true;
     }

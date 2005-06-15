@@ -138,6 +138,8 @@ public final class BindInfo implements Iterable<BIDeclaration> {
     public void setOwner( BGMBuilder _builder, XSComponent _owner ) {
         this.owner = _owner;
         this.builder = _builder;
+        for (BIDeclaration d : decls)
+            d.onSetOwner();
     }
     public XSComponent getOwner() { return owner; }
     
