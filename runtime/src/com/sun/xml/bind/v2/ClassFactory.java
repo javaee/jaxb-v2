@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import com.sun.xml.bind.Util;
 
@@ -40,29 +42,37 @@ public final class ClassFactory {
     /**
      * Creates a new instance of the class but throw exceptions without catching it.
      */
-    public static <T> T create0( Class<T> clazz ) throws IllegalAccessException, InvocationTargetException, InstantiationException {
+    public static <T> T create0( final Class<T> clazz ) throws IllegalAccessException, InvocationTargetException, InstantiationException {
         Map<Class,Constructor> m = tls.get();
         Constructor<T> cons = m.get(clazz);
         if(cons==null) {
-            try {
-                cons = clazz.getDeclaredConstructor(emptyClass);
-            } catch (NoSuchMethodException e) {
-                logger.log(Level.INFO,"No default constructor found on "+clazz,e);
-                throw new NoSuchMethodError(e.getMessage());
-            }
+            cons = AccessController.doPrivileged(new PrivilegedAction<Constructor<T>>() {
+                public Constructor<T> run() {
+                    Constructor<T> cons;
 
-            int classMod = clazz.getModifiers();
+                    try {
+                        cons = clazz.getDeclaredConstructor(emptyClass);
+                    } catch (NoSuchMethodException e) {
+                        logger.log(Level.INFO,"No default constructor found on "+clazz,e);
+                        throw new NoSuchMethodError(e.getMessage());
+                    }
 
-            if(!Modifier.isPublic(classMod) || !Modifier.isPublic(cons.getModifiers())) {
-                // attempt to make it work even if the constructor is not accessible
-                try {
-                    cons.setAccessible(true);
-                } catch(SecurityException e) {
-                    // but if we don't have a permission to do so, work gracefully.
-                    logger.log(Level.FINE,"Unable to make the constructor of "+clazz+" accessible",e);
-                    throw e;
+                    int classMod = clazz.getModifiers();
+
+                    if(!Modifier.isPublic(classMod) || !Modifier.isPublic(cons.getModifiers())) {
+                        // attempt to make it work even if the constructor is not accessible
+                        try {
+                            cons.setAccessible(true);
+                        } catch(SecurityException e) {
+                            // but if we don't have a permission to do so, work gracefully.
+                            logger.log(Level.FINE,"Unable to make the constructor of "+clazz+" accessible",e);
+                            throw e;
+                        }
+                    }
+
+                    return cons;
                 }
-            }
+            });
 
             m.put(clazz,cons);
         }
