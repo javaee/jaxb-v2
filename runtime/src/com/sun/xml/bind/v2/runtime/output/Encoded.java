@@ -37,6 +37,16 @@ public final class Encoded {
             final char chr = text.charAt(i);
             if (chr > 0x7F) {
                 if (chr > 0x7FF) {
+                    if(Character.MIN_HIGH_SURROGATE<=chr && chr<=Character.MAX_LOW_SURROGATE) {
+                        // surrogate
+                        int uc = (((chr & 0x3ff) << 10) | (text.charAt(++i) & 0x3ff)) + 0x10000;
+
+                        buf[ptr++] = (byte)(0xF0 | ((uc >> 18)));
+                        buf[ptr++] = (byte)(0x80 | ((uc >> 12) & 0x3F));
+                        buf[ptr++] = (byte)(0x80 | ((uc >> 6) & 0x3F));
+                        buf[ptr++] = (byte)(0x80 + (uc & 0x3F));
+                        continue;
+                    }
                     buf[ptr++] = (byte)(0xE0 + (chr >> 12));
                     buf[ptr++] = (byte)(0x80 + ((chr >> 6) & 0x3F));
                 } else {
@@ -52,36 +62,6 @@ public final class Encoded {
     }
 
     /**
-     * The meat of {@link #setEscape}. The VM should be able to inline this.
-     */
-    private final int escapeChar(boolean isAttribute, final char chr, int ptr) {
-        if (chr > 0x7F) {
-            if (chr > 0x7FF) {
-                buf[ptr++] = (byte)(0xE0 + (chr >> 12));
-                buf[ptr++] = (byte)(0x80 + ((chr >> 6) & 0x3F));
-            } else {
-                buf[ptr++] = (byte)(0xC0 + (chr >> 6));
-            }
-            buf[ptr++] = (byte)(0x80 + (chr & 0x3F));
-        } else {
-            byte[] ent;
-
-            if((ent=attributeEntities[chr])!=null) {
-                // the majority of the case is just printed as a char,
-                // so it's very important to reject them as quickly as possible
-
-                // check again to see if this really needs to be escaped
-                if(isAttribute || entities[chr]!=null)
-                    ptr = writeEntity(ent,ptr);
-                else
-                    buf[ptr++] = (byte)chr;
-            } else
-                buf[ptr++] = (byte)chr;
-        }
-        return ptr;
-    }
-
-    /**
      * Fill in the buffer by encoding the specified characters
      * while escaping characters like &lt;
      *
@@ -94,8 +74,45 @@ public final class Encoded {
 
         int ptr = 0;
 
-        for (int i = 0; i < length; i++)
-            ptr = escapeChar(isAttribute,text.charAt(i),ptr);
+        for (int i = 0; i < length; i++) {
+            final char chr = text.charAt(i);
+
+            int ptr1 = ptr;
+            if (chr > 0x7F) {
+                if (chr > 0x7FF) {
+                    if(Character.MIN_HIGH_SURROGATE<=chr && chr<=Character.MAX_LOW_SURROGATE) {
+                        // surrogate
+                        int uc = (((chr & 0x3ff) << 10) | (text.charAt(++i) & 0x3ff)) + 0x10000;
+
+                        buf[ptr++] = (byte)(0xF0 | ((uc >> 18)));
+                        buf[ptr++] = (byte)(0x80 | ((uc >> 12) & 0x3F));
+                        buf[ptr++] = (byte)(0x80 | ((uc >> 6) & 0x3F));
+                        buf[ptr++] = (byte)(0x80 + (uc & 0x3F));
+                        continue;
+                    }
+                    buf[ptr1++] = (byte)(0xE0 + (chr >> 12));
+                    buf[ptr1++] = (byte)(0x80 + ((chr >> 6) & 0x3F));
+                } else {
+                    buf[ptr1++] = (byte)(0xC0 + (chr >> 6));
+                }
+                buf[ptr1++] = (byte)(0x80 + (chr & 0x3F));
+            } else {
+                byte[] ent;
+
+                if((ent=attributeEntities[chr])!=null) {
+                    // the majority of the case is just printed as a char,
+                    // so it's very important to reject them as quickly as possible
+
+                    // check again to see if this really needs to be escaped
+                    if(isAttribute || entities[chr]!=null)
+                        ptr1 = writeEntity(ent,ptr1);
+                    else
+                        buf[ptr1++] = (byte)chr;
+                } else
+                    buf[ptr1++] = (byte)chr;
+            }
+            ptr = ptr1;
+        }
         len = ptr;
     }
 
