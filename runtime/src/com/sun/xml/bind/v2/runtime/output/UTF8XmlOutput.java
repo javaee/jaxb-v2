@@ -14,6 +14,7 @@ import org.xml.sax.SAXException;
  * {@link XmlOutput} implementation specialized for UTF-8.
  *
  * @author Kohsuke Kawaguchi
+ * @author Paul Sandoz
  */
 public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     protected final OutputStream out;
@@ -25,7 +26,19 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     private final Encoded[] localNames;
 
     /** Temporary buffer used to encode text. */
+    /* 
+     * TODO
+     * The textBuffer could write directly to the _octetBuffer
+     * when encoding a string if Encoder is modified.
+     * This will avoid an additional memory copy.
+     */
     private final Encoded textBuffer = new Encoded();
+
+    /** Buffer of octets for writing. */
+    protected byte[] _octetBuffer;
+    
+    /** Index in buffer to write to. */
+    protected int _octetBufferIndex;
 
     /**
      *
@@ -44,26 +57,35 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     @Override
     public void startDocument(XMLSerializer serializer, boolean fragment, int[] nsUriIndex2prefixIndex, NamespaceContextImpl nsContext) throws IOException, SAXException, XMLStreamException {
         super.startDocument(serializer, fragment,nsUriIndex2prefixIndex,nsContext);
+                
+        /**
+         * TODO
+         * Obtain buffer size from property on the JAXB context
+         */
+        initiateWriteBuffer(1024);
+        
         if(!fragment) {
-            out.write(XML_DECL);
+            write(XML_DECL);
         }
+        
     }
 
     public void endDocument(boolean fragment) throws IOException, SAXException, XMLStreamException {
-        out.write('\n');
+        write('\n');
+        flushBuffer();
         super.endDocument(fragment);
     }
 
     public void beginStartTag(int prefix, String localName) throws IOException {
         int base= pushNsDecls();
-        out.write('<');
+        write('<');
         writeName(prefix,localName);
         writeNsDecls(base);
     }
 
     public void beginStartTag(Name name) throws IOException {
         int base = pushNsDecls();
-        out.write('<');
+        write('<');
         writeName(name);
         writeNsDecls(base);
     }
@@ -110,90 +132,94 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
             if(p.length()==0) {
                 if(base==1 && ns.getNsUri(i).length()==0)
                     continue;   // no point in declaring xmlns="" on the root element
-                out.write(XMLNS_EQUALS);
+                write(XMLNS_EQUALS);
             } else {
                 Encoded e = prefixes[base+i];
-                out.write(XMLNS_COLON);
-                out.write(e.buf,0,e.len-1); // skip the trailing ':'
-                out.write(EQUALS);
+                write(XMLNS_COLON);
+                write(e.buf,0,e.len-1); // skip the trailing ':'
+                write(EQUALS);
             }
             doText(ns.getNsUri(i),true);
-            out.write('\"');
+            write('\"');
         }
     }
 
     private void writePrefix(int prefix) throws IOException {
         Encoded e = prefixes[prefix];
-        out.write(e.buf,0,e.len);
+        write(e.buf,0,e.len);
     }
 
     private void writeName(Name name) throws IOException {
         writePrefix(nsUriIndex2prefixIndex[name.nsUriIndex]);
-        localNames[name.localNameIndex].write(out);
+        write(localNames[name.localNameIndex].buf, 0, localNames[name.localNameIndex].len);
     }
 
     private void writeName(int prefix, String localName) throws IOException {
         writePrefix(prefix);
         textBuffer.set(localName);
-        textBuffer.write(out);
+        write(textBuffer.buf, 0, textBuffer.len);
     }
 
     @Override
     public void attribute(Name name, String value) throws IOException {
-        out.write(' ');
+        write(' ');
         if(name.nsUriIndex==-1) {
-            localNames[name.localNameIndex].write(out);
+            write(localNames[name.localNameIndex].buf, 0, localNames[name.localNameIndex].len);
         } else
             writeName(name);
-        out.write(EQUALS);
+        write(EQUALS);
         doText(value,true);
-        out.write('\"');
+        write('\"');
     }
 
     public void attribute(int prefix, String localName, String value) throws IOException {
-        out.write(' ');
+        write(' ');
         if(prefix==-1) {
             textBuffer.set(localName);
-            textBuffer.write(out);
+            write(textBuffer.buf, 0, textBuffer.len);
         } else
             writeName(prefix,localName);
-        out.write(EQUALS);
+        write(EQUALS);
         doText(value,true);
-        out.write('\"');
+        write('\"');
     }
 
     public void endStartTag() throws IOException {
-        out.write('>');
+        write('>');
     }
 
     @Override
     public void endTag(Name name) throws IOException {
-        out.write(CLOSE_TAG);
+        write(CLOSE_TAG);
         writeName(name);
-        out.write('>');
+        write('>');
     }
 
     public void endTag(int prefix, String localName) throws IOException {
-        out.write(CLOSE_TAG);
+        write(CLOSE_TAG);
         writeName(prefix,localName);
-        out.write('>');
+        write('>');
     }
 
     public void text(CharSequence value, boolean needSP) throws IOException {
         if(needSP)
-            out.write(' ');
+            write(' ');
         doText(value,false);
     }
 
     private void doText(CharSequence value,boolean isAttribute) throws IOException {
         textBuffer.setEscape(value,isAttribute);
-        textBuffer.write(out);
+        write(textBuffer.buf, 0, textBuffer.len);
     }
 
     @Override
     public void text(int value) throws IOException, SAXException, XMLStreamException {
+        /*
+         * TODO
+         * Change to use the octet buffer directly
+         */
         if(value==0) {
-            out.write((byte)'0');
+            write((byte)'0');
         } else {
             // max is -2147483648 and 11 digits
             boolean minus = (value<0);
@@ -210,13 +236,50 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
 
             if(minus)   buf[--idx] = (byte)'-';
 
-            out.write(buf,idx,11-idx);
+            write(buf,idx,11-idx);
+        }
+    }
+  
+    protected final void initiateWriteBuffer(int size) {
+        _octetBufferIndex = 0;
+        _octetBuffer = new byte[size];
+    }
+    
+    protected final void write(int i) throws IOException {
+        if (_octetBufferIndex < _octetBuffer.length) {
+            _octetBuffer[_octetBufferIndex++] = (byte)i;
+        } else {
+            out.write(_octetBuffer);
+            _octetBufferIndex = 1;
+            _octetBuffer[0] = (byte)i;
         }
     }
 
+    protected final void write(byte[] b) throws IOException {
+        write(b, 0,  b.length);
+    }
+    
+    protected final void write(byte[] b, int start, int length) throws IOException {
+        if ((_octetBufferIndex + length) < _octetBuffer.length) {
+            System.arraycopy(b, start, _octetBuffer, _octetBufferIndex, length);
+            _octetBufferIndex += length;
+        } else {
+            out.write(_octetBuffer, 0, _octetBufferIndex);
+            out.write(b, start, length);
+            _octetBufferIndex = 0;
+        }
+    }
+
+    protected final void flushBuffer() throws IOException {
+        out.write(_octetBuffer, 0, _octetBufferIndex);
+        _octetBufferIndex = 0;        
+    }
+    
     public void flush() throws IOException {
+        flushBuffer();
         out.flush();
     }
+
 
 
     static final byte[] toBytes(String s) {
