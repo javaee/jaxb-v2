@@ -98,15 +98,15 @@ public final class IndentingUTF8XmlOutput extends UTF8XmlOutput {
     }
 
     private void printIndent() throws IOException {
-        out.write('\n');
+        write('\n');
         int i = depth%8;
 
-        out.write( indent8.buf, 0, i*unitLen );
+        write( indent8.buf, 0, i*unitLen );
 
         i>>=3;  // really i /= 8;
 
         for( ; i>0; i-- )
-            indent8.write(out);
+            write(indent8.buf, 0, indent8.len);
     }
 
     @Override
