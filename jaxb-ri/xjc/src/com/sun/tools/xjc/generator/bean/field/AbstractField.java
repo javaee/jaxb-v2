@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AbstractField.java,v 1.17 2005-06-01 18:34:37 ryan_shoemaker Exp $
+ * @(#)$Id: AbstractField.java,v 1.18 2005-06-17 18:56:03 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -28,6 +28,7 @@ import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
+import com.sun.codemodel.JPrimitiveType;
 import com.sun.tools.xjc.generator.annotation.spec.XmlAnyElementWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlAttributeWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlElementRefWriter;
@@ -383,15 +384,22 @@ abstract class AbstractField implements FieldOutline {
         TypeList r = new TypeList();
         r.add(prop.ref());
 
-        JType t = TypeUtil.getCommonBaseType(codeModel,r);
+        JType t;
+        if(prop.baseType!=null)
+            t = prop.baseType;
+        else
+            t = TypeUtil.getCommonBaseType(codeModel,r);
 
         // if item type is unboxable, convert t=Integer -> t=int
         // the in-memory data structure can't have primitives directly,
         // but this guarantees that items cannot legal hold null,
         // which helps us improve the boundary signature between our
         // data structure and user code
-        if(prop.isUnboxable())
-            t = t.boxify().getPrimitiveType();
+        if(prop.isUnboxable()) {
+            JPrimitiveType tt = t.boxify().getPrimitiveType();
+            if(tt!=null)
+                t = tt;
+        }
         return t;
     }
 

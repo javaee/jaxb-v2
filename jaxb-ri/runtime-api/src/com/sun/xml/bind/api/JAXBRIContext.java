@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JAXBRIContext.java,v 1.8 2005-06-02 17:52:22 kohsuke Exp $
+ * @(#)$Id: JAXBRIContext.java,v 1.9 2005-06-17 18:56:02 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -9,12 +9,11 @@
  */
 package com.sun.xml.bind.api;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.io.IOException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

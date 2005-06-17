@@ -597,7 +597,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
             Base64Data base64Data = (Base64Data) text;
             return base64Data.getExact();
         } else {
-            return DatatypeConverterImpl._parseBase64Binary(text);
+            return DatatypeConverterImpl._parseBase64Binary(text.toString());
         }
     }
 

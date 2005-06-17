@@ -7,6 +7,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JJavaName;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JClass;
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
@@ -29,6 +31,12 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
 
     @XmlTransient
     public final Locator locator;
+
+    /**
+     * If the base type of the property is overriden,
+     * this field is set to non-null.
+     */
+    public JType baseType;
 
     /**
      * Javadoc for this property. Must not be null.
@@ -178,6 +186,9 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
         if(ts.size()!=1)
             // if the property is heterogeneous, no way.
             // ts.size()==0 is a special case that can happen for wildcards.
+            return false;
+
+        if(baseType!=null && (baseType instanceof JClass))
             return false;
 
         CTypeInfo t = ts.iterator().next();

@@ -4,9 +4,11 @@
  */
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
+import com.sun.codemodel.JCodeModel;
+import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
-import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.bind.annotation.XmlLocation;
+import com.sun.xml.xsom.XSComponent;
 
 import org.xml.sax.Locator;
 
@@ -39,7 +41,11 @@ abstract class AbstractDeclarationImpl implements BIDeclaration {
     protected final BGMBuilder getBuilder() {
         return parent.getBuilder();
     }
-    
+    protected final JCodeModel getCodeModel() {
+        return Ring.get(JCodeModel.class);
+    }
+
+
     private boolean isAcknowledged = false;
     
     public final boolean isAcknowledged() { return isAcknowledged; }

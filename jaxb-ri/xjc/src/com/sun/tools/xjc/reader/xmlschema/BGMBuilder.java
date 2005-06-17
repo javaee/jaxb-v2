@@ -164,7 +164,7 @@ public class BGMBuilder extends BindingComponent {
         }
 
         // code generation mode
-        model.strategy = globalBinding.codeGenerationStrategy;
+        model.strategy = globalBinding.getCodeGenerationStrategy();
         model.rootClass = globalBinding.getSuperClass();
         model.rootInterface = globalBinding.getSuperInterface();
 

@@ -8,12 +8,10 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JType;
 import com.sun.tools.xjc.ErrorReceiver;
-import com.sun.tools.xjc.util.ReadOnlyAdapter;
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
 import com.sun.tools.xjc.generator.bean.field.IsSetFieldRenderer;
 import com.sun.tools.xjc.model.CAttributePropertyInfo;
@@ -26,6 +24,7 @@ import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.reader.RawTypeSet;
 import com.sun.tools.xjc.reader.Ring;
+import com.sun.tools.xjc.reader.TypeUtil;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.xml.bind.v2.NameConverter;
 import com.sun.xml.xsom.XSAnnotation;
@@ -86,28 +85,18 @@ public final class BIProperty extends AbstractDeclarationImpl {
     private String javadoc = null;
     
     // can be null
-    // TODO: JAXB-ify
-    private JType baseType = null;
+    @XmlElement
+    private BaseTypeBean baseType = null;
 
     // TODO: report 'unsupported' error if this is true
     @XmlAttribute
     private boolean generateFailFastSetterMethod = false;
 
-    /**
-     * If there's a nested javaType customization, this field
-     * will keep that customization. Otherwise null.
-     * 
-     * This customization, if present, is used to customize
-     * the simple type mapping at the point of reference.
-     */
-    @XmlElementRef
-    @XmlJavaTypeAdapter(BaseTypeAdapter.class)
-    private BIConversion.User conv = null;
 
 
-    public BIProperty( Locator loc, String _propName, String _javadoc,
-        JType _baseType, BIConversion.User _conv,
-        CollectionTypeAttribute collectionType, Boolean isConst, Boolean isSet, Boolean genElemProp ) {
+    public BIProperty(Locator loc, String _propName, String _javadoc,
+                      BaseTypeBean _baseType, CollectionTypeAttribute collectionType, Boolean isConst,
+                      Boolean isSet, Boolean genElemProp) {
         super(loc);
 
         this.name = _propName;
@@ -117,7 +106,6 @@ public final class BIProperty extends AbstractDeclarationImpl {
         this.isConstantProperty = isConst;
         this.needIsSetMethod = isSet;
         this.generateElementProperty = genElemProp;
-        this.conv = _conv;
     }
 
     protected BIProperty() {}
@@ -125,8 +113,8 @@ public final class BIProperty extends AbstractDeclarationImpl {
 
     public void setParent( BindInfo parent ) {
         super.setParent(parent);
-        if(conv!=null)
-            conv.setParent(parent);
+        if(baseType!=null && baseType.conv!=null)
+            baseType.conv.setParent(parent);
     }
 
     
@@ -175,7 +163,11 @@ public final class BIProperty extends AbstractDeclarationImpl {
     
     // can be null
     public JType getBaseType() {
-        if(baseType!=null)  return baseType;
+        if(baseType!=null && baseType.name!=null) {
+            return TypeUtil.getType(getCodeModel(),
+                    baseType.name,
+                    Ring.get(ErrorReceiver.class),getLocation());
+        }
         BIProperty next = getDefault();
         if(next!=null)  return next.getBaseType();
         else            return null;
@@ -388,6 +380,10 @@ public final class BIProperty extends AbstractDeclarationImpl {
             // if it's a collection, we need to be able to unset it so that we can distinguish
             // null list and empty list.
             prop.realization = new IsSetFieldRenderer( prop.realization, prop.isUnboxable()||prop.isCollection(), true );
+
+        JType bt = getBaseType();
+        if(bt!=null)
+            prop.baseType = bt;
 
         return prop;
     }
@@ -615,19 +611,28 @@ public final class BIProperty extends AbstractDeclarationImpl {
         "BIProperty.IllegalFixedAttributeAsConstantProperty";
 
     public BIConversion.User getConv() {
-        return conv;
+        if(baseType!=null)
+            return baseType.conv;
+        else
+            return null;
     }
 
-    @XmlRootElement(name="baseType")
     private static final class BaseTypeBean {
+        /**
+         * If there's a nested javaType customization, this field
+         * will keep that customization. Otherwise null.
+         *
+         * This customization, if present, is used to customize
+         * the simple type mapping at the point of reference.
+         */
         @XmlElementRef
         BIConversion.User conv;
-    }
 
-    private static final class BaseTypeAdapter extends ReadOnlyAdapter<BaseTypeBean,BIConversion.User> {
-        public BIConversion.User unmarshal(BaseTypeBean btb) throws Exception {
-            return btb.conv;
-        }
+        /**
+         * Java type name.
+         */
+        @XmlAttribute
+        String name;
     }
 }
 

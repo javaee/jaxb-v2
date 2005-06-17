@@ -32,7 +32,7 @@ import com.sun.xml.bind.v2.TODO;
  * This class is responsible for whitespace normalization.
  *
  * @author <ul><li>Ryan Shoemaker, Sun Microsystems, Inc.</li></ul>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since JAXB1.0
  */
 public final class DatatypeConverterImpl implements DatatypeConverterInterface {
@@ -517,7 +517,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
      * @return    -1        if format is illegal.
      *
      */
-    private static int calcLength( CharSequence text ) {
+    private static int calcLength( String text ) {
         final int len = text.length();
         int base64count=0;
         int i;
@@ -535,7 +535,16 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         return (base64count/4)*3+Math.max(0,(base64count%4)-1);
     }
 
-    public static byte[] _parseBase64Binary(CharSequence text) {
+    /**
+     * @param text
+     *      base64Binary data is likely to be long, and decoding requires
+     *      each character to be accessed twice (once for counting length, another
+     *      for decoding.)
+     *
+     *      A benchmark showed that taking {@link String} is faster, presumably
+     *      because JIT can inline a lot of string access (with data of 1K chars, it was twice as fast)
+     */
+    public static byte[] _parseBase64Binary(String text) {
         final int outlen = calcLength(text);
         if( outlen==-1 )    return null;
         final byte[] out = new byte[outlen];

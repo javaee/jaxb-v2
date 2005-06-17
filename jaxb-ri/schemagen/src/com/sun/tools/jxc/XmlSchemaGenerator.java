@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -96,7 +97,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
      *
      * @see SchemaOutputResolver#createOutput(String, String)
      */
-    private final Map<String,Namespace> namespaces = new TreeMap<String,Namespace>();
+    private final Map<String,Namespace> namespaces = new TreeMap<String,Namespace>(NAMESPACE_COMPARATOR);
 
     /** model navigator **/
     private Navigator navigator;
@@ -245,12 +246,20 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
 
         // first create the outputs for all so that we can resolve references among
         // schema files when we write
-        for( Namespace n : namespaces.values() )
-            out.put(n,resolver.createOutput(n.uri,"schema"+(out.size()+1)+".xsd"));
+        for( Namespace n : namespaces.values() ) {
+            final Result output = resolver.createOutput(n.uri,"schema"+(out.size()+1)+".xsd");
+            if(output!=null) {  // null result means no schema for that namespace
+                out.put(n,output);
+            }
+        }
 
         // then write'em all
-        for( Namespace n : namespaces.values() )
-            n.writeTo( out.get(n), out );
+        for( Namespace n : namespaces.values() ) {
+            final Result result = out.get(n);
+            if(result!=null) { // null result means no schema for that namespace
+                n.writeTo( result, out );
+            }
+        }
     }
 
 
@@ -769,6 +778,18 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             QName ename = ep.getXmlName();
             Occurs occurs = null;
 
+            if (ep.isValueList()) {
+                TypeRef t = (TypeRef)ep.getTypes().get(0);
+                LocalElement e = compositor.element();
+
+                QName tn = t.getTagName();
+                e.name(tn.getLocalPart());
+                com.sun.tools.jxc.gen.xmlschema.List lst = e.simpleType().list();
+                writeTypeRef(lst,t, "itemType");
+                if(tn.getNamespaceURI().length()>0)
+                    e.form("qualified");    // TODO: what if the URI != tns?
+            }
+
             if (ep.isCollection()) {
                 if (ename != null) { // wrapped collection
                     LocalElement e = compositor.element();
@@ -808,7 +829,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                     allNillable = false;
                 }
                 if(tn.getNamespaceURI().length()>0)
-                    e.form("qualified");
+                    e.form("qualified");    // TODO: what if the URI != tns?
             }
 
             if (ep.isCollection()) {
@@ -1067,4 +1088,14 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             return r;
         }
     }
+
+    /**
+     * JAX-RPC wants the namespaces to be sorted in the reverse order
+     * so that the empty namespace "" comes to the very end. Don't ask me why.
+     */
+    private static final Comparator<String> NAMESPACE_COMPARATOR = new Comparator<String>() {
+        public int compare(String lhs, String rhs) {
+            return -lhs.compareTo(rhs);
+        }
+    };
 }

@@ -222,8 +222,13 @@ public class RawTypeSetBuilder implements XSTermVisitor {
 
             // we have no place to put an adater if this thing maps to a type
             CElementPropertyInfo p = target.getProperty();
-            if(p.getAdapter()!=null && (parent.refs.size()>1 || !parent.mul.isAtMostOnce()))
-                return false;
+            // if we have an adapter or IDness, which requires special
+            // annotation, and there's more than one element,
+            // we have no place to put the special annotation, so we need JAXBElement.
+            if(parent.refs.size()>1 || !parent.mul.isAtMostOnce()) {
+                if(p.getAdapter()!=null || p.id()!=ID.NONE)
+                    return false;
+            }
 
             return true;
         }

@@ -22,7 +22,6 @@ import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.tools.xjc.reader.xmlschema.ClassSelector;
 import com.sun.tools.xjc.reader.xmlschema.SimpleTypeBuilder;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIGlobalBinding;
-import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.core.Element;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.xsom.XSElementDecl;
@@ -229,7 +228,7 @@ public final class RawTypeSet {
             CClassInfo scope = Ring.get(ClassSelector.class).getCurrentBean();
             Model model = Ring.get(Model.class);
 
-            if(target instanceof CClassInfo && Ring.get(BIGlobalBinding.class).simpleMode) {
+            if(target instanceof CClassInfo && Ring.get(BIGlobalBinding.class).isSimpleMode()) {
                 CClassInfo bean = new CClassInfo(model,scope,
                                 model.getNameConverter().toClassName(elementName.getLocalPart()),
                                 locator,null,elementName,custs);
@@ -242,10 +241,13 @@ public final class RawTypeSet {
         }
 
         protected boolean canBeType(RawTypeSet parent) {
-            // if we have an adapter and there's more than one element,
-            // we have no place to put the adapter, so we need JAXBElement.
-            if(target.getAdapterUse()!=null && (parent.refs.size()>1 || !parent.mul.isAtMostOnce()))
-                return false;
+            // if we have an adapter or IDness, which requires special
+            // annotation, and there's more than one element,
+            // we have no place to put the special annotation, so we need JAXBElement.
+            if(parent.refs.size()>1 || !parent.mul.isAtMostOnce()) {
+                if(target.getAdapterUse()!=null || target.idUse()!=ID.NONE)
+                    return false;
+            }
 
             // nillable and optional at the same time. needs an element wrapper to distinguish those
             // two states.

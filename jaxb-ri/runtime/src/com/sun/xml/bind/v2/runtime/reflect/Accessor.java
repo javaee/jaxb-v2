@@ -6,19 +6,19 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Map;
-import java.util.HashMap;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import com.sun.xml.bind.api.AccessorException;
-import com.sun.xml.bind.api.RawAccessor;
+import com.sun.xml.bind.api.JAXBRIContext;
+import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.runtime.Coordinator;
 import com.sun.xml.bind.v2.runtime.reflect.opt.OptimizedAccessorFactory;
-import com.sun.xml.bind.v2.ClassFactory;
 
 /**
  * Accesses a particular property of a bean.
@@ -33,7 +33,7 @@ import com.sun.xml.bind.v2.ClassFactory;
  *
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
-public abstract class Accessor<BeanT,ValueT> extends RawAccessor<BeanT,ValueT> {
+public abstract class Accessor<BeanT,ValueT> {
 
     public final Class<ValueT> valueType;
 
@@ -57,6 +57,57 @@ public abstract class Accessor<BeanT,ValueT> extends RawAccessor<BeanT,ValueT> {
 
 
     /**
+     * Gets the value of the property of the given bean object.
+     *
+     * @param bean
+     *      must not be null.
+     * @throws AccessorException
+     *      if failed to set a value. For example, the getter method
+     *      may throw an exception.
+     *
+     * @since 2.0 EA1
+     */
+    public abstract ValueT get(BeanT bean) throws AccessorException;
+
+    /**
+     * Sets the value of the property of the given bean object.
+     *
+     * @param bean
+     *      must not be null.
+     * @param value
+     *      the value to be set. Setting value to null means resetting
+     *      to the VM default value (even for primitive properties.)
+     * @throws AccessorException
+     *      if failed to set a value. For example, the setter method
+     *      may throw an exception.
+     *
+     * @since 2.0 EA1
+     */
+    public abstract void set(BeanT bean,ValueT value) throws AccessorException;
+
+
+    /**
+     * Sets the value without adapting the value.
+     *
+     * This ugly entry point is only used by JAX-WS.
+     * See {@link JAXBRIContext#getElementPropertyAccessor}
+     */
+    public Object getUnadapted(BeanT bean) throws AccessorException {
+        return get(bean);
+    }
+
+    /**
+     * Sets the value without adapting the value.
+     *
+     * This ugly entry point is only used by JAX-WS.
+     * See {@link JAXBRIContext#getElementPropertyAccessor}
+     */
+    public void setUnadapted(BeanT bean,Object value) throws AccessorException {
+        set(bean,(ValueT)value);
+    }
+
+
+    /**
      * Wraps this  {@link Accessor} into another {@link Accessor}
      * and performs the type adaption as necessary.
      */
@@ -76,6 +127,27 @@ public abstract class Accessor<BeanT,ValueT> extends RawAccessor<BeanT,ValueT> {
                 }
             }
 
+            public void set(BeanT bean, T o) throws AccessorException {
+                if(o==null)
+                    extThis.set(bean,null);
+                else {
+                    XmlAdapter<T, ValueT> a = getAdapter();
+                    try {
+                        extThis.set(bean,a.unmarshal(o));
+                    } catch (Exception e) {
+                        throw new AccessorException(e);
+                    }
+                }
+            }
+
+            public Object getUnadapted(BeanT bean) throws AccessorException {
+                return extThis.getUnadapted(bean);
+            }
+
+            public void setUnadapted(BeanT bean, Object value) throws AccessorException {
+                extThis.setUnadapted(bean,value);
+            }
+
             /**
              * Sometimes Adapters are used directly by JAX-WS outside any
              * {@link Coordinator}. Use this lazily-created cached
@@ -93,19 +165,6 @@ public abstract class Accessor<BeanT,ValueT> extends RawAccessor<BeanT,ValueT> {
                             staticAdapter = ClassFactory.create(adapter);
                     }
                     return staticAdapter;
-                }
-            }
-
-            public void set(BeanT bean, T o) throws AccessorException {
-                if(o==null)
-                    extThis.set(bean,null);
-                else {
-                    XmlAdapter<T, ValueT> a = getAdapter();
-                    try {
-                        extThis.set(bean,a.unmarshal(o));
-                    } catch (Exception e) {
-                        throw new AccessorException(e);
-                    }
                 }
             }
         };
