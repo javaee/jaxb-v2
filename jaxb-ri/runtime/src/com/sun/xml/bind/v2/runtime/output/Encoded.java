@@ -1,7 +1,6 @@
 package com.sun.xml.bind.v2.runtime.output;
 
 import java.io.IOException;
-import java.io.OutputStream;
 
 /**
  * Buffer for UTF-8 encoded string.
@@ -124,7 +123,7 @@ public final class Encoded {
     /**
      * Writes the encoded bytes to the given output stream.
      */
-    public final void write(OutputStream out) throws IOException {
+    public final void write(UTF8XmlOutput out) throws IOException {
         out.write(buf,0,len);
     }
 

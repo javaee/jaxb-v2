@@ -145,26 +145,25 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     }
 
     private void writePrefix(int prefix) throws IOException {
-        Encoded e = prefixes[prefix];
-        write(e.buf,0,e.len);
+        prefixes[prefix].write(this);
     }
 
     private void writeName(Name name) throws IOException {
         writePrefix(nsUriIndex2prefixIndex[name.nsUriIndex]);
-        write(localNames[name.localNameIndex].buf, 0, localNames[name.localNameIndex].len);
+        localNames[name.localNameIndex].write(this);
     }
 
     private void writeName(int prefix, String localName) throws IOException {
         writePrefix(prefix);
         textBuffer.set(localName);
-        write(textBuffer.buf, 0, textBuffer.len);
+        textBuffer.write(this);
     }
 
     @Override
     public void attribute(Name name, String value) throws IOException {
         write(' ');
         if(name.nsUriIndex==-1) {
-            write(localNames[name.localNameIndex].buf, 0, localNames[name.localNameIndex].len);
+            localNames[name.localNameIndex].write(this);
         } else
             writeName(name);
         write(EQUALS);
@@ -176,7 +175,7 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
         write(' ');
         if(prefix==-1) {
             textBuffer.set(localName);
-            write(textBuffer.buf, 0, textBuffer.len);
+            textBuffer.write(this);
         } else
             writeName(prefix,localName);
         write(EQUALS);
@@ -209,7 +208,7 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
 
     private void doText(CharSequence value,boolean isAttribute) throws IOException {
         textBuffer.setEscape(value,isAttribute);
-        write(textBuffer.buf, 0, textBuffer.len);
+        textBuffer.write(this);
     }
 
     @Override
