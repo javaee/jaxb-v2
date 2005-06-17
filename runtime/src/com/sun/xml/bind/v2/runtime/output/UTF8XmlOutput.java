@@ -35,7 +35,8 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     private final Encoded textBuffer = new Encoded();
 
     /** Buffer of octets for writing. */
-    protected byte[] _octetBuffer;
+    // TODO: Obtain buffer size from property on the JAXB context
+    protected final byte[] _octetBuffer = new byte[1024];
     
     /** Index in buffer to write to. */
     protected int _octetBufferIndex;
@@ -57,17 +58,11 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     @Override
     public void startDocument(XMLSerializer serializer, boolean fragment, int[] nsUriIndex2prefixIndex, NamespaceContextImpl nsContext) throws IOException, SAXException, XMLStreamException {
         super.startDocument(serializer, fragment,nsUriIndex2prefixIndex,nsContext);
-                
-        /**
-         * TODO
-         * Obtain buffer size from property on the JAXB context
-         */
-        initiateWriteBuffer(1024);
-        
+
+        _octetBufferIndex = 0;
         if(!fragment) {
             write(XML_DECL);
         }
-        
     }
 
     public void endDocument(boolean fragment) throws IOException, SAXException, XMLStreamException {
@@ -235,12 +230,7 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
 
         write(buf,idx,11-idx);
     }
-  
-    protected final void initiateWriteBuffer(int size) {
-        _octetBufferIndex = 0;
-        _octetBuffer = new byte[size];
-    }
-    
+
     protected final void write(int i) throws IOException {
         if (_octetBufferIndex < _octetBuffer.length) {
             _octetBuffer[_octetBufferIndex++] = (byte)i;
