@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: UnmarshallerImpl.java,v 1.11 2005-05-23 15:15:31 kohsuke Exp $
+ * @(#)$Id: UnmarshallerImpl.java,v 1.12 2005-06-17 19:00:17 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -105,9 +105,7 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl
         return new SAXConnector(new InterningXmlVisitor(
             createUnmarshallerHandler(null,false)),null);
     }
-    
-    
-    
+
     /**
      * Creates and configures a new unmarshalling pipe line.
      * Depending on the setting, we put a validator as a filter.
@@ -246,8 +244,14 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl
             throw new IllegalStateException(
                 Messages.format(Messages.ILLEGAL_READER_STATE,eventType));
         }
-        
-        UnmarshallerHandler h = getUnmarshallerHandler();
+
+        UnmarshallerHandler h;
+        // Quick hack until SJSXP fixes 6270116
+        if(reader.getClass().getName().equals("com.sun.xml.stream.XMLReaderImpl"))
+            h = new SAXConnector(createUnmarshallerHandler(null,false),null);
+        else
+            h = getUnmarshallerHandler();
+
         try {
             new XMLStreamReaderToContentHandler(reader,h).bridge();
         } catch (XMLStreamException e) {
