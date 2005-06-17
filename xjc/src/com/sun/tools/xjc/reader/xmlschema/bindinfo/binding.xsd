@@ -162,7 +162,6 @@
         <xs:element ref="jaxb:baseType"/>
       </xs:choice>
       <xs:attribute name="name"/>
-      <xs:attribute name="baseType"/>
       <xs:attribute name="collectionType" type="jaxb:collectionType"/>
       <xs:attribute name="fixedAttributeAsConstantProperty" type="xs:boolean"/>
       <xs:attribute name="generateIsSetMethod" type="xs:boolean"/>
@@ -173,8 +172,9 @@
   <xs:element name="baseType">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="jaxb:javaType"/>
+        <xs:element ref="jaxb:javaType" minOccurs="0" />
       </xs:sequence>
+      <xs:attribute name="name"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="javaType" substitutionGroup="jaxb:declaration">

@@ -24,7 +24,6 @@ import com.sun.codemodel.JVar;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.model.CAdapter;
 import com.sun.tools.xjc.model.CBuiltinLeafInfo;
-import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.model.TypeUseFactory;
 import com.sun.tools.xjc.reader.Const;
@@ -137,13 +136,12 @@ public abstract class BIConversion extends AbstractDeclarationImpl {
             if(typeUse!=null)
                 return typeUse;
 
-            Model model = Ring.get(Model.class);
-            JCodeModel cm = model.codeModel;
+            JCodeModel cm = getCodeModel();
 
             if(inMemoryType==null)
                 inMemoryType = TypeUtil.getType(cm,type,Ring.get(ErrorReceiver.class),getLocation());
 
-            JDefinedClass adapter = generateAdapter(cm,parseMethodFor(owner),printMethodFor(owner),owner);
+            JDefinedClass adapter = generateAdapter(parseMethodFor(owner),printMethodFor(owner),owner);
 
             // XmlJavaType customization always converts between string and an user-defined type.
             typeUse = TypeUseFactory.adapt(CBuiltinLeafInfo.STRING,new CAdapter(adapter));
@@ -154,7 +152,7 @@ public abstract class BIConversion extends AbstractDeclarationImpl {
         /**
          * generate the adapter class.
          */
-        private JDefinedClass generateAdapter(JCodeModel cm, String parseMethod, String printMethod,XSSimpleType owner) {
+        private JDefinedClass generateAdapter(String parseMethod, String printMethod,XSSimpleType owner) {
             JDefinedClass adapter = null;
 
             int id = 1;
@@ -172,7 +170,7 @@ public abstract class BIConversion extends AbstractDeclarationImpl {
 
             JClass bim = inMemoryType.boxify();
 
-            adapter._extends(cm.ref(XmlAdapter.class).narrow(String.class).narrow(bim));
+            adapter._extends(getCodeModel().ref(XmlAdapter.class).narrow(String.class).narrow(bim));
 
             JMethod unmarshal = adapter.method(JMod.PUBLIC, bim, "unmarshal");
             JVar $value = unmarshal.param(String.class, "value");

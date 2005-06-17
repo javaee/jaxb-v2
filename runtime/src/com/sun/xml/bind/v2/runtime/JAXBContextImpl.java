@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.32 2005-06-13 15:02:51 sandoz Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.33 2005-06-17 18:56:00 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -91,7 +91,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * This is ugly, but this class implements {@link ValidationEventHandler}
  * and always return true. This {@link ValidationEventHandler} is the default for 2.0.
  *
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  */
 public final class JAXBContextImpl extends JAXBRIContext implements ValidationEventHandler {
 
@@ -746,9 +746,22 @@ public final class JAXBContextImpl extends JAXBRIContext implements ValidationEv
 
         ClassBeanInfoImpl cb = (ClassBeanInfoImpl) bi;
         for (Property p : cb.properties) {
-            Accessor acc = p.getElementPropertyAccessor(nsUri,localName);
+            final Accessor acc = p.getElementPropertyAccessor(nsUri,localName);
             if(acc!=null)
-                return acc;
+                return new RawAccessor() {
+                    // Accessor.set/get are designed for unmarshaller/marshaller, and hence
+                    // they go through an adapter behind the scene.
+                    // this isn't desirable for JAX-WS, which essentially uses this method
+                    // just as a reflection library. So use the "unadapted" version to
+                    // achieve the desired semantics
+                    public Object get(Object bean) throws AccessorException {
+                        return acc.getUnadapted(bean);
+                    }
+
+                    public void set(Object bean, Object value) throws AccessorException {
+                        acc.setUnadapted(bean,value);
+                    }
+                }; ;
         }
         throw new JAXBException(new QName(nsUri,localName)+" is not a valid property on "+wrapperBean);
     }

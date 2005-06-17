@@ -152,7 +152,7 @@ class DefaultClassBinder extends AbstractBinderImpl
             CCustomizations custs = builder.getBindInfo(decl).toCustomizationList();
 
             if(decl.isGlobal()) {
-                if( getGlobalBinding().simpleMode || isCollapsable(decl)) {
+                if( getGlobalBinding().isSimpleMode() || isCollapsable(decl)) {
                     // in a simple mode, we map every global element to a class
                     // that derives from its complex type (or has a simple type).
                     //
@@ -164,7 +164,7 @@ class DefaultClassBinder extends AbstractBinderImpl
                         ANONYMOUS, tagName, custs );
                 } else {
                     String className = null;
-                    if(getGlobalBinding().generateElementClass) {
+                    if(getGlobalBinding().isGenerateElementClass()) {
                         className = getGlobalBinding().nameConverter.toClassName(decl.getName());
                     }
 
@@ -214,7 +214,7 @@ class DefaultClassBinder extends AbstractBinderImpl
         CElement c = allow(type,type.getName());
         if(c!=null) return c;
 
-        if(getGlobalBinding().simpleTypeSubstitution && type.isGlobal()) {
+        if(getGlobalBinding().isSimpleTypeSubstitution() && type.isGlobal()) {
             return new CClassInfo(model,selector.getClassScope(),
                     deriveName(type), type.getLocator(), getTypeName(type), null, null );
         }

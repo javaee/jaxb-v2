@@ -38,48 +38,53 @@
 
       <blockquote>
         <ul>
-	  <li>From Section 8: Java to XML
-	  <ul>
-          <li>The specification does not specify the default property order, <tt>@XmlType.propOrder()</tt>. JAXB RI would
-              like source code order.  While source code order is working for <tt>&#64;XmlAccessorType(AccessType.FIELD)</tt>,
-              the default <tt>&#64;XmlAccessorType(AccessType.PROPERTY)</tt> is not following source code order, but
-              rather Unicode code point alphabetical order.  This ordering issue is still open for discussion
-              and debate for future releases.  Since the default is <tt>&#64;XmlAccessorType.value()==AccessType.PROPERTY</tt>, the
-              alphabetical order could be suprising to users.</li>
-          <li>The specification states that if a property or a field has been marked with <tt>&#64;XmlValue</tt>
-              annotation, then the containing class must not extend another class (other than
-              <tt>java.lang.Object</tt>).  The RI currently does not enforce this.</li>
-          <li>The specification restricts <tt>&#64;XmlJavaTypeAdapter</tt> from being placed on a package and
-              the RI enforces this.  We may reconsider allowing this in the final version.</li>
-          <li>According to Table 8-4 in the specification "Mapping class to Complex Type Definition",
-              when a property/field is annotated with <tt>&#64;XmlValue</tt> annotation, the complex type to which
-              the class maps must derived from the schema type to which the property/field annotated
-              with <tt>&#64;XmlValue</tt> is mapped.  The RI does not currently bind this correctly.</li>
-          <li>The RI (schemagen) currently does not have support for generating anonymous complex types as described
-              in Sec 8.2.5 and in the javadoc for <tt>&#64;XmlType</tt> and <tt>&#64;XmlAttribute</tt></li>
-          <li>The RI (schemagen) does not have support for handling <tt>&#64;XmlIDREF</tt> in the schema generator</li>
-          <li>The RI (schemagen) does not have support for generating attribute references.</li>
-	  </ul></li>
-	  <li>Section 6, 7: Schema to Java Binding
-	  <ul>
-          <li>Binding of a simple element property (Sec 6.7.5) that is the head of an element substition
-              group or customization with <tt>&lt;jaxb:property generateElementProperty?="true"/></tt> (Sec 7.8.1).
-              The RI only generates an element setter/getter (Sec 5.5.5), it does not generate the additional
-              type setter/getter(Sec 5.1). The RI generates a raw <tt>JAXBElement</tt> instead of a <tt>JAXBElement</tt> with
-              an upper bound wildcard notation. (i.e. <tt>JAXBElement</tt> instead of <tt>JAXBElement&lt;? extends Base></tt>).</li>
-          <li>RI annotates the schema-derived class for a global element declaration's anonymous complex
-              type definition with <tt>&#64;XmlRootElement</tt> instead of generating an element instance factory
-              that returns <tt>javax.xml.bind.JAXBElement&lt;JAXBBindingOfAnonComplexTypeDef></tt> as specified in
-              Sec 6.7.3. Note that unmarshal methods do not return an instance of <tt>javax.xml.bind.JAXBElement</tt>
-              for instances bound in this manner.</li>
-          <li>RI does not generate schema derived enum methods, <tt>value()</tt> or <tt>fromValue(String)</tt>, as specified
-              in Section 6.2.3.3 "Enum Constant".</li>
-          <li>Section 7.12 <tt>&lt;jaxb:dom></tt> schema customization is not supported by RI.</li>
-          <li>The RI does not have support for marshalling fixed attributes bound with customization
-              <tt>&#64;fixedAttributesAsConstantProperty</tt>. Currently it fails to marshal the attributes.</li>
-	   </ul></li>
-          <li>Roundtripping documents with enum values not listed as part of xml schema results in broken xml.
-</li>
+	      <li>From Section 8: Java to XML
+	        <ul>
+              <li>The specification does not specify the default property order, <tt>@XmlType.propOrder()</tt>. JAXB RI would
+                  like source code order.  While source code order is working for <tt>&#64;XmlAccessorType(AccessType.FIELD)</tt>,
+                  the default <tt>&#64;XmlAccessorType(AccessType.PROPERTY)</tt> is not following source code order, but
+                  rather Unicode code point alphabetical order.  This ordering issue is still open for discussion
+                  and debate for future releases.</li>
+              <li>The specification states that if a property or a field has been marked with <tt>&#64;XmlValue</tt>
+                  annotation, then the containing class must not extend another class (other than
+                  <tt>java.lang.Object</tt>).  The RI currently does not enforce this.</li>
+              <li>The specification restricts <tt>&#64;XmlJavaTypeAdapter</tt> from being placed on a package and
+                  the RI enforces this.  We may reconsider allowing this in the final version.</li>
+              <li>According to Table 8-4 in the specification "Mapping class to Complex Type Definition",
+                  when a property/field is annotated with <tt>&#64;XmlValue</tt> annotation, the complex type to which
+                  the class maps must derived from the schema type to which the property/field annotated
+                  with <tt>&#64;XmlValue</tt> is mapped.  The RI does not currently bind this correctly.</li>
+              <li>The RI has not fully implemented support for the Unmarshal(S4.4.1) and Marshal(S4.5.1) Callback Events from
+                  the ObjectLifeCycle interface.</li>
+              <li>The RI has not fully implemented support for the schema customizations &lt;inlineBinaryData>to disable
+                  MTOM/XOP (S 7.13) and control ref:swaRef binding &lt;jaxb:property @attachmentRef> (S 7.8.1).</li>
+	        </ul></li>
+	      <li>Section 6, 7: Schema to Java Binding
+	        <ul>
+              <li>Binding of a simple element property (Sec 6.7.5) that is the head of an element substition
+                  group or customization with <tt>&lt;jaxb:property generateElementProperty?="true"/></tt> (Sec 7.8.1).
+                  The RI only generates an element setter/getter (Sec 5.5.5), it does not generate the additional
+                  type setter/getter(Sec 5.1). The RI generates a raw <tt>JAXBElement</tt> instead of a <tt>JAXBElement</tt> with
+                  an upper bound wildcard notation. (i.e. <tt>JAXBElement</tt> instead of <tt>JAXBElement&lt;? extends Base></tt>).</li>
+              <li>RI annotates the schema-derived class for a global element declaration's anonymous complex
+                  type definition with <tt>&#64;XmlRootElement</tt> instead of generating an element instance factory
+                  that returns <tt>javax.xml.bind.JAXBElement&lt;JAXBBindingOfAnonComplexTypeDef></tt> as specified in
+                  Sec 6.7.3. Note that unmarshal methods do not return an instance of <tt>javax.xml.bind.JAXBElement</tt>
+                  for instances bound in this manner.</li>
+              <li>RI does not generate schema derived enum methods, <tt>value()</tt> or <tt>fromValue(String)</tt>, as specified
+                  in Section 6.2.3.3 "Enum Constant".</li>
+              <li>Section 7.12 <tt>&lt;jaxb:dom></tt> schema customization is not supported by RI.</li>
+              <li>The RI does not have support for marshalling fixed attributes bound with customization
+                  <tt>&#64;fixedAttributesAsConstantProperty</tt>. Currently it fails to marshal the attributes.</li>
+              <li><tt>@XmlSchemaType</tt> was added for mapping <tt>XmlGregorianCalendar</tt>, but has not been implemented
+                  by the RI yet.</li>
+              <li>The spec has changed the mapping of <tt>XMLGregorianCalendar</tt> to <tt>xs:anySimpleType</tt>, but the RI still
+                  maps it to <tt>xs:dateTime</tt>.</li>
+              <li>The spec allows <tt>@XmlJavaTypeAdapter</tt> on classes and fields, but the RI only supports this annotation
+                  on fields.</li>
+              <li>The spec allows mapping of public static final fields annotated with <tt>@XmlAttribute</tt> to a fixed
+                     attribute in schema, the RI doesn't handle this case yet.</li>
+	       </ul></li>
         </ul>
 	  </blockquote>
 	</blockquote>
@@ -130,8 +135,8 @@ $ xjc.sh -dtd test.dtd
 	
 	<hr/>
 	<font size="-1">
-	  $Revision: 1.1 $<br/>
-	  $Date: 2005-04-15 20:03:06 $
+	  $Revision: 1.2 $<br/>
+	  $Date: 2005-06-17 18:55:58 $
 	</font>
   </body>
 </html>

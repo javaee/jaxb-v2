@@ -204,7 +204,7 @@ public final class ConversionFinder extends BindingComponent {
             return false;
 
         List<XSFacet> facets = type.getDeclaredFacets(XSFacet.FACET_ENUMERATION);
-        if( facets.isEmpty() || facets.size()>builder.getGlobalBinding().defaultEnumMemberSizeCap )
+        if( facets.isEmpty() || facets.size()>builder.getGlobalBinding().getDefaultEnumMemberSizeCap() )
             // if the type itself doesn't have the enumeration facet,
             // it won't be mapped to a type-safe enum.
             //
@@ -517,7 +517,7 @@ public final class ConversionFinder extends BindingComponent {
             return lookupBinaryTypeBinding();
         } else
         if(typeLocalName.equals("anySimpleType")) {
-            if(referer instanceof XSAttributeDecl)
+            if(referer instanceof XSAttributeDecl || referer instanceof XSSimpleType)
                 return CBuiltinLeafInfo.STRING;
             else
                 return CBuiltinLeafInfo.ANYTYPE;
@@ -539,12 +539,17 @@ public final class ConversionFinder extends BindingComponent {
                 List<MimeTypeRange> types = MimeTypeRange.parseRanges(emt);
                 MimeTypeRange mt = MimeTypeRange.merge(types);
 
+                // see spec table I-1 in appendix I section 2.1.1 for bindings
                 if(mt.majorType.equals("image"))
                     return CBuiltinLeafInfo.IMAGE.makeMimeTyped(mt.toMimeType());
 
                 if(( mt.majorType.equals("application") || mt.majorType.equals("text"))
                         && isXml(mt.subType))
                     return CBuiltinLeafInfo.XML_SOURCE.makeMimeTyped(mt.toMimeType());
+
+                if((mt.majorType.equals("text") && (mt.subType.equals("plain")) )) {
+                    return CBuiltinLeafInfo.STRING.makeMimeTyped(mt.toMimeType());
+                }
 
                 return CBuiltinLeafInfo.DATA_HANDLER.makeMimeTyped(mt.toMimeType());
             } catch (ParseException e) {

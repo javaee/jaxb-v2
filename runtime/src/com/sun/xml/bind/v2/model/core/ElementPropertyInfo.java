@@ -48,6 +48,9 @@ public interface ElementPropertyInfo<TypeT,ClassDeclT> extends PropertyInfo<Type
      *
      * <p>
      * If {@link #isCollection()}==false, this property is always false.
+     *
+     * <p>
+     * When this flag is true, <tt>getTypes().size()==1</tt> always holds.
      */
     boolean isValueList();
 

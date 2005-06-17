@@ -97,6 +97,34 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
         return serializable;
     }
 
+    public boolean isGenerateElementClass() {
+        return generateElementClass;
+    }
+
+    public int getDefaultEnumMemberSizeCap() {
+        return defaultEnumMemberSizeCap;
+    }
+
+    public boolean isSimpleMode() {
+        return simpleMode;
+    }
+
+    public boolean isGenerateEnumMemberName() {
+        return generateEnumMemberName;
+    }
+
+    public boolean isSimpleTypeSubstitution() {
+        return simpleTypeSubstitution;
+    }
+
+    public ImplStructureStrategy getCodeGenerationStrategy() {
+        return codeGenerationStrategy;
+    }
+
+    public LocalScoping getFlattenClasses() {
+        return flattenClasses;
+    }
+
     private static enum UnderscoreBinding {
         @XmlEnumValue("asWordSeparator")
         WORD_SEPARATOR(NameConverter.standard),
@@ -127,7 +155,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
      * True to generate classes for every simple type. 
      */
     @XmlAttribute(name="mapSimpleTypeDef")
-    public final boolean simpleTypeSubstitution = false;
+    boolean simpleTypeSubstitution = false;
 
     /**
      * Gets the default defaultProperty customization.
@@ -152,7 +180,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
      */
     @XmlAttribute(name="typesafeEnumMemberName")
     @XmlJavaTypeAdapter(GenerateEnumMemberNameAdapter.class)
-    public final boolean generateEnumMemberName = false;
+    boolean generateEnumMemberName = false;
 
     private static final class GenerateEnumMemberNameAdapter extends ReadOnlyAdapter<String,Boolean> {
         public Boolean unmarshal(String s) throws Exception {
@@ -166,7 +194,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
      * The code generation strategy.
      */
     @XmlAttribute(name="generateValueClass")
-    public final ImplStructureStrategy codeGenerationStrategy = BEAN_ONLY;
+    ImplStructureStrategy codeGenerationStrategy = BEAN_ONLY;
 
     /**
      * Set of datatype names. For a type-safe enum class
@@ -189,27 +217,27 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
      * returns the specified root class. Otherwise null.
      */
     @XmlElement(namespace=Const.XJC_EXTENSION_URI)
-    final ClassNameBean superClass = null;
+    ClassNameBean superClass = null;
 
     /**
      * If &lt;xjc:superInterface> extension is specified,
      * returns the specified root class. Otherwise null.
      */
     @XmlElement(namespace=Const.XJC_EXTENSION_URI)
-    final ClassNameBean superInterface = null;
+    ClassNameBean superInterface = null;
 
     /**
      * Generate the simpler optimized code, but not necessarily
      * conforming to the spec.
      */
     @XmlElement(name="simpleMode",namespace=Const.XJC_EXTENSION_URI)
-    public final boolean simpleMode = false;
+    boolean simpleMode = false;
 
     /**
      * True to generate a class for elements by default.
      */
     @XmlAttribute
-    public final boolean generateElementClass = false;
+    private boolean generateElementClass = false;
 
     /**
      * Default cap to the number of constants in the enum.
@@ -217,7 +245,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
      * if there are more enumeration facets than specified in this field.
      */
     @XmlAttribute(name="typesafeEnumMaxMembers")
-    public final int defaultEnumMemberSizeCap = 256;
+    int defaultEnumMemberSizeCap = 256;
 
     /**
      * If true, interfaces/classes that are normally generated as a nested interface/class
@@ -226,7 +254,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
      * See <a href="http://monaco.sfbay/detail.jsf?cr=4969415">Bug 4969415</a> for the motivation.
      */
     @XmlAttribute(name="localScoping")
-    public final LocalScoping flattenClasses = LocalScoping.NESTED;
+    LocalScoping flattenClasses = LocalScoping.NESTED;
 
     /**
      * Globally-defined conversion customizations.
@@ -281,8 +309,8 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
 
 
 
-        this.defaultProperty = new BIProperty(getLocation(),null,null,null,null,
-            collectionType, fixedAttributeAsConstantProperty, generateIsSetMethod, false );
+        this.defaultProperty = new BIProperty(getLocation(),null,null,null,
+                collectionType, fixedAttributeAsConstantProperty, generateIsSetMethod, false );
         defaultProperty.setParent(parent); // don't forget to initialize the defaultProperty
     }
     

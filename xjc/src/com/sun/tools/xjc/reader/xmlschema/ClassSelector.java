@@ -156,7 +156,7 @@ public class ClassSelector extends BindingComponent {
                 addSchemaFragmentJavadoc(bean,sc);
 
             // build the body
-            if(builder.getGlobalBinding().flattenClasses==LocalScoping.NESTED)
+            if(builder.getGlobalBinding().getFlattenClasses()==LocalScoping.NESTED)
                 pushClassScope(bean);
             else
                 pushClassScope(bean.parent());
