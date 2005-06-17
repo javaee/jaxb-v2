@@ -106,7 +106,7 @@ public final class IndentingUTF8XmlOutput extends UTF8XmlOutput {
         i>>=3;  // really i /= 8;
 
         for( ; i>0; i-- )
-            write(indent8.buf, 0, indent8.len);
+            indent8.write(this);
     }
 
     @Override
