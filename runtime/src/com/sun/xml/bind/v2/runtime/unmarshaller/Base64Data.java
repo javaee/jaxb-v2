@@ -197,6 +197,7 @@ public final class Base64Data implements CharSequence {
      * Returns the base64 encoded string of this data.
      */
     public String toString() {
-        return subSequence(0,length()).toString();
+        get();  // fill in the buffer
+        return DatatypeConverterImpl._printBase64Binary(data,dataLen);
     }
 }
