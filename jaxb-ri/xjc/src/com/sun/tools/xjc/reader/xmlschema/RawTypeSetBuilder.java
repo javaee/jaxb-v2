@@ -40,6 +40,7 @@ public class RawTypeSetBuilder implements XSTermVisitor {
      */
     public static RawTypeSet build( XSParticle p, boolean optional ) {
         RawTypeSetBuilder rtsb = new RawTypeSetBuilder();
+        rtsb.particle(p);
         Multiplicity mul = MultiplicityCounter.theInstance.particle(p);
 
         if(optional)
