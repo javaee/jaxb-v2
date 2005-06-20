@@ -15,9 +15,14 @@ public final class ByteArrayDataSource implements DataSource {
 
     private final String contentType;
     private final byte[] buf;
+    private final int len;
 
     public ByteArrayDataSource(byte[] buf, String contentType) {
+        this(buf,buf.length,contentType);
+    }
+    public ByteArrayDataSource(byte[] buf, int length, String contentType) {
         this.buf = buf;
+        this.len = length;
         this.contentType = contentType;
     }
 
@@ -26,7 +31,7 @@ public final class ByteArrayDataSource implements DataSource {
     }
 
     public InputStream getInputStream() {
-        return new ByteArrayInputStream(buf);
+        return new ByteArrayInputStream(buf,0,len);
     }
 
     public String getName() {
