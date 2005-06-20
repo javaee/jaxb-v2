@@ -17,8 +17,8 @@ public final class ByteArrayOutputStreamEx extends ByteArrayOutputStream {
         super(size);
     }
 
-    public void set(Base64Data dt) {
-        dt.set(buf,count);
+    public void set(Base64Data dt,String mimeType) {
+        dt.set(buf,count,mimeType);
     }
 
     public byte[] getBuffer() {

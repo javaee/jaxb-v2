@@ -20,6 +20,9 @@ import com.sun.xml.bind.v2.ByteArrayOutputStreamEx;
  * This object is mutable and the owner of this object can
  * reuse it with new data.
  *
+ * Also used by the marshaller to write out the binary data
+ * that could be possibly attached.
+ *
  * @see XmlVisitor#text(CharSequence)
  * @see XMLSerializer#text(CharSequence,String)
  *
@@ -27,7 +30,7 @@ import com.sun.xml.bind.v2.ByteArrayOutputStreamEx;
  */
 public final class Base64Data implements CharSequence {
 
-    // either dataHandler or data must be present
+    // either dataHandler or (data,dataLen,mimeType?) must be present
 
     private DataHandler dataHandler;
 
@@ -36,6 +39,13 @@ public final class Base64Data implements CharSequence {
      * Length of the valid data in {@link #data}.
      */
     private int dataLen;
+    /**
+     * Optional MIME type of {@link #data}.
+     *
+     * Unused when {@link #dataHandler} is set.
+     * Use {@link DataHandler#getContentType()} in that case.
+     */
+    private String mimeType;
 
     /**
      * Fills in the data object by a portion of the byte[].
@@ -43,10 +53,11 @@ public final class Base64Data implements CharSequence {
      * @param len
      *      data[0] to data[len-1] are treated as the data.
      */
-    public void set(byte[] data, int len) {
+    public void set(byte[] data, int len, String mimeType) {
         this.data = data;
         this.dataLen = len;
         this.dataHandler = null;
+        this.mimeType = mimeType;
     }
 
     /**
@@ -55,8 +66,8 @@ public final class Base64Data implements CharSequence {
      * @param data
      *      this buffer may be owned directly by the unmarshaleld JAXB object.
      */
-    public void set(byte[] data) {
-        set(data,data.length);
+    public void set(byte[] data,String mimeType) {
+        set(data,data.length,mimeType);
     }
 
     /**
@@ -119,6 +130,10 @@ public final class Base64Data implements CharSequence {
             }
         }
         return data;
+    }
+
+    public String getMimeType() {
+        return mimeType;
     }
 
     /**

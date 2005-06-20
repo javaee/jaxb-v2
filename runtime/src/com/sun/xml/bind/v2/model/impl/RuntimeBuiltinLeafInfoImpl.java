@@ -279,16 +279,16 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                 ByteArrayOutputStreamEx imageData = new ByteArrayOutputStreamEx();
                 XMLSerializer xs = XMLSerializer.getInstance();
 
-                try {
-                    String mimeType = xs.getXMIMEContentType();
-                    if(mimeType==null || mimeType.startsWith("image/*"))
-                        // because PNG is lossless, it's a good default
-                        //
-                        // mime type can be a range, in which case we can't just pass that
-                        // to ImageIO.getImageWritersByMIMEType, so here I'm just assuming
-                        // the default of PNG. Not sure if this is complete.
-                        mimeType = "image/png";
+                String mimeType = xs.getXMIMEContentType();
+                if(mimeType==null || mimeType.startsWith("image/*"))
+                    // because PNG is lossless, it's a good default
+                    //
+                    // mime type can be a range, in which case we can't just pass that
+                    // to ImageIO.getImageWritersByMIMEType, so here I'm just assuming
+                    // the default of PNG. Not sure if this is complete.
+                    mimeType = "image/png";
 
+                try {
                     Iterator<ImageWriter> itr = ImageIO.getImageWritersByMIMEType(mimeType);
                     if(itr.hasNext()) {
                         ImageWriter w = itr.next();
@@ -310,7 +310,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                     throw new RuntimeException(e);
                 }
                 Base64Data bd = xs.getCachedBase64DataInstance();
-                imageData.set(bd);
+                imageData.set(bd,mimeType);
                 return bd;
             }
         },
@@ -382,7 +382,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                     ByteArrayOutputStreamEx baos = new ByteArrayOutputStreamEx();
                     xs.getIdentityTransformer().transform(v,
                         new StreamResult(new OutputStreamWriter(baos,charset)));
-                    baos.set(bd);
+                    baos.set(bd,"application/xml; charset="+charset);
                     return bd;
                 } catch (TransformerException e) {
                     // TODO: marshaller error handling
@@ -419,7 +419,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
 
             public CharSequence print(byte[] v) {
                 Base64Data bd = XMLSerializer.getInstance().getCachedBase64DataInstance();
-                bd.set(v);
+                bd.set(v,null);
                 return bd;
             }
         },
