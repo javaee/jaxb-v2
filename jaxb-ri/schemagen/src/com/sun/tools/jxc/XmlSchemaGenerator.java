@@ -19,6 +19,7 @@ import javax.activation.MimeType;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
+import javax.xml.transform.stream.StreamResult;
 
 import com.sun.tools.jxc.gen.xmlschema.Any;
 import com.sun.tools.jxc.gen.xmlschema.AttrDecls;
@@ -258,6 +259,10 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             final Result result = out.get(n);
             if(result!=null) { // null result means no schema for that namespace
                 n.writeTo( result, out );
+                if(result instanceof StreamResult) {
+                    // TODO: is there some way to close other Results?
+                    ((StreamResult)result).getOutputStream().close(); // fix for bugid: 6291301
+                }
             }
         }
     }
