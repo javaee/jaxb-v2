@@ -1,6 +1,8 @@
 package com.sun.tools.jxc;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
@@ -260,8 +262,17 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             if(result!=null) { // null result means no schema for that namespace
                 n.writeTo( result, out );
                 if(result instanceof StreamResult) {
-                    // TODO: is there some way to close other Results?
-                    ((StreamResult)result).getOutputStream().close(); // fix for bugid: 6291301
+                    // TODO: handle other Result implementations?
+                    // handling StreamResult is at least good enough for schemagen since SchemaGenerator
+                    // uses a StreamResult by default.  Besides, is anyone ever really going to send the
+                    // schema to a DOM tree or SAX events?
+                    final OutputStream outputStream = ((StreamResult)result).getOutputStream();
+                    if(outputStream != null) {
+                        outputStream.close(); // fix for bugid: 6291301
+                    } else {
+                        final Writer writer = ((StreamResult)result).getWriter();
+                        if(writer != null) writer.close();
+                    }
                 }
             }
         }
