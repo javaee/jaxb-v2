@@ -4,21 +4,21 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.33 2005-06-17 18:56:00 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.34 2005-07-01 18:32:50 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashSet;
 
 import javax.xml.bind.Binder;
 import javax.xml.bind.JAXBElement;
@@ -91,7 +91,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * This is ugly, but this class implements {@link ValidationEventHandler}
  * and always return true. This {@link ValidationEventHandler} is the default for 2.0.
  *
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  */
 public final class JAXBContextImpl extends JAXBRIContext implements ValidationEventHandler {
 
@@ -652,7 +652,13 @@ public final class JAXBContextImpl extends JAXBRIContext implements ValidationEv
 
         SchemaGenerator xsdgen;
         try {
-            Class clazz = this.getClass().getClassLoader().loadClass("com.sun.tools.jxc.XmlSchemaGenerator");
+            ClassLoader cl = this.getClass().getClassLoader();
+            Class clazz;
+            if(cl!=null)
+                clazz = cl.loadClass("com.sun.tools.jxc.XmlSchemaGenerator");
+            else
+                clazz = Class.forName("com.sun.tools.jxc.XmlSchemaGenerator");
+
             xsdgen = (SchemaGenerator)clazz.getConstructor(Navigator.class).newInstance(tis.getNavigator());
         } catch (ClassNotFoundException e) {
             throw new UnsupportedOperationException(e);
