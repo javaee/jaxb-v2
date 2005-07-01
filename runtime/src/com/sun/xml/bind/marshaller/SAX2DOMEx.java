@@ -35,33 +35,31 @@ import org.xml.sax.Locator;
  */
 public class SAX2DOMEx implements ContentHandler {
 
-    private Node _node=null;
-    private final Stack _nodeStk = new Stack();
-    
-    public final Element getCurrentElement() {
-        return (Element) _nodeStk.peek();
-    }
-    
+    private Node node=null;
+    private final Stack<Node> nodeStack = new Stack<Node>();
+    private final ArrayList<String> unprocessedNamespaces = new ArrayList<String>();
+
+
     /**
      * Document object that owns the specified node.
      */
-    private final Document _document;
-    
+    private final Document document;
+
     /**
      * @param   node
      *      Nodes will be created and added under this object.
      */
     public SAX2DOMEx(Node node)
     {
-        _node = node;
-        _nodeStk.push(_node);
+        this.node = node;
+        nodeStack.push(this.node);
 
         if( node instanceof Document )
-            this._document = (Document)node;
+            this.document = (Document)node;
         else
-            this._document = node.getOwnerDocument();
+            this.document = node.getOwnerDocument();
     }
-    
+
     /**
      * Creates a fresh empty DOM document and adds nodes under this document.
      */
@@ -70,13 +68,17 @@ public class SAX2DOMEx implements ContentHandler {
         factory.setNamespaceAware(true);
         factory.setValidating(false);
         
-        _document = factory.newDocumentBuilder().newDocument();
-        _node = _document;
-        _nodeStk.push( _document );
+        document = factory.newDocumentBuilder().newDocument();
+        node = document;
+        nodeStack.push( document );
+    }
+
+    public final Element getCurrentElement() {
+        return (Element) nodeStack.peek();
     }
 
     public Node getDOM() {
-        return _node;
+        return node;
     }
 
     public void startDocument() {
@@ -86,25 +88,25 @@ public class SAX2DOMEx implements ContentHandler {
     }
 
     public void startElement(String namespace, String localName, String qName, Attributes attrs){
-        Node parent = (Node) _nodeStk.peek();
+        Node parent = nodeStack.peek();
         
         // some broken DOM implementatino (we confirmed it with SAXON)
         // return null from this method.
-        Element element = _document.createElementNS(namespace, qName);
+        Element element = document.createElementNS(namespace, qName);
         
         if( element==null ) {
             // if so, report an user-friendly error message,
             // rather than dying mysteriously with NPE.
             throw new AssertionError(
                 Messages.format(Messages.DOM_IMPL_DOESNT_SUPPORT_CREATELEMENTNS,
-                    _document.getClass().getName(),
-                    Which.which(_document.getClass())));
+                    document.getClass().getName(),
+                    Which.which(document.getClass())));
         }
         
         // process namespace bindings
         for( int i=0; i<unprocessedNamespaces.size(); i+=2 ) {
-            String prefix = (String)unprocessedNamespaces.get(i+0);
-            String uri = (String)unprocessedNamespaces.get(i+1);
+            String prefix = unprocessedNamespaces.get(i+0);
+            String uri = unprocessedNamespaces.get(i+1);
             
             String qname;
             if( "".equals(prefix) || prefix==null )
@@ -142,17 +144,17 @@ public class SAX2DOMEx implements ContentHandler {
         // append this new node onto current stack node
         parent.appendChild(element);
         // push this node onto stack
-        _nodeStk.push(element);        
+        nodeStack.push(element);
     }
     
     public void endElement(String namespace, String localName, String qName){
-        _nodeStk.pop();
+        nodeStack.pop();
     }
 
 
     public void characters(char[] ch, int start, int length) {
-        Node parent = (Node) _nodeStk.peek();
-        Text text = _document.createTextNode(new String(ch, start, length));
+        Node parent = nodeStack.peek();
+        Text text = document.createTextNode(new String(ch, start, length));
         parent.appendChild(text);
     }
 
@@ -162,8 +164,8 @@ public class SAX2DOMEx implements ContentHandler {
     }
 
     public void processingInstruction(String target, String data) throws org.xml.sax.SAXException{
-        Node parent = (Node) _nodeStk.peek();
-        Node node = _document.createProcessingInstruction(target, data);
+        Node parent = nodeStack.peek();
+        Node node = document.createProcessingInstruction(target, data);
         parent.appendChild(node);	
     }
 
@@ -173,8 +175,6 @@ public class SAX2DOMEx implements ContentHandler {
     public void skippedEntity(String name) {
     }
 
-    private ArrayList unprocessedNamespaces = new ArrayList();
-    
     public void startPrefixMapping(String prefix, String uri) {
         unprocessedNamespaces.add(prefix);
         unprocessedNamespaces.add(uri);
