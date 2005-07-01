@@ -26,20 +26,20 @@ public class JDoLoop implements JStatement {
      * Construct a Do statment
      */
     JDoLoop(JExpression test) {
-	this.test = test;
+        this.test = test;
     }
 
     public JBlock body() {
-	if (body == null) body = new JBlock();
-	return body;
+        if (body == null) body = new JBlock();
+        return body;
     }
 
     public void state(JFormatter f) {
-	f.p("do");
-	if (body != null)
-	    f.g(body);
-	else
-	    f.p("{ }");
+        f.p("do");
+        if (body != null)
+            f.g(body);
+        else
+            f.p("{ }");
 
         if (JOp.hasTopOp(test)) {
             f.p("while ").g(test);

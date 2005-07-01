@@ -5,7 +5,7 @@
 package com.sun.codemodel;
 
 /**
- * Label that can be used for continue and break
+ * Label that can be used for continue and break.
  * 
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)

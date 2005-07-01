@@ -8,19 +8,18 @@ package com.sun.codemodel;
 
 
 /**
- * JMethod invocation
+ * A cast operation.
  */
-
-public class JCast extends JExpressionImpl {
+final class JCast extends JExpressionImpl {
     /**
      * JType to which the expression is to be cast.
      */
-    private JType type;
+    private final JType type;
 
     /**
      * JExpression to be cast.
      */
-    private JExpression object;
+    private final JExpression object;
 
     /**
      * JCast constructor 
@@ -34,7 +33,7 @@ public class JCast extends JExpressionImpl {
      */
     JCast(JType type, JExpression object) {
         this.type = type;
-	this.object = object;
+        this.object = object;
     }
 
     public void generate(JFormatter f) {

@@ -8,13 +8,12 @@ package com.sun.codemodel;
 import java.util.Iterator;
 
 /**
- * {@link JType}s that belong the the type hierarchy rooted at
- * {@link Object}.
+ * Represents a Java reference type, such as a class, an interface,
+ * an enum, an array type, a parameterized type.
  * 
  * <p>
- * Those types are also called as "reference types".
  * To be exact, this object represents an "use" of a reference type,
- * not the declaration of it.
+ * not necessarily a declaration of it, which is modeled as {@link JDefinedClass}.
  */
 public abstract class JClass extends JType
 {

@@ -10,9 +10,9 @@ import java.util.List;
 
 
 /**
- * JArray creation and initialization
+ * array creation and initialization.
  */
-public class JArray extends JExpressionImpl {
+public final class JArray extends JExpressionImpl {
 
     private final JType type;
     private final JExpression size;

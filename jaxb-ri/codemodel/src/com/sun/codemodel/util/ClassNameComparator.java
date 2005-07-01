@@ -5,7 +5,6 @@
 package com.sun.codemodel.util;
 
 import java.util.Comparator;
-
 import com.sun.codemodel.JClass;
 
 /**
@@ -15,13 +14,12 @@ import com.sun.codemodel.JClass;
  * @author
  * 	Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-public class ClassNameComparator implements Comparator {
+public class ClassNameComparator implements Comparator<JClass> {
     private ClassNameComparator() {}
     
-    public int compare(Object l, Object r) {
-        return ((JClass)l).fullName().compareTo(
-            ((JClass)r).fullName());
+    public int compare(JClass l, JClass r) {
+        return l.fullName().compareTo(r.fullName());
     }
 
-    public static final Comparator theInstance = new ClassNameComparator();
+    public static final Comparator<JClass> theInstance = new ClassNameComparator();
 }
