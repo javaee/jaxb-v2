@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Collections;
+import java.util.List;
+import java.util.ArrayList;
 import java.lang.reflect.Modifier;
 
 import com.sun.codemodel.writer.FileCodeWriter;
@@ -156,7 +158,7 @@ public final class JCodeModel {
      * 
      * @return null
      *      If the class is not yet created.
-     * @see JPackage#_getClass(String) 
+     * @see JPackage#_getClass(String)
      */
     public JDefinedClass _getClass(String fullyQualifiedName) {
         int idx = fullyQualifiedName.lastIndexOf('.');
@@ -325,7 +327,74 @@ public final class JCodeModel {
         }
 
         // existing class
-        return ref(name);
+        return new TypeNameParser(name).parseTypeName();
+    }
+
+    private final class TypeNameParser {
+        private final String s;
+        private int idx;
+
+        public TypeNameParser(String s) {
+            this.s = s;
+        }
+
+        /**
+         * Parses a type name token T (which can be potentially of the form Tr&ly;T1,T2,...>.)
+         *
+         * @return the index of the character next to T.
+         */
+        JClass parseTypeName() throws ClassNotFoundException {
+            int start = idx;
+
+            while(idx<s.length()) {
+                char ch = s.charAt(idx);
+                if(Character.isJavaIdentifierStart(ch)
+                || Character.isJavaIdentifierPart(ch)
+                || ch=='.')
+                    idx++;
+                else
+                    break;
+            }
+
+            JClass clazz = ref(s.substring(start,idx));
+
+            if(idx==s.length())
+                return clazz; // hit EOL
+
+            char ch = s.charAt(idx);
+
+            if(ch=='<')
+                return parseArguments(clazz);
+
+            return clazz;
+        }
+
+        /**
+         * Parses '&lt;T1,T2,...,Tn>'
+         *
+         * @return the index of the character next to '>'
+         */
+        private JClass parseArguments(JClass rawType) throws ClassNotFoundException {
+            if(s.charAt(idx)!='<')
+                throw new IllegalArgumentException();
+            idx++;
+
+            List<JClass> args = new ArrayList<JClass>();
+
+            while(true) {
+                args.add(parseTypeName());
+                if(idx==s.length())
+                    throw new IllegalArgumentException("Missing '>' in "+s);
+                char ch = s.charAt(idx);
+                if(ch=='>')
+                    return rawType.narrow(args.toArray(new JClass[args.size()]));
+
+                if(ch!=',')
+                    throw new IllegalArgumentException(s);
+                idx++;
+            }
+
+        }
     }
 
     /**
