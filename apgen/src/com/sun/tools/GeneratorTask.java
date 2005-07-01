@@ -121,11 +121,12 @@ public class GeneratorTask extends Task {
         }
 
         // [RESULT]
-        // public Class annotationType() {
+        // public Class<XmlAttribute> annotationType() {
         //     return XmlAttribute.class;
         // }
         {
-            JMethod m = c.method(JMod.PUBLIC,Class.class,"annotationType");
+            JMethod m = c.method(JMod.PUBLIC,
+                codeModel.ref(Class.class).narrow(ann),"annotationType");
             m.body()._return(codeModel.ref(ann).dotclass());
         }
 

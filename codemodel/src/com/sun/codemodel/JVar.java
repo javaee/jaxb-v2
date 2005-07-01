@@ -98,7 +98,7 @@ public class JVar extends JExpressionImpl implements JDeclaration, JAssignmentTa
      */
     public JAnnotationUse annotate(JClass clazz){
         if(annotations==null)
-           annotations = new ArrayList();
+           annotations = new ArrayList<JAnnotationUse>();
         JAnnotationUse a = new JAnnotationUse(clazz);
         annotations.add(a);
         return a;

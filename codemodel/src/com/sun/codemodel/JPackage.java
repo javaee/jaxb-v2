@@ -57,7 +57,7 @@ public final class JPackage implements JDeclaration, JGenerable, JClassContainer
      * This field is non-null only on Windows, to detect
      * "Foo" and "foo" as a collision. 
      */
-    private final Map upperCaseClassMap;
+    private final Map<String,JDefinedClass> upperCaseClassMap;
 
     /**
      * Lazily created list of package annotations.
@@ -110,7 +110,7 @@ public final class JPackage implements JDeclaration, JGenerable, JClassContainer
         if(JCodeModel.isCaseSensitiveFileSystem)
             upperCaseClassMap = null;
         else
-            upperCaseClassMap = new HashMap();
+            upperCaseClassMap = new HashMap<String,JDefinedClass>();
         
         this.name = name;
     }
@@ -168,7 +168,7 @@ public final class JPackage implements JDeclaration, JGenerable, JClassContainer
             JDefinedClass c = new JDefinedClass(this, mods, name, classTypeVal);
             
             if( upperCaseClassMap!=null ) {
-                JDefinedClass dc = (JDefinedClass)upperCaseClassMap.get(name.toUpperCase());
+                JDefinedClass dc = upperCaseClassMap.get(name.toUpperCase());
                 if(dc!=null)
                     throw new JClassAlreadyExistsException(dc);
                 upperCaseClassMap.put(name.toUpperCase(),c);

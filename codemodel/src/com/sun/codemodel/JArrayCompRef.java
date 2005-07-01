@@ -6,18 +6,18 @@
 package com.sun.codemodel;
 
 /**
- * JArray component reference
+ * array component reference.
  */
-public class JArrayCompRef extends JExpressionImpl implements JAssignmentTarget {
+final class JArrayCompRef extends JExpressionImpl implements JAssignmentTarget {
     /**
      * JArray expression upon which this component will be accessed.
      */
-    private JExpression array;
+    private final JExpression array;
 
     /**
      * Integer expression representing index of the component
      */
-    private JExpression index;
+    private final JExpression index;
 
     /**
      * JArray component reference constructor given an array expression

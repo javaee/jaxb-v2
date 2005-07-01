@@ -9,10 +9,9 @@ package com.sun.codemodel;
 /**
  * JAtoms: Simple code components that merely generate themselves.
  */
-
-class JAtom extends JExpressionImpl {
+final class JAtom extends JExpressionImpl {
     
-    String what;
+    private final String what;
     
     JAtom(String what) {
         this.what = what;

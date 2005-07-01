@@ -15,9 +15,10 @@ import java.util.List;
 public final class JBlock implements JGenerable, JStatement {
 
     /**
-     * Declarations and statements contained in this block
+     * Declarations and statements contained in this block.
+     * Either {@link JStatement} or {@link JVar}.
      */
-    private final List content = new ArrayList();
+    private final List<Object> content = new ArrayList<Object>();
 
     /**
      * Whether or not this block must be braced and indented

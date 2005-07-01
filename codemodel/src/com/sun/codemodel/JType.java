@@ -7,8 +7,10 @@ package com.sun.codemodel;
 
 
 /**
- * JType constants and type factories.
- * 
+ * A representation of a type in codeModel.
+ *
+ * A type is always either primitive ({@link JPrimitiveType}) or
+ * a reference type ({@link JClass}).
  */
 public abstract class JType implements JGenerable, Comparable {
 
@@ -42,7 +44,7 @@ public abstract class JType implements JGenerable, Comparable {
     public abstract JCodeModel owner();
     
     /**
-     * Gets the full name of the type
+     * Gets the full name of the type.
      */
     public abstract String fullName();
 

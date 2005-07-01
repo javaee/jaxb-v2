@@ -7,7 +7,7 @@ package com.sun.codemodel;
 
 
 /**
- * Factory methods that generate various expressions.
+ * Factory methods that generate various {@link JExpression}s.
  */
 public abstract class JExpr {
 

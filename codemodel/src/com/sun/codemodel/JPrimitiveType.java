@@ -8,6 +8,9 @@ package com.sun.codemodel;
 
 /**
  * Java built-in primitive types.
+ *
+ * Instances of this class can be obtained as constants of {@link JCodeModel},
+ * such as {@link JCodeModel#BOOLEAN}.
  */
 public final class JPrimitiveType extends JType {
 

@@ -9,8 +9,7 @@ package com.sun.codemodel;
 /**
  * JBreak statement
  */
-
-class JBreak implements JStatement {
+final class JBreak implements JStatement {
     
     private final JLabel label;
     

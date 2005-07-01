@@ -7,17 +7,25 @@ package com.sun.codemodel;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.LinkedHashMap;
 
 /**
- * A generated Java class.
+ * A generated Java class/interface/enum/....
+ *
+ * <p>
+ * This class models a declaration, and since a declaration can be always
+ * used as a reference, it inherits {@link JClass}.
+ *
+ * <h2>Where to go from here?</h2>
+ * <p>
+ * You'd want to generate fields and methods on a class.
+ * See {@link #method(int, JType, String)} and {@link #field(int, JType, String)}.
  */
 public class JDefinedClass
     extends JClass
@@ -685,7 +693,6 @@ public class JDefinedClass
             f.nl().i().p("extends").g(superClass).nl().o();
 
         if (!interfaces.isEmpty()) {
-            boolean first = true;
             if (superClass == null)
                 f.nl();
             f.i().p(classType.equals(ClassType.INTERFACE) ? "extends" : "implements");
@@ -789,7 +796,7 @@ public class JDefinedClass
       */
      public JAnnotationUse annotate(JClass clazz){
         if(annotations==null)
-           annotations = new ArrayList();
+           annotations = new ArrayList<JAnnotationUse>();
         JAnnotationUse a = new JAnnotationUse(clazz);
         annotations.add(a);
         return a;

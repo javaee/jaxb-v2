@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JGenerifiableImpl.java,v 1.1 2005-04-15 20:02:51 kohsuke Exp $
+ * @(#)$Id: JGenerifiableImpl.java,v 1.2 2005-07-01 18:24:43 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -21,7 +21,7 @@ import java.util.List;
 abstract class JGenerifiableImpl implements JGenerifiable, JDeclaration {
     
     /** Lazily created list of {@link JTypeVar}s. */
-    private List typeVariables = null;
+    private List<JTypeVar> typeVariables = null;
     
     protected abstract JCodeModel owner();
     
@@ -29,9 +29,8 @@ abstract class JGenerifiableImpl implements JGenerifiable, JDeclaration {
         if(typeVariables!=null) {
             f.p('<');
             for (int i = 0; i < typeVariables.size(); i++) {
-                JTypeVar v = (JTypeVar)typeVariables.get(i);
                 if(i!=0)    f.p(',');
-                f.d(v);
+                f.d(typeVariables.get(i));
             }
             f.p('>');
         }
@@ -41,7 +40,7 @@ abstract class JGenerifiableImpl implements JGenerifiable, JDeclaration {
     public JTypeVar generify(String name) {
         JTypeVar v = new JTypeVar(owner(),name);
         if(typeVariables==null)
-            typeVariables = new ArrayList(3);
+            typeVariables = new ArrayList<JTypeVar>(3);
         typeVariables.add(v);
         return v;
     }
@@ -58,7 +57,7 @@ abstract class JGenerifiableImpl implements JGenerifiable, JDeclaration {
         if(typeVariables==null)
             return JTypeVar.EMPTY_ARRAY;
         else
-            return (JTypeVar[]) typeVariables.toArray(new JTypeVar[typeVariables.size()]);
+            return typeVariables.toArray(new JTypeVar[typeVariables.size()]);
     }
 
 }

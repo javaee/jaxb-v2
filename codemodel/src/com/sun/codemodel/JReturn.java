@@ -7,9 +7,8 @@ package com.sun.codemodel;
 
 
 /**
- * JReturn statement
+ * A return statement
  */
-
 class JReturn implements JStatement {
 
     /**

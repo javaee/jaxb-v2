@@ -20,11 +20,45 @@ import com.sun.codemodel.writer.ProgressCodeWriter;
 
 /**
  * Root of the code DOM.
+ *
+ * <p>
+ * Here's your typical CodeModel application.
+ *
+ * <pre>
+ * JCodeModel cm = new JCodeModel();
+ *
+ * // generate source code by populating the 'cm' tree.
+ * cm._class(...);
+ * ...
+ *
+ * // write them out
+ * cm.build(new File("."));
+ * </pre>
+ *
+ * <p>
+ * Every CodeModel node is always owned by one {@link JCodeModel} object
+ * at any given time (which can be often accesesd by the <tt>owner()</tt> method.)
+ *
+ * As such, when you generate Java code, most of the operation works
+ * in a top-down fashion. For example, you create a class from {@link JCodeModel},
+ * which gives you a {@link JDefinedClass}. Then you invoke a method on it
+ * to generate a new method, which gives you {@link JMethod}, and so on.
+ *
+ * There are a few exceptions to this, most notably building {@link JExpression}s,
+ * but generally you work with CodeModel in a top-down fashion.
+ *
+ * Because of this design, most of the CodeModel classes aren't directly instanciable.
+ *
+ *
+ * <h2>Where to go from here?</h2>
+ * <p>
+ * Most of the time you'd want to populate new type definitions in a {@link JCodeModel}.
+ * See {@link #_class(String, ClassType)}.
  */
 public final class JCodeModel {
     
     /** The packages that this JCodeWriter contains. */
-    private HashMap packages = new HashMap();
+    private HashMap<String,JPackage> packages = new HashMap<String,JPackage>();
     
     /** All JReferencedClasses are pooled here. */
     private final HashMap refClasses = new HashMap();
@@ -73,7 +107,7 @@ public final class JCodeModel {
      * @return Newly generated package
      */
     public JPackage _package(String name) {
-        JPackage p = (JPackage)(packages.get(name));
+        JPackage p = packages.get(name);
         if (p == null) {
             p = new JPackage(name, this);
             packages.put(name, p);
@@ -212,7 +246,7 @@ public final class JCodeModel {
      * Generates Java source code.
      */
     public void build( CodeWriter source, CodeWriter resource ) throws IOException {
-        JPackage[] pkgs = (JPackage[])packages.values().toArray(new JPackage[packages.size()]);
+        JPackage[] pkgs = packages.values().toArray(new JPackage[packages.size()]);
         // avoid concurrent modification exception
         for( JPackage pkg : pkgs )
             pkg.build(source,resource);
