@@ -156,6 +156,7 @@ public final class JCodeModel {
      * 
      * @return null
      *      If the class is not yet created.
+     * @see JPackage#_getClass(String) 
      */
     public JDefinedClass _getClass(String fullyQualifiedName) {
         int idx = fullyQualifiedName.lastIndexOf('.');
