@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: SchemaWriter.java,v 1.1 2005-04-14 22:06:33 kohsuke Exp $
+ * @(#)$Id: SchemaWriter.java,v 1.2 2005-07-09 17:24:50 kirillcool Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -46,7 +46,7 @@ import com.sun.xml.xsom.visitor.XSVisitor;
  * Generates approximated XML Schema representation from
  * a schema component. This is not intended to be a fully-fledged
  * round-trippable schema writer.
- * 
+ *
  * <h2>Usage of this class</h2>
  * <ol>
  *  <li>Create a new instance with whatever Writer
@@ -54,35 +54,38 @@ import com.sun.xml.xsom.visitor.XSVisitor;
  *  <li>Call one of the overloaded dump methods.
  *      You can repeat this process as many times as you want.
  * </ol>
- * 
+ *
  * @author Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
+ * @author Kirill Grouchnikov (kirillcool@yahoo.com)
  */
 public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
     public SchemaWriter( Writer _out ) {
         this.out=_out;
     }
-    
+
     /** output is sent to this object. */
     private final Writer out;
-    
+
     /** indentation. */
     private int indent;
-    
+
     private void println(String s) {
         try {
             for( int i=0; i<indent; i++)    out.write("  ");
             out.write(s);
             out.write('\n');
+            // flush stream to make the output appear immediately
+            out.flush();
         } catch( IOException e ) {
             // ignore IOException.
             hadError = true;
         }
     }
     private void println() { println(""); }
-    
+
     /** If IOException is encountered, this flag is set to true. */
     private boolean hadError =false;
-    
+
     /** Flush the stream and check its error state. */
     public boolean checkError() {
         try {
@@ -92,12 +95,12 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
         }
         return hadError;
     }
-    
+
     /** Prints UName. */
     private String toString( UName name ) {
         return '{'+name.getNamespaceURI()+'}'+name.getName();
     }
-    
+
     public void visit( XSSchemaSet s ) {
         Iterator itr =  s.iterateSchema();
         while(itr.hasNext()) {
@@ -105,52 +108,52 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
             println();
         }
     }
-    
+
     public void schema( XSSchema s ) {
-        
+
         // QUICK HACK: don't print the built-in components
         if(s.getTargetNamespace().equals(Const.schemaNamespace))
             return;
-        
+
         println(MessageFormat.format("<schema targetNamespace=\"{0}\">",
             new Object[]{
                 s.getTargetNamespace(),
             }));
         indent++;
-        
+
         Iterator itr;
-        
+
         itr = s.iterateAttGroupDecls();
         while(itr.hasNext())
             attGroupDecl( (XSAttGroupDecl)itr.next() );
-        
+
         itr = s.iterateAttributeDecls();
         while(itr.hasNext())
             attributeDecl( (XSAttributeDecl)itr.next() );
-        
+
         itr = s.iterateComplexTypes();
         while(itr.hasNext())
             complexType( (XSComplexType)itr.next() );
-        
+
         itr = s.iterateElementDecls();
         while(itr.hasNext())
             elementDecl( (XSElementDecl)itr.next() );
-        
+
         itr = s.iterateModelGroupDecls();
         while(itr.hasNext())
             modelGroupDecl( (XSModelGroupDecl)itr.next() );
-        
+
         itr = s.iterateSimpleTypes();
         while(itr.hasNext())
             simpleType( (XSSimpleType)itr.next() );
-            
-        indent--;    
+
+        indent--;
         println("</schema>");
     }
-    
+
     public void attGroupDecl( XSAttGroupDecl decl ) {
         Iterator itr;
-        
+
         println(MessageFormat.format("<attGroup name=\"{0}\">",
             new Object[]{ decl.getName() }));
         indent++;
@@ -164,28 +167,28 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
         itr = decl.iterateDeclaredAttributeUses();
         while(itr.hasNext())
             attributeUse( (XSAttributeUse)itr.next() );
-        
+
         indent--;
         println("</attGroup>");
     }
-    
+
     public void dumpRef( XSAttGroupDecl decl ) {
         println(MessageFormat.format("<attGroup ref=\"'{'{0}'}'{1}\"/>",
             new Object[]{ decl.getTargetNamespace(), decl.getName() }));
     }
-    
+
     public void attributeUse( XSAttributeUse use ) {
         XSAttributeDecl decl = use.getDecl();
-        
+
         String additionalAtts="";
-        
+
         if(use.isRequired())
             additionalAtts += " use=\"required\"";
         if(use.getFixedValue()!=null && use.getDecl().getFixedValue()==null)
             additionalAtts += " fixed=\""+use.getFixedValue()+"\"";
         if(use.getDefaultValue()!=null && use.getDecl().getDefaultValue()==null)
             additionalAtts += " default=\""+use.getDefaultValue()+"\"";
-        
+
         if(decl.isLocal()) {
             // this is anonymous attribute use
             dump(decl,additionalAtts);
@@ -196,14 +199,14 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
                     additionalAtts }));
         }
     }
-    
+
     public void attributeDecl( XSAttributeDecl decl ) {
         dump(decl,"");
     }
-    
+
     private void dump( XSAttributeDecl decl, String additionalAtts ) {
         XSSimpleType type=decl.getType();
-        
+
         println(MessageFormat.format("<attribute name=\"{0}\"{1}{2}{3}{4}{5}>",
             new Object[]{
                 decl.getName(),
@@ -220,7 +223,7 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
                     "":" default=\""+decl.getDefaultValue()+"\"",
                 type.isLocal()?"":" /"
             }));
-        
+
         if(type.isLocal()) {
             indent++;
             simpleType(type);
@@ -228,23 +231,23 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
             println("</attribute>");
         }
     }
-    
+
     public void simpleType( XSSimpleType type ) {
         println(MessageFormat.format("<simpleType{0}>",
             new Object[]{
                 type.isLocal()?"":" name=\""+type.getName()+"\""
             }));
         indent++;
-        
+
         type.visit((XSSimpleTypeVisitor)this);
-        
+
         indent--;
         println("</simpleType>");
     }
-    
+
     public void listSimpleType( XSListSimpleType type ) {
         XSSimpleType itemType = type.getItemType();
-        
+
         if(itemType.isLocal()) {
             println("<list>");
             indent++;
@@ -260,18 +263,18 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
                 }));
         }
     }
-    
+
     public void unionSimpleType( XSUnionSimpleType type ) {
         final int len = type.getMemberSize();
         StringBuffer ref = new StringBuffer();
-        
+
         for( int i=0; i<len; i++ ) {
             XSSimpleType member = type.getMember(i);
             if(member.isGlobal())
                 ref.append(MessageFormat.format(" '{'{0}'}'{1}",
                     new Object[]{member.getTargetNamespace(),member.getName()}));
         }
-        
+
         if(ref.length()==0)
             println("<union>");
         else
@@ -282,13 +285,13 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
             XSSimpleType member = type.getMember(i);
             if(member.isLocal())
                 simpleType(member);
-        }         
+        }
         indent--;
         println("</union>");
     }
-    
+
     public void restrictionSimpleType( XSRestrictionSimpleType type ) {
-        
+
         if(type.getBaseType()==null) {
             // don't print anySimpleType
             if(!type.getName().equals("anySimpleType"))
@@ -297,9 +300,9 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
                 throw new InternalError();
             return;
         }
-        
+
         XSSimpleType baseType = type.getSimpleBaseType();
-        
+
         println(MessageFormat.format("<restriction{0}>",
             new Object[]{
                 baseType.isLocal()?"":" base=\"{"+
@@ -307,25 +310,25 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
                 baseType.getName()+"\""
             }));
         indent++;
-        
+
         if(baseType.isLocal())
             simpleType(baseType);
-        
+
         Iterator itr = type.iterateDeclaredFacets();
         while(itr.hasNext())
             facet( (XSFacet)itr.next() );
-        
+
         indent--;
         println("</restriction>");
     }
-    
+
     public void facet( XSFacet facet ) {
         println(MessageFormat.format("<{0} value=\"{1}\"/>",
             new Object[]{
                 facet.getName(), facet.getValue(),
             }));
     }
-    
+
     public void notation( XSNotation notation ) {
         println(MessageFormat.format("<notation name='\"0}\" public =\"{1}\" system=\"{2}\" />",
             new Object[] {
@@ -333,9 +336,9 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
                 notation.getPublicId(),
                 notation.getSystemId() } ));
     }
-    
-    
-    
+
+
+
     public void complexType( XSComplexType type ) {
         println(MessageFormat.format("<complexType{0}>",
             new Object[]{
@@ -349,9 +352,9 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
             // simple content
             println("<simpleContent>");
             indent++;
-            
+
             XSType baseType = type.getBaseType();
-            
+
             if(type.getDerivationMethod()==XSType.RESTRICTION) {
                 // restriction
                 println(MessageFormat.format("<restriction base=\"<{0}>{1}\">",
@@ -359,9 +362,9 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
                         baseType.getTargetNamespace(),
                         baseType.getName() }));
                 indent++;
-                
+
                 dumpComplexTypeAttribute(type);
-                
+
                 indent--;
                 println("</restriction>");
             } else {
@@ -370,23 +373,37 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
                     new Object[]{
                         baseType.getTargetNamespace(),
                         baseType.getName() }));
+
+                // check if have redefine tag - Kirill
+                if ((type.getTargetNamespace().compareTo(baseType.getTargetNamespace()) == 0)
+                        &&
+                        (type.getName().compareTo(baseType.getName()) == 0)) {
+                    indent++;
+                    println("<redefine>");
+                    indent++;
+                    baseType.visit(this);
+                    indent--;
+                    println("</redefine>");
+                    indent--;
+                }
+
                 indent++;
-                
+
                 dumpComplexTypeAttribute(type);
-                
+
                 indent--;
                 println("</extension>");
             }
-            
+
             indent--;
             println("</simpleContent>");
         } else {
             // complex content
             println("<complexContent>");
             indent++;
-            
+
             XSComplexType baseType = type.getBaseType().asComplexType();
-            
+
             if(type.getDerivationMethod()==XSType.RESTRICTION) {
                 // restriction
                 println(MessageFormat.format("<restriction base=\"'{'{0}'}'{1}\">",
@@ -394,10 +411,10 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
                         baseType.getTargetNamespace(),
                         baseType.getName() }));
                 indent++;
-                
+
                 type.getContentType().visit(this);
                 dumpComplexTypeAttribute(type);
-                
+
                 indent--;
                 println("</restriction>");
             } else {
@@ -406,15 +423,29 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
                     new Object[]{
                         baseType.getTargetNamespace(),
                         baseType.getName() }));
+
+                // check if have redefine - Kirill
+                if ((type.getTargetNamespace().compareTo(baseType.getTargetNamespace()) == 0)
+                        &&
+                        (type.getName().compareTo(baseType.getName()) == 0)) {
+                    indent++;
+                    println("<redefine>");
+                    indent++;
+                    baseType.visit(this);
+                    indent--;
+                    println("</redefine>");
+                    indent--;
+                }
+
                 indent++;
-                
+
                 type.getExplicitContent().visit(this);
                 dumpComplexTypeAttribute(type);
-                
+
                 indent--;
                 println("</extension>");
             }
-            
+
             indent--;
             println("</complexContent>");
         }
@@ -422,10 +453,10 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
         indent--;
         println("</complexType>");
     }
-    
+
     private void dumpComplexTypeAttribute( XSComplexType type ) {
         Iterator itr;
-        
+
         itr = type.iterateAttGroups();
         while(itr.hasNext())
             dumpRef( (XSAttGroupDecl)itr.next() );
@@ -434,7 +465,7 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
         while(itr.hasNext())
             attributeUse( (XSAttributeUse)itr.next() );
     }
-    
+
     public void elementDecl( XSElementDecl decl ) {
         elementDecl(decl,"");
     }
@@ -452,30 +483,30 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
                 extraAtts,
                 type.isLocal()?"":"/"
             }));
-            
+
         if(type.isLocal()) {
             indent++;
-            
+
             if(type.isLocal())  type.visit(this);
-            
+
             indent--;
             println("</element>");
         }
     }
-    
+
     public void modelGroupDecl( XSModelGroupDecl decl ) {
         println(MessageFormat.format("<group name=\"{0}\">",
             new Object[]{
                 decl.getName()
             }));
         indent++;
-        
+
         modelGroup(decl.getModelGroup());
-        
+
         indent--;
         println("</group>");
     }
-    
+
     public void modelGroup( XSModelGroup group ) {
         modelGroup(group,"");
     }
@@ -483,33 +514,33 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
         println(MessageFormat.format("<{0}{1}>",
             new Object[]{ group.getCompositor(), extraAtts }));
         indent++;
-        
+
         final int len = group.getSize();
         for( int i=0; i<len; i++ )
             particle(group.getChild(i));
-        
+
         indent--;
         println(MessageFormat.format("</{0}>",
             new Object[]{ group.getCompositor() }));
     }
-    
+
     public void particle( XSParticle part ) {
         int i;
-        
+
         StringBuffer buf = new StringBuffer();
-        
+
         i = part.getMaxOccurs();
         if(i==XSParticle.UNBOUNDED)
             buf.append(" maxOccurs=\"unbounded\"");
         else if(i!=1)
             buf.append(" maxOccurs=\""+i+"\"");
-        
+
         i = part.getMinOccurs();
         if(i!=1)
             buf.append(" minOccurs=\""+i+"\"");
-            
+
         final String extraAtts = buf.toString();
-        
+
         part.getTerm().visit(new XSTermVisitor(){
             public void elementDecl( XSElementDecl decl ) {
                 if(decl.isLocal())
@@ -541,16 +572,16 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
             }
         });
     }
-    
+
     public void wildcard( XSWildcard wc ) {
         wildcard(wc,"");
     }
-    
+
     private void wildcard( XSWildcard wc, String extraAtts ) {
         // TODO
         println(MessageFormat.format("<any/>", new Object[]{extraAtts}));
     }
-    
+
     public void annotation( XSAnnotation ann ) {
         // TODO: it would be nice even if we just put <xs:documentation>
     }
