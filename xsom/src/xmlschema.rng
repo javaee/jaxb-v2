@@ -148,7 +148,10 @@
           </group>
           
           <element name="attribute">
-            <cc:java>locator = $runtime.copyLocator();</cc:java>
+            locator = $runtime.copyLocator();
+            defaultValue = null;
+            fixedValue = null;
+            
             <optional>
               <attribute name="default" cc:alias="defaultValue"/>
             </optional>
