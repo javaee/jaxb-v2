@@ -1,0 +1,1 @@
+This module cannot be in the JAXB project proper because it defines a copy of the Locatable interface in an incompatible way.
