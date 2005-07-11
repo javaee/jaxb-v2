@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <project name="XSOM" basedir="." default="jar">
-	
-	
+
+  <!-- official builds should set this property -->
+  <property name="build.id" value="(private build)" />
+
 	<!-- check if RelaxNGCC needs to be run -->
 	<target name="ngcc-check">
 		<uptodate property="ngcc.notrequired" targetfile="src/com/sun/xml/xsom/impl/parser/state/Schema.java">
