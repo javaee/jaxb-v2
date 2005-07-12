@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: InfosetScanner.java,v 1.3 2005-05-20 20:57:19 kohsuke Exp $
+ * @(#)$Id: InfosetScanner.java,v 1.4 2005-07-12 22:39:39 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -11,7 +11,6 @@ package com.sun.xml.bind.unmarshaller;
 
 import javax.xml.bind.Binder;
 
-import javax.xml.bind.Binder;
 import com.sun.xml.bind.v2.runtime.unmarshaller.LocatorEx;
 
 import org.xml.sax.Attributes;
