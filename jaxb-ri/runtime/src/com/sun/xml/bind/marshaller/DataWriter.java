@@ -85,7 +85,9 @@ public class DataWriter extends XMLWriter
      *
      * @param writer The character stream where the XML document
      *        will be written.
-     * @param encoding      *      If non-null string is specified, it is written as a part     *      of the XML declaration.
+     * @param encoding 
+     *      If non-null string is specified, it is written as a part
+     *      of the XML declaration.
      */
     public DataWriter ( Writer writer, String encoding, CharacterEscapeHandler _escapeHandler )
     {
@@ -325,7 +327,7 @@ public class DataWriter extends XMLWriter
     ////////////////////////////////////////////////////////////////////
 
     private Object state = SEEN_NOTHING;
-    private Stack stateStack = new Stack();
+    private Stack<Object> stateStack = new Stack<Object>();
 
     private String indentStep = "";
     private int depth = 0;
