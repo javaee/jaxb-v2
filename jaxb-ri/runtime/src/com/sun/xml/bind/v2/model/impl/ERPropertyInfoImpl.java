@@ -100,10 +100,4 @@ abstract class ERPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         }
         return new QName(uri.intern(),local.intern());
     }
-
-    @Override
-    protected void link() {
-        super.link();
-        getXmlName();
-    }
 }
