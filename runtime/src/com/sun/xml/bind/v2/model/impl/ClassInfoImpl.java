@@ -221,6 +221,34 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             sorter.checkUnusedProperties();
         }
 
+        {// additional error checks
+            PropertyInfoImpl vp=null; // existing value property
+            PropertyInfoImpl ep=null; // existing element property
+
+            for (PropertyInfoImpl p : properties) {
+                if(p.kind()==PropertyKind.ELEMENT)
+                    ep = p;
+                if(p.kind()==PropertyKind.VALUE) {
+                    if(vp!=null) {
+                        // can't have multiple value properties.
+                        builder.reportError(new IllegalAnnotationException(
+                            Messages.MULTIPLE_VALUE_PROPERTY.format(),
+                            vp, p
+                        ));
+                    }
+                    vp = p;
+                }
+            }
+
+            if(ep!=null && vp!=null) {
+                // can't have element and value property at the same time
+                builder.reportError(new IllegalAnnotationException(
+                    Messages.ELEMENT_AND_VALUE_PROPERTY.format(),
+                    vp, ep
+                ));
+            }
+        }
+
         return properties;
     }
 

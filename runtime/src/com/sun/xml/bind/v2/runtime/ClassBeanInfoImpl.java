@@ -180,11 +180,10 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
                     propList.add(p);
                     break;
                 case VALUE:
-                    if(valueHandler!=null) {
-                        // TODO: only up to one value handler per class.
-                        // think about who should be responsible for reporting this as an error
-                        throw new UnsupportedOperationException();
-                    }
+                    if(valueHandler!=null)
+                        // only up to one value handler per class.
+                        // this error is checked by ClassInfoImpl
+                        throw new AssertionError();
                     valueHandler = p.createUnmarshallerHandler(grammar, tail);
                     break;
                 }
@@ -192,14 +191,8 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
         }
 
         Unmarshaller.Handler handler;
-        if (propList.size() > 0 ) {
-            if(valueHandler!=null) {
-                // TODO: you can't mix elements and values
-                // report errors
-                throw new UnsupportedOperationException();
-            }
+        if (propList.size() > 0 )
             handler = new ElementDispatcher(grammar,propList,tail);
-        }
 
         else
         if(valueHandler!=null)
