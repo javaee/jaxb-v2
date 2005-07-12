@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.DomHandler;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.transform.Result;
 
 import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.QNameMap;
@@ -125,7 +126,7 @@ class ArrayReferenceNodeProperty<BeanT,ListT,ItemT> extends ArrayERProperty<Bean
         return PropertyKind.REFERENCE;
     }
 
-    private final class WildcardUnmarshallerImpl extends WildcardUnmarshaller {
+    private final class WildcardUnmarshallerImpl<ResultT extends Result> extends WildcardUnmarshaller<ResultT> {
         private final int offset;
 
         WildcardUnmarshallerImpl(DomHandler domHandler, WildcardMode wcmode, Unmarshaller.Handler next, int offset) {

@@ -1,23 +1,12 @@
 package com.sun.xml.bind.v2.model.impl;
 
-import static com.sun.xml.bind.v2.model.core.ID.IDREF;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
-
-import com.sun.xml.bind.v2.model.core.ID;
-import com.sun.xml.bind.v2.model.core.PropertyInfo;
-import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimeAttributePropertyInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeNonElement;
 import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
-import com.sun.xml.bind.v2.runtime.Transducer;
-import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
-import com.sun.xml.bind.v2.runtime.reflect.Accessor;
-import com.sun.xml.bind.v2.runtime.reflect.ListTransducedAccessorImpl;
-import com.sun.xml.bind.v2.runtime.reflect.Lister;
-import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
 
 /**
  * @author Kohsuke Kawaguchi
