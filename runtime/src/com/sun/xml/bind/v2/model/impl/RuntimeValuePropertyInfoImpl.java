@@ -4,21 +4,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
-
-import javax.activation.MimeType;
-
-import com.sun.xml.bind.v2.model.core.ID;
-import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimeNonElement;
-import com.sun.xml.bind.v2.model.runtime.RuntimeValuePropertyInfo;
-import com.sun.xml.bind.v2.model.runtime.RuntimeNonElementRef;
 import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
-import com.sun.xml.bind.v2.runtime.Transducer;
-import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
-import com.sun.xml.bind.v2.runtime.reflect.Accessor;
-import com.sun.xml.bind.v2.runtime.reflect.ListTransducedAccessorImpl;
-import com.sun.xml.bind.v2.runtime.reflect.Lister;
-import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
+import com.sun.xml.bind.v2.model.runtime.RuntimeValuePropertyInfo;
 
 /**
  * @author Kohsuke Kawaguchi
