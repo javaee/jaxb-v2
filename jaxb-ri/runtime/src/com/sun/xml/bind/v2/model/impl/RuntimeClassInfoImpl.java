@@ -9,12 +9,12 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import com.sun.xml.bind.annotation.XmlLocation;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
-import com.sun.xml.bind.v2.model.nav.ReflectionNavigator;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimeClassInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElement;
@@ -26,10 +26,9 @@ import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
-import com.sun.xml.bind.annotation.XmlLocation;
 
-import org.xml.sax.SAXException;
 import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
 
 /**
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
@@ -71,6 +70,11 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
     @Override
     protected ElementPropertyInfoImpl createElementProperty(PropertySeed<Type,Class,Field,Method> seed) {
         return new RuntimeElementPropertyInfoImpl(this,seed);
+    }
+
+    @Override
+    protected MapPropertyInfoImpl createMapProperty(PropertySeed<Type,Class,Field,Method> seed) {
+        return new RuntimeMapPropertyInfoImpl(this,seed);
     }
 
 

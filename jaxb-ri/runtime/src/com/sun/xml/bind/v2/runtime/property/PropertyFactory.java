@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 import com.sun.xml.bind.v2.model.core.ID;
+import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.runtime.RuntimeAttributePropertyInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementPropertyInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeNonElement;
@@ -31,15 +32,19 @@ public abstract class PropertyFactory {
         Class<? extends Property>[] implClasses = new Class[] {
             SingleElementLeafProperty.class,
             null, // single reference leaf --- but there's no such thing as "reference leaf"
+            null, // no such thing as "map leaf"
 
             ArrayElementLeafProperty.class,
             null, // array reference leaf --- but there's no such thing as "reference leaf"
+            null, // no such thing as "map leaf"
 
             SingleElementNodeProperty.class,
             SingleReferenceNodeProperty.class,
+            SingleMapNodeProperty.class,
 
             ArrayElementNodeProperty.class,
             ArrayReferenceNodeProperty.class,
+            null, // map is always a single property (Map doesn't implement Collection)
         };
 
         propImpls = new Constructor[implClasses.length];
@@ -55,20 +60,29 @@ public abstract class PropertyFactory {
      */
     public static Property create( JAXBContextImpl grammar, RuntimePropertyInfo info ) {
 
-        if(info instanceof RuntimeAttributePropertyInfo)
+        PropertyKind kind = info.kind();
+
+        switch(kind) {
+        case ATTRIBUTE:
             return new AttributeProperty(grammar,(RuntimeAttributePropertyInfo)info);
-        if(info instanceof RuntimeValuePropertyInfo)
+        case VALUE:
             return new ValueProperty(grammar,(RuntimeValuePropertyInfo)info);
+        case ELEMENT:
+            if(((RuntimeElementPropertyInfo)info).isValueList())
+                return new ListElementProperty(grammar,(RuntimeElementPropertyInfo) info);
+            break;
+        case REFERENCE:
+        case MAP:
+            break;
+        default:
+            assert false;
+        }
 
-        boolean isElement = info instanceof RuntimeElementPropertyInfo;
-
-        if(isElement && ((RuntimeElementPropertyInfo)info).isValueList())
-            return new ListElementProperty(grammar,(RuntimeElementPropertyInfo) info);
 
         boolean isCollection = info.isCollection();
         boolean isLeaf = isLeaf(info);
 
-        Constructor<? extends Property> c = propImpls[(isLeaf?0:4)+(isCollection?2:0)+(isElement?0:1)];
+        Constructor<? extends Property> c = propImpls[(isLeaf?0:6)+(isCollection?3:0)+kind.propertyIndex];
         try {
             return c.newInstance( grammar, info );
         } catch (InstantiationException e) {
