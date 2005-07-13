@@ -14,6 +14,7 @@ import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementPropertyInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfo;
+import com.sun.xml.bind.v2.model.runtime.RuntimeTypeRef;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 import com.sun.xml.bind.v2.runtime.Name;
@@ -42,8 +43,8 @@ final class SingleElementNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT> 
      */
     private final Name nullTagName;
 
-    public SingleElementNodeProperty(JAXBContextImpl grammar, RuntimeElementPropertyInfo prop) {
-        super(grammar,prop);
+    public SingleElementNodeProperty(JAXBContextImpl context, RuntimeElementPropertyInfo prop) {
+        super(context,prop);
         acc = prop.getAccessor().optimize();
         this.prop = prop;
 
@@ -54,15 +55,15 @@ final class SingleElementNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT> 
         for( int i=0; i<acceptedElements.length; i++ )
             acceptedElements[i] = prop.getTypes().get(i).getTagName();
 
-        for (TypeRef<Type,Class> e : prop.getTypes()) {
-            JaxBeanInfo beanInfo = grammar.getOrCreate((RuntimeTypeInfo) e.getTarget());
+        for (RuntimeTypeRef e : prop.getTypes()) {
+            JaxBeanInfo beanInfo = context.getOrCreate(e.getTarget());
             if(nt==null)    nt = e.getTagName();
             typeNames.put( beanInfo.jaxbType, new TagAndType(
-                grammar.nameBuilder.createElementName(e.getTagName()),beanInfo) );
+                context.nameBuilder.createElementName(e.getTagName()),beanInfo) );
             nil |= e.isNillable();
         }
 
-        nullTagName = grammar.nameBuilder.createElementName(nt);
+        nullTagName = context.nameBuilder.createElementName(nt);
 
         nillable = nil;
     }

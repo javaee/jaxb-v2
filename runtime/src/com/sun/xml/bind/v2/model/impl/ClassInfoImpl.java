@@ -6,12 +6,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.HashSet;
 
 import javax.xml.bind.annotation.AccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -41,7 +41,6 @@ import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
 import com.sun.xml.bind.v2.model.core.Element;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
-import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
@@ -226,9 +225,13 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             PropertyInfoImpl ep=null; // existing element property
 
             for (PropertyInfoImpl p : properties) {
-                if(p.kind()==PropertyKind.ELEMENT)
+                switch(p.kind()) {
+                case ELEMENT:
+                case REFERENCE:
+                case MAP:
                     ep = p;
-                if(p.kind()==PropertyKind.VALUE) {
+                    break;
+                case VALUE:
                     if(vp!=null) {
                         // can't have multiple value properties.
                         builder.reportError(new IllegalAnnotationException(
@@ -237,6 +240,11 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
                         ));
                     }
                     vp = p;
+                    break;
+                case ATTRIBUTE:
+                    break;  // noop
+                default:
+                    assert false;
                 }
             }
 
@@ -329,7 +337,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             Integer i = get(p.getName());
             if(i==null) {
                 // missing
-                if((p.kind()==PropertyKind.ELEMENT || p.kind()==PropertyKind.REFERENCE))
+                if((p.kind().isOrdered))
                     builder.reportError(new IllegalAnnotationException(
                         Messages.PROPERTY_MISSING_FROM_ORDER.format(p.getName()),p));
 
@@ -462,8 +470,6 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
                 return;
             }
 
-            //if no annotation present defaults to Element
-            // if XMLElement annotation present also then Kind is Kind.ELEMENT
             if(v!=null) {
                 properties.add(createValueProperty(seed));
             } else
@@ -472,8 +478,16 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             } else
             if(r1!=null || r2!=null || xae!=null) {
                 properties.add(createReferenceProperty(seed));
-            } else
-                properties.add(createElementProperty(seed));
+            } else {
+                // either an element property or a map property.
+                // sniff the signature and then decide.
+                // UGLY: the presence of XmlJavaTypeAdapter makes it an element property. ARGH.
+                if(nav().isSubClassOf( seed.getRawType(), nav().ref(Map.class) )
+                && !seed.hasAnnotation(XmlJavaTypeAdapter.class))
+                    properties.add(createMapProperty(seed));
+                else
+                    properties.add(createElementProperty(seed));
+            }
         } catch( ConflictException x ) {
             // report a conflicting annotation
             List<Annotation> err = x.annotations;
@@ -502,6 +516,10 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     protected ElementPropertyInfoImpl<TypeT, ClassDeclT, FieldT, MethodT> createElementProperty(PropertySeed<TypeT, ClassDeclT, FieldT, MethodT> seed) {
         return new ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>(this,seed);
+    }
+
+    protected MapPropertyInfoImpl<TypeT, ClassDeclT, FieldT, MethodT> createMapProperty(PropertySeed<TypeT, ClassDeclT, FieldT, MethodT> seed) {
+        return new MapPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>(this,seed);
     }
 
 

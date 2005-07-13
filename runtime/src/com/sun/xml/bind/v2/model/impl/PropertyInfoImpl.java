@@ -1,12 +1,17 @@
 package com.sun.xml.bind.v2.model.impl;
 
 import java.util.Collection;
+import java.beans.Introspector;
 
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlMimeType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlSchema;
+import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
@@ -18,6 +23,7 @@ import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
+import com.sun.xml.bind.v2.TODO;
 
 /**
  * Default partial implementation for {@link PropertyInfo}.
@@ -168,5 +174,60 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     public Location getLocation() {
         return seed.getLocation();
+    }
+
+
+//
+//
+// convenience methods for derived classes
+//
+//
+
+
+    /**
+     * Computes the tag name from a {@link XmlElement} by taking the defaulting into account.
+     */
+    protected final QName calcXmlName(XmlElement e) {
+        if(e!=null)
+            return calcXmlName(e.namespace(),e.name());
+        else
+            return calcXmlName("##default","##default");
+    }
+
+    /**
+     * Computes the tag name from a {@link XmlElementWrapper} by taking the defaulting into account.
+     */
+    protected final QName calcXmlName(XmlElementWrapper e) {
+        if(e!=null)
+            return calcXmlName(e.namespace(),e.name());
+        else
+            return calcXmlName("##default","##default");
+    }
+
+    private final QName calcXmlName(String uri,String local) {
+        // compute the default
+        TODO.checkSpec();
+        if(local.length()==0 || local.equals("##default"))
+            local = Introspector.decapitalize(getName());
+        if(uri.equals("##default")) {
+            XmlSchema xs = reader().getPackageAnnotation( XmlSchema.class, parent.getClazz(), this );
+            // JAX-RPC doesn't want the default namespace URI swapping to take effect to
+            // local "unqualified" elements. UGLY.
+            if(xs!=null) {
+                switch(xs.elementFormDefault()) {
+                case QUALIFIED:
+                    uri = parent.getTypeName().getNamespaceURI();
+                    if(uri.length()==0)
+                        uri = parent.builder.defaultNsUri;
+                    break;
+                case UNQUALIFIED:
+                case UNSET:
+                    uri = "";
+                }
+            } else {
+                uri = "";
+            }
+        }
+        return new QName(uri.intern(),local.intern());
     }
 }

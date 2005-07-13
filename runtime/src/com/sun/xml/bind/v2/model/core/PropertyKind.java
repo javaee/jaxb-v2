@@ -1,6 +1,9 @@
 package com.sun.xml.bind.v2.model.core;
 
 import javax.xml.bind.annotation.XmlMimeType;
+import javax.xml.bind.annotation.XmlType;
+
+import com.sun.xml.bind.v2.runtime.property.PropertyFactory;
 
 
 /**
@@ -12,11 +15,11 @@ import javax.xml.bind.annotation.XmlMimeType;
  * @author Bhakti Mehta (bhakti.mehta@sun.com)
  */
 public enum PropertyKind {
-    VALUE(true),
-    ATTRIBUTE(false),
-    ELEMENT(true),
-    REFERENCE(false)
-
+    VALUE(true,false,Integer.MAX_VALUE),
+    ATTRIBUTE(false,false,Integer.MAX_VALUE),
+    ELEMENT(true,true,0),
+    REFERENCE(false,true,1),
+    MAP(false,true,2),
     ;
 
     /**
@@ -24,7 +27,20 @@ public enum PropertyKind {
      */
     public final boolean canHaveXmlMimeType;
 
-    PropertyKind(boolean canHaveExpectedContentType) {
+    /**
+     * This kind of properties need to show up in {@link XmlType#propOrder()}.
+     */
+    public final boolean isOrdered;
+
+    /**
+     * {@link PropertyFactory} benefits from having index numbers assigned to
+     * {@link #ELEMENT}, {@link REFERENCE}, and {@link MAP} in this order.
+     */
+    public final int propertyIndex;
+
+    PropertyKind(boolean canHaveExpectedContentType, boolean isOrdered, int propertyIndex) {
         this.canHaveXmlMimeType = canHaveExpectedContentType;
+        this.isOrdered = isOrdered;
+        this.propertyIndex = propertyIndex;
     }
 }
