@@ -70,11 +70,6 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
         return PropertyKind.MAP;
     }
 
-    public Unmarshaller.Handler createUnmarshallerHandler(JAXBContextImpl grammar, Unmarshaller.Handler tail) {
-        // TODO
-        throw new UnsupportedOperationException();
-    }
-
     public void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<Unmarshaller.Handler> handlers) {
         // TODO
         throw new UnsupportedOperationException();
@@ -88,14 +83,18 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
                 w.startElement(entryTag,null);
 
                 Object key = e.getKey();
-                w.startElement(keyTag,key);
-                w.childAsXsiType(key,fieldName,keyBeanInfo);
-                w.endElement();
+                if(key!=null) {
+                    w.startElement(keyTag,key);
+                    w.childAsXsiType(key,fieldName,keyBeanInfo);
+                    w.endElement();
+                }
 
                 Object value = e.getValue();
-                w.startElement(valueTag,value);
-                w.childAsXsiType(value,fieldName,valueBeanInfo);
-                w.endElement();
+                if(value!=null) {
+                    w.startElement(valueTag,value);
+                    w.childAsXsiType(value,fieldName,valueBeanInfo);
+                    w.endElement();
+                }
 
                 w.endElement();
             }

@@ -7,10 +7,9 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
-import com.sun.xml.bind.v2.model.core.PropertyKind;
-import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.model.core.ID;
-import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
+import com.sun.xml.bind.v2.model.core.PropertyInfo;
+import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
@@ -57,16 +56,16 @@ public interface Property<BeanT> extends ChildElementUnmarshallerBuilder {
      */
     public void serializeURIs(BeanT beanT, XMLSerializer target) throws SAXException, AccessorException;
 
-    /**
-     * Builds the unmarshaller.
-     *
-     * @param grammar
-     *      the context object to which this property ultimately belongs to.
-     *      a property will only belong to one grammar, but to reduce the memory footprint
-     *      we don't keep that information stored in {@link Property}, and instead we
-     *      just pass the value as a parameter when needed.
-     */
-    Unmarshaller.Handler createUnmarshallerHandler(JAXBContextImpl grammar, Unmarshaller.Handler tail);
+//    /**
+//     * Builds the unmarshaller.
+//     *
+//     * @param grammar
+//     *      the context object to which this property ultimately belongs to.
+//     *      a property will only belong to one grammar, but to reduce the memory footprint
+//     *      we don't keep that information stored in {@link Property}, and instead we
+//     *      just pass the value as a parameter when needed.
+//     */
+//    Unmarshaller.Handler createUnmarshallerHandler(JAXBContextImpl grammar, Unmarshaller.Handler tail);
 
     /**
      * Gets the value of the property.

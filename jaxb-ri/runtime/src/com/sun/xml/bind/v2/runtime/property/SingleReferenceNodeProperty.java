@@ -77,11 +77,6 @@ final class SingleReferenceNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT
         }
     }
 
-    public Unmarshaller.Handler createUnmarshallerHandler(JAXBContextImpl grammar, Unmarshaller.Handler tail) {
-        Unmarshaller.Handler h = new WildcardUnmarshallerImpl(domHandler,wcMode,tail);
-        return createUnmarshaller(h,tail);
-    }
-
     private Unmarshaller.Handler createUnmarshaller( Unmarshaller.Handler fallthrough,Unmarshaller.Handler next ) {
         return new Unmarshaller.ForkHandler(fallthrough,next) {
             public void enterElement(UnmarshallingContext context, EventArg arg) throws SAXException {

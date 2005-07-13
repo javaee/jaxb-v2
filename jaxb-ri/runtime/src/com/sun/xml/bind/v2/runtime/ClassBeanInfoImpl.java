@@ -23,6 +23,7 @@ import com.sun.xml.bind.v2.runtime.property.ElementDispatcher;
 import com.sun.xml.bind.v2.runtime.property.Property;
 import com.sun.xml.bind.v2.runtime.property.PropertyFactory;
 import com.sun.xml.bind.v2.runtime.property.Unmarshaller;
+import com.sun.xml.bind.v2.runtime.property.ValueProperty;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingEventHandler;
@@ -184,7 +185,7 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
                         // only up to one value handler per class.
                         // this error is checked by ClassInfoImpl
                         throw new AssertionError();
-                    valueHandler = p.createUnmarshallerHandler(grammar, tail);
+                    valueHandler = ((ValueProperty)p).createUnmarshallerHandler(grammar, tail);
                     break;
                 }
             }
