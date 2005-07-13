@@ -46,7 +46,7 @@ abstract class ArrayERProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,Li
         this.isWrapperNillable = isWrapperNillable;
     }
 
-    public final Unmarshaller.Handler createUnmarshallerHandler(JAXBContextImpl grammar, Unmarshaller.Handler tail) {
+    private Unmarshaller.Handler createUnmarshallerHandler(JAXBContextImpl grammar, Unmarshaller.Handler tail) {
         final Unmarshaller.Handler end = tail;
 
         // handle </items>

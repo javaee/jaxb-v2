@@ -42,7 +42,15 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
         super(grammar,rei,(Class<JAXBElement>)rei.getType(),null,true,false);
 
         this.property = PropertyFactory.create(grammar,rei.getProperty());
-        this.unmarshaller = property.createUnmarshallerHandler(grammar,Unmarshaller.REVERT_TO_PARENT);
+
+//        this.unmarshaller = property.createUnmarshallerHandler(grammar,Unmarshaller.REVERT_TO_PARENT);
+        UnmarshallerChain c = new UnmarshallerChain(grammar);
+        c.tail = Unmarshaller.REVERT_TO_PARENT;
+        QNameMap<Unmarshaller.Handler> result = new QNameMap<Unmarshaller.Handler>();
+        property.buildChildElementUnmarshallers(c,result);
+        assert result.size()==1;    // ElementBeanInfoImpl only has one tag name
+        this.unmarshaller = result.getOne().getValue();
+
 
         // TODO: pre-compute these values to improve speed
         tagName = rei.getElementName();
@@ -105,10 +113,6 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
             }
 
             public void serializeURIs(JAXBElement o, XMLSerializer target) {
-            }
-
-            public Unmarshaller.Handler createUnmarshallerHandler(JAXBContextImpl grammar, Unmarshaller.Handler tail) {
-                throw new UnsupportedOperationException();
             }
 
             public String getIdValue(JAXBElement o) {

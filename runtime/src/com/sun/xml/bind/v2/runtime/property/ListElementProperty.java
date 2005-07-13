@@ -51,7 +51,7 @@ final class ListElementProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,L
     }
 
 
-    public Unmarshaller.Handler createUnmarshallerHandler(JAXBContextImpl grammar, Unmarshaller.Handler tail) {
+    private Unmarshaller.Handler createUnmarshallerHandler(JAXBContextImpl grammar, Unmarshaller.Handler tail) {
         Unmarshaller.Handler item = new Unmarshaller.LeaveElementHandler(ERROR,tail);
         item = new Unmarshaller.TextHandler(xacc,ERROR,item);
         item = new Unmarshaller.EnterElementHandler(tagName,false,null,ERROR,item);

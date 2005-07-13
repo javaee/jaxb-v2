@@ -116,23 +116,6 @@ final class SingleElementNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT> 
         }
     }
 
-    public Unmarshaller.Handler createUnmarshallerHandler(JAXBContextImpl grammar, Unmarshaller.Handler tail) {
-        tail = new Unmarshaller.LeaveElementHandler(Unmarshaller.ERROR,tail);
-
-        Unmarshaller.Handler head = tail;
-
-        for (TypeRef<Type,Class> e : prop.getTypes()) {
-            JaxBeanInfo bi = grammar.getOrCreate((RuntimeTypeInfo) e.getTarget());
-            Unmarshaller.Handler h = new Unmarshaller.SpawnChildSetHandler(bi,tail,false,acc);
-            if(nillable)
-                h = new Unmarshaller.SingleXsiNilHandler(h,tail,acc);
-            head = new Unmarshaller.EnterElementHandler(
-                grammar.nameBuilder.createElementName(e.getTagName()),false,e.getDefaultValue(),head,h);
-        }
-
-        return head;
-    }
-
     public void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<Unmarshaller.Handler> handlers) {
         final Unmarshaller.Handler tail = new Unmarshaller.LeaveElementHandler(Unmarshaller.ERROR,chain.tail);
         JAXBContextImpl grammar = chain.context;

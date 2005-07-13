@@ -246,6 +246,21 @@ public final class QNameMap<ValueT> {
         }
     }
 
+    /**
+     * Returns one random item in the map.
+     * If this map is empty, return null.
+     *
+     * <p>
+     * This method is useful to obtain the value from a map that only contains one element.
+     */
+    public Entry<ValueT> getOne() {
+        for( Entry<ValueT> e : table ) {
+            if(e!=null)
+                return e;
+        }
+        return null;
+    }
+
     private abstract class HashIterator<E> implements Iterator<E> {
         Entry<ValueT> next;	// next entry to return
         int index;		// current slot

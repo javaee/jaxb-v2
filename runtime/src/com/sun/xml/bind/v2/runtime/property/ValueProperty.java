@@ -25,7 +25,7 @@ import org.xml.sax.SAXException;
  *
  * @author Bhakti Mehta (bhakti.mehta@sun.com)
  */
-final class ValueProperty<BeanT,ListT,ItemT> extends PropertyImpl<BeanT> {
+public final class ValueProperty<BeanT,ListT,ItemT> extends PropertyImpl<BeanT> {
 
     /**
      * Heart of the conversion logic.

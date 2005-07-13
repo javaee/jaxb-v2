@@ -63,8 +63,8 @@ final class SingleElementLeafProperty<BeanT> extends PropertyImpl<BeanT> {
         }
     }
 
-    public Unmarshaller.Handler createUnmarshallerHandler(JAXBContextImpl grammar, Unmarshaller.Handler tail) {
-        Unmarshaller.Handler cont = tail;
+    public void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<Unmarshaller.Handler> handlers) {
+        Unmarshaller.Handler tail = chain.tail;
 
         Unmarshaller.Handler ee = new Unmarshaller.LeaveElementHandler(Unmarshaller.ERROR,tail);
         Unmarshaller.Handler text = new Unmarshaller.TextHandler(xacc,Unmarshaller.ERROR,ee);
@@ -74,13 +74,8 @@ final class SingleElementLeafProperty<BeanT> extends PropertyImpl<BeanT> {
         } else
             tail = text;
 
-        tail = new Unmarshaller.EnterElementHandler(tagName,false,defaultValue,cont,tail);
+        tail = new Unmarshaller.EnterElementHandler(tagName,false,defaultValue,chain.tail,tail);
 
-        return tail;
-    }
-
-    public void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<Unmarshaller.Handler> handlers) {
-        Unmarshaller.Handler tail = createUnmarshallerHandler(chain.context,chain.tail);
         chain.tail = tail;
         handlers.put(tagName,tail);
     }
