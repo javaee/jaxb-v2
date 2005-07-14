@@ -643,19 +643,21 @@ public final class UnmarshallingContext extends Coordinator
 
 
 
-//
-//
-// state management
-//
-//
+/*
+    State Management
+    ================
+
+    during the unmarshalling, state can be used as a stack of objects.
+    the stack top can be modified fairly quickly.
+*/
     private Object[] states = new Object[16];
     /**
      * Points to the top of the scope stack (=size-1).
      */
     private int stateTop=0;
 
-    public void startState() {
-        stateTop++;
+    public void startState(Object o) {
+        states[++stateTop] = o;
     }
 
     public void setState(Object o) {

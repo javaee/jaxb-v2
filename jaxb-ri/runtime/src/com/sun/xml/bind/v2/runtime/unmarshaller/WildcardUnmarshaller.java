@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: WildcardUnmarshaller.java,v 1.4 2005-05-23 16:30:44 kohsuke Exp $
+ * @(#)$Id: WildcardUnmarshaller.java,v 1.5 2005-07-14 00:21:26 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -93,8 +93,7 @@ public class WildcardUnmarshaller<ResultT extends Result> extends Unmarshaller.H
 
     @Override
     public void activate(UnmarshallingContext context) throws SAXException {
-        context.startState();
-        context.setState(new State(context));
+        context.startState(new State(context));
     }
 
     public void deactivated(UnmarshallingContext context) throws SAXException {
