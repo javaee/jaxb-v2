@@ -1019,9 +1019,8 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
     private static String getProcessContentsModeName(WildcardMode wc) {
         switch(wc) {
         case LAX:
-            return WildcardMode.LAX.name().toLowerCase();
         case SKIP:
-            return WildcardMode.SKIP.name().toLowerCase();
+            return wc.name().toLowerCase();
         case STRICT:
             return null;
         default:
