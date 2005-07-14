@@ -3,14 +3,19 @@ package com.sun.xml.bind.v2.runtime.property;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.TreeMap;
 
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.QNameMap;
+import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.runtime.RuntimeMapPropertyInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeNonElement;
+import com.sun.xml.bind.v2.model.nav.ReflectionNavigator;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 import com.sun.xml.bind.v2.runtime.Name;
@@ -45,6 +50,12 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
     private JaxBeanInfo keyBeanInfo;
     private JaxBeanInfo valueBeanInfo;
 
+    /**
+     * The implementation class for this property.
+     * If the property is null, we create an instance of this class.
+     */
+    private final Class<? extends ValueT> mapImplClass;
+
     public SingleMapNodeProperty(JAXBContextImpl context, RuntimeMapPropertyInfo prop) {
         super(context, prop);
         acc = prop.getAccessor().optimize();
@@ -56,7 +67,17 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
         this.nillable = prop.isCollectionNillable();
         this.keyBeanInfo = context.getOrCreate(prop.getKeyType());
         this.valueBeanInfo = context.getOrCreate(prop.getValueType());
+
+        // infer the implementation class
+        Class<ValueT> sig = ReflectionNavigator.REFLECTION.erasure(prop.getRawType());
+        mapImplClass = ClassFactory.inferImplClass(sig,knownImplClasses);
+        // TODO: error check for mapImplClass==null
+        // what is the error reporting path for this part of the code?
     }
+
+    private static final Class[] knownImplClasses = {
+        HashMap.class, TreeMap.class, LinkedHashMap.class
+    };
 
     public void reset(BeanT bean) throws AccessorException {
         acc.set(bean,null);
@@ -97,9 +118,23 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
         // handle <items>
         tail = new Unmarshaller.EnterElementHandler(tagName,true,null,Unmarshaller.ERROR,tail) {
             protected void act(UnmarshallingContext context) throws SAXException {
-                context.startState(null);   // this state is used to store Map object.
-                // TODO: create or obtain the Map object
-                // TODO: consider using Scope instead of state.
+                // create or obtain the Map object
+                try {
+                    BeanT target = context.<BeanT>getTarget();
+                    ValueT map = acc.get(target);
+                    if(map==null) {
+                        map = ClassFactory.create(mapImplClass);
+                        acc.set(target,map);
+                    }
+                    map.clear();
+
+                    context.startState(map);   // this state is used to store Map object.
+                } catch (AccessorException e) {
+                    // recover from error by setting a dummy Map that receives and discards the values
+                    context.handleError(e);
+                    context.startState(new HashMap());
+                }
+
                 super.act(context);
             }
         };
@@ -115,9 +150,7 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
             public void leaveElement(UnmarshallingContext context, EventArg arg) throws SAXException {
                 Object[] keyValue = context.getState();
                 context.endState(); // finish the state for the entry
-
-                if(keyValue!=null) // could be null if <entry> didn't contain anything
-                    ((Map)context.getState()).put(keyValue[0],keyValue[1]);
+                ((Map)context.getState()).put(keyValue[0],keyValue[1]);
                 super.leaveElement(context, arg);
             }
         };
@@ -132,7 +165,7 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
                 tail);
 
         // handle <entry>
-        tail = new Unmarshaller.EnterElementHandler(tagName,true,null,Unmarshaller.ERROR,tail) {
+        tail = new Unmarshaller.EnterElementHandler(entryTag,true,null,Unmarshaller.ERROR,tail) {
             protected void act(UnmarshallingContext context) throws SAXException {
                 context.startState(new Object[2]);  // this is inefficient
                 super.act(context);
@@ -179,9 +212,9 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
     public void serializeBody(BeanT o, XMLSerializer w, Object outerPeer) throws SAXException, AccessorException, IOException, XMLStreamException {
         ValueT v = acc.get(o);
         if(v!=null) {
-            w.startElement(tagName,v);
+            bareStartTag(w,tagName,v);
             for( Map.Entry e : ((Map<?,?>)v).entrySet() ) {
-                w.startElement(entryTag,null);
+                bareStartTag(w,entryTag,null);
 
                 Object key = e.getKey();
                 if(key!=null) {
@@ -206,6 +239,12 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
             w.writeXsiNilTrue();
             w.endElement();
         }
+    }
+
+    private void bareStartTag(XMLSerializer w, Name tagName, Object peer) throws IOException, XMLStreamException, SAXException {
+        w.startElement(tagName,peer);
+        w.endNamespaceDecls(peer);
+        w.endAttributes();
     }
 
     public void wrapUp() {

@@ -111,4 +111,27 @@ public final class ClassFactory {
             throw new IllegalStateException(target);
         }
     }
+
+    /**
+     * Infers the instanciable implementation class that can be assigned to the given field type.
+     *
+     * @return null
+     *      if inference fails.
+     */
+    public static <T> Class<? extends T> inferImplClass(Class<T> fieldType, Class[] knownImplClasses) {
+        if(!fieldType.isInterface())
+            // instanciable class?
+            // TODO: check if it has a default constructor
+            return fieldType;
+
+        for( Class impl : knownImplClasses ) {
+            if(fieldType.isAssignableFrom(impl))
+                return impl;
+        }
+
+        // if we can't find an implementation class,
+        // let's just hope that we will never need to create a new object,
+        // and returns null
+        return null;
+    }
 }

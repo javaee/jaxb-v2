@@ -178,6 +178,7 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
                 switch(p.getKind()) {
                 case ELEMENT:
                 case REFERENCE:
+                case MAP:
                     propList.add(p);
                     break;
                 case VALUE:

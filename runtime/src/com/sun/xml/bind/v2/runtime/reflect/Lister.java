@@ -99,20 +99,7 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
     };
 
     private static Class getImplClass(Class fieldType) {
-        TODO.checkSpec();       // TODO: semantics?
-        if(!fieldType.isInterface())
-            // instanciable class?
-            return fieldType;
-
-        for( Class impl : implClasses ) {
-            if(fieldType.isAssignableFrom(impl))
-                return impl;
-        }
-
-        // if we can't find an implementation class,
-        // let's just hope that we will never need to create a new object,
-        // and returns null
-        return null;
+        return ClassFactory.inferImplClass(fieldType,implClasses);
     }
 
     /**
