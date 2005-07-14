@@ -59,18 +59,10 @@ abstract class ArrayERProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,Li
                 }
             };
         } else {
-            tail = new Unmarshaller.ForkHandler(Unmarshaller.ERROR,tail) {
+            tail = new Unmarshaller.LeaveElementHandler(Unmarshaller.ERROR,tail) {
                 public void leaveElement(UnmarshallingContext context, EventArg arg) throws SAXException {
-                    context.popAttributes();
                     context.endScope(1);
-                    context.setCurrentHandler(next);
-                }
-
-                protected Unmarshaller.Handler forwardTo(Unmarshaller.EventType event) {
-                    if(event==Unmarshaller.EventType.LEAVE_ELEMENT)
-                        return this;
-                    else
-                        return super.forwardTo(event);
+                    super.leaveElement(context, arg);
                 }
             };
         }
@@ -94,22 +86,10 @@ abstract class ArrayERProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,Li
                 }
             };
         } else {
-            tail = new Unmarshaller.ForkHandler(end,tail) {
-                public void enterElement(UnmarshallingContext context, EventArg arg) throws SAXException {
-                    if(arg.matches(wrapperTagName)) {
-                        context.pushAttributes(arg.atts,false,null);
-                        context.startScope(1);
-                        context.setCurrentHandler(next);
-                        return;
-                    }
-                    super.enterElement(context,arg);
-                }
-
-                protected Unmarshaller.Handler forwardTo(Unmarshaller.EventType event) {
-                    if(event==Unmarshaller.EventType.ENTER_ELEMENT)
-                        return this;
-                    else
-                        return super.forwardTo(event);
+            tail = new Unmarshaller.EnterElementHandler(wrapperTagName,true,null,end,tail) {
+                protected void act(UnmarshallingContext context) throws SAXException {
+                    context.startScope(1);
+                    super.act(context);
                 }
             };
         }

@@ -9,6 +9,7 @@
 package com.sun.xml.bind.v2.runtime.property;
 
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Scope;
 
 
 /**
@@ -31,8 +32,7 @@ public final class UnmarshallerChain {
     public Unmarshaller.Handler tail;
 
     /**
-     * This will help maintain the position
-     * relative to the stack in the UnmarshallingContext
+     * This offset allows child unmarshallers to have its own {@link Scope} without colliding with siblings.
      */
     private int offset = 0;
 
@@ -43,7 +43,7 @@ public final class UnmarshallerChain {
     }
 
     /**
-     * Allocates a new scope offset.
+     * Allocates a new {@link Scope} offset.
      */
     public int allocateOffset() {
         return offset++;
