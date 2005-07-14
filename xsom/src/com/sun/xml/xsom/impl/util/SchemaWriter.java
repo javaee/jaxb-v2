@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: SchemaWriter.java,v 1.2 2005-07-09 17:24:50 kirillcool Exp $
+ * @(#)$Id: SchemaWriter.java,v 1.3 2005-07-14 16:28:39 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -9,11 +9,6 @@
  */
 package com.sun.xml.xsom.impl.util;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.text.MessageFormat;
-import java.util.Iterator;
-
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSAttGroupDecl;
 import com.sun.xml.xsom.XSAttributeDecl;
@@ -22,6 +17,7 @@ import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSContentType;
 import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XSFacet;
+import com.sun.xml.xsom.XSIdentityConstraint;
 import com.sun.xml.xsom.XSListSimpleType;
 import com.sun.xml.xsom.XSModelGroup;
 import com.sun.xml.xsom.XSModelGroupDecl;
@@ -34,13 +30,16 @@ import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSUnionSimpleType;
 import com.sun.xml.xsom.XSWildcard;
-import com.sun.xml.xsom.XSIdentityConstraint;
 import com.sun.xml.xsom.XSXPath;
 import com.sun.xml.xsom.impl.Const;
-import com.sun.xml.xsom.impl.UName;
 import com.sun.xml.xsom.visitor.XSSimpleTypeVisitor;
 import com.sun.xml.xsom.visitor.XSTermVisitor;
 import com.sun.xml.xsom.visitor.XSVisitor;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.text.MessageFormat;
+import java.util.Iterator;
 
 /**
  * Generates approximated XML Schema representation from
@@ -94,11 +93,6 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
             hadError=true;
         }
         return hadError;
-    }
-
-    /** Prints UName. */
-    private String toString( UName name ) {
-        return '{'+name.getNamespaceURI()+'}'+name.getName();
     }
 
     public void visit( XSSchemaSet s ) {
@@ -185,9 +179,9 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
         if(use.isRequired())
             additionalAtts += " use=\"required\"";
         if(use.getFixedValue()!=null && use.getDecl().getFixedValue()==null)
-            additionalAtts += " fixed=\""+use.getFixedValue()+"\"";
+            additionalAtts += " fixed=\""+use.getFixedValue()+'\"';
         if(use.getDefaultValue()!=null && use.getDecl().getDefaultValue()==null)
-            additionalAtts += " default=\""+use.getDefaultValue()+"\"";
+            additionalAtts += " default=\""+use.getDefaultValue()+'\"';
 
         if(decl.isLocal()) {
             // this is anonymous attribute use
@@ -218,9 +212,9 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
                     type.getName()
                 }),
                 decl.getFixedValue()==null ?
-                    "":" fixed=\""+decl.getFixedValue()+"\"",
+                    "":" fixed=\""+decl.getFixedValue()+'\"',
                 decl.getDefaultValue()==null ?
-                    "":" default=\""+decl.getDefaultValue()+"\"",
+                    "":" default=\""+decl.getDefaultValue()+'\"',
                 type.isLocal()?"":" /"
             }));
 
@@ -235,7 +229,7 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
     public void simpleType( XSSimpleType type ) {
         println(MessageFormat.format("<simpleType{0}>",
             new Object[]{
-                type.isLocal()?"":" name=\""+type.getName()+"\""
+                type.isLocal()?"":" name=\""+type.getName()+'\"'
             }));
         indent++;
 
@@ -306,8 +300,8 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
         println(MessageFormat.format("<restriction{0}>",
             new Object[]{
                 baseType.isLocal()?"":" base=\"{"+
-                baseType.getTargetNamespace()+"}"+
-                baseType.getName()+"\""
+                baseType.getTargetNamespace()+'}'+
+                baseType.getName()+'\"'
             }));
         indent++;
 
@@ -342,7 +336,7 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
     public void complexType( XSComplexType type ) {
         println(MessageFormat.format("<complexType{0}>",
             new Object[]{
-                type.isLocal()?"":" name=\""+type.getName()+"\""
+                type.isLocal()?"":" name=\""+type.getName()+'\"'
             }));
         indent++;
         
@@ -425,9 +419,9 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
                         baseType.getName() }));
 
                 // check if have redefine - Kirill
-                if ((type.getTargetNamespace().compareTo(baseType.getTargetNamespace()) == 0)
-                        &&
-                        (type.getName().compareTo(baseType.getName()) == 0)) {
+                if( type.isGlobal()
+                && type.getTargetNamespace().equals(baseType.getTargetNamespace())
+                && type.getName().equals(baseType.getName())) {
                     indent++;
                     println("<redefine>");
                     indent++;
@@ -478,8 +472,8 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
             new Object[]{
                 decl.getName(),
                 type.isLocal()?"":" type=\"{"+
-                    type.getTargetNamespace()+"}"+
-                    type.getName()+"\"",
+                    type.getTargetNamespace()+'}'+
+                    type.getName()+'\"',
                 extraAtts,
                 type.isLocal()?"":"/"
             }));
@@ -533,11 +527,11 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
         if(i==XSParticle.UNBOUNDED)
             buf.append(" maxOccurs=\"unbounded\"");
         else if(i!=1)
-            buf.append(" maxOccurs=\""+i+"\"");
+            buf.append(" maxOccurs=\""+i+'\"');
 
         i = part.getMinOccurs();
         if(i!=1)
-            buf.append(" minOccurs=\""+i+"\"");
+            buf.append(" minOccurs=\""+i+'\"');
 
         final String extraAtts = buf.toString();
 
