@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: SchemaWriter.java,v 1.3 2005-07-14 16:28:39 kohsuke Exp $
+ * @(#)$Id: SchemaWriter.java,v 1.4 2005-07-14 17:53:23 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -369,9 +369,9 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
                         baseType.getName() }));
 
                 // check if have redefine tag - Kirill
-                if ((type.getTargetNamespace().compareTo(baseType.getTargetNamespace()) == 0)
-                        &&
-                        (type.getName().compareTo(baseType.getName()) == 0)) {
+                if( type.isGlobal()
+                && type.getTargetNamespace().equals(baseType.getTargetNamespace())
+                && type.getName().equals(baseType.getName())) {
                     indent++;
                     println("<redefine>");
                     indent++;
