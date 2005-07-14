@@ -110,7 +110,14 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
      * Resolves relative URI found in the document.
      *
      * @param namespaceURI
-     *      passed to the entity resolver
+     *      passed to the entity resolver.
+     * @param relativeUri
+     *      value of the schemaLocation attribute. Can be null.
+     *
+     * @return
+     *      non-null if {@link EntityResolver} returned an {@link InputSource},
+     *      or if the relativeUri parameter seems to be pointing to something.
+     *      Otherwise it returns null, in which case import/include should be abandoned.
      */
     private InputSource resolveRelativeURL( String namespaceURI, String relativeUri ) throws SAXException {
         String baseUri = getLocator().getSystemId();
@@ -118,8 +125,10 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
             // if the base URI is not available, the document system ID is
             // better than nothing.
             baseUri=documentSystemId;
-        
-        String systemId = Uri.resolve(baseUri,relativeUri);
+
+        String systemId = null;
+        if(relativeUri!=null)
+            systemId = Uri.resolve(baseUri,relativeUri);
 
         EntityResolver er = parser.getEntityResolver();
         if(er!=null) {
@@ -132,7 +141,10 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
             }
         }
 
-        return new InputSource(systemId);
+        if(systemId!=null)
+            return new InputSource(systemId);
+        else
+            return null;
     }
     
     /** Includes the specified schema. */
@@ -155,14 +167,14 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
     
     /** Imports the specified schema. */
     public void importSchema( String ns, String schemaLocation ) throws SAXException {
-        if(schemaLocation==null)
-            // we can't locate this document now. Let's just hope that
-            // we already have the schema components for this schema
-            // or we will receive them in the future.
-            return;
-        
         NGCCRuntimeEx newRuntime = new NGCCRuntimeEx(parser);
-        newRuntime.parseEntity( resolveRelativeURL(ns,schemaLocation), false, ns, getLocator() );
+        InputSource source = resolveRelativeURL(ns,schemaLocation);
+        if(source!=null)
+            newRuntime.parseEntity( source, false, ns, getLocator() );
+        // if source == null,
+        // we can't locate this document. Let's just hope that
+        // we already have the schema components for this schema
+        // or we will receive them in the future.
     }
     
     /**
