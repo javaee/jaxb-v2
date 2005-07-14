@@ -62,6 +62,7 @@ import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.core.ValuePropertyInfo;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
+import com.sun.xml.bind.v2.model.core.MapPropertyInfo;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.SchemaGenerator;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
@@ -769,6 +770,9 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             case REFERENCE:
                 handleReferenceProp((ReferencePropertyInfo)p, compositor);
                 break;
+            case MAP:
+                handleMapProp((MapPropertyInfo)p, compositor);
+                break;
             case VALUE:
                 // value props handled above in writeClass()
                 assert false;
@@ -971,6 +975,38 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
 
                 occurs.maxOccurs("unbounded");
             } // else maxOccurs defaults to 1
+        }
+
+        /**
+         * Generate the proper schema fragment for the given map property into the
+         * specified schema compositor.
+         *
+         * @param mp the map property
+         * @param compositor the schema compositor (sequence or all)
+         */
+        private void handleMapProp(MapPropertyInfo<TypeT,ClassDeclT> mp, ExplicitGroup compositor) {
+            QName ename = mp.getXmlName();
+
+            LocalElement e = compositor.element();
+            if(ename.getNamespaceURI().length()>0)
+                e.form("qualified");    // TODO: what if the URI != tns?
+            if(mp.isCollectionNillable())
+                e.nillable(true);
+            ComplexType p = e.name(ename.getLocalPart()).complexType();
+
+            // TODO: entry, key, and value are always unqualified. that needs to be fixed, too.
+            e = p.sequence().element();
+            e.name("entry").minOccurs(0).maxOccurs("unbounded");
+
+            ExplicitGroup seq = e.complexType().sequence();
+            writeKeyOrValue(seq, "key", mp.getKeyType());
+            writeKeyOrValue(seq, "value", mp.getValueType());
+        }
+
+        private void writeKeyOrValue(ExplicitGroup seq, String tagName, NonElement<TypeT, ClassDeclT> typeRef) {
+            LocalElement key = seq.element().name(tagName);
+            key.minOccurs(0);
+            writeTypeRef(key, typeRef, "type");
         }
     }
 
