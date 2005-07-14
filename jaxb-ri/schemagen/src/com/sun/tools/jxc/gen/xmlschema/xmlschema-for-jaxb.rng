@@ -174,7 +174,7 @@
     </zeroOrMore>
     <zeroOrMore>
       <choice>
-        <ref name="include" />
+        <!--ref name="include" /-->
         <ref name="import" />
         <!--ref name="redefine" /-->
         <ref name="annotation" />
@@ -825,7 +825,7 @@
   </element>
 </define-->
 
-<define name="include">
+<!--define name="include">
   <doc:p>
     This describes an include element, which must have a schemaLocation 
     attribute.
@@ -837,7 +837,7 @@
       <data type="anyURI" />
     </attribute>
   </element>
-</define>
+</define-->
 
 <!--define name="redefine">
   <doc:p>
