@@ -9,6 +9,7 @@ import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JFormatter;
 import com.sun.codemodel.JVar;
+import com.sun.codemodel.JType;
 import com.sun.tools.xjc.api.Mapping;
 import com.sun.tools.xjc.api.Property;
 import com.sun.tools.xjc.outline.FieldAccessor;
@@ -49,8 +50,8 @@ public /*for BSH*/ final class PropertyImpl implements Property {
         return sw.toString();
     }
 
-    public final String type() {
-        return fr.getRawType().fullName();
+    public final JType type() {
+        return fr.getRawType();
     }
 
     public String setValue(String bean, String var, String uniqueName) {

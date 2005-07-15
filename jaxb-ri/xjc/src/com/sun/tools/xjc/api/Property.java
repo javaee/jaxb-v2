@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: Property.java,v 1.1 2005-04-15 20:08:58 kohsuke Exp $
+ * @(#)$Id: Property.java,v 1.2 2005-07-15 23:45:26 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -10,6 +10,8 @@
 package com.sun.tools.xjc.api;
 
 import javax.xml.namespace.QName;
+
+import com.sun.codemodel.JType;
 
 /**
  * Represents a property of a wrapper-style element.
@@ -46,13 +48,11 @@ public interface Property {
      * The Java type of the property.
      * 
      * @return
-     *      always non-null. It may return a primitive like "int" or
-     *      "byte", or it could be a fully-qualified class name like
-     *      "java.util.Calendar". It could be an existing class,
-     *      it could be a JAXB-generated interface. It could be an
-     *      array.
+     *      always non-null.
+     *      {@link JType} is a representation of a Java type in a codeModel.
+     *      If you just need the fully-qualified class name, call {@link JType#fullName()}.
      */
-    String type();
+    JType type();
     
     /**
      * Name of the XML element that corresponds to the property.
