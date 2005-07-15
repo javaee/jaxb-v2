@@ -6,6 +6,7 @@ package com.sun.codemodel;
 
 import java.util.Iterator;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Array class.
@@ -83,7 +84,7 @@ final class JArrayClass extends JClass {
         return componentType.hashCode();
     }
 
-    protected JClass substituteParams(JTypeVar[] variables, JClass[] bindings) {
+    protected JClass substituteParams(JTypeVar[] variables, List<JClass> bindings) {
         if( componentType.isPrimitive() )
             return this;
         

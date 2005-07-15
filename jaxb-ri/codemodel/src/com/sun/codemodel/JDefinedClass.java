@@ -798,7 +798,7 @@ public class JDefinedClass
 
     protected JClass substituteParams(
         JTypeVar[] variables,
-        JClass[] bindings) {
+        List<JClass> bindings) {
         return this;
     }
 

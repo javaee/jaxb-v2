@@ -6,6 +6,10 @@
 package com.sun.codemodel;
 
 import java.util.Iterator;
+import java.util.List;
+import java.util.Collections;
+import java.util.Arrays;
+import java.util.ArrayList;
 
 /**
  * Represents a Java reference type, such as a class, an interface,
@@ -229,14 +233,18 @@ public abstract class JClass extends JType
     }
 
     public JClass narrow( JClass... clazz ) {
-        return new JNarrowedClass(this,clazz.clone());
+        return new JNarrowedClass(this,Arrays.asList(clazz.clone()));
+    }
+
+    public JClass narrow( List<? extends JClass> clazz ) {
+        return new JNarrowedClass(this,new ArrayList(clazz));
     }
 
     /**
      * If this class is parameterized, return the type parameter of the given index.
      */
-    public JClass getTypeParameter(int index) {
-        throw new IllegalArgumentException();
+    public List<JClass> getTypeParameters() {
+        return Collections.emptyList();
     }
 
     /**
@@ -267,7 +275,7 @@ public abstract class JClass extends JType
      * <p>
      * This method needs to work recursively.
      */
-    protected abstract JClass substituteParams( JTypeVar[] variables, JClass[] bindings );
+    protected abstract JClass substituteParams( JTypeVar[] variables, List<JClass> bindings );
     
     public String toString() {
         return this.getClass().getName() + '(' + name() + ')';

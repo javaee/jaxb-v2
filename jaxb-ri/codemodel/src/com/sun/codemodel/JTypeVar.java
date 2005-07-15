@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JTypeVar.java,v 1.5 2005-07-15 22:09:05 kohsuke Exp $
+ * @(#)$Id: JTypeVar.java,v 1.6 2005-07-15 23:39:59 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -10,6 +10,7 @@
 package com.sun.codemodel;
 
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Type variable used to declare generics.
@@ -91,10 +92,10 @@ public final class JTypeVar extends JClass implements JDeclaration {
     }
 
 
-    protected JClass substituteParams(JTypeVar[] variables, JClass[] bindings) {
+    protected JClass substituteParams(JTypeVar[] variables, List<JClass> bindings) {
         for(int i=0;i<variables.length;i++)
             if(variables[i]==this)
-                return bindings[i];
+                return bindings.get(i);
         return this;
     }
 
