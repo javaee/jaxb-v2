@@ -5,7 +5,7 @@
  SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 -->
 
-<!-- $Id: build.xml,v 1.13 2005-05-31 19:08:03 ryan_shoemaker Exp $ -->
+<!-- $Id: build.xml,v 1.14 2005-07-15 22:25:06 kohsuke Exp $ -->
 <project name="xjc" basedir=".." default="compile">
 
   <description>
@@ -239,8 +239,8 @@
     <target name="javadoc" 
             description="generate javadoc for xjc into jaxb-ri/xjc/docs/api">
       <mkdir dir="${xjc.root}/build/javadoc" />
-      <javadoc sourcepath="${xjc.src}"
-            packagenames="com.*"
+      <javadoc sourcepath="${xjc.src}:${xjc.root}/javadoc"
+            packagenames="com.*,jaxb"
             destdir="${xjc.root}/build/javadoc"
             use="true"
             author="false"

@@ -17,7 +17,7 @@ import com.sun.mirror.declaration.FieldDeclaration;
 import com.sun.mirror.declaration.MethodDeclaration;
 import com.sun.mirror.declaration.TypeDeclaration;
 import com.sun.mirror.type.TypeMirror;
-import com.sun.tools.jxc.XmlSchemaGenerator;
+import com.sun.xml.bind.v2.schemagen.XmlSchemaGenerator;
 import com.sun.tools.xjc.api.ErrorListener;
 import com.sun.tools.xjc.api.J2SJAXBModel;
 import com.sun.tools.xjc.api.Reference;
@@ -32,6 +32,7 @@ import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.Ref;
 import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.nav.Navigator;
+import com.sun.xml.bind.v2.schemagen.XmlSchemaGenerator;
 
 /**
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
