@@ -57,9 +57,9 @@
       <classpath refid="txw.classpath"/>
     </taskdef>
     <mkdir dir="${schemagen.gensrc}" />
-    <txwc schema="${schemagen.src}/com/sun/tools/jxc/gen/xmlschema/xmlschema-for-jaxb.rng"
+    <txwc schema="${schemagen.src}/com/sun/xml/bind/v2/schemagen/xmlschema/xmlschema-for-jaxb.rng"
       destdir="${schemagen.gensrc}"
-      package="com.sun.tools.jxc.gen.xmlschema"
+      package="com.sun.xml.bind.v2.schemagen.xmlschema"
       methodChaining="true"/>
   </target>
 

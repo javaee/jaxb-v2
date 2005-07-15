@@ -1,4 +1,4 @@
-package com.sun.tools.jxc;
+package com.sun.xml.bind.v2.schemagen;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -10,7 +10,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -23,23 +22,6 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 
-import com.sun.tools.jxc.gen.xmlschema.Any;
-import com.sun.tools.jxc.gen.xmlschema.AttrDecls;
-import com.sun.tools.jxc.gen.xmlschema.ComplexExtension;
-import com.sun.tools.jxc.gen.xmlschema.ComplexType;
-import com.sun.tools.jxc.gen.xmlschema.ComplexTypeHost;
-import com.sun.tools.jxc.gen.xmlschema.ExplicitGroup;
-import com.sun.tools.jxc.gen.xmlschema.Import;
-import com.sun.tools.jxc.gen.xmlschema.LocalAttribute;
-import com.sun.tools.jxc.gen.xmlschema.LocalElement;
-import com.sun.tools.jxc.gen.xmlschema.Occurs;
-import com.sun.tools.jxc.gen.xmlschema.Schema;
-import com.sun.tools.jxc.gen.xmlschema.SimpleExtension;
-import com.sun.tools.jxc.gen.xmlschema.SimpleRestrictionModel;
-import com.sun.tools.jxc.gen.xmlschema.SimpleType;
-import com.sun.tools.jxc.gen.xmlschema.SimpleTypeHost;
-import com.sun.tools.jxc.gen.xmlschema.TopLevelElement;
-import com.sun.tools.jxc.gen.xmlschema.TypeHost;
 import com.sun.xml.bind.Util;
 import com.sun.xml.bind.api.SchemaOutputResolver;
 import com.sun.xml.bind.v2.TODO;
@@ -53,6 +35,7 @@ import com.sun.xml.bind.v2.model.core.ElementInfo;
 import com.sun.xml.bind.v2.model.core.ElementPropertyInfo;
 import com.sun.xml.bind.v2.model.core.EnumConstant;
 import com.sun.xml.bind.v2.model.core.EnumLeafInfo;
+import com.sun.xml.bind.v2.model.core.MapPropertyInfo;
 import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.NonElementRef;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
@@ -62,16 +45,32 @@ import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.core.ValuePropertyInfo;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
-import com.sun.xml.bind.v2.model.core.MapPropertyInfo;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.SchemaGenerator;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
+import com.sun.xml.bind.v2.schemagen.xmlschema.Any;
+import com.sun.xml.bind.v2.schemagen.xmlschema.AttrDecls;
+import com.sun.xml.bind.v2.schemagen.xmlschema.ComplexExtension;
+import com.sun.xml.bind.v2.schemagen.xmlschema.ComplexType;
+import com.sun.xml.bind.v2.schemagen.xmlschema.ComplexTypeHost;
+import com.sun.xml.bind.v2.schemagen.xmlschema.ExplicitGroup;
+import com.sun.xml.bind.v2.schemagen.xmlschema.Import;
+import com.sun.xml.bind.v2.schemagen.xmlschema.LocalAttribute;
+import com.sun.xml.bind.v2.schemagen.xmlschema.LocalElement;
+import com.sun.xml.bind.v2.schemagen.xmlschema.Occurs;
+import com.sun.xml.bind.v2.schemagen.xmlschema.Schema;
+import com.sun.xml.bind.v2.schemagen.xmlschema.SimpleExtension;
+import com.sun.xml.bind.v2.schemagen.xmlschema.SimpleRestrictionModel;
+import com.sun.xml.bind.v2.schemagen.xmlschema.SimpleType;
+import com.sun.xml.bind.v2.schemagen.xmlschema.SimpleTypeHost;
+import com.sun.xml.bind.v2.schemagen.xmlschema.TopLevelElement;
+import com.sun.xml.bind.v2.schemagen.xmlschema.TypeHost;
 import com.sun.xml.txw2.TXW;
 import com.sun.xml.txw2.TxwException;
 import com.sun.xml.txw2.output.ResultFactory;
 
 import static com.sun.xml.bind.v2.WellKnownNamespace.*;
-import static com.sun.tools.jxc.util.Util.*;
+import static com.sun.xml.bind.v2.schemagen.Util.*;
 
 /**
  * Generates a set of W3C XML Schema documents from a set of Java classes.
@@ -794,17 +793,17 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
          * @param ep the element property
          * @param compositor the schema compositor (sequence or all)
          */
-        private void handleElementProp(ElementPropertyInfo ep, ExplicitGroup compositor) {
+        private void handleElementProp(ElementPropertyInfo<TypeT,ClassDeclT> ep, ExplicitGroup compositor) {
             QName ename = ep.getXmlName();
             Occurs occurs = null;
 
             if (ep.isValueList()) {
-                TypeRef t = (TypeRef)ep.getTypes().get(0);
+                TypeRef t = ep.getTypes().get(0);
                 LocalElement e = compositor.element();
 
                 QName tn = t.getTagName();
                 e.name(tn.getLocalPart());
-                com.sun.tools.jxc.gen.xmlschema.List lst = e.simpleType().list();
+                com.sun.xml.bind.v2.schemagen.xmlschema.List lst = e.simpleType().list();
                 writeTypeRef(lst,t, "itemType");
                 if(tn.getNamespaceURI().length()>0)
                     e.form("qualified");    // TODO: what if the URI != tns?
@@ -837,7 +836,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             boolean allNillable = true; // remain true after the next for loop if all TypeRefs are nillable
 
             // fill in the content model
-            for (TypeRef t : (List<TypeRef>) ep.getTypes()) {
+            for (TypeRef t : ep.getTypes()) {
                 LocalElement e = compositor.element();
                 if (occurs == null) occurs = e;
                 QName tn = t.getTagName();

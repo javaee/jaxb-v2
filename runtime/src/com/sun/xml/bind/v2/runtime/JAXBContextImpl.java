@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.38 2005-07-15 20:46:34 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.39 2005-07-15 22:25:54 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -85,7 +85,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -649,9 +649,9 @@ public final class JAXBContextImpl extends JAXBRIContext {
             ClassLoader cl = this.getClass().getClassLoader();
             Class clazz;
             if(cl!=null)
-                clazz = cl.loadClass("com.sun.tools.jxc.XmlSchemaGenerator");
+                clazz = cl.loadClass( "com.sun.xml.bind.v2.schemagen.XmlSchemaGenerator");
             else
-                clazz = Class.forName("com.sun.tools.jxc.XmlSchemaGenerator");
+                clazz = Class.forName("com.sun.xml.bind.v2.schemagen.XmlSchemaGenerator");
 
             xsdgen = (SchemaGenerator)clazz.getConstructor(Navigator.class).newInstance(tis.getNavigator());
         } catch (ClassNotFoundException e) {

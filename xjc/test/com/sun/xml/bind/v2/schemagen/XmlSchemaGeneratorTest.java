@@ -1,4 +1,4 @@
-package com.sun.tools.jxc;
+package com.sun.xml.bind.v2.schemagen;
 
 import java.io.PrintWriter;
 import java.net.URI;
