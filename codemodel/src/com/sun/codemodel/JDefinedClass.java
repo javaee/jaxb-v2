@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Collections;
 
 /**
  * A generated Java class/interface/enum/....
@@ -63,8 +64,13 @@ public class JDefinedClass
      * Nested classes as a map from name to JDefinedClass.
      * The name is all capitalized in a case sensitive file system
      * ({@link JCodeModel#isCaseSensitiveFileSystem}) to avoid conflicts.
+     *
+     * Lazily created to save footprint.
+     *
+     * @see #getClasses()
      */
-    private final Map<String,JDefinedClass> classes = new TreeMap<String,JDefinedClass>();
+    private Map<String,JDefinedClass> classes;
+
 
     /**
      * Flag that controls whether this class should be really generated or not.
@@ -575,12 +581,12 @@ public class JDefinedClass
         else
             NAME = name;
 
-        if (classes.containsKey(NAME))
-            throw new JClassAlreadyExistsException(classes.get(NAME));
+        if (getClasses().containsKey(NAME))
+            throw new JClassAlreadyExistsException(getClasses().get(NAME));
         else {
             // XXX problems caught in the NC constructor
             JDefinedClass c = new JDefinedClass(this, mods, name, classTypeVal);
-            classes.put(NAME,c);
+            getClasses().put(NAME,c);
             return c;
         }
     }
@@ -650,14 +656,27 @@ public class JDefinedClass
      * class.
      */
     public final Iterator<JDefinedClass> classes() {
-        return classes.values().iterator();
+        if(classes==null)
+            return Collections.<JDefinedClass>emptyList().iterator();
+        else
+            return classes.values().iterator();
     }
+
+    private Map<String,JDefinedClass> getClasses() {
+        if(classes==null)
+            classes = new TreeMap<String,JDefinedClass>();
+        return classes;
+    }
+
 
     /**
      * Returns all the nested classes defined in this class.
      */
     public final JClass[] listClasses() {
-        return classes.values().toArray(new JClass[classes.values().size()]);
+        if(classes==null)
+            return new JClass[0];
+        else
+            return classes.values().toArray(new JClass[classes.values().size()]);
     }
 
     /**
@@ -728,10 +747,10 @@ public class JDefinedClass
         for (JMethod m : methods) {
             f.nl().d(m);
         }
-        for (JDefinedClass dc : classes.values()) {
-            f.nl().d(dc);
-        }
-        
+        if(classes!=null)
+            for (JDefinedClass dc : classes.values())
+                f.nl().d(dc);
+
         
         if (directBlock != null)
             f.p(directBlock);
