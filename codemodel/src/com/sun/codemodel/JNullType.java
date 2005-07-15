@@ -39,10 +39,6 @@ public final class JNullType extends JClass {
     public boolean isInterface() { return false; }
     public boolean isAbstract() { return false; }
 
-    public JTypeVar[] typeParams() {
-        return JTypeVar.EMPTY_ARRAY;
-    }
-
     protected JClass substituteParams(JTypeVar[] variables, JClass[] bindings) {
         return this;
     }

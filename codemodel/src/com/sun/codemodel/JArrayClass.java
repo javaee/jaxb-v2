@@ -90,12 +90,6 @@ final class JArrayClass extends JClass {
         return componentType.hashCode();
     }
 
-
-    public JTypeVar[] typeParams() {
-        return JTypeVar.EMPTY_ARRAY;
-    }
-
-
     protected JClass substituteParams(JTypeVar[] variables, JClass[] bindings) {
         if( componentType.isPrimitive() )
             return this;

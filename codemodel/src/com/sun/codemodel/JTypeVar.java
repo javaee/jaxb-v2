@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JTypeVar.java,v 1.3 2005-07-15 21:01:24 kohsuke Exp $
+ * @(#)$Id: JTypeVar.java,v 1.4 2005-07-15 21:49:26 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -91,10 +91,6 @@ public final class JTypeVar extends JClass implements JDeclaration {
     }
 
 
-    public JTypeVar[] typeParams() {
-        return EMPTY_ARRAY;
-    }
-
     protected JClass substituteParams(JTypeVar[] variables, JClass[] bindings) {
         for(int i=0;i<variables.length;i++)
             if(variables[i]==this)
@@ -105,9 +101,4 @@ public final class JTypeVar extends JClass implements JDeclaration {
     public void generate(JFormatter f) {
         f.id(name);
     }
-
-    /**
-     * Sometimes useful reusable empty array.
-     */
-    static final JTypeVar[] EMPTY_ARRAY = new JTypeVar[0];
 }
