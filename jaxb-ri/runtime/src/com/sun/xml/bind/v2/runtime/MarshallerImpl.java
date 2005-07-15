@@ -19,6 +19,9 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.MarshalException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
+import javax.xml.bind.ValidationEventHandler;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.attachment.AttachmentMarshaller;
 import javax.xml.bind.helpers.AbstractMarshallerImpl;
@@ -68,7 +71,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * @author Kohsuke Kawaguchi
  * @author Vivek Pandey
  */
-public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractMarshallerImpl
+public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractMarshallerImpl implements ValidationEventHandler
 {
     /** Indentation string. Default is four whitespaces. */
     private String indent = "    ";
@@ -113,7 +116,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         serializer = new XMLSerializer(this);
 
         try {
-            setEventHandler(context);
+            setEventHandler(this);
         } catch (JAXBException e) {
             throw new AssertionError(e);    // impossible
         }
@@ -429,6 +432,14 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
 
     public void setSchema(Schema s) {
         this.schema = s;
+    }
+
+    /**
+     * Default error handling behavior fot {@link Marshaller}.
+     */
+    public boolean handleEvent(ValidationEvent event) {
+        // draconian by default
+        return false;
     }
 
 

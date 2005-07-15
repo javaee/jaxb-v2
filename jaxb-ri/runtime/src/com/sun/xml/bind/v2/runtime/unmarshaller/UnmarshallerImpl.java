@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: UnmarshallerImpl.java,v 1.12 2005-06-17 19:00:17 kohsuke Exp $
+ * @(#)$Id: UnmarshallerImpl.java,v 1.13 2005-07-15 20:46:34 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -18,6 +18,7 @@ import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.UnmarshallerHandler;
 import javax.xml.bind.ValidationEventHandler;
+import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.attachment.AttachmentUnmarshaller;
 import javax.xml.bind.helpers.AbstractUnmarshallerImpl;
@@ -56,7 +57,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author
  *  <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
-public final class UnmarshallerImpl extends AbstractUnmarshallerImpl
+public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements ValidationEventHandler
 {
     /** Owning {@link JAXBContext} */
     protected final JAXBContextImpl context;
@@ -95,7 +96,7 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl
         DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
 
         try {
-            setEventHandler(context);
+            setEventHandler(this);
         } catch (JAXBException e) {
             throw new AssertionError(e);    // impossible
         }
@@ -400,4 +401,11 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl
         return super.createUnmarshalException(e);
     }
 
+
+    /**
+     * Default error handling behavior fot {@link Unmarshaller}.
+     */
+    public boolean handleEvent(ValidationEvent event) {
+        return event.getSeverity()!=ValidationEvent.FATAL_ERROR;
+    }
 }
