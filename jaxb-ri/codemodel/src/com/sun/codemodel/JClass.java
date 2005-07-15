@@ -254,7 +254,7 @@ public abstract class JClass extends JType
     protected abstract JClass substituteParams( JTypeVar[] variables, JClass[] bindings );
     
     public String toString() {
-        return this.getClass().getName() + "(" + name() + ")";
+        return this.getClass().getName() + '(' + name() + ')';
     }
 
 
