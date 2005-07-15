@@ -22,9 +22,9 @@ import java.io.File;
 public class TreeDumper extends JFrame {
     public TreeDumper(String mainSchemName, JTree tree) {
         super("Tree for schema '" + mainSchemName + "'");
-        this.setLayout(new BorderLayout());
+        this.getRootPane().setLayout(new BorderLayout());
         JScrollPane scrollPane = new JScrollPane(tree);
-        this.add(scrollPane, BorderLayout.CENTER);
+        this.getRootPane().add(scrollPane, BorderLayout.CENTER);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
@@ -56,7 +56,7 @@ public class TreeDumper extends JFrame {
                 tree.setCellRenderer(new SchemaTreeTraverser.SchemaTreeCellRenderer());
                 TreeDumper dumper = new TreeDumper(args[0], tree);
                 Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
-                dumper.setPreferredSize(screenDim);
+//                dumper.setPreferredSize(screenDim);
                 dumper.setSize(screenDim);
                 dumper.setVisible(true);
             }
