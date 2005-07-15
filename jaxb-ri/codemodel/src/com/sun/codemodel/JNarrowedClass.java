@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JNarrowedClass.java,v 1.2 2005-06-14 01:15:24 kohsuke Exp $
+ * @(#)$Id: JNarrowedClass.java,v 1.3 2005-07-15 21:49:26 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -156,10 +156,6 @@ class JNarrowedClass extends JClass {
 
     public int hashCode() {
         return fullName().hashCode();
-    }
-
-    public JTypeVar[] typeParams() {
-        return JTypeVar.EMPTY_ARRAY;
     }
 
     protected JClass substituteParams(JTypeVar[] variables, JClass[] bindings) {

@@ -1,0 +1,80 @@
+package com.sun.codemodel;
+
+import java.util.Iterator;
+
+/**
+ * Represents a wildcard type like "? extends Foo".
+ *
+ * <p>
+ * Instances of this class can be obtained from {@link JClass#
+ *
+ * TODO: extend this to cover "? super Integer".
+ *
+ * <p>
+ * Our modeling of types are starting to look really ugly.
+ * ideally it should have been done somewhat like APT,
+ * but it's too late now.
+ *
+ * @author Kohsuke Kawaguchi
+ */
+final class JTypeWildcard extends JClass {
+
+    private final JClass bound;
+
+    JTypeWildcard(JClass bound) {
+        super(bound.owner());
+        this.bound = bound;
+    }
+
+    public String name() {
+        return "? extends "+bound.name();
+    }
+
+    public String fullName() {
+        return "? extends "+bound.fullName();
+    }
+
+    public JPackage _package() {
+        return null;
+    }
+
+    /**
+     * Returns the class bound of this variable.
+     *
+     * <p>
+     * If no bound is given, this method returns {@link Object}.
+     */
+    public JClass _extends() {
+        if(bound!=null)
+            return bound;
+        else
+            return owner().ref(Object.class);
+    }
+
+    /**
+     * Returns the interface bounds of this variable.
+     */
+    public Iterator _implements() {
+        return bound._implements();
+    }
+
+    public boolean isInterface() {
+        return false;
+    }
+
+    public boolean isAbstract() {
+        return false;
+    }
+
+    protected JClass substituteParams(JTypeVar[] variables, JClass[] bindings) {
+        JClass nb = bound.substituteParams(variables,bindings);
+        if(nb==bound)
+            return this;
+        else
+            return new JTypeWildcard(nb);
+    }
+
+    public void generate(JFormatter f) {
+        f.p("? extends").t(bound);
+    }
+}

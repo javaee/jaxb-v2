@@ -772,6 +772,7 @@ public class JDefinedClass
     public JTypeVar generify(String name, JClass bound) {
         return generifiable.generify(name, bound);
     }
+    @Override
     public JTypeVar[] typeParams() {
         return generifiable.typeParams();
     }

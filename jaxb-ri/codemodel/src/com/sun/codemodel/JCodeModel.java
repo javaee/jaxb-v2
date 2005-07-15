@@ -556,7 +556,7 @@ public final class JCodeModel {
 
         public JTypeVar[] typeParams() {
             // TODO: does JDK 1.5 reflection provides these information?
-            return JTypeVar.EMPTY_ARRAY;
+            return super.typeParams();
         }
 
         protected JClass substituteParams(JTypeVar[] variables, JClass[] bindings) {

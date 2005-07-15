@@ -73,8 +73,15 @@ public abstract class JClass extends JType
      * <code>Set&lt;T></code>, this method returns an array
      * that contains single {@link JTypeVar} for 'T'.
      */
-    abstract public JTypeVar[] typeParams();
-    
+    public JTypeVar[] typeParams() {
+        return EMPTY_ARRAY;
+    }
+
+    /**
+     * Sometimes useful reusable empty array.
+     */
+    protected static final JTypeVar[] EMPTY_ARRAY = new JTypeVar[0];
+
     /**
      * Checks if this object represents an interface.
      */
@@ -237,6 +244,15 @@ public abstract class JClass extends JType
      */
     public final boolean isParameterized() {
         return erasure()!=this;
+    }
+
+    /**
+     * Create "? extends T" from T.
+     *
+     * @return never null
+     */
+    public final JClass wildcard() {
+        return new JTypeWildcard(this);
     }
 
     /**
