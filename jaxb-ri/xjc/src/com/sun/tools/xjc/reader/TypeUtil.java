@@ -9,6 +9,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.List;
+import java.util.ArrayList;
 
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -35,7 +37,7 @@ public class TypeUtil {
      * @param types
      *      set of {@link JType} objects.
      */
-    public static JType getCommonBaseType( JCodeModel codeModel, Collection<JType> types ) {
+    public static JType getCommonBaseType( JCodeModel codeModel, Collection<? extends JType> types ) {
         return getCommonBaseType( codeModel, types.toArray(new JType[types.size()]) );
     }
 
@@ -60,17 +62,17 @@ public class TypeUtil {
         // from this method
         if (uniqueTypes.size() == 1)
             return uniqueTypes.iterator().next();
-        if (uniqueTypes.size() == 0)
-            // assertion failed. nullType can be used only under a very special circumstance
-            throw new AssertionError();
+
+        // assertion failed. nullType can be used only under a very special circumstance
+        assert !uniqueTypes.isEmpty();
+
+        // the null type doesn't need to be taken into account.
+        uniqueTypes.remove(codeModel.NULL);
 
         // box all the types and compute the intersection of all types
-        Set s = null;
-        for (JType type : uniqueTypes) {
-            if (type == codeModel.NULL)
-            // the null type doesn't need to be taken into account.
-                continue;
+        Set<JClass> s = null;
 
+        for (JType type : uniqueTypes) {
             JClass cls = type.boxify();
 
             if (s == null)
@@ -79,13 +81,16 @@ public class TypeUtil {
                 s.retainAll(getAssignableTypes(cls));
         }
 
+        // any JClass can be casted to Object, so make sure it's always there
+        s.add( codeModel.ref(Object.class));
+
         // refine 's' by removing "lower" types.
         // for example, if we have both java.lang.Object and
         // java.io.InputStream, then we don't want to use java.lang.Object.
 
-        JClass[] raw = (JClass[])s.toArray(new JClass[s.size()]);
-
+        JClass[] raw = s.toArray(new JClass[s.size()]);
         s.clear();
+
         for (int i = 0; i < raw.length; i++) { // for each raw[i]
             int j;
             for (j = 0; j < raw.length; j++) { // see if raw[j] "includes" raw[i]
@@ -101,26 +106,87 @@ public class TypeUtil {
                 s.add(raw[i]);
         }
 
-        // assert(s.size()!=0) since at least java.lang.Object has to be there
+        assert !s.isEmpty(); // since at least java.lang.Object has to be there
 
+        // we now pick the candidate for the return type
+        JClass result = pickOne(s);
+
+        // finally, sometimes this method is used to compute the base type of types like
+        // JAXBElement<A>, JAXBElement<B>, and JAXBElement<C>.
+        // for those inputs, at this point result=JAXBElement.
+        //
+        // here, we'll try to figure out the parameterization
+        // so that we can return JAXBElement<? extends D> instead of just "JAXBElement".
+        if(result.isParameterized())
+            return result;
+
+        // for each uniqueType we store the list of base type parameterization
+        List<List<JClass>> parameters = new ArrayList<List<JClass>>(uniqueTypes.size());
+        int paramLen = -1;
+
+        for (JType type : uniqueTypes) {
+            JClass cls = type.boxify();
+            JClass bp = cls.getBaseClass(result);
+            // if there's no parameterization in the base type,
+            // we won't do any better than <?>. Thus no point in trying to figure out the parameterization.
+            // just return the base type.
+            if(bp.equals(result))
+                return result;
+
+            assert bp.isParameterized();
+            List<JClass> tp = bp.getTypeParameters();
+            parameters.add(tp);
+
+            assert paramLen==-1 || paramLen==tp.size();
+                // since 'bp' always is a parameterized version of 'result', it should always
+                // have the same number of parameters.
+            paramLen = tp.size();
+        }
+
+        List<JClass> paramResult = new ArrayList<JClass>();
+        List<JClass> argList = new ArrayList<JClass>(parameters.size());
+        // for each type parameter compute the common base type
+        for( int i=0; i<paramLen; i++ ) {
+            argList.clear();
+            for (List<JClass> list : parameters)
+                argList.add(list.get(i));
+
+            // compute the lower bound.
+            JClass bound = (JClass)getCommonBaseType(codeModel,argList);
+            boolean allSame = true;
+            for (JClass a : argList)
+                allSame &= a.equals(bound);
+            if(!allSame)
+                bound = bound.wildcard();
+
+            paramResult.add(bound);
+        }
+
+        return result.narrow(paramResult);
+    }
+
+    private static JClass pickOne(Set<JClass> s) {
         // we may have more than one candidates at this point.
         // any user-defined generated types should have
         // precedence over system-defined existing types.
         //
         // so try to return such a type if any.
-        Iterator itr = s.iterator();
-        while (itr.hasNext()) {
-            JClass c = (JClass)itr.next();
+        for (JClass c : s)
             if (c instanceof JDefinedClass)
                 return c;
-        }
 
         // we can do more if we like. for example,
         // we can avoid types in the RI runtime.
         // but for now, just return the first one.
-        return (JClass)s.iterator().next();
+        return s.iterator().next();
     }
-    
+
+    private static Set<JClass> getAssignableTypes( JClass t ) {
+        Set<JClass> r = new TreeSet<JClass>(typeComparator);
+        getAssignableTypes(t,r);
+        return r;
+    }
+
     /**
      * Returns the set of all classes/interfaces that a given type
      * implements/extends, including itself.
@@ -129,32 +195,23 @@ public class TypeUtil {
      * set will contain java.lang.Object, java.lang.InputStream, and
      * java.lang.FilterInputStream.
      */
-    public static Set getAssignableTypes( JClass t ) {
-        Set s = new TreeSet(typeComparator);
-        
-        // any JClass can be casted to Object.
-        s.add( t.owner().ref(Object.class));
-        
-        _getAssignableTypes(t,s);
-        return s;
-    }
-    
-    private static void _getAssignableTypes( JClass t, Set s ) {
-        if(!s.add(t))   return;
+    private static void getAssignableTypes( JClass t, Set<JClass> s ) {
+        if(!s.add(t))
+            return;
 
         // add its raw type
         s.add(t.erasure());
 
-        // if this type is added first time,
+        // if this type is added for the first time,
         // recursively process the super class.
         JClass _super = t._extends();
         if(_super!=null)
-            _getAssignableTypes(_super,s);
+            getAssignableTypes(_super,s);
         
         // recursively process all implemented interfaces
-        Iterator itr = t._implements();
+        Iterator<JClass> itr = t._implements();
         while(itr.hasNext())
-            _getAssignableTypes((JClass)itr.next(),s);
+            getAssignableTypes(itr.next(),s);
     }
 
     /**

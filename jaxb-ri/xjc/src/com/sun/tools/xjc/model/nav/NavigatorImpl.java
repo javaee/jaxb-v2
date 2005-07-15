@@ -147,7 +147,7 @@ public final class NavigatorImpl implements Navigator<NType,NClass,Void,Void> {
         }
         if (nt instanceof NClassByJClass) {
             NClassByJClass nnt = (NClassByJClass) nt;
-            return ref(nnt.clazz.getTypeParameter(i));
+            return ref(nnt.clazz.getTypeParameters().get(i));
         }
 
         throw new UnsupportedOperationException();
