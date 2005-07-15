@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.sun.codemodel.JPrimitiveType;
@@ -14,10 +15,6 @@ import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javax.xml.bind.annotation.XmlList;
-
-import javax.xml.bind.annotation.XmlList;
 
 /**
  * {@link TypeAndAnnotation} implementation.
@@ -33,7 +30,7 @@ final class TypeAndAnnotationImpl implements TypeAndAnnotation {
         this.outline = outline;
     }
 
-    public String getTypeClass() {
+    public JType getTypeClass() {
         CAdapter a = typeUse.getAdapterUse();
         NType nt;
         if(a!=null)
@@ -46,12 +43,11 @@ final class TypeAndAnnotationImpl implements TypeAndAnnotation {
         JPrimitiveType prim = jt.boxify().getPrimitiveType();
         if(!typeUse.isCollection() && prim!=null)
             jt = prim;
-        String name = jt.fullName();
 
         if(typeUse.isCollection())
-            name = name+"[]";
+            jt = jt.array();
 
-        return name;
+        return jt;
     }
 
     public List<String> getAnnotations() {

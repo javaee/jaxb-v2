@@ -2,6 +2,8 @@ package com.sun.tools.xjc.api;
 
 import java.util.List;
 
+import com.sun.codemodel.JType;
+
 /**
  *
  *
@@ -9,12 +11,16 @@ import java.util.List;
  */
 public interface TypeAndAnnotation {
     /**
-     * Returns the fully-qualified name of the java type.
+     * Returns the Java type.
      *
+     * <p>
+     * {@link JType} is a representation of a Java type in a codeModel.
+     * If you just need the fully-qualified class name, call {@link JType#fullName()}.
+     * 
      * @return
      *      never be null.
      */
-    String getTypeClass();
+    JType getTypeClass();
 
     /**
      * Returns the additional annotations needed to be with the type.
