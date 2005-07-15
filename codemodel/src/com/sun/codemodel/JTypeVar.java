@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JTypeVar.java,v 1.2 2005-05-23 14:34:37 kohsuke Exp $
+ * @(#)$Id: JTypeVar.java,v 1.3 2005-07-15 21:01:24 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -9,21 +9,12 @@
  */
 package com.sun.codemodel;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Type variable used to declare generics.
  * 
- * <p>
- * A type variable may have one class bound, and any number of
- * interface bounds (which are usually written as
- * <code>T extends A&amp;B&amp;C</code>.
- * 
  * @see JGenerifiable
- * 
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
@@ -31,10 +22,8 @@ public final class JTypeVar extends JClass implements JDeclaration {
     
     private final String name;
     
-    private JClass classBound;
-    
-    private List<JClass> interfaceBounds;
-    
+    private JClass bound;
+
     JTypeVar(JCodeModel owner, String _name) {
         super(owner);
         this.name = _name;
@@ -58,15 +47,9 @@ public final class JTypeVar extends JClass implements JDeclaration {
      * @return  this
      */
     public JTypeVar bound( JClass c ) {
-        if( c.isInterface() ) {
-            if(interfaceBounds==null)
-                interfaceBounds = new ArrayList<JClass>(1);
-            interfaceBounds.add(c);
-        } else {
-            if(classBound!=null)
-                throw new IllegalArgumentException("type variable has an existing class bound "+classBound);
-            classBound = c;
-        }
+        if(bound!=null)
+            throw new IllegalArgumentException("type variable has an existing class bound "+bound);
+        bound = c;
         return this;
     }
 
@@ -77,8 +60,8 @@ public final class JTypeVar extends JClass implements JDeclaration {
      * If no bound is given, this method returns {@link Object}.
      */
     public JClass _extends() {
-        if(classBound!=null)
-            return classBound;
+        if(bound!=null)
+            return bound;
         else
             return owner().ref(Object.class);
     }
@@ -87,9 +70,7 @@ public final class JTypeVar extends JClass implements JDeclaration {
      * Returns the interface bounds of this variable.
      */
     public Iterator _implements() {
-        if(interfaceBounds==null)
-            return Collections.EMPTY_LIST.iterator();
-        return interfaceBounds.iterator();
+        return bound._implements();
     }
 
     public boolean isInterface() {
@@ -105,13 +86,8 @@ public final class JTypeVar extends JClass implements JDeclaration {
      */
     public void declare(JFormatter f) {
         f.id(name);
-        if(interfaceBounds!=null) {
-            f.p("extends");
-            for(int i=0;i<interfaceBounds.size();i++) {
-                if(i!=0)    f.p('&');
-                f.g(interfaceBounds.get(i));
-            }
-        }
+        if(bound!=null)
+            f.p("extends").g(bound);
     }
 
 
