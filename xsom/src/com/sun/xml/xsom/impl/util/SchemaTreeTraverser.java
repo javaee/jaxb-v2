@@ -104,7 +104,7 @@ public class SchemaTreeTraverser implements XSVisitor, XSSimpleTypeVisitor {
             }
             else {
                 String filename = locator.getSystemId();
-                filename = filename.replace("%20", " ");
+                filename = filename.replaceAll("\u002520", " ");
                 // strip leading protocol
                 if (filename.startsWith("file:/")) {
                     filename = filename.substring(6);
