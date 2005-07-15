@@ -6,6 +6,7 @@ package com.sun.codemodel;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Special class object that represents the type of "null".
@@ -36,7 +37,7 @@ public final class JNullType extends JClass {
     public boolean isInterface() { return false; }
     public boolean isAbstract() { return false; }
 
-    protected JClass substituteParams(JTypeVar[] variables, JClass[] bindings) {
+    protected JClass substituteParams(JTypeVar[] variables, List<JClass> bindings) {
         return this;
     }
 }

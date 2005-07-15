@@ -1,6 +1,7 @@
 package com.sun.codemodel;
 
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Represents a wildcard type like "? extends Foo".
@@ -66,7 +67,7 @@ final class JTypeWildcard extends JClass {
         return false;
     }
 
-    protected JClass substituteParams(JTypeVar[] variables, JClass[] bindings) {
+    protected JClass substituteParams(JTypeVar[] variables, List<JClass> bindings) {
         JClass nb = bound.substituteParams(variables,bindings);
         if(nb==bound)
             return this;

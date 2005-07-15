@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JNarrowedClass.java,v 1.4 2005-07-15 22:09:04 kohsuke Exp $
+ * @(#)$Id: JNarrowedClass.java,v 1.5 2005-07-15 23:39:58 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -10,6 +10,9 @@
 package com.sun.codemodel;
 
 import java.util.Iterator;
+import java.util.List;
+import java.util.Collections;
+import java.util.ArrayList;
 
 /**
  * Represents X&lt;Y>.
@@ -27,13 +30,13 @@ class JNarrowedClass extends JClass {
     /**
      * Arguments to those parameters.
      */
-    private final JClass[] args;
+    private final List<JClass> args;
 
     JNarrowedClass(JClass basis, JClass arg) {
-        this(basis,new JClass[]{arg});
+        this(basis,Collections.singletonList(arg));
     }
     
-    JNarrowedClass(JClass basis, JClass[] args) {
+    JNarrowedClass(JClass basis, List<JClass> args) {
         super(basis.owner());
         this.basis = basis;
         assert !(basis instanceof JNarrowedClass);
@@ -41,27 +44,29 @@ class JNarrowedClass extends JClass {
     }
 
     public JClass narrow( JClass clazz ) {
-        JClass[] newArgs = new JClass[args.length+1];
-        System.arraycopy(args,0,newArgs,0,args.length);
-        newArgs[args.length] = clazz;
+        List<JClass> newArgs = new ArrayList<JClass>(args);
+        newArgs.add(clazz);
         return new JNarrowedClass(basis,newArgs);
     }
 
     public JClass narrow( JClass... clazz ) {
-        JClass[] newArgs = new JClass[args.length+clazz.length];
-        System.arraycopy(args,0,newArgs,0,args.length);
-        System.arraycopy(clazz,0,newArgs,args.length,clazz.length);
+        List<JClass> newArgs = new ArrayList<JClass>(args);
+        for (JClass c : clazz)
+            newArgs.add(c);
         return new JNarrowedClass(basis,newArgs);
     }
-
 
     public String name() {
         StringBuffer buf = new StringBuffer();
         buf.append(basis.name());
         buf.append('<');
-        for( int i=0; i<args.length; i++ ) {
-            if(i!=0)    buf.append(',');
-            buf.append(args[i].name());
+        boolean first = true;
+        for (JClass c : args) {
+            if(first)
+                first = false;
+            else
+                buf.append(',');
+            buf.append(c.name());
         }
         buf.append('>');
         return buf.toString();
@@ -71,21 +76,20 @@ class JNarrowedClass extends JClass {
         StringBuffer buf = new StringBuffer();
         buf.append(basis.fullName());
         buf.append('<');
-        for( int i=0; i<args.length; i++ ) {
-            if(i!=0)    buf.append(',');
-            buf.append(args[i].fullName());
+        boolean first = true;
+        for (JClass c : args) {
+            if(first)
+                first = false;
+            else
+                buf.append(',');
+            buf.append(c.fullName());
         }
         buf.append('>');
         return buf.toString();
     }
 
     public void generate(JFormatter f) {
-        f.t(basis).p('<');
-        for( int i=0; i<args.length; i++ ) {
-            if(i!=0)    f.p(',');
-            f.g(args[i]);
-        }
-        f.p(JFormatter.CLOSE_TYPE_ARGS);
+        f.t(basis).p('<').g(args).p(JFormatter.CLOSE_TYPE_ARGS);
     }
 
     @Override
@@ -158,14 +162,15 @@ class JNarrowedClass extends JClass {
         return fullName().hashCode();
     }
 
-    protected JClass substituteParams(JTypeVar[] variables, JClass[] bindings) {
+    protected JClass substituteParams(JTypeVar[] variables, List<JClass> bindings) {
         JClass b = basis.substituteParams(variables,bindings);
         boolean different = b!=basis;
         
-        JClass[] clazz = new JClass[args.length];
-        for( int i=0; i<clazz.length; i++ ) {
-            clazz[i] = args[i].substituteParams(variables,bindings);
-            different |= clazz[i] != args[i];
+        List<JClass> clazz = new ArrayList<JClass>(args.size());
+        for( int i=0; i<clazz.size(); i++ ) {
+            JClass c = args.get(i).substituteParams(variables,bindings);
+            clazz.set(i,c);
+            different |= c != args.get(i);
         }
         
         if(different)
@@ -174,7 +179,7 @@ class JNarrowedClass extends JClass {
             return this;
     }
 
-    public JClass getTypeParameter(int index) {
-        return args[index];
+    public List<JClass> getTypeParameters() {
+        return args;
     }
 }

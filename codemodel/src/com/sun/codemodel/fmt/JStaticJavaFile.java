@@ -15,6 +15,7 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.Iterator;
+import java.util.List;
 
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JPackage;
@@ -210,7 +211,7 @@ public final class JStaticJavaFile extends JResourceFile {
             return typeParams;
         }
 
-        protected JClass substituteParams(JTypeVar[] variables, JClass[] bindings) {
+        protected JClass substituteParams(JTypeVar[] variables, List<JClass> bindings) {
             return this;
         }
     };

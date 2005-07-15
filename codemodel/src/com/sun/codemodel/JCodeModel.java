@@ -493,7 +493,7 @@ public final class JCodeModel {
             return super.typeParams();
         }
 
-        protected JClass substituteParams(JTypeVar[] variables, JClass[] bindings) {
+        protected JClass substituteParams(JTypeVar[] variables, List<JClass> bindings) {
             // TODO: does JDK 1.5 reflection provides these information?
             return this;
         }
