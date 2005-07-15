@@ -321,7 +321,7 @@ public final class JPackage implements JDeclaration, JGenerable, JClassContainer
      * Returns an iterator that walks the top-level classes defined in this
      * package.
      */
-    public Iterator classes() {
+    public Iterator<JDefinedClass> classes() {
         return classes.values().iterator();
     }
     

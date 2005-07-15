@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JNarrowedClass.java,v 1.3 2005-07-15 21:49:26 kohsuke Exp $
+ * @(#)$Id: JNarrowedClass.java,v 1.4 2005-07-15 22:09:04 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -113,14 +113,14 @@ class JNarrowedClass extends JClass {
         return base.substituteParams(basis.typeParams(),args);
     }
 
-    public Iterator _implements() {
-        return new Iterator() {
-            private final Iterator core = basis._implements();
+    public Iterator<JClass> _implements() {
+        return new Iterator<JClass>() {
+            private final Iterator<JClass> core = basis._implements();
             public void remove() {
                 core.remove();
             }
-            public Object next() {
-                return ((JClass)core.next()).substituteParams(basis.typeParams(),args);
+            public JClass next() {
+                return core.next().substituteParams(basis.typeParams(),args);
             }
             public boolean hasNext() {
                 return core.hasNext();
