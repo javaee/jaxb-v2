@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.37 2005-07-14 20:15:37 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.38 2005-07-15 20:46:34 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -20,13 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.bind.Binder;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBIntrospector;
-import javax.xml.bind.ValidationEvent;
-import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.Validator;
-import javax.xml.bind.Binder;
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
@@ -87,13 +85,9 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * <p>
- * This is ugly, but this class implements {@link ValidationEventHandler}
- * and always return true. This {@link ValidationEventHandler} is the default for 2.0.
- *
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  */
-public final class JAXBContextImpl extends JAXBRIContext implements ValidationEventHandler {
+public final class JAXBContextImpl extends JAXBRIContext {
 
     /**
      * All the bridge classes.
@@ -802,13 +796,5 @@ public final class JAXBContextImpl extends JAXBRIContext implements ValidationEv
             }
         }
         return null;
-    }
-
-    /**
-     * Convenient default event handler implementation.
-     * Merged into this class just to save another object.
-     */
-    public boolean handleEvent(ValidationEvent event) {
-        return event.getSeverity()!=ValidationEvent.FATAL_ERROR;
     }
 }
