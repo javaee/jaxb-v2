@@ -4,8 +4,8 @@
  */
 package com.sun.codemodel;
 
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 /**
  * Special class object that represents the type of "null".
@@ -29,11 +29,8 @@ public final class JNullType extends JClass {
 
     public JClass _extends() { return null; }
 
-    public Iterator _implements() { return new Iterator() {
-            public boolean hasNext() { return false; }
-            public Object next() { throw new NoSuchElementException(); }
-            public void remove() { throw new UnsupportedOperationException(); }
-        };
+    public Iterator<JClass> _implements() {
+        return Collections.<JClass>emptyList().iterator();
     }
 
     public boolean isInterface() { return false; }

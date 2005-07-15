@@ -54,7 +54,7 @@ final class JTypeWildcard extends JClass {
     /**
      * Returns the interface bounds of this variable.
      */
-    public Iterator _implements() {
+    public Iterator<JClass> _implements() {
         return bound._implements();
     }
 

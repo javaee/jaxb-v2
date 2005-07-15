@@ -88,7 +88,7 @@ public interface JClassContainer {
      * Returns an iterator that walks the nested classes defined in this
      * class.
      */
-    public Iterator classes();
+    public Iterator<JDefinedClass> classes();
     
     /**
      * Parent JClassContainer.

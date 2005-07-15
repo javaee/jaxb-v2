@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JTypeVar.java,v 1.4 2005-07-15 21:49:26 kohsuke Exp $
+ * @(#)$Id: JTypeVar.java,v 1.5 2005-07-15 22:09:05 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -69,7 +69,7 @@ public final class JTypeVar extends JClass implements JDeclaration {
     /**
      * Returns the interface bounds of this variable.
      */
-    public Iterator _implements() {
+    public Iterator<JClass> _implements() {
         return bound._implements();
     }
 

@@ -5,6 +5,7 @@
 package com.sun.codemodel;
 
 import java.util.Iterator;
+import java.util.Collections;
 
 /**
  * Array class.
@@ -44,8 +45,8 @@ final class JArrayClass extends JClass {
         return owner().ref(Object.class);
     }
 
-    public Iterator _implements() {
-        return emptyIterator;
+    public Iterator<JClass> _implements() {
+        return Collections.<JClass>emptyList().iterator();
     }
 
     public boolean isInterface() {
@@ -56,14 +57,6 @@ final class JArrayClass extends JClass {
         return false;
     }
 
-    
-    /** Iterator that walks on an empty list. */
-    private static Iterator emptyIterator = new Iterator() {
-        public boolean hasNext() { return false; }
-        public Object next() { throw new IllegalStateException(); }
-        public void remove() { throw new UnsupportedOperationException(); }
-    };
-    
     public JType elementType() {
         return componentType;
     }

@@ -63,7 +63,7 @@ public abstract class JClass extends JType
      *		{@link JClass} objects that represents those interfaces
      *		implemented by this object.
      */
-    abstract public Iterator _implements();
+    abstract public Iterator<JClass> _implements();
     
     /**
      * Iterates all the type parameters of this class/interface.

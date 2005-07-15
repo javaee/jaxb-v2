@@ -257,7 +257,7 @@ public class JDefinedClass
      * Returns an iterator that walks the nested classes defined in this
      * class.
      */
-    public Iterator _implements() {
+    public Iterator<JClass> _implements() {
         return interfaces.iterator();
     }
 
@@ -649,7 +649,7 @@ public class JDefinedClass
      * Returns an iterator that walks the nested classes defined in this
      * class.
      */
-    public final Iterator classes() {
+    public final Iterator<JDefinedClass> classes() {
         return classes.values().iterator();
     }
 

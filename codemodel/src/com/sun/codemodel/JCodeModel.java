@@ -8,13 +8,13 @@ package com.sun.codemodel;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Collections;
 import java.util.List;
-import java.util.ArrayList;
-import java.lang.reflect.Modifier;
+import java.util.Map;
 
 import com.sun.codemodel.writer.FileCodeWriter;
 import com.sun.codemodel.writer.ProgressCodeWriter;
@@ -415,67 +415,15 @@ public final class JCodeModel {
         JReferencedClass(Class _clazz) {
             super(JCodeModel.this);
             this._class = _clazz;
-
-            if (_class.isArray())
-                throw new InternalError("assertion failure: class cannot be an array");
-        }
-
-        /**
-         * Converts encoded array type name (e.g., "[[B") into
-         * a normal type name (e.g., "byte[][]").
-         */
-        private String getArrayName(String name) {
-            // this reference class actually points to an array
-            // I don't know if it's a good idea to keep it as JClass
-            // --- you can well argue that since it's array, we should
-            // use JType. I think, since we allow JCodeModel.ref method
-            // to take a Class object, it's really hard (and not application
-            // friendly) to prohibit those arrays.
-            // so let's just make it work.
-            int i = 1;
-            while (name.charAt(i) == '[')
-                i++;
-
-            String[] primitives =
-                new String[] { "Bbyte", "Cchar", "Ddouble", "Ffloat", "Iint", "Jlong", "Sshort", "2boolean" };
-
-            String r = null;
-
-            for (String p : primitives) {
-                if (p.charAt(0) == name.charAt(i))
-                    r = p.substring(1);
-            }
-            if (r == null) {
-                // ASSERT: it must be Lclassname;
-                if (name.charAt(i) != 'L')
-                    throw new InternalError();
-
-                r = name.substring(i + 1, name.length() - 1);
-            }
-
-            for (; i > 0; i--)
-                r += "[]";
-            return r;
+            assert !_class.isArray();
         }
 
         public String name() {
-            String name = _class.getName();
-            if (name.charAt(0) == '[')
-                return getArrayName(name);
-
-            int idx = name.lastIndexOf('.');
-            if (idx < 0)
-                return name;
-            else
-                return name.substring(idx + 1);
+            return _class.getSimpleName();
         }
 
         public String fullName() {
-            String name = _class.getName();
-            if (name.charAt(0) == '[')
-                return getArrayName(name);
-            else
-                return name;
+            return _class.getName().replace('$','.');
         }
 
         public JPackage _package() {
@@ -498,17 +446,17 @@ public final class JCodeModel {
             if (sp == null)
                 return null;
             else
-                return JCodeModel.this.ref(sp);
+                return ref(sp);
         }
 
-        public Iterator _implements() {
+        public Iterator<JClass> _implements() {
             final Class[] interfaces = _class.getInterfaces();
-            return new Iterator() {
+            return new Iterator<JClass>() {
                 private int idx = 0;
                 public boolean hasNext() {
                     return idx < interfaces.length;
                 }
-                public Object next() {
+                public JClass next() {
                     return JCodeModel.this.ref(interfaces[idx++]);
                 }
                 public void remove() {
@@ -526,29 +474,15 @@ public final class JCodeModel {
         }
 
         public JPrimitiveType getPrimitiveType() {
-            if (_class == Boolean.class)
-                return BOOLEAN;
-            if (_class == Byte.class)
-                return BYTE;
-            if (_class == Character.class)
-                return CHAR;
-            if (_class == Double.class)
-                return DOUBLE;
-            if (_class == Float.class)
-                return FLOAT;
-            if (_class == Integer.class)
-                return INT;
-            if (_class == Long.class)
-                return LONG;
-            if (_class == Short.class)
-                return SHORT;
-            if (_class == Void.class)
-                return VOID;
-            return null;
+            Class v = boxToPrimitive.get(_class);
+            if(v!=null)
+                return JType.parse(JCodeModel.this,v.getName());
+            else
+                return null;
         }
 
         public boolean isArray() {
-            return _class.isArray();
+            return false;
         }
 
         public void declare(JFormatter f) {
