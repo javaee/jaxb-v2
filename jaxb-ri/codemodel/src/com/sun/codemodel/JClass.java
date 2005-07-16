@@ -171,7 +171,7 @@ public abstract class JClass extends JType
      */
     public final JClass getBaseClass( JClass baseType ) {
 
-        if( this.erasure()==baseType )
+        if( this.erasure().equals(baseType) )
             return this;
 
         JClass b = _extends();
@@ -181,9 +181,9 @@ public abstract class JClass extends JType
                 return bc;
         }
 
-        Iterator itfs = _implements();
+        Iterator<JClass> itfs = _implements();
         while( itfs.hasNext() ) {
-            JClass bc = ((JClass)itfs.next()).getBaseClass(baseType);
+            JClass bc = itfs.next().getBaseClass(baseType);
             if(bc!=null)
                 return bc;
         }
