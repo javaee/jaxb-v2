@@ -235,10 +235,11 @@ public class JDefinedClass
     }
 
     /**
-     * Returns the class extended by this class,
-     * or <tt>null</tt> if this class does not explicitly extend a class.
+     * Returns the class extended by this class.
      */
     public JClass _extends() {
+        if(superClass==null)
+            superClass = owner().ref(Object.class);
         return superClass;
     }
 
