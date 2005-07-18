@@ -32,7 +32,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.23 2005-07-18 22:40:08 kohsuke Exp $
+       $Id: build.xml,v 1.24 2005-07-18 23:05:10 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -92,6 +92,7 @@
         <group title="CodeModel" packages="com.sun.codemodel*" />
 
         <packageset dir="${runtime.src}"/>
+        <packageset dir="${runtime-api.src}"/>
         <packageset dir="${schemagen.src}"/>
         <group title="Runtime API for JAX-WS" packages="com.sun.xml.bind.api" />
         <group title="Runtime" packages="com.sun.xml.bind*" />
