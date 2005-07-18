@@ -10,8 +10,14 @@ import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.RootDoc;
+import com.sun.javadoc.PackageDoc;
+import com.sun.javadoc.Tag;
+import com.sun.javadoc.Doc;
 import com.sun.tools.doclets.formats.html.HtmlDoclet;
+import com.sun.tools.doclets.formats.html.ConfigurationImpl;
+import com.sun.tools.doclets.formats.html.PackageIndexFrameWriter;
 import com.sun.tools.doclets.internal.toolkit.builders.AbstractBuilder;
+import com.sun.tools.doclets.internal.toolkit.builders.PackageSummaryBuilder;
 import com.sun.tools.doclets.internal.toolkit.util.ClassTree;
 import com.sun.tools.doclets.internal.toolkit.util.DocletAbortException;
 import com.sun.tools.doclets.internal.toolkit.util.DocletConstants;
@@ -72,6 +78,9 @@ public class CustomHtmlDoclet extends HtmlDoclet {
             }
         }
 
+//        configuration.tagletManager.addCustomTag(new ArchitectureDocumentTaglet());
+        configuration.tagletManager.addNewSimpleCustomTag("ArchitectureDocument","","X");
+
         PackageListWriter.generate(configuration);
         generatePackageFiles(classtree);
 
@@ -80,31 +89,53 @@ public class CustomHtmlDoclet extends HtmlDoclet {
     }
 
 
-//    /*
-//        Most of the code is ripped from the base class. I just want to
-//        generate a different kind of the summary page here.
-//    */
-//    @Override
-//    protected void generatePackageFiles(ClassTree classtree) throws Exception {
-//        super.generatePackageFiles(classtree);
-//
-//        PackageDoc[] packages = configuration.packages;
-//        PackageDoc prev = null, next;
-//        for(int i = 0; i < packages.length; i++) {
-//            next = (i + 1 < packages.length && packages[i+1].name().length() > 0) ?
-//                packages[i+1] : null;
-//            //If the next package is unnamed package, skip 2 ahead if possible
-//            next = (i + 2 < packages.length && next == null) ?
-//                packages[i+2]: next;
-//
-//            PackageSummaryBuilder packageSummaryBuilder;
-//            packageSummaryBuilder = PackageSummaryBuilder.getInstance(configuration, packages[i],
-//                new CustomPackageWriterImpl(ConfigurationImpl.getInstance(), packages[i], prev, next ));
-//            packageSummaryBuilder.build();
-//
-//            prev = packages[i];
-//        }
-//    }
+    /*
+        Most of the code is ripped from the base class. I just want to
+        generate a different kind of the summary page here.
+    */
+    @Override
+    protected void generatePackageFiles(ClassTree classtree) throws Exception {
+        super.generatePackageFiles(classtree);
+
+        PackageDoc[] packages = configuration.packages;
+        if (packages.length > 1) {
+            PackageIndexFrameWriter.generate(configuration);
+        }
+        PackageDoc prev = null, next;
+        for(int i = 0; i < packages.length; i++) {
+            next = (i + 1 < packages.length && packages[i+1].name().length() > 0) ?
+                packages[i+1] : null;
+            //If the next package is unnamed package, skip 2 ahead if possible
+            next = (i + 2 < packages.length && next == null) ?
+                packages[i+2]: next;
+
+            AbstractBuilder packageSummaryBuilder;
+
+            if(containsArchDocTag(packages[i])) {
+                packageSummaryBuilder = PackageSummaryBuilder.getInstance(configuration, packages[i],
+                    new CustomPackageWriterImpl(ConfigurationImpl.getInstance(), packages[i], prev, next ));
+            } else {
+                packageSummaryBuilder = configuration.getBuilderFactory().getPackageSummaryBuilder(
+                    packages[i], prev, next);
+            }
+
+
+            packageSummaryBuilder.build();
+
+            prev = packages[i];
+        }
+    }
+
+    /**
+     * Checks if the package javadoc contains @ArchitectureDocument tag
+     */
+    private boolean containsArchDocTag(Doc doc) {
+        for (Tag tag : doc.tags()) {
+            if(tag.name().equals("@ArchitectureDocument"))
+                return true;
+        }
+        return false;
+    }
 
     /*
         Generate description-only HTML from class javadoc,
@@ -119,7 +150,7 @@ public class CustomHtmlDoclet extends HtmlDoclet {
         List<ClassDoc> archdocs = new ArrayList<ClassDoc>();
 
         for (ClassDoc cd : arr) {
-            if(cd.qualifiedName().contains(".ArchitectureDocument"))
+            if(containsArchDocTag(cd))
                 archdocs.add(cd);
             else
                 normals.add(cd);
@@ -143,9 +174,8 @@ public class CustomHtmlDoclet extends HtmlDoclet {
                 null:
                 arr[i+1];
             try {
-                AbstractBuilder classBuilder =
-                    CustomClassBuilder.getInstance(configuration, curr,
-                        new CustomClassWriterImpl(curr, prev, next,classtree));
+                AbstractBuilder classBuilder = CustomClassBuilder.getInstance(configuration, curr,
+                                        new CustomClassWriterImpl(curr, prev, next,classtree));
                 classBuilder.build();
             } catch (Exception e) {
                 e.printStackTrace();
