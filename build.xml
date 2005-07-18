@@ -32,7 +32,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.19 2005-06-01 01:18:11 kohsuke Exp $
+       $Id: build.xml,v 1.20 2005-07-18 20:01:27 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -65,8 +65,42 @@
         <ant dir="xjc"                 target="compile" />
         <ant dir="tools"               target="compile" />
     </target>
-    
-    
+
+    <target name="architecture-document"
+            description="generate architecture documents (which is just a glorified javadoc)">
+      <ant dir="tools/taglets" target="compile" />
+      <mkdir dir="${jaxb.root}/build/javadoc" />
+      <javadoc
+            destdir="${jaxb.root}/build/javadoc"
+            use="true"
+            author="false"
+            version="false"
+            windowtitle="JAXB RI"
+            doctitle="JAXB RI"
+            access="package">
+        <doclet name="com.sun.xml.bind.taglets.CustomHtmlDoclet"
+                path="${jaxb.root}/tools/taglets/build/classes">
+        </doclet>
+        <arg value="-quiet"/>
+
+        <packageset dir="${xjc.root}/javadoc"/>
+        <group title="Root Architecture Document" packages="jaxb" />
+
+        <packageset dir="${codemodel.src}"/>
+        <group title="CodeModel" packages="com.sun.codemodel*" />
+
+        <packageset dir="${runtime.src}"/>
+        <packageset dir="${schemagen.src}"/>
+        <group title="Runtime API for JAX-WS" packages="com.sun.xml.bind.api" />
+        <group title="Runtime" packages="com.sun.xml.bind*" />
+
+        <packageset dir="${xjc.src}"/>
+        <group title="XJC API for JAX-WS" packages="com.sun.tools.xjc.api" />
+        <group title="XJC" packages="com.sun.tools.xjc*:com.sun.tools.jxc*" />
+
+      </javadoc>
+    </target>
+
     <!-- process sample app meta data -->
     <target name="process-samples"
             description="process sample.meta data">
