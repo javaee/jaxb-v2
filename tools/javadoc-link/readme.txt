@@ -1,0 +1,1 @@
+Stores package-list files for offline javadoc generation.
