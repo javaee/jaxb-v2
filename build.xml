@@ -32,7 +32,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.22 2005-07-18 22:35:47 kohsuke Exp $
+       $Id: build.xml,v 1.23 2005-07-18 22:40:08 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -106,6 +106,10 @@
           offline="true" packagelistloc="${jaxb.root}/tools/javadoc-link/j2se5.0"  />
         <link href="https://xsom.dev.java.net/nonav/javadoc/"
           offline="true" packagelistloc="${jaxb.root}/tools/javadoc-link/xsom"  />
+
+        <classpath>
+          <fileset dir="${jaxb.libs}/" includes="**/*.jar" />
+        </classpath>
       </javadoc>
     </target>
 
