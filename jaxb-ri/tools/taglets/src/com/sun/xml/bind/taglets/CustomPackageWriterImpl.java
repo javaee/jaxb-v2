@@ -37,7 +37,7 @@ public class CustomPackageWriterImpl extends HtmlDocletWriter
     /**
      * The name of the output file.
      */
-    private static final String OUTPUT_FILE_NAME = "package.html";
+    private static final String OUTPUT_FILE_NAME = "package-summary.html";
 
     /**
      * Constructor to construct PackageWriter object and to generate
