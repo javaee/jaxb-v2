@@ -1,5 +1,5 @@
 /**
- * Library for generating Java source code.
+ * <h1>Library for generating Java source code</h1>.
  *
  * <p>
  * CodeModel is a library that allows you to generate Java source
@@ -50,6 +50,8 @@
  * is slow, as it needs to traverse each AST node. Consider
  * pre-encoding tokens (like 'public') to the target encoding,
  * and consider exploting the subtree equivalence.
+ *
+ * @ArchitectureDocument
  */
 package com.sun.codemodel;
 
