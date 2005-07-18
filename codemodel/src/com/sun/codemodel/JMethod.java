@@ -361,11 +361,15 @@ public class JMethod extends JGenerifiableImpl implements JDeclaration, JAnnotat
 		f.g(mods);
 		if (!isConstructor())
 			f.g(type);
-		f.id(name).p('(');
+		f.id(name).p('(').i();
+        // when parameters are printed in new lines, we want them to be indented.
+        // there's a good chance no newlines happen, too, but just in case it does.
 		boolean first = true;
         for (JVar var : params) {
             if (!first)
                 f.p(',');
+            if(var.isAnnotated())
+                f.nl();
             f.b(var);
             first = false;
         }
@@ -377,7 +381,7 @@ public class JMethod extends JGenerifiableImpl implements JDeclaration, JAnnotat
 			f.id(varParam.name());
 		}
 
-		f.p(')');
+		f.o().p(')');
 		if (_throws!=null && !_throws.isEmpty()) {
 			f.nl().i().p("throws").g(_throws).nl().o();
 		}

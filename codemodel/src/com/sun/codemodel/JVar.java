@@ -118,6 +118,9 @@ public class JVar extends JExpressionImpl implements JDeclaration, JAssignmentTa
         return TypedAnnotationWriter.create(clazz,this);
     }
 
+    protected boolean isAnnotated() {
+        return annotations!=null;
+    }
 
     public void bind(JFormatter f) {
         if (annotations != null){
