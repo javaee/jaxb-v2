@@ -32,7 +32,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.20 2005-07-18 20:01:27 kohsuke Exp $
+       $Id: build.xml,v 1.21 2005-07-18 22:25:24 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -78,6 +78,8 @@
             windowtitle="JAXB RI"
             doctitle="JAXB RI"
             access="package">
+        <!--arg line="-J-Xdebug -J-Xrunjdwp:transport=dt_socket,server=y,address=8000" /-->
+
         <doclet name="com.sun.xml.bind.taglets.CustomHtmlDoclet"
                 path="${jaxb.root}/tools/taglets/build/classes">
         </doclet>
@@ -98,6 +100,12 @@
         <group title="XJC API for JAX-WS" packages="com.sun.tools.xjc.api" />
         <group title="XJC" packages="com.sun.tools.xjc*:com.sun.tools.jxc*" />
 
+        <link href="https://jaxb.dev.java.net/nonav/jaxb20-pr/api/"
+          offline="true" packagelistloc="${jaxb.root}/tools/javadoc-link/jaxb-api"   />
+        <link href="http://java.sun.com/j2se/1.5.0/docs/api/"
+          offline="true" packagelistloc="${jaxb.root}/tools/javadoc-link/j2se5.0"  />
+        <link href="https://xsom.dev.java.net/nonav/javadoc/"
+          offline="true" packagelistloc="${jaxb.root}/tools/javadoc-link/xsom"  />
       </javadoc>
     </target>
 
