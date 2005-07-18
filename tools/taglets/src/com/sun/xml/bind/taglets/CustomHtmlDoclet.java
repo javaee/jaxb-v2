@@ -7,17 +7,16 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.Doc;
 import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.LanguageVersion;
-import com.sun.javadoc.RootDoc;
 import com.sun.javadoc.PackageDoc;
+import com.sun.javadoc.RootDoc;
 import com.sun.javadoc.Tag;
-import com.sun.javadoc.Doc;
-import com.sun.tools.doclets.formats.html.HtmlDoclet;
 import com.sun.tools.doclets.formats.html.ConfigurationImpl;
+import com.sun.tools.doclets.formats.html.HtmlDoclet;
 import com.sun.tools.doclets.formats.html.PackageIndexFrameWriter;
 import com.sun.tools.doclets.internal.toolkit.builders.AbstractBuilder;
-import com.sun.tools.doclets.internal.toolkit.builders.PackageSummaryBuilder;
 import com.sun.tools.doclets.internal.toolkit.util.ClassTree;
 import com.sun.tools.doclets.internal.toolkit.util.DocletAbortException;
 import com.sun.tools.doclets.internal.toolkit.util.DocletConstants;
@@ -112,7 +111,7 @@ public class CustomHtmlDoclet extends HtmlDoclet {
             AbstractBuilder packageSummaryBuilder;
 
             if(containsArchDocTag(packages[i])) {
-                packageSummaryBuilder = PackageSummaryBuilder.getInstance(configuration, packages[i],
+                packageSummaryBuilder = CustomPackageSummaryBuilder.getInstance(configuration, packages[i],
                     new CustomPackageWriterImpl(ConfigurationImpl.getInstance(), packages[i], prev, next ));
             } else {
                 packageSummaryBuilder = configuration.getBuilderFactory().getPackageSummaryBuilder(
