@@ -1,23 +1,18 @@
 package com.sun.tools.xjc.api.impl.s2j;
 
-import static com.sun.tools.xjc.outline.Aspect.EXPOSED;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlList;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.sun.codemodel.JAnnotatable;
 import com.sun.codemodel.JPrimitiveType;
 import com.sun.codemodel.JType;
-import com.sun.codemodel.JAnnotatable;
 import com.sun.tools.xjc.api.TypeAndAnnotation;
+import com.sun.tools.xjc.generator.annotation.spec.XmlJavaTypeAdapterWriter;
 import com.sun.tools.xjc.model.CAdapter;
 import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.model.nav.NType;
-import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
-import com.sun.tools.xjc.generator.annotation.spec.XmlJavaTypeAdapterWriter;
+
+import static com.sun.tools.xjc.outline.Aspect.EXPOSED;
 
 /**
  * {@link TypeAndAnnotation} implementation.
@@ -67,8 +62,7 @@ final class TypeAndAnnotationImpl implements TypeAndAnnotation {
 
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for( String s : getAnnotations() )
-            builder.append(s).append(' ');
+        // TODO: support annotations
         builder.append(getTypeClass());
         return builder.toString();
     }
