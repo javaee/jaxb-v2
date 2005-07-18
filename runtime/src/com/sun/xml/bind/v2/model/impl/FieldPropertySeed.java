@@ -29,6 +29,8 @@ class FieldPropertySeed<TypeT,ClassDeclT,FieldT,MethodT> implements
     }
 
     public String getName() {
+        // according to the spec team, the BeanIntrospector.decapitalize does not apply
+        // to the fields. Don't call Introspector.decapitalize
         return parent.nav().getFieldName(field);
     }
 

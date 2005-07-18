@@ -11,6 +11,12 @@ import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
  */
 interface PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> extends Locatable {
 
+    /**
+     * The name of the property is a spec defined concept --- although it doesn't do
+     * so explicitly in anywhere.
+     *
+     * @see PropertyInfo#getName()
+     */
     String getName();
 
     /**
