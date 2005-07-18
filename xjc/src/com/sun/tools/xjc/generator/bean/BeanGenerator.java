@@ -163,15 +163,10 @@ public final class BeanGenerator implements Outline
         for (PackageOutlineImpl p : packageContexts.values())
             p.calcDefaultValues();
 
-        // fill in implementation classes
-        for( ClassOutlineImpl co : getClasses() )
-            generateClassBody(co);
+        JClass OBJECT = codeModel.ref(Object.class);
 
-        // create factories for the impl-less elements
-        for( CElementInfo ei : model.getAllElements())
-            getPackageContext(ei._package()).objectFactoryGenerator().populate(ei);
-
-        // things that have to be done after all the skeletons are generated
+        // inheritance relationship needs to be set before we generate fields, or otherwise
+        // we'll fail to compute the correct type signature (namely the common base type computation)
         for( ClassOutlineImpl cc : getClasses() ) {
 
             // setup inheritance between implementation hierarchy.
@@ -181,12 +176,20 @@ public final class BeanGenerator implements Outline
                 model.strategy._extends(cc,getClazz(superClass));
             } else {
                 // use the default one, if any
-                if( model.rootClass!=null && cc.implClass._extends()==null )
+                if( model.rootClass!=null && cc.implClass._extends().equals(OBJECT) )
                     cc.implClass._extends(model.rootClass);
                 if( model.rootInterface!=null)
                     cc.ref._implements(model.rootInterface);
             }
         }
+
+        // fill in implementation classes
+        for( ClassOutlineImpl co : getClasses() )
+            generateClassBody(co);
+
+        // create factories for the impl-less elements
+        for( CElementInfo ei : model.getAllElements())
+            getPackageContext(ei._package()).objectFactoryGenerator().populate(ei);
 
         if(model.options.debugMode)
             generateClassList();
