@@ -32,7 +32,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.21 2005-07-18 22:25:24 kohsuke Exp $
+       $Id: build.xml,v 1.22 2005-07-18 22:35:47 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -85,7 +85,7 @@
         </doclet>
         <arg value="-quiet"/>
 
-        <packageset dir="${xjc.root}/javadoc"/>
+        <packageset dir="${jaxb.root}/javadoc"/>
         <group title="Root Architecture Document" packages="jaxb" />
 
         <packageset dir="${codemodel.src}"/>
