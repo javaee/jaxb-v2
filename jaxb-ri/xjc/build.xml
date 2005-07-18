@@ -5,7 +5,7 @@
  SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 -->
 
-<!-- $Id: build.xml,v 1.15 2005-07-15 22:42:40 kohsuke Exp $ -->
+<!-- $Id: build.xml,v 1.16 2005-07-18 20:00:59 kohsuke Exp $ -->
 <project name="xjc" basedir=".." default="compile">
 
   <description>
@@ -249,7 +249,7 @@
             doctitle="XJC"
             access="package">
         <classpath refid="javadoc.classpath" />
-        <arg value="-quiet"/>        
+        <arg value="-quiet"/>
       </javadoc>
     </target>
     
