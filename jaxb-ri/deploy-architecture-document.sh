@@ -16,12 +16,14 @@ else
   cvs "-d:pserver:kohsuke@kohsuke.sfbay:/cvs" -z9 co -d jaxb-architecture-document-www jaxb-architecture-document/www
 fi
 
-cd jaxb-architecture-document-www
+cd jaxb-architecture-document-wwwh
 
 cp -R ../javadoc/* doc
 
-# swallow the error code
-find . -name CVS -prune -o -exec cvs add {} \+ -o -exec true \;
+# ignore everything under CVS, then
+# ignore all files that are already in CVS, then
+# add the rest of the files
+find . -name CVS -prune -o -exec sh tools/in-cvs.{} \; -o cvs add {} \+
 
 date >> update.html
 
