@@ -93,6 +93,8 @@
  * Code that implements the unmarshaller and the marshaller OTOH
  * needs to be very carefully written to achieve maximum sustaining
  * performance.
+ *
+ * @ArchitectureDocument 
  */
 package com.sun.xml.bind.v2;
 
