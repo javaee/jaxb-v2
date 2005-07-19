@@ -31,17 +31,17 @@
  * The rest of the JAXB RI "proper" consists of the following major modules.
  *
  * <dl>
- *  <dt><a href="../com/sun/xml/bind/v2/package-summary.html#package_description">runtime</a>
+ *  <dt>{@link com.sun.xml.bind.v2 runtime}
  *  <dd>
  *    runtime module is available at application runtime and provide the actual
  *    XML unmarshalling/marshalling capability. Notably, it implements {@link JAXBContext}.
  *
- *  <dt><a href="../com/sun/xml/bind/api/package-summary.html#package_description">runtime API</a>
+ *  <dt>{@link com.sun.xml.bind.api runtime-API}</a>
  *  <dd>
  *    A part of the runtime that defines the contract between the JAXB RI and
  *    the JAX-WS RI.
  *
- *  <dt><a href="../com/sun/tools/jxc/package-summary.html#package_description">schemagen</a>
+ *  <dt>{@link com.sun.xml.bind.v2.schemagen.XmlSchemaGenerator schemagen}
  *  <dd>
  *    The XML Schema generator. For historical reason it lives in its own module.
  *
