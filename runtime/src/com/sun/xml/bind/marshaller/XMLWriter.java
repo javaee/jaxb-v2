@@ -142,23 +142,12 @@ import org.xml.sax.helpers.XMLFilterImpl;
  *
  * <ol>
  * <li>the qualified name</li>
- * <li>the {@link #setPrefix setPrefix} method.</li>
  * </ol>
  *
  * <p>Whenever the XML writer finds a new Namespace URI, it checks
  * to see if a qualified (prefixed) name is also available; if so
  * it attempts to use the name's prefix (as long as the prefix is
  * not already in use for another Namespace URI).</p>
- *
- * <p>Before writing a document, the client can also pre-map a prefix
- * to a Namespace URI with the setPrefix method:</p>
- *
- * <pre>
- * w.setPrefix("http://www.foo.com/ns/", "foo");
- * w.startDocument();
- * w.emptyElement("http://www.foo.com/ns/", "foo");
- * w.endDocument();
- * </pre>
  *
  * <p>The resulting document will look like this:</p>
  *

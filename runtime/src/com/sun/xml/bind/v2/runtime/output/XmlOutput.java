@@ -103,7 +103,7 @@ public interface XmlOutput {
      * Writes a start tag.
      *
      * <p>
-     * At this point {@link #nsContext} holds namespace declarations needed for this
+     * At this point {@link NamespaceContextImpl} holds namespace declarations needed for this
      * new element.
      *
      * <p>

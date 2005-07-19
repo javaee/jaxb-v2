@@ -34,7 +34,7 @@ public enum PropertyKind {
 
     /**
      * {@link PropertyFactory} benefits from having index numbers assigned to
-     * {@link #ELEMENT}, {@link REFERENCE}, and {@link MAP} in this order.
+     * {@link #ELEMENT}, {@link #REFERENCE}, and {@link #MAP} in this order.
      */
     public final int propertyIndex;
 

@@ -7,7 +7,7 @@ import java.util.List;
  * Represents a wildcard type like "? extends Foo".
  *
  * <p>
- * Instances of this class can be obtained from {@link JClass#
+ * Instances of this class can be obtained from {@link JClass#wildcard()} 
  *
  * TODO: extend this to cover "? super Integer".
  *

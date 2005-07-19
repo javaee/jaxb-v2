@@ -250,7 +250,6 @@ public class JMethod extends JGenerifiableImpl implements JDeclaration, JAnnotat
 
 	/**
 	 * Returns the return type.
-	 * @return
 	 */
 	public JType type() {
 		return type;
