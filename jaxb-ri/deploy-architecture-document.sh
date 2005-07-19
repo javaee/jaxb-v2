@@ -9,7 +9,9 @@ cd build
 
 if [ -e jaxb-architecture-document-www ]
 then
+  cd jaxb-architecture-document-www
   cvs update -Pd
+  cd ..
 else
   cvs "-d:pserver:kohsuke@kohsuke.sfbay:/cvs" -z9 co -d jaxb-architecture-document-www jaxb-architecture-document/www
 fi
@@ -19,7 +21,7 @@ cd jaxb-architecture-document-www
 cp -R ../javadoc/* doc
 
 # swallow the error code
-find . -name CVS -prune -or -exec cvs add {} \+ -or -true
+find . -name CVS -prune -o -exec cvs add {} \+ -o -true
 
 date >> update.html
 
