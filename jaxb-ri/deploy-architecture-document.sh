@@ -7,7 +7,11 @@ ant architecture-document
 
 cd build
 
-cvs "-d:pserver:kohsuke@kohsuke.sfbay:/cvs" -z9 co -d jaxb-architecture-document-www jaxb-architecture-document/www
+if [ -e jaxb-architecture-document-www ]; then
+  cvs update -Pd
+else
+  cvs "-d:pserver:kohsuke@kohsuke.sfbay:/cvs" -z9 co -d jaxb-architecture-document-www jaxb-architecture-document/www
+fi
 
 cd jaxb-architecture-document-www
 
