@@ -460,6 +460,7 @@
       <module fileurl="file://$PROJECT_DIR$/codemodel/codemodel.iml" filepath="$PROJECT_DIR$/codemodel/codemodel.iml" />
       <module fileurl="file://$PROJECT_DIR$/tools/installer/installer.iml" filepath="$PROJECT_DIR$/tools/installer/installer.iml" />
       <module fileurl="file://$PROJECT_DIR$/tools/installer-builder/installer-builder.iml" filepath="$PROJECT_DIR$/tools/installer-builder/installer-builder.iml" />
+      <module fileurl="file://$PROJECT_DIR$/javadoc/javadoc.iml" filepath="$PROJECT_DIR$/javadoc/javadoc.iml" />
       <module fileurl="file://$PROJECT_DIR$/jaxb-ri.iml" filepath="$PROJECT_DIR$/jaxb-ri.iml" />
       <module fileurl="file://$PROJECT_DIR$/tools/pretty-printer/pretty-printer.iml" filepath="$PROJECT_DIR$/tools/pretty-printer/pretty-printer.iml" />
       <module fileurl="file://$PROJECT_DIR$/runtime/runtime.iml" filepath="$PROJECT_DIR$/runtime/runtime.iml" />
@@ -467,6 +468,7 @@
       <module fileurl="file://$PROJECT_DIR$/runtime-deprecated/runtime-deprecated.iml" filepath="$PROJECT_DIR$/runtime-deprecated/runtime-deprecated.iml" />
       <module fileurl="file://$PROJECT_DIR$/samples/samples.iml" filepath="$PROJECT_DIR$/samples/samples.iml" />
       <module fileurl="file://$PROJECT_DIR$/schemagen/schemagen.iml" filepath="$PROJECT_DIR$/schemagen/schemagen.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tools/taglets/taglets.iml" filepath="$PROJECT_DIR$/tools/taglets/taglets.iml" />
       <module fileurl="file://$PROJECT_DIR$/../jaxb-unit/test/test.iml" filepath="$PROJECT_DIR$/../jaxb-unit/test/test.iml" />
       <module fileurl="file://$PROJECT_DIR$/xjc/xjc.iml" filepath="$PROJECT_DIR$/xjc/xjc.iml" />
     </modules>
