@@ -21,7 +21,7 @@ cd jaxb-architecture-document-www
 cp -R ../javadoc/* doc
 
 # swallow the error code
-find . -name CVS -prune -o -exec cvs add {} \+ -o -true
+find . -name CVS -prune -o -exec cvs add {} \+ -o -exec true \;
 
 date >> update.html
 
