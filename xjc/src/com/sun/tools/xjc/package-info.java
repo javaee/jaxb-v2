@@ -1,5 +1,5 @@
 /**
- * Schema to Java compiler.
+ * <h1>Schema to Java compiler</h1>.
  *
  * <p>
  * This module contains the code that implements the schema compiler 'XJC'.
@@ -23,15 +23,15 @@
  *  <dt>{@link com.sun.tools.xjc.generator Code generator}
  *  <dd>
  *   Code generators use a model as an input and builds Java code AST
- *   into CodeModel. It also produces an {@link Outline} which captures
+ *   into CodeModel. It also produces an {@link com.sun.tools.xjc.outline.Outline} which captures
  *   this work.
  *
- *  <dt>{@link Outline Outline}
+ *  <dt>{@link com.sun.tools.xjc.outline.Outline Outline}
  *  <dd>
  *   Outline can be thought as a series of links between a model
  *   and CodeModel.
  * </dl>
+ *
+ * @ArchitectureDocument
  */
 package com.sun.tools.xjc;
-
-import com.sun.tools.xjc.outline.Outline;
