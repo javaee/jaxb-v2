@@ -25,6 +25,5 @@ cp -R ../javadoc/* doc
 # add the rest of the files
 find . -name CVS -prune -o -exec bash ../../tools/scripts/in-cvs.sh {} \; -o \( -print -a -exec cvs add {} \+ \)
 
-date >> update.html
-
-cvs commit -m "to work around a bug in java.net web updater"
+# sometimes the first commit fails
+cvs commit -m "commit 1 " || cvs commit -m "commit 2"
