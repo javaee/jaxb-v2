@@ -23,7 +23,7 @@ cp -R ../javadoc/* doc
 # ignore everything under CVS, then
 # ignore all files that are already in CVS, then
 # add the rest of the files
-find . -name CVS -prune -o -exec bash ../../tools/scripts/in-cvs.sh {} \; -o -exec cvs add {} \+
+find . -name CVS -prune -o -exec bash ../../tools/scripts/in-cvs.sh {} \; -o (-print -a -exec cvs add {} \+ )
 
 date >> update.html
 
