@@ -85,7 +85,7 @@
  *
  * <h1>Performance Characteristics</h1>
  * <p>
- * Model construction happens inside {@link JAXBContext#newInstance}.
+ * Model construction happens inside {@link JAXBContext#newInstance(Class[])}.
  * It's desirable for this step to be fast and consume less memory,
  * but it's not too performance sensitive.
  *
@@ -94,7 +94,39 @@
  * needs to be very carefully written to achieve maximum sustaining
  * performance.
  *
- * @ArchitectureDocument 
+ *
+ *
+ *
+ * <h1>Bootstrap Sequence</h1>
+ * <p>
+ * The following picture illustrates how the {@link JAXBContext#newInstance(Class[])} method
+ * triggers activities.
+ *
+ * {@SequenceDiagram
+ *      pobject(U,"user");
+ *      object(A,"JAXB API");
+ *      object(CF,"ContextFactory");
+ *      step();
+ *
+ *      message(U,A,"JAXBContext.newInstance()");
+ *      active(A);
+ *      message(A,A,"locate JAXB RI 2.0");
+ *      active(A);
+ *      step();
+ *      inactive(A);
+ *
+ *      message(A,CF,"createContext");
+ *      active(CF);
+ *
+ *      rmessage(A,U,"context object");
+ *      inactive(CF);
+ *      inactive(A);
+ *
+ *      complete(CF);
+ *      complete(A);
+ * }
+ *
+ * @ArchitectureDocument
  */
 package com.sun.xml.bind.v2;
 
