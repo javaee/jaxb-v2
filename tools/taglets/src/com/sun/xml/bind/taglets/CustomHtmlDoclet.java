@@ -62,6 +62,10 @@ public class CustomHtmlDoclet extends HtmlDoclet {
         configuration.setOptions();
         configuration.getDocletSpecificMsg().notice("doclet.build_version",
             configuration.getDocletSpecificBuildDate());
+
+        configuration.tagletManager.addCustomTag(new SequenceDiagramTag());
+        configuration.tagletManager.addNewSimpleCustomTag("ArchitectureDocument","","X");
+
         ClassTree classtree = new ClassTree(configuration, configuration.nodeprecated);
 
         generateClassFiles(root, classtree);
@@ -77,9 +81,6 @@ public class CustomHtmlDoclet extends HtmlDoclet {
             }
         }
 
-//        configuration.tagletManager.addCustomTag(new ArchitectureDocumentTaglet());
-        configuration.tagletManager.addNewSimpleCustomTag("ArchitectureDocument","","X");
-
         PackageListWriter.generate(configuration);
         generatePackageFiles(classtree);
 
@@ -94,7 +95,7 @@ public class CustomHtmlDoclet extends HtmlDoclet {
     */
     @Override
     protected void generatePackageFiles(ClassTree classtree) throws Exception {
-        super.generatePackageFiles(classtree);
+        // super.generatePackageFiles(classtree);
 
         PackageDoc[] packages = configuration.packages;
         if (packages.length > 1) {
