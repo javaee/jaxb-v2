@@ -27,6 +27,8 @@ public final class ByteArrayDataSource implements DataSource {
     }
 
     public String getContentType() {
+        if(contentType==null)
+            return "application/octet-stream";
         return contentType;
     }
 
