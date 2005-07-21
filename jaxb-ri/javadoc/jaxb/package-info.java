@@ -2,9 +2,24 @@
  * <h1>JAXB RI Architecture Document</h1>.
  *
  * <h2>JAXB RI Major Modules and Libraries</h2>
- * <div>
- *   <img src="doc-files/jaxbModulesLibs.png"/>
- * </div>
+ * {@DotDiagram
+     digraph G {
+       node [style=filled,color=lightblue];
+       XSOM; RNGOM; TXW;
+
+       // modules
+       node [style=filled,color=lightpink];
+       XJC; CodeModel; runtime; schemagen; "runtime API";
+
+       XJC -> XSOM;
+       XJC -> RNGOM;
+       XJC -> CodeModel;
+       XJC -> runtime -> schemagen -> TXW;
+       runtime -> "runtime API";
+     }
+ * }
+ * <p>
+ * <b>Legend:<b> blue: external library, pink: module
  *
  *
  * <h2>Modules</h2>
@@ -16,6 +31,10 @@
  *  <dd>
  *    runtime module is available at application runtime and provide the actual
  *    XML unmarshalling/marshalling capability. Notably, it implements {@link JAXBContext}.
+ *
+ *  <dt>{@link com.sun.codemodel CodeModel}
+ *  <dd>
+ *    Library for generating Java source code
  *
  *  <dt>{@link com.sun.tools.xjc XJC}
  *  <dd>
@@ -35,21 +54,16 @@
  * <h2>Libraries</h2>
  * <p>
  * JAXB RI uses the following major libraries extensively.
- * The parenthesis shows which modules of the JAXB RI depends on it.
  * <dl>
- *  <dt><a href="../com/sun/codemodel/package-summary.html#package_description">CodeModel</a> (XJC)
- *  <dd>
- *    Library for generating Java source code
- *
- *  <dt><a href="#">XSOM</a> (XJC)
+ *  <dt><a href="#">XSOM</a>
  *  <dd>
  *    Library for parsing XML Schema into in-memory representations
  *
- *  <dt><a href="http://rngom.dev.java.net/">RNGOM</a> (XJC)
+ *  <dt><a href="http://rngom.dev.java.net/">RNGOM</a>
  *  <dd>
  *    Library for parsing RELAX NG into in-memory representation
  *
- *  <dt><a href="#">TXW</a> (runtime,schemagen)
+ *  <dt><a href="#">TXW</a>
  *  <dd>
  *    Library for writing XML
  * </dl>
