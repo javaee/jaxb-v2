@@ -171,7 +171,8 @@ digraph G {
  * <p>
  * Alternatively, Hudson automatically posts a new architecture document to
  * <a href="https://jaxb-architecture-document.dev.java.net/nonav/doc/">the java.net</a>
- * every time a commit is made. This process typically takes a few minutes.
+ * every time a commit is made. This process typically takes 10 minutes
+ * (so in the worst case, it takes 20 minutes for your change to be reflected.)
  *
  *
  *
