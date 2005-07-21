@@ -125,7 +125,7 @@ public final class JCodeModel {
      * Returns an iterator that walks the packages defined using this code
      * writer.
      */
-    public Iterator packages() {
+    public Iterator<JPackage> packages() {
         return packages.values().iterator();
     }
     
@@ -303,6 +303,21 @@ public final class JCodeModel {
             // then the default mechanism.
             return ref(Class.forName(fullyQualifiedClassName));
         }
+    }
+
+    /**
+     * Cached for {@link #wildcard()}.
+     */
+    private JClass wildcard;
+
+    /**
+     * Gets a {@link JClass} representation for "?",
+     * which is equivalent to "? extends Object".
+     */
+    public JClass wildcard() {
+        if(wildcard==null)
+            wildcard = ref(Object.class).wildcard();
+        return wildcard;
     }
 
     /**
