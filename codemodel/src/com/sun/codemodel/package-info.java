@@ -3,8 +3,39 @@
  *
  * <p>
  * CodeModel is a library that allows you to generate Java source
- * code in a type-safe fashion. It is AST-based, which brings
- * the following features:
+ * code in a type-safe fashion.
+ *
+ * <p>
+ * With CodeModel, you build the java source code by first building AST,
+ * then writing it out as text files that is Java source files.
+ * The AST looks like this:
+ *
+ * {@DotDiagram
+    digraph G {
+        cls1 [label="JDefinedClass"];
+        cls2 [label="JDefinedClass"];
+        JCodeModel -> cls1 [label="generated class"];
+        JCodeModel -> cls2 [label="generated class"];
+
+        m1 [label="JMethod"];
+        m2 [label="JMethod"];
+
+        cls1 -> m1;
+        cls1 -> m2;
+        cls1 -> JField;
+
+        m1 -> JVar [label="method parameter"];
+        m1 -> JBlock [label="code"];
+    }
+ * }
+ *
+ * <p>
+ * You bulid this tree mostly from top-down. So, you first create
+ * a new {@link JDefinedClass} from {@link JCodeModel}, then you
+ * create a {@link JMethod} from {@link JDefinedClass}, and so on.
+ *
+ * <p>
+ * This design brings the following beneefits:
  *
  * <ul>
  *  <li>source code can be written in random order
