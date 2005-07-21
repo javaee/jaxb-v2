@@ -34,7 +34,7 @@ import org.xml.sax.helpers.NamespaceSupport;
  * classes like this.
  *
  * @author <ul><li>Kohsuke Kawaguchi, Sun Microsystems, Inc.</li></ul>
- * @version $Revision: 1.2 $ $Date: 2005-04-30 00:19:09 $
+ * @version $Revision: 1.3 $ $Date: 2005-07-21 20:43:38 $
  * @since JAXB1.0
  */
 public class DOMScanner implements LocatorEx,InfosetScanner/*<Node> --- but can't do this to protect 1.0 clients, or can I? */
@@ -166,7 +166,7 @@ public class DOMScanner implements LocatorEx,InfosetScanner/*<Node> --- but can'
         final NamedNodeMap attributes = e.getAttributes();
         
         atts.clear();
-        int len = attributes.getLength();
+        int len = attributes==null ? 0: attributes.getLength();
         
         for( int i=len-1; i>=0; i-- ) {
             Attr a = (Attr)attributes.item(i);
