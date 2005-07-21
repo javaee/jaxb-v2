@@ -1,6 +1,10 @@
 /**
  * <h1>JAXB RI Architecture Document</h1>.
  *
+ * <p>
+ * See {@link MetaArchitectureDocument} for how to contribute to this document.
+ *
+ *
  * <h2>JAXB RI Major Modules and Libraries</h2>
  * {@DotDiagram
      digraph G {
@@ -19,7 +23,7 @@
      }
  * }
  * <p>
- * <b>Legend:<b> blue: external library, pink: module
+ * <b>Legend:</b> blue: external library, pink: module
  *
  *
  * <h2>Modules</h2>
