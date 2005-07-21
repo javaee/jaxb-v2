@@ -3,6 +3,7 @@ import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
@@ -12,7 +13,8 @@ import com.sun.xml.bind.v2.runtime.Name;
  * Map keyed by {@link QName}.
  *
  * This specialized map allows a look up operation without constructing
- * a new QName instance, for a performance reason.
+ * a new QName instance, for a performance reason. This {@link Map} assumes
+ * that both namespace URI and local name are {@link String#intern() intern}ed.
  *
  * @since JAXB 2.0
  */
@@ -231,10 +233,9 @@ public final class QNameMap<ValueT> {
     private void transfer(Entry<ValueT>[] newTable) {
         Entry<ValueT>[] src = table;
         int newCapacity = newTable.length;
-        for (int j = 0; j < src.length; j++) {
-            Entry<ValueT> e = src[j];
+        for (Entry<ValueT> e : src) {
             if (e != null) {
-                src[j] = null;
+                e = null;
                 do {
                     Entry<ValueT> next = e.next;
                     int i = indexFor(e.hash, newCapacity);
