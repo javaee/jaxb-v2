@@ -170,7 +170,7 @@ digraph G {
  *
  * <p>
  * Alternatively, Hudson automatically posts a new architecture document to
- * <a href="https://jaxb-architecture-document.dev.java.net/nonav/doc">the java.net</a>
+ * <a href="https://jaxb-architecture-document.dev.java.net/nonav/doc/">the java.net</a>
  * every time a commit is made. This process typically takes a few minutes.
  *
  *
@@ -178,7 +178,7 @@ digraph G {
  * <h2>Browse the document</h2>
  * <p>
  * The up-to-date version of the document is always available at
- * <a href="https://jaxb-architecture-document.dev.java.net/nonav/doc">the java.net</a>.
+ * <a href="https://jaxb-architecture-document.dev.java.net/nonav/doc/">the java.net</a>.
  *
  *
  * @ArchitectureDocument
