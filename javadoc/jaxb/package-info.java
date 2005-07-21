@@ -1,10 +1,6 @@
 /**
  * <h1>JAXB RI Architecture Document</h1>.
  *
- * <p>
- * See {@link jaxb.MetaArchitectureDocument} for how to contribute to this document.
- *
- *
  * <h2>JAXB RI Major Modules and Libraries</h2>
  * {@DotDiagram
      digraph G {
@@ -29,9 +25,10 @@
        runtime -> "runtime API";
      }
  * }
- * <p>
+ * <div align=right>
  * <b>Legend:</b> blue: external library, pink: module
- *
+ * </div>
+ * 
  *
  * <h2>Modules</h2>
  * <p>
@@ -88,6 +85,10 @@
  *    Library for writing XML
  * </dl>
  *
+ *
+ * <h2>About This Document</h2>
+ * <p>
+ * See {@link jaxb.MetaArchitectureDocument} for how to contribute to this document.
  *
  * @ArchitectureDocument
  */
