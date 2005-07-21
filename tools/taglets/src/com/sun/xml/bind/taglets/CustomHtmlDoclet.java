@@ -64,6 +64,7 @@ public class CustomHtmlDoclet extends HtmlDoclet {
             configuration.getDocletSpecificBuildDate());
 
         configuration.tagletManager.addCustomTag(new SequenceDiagramTag());
+        configuration.tagletManager.addCustomTag(new DotDiagramTag());
         configuration.tagletManager.addNewSimpleCustomTag("ArchitectureDocument","","X");
 
         ClassTree classtree = new ClassTree(configuration, configuration.nodeprecated);
