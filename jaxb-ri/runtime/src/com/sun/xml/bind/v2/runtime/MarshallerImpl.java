@@ -6,22 +6,21 @@ package com.sun.xml.bind.v2.runtime;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.io.ByteArrayOutputStream;
 
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.MarshalException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
-import javax.xml.bind.ValidationEventHandler;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.attachment.AttachmentMarshaller;
 import javax.xml.bind.helpers.AbstractMarshallerImpl;
@@ -45,16 +44,16 @@ import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import com.sun.xml.bind.marshaller.NioEscapeHandler;
 import com.sun.xml.bind.marshaller.SAX2DOMEx;
 import com.sun.xml.bind.marshaller.XMLWriter;
+import com.sun.xml.bind.v2.AssociationMap;
+import com.sun.xml.bind.v2.FatalAdapter;
 import com.sun.xml.bind.v2.runtime.output.Encoded;
+import com.sun.xml.bind.v2.runtime.output.ForkXmlOutput;
 import com.sun.xml.bind.v2.runtime.output.IndentingUTF8XmlOutput;
 import com.sun.xml.bind.v2.runtime.output.SAXOutput;
 import com.sun.xml.bind.v2.runtime.output.UTF8XmlOutput;
 import com.sun.xml.bind.v2.runtime.output.XMLEventWriterOutput;
 import com.sun.xml.bind.v2.runtime.output.XMLStreamWriterOutput;
 import com.sun.xml.bind.v2.runtime.output.XmlOutput;
-import com.sun.xml.bind.v2.runtime.output.ForkXmlOutput;
-import com.sun.xml.bind.v2.AssociationMap;
-import com.sun.xml.bind.v2.FatalAdapter;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -315,11 +314,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
             xw = new XMLWriter(w,encoding,ceh);
 
         // Marshaller.JAXB_FRAGMENT property overrides our c.s.x.b.xmlDeclaration vendor property
-        if( isFragment() ) {
-            xw.setXmlDecl(false);
-        } else {
-            xw.setXmlDecl(printXmlDeclaration);
-        }
+        xw.setXmlDecl(printXmlDeclaration && !isFragment());
         xw.setHeader(header);
         return new SAXOutput(xw);   // TODO: don't we need a better writer?
     }
