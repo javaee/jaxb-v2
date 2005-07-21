@@ -233,9 +233,10 @@ public final class QNameMap<ValueT> {
     private void transfer(Entry<ValueT>[] newTable) {
         Entry<ValueT>[] src = table;
         int newCapacity = newTable.length;
-        for (Entry<ValueT> e : src) {
+        for (int j = 0; j < src.length; j++) {
+            Entry<ValueT> e = src[j];
             if (e != null) {
-                e = null;
+                src[j] = null;
                 do {
                     Entry<ValueT> next = e.next;
                     int i = indexFor(e.hash, newCapacity);
