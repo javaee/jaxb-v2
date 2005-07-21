@@ -15,6 +15,6 @@ public final class AttributesExImpl extends AttributesImpl implements Attributes
     }
 
     public CharSequence getData(String nsUri, String localName) {
-        return getData(nsUri,localName);
+        return getValue(nsUri,localName);
     }
 }
