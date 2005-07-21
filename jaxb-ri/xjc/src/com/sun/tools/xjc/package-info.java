@@ -6,9 +6,25 @@
  *
  *
  * <h2>XJC Architecture Diagram</h2>
- * <div>
- *   <img src="doc-files/xjcArchitecture.png"/>
- * </div>
+ * {@DotDiagram
+     digraph G {
+         rankdir=TB;
+
+         // data
+         node [shape=box]; // style=filled,color=lightpink];
+         schema -> "DOM forest" [label="DOMForest.parse()"];
+         "DOM forest" -> "schema OM" [label="SOM specific parser"];
+         "schema OM" -> model [label="language specific builder"];
+
+         model -> codeModel [label="BeanGenerator.generate()"];
+         codeModel -> "Java source files" [label="JCodeModel.build()"];
+         model -> outline [label="BeanGenerator.generate()"];
+
+         edge [style=dotted,label="associate"]
+         outline -> codeModel;
+         outline -> model;
+       }
+ * }
  *
  * <h2>Overview</h2>
  * <p>
@@ -36,6 +52,13 @@
  *   Outline can be thought as a series of links between a model
  *   and CodeModel.
  * </dl>
+ *
+ * {@DotDiagram
+ *   digraph G {
+ *      rankdir = LR;
+ *      schema -> reader -> model -> backend -> outline;
+ *   }
+ * }
  *
  * @ArchitectureDocument
  */
