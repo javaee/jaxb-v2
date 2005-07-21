@@ -9,7 +9,7 @@
   base dir has to be jaxb-ri for this to be work correctly
   when it's called from the jaxb-ri/build.xml
 
-  $Id: build.xml,v 1.1 2005-07-18 19:59:44 kohsuke Exp $
+  $Id: build.xml,v 1.2 2005-07-21 20:29:49 kohsuke Exp $
 -->
 <project name="taglets" basedir="../.." default="compile">
 
@@ -25,7 +25,17 @@
           <!-- ant seems to put tools.jar into classpath automatically -->
         </javac>
     </target>
-    
+
+    <target name="jar" depends="compile" >
+      <tstamp/>
+      <jar jarfile="${root}/build/${name}.jar">
+        <fileset dir="${root}/build/classes" />
+        <manifest>
+          <attribute name="Build-Id" value="${TSTAMP}" />
+        </manifest>
+      </jar>
+    </target>
+
     <target name="clean">
         <delete dir="${root}/build" />
     </target>
