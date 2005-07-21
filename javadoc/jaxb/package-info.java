@@ -8,15 +8,22 @@
  * <h2>JAXB RI Major Modules and Libraries</h2>
  * {@DotDiagram
      digraph G {
+       "JAX-WS" [label="JAX-WS RI"];
+
+       // libraries
        node [style=filled,color=lightblue];
-       XSOM; RNGOM; TXW;
+       XSOM; RNGOM; TXW; "DTD parser";
 
        // modules
        node [style=filled,color=lightpink];
-       XJC; CodeModel; runtime; schemagen; "runtime API";
+       XJC; CodeModel; runtime; schemagen; "XJC API"; "runtime API";
 
+       "JAX-WS" -> "XJC API" -> CodeModel;
+       "JAX-WS" -> "runtime API";
        XJC -> XSOM;
+       XJC -> "DTD parser";
        XJC -> RNGOM;
+       XJC -> "XJC API";
        XJC -> CodeModel;
        XJC -> runtime -> schemagen -> TXW;
        runtime -> "runtime API";
@@ -39,6 +46,11 @@
  *  <dt>{@link com.sun.codemodel CodeModel}
  *  <dd>
  *    Library for generating Java source code
+ *
+ *  <dt>{@link com.sun.tools.xjc.api XJC-API}
+ *  <dd>
+ *    A part of the XJC that defines the contract between the JAXB RI and
+ *    the JAX-WS RI.
  *
  *  <dt>{@link com.sun.tools.xjc XJC}
  *  <dd>
@@ -66,6 +78,10 @@
  *  <dt><a href="http://rngom.dev.java.net/">RNGOM</a>
  *  <dd>
  *    Library for parsing RELAX NG into in-memory representation
+ *
+ *  <dt><a href="http://dtd-parser.dev.java.net/">DTD parser</a>
+ *  <dd>
+ *    Library for parsing DTD into in-memory representation
  *
  *  <dt><a href="#">TXW</a>
  *  <dd>
