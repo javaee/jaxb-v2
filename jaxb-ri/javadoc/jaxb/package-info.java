@@ -2,7 +2,7 @@
  * <h1>JAXB RI Architecture Document</h1>.
  *
  * <p>
- * See {@link MetaArchitectureDocument} for how to contribute to this document.
+ * See {@link jaxb.MetaArchitectureDocument} for how to contribute to this document.
  *
  *
  * <h2>JAXB RI Major Modules and Libraries</h2>
