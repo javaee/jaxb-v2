@@ -7,7 +7,7 @@ import java.util.List;
  * Represents a wildcard type like "? extends Foo".
  *
  * <p>
- * Instances of this class can be obtained from {@link JClass#wildcard()} 
+ * Instances of this class can be obtained from {@link JClass#wildcard()}
  *
  * TODO: extend this to cover "? super Integer".
  *
@@ -76,6 +76,9 @@ final class JTypeWildcard extends JClass {
     }
 
     public void generate(JFormatter f) {
-        f.p("? extends").t(bound);
+        if(bound._extends()==null)
+            f.p("?");   // instead of "? extends Object"
+        else
+            f.p("? extends").t(bound);
     }
 }
