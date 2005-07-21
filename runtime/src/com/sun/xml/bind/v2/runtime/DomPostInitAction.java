@@ -32,6 +32,7 @@ final class DomPostInitAction implements Runnable {
         Set<String> declaredPrefixes = new HashSet<String>();
         for( Node n=node; n!=null && n.getNodeType()==Node.ELEMENT_NODE; n=n.getParentNode() ) {
             NamedNodeMap atts = n.getAttributes();
+            if(atts==null)      continue; // broken DOM. but be graceful.
             for( int i=0; i<atts.getLength(); i++ ) {
                 Attr a = (Attr)atts.item(i);
                 String nsUri = a.getNamespaceURI();
