@@ -35,6 +35,8 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.ValidatorHandler;
 
 import com.sun.xml.bind.DatatypeConverterImpl;
+import com.sun.xml.bind.api.InscopeNamespaceLister;
+import com.sun.xml.bind.api.JAXBRIContext;
 import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
 import com.sun.xml.bind.marshaller.DataWriter;
 import com.sun.xml.bind.marshaller.DumbEscapeHandler;
@@ -87,7 +89,12 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     
     /** XML BLOB written after the XML declaration. */
     private String header=null;
-    
+
+    /**
+     * Set by application
+     */
+    private InscopeNamespaceLister inscopeNamespaceLister = null;
+
     /** reference to the context that created this object */
     final JAXBContextImpl context;
 
@@ -262,6 +269,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     private void prewrite(XmlOutput out, boolean fragment, Runnable postInitAction) throws IOException, SAXException, XMLStreamException {
         serializer.startDocument(out,fragment,getSchemaLocation(),getNoNSSchemaLocation());
         if(postInitAction!=null)    postInitAction.run();
+        if(inscopeNamespaceLister!=null)    inscopeNamespaceLister.listInscopeNamespaces(serializer);
         serializer.setPrefixMapper(prefixMapper);
     }
 
@@ -368,13 +376,19 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
             return printXmlDeclaration;
         if( XML_HEADERS.equals(name) )
             return header;
+        if( JAXBRIContext.INSCOPE_NAMESPACE_LISTER.equals(name) )
+            return inscopeNamespaceLister;
 
         return super.getProperty(name);
     }
 
     public void setProperty(String name, Object value) throws PropertyException {
-        if( INDENT_STRING.equals(name) && value instanceof String ) {
+        if( INDENT_STRING.equals(name) ) {
             indent = (String)value;
+            return;
+        }
+        if( JAXBRIContext.INSCOPE_NAMESPACE_LISTER.equals(name) ) {
+            inscopeNamespaceLister = (InscopeNamespaceLister)value;
             return;
         }
         if( ENCODING_HANDLER.equals(name) ) {

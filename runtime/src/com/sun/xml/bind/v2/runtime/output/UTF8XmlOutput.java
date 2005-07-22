@@ -22,6 +22,13 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     /** prefixes encoded. */
     private Encoded[] prefixes = new Encoded[8];
 
+    /**
+     * Of the {@link #prefixes}, number of filled entries.
+     * This is almost the same as {@link NamespaceContextImpl#count()},
+     * except that it allows us to handle contextual in-scope namespace bindings correctly.
+     */
+    private int prefixCount;
+
     /** local names encoded in UTF-8. All entries are pre-filled. */
     private final Encoded[] localNames;
 
@@ -51,8 +58,6 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
         this.localNames = localNames;
         for( int i=0; i<prefixes.length; i++ )
             prefixes[i] = new Encoded();
-        // TODO: check
-        prefixes[0].set("xml:");
     }
 
     @Override
@@ -118,27 +123,30 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     }
 
     protected void writeNsDecls(int base) throws IOException {
-        NamespaceContextImpl.Element ns = nsContext.getCurrent();
-        int count = ns.count();
+        int count = nsContext.getCurrent().count();
 
         for( int i=0; i<count; i++ )
-            writeNsDecl(ns, i, base);
+            writeNsDecl(base+i);
     }
 
-    protected final void writeNsDecl(NamespaceContextImpl.Element ns, int i, int base) throws IOException {
-        String p = ns.getPrefix(i);
+    /**
+     * Writes a single namespace declaration for the specified prefix.
+     */
+    protected final void writeNsDecl(int prefixIndex) throws IOException {
+        String p = nsContext.getPrefix(prefixIndex);
 
         if(p.length()==0) {
-            if(base==1 && ns.getNsUri(i).length()==0)
+            if(nsContext.getCurrent().isRootElement()
+            && nsContext.getNamespaceURI(prefixIndex).length()==0)
                 return;     // no point in declaring xmlns="" on the root element
             write(XMLNS_EQUALS);
         } else {
-            Encoded e = prefixes[base+i];
+            Encoded e = prefixes[prefixIndex];
             write(XMLNS_COLON);
             write(e.buf,0,e.len-1); // skip the trailing ':'
             write(EQUALS);
         }
-        doText(ns.getNsUri(i),true);
+        doText(nsContext.getNamespaceURI(prefixIndex),true);
         write('\"');
     }
 

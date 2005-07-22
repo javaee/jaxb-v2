@@ -15,14 +15,22 @@ import javax.xml.bind.Marshaller;
  * If you create {@link JAXBContext} with the c14n support, {@link Marshaller}s created
  * from such {@link JAXBContext} will automatically generate canonical XML documents
  * (in the sense of <a href="http://www.w3.org/TR/2001/REC-xml-c14n-20010315">the Canonical XML spec</a>)
- * provided that you marshal it to UTF-8 and don't do indentation.
- * (The c14n code is tied to this particular configuration.)
+ * provided that you marshal it to UTF-8 (which is the spec requirement) and
+ * don't turn on the formatting (which is our implementation requirement.)
  *
  * <p>
  * When using JAXB to marshal a tree canonically to be a subtree of a bigger document,
  * you also need to use {@link InscopeNamespaceLister} with the marshaller. To do so,
  * use {@link Marshaller#setProperty(String, Object)} }. Also
  * refer to {@link JAXBRIContext#INSCOPE_NAMESPACE_LISTER} for details.
+ *
+ *
+ * <h2>Unsupported Features</h2>
+ * <p>
+ * When canonicalizing a subtree, the canonical XML spec requires the xml attributes
+ * (such as xml:lang, xml:base) to be copied over to the root of the canonical subtree.
+ * This behavior is not implemented.
+ *
  *
  *
  * <h2>TODOs</h2>

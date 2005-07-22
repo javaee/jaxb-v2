@@ -30,6 +30,7 @@ import javax.xml.transform.sax.SAXResult;
 
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.api.AccessorException;
+import com.sun.xml.bind.api.InscopeNamespaceLister;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import com.sun.xml.bind.util.ValidationEventLocatorExImpl;
 import com.sun.xml.bind.v2.WellKnownNamespace;
@@ -88,7 +89,7 @@ import org.xml.sax.SAXException;
  *
  * @author  Kohsuke Kawaguchi
  */
-public final class XMLSerializer extends Coordinator {
+public final class XMLSerializer extends Coordinator implements InscopeNamespaceLister.Receiver {
     public final JAXBContextImpl grammar;
 
     /** Object currently marshalling itself. */
