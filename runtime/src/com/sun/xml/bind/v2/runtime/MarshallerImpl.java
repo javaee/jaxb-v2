@@ -35,8 +35,6 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.ValidatorHandler;
 
 import com.sun.xml.bind.DatatypeConverterImpl;
-import com.sun.xml.bind.api.InscopeNamespaceLister;
-import com.sun.xml.bind.api.JAXBRIContext;
 import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
 import com.sun.xml.bind.marshaller.DataWriter;
 import com.sun.xml.bind.marshaller.DumbEscapeHandler;
@@ -48,6 +46,7 @@ import com.sun.xml.bind.marshaller.SAX2DOMEx;
 import com.sun.xml.bind.marshaller.XMLWriter;
 import com.sun.xml.bind.v2.AssociationMap;
 import com.sun.xml.bind.v2.FatalAdapter;
+import com.sun.xml.bind.v2.runtime.output.C14nXmlOutput;
 import com.sun.xml.bind.v2.runtime.output.Encoded;
 import com.sun.xml.bind.v2.runtime.output.ForkXmlOutput;
 import com.sun.xml.bind.v2.runtime.output.IndentingUTF8XmlOutput;
@@ -56,7 +55,6 @@ import com.sun.xml.bind.v2.runtime.output.UTF8XmlOutput;
 import com.sun.xml.bind.v2.runtime.output.XMLEventWriterOutput;
 import com.sun.xml.bind.v2.runtime.output.XMLStreamWriterOutput;
 import com.sun.xml.bind.v2.runtime.output.XmlOutput;
-import com.sun.xml.bind.v2.runtime.output.C14nXmlOutput;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -89,11 +87,6 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     
     /** XML BLOB written after the XML declaration. */
     private String header=null;
-
-    /**
-     * Set by application
-     */
-    private InscopeNamespaceLister inscopeNamespaceLister = null;
 
     /** reference to the context that created this object */
     final JAXBContextImpl context;
@@ -269,7 +262,18 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     private void prewrite(XmlOutput out, boolean fragment, Runnable postInitAction) throws IOException, SAXException, XMLStreamException {
         serializer.startDocument(out,fragment,getSchemaLocation(),getNoNSSchemaLocation());
         if(postInitAction!=null)    postInitAction.run();
-        if(inscopeNamespaceLister!=null)    inscopeNamespaceLister.listInscopeNamespaces(serializer);
+        if(prefixMapper!=null) {
+            // be defensive as we work with the user's code
+            String[] decls = prefixMapper.getContextualNamespaceDecls();
+            if(decls!=null) { // defensive check
+                for( int i=0; i<decls.length; i+=2 ) {
+                    String prefix = decls[i];
+                    String nsUri = decls[i+1];
+                    if(nsUri!=null && prefix!=null) // defensive check
+                        serializer.addInscopeBinding(nsUri,prefix);
+                }
+            }
+        }
         serializer.setPrefixMapper(prefixMapper);
     }
 
@@ -376,8 +380,6 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
             return printXmlDeclaration;
         if( XML_HEADERS.equals(name) )
             return header;
-        if( JAXBRIContext.INSCOPE_NAMESPACE_LISTER.equals(name) )
-            return inscopeNamespaceLister;
 
         return super.getProperty(name);
     }
@@ -385,10 +387,6 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     public void setProperty(String name, Object value) throws PropertyException {
         if( INDENT_STRING.equals(name) ) {
             indent = (String)value;
-            return;
-        }
-        if( JAXBRIContext.INSCOPE_NAMESPACE_LISTER.equals(name) ) {
-            inscopeNamespaceLister = (InscopeNamespaceLister)value;
             return;
         }
         if( ENCODING_HANDLER.equals(name) ) {

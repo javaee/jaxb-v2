@@ -30,7 +30,6 @@ import javax.xml.transform.sax.SAXResult;
 
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.api.AccessorException;
-import com.sun.xml.bind.api.InscopeNamespaceLister;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import com.sun.xml.bind.util.ValidationEventLocatorExImpl;
 import com.sun.xml.bind.v2.WellKnownNamespace;
@@ -89,7 +88,7 @@ import org.xml.sax.SAXException;
  *
  * @author  Kohsuke Kawaguchi
  */
-public final class XMLSerializer extends Coordinator implements InscopeNamespaceLister.Receiver {
+public final class XMLSerializer extends Coordinator {
     public final JAXBContextImpl grammar;
 
     /** Object currently marshalling itself. */
@@ -669,7 +668,20 @@ public final class XMLSerializer extends Coordinator implements InscopeNamespace
             String[] uris = nsContext.getPrefixMapper().getPreDeclaredNamespaceUris();
             if( uris!=null ) {
                 for (String uri : uris) {
-                    if (uri != null) nsContext.declareNsUri(uri, null, false);
+                    if (uri != null)
+                        nsContext.declareNsUri(uri, null, false);
+                }
+            }
+            String[] pairs = nsContext.getPrefixMapper().getPreDeclaredNamespaceUris2();
+            if( pairs!=null ) {
+                for( int i=0; i<pairs.length; i++ ) {
+                    String prefix = pairs[i];
+                    String nsUri = pairs[i+1];
+                    if(prefix!=null && nsUri!=null)
+                        // in this case, we don't want the redundant binding consolidation
+                        // to happen (such as declaring the same namespace URI twice with
+                        // different prefixes.) Hence we call the put method directly.
+                        nsContext.put(nsUri,prefix);
                 }
             }
 

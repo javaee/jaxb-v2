@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JAXBRIContext.java,v 1.10 2005-07-22 03:27:07 kohsuke Exp $
+ * @(#)$Id: JAXBRIContext.java,v 1.11 2005-07-22 06:25:03 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -247,11 +247,4 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @since 2.0 EA2
      */
     public static final String ENABLE_XOP = "com.sun.xml.bind.XOP";
-
-    /**
-     * Marshalelr property to allow the JAXB RI to use the in-scope namespace bindings.
-     *
-     * @see InscopeNamespaceLister
-     */
-    public static final String INSCOPE_NAMESPACE_LISTER = InscopeNamespaceLister.class.getName();
 }
