@@ -5,7 +5,7 @@
  SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 -->
 
-<project name="runtime-api" basedir=".." default="deploy">
+<project name="runtime-api" basedir=".." default="compile">
 
     <description>
       Runtime API Sub-Project
