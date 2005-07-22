@@ -73,8 +73,7 @@ public class AnnotationParserFactoryImpl implements AnnotationParserFactory {
                             BIGlobalBinding.class,
                             BIProperty.class,
                             BISchemaBinding.class
-                        }, Collections.<TypeReference>emptyList(), null
-                    );
+                        }, Collections.<TypeReference>emptyList(), null, false);
                 return customizationContext;
             } catch (JAXBException e) {
                 throw new AssertionError(e);
