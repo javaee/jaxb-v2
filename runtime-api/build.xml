@@ -31,7 +31,7 @@
            description="compile all classes">
         <mkdir dir="${runtime-api.classes}" />
 
-        <javac srcdir="${runtime-api.src}" destdir="${runtime-api.classes}"
+        <javac srcdir="${runtime-api.src}:${runtime-api.root}/arch-doc" destdir="${runtime-api.classes}"
             debug="${compile.debug}" optimize="${compile.optimize}"
             deprecation="${compile.deprecation}" >
             <classpath refid="javac.classpath" />
