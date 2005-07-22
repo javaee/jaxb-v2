@@ -22,6 +22,7 @@
         <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
         <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
         <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
+        <pathelement path="${jaxb.root}/javadoc" />
    </path>
    
    
