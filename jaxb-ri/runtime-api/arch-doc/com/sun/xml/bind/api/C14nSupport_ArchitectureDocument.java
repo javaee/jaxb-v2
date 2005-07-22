@@ -20,17 +20,21 @@ import javax.xml.bind.Marshaller;
  *
  * <p>
  * When using JAXB to marshal a tree canonically to be a subtree of a bigger document,
- * you also need to use {@link InscopeNamespaceLister} with the marshaller. To do so,
- * use {@link Marshaller#setProperty(String, Object)} }. Also
- * refer to {@link JAXBRIContext#INSCOPE_NAMESPACE_LISTER} for details.
+ * you also need to use {@link com.sun.xml.bind.marshaller.NamespacePrefixMapper}
+ * with the marshaller.
+ *
+ * In particular, use
+ * {@link com.sun.xml.bind.marshaller.NamespacePrefixMapper#getPreDeclaredNamespaceUris2()}
+ * to make sure that the marshalling redeclares all the in-scope namespace bindings at
+ * the root element.
  *
  *
  * <h2>Unsupported Features</h2>
  * <p>
  * When canonicalizing a subtree, the canonical XML spec requires the xml attributes
- * (such as xml:lang, xml:base) to be copied over to the root of the canonical subtree.
+ * (such as xml:lang, xml:base) on ancestor elements to be copied over to the root
+ * of the canonical subtree.
  * This behavior is not implemented.
- *
  *
  *
  * <h2>TODOs</h2>
@@ -52,7 +56,6 @@ import javax.xml.bind.Marshaller;
  * </ol>
  *
  * @see JAXBRIContext#CANONICALIZATION_SUPPORT
- * @see InscopeNamespaceLister
  *
  * @ArchitectureDocument
  * @author Kohsuke Kawaguchi

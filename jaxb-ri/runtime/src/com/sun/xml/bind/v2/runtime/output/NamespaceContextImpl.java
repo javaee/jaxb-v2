@@ -185,7 +185,11 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
     }
 
     /**
-     * Puts this new binding into the declared prefixes list.
+     * Puts this new binding into the declared prefixes list
+     * without doing any duplicate check.
+     *
+     * <p>
+     * Most of the time {@link #declareNsUri(String, String, boolean)} shall be used.
      *
      * @param prefix
      *      if null, an unique prefix is allocated.
@@ -193,7 +197,7 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
      * @return
      *      the index of this new binding.
      */
-    private int put(String uri, String prefix) {
+    public int put(String uri, String prefix) {
         if(size==nsUris.length) {
             // reallocate
             String[] u = new String[nsUris.length*2];

@@ -4,7 +4,13 @@
  */
 package com.sun.xml.bind.marshaller;
 
+import java.io.OutputStream;
 
+import javax.xml.stream.XMLEventWriter;
+import javax.xml.stream.XMLStreamWriter;
+import javax.xml.transform.dom.DOMResult;
+
+import org.w3c.dom.Node;
 
 // be careful about changing this class. this class is supposed to be
 // extended by users and therefore we are not allowed to break
@@ -27,6 +33,9 @@ package com.sun.xml.bind.marshaller;
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 public abstract class NamespacePrefixMapper {
+
+    private static final String[] EMPTY_STRING = new String[0];
+
     /**
      * Returns a preferred prefix for the given namespace URI.
      * 
@@ -125,6 +134,83 @@ public abstract class NamespacePrefixMapper {
      *      JAXB RI 1.0.2 
      */
     public String[] getPreDeclaredNamespaceUris() {
-        return new String[0];
+        return EMPTY_STRING;
+    }
+
+    /**
+     * Similar to {@link #getPreDeclaredNamespaceUris()} but allows the
+     * (prefix,nsUri) pairs to be returned.
+     *
+     * <p>
+     * With {@link #getPreDeclaredNamespaceUris()}, applications who wish to control
+     * the prefixes as well as the namespaces needed to implement both
+     * {@link #getPreDeclaredNamespaceUris()} and {@link #getPreferredPrefix(String, String, boolean)}.
+     *
+     * <p>
+     * This version eliminates the needs by returning an array of pairs.
+     *
+     * @return
+     *      always return a non-null (but possibly empty) array. The array stores
+     *      data like (prefix1,nsUri1,prefix2,nsUri2,...) Use an empty string to represent
+     *      the empty namespace URI and the default prefix. Null is not allowed as a value
+     *      in the array.
+     *
+     * @since
+     *      JAXB RI 2.0 beta
+     */
+    public String[] getPreDeclaredNamespaceUris2() {
+        return EMPTY_STRING;
+    }
+
+    /**
+     * Returns a list of (prefix,namespace URI) pairs that represents
+     * namespace bindings available on ancestor elements (that need not be repeated
+     * by the JAXB RI.)
+     *
+     * <p>
+     * Sometimes JAXB is used to marshal an XML document, which will be
+     * used as a subtree of a bigger document. When this happens, it's nice
+     * for a JAXB marshaller to be able to use in-scope namespace bindings
+     * of the larger document and avoid declaring redundant namespace URIs.
+     *
+     * <p>
+     * This is automatically done when you are marshalling to {@link XMLStreamWriter},
+     * {@link XMLEventWriter}, {@link DOMResult}, or {@link Node}, because
+     * those output format allows us to inspect what's currently available
+     * as in-scope namespace binding. However, with other output format,
+     * such as {@link OutputStream}, the JAXB RI cannot do this automatically.
+     * That's when this method comes into play.
+     *
+     * <p>
+     * Namespace bindings returned by this method will be used by the JAXB RI,
+     * but will not be re-declared. They are assumed to be available when you insert
+     * this subtree into a bigger document.
+     *
+     * <p>
+     * It is <b>NOT</b> OK to return  the same binding, or give
+     * the receiver a conflicting binding information.
+     * It's a responsibility of the caller to make sure that this doesn't happen
+     * even if the ancestor elements look like:
+     * <pre><xmp>
+     *   <foo:abc xmlns:foo="abc">
+     *     <foo:abc xmlns:foo="def">
+     *       <foo:abc xmlns:foo="abc">
+     *         ... JAXB marshalling into here.
+     *       </foo:abc>
+     *     </foo:abc>
+     *   </foo:abc>
+     * </xmp></pre>
+     * <!-- TODO: shall we relax this constraint? -->
+     *
+     * @return
+     *      always return a non-null (but possibly empty) array. The array stores
+     *      data like (prefix1,nsUri1,prefix2,nsUri2,...) Use an empty string to represent
+     *      the empty namespace URI and the default prefix. Null is not allowed as a value
+     *      in the array.
+     *
+     * @since JAXB RI 2.0 beta
+     */
+    public String[] getContextualNamespaceDecls() {
+        return EMPTY_STRING;
     }
 }
