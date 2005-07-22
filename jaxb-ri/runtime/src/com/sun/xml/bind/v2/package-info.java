@@ -1,5 +1,5 @@
 /**
- * The JAXB 2.0 runtime.
+ * <h1>The JAXB 2.0 runtime</h1>.
  *
  * <h1>Overview</h1>
  * <p>
@@ -16,9 +16,23 @@
  *      composing unmarshallers and marshallers.
  * </ol>
  *
+ * <h1>Interesting Pieces inside Runtime</h1>
+ * <p>
+ * The followings are the interesting pieces inside the runtime.
  *
+ * <dl>
+ *  <dt>{@link com.sun.xml.bind.v2.model model}
+ *  <dd>
+ *    This set of classes and interfaces models JAXB-bound types.
  *
+ *  <dt>{@link com.sun.xml.bind.v2.runtime XML I/O}
+ *  <dd>
+ *    This set of classes implements the JAXB API and provides the XML I/O functionality.
+ * </dl>
  *
+ * <p>
+ * The classes <b>NOT</b> in the {@link com.sun.xml.bind.v2} package (and its subpackages)
+ * are also used by old JAXB 1.0 clients.
  *
  * <h1>Models</h1>
  * <p>
@@ -78,7 +92,8 @@
  *
  * <h3>Evolution Rules</h3>
  * None of the class in this package or below should be directly
- * referenced by the generated code.
+ * referenced by the generated code. Hence they can be changed freely
+ * from versions to versions.
  *
  *
  *
@@ -103,27 +118,38 @@
  * triggers activities.
  *
  * {@SequenceDiagram
- *      pobject(U,"user");
- *      object(A,"JAXB API");
- *      object(CF,"ContextFactory");
- *      step();
- *
- *      message(U,A,"JAXBContext.newInstance()");
- *      active(A);
- *      message(A,A,"locate JAXB RI 2.0");
- *      active(A);
- *      step();
- *      inactive(A);
- *
- *      message(A,CF,"createContext");
- *      active(CF);
- *
- *      rmessage(A,U,"context object");
- *      inactive(CF);
- *      inactive(A);
- *
- *      complete(CF);
- *      complete(A);
+     boxwid=1.2;
+
+     pobject(U,"user");
+     object(A,"JAXB API");
+     object(CF,"ContextFactory");
+     pobject(JC);
+     step();
+
+     message(U,A,"JAXBContext.newInstance()");
+     active(A);
+     message(A,A,"locate JAXB RI 2.0");
+     active(A);
+     step();
+     inactive(A);
+
+     message(A,CF,"createContext");
+     active(CF);
+
+     create_message(CF,JC,"c:JAXBContextImpl");
+     active(JC);
+
+     message(JC,JC,"build runtime model");
+     message(JC,JC,"build JaxBeanInfos");
+     inactive(JC);
+
+     rmessage(A,U,"return c");
+     inactive(CF);
+     inactive(A);
+
+     complete(JC);
+     complete(CF);
+     complete(A);
  * }
  *
  * @ArchitectureDocument

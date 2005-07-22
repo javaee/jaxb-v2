@@ -64,7 +64,7 @@ import org.xml.sax.SAXException;
  * {@link XMLSerializer} calls the writer methods in the following order:
  *
  * <pre>
- * CALLSEQUENCE  :=  {@link #startDocument} ELEMENT {@link #endDocument}
+ * CALLSEQUENCE  :=  {@link #startDocument startDocument} ELEMENT {@link #endDocument endDocument}
  *               |   ELEMENT   // for fragment
  *
  * ELEMENT       :=  {@link #beginStartTag beginStartTag} {@link #attribute attribute}* {@link #endStartTag endStartTag} CONTENTS {@link #endTag endTag}

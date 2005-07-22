@@ -117,26 +117,29 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
         return base;
     }
 
-    private void writeNsDecls(int base) throws IOException {
+    protected void writeNsDecls(int base) throws IOException {
         NamespaceContextImpl.Element ns = nsContext.getCurrent();
         int count = ns.count();
 
-        for( int i=0; i<count; i++ ) {
-            String p = ns.getPrefix(i);
+        for( int i=0; i<count; i++ )
+            writeNsDecl(ns, i, base);
+    }
 
-            if(p.length()==0) {
-                if(base==1 && ns.getNsUri(i).length()==0)
-                    continue;   // no point in declaring xmlns="" on the root element
-                write(XMLNS_EQUALS);
-            } else {
-                Encoded e = prefixes[base+i];
-                write(XMLNS_COLON);
-                write(e.buf,0,e.len-1); // skip the trailing ':'
-                write(EQUALS);
-            }
-            doText(ns.getNsUri(i),true);
-            write('\"');
+    protected final void writeNsDecl(NamespaceContextImpl.Element ns, int i, int base) throws IOException {
+        String p = ns.getPrefix(i);
+
+        if(p.length()==0) {
+            if(base==1 && ns.getNsUri(i).length()==0)
+                return;     // no point in declaring xmlns="" on the root element
+            write(XMLNS_EQUALS);
+        } else {
+            Encoded e = prefixes[base+i];
+            write(XMLNS_COLON);
+            write(e.buf,0,e.len-1); // skip the trailing ':'
+            write(EQUALS);
         }
+        doText(ns.getNsUri(i),true);
+        write('\"');
     }
 
     private void writePrefix(int prefix) throws IOException {

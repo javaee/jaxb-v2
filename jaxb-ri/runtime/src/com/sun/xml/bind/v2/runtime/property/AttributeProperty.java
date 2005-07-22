@@ -12,9 +12,9 @@ import com.sun.xml.bind.v2.model.runtime.RuntimeAttributePropertyInfo;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
-import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
+import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
-import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
+import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
 
 import org.xml.sax.SAXException;
 
@@ -24,11 +24,13 @@ import org.xml.sax.SAXException;
  * <p>
  * This one works for both leaves and nodes, scalars and arrays.
  *
+ * <p>
+ * Implements {@link Comparable} so that it can be sorted lexicographically.
+ *
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
-public final class AttributeProperty<BeanT> extends PropertyImpl<BeanT> {
-
-    private final boolean required;
+public final class AttributeProperty<BeanT> extends PropertyImpl<BeanT>
+    implements Comparable<AttributeProperty> {
 
     /**
      * Attribute name.
@@ -44,12 +46,16 @@ public final class AttributeProperty<BeanT> extends PropertyImpl<BeanT> {
 
     public AttributeProperty(JAXBContextImpl p, RuntimeAttributePropertyInfo prop) {
         super(p,prop);
-        this.required = prop.isRequired();
         this.attName = p.nameBuilder.createAttributeName(prop.getXmlName());
         this.xacc = TransducedAccessor.get(prop);
         this.acc = prop.getAccessor();   // we only use this for binder, so don't waste memory by optimizing
     }
 
+    /**
+     * Marshals one attribute.
+     *
+     * @see JaxBeanInfo#serializeAttributes(Object, XMLSerializer)
+     */
     public void serializeAttributes(BeanT o, XMLSerializer w) throws SAXException, AccessorException, IOException, XMLStreamException {
         if(xacc.hasValue(o))
             w.attribute(attName,xacc.print(o).toString());
@@ -74,5 +80,9 @@ public final class AttributeProperty<BeanT> extends PropertyImpl<BeanT> {
 
     public String getIdValue(BeanT bean) throws AccessorException, SAXException {
         return xacc.print(bean).toString();
+    }
+
+    public int compareTo(AttributeProperty that) {
+        return this.attName.compareTo(that.attName);
     }
 }

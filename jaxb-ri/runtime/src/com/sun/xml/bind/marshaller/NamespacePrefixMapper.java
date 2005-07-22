@@ -63,12 +63,13 @@ public abstract class NamespacePrefixMapper {
      * @since JAXB 1.0.1
      */
     public abstract String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix);
-    
+
     /**
      * Returns a list of namespace URIs that should be declared
      * at the root element.
+     *
      * <p>
-     * By default, the JAXB RI produces namespace declarations only when
+     * By default, the JAXB RI 1.0.x produces namespace declarations only when
      * they are necessary, only at where they are used. Because of this
      * lack of look-ahead, sometimes the marshaller produces a lot of
      * namespace declarations that look redundant to human eyes. For example,
@@ -81,10 +82,21 @@ public abstract class NamespacePrefixMapper {
      *   ...
      * </root>
      * <xmp></pre>
+     *
+     * <p>
+     * The JAXB RI 2.x mostly doesn't exhibit this behavior any more,
+     * as it declares all statically known namespace URIs (those URIs
+     * that are used as element/attribute names in JAXB annotations),
+     * but it may still declare additional namespaces in the middle of
+     * a document, for example when (i) a QName as an attribute/element value
+     * requires a new namespace URI, or (ii) DOM nodes as a portion of an object
+     * tree requires a new namespace URI.
+     *
      * <p>
      * If you know in advance that you are going to use a certain set of
      * namespace URIs, you can override this method and have the marshaller
-     * declare those namespace URIs at the root element. 
+     * declare those namespace URIs at the root element.
+     *
      * <p>
      * For example, by returning <code>new String[]{"urn:foo"}</code>,
      * the marshaller will produce:

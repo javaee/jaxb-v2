@@ -54,6 +54,7 @@ import com.sun.xml.bind.v2.runtime.output.UTF8XmlOutput;
 import com.sun.xml.bind.v2.runtime.output.XMLEventWriterOutput;
 import com.sun.xml.bind.v2.runtime.output.XMLStreamWriterOutput;
 import com.sun.xml.bind.v2.runtime.output.XmlOutput;
+import com.sun.xml.bind.v2.runtime.output.C14nXmlOutput;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -336,8 +337,12 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
             Encoded[] table = context.getUTF8NameTable();
             if(isFormattedOutput())
                 return new IndentingUTF8XmlOutput(os,indent,table);
-            else
-                return new UTF8XmlOutput(os,table);
+            else {
+                if(context.c14nSupport)
+                    return new C14nXmlOutput(os,table);
+                else
+                    return new UTF8XmlOutput(os,table);
+            }
         }
 
         try {

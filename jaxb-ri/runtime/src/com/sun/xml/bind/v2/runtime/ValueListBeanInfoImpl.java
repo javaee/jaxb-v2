@@ -13,6 +13,7 @@ import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.runtime.property.Unmarshaller;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingEventHandler;
+import com.sun.xml.bind.v2.FinalArrayList;
 
 import org.xml.sax.SAXException;
 
@@ -39,7 +40,7 @@ final class ValueListBeanInfoImpl extends JaxBeanInfo {
     private Unmarshaller.Handler createUnmarshaller() {
         return new Unmarshaller.RawTextHandler(Unmarshaller.REVERT_TO_PARENT,Unmarshaller.REVERT_TO_PARENT) {
             public void processText(UnmarshallingContext context, CharSequence s) throws SAXException {
-                List<Object> r = new ArrayList<Object>();
+                List<Object> r = new FinalArrayList<Object>();
 
                 int idx = 0;
                 int len = s.length();

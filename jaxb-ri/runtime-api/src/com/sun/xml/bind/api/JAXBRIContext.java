@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JAXBRIContext.java,v 1.9 2005-06-17 18:56:02 kohsuke Exp $
+ * @(#)$Id: JAXBRIContext.java,v 1.10 2005-07-22 03:27:07 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -17,6 +17,7 @@ import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 /**
@@ -36,20 +37,26 @@ public abstract class JAXBRIContext extends JAXBContext {
      * Creates a new {@link JAXBRIContext}.
      *
      * <p>
-     * {@link JAXBContext#newInstance JAXBContext.newInstance()} methods may
+     * {@link JAXBContext#newInstance(Class[]) JAXBContext.newInstance()} methods may
      * return other JAXB providers that are not compatible with the JAX-RPC RI.
+     * This method guarantees that the JAX-WS RI will finds the JAXB RI.
      *
-     * <p>
-     * This method guarantees that the JAX-RPC RI will finds the JAXB RI.
-     *
-     * <P>
-     * TODO: verify that the parameters are OK with the JAX-RPC. 
+     * @param classes
+     *      Classes to be bound. See {@link JAXBContext#newInstance(Class[])} for the meaning.
+     * @param typeRefs
+     *      See {@link #TYPE_REFERENCES} for the meaning of this parameter.
+     *      Can be null.
+     * @param defaultNamespaceRemap
+     *      See {@link #DEFAULT_NAMESPACE_REMAP} for the meaning of this parameter.
+     *      Can be null (and should be null for ordinary use of JAXB.)
+     * @param c14nSupport
+     *      See {@link #CANONICALIZATION_SUPPORT} for the meaning of this parameter.
      */
-    public static final JAXBRIContext newInstance(Class[] classes, Collection<TypeReference> typeRefs, String defaultNamespaceRemap ) throws JAXBException {
+    public static final JAXBRIContext newInstance(Class[] classes, Collection<TypeReference> typeRefs, String defaultNamespaceRemap, boolean c14nSupport ) throws JAXBException {
         try {
             Class c = Class.forName("com.sun.xml.bind.v2.ContextFactory");
-            Method method = c.getMethod("createContext",Class[].class,Collection.class,String.class);
-            Object o = method.invoke(null,classes,typeRefs,defaultNamespaceRemap);
+            Method method = c.getMethod("createContext",Class[].class,Collection.class,String.class,boolean.class);
+            Object o = method.invoke(null,classes,typeRefs,defaultNamespaceRemap,c14nSupport);
             return (JAXBRIContext)o;
         } catch (ClassNotFoundException e) {
             throw new JAXBException(e);
@@ -214,9 +221,25 @@ public abstract class JAXBRIContext extends JAXBContext {
      * The value of the property is {@link Collection}&lt;{@link TypeReference}>.
      * Those {@link TypeReference}s can then be used to create {@link Bridge}s.
      *
+     * <p>
+     * This mechanism allows additional element declarations that were not a part of
+     * the schema into the created {@link JAXBContext}.
+     *
      * @since 2.0 EA1
      */
     public static final String TYPE_REFERENCES = "com.sun.xml.bind.typeReferences";
+
+    /**
+     * The property that you can specify to {@link JAXBContext#newInstance}
+     * to enable the c14n marshalling support in the {@link JAXBContext}.
+     *
+     * @see C14nSupport_ArchitectureDocument
+     *
+     * @since 2.0 EA2
+     * @see InscopeNamespaceLister
+     * @see #INSCOPE_NAMESPACE_LISTER
+     */
+    public static final String CANONICALIZATION_SUPPORT = "com.sun.xml.bind.c14n";
 
     /**
      * Marshaller/Unmarshaller property to enable XOP processing.
@@ -224,4 +247,11 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @since 2.0 EA2
      */
     public static final String ENABLE_XOP = "com.sun.xml.bind.XOP";
+
+    /**
+     * Marshalelr property to allow the JAXB RI to use the in-scope namespace bindings.
+     *
+     * @see InscopeNamespaceLister
+     */
+    public static final String INSCOPE_NAMESPACE_LISTER = InscopeNamespaceLister.class.getName();
 }

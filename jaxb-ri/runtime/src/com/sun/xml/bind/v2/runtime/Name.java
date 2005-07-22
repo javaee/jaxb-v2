@@ -8,9 +8,13 @@ import javax.xml.namespace.QName;
  * <p>
  * This class keeps indicies for URI and local name for enabling faster processing.
  *
+ * <p>
+ * {@link Name}s are ordered lexicographically (nsUri first, local name next.)
+ * This is the same order required by canonical XML.
+ *
  * @author Kohsuke Kawaguchi
  */
-public final class Name {
+public final class Name implements Comparable<Name> {
     /**
      * Namespace URI. interned.
      */
@@ -59,5 +63,11 @@ public final class Name {
 
     public boolean equals( String nsUri, String localName ) {
         return localName.equals(this.localName) && nsUri.equals(this.nsUri);
+    }
+
+    public int compareTo(Name that) {
+        int r = this.nsUri.compareTo(that.nsUri);
+        if(r!=0)    return r;
+        return this.localName.compareTo(that.localName);
     }
 }

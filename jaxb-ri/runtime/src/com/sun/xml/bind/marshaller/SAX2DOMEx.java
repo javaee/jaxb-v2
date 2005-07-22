@@ -11,13 +11,13 @@
 
 package com.sun.xml.bind.marshaller;
 
-import java.util.ArrayList;
 import java.util.Stack;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import com.sun.xml.bind.util.Which;
+import com.sun.xml.bind.v2.FinalArrayList;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -37,7 +37,7 @@ public class SAX2DOMEx implements ContentHandler {
 
     private Node node=null;
     private final Stack<Node> nodeStack = new Stack<Node>();
-    private final ArrayList<String> unprocessedNamespaces = new ArrayList<String>();
+    private final FinalArrayList<String> unprocessedNamespaces = new FinalArrayList<String>();
 
 
     /**

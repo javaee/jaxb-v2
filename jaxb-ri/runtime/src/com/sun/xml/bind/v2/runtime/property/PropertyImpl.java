@@ -28,9 +28,6 @@ abstract class PropertyImpl<BeanT> implements Property<BeanT> {
     public void serializeBody(BeanT o, XMLSerializer w, Object outerPeer) throws SAXException, AccessorException, IOException, XMLStreamException {
     }
 
-    public void serializeAttributes(BeanT o, XMLSerializer w) throws SAXException, AccessorException, IOException, XMLStreamException {
-    }
-
     public void serializeURIs(BeanT o, XMLSerializer w) throws SAXException, AccessorException {
     }
 

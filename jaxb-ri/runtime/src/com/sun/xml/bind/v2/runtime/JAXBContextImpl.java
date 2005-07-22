@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.39 2005-07-15 22:25:54 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.40 2005-07-22 03:27:03 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -85,7 +85,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -155,18 +155,26 @@ public final class JAXBContextImpl extends JAXBRIContext {
     private final String defaultNsUri;
     private final Class[] classes;
 
+    /**
+     * true to reorder attributes lexicographically in preparation of the c14n support.
+     */
+    protected final boolean c14nSupport;
+
     private WeakReference<RuntimeTypeInfoSet> typeInfoSetCache;
 
     /**
      *
      * @param typeRefs
      *      used to build {@link Bridge}s. Can be empty.
+     * @param c14nSupport
+     *      {@link #c14nSupport}.
      */
-    public JAXBContextImpl( Class[] classes, Collection<TypeReference> typeRefs, String defaultNsUri ) throws JAXBException {
+    public JAXBContextImpl(Class[] classes, Collection<TypeReference> typeRefs, String defaultNsUri, boolean c14nSupport) throws JAXBException {
 
         if(defaultNsUri==null)      defaultNsUri="";    // fool-proof
 
         this.defaultNsUri = defaultNsUri;
+        this.c14nSupport = c14nSupport;
         this.classes = new Class[classes.length];
         System.arraycopy(classes,0,this.classes,0,classes.length);
 
