@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
 
-import com.sun.xml.bind.api.C14nSupport_ArchitectureDocument;
 import com.sun.xml.bind.v2.FinalArrayList;
 import com.sun.xml.bind.v2.runtime.Name;
+import com.sun.xml.bind.api.C14nSupport_ArchitectureDocument;
 
 /**
  * {@link XmlOutput} that generates canonical XML.

@@ -2,7 +2,6 @@ package com.sun.xml.bind.v2.runtime;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -10,10 +9,10 @@ import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.WhiteSpaceProcessor;
 import com.sun.xml.bind.api.AccessorException;
+import com.sun.xml.bind.v2.FinalArrayList;
 import com.sun.xml.bind.v2.runtime.property.Unmarshaller;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingEventHandler;
-import com.sun.xml.bind.v2.FinalArrayList;
 
 import org.xml.sax.SAXException;
 

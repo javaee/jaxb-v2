@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JAXBRIContext.java,v 1.11 2005-07-22 06:25:03 kohsuke Exp $
+ * @(#)$Id: JAXBRIContext.java,v 1.12 2005-07-22 22:14:08 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -17,7 +17,6 @@ import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 /**
@@ -234,10 +233,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      * to enable the c14n marshalling support in the {@link JAXBContext}.
      *
      * @see C14nSupport_ArchitectureDocument
-     *
      * @since 2.0 EA2
-     * @see InscopeNamespaceLister
-     * @see #INSCOPE_NAMESPACE_LISTER
      */
     public static final String CANONICALIZATION_SUPPORT = "com.sun.xml.bind.c14n";
 
