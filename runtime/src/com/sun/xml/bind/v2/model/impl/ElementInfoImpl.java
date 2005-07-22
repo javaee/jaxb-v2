@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.TODO;
+import com.sun.xml.bind.v2.FinalArrayList;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
@@ -66,7 +67,7 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      * This could be null.
      * @see #link()
      */
-    private List<ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>> substitutionMembers;
+    private FinalArrayList<ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>> substitutionMembers;
 
     /**
      * The factory method from which this mapping was created.
@@ -360,7 +361,7 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     private void addSubstitutionMember(ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> child) {
         if(substitutionMembers==null)
-            substitutionMembers = new ArrayList<ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>>();
+            substitutionMembers = new FinalArrayList<ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>>();
         substitutionMembers.add(child);
     }
 

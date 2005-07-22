@@ -1,17 +1,16 @@
 package com.sun.xml.bind.v2.model.impl;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.model.core.MapPropertyInfo;
+import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
-import com.sun.xml.bind.v2.model.core.NonElement;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -48,10 +47,7 @@ class MapPropertyInfoImpl<T,C,F,M> extends PropertyInfoImpl<T,C,F,M> implements 
     }
 
     public Collection<? extends TypeInfo<T,C>> ref() {
-        List<TypeInfo<T,C>> r = new ArrayList<TypeInfo<T,C>>();
-        r.add(getKeyType());
-        r.add(getValueType());
-        return r;
+        return Arrays.asList(getKeyType(),getValueType());
     }
 
     public final PropertyKind kind() {

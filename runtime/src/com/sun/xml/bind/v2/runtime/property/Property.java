@@ -47,11 +47,6 @@ public interface Property<BeanT> extends ChildElementUnmarshallerBuilder {
     public void serializeBody(BeanT beanT, XMLSerializer target, Object outerPeer) throws SAXException, AccessorException, IOException, XMLStreamException;
 
     /**
-     * @see JaxBeanInfo#serializeAttributes(Object, XMLSerializer)
-     */
-    public void serializeAttributes(BeanT beanT, XMLSerializer target) throws SAXException, AccessorException, IOException, XMLStreamException;
-
-    /**
      * @see JaxBeanInfo#serializeURIs(Object, XMLSerializer)
      */
     public void serializeURIs(BeanT beanT, XMLSerializer target) throws SAXException, AccessorException;

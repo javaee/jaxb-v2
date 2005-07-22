@@ -6,12 +6,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Collections;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.ClassFactory;
+import com.sun.xml.bind.v2.FinalArrayList;
 import com.sun.xml.bind.v2.model.core.Element;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
@@ -65,13 +67,13 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
      */
     private /*final*/ Unmarshaller.Handler elementUnmarshaller;
 
-    // TODO: revisit and try to eliminate this reference for better memory footproint
     /**
      * Set only until the link phase to avoid leaking memory.
      */
     private RuntimeClassInfo ci;
 
     private final Accessor declaredAttWildcard;
+    private final Accessor inheritedAttWildcard;
     private final Transducer xducer;
     protected final ClassBeanInfoImpl superClazz;
 
@@ -79,13 +81,20 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
 
     private final Name tagName;
 
+    /**
+     * The {@link AttributeProperty}s for this type and all its ancestors.
+     * If {@link JAXBContextImpl#c14nSupport} is true, this is sorted alphabetically.
+     */
+    private /*final*/ AttributeProperty[] attributeProperties;
+
 
     /*package*/ ClassBeanInfoImpl(JAXBContextImpl owner, RuntimeClassInfo ci) {
         super(owner,ci,ci.getClazz(),ci.getTypeName(),ci.isElement(),false);
 
         this.ci = ci;
+        this.inheritedAttWildcard = ci.getAttributeWildcard();
         if(ci.declaresAttributeWildcard())
-            this.declaredAttWildcard = ci.getAttributeWildcard();
+            this.declaredAttWildcard = inheritedAttWildcard;
         else
             this.declaredAttWildcard = null;
         this.xducer = ci.getTransducer();
@@ -158,6 +167,19 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
             if(!superClazz.hasElementOnlyContentModel())
                 hasElementOnlyContentModel(false);
         }
+
+        // create a list of attribute handlers
+        List<AttributeProperty> attProps = new FinalArrayList<AttributeProperty>();
+        for (ClassBeanInfoImpl bi = this; bi != null; bi = bi.superClazz) {
+            for (int i = bi.properties.length - 1; i >= 0; i--) {
+                Property p = bi.properties[i];
+                if(p instanceof AttributeProperty)
+                    attProps.add((AttributeProperty) p);
+            }
+        }
+        if(grammar.c14nSupport)
+            Collections.sort(attProps);
+        attributeProperties = attProps.toArray(new AttributeProperty[attProps.size()]);
     }
 
     public void wrapUp() {
@@ -169,7 +191,7 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
 
     private Unmarshaller.Handler createTypeUnmarshaller(JAXBContextImpl grammar,Unmarshaller.Handler tail) {
         Unmarshaller.Handler valueHandler = null;
-        List <Property> propList = new ArrayList<Property>();
+        List<Property> propList = new FinalArrayList<Property>();
 
         for (ClassBeanInfoImpl bi = this; bi != null; bi = bi.superClazz) {
             for (int i = bi.properties.length - 1; i >= 0; i--) {
@@ -211,7 +233,7 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
      * and prepend it in front of the given 'tail'.
      */
     private Unmarshaller.Handler createAttributeHandler(Unmarshaller.Handler tail) {
-        List<AttributeProperty> propList = new ArrayList<AttributeProperty>();
+        List<AttributeProperty> propList = new FinalArrayList<AttributeProperty>();
         for (ClassBeanInfoImpl bi = this; bi != null; bi = bi.superClazz) {
             for (int i = bi.properties.length - 1; i >= 0; i--) {
                 Property p = bi.properties[i];
@@ -295,14 +317,12 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
     }
 
     public void serializeAttributes(BeanT bean, XMLSerializer target) throws SAXException, IOException, XMLStreamException {
-        if(superClazz!=null)
-            superClazz.serializeAttributes(bean,target);
         try {
-            for( Property p : properties )
+            for( AttributeProperty p : attributeProperties )
                 p.serializeAttributes(bean,target);
 
-            if(declaredAttWildcard!=null) {
-                Map<QName,Object> map = (Map<QName,Object>)declaredAttWildcard.get(bean);
+            if(inheritedAttWildcard!=null) {
+                Map<QName,Object> map = (Map<QName,Object>)inheritedAttWildcard.get(bean);
                 target.attWildcardAsAttributes(map,null);
             }
         } catch (AccessorException e) {

@@ -1,7 +1,6 @@
 package com.sun.xml.bind.v2.model.impl;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -33,6 +32,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.annotation.XmlLocation;
+import com.sun.xml.bind.v2.FinalArrayList;
 import com.sun.xml.bind.v2.NameConverter;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
@@ -73,7 +73,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      *
      * @see #getProperties()
      */
-    private List<PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>> properties;
+    private FinalArrayList<PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>> properties;
 
     /**
      * The property order.
@@ -193,7 +193,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         // check the access type first
         AccessType at = getAccessType();
 
-        properties = new ArrayList<PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>>();
+        properties = new FinalArrayList<PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>>();
 
         // find properties from fields
         for( FieldT f : nav().getDeclaredFields(clazz) ) {
@@ -398,7 +398,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
 
     private static final <T> List<T> makeSet( T... args ) {
-        List<T> l = new ArrayList<T>();
+        List<T> l = new FinalArrayList<T>();
         for( T arg : args )
             if(arg!=null)   l.add(arg);
         return l;

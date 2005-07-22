@@ -109,9 +109,6 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
                 }
             }
 
-            public void serializeAttributes(JAXBElement o, XMLSerializer target) {
-            }
-
             public void serializeURIs(JAXBElement o, XMLSerializer target) {
             }
 

@@ -46,6 +46,10 @@ public final class ValueProperty<BeanT,ListT,ItemT> extends PropertyImpl<BeanT> 
         }
     }
 
+    public void serializeURIs(BeanT o, XMLSerializer w) throws SAXException, AccessorException {
+        xacc.declareNamespace(o,w);
+    }
+
     public Unmarshaller.Handler createUnmarshallerHandler(JAXBContextImpl grammar, Unmarshaller.Handler tail){
          return new Unmarshaller.TextHandler(xacc,Unmarshaller.ERROR, tail);
     }

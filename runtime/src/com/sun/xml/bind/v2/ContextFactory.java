@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,33 +40,39 @@ public class ContextFactory {
         else
             properties = new HashMap<String,Object>(properties);
 
-        String defaultNsUri = getDefaultNamespaceRemap(properties);
+        String defaultNsUri = getPropertyValue(properties,JAXBRIContext.DEFAULT_NAMESPACE_REMAP,String.class);
+
+        Boolean c14nSupport = getPropertyValue(properties,JAXBRIContext.CANONICALIZATION_SUPPORT,Boolean.class);
+        if(c14nSupport==null)
+            c14nSupport = false;
+
 
         if(!properties.isEmpty()) {
             throw new JAXBException(Messages.UNSUPPORTED_PROPERTY.format(properties.keySet().iterator().next()));
         }
 
-        return createContext(classes,Collections.<TypeReference>emptyList(),defaultNsUri);
+        return createContext(classes,Collections.<TypeReference>emptyList(),defaultNsUri,c14nSupport);
     }
 
-    private static String getDefaultNamespaceRemap(Map<String, Object> properties) throws JAXBException {
-        String propName = null;
-        Object o = properties.get(JAXBRIContext.DEFAULT_NAMESPACE_REMAP);
-        if(o!=null) {
-            properties.remove(JAXBRIContext.DEFAULT_NAMESPACE_REMAP);
-            if(!(o instanceof String))
-                throw new JAXBException(Messages.INVALID_PROPERTY_VALUE.format(JAXBRIContext.DEFAULT_NAMESPACE_REMAP,o));
-            else
-                propName = (String)o;
-        }
-        return propName;
+    /**
+     * If a key is present in the map, remove the value and return it.
+     */
+    private static <T> T getPropertyValue(Map<String, Object> properties, String keyName, Class<T> type ) throws JAXBException {
+        Object o = properties.get(keyName);
+        if(o==null)     return null;
+
+        properties.remove(keyName);
+        if(!type.isInstance(o))
+            throw new JAXBException(Messages.INVALID_PROPERTY_VALUE.format(keyName,o));
+        else
+            return type.cast(o);
     }
 
     /**
      * Used from the JAXB RI runtime API, invoked via reflection.
      */
-    public static JAXBContext createContext( Class[] classes, Collection<TypeReference> typeRefs, String defaultNsUri ) throws JAXBException {
-        return new JAXBContextImpl(classes,typeRefs,defaultNsUri);
+    public static JAXBContext createContext( Class[] classes, Collection<TypeReference> typeRefs, String defaultNsUri, boolean c14nSupport ) throws JAXBException {
+        return new JAXBContextImpl(classes,typeRefs,defaultNsUri,c14nSupport);
     }
 
     /**
@@ -75,7 +80,7 @@ public class ContextFactory {
      */
     public static JAXBContext createContext( String contextPath,
                                              ClassLoader classLoader, Map<String,Object> properties ) throws JAXBException {
-        List<Class> classes = new ArrayList<Class>();
+        FinalArrayList<Class> classes = new FinalArrayList<Class>();
         StringTokenizer tokens = new StringTokenizer(contextPath,":");
         List<Class> indexedClasses;
 
@@ -138,7 +143,7 @@ public class ContextFactory {
         BufferedReader in =
                 new BufferedReader(new InputStreamReader(resourceAsStream, "UTF-8"));
 
-        List<Class> classes = new ArrayList<Class>();
+        FinalArrayList<Class> classes = new FinalArrayList<Class>();
         String className = in.readLine();
         while (className != null) {
             className = className.trim();

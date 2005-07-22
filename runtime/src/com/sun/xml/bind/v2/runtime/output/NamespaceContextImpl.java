@@ -20,7 +20,7 @@ import org.xml.sax.SAXException;
  *
  * <p>
  * This class is also used to keep track of tag names for each element
- * for the marshaller.
+ * for the marshaller (for the performance reason.)
  *
  * @author Kohsuke Kawaguchi
  */
@@ -29,6 +29,28 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
 
     private String[] prefixes = new String[4];
     private String[] nsUris = new String[4];
+//    /**
+//     * True if the correponding namespace declaration is an authentic one that should be printed.
+//     *
+//     * False if it's a re-discovered in-scope namespace binding available at the ancestor elements
+//     * outside this marhsalling. The false value is used to incorporate the in-scope namespace binding
+//     * information from {@link #inscopeNamespaceContext}. When false, such a declaration does not need
+//     * to be printed, as it's already available in ancestors.
+//     */
+//    private boolean[] visible = new boolean[4];
+//
+//    /**
+//     * {@link NamespaceContext} that informs this {@link XMLSerializer} about the
+//     * in-scope namespace bindings of the ancestor elements outside this marshalling.
+//     *
+//     * <p>
+//     * This is used when the marshaller is marshalling into a subtree that has ancestor
+//     * elements created outside the JAXB marshaller.
+//     *
+//     * Its {@link NamespaceContext#getPrefix(String)} is used to discover in-scope namespace
+//     * binding,
+//     */
+//    private final NamespaceContext inscopeNamespaceContext;
 
     /**
      * Number of URIs declared. Identifies the valid portion of

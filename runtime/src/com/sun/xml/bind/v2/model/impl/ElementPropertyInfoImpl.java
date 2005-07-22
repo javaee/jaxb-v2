@@ -1,7 +1,6 @@
 package com.sun.xml.bind.v2.model.impl;
 
 import java.util.AbstractList;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -10,6 +9,7 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.namespace.QName;
 
+import com.sun.xml.bind.v2.FinalArrayList;
 import com.sun.xml.bind.v2.model.core.ElementPropertyInfo;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
@@ -61,7 +61,7 @@ class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     public List<? extends TypeRefImpl<TypeT,ClassDeclT>> getTypes() {
         if(types==null) {
-            types = new ArrayList<TypeRefImpl<TypeT,ClassDeclT>>();
+            types = new FinalArrayList<TypeRefImpl<TypeT,ClassDeclT>>();
             XmlElement[] ann=null;
 
             XmlElement xe = seed.readAnnotation(XmlElement.class);

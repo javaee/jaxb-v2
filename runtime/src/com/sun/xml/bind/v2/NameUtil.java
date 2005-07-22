@@ -1,6 +1,5 @@
 package com.sun.xml.bind.v2;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -158,7 +157,7 @@ class NameUtil {
      * {"Abc", "100","Ghi"}.
      */
     public List<String> toWordList(String s) {
-        ArrayList<String> ss = new ArrayList<String>();
+        FinalArrayList<String> ss = new FinalArrayList<String>();
         int n = s.length();
         for (int i = 0; i < n;) {
 

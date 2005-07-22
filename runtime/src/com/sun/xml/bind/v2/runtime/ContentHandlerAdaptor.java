@@ -5,9 +5,10 @@
 package com.sun.xml.bind.v2.runtime;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.xml.stream.XMLStreamException;
+
+import com.sun.xml.bind.v2.FinalArrayList;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -23,7 +24,7 @@ import org.xml.sax.helpers.DefaultHandler;
 final class ContentHandlerAdaptor extends DefaultHandler {
 
     /** Stores newly declared prefix-URI mapping. */
-    private final ArrayList prefixMap = new ArrayList();
+    private final FinalArrayList prefixMap = new FinalArrayList();
     
     /** Events will be sent to this object. */
     private final XMLSerializer serializer;
