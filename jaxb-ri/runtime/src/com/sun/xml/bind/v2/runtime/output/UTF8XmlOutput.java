@@ -104,12 +104,12 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
             prefixes = buf;
         }
 
-        int count = ns.count();
-        int base = ns.getBase();
-        for( int i=0; i<count; i++ ) {
-            String p = ns.getPrefix(i);
+        int base = Math.min(prefixCount,ns.getBase());
+        int size = nsContext.count();
+        for( int i=base; i<size; i++ ) {
+            String p = nsContext.getPrefix(i);
 
-            Encoded e = prefixes[base+i];
+            Encoded e = prefixes[i];
 
             if(p.length()==0) {
                 e.buf = EMPTY_BYTE_ARRAY;
@@ -119,14 +119,16 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
                 e.append(':');
             }
         }
+        prefixCount = size;
         return base;
     }
 
     protected void writeNsDecls(int base) throws IOException {
-        int count = nsContext.getCurrent().count();
+        NamespaceContextImpl.Element ns = nsContext.getCurrent();
+        int size = nsContext.count();
 
-        for( int i=0; i<count; i++ )
-            writeNsDecl(base+i);
+        for( int i=ns.getBase(); i<size; i++ )
+            writeNsDecl(i);
     }
 
     /**
