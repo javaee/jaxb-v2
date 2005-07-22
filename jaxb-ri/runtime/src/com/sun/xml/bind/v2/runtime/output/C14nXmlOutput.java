@@ -124,24 +124,23 @@ public class C14nXmlOutput extends UTF8XmlOutput {
      */
     @Override
     protected void writeNsDecls(int base) throws IOException {
-        NamespaceContextImpl.Element ns = nsContext.getCurrent();
-        int count = ns.count();
+        int count = nsContext.getCurrent().count();
 
         if(count==0)
-            return;
+            return; // quickly reject the most common case
 
         if(count>nsBuf.length)
             nsBuf = new int[count];
 
         for( int i=count-1; i>=0; i-- )
-            nsBuf[i] = i;
+            nsBuf[i] = base+i;
 
         // do a bubble sort. Hopefully # of ns decls are small enough to justify bubble sort.
         // faster algorithm is more compliated to implement
         for( int i=0; i<count; i++ ) {
             for( int j=i+1; j<count; j++ ) {
-                String p = ns.getPrefix(i);
-                String q = ns.getPrefix(j);
+                String p = nsContext.getPrefix(nsBuf[i]);
+                String q = nsContext.getPrefix(nsBuf[j]);
                 if( p.compareTo(q) > 0 ) {
                     // swap
                     int t = nsBuf[j];
@@ -153,6 +152,6 @@ public class C14nXmlOutput extends UTF8XmlOutput {
 
         // write them out
         for( int i=0; i<count; i++ )
-            writeNsDecl(ns, nsBuf[i], base);
+            writeNsDecl(nsBuf[i]);
     }
 }

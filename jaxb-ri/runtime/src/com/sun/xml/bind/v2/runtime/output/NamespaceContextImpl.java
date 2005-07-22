@@ -60,7 +60,15 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
 
     private Element current;
 
-    private final Element root;
+    /**
+     * This is the {@link Element} whose prev==null.
+     * This element is used to hold the contextual namespace bindings
+     * that are assumed to be outside of the document we are marshalling.
+     * Specifically the xml prefix and any other user-specified bindings.
+     *
+     * @see NamespacePrefixMapper#getPreDeclaredNamespaceUris()
+     */
+    private final Element top;
 
     /**
      * Never null.
@@ -76,7 +84,7 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
     public NamespaceContextImpl(XMLSerializer owner) {
         this.owner = owner;
 
-        current = root = new Element(this,null);
+        current = top = new Element(this,null);
         // register namespace URIs that are implicitly bound
         put(XMLConstants.XML_NS_URI,XMLConstants.XML_NS_PREFIX);
     }
@@ -92,7 +100,7 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
     }
 
     public void reset() {
-        current = root;
+        current = top;
         size = 1;
         collectionMode = false;
     }
@@ -313,6 +321,22 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
          */
         private int baseIndex;
 
+        /**
+         * The depth of the {@link Element}.
+         *
+         * This value is equivalent as the result of the following computation.
+         *
+         * <pre>
+         * int depth() {
+         *   int i=-1;
+         *   for(Element e=this; e!=null;e=e.prev)
+         *     i++;
+         *   return i;
+         * }
+         * </pre>
+         */
+        private final int depth;
+
 
 
         private int elementNamePrefix;
@@ -334,6 +358,15 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
         private Element(NamespaceContextImpl context,Element prev) {
             this.context = context;
             this.prev = prev;
+            this.depth = (prev==null) ? 0 : prev.depth+1;
+        }
+
+        /**
+         * Returns true if this {@link Element} represents the root element that
+         * we are marshalling.
+         */
+        public boolean isRootElement() {
+            return depth==1;
         }
 
         public Element push() {
@@ -428,6 +461,13 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
 
         public Object getInnerPeer() {
             return innerPeer;
+        }
+
+        /**
+         * Gets the parent {@link Element}.
+         */
+        public Element getParent() {
+            return prev;
         }
     }
 

@@ -18,7 +18,7 @@ import org.w3c.dom.Node;
  * Sometimes JAXB is used to marshal an XML document, which will be
  * used as a subtree of a bigger document. When this happens, it's nice
  * for a JAXB marshaller to be able to use in-scope namespace bindings
- * of the larger document.
+ * of the larger document and avoid declaring redundant namespace URIs.
  *
  * <p>
  * This is automatically done when you are marshalling to {@link XMLStreamWriter},
@@ -27,11 +27,6 @@ import org.w3c.dom.Node;
  * as in-scope namespace binding. However, with other output format,
  * such as {@link OutputStream}, the JAXB RI cannot do this automatically.
  * That's when this "interface" comes into play.
- *
- * <p>
- * This is critically important if the calling application wishes to
- * marshal such a subtree canonically, as the canonical XML spec prohibits
- * pointless namespace declarations.
  *
  *
  * <h2>Usage</h2>

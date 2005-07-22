@@ -4,6 +4,8 @@
  */
 package com.sun.xml.bind.marshaller;
 
+
+
 // be careful about changing this class. this class is supposed to be
 // extended by users and therefore we are not allowed to break
 // those user code.
