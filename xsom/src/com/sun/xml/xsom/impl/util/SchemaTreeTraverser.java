@@ -373,7 +373,7 @@ public class SchemaTreeTraverser implements XSVisitor, XSSimpleTypeVisitor {
 
         Iterator itr;
 
-        itr = decl.iterateAttributeUses();
+        itr = decl.iterateAttGroups();
         while (itr.hasNext()) {
             dumpRef((XSAttGroupDecl) itr.next());
         }
