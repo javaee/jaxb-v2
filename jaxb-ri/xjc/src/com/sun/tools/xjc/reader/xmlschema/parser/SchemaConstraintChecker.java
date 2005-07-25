@@ -50,7 +50,9 @@ public class SchemaConstraintChecker {
             sf.setResourceResolver(new LSResourceResolver() {
                 public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, String baseURI) {
                     try {
-                        InputSource is = entityResolver.resolveEntity(publicId, systemId);
+                        // XSOM passes the namespace URI to the publicID parameter.
+                        // we do the same here .
+                        InputSource is = entityResolver.resolveEntity(namespaceURI, systemId);
                         if(is==null)    return null;
                         return new LSInputSAXWrapper(is);
                     } catch (SAXException e) {
