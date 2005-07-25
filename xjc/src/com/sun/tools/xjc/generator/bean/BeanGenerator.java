@@ -32,7 +32,9 @@ import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JEnumConstant;
 import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JForEach;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JJavaName;
 import com.sun.codemodel.JMethod;
@@ -513,7 +515,7 @@ public final class BeanGenerator implements Outline
     private EnumOutline generateEnum(CEnumLeafInfo e) {
         JDefinedClass type;
 
-        // since constant values are never null, no point in using the boxed types. 
+        // since constant values are never null, no point in using the boxed types.
         JType baseExposedType = e.base.toType(this,Aspect.EXPOSED).unboxify();
         JType baseImplType = e.base.toType(this,Aspect.IMPLEMENTATION).unboxify();
 
@@ -569,19 +571,59 @@ public final class BeanGenerator implements Outline
 
         if(needsValue) {
             // [RESULT]
-            // public final <valueType> value;
-            JFieldVar $value = type.field( JMod.PUBLIC|JMod.FINAL, baseExposedType, "value" );
+            // final <valueType> value;
+            JFieldVar $value = type.field( JMod.PRIVATE|JMod.FINAL, baseExposedType, "value" );
+
+            // [RESULT]
+            // public <valuetype> value() { return value; }
+            type.method(JMod.PUBLIC, baseExposedType, "value" ).body()._return($value);
 
             // [RESULT]
             // <constructor>(<valueType> v) {
             //     this.value=v;
-            //     this.lexicalValue=<serialize>(v);
-            //     valueMap.put( v, this );
             // }
             {
                 JMethod m = type.constructor(0);
                 m.body().assign( $value,    m.param( baseImplType, "v" ) );
             }
+
+            // [RESULT]
+            // public <Const> fromValue(<valueType> v) {
+            //   for( <Const> c : <Const>.values() ) {
+            //       if(c.value == v)   // or equals
+            //           return c;
+            //   }
+            //   throw new IllegalArgumentException(...);
+            // }
+            {
+                JMethod m = type.method(JMod.PUBLIC, type, "fromValue" );
+                JVar $v = m.param(baseExposedType,"v");
+                JForEach fe = m.body().forEach(type,"c", type.staticInvoke("values") );
+                JExpression eq;
+                if(baseExposedType.isPrimitive())
+                    eq = fe.var().ref($value).eq($v);
+                else
+                    eq = fe.var().ref($value).invoke("equals").arg($v);
+
+                fe.body()._if(eq)._then()._return(fe.var());
+
+                JInvocation ex = JExpr._new(codeModel.ref(IllegalArgumentException.class));
+
+                if(baseExposedType.isPrimitive()) {
+                    m.body()._throw(ex.arg(codeModel.ref(String.class).staticInvoke("valueOf").arg($v)));
+                } else {
+                    m.body()._throw(ex.arg($v.invoke("toString")));
+                }
+            }
+        } else {
+            // [RESULT]
+            // public String value() { return name(); }
+            type.method(JMod.PUBLIC, String.class, "value" ).body()._return(JExpr.invoke("name"));
+
+            // [RESULT]
+            // public <Const> fromValue(String v) { return valueOf(v); }
+            JMethod m = type.method(JMod.PUBLIC, type, "fromValue" );
+            m.body()._return( JExpr.invoke("valueOf").arg(m.param(String.class,"v")));
         }
 
         return enumOutline;
