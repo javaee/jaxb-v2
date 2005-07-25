@@ -37,6 +37,14 @@ import org.xml.sax.SAXParseException;
 public class Driver {
     
     public static void main(final String[] args) throws Exception {
+        // use the platform default proxy if available.
+        // see sun.net.spi.DefaultProxySelector for details.
+        try {
+            System.setProperty("java.net.useSystemProxies","true");
+        } catch (SecurityException e) {
+            ; // failing to set this property isn't fatal
+        }
+
         if( Util.getSystemProperty(Driver.class,"noThreadSwap")!=null )
             _main(args);    // for the ease of debugging
         
