@@ -513,8 +513,9 @@ public final class BeanGenerator implements Outline
     private EnumOutline generateEnum(CEnumLeafInfo e) {
         JDefinedClass type;
 
-        JType baseExposedType = e.base.toType(this,Aspect.EXPOSED);
-        JType baseImplType = e.base.toType(this,Aspect.IMPLEMENTATION);
+        // since constant values are never null, no point in using the boxed types. 
+        JType baseExposedType = e.base.toType(this,Aspect.EXPOSED).unboxify();
+        JType baseImplType = e.base.toType(this,Aspect.IMPLEMENTATION).unboxify();
 
 
         type = getClassFactory().createClass(
