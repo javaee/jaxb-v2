@@ -11,7 +11,7 @@ package com.sun.xml.bind.taglets;
 public class SequenceDiagramTag extends ImageGeneratingTag {
 
     public SequenceDiagramTag() {
-        super("http://kohsuke.sfbay/sequence-diagram/Build", "sequence-diagram");
+        super("http://kohsuke.sfbay.sun.com/sequence-diagram/Build", "sequence-diagram");
     }
 
     public String getName() {
