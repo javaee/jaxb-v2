@@ -594,7 +594,7 @@ public final class XMLSerializer extends Coordinator {
         setThreadAffinity();
         pushCoordinator();
         nsContext.reset();
-        nse = nsContext.getCurrent().push(); // keep the root scope intact.
+        nse = nsContext.getCurrent();
         if(attachmentMarshaller!=null && attachmentMarshaller.isXOPPackage())
             out = new MTOMXmlOutput(out);
         this.out = out;
