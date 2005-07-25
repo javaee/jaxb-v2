@@ -56,6 +56,9 @@ abstract public class JOp {
         return new UnaryOp("-", e);
     }
 
+    /**
+     * Logical not <tt>'!x'</tt>.
+     */
     public static JExpression not(JExpression e) {
         if (e == JExpr.TRUE) return JExpr.FALSE;
         if (e == JExpr.FALSE) return JExpr.TRUE;
