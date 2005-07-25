@@ -555,7 +555,8 @@ public final class BeanGenerator implements Outline
             if(needsValue)
                 constRef.arg(e.base.createConstant(codeModel, mem.getLexicalValue(), null ));
 
-            constRef.annotate2(XmlEnumValueWriter.class).value(mem.getLexicalValue());
+            if(!mem.getLexicalValue().equals(constName))
+                constRef.annotate2(XmlEnumValueWriter.class).value(mem.getLexicalValue());
 
             // set javadoc
             if( mem!=null && mem.javadoc!=null )
