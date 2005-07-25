@@ -221,7 +221,7 @@ public class JDefinedClass
      * @return This class
      */
     public JDefinedClass _extends(JClass superClass) {
-        if (this.classType.equals(ClassType.INTERFACE))
+        if (this.classType==ClassType.INTERFACE)
             throw new IllegalArgumentException("unable to set the super class for an interface");
         if (superClass == null)
             throw new NullPointerException();
@@ -311,7 +311,7 @@ public class JDefinedClass
     }
 
     public boolean isInterface() {
-        return this.classType.equals(ClassType.INTERFACE);
+        return this.classType==ClassType.INTERFACE;
     }
 
     public boolean isAbstract() {
@@ -371,7 +371,7 @@ public class JDefinedClass
      *
      */
     public boolean isAnnotationTypeDeclaration() {
-        return this.classType.equals(ClassType.ANNOTATION_TYPE_DECL);
+        return this.classType==ClassType.ANNOTATION_TYPE_DECL;
         
 
     }
@@ -700,14 +700,7 @@ public class JDefinedClass
                 f.g(annotations.get(i)).nl();
         }
 
-        if ((classType.equals(ClassType.ANNOTATION_TYPE_DECL))) {
-            f.p("@interface").id(name);
-        } else if ((classType.equals(ClassType.ENUM))) {
-        	f.g(mods).p("enum").id(name);
-        } else
-            f.g(mods).p(classType.equals(ClassType.INTERFACE) ? "interface" : "class").id(name);
-            
-        f.d(generifiable);
+        f.p(classType.declarationToken).id(name).d(generifiable);
 
         if (superClass != null && superClass != owner().ref(Object.class))
             f.nl().i().p("extends").g(superClass).nl().o();
@@ -715,7 +708,7 @@ public class JDefinedClass
         if (!interfaces.isEmpty()) {
             if (superClass == null)
                 f.nl();
-            f.i().p(classType.equals(ClassType.INTERFACE) ? "extends" : "implements");
+            f.i().p(classType==ClassType.INTERFACE ? "extends" : "implements");
             f.g(interfaces);
             f.nl().o();
         }
