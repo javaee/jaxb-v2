@@ -25,7 +25,6 @@ import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.Util;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BISchemaBinding;
-import com.sun.tools.xjc.reader.xmlschema.bindinfo.BindInfo;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.LocalScoping;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.xsom.XSComplexType;
@@ -374,13 +373,13 @@ public class ClassSelector extends BindingComponent {
      * Copies a schema fragment into the javadoc of the generated class.
      */
     private void addSchemaFragmentJavadoc( CClassInfo bean, XSComponent sc ) {
-        BindInfo bi = builder.getBindInfo(sc);
-        String doc = bi.getDocumentation();
 
-        StringWriter out = new StringWriter();
-        SchemaWriter sw = new SchemaWriter(new JavadocEscapeWriter(out));
-        sc.visit(sw);
+        // first, pick it up from <documentation> if any.
+        String doc = builder.getBindInfo(sc).getDocumentation();
+        if(doc!=null)
+            append(bean, doc);
 
+        // then the description of where this component came from
         Locator loc = sc.getLocator();
         String fileName = null;
         if(loc!=null) {
@@ -395,31 +394,24 @@ public class ClassSelector extends BindingComponent {
             lineNumber = String.valueOf(loc.getLineNumber());
 
         String componentName = sc.apply( new ComponentNameFunction() );
-        final String jdoc = Messages.format( Messages.JAVADOC_HEADING, componentName, fileName, lineNumber );
-        if(bean.javadoc==null) {
-            bean.javadoc = jdoc;
-        } else {
-            bean.javadoc += jdoc;
-        }
+        String jdoc = Messages.format( Messages.JAVADOC_HEADING, componentName, fileName, lineNumber );
+        append(bean,jdoc);
 
-        if(doc!=null) {
-            bean.javadoc += '\n'+doc+'\n';
-        }
-
-        bean.javadoc += "\n<p>\n<pre>\n"+out.getBuffer()+"</pre>";
+        // then schema fragment
+        StringWriter out = new StringWriter();
+        out.write("<pre>\n");
+        SchemaWriter sw = new SchemaWriter(new JavadocEscapeWriter(out));
+        sc.visit(sw);
+        out.write("</pre>");
+        append(bean,out.toString());
     }
 
-
-
-
-
-
-
-
-
-
-
-
+    private void append(CClassInfo bean, String doc) {
+        if(bean.javadoc==null)
+            bean.javadoc = doc+'\n';
+        else
+            bean.javadoc += '\n'+doc+'\n';
+    }
 
 
     /**
