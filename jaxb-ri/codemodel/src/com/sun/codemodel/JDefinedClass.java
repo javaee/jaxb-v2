@@ -700,7 +700,7 @@ public class JDefinedClass
                 f.g(annotations.get(i)).nl();
         }
 
-        f.p(classType.declarationToken).id(name).d(generifiable);
+        f.g(mods).p(classType.declarationToken).id(name).d(generifiable);
 
         if (superClass != null && superClass != owner().ref(Object.class))
             f.nl().i().p("extends").g(superClass).nl().o();
