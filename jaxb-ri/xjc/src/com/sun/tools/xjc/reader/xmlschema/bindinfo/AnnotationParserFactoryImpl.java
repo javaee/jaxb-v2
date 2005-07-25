@@ -138,7 +138,7 @@ public class AnnotationParserFactoryImpl implements AnnotationParserFactory {
                         bie.absorb(result);
                         return bie;
                     } else {
-                        if(result.size()>0)
+                        if(!result.isPointless())
                             return result;   // just annotation. no meaningful customization
                         else
                             return null;

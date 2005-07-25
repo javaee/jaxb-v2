@@ -50,12 +50,27 @@ public final class BindInfo implements Iterable<BIDeclaration> {
     @XmlElement
     private Documentation documentation;
 
+    /**
+     * Returns true if this {@link BindInfo} doesn't contain any useful
+     * information.
+     *
+     * This flag is used to discard unused {@link BindInfo}s early to save memory footprint.
+     */
+    public boolean isPointless() {
+        if(size()>0)     return false;
+        if(documentation!=null && !documentation.contents.isEmpty())
+            return false;
+        
+        return true;
+    }
+
     private static final class Documentation implements ObjectLifeCycle{
         @XmlAnyElement
         @XmlMixed
-        List<Object> contents;
+        List<Object> contents = new ArrayList<Object>();
 
         public void beforeUnmarshalling(Unmarshaller unmarshaller, Object parent) {
+            System.out.println();
         }
 
         public void afterUnmarshalling(Unmarshaller unmarshaller, Object parent) {
