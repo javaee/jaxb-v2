@@ -246,7 +246,7 @@ abstract class AbstractListField extends AbstractField {
             body.assign(field,JExpr._null());
         }
         public JExpression hasSetValue() {
-            return field.ne(JExpr._null());
+            return field.ne(JExpr._null()).cand(field.invoke("isEmpty").not());
         }
         public JExpression getContentValue() {
             return ref(false);
