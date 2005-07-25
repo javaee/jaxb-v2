@@ -86,6 +86,15 @@ public abstract class JType implements JGenerable, Comparable {
     public abstract JClass boxify();
 
     /**
+     * If this class is a wrapper type for a primitive, return the primitive type.
+     * Otherwise return <tt>this</tt>.
+     *
+     * <p>
+     * For example, for "java.lang.Integer", this method returns "int".
+     */
+    public abstract JType unboxify();
+
+    /**
      * Returns the erasure of this type.
      */
     public JType erasure() {

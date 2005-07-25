@@ -110,6 +110,11 @@ public abstract class JClass extends JType
      */
     public JClass boxify() { return this; }
 
+    public JType unboxify() {
+        JPrimitiveType pt = getPrimitiveType();
+        return pt==null ? (JType)this : pt;
+    }
+
     public JClass erasure() {
         return this;
     }

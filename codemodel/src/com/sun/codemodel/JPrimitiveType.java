@@ -59,6 +59,15 @@ public final class JPrimitiveType extends JType {
     }
 
     /**
+     * @deprecated calling this method from {@link JPrimitiveType}
+     * would be meaningless, since it's always guaranteed to
+     * return <tt>this</tt>.
+     */
+    public JType unboxify() {
+        return this;
+    }
+
+    /**
      * @deprecated
      *      Use {@link #boxify()}.
      */

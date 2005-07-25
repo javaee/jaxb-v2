@@ -213,12 +213,7 @@ public abstract class BIConversion extends AbstractDeclarationImpl {
                 // RESULT: <className>.<method>(<value>)
                 if(this.printMethod==null) {
                     // HACK HACK HACK
-                    JClass c = inMemoryType.boxify();
-                    JType t;
-                    if(c.getPrimitiveType()!=null)
-                        t = c.getPrimitiveType();
-                    else
-                        t = c;
+                    JType t = inMemoryType.unboxify();
                     inv = JExpr.direct(printMethod+"(("+findBaseConversion(owner).toLowerCase()+")("+t.fullName()+")value)");
                 } else
                     inv = JExpr.direct(printMethod+"(value)");
@@ -244,13 +239,7 @@ public abstract class BIConversion extends AbstractDeclarationImpl {
             String method = getConversionMethod("parse", owner);
             if(method!=null) {
                 // this cast is necessary for conversion between primitive Java types
-                JClass c = inMemoryType.boxify();
-                JType t;
-                if(c.getPrimitiveType()!=null)
-                    t = c.getPrimitiveType();
-                else
-                    t = c;
-                return '('+t.fullName()+')'+method;
+                return '('+inMemoryType.unboxify().fullName()+')'+method;
             }
 
             return "new";
