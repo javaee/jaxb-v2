@@ -18,6 +18,9 @@ public abstract class JExpressionImpl implements JExpression
         return JOp.minus(this);
     }
 
+    /**
+     * Logical not <tt>'!x'</tt>.
+     */
     public final JExpression not() {
         return JOp.not(this);
     }
