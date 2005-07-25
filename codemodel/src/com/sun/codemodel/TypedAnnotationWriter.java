@@ -83,12 +83,21 @@ class TypedAnnotationWriter<A extends Annotation,W extends JAnnotationWriter<A>>
                 r,method.getReturnType(),use.annotationParam(name,r)).createProxy();
         }
 
-        // primitive
+        // scalar value
+
         if(arg instanceof JType) {
+            JType targ = (JType) arg;
             checkType(Class.class,rt);
-            use.param(name,(JType)arg);
+            if(m.getDefaultValue()!=null) {
+                // check the default
+                if(targ.equals(targ.owner().ref((Class)m.getDefaultValue())))
+                    return proxy;   // defaulted
+            }
+            use.param(name,targ);
             return proxy;
         }
+
+        // other Java built-in types
         checkType(arg.getClass(),rt);
         if(m.getDefaultValue()!=null && m.getDefaultValue().equals(arg))
             // defaulted. no need to write out.
