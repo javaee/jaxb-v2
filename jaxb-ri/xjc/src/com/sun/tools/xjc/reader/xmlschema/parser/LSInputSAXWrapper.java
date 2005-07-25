@@ -15,7 +15,7 @@ public class LSInputSAXWrapper implements LSInput {
     private InputSource core;
 
     public LSInputSAXWrapper(InputSource inputSource) {
-        assert core!=null;
+        assert inputSource!=null;
         core = inputSource;
     }
 
