@@ -10,7 +10,7 @@ package com.sun.xml.bind.taglets;
 public class DotDiagramTag extends ImageGeneratingTag {
 
     public DotDiagramTag() {
-        super("http://kohsuke.sfbay/graphviz-server/Build", "dot-diagram");
+        super("http://kohsuke.sfbay.sun.com/graphviz-server/Build", "dot-diagram");
     }
 
     public String getName() {
