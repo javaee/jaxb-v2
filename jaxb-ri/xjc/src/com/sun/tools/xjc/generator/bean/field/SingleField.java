@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: SingleField.java,v 1.3 2005-05-06 21:49:18 kohsuke Exp $
+ * @(#)$Id: SingleField.java,v 1.4 2005-07-25 20:29:18 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -71,8 +71,8 @@ class SingleField extends AbstractFieldWithVar {
         // if Type is a wrapper and we have a default value,
         // we can use the primitive type.
         JType getterType;
-        if(defaultValue!=null && exposedType.boxify().getPrimitiveType()!=null)
-            getterType = exposedType.boxify().getPrimitiveType();
+        if(defaultValue!=null)
+            getterType = exposedType.unboxify();
         else
             getterType = exposedType;
 

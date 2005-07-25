@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AbstractField.java,v 1.18 2005-06-17 18:56:03 kohsuke Exp $
+ * @(#)$Id: AbstractField.java,v 1.19 2005-07-25 20:29:18 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -28,7 +28,6 @@ import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
-import com.sun.codemodel.JPrimitiveType;
 import com.sun.tools.xjc.generator.annotation.spec.XmlAnyElementWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlAttributeWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlElementRefWriter;
@@ -395,11 +394,8 @@ abstract class AbstractField implements FieldOutline {
         // but this guarantees that items cannot legal hold null,
         // which helps us improve the boundary signature between our
         // data structure and user code
-        if(prop.isUnboxable()) {
-            JPrimitiveType tt = t.boxify().getPrimitiveType();
-            if(tt!=null)
-                t = tt;
-        }
+        if(prop.isUnboxable())
+            t = t.unboxify();
         return t;
     }
 
