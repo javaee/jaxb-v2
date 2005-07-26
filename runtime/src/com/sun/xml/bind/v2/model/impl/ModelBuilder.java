@@ -1,6 +1,10 @@
 package com.sun.xml.bind.v2.model.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.xml.bind.annotation.XmlRegistry;
+import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
@@ -39,6 +43,11 @@ public class ModelBuilder<TypeT,ClassDeclT,FieldT,MethodT> {
     public final AnnotationReader<TypeT,ClassDeclT,FieldT,MethodT> reader;
 
     public final Navigator<TypeT,ClassDeclT,FieldT,MethodT> nav;
+
+    /**
+     * Used to detect collisions among global type names.
+     */
+    private final Map<QName,TypeInfo> typeNames = new HashMap<QName, TypeInfo>();
 
     /**
      * JAXB doesn't want to use namespaces unless we are told to, but WS-I BP
@@ -103,7 +112,7 @@ public class ModelBuilder<TypeT,ClassDeclT,FieldT,MethodT> {
         if(nav.isEnum(clazz)) {
             EnumLeafInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> li = createEnumLeafInfo(clazz,upstream);
             typeInfoSet.add(li);
-            return li;
+            r = li;
         } else {
             ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> ci = createClassInfo(clazz,upstream);
             typeInfoSet.add(ci);
@@ -113,8 +122,27 @@ public class ModelBuilder<TypeT,ClassDeclT,FieldT,MethodT> {
                 for( TypeInfo<TypeT,ClassDeclT> t : p.ref() )
                     ; // just compute a reference should be suffice
             }
+            r = ci;
+        }
 
-            return ci;
+        addTypeName(r);
+
+        return r;
+    }
+
+    /**
+     * Checks the uniqueness of the type name.
+     */
+    private void addTypeName(NonElement<TypeT, ClassDeclT> r) {
+        QName t = r.getTypeName();
+        if(t==null)     return;
+
+        TypeInfo old = typeNames.put(t,r);
+        if(old!=null) {
+            // collision
+            reportError(new IllegalAnnotationException(
+                    Messages.CONFLICTING_XML_TYPE_MAPPING.format(r.getTypeName()),
+                    old, r ));
         }
     }
 
@@ -132,6 +160,7 @@ public class ModelBuilder<TypeT,ClassDeclT,FieldT,MethodT> {
         if(nav.isArray(t)) { // no need for checking byte[], because above typeInfoset.getTypeInfo() would return non-null
             ArrayInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> ai =
                 createArrayInfo(upstream, t);
+            addTypeName(ai);
             typeInfoSet.add(ai);
             return ai;
         }

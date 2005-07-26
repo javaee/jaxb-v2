@@ -42,6 +42,7 @@ enum Messages {
 
     MULTIPLE_VALUE_PROPERTY, // 0 args
     ELEMENT_AND_VALUE_PROPERTY, // 0 args
+    CONFLICTING_XML_TYPE_MAPPING, // 1 arg
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());

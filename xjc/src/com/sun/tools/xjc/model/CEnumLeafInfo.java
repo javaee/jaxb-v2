@@ -19,6 +19,8 @@ import com.sun.tools.xjc.outline.Outline;
 import com.sun.xml.bind.v2.model.core.EnumLeafInfo;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.NonElement;
+import com.sun.xml.bind.v2.model.annotation.Locatable;
+import com.sun.xml.bind.v2.runtime.Location;
 
 import org.relaxng.datatype.ValidationContext;
 import org.xml.sax.Locator;
@@ -203,5 +205,13 @@ public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, 
 
     public CCustomizations getCustomizations() {
         return customizations;
+    }
+
+    public Locatable getUpstream() {
+        throw new UnsupportedOperationException();
+    }
+
+    public Location getLocation() {
+        throw new UnsupportedOperationException();
     }
 }

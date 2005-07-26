@@ -101,6 +101,10 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
         return generateElementClass;
     }
 
+    public boolean enableChoiceContentProperty() {
+        return choiceContentProperty;
+    }
+
     public int getDefaultEnumMemberSizeCap() {
         return defaultEnumMemberSizeCap;
     }
@@ -238,6 +242,9 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
      */
     @XmlAttribute
     private boolean generateElementClass = false;
+
+    @XmlAttribute
+    private boolean choiceContentProperty = false;
 
     /**
      * Default cap to the number of constants in the enum.
