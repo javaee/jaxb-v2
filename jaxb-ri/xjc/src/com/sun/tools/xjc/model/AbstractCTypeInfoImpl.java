@@ -5,6 +5,8 @@ import javax.activation.MimeType;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JExpression;
 import com.sun.xml.bind.v2.model.core.ID;
+import com.sun.xml.bind.v2.model.annotation.Locatable;
+import com.sun.xml.bind.v2.runtime.Location;
 
 import org.relaxng.datatype.ValidationContext;
 
@@ -60,5 +62,13 @@ abstract class AbstractCTypeInfoImpl implements CTypeInfo {
     // this is just a convenient default
     public JExpression createConstant(JCodeModel codeModel, String lexical, ValidationContext context) {
         return null;
+    }
+
+    public final Locatable getUpstream() {
+        throw new UnsupportedOperationException();
+    }
+
+    public final Location getLocation() {
+        throw new UnsupportedOperationException();
     }
 }

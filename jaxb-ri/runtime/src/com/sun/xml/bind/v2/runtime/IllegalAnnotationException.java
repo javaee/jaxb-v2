@@ -72,7 +72,7 @@ public class IllegalAnnotationException extends JAXBException {
     }
 
     /**
-     * Buidls a list of {@link Location}s out of a {@link Locatable}.
+     * Builds a list of {@link Location}s out of a {@link Locatable}.
      */
     private List<Location> convert(Locatable src) {
         if(src==null)   return null;

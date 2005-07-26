@@ -1,6 +1,6 @@
 package com.sun.xml.bind.v2.model.core;
 
-
+import com.sun.xml.bind.v2.model.annotation.Locatable;
 
 
 /**
@@ -8,7 +8,7 @@ package com.sun.xml.bind.v2.model.core;
  *
  * @author Kohsuke Kawaguchi
  */
-public interface TypeInfo<TypeT,ClassDeclT> {
+public interface TypeInfo<TypeT,ClassDeclT> extends Locatable {
 
     /**
      * Gets the underlying Java type that object represents.
