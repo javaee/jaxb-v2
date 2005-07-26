@@ -849,6 +849,8 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 } else {
                     allNillable = false;
                 }
+                if(t.getDefaultValue()!=null)
+                    e._default(t.getDefaultValue());
                 if(tn.getNamespaceURI().length()>0)
                     e.form("qualified");    // TODO: what if the URI != tns?
             }
