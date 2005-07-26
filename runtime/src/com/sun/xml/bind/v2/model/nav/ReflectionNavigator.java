@@ -203,10 +203,7 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
     }
 
     public String getClassShortName(Class clazz) {
-        String n = clazz.getName();
-        int idx = n.lastIndexOf('.');
-        if(idx<0)   return n;
-        else        return n.substring(idx+1);
+        return clazz.getSimpleName();
     }
 
     public Collection<? extends Field> getDeclaredFields(Class clazz) {
