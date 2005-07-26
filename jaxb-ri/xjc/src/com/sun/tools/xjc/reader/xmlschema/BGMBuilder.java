@@ -7,6 +7,9 @@ import java.util.Map;
 
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerConfigurationException;
 
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.fmt.JTextFile;
@@ -482,5 +485,20 @@ public class BGMBuilder extends BindingComponent {
             sc.visit(purple);
         else
             sc.visit(green);
+    }
+
+    private Transformer identityTransformer;
+
+    /**
+     * Gets the shared instance of the identity transformer.
+     */
+    public Transformer getIdentityTransformer() {
+        try {
+            if(identityTransformer==null)
+                identityTransformer = TransformerFactory.newInstance().newTransformer();
+            return identityTransformer;
+        } catch (TransformerConfigurationException e) {
+            throw new Error(e); // impossible
+        }
     }
 }
