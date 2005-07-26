@@ -817,6 +817,8 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                     ComplexType p = e.name(ename.getLocalPart()).complexType();
                     if(ep.isCollectionNillable()) {
                         e.nillable(true);
+                    } else {
+                        e.minOccurs(0);
                     }
                     if (ep.getTypes().size() == 1) {
                         compositor = p.sequence();
