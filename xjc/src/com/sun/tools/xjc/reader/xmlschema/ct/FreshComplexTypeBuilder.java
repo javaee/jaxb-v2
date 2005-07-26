@@ -51,9 +51,9 @@ final class FreshComplexTypeBuilder extends CTBuilder {
                 // determine the binding of this complex type.
 
                 builder.recordBindingMode(ct,
-                    getParticleBinder().checkFallback(p)?FALLBACK_CONTENT:NORMAL);
+                    particleBinder.checkFallback(p)?FALLBACK_CONTENT:NORMAL);
 
-                getParticleBinder().build(p);
+                particleBinder.build(p);
 
                 XSTerm term = p.getTerm();
                 if(term.isModelGroup() && term.asModelGroup().getCompositor()==XSModelGroup.ALL)

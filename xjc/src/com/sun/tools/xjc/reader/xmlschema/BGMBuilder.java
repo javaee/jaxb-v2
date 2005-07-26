@@ -120,8 +120,6 @@ public class BGMBuilder extends BindingComponent {
         
         DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
 
-        new DefaultParticleBinder();    // will register itself to the ring
-
         promoteGlobalBindings();
     }
 

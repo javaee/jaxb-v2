@@ -101,7 +101,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
         return generateElementClass;
     }
 
-    public boolean enableChoiceContentProperty() {
+    public boolean isChoiceContentPropertyEnabled() {
         return choiceContentProperty;
     }
 
@@ -241,10 +241,10 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
      * True to generate a class for elements by default.
      */
     @XmlAttribute
-    private boolean generateElementClass = false;
+    boolean generateElementClass = false;
 
     @XmlAttribute
-    private boolean choiceContentProperty = false;
+    boolean choiceContentProperty = false;
 
     /**
      * Default cap to the number of constants in the enum.
