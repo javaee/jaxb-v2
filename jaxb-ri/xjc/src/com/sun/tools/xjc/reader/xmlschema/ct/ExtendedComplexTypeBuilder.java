@@ -79,11 +79,11 @@ final class ExtendedComplexTypeBuilder extends CTBuilder {
                 // if we have additional explicit content, process them.
 
                 builder.recordBindingMode(ct,
-                    getParticleBinder().checkFallback(explicitContent.asParticle())
+                    particleBinder.checkFallback(explicitContent.asParticle())
                     ?ComplexTypeBindingMode.FALLBACK_REST
                     :ComplexTypeBindingMode.NORMAL);
 
-                getParticleBinder().build(explicitContent.asParticle());
+                particleBinder.build(explicitContent.asParticle());
 
             } else {
                 // the base class has already done the fallback.
