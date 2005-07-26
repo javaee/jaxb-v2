@@ -66,6 +66,8 @@ public class SchemaGenerator implements AnnotationProcessorFactory {
                     decls.add(new Reference(d,env));
 
                 J2SJAXBModel model = XJC.createJavaCompiler().bind(decls,Collections.<QName,Reference>emptyMap(),null,env);
+                if(model==null)
+                    return; // error
 
                 try {
                     model.generateSchema(
