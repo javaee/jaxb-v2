@@ -7,25 +7,32 @@ package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.io.FilterWriter;
+import java.io.IOException;
 
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.dom.DOMSource;
 
 import com.sun.codemodel.JDocComment;
 import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.model.CPluginCustomization;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
-import com.sun.xml.bind.ObjectLifeCycle;
 import com.sun.xml.bind.annotation.XmlLocation;
 import com.sun.xml.bind.v2.WellKnownNamespace;
+import com.sun.xml.bind.marshaller.MinimumEscapeHandler;
 import com.sun.xml.xsom.XSComponent;
 
 import org.xml.sax.Locator;
+import org.w3c.dom.Element;
 
 /**
  * Container for customization declarations.
@@ -60,28 +67,14 @@ public final class BindInfo implements Iterable<BIDeclaration> {
         if(size()>0)     return false;
         if(documentation!=null && !documentation.contents.isEmpty())
             return false;
-        
+
         return true;
     }
 
-    private static final class Documentation implements ObjectLifeCycle{
+    private static final class Documentation {
         @XmlAnyElement
         @XmlMixed
         List<Object> contents = new ArrayList<Object>();
-
-        public void beforeUnmarshalling(Unmarshaller unmarshaller, Object parent) {
-            System.out.println();
-        }
-
-        public void afterUnmarshalling(Unmarshaller unmarshaller, Object parent) {
-            // TODO: transform DOM in contents to String
-        }
-
-        public void beforeMarshalling(Marshaller marshaller) {
-        }
-
-        public void afterMarshalling(Marshaller marshaller) {
-        }
 
         void addAll(Documentation rhs) {
             if(rhs==null)   return;
@@ -198,8 +191,43 @@ public final class BindInfo implements Iterable<BIDeclaration> {
      */
     public String getDocumentation() {
         // TODO: FIXME: correctly turn individual items to String including DOM
-        if(documentation==null) return null;
-        return documentation.contents.toString();
+        if(documentation==null || documentation.contents==null) return null;
+
+        StringBuilder buf = new StringBuilder();
+        for (Object c : documentation.contents) {
+            if(c instanceof String) {
+                buf.append(c.toString());
+            }
+            if(c instanceof Element) {
+                Transformer t = builder.getIdentityTransformer();
+                StringWriter w = new StringWriter();
+                try {
+                    Writer fw = new FilterWriter(w) {
+                        char[] buf = new char[1];
+
+                        public void write(int c) throws IOException {
+                            buf[0] = (char)c;
+                            write(buf,0,1);
+                        }
+
+                        public void write(char[] cbuf, int off, int len) throws IOException {
+                            MinimumEscapeHandler.theInstance.escape(cbuf,off,len,false,out);
+                        }
+
+                        public void write(String str, int off, int len) throws IOException {
+                            write(str.toCharArray(),off,len);
+                        }
+                    };
+                    t.transform(new DOMSource((Element)c),new StreamResult(fw));
+                } catch (TransformerException e) {
+                    throw new Error(e); // impossible
+                }
+                buf.append("\n<pre>\n");
+                buf.append(w);
+                buf.append("\n</pre>\n");
+            }
+        }
+        return buf.toString();
     }
 
     /**
