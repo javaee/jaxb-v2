@@ -82,7 +82,10 @@ public interface Navigator<TypeT,ClassDeclT,FieldT,MethodT> {
     String getTypeName(TypeT rawType);
 
     /**
-     * Gets the short name of the class ("Object" for {@link Object})
+     * Gets the short name of the class ("Object" for {@link Object}.)
+     *
+     * For nested classes, this method should just return the inner name.
+     * (for example "Inner" for "com.acme.Outer$Inner".
      */
     String getClassShortName(ClassDeclT clazz);
 
