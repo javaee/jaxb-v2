@@ -59,6 +59,9 @@ public final class CodeModelClassFactory {
         JClassContainer parent, int mod, String name, Locator source, ClassType kind ) {
         
         try {
+            if(parent.isClass())
+                mod |= JMod.STATIC;
+
             JDefinedClass r = parent._class(mod,name,kind);
             // use the metadata field to store the source location,
             // so that we can report class name collision errors.
