@@ -32,7 +32,7 @@ import com.sun.xml.bind.v2.TODO;
  * This class is responsible for whitespace normalization.
  *
  * @author <ul><li>Ryan Shoemaker, Sun Microsystems, Inc.</li></ul>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since JAXB1.0
  */
 public final class DatatypeConverterImpl implements DatatypeConverterInterface {
@@ -299,8 +299,9 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
             prefix = text.subSequence(start,idx).toString();
             localPart = text.subSequence(idx+1,end).toString();
             uri = nsc.getNamespaceURI(prefix);
-            // crap. the NamespaceContext interface is broken.
-            if(uri.length()==0)
+            // uri can never be null according to javadoc,
+            // but some users reported that there are implementations that return null.
+            if(uri==null || uri.length()==0) // crap. the NamespaceContext interface is broken.
                 // error: unbound prefix
                 throw new IllegalArgumentException("prefix "+prefix+" is not bound to a namespace");
         }
