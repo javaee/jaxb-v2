@@ -419,17 +419,16 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                     if (e != null) {
                         writeTopLevelClass(c, e, schema);
                     }
-                    if (c.getTypeName() != null && c.getTypeName().getLocalPart().equals("")) {
-                        // don't generate anything if this is a top-level class that is going to
-                        // resolve to an anonymous type
+                    if (c.getTypeName()==null) {
+                        // don't generate anything if it's an anonymous type
                         continue;
                     }
                     writeClass(c, schema);
                     schema._pcdata(newline);
                 }
                 for (EnumLeafInfo<TypeT, ClassDeclT> e : enums) {
-                    if (e.getTypeName() != null && e.getTypeName().getLocalPart().equals("")) {
-                        // don't generate anything if this is an in-lined enum
+                    if (e.getTypeName()==null) {
+                        // don't generate anything if it's an anonymous type
                         continue;
                     }
                     writeEnum(e,schema);
