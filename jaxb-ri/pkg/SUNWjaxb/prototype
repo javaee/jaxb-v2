@@ -3,7 +3,7 @@
 # SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 #
 
-#ident  "$Id: prototype,v 1.1 2005-04-15 20:03:13 kohsuke Exp $"
+#ident  "$Id: prototype,v 1.2 2005-07-27 00:19:29 kohsuke Exp $"
 #
 # This required package information file contains a list of package contents.
 # The 'pkgmk' command uses this file to identify the contents of a package
@@ -32,5 +32,5 @@ d none usr/share 755 root sys
 d none usr/share/lib 755 root sys
 f none usr/share/lib/jaxb-api.jar 444 root sys
 f none usr/share/lib/jaxb-impl.jar 444 root sys
-f none usr/share/lib/jaxb-libs.jar 444 root sys
+f none usr/share/lib/jaxb1-impl.jar 444 root sys
 f none usr/share/lib/jaxb-xjc.jar 444 root sys
