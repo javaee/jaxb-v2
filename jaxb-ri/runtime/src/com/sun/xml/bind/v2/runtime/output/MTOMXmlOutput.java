@@ -2,12 +2,10 @@ package com.sun.xml.bind.v2.runtime.output;
 
 import java.io.IOException;
 
-import javax.xml.stream.XMLStreamException;
 import javax.xml.bind.attachment.AttachmentMarshaller;
-import javax.activation.DataHandler;
+import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.v2.WellKnownNamespace;
-import com.sun.xml.bind.v2.ByteArrayDataSource;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Base64Data;
@@ -78,10 +76,14 @@ public final class MTOMXmlOutput extends XmlOutputAbstractImpl {
     public void text( CharSequence value, boolean needsSeparatingWhitespace ) throws IOException, SAXException, XMLStreamException {
         if(value instanceof Base64Data) {
             Base64Data b64d = (Base64Data) value;
-            // see bug 6288318. we are hoping to pass byte[] directly
-            // String cid = serializer.attachmentMarshaller.addMtomAttachment(b64d.getExact(),nsUri,localName);
-            String cid = serializer.attachmentMarshaller.addMtomAttachment(
-                new DataHandler(new ByteArrayDataSource(b64d.get(),b64d.length(),b64d.getMimeType())),nsUri,localName);
+            String cid;
+            if(b64d.hasData())
+                cid = serializer.attachmentMarshaller.addMtomAttachment(
+                                b64d.get(),0,b64d.getDataLen(),b64d.getMimeType(),nsUri,localName);
+            else
+                cid = serializer.attachmentMarshaller.addMtomAttachment(
+                    b64d.getDataHandler(),nsUri,localName);
+
             if(cid!=null) {
                 nsContext.getCurrent().push();
                 int prefix = nsContext.declareNsUri(WellKnownNamespace.XOP,"xop",false);
