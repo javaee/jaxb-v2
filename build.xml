@@ -32,7 +32,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.25 2005-07-22 04:04:28 kohsuke Exp $
+       $Id: build.xml,v 1.26 2005-07-27 18:43:37 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -237,6 +237,11 @@
               <stripper remove="basicDebugInfo compilerInfo">
                 <source dir="${runtime.classes}" includes="**/*.class" />
               </stripper-->
+              <manifest mode="update" file="${runtime.root}/build/manifest.rt">
+                <section name="com.sun.xml.bind.v2.runtime">
+                  <attribute name="Implementation-Version" value="${build.version}" /> 
+                </section>
+              </manifest>
               <jar jarfile="${jaxb.dist}/lib/jaxb-impl.jar"
                    manifest="${runtime.root}/build/manifest.rt">
                   <fileset dir="${runtime.classes}"/>
