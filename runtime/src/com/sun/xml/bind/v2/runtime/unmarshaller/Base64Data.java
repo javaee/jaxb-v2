@@ -82,7 +82,7 @@ public final class Base64Data implements CharSequence {
     /**
      * Gets the raw data.
      */
-    public DataHandler getData() {
+    public DataHandler getDataHandler() {
         if(dataHandler==null)
             // TODO
             throw new UnsupportedOperationException();
@@ -113,6 +113,14 @@ public final class Base64Data implements CharSequence {
     }
 
     /**
+     * Returns false if this object only has {@link DataHandler} and therefore
+     * {@link #get()} operation is likely going to be expensive.
+     */
+    public boolean hasData() {
+        return data!=null;
+    }
+
+    /**
      * Gets the raw data. The size of the byte array maybe larger than the actual length.
      */
     public byte[] get() {
@@ -130,6 +138,10 @@ public final class Base64Data implements CharSequence {
             }
         }
         return data;
+    }
+
+    public int getDataLen() {
+        return dataLen;
     }
 
     public String getMimeType() {

@@ -317,7 +317,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
         new RuntimeBuiltinLeafInfoImpl<DataHandler>(DataHandler.class, createXS("base64Binary")) {
             public DataHandler parse(CharSequence text) {
                 if(text instanceof Base64Data)
-                    return ((Base64Data)text).getData();
+                    return ((Base64Data)text).getDataHandler();
                 else
                     return new DataHandler(new ByteArrayDataSource(decodeBase64(text),
                         UnmarshallingContext.getInstance().getXMIMEContentType()));
@@ -333,7 +333,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
             public Source parse(CharSequence text) throws SAXException  {
                 try {
                     if(text instanceof Base64Data)
-                        return new DataSourceSource( ((Base64Data)text).getData() );
+                        return new DataSourceSource( ((Base64Data)text).getDataHandler() );
                     else
                         return new DataSourceSource(new ByteArrayDataSource(decodeBase64(text),
                             UnmarshallingContext.getInstance().getXMIMEContentType()));
