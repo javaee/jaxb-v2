@@ -7,6 +7,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.transform.stream.StreamSource;
 
 import com.sun.xml.bind.api.Bridge;
 import com.sun.xml.bind.api.BridgeContext;
@@ -56,14 +57,13 @@ final class BridgeImpl<T> extends Bridge<T> {
 
     public T unmarshal(BridgeContext context, XMLStreamReader in) throws JAXBException {
         UnmarshallerImpl u = ((BridgeContextImpl)context).unmarshaller;
-        u.setExpectedType(bi);
-        return ((JAXBElement<T>)u.unmarshal(in)).getValue();
+        return ((JAXBElement<T>)u.unmarshal0(in,bi)).getValue();
     }
 
     public T unmarshal(BridgeContext context, URL in) throws JAXBException {
         UnmarshallerImpl u = ((BridgeContextImpl)context).unmarshaller;
-        u.setExpectedType(bi);
-        return ((JAXBElement<T>)u.unmarshal(in)).getValue();
+        // remove this unmarshal0 method when you remove this method
+        return ((JAXBElement<T>)u.unmarshal0(in,bi)).getValue();
     }
 
     public TypeReference getTypeReference() {

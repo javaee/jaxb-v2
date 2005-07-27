@@ -20,6 +20,7 @@ import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.ValidationEventLocator;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.helpers.ValidationEventImpl;
 import javax.xml.bind.helpers.ValidationEventLocatorImpl;
 import javax.xml.namespace.NamespaceContext;
@@ -94,6 +95,17 @@ public final class UnmarshallingContext extends Coordinator
      * This is used when we are building an association map.
      */
     private InfosetScanner scanner;
+
+    /**
+     * If non-null, this unmarshaller will unmarshal {@code JAXBElement<EXPECTEDTYPE>}
+     * regardless of the tag name, as opposed to deciding the root object by using
+     * the tag name.
+     *
+     * The property has a package-level access, because we cannot copy this value
+     * to {@link UnmarshallingContext} when it is created. The property
+     * on {@link javax.xml.bind.Unmarshaller} could be changed after the handler is created.
+     */
+    /*package*/ JaxBeanInfo expectedType;
 
     /**
      * Stub to the user-specified factory method.
@@ -227,10 +239,10 @@ public final class UnmarshallingContext extends Coordinator
     }
 
 
-    public void reset(InfosetScanner scanner,boolean isInplaceMode) {
+    public void reset(InfosetScanner scanner,boolean isInplaceMode, JaxBeanInfo expectedType) {
         this.scanner = scanner;
         this.isInplaceMode = isInplaceMode;
-        // more resetting is done in the startDocument method
+        this.expectedType = expectedType;
     }
 
     /**
@@ -346,7 +358,7 @@ public final class UnmarshallingContext extends Coordinator
             // this is the root element.
             // create a root object and start unmarshalling
 
-            if(parent.expectedType==null) {
+            if(expectedType==null) {
                 // normal unmarshalling
                 UnmarshallingEventHandler unmarshaller =
                     parent.context.pushUnmarshaller(uri,local,this);
@@ -366,10 +378,10 @@ public final class UnmarshallingContext extends Coordinator
             } else {
                 // unmarshals the specified type
                 QName qn = new QName(uri,local);
-                result = new JAXBElement(qn,parent.expectedType.jaxbType,null,null);
+                result = new JAXBElement(qn,expectedType.jaxbType,null,null);
 
                 UnmarshallingEventHandler handler =
-                    new Unmarshaller.SpawnChildSetHandler(parent.expectedType,
+                    new Unmarshaller.SpawnChildSetHandler(expectedType,
                         new Unmarshaller.LeaveElementHandler(Unmarshaller.ERROR,Unmarshaller.REVERT_TO_PARENT),
                         false, Accessor.JAXB_ELEMENT_VALUE );
 

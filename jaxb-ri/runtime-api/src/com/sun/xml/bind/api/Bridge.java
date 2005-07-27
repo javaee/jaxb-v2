@@ -83,6 +83,7 @@ public abstract class Bridge<T> {
      *      if there was an error while unmarshalling.
      *
      * @since 2.0 EA1
+     * @deprecated is this method still in use?
      */
     public abstract T unmarshal(BridgeContext context,URL url) throws JAXBException;
 

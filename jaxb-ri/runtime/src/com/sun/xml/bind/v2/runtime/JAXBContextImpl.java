@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.41 2005-07-27 18:29:31 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.42 2005-07-27 21:17:40 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -86,7 +86,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -439,8 +439,8 @@ public final class JAXBContextImpl extends JAXBRIContext {
      * @return null
      *      if <tt>c</tt> isn't a JAXB-bound class and <tt>fatal==false</tt>.
      */
-    public final JaxBeanInfo getBeanInfo(Class clazz) {
-        return beanInfoMap.get(clazz);
+    public final <T> JaxBeanInfo<T> getBeanInfo(Class<T> clazz) {
+        return (JaxBeanInfo<T>)beanInfoMap.get(clazz);
     }
 
     /**
@@ -451,8 +451,8 @@ public final class JAXBContextImpl extends JAXBRIContext {
      *      if true, the failure to look up will throw an exception.
      *      Otherwise it will just return null.
      */
-    public final JaxBeanInfo getBeanInfo(Class clazz,boolean fatal) throws JAXBException {
-        JaxBeanInfo bi = getBeanInfo(clazz);
+    public final <T> JaxBeanInfo<T> getBeanInfo(Class<T> clazz,boolean fatal) throws JAXBException {
+        JaxBeanInfo<T> bi = getBeanInfo(clazz);
         if(bi!=null)    return bi;
         if(fatal)
             throw new JAXBException(clazz.getName()+" is not known to this context");
