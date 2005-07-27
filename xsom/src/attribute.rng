@@ -167,8 +167,8 @@
               </attribute>
               <optional>
                 <ref name="annotation" cc:alias="annotation"/>(null,AnnotationContext.ATTRIBUTE_USE);
-                fa = <ref name="foreignAttributes" />(null);
               </optional>
+              fa = <ref name="foreignAttributes" />(null);
             </group>
           </choice>
           <cc:java>
