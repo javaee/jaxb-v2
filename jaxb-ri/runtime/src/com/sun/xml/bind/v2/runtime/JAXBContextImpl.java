@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.40 2005-07-22 03:27:03 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.41 2005-07-27 18:29:31 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -73,6 +73,7 @@ import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingEventHandler;
+import com.sun.xml.bind.util.Which;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -85,7 +86,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -776,6 +777,16 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
     public List<String> getKnownNamespaceURIs() {
         return Arrays.asList(nameList.namespaceURIs);
+    }
+
+    public String getBuildId() {
+        Package pkg = getClass().getPackage();
+        if(pkg==null)   return null;
+        return pkg.getImplementationVersion();
+    }
+
+    public String toString() {
+        return Which.which(getClass())+" Build-Id: "+getBuildId();
     }
 
     /**
