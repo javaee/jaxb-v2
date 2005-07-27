@@ -137,9 +137,19 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
         assert clazz!=null;
         // we need the namespace of the type and the element to be the same.
         // TODO: check with the spec if this is reasonable.
-        assert !clazz.isElement() || clazz.getElementName().getNamespaceURI().equals(clazz.getTypeName().getNamespaceURI());
 
-        Namespace n = getNamespace(clazz);
+        String ns;
+        if(clazz.isElement()) {
+            ns = clazz.getElementName().getNamespaceURI();
+            assert clazz.getTypeName()==null || clazz.getTypeName().getNamespaceURI().equals(ns);
+        } else {
+            QName tn = clazz.getTypeName();
+            if(tn==null)
+                return; // anonymous type
+            ns = tn.getNamespaceURI();
+        }
+
+        Namespace n = getNamespace(ns);
         n.classes.add(clazz);
 
         // search properties for foreign namespace references
@@ -626,9 +636,9 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                     // </>
                     ValuePropertyInfo vp = (ValuePropertyInfo)c.getProperties().get(0);
                     SimpleType st = ((SimpleTypeHost)parent).simpleType();
-                    final String name = c.getTypeName().getLocalPart();
-                    if(!name.equals("")) {
-                        st.name(name);  // named st
+                    QName tn = c.getTypeName();
+                    if(tn!=null) {
+                        st.name(tn.getLocalPart());  // named st
                     }
                     st.restriction().base(vp.getTarget().getTypeName());
                     return;
@@ -679,9 +689,9 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             // we didn't fall into the special case for value props, so we
             // need to initialize the ct.
             if( ct == null ) {
-                final String name = c.getTypeName().getLocalPart();
-                if( !name.equals("")) {
-                    ct = ((ComplexTypeHost)parent).complexType().name(name);  // named ct
+                QName tn = c.getTypeName();
+                if(tn!=null) {
+                    ct = ((ComplexTypeHost)parent).complexType().name(tn.getLocalPart());  // named ct
                 } else {
                     ct = ((ComplexTypeHost)parent).complexType();  // anonymous ct
                 }

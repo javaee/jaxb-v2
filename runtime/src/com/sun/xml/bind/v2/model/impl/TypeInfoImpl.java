@@ -85,6 +85,10 @@ abstract class TypeInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             local = t.name();
         }
 
+        if(local.length()==0)
+            return null; // anonymous
+
+
         if(local.equals("##default"))
             // if defaulted ...
             local = NameConverter.standard.toVariableName(nav().getClassShortName(clazz));
