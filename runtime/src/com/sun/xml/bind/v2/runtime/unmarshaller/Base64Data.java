@@ -213,6 +213,6 @@ public final class Base64Data implements CharSequence {
      */
     public String toString() {
         get();  // fill in the buffer
-        return DatatypeConverterImpl._printBase64Binary(data,dataLen);
+        return DatatypeConverterImpl._printBase64Binary(data, 0, dataLen);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: BinderImpl.java,v 1.7 2005-07-12 22:38:53 kohsuke Exp $
+ * @(#)$Id: BinderImpl.java,v 1.8 2005-07-27 21:17:40 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -12,6 +12,7 @@ package com.sun.xml.bind.v2.runtime;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.Binder;
+import javax.xml.bind.JAXBElement;
 import javax.xml.validation.Schema;
 
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
@@ -79,7 +80,7 @@ public class BinderImpl<XmlNode> extends Binder<XmlNode> {
         return marshaller;
     }
 
-    public void bindFromJava(Object jaxbObject, XmlNode xmlNode) throws JAXBException {
+    public void marshal(Object jaxbObject, XmlNode xmlNode) throws JAXBException {
         getMarshaller().marshal(jaxbObject,createOutput(xmlNode));
     }
 
@@ -89,12 +90,17 @@ public class BinderImpl<XmlNode> extends Binder<XmlNode> {
     }
 
 
-    public Object bindFromXml( XmlNode xmlNode ) throws JAXBException {
-        return associativeUnmarshal(xmlNode,false);
+    public Object unmarshal( XmlNode xmlNode ) throws JAXBException {
+        return associativeUnmarshal(xmlNode,false,null);
     }
 
-    public Object updateJava(XmlNode xmlNode) throws JAXBException {
-        return associativeUnmarshal(xmlNode,true);
+    public Object updateJAXB(XmlNode xmlNode) throws JAXBException {
+        return associativeUnmarshal(xmlNode,true,null);
+    }
+
+    public <T> JAXBElement<T> unmarshal(XmlNode xmlNode, Class<T> expectedType) throws JAXBException {
+        if(expectedType==null)  throw new IllegalArgumentException();
+        return (JAXBElement)associativeUnmarshal(xmlNode,true,expectedType);
     }
 
     public void setSchema(Schema schema) throws JAXBException {
@@ -105,8 +111,9 @@ public class BinderImpl<XmlNode> extends Binder<XmlNode> {
         return getUnmarshaller().getSchema();
     }
 
-    private Object associativeUnmarshal(XmlNode xmlNode, boolean inplace) throws JAXBException {
-        InterningXmlVisitor handler = new InterningXmlVisitor(getUnmarshaller().createUnmarshallerHandler(scanner, inplace ));
+    private Object associativeUnmarshal(XmlNode xmlNode, boolean inplace, Class expectedType) throws JAXBException {
+        InterningXmlVisitor handler = new InterningXmlVisitor(
+            getUnmarshaller().createUnmarshallerHandler(scanner,inplace,context.getBeanInfo(expectedType,true)));
         scanner.setContentHandler(new SAXConnector(handler,scanner.getLocator()));
         try {
             scanner.scan(xmlNode);
@@ -117,24 +124,24 @@ public class BinderImpl<XmlNode> extends Binder<XmlNode> {
         return handler.getContext().getResult();
     }
 
-    public XmlNode getXmlNode(Object jaxbObject) {
+    public XmlNode getXMLNode(Object jaxbObject) {
         AssociationMap.Entry<XmlNode> e = assoc.byPeer(jaxbObject);
         if(e==null)     return null;
         return e.element();
     }
 
-    public Object getJavaNode(XmlNode xmlNode) {
+    public Object getJAXBNode(XmlNode xmlNode) {
         AssociationMap.Entry e = assoc.byElement(xmlNode);
         if(e==null)     return null;
         if(e.outer()!=null)     return e.outer();
         return e.inner();
     }
 
-    public XmlNode updateXml(Object jaxbObject) throws JAXBException {
-        return updateXml(jaxbObject,getXmlNode(jaxbObject));
+    public XmlNode updateXML(Object jaxbObject) throws JAXBException {
+        return updateXML(jaxbObject,getXMLNode(jaxbObject));
     }
 
-    public XmlNode updateXml(Object jaxbObject, XmlNode xmlNode) throws JAXBException {
+    public XmlNode updateXML(Object jaxbObject, XmlNode xmlNode) throws JAXBException {
         if(jaxbObject==null || xmlNode==null)   throw new IllegalArgumentException();
 
         // TODO
