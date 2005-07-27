@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JAXBRIContext.java,v 1.12 2005-07-22 22:14:08 kohsuke Exp $
+ * @(#)$Id: JAXBRIContext.java,v 1.13 2005-07-27 18:39:38 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -199,6 +199,15 @@ public abstract class JAXBRIContext extends JAXBContext {
      *      if the referenced type is an anonymous and therefore doesn't have a name. 
      */
     public abstract QName getTypeName(TypeReference tr);
+
+    /**
+     * Gets the build information of the JAXB runtime.
+     *
+     * @return
+     *      may be null, if the runtime is loaded by a class loader that doesn't support
+     *      the access to the manifest informatino.
+     */
+    public abstract String getBuildId();
 
     /**
      * The property that you can specify to {@link JAXBContext#newInstance}
