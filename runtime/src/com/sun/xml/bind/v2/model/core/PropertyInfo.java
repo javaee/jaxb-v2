@@ -90,4 +90,10 @@ public interface PropertyInfo<TypeT,ClassDeclT> {
      * Expected MIME type, if any.
      */
     MimeType getExpectedMimeType();
+
+    /**
+     * If this is true and this property indeed represents a binary data,
+     * it should be always inlined.
+     */
+    boolean inlineBinaryData();
 }

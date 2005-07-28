@@ -74,7 +74,7 @@ public final class MTOMXmlOutput extends XmlOutputAbstractImpl {
     }
 
     public void text( CharSequence value, boolean needsSeparatingWhitespace ) throws IOException, SAXException, XMLStreamException {
-        if(value instanceof Base64Data) {
+        if(value instanceof Base64Data && !serializer.getInlineBinaryFlag()) {
             Base64Data b64d = (Base64Data) value;
             String cid;
             if(b64d.hasData())
