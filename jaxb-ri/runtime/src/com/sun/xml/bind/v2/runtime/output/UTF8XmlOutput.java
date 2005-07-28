@@ -71,7 +71,6 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     }
 
     public void endDocument(boolean fragment) throws IOException, SAXException, XMLStreamException {
-        write('\n');
         flushBuffer();
         super.endDocument(fragment);
     }
