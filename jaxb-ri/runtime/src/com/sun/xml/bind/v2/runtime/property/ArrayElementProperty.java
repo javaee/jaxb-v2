@@ -111,17 +111,24 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
 
                     if(tt==null) {
                         // item is not of the expected type.
-                        w.reportError(new ValidationEventImpl(ValidationEvent.ERROR,
-                            Messages.UNEXPECTED_JAVA_TYPE.format(
-                                item.getClass().getName(),
-                                getExpectedClassNameList()
-                            ),
-                            w.getCurrentLocation(fieldName)));
-                        continue;
+//                        w.reportError(new ValidationEventImpl(ValidationEvent.ERROR,
+//                            Messages.UNEXPECTED_JAVA_TYPE.format(
+//                                item.getClass().getName(),
+//                                getExpectedClassNameList()
+//                            ),
+//                            w.getCurrentLocation(fieldName)));
+//                        continue;
+
+                        // see the similar code in SingleElementNodeProperty.
+                        // for the purpose of simple type substitution, make it a non-error
+
+                        w.startElement(typeMap.values().iterator().next().tagName,null);
+                        w.childAsXsiType(item,fieldName,w.grammar.getBeanInfo(Object.class));
+                    } else {
+                        w.startElement(tt.tagName,null);
+                        serializeItem(tt.beanInfo,item,w);
                     }
 
-                    w.startElement(tt.tagName,null);
-                    serializeItem(tt.beanInfo,item,w);
                     w.endElement();
                 } else {
                     if(nillableTagName!=null) {
