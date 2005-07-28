@@ -16,9 +16,9 @@ import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIClass;
-import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIGlobalBinding;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BISchemaBinding;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BindInfo;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIGlobalBinding;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSAttGroupDecl;
@@ -27,6 +27,7 @@ import com.sun.xml.xsom.XSAttributeUse;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XSContentType;
+import com.sun.xml.xsom.XSDeclaration;
 import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XSFacet;
 import com.sun.xml.xsom.XSIdentityConstraint;
@@ -44,15 +45,14 @@ import com.sun.xml.xsom.XSXPath;
  * Default classBinder implementation. Honors &lt;jaxb:class> customizations
  * and default bindings.
  */
-class DefaultClassBinder extends AbstractBinderImpl
+final class DefaultClassBinder implements ClassBinder
 {
     private final SimpleTypeBuilder stb = Ring.get(SimpleTypeBuilder.class);
     private final Model model = Ring.get(Model.class);
 
+    protected final BGMBuilder builder = Ring.get(BGMBuilder.class);
+    protected final ClassSelector selector = Ring.get(ClassSelector.class);
 
-    private BIGlobalBinding getGlobalBinding() {
-        return Ring.get(BGMBuilder.class).getGlobalBinding();
-    }
 
     public CElement attGroupDecl(XSAttGroupDecl decl) {
         return allow(decl,decl.getName());
@@ -108,7 +108,7 @@ class DefaultClassBinder extends AbstractBinderImpl
 
             if(sb!=null)    className = sb.mangleAnonymousTypeClassName(className);
 
-            return new CClassInfo(model, selector.getClassScope(), className, type.getLocator(), ANONYMOUS, null, bi.toCustomizationList() );
+            return new CClassInfo(model, selector.getClassScope(), className, type.getLocator(), null, null, bi.toCustomizationList() );
         }
     }
 
@@ -168,7 +168,7 @@ class DefaultClassBinder extends AbstractBinderImpl
                     // and collapses element and complex type.
                     r = new CClassInfo( model, selector.getClassScope(),
                         deriveName(decl), decl.getLocator(),
-                        ANONYMOUS, tagName, custs );
+                        null, tagName, custs );
                 } else {
                     String className = null;
                     if(getGlobalBinding().isGenerateElementClass()) {
@@ -332,7 +332,7 @@ class DefaultClassBinder extends AbstractBinderImpl
             }
         }
 
-        QName typeName = ANONYMOUS;
+        QName typeName = null;
         QName elementName = null;
 
         if(component instanceof XSType) {
@@ -378,9 +378,56 @@ class DefaultClassBinder extends AbstractBinderImpl
         }
     }
 
+    private BIGlobalBinding getGlobalBinding() {
+        return builder.getGlobalBinding();
+    }
+
     /**
-     * Anonymous type name.
+     * Derives a name from a schema component.
+     * Use the name of the schema component as the default name.
      */
-    // TODO: check spec
-    private static final QName ANONYMOUS = null;
+    private String deriveName( XSDeclaration comp ) {
+        return deriveName( comp.getName(), comp );
+    }
+
+    /**
+     * Derives a name from a schema component.
+     * For complex types, we take redefinition into account when
+     * deriving a default name.
+     */
+    private String deriveName( XSComplexType comp ) {
+        String seed = deriveName( comp.getName(), comp );
+        int cnt = comp.getRedefinedCount();
+        for( ; cnt>0; cnt-- )
+            seed = "Original"+seed;
+        return seed;
+    }
+
+    /**
+     * Derives a name from a schema component.
+     *
+     * This method handles prefix/suffix modification and
+     * XML-to-Java name conversion.
+     *
+     * @param name
+     *      The base name. This should be things like element names
+     *      or type names.
+     * @param comp
+     *      The component from which the base name was taken.
+     *      Used to determine how names are modified.
+     */
+    private String deriveName( String name, XSComponent comp ) {
+        XSSchema owner = comp.getOwnerSchema();
+
+        if( owner!=null ) {
+            BISchemaBinding sb = builder.getBindInfo(
+                owner).get(BISchemaBinding.class);
+
+            if(sb!=null)    name = sb.mangleClassName(name,comp);
+        }
+
+        name = builder.getNameConverter().toClassName(name);
+
+        return name;
+    }
 };
