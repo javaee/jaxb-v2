@@ -338,11 +338,6 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
          */
         private Map<String,String> xmlNs = new HashMap<String, String>();
 
-        /**
-         * cache of visited ClassInfos
-         */
-        private final Set<ClassInfo> visited = new HashSet<ClassInfo>();
-
         public Namespace(String uri) {
             this.uri = uri;
             assert !XmlSchemaGenerator.this.namespaces.containsKey(uri);
@@ -609,17 +604,6 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
          * @param parent the writer of the parent element into which the type will be defined
          */
         private void writeClass(ClassInfo<TypeT,ClassDeclT> c, TypeHost parent) {
-
-            // don't process ClassInfos that have already been visted
-            if (visited.contains(c)) {
-                return;
-            } else {
-                visited.add(c);
-            }
-
-            // recurse on baseTypes to make sure that we can refer to them in the schema
-            final ClassInfo<TypeT,ClassDeclT> bc = c.getBaseClass();
-
             // special handling for value properties
             if (containsValueProp(c)) {
                 if (c.getProperties().size() == 1) {
@@ -696,6 +680,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             ComplexExtension ce = null;
 
             // if there is a base class, we need to generate an extension in the schema
+            final ClassInfo<TypeT,ClassDeclT> bc = c.getBaseClass();
             if (bc != null) {
                 ce = ct.complexContent().extension();
                 ce.base(bc.getTypeName());
