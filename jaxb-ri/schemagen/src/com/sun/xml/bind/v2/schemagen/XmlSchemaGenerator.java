@@ -67,6 +67,7 @@ import com.sun.xml.bind.v2.schemagen.xmlschema.TopLevelElement;
 import com.sun.xml.bind.v2.schemagen.xmlschema.TypeHost;
 import com.sun.xml.txw2.TXW;
 import com.sun.xml.txw2.TxwException;
+import com.sun.xml.txw2.TypedXmlWriter;
 import com.sun.xml.txw2.output.ResultFactory;
 
 import static com.sun.xml.bind.v2.WellKnownNamespace.*;
@@ -156,6 +157,11 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
         for( PropertyInfo<TypeT, ClassDeclT> p : clazz.getProperties()) {
             n.processForeignNamespaces(p);
         }
+
+        // recurse on baseTypes to make sure that we can refer to them in the schema
+        ClassInfo<TypeT,ClassDeclT> bc = clazz.getBaseClass();
+        if (bc != null)
+            add(bc);
     }
 
     /**
@@ -526,7 +532,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
          *      The name of the attribute used when referencing a type by QName.
          */
         private void writeTypeRef(TypeHost th, NonElement<TypeT, ClassDeclT> type, String refAttName) {
-            if(type.getTypeName()==null || type.getTypeName().getLocalPart().equals("")) {
+            if(type.getTypeName()==null) {
                 if(type instanceof ClassInfo) {
                     writeClass( (ClassInfo<TypeT,ClassDeclT>)type, th );
                 } else {
@@ -555,11 +561,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
          */
         private void writeEnum(EnumLeafInfo<TypeT, ClassDeclT> e, SimpleTypeHost th) {
             SimpleType st = th.simpleType();
-            final QName typeName = e.getTypeName();
-            if( typeName != null && !typeName.getLocalPart().equals("")) {
-                st.name(typeName.getLocalPart()); // named st
-            }
-
+            writeName(e,st);
 
             SimpleRestrictionModel base = st.restriction();
             writeTypeRef(base, e.getBaseType(), "base");
@@ -616,18 +618,11 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             }
 
             // recurse on baseTypes to make sure that we can refer to them in the schema
-            ClassInfo<TypeT,ClassDeclT> bc = c.getBaseClass();
-            if (bc != null) {
-                writeClass(bc, parent);
-            }
-
-            // generate the complexType
-            ComplexType ct = null;
+            final ClassInfo<TypeT,ClassDeclT> bc = c.getBaseClass();
 
             // special handling for value properties
             if (containsValueProp(c)) {
-                boolean valueProcessed = false;
-                if (c.getProperties().size() == 1 && c.getProperties().get(0) instanceof ValuePropertyInfo) {
+                if (c.getProperties().size() == 1) {
                     // [RESULT 2 - simpleType if the value prop is the only prop]
                     //
                     // <simpleType name="foo">
@@ -635,10 +630,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                     // </>
                     ValuePropertyInfo vp = (ValuePropertyInfo)c.getProperties().get(0);
                     SimpleType st = ((SimpleTypeHost)parent).simpleType();
-                    QName tn = c.getTypeName();
-                    if(tn!=null) {
-                        st.name(tn.getLocalPart());  // named st
-                    }
+                    writeName(c, st);
                     st.restriction().base(vp.getTarget().getTypeName());
                     return;
                 } else {
@@ -654,7 +646,11 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                     // ...
                     //   <element name="f" type="foo"/>
                     // ...
-                    ct = ((ComplexTypeHost)parent).complexType().name(c.getTypeName().getLocalPart());
+                    ComplexType ct = ((ComplexTypeHost)parent).complexType();
+                    writeName(c,ct);
+                    if(c.isFinal())
+                        ct._final("extension restriction");
+
                     SimpleExtension se = ct.simpleContent().extension();
                     for (PropertyInfo p : c.getProperties()) {
                         switch (p.kind()) {
@@ -663,11 +659,8 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                             break;
                         case VALUE:
                             TODO.checkSpec("what if vp.isCollection() == true?");
-                            assert !valueProcessed;
-                            if (valueProcessed) throw new IllegalStateException();
                             ValuePropertyInfo vp = (ValuePropertyInfo) p;
                             se.base(vp.getTarget().getTypeName());
-                            valueProcessed = true;
                             break;
                         case ELEMENT:   // error
                         case REFERENCE: // error
@@ -687,14 +680,11 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
 
             // we didn't fall into the special case for value props, so we
             // need to initialize the ct.
-            if( ct == null ) {
-                QName tn = c.getTypeName();
-                if(tn!=null) {
-                    ct = ((ComplexTypeHost)parent).complexType().name(tn.getLocalPart());  // named ct
-                } else {
-                    ct = ((ComplexTypeHost)parent).complexType();  // anonymous ct
-                }
-            }
+            // generate the complexType
+            ComplexType ct = ((ComplexTypeHost)parent).complexType();
+            writeName(c,ct);
+            if(c.isFinal())
+                ct._final("extension restriction");
 
             // hold the ct open in case we need to generate @mixed below...
             ct.block();
@@ -709,6 +699,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             if (bc != null) {
                 ce = ct.complexContent().extension();
                 ce.base(bc.getTypeName());
+                // TODO: what if the base type is anonymous?
                 // ordered props go in a sequence, unordered go in an all
                 if( c.isOrdered() ) {
                     compositor = ce.sequence();
@@ -755,6 +746,15 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
 
             // finally commit the ct
             ct.commit();
+        }
+
+        /**
+         * Writes the name attribute if it's named.
+         */
+        private void writeName(NonElement<TypeT,ClassDeclT> c, TypedXmlWriter xw) {
+            QName tn = c.getTypeName();
+            if(tn!=null)
+                xw._attribute("name",tn.getLocalPart());  // named
         }
 
         private boolean containsValueProp(ClassInfo<TypeT, ClassDeclT> c) {
