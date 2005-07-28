@@ -200,5 +200,12 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
         return customizations;
     }
 
+    /**
+     * @deprecated if you are calling this method directly, there's something wrong.
+     */
+    public boolean inlineBinaryData() {
+        return false;
+    }
+
     public abstract <V> V accept( CPropertyVisitor<V> visitor );
 }
