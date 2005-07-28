@@ -16,10 +16,12 @@ import com.sun.xml.bind.v2.model.nav.ReflectionNavigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimeNonElement;
 import com.sun.xml.bind.v2.model.runtime.RuntimeNonElementRef;
 import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfoSet;
+import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.MimeTypedTransducer;
+import com.sun.xml.bind.v2.runtime.InlineBinaryTransducer;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 
 import org.xml.sax.SAXException;
@@ -89,7 +91,8 @@ public class RuntimeModelBuilder extends ModelBuilder<Type,Class,Field,Method> {
      */
     public static Transducer createTransducer(RuntimeNonElementRef ref) {
         Transducer t = ref.getTarget().getTransducer();
-        ID id = ref.getSource().id();
+        RuntimePropertyInfo src = ref.getSource();
+        ID id = src.id();
 
         if(id==ID.IDREF)
             return RuntimeBuiltinLeafInfoImpl.STRING;
@@ -97,9 +100,12 @@ public class RuntimeModelBuilder extends ModelBuilder<Type,Class,Field,Method> {
         if(id==ID.ID)
             t = new IDTransducerImpl(t);
 
-        MimeType emt = ref.getSource().getExpectedMimeType();
+        MimeType emt = src.getExpectedMimeType();
         if(emt!=null)
             t = new MimeTypedTransducer(t,emt);
+
+        if(src.inlineBinaryData())
+            t = new InlineBinaryTransducer(t);
 
         return t;
     }

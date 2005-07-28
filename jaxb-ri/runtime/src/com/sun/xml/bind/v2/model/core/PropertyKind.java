@@ -2,6 +2,7 @@ package com.sun.xml.bind.v2.model.core;
 
 import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlInlineBinaryData;
 
 import com.sun.xml.bind.v2.runtime.property.PropertyFactory;
 
@@ -23,7 +24,8 @@ public enum PropertyKind {
     ;
 
     /**
-     * This kind of property can have {@link XmlMimeType} annotation with it.
+     * This kind of property can have {@link XmlMimeType} and {@link XmlInlineBinaryData}
+     * annotation with it.
      */
     public final boolean canHaveXmlMimeType;
 

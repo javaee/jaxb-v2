@@ -605,6 +605,8 @@ public final class XMLSerializer extends Coordinator {
         this.schemaLocation = schemaLocation;
         this.noNsSchemaLocation = noNsSchemaLocation;
         this.fragment = fragment;
+        this.inlineBinaryFlag = false;
+        this.expectedMimeType = null;
 
         out.startDocument(this,fragment,knownUri2prefixIndexMap,nsContext);
     }
@@ -707,10 +709,18 @@ public final class XMLSerializer extends Coordinator {
     }
 
     /**
-     * Returns a non-null valid object if there's an expected MIME type in the current context.
+     * True to force inlining.
      */
-    public MimeType getExpectedMimeType() {
-        return expectedMimeType;
+    private boolean inlineBinaryFlag;
+
+    public boolean setInlineBinaryFlag(boolean value) {
+        boolean old = inlineBinaryFlag;
+        this.inlineBinaryFlag = value;
+        return old;
+    }
+
+    public boolean getInlineBinaryFlag() {
+        return inlineBinaryFlag;
     }
 
     void reconcileID() throws SAXException {

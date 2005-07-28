@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlSchema;
+import javax.xml.bind.annotation.XmlInlineBinaryData;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
@@ -85,6 +86,7 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     private final PropertyImpl property;
     private final MimeType expectedMimeType;
+    private final boolean inlineBinary;
 
     /**
      * Singleton instance of {@link ElementPropertyInfo} for this element.
@@ -169,6 +171,10 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
         public MimeType getExpectedMimeType() {
             return expectedMimeType;
+        }
+
+        public boolean inlineBinaryData() {
+            return inlineBinary;
         }
 
         public PropertyInfo<TypeT,ClassDeclT> getSource() {
@@ -264,6 +270,7 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             }
         }
         this.expectedMimeType = mt;
+        this.inlineBinary = reader().hasMethodAnnotation(XmlInlineBinaryData.class,method);
     }
 
     final QName parseElementName(XmlElementDecl e) {
