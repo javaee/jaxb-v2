@@ -2,14 +2,17 @@ package com.sun.xml.bind.v2.runtime;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Collections;
+import java.util.HashMap;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.bind.Marshaller;
 
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.ClassFactory;
@@ -39,7 +42,7 @@ import org.xml.sax.helpers.LocatorImpl;
  *
  * @author Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
+public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
 
     /**
      * Properties of this bean class but not its ancestor classes.
@@ -131,6 +134,102 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
             tagName = owner.nameBuilder.createElementName(ci.getElementName());
         else
             tagName = null;
+
+        setLifecycleFlags();
+    }
+
+    /**
+     * use reflection to determine which of the 4 object lifecycle methods exist on
+     * the JAXB bound type.
+     */
+    private void setLifecycleFlags() {
+        Method[] methods = jaxbType.getDeclaredMethods();
+        for (Method m : methods) {
+            final String name = m.getName();
+            final Class[] params = m.getParameterTypes();
+            final Class returnType = m.getReturnType();
+
+            if (returnType == void.class) {
+                if (name.equals("beforeUnmarshal")) {
+                    if (params.length == 2) {
+                        if ((params[0] == javax.xml.bind.Unmarshaller.class) && (params[1] == Object.class)) {
+                            // void beforeUnmarshal(Unmarshaller, Object)
+                            cacheLifecycleMethod(m, FLAG_HAS_BEFORE_UNMARSHAL_METHOD);
+                            continue;
+                        }
+                    }
+                } else if (name.equals("afterUnmarshal")) {
+                    if (params.length == 2) {
+                        if ((params[0] == javax.xml.bind.Unmarshaller.class) && (params[1] == Object.class)) {
+                            // void afterUnmarshal(Unmarshaller, Object)
+                            cacheLifecycleMethod(m, FLAG_HAS_AFTER_UNMARSHAL_METHOD);
+                            continue;
+                        }
+                    }
+                } else if (name.equals("beforeMarshal")) {
+                    if (params.length == 1) {
+                        if (params[0] == javax.xml.bind.Marshaller.class) {
+                            // void beforeMarshal(Marshaller)
+                            cacheLifecycleMethod(m, FLAG_HAS_BEFORE_MARSHAL_METHOD);
+                            continue;
+                        }
+                    }
+                } else if (name.equals("afterMarshal")) {
+                    if (params.length == 1) {
+                        if (params[0] == javax.xml.bind.Marshaller.class) {
+                            // void afterMarshal(Marshaller)
+                            cacheLifecycleMethod(m, FLAG_HAS_AFTER_MARSHAL_METHOD);
+                            continue;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Cache a reference to the specified lifecycle method for the jaxbType
+     * associated with this beanInfo.
+     *
+     * @param m Method reference
+     * @param lifecycleFlag byte representing which of the 4 lifecycle methods
+     *        is being cached
+     */
+    private void cacheLifecycleMethod(Method m, byte lifecycleFlag) {
+        LifecycleMethods lcm = getLifecycleMethods();
+        if(lcm==null) {
+            lcm = new LifecycleMethods();
+            lcmCache.put(jaxbType, lcm);
+        }
+
+        flag |= lifecycleFlag;
+
+        switch (lifecycleFlag) {
+        case FLAG_HAS_BEFORE_UNMARSHAL_METHOD:
+            lcm.setBeforeUnmarshal(m);
+            break;
+        case FLAG_HAS_AFTER_UNMARSHAL_METHOD:
+            lcm.setAfterUnmarshal(m);
+            break;
+        case FLAG_HAS_BEFORE_MARSHAL_METHOD:
+            lcm.setBeforeMarshal(m);
+            break;
+        case FLAG_HAS_AFTER_MARSHAL_METHOD:
+            lcm.setAfterMarshal(m);
+            break;
+        }
+    }
+
+    /** cache of lifecycle methods.  Map<jaxbType,LifecycleMethods> */
+    private static final HashMap lcmCache = new HashMap(11);
+
+    /**
+     * Return the LifecycleMethods cache for this ClassBeanInfo's corresponding
+     * jaxbType if it exists, else return null.
+     *
+     */
+    public LifecycleMethods getLifecycleMethods() {
+        return (LifecycleMethods)lcmCache.get(jaxbType);
     }
 
     @Override
@@ -355,3 +454,4 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
         return xducer;
     }
 }
+
