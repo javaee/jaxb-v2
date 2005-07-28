@@ -30,7 +30,7 @@ import com.sun.xml.bind.v2.runtime.Location;
  * @author Kohsuke Kawaguchi
  */
 abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
-    implements PropertyInfo<TypeT,ClassDeclT>, Locatable {
+    implements PropertyInfo<TypeT,ClassDeclT>, Locatable, Comparable<PropertyInfoImpl> /*by their names*/ {
 
     /**
      * Object that reads annotations.
@@ -228,5 +228,9 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             }
         }
         return new QName(uri.intern(),local.intern());
+    }
+
+    public int compareTo(PropertyInfoImpl that) {
+        return this.getName().compareTo(that.getName());
     }
 }

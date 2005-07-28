@@ -28,6 +28,8 @@ import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
+import javax.xml.bind.annotation.AccessorOrder;
+import javax.xml.bind.annotation.XmlAccessorOrder;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
@@ -211,6 +213,9 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
         if(propOrder==DEFAULT_ORDER || propOrder==null) {
             // TODO: sort them in the default order
+            AccessorOrder ao = getAccessorOrder();
+            if(ao==AccessorOrder.ALPHABETICAL)
+                Collections.sort(properties);
         } else {
             //sort them as specified
             PropertySorter sorter = new PropertySorter();
@@ -267,18 +272,37 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     }
 
     /**
+     * Gets an annotation that are allowed on both class and type.
+     */
+    private <T extends Annotation> T getClassOrPackageAnnotation(Class<T> type) {
+        T t = reader().getClassAnnotation(type,clazz,this);
+        if(t!=null)
+            return t;
+        // defaults to the package level
+        return reader().getPackageAnnotation(type,clazz,this);
+    }
+
+    /**
      * Computes the {@link AccessType} on this class by looking at {@link XmlAccessorType}
      * annotations.
      */
     private AccessType getAccessType() {
-        AccessType at = AccessType.PUBLIC_MEMBER;
-        XmlAccessorType xat = reader().getClassAnnotation(XmlAccessorType.class,clazz,this);
-        if(xat==null)
-            // defaults to the package level
-            xat = reader().getPackageAnnotation(XmlAccessorType.class,clazz,this);
+        XmlAccessorType xat = getClassOrPackageAnnotation(XmlAccessorType.class);
         if(xat!=null)
-            at = xat.value();
-        return at;
+            return xat.value();
+        else
+            return AccessType.PUBLIC_MEMBER;
+    }
+
+    /**
+     * Gets the accessor order for this class by consulting {@link XmlAccessorOrder}.
+     */
+    private AccessorOrder getAccessorOrder() {
+        XmlAccessorOrder xao = getClassOrPackageAnnotation(XmlAccessorOrder.class);
+        if(xao!=null)
+            return xao.value();
+        else
+            return AccessorOrder.UNDEFINED;
     }
 
     /**
