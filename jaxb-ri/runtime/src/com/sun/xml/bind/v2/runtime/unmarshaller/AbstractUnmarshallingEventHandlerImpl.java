@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: AbstractUnmarshallingEventHandlerImpl.java,v 1.4 2005-05-23 15:15:31 kohsuke Exp $
+ * @(#)$Id: AbstractUnmarshallingEventHandlerImpl.java,v 1.5 2005-07-28 19:48:42 ryan_shoemaker Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -93,7 +93,7 @@ public abstract class AbstractUnmarshallingEventHandlerImpl implements Unmarshal
         // notify the error
         reportError(Messages.format(Messages.UNEXPECTED_ENTER_ELEMENT, arg.uri, arg.local ), true );
         // then recover by ignoring the whole element.
-        context.pushContentHandler(new Discarder(),null,false);
+        context.pushContentHandler(new Discarder(),null,null);
         context.getCurrentHandler().enterElement(context,arg);
     }
     protected static final void unexpectedLeaveElement(EventArg arg) throws SAXException {
@@ -160,7 +160,7 @@ public abstract class AbstractUnmarshallingEventHandlerImpl implements Unmarshal
         }
 
         UnmarshallingEventHandler handler = beanInfo.getUnmarshaller(asElement);
-        context.pushContentHandler(handler, child, beanInfo.implementsLifecycle());
+        context.pushContentHandler(handler, child, beanInfo);
         if(beanInfo.hasElementOnlyContentModel())
             context.disableTextCollection();
         return handler;

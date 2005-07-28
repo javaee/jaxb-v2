@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: ElementDispatcher.java,v 1.1 2005-04-15 20:04:31 kohsuke Exp $
+ * @(#)$Id: ElementDispatcher.java,v 1.2 2005-07-28 19:48:42 ryan_shoemaker Exp $
  */
 package com.sun.xml.bind.v2.runtime.property;
 
@@ -118,7 +118,7 @@ public class ElementDispatcher extends Unmarshaller.DelegatingHandler {
             // activate ourselves
             context.setCurrentHandler(this);
         }
-        context.pushContentHandler(handler, context.getTarget(), false);
+        context.pushContentHandler(handler, context.getTarget(), null);
         context.getCurrentHandler().enterElement(context,arg);
     }
 

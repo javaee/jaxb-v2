@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.42 2005-07-27 21:17:40 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.43 2005-07-28 19:48:43 ryan_shoemaker Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -86,7 +86,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -495,7 +495,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
         context.recordOuterPeer(child);
 
         UnmarshallingEventHandler u = beanInfo.getUnmarshaller(true);
-        context.pushContentHandler(u, child, beanInfo.implementsLifecycle());
+        context.pushContentHandler(u, child, beanInfo);
 
         return u;
     }

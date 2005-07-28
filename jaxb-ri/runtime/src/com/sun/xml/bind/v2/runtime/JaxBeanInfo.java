@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JaxBeanInfo.java,v 1.2 2005-05-20 18:39:38 kohsuke Exp $
+ * @(#)$Id: JaxBeanInfo.java,v 1.3 2005-07-28 19:48:43 ryan_shoemaker Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -16,7 +16,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
-import com.sun.xml.bind.ObjectLifeCycle;
 import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfo;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingEventHandler;
@@ -54,25 +53,48 @@ public abstract class JaxBeanInfo<BeanT> {
 
         this.jaxbType = jaxbType;
         this.typeName = typeName;
-        boolean implementsLifecycle = ObjectLifeCycle.class.isAssignableFrom(jaxbType);
-        this.flag = (byte)((isElement?FLAG_IS_ELEMENT:0)|(isImmutable?FLAG_IS_IMMUTABLE:0)|(implementsLifecycle?FLAG_IMPLEMENTS_LIFECYCLE:0));
+        this.flag = (byte)((isElement?FLAG_IS_ELEMENT:0)|(isImmutable?FLAG_IS_IMMUTABLE:0));
     }
 
     /**
      * Various boolean flags combined into one field to improve memory footprint.
      */
-    private byte flag;
+    protected byte flag;
 
-    private static final byte FLAG_IMPLEMENTS_LIFECYCLE = 1;
-    private static final byte FLAG_IS_ELEMENT = 2;
-    private static final byte FLAG_IS_IMMUTABLE = 4;
-    private static final byte FLAG_HAS_ELEMENT_ONLY_CONTENTMODEL = 8;
+    private static final byte FLAG_IS_ELEMENT = 1;
+    private static final byte FLAG_IS_IMMUTABLE = 2;
+    private static final byte FLAG_HAS_ELEMENT_ONLY_CONTENTMODEL = 4;
+    protected static final byte FLAG_HAS_BEFORE_UNMARSHAL_METHOD = 8;
+    protected static final byte FLAG_HAS_AFTER_UNMARSHAL_METHOD = 16;
+    protected static final byte FLAG_HAS_BEFORE_MARSHAL_METHOD = 32;
+    protected static final byte FLAG_HAS_AFTER_MARSHAL_METHOD = 64;
 
     /**
-     * True if {@link #jaxbType} implements {@link ObjectLifeCycle}.
+     * True if {@link #jaxbType} has the  lifecycle method.
      */
-    public final boolean implementsLifecycle() {
-        return (flag&FLAG_IMPLEMENTS_LIFECYCLE)!=0;
+    public final boolean hasBeforeUnmarshalMethod() {
+        return (flag&FLAG_HAS_BEFORE_UNMARSHAL_METHOD) != 0;
+    }
+
+    /**
+     * True if {@link #jaxbType} has the  lifecycle method.
+     */
+    public final boolean hasAfterUnmarshalMethod() {
+        return (flag&FLAG_HAS_AFTER_UNMARSHAL_METHOD) != 0;
+    }
+
+    /**
+     * True if {@link #jaxbType} has the  lifecycle method.
+     */
+    public final boolean hasBeforeMarshalMethod() {
+        return (flag&FLAG_HAS_BEFORE_MARSHAL_METHOD) != 0;
+    }
+
+    /**
+     * True if {@link #jaxbType} has the  lifecycle method.
+     */
+    public final boolean hasAfterMarshalMethod() {
+        return (flag&FLAG_HAS_AFTER_MARSHAL_METHOD) != 0;
     }
 
     /**

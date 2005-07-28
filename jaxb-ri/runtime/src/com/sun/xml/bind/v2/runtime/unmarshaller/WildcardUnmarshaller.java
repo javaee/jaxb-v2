@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: WildcardUnmarshaller.java,v 1.5 2005-07-14 00:21:26 kohsuke Exp $
+ * @(#)$Id: WildcardUnmarshaller.java,v 1.6 2005-07-28 19:48:43 ryan_shoemaker Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -125,7 +125,7 @@ public class WildcardUnmarshaller<ResultT extends Result> extends Unmarshaller.H
             }
         } else {
             // simply discard
-            context.pushContentHandler(new Discarder(),null,false);
+            context.pushContentHandler(new Discarder(),null,null);
             context.getCurrentHandler().enterElement(context,arg);
         }
     }

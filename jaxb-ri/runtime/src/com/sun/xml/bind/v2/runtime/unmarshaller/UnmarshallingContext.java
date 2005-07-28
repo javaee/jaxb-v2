@@ -26,11 +26,11 @@ import javax.xml.bind.helpers.ValidationEventLocatorImpl;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
-import com.sun.xml.bind.ObjectLifeCycle;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
 import com.sun.xml.bind.v2.AssociationMap;
 import com.sun.xml.bind.v2.ClassFactory;
+import com.sun.xml.bind.v2.runtime.ClassBeanInfoImpl;
 import com.sun.xml.bind.v2.runtime.Coordinator;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
@@ -387,7 +387,7 @@ public final class UnmarshallingContext extends Coordinator
 
                 pushAttributes(atts,true,null);
 
-                this.pushContentHandler(handler, result, false);
+                this.pushContentHandler(handler, result, null);
                 return; // don't forward the enterElement event, as it has already been consumed.
             }
         }
@@ -437,7 +437,7 @@ public final class UnmarshallingContext extends Coordinator
 //
     private UnmarshallingEventHandler[] handlers = new UnmarshallingEventHandler[16];
     private Object[] targets = new Object[16];
-    private boolean[] lifecycleControls = new boolean[16];
+    private JaxBeanInfo[] beanInfos = new JaxBeanInfo[16];
     private int handlerLen=0;
     
     /**
@@ -448,44 +448,62 @@ public final class UnmarshallingContext extends Coordinator
      * @param target
      *      The target object that the given {@link UnmarshallingEventHandler}
      *      is going to unmarshal.
-     * @param lifecycleControl
-     *      If true, the target object's
-     *      {@link ObjectLifeCycle#beforeUnmarshalling(javax.xml.bind.Unmarshaller, Object)}
-     *      is called.
-     *
-     *      If true, it's the caller's responsibility to make sure that the object
-     *      implements {@link ObjectLifeCycle}. For performance reason, you should
-     *      check {@link JaxBeanInfo#implementsLifecycle}.
-     *
-     *      Normally, you should only set this to true when you created a new child
-     *      object and know that the object implements {@link ObjectLifeCycle}.
+     * @param beanInfo
+     *      Reference to the associated JaxBeanInfo used to determine if the Unmarshaller
+     *      lifecycle methods should be triggered.  If so, the target object's
+     *      beforeUnmarshalling(javax.xml.bind.Unmarshaller, Object) method
+     *      is called (Spec Sec 4.4.1).  If this parameter is null, then the lifecycle
+     *      processing will be skipped altogether.
      *
      * @see #getTarget()
      */
-    public void pushContentHandler(UnmarshallingEventHandler handler, Object target, boolean lifecycleControl ) throws SAXException {
+    public void pushContentHandler(UnmarshallingEventHandler handler, Object target, JaxBeanInfo beanInfo ) throws SAXException {
 
-        if(lifecycleControl) {
-            Object p;
-            if(handlerLen==0)   p = null;
-            else                p = targets[handlerLen-1];
-            ((ObjectLifeCycle)target).beforeUnmarshalling(parent,p);
+        if((beanInfo != null) && (beanInfo instanceof ClassBeanInfoImpl)) {
+            if(((ClassBeanInfoImpl)beanInfo).hasBeforeUnmarshalMethod()) {
+                Method m = ((ClassBeanInfoImpl)beanInfo).getLifecycleMethods().getBeforeUnmarshal();
+                assert m != null;
+
+                Object p;
+                if(handlerLen==0) {
+                    p = null;
+                } else {
+                    p = targets[handlerLen-1];
+                }
+
+                Object[] params = new Object[] { parent, p };
+                try {
+                    m.setAccessible(true);
+                    m.invoke(target, params);
+                } catch (IllegalAccessException e) {
+                    throw new SAXException(e);
+                } catch (InvocationTargetException e) {
+                    throw new SAXException(e);
+                }
+            }
         }
+//        if(lifecycleControl) {
+//            Object p;
+//            if(handlerLen==0)   p = null;
+//            else                p = targets[handlerLen-1];
+//            ((ObjectLifeCycle)target).beforeUnmarshalling(parent,p);
+//        }
 
         if(handlerLen==handlers.length) {
             // expand buffer
             UnmarshallingEventHandler[] h = new UnmarshallingEventHandler[handlerLen*2];
             Object[] t = new Object[handlerLen*2];
-            boolean[] l = new boolean[handlerLen*2];
+            JaxBeanInfo[] jbi = new JaxBeanInfo[handlerLen*2];
             System.arraycopy(handlers,0,h,0,handlerLen);
             System.arraycopy(targets, 0,t,0,handlerLen);
-            System.arraycopy(lifecycleControls,0,l,0,handlerLen);
+            System.arraycopy(beanInfos,0,jbi,0,handlerLen);
             handlers = h;
             targets  = t;
-            lifecycleControls = l;
+            beanInfos = jbi;
         }
         handlers[handlerLen] = handler;
         targets[handlerLen]  = target;
-        lifecycleControls[handlerLen] = lifecycleControl;
+        beanInfos[handlerLen] = beanInfo;
         handlerLen++;
 
         handler.activate(this);
@@ -509,13 +527,30 @@ public final class UnmarshallingContext extends Coordinator
 
         old.deactivated(this);
 
-        if(lifecycleControls[handlerLen]) {
-            Object p;
-            if(handlerLen==0)   p = null;
-            else                p = targets[handlerLen-1];
-            ((ObjectLifeCycle)child).afterUnmarshalling(parent,p);
-        }
+        final JaxBeanInfo beanInfo = beanInfos[handlerLen];
+        if((beanInfo!=null) && (beanInfo instanceof ClassBeanInfoImpl)){
+            if(((ClassBeanInfoImpl)beanInfo).hasAfterUnmarshalMethod()) {
+                Method m = ((ClassBeanInfoImpl)beanInfo).getLifecycleMethods().getAfterUnmarshal();
+                assert m != null;
 
+                Object p;
+                if(handlerLen==0) {
+                    p = null;
+                } else {
+                    p = targets[handlerLen-1];
+                }
+
+                Object[] params = new Object[] { parent, p };
+                try {
+                    m.setAccessible(true);
+                    m.invoke(child, params);
+                } catch (IllegalAccessException e) {
+                    throw new SAXException(e);
+                } catch (InvocationTargetException e) {
+                    throw new SAXException(e);
+                }
+            }
+        }
 
         if(handlerLen!=0)
             getCurrentHandler().leaveChild(this, child);

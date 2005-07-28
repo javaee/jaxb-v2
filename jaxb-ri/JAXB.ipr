@@ -199,35 +199,35 @@
   <component name="DependencyValidationManager" />
   <component name="EntryPointsManager">
     <entry_points>
-      <entry_point TYPE="method" FQNAME="com.sun.ant.taskdefs.StyleTaskEx.StyleTaskEx()" />
-      <entry_point TYPE="method" FQNAME="OutputProperty com.sun.ant.taskdefs.StyleTaskEx.createOutputProperty()" />
-      <entry_point TYPE="method" FQNAME="Param com.sun.ant.taskdefs.StyleTaskEx.createParam()" />
-      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setIn(File inFile)" />
-      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setOut(File outFile)" />
-      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.addConfiguredXMLCatalog(XMLCatalog xmlCatalog)" />
-      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setProcessor(String processor)" />
-      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setClasspathRef(Reference r)" />
-      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setClasspath(Path classpath)" />
-      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setStyle(String xslFile)" />
-      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setExtension(String name)" />
-      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setDestdir(File dir)" />
-      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setBasedir(File dir)" />
-      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setForce(boolean force)" />
-      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setReloadStylesheet(boolean b)" />
-      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setScanIncludedDirectories(boolean b)" />
-      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.OutputProperty.setValue(String value)" />
-      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.OutputProperty.setName(String name)" />
-      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.Param.setExpression(String expression)" />
-      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.Param.setName(String name)" />
-      <entry_point TYPE="class" FQNAME="com.sun.ant.taskdefs.forehead.ForeheadConfTask" />
-      <entry_point TYPE="method" FQNAME="JAXBContext com.sun.tools.xjc.runtime.JAXBContextFactory.createContext(String contextPath, ClassLoader classLoader, Map properties)" />
       <entry_point TYPE="method" FQNAME="JAXBContext com.sun.tools.xjc.runtime.JAXBContextFactory.createContext(Class[] classes, Map properties)" />
-      <entry_point TYPE="method" FQNAME="JAXBContext com.sun.xml.bind.v2.ContextFactory.createContext(Class[] classes, Map&lt;String, Object&gt; properties)" />
+      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setExtension(String name)" />
+      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setClasspathRef(Reference r)" />
+      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.Param.setName(String name)" />
+      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setStyle(String xslFile)" />
+      <entry_point TYPE="method" FQNAME="OutputProperty com.sun.ant.taskdefs.StyleTaskEx.createOutputProperty()" />
       <entry_point TYPE="method" FQNAME="JAXBContext com.sun.xml.bind.v2.ContextFactory.createContext(String contextPath, ClassLoader classLoader, Map&lt;String, Object&gt; properties)" />
-      <entry_point TYPE="method" FQNAME="com.sun.xml.bind.v2.runtime.property.SingleReferenceNodeProperty.SingleReferenceNodeProperty(JAXBContextImpl p, RuntimeReferencePropertyInfo prop)" />
-      <entry_point TYPE="method" FQNAME="com.sun.xml.bind.v2.runtime.property.SingleElementLeafProperty.SingleElementLeafProperty(JAXBContextImpl context, RuntimeElementPropertyInfo prop)" />
-      <entry_point TYPE="method" FQNAME="com.sun.xml.bind.v2.runtime.property.ArrayElementLeafProperty.ArrayElementLeafProperty(JAXBContextImpl p, RuntimeElementPropertyInfo prop)" />
       <entry_point TYPE="method" FQNAME="com.sun.xml.bind.v2.runtime.property.ArrayElementNodeProperty.ArrayElementNodeProperty(JAXBContextImpl p, RuntimeElementPropertyInfo prop)" />
+      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setScanIncludedDirectories(boolean b)" />
+      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.Param.setExpression(String expression)" />
+      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setProcessor(String processor)" />
+      <entry_point TYPE="method" FQNAME="com.sun.ant.taskdefs.StyleTaskEx.StyleTaskEx()" />
+      <entry_point TYPE="method" FQNAME="JAXBContext com.sun.xml.bind.v2.ContextFactory.createContext(Class[] classes, Map&lt;String, Object&gt; properties)" />
+      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setBasedir(File dir)" />
+      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.addConfiguredXMLCatalog(XMLCatalog xmlCatalog)" />
+      <entry_point TYPE="method" FQNAME="com.sun.xml.bind.v2.runtime.property.SingleReferenceNodeProperty.SingleReferenceNodeProperty(JAXBContextImpl p, RuntimeReferencePropertyInfo prop)" />
+      <entry_point TYPE="method" FQNAME="Param com.sun.ant.taskdefs.StyleTaskEx.createParam()" />
+      <entry_point TYPE="method" FQNAME="com.sun.xml.bind.v2.runtime.property.SingleElementLeafProperty.SingleElementLeafProperty(JAXBContextImpl context, RuntimeElementPropertyInfo prop)" />
+      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setOut(File outFile)" />
+      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.OutputProperty.setName(String name)" />
+      <entry_point TYPE="class" FQNAME="com.sun.ant.taskdefs.forehead.ForeheadConfTask" />
+      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setClasspath(Path classpath)" />
+      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.OutputProperty.setValue(String value)" />
+      <entry_point TYPE="method" FQNAME="JAXBContext com.sun.tools.xjc.runtime.JAXBContextFactory.createContext(String contextPath, ClassLoader classLoader, Map properties)" />
+      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setForce(boolean force)" />
+      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setIn(File inFile)" />
+      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setReloadStylesheet(boolean b)" />
+      <entry_point TYPE="method" FQNAME="void com.sun.ant.taskdefs.StyleTaskEx.setDestdir(File dir)" />
+      <entry_point TYPE="method" FQNAME="com.sun.xml.bind.v2.runtime.property.ArrayElementLeafProperty.ArrayElementLeafProperty(JAXBContextImpl p, RuntimeElementPropertyInfo prop)" />
     </entry_points>
   </component>
   <component name="ExportToHTMLSettings">
@@ -615,7 +615,6 @@
         <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/xsom.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/rngom.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/dtd-parser-1.0.jar!/" />
-        <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/relaxngDatatype.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -625,7 +624,6 @@
         <root url="jar://$PROJECT_DIR$/tools/lib/src/xsom-src.zip!/src" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/rngom-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/dtd-parser-1.0-src.zip!/dtd-parser-1.0/src" />
-        <root url="jar://$PROJECT_DIR$/tools/lib/src/relaxngDatatype-src.zip!/" />
       </SOURCES>
     </library>
     <library name="ant">
