@@ -31,6 +31,7 @@ import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIConversion;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIEnum;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIEnumMember;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BindInfo;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.EnumMemberMode;
 import com.sun.tools.xjc.util.MimeTypeRange;
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.v2.WellKnownNamespace;
@@ -181,7 +182,8 @@ public final class ConversionFinder extends BindingComponent {
             // see if this type should be mapped to a type-safe enumeration by default.
             // if so, built a EnumXDucer from it and return it.
             if( shouldBeMappedToTypeSafeEnumByDefault(type) ) {
-                token = bindToTypeSafeEnum(type,null,null,Collections.<String,BIEnumMember>emptyMap(),true,null);
+                token = bindToTypeSafeEnum(type,null,null,Collections.<String,BIEnumMember>emptyMap(),
+                            getEnumMemberMode(),null);
                 if(token!=null)
                     return token;
             }
@@ -192,7 +194,7 @@ public final class ConversionFinder extends BindingComponent {
 
     /**
      * Returns true if a type-safe enum should be created from
-     * the given simple type by default.
+     * the given simple type by default without an explicit &lt;jaxb:enum> customization.
      */
     private boolean shouldBeMappedToTypeSafeEnumByDefault( XSRestrictionSimpleType type ) {
 
@@ -216,13 +218,9 @@ public final class ConversionFinder extends BindingComponent {
         // don't try to bind it to an enum.
 
         // return true only when this type is derived from one of the "enum base type".
-        XSSimpleType t = type;
-        do {
+        for( XSSimpleType t = type; t!=null; t=t.getSimpleBaseType() )
             if( t.isGlobal() && builder.getGlobalBinding().canBeMappedToTypeSafeEnum(t) )
                 return true;
-
-            t = t.getSimpleBaseType();
-        } while( t!=null );
 
         return false;
     }
@@ -294,17 +292,13 @@ public final class ConversionFinder extends BindingComponent {
      *      if some of the value names need to be overrided.
      *      Cannot be null, but the map may not contain entries
      *      for all enumeration values.
-     * @param abortIfCollide
-     *      if true and there's a name collision among constants, this method returns null.
-     *      this is used when XJC is doing 'opportunistic type-safe binding'.
-     *      if false, a collision will cause the constants to have numbered names.
      * @param loc
      *      The source location where the above customizations are
      *      specified, or null if none is available.
      */
     private TypeUse bindToTypeSafeEnum( XSRestrictionSimpleType type,
         String className, String javadoc, Map<String,BIEnumMember> members,
-        boolean abortIfCollide, Locator loc ) {
+        EnumMemberMode mode, Locator loc ) {
 
         if( loc==null )  // use the location of the simple type as the default
             loc = type.getLocator();
@@ -346,8 +340,16 @@ public final class ConversionFinder extends BindingComponent {
         // if the member names collide, re-generate numbered constant names.
         List<CEnumConstant> memberList = buildCEnumConstants(type, false, members);
         if(checkMemberNameCollision(memberList)) {
-            if(abortIfCollide)  return null;
-            memberList = buildCEnumConstants(type,true,members);
+            switch(mode) {
+            case SKIP:
+                // abort
+                return null;
+            case ERROR:
+            case GENERATE:
+                // generate
+                memberList = buildCEnumConstants(type,true,members);
+                break;
+            }
         }
 
         QName typeName = null;
@@ -382,7 +384,7 @@ public final class ConversionFinder extends BindingComponent {
             if( needsToGenerateMemberName ) {
                 // generate names for all member names.
                 // this will even override names specified by the user. that's crazy.
-                name = "value"+(idx++);
+                name = "VALUE_"+(idx++);
             } else {
                 BIEnumMember mem = members.get(facet.getValue());
                 if( mem==null )
@@ -453,7 +455,9 @@ public final class ConversionFinder extends BindingComponent {
             // list and union cannot be mapped to a type-safe enum,
             // so in this stage we can safely cast it to XSRestrictionSimpleType
             return bindToTypeSafeEnum( (XSRestrictionSimpleType)type,
-                    en.className, en.javadoc, en.members, false, en.getLocation() );
+                    en.className, en.javadoc, en.members,
+                    getEnumMemberMode().getModeWithEnum(),
+                    en.getLocation() );
         }
 
 
@@ -478,6 +482,10 @@ public final class ConversionFinder extends BindingComponent {
         } else
 
         return null;
+    }
+
+    private EnumMemberMode getEnumMemberMode() {
+        return builder.getGlobalBinding().getEnumMemberMode();
     }
 
     private TypeUse lookupBuiltin( XSSimpleType type, String typeLocalName ) {

@@ -113,7 +113,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
         return simpleMode;
     }
 
-    public boolean isGenerateEnumMemberName() {
+    public EnumMemberMode getEnumMemberMode() {
         return generateEnumMemberName;
     }
 
@@ -183,16 +183,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
      * member names when enumeration values cannot be used as constant names.
      */
     @XmlAttribute(name="typesafeEnumMemberName")
-    @XmlJavaTypeAdapter(GenerateEnumMemberNameAdapter.class)
-    boolean generateEnumMemberName = false;
-
-    private static final class GenerateEnumMemberNameAdapter extends ReadOnlyAdapter<String,Boolean> {
-        public Boolean unmarshal(String s) throws Exception {
-            if(s.equals("generateName"))    return true;
-            if(s.equals("generateError"))   return false;
-            throw new IllegalArgumentException(s);
-        }
-    }
+    EnumMemberMode generateEnumMemberName = EnumMemberMode.SKIP;
 
     /**
      * The code generation strategy.
