@@ -141,7 +141,11 @@ public class APTNavigator implements Navigator<TypeMirror,TypeDeclaration,FieldD
     }
 
     public boolean isStaticMethod(MethodDeclaration m) {
-        return m.getModifiers().contains(Modifier.STATIC);
+        return hasModifier(m, Modifier.STATIC);
+    }
+
+    private boolean hasModifier(Declaration d, Modifier mod) {
+        return d.getModifiers().contains(mod);
     }
 
     public boolean isSubClassOf(TypeMirror sub, TypeMirror sup) {
@@ -211,7 +215,11 @@ public class APTNavigator implements Navigator<TypeMirror,TypeDeclaration,FieldD
     }
 
     public boolean isAbstract(TypeDeclaration clazz) {
-        return clazz.getModifiers().contains(Modifier.ABSTRACT);
+        return hasModifier(clazz,Modifier.ABSTRACT);
+    }
+
+    public boolean isFinal(TypeDeclaration clazz) {
+        return hasModifier(clazz,Modifier.FINAL);
     }
 
     public FieldDeclaration[] getEnumConstants(TypeDeclaration clazz) {
@@ -412,15 +420,15 @@ public class APTNavigator implements Navigator<TypeMirror,TypeDeclaration,FieldD
     }
 
     public boolean isStaticField(FieldDeclaration f) {
-        return f.getModifiers().contains(Modifier.STATIC);
+        return hasModifier(f,Modifier.STATIC);
     }
 
     public boolean isPublicMethod(MethodDeclaration m) {
-        return m.getModifiers().contains(Modifier.PUBLIC);
+        return hasModifier(m,Modifier.PUBLIC);
     }
 
     public boolean isPublicField(FieldDeclaration f) {
-        return f.getModifiers().contains(Modifier.PUBLIC);
+        return hasModifier(f,Modifier.PUBLIC);
     }
 
     public boolean isEnum(TypeDeclaration t) {

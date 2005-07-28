@@ -124,6 +124,11 @@ public interface ClassInfo<TypeT,ClassDeclT> extends NonElement<TypeT,ClassDeclT
     boolean isOrdered();
 
     /**
+     * If this class is marked as final and no further extension/restriction is allowed.
+     */
+    boolean isFinal();
+
+    /**
      * Returns true if this bean class has an attribute wildcard.
      *
      * <p>

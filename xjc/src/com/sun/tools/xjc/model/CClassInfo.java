@@ -242,6 +242,14 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
         return isOrdered;
     }
 
+    /**
+     * @deprecated
+     *      if you are calling this method directly, you must be doing something wrong.
+     */
+    public boolean isFinal() {
+        return false;
+    }
+
     public void setOrdered(boolean value) {
         isOrdered = value;
     }

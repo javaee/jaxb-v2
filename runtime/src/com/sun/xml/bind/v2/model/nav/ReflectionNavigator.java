@@ -318,6 +318,10 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
         return Modifier.isAbstract(clazz.getModifiers());
     }
 
+    public boolean isFinal(Class clazz) {
+        return Modifier.isFinal(clazz.getModifiers());
+    }
+
     /**
      * Returns the {@link Type} object that represents {@code clazz&lt;T1,T2,T3>}.
      */

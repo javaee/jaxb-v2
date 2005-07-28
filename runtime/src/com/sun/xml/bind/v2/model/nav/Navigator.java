@@ -279,6 +279,11 @@ public interface Navigator<TypeT,ClassDeclT,FieldT,MethodT> {
     boolean isAbstract(ClassDeclT clazz);
 
     /**
+     * Returns true if this is a final class.
+     */
+    boolean isFinal(ClassDeclT clazz);
+
+    /**
      * Gets the enumeration constants from an enum class.
      *
      * @param clazz

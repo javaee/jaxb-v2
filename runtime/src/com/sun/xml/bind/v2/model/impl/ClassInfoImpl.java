@@ -741,6 +741,10 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         return propOrder!=null;
     }
 
+    public boolean isFinal() {
+        return nav().isFinal(clazz);
+    }
+
     public final boolean hasAttributeWildcard() {
         return declaresAttributeWildcard() || inheritsAttributeWildcard();
     }
