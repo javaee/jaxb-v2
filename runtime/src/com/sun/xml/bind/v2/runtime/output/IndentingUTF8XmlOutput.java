@@ -120,4 +120,10 @@ public final class IndentingUTF8XmlOutput extends UTF8XmlOutput {
         seenText = true;
         super.text(value);
     }
+
+    @Override
+    public void endDocument(boolean fragment) throws IOException, SAXException, XMLStreamException {
+        write('\n');
+        super.endDocument(fragment);
+    }
 }
