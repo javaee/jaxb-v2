@@ -100,7 +100,8 @@ final class SingleElementNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT> 
                 // actually this is an error, because the actual type was not a sub-type
                 // of any of the types specified in the annotations,
                 // but for the purpose of experimenting with simple type substitution,
-                // it's convenient to marshal this anyway.
+                // it's convenient to marshal this anyway (for example so that classes
+                // generated from simple types like String can be marshalled as expected.)
                 w.startElement(typeNames.values().iterator().next().tagName,null);
                 w.childAsXsiType(v,fieldName,w.grammar.getBeanInfo(Object.class));
             } else {
