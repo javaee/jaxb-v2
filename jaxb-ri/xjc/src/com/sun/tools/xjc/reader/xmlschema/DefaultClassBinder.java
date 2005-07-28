@@ -116,6 +116,13 @@ class DefaultClassBinder extends AbstractBinderImpl
         return new QName(type.getTargetNamespace(),type.getName());
     }
 
+    private QName getTypeName(XSComplexType type) {
+        if(type.getRedefinedBy()!=null)
+            return null;
+        else
+            return getTypeName((XSType)type);
+    }
+
     /**
      * Returns true if the complex type of the given element can be "optimized away"
      * and unified with its parent element decl to form a single class.
