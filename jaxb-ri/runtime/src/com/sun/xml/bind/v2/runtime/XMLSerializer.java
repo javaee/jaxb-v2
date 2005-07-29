@@ -528,13 +528,11 @@ public final class XMLSerializer extends Coordinator {
             Object oldTarget = currentTarget;
             currentTarget = child;
 
-            ClassBeanInfoImpl cbi = null;
             Method m;
 
-            if((asExpected) && (actual instanceof ClassBeanInfoImpl)) {
-                cbi = (ClassBeanInfoImpl)actual;
-                if((cbi != null) && cbi.hasBeforeMarshalMethod()) {
-                    m = cbi.getLifecycleMethods().getBeforeMarshal();
+            if((asExpected) && (actual.lookForLifecycleMethods())) {
+                if(actual.hasBeforeMarshalMethod()) {
+                    m = actual.getLifecycleMethods().getBeforeMarshal();
                     fireMarshalEvent(currentTarget, m);
                 }
             }
@@ -542,10 +540,9 @@ public final class XMLSerializer extends Coordinator {
             if(!asExpected) {
                 try {
                     actual = grammar.getBeanInfo(child,true);
-                    if (actual instanceof ClassBeanInfoImpl) {
-                        cbi = (ClassBeanInfoImpl) actual;
-                        if ((cbi != null) && cbi.hasBeforeMarshalMethod()) {
-                            m = cbi.getLifecycleMethods().getBeforeMarshal();
+                    if (actual.lookForLifecycleMethods()) {
+                        if (actual.hasBeforeMarshalMethod()) {
+                            m = actual.getLifecycleMethods().getBeforeMarshal();
                             fireMarshalEvent(currentTarget, m);
                         }
                     }
@@ -572,8 +569,8 @@ public final class XMLSerializer extends Coordinator {
             endAttributes();
             actual.serializeBody(child,this);
 
-            if((cbi != null) && cbi.hasAfterMarshalMethod()) {
-                m = cbi.getLifecycleMethods().getAfterMarshal();
+            if(actual.hasAfterMarshalMethod()) {
+                m = actual.getLifecycleMethods().getAfterMarshal();
                 fireMarshalEvent(currentTarget, m);
             }
 
@@ -584,7 +581,6 @@ public final class XMLSerializer extends Coordinator {
     private void fireMarshalEvent(Object target, Method m) {
         Object[] params = new Object[] { marshaller };
         try {
-            m.setAccessible(true);
             m.invoke(target, params);
         } catch (Exception e) {
             // this really only happens if there is a bug in the ri

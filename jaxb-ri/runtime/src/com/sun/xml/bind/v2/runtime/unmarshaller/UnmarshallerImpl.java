@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: UnmarshallerImpl.java,v 1.14 2005-07-27 21:17:39 kohsuke Exp $
+ * @(#)$Id: UnmarshallerImpl.java,v 1.15 2005-07-29 22:43:34 ryan_shoemaker Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -75,6 +75,9 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
 
 
     public final UnmarshallingContext coordinator;
+
+    /** Unmarshaller.Listener */
+    private Listener externalListener;
 
     /**
      * The attachment unmarshaller used to support MTOM and swaRef.
@@ -446,5 +449,13 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
 
     public <T> JaxBeanInfo<T> getBeanInfo(Class<T> clazz) throws JAXBException {
         return context.getBeanInfo(clazz,true);
+    }
+
+    public Listener getListener() {
+        return externalListener;
+    }
+
+    public void setListener(Listener listener) {
+        externalListener = listener;
     }
 }

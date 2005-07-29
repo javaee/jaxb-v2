@@ -29,7 +29,6 @@ import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
 import com.sun.xml.bind.v2.AssociationMap;
 import com.sun.xml.bind.v2.ClassFactory;
-import com.sun.xml.bind.v2.runtime.ClassBeanInfoImpl;
 import com.sun.xml.bind.v2.runtime.Coordinator;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
@@ -458,9 +457,21 @@ public final class UnmarshallingContext extends Coordinator
      */
     public void pushContentHandler(UnmarshallingEventHandler handler, Object target, JaxBeanInfo beanInfo ) throws SAXException {
 
-        if((beanInfo != null) && (beanInfo instanceof ClassBeanInfoImpl)) {
-            if(((ClassBeanInfoImpl)beanInfo).hasBeforeUnmarshalMethod()) {
-                Method m = ((ClassBeanInfoImpl)beanInfo).getLifecycleMethods().getBeforeUnmarshal();
+        // unmarshaller lifecycle handling
+        if((beanInfo != null) && (beanInfo.lookForLifecycleMethods())) {
+            // invoke external listener before bean embedded listener
+            javax.xml.bind.Unmarshaller.Listener externalListener =
+                    parent.getListener();
+            if(externalListener != null) {
+                externalListener.beforeUnmarshal(
+                        target,
+                        (handlerLen==0) ? null : targets[handlerLen-1] /* parent object of 'target' */
+                );
+            }
+
+            // then invoke bean embedded listener
+            if(beanInfo.hasBeforeUnmarshalMethod()) {
+                Method m = beanInfo.getLifecycleMethods().getBeforeUnmarshal();
                 assert m != null;
 
                 Object p;
@@ -472,7 +483,6 @@ public final class UnmarshallingContext extends Coordinator
 
                 Object[] params = new Object[] { parent, p };
                 try {
-                    m.setAccessible(true);
                     m.invoke(target, params);
                 } catch (IllegalAccessException e) {
                     throw new SAXException(e);
@@ -520,22 +530,23 @@ public final class UnmarshallingContext extends Coordinator
 
         old.deactivated(this);
 
-        final JaxBeanInfo beanInfo = beanInfos[handlerLen];
-        if((beanInfo!=null) && (beanInfo instanceof ClassBeanInfoImpl)){
-            if(((ClassBeanInfoImpl)beanInfo).hasAfterUnmarshalMethod()) {
-                Method m = ((ClassBeanInfoImpl)beanInfo).getLifecycleMethods().getAfterUnmarshal();
-                assert m != null;
+        Object p;
+        if(handlerLen==0) {
+            p = null;
+        } else {
+            p = targets[handlerLen-1];
+        }
 
-                Object p;
-                if(handlerLen==0) {
-                    p = null;
-                } else {
-                    p = targets[handlerLen-1];
-                }
+        // unmarshaller lifecycle handling
+        final JaxBeanInfo beanInfo = beanInfos[handlerLen];
+        if((beanInfo!=null) && beanInfo.lookForLifecycleMethods()){
+            // invoke the bean embedded listener first
+            if(beanInfo.hasAfterUnmarshalMethod()) {
+                Method m = beanInfo.getLifecycleMethods().getAfterUnmarshal();
+                assert m != null;
 
                 Object[] params = new Object[] { parent, p };
                 try {
-                    m.setAccessible(true);
                     m.invoke(child, params);
                 } catch (IllegalAccessException e) {
                     throw new SAXException(e);
@@ -543,11 +554,22 @@ public final class UnmarshallingContext extends Coordinator
                     throw new SAXException(e);
                 }
             }
+
+            // then invoke the external listener
+            javax.xml.bind.Unmarshaller.Listener externalListener =
+                    parent.getListener();
+            if(externalListener != null) {
+                externalListener.afterUnmarshal(
+                        p,
+                        (handlerLen==0) ? null : targets[handlerLen-1] /* parent object of 'p' */
+                );
+            }
         }
 
         if(handlerLen!=0)
             getCurrentHandler().leaveChild(this, child);
     }
+
 
     /**
      * Gets the current handler.

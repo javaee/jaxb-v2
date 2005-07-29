@@ -12,7 +12,7 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
  * @see UnmarshallingContext
  * TODO: add @see for marshaller side
  */
-public class LifecycleMethods {
+public final class LifecycleMethods {
     private Method beforeUnmarshal;
     private Method afterUnmarshal;
     private Method beforeMarshal;
