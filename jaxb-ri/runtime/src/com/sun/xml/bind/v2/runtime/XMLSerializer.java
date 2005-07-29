@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.activation.MimeType;
 import javax.xml.bind.DatatypeConverter;
@@ -412,7 +414,25 @@ public final class XMLSerializer extends Coordinator {
     public void childAsRoot(Object obj) throws JAXBException, IOException, SAXException, XMLStreamException {
         Object old = currentTarget;
         currentTarget = obj;
-        grammar.getBeanInfo(obj, true).serializeRoot(obj,this);
+
+        final JaxBeanInfo beanInfo = grammar.getBeanInfo(obj, true);
+        ClassBeanInfoImpl cbi = null;
+        if(beanInfo instanceof ClassBeanInfoImpl) {
+            cbi = (ClassBeanInfoImpl)beanInfo;
+        }
+
+        Method m;
+        if((cbi != null) && cbi.hasBeforeMarshalMethod()) {
+            m = cbi.getLifecycleMethods().getBeforeMarshal();
+            fireMarshalEvent(currentTarget, m);
+        }
+
+        beanInfo.serializeRoot(obj,this);
+
+        if((cbi != null) && cbi.hasAfterMarshalMethod()) {
+            m = cbi.getLifecycleMethods().getAfterMarshal();
+            fireMarshalEvent(currentTarget, m);
+        }
         currentTarget = old;
     }
 
@@ -449,11 +469,27 @@ public final class XMLSerializer extends Coordinator {
             Object oldTarget = currentTarget;
             currentTarget = child;
 
+            ClassBeanInfoImpl cbi = null;
+            if(beanInfo instanceof ClassBeanInfoImpl) {
+                cbi = (ClassBeanInfoImpl)beanInfo;
+            }
+
+            Method m;
+            if((cbi != null) && cbi.hasBeforeMarshalMethod()) {
+                m = cbi.getLifecycleMethods().getBeforeMarshal();
+                fireMarshalEvent(currentTarget, m);
+            }
+
             beanInfo.serializeURIs(child,this);
             endNamespaceDecls(child);
             beanInfo.serializeAttributes(child,this);
             endAttributes();
             beanInfo.serializeBody(child,this);
+
+            if((cbi != null) && cbi.hasAfterMarshalMethod()) {
+                m = cbi.getLifecycleMethods().getAfterMarshal();
+                fireMarshalEvent(currentTarget, m);
+            }
 
             currentTarget = oldTarget;
         }
@@ -493,9 +529,25 @@ public final class XMLSerializer extends Coordinator {
             Object oldTarget = currentTarget;
             currentTarget = child;
 
+            ClassBeanInfoImpl cbi = null;
+            Method m;
+
+            if((asExpected) && (actual instanceof ClassBeanInfoImpl)) {
+                cbi = (ClassBeanInfoImpl)actual;
+                if((cbi != null) && cbi.hasBeforeMarshalMethod()) {
+                    m = cbi.getLifecycleMethods().getBeforeMarshal();
+                    fireMarshalEvent(currentTarget, m);
+                }
+            }
+
             if(!asExpected) {
                 try {
                     actual = grammar.getBeanInfo(child,true);
+                    cbi = (ClassBeanInfoImpl)actual;
+                    if((cbi != null) && cbi.hasBeforeMarshalMethod()) {
+                        m = cbi.getLifecycleMethods().getBeforeMarshal();
+                        fireMarshalEvent(currentTarget, m);
+                    }
                 } catch (JAXBException e) {
                     reportError(fieldName,e);
                     endNamespaceDecls(null);
@@ -519,7 +571,23 @@ public final class XMLSerializer extends Coordinator {
             endAttributes();
             actual.serializeBody(child,this);
 
+            if((cbi != null) && cbi.hasAfterMarshalMethod()) {
+                m = cbi.getLifecycleMethods().getAfterMarshal();
+                fireMarshalEvent(currentTarget, m);
+            }
+
             currentTarget = oldTarget;
+        }
+    }
+
+    private void fireMarshalEvent(Object target, Method m) {
+        Object[] params = new Object[] { marshaller };
+        try {
+            m.setAccessible(true);
+            m.invoke(target, params);
+        } catch (Exception e) {
+            // this really only happens if there is a bug in the ri
+            throw new IllegalStateException(e);
         }
     }
 
