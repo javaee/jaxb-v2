@@ -103,6 +103,9 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
      */
     private Schema schema;
 
+    /** Marshaller.Listener */
+    private Listener externalListener = null;
+
     /**
      * @param assoc
      *      non-null if the marshaller is working inside {@link BinderImpl}.
@@ -454,6 +457,13 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         return false;
     }
 
+    public Listener getListener() {
+        return externalListener;
+    }
+
+    public void setListener(Listener listener) {
+        externalListener = listener;
+    }
 
     private static final String INDENT_STRING = "com.sun.xml.bind.indentString";
     private static final String PREFIX_MAPPER = "com.sun.xml.bind.namespacePrefixMapper"; 
