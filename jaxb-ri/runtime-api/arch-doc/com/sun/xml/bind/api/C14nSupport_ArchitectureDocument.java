@@ -10,7 +10,8 @@ import javax.xml.bind.Marshaller;
  * The JAXB RI marshaller can be configured to marshal canonical XML.
  * To do so, you specify true to the {@link JAXBRIContext#newInstance} method.
  *
- * <h3>Supported C14n Modes</h3>
+ * <h2>Supported C14n Modes</h2>
+ * <h3>(Inclusive) Canonicalization</h3>
  * <p>
  * If you create {@link JAXBContext} with the c14n support, {@link Marshaller}s created
  * from such {@link JAXBContext} will automatically generate canonical XML documents
@@ -29,6 +30,33 @@ import javax.xml.bind.Marshaller;
  * the root element.
  *
  *
+ *
+ * <h3>Exclusive Canonicalization</h3>
+ * <p>
+ * JAXB RI doesn't support exclusive canonicalization (xc14n) in its full generality,
+ * but it can be used to performa xc14n if the application is in position to choose
+ * the list of <a href="http://www.w3.org/TR/2002/REC-xml-exc-c14n-20020718/#def-InclusiveNamespaces-PrefixList">
+ * "inclusive namespaces"</a>.
+ *
+ * <p>
+ * IOW, this support can be used when c14n is for producing a new signature, but not
+ * when c14n is for verifying a signature.
+ *
+ * <p>
+ * The exclusive c14n support in JAXB can be done by making "inclusive namespaces"
+ * an union of (1) all the namespace URIs statically known to JAXB RI and
+ * (2) all in-scope namespace bindings available at ancestors.
+ *
+ * This effectively reduces xc14n to inclusive c14n.
+ *
+ * <p>
+ * Specifically, the calling application should do the followings:
+ *
+ * <ol>
+ *  <li>List up all the in-scope namespaces declared in ancestor elements,
+ *      and add them to the inclusive namespace prefix list.
+ *  <li>Do not  
+ *
  * <h2>Unsupported Features</h2>
  * <p>
  * When canonicalizing a subtree, the canonical XML spec requires the xml attributes
@@ -37,9 +65,7 @@ import javax.xml.bind.Marshaller;
  * This behavior is not implemented.
  *
  *
- * <h2>TODOs</h2>
- * <p>
- * Exclusive canonicalization.
+ *
  *
  * <h2>Internals</h2>
  * <p>
