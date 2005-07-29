@@ -542,9 +542,9 @@ public final class XMLSerializer extends Coordinator {
             if(!asExpected) {
                 try {
                     actual = grammar.getBeanInfo(child,true);
-                    if(actual instanceof ClassBeanInfoImpl) {
-                        cbi = (ClassBeanInfoImpl)actual;
-                        if((cbi != null) && cbi.hasBeforeMarshalMethod()) {
+                    if (actual instanceof ClassBeanInfoImpl) {
+                        cbi = (ClassBeanInfoImpl) actual;
+                        if ((cbi != null) && cbi.hasBeforeMarshalMethod()) {
                             m = cbi.getLifecycleMethods().getBeforeMarshal();
                             fireMarshalEvent(currentTarget, m);
                         }
