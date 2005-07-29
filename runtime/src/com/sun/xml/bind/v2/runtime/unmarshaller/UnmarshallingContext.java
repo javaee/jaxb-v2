@@ -20,7 +20,6 @@ import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.ValidationEventLocator;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.helpers.ValidationEventImpl;
 import javax.xml.bind.helpers.ValidationEventLocatorImpl;
 import javax.xml.namespace.NamespaceContext;
@@ -482,12 +481,6 @@ public final class UnmarshallingContext extends Coordinator
                 }
             }
         }
-//        if(lifecycleControl) {
-//            Object p;
-//            if(handlerLen==0)   p = null;
-//            else                p = targets[handlerLen-1];
-//            ((ObjectLifeCycle)target).beforeUnmarshalling(parent,p);
-//        }
 
         if(handlerLen==handlers.length) {
             // expand buffer
