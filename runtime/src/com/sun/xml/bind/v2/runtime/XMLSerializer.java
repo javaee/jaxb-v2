@@ -6,11 +6,10 @@
 package com.sun.xml.bind.v2.runtime;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.activation.MimeType;
 import javax.xml.bind.DatatypeConverter;
