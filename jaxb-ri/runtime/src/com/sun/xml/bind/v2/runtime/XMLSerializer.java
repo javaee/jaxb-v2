@@ -415,23 +415,18 @@ public final class XMLSerializer extends Coordinator {
         currentTarget = obj;
 
         final JaxBeanInfo beanInfo = grammar.getBeanInfo(obj, true);
-        ClassBeanInfoImpl cbi = null;
-        if(beanInfo instanceof ClassBeanInfoImpl) {
-            cbi = (ClassBeanInfoImpl)beanInfo;
-        }
 
-        Method m;
-        if((cbi != null) && cbi.hasBeforeMarshalMethod()) {
-            m = cbi.getLifecycleMethods().getBeforeMarshal();
-            fireMarshalEvent(currentTarget, m);
+        final boolean lookForLifecycleMethods = (beanInfo != null) && (beanInfo.lookForLifecycleMethods());
+        if (lookForLifecycleMethods) {
+            fireBeforeMarshalEvents(beanInfo, currentTarget);
         }
 
         beanInfo.serializeRoot(obj,this);
 
-        if((cbi != null) && cbi.hasAfterMarshalMethod()) {
-            m = cbi.getLifecycleMethods().getAfterMarshal();
-            fireMarshalEvent(currentTarget, m);
+        if (lookForLifecycleMethods) {
+            fireAfterMarshalEvents(beanInfo, currentTarget);
         }
+
         currentTarget = old;
     }
 
@@ -468,15 +463,9 @@ public final class XMLSerializer extends Coordinator {
             Object oldTarget = currentTarget;
             currentTarget = child;
 
-            ClassBeanInfoImpl cbi = null;
-            if(beanInfo instanceof ClassBeanInfoImpl) {
-                cbi = (ClassBeanInfoImpl)beanInfo;
-            }
-
-            Method m;
-            if((cbi != null) && cbi.hasBeforeMarshalMethod()) {
-                m = cbi.getLifecycleMethods().getBeforeMarshal();
-                fireMarshalEvent(currentTarget, m);
+            final boolean lookForLifecycleMethods = (beanInfo != null) && (beanInfo.lookForLifecycleMethods());
+            if (lookForLifecycleMethods) {
+                fireBeforeMarshalEvents(beanInfo, currentTarget);
             }
 
             beanInfo.serializeURIs(child,this);
@@ -485,9 +474,8 @@ public final class XMLSerializer extends Coordinator {
             endAttributes();
             beanInfo.serializeBody(child,this);
 
-            if((cbi != null) && cbi.hasAfterMarshalMethod()) {
-                m = cbi.getLifecycleMethods().getAfterMarshal();
-                fireMarshalEvent(currentTarget, m);
+            if (lookForLifecycleMethods) {
+                fireAfterMarshalEvents(beanInfo, currentTarget);
             }
 
             currentTarget = oldTarget;
@@ -531,20 +519,14 @@ public final class XMLSerializer extends Coordinator {
             Method m;
 
             if((asExpected) && (actual.lookForLifecycleMethods())) {
-                if(actual.hasBeforeMarshalMethod()) {
-                    m = actual.getLifecycleMethods().getBeforeMarshal();
-                    fireMarshalEvent(currentTarget, m);
-                }
+                fireBeforeMarshalEvents(actual, currentTarget);
             }
 
             if(!asExpected) {
                 try {
                     actual = grammar.getBeanInfo(child,true);
                     if (actual.lookForLifecycleMethods()) {
-                        if (actual.hasBeforeMarshalMethod()) {
-                            m = actual.getLifecycleMethods().getBeforeMarshal();
-                            fireMarshalEvent(currentTarget, m);
-                        }
+                        fireBeforeMarshalEvents(actual, currentTarget);
                     }
                 } catch (JAXBException e) {
                     reportError(fieldName,e);
@@ -569,12 +551,60 @@ public final class XMLSerializer extends Coordinator {
             endAttributes();
             actual.serializeBody(child,this);
 
-            if(actual.hasAfterMarshalMethod()) {
-                m = actual.getLifecycleMethods().getAfterMarshal();
-                fireMarshalEvent(currentTarget, m);
+            if (actual.lookForLifecycleMethods()) {
+                fireAfterMarshalEvents(actual, currentTarget);
             }
 
             currentTarget = oldTarget;
+        }
+    }
+
+    /**
+     * Invoke the afterMarshal api on the external listener (if it exists) and on the bean embedded
+     * afterMarshal api(if it exists).
+     *
+     * This method is called only after the callee has determined that beanInfo.lookForLifecycleMethods == true.
+     *
+     * @param beanInfo
+     * @param currentTarget
+     */
+    private void fireAfterMarshalEvents(final JaxBeanInfo beanInfo, Object currentTarget) {
+        // first invoke bean embedded listener
+        if (beanInfo.hasAfterMarshalMethod()) {
+            Method m = beanInfo.getLifecycleMethods().getAfterMarshal();
+            fireMarshalEvent(currentTarget, m);
+        }
+
+        // then invoke external listener before bean embedded listener
+        javax.xml.bind.Marshaller.Listener externalListener =
+                marshaller.getListener();
+        if (externalListener != null) {
+            externalListener.afterMarshal(currentTarget);
+        }
+
+    }
+
+    /**
+     * Invoke the beforeMarshal api on the external listener (if it exists) and on the bean embedded
+     * beforeMarshal api(if it exists).
+     *
+     * This method is called only after the callee has determined that beanInfo.lookForLifecycleMethods == true.
+     *
+     * @param beanInfo
+     * @param currentTarget
+     */
+    private void fireBeforeMarshalEvents(final JaxBeanInfo beanInfo, Object currentTarget) {
+        // invoke external listener before bean embedded listener
+        javax.xml.bind.Marshaller.Listener externalListener =
+                marshaller.getListener();
+        if (externalListener != null) {
+            externalListener.beforeMarshal(currentTarget);
+        }
+
+        // then invoke bean embedded listener
+        if (beanInfo.hasBeforeMarshalMethod()) {
+            Method m = beanInfo.getLifecycleMethods().getBeforeMarshal();
+            fireMarshalEvent(currentTarget, m);
         }
     }
 
