@@ -4,23 +4,24 @@
  */
 
 /*
- * @(#)$Id: UnmarshallerImpl.java,v 1.15 2005-07-29 22:43:34 ryan_shoemaker Exp $
+ * @(#)$Id: UnmarshallerImpl.java,v 1.16 2005-08-01 19:35:36 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.net.URL;
 
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.PropertyException;
 import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.UnmarshallerHandler;
-import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.ValidationEvent;
-import javax.xml.bind.JAXBElement;
+import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.attachment.AttachmentUnmarshaller;
 import javax.xml.bind.helpers.AbstractUnmarshallerImpl;
@@ -29,11 +30,11 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
-import javax.xml.validation.Schema;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
 
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
@@ -42,6 +43,7 @@ import com.sun.xml.bind.unmarshaller.Messages;
 import com.sun.xml.bind.v2.AssociationMap;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
+import com.sun.xml.bind.v2.stax.StAXConnector;
 import com.sun.xml.bind.v2.stax.XMLEventReaderToContentHandler;
 import com.sun.xml.bind.v2.stax.XMLStreamReaderToContentHandler;
 
@@ -55,7 +57,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Default Unmarshaller implementation.
- * 
+ *
  * <p>
  * This class can be extended by the generated code to provide
  * type-safe unmarshall methods.
@@ -112,13 +114,13 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
     /**
      * Creates and configures a new unmarshalling pipe line.
      * Depending on the setting, we put a validator as a filter.
-     * 
+     *
      * @return
      *      A component that implements both {@link UnmarshallerHandler}
      *      and {@link ValidationEventHandler}. All the parsing errors
      *      should be reported to this error handler for the unmarshalling
      *      process to work correctly.
-     * 
+     *
      *      Also, returned handler expects all the XML names to be interned.
      *
      */
@@ -191,15 +193,15 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
         } catch( SAXException e ) {
             throw createUnmarshalException(e);
         }
-        
+
         Object result = connector.getResult();
-        
+
         // avoid keeping unnecessary references too long to let the GC
         // reclaim more memory.
         // setting null upsets some parsers, so use a dummy instance instead.
         reader.setContentHandler(dummyHandler);
         reader.setErrorHandler(dummyHandler);
-        
+
         return result;
     }
 
@@ -260,7 +262,7 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
             else
                 // no other type of input is supported
                 throw new IllegalArgumentException();
-            
+
             return handler.getContext().getResult();
         } catch( SAXException e ) {
             throw createUnmarshalException(e);
@@ -293,16 +295,38 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
                 Messages.format(Messages.ILLEGAL_READER_STATE,eventType));
         }
 
-        // Quick hack until SJSXP fixes 6270116
-        boolean isZephyr = reader.getClass().getName().equals("com.sun.xml.stream.XMLReaderImpl");
-        UnmarshallerHandler h = getUnmarshallerHandler(!isZephyr,expectedType);
+        StAXConnector connector=null;
+        UnmarshallingContext context=null;
+
+        if (reader.getClass()==FI_STAX_READER_CLASS && FI_CONNECTOR_CTOR!=null) {
+            // check if this is FI.
+            XmlVisitor h = createUnmarshallerHandler(null,false,expectedType);
+            context = h.getContext();
+
+            try {
+                connector = FI_CONNECTOR_CTOR.newInstance(reader,h);
+            } catch (Exception t) {
+                ; // default to the normal codepath
+            }
+        }
+
+        if(connector==null) {
+            // this is the normal StAX codepath
+
+            // Quick hack until SJSXP fixes 6270116
+            boolean isZephyr = reader.getClass().getName().equals("com.sun.xml.stream.XMLReaderImpl");
+            SAXConnector h = getUnmarshallerHandler(!isZephyr,expectedType);
+            connector = new XMLStreamReaderToContentHandler(reader,h);
+            context = h.getContext();
+        }
 
         try {
-            new XMLStreamReaderToContentHandler(reader,h).bridge();
+            connector.bridge();
         } catch (XMLStreamException e) {
             throw handleStreamException(e);
         }
-        return h.getResult();
+
+        return context.getResult();
     }
 
     @Override
@@ -345,7 +369,7 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
     public Object unmarshal0( URL input, JaxBeanInfo expectedType ) throws JAXBException {
         return unmarshal0(getXMLReader(),new InputSource(input.toExternalForm()),expectedType);
     }
-    
+
     private static JAXBException handleStreamException(XMLStreamException e) {
         // XMLStreamReaderToContentHandler wraps SAXException to XMLStreamException.
         // XMLStreamException doesn't print its nested stack trace when it prints
@@ -450,6 +474,31 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
     public <T> JaxBeanInfo<T> getBeanInfo(Class<T> clazz) throws JAXBException {
         return context.getBeanInfo(clazz,true);
     }
+<<<<<<< UnmarshallerImpl.java
+
+    /**
+     * Reference to FI's StAXReader class, if FI can be loaded.
+     */
+    private static final Class FI_STAX_READER_CLASS = initFIStAXReaderClass();
+    private static final Constructor<? extends StAXConnector> FI_CONNECTOR_CTOR = initFastInfosetConnectorClass();
+
+    private static Class initFIStAXReaderClass() {
+        try {
+            return UnmarshallerImpl.class.getClassLoader().loadClass("com.sun.xml.fastinfoset.stax.StAXDocumentParser");
+        } catch (Throwable e) {
+            return null;
+        }
+    }
+
+    private static Constructor<? extends StAXConnector> initFastInfosetConnectorClass() {
+        try {
+            Class c = UnmarshallerImpl.class.getClassLoader().loadClass("com.sun.xml.bind.v2.runtime.unmarshaller.FastInfosetConnector");
+            return c.getConstructor(FI_STAX_READER_CLASS,XmlVisitor.class);
+        } catch (Throwable e) {
+            return null;
+        }
+    }
+=======
 
     public Listener getListener() {
         return externalListener;
@@ -458,4 +507,5 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
     public void setListener(Listener listener) {
         externalListener = listener;
     }
+>>>>>>> 1.15
 }

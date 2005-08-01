@@ -32,7 +32,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.27 2005-08-01 18:15:15 kk122374 Exp $
+       $Id: build.xml,v 1.28 2005-08-01 19:35:36 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -60,6 +60,7 @@
         <ant dir="apgen"               target="compile" />
         <ant dir="runtime-api"         target="compile" />
         <ant dir="runtime"             target="compile" />
+        <ant dir="runtime-fi"          target="compile" />
         <ant dir="runtime-deprecated"  target="compile-runtime-deprecated" />
         <ant dir="schemagen"           target="compile" />
         <ant dir="xjc"                 target="compile" />
@@ -245,6 +246,7 @@
               <jar jarfile="${jaxb.dist}/lib/jaxb-impl.jar"
                    manifest="${runtime.root}/build/manifest.rt">
                   <fileset dir="${runtime.classes}"/>
+                  <fileset dir="${runtime-fi.classes}"/>
                   <fileset dir="${runtime-api.classes}"/>
                   <fileset dir="${schemagen.classes}"/>
                   <fileset dir="${runtime.src}" includes="META-INF/**/*" />
@@ -772,8 +774,16 @@ Class-Path: ${manifest.classpath}
       <unjar src="${jaxb.libs.compiler10}/jaxb1-xjc.jar" dest="${xjc10.classes}"/>
       <delete dir="${xjc10.classes}/META-INF/MANIFEST.MF"/>
     </target>
-    
-    
+
+
+    <target name="integrate-fi">
+      <get src="http://kohsuke.sfbay/hudson/job/fi/lastSuccessfulBuild/artifact/fi/FastInfoset/dist/FastInfoset.jar"
+           dest="tools/lib/util/FastInfoset.jar" />
+      <get src="http://kohsuke.sfbay/hudson/job/fi/lastSuccessfulBuild/artifact/fi/package/FastInfoset.src.zip"
+           dest="tools/lib/src/FastInfoset.src.zip" />
+    </target>
+
+
     <target name="integrate-jsr222">
         <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api.jar"
              dest="tools/lib/redist/jaxb-api.jar" />

@@ -13,6 +13,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.lang.reflect.Constructor;
 
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBException;
@@ -46,6 +47,7 @@ import com.sun.xml.bind.marshaller.SAX2DOMEx;
 import com.sun.xml.bind.marshaller.XMLWriter;
 import com.sun.xml.bind.v2.AssociationMap;
 import com.sun.xml.bind.v2.FatalAdapter;
+import com.sun.xml.bind.v2.stax.StAXConnector;
 import com.sun.xml.bind.v2.runtime.output.C14nXmlOutput;
 import com.sun.xml.bind.v2.runtime.output.Encoded;
 import com.sun.xml.bind.v2.runtime.output.ForkXmlOutput;
@@ -55,6 +57,8 @@ import com.sun.xml.bind.v2.runtime.output.UTF8XmlOutput;
 import com.sun.xml.bind.v2.runtime.output.XMLEventWriterOutput;
 import com.sun.xml.bind.v2.runtime.output.XMLStreamWriterOutput;
 import com.sun.xml.bind.v2.runtime.output.XmlOutput;
+import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
+import com.sun.xml.bind.v2.runtime.unmarshaller.XmlVisitor;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -67,7 +71,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * <p>
  * Eventually all the {@link #marshal} methods call into
  * the {@link #write} method.
- * 
+ *
  * @author Kohsuke Kawaguchi
  * @author Vivek Pandey
  */
@@ -75,16 +79,16 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
 {
     /** Indentation string. Default is four whitespaces. */
     private String indent = "    ";
-    
+
     /** Used to assign prefixes to namespace URIs. */
     private NamespacePrefixMapper prefixMapper = null;
-    
+
     /** Object that handles character escaping. */
-    private CharacterEscapeHandler escapeHandler = null; 
-    
+    private CharacterEscapeHandler escapeHandler = null;
+
     /** Whether the xml declaration will be printed or not. */
     private boolean printXmlDeclaration = true;
-    
+
     /** XML BLOB written after the XML declaration. */
     private String header=null;
 
@@ -113,7 +117,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     public MarshallerImpl( JAXBContextImpl c, AssociationMap assoc ) {
         // initialize datatype converter with ours
         DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
-        
+
         context = c;
         this.assoc = assoc;
         serializer = new XMLSerializer(this);
@@ -126,7 +130,19 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     }
 
     public void marshal(Object obj, XMLStreamWriter writer) throws JAXBException {
-        write(obj, new XMLStreamWriterOutput(writer), new StAXPostInitAction(writer,serializer));
+        XmlOutput out=null;
+        if(writer.getClass()==FI_STAX_WRITER_CLASS && FI_OUTPUT_CTOR!=null) {
+            // this is FI. Try to use the optimized runtime code
+            try {
+                out = FI_OUTPUT_CTOR.newInstance(writer);
+            } catch (Exception e) {
+                // use the normal StAX codepath as a back up.
+                // TODO: where should we report this problem?
+            }
+        }
+        if(out==null)   // default
+            out = new XMLStreamWriterOutput(writer);
+        write(obj, out, new StAXPostInitAction(writer,serializer));
     }
 
     public void marshal(Object obj, XMLEventWriter writer) throws JAXBException {
@@ -188,7 +204,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         }
 
         // unsupported parameter type
-        throw new MarshalException( 
+        throw new MarshalException(
             Messages.format( Messages.UNSUPPORTED_RESULT ) );
     }
 
@@ -292,17 +308,17 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     // create XMLWriter by specifing various type of output.
     //
     //
-    
+
     protected CharacterEscapeHandler createEscapeHandler( String encoding ) {
         if( escapeHandler!=null )
             // user-specified one takes precedence.
             return escapeHandler;
-        
+
         if( encoding.startsWith("UTF") )
             // no need for character reference. Use the handler
             // optimized for that pattern.
             return MinimumEscapeHandler.theInstance;
-        
+
         // otherwise try to find one from the encoding
         try {
             // try new JDK1.4 NIO
@@ -312,20 +328,20 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
             return DumbEscapeHandler.theInstance;
         }
     }
-            
+
     public XmlOutput createWriter( Writer w, String encoding ) {
-        
+
         // buffering improves the performance
         w = new BufferedWriter(w);
-        
+
         CharacterEscapeHandler ceh = createEscapeHandler(encoding);
         XMLWriter xw;
-        
+
         if(isFormattedOutput()) {
             DataWriter d = new DataWriter(w,encoding,ceh);
             d.setIndentStep(indent);
             xw=d;
-        } 
+        }
         else
             xw = new XMLWriter(w,encoding,ceh);
 
@@ -338,11 +354,11 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     public XmlOutput createWriter(Writer w) {
         return createWriter(w, getEncoding());
     }
-    
+
     public XmlOutput createWriter( OutputStream os ) throws JAXBException {
         return createWriter(os, getEncoding());
     }
-    
+
     public XmlOutput createWriter( OutputStream os, String encoding ) throws JAXBException {
         // buffering improves the performance, but not always
         if(!(os instanceof BufferedOutputStream) && !(os instanceof ByteArrayOutputStream))
@@ -370,8 +386,8 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
                 e );
         }
     }
-    
-    
+
+
     public Object getProperty(String name) throws PropertyException {
         if( INDENT_STRING.equals(name) )
             return indent;
@@ -466,8 +482,31 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     }
 
     private static final String INDENT_STRING = "com.sun.xml.bind.indentString";
-    private static final String PREFIX_MAPPER = "com.sun.xml.bind.namespacePrefixMapper"; 
-    private static final String ENCODING_HANDLER = "com.sun.xml.bind.characterEscapeHandler"; 
-    private static final String XMLDECLARATION = "com.sun.xml.bind.xmlDeclaration"; 
+    private static final String PREFIX_MAPPER = "com.sun.xml.bind.namespacePrefixMapper";
+    private static final String ENCODING_HANDLER = "com.sun.xml.bind.characterEscapeHandler";
+    private static final String XMLDECLARATION = "com.sun.xml.bind.xmlDeclaration";
     private static final String XML_HEADERS = "com.sun.xml.bind.xmlHeaders";
+
+    /**
+     * Reference to FI's XMLStreamWriter class, if FI can be loaded.
+     */
+    private static final Class FI_STAX_WRITER_CLASS = initFIStAXWriterClass();
+    private static final Constructor<? extends XmlOutput> FI_OUTPUT_CTOR = initFastInfosetOutputClass();
+
+    private static Class initFIStAXWriterClass() {
+        try {
+            return MarshallerImpl.class.getClassLoader().loadClass("com.sun.xml.fastinfoset.stax.StAXDocumentSerializer");
+        } catch (Throwable e) {
+            return null;
+        }
+    }
+
+    private static Constructor<? extends XmlOutput> initFastInfosetOutputClass() {
+        try {
+            Class c = UnmarshallerImpl.class.getClassLoader().loadClass("com.sun.xml.bind.v2.runtime.output.FastInfosetStreamWriterOutput");
+            return c.getConstructor(FI_STAX_WRITER_CLASS);
+        } catch (Throwable e) {
+            return null;
+        }
+    }
 }
