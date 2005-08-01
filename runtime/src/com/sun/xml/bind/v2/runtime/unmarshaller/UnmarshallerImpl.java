@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: UnmarshallerImpl.java,v 1.16 2005-08-01 19:35:36 kohsuke Exp $
+ * @(#)$Id: UnmarshallerImpl.java,v 1.17 2005-08-01 21:29:15 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -474,7 +474,16 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
     public <T> JaxBeanInfo<T> getBeanInfo(Class<T> clazz) throws JAXBException {
         return context.getBeanInfo(clazz,true);
     }
-<<<<<<< UnmarshallerImpl.java
+
+    @Override
+    public Listener getListener() {
+        return externalListener;
+    }
+
+    @Override
+    public void setListener(Listener listener) {
+        externalListener = listener;
+    }
 
     /**
      * Reference to FI's StAXReader class, if FI can be loaded.
@@ -498,14 +507,4 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
             return null;
         }
     }
-=======
-
-    public Listener getListener() {
-        return externalListener;
-    }
-
-    public void setListener(Listener listener) {
-        externalListener = listener;
-    }
->>>>>>> 1.15
 }
