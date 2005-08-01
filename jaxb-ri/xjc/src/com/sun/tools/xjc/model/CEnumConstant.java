@@ -3,7 +3,6 @@ package com.sun.tools.xjc.model;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.xml.bind.v2.model.core.EnumConstant;
-import com.sun.codemodel.JJavaName;
 
 /**
  * Enumeration constant.
@@ -12,7 +11,7 @@ import com.sun.codemodel.JJavaName;
  */
 public final class CEnumConstant implements EnumConstant<NType,NClass> {
     /** Name of the constant, or null to default. */
-    private String name;
+    public final String name;
     /** Javadoc comment. Can be null. */
     public final String javadoc;
     /** Lexical representation of this enum constant. Always non-null. */
