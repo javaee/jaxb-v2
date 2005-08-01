@@ -443,6 +443,8 @@ public final class UnmarshallingContext extends Coordinator
      * and registers the newly specified content handler so
      * that it can receive SAX events.
      *
+     * This method also fires beforeUnmarshal lifecycle events if necessary.
+     *
      * @param target
      *      The target object that the given {@link UnmarshallingEventHandler}
      *      is going to unmarshal.
@@ -519,6 +521,8 @@ public final class UnmarshallingContext extends Coordinator
      * <p>
      * This method will also fire the leaveChild event with the
      * associated memento.
+     *
+     * This method also fires the afterUnmarshal lifecycle events if necessary.
      */
     public void popContentHandler() throws SAXException {
         handlerLen--;
