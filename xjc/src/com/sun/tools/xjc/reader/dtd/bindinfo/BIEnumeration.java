@@ -82,7 +82,8 @@ public final class BIEnumeration implements BIConversion
         StringTokenizer tokens = new StringTokenizer(members);
         while(tokens.hasMoreTokens()) {
             String token = tokens.nextToken();
-            r.add(new CEnumConstant(model,null,null,token));
+            r.add(new CEnumConstant(model.getNameConverter().toConstantName(token),
+                    null,token));
         }
         
         return r;

@@ -19,6 +19,7 @@ import javax.activation.MimeTypeParseException;
 import javax.xml.namespace.QName;
 
 import com.sun.codemodel.util.JavadocEscapeWriter;
+import com.sun.codemodel.JJavaName;
 import com.sun.tools.xjc.model.CBuiltinLeafInfo;
 import com.sun.tools.xjc.model.CClassInfoParent;
 import com.sun.tools.xjc.model.CEnumConstant;
@@ -339,7 +340,7 @@ public final class ConversionFinder extends BindingComponent {
 
         // if the member names collide, re-generate numbered constant names.
         List<CEnumConstant> memberList = buildCEnumConstants(type, false, members);
-        if(checkMemberNameCollision(memberList)) {
+        if(memberList==null || checkMemberNameCollision(memberList)) {
             switch(mode) {
             case SKIP:
                 // abort
@@ -395,9 +396,15 @@ public final class ConversionFinder extends BindingComponent {
                     name = mem.name;
                     mdoc = mem.javadoc;
                 }
-
             }
-            memberList.add(new CEnumConstant(model,name,mdoc,facet.getValue()));
+
+            if(name==null)
+                name = model.getNameConverter().toConstantName(facet.getValue());
+
+            if(!JJavaName.isJavaIdentifier(name))
+                return null;    // unable to generate a name
+
+            memberList.add(new CEnumConstant(name,mdoc,facet.getValue()));
         }
         return memberList;
     }
