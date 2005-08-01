@@ -545,7 +545,9 @@ public final class UnmarshallingContext extends Coordinator
                 Method m = beanInfo.getLifecycleMethods().getAfterUnmarshal();
                 assert m != null;
 
-                Object[] params = new Object[] { parent, p };
+                Object[] params = new Object[] {
+                    parent /* unmarshaller */,
+                    p      /* target */ };
                 try {
                     m.invoke(child, params);
                 } catch (IllegalAccessException e) {
@@ -560,8 +562,8 @@ public final class UnmarshallingContext extends Coordinator
                     parent.getListener();
             if(externalListener != null) {
                 externalListener.afterUnmarshal(
-                        p,
-                        (handlerLen==0) ? null : targets[handlerLen-1] /* parent object of 'p' */
+                        child, /* target */
+                        p      /* parent */
                 );
             }
         }
