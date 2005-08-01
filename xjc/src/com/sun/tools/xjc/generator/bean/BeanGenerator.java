@@ -394,6 +394,10 @@ public final class BeanGenerator implements Outline
         return enums.get(eli);
     }
 
+    public Collection<EnumOutline> getEnums() {
+        return enums.values();
+    }
+
     public Iterable<? extends PackageOutline> getAllPackageContexts() {
         return packageContexts.values();
     }

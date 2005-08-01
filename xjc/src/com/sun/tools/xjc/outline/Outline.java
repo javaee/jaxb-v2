@@ -75,6 +75,11 @@ public interface Outline
 
     EnumOutline getEnum(CEnumLeafInfo eli);
 
+    /**
+     * Gets all the {@link EnumOutline}s.
+     */
+    Collection<EnumOutline> getEnums();
+
     /** Gets all package-wise contexts at once. */
     Iterable<? extends PackageOutline> getAllPackageContexts();
    
