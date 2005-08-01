@@ -123,7 +123,7 @@ public final class ConversionFinder extends BindingComponent {
         m.put("decimal",        CBuiltinLeafInfo.BIG_DECIMAL);
         m.put("integer",        CBuiltinLeafInfo.BIG_INTEGER);
         m.put("long",           CBuiltinLeafInfo.LONG);
-        m.put("unsignedLong",   CBuiltinLeafInfo.LONG);
+        m.put("unsignedInt",    CBuiltinLeafInfo.LONG);
         m.put("int",            CBuiltinLeafInfo.INT);
         m.put("unsignedShort",  CBuiltinLeafInfo.INT);
         m.put("short",          CBuiltinLeafInfo.SHORT);
