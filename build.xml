@@ -32,7 +32,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.26 2005-07-27 18:43:37 kohsuke Exp $
+       $Id: build.xml,v 1.27 2005-08-01 18:15:15 kk122374 Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -474,6 +474,9 @@ Class-Path: ${manifest.classpath}
                 <patternset refid="src-includes"/>
             </zipfileset>
             <zipfileset dir="${runtime-api.src}" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
+                <patternset refid="src-includes"/>
+            </zipfileset>
+            <zipfileset dir="${runtime-api.root}/arch-doc" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
                 <patternset refid="src-includes"/>
             </zipfileset>
             <zipfileset dir="${runtime.src}" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
