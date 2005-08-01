@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Collections;
+import java.util.Collection;
 
 /**
  * A generated Java class/interface/enum/....
@@ -439,8 +440,8 @@ public class JDefinedClass
     /**
      * Returns an iterator that walks the fields defined in this class.
      */
-    public Iterator fields() {
-        return fields.values().iterator();
+    public Collection<JFieldVar> fields() {
+        return fields.values();
     }
 
     /**
@@ -515,10 +516,10 @@ public class JDefinedClass
     }
 
     /**
-     * Returns an iterator that walks the methods defined in this class.
+     * Returns the set of methods defined in this class.
      */
-    public Iterator methods() {
-        return methods.iterator();
+    public Collection<JMethod> methods() {
+        return methods;
     }
 
     /**
