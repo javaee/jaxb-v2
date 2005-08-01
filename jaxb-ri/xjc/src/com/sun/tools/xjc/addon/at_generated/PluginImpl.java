@@ -11,6 +11,7 @@ import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.Plugin;
 import com.sun.tools.xjc.outline.ClassOutline;
 import com.sun.tools.xjc.outline.Outline;
+import com.sun.tools.xjc.outline.EnumOutline;
 
 import org.xml.sax.ErrorHandler;
 
@@ -45,7 +46,13 @@ public class PluginImpl extends Plugin {
 
         for( ClassOutline co : model.getClasses() )
             augument(co);
+        for( EnumOutline eo : model.getEnums() )
+            augument(eo);
         return true;
+    }
+
+    private void augument(EnumOutline eo) {
+        annotate(eo.clazz);
     }
 
     /**
