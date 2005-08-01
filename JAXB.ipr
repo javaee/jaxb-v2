@@ -466,6 +466,7 @@
       <module fileurl="file://$PROJECT_DIR$/runtime/runtime.iml" filepath="$PROJECT_DIR$/runtime/runtime.iml" />
       <module fileurl="file://$PROJECT_DIR$/runtime-api/runtime-api.iml" filepath="$PROJECT_DIR$/runtime-api/runtime-api.iml" />
       <module fileurl="file://$PROJECT_DIR$/runtime-deprecated/runtime-deprecated.iml" filepath="$PROJECT_DIR$/runtime-deprecated/runtime-deprecated.iml" />
+      <module fileurl="file://$PROJECT_DIR$/runtime-fi/runtime-fi.iml" filepath="$PROJECT_DIR$/runtime-fi/runtime-fi.iml" />
       <module fileurl="file://$PROJECT_DIR$/samples/samples.iml" filepath="$PROJECT_DIR$/samples/samples.iml" />
       <module fileurl="file://$PROJECT_DIR$/schemagen/schemagen.iml" filepath="$PROJECT_DIR$/schemagen/schemagen.iml" />
       <module fileurl="file://$PROJECT_DIR$/tools/taglets/taglets.iml" filepath="$PROJECT_DIR$/tools/taglets/taglets.iml" />

@@ -46,6 +46,10 @@ public class SAXConnector implements UnmarshallerHandler {
         return next.getContext().getResult();
     }
 
+    public UnmarshallingContext getContext() {
+        return next.getContext();
+    }
+
     public void setDocumentLocator(final Locator locator) {
         if(loc!=null)
             return; // we already have an external locator. ignore.

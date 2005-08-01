@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+
+<!--
+ Copyright 2004 Sun Microsystems, Inc. All rights reserved.
+ SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+-->
+
+<project name="runtime-fi" basedir=".." default="compile">
+
+  <description>
+    Runtime FI Sub-Project
+    ======================
+    
+    This sub-project hosts code that are used to integrate FastInfoset
+    and JAXB RI runtime.
+  </description>
+  
+    <!-- import build properties -->
+    <property file="${basedir}/build.properties" />
+
+    <!-- classpath -->
+    <path id="javac.classpath">
+        <pathelement path="${runtime.classes}" />
+        <pathelement path="${runtime-api.classes}" />
+        <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
+        <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
+        <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
+    </path>
+    
+    
+    <!-- compile Java source files -->
+    <target name="compile"
+                description="compile all runtime src into jaxb-ri/runtime/build/classes">
+        <mkdir dir="${runtime-fi.classes}" />
+
+        <javac srcdir="${runtime-fi.src}" destdir="${runtime-fi.classes}"
+            debug="${compile.debug}" optimize="${compile.optimize}"
+            deprecation="${compile.deprecation}" >
+            <classpath refid="javac.classpath" />
+        </javac>
+        
+        <copy toDir="${runtime-fi.classes}">
+            <fileset dir="${runtime.src}" includes="**/*.properties" />
+        </copy>
+
+        <!-- expose the build version to the DefaultJAXBContextImpl class so
+             that it is available to the generated ObjectFactory classes -->
+        <!--replace file="${runtime.classes}/com/sun/xml/bind/Messages.properties">
+            <replacefilter token="@@BUILD_VERSION@@" value="${build.version}"/>
+        </replace-->
+    </target>
+
+    <!-- generate javadoc -->
+    <target name="javadoc">
+        <fail>Use the javadoc target of the runtime module</fail>
+    </target>
+
+    <!-- remove all intermediate files -->
+    <target name="clean"
+            description="clean jaxb-ri/runtime-fi/build">
+        <delete dir="${runtime-fi.root}/build" />
+    </target>
+</project>
