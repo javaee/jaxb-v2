@@ -48,10 +48,8 @@ public class SynchronizedMethodAddOn extends Plugin {
      * Adds "synchoronized" to all the methods.
      */
     private void augument(ClassOutline co) {
-        for( Iterator itr=co.implClass.methods(); itr.hasNext(); ) {
-            JMethod m = (JMethod)itr.next();
+        for (JMethod m : co.implClass.methods())
             m.getMods().setSynchronized(true);
-        }
     }
 
 }
