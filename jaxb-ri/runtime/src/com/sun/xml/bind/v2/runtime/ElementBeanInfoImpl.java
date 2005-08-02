@@ -195,4 +195,9 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
         super.wrapUp();
         property.wrapUp();
     }
+
+    /** generate lifecycle events for JAXBElements */
+    @Override public boolean lookForLifecycleMethods() {
+        return true;
+    }
 }
