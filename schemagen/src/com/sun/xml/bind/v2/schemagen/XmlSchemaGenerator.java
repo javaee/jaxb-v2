@@ -960,18 +960,18 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 eref.ref(e.getElementName());
             }
 
-            if (rp.isCollection()) {
-                WildcardMode wc = rp.getWildcard();
-                if( wc != null ) {
-                    Any any = compositor.any();
-                    final String pcmode = getProcessContentsModeName(wc);
-                    if( pcmode != null ) any.processContents(pcmode);
-                    TODO.schemaGenerator("generate @namespace ???");
-                    if( occurs == null ) occurs = any;
-                }
+            WildcardMode wc = rp.getWildcard();
+            if( wc != null ) {
+                Any any = compositor.any();
+                final String pcmode = getProcessContentsModeName(wc);
+                if( pcmode != null ) any.processContents(pcmode);
+                TODO.schemaGenerator("generate @namespace ???");
+                if( occurs == null ) occurs = any;
+            }
 
+            if(rp.isCollection())
                 occurs.maxOccurs("unbounded");
-            } // else maxOccurs defaults to 1
+
         }
 
         /**
