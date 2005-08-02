@@ -359,8 +359,12 @@ public final class ConversionFinder extends BindingComponent {
 
 
         // use the name of the simple type as the name of the class.
-        CEnumLeafInfo xducer = new CEnumLeafInfo( model, typeName,
-            new CClassInfoParent.Package(getClassSelector().getPackage(type.getTargetNamespace())),
+        CClassInfoParent scope;
+        if(type.isGlobal())
+            scope = new CClassInfoParent.Package(getClassSelector().getPackage(type.getTargetNamespace()));
+        else
+            scope = getClassSelector().getClassScope();
+        CEnumLeafInfo xducer = new CEnumLeafInfo( model, typeName, scope,
             className, baseDt, memberList,
             builder.getBindInfo(type).toCustomizationList(), loc );
         xducer.javadoc = javadoc;
