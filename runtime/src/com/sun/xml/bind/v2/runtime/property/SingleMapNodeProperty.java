@@ -247,6 +247,13 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
         w.endAttributes();
     }
 
+    @Override
+    public Accessor getElementPropertyAccessor(String nsUri, String localName) {
+        if(tagName.equals(nsUri,localName))
+            return acc;
+        return null;
+    }
+
     public void wrapUp() {
         super.wrapUp();
         prop = null;
