@@ -173,9 +173,14 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
     @XmlAttribute
     private boolean fixedAttributeAsConstantProperty = false;
     @XmlAttribute
-    private boolean generateIsSetMethod = false;
-    @XmlAttribute
     private CollectionTypeAttribute collectionType = new CollectionTypeAttribute();
+    @XmlAttribute
+    void setGenerateIsSetMethod(boolean b) {
+        optionalProperty = b ? OptionalPropertyMode.ISSET : OptionalPropertyMode.WRAPPER;
+    }
+    boolean getGenerateisSetMethod() {
+        throw new UnsupportedOperationException();  // this is here just to make JAXB happy
+    }
 
 
     /**
@@ -236,6 +241,9 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
 
     @XmlAttribute
     boolean choiceContentProperty = false;
+
+    @XmlAttribute
+    OptionalPropertyMode optionalProperty = OptionalPropertyMode.WRAPPER;
 
     /**
      * Default cap to the number of constants in the enum.
@@ -308,7 +316,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
 
 
         this.defaultProperty = new BIProperty(getLocation(),null,null,null,
-                collectionType, fixedAttributeAsConstantProperty, generateIsSetMethod, false );
+                collectionType, fixedAttributeAsConstantProperty, optionalProperty, false );
         defaultProperty.setParent(parent); // don't forget to initialize the defaultProperty
     }
     

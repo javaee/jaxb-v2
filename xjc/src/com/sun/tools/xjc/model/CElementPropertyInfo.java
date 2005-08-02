@@ -109,6 +109,16 @@ public final class CElementPropertyInfo extends CPropertyInfo implements Element
         return super.isUnboxable();
     }
 
+    @Override
+    public boolean isOptionalPrimitive() {
+        // we need to have null to represent the absence of value. not unboxable.
+        for (CTypeRef t : getTypes()) {
+            if(t.isNillable())
+                return false;
+        }
+        return !isCollection() && !required && super.isUnboxable();
+    }
+
     public <V> V accept(CPropertyVisitor<V> visitor) {
         return visitor.onElement(this);
     }

@@ -43,6 +43,11 @@ public final class CAttributePropertyInfo extends CSingleTypePropertyInfo implem
         return super.isUnboxable();
     }
 
+    @Override
+    public boolean isOptionalPrimitive() {
+        return !isRequired && super.isUnboxable();
+    }
+
     public <V> V accept(CPropertyVisitor<V> visitor) {
         return visitor.onAttribute(this);
     }

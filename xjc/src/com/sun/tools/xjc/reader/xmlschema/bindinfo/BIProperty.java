@@ -96,7 +96,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
 
     public BIProperty(Locator loc, String _propName, String _javadoc,
                       BaseTypeBean _baseType, CollectionTypeAttribute collectionType, Boolean isConst,
-                      Boolean isSet, Boolean genElemProp) {
+                      OptionalPropertyMode optionalProperty, Boolean genElemProp) {
         super(loc);
 
         this.name = _propName;
@@ -104,7 +104,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
         this.baseType = _baseType;
         this.collectionType = collectionType;
         this.isConstantProperty = isConst;
-        this.needIsSetMethod = isSet;
+        this.optionalProperty = optionalProperty;
         this.generateElementProperty = genElemProp;
     }
 
@@ -182,28 +182,27 @@ public final class BIProperty extends AbstractDeclarationImpl {
      * Gets the realization of this field.
      * @return Always return non-null.
      */
-    public FieldRenderer getRealization() {
-        if(collectionType!=null)   return collectionType.get(getBuilder().model);
-        BIProperty next = getDefault();
-        if(next!=null)  return next.getRealization();
-        
-        // globalBinding always has a value in this property,
-        // so this can't happen
-        throw new AssertionError();
+    CollectionTypeAttribute getCollectionType() {
+        if(collectionType!=null)   return collectionType;
+        return getDefault().getCollectionType();
     }
-    
-    
-    // true, false, or null.
-    @XmlAttribute(name="generateIsSetMethod")
-    private Boolean needIsSetMethod = null;
-    public boolean needIsSetMethod() {
-        if(needIsSetMethod!=null)   return needIsSetMethod;
-        BIProperty next = getDefault();
-        if(next!=null)      return next.needIsSetMethod();
-        
-        // globalBinding always has true or false in this property,
-        // so this can't happen
-        throw new AssertionError();
+
+
+    @XmlAttribute
+    private OptionalPropertyMode optionalProperty = null;
+
+    // virtual property for @generateIsSetMethod
+    @XmlAttribute
+    void setGenerateIsSetMethod(boolean b) {
+        optionalProperty = b ? OptionalPropertyMode.ISSET : OptionalPropertyMode.WRAPPER;
+    }
+    boolean getGenerateisSetMethod() {
+        throw new UnsupportedOperationException();  // this is here just to make JAXB happy
+    }
+
+    public OptionalPropertyMode getOptionalPropertyMode() {
+        if(optionalProperty!=null)   return optionalProperty;
+        return getDefault().getOptionalPropertyMode();
     }
 
     // null if delegated
@@ -370,16 +369,44 @@ public final class BIProperty extends AbstractDeclarationImpl {
         if(prop.javadoc==null)
             prop.javadoc="";
 
-        prop.realization = getRealization();
+        // decide the realization.
+        FieldRenderer r;
+        OptionalPropertyMode opm = getOptionalPropertyMode();
+        if(prop.isCollection()) {
+            CollectionTypeAttribute ct = getCollectionType();
+            r = ct.get(getBuilder().model);
+        } else {
+            if(prop.isOptionalPrimitive()) {
+                // the property type can be primitive type if we are to ignore absence
+                switch(opm) {
+                case PRIMITIVE:
+                    r = FieldRenderer.REQUIRED_UNBOXED;
+                    break;
+                case WRAPPER:
+                    // force the wrapper type
+                    r = FieldRenderer.SINGLE;
+                    break;
+                case ISSET:
+                    r = FieldRenderer.SINGLE_PRIMITIVE_ACCESS;
+                    break;
+                default:
+                    throw new Error();
+                }
+            } else {
+                r = FieldRenderer.DEFAULT;
+            }
+        }
+        if(opm==OptionalPropertyMode.ISSET) {
+            // only isSet is allowed on a collection. these 3 modes aren't really symmetric.
 
-        assert prop.realization!=null;      // we can't allow null because sometimes
-                                            // we need to wrap it by a IsSetFieldRenderer
-        if( needIsSetMethod() )
             // if the property is a primitive type, we need an explicit unset because
             // we can't overload the meaning of set(null).
             // if it's a collection, we need to be able to unset it so that we can distinguish
             // null list and empty list.
-            prop.realization = new IsSetFieldRenderer( prop.realization, prop.isUnboxable()||prop.isCollection(), true );
+            r = new IsSetFieldRenderer( r, prop.isUnboxable()||prop.isCollection(), true );
+        }
+
+        prop.realization = r;
 
         JType bt = getBaseType();
         if(bt!=null)
