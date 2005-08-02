@@ -33,11 +33,11 @@ final class CollectionTypeAttribute {
             return FieldRenderer.DEFAULT;
 
         if (collectionType.equals("indexed"))
-            return new DefaultFieldRenderer(FieldRenderer.ARRAY);
+            return FieldRenderer.ARRAY;
 
         try {
-            return new DefaultFieldRenderer(new UntypedListFieldRenderer(
-                m.codeModel.ref(collectionType)));
+            return new UntypedListFieldRenderer(
+                m.codeModel.ref(collectionType));
         } catch (ClassNotFoundException e) {
             throw new NoClassDefFoundError(e.getMessage());
         }

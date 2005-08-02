@@ -105,7 +105,14 @@ public final class CReferencePropertyInfo extends CPropertyInfo implements Refer
      * Reference properties refer to elements, and none of the Java primitive type
      * maps to an element. Thus a reference property is always unboxable.
      */
+    @Override
     public boolean isUnboxable() {
+        return false;
+    }
+
+    // the same as above
+    @Override
+    public boolean isOptionalPrimitive() {
         return false;
     }
 

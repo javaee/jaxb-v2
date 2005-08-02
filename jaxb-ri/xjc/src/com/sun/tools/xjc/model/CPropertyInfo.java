@@ -196,6 +196,14 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
         return t.getType().isBoxedType();
     }
 
+    /**
+     * Returns true if this property needs to represent null
+     * just for the purpose of representing an absence of the property.
+     */
+    public boolean isOptionalPrimitive() {
+        return false;
+    }
+
     public CCustomizations getCustomizations() {
         return customizations;
     }

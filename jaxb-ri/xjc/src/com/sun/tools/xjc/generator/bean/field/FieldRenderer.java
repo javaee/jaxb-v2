@@ -58,7 +58,10 @@ public interface FieldRenderer {
     
     public static final FieldRenderer SINGLE
         = new GenericFieldRenderer(SingleField.class);
-    
+
+    public static final FieldRenderer SINGLE_PRIMITIVE_ACCESS
+        = new GenericFieldRenderer(SinglePrimitiveAccessField.class);
+
     public static final FieldRenderer JAXB_DEFAULT
         = new DefaultFieldRenderer();
 }

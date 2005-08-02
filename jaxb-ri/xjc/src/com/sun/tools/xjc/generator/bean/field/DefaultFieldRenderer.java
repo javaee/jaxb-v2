@@ -43,14 +43,10 @@ public class DefaultFieldRenderer implements FieldRenderer {
         if(!prop.isCollection()) {
             // non-collection field
             
-            // if the field item is at most one (hence not a collection) and
-            // its type is a boxed type (a type that wraps a primitive type),
-            // for example "java.lang.Integer", use one of the
-            // derived clases of UnboxedFieldImpl
-            //
             // TODO: check for bidning info for optionalPrimitiveType=boxed or
             // noHasMethod=false and noDeletedMethod=false
             if(prop.isUnboxable())
+                // this one uses a primitive type as much as possible
                 return FieldRenderer.REQUIRED_UNBOXED;
             else
                 // otherwise use the default non-collection field

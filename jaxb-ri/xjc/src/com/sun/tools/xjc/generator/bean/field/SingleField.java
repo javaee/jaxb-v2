@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: SingleField.java,v 1.4 2005-07-25 20:29:18 kohsuke Exp $
+ * @(#)$Id: SingleField.java,v 1.5 2005-08-02 18:37:52 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -26,13 +26,18 @@ import com.sun.xml.bind.v2.NameConverter;
 
 /**
  * Realizes a property through one getter and one setter.
- * This rendered can be used only with a reference type
+ * This renders:
  * 
  * <pre>
- * T getXXX();
- * void setXXX(T value);
+ * T' field;
+ * T getXXX() { ... }
+ * void setXXX(T value) { ... }
  * </pre>
- * 
+ *
+ * <p>
+ * Normally T'=T, but under some tricky circumstances they could be different
+ * (like T'=Integer, T=int.)
+ *
  * This realization is only applicable to fields with (1,1)
  * or (0,1) multiplicity.
  * 
@@ -40,8 +45,18 @@ import com.sun.xml.bind.v2.NameConverter;
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 class SingleField extends AbstractFieldWithVar {
-    
+
     SingleField(ClassOutlineImpl context, CPropertyInfo prop) {
+        this(context,prop,false);
+    }
+
+    /**
+     *
+     * @param forcePrimitiveAccess
+     *      forces the setter/getter to expose the primitive type.
+     *      it's a pointless customization, but it's nevertheless in the spec.
+     */
+    SingleField(ClassOutlineImpl context, CPropertyInfo prop, boolean forcePrimitiveAccess ) {
         super(context, prop);
         assert !exposedType.isPrimitive() && !implType.isPrimitive();
         
@@ -50,14 +65,6 @@ class SingleField extends AbstractFieldWithVar {
         MethodWriter writer = context.createMethodWriter();
         NameConverter nc = context.parent().getModel().getNameConverter();
 
-        /**
-         * Generates the following get/set methods.
-         * <pre>
-         * T getXXX();
-         * void setXXX(T value);
-         * </pre>
-         */
-        
         // [RESULT]
         // Type getXXX() {
         // #ifdef default value
@@ -71,7 +78,7 @@ class SingleField extends AbstractFieldWithVar {
         // if Type is a wrapper and we have a default value,
         // we can use the primitive type.
         JType getterType;
-        if(defaultValue!=null)
+        if(defaultValue!=null || forcePrimitiveAccess)
             getterType = exposedType.unboxify();
         else
             getterType = exposedType;
@@ -103,7 +110,9 @@ class SingleField extends AbstractFieldWithVar {
         //     /*onSetEventHandler*/
         // }       
         JMethod $set = writer.declareMethod( codeModel.VOID, "set"+prop.getName(true) );
-        JVar $value = writer.addParameter( exposedType, "value" );
+        JType setterType = exposedType;
+        if(forcePrimitiveAccess)    setterType = setterType.unboxify();
+        JVar $value = writer.addParameter( setterType, "value" );
         JBlock body = $set.body();
         body.assign(JExpr._this().ref(ref()),castToImplType($value));
         onSetEvent = body;
