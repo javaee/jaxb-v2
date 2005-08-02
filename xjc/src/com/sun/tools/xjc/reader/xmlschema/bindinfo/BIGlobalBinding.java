@@ -178,9 +178,6 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
     void setGenerateIsSetMethod(boolean b) {
         optionalProperty = b ? OptionalPropertyMode.ISSET : OptionalPropertyMode.WRAPPER;
     }
-    boolean getGenerateIsSetMethod() {
-        throw new UnsupportedOperationException();  // this is here just to make JAXB happy
-    }
 
 
     /**
