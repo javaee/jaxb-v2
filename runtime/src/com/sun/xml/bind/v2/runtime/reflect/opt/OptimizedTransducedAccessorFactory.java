@@ -85,6 +85,10 @@ public abstract class OptimizedTransducedAccessorFactory {
 
         if(acc instanceof Accessor.GetterSetterReflection) {
             Accessor.GetterSetterReflection gacc = (Accessor.GetterSetterReflection) acc;
+
+            if(gacc.getter==null || gacc.setter==null)
+                return null;    // incomplete
+
             Class<?> t = gacc.getter.getReturnType();
 
             if(Modifier.isPrivate(gacc.getter.getModifiers())
