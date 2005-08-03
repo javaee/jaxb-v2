@@ -4,7 +4,8 @@
 # SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 #
 
-# Script to run XJC
+#
+# Script to run schemagen
 #
 
 # Resolve links - $0 may be a softlink
@@ -34,9 +35,9 @@ EOF`
 
 if [ -n "$JAVA_HOME" ]
 then
-    JAVA=$JAVA_HOME/bin/java
+    APT=$JAVA_HOME/bin/apt
 else
-    JAVA=java
+    APT=apt
 fi
  
-$JAVA $XJC_OPTS -cp "$CLASSPATH" com.sun.tools.xjc.Driver "$@"
+$APT $XJC_OPTS -cp "$CLASSPATH" -factorypath $WEBSERVICES_LIB/jaxb/lib/jaxb-xjc.jar -factory com.sun.tools.jxc.apt.SchemaGenerator -nocompile "$@"

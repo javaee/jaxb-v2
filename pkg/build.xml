@@ -23,7 +23,7 @@
   <property name="pkg.prod.name"    value="Sun Java(TM) Enterprise System"/>
 
   <!-- The package product version -->
-  <property name="pkg.prod.version"    value="3.0"/>
+  <property name="pkg.prod.version"    value="5.0"/>
 
   <!-- The package build directory -->
   <property name="pkg.build.dir"    value="../build/pkg"/>
@@ -82,25 +82,16 @@
     <!-- copy script files into the right directory structure -->
     <copy todir="${pkg.build.dir}/${pkg.jaxb}/usr/share/lib/install/templates" overwrite="yes">
       <fileset dir="${basedir}/../tools/bin">
-        <include name="*.template"/>
+        <include name="*.pkg.template"/>
       </fileset>
     </copy>
 
     <!-- copy jaxb jar files into the right directory structure -->
     <copy todir="${pkg.build.dir}/${pkg.jaxb}/usr/share/lib" overwrite="yes">
       <fileset dir="${dist.home}/lib">
- 	<exclude name="ant.jar"/>
-	<exclude name="dom.jar"/>
-	<exclude name="jaxb-api-src.zip"/>   
-	<exclude name="jaxp-api.jar"/>
-	<exclude name="sax.jar"/>
-	<exclude name="xalan.jar"/>
-	<exclude name="namespace.jar"/>
-	<exclude name="xsdlib.jar"/>
-	<exclude name="jax-qname.jar"/>
-	<exclude name="relaxngDatatype.jar"/>
-	<exclude name="jaxb-api-doc.zip"/>
-	<exclude name="xercesImpl.jar"/>
+        <exclude name="jaxb-api-doc.zip"/>
+        <exclude name="jaxb-api-src.zip"/>
+        <!-- TODO: exclude jsr173_1.0_api.jar and activation.jar ??? -->
       </fileset>
     </copy>
 

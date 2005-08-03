@@ -15,7 +15,7 @@ set WEBSERVICES_LIB=%PRG%\..\..\..
 REM
 REM TODO: figure out where to find jsr173_1.0_api.jar and activation.jar
 REM
-set CLASSPATH=%WEBSERVICES_LIB%\jaxb\lib\jaxb-api.jar;%WEBSERVICES_LIB%\jaxb\lib\jaxb-xjc.jar;%WEBSERVICES_LIB%\jaxb\lib\jaxb-impl.jar;%WEBSERVICES_LIB%\jaxb\lib\jaxb1-impl.jar;
+set CLASSPATH=%WEBSERVICES_LIB%\jaxb\lib\jaxb-api.jar;%WEBSERVICES_LIB%\jaxb\lib\jaxb-xjc.jar;%WEBSERVICES_LIB%\jaxb\lib\jaxb-impl.jar;%WEBSERVICES_LIB%\jaxb\lib\jaxb1-impl.jar
 
 
 :CHECKJAVAHOME
@@ -28,15 +28,15 @@ echo   you will need to set the JAVA_HOME environment variable
 echo   to the installation directory of java.
 echo.
 
-set JAVA=java
-goto LAUNCHXJC
+set APT=apt
+goto LAUNCHSCHEMAGEN
 
 :USE_JAVA_HOME
-set JAVA=%JAVA_HOME%\bin\java
-goto LAUNCHXJC
+set APT=%JAVA_HOME%\bin\apt
+goto LAUNCHSCHEMAGEN
 
-:LAUNCHXJC
-"%JAVA%" %XJC_OPTS% -cp "%CLASSPATH%" com.sun.tools.xjc.Driver %*
+:LAUNCHSCHEMAGEN
+"%APT%" %XJC_OPTS% -cp "%CLASSPATH%" -factorypath %WEBSERVICES_LIB%\jaxb\lib\jaxb-xjc.jar -factory com.sun.tools.jxc.apt.SchemaGenerator -nocompile %*
 goto END
 
 :END

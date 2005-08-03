@@ -86,7 +86,7 @@
     <!-- copy script files into the right directory structure -->
     <copy tofile="${rpm.build.dir}/SOURCES/sun-jaxb-${release.impl.version}${rpm.install.base}/bin/xjc" overwrite="yes">
       <fileset dir="${basedir}/../tools/bin">
-        <include name="xjc.pkg.template"/>
+        <include name="*.pkg.template"/>
       </fileset>
     </copy>
 
@@ -94,25 +94,13 @@
     <replace dir="${rpm.build.dir}/SOURCES/sun-jaxb-${release.impl.version}${rpm.install.base}/bin" value="${rpm.install.base}/share/lib">
       <replacetoken>%WEBSERVICES_LIB%</replacetoken>
     </replace>
-    <replace dir="${rpm.build.dir}/SOURCES/sun-jaxb-${release.impl.version}${rpm.install.base}/bin" value="${rpm.install.base}/private/share/lib">
-      <replacetoken>%WEBSERVICES_PRIVATE_LIB%</replacetoken>
-    </replace>
 
     <!-- copy jaxb jar files into the right directory structure -->
     <copy todir="${rpm.build.dir}/SOURCES/sun-jaxb-${release.impl.version}${rpm.install.base}/share/lib" overwrite="yes">
       <fileset dir="${dist.home}/lib">
- 	<exclude name="ant.jar"/>
-	<exclude name="dom.jar"/>
-	<exclude name="jaxb-api-src.zip"/>   
-	<exclude name="jaxp-api.jar"/>
-	<exclude name="sax.jar"/>
-	<exclude name="xalan.jar"/>
-	<exclude name="namespace.jar"/>
-	<exclude name="xsdlib.jar"/>
-	<exclude name="jax-qname.jar"/>
-	<exclude name="relaxngDatatype.jar"/>
-	<exclude name="jaxb-api-doc.zip"/>
-	<exclude name="xercesImpl.jar"/>
+        <exclude name="jaxb-api-src.zip"/>
+        <exclude name="jaxb-api-doc.zip"/>
+        <!-- TODO: exclude jsr173_1.0_api.jar and activation.jar ??? -->
       </fileset>
     </copy>
 

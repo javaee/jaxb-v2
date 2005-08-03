@@ -1,8 +1,8 @@
 #!/bin/sh
 #
-#ident	"$Id: i.jwsenv,v 1.1 2005-04-15 20:03:12 kohsuke Exp $"
+#ident	"$Id: i.jwsenv,v 1.2 2005-08-03 19:19:56 ryan_shoemaker Exp $"
 #
-# Copyright 2004 Sun Microsystems, Inc.  All rights reserved.
+# Copyright 2005 Sun Microsystems, Inc.  All rights reserved.
 # Use is subject to license terms.
 #
 
@@ -12,7 +12,6 @@ while read src dest
 do
 	sed \
 		-e "s,\%WEBSERVICES_LIB\%,${BASEDIR}/usr/share/lib," \
-		-e "s,\%WEBSERVICES_PRIVATE_LIB\%,${BASEDIR}/usr/share/lib," \
 		-e "s,//,/,g" \
 		< $src > $dest
 	echo $dest

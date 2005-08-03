@@ -3,7 +3,7 @@
 # SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 #
 
-#ident  "$Id: prototype,v 1.2 2005-07-27 00:19:29 kohsuke Exp $"
+#ident  "$Id: prototype,v 1.3 2005-08-03 19:19:56 ryan_shoemaker Exp $"
 #
 # This required package information file contains a list of package contents.
 # The 'pkgmk' command uses this file to identify the contents of a package
@@ -28,6 +28,7 @@ i i.jwsenv
 d none usr 755 root sys
 d none usr/bin 755 root bin
 e jwsenv usr/bin/xjc=usr/share/lib/install/templates/xjc.pkg.template 755 root bin
+e jwsenv usr/bin/schemagen=usr/share/lib/install/templates/schemagen.pkg.template 755 root bin
 d none usr/share 755 root sys
 d none usr/share/lib 755 root sys
 f none usr/share/lib/jaxb-api.jar 444 root sys
