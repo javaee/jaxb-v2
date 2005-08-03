@@ -3,7 +3,7 @@ Summary: Java Architecture for XML Binding
 Name: sun-jaxb
 Version: @jaxb.version@ 
 Release: @jaxb.release@ 
-License: Copyright 2004 Sun Microsystems, Inc.  All rights reserved.  Use is subject to license terms.
+License: Copyright 2005 Sun Microsystems, Inc.  All rights reserved.  Use is subject to license terms.
 Group: Development/Libraries
 Source: %{name}-%{version}.tar
 Distribution: @prod.name@ 
@@ -28,6 +28,7 @@ Java Architecture for XML Binding
 
 %files
 %attr(755,root,root) @install.prefix@/bin/xjc
+%attr(755,root,root) @install.prefix@/bin/schemagen
 %attr(-,root,root) @install.prefix@/share/lib/jaxb-api.jar
 %attr(-,root,root) @install.prefix@/share/lib/jaxb-impl.jar
 %attr(-,root,root) @install.prefix@/share/lib/jaxb1-impl.jar

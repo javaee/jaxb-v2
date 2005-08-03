@@ -32,7 +32,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.28 2005-08-01 19:35:36 kohsuke Exp $
+       $Id: build.xml,v 1.29 2005-08-03 19:19:57 ryan_shoemaker Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -744,11 +744,15 @@ Class-Path: ${manifest.classpath}
 
       <!-- copy files into the right directory structure -->
       <parallel>
-        <copy tofile="${zip.build.dir}/jaxb/bin/xjc.bat" file="${basedir}/tools/bin/xjc.zip.bat" />
-        <copy tofile="${zip.build.dir}/jaxb/bin/xjc.sh"  file="${basedir}/tools/bin/xjc.zip.sh" />
+        <copy tofile="${zip.build.dir}/jaxb/bin/xjc.bat"       file="${basedir}/tools/bin/xjc.zip.bat" />
+        <copy tofile="${zip.build.dir}/jaxb/bin/xjc.sh"        file="${basedir}/tools/bin/xjc.zip.sh" />
+        <copy tofile="${zip.build.dir}/jaxb/bin/schemagen.bat" file="${basedir}/tools/bin/schemagen.zip.bat" />
+        <copy tofile="${zip.build.dir}/jaxb/bin/schemagen.sh"  file="${basedir}/tools/bin/schemagen.zip.sh" />
         <copy todir="${zip.build.dir}/jaxb/lib">
           <fileset dir="${jaxb.dist}/lib">
+            <exclude name="jaxb-api-doc.zip"/>
             <exclude name="jaxb-api-src.zip"/>
+            <!-- TODO: exclude jsr173_1.0_api.jar and activation.jar ??? -->
           </fileset>
         </copy>
       </parallel>
