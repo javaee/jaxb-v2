@@ -25,7 +25,9 @@ import javax.xml.transform.dom.DOMSource;
 import com.sun.codemodel.JDocComment;
 import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.model.CPluginCustomization;
+import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
+import com.sun.tools.xjc.reader.Ring;
 import com.sun.xml.bind.annotation.XmlLocation;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.marshaller.MinimumEscapeHandler;
@@ -267,6 +269,8 @@ public final class BindInfo implements Iterable<BIDeclaration> {
             if(d instanceof BIXPluginCustomization) {
                 BIXPluginCustomization pc = (BIXPluginCustomization) d;
                 pc.markAsAcknowledged();
+                if(!Ring.get(Model.class).options.pluginURIs.contains(pc.getName().getNamespaceURI()))
+                    continue;   // this isn't a plugin customization
                 if(r==null)
                     r = new CCustomizations();
                 r.add(new CPluginCustomization(pc.element,pc.getLocation()));
