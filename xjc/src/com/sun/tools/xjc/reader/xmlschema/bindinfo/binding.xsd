@@ -220,6 +220,11 @@
       <xs:attribute name="name" use="required"/>
     </xs:complexType>
   </xs:element>
+  <xs:element name="dom">
+    <xs:complexType>
+      <xs:attribute name="type" use="required"/>
+    </xs:complexType>
+  </xs:element>
   <xs:group name="anyContents">
     <xs:sequence>
       <xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
