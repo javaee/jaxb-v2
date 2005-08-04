@@ -26,7 +26,7 @@ final class ValueListBeanInfoImpl extends JaxBeanInfo {
     private final Transducer xducer;    // for items
 
     public ValueListBeanInfoImpl(JAXBContextImpl owner, Class arrayType) throws JAXBException {
-        super(owner, null, arrayType, null, false, true);
+        super(owner, null, arrayType, null, false, true, false);
         this.itemType = jaxbType.getComponentType();
         this.xducer = owner.getBeanInfo(arrayType.getComponentType(),true).getTransducer();
         assert xducer!=null;

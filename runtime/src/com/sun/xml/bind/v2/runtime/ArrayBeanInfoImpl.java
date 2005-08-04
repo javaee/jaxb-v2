@@ -29,7 +29,7 @@ final class ArrayBeanInfoImpl  extends JaxBeanInfo {
     private final Loader loader;
 
     public ArrayBeanInfoImpl(JAXBContextImpl owner, RuntimeArrayInfo rai) {
-        super(owner,rai,rai.getType(), rai.getTypeName(), false, true);
+        super(owner,rai,rai.getType(), rai.getTypeName(), false, true, false);
         this.itemType = jaxbType.getComponentType();
         this.itemBeanInfo = owner.getOrCreate(rai.getItemType());
 
