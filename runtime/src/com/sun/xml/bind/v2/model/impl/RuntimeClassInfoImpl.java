@@ -88,9 +88,9 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
         getTransducer();    // populate the transducer
     }
 
-    private Accessor<?,Map<QName,Object>> attributeWildcardAccessor;
+    private Accessor<?,Map<QName,String>> attributeWildcardAccessor;
 
-    public Accessor<?,Map<QName,Object>> getAttributeWildcard() {
+    public Accessor<?,Map<QName,String>> getAttributeWildcard() {
         for( RuntimeClassInfoImpl c=this; c!=null; c=c.getBaseClass() ) {
             if(c.attributeWildcard!=null) {
                 if(c.attributeWildcardAccessor==null)
@@ -135,7 +135,7 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
     /**
      * Creates
      */
-    private Accessor<?,Map<QName,Object>> createAttributeWildcardAccessor() {
+    private Accessor<?,Map<QName,String>> createAttributeWildcardAccessor() {
         assert attributeWildcard!=null;
         return ((RuntimePropertySeed)attributeWildcard).getAccessor();
     }

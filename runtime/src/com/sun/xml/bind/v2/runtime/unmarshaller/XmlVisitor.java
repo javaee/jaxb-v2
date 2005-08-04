@@ -69,6 +69,12 @@ public interface XmlVisitor {
     /**
      * Text events.
      *
+     * <p>
+     * The caller should consult <tt>getContext().expectText()</tt> to see
+     * if the unmarshaller is expecting any PCDATA. If the above is returning
+     * false, the caller is OK to skip any text in XML. The net effect is
+     * that we can ignore whitespaces quickly.
+     *
      * @param pcdata
      *      represents character data. This object can be mutable
      *      (such as {@link StringBuilder}); it only needs to be fixed
@@ -77,23 +83,10 @@ public interface XmlVisitor {
     void text( CharSequence pcdata ) throws SAXException;
 
     /**
-     * Returns true if the visitor is expecting a text event as the next event.
-     *
-     * <p>
-     * This is primarily intended to be used for optimization to avoid buffering
-     * characters unnecessarily. If this method returns false and the connector
-     * sees whitespace it can safely skip it.
-     *
-     * <p>
-     * If this method returns true, all the whitespaces are considered significant
-     * and thus need to be reported as a {@link #text} event. Furthermore,
-     * if the element has no children (like &lt;foo/>), then it has to be reported
-     * an empty {@link #text} event.
-     */
-    boolean expectText();
-
-    /**
      * Returns the {@link UnmarshallingContext} at the end of the chain.
+     *
+     * @return
+     *      always return the same object, so caching the result is recommended.
      */
     UnmarshallingContext getContext();
 }

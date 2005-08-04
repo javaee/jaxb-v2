@@ -14,6 +14,11 @@ import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
+import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.DefaultValueLoaderDecorator;
+import com.sun.xml.bind.v2.runtime.unmarshaller.LeafPropertyLoader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader;
 
 import org.xml.sax.SAXException;
 
@@ -63,21 +68,13 @@ final class SingleElementLeafProperty<BeanT> extends PropertyImpl<BeanT> {
         }
     }
 
-    public void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<Unmarshaller.Handler> handlers) {
-        Unmarshaller.Handler tail = chain.tail;
-
-        Unmarshaller.Handler ee = new Unmarshaller.LeaveElementHandler(Unmarshaller.ERROR,tail);
-        Unmarshaller.Handler text = new Unmarshaller.TextHandler(xacc,Unmarshaller.ERROR,ee);
-
-        if(nillable) {
-            tail = new Unmarshaller.SingleXsiNilHandler(text,ee,acc);
-        } else
-            tail = text;
-
-        tail = new Unmarshaller.EnterElementHandler(tagName,false,defaultValue,chain.tail,tail);
-
-        chain.tail = tail;
-        handlers.put(tagName,tail);
+    public void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<ChildLoader> handlers) {
+        Loader l = new LeafPropertyLoader(xacc);
+        if(defaultValue!=null)
+            l = new DefaultValueLoaderDecorator(l,defaultValue);
+        if(nillable)
+            l = new XsiNilLoader.Single(l,acc);
+        handlers.put(tagName,new ChildLoader(l,null));
     }
 
 

@@ -2,39 +2,30 @@ package com.sun.xml.bind.v2.runtime;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Collections;
-import java.util.HashMap;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.bind.Marshaller;
 
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.FinalArrayList;
-import com.sun.xml.bind.v2.model.core.Element;
 import com.sun.xml.bind.v2.model.core.ID;
-import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.runtime.RuntimeClassInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
-import com.sun.xml.bind.v2.runtime.property.AttributeDispatcher;
 import com.sun.xml.bind.v2.runtime.property.AttributeProperty;
-import com.sun.xml.bind.v2.runtime.property.ElementDispatcher;
 import com.sun.xml.bind.v2.runtime.property.Property;
 import com.sun.xml.bind.v2.runtime.property.PropertyFactory;
-import com.sun.xml.bind.v2.runtime.property.Unmarshaller;
-import com.sun.xml.bind.v2.runtime.property.ValueProperty;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.StructureLoader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
-import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingEventHandler;
 
-import org.xml.sax.SAXException;
 import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.LocatorImpl;
 
 /**
@@ -55,20 +46,12 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
     private Property idProperty;
 
     /**
-     * Immutable configured unmarshaller for this class.
+     * Immutable configured loader for this class.
      *
      * <p>
      * Set from the link method, but considered final.
      */
-    private /*final*/ Unmarshaller.Handler typeUnmarshaller;
-    /**
-     * Unmarshaller to unmarshal this bean as an element.
-     * If this bean is not bound to an element, null.
-     *
-     * <p>
-     * Set from the link method, but considered final.
-     */
-    private /*final*/ Unmarshaller.Handler elementUnmarshaller;
+    private Loader loader;
 
     /**
      * Set only until the link phase to avoid leaking memory.
@@ -140,29 +123,13 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
 
     @Override
     protected void link(JAXBContextImpl grammar) {
-        if(typeUnmarshaller!=null)      return; // avoid linkng twice.
+        if(loader!=null)      return; // avoid linkng twice.
 
         if(superClazz!=null)
             superClazz.link(grammar);
 
         // create unmarshaller. our unmarshaller is immutable
-        typeUnmarshaller = createTypeUnmarshaller(grammar,Unmarshaller.REVERT_TO_PARENT);
-
-        if(ci.isElement()) {
-            Element e = ci.asElement();
-            Unmarshaller.Handler te = Unmarshaller.REVERT_TO_PARENT;
-            te = new Unmarshaller.LeaveElementHandler(Unmarshaller.ERROR,te);
-            te = createTypeUnmarshaller(grammar,te);
-            te = new Unmarshaller.EnterElementHandler(
-                grammar.nameBuilder.createElementName(e.getElementName()),
-                hasElementOnlyContentModel(),
-                null /*TODO: or capture this in @XmlRootElement */,
-                Unmarshaller.ERROR,te);
-
-            elementUnmarshaller = te;
-        } else {
-            elementUnmarshaller = null;
-        }
+        loader = createLoader(grammar);
 
         // propagate values from super class
         if(superClazz!=null) {
@@ -205,67 +172,32 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
         return true;
     }
 
-    private Unmarshaller.Handler createTypeUnmarshaller(JAXBContextImpl grammar,Unmarshaller.Handler tail) {
-        Unmarshaller.Handler valueHandler = null;
+    private Loader createLoader(JAXBContextImpl grammar) {
         List<Property> propList = new FinalArrayList<Property>();
+        List<AttributeProperty> atts = new FinalArrayList<AttributeProperty>();
 
         for (ClassBeanInfoImpl bi = this; bi != null; bi = bi.superClazz) {
             for (int i = bi.properties.length - 1; i >= 0; i--) {
                 Property p = bi.properties[i];
 
                 switch(p.getKind()) {
+                case ATTRIBUTE:
+                    atts.add((AttributeProperty)p);
+                    break;
                 case ELEMENT:
                 case REFERENCE:
                 case MAP:
+                case VALUE:
                     propList.add(p);
                     break;
-                case VALUE:
-                    if(valueHandler!=null)
-                        // only up to one value handler per class.
-                        // this error is checked by ClassInfoImpl
-                        throw new AssertionError();
-                    valueHandler = ((ValueProperty)p).createUnmarshallerHandler(grammar, tail);
-                    break;
                 }
             }
         }
 
-        Unmarshaller.Handler handler;
-        if (propList.size() > 0 )
-            handler = new ElementDispatcher(grammar,propList,tail);
-
-        else
-        if(valueHandler!=null)
-            handler = valueHandler;
-        else
-            handler = tail;
-
-        handler = createAttributeHandler(handler);
-        return handler;
+        Accessor<?,Map<QName,String>> attw = ci.getAttributeWildcard();
+        return new StructureLoader(grammar,this,propList,atts,attw);
     }
 
-    /**
-     * Creates a chain of handlers to unmarshal attributes,
-     * and prepend it in front of the given 'tail'.
-     */
-    private Unmarshaller.Handler createAttributeHandler(Unmarshaller.Handler tail) {
-        List<AttributeProperty> propList = new FinalArrayList<AttributeProperty>();
-        for (ClassBeanInfoImpl bi = this; bi != null; bi = bi.superClazz) {
-            for (int i = bi.properties.length - 1; i >= 0; i--) {
-                Property p = bi.properties[i];
-                if (p.getKind()==PropertyKind.ATTRIBUTE) {
-                    propList.add((AttributeProperty)p);
-                }
-            }
-        }
-        Accessor<?,Map<QName,Object>> attw = ci.getAttributeWildcard();
-        if(propList.isEmpty() && attw==null)
-            // no attributes
-            return tail;
-        else {
-            return new AttributeDispatcher(propList,attw,tail,tail);
-        }
-    }
 
     public String getElementNamespaceURI(BeanT bean) {
         return tagName.nsUri;
@@ -362,9 +294,8 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
         }
     }
 
-    public UnmarshallingEventHandler getUnmarshaller(boolean root) {
-        if(root)    return elementUnmarshaller;
-        else        return typeUnmarshaller;
+    public Loader getLoader() {
+        return loader;
     }
 
     public Transducer<BeanT> getTransducer() {

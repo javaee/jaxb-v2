@@ -25,6 +25,8 @@ public class FastInfosetConnector implements StAXConnector {
     // event sink
     private final XmlVisitor visitor;
 
+    private final UnmarshallingContext context;
+
     // Flag set to true if there is octets instead of characters
     boolean hasBase64Data = false;
     // Flag set to true if the first chunk of CIIs
@@ -41,6 +43,7 @@ public class FastInfosetConnector implements StAXConnector {
         fastInfosetStreamReader.setStringInterning(true);
         this.fastInfosetStreamReader = fastInfosetStreamReader;
         this.visitor = visitor;
+        this.context = visitor.getContext();
     }
 
     public void bridge() throws XMLStreamException {
@@ -126,8 +129,8 @@ public class FastInfosetConnector implements StAXConnector {
         }
     }
 
-    private void handleCharacters() throws XMLStreamException {
-        if (visitor.expectText()) {
+    private void handleCharacters() {
+        if (context.expectText()) {
             // If the first chunk of CIIs and character data is present
             if (firstCIIChunk &&
                     fastInfosetStreamReader.getTextAlgorithmBytes() == null) {

@@ -10,9 +10,8 @@ import javax.xml.stream.XMLStreamException;
 import com.sun.xml.bind.WhiteSpaceProcessor;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.FinalArrayList;
-import com.sun.xml.bind.v2.runtime.property.Unmarshaller;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
-import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingEventHandler;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 
 import org.xml.sax.SAXException;
 
@@ -24,8 +23,6 @@ import org.xml.sax.SAXException;
 final class ValueListBeanInfoImpl extends JaxBeanInfo {
 
     private final Class itemType;
-    private final Unmarshaller.Handler unmarshaller;
-
     private final Transducer xducer;    // for items
 
     public ValueListBeanInfoImpl(JAXBContextImpl owner, Class arrayType) throws JAXBException {
@@ -33,44 +30,42 @@ final class ValueListBeanInfoImpl extends JaxBeanInfo {
         this.itemType = jaxbType.getComponentType();
         this.xducer = owner.getBeanInfo(arrayType.getComponentType(),true).getTransducer();
         assert xducer!=null;
-        unmarshaller = createUnmarshaller();
     }
 
-    private Unmarshaller.Handler createUnmarshaller() {
-        return new Unmarshaller.RawTextHandler(Unmarshaller.REVERT_TO_PARENT,Unmarshaller.REVERT_TO_PARENT) {
-            public void processText(UnmarshallingContext context, CharSequence s) throws SAXException {
-                List<Object> r = new FinalArrayList<Object>();
+    private final Loader loader = new Loader(true) {
+        @Override
+        public void text(UnmarshallingContext.State state, CharSequence text) throws SAXException {
+            List<Object> r = new FinalArrayList<Object>();
 
-                int idx = 0;
-                int len = s.length();
+            int idx = 0;
+            int len = text.length();
 
-                while(true) {
-                    int p = idx;
-                    while( p<len && !WhiteSpaceProcessor.isWhiteSpace(s.charAt(p)) )
-                        p++;
+            while(true) {
+                int p = idx;
+                while( p<len && !WhiteSpaceProcessor.isWhiteSpace(text.charAt(p)) )
+                    p++;
 
-                    CharSequence token = s.subSequence(idx,p);
-                    if (!token.equals(""))
-                        try {
-                            r.add(xducer.parse(token));
-                        } catch (AccessorException e) {
-                            handleGenericException(e,true);
-                            continue;   // move on to next
-                        }
+                CharSequence token = text.subSequence(idx,p);
+                if (!token.equals(""))
+                    try {
+                        r.add(xducer.parse(token));
+                    } catch (AccessorException e) {
+                        handleGenericException(e,true);
+                        continue;   // move on to next
+                    }
 
-                    if(p==len)      break;  // done
+                if(p==len)      break;  // done
 
-                    while( p<len && WhiteSpaceProcessor.isWhiteSpace(s.charAt(p)) )
-                        p++;
-                    if(p==len)      break;  // done
+                while( p<len && WhiteSpaceProcessor.isWhiteSpace(text.charAt(p)) )
+                    p++;
+                if(p==len)      break;  // done
 
-                    idx = p;
-                }
-
-                context.setTarget(toArray(r));
+                idx = p;
             }
-        };
-    }
+
+            state.target = toArray(r);
+        }
+    };
 
     private Object toArray( List list ) {
         int len = list.size();
@@ -138,7 +133,7 @@ final class ValueListBeanInfoImpl extends JaxBeanInfo {
         return null;
     }
 
-    public final UnmarshallingEventHandler getUnmarshaller(boolean root) {
-        return unmarshaller;
+    public final Loader getLoader() {
+        return loader;
     }
 }

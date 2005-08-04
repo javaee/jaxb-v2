@@ -5,7 +5,6 @@ import java.io.IOException;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.DomHandler;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.transform.Result;
 
 import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.QNameMap;
@@ -18,9 +17,12 @@ import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.reflect.ListIterator;
-import com.sun.xml.bind.v2.runtime.unmarshaller.EventArg;
+import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Receiver;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
-import com.sun.xml.bind.v2.runtime.unmarshaller.WildcardUnmarshaller;
+import com.sun.xml.bind.v2.runtime.unmarshaller.WildcardLoader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiTypeLoader;
 
 import org.xml.sax.SAXException;
 
@@ -82,62 +84,45 @@ class ArrayReferenceNodeProperty<BeanT,ListT,ItemT> extends ArrayERProperty<Bean
         }
     }
 
-    public void createBodyUnmarshaller(UnmarshallerChain chain, QNameMap<Unmarshaller.Handler> handlers) {
+    public void createBodyUnmarshaller(UnmarshallerChain chain, QNameMap<ChildLoader> loaders) {
         final int offset = chain.allocateOffset();
+
+        Receiver recv = new ReceiverImpl(offset);
 
         for( QNameMap.Entry<JaxBeanInfo> n : expectedElements.entrySet() ) {
             final JaxBeanInfo beanInfo = n.getValue();
-            Unmarshaller.Handler spawnChildHandler = new Unmarshaller.ForkHandler(Unmarshaller.ERROR,chain.tail) {
-                public void enterElement(UnmarshallingContext context, EventArg arg) throws SAXException {
-                    spawnChild(context,beanInfo,true).enterElement(context,arg);
-                }
-
-                @Override
-                public void leaveChild(UnmarshallingContext context, Object child) throws SAXException {
-                    context.getScope(offset).add(acc,lister,(ItemT)child);
-                    context.setCurrentHandler(next);
-                }
-
-                protected Unmarshaller.Handler forwardTo(Unmarshaller.EventType event) {
-                    if(event==Unmarshaller.EventType.ENTER_ELEMENT)
-                        return this;
-                    else
-                        return super.forwardTo(event);
-                }
-            };
-            handlers.put(n.nsUri,n.localName,  spawnChildHandler);
+            loaders.put(n.nsUri,n.localName,new ChildLoader(new XsiTypeLoader(beanInfo),recv));
         }
 
         if(isMixed) {
             // handler for processing mixed contents.
-            handlers.put(TEXT_HANDLER,new Unmarshaller.RawTextHandler(Unmarshaller.ERROR,chain.tail) {
-                public void processText(UnmarshallingContext context, CharSequence s) throws SAXException {
-                    context.getScope(offset).add(acc,lister,s.toString());
-                }
-            });
+            loaders.put(TEXT_HANDLER,
+                new ChildLoader(new MixedTextoader(recv),null));
         }
 
         if(domHandler!=null) {
-            handlers.put(CATCH_ALL,new WildcardUnmarshallerImpl(domHandler,wcMode,chain.tail,offset));
+            loaders.put(CATCH_ALL,
+                new ChildLoader(new WildcardLoader(domHandler,wcMode),recv));
         }
     }
+
+    private static final class MixedTextoader extends Loader {
+
+        private final Receiver recv;
+
+        public MixedTextoader(Receiver recv) {
+            super(true);
+            this.recv = recv;
+        }
+
+        public void text(UnmarshallingContext.State state, CharSequence text) throws SAXException {
+            recv.receive(state,text.toString());
+        }
+    }
+
 
     public PropertyKind getKind() {
         return PropertyKind.REFERENCE;
-    }
-
-    private final class WildcardUnmarshallerImpl<ResultT extends Result> extends WildcardUnmarshaller<ResultT> {
-        private final int offset;
-
-        WildcardUnmarshallerImpl(DomHandler domHandler, WildcardMode wcmode, Unmarshaller.Handler next, int offset) {
-            super(domHandler, wcmode, next);
-            this.offset = offset;
-        }
-
-        public void onDone(UnmarshallingContext context, Object element) throws SAXException {
-            super.onDone(context,element);
-            context.getScope(offset).add(acc,lister,element);
-        }
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JaxBeanInfo.java,v 1.4 2005-07-29 22:43:35 ryan_shoemaker Exp $
+ * @(#)$Id: JaxBeanInfo.java,v 1.5 2005-08-04 03:08:52 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -21,6 +21,8 @@ import javax.xml.stream.XMLStreamException;
 import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfo;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingEventHandler;
+import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 
 import org.xml.sax.SAXException;
 
@@ -205,7 +207,6 @@ public abstract class JaxBeanInfo<BeanT> {
      *
      * @param context
      *      Sometimes the created bean remembers the corresponding source location,
-     *      and this information is used to obtain that information.
      */
     public abstract BeanT createInstance(UnmarshallingContext context) throws IllegalAccessException, InvocationTargetException, InstantiationException, SAXException;
 
@@ -277,20 +278,12 @@ public abstract class JaxBeanInfo<BeanT> {
     public abstract void serializeURIs( BeanT o, XMLSerializer target ) throws SAXException;
     
     /**
-     * Gets an unmarshaller that will unmarshall the given object.
+     * Gets the {@link Loader} that will unmarshall the given object.
      *
      * @return
      *      must return non-null valid object
-     * @param root
-     *      In the java-to-schema binding, an object might unmarshal in two different
-     *      ways depending on whether it is used as the root of the graph or not.
-     *      In the former case, an object could unmarshal as an element, whereas
-     *      in the latter case, it marshals as a type.
-     *
-     *      This is the ugly flag to handle those two cases. If true, it returns
-     *      the unmarshaller for unmarshalling it as an element. Otherwise as the type.
      */
-    public abstract UnmarshallingEventHandler getUnmarshaller(boolean root);
+    public abstract Loader getLoader();
 
     /**
      * If the bean's representation in XML is just a text,

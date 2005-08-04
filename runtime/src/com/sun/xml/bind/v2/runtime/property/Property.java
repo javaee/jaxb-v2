@@ -21,7 +21,7 @@ import org.xml.sax.SAXException;
  *
  * @author Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-public interface Property<BeanT> extends ChildElementUnmarshallerBuilder {
+public interface Property<BeanT> extends StructureLoaderBuilder {
 
 //    // is this method necessary? --> probably not
 //    RuntimePropertyInfo owner();

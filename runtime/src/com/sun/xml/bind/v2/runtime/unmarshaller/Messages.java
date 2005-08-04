@@ -8,7 +8,11 @@ import java.util.ResourceBundle;
  */
 enum Messages {
     UNRESOLVED_IDREF, // 1 arg
-    UNEXPECTED_ROOT_ELEMENT, // 3 args
+    UNEXPECTED_ELEMENT, // 3 args
+    UNEXPECTED_TEXT, // 1 arg
+    NOT_A_QNAME,    // 1 arg
+    UNRECOGNIZED_TYPE_NAME, // 1 arg
+    UNABLE_TO_CREATE_MAP, // 1 arg
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());

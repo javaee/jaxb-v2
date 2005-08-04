@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.43 2005-07-28 19:48:43 ryan_shoemaker Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.44 2005-08-04 03:08:52 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.xml.bind.Binder;
 import javax.xml.bind.JAXBElement;
@@ -49,6 +50,7 @@ import com.sun.xml.bind.api.SchemaOutputResolver;
 import com.sun.xml.bind.api.TypeReference;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.bind.v2.WellKnownNamespace;
+import com.sun.xml.bind.v2.QNameMap;
 import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.NonElement;
@@ -73,6 +75,9 @@ import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingEventHandler;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
+import com.sun.xml.bind.v2.runtime.unmarshaller.EventArg;
 import com.sun.xml.bind.util.Which;
 
 import org.w3c.dom.Document;
@@ -86,7 +91,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -109,8 +114,8 @@ public final class JAXBContextImpl extends JAXBRIContext {
      */
     private static DocumentBuilder db;
 
-    private final Map<QName,JaxBeanInfo> rootMap = new LinkedHashMap<QName,JaxBeanInfo>();
-    private final Map<QName,JaxBeanInfo> typeMap = new LinkedHashMap<QName,JaxBeanInfo>();
+    private final QNameMap<JaxBeanInfo> rootMap = new QNameMap<JaxBeanInfo>();
+    private final QNameMap<JaxBeanInfo> typeMap = new QNameMap<JaxBeanInfo>();
 
     /**
      * Map from JAXB-bound {@link Class} to its {@link JaxBeanInfo}.
@@ -460,44 +465,37 @@ public final class JAXBContextImpl extends JAXBRIContext {
     }
 
     /**
-     * Creates an unmarshaller that can unmarshal a given element,
-     * then create a new object to unmarshal, and push the newly created
-     * {@link UnmarshallingEventHandler} to the context.
+     * Based on the tag name, determine what object to unmarshal,
+     * and then set a new object and its loader to the current unmarshaller state.
      *
-     * @param namespaceUri
-     *      The string needs to be interned by the caller
-     *      for a performance reason.
-     * @param localName
-     *      The string needs to be interned by the caller
-     *      for a performance reason.
      * @return
      *      null if the given name pair is not recognized.
      */
-    public final UnmarshallingEventHandler pushUnmarshaller(
-        String namespaceUri, String localName, UnmarshallingContext context ) throws SAXException {
+    public final Loader selectRootLoader( UnmarshallingContext.State state, EventArg ea ) {
+        JaxBeanInfo beanInfo = rootMap.get(ea.uri,ea.local);
+        if(beanInfo==null)
+            // TODO: this is probably the right place to handle @xsi:type
+            return null;
 
-        JaxBeanInfo beanInfo = rootMap.get(new QName(namespaceUri,localName));
-        if(beanInfo==null)        return null;
+        // objects are created by the Loader that loads it.
+//        // try the outer peer of the current element first
+//        Object child = context.getOuterPeer();
+//        if(!beanInfo.jaxbType.isInstance(child))
+//            child = null;   // unexpected type
+//
+//        if(child!=null) {
+//            if(!beanInfo.reset(child,context))
+//                child = null;
+//        }
+//
+//        if(child==null)
+//            child = context.createInstance(beanInfo);
+//
+//        context.recordOuterPeer(child);
 
-        // try the outer peer of the current element first
-        Object child = context.getOuterPeer();
-        if(!beanInfo.jaxbType.isInstance(child))
-            child = null;   // unexpected type
+        Loader l = beanInfo.getLoader();
 
-        if(child!=null) {
-            if(!beanInfo.reset(child,context))
-                child = null;
-        }
-
-        if(child==null)
-            child = context.createInstance(beanInfo);
-
-        context.recordOuterPeer(child);
-
-        UnmarshallingEventHandler u = beanInfo.getUnmarshaller(true);
-        context.pushContentHandler(u, child, beanInfo);
-
-        return u;
+        return l;
     }
 
     /**
@@ -514,9 +512,14 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
     /**
      * Returns the set of valid root tag names.
+     * For diagnostic use.
      */
     public Set<QName> getValidRootNames() {
-        return rootMap.keySet();
+        Set<QName> r = new TreeSet<QName>();
+        for (QNameMap.Entry e : rootMap.entrySet()) {
+            r.add(e.createQName());
+        }
+        return r;
     }
 
     /**

@@ -12,8 +12,10 @@ import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.runtime.RuntimeValuePropertyInfo;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
-import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
+import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
+import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.ValuePropertyLoader;
 
 import org.xml.sax.SAXException;
 
@@ -50,11 +52,9 @@ public final class ValueProperty<BeanT,ListT,ItemT> extends PropertyImpl<BeanT> 
         xacc.declareNamespace(o,w);
     }
 
-    public Unmarshaller.Handler createUnmarshallerHandler(JAXBContextImpl grammar, Unmarshaller.Handler tail){
-         return new Unmarshaller.TextHandler(xacc,Unmarshaller.ERROR, tail);
-    }
-
-    public void buildChildElementUnmarshallers(UnmarshallerChain chainElem, QNameMap<Unmarshaller.Handler> handlers) {
+    public void buildChildElementUnmarshallers(UnmarshallerChain chainElem, QNameMap<ChildLoader> handlers) {
+        handlers.put(StructureLoaderBuilder.TEXT_HANDLER,
+                new ChildLoader(new ValuePropertyLoader(xacc),null));
     }
 
     public PropertyKind getKind() {
