@@ -181,7 +181,10 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
             state.target = state.backup;
             state.backup = null;
 
-            e.setValue(o);
+            if(o!=null)
+                // if the value is a leaf type, it's often already set to the element
+                // through Accessor.
+                e.setValue(o);
 
             return e;
         }
