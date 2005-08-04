@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JaxBeanInfo.java,v 1.6 2005-08-04 21:33:31 kohsuke Exp $
+ * @(#)$Id: JaxBeanInfo.java,v 1.7 2005-08-04 22:58:25 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -420,7 +420,7 @@ public abstract class JaxBeanInfo<BeanT> {
      * Invokes the afterUnmarshal method if applicable.
      */
     public final void invokeAfterUnmarshalMethod(UnmarshallerImpl unm, Object child, Object parent) throws SAXException {
-        Method m = getLifecycleMethods().getBeforeUnmarshal();
+        Method m = getLifecycleMethods().getAfterUnmarshal();
         invokeUnmarshallCallback(m, child, unm, parent);
     }
 
