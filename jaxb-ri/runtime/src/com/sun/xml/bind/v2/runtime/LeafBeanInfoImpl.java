@@ -32,7 +32,7 @@ final class LeafBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
     private final Transducer<BeanT> xducer;
 
     public LeafBeanInfoImpl(JAXBContextImpl grammar, RuntimeLeafInfo li) {
-        super(grammar,li,li.getClazz(),li.getTypeName(),false,true);
+        super(grammar,li,li.getClazz(),li.getTypeName(),false,true,false);
 
         xducer = li.getTransducer();
         loader = new TextLoader(xducer);

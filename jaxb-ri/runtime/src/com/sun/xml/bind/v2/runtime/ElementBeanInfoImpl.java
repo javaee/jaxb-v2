@@ -41,7 +41,7 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
     private final Class scope;
 
     ElementBeanInfoImpl(JAXBContextImpl grammar, RuntimeElementInfo rei) {
-        super(grammar,rei,(Class<JAXBElement>)rei.getType(),null,true,false);
+        super(grammar,rei,(Class<JAXBElement>)rei.getType(),null,true,false,true);
 
         this.property = PropertyFactory.create(grammar,rei.getProperty());
 
@@ -53,7 +53,6 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
         this.loader = new IntercepterLoader(result.getOne().getValue().loader);
 
 
-        // TODO: pre-compute these values to improve speed
         tagName = rei.getElementName();
         expectedType = Navigator.REFLECTION.erasure(rei.getContentInMemoryType());
         scope = rei.getScope()==null ? JAXBElement.GlobalScope.class : rei.getScope().getClazz();
@@ -68,7 +67,7 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
      * This is a hack.
      */
     protected ElementBeanInfoImpl(final JAXBContextImpl grammar) {
-        super(grammar,null,JAXBElement.class,null,true,false);
+        super(grammar,null,JAXBElement.class,null,true,false,true);
         tagName = null;
         expectedType = null;
         scope = null;
@@ -168,6 +167,8 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
             if(child==null)
                 child = context.createInstance(ElementBeanInfoImpl.this);
 
+            fireBeforeUnmarshal(ElementBeanInfoImpl.this, child, state);
+
             context.recordOuterPeer(child);
             UnmarshallingContext.State p = state.prev;
             p.backup = p.target;
@@ -176,7 +177,7 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
             core.startElement(state,ea);
         }
 
-        public Object intercept(UnmarshallingContext.State state, Object o) {
+        public Object intercept(UnmarshallingContext.State state, Object o) throws SAXException {
             JAXBElement e = (JAXBElement)state.target;
             state.target = state.backup;
             state.backup = null;
@@ -185,6 +186,8 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
                 // if the value is a leaf type, it's often already set to the element
                 // through Accessor.
                 e.setValue(o);
+
+            fireAfterUnmarshal(ElementBeanInfoImpl.this, e, state);
 
             return e;
         }
@@ -251,10 +254,5 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
     public void wrapUp() {
         super.wrapUp();
         property.wrapUp();
-    }
-
-    /** generate lifecycle events for JAXBElements */
-    @Override public boolean lookForLifecycleMethods() {
-        return true;
     }
 }

@@ -126,6 +126,7 @@ public final class StructureLoader extends Loader {
 
         state.target = child;
 
+        fireBeforeUnmarshal(beanInfo, child, state);
 
 
         context.startScope(frameSize);
@@ -198,5 +199,6 @@ public final class StructureLoader extends Loader {
 
     public void leaveElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
         state.getContext().endScope(frameSize);
+        fireAfterUnmarshal(beanInfo, state.target, state.prev);
     }
 }

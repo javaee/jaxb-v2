@@ -75,7 +75,7 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
 
 
     /*package*/ ClassBeanInfoImpl(JAXBContextImpl owner, RuntimeClassInfo ci) {
-        super(owner,ci,ci.getClazz(),ci.getTypeName(),ci.isElement(),false);
+        super(owner,ci,ci.getClazz(),ci.getTypeName(),ci.isElement(),false,true);
 
         this.ci = ci;
         this.inheritedAttWildcard = ci.getAttributeWildcard();
@@ -159,17 +159,6 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
             p.wrapUp();
         ci = null;
         super.wrapUp();
-    }
-
-    /**
-     * This method is used to determine which of the sub-classes should be
-     * interrogated for the existence of lifecycle methods.
-     *
-     * @return true if the un|marshaller should look for lifecycle methods
-     *         on this beanInfo, false otherwise.
-     */
-    @Override public boolean lookForLifecycleMethods() {
-        return true;
     }
 
     private Loader createLoader(JAXBContextImpl grammar) {

@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: UnmarshallerImpl.java,v 1.17 2005-08-01 21:29:15 kohsuke Exp $
+ * @(#)$Id: UnmarshallerImpl.java,v 1.18 2005-08-04 21:33:30 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 

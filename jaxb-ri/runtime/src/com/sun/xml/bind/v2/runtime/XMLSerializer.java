@@ -17,6 +17,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.ValidationEventLocator;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.DomHandler;
 import javax.xml.bind.attachment.AttachmentMarshaller;
 import javax.xml.bind.helpers.NotIdentifiableEventImpl;
@@ -416,7 +417,7 @@ public final class XMLSerializer extends Coordinator {
 
         final JaxBeanInfo beanInfo = grammar.getBeanInfo(obj, true);
 
-        final boolean lookForLifecycleMethods = (beanInfo != null) && (beanInfo.lookForLifecycleMethods());
+        final boolean lookForLifecycleMethods = beanInfo.lookForLifecycleMethods();
         if (lookForLifecycleMethods) {
             fireBeforeMarshalEvents(beanInfo, currentTarget);
         }
@@ -463,7 +464,7 @@ public final class XMLSerializer extends Coordinator {
             Object oldTarget = currentTarget;
             currentTarget = child;
 
-            final boolean lookForLifecycleMethods = (beanInfo != null) && (beanInfo.lookForLifecycleMethods());
+            final boolean lookForLifecycleMethods = beanInfo.lookForLifecycleMethods();
             if (lookForLifecycleMethods) {
                 fireBeforeMarshalEvents(beanInfo, currentTarget);
             }
@@ -515,8 +516,6 @@ public final class XMLSerializer extends Coordinator {
 
             Object oldTarget = currentTarget;
             currentTarget = child;
-
-            Method m;
 
             if((asExpected) && (actual.lookForLifecycleMethods())) {
                 fireBeforeMarshalEvents(actual, currentTarget);
@@ -576,8 +575,7 @@ public final class XMLSerializer extends Coordinator {
         }
 
         // then invoke external listener before bean embedded listener
-        javax.xml.bind.Marshaller.Listener externalListener =
-                marshaller.getListener();
+        Marshaller.Listener externalListener = marshaller.getListener();
         if (externalListener != null) {
             externalListener.afterMarshal(currentTarget);
         }
@@ -595,8 +593,7 @@ public final class XMLSerializer extends Coordinator {
      */
     private void fireBeforeMarshalEvents(final JaxBeanInfo beanInfo, Object currentTarget) {
         // invoke external listener before bean embedded listener
-        javax.xml.bind.Marshaller.Listener externalListener =
-                marshaller.getListener();
+        Marshaller.Listener externalListener = marshaller.getListener();
         if (externalListener != null) {
             externalListener.beforeMarshal(currentTarget);
         }

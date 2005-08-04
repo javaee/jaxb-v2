@@ -27,7 +27,7 @@ import org.xml.sax.SAXException;
 final class AnyTypeBeanInfo extends JaxBeanInfo<Object> {
 
     public AnyTypeBeanInfo(JAXBContextImpl grammar) {
-        super(grammar, RuntimeAnyTypeImpl.theInstance, Object.class, new QName(WellKnownNamespace.XML_SCHEMA,"anyType"), false, true);
+        super(grammar, RuntimeAnyTypeImpl.theInstance, Object.class, new QName(WellKnownNamespace.XML_SCHEMA,"anyType"), false, true, false);
     }
 
     public String getElementNamespaceURI(Object element) {

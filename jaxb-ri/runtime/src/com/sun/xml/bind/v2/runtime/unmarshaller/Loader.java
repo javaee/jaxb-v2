@@ -1,7 +1,10 @@
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
 import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.helpers.ValidationEventImpl;
+
+import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 
 import org.xml.sax.SAXException;
 
@@ -105,6 +108,44 @@ public abstract class Loader {
 //
 //
 //
+    /**
+     * Fires the beforeUnmarshal event if necessary.
+     *
+     * @param state
+     *      state of the newly create child object.
+     */
+    protected final void fireBeforeUnmarshal(JaxBeanInfo beanInfo, Object child, UnmarshallingContext.State state) throws SAXException {
+        if(beanInfo.lookForLifecycleMethods()) {
+            UnmarshallingContext context = state.getContext();
+            Unmarshaller.Listener listener = context.parent.getListener();
+            if(listener!=null)
+                listener.beforeUnmarshal(child, state.prev.target);
+            if(beanInfo.hasBeforeUnmarshalMethod()) {
+                beanInfo.invokeBeforeUnmarshalMethod(context.parent, child, state.prev.target);
+            }
+        }
+    }
+
+    /**
+     * Fires the afterUnmarshal event if necessary.
+     *
+     * @param state
+     *      state of the parent object
+     */
+    protected final void fireAfterUnmarshal(JaxBeanInfo beanInfo, Object child, UnmarshallingContext.State state) throws SAXException {
+        // fire the event callback
+        if(beanInfo.lookForLifecycleMethods()) {
+            UnmarshallingContext context = state.getContext();
+            Unmarshaller.Listener listener = context.parent.getListener();
+            if(listener!=null)
+                listener.afterUnmarshal(child, state.target);
+            if(beanInfo.hasAfterUnmarshalMethod()) {
+                beanInfo.invokeAfterUnmarshalMethod(context.parent, child, state.target);
+            }
+        }
+    }
+
+
     /**
      * Last resort when something goes terribly wrong within the unmarshaller.
      */

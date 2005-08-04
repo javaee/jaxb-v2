@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JaxBeanInfo.java,v 1.5 2005-08-04 03:08:52 kohsuke Exp $
+ * @(#)$Id: JaxBeanInfo.java,v 1.6 2005-08-04 21:33:31 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -12,17 +12,17 @@ package com.sun.xml.bind.v2.runtime;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfo;
-import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
-import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingEventHandler;
-import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
+import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
 
 import org.xml.sax.SAXException;
 
@@ -52,26 +52,29 @@ import org.xml.sax.SAXException;
  */
 public abstract class JaxBeanInfo<BeanT> {
 
-    protected JaxBeanInfo(JAXBContextImpl grammar, RuntimeTypeInfo rti, Class<BeanT> jaxbType, QName typeName, boolean isElement,boolean isImmutable) {
+    protected JaxBeanInfo(JAXBContextImpl grammar, RuntimeTypeInfo rti, Class<BeanT> jaxbType, QName typeName, boolean isElement,boolean isImmutable, boolean hasLifecycleEvents) {
         grammar.beanInfos.put(rti,this);
 
         this.jaxbType = jaxbType;
         this.typeName = typeName;
-        this.flag = (byte)((isElement?FLAG_IS_ELEMENT:0)|(isImmutable?FLAG_IS_IMMUTABLE:0));
+        this.flag = (short)((isElement?FLAG_IS_ELEMENT:0)
+                |(isImmutable?FLAG_IS_IMMUTABLE:0)
+                |(hasLifecycleEvents?FLAG_HAS_LIFECYCLE_EVENTS:0));
     }
 
     /**
      * Various boolean flags combined into one field to improve memory footprint.
      */
-    protected byte flag;
+    protected short flag;
 
-    private static final byte FLAG_IS_ELEMENT = 1;
-    private static final byte FLAG_IS_IMMUTABLE = 2;
-    private static final byte FLAG_HAS_ELEMENT_ONLY_CONTENTMODEL = 4;
-    private static final byte FLAG_HAS_BEFORE_UNMARSHAL_METHOD = 8;
-    private static final byte FLAG_HAS_AFTER_UNMARSHAL_METHOD = 16;
-    private static final byte FLAG_HAS_BEFORE_MARSHAL_METHOD = 32;
-    private static final byte FLAG_HAS_AFTER_MARSHAL_METHOD = 64;
+    private static final short FLAG_IS_ELEMENT = 1;
+    private static final short FLAG_IS_IMMUTABLE = 2;
+    private static final short FLAG_HAS_ELEMENT_ONLY_CONTENTMODEL = 4;
+    private static final short FLAG_HAS_BEFORE_UNMARSHAL_METHOD = 8;
+    private static final short FLAG_HAS_AFTER_UNMARSHAL_METHOD = 16;
+    private static final short FLAG_HAS_BEFORE_MARSHAL_METHOD = 32;
+    private static final short FLAG_HAS_AFTER_MARSHAL_METHOD = 64;
+    private static final short FLAG_HAS_LIFECYCLE_EVENTS = 128;
 
     /** cache of lifecycle methods */
     private LifecycleMethods lcm = null;
@@ -159,6 +162,17 @@ public abstract class JaxBeanInfo<BeanT> {
             flag |= FLAG_HAS_ELEMENT_ONLY_CONTENTMODEL;
         else
             flag &= ~FLAG_HAS_ELEMENT_ONLY_CONTENTMODEL;
+    }
+
+    /**
+     * This method is used to determine which of the sub-classes should be
+     * interrogated for the existence of lifecycle methods.
+     *
+     * @return true if the un|marshaller should look for lifecycle methods
+     *         on this beanInfo, false otherwise.
+     */
+    public boolean lookForLifecycleMethods() {
+        return (flag&FLAG_HAS_LIFECYCLE_EVENTS)!=0;
     }
 
     /**
@@ -306,28 +320,16 @@ public abstract class JaxBeanInfo<BeanT> {
      */
     public void wrapUp() {}
 
-    /**
-     * This method is used to determine which of the sub-classes should be
-     * interrogated for the existence of lifecycle methods.
-     *
-     * @return true if the un|marshaller should look for lifecycle methods
-     *         on this beanInfo, false otherwise.
-     */
-    public boolean lookForLifecycleMethods() {
-        // overridden by subclasses that return true
-        return false;
-    }
+
+    private static final Class[] unmarshalEventParams = { Unmarshaller.class, Object.class };
+    private static Class[] marshalEventParams = { Marshaller.class };
 
     /**
      * use reflection to determine which of the 4 object lifecycle methods exist on
      * the JAXB bound type.
      */
-    protected void setLifecycleFlags() {
+    protected final void setLifecycleFlags() {
         Method m;
-
-        // two possible parameter sets
-        Class[] unmarshalEventParams = new Class[] { javax.xml.bind.Unmarshaller.class, Object.class };
-        Class[] marshalEventParams = new Class[] { javax.xml.bind.Marshaller.class };
 
         // beforeUnmarshal
         try {
@@ -370,7 +372,7 @@ public abstract class JaxBeanInfo<BeanT> {
      * @param lifecycleFlag byte representing which of the 4 lifecycle methods
      *        is being cached
      */
-    private void cacheLifecycleMethod(Method m, byte lifecycleFlag) {
+    private void cacheLifecycleMethod(Method m, short lifecycleFlag) {
         //LifecycleMethods lcm = getLifecycleMethods();
         if(lcm==null) {
             lcm = new LifecycleMethods();
@@ -402,8 +404,33 @@ public abstract class JaxBeanInfo<BeanT> {
      * jaxbType if it exists, else return null.
      *
      */
-    public LifecycleMethods getLifecycleMethods() {
-        //return (LifecycleMethods)lcmCache.get(jaxbType);
+    public final LifecycleMethods getLifecycleMethods() {
         return lcm;
+    }
+
+    /**
+     * Invokes the beforeUnmarshal method if applicable.
+     */
+    public final void invokeBeforeUnmarshalMethod(UnmarshallerImpl unm, Object child, Object parent) throws SAXException {
+        Method m = getLifecycleMethods().getBeforeUnmarshal();
+        invokeUnmarshallCallback(m, child, unm, parent);
+    }
+
+    /**
+     * Invokes the afterUnmarshal method if applicable.
+     */
+    public final void invokeAfterUnmarshalMethod(UnmarshallerImpl unm, Object child, Object parent) throws SAXException {
+        Method m = getLifecycleMethods().getBeforeUnmarshal();
+        invokeUnmarshallCallback(m, child, unm, parent);
+    }
+
+    private void invokeUnmarshallCallback(Method m, Object child, UnmarshallerImpl unm, Object parent) throws SAXException {
+        try {
+            m.invoke(child,unm,parent);
+        } catch (IllegalAccessException e) {
+            UnmarshallingContext.getInstance().handleError(e);
+        } catch (InvocationTargetException e) {
+            UnmarshallingContext.getInstance().handleError(e);
+        }
     }
 }
