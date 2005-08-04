@@ -31,7 +31,7 @@ public interface RuntimeClassInfo extends ClassInfo<Type,Class>, RuntimeNonEleme
      *
      * @see Accessor#optimize()
      */
-    Accessor<?,Map<QName,Object>> getAttributeWildcard();
+    Accessor<?,Map<QName,String>> getAttributeWildcard();
 
     /**
      * If this JAXB bean has a property annotated with {@link XmlLocation},

@@ -72,7 +72,7 @@ public final class Scope<BeanT,PropT,ItemT,PackT> {
     public void add( Accessor<BeanT,PropT> acc, Lister<BeanT,PropT,ItemT,PackT> lister, ItemT value) throws SAXException{
         try {
             if(!hasStarted()) {
-                this.bean = context.<BeanT>getTarget();
+                this.bean = (BeanT)context.getCurrentState().target;
                 this.acc = acc;
                 this.lister = lister;
                 this.pack = lister.startPacking(bean,acc);
@@ -80,7 +80,7 @@ public final class Scope<BeanT,PropT,ItemT,PackT> {
 
             lister.addToPack(pack,value);
         } catch (AccessorException e) {
-            AbstractUnmarshallingEventHandlerImpl.handleGenericException(e,true);
+            Loader.handleGenericException(e,true);
             // recover from this error by ignoring future items.
             this.lister = Lister.ERROR;
             this.acc = Accessor.ERROR;

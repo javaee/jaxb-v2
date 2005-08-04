@@ -16,10 +16,10 @@ import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.ListTransducedAccessorImpl;
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
+import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.LeafPropertyLoader;
 
 import org.xml.sax.SAXException;
-
-import static com.sun.xml.bind.v2.runtime.property.Unmarshaller.ERROR;
 
 /**
  * {@link Property} implementation for {@link ElementPropertyInfo} whose
@@ -50,21 +50,12 @@ final class ListElementProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,L
         xacc = new ListTransducedAccessorImpl(xducer,acc,lister);
     }
 
-
-    private Unmarshaller.Handler createUnmarshallerHandler(JAXBContextImpl grammar, Unmarshaller.Handler tail) {
-        Unmarshaller.Handler item = new Unmarshaller.LeaveElementHandler(ERROR,tail);
-        item = new Unmarshaller.TextHandler(xacc,ERROR,item);
-        item = new Unmarshaller.EnterElementHandler(tagName,false,null,ERROR,item);
-
-        return item;
-    }
-
     public PropertyKind getKind() {
         return PropertyKind.ELEMENT;
     }
 
-    public void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<Unmarshaller.Handler> handlers) {
-        handlers.put(tagName, createUnmarshallerHandler(chain.context, chain.tail));
+    public void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<ChildLoader> handlers) {
+        handlers.put(tagName, new ChildLoader(new LeafPropertyLoader(xacc),null));
     }
 
     public void serializeBody(BeanT o, XMLSerializer w, Object outerPeer) throws SAXException, AccessorException, IOException, XMLStreamException {

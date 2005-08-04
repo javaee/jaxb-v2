@@ -7,13 +7,10 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.v2.WellKnownNamespace;
-import com.sun.xml.bind.v2.model.core.WildcardMode;
 import com.sun.xml.bind.v2.model.impl.RuntimeAnyTypeImpl;
-import com.sun.xml.bind.v2.runtime.property.Unmarshaller;
-import com.sun.xml.bind.v2.runtime.unmarshaller.EventArg;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
-import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingEventHandler;
-import com.sun.xml.bind.v2.runtime.unmarshaller.WildcardUnmarshaller;
+import com.sun.xml.bind.v2.runtime.unmarshaller.DomLoader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
@@ -124,25 +121,10 @@ final class AnyTypeBeanInfo extends JaxBeanInfo<Object> {
         return null;
     }
 
-    public UnmarshallingEventHandler getUnmarshaller(boolean root) {
-        final Unmarshaller.Handler base = new WildcardUnmarshaller(domHandler,WildcardMode.SKIP,Unmarshaller.REVERT_TO_PARENT) {
-            public void onDone(UnmarshallingContext context, Object element) throws SAXException {
-                context.setTarget(element);
-                super.onDone(context,element);
-                EventArg ea = new EventArg("","noname","noname",null);
-                context.getCurrentHandler().leaveElement(context,ea);
-            }
-        };
-
-        return new Unmarshaller.EpsilonHandler() {
-            protected void handle(UnmarshallingContext context) throws SAXException {
-                context.setCurrentHandler(base);
-
-                EventArg ea = new EventArg("","noname","noname",context.getUnconsumedAttributes());
-                base.enterElement(context,ea);
-            }
-        };
+    public Loader getLoader() {
+        return domLoader;
     }
 
     private static final W3CDomHandler domHandler = new W3CDomHandler();
+    private static final DomLoader domLoader = new DomLoader(domHandler);
 }

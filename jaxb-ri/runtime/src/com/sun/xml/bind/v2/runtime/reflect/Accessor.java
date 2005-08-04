@@ -18,7 +18,12 @@ import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.JAXBRIContext;
 import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.runtime.Coordinator;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Receiver;
+import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.reflect.opt.OptimizedAccessorFactory;
+
+import org.xml.sax.SAXException;
 
 /**
  * Accesses a particular property of a bean.
@@ -28,12 +33,16 @@ import com.sun.xml.bind.v2.runtime.reflect.opt.OptimizedAccessorFactory;
  * The intention is to generate implementations for a particular bean
  * and a property to improve the performance.
  *
+ * <p>
+ * Accessor can be used as a receiver. Upon receiving an object
+ * it sets that to the field.
+ *
  * @see Accessor.FieldReflection
  * @see TransducedAccessor
  *
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
-public abstract class Accessor<BeanT,ValueT> {
+public abstract class Accessor<BeanT,ValueT> implements Receiver {
 
     public final Class<ValueT> valueType;
 
@@ -106,6 +115,13 @@ public abstract class Accessor<BeanT,ValueT> {
         set(bean,(ValueT)value);
     }
 
+    public void receive(UnmarshallingContext.State state, Object o) throws SAXException {
+        try {
+            set((BeanT)state.target,(ValueT)o);
+        } catch (AccessorException e) {
+            Loader.handleGenericException(e,true);
+        }
+    }
 
     /**
      * Wraps this  {@link Accessor} into another {@link Accessor}

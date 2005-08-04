@@ -6,9 +6,9 @@ import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.model.runtime.RuntimeLeafInfo;
-import com.sun.xml.bind.v2.runtime.property.Unmarshaller;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
-import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingEventHandler;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.TextLoader;
 
 import org.xml.sax.SAXException;
 
@@ -27,7 +27,7 @@ import org.xml.sax.SAXException;
  */
 final class LeafBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
 
-    private final Unmarshaller.Handler unmarshaller;
+    private final Loader loader;
 
     private final Transducer<BeanT> xducer;
 
@@ -35,17 +35,7 @@ final class LeafBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
         super(grammar,li,li.getClazz(),li.getTypeName(),false,true);
 
         xducer = li.getTransducer();
-
-        unmarshaller = new Unmarshaller.RawTextHandler(
-            Unmarshaller.ERROR,Unmarshaller.REVERT_TO_PARENT) {
-            public void processText(UnmarshallingContext context, CharSequence s) throws SAXException {
-                try {
-                    context.setTarget(xducer.parse(s));
-                } catch( Exception e ) {
-                    handleParseConversionException(context,e);
-                }
-            }
-        };
+        loader = new TextLoader(xducer);
     }
 
     public final String getElementNamespaceURI(BeanT _) {
@@ -99,8 +89,8 @@ final class LeafBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
         }
     }
 
-    public final UnmarshallingEventHandler getUnmarshaller(boolean root) {
-        return unmarshaller;
+    public final Loader getLoader() {
+        return loader;
     }
 
     public Transducer<BeanT> getTransducer() {

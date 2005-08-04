@@ -28,6 +28,7 @@ public class SAXConnector implements UnmarshallerHandler {
 
 
     private final XmlVisitor next;
+    private final UnmarshallingContext context;
 
 
     /**
@@ -39,15 +40,16 @@ public class SAXConnector implements UnmarshallerHandler {
      */
     public SAXConnector(XmlVisitor next, LocatorEx externalLocator ) {
         this.next = next;
+        this.context = next.getContext();
         this.loc = externalLocator;
     }
 
     public Object getResult() throws JAXBException, IllegalStateException {
-        return next.getContext().getResult();
+        return context.getResult();
     }
 
     public UnmarshallingContext getContext() {
-        return next.getContext();
+        return context;
     }
 
     public void setDocumentLocator(final Locator locator) {
@@ -110,7 +112,7 @@ public class SAXConnector implements UnmarshallerHandler {
 
 
     public final void characters( char[] buf, int start, int len ) {
-        if( next.expectText() )
+        if( context.expectText() )
             buffer.append(buf,start,len);
     }
 
@@ -127,7 +129,7 @@ public class SAXConnector implements UnmarshallerHandler {
     }
 
     private void processText( boolean ignorable ) throws SAXException {
-        if( next.expectText() && (!ignorable || !WhiteSpaceProcessor.isWhiteSpace(buffer)))
+        if( context.expectText() && (!ignorable || !WhiteSpaceProcessor.isWhiteSpace(buffer)))
             next.text(buffer);
 
         // avoid excessive object allocation, but also avoid

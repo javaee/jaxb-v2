@@ -1,29 +1,30 @@
 package com.sun.xml.bind.v2.runtime.property;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.TreeMap;
 
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
-import com.sun.xml.bind.v2.QNameMap;
 import com.sun.xml.bind.v2.ClassFactory;
+import com.sun.xml.bind.v2.QNameMap;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
-import com.sun.xml.bind.v2.model.runtime.RuntimeMapPropertyInfo;
-import com.sun.xml.bind.v2.model.runtime.RuntimeNonElement;
 import com.sun.xml.bind.v2.model.nav.ReflectionNavigator;
+import com.sun.xml.bind.v2.model.runtime.RuntimeMapPropertyInfo;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 import com.sun.xml.bind.v2.runtime.Name;
-import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
+import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.EventArg;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Receiver;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiTypeLoader;
 
 import org.xml.sax.SAXException;
 
@@ -95,118 +96,97 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
         return PropertyKind.MAP;
     }
 
-    public void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<Unmarshaller.Handler> handlers) {
-        Unmarshaller.Handler tail = chain.tail;
-
-        // handle </items>
-        tail = new Unmarshaller.LeaveElementHandler(Unmarshaller.ERROR,tail) {
-            public void leaveElement(UnmarshallingContext context, EventArg arg) throws SAXException {
-                context.endState();
-                super.leaveElement(context, arg);
-            }
-        };
-
-        // handle the body (entry*)
-        tail = new ElementDispatcher( chain.context,
-                Collections.singletonList(new ChildElementUnmarshallerBuilder() {
-                    public void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<Unmarshaller.Handler> handlers) {
-                        buildUnmarshallerForEntry(chain,handlers);
-                    }
-                }),
-                tail);
-
-        // handle <items>
-        tail = new Unmarshaller.EnterElementHandler(tagName,true,null,Unmarshaller.ERROR,tail) {
-            protected void act(UnmarshallingContext context) throws SAXException {
-                // create or obtain the Map object
-                try {
-                    BeanT target = context.<BeanT>getTarget();
-                    ValueT map = acc.get(target);
-                    if(map==null) {
-                        map = ClassFactory.create(mapImplClass);
-                        acc.set(target,map);
-                    }
-                    map.clear();
-
-                    context.startState(map);   // this state is used to store Map object.
-                } catch (AccessorException e) {
-                    // recover from error by setting a dummy Map that receives and discards the values
-                    context.handleError(e);
-                    context.startState(new HashMap());
-                }
-
-                super.act(context);
-            }
-        };
-
-        handlers.put(tagName,tail);
+    public void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<ChildLoader> handlers) {
+        keyLoader = new XsiTypeLoader(keyBeanInfo);
+        valueLoader = new XsiTypeLoader(valueBeanInfo);
+        handlers.put(tagName,new ChildLoader(itemsLoader,null));
     }
 
-    private void buildUnmarshallerForEntry(UnmarshallerChain chain, QNameMap<Unmarshaller.Handler> handlers) {
-        Unmarshaller.Handler tail = chain.tail;
+    private Loader keyLoader;
+    private Loader valueLoader;
 
-        // handle </entry>
-        tail = new Unmarshaller.LeaveElementHandler(Unmarshaller.ERROR, tail) {
-            public void leaveElement(UnmarshallingContext context, EventArg arg) throws SAXException {
-                Object[] keyValue = context.getState();
-                context.endState(); // finish the state for the entry
-                ((Map)context.getState()).put(keyValue[0],keyValue[1]);
-                super.leaveElement(context, arg);
-            }
-        };
-
-        // handle the body (key?,value?)
-        tail = new ElementDispatcher( chain.context,
-                Collections.singletonList(new ChildElementUnmarshallerBuilder() {
-                    public void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<Unmarshaller.Handler> handlers) {
-                        buildUnmarshallerForKeyValue(chain,handlers);
-                    }
-                }),
-                tail);
-
-        // handle <entry>
-        tail = new Unmarshaller.EnterElementHandler(entryTag,true,null,Unmarshaller.ERROR,tail) {
-            protected void act(UnmarshallingContext context) throws SAXException {
-                context.startState(new Object[2]);  // this is inefficient
-                super.act(context);
-            }
-        };
-
-        handlers.put(entryTag,tail);
-    }
-
-    private void buildUnmarshallerForKeyValue(UnmarshallerChain chain, QNameMap<Unmarshaller.Handler> handlers) {
-        final Unmarshaller.Handler leaveElement = new Unmarshaller.LeaveElementHandler(Unmarshaller.ERROR, chain.tail);
-
-        handlers.put(keyTag,  createItemUnmarshaller(keyTag,  prop.getKeyType(),  keyBeanInfo,  leaveElement,0));
-        handlers.put(valueTag,createItemUnmarshaller(valueTag,prop.getValueType(),valueBeanInfo,leaveElement,1));
-    }
-
-    private final Unmarshaller.Handler createItemUnmarshaller(Name tagName, RuntimeNonElement type, JaxBeanInfo bi, Unmarshaller.Handler tail, final int offset) {
-        final Transducer xducer = type.getTransducer();
-        Unmarshaller.Handler body;
-
-        if(xducer!=null) {
-            body = new Unmarshaller.RawTextHandler(Unmarshaller.ERROR,tail) {
-                public void processText(UnmarshallingContext context, CharSequence s) throws SAXException {
-                    try {
-                        Object[] state = context.getState();
-                        state[offset] = xducer.parse(s);
-                    } catch (AccessorException e) {
-                        handleGenericException(e,true);
-                    }
+    /**
+     * Handles &lt;items> and &lt;/items>.
+     *
+     * The target will be set to a {@link Map}.
+     */
+    private final Loader itemsLoader = new Loader(false) {
+        @Override
+        public void startElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+            // create or obtain the Map object
+            try {
+                BeanT target = (BeanT)state.prev.target;
+                ValueT map = acc.get(target);
+                if(map==null) {
+                    map = ClassFactory.create(mapImplClass);
+                    acc.set(target,map);
                 }
-            };
-        } else {
-            body = new Unmarshaller.SpawnChildHandler(bi,tail,false) {
-                protected void onNewChild(Object bean, Object value, UnmarshallingContext context) {
-                    Object[] state = context.getState();
-                    state[offset] = value;
-                }
-            };
+                map.clear();
+                state.target = map;
+            } catch (AccessorException e) {
+                // recover from error by setting a dummy Map that receives and discards the values
+                handleGenericException(e,true);
+                state.target = new HashMap();
+            }
         }
-        return new Unmarshaller.EnterElementHandler(tagName,false,null,Unmarshaller.ERROR,body);
+
+        @Override
+        public void childElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+            if(ea.matches(entryTag)) {
+                state.loader = entryLoader;
+            } else {
+                super.childElement(state,ea);
+            }
+        }
+    };
+
+    /**
+     * Handles &lt;entry> and &lt;/entry>.
+     *
+     * The target will be set to a {@link Map}.
+     */
+    private final Loader entryLoader = new Loader(false) {
+        @Override
+        public void startElement(UnmarshallingContext.State state, EventArg ea) {
+            state.target = new Object[2];  // this is inefficient
+        }
+
+        @Override
+        public void leaveElement(UnmarshallingContext.State state, EventArg ea) {
+            Object[] keyValue = (Object[])state.target;
+            Map map = (Map) state.prev.target;
+            map.put(keyValue[0],keyValue[1]);
+        }
+
+        public void childElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+            if(ea.matches(keyTag)) {
+                state.loader = keyLoader;
+                state.receiver = keyReceiver;
+                return;
+            }
+            if(ea.matches(valueTag)) {
+                state.loader = valueLoader;
+                state.receiver = valueReceiver;
+                return;
+            }
+            super.childElement(state,ea);
+        }
+    };
+
+    private static final class ReceiverImpl implements Receiver {
+        private final int index;
+        public ReceiverImpl(int index) {
+            this.index = index;
+        }
+        public void receive(UnmarshallingContext.State state, Object o) {
+            ((Object[])state.target)[index] = o;
+        }
     }
+
+    private static final Receiver keyReceiver = new ReceiverImpl(0);
+    private static final Receiver valueReceiver = new ReceiverImpl(1);
+
+
 
 
     public void serializeBody(BeanT o, XMLSerializer w, Object outerPeer) throws SAXException, AccessorException, IOException, XMLStreamException {

@@ -6,7 +6,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.DomHandler;
 import javax.xml.stream.XMLStreamException;
 
-import javax.xml.bind.annotation.DomHandler;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.QNameMap;
@@ -18,9 +17,9 @@ import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
-import com.sun.xml.bind.v2.runtime.unmarshaller.EventArg;
-import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
-import com.sun.xml.bind.v2.runtime.unmarshaller.WildcardUnmarshaller;
+import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.WildcardLoader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiTypeLoader;
 
 import org.xml.sax.SAXException;
 
@@ -77,67 +76,17 @@ final class SingleReferenceNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT
         }
     }
 
-    private Unmarshaller.Handler createUnmarshaller( Unmarshaller.Handler fallthrough,Unmarshaller.Handler next ) {
-        return new Unmarshaller.ForkHandler(fallthrough,next) {
-            public void enterElement(UnmarshallingContext context, EventArg arg) throws SAXException {
-                // TODO: this is somewhat inefficient when launched from ElementDispatcher
-                // additional check is redundant
-                JaxBeanInfo target = expectedElements.get(arg.uri,arg.local);
-                if(target==null) {
-                    super.enterElement(context,arg);
-                } else {
-                    context.setCurrentHandler(this);
-                    spawnChild(context,target,true).enterElement(context,arg);
-                    return;
-                }
-            }
-
-            @Override
-            public void leaveChild(UnmarshallingContext context, Object child) throws SAXException {
-                try {
-                    acc.set((BeanT)context.getTarget(),(ValueT)child);
-                } catch (AccessorException e) {
-                    handleGenericException(e);
-                }
-                context.setCurrentHandler(next);
-            }
-
-            protected Unmarshaller.Handler forwardTo(Unmarshaller.EventType event) {
-                if(event==Unmarshaller.EventType.ENTER_ELEMENT)
-                    return this;
-                else
-                    return super.forwardTo(event);
-            }
-        };
-    }
-
-    public void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<Unmarshaller.Handler> handlers) {
+    public void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<ChildLoader> handlers) {
         for (QNameMap.Entry<JaxBeanInfo> n : expectedElements.entrySet())
-            handlers.put(n.nsUri,n.localName,new Unmarshaller.SpawnChildSetHandler(n.getValue(),chain.tail,true,acc));
+            handlers.put(n.nsUri,n.localName, new ChildLoader(new XsiTypeLoader(n.getValue()),acc));
+
         if(domHandler!=null)
-            handlers.put(CATCH_ALL,new WildcardUnmarshallerImpl(domHandler,wcMode,chain.tail));
+            handlers.put(CATCH_ALL,new ChildLoader(new WildcardLoader(domHandler,wcMode),acc));
 
     }
 
     public PropertyKind getKind() {
         return PropertyKind.REFERENCE;
-    }
-
-    // TODO: revisit leaveChild method. Maybe it's easier if that can be specified separately
-    // instead of just calling the method on the parent handler
-    private final class WildcardUnmarshallerImpl extends WildcardUnmarshaller {
-        public WildcardUnmarshallerImpl(DomHandler domHandler, WildcardMode mode, Unmarshaller.Handler next) {
-            super(domHandler, mode, next);
-        }
-
-        public void onDone(UnmarshallingContext context, Object element) throws SAXException {
-            super.onDone(context,element);
-            try {
-                acc.set((BeanT)context.getTarget(),(ValueT)element);
-            } catch (AccessorException e) {
-                handleGenericException(e);
-            }
-        }
     }
 
     @Override

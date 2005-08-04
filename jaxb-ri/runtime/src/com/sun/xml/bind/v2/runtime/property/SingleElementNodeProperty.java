@@ -19,6 +19,11 @@ import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.DefaultValueLoaderDecorator;
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiTypeLoader;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 
 import org.xml.sax.SAXException;
@@ -117,17 +122,17 @@ final class SingleElementNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT> 
         }
     }
 
-    public void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<Unmarshaller.Handler> handlers) {
-        final Unmarshaller.Handler tail = new Unmarshaller.LeaveElementHandler(Unmarshaller.ERROR,chain.tail);
-        JAXBContextImpl grammar = chain.context;
+    public void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<ChildLoader> handlers) {
+        JAXBContextImpl context = chain.context;
 
         for (TypeRef<Type,Class> e : prop.getTypes()) {
-            JaxBeanInfo bi = grammar.getOrCreate((RuntimeTypeInfo) e.getTarget());
-            Unmarshaller.Handler h = new Unmarshaller.SpawnChildSetHandler(bi,tail,false,acc);
+            JaxBeanInfo bi = context.getOrCreate((RuntimeTypeInfo) e.getTarget());
+            Loader l = new XsiTypeLoader(bi);
+            if(e.getDefaultValue()!=null)
+                l = new DefaultValueLoaderDecorator(l,e.getDefaultValue());
             if(nillable)
-                h = new Unmarshaller.SingleXsiNilHandler(h,tail,acc);
-            handlers.put( e.getTagName(), new Unmarshaller.EnterElementHandler(
-                grammar.nameBuilder.createElementName(e.getTagName()),false,e.getDefaultValue(),Unmarshaller.ERROR,h));
+                l = new XsiNilLoader.Single(l,acc);
+            handlers.put( e.getTagName(), new ChildLoader(l,acc));
         }
     }
 

@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: UnmarshallingEventHandler.java,v 1.1 2005-04-15 20:04:43 kohsuke Exp $
+ * @(#)$Id: UnmarshallingEventHandler.java,v 1.2 2005-08-04 03:08:49 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -26,6 +26,8 @@ import org.xml.sax.SAXException;
  *
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
+ * @deprecated
+ *      to be removed
  */
 public interface UnmarshallingEventHandler {
 

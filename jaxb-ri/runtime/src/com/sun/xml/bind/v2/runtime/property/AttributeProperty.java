@@ -13,6 +13,8 @@ import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
 
@@ -66,7 +68,8 @@ public final class AttributeProperty<BeanT> extends PropertyImpl<BeanT>
             xacc.declareNamespace(o,w);
     }
 
-    public void buildChildElementUnmarshallers(UnmarshallerChain chainElem, QNameMap<Unmarshaller.Handler> handlers) {
+    public void buildChildElementUnmarshallers(UnmarshallerChain chainElem, QNameMap<ChildLoader> handlers) {
+        throw new IllegalStateException();
     }
 
    

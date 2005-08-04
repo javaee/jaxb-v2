@@ -1,7 +1,6 @@
 package com.sun.xml.bind.v2.runtime.property;
 
 import java.io.IOException;
-import java.util.Collections;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -12,7 +11,11 @@ import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
+import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.EventArg;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Receiver;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Scope;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 
 import org.xml.sax.SAXException;
@@ -46,55 +49,32 @@ abstract class ArrayERProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,Li
         this.isWrapperNillable = isWrapperNillable;
     }
 
-    private Unmarshaller.Handler createUnmarshallerHandler(JAXBContextImpl grammar, Unmarshaller.Handler tail) {
-        final Unmarshaller.Handler end = tail;
 
-        // handle </items>
-        if(wrapperTagName==null) {
-            final Unmarshaller.Handler next = tail;
-            tail = new Unmarshaller.EpsilonHandler() {
-                protected void handle(UnmarshallingContext context) throws SAXException {
-                    context.endScope(1);
-                    context.setCurrentHandler(next);
-                }
-            };
-        } else {
-            tail = new Unmarshaller.LeaveElementHandler(Unmarshaller.ERROR,tail) {
-                public void leaveElement(UnmarshallingContext context, EventArg arg) throws SAXException {
-                    context.endScope(1);
-                    super.leaveElement(context, arg);
-                }
-            };
+    private class ItemsLoader extends Loader {
+        public ItemsLoader(QNameMap<ChildLoader> children) {
+            super(false);
+            this.children = children;
         }
 
-        // build the body
-        tail = new ElementDispatcher( grammar,
-                Collections.singletonList(new ChildElementUnmarshallerBuilder() {
-                    public void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<Unmarshaller.Handler> handlers) {
-                        createBodyUnmarshaller(chain,handlers);
-                    }
-                }),
-                tail);
-
-        // handle <items>
-        if(wrapperTagName==null) {
-            final Unmarshaller.Handler next = tail;
-            tail = new Unmarshaller.EpsilonHandler() {
-                protected void handle(UnmarshallingContext context) throws SAXException {
-                    context.startScope(1);
-                    context.setCurrentHandler(next);
-                }
-            };
-        } else {
-            tail = new Unmarshaller.EnterElementHandler(wrapperTagName,true,null,end,tail) {
-                protected void act(UnmarshallingContext context) throws SAXException {
-                    context.startScope(1);
-                    super.act(context);
-                }
-            };
+        public void startElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+            state.getContext().startScope(1);
         }
 
-        return tail;
+        private final QNameMap<ChildLoader> children;
+
+        public void childElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+            ChildLoader child = children.get(ea.uri,ea.local);
+            if(child!=null) {
+                state.loader = child.loader;
+                state.receiver = child.receiver;
+            } else {
+                super.childElement(state,ea);
+            }
+        }
+
+        public void leaveElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+            state.getContext().endScope(1);
+        }
     }
 
     public final void serializeBody(BeanT o, XMLSerializer w, Object outerPeer) throws SAXException, AccessorException, IOException, XMLStreamException {
@@ -133,15 +113,31 @@ abstract class ArrayERProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,Li
     /**
      * Creates the unmarshaller to unmarshal the body.
      */
-    protected abstract void createBodyUnmarshaller(UnmarshallerChain chain, QNameMap<Unmarshaller.Handler> handlers);
+    protected abstract void createBodyUnmarshaller(UnmarshallerChain chain, QNameMap<ChildLoader> loaders);
 
 
-    public final void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<Unmarshaller.Handler> handlers) {
+    public final void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<ChildLoader> loaders) {
         if(wrapperTagName!=null) {
-            chain.tail = createUnmarshallerHandler(chain.context, chain.tail);
-            handlers.put(wrapperTagName,chain.tail);
+            UnmarshallerChain c = new UnmarshallerChain(chain.context);
+            QNameMap<ChildLoader> m = new QNameMap<ChildLoader>();
+            createBodyUnmarshaller(c,m);
+            loaders.put(wrapperTagName,new ChildLoader(new ItemsLoader(m),null));
         } else {
-            createBodyUnmarshaller(chain,handlers);
+            createBodyUnmarshaller(chain,loaders);
         }
     }
-}
+
+    /**
+     * {@link Receiver} that puts the child object into the {@link Scope} object.
+     */
+    protected final class ReceiverImpl implements Receiver {
+        private final int offset;
+
+        protected ReceiverImpl(int offset) {
+            this.offset = offset;
+        }
+
+        public void receive(UnmarshallingContext.State state, Object o) throws SAXException {
+            state.getContext().getScope(offset).add(acc,lister,o);
+        }
+    }}

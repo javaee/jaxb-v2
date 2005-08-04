@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.ValidationEvent;
-import javax.xml.bind.helpers.ValidationEventImpl;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
@@ -26,7 +24,14 @@ import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.reflect.ListIterator;
 import com.sun.xml.bind.v2.runtime.reflect.Lister;
+import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
+import com.sun.xml.bind.v2.runtime.unmarshaller.DefaultValueLoaderDecorator;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Receiver;
+import com.sun.xml.bind.v2.runtime.unmarshaller.TextLoader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiTypeLoader;
 
 import org.xml.sax.SAXException;
 
@@ -162,29 +167,24 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
     protected abstract void serializeItem(JaxBeanInfo expected, ItemT item, XMLSerializer w) throws SAXException, AccessorException, IOException, XMLStreamException;
 
 
-    public void createBodyUnmarshaller(UnmarshallerChain chain, QNameMap<Unmarshaller.Handler> handlers) {
+    public void createBodyUnmarshaller(UnmarshallerChain chain, QNameMap<ChildLoader> loaders) {
 
-        final Unmarshaller.Handler tail = chain.tail;
         // all items go to the same lister,
         // so they should share the same offset.
         int offset = chain.allocateOffset();
-
-        Unmarshaller.Handler leaveElement = new Unmarshaller.LeaveElementHandler(Unmarshaller.ERROR, tail);
+        Receiver recv = new ReceiverImpl(offset);
 
         for (RuntimeTypeRef typeRef : prop.getTypes()) {
 
             Name tagName = chain.context.nameBuilder.createElementName(typeRef.getTagName());
-            Unmarshaller.Handler item = createItemUnmarshaller(typeRef,leaveElement,offset);
+            Loader item = createItemUnmarshaller(typeRef);
 
             if(typeRef.isNillable())
-                item = new Unmarshaller.ArrayXsiNilHandler(item,leaveElement,acc,offset,lister);
+                item = new XsiNilLoader.Array(item,acc,offset,lister);
+            if(typeRef.getDefaultValue()!=null)
+                item = new DefaultValueLoaderDecorator(item,typeRef.getDefaultValue());
 
-            item = new Unmarshaller.EnterElementHandler(tagName,
-                false,
-                typeRef.getDefaultValue(),
-                Unmarshaller.ERROR,item);
-
-            handlers.put(tagName, item);
+            loaders.put(tagName,new ChildLoader(item,recv));
         }
     }
 
@@ -192,8 +192,10 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
         return PropertyKind.ELEMENT;
     }
 
+;
+
     /**
-     * Creates unmarshaller handler that unmarshals the body of the item.
+     * Creates a loader handler that unmarshals the body of the item.
      *
      * <p>
      * This will be sandwiched into <item> ... </item>.
@@ -203,26 +205,13 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
      * as the handler state.
      *
      * @param typeRef
-     *      the type of the child for which we are creating the unmarshaller.
      */
-    private final Unmarshaller.Handler createItemUnmarshaller(RuntimeTypeRef typeRef, Unmarshaller.Handler tail, final int offset) {
+    private final Loader createItemUnmarshaller(RuntimeTypeRef typeRef) {
         if(PropertyFactory.isLeaf(typeRef.getSource())) {
             final Transducer xducer = typeRef.getTransducer();
-            return new Unmarshaller.RawTextHandler(Unmarshaller.ERROR,tail) {
-                public void processText(UnmarshallingContext context, CharSequence s) throws SAXException {
-                    try {
-                        context.getScope(offset).add(acc,lister,xducer.parse(s));
-                    } catch (AccessorException e) {
-                        handleGenericException(e,true);
-                    }
-                }
-            };
+            return new TextLoader(xducer);
         } else {
-            return new Unmarshaller.SpawnChildHandler(refs.get(typeRef),tail,false) {
-                protected void onNewChild(Object bean, Object value, UnmarshallingContext context) throws SAXException {
-                    context.getScope(offset).add(acc,lister,value);
-                }
-            };
+            return new XsiTypeLoader(refs.get(typeRef));
         }
     }
 

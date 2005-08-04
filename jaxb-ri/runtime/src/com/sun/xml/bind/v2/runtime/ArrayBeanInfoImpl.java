@@ -8,9 +8,11 @@ import java.util.List;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.v2.model.runtime.RuntimeArrayInfo;
-import com.sun.xml.bind.v2.runtime.property.Unmarshaller;
+import com.sun.xml.bind.v2.runtime.unmarshaller.EventArg;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Receiver;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
-import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingEventHandler;
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiTypeLoader;
 
 import org.xml.sax.SAXException;
 
@@ -22,40 +24,47 @@ import org.xml.sax.SAXException;
  */
 final class ArrayBeanInfoImpl  extends JaxBeanInfo {
 
-    protected final Class itemType;
-    protected final JaxBeanInfo itemBeanInfo;
-    protected final Unmarshaller.Handler unmarshaller;
+    private final Class itemType;
+    private final JaxBeanInfo itemBeanInfo;
+    private final Loader loader;
 
     public ArrayBeanInfoImpl(JAXBContextImpl owner, RuntimeArrayInfo rai) {
         super(owner,rai,rai.getType(), rai.getTypeName(), false, true);
         this.itemType = jaxbType.getComponentType();
         this.itemBeanInfo = owner.getOrCreate(rai.getItemType());
 
-        unmarshaller = createUnmarshaller(owner);
+        loader = new ArrayLoader();
     }
 
-    private Unmarshaller.Handler createUnmarshaller(JAXBContextImpl grammar) {
-        Unmarshaller.EnterElementHandler enter = new Unmarshaller.EnterElementHandler(
-            grammar.nameBuilder.createElementName("", "item"), false, null,
-                new Unmarshaller.EpsilonHandler() {
-                    protected void handle(UnmarshallingContext context) throws SAXException {
-                        context.setTarget(toArray((List)context.getTarget()));
-                        context.popContentHandler();
-                    }
-                }, null );
+    private final class ArrayLoader extends Loader implements Receiver {
+        public ArrayLoader() {
+            super(false);
+        }
 
-        enter.next = new Unmarshaller.SpawnChildHandler(itemBeanInfo,
-                new Unmarshaller.LeaveElementHandler(Unmarshaller.ERROR,enter), false ) {
-            protected void onNewChild(Object bean, Object value, UnmarshallingContext context) {
-                if(bean==null) {
-                    context.setTarget(bean=new ArrayList());
-                }
-                ((List)bean).add(value);
+        private final XsiTypeLoader itemLoader = new XsiTypeLoader(itemBeanInfo);
+
+        @Override
+        public void startElement(UnmarshallingContext.State state, EventArg ea) {
+            state.target = new ArrayList();
+        }
+
+        public void leaveElement(UnmarshallingContext.State state, EventArg ea) {
+            state.target = toArray((List)state.target);
+        }
+
+        public void childElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+            if(ea.matches("","item")) {
+                state.loader = itemLoader;
+                state.receiver = this;
+            } else {
+                super.childElement(state,ea);
             }
-        };
+        }
 
-        return enter;
-    }
+        public void receive(UnmarshallingContext.State state, Object o) {
+            ((List)state.target).add(o);
+        }
+    };
 
     protected Object toArray( List list ) {
         int len = list.size();
@@ -117,7 +126,7 @@ final class ArrayBeanInfoImpl  extends JaxBeanInfo {
         return null;
     }
 
-    public final UnmarshallingEventHandler getUnmarshaller(boolean root) {
-        return unmarshaller;
+    public final Loader getLoader() {
+        return loader;
     }
 }

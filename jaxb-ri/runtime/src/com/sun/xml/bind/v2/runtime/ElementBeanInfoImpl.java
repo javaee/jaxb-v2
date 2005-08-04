@@ -14,11 +14,13 @@ import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementInfo;
 import com.sun.xml.bind.v2.runtime.property.Property;
 import com.sun.xml.bind.v2.runtime.property.PropertyFactory;
-import com.sun.xml.bind.v2.runtime.property.Unmarshaller;
 import com.sun.xml.bind.v2.runtime.property.UnmarshallerChain;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
+import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.EventArg;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Intercepter;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
-import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingEventHandler;
 
 import org.xml.sax.SAXException;
 
@@ -29,7 +31,7 @@ import org.xml.sax.SAXException;
  */
 final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
 
-    private final Unmarshaller.Handler unmarshaller;
+    private final Loader loader;
 
     private final Property property;
 
@@ -45,11 +47,10 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
 
 //        this.unmarshaller = property.createUnmarshallerHandler(grammar,Unmarshaller.REVERT_TO_PARENT);
         UnmarshallerChain c = new UnmarshallerChain(grammar);
-        c.tail = Unmarshaller.REVERT_TO_PARENT;
-        QNameMap<Unmarshaller.Handler> result = new QNameMap<Unmarshaller.Handler>();
+        QNameMap<ChildLoader> result = new QNameMap<ChildLoader>();
         property.buildChildElementUnmarshallers(c,result);
         assert result.size()==1;    // ElementBeanInfoImpl only has one tag name
-        this.unmarshaller = result.getOne().getValue();
+        this.loader = new IntercepterLoader(result.getOne().getValue().loader);
 
 
         // TODO: pre-compute these values to improve speed
@@ -120,7 +121,7 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
                 return PropertyKind.ELEMENT;
             }
 
-            public void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<Unmarshaller.Handler> handlers) {
+            public void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<ChildLoader> handlers) {
             }
 
             public Accessor getElementPropertyAccessor(String nsUri, String localName) {
@@ -130,7 +131,60 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
             public void wrapUp() {
             }
         };
-        this.unmarshaller = null;
+        this.loader = null;
+    }
+
+    /**
+     * Use the previous {@link UnmarshallingContext.State}'s target to store
+     * {@link JAXBElement} object to be unmarshalled. This allows the property {@link Loader}
+     * to correctly find the parent object.
+     * This is a hack.
+     */
+    private final class IntercepterLoader extends Loader implements Intercepter {
+        private final Loader core;
+
+        public IntercepterLoader(Loader core) {
+            this.core = core;
+        }
+
+        public final void startElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+            state.loader = core;
+            state.intercepter = this;
+
+            // TODO: make sure there aren't too many duplicate of this code
+            // create the object to unmarshal
+            Object child;
+            UnmarshallingContext context = state.getContext();
+
+            // let's see if we can reuse the existing peer object
+            child = context.getOuterPeer();
+
+            if(child!=null && jaxbType!=child.getClass())
+                child = null;   // unexpected type.
+
+            if(child!=null)
+                reset((JAXBElement)child,context);
+
+            if(child==null)
+                child = context.createInstance(ElementBeanInfoImpl.this);
+
+            context.recordOuterPeer(child);
+            UnmarshallingContext.State p = state.prev;
+            p.backup = p.target;
+            p.target = child;
+
+            core.startElement(state,ea);
+        }
+
+        public Object intercept(UnmarshallingContext.State state, Object o) {
+            JAXBElement e = (JAXBElement)state.target;
+            state.target = state.backup;
+            state.backup = null;
+
+            e.setValue(o);
+
+            return e;
+        }
     }
 
     public String getElementNamespaceURI(JAXBElement e) {
@@ -141,8 +195,8 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
         return e.getName().getLocalPart();
     }
 
-    public UnmarshallingEventHandler getUnmarshaller(boolean root) {
-        return unmarshaller;
+    public Loader getLoader() {
+        return loader;
     }
 
     public final JAXBElement createInstance(UnmarshallingContext context) {

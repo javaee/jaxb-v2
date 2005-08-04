@@ -46,10 +46,6 @@ public final class InterningXmlVisitor implements XmlVisitor {
         next.text(pcdata);
     }
 
-    public boolean expectText() {
-        return next.expectText();
-    }
-
     public UnmarshallingContext getContext() {
         return next.getContext();
     }

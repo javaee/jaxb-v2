@@ -26,12 +26,6 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.Scope;
  */
 public final class UnmarshallerChain {
     /**
-     * This will point to the tail of the {@link Unmarshaller.Handler}
-     * This will help when creating child unmarshallers
-     */
-    public Unmarshaller.Handler tail;
-
-    /**
      * This offset allows child unmarshallers to have its own {@link Scope} without colliding with siblings.
      */
     private int offset = 0;
