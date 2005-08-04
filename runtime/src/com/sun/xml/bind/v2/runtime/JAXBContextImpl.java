@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.44 2005-08-04 03:08:52 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.45 2005-08-04 04:13:06 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -14,6 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -49,8 +50,9 @@ import com.sun.xml.bind.api.RawAccessor;
 import com.sun.xml.bind.api.SchemaOutputResolver;
 import com.sun.xml.bind.api.TypeReference;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
-import com.sun.xml.bind.v2.WellKnownNamespace;
+import com.sun.xml.bind.util.Which;
 import com.sun.xml.bind.v2.QNameMap;
+import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.NonElement;
@@ -72,13 +74,10 @@ import com.sun.xml.bind.v2.runtime.output.Encoded;
 import com.sun.xml.bind.v2.runtime.property.AttributeProperty;
 import com.sun.xml.bind.v2.runtime.property.Property;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
+import com.sun.xml.bind.v2.runtime.unmarshaller.EventArg;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
-import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingEventHandler;
-import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
-import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
-import com.sun.xml.bind.v2.runtime.unmarshaller.EventArg;
-import com.sun.xml.bind.util.Which;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -91,7 +90,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -115,7 +114,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
     private static DocumentBuilder db;
 
     private final QNameMap<JaxBeanInfo> rootMap = new QNameMap<JaxBeanInfo>();
-    private final QNameMap<JaxBeanInfo> typeMap = new QNameMap<JaxBeanInfo>();
+    private final HashMap<QName,JaxBeanInfo> typeMap = new HashMap<QName,JaxBeanInfo>();
 
     /**
      * Map from JAXB-bound {@link Class} to its {@link JaxBeanInfo}.
