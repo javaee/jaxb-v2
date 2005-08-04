@@ -419,7 +419,9 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
 
             public CharSequence print(byte[] v) {
                 Base64Data bd = XMLSerializer.getInstance().getCachedBase64DataInstance();
-                bd.set(v,null);
+                XMLSerializer xs = XMLSerializer.getInstance();
+                String mimeType = xs.getXMIMEContentType();
+                bd.set(v,mimeType);
                 return bd;
             }
         },
