@@ -700,7 +700,7 @@ public final class UnmarshallingContext extends Coordinator
         if(prefix.equals("xml"))
             return "http://www.w3.org/XML/1998/namespace";
 
-        for( int i=nsLen; i>=0; i-=2 ) {
+        for( int i=nsLen-2; i>=0; i-=2 ) {
             if(prefix.equals(nsBind[i]))
                 return nsBind[i+1];
         }
