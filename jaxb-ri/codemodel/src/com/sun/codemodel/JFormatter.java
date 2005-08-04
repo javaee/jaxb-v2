@@ -9,11 +9,11 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Iterator;
-import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -262,6 +262,14 @@ public final class JFormatter {
         case COLLECTING:
             // see if there is a type name that collides with this id
             if(collectedReferences.containsKey(id)) {
+                if( !collectedReferences.get(id).getClasses().isEmpty() ) {
+                    for( JClass type : collectedReferences.get(id).getClasses() ) {
+                        if ((type instanceof JDefinedClass) && ((JDefinedClass)type).outer()!=null) {
+                            collectedReferences.get(id).setId(false);
+                            return this;
+                        }
+                    }
+                }
                 collectedReferences.get(id).setId(true);
             } else {
                 // not a type, but we need to create a place holder to
