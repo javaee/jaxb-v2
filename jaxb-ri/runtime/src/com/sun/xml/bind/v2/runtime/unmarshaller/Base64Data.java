@@ -145,6 +145,8 @@ public final class Base64Data implements CharSequence {
     }
 
     public String getMimeType() {
+        if(mimeType==null)
+            return "application/octet-stream";
         return mimeType;
     }
 
