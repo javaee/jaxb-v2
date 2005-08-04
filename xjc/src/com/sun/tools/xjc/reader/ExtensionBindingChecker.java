@@ -27,9 +27,13 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * 
  * <p>
  * This filter also remembers enabled extension namespaces
- * and filters out any foreign namespaces that doesn't belong
+ * and filters out any extension namespaces that doesn't belong
  * to those. The net effect is that disabled customizations
  * will never pass through this filter.
+ *
+ * <p>
+ * Note that we can't just filter out all foreign namespaces,
+ * as we need to use user-defined tags in documentations to generate javadoc.
  * 
  * <p>
  * The class needs to know the list of extension binding namespaces
