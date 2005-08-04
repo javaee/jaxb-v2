@@ -400,7 +400,7 @@ public final class UnmarshallingContext extends Coordinator
             Receiver recv = child.receiver;
             Intercepter intercepter = child.intercepter;
             child.pop();
-            
+
             // then let the parent know
             if(intercepter!=null)
                 target = intercepter.intercept(current,target);
@@ -648,7 +648,16 @@ public final class UnmarshallingContext extends Coordinator
     // -kk
     public String addToIdTable( String id ) {
         if(idmap==null)     idmap = new Hashtable<String,Object>();
-        idmap.put( id, current.target );
+        // Hmm...
+        // in cases such as when ID is used as an attribute, or as @XmlValue
+        // the target wilil be current.target.
+        // but in some other cases, such as when ID is used as a child element
+        // or a value of JAXBElement, it's current.prev.target.
+        // I don't know if this detection logic is complete
+        Object o = current.target;
+        if(o==null)
+            o = current.prev.target;
+        idmap.put( id, o );
         return id;
     }
 
