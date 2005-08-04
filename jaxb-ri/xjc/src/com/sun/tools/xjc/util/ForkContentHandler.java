@@ -10,7 +10,7 @@ import org.xml.sax.SAXException;
  * two ContentHandlers.
  *
  *
- * @version	$Id: ForkContentHandler.java,v 1.1 2005-05-23 17:04:58 kohsuke Exp $
+ * @version	$Id: ForkContentHandler.java,v 1.2 2005-08-04 15:29:58 kohsuke Exp $
  * @author  <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ForkContentHandler implements ContentHandler {

@@ -218,7 +218,7 @@ public final class ModelLoader {
             handler = wrapBy( new IncorrectNamespaceURIChecker(errorReceiver), handler );
             handler = wrapBy( new CustomizationContextChecker(errorReceiver), handler );
 //          handler = wrapBy( new VersionChecker(controller), handler );
-            
+
             baseParser.parse( source, handler, errorHandler, entityResolver );
         }
         /**

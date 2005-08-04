@@ -30,6 +30,11 @@
       <xs:attribute name="name" use="required"/>
     </xs:complexType>
   </xs:element>
+  <xs:element name="dom">
+    <xs:complexType>
+      <xs:attribute name="type" use="required"/>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="serializable">
     <xs:complexType>
       <xs:attribute name="uid" type="xs:long"/>
