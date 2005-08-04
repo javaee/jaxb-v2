@@ -29,6 +29,16 @@ final class MTOMDecorator implements XmlVisitor {
      */
     private boolean inXopInclude;
 
+    /**
+     * UGLY HACK: we need to ignore the whitespace that follows
+     * the attached base64 image.
+     *
+     * This happens twice; once before &lt;/xop:Include>, another
+     * after &lt;/xop:Include>. The spec guarantees that
+     * no valid pcdata can follow &lt;/xop:Include>. 
+     */
+    private boolean followXop;
+
     public MTOMDecorator(UnmarshallerImpl parent,XmlVisitor next, AttachmentUnmarshaller au) {
         this.parent = parent;
         this.next = next;
@@ -56,6 +66,7 @@ final class MTOMDecorator implements XmlVisitor {
             base64data.set(attachment);
             next.text(base64data);
             inXopInclude = true;
+            followXop = true;
         } else
             next.startElement(nsUri, localName, qname, atts);
     }
@@ -64,6 +75,7 @@ final class MTOMDecorator implements XmlVisitor {
         if(inXopInclude) {
             // consume </xop:Include> by ourselves.
             inXopInclude = false;
+            followXop = true;
             return;
         }
         next.endElement(nsUri,localName,qname);
@@ -78,7 +90,10 @@ final class MTOMDecorator implements XmlVisitor {
     }
 
     public void text( CharSequence pcdata ) throws SAXException {
-        next.text(pcdata);
+        if(!followXop)
+            next.text(pcdata);
+        else
+            followXop = false;
     }
 
     public UnmarshallingContext getContext() {
