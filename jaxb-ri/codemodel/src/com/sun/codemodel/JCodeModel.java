@@ -458,9 +458,11 @@ public final class JCodeModel {
 
         public JClass _extends() {
             Class sp = _class.getSuperclass();
-            if (sp == null)
+            if (sp == null) {
+                if(isInterface())
+                    return owner().ref(Object.class);
                 return null;
-            else
+            } else
                 return ref(sp);
         }
 
