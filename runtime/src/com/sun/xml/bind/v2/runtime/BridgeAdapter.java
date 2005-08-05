@@ -4,6 +4,8 @@ import java.io.OutputStream;
 import java.net.URL;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.MarshalException;
+import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -55,7 +57,7 @@ final class BridgeAdapter<OnWire,InMemory> extends Bridge<InMemory> {
             return a.marshal(v);
         } catch (Exception e) {
             m.serializer.handleError(e,v,null);
-            throw new JAXBException(e);
+            throw new MarshalException(e);
         } finally {
             m.serializer.popCoordinator();
             m.serializer.resetThreadAffinity();
@@ -86,9 +88,9 @@ final class BridgeAdapter<OnWire,InMemory> extends Bridge<InMemory> {
             try {
                 u.coordinator.handleError(e);
             } catch (SAXException e1) {
-                throw new JAXBException(e1);
+                throw new UnmarshalException(e1);
             }
-            throw new JAXBException(e);
+            throw new UnmarshalException(e);
         } finally {
             u.coordinator.popCoordinator();
             u.coordinator.resetThreadAffinity();
