@@ -145,10 +145,18 @@ abstract class ObjectFactoryGeneratorImpl extends ObjectFactoryGenerator {
         //        }
         //        NOTE: when we generate value classes FooType==FooTypeImpl
         //
+        // to deal with
+        //  new JAXBElement<List<String>>( ..., List.class, ... );
+        // we sometimes have to produce (Class)List.class instead of just List.class
 
         m = objectFactory.method( JMod.PUBLIC, exposedElementType, "create" + ei.getSqueezedName() );
         JVar $value = m.param(exposedType,"value");
-        JExpression declaredType = JExpr.cast(classRef,implType.boxify().dotclass()); // why do we have to cast?
+
+        JExpression declaredType;
+        if(implType.boxify().isParameterized())
+            declaredType = JExpr.cast(classRef,implType.boxify().dotclass());
+        else
+            declaredType = implType.boxify().dotclass();
         JExpression scopeClass = scope==null?JExpr._null():scope.dotclass();
 
         // build up the return extpression
