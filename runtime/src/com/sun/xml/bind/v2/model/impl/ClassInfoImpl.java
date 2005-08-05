@@ -814,8 +814,17 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     @Override
     /*package*/ void link() {
         getProperties();    // make sure properties!=null
-        for( PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> p : properties )
+
+        Map<String,PropertyInfoImpl> names = new HashMap<String,PropertyInfoImpl>();
+        for( PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> p : properties ) {
             p.link();
+            PropertyInfoImpl old = names.put(p.getName(),p);
+            if(old!=null) {
+                builder.reportError(new IllegalAnnotationException(
+                    Messages.PROPERTY_COLLISION.format(p.getName()),
+                    p, old ));
+            }
+        }
         super.link();
     }
 

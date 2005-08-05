@@ -43,6 +43,7 @@ enum Messages {
     CONFLICTING_XML_TYPE_MAPPING, // 1 arg
     XMLVALUE_IN_DERIVED_TYPE, // 0 args
     SIMPLE_TYPE_IS_REQUIRED, // 1 arg
+    PROPERTY_COLLISION, // 1 arg
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());
