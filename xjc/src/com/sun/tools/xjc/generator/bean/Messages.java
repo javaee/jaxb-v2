@@ -17,6 +17,8 @@ enum Messages {
     ERR_UNUSABLE_NAME, // 2 args
     ERR_NAME_COLLISION, // 1 arg
     ILLEGAL_CONSTRUCTOR_PARAM, // 1 arg
+    OBJECT_FACTORY_CONFLICT,    // 1 arg
+    OBJECT_FACTORY_CONFLICT_RELATED,
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getPackage().getName() + ".MessageBundle");

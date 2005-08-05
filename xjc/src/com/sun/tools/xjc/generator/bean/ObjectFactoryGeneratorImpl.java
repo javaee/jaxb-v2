@@ -2,9 +2,10 @@ package com.sun.tools.xjc.generator.bean;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
-import javax.xml.namespace.QName;
 import javax.xml.bind.JAXBException;
+import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
@@ -55,8 +56,24 @@ abstract class ObjectFactoryGeneratorImpl extends ObjectFactoryGenerator {
      */
     private final JDefinedClass objectFactory;
 
-    /** map of qname to JInvocation */
+    /** map of qname to the QName constant field. */
     private final HashMap<QName,JFieldVar> qnameMap = new HashMap<QName,JFieldVar>();
+
+    /**
+     * Names of the element factory methods that are created.
+     * Used to detect collisions.
+     *
+     * The value is used for reporting error locations.
+     */
+    private final Map<String,CElementInfo> elementFactoryNames = new HashMap<String,CElementInfo>();
+
+    /**
+     * Names of the value factory methods that are created.
+     * Used to detect collisions.
+     *
+     * The value is used for reporting error locations.
+     */
+    private final Map<String,ClassOutlineImpl> valueFactoryNames = new HashMap<String,ClassOutlineImpl>();
 
     /**
      * Returns a reference to the generated (public) ObjectFactory
@@ -125,6 +142,17 @@ abstract class ObjectFactoryGeneratorImpl extends ObjectFactoryGenerator {
             // TODO: see the "Abstract elements and mighty IXmlElement" e-mail
             // that I sent to jaxb-tech
             TODO.checkSpec();
+        }
+
+        {// collision check
+            CElementInfo existing = elementFactoryNames.put(ei.getSqueezedName(),ei);
+            if( existing!=null ) {
+                outline.getErrorReceiver().error(existing.getLocator(),
+                    Messages.OBJECT_FACTORY_CONFLICT.format(ei.getSqueezedName()));
+                outline.getErrorReceiver().error(ei.getLocator(),
+                    Messages.OBJECT_FACTORY_CONFLICT_RELATED.format());
+                return;
+            }
         }
 
         // no arg constructor
@@ -256,6 +284,18 @@ abstract class ObjectFactoryGeneratorImpl extends ObjectFactoryGenerator {
             // if we are going to add constructors with parameters,
             // first we need to have a default constructor.
             cc.implClass.constructor(JMod.PUBLIC);
+        }
+
+        {// collision check
+            String name = cc.target.getSqueezedName();
+            ClassOutlineImpl existing = valueFactoryNames.put(name,cc);
+            if( existing!=null ) {
+                outline.getErrorReceiver().error(existing.target.getLocator(),
+                    Messages.OBJECT_FACTORY_CONFLICT.format(name));
+                outline.getErrorReceiver().error(cc.target.getLocator(),
+                    Messages.OBJECT_FACTORY_CONFLICT_RELATED.format());
+                return;
+            }
         }
 
         for( Constructor cons : consl ) {
