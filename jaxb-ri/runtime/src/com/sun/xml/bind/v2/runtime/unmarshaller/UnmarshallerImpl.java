@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: UnmarshallerImpl.java,v 1.18 2005-08-04 21:33:30 kohsuke Exp $
+ * @(#)$Id: UnmarshallerImpl.java,v 1.19 2005-08-05 20:52:48 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -189,7 +189,7 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
         try {
             reader.parse(source);
         } catch( IOException e ) {
-            throw new JAXBException(e);
+            throw new UnmarshalException(e);
         } catch( SAXException e ) {
             throw createUnmarshalException(e);
         }
@@ -381,8 +381,8 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
         if(ne instanceof JAXBException)
             return (JAXBException)ne;
         if(ne instanceof SAXException)
-            return new JAXBException(ne);
-        return new JAXBException(e);
+            return new UnmarshalException(ne);
+        return new UnmarshalException(e);
     }
 
     public void setProperty(String name, Object value) throws PropertyException {
