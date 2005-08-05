@@ -26,27 +26,25 @@ set APT=apt
 goto SETCLASSPATH
 
 :USE_JAVA_HOME
-set APT="%JAVA_HOME%\bin\apt"
+set JAVA="%JAVA_HOME%\bin\java"
 goto SETCLASSPATH
 
 :SETCLASSPATH
 if "%CLASSPATH%" == "" goto NOUSERCLASSPATH
-set LOCALCLASSPATH=%JAXB_HOME%\lib\jaxb-api.jar;%CLASSPATH%
+set LOCALCLASSPATH=%JAXB_HOME%\lib\jaxb-api.jar;%JAXB_HOME%\lib\jaxb-xjc.jar;%JAVA_HOME%/lib/tools.jar;%CLASSPATH%
 goto LAUNCHSCHEMAGEN
 
 :NOUSERCLASSPATH
-set LOCALCLASSPATH=%JAXB_HOME%\lib\jaxb-api.jar
+set LOCALCLASSPATH=%JAXB_HOME%\lib\jaxb-api.jar;%JAXB_HOME%\lib\jaxb-xjc.jar;%JAVA_HOME%/lib/tools.jar
 goto LAUNCHSCHEMAGEN
 
 :LAUNCHSCHEMAGEN
-set OPTS=-factory com.sun.tools.jxc.apt.SchemaGenerator -nocompile
-
 if not "%XJC_OPTS%" == "" goto LAUNCHSCHEMAGENWITHOPTS
-%APT% -cp %LOCALCLASSPATH% -factorypath %JAXB_HOME%\lib\jaxb-xjc.jar %OPTS% %*
+%JAVA%  -cp %LOCALCLASSPATH% com.sun.tools.jxc.apt.SchemaGeneratorWrapper %*
 goto END
 
 :LAUNCHSCHEMAGENWITHOPTS
-%APT% %XJC_OPTS% -cp %JAXB_HOME%\lib\jaxb-api.jar -factorypath %JAXB_HOME%\lib\jaxb-xjc.jar %OPTS% %*
+%JAVA% %XJC_OPTS% -cp %LOCALCLASSPATH% com.sun.tools.jxc.apt.SchemaGeneratorWrapper %*
 goto END
 
 
