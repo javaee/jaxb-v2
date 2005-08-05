@@ -146,6 +146,11 @@ public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, 
         return false;
     }
 
+    public boolean isSimpleType() {
+        return true;
+    }
+
+
     /**
      * The spec says the value field in the enum class will be generated
      * only under certain circumstances.

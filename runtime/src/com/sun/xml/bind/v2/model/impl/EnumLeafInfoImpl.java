@@ -105,6 +105,10 @@ class EnumLeafInfoImpl<T,C,F,M>
         return baseType;
     }
 
+    public boolean isSimpleType() {
+        return true;
+    }
+
     public Location getLocation() {
         return nav().getClassLocation(clazz);
     }

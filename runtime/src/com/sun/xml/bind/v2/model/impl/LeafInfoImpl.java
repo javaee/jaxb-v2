@@ -45,6 +45,10 @@ abstract class LeafInfoImpl<TypeT,ClassDeclT> implements LeafInfo<TypeT,ClassDec
         return this;
     }
 
+    public boolean isSimpleType() {
+        return true;
+    }
+
     public String toString() {
         return type.toString();
     }

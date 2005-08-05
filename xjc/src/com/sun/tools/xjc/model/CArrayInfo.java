@@ -37,6 +37,10 @@ public final class CArrayInfo extends AbstractCTypeInfoImpl implements ArrayInfo
         return typeName;
     }
 
+    public boolean isSimpleType() {
+        return false;
+    }
+
     public JType toType(Outline o, Aspect aspect) {
         return itemType.toType(o,aspect).array();
     }

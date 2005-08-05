@@ -36,6 +36,10 @@ public class AnyTypeImpl<T,C> implements NonElement<T,C> {
         return null;
     }
 
+    public boolean isSimpleType() {
+        return false;
+    }
+
     public Location getLocation() {
         return nav.getClassLocation(nav.asDecl(Object.class));
     }

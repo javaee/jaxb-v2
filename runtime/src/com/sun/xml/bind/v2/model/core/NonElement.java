@@ -19,4 +19,10 @@ public interface NonElement<TypeT,ClassDeclT> extends TypeInfo<TypeT,ClassDeclT>
      *      null if the object doesn't have an explicit type name (AKA anonymous.)
      */
     QName getTypeName();
+
+    /**
+     * Returns true if this {@link NonElement} maps to text in XML,
+     * without any attribute nor child elements.
+     */
+    boolean isSimpleType();
 }

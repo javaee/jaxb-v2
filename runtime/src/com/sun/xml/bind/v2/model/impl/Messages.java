@@ -35,8 +35,6 @@ enum Messages {
     FAILED_TO_INITIALE_DATATYPE_FACTORY, // 0 args
     NO_IMAGE_WRITER, // 1 arg
 
-    ILLEGAL_TYPE_FOR_ATTRIBUTE, // 1 arg
-    ILLEGAL_TYPE_FOR_VALUE, // 1 arg
     ILLEGAL_MIME_TYPE, // 2 args
     ILLEGAL_ANNOTATION, // 1 arg
 
@@ -44,6 +42,7 @@ enum Messages {
     ELEMENT_AND_VALUE_PROPERTY, // 0 args
     CONFLICTING_XML_TYPE_MAPPING, // 1 arg
     XMLVALUE_IN_DERIVED_TYPE, // 0 args
+    SIMPLE_TYPE_IS_REQUIRED, // 1 arg
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());

@@ -262,6 +262,10 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
         return typeName;
     }
 
+    public boolean isSimpleType() {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * Returns the FQCN of this bean.
      */
