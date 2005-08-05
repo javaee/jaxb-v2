@@ -566,7 +566,7 @@ public final class BeanGenerator implements Outline
                 constRef.annotate2(XmlEnumValueWriter.class).value(mem.getLexicalValue());
 
             // set javadoc
-            if( mem!=null && mem.javadoc!=null )
+            if( mem.javadoc!=null )
                 constRef.javadoc().append(mem.javadoc);
 
             enumOutline.constants.add(new EnumConstantOutline(mem,constRef){});

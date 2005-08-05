@@ -59,7 +59,6 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
 
     protected ArrayElementProperty(JAXBContextImpl grammar, RuntimeElementPropertyInfo prop) {
         super(grammar, prop, prop.getXmlName(), prop.isCollectionNillable());
-        assert prop!=null;
         this.prop = prop;
 
         List<? extends RuntimeTypeRef> types = prop.getTypes();

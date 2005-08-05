@@ -50,13 +50,13 @@ abstract class ArrayERProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,Li
     }
 
 
-    private class ItemsLoader extends Loader {
+    private static final class ItemsLoader extends Loader {
         public ItemsLoader(QNameMap<ChildLoader> children) {
             super(false);
             this.children = children;
         }
 
-        public void startElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+        public void startElement(UnmarshallingContext.State state, EventArg ea) {
             state.getContext().startScope(1);
         }
 

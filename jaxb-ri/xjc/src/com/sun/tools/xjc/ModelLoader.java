@@ -379,6 +379,14 @@ public final class ModelLoader {
 
     private static final class SpeculationFailure extends Error {}
 
+    private static final class SpeculationChecker extends XMLFilterImpl {
+        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+            if(localName.equals("bindings") && uri.equals(Const.JAXB_NSURI))
+                throw new SpeculationFailure();
+            super.startElement(uri,localName,qName,attributes);
+        }
+    }
+
     /**
      * Parses schemas directly into XSOM by assuming that there's
      * no external annotations.
@@ -389,13 +397,6 @@ public final class ModelLoader {
     private XSSchemaSet createXSOMSpeculative() throws SAXException, SpeculationFailure {
 
         // check if the schema contains external binding files. If so, speculation is a failure.
-        class SpeculationChecker extends XMLFilterImpl {
-            public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-                if(localName.equals("bindings") && uri.equals(Const.JAXB_NSURI))
-                    throw new SpeculationFailure();
-                super.startElement(uri,localName,qName,attributes);
-            }
-        }
 
         XMLParser parser = new XMLParser() {
             private final JAXPParser base = new JAXPParser();

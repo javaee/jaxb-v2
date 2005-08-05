@@ -22,14 +22,14 @@ public final class QNameMap<ValueT> {
     /**
      * The default initial capacity - MUST be a power of two.
      */
-    static final int DEFAULT_INITIAL_CAPACITY = 16;
+    private static final int DEFAULT_INITIAL_CAPACITY = 16;
 
     /**
      * The maximum capacity, used if a higher value is implicitly specified
      * by either of the constructors with arguments.
      * MUST be a power of two <= 1<<30.
      */
-    static final int MAXIMUM_CAPACITY = 1 << 30;
+    private static final int MAXIMUM_CAPACITY = 1 << 30;
 
     /**
      * The table, resized as necessary. Length MUST Always be a power of two.
@@ -51,14 +51,8 @@ public final class QNameMap<ValueT> {
     /**
      * The load factor used when none specified in constructor.
      **/
-    static final float DEFAULT_LOAD_FACTOR = 0.75f;
+    private static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
-    /**
-     * The load factor for the hash table.
-     *
-     * @serial
-     */
-    final float loadFactor;
 
 
     /**
@@ -67,7 +61,6 @@ public final class QNameMap<ValueT> {
     private Set<Entry<ValueT>> entrySet = null;
 
     public QNameMap() {
-        this.loadFactor = DEFAULT_LOAD_FACTOR;
         threshold = (int)(DEFAULT_INITIAL_CAPACITY * DEFAULT_LOAD_FACTOR);
         table = new Entry[DEFAULT_INITIAL_CAPACITY];
 
@@ -266,7 +259,6 @@ public final class QNameMap<ValueT> {
     private abstract class HashIterator<E> implements Iterator<E> {
         Entry<ValueT> next;	// next entry to return
         int index;		// current slot
-        Entry<ValueT> current;	// current entry
 
         HashIterator() {
             Entry<ValueT>[] t = table;
@@ -296,11 +288,10 @@ public final class QNameMap<ValueT> {
                 n = t[--i];
             index = i;
             next = n;
-            return current = e;
+            return e;
         }
 
         public void remove() {
-            // TODO: implement this method later
             throw new UnsupportedOperationException();
         }
     }

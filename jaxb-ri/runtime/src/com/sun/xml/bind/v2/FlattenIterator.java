@@ -2,6 +2,7 @@ package com.sun.xml.bind.v2;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 /**
  * {@link Iterator} that walks over a map of maps.
@@ -30,9 +31,10 @@ public final class FlattenIterator<T> implements Iterator<T> {
     }
 
     public T next() {
-        getNext();
         T r = next;
         next = null;
+        if(r==null)
+            throw new NoSuchElementException();
         return r;
     }
 

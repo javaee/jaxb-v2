@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: IsSetField.java,v 1.1 2005-04-15 20:09:08 kohsuke Exp $
+ * @(#)$Id: IsSetField.java,v 1.2 2005-08-05 18:01:31 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -60,7 +60,7 @@ class IsSetField extends AbstractField {
             if( hasSetValue==null ) {
                 // this field renderer doesn't support the isSet/unset methods generation.
                 // issue an error
-                
+                throw new UnsupportedOperationException();
             }
             writer.declareMethod(codeModel.BOOLEAN,"isSet"+this.prop.getName(true))
                 .body()._return( hasSetValue );
