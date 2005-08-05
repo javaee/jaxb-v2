@@ -51,7 +51,7 @@ import org.xml.sax.Locator;
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-public class ClassSelector extends BindingComponent {
+public final class ClassSelector extends BindingComponent {
     /** Center of owner classes. */
     private final BGMBuilder builder = Ring.get(BGMBuilder.class);
 
