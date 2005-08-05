@@ -23,6 +23,10 @@ public class SchemaGeneratorWrapper  {
 
     public static void main (String args[]) {
         try {
+            if (args.length ==0) {
+                usage();
+                System.exit(0);
+            }
             for (String arg : args) {
                 if (arg.equals("-help")) {
                     usage();
