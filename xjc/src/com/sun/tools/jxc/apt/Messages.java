@@ -12,6 +12,7 @@ enum Messages {
     // Accessor
     NON_EXISTENT_FILE, // 1 arg
     NO_FILE_SPECIFIED, // 0 args
+    USAGE, //0 args
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getPackage().getName() +".MessageBundle");
