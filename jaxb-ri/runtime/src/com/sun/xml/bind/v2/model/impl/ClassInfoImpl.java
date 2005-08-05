@@ -188,8 +188,6 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     }
 
     public List<? extends PropertyInfo<TypeT,ClassDeclT>> getProperties() {
-        TODO.prototype();       // TODO: implement this method properly later
-
         if(properties!=null)    return properties;
 
         // check the access type first
@@ -212,7 +210,6 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         findGetterSetterProperties(at);
 
         if(propOrder==DEFAULT_ORDER || propOrder==null) {
-            // TODO: sort them in the default order
             AccessorOrder ao = getAccessorOrder();
             if(ao==AccessorOrder.ALPHABETICAL)
                 Collections.sort(properties);
@@ -241,8 +238,11 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
                         // can't have multiple value properties.
                         builder.reportError(new IllegalAnnotationException(
                             Messages.MULTIPLE_VALUE_PROPERTY.format(),
-                            vp, p
-                        ));
+                            vp, p ));
+                    }
+                    if(getBaseClass()!=null) {
+                        builder.reportError(new IllegalAnnotationException(
+                            Messages.XMLVALUE_IN_DERIVED_TYPE.format(), p ));
                     }
                     vp = p;
                     break;
