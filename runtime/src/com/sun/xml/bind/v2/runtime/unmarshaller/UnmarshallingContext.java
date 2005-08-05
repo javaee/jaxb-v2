@@ -941,14 +941,14 @@ public final class UnmarshallingContext extends Coordinator
          * Computes the names of possible root elements for a better error diagnosis.
          */
         private String computeExpectedRootElements(UnmarshallingContext context) {
-            String r = "";
+            StringBuilder r = new StringBuilder();
 
             for( QName n : context.getJAXBContext().getValidRootNames() ) {
-                if(r.length()!=0)   r+=',';
-                r += "<{"+n.getNamespaceURI()+'}'+n.getLocalPart()+'>';
+                if(r.length()!=0)   r.append(',');
+                r.append("<{").append(n.getNamespaceURI()).append('}').append(n.getLocalPart()).append('>');
             }
 
-            return r;
+            return r.toString();
         }
 
         public void receive(State state, Object o) {

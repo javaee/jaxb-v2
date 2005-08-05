@@ -138,9 +138,10 @@ public class DataWriter extends XMLWriter
      */
     public void setIndentStep (int indentStep)
     {
-        String s = "";
-        for( ; indentStep>0; indentStep-- )   s+=' ';
-        setIndentStep(s);
+        StringBuilder buf = new StringBuilder();
+        for( ; indentStep>0; indentStep-- )
+            buf.append(' ');
+        setIndentStep(buf.toString());
     }
     
     public void setIndentStep(String s) {

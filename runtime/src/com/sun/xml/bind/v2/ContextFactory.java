@@ -142,29 +142,32 @@ public class ContextFactory {
 
         BufferedReader in =
                 new BufferedReader(new InputStreamReader(resourceAsStream, "UTF-8"));
+        try {
+            FinalArrayList<Class> classes = new FinalArrayList<Class>();
+            String className = in.readLine();
+            while (className != null) {
+                className = className.trim();
+                if (className.startsWith("#") || (className.length() == 0)) {
+                    className = in.readLine();
+                    continue;
+                }
+                int dot = className.indexOf('.');
+                if (dot < 1) {
+                    throw new JAXBException(Messages.ILLEGAL_ENTRY.format(resource));
+                }
 
-        FinalArrayList<Class> classes = new FinalArrayList<Class>();
-        String className = in.readLine();
-        while (className != null) {
-            className = className.trim();
-            if (className.startsWith("#") || (className.length() == 0)) {
+                className = className.substring(0, dot);
+                try {
+                    classes.add(classLoader.loadClass(pkg + '.' + className));
+                } catch (ClassNotFoundException e) {
+                    throw new JAXBException(Messages.ERROR_LOADING_CLASS.format(className, resource));
+                }
+
                 className = in.readLine();
-                continue;
             }
-            int dot = className.indexOf('.');
-            if (dot < 1) {
-                throw new JAXBException(Messages.ILLEGAL_ENTRY.format(resource));
-            }
-
-            className = className.substring(0, dot);
-            try {
-                classes.add(classLoader.loadClass(pkg + '.' + className));
-            } catch (ClassNotFoundException e) {
-                throw new JAXBException(Messages.ERROR_LOADING_CLASS.format(className, resource));
-            }
-
-            className = in.readLine();
+            return classes;
+        } finally {
+            in.close();
         }
-        return classes;
     }
 }

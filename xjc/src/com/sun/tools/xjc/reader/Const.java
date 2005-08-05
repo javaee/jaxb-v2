@@ -33,53 +33,5 @@ public class Const {
 
     /** URI to represent DTD. */
     public static final String DTD = "DTD";
-
-    /** List of all built-in types. */
-    public final static String[] builtinTypeNames = new String[] {
-        "anySimpleType",
-        "duration",
-        "dateTime",
-        "time",
-        "date",
-        "gYearMonth",
-        "gYear",
-        "gMonthDay",
-        "gDay",
-        "gMonth",
-        "string",
-        "normalizedString",
-        "token",
-        "language",
-        "Name",
-        "NCName",
-        "ID",
-        "IDREF",
-        "IDREFS",
-        "ENTITY",
-        "ENTITIES",
-        "NMTOKEN",
-        "NMTOKENS",
-        "boolean",
-        "base64Binary",
-        "hexBinary",
-        "float",
-        "decimal",
-        "integer",
-        "nonPositiveInteger",
-        "negativeInteger",
-        "long",
-        "int",
-        "short",
-        "byte",
-        "nonNegativeInteger",
-        "unsignedLong",
-        "unsignedInt",
-        "unsignedShort",
-        "unsignedByte",
-        "positiveInteger",
-        "double",
-        "anyURI",
-        "QName",
-        "NOTATION"};
 }
 

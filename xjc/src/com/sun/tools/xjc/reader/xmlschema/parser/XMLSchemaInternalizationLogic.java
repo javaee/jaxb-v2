@@ -28,7 +28,7 @@ public class XMLSchemaInternalizationLogic implements InternalizationLogic {
      * This filter looks for &lt;xs:import> and &lt;xs:include>
      * and parses those documents referenced by them.
      */
-    private class ReferenceFinder extends AbstractReferenceFinderImpl {
+    private static final class ReferenceFinder extends AbstractReferenceFinderImpl {
         ReferenceFinder( DOMForest parent ) {
             super(parent);
         }
@@ -40,7 +40,7 @@ public class XMLSchemaInternalizationLogic implements InternalizationLogic {
             else
                 return null;
         }
-    };
+    }
 
     public XMLFilterImpl createExternalReferenceFinder(DOMForest parent) {
         return new ReferenceFinder(parent);

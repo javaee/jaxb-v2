@@ -48,30 +48,30 @@ public abstract class WhitespaceNormalizer
         throw new IllegalArgumentException(method);
     }
     
-    public static WhitespaceNormalizer PRESERVE = new WhitespaceNormalizer() {
+    public static final WhitespaceNormalizer PRESERVE = new WhitespaceNormalizer() {
         public JExpression generate( JCodeModel codeModel, JExpression literal ) {
             return literal;
         }
     };
     
-    public static WhitespaceNormalizer REPLACE = new WhitespaceNormalizer() {
+    public static final WhitespaceNormalizer REPLACE = new WhitespaceNormalizer() {
         public JExpression generate( JCodeModel codeModel, JExpression literal ) {
             // WhitespaceProcessor.replace(<literal>);
             if( literal instanceof JStringLiteral )
                 // optimize
-                return JExpr.lit( WhiteSpaceProcessor.replace(((JStringLiteral)literal).str).toString() );
+                return JExpr.lit( WhiteSpaceProcessor.replace(((JStringLiteral)literal).str) );
             else
                 return codeModel.ref(WhiteSpaceProcessor.class)
                     .staticInvoke("replace").arg(literal);
         }
     };
     
-    public static WhitespaceNormalizer COLLAPSE = new WhitespaceNormalizer() {
+    public static final WhitespaceNormalizer COLLAPSE = new WhitespaceNormalizer() {
         public JExpression generate( JCodeModel codeModel, JExpression literal ) {
             // WhitespaceProcessor.replace(<literal>);
             if( literal instanceof JStringLiteral )
                 // optimize
-                return JExpr.lit( WhiteSpaceProcessor.collapse(((JStringLiteral)literal).str).toString() );
+                return JExpr.lit( WhiteSpaceProcessor.collapse(((JStringLiteral)literal).str) );
             else
                 return codeModel.ref(WhiteSpaceProcessor.class)
                     .staticInvoke("collapse").arg(literal);

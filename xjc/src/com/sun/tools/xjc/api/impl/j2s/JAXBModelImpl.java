@@ -2,22 +2,20 @@ package com.sun.tools.xjc.api.impl.j2s;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
 
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
-import com.sun.mirror.apt.AnnotationProcessorEnvironment;
 import com.sun.mirror.declaration.FieldDeclaration;
 import com.sun.mirror.declaration.MethodDeclaration;
 import com.sun.mirror.declaration.TypeDeclaration;
 import com.sun.mirror.type.TypeMirror;
-import com.sun.xml.bind.v2.schemagen.XmlSchemaGenerator;
 import com.sun.tools.xjc.api.ErrorListener;
 import com.sun.tools.xjc.api.J2SJAXBModel;
 import com.sun.tools.xjc.api.Reference;
@@ -39,8 +37,6 @@ import com.sun.xml.bind.v2.schemagen.XmlSchemaGenerator;
  */
 final class JAXBModelImpl implements J2SJAXBModel {
 
-    final AnnotationProcessorEnvironment env;
-    
     private final Map<QName,Reference> additionalElementDecls;
 
     private final List<String> classList = new ArrayList<String>();
@@ -56,14 +52,12 @@ final class JAXBModelImpl implements J2SJAXBModel {
     private final Map<Reference,NonElement<TypeMirror,TypeDeclaration>> refMap =
         new HashMap<Reference, NonElement<TypeMirror,TypeDeclaration>>();
 
-    public JAXBModelImpl(AnnotationProcessorEnvironment env,
-                         TypeInfoSet<TypeMirror,TypeDeclaration,FieldDeclaration,MethodDeclaration> types,
-                         AnnotationReader<TypeMirror,TypeDeclaration,FieldDeclaration,MethodDeclaration> reader,
+    public JAXBModelImpl(TypeInfoSet<TypeMirror, TypeDeclaration, FieldDeclaration, MethodDeclaration> types,
+                         AnnotationReader<TypeMirror, TypeDeclaration, FieldDeclaration, MethodDeclaration> reader,
                          Collection<Reference> rootClasses,
-                         Map<QName,Reference> additionalElementDecls) {
+                         Map<QName, Reference> additionalElementDecls) {
         this.types = types;
         this.reader = reader;
-        this.env = env;
         this.additionalElementDecls = additionalElementDecls;
 
         Navigator<TypeMirror,TypeDeclaration,FieldDeclaration,MethodDeclaration> navigator = types.getNavigator();

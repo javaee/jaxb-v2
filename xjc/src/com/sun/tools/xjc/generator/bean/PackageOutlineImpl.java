@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: PackageOutlineImpl.java,v 1.9 2005-05-20 20:58:54 ryan_shoemaker Exp $
+ * @(#)$Id: PackageOutlineImpl.java,v 1.10 2005-08-05 18:01:32 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlSchema;
@@ -198,8 +199,9 @@ final class PackageOutlineImpl implements PackageOutline {
         String mostPopular = null;
         int count = 0;
 
-        for (String uri : map.keySet()) {
-            int uriCount = map.get(uri);
+        for (Map.Entry<String,Integer> e : map.entrySet()) {
+            String uri = e.getKey();
+            int uriCount = e.getValue();
             if (mostPopular == null) {
                 mostPopular = uri;
                 count = uriCount;

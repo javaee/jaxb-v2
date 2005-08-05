@@ -49,11 +49,6 @@ public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, 
     private final QName typeName;
 
     /**
-     * {@link Model} that owns this object.
-     */
-    /*package*/ final Model model;
-
-    /**
      * Represents the underlying type of this enumeration
      * and its conversion.
      *
@@ -94,7 +89,6 @@ public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, 
                          Collection<CEnumConstant> _members,
                          CCustomizations customizations,
                          Locator _sourceLocator) {
-        this.model = model;
         this.parent = container;
         this.shortName = shortName;
         this.base = base;
