@@ -128,7 +128,9 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
         }
         if(valuep==null)
             return null;
-
+        if( !valuep.getTarget().isSimpleType() )
+            return null;    // if there's an error, recover from it by returning null.
+        
         return new TransducerImpl(getClazz(),TransducedAccessor.get(valuep));
     }
 

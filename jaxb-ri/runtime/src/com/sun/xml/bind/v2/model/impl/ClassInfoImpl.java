@@ -44,6 +44,7 @@ import com.sun.xml.bind.v2.model.core.ClassInfo;
 import com.sun.xml.bind.v2.model.core.Element;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
+import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
@@ -797,6 +798,14 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     public final QName getTypeName() {
         return typeName;
+    }
+
+    public final boolean isSimpleType() {
+        for (PropertyInfo p : getProperties()) {
+            if(p.kind()!=PropertyKind.VALUE)
+                return false;
+        }
+        return true;
     }
 
     /**

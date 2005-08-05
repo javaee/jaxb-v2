@@ -9,7 +9,6 @@ import com.sun.xml.bind.v2.model.runtime.RuntimeNonElementRef;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
-import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
 
 /**
  * {@link PropertyInfoImpl} that can only have one type.
@@ -52,6 +51,17 @@ abstract class SingleTypePropertyInfoImpl<T,C,F,M>
         return this;
     }
 
+    public void link() {
+        super.link();
+
+        // parent.builder.
+        if(!type.isSimpleType()) {
+            parent.builder.reportError(new IllegalAnnotationException(
+                Messages.SIMPLE_TYPE_IS_REQUIRED.format(),
+                seed
+            ));
+        }
+    }
 
 //
 //
@@ -75,11 +85,8 @@ abstract class SingleTypePropertyInfoImpl<T,C,F,M>
         if(xducer==null) {
             xducer = RuntimeModelBuilder.createTransducer((RuntimeNonElementRef)this);
             if(xducer==null) {
-                parent().builder.reportError(new IllegalAnnotationException(
-                    Messages.ILLEGAL_TYPE_FOR_VALUE.format(getTarget().getType()),
-                    this
-                ));
-                // avoid repeating the same error by setting a xducer.
+                // this situation is checked by by the link method.
+                // avoid repeating the same error by silently recovering
                 xducer = RuntimeBuiltinLeafInfoImpl.STRING;
             }
         }

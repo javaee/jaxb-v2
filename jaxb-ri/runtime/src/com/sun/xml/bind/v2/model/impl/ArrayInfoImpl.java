@@ -61,6 +61,10 @@ public class ArrayInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         return typeName;
     }
 
+    public boolean isSimpleType() {
+        return false;
+    }
+
     public TypeT getType() {
         return arrayType;
     }
