@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
+import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.runtime.RuntimeNonElementRef;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Transducer;
@@ -54,8 +55,7 @@ abstract class SingleTypePropertyInfoImpl<T,C,F,M>
     public void link() {
         super.link();
 
-        // parent.builder.
-        if(!type.isSimpleType()) {
+        if(!type.isSimpleType() && id()!=ID.IDREF) {
             parent.builder.reportError(new IllegalAnnotationException(
                 Messages.SIMPLE_TYPE_IS_REQUIRED.format(),
                 seed
