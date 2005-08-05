@@ -141,14 +141,7 @@ final class DefaultClassBinder implements ClassBinder
         if(!type.isLocal() || !type.isComplexType())
             return false;
 
-        if( type.getBaseType()==Ring.get(XSSchemaSet.class).getAnyType() )
-            return true;
-
-        if( type.getBaseType().isSimpleType() )
-            return true;    // extended from a simple type
-
-        // todo: check substitution groups and nillableness
-        return false;
+        return true;
     }
 
     public CElement elementDecl(XSElementDecl decl) {
