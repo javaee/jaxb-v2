@@ -5,10 +5,8 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -926,7 +924,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
          * @param rp
          * @param compositor
          */
-        private void handleReferenceProp(ReferencePropertyInfo rp, ExplicitGroup compositor) {
+        private void handleReferenceProp(ReferencePropertyInfo<TypeT,ClassDeclT> rp, ExplicitGroup compositor) {
             QName ename = rp.getXmlName();
             Occurs occurs = null;
 
@@ -954,7 +952,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
 
             // fill in content model
             TODO.checkSpec("should we loop in the case of a non-collection ep?");
-            for (Element<TypeT, ClassDeclT> e : (Collection<? extends Element<TypeT, ClassDeclT>>) rp.getElements()) {
+            for (Element<TypeT, ClassDeclT> e : rp.getElements()) {
                 LocalElement eref = compositor.element();
                 if (occurs == null) occurs = eref;
                 eref.ref(e.getElementName());
