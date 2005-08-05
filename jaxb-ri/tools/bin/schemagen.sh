@@ -42,22 +42,26 @@ fi
 
 # add the api jar file
 if [ -z "$LOCALCLASSPATH" ] ; then
-    LOCALCLASSPATH="$JAXB_HOME"/lib/jaxb-api.jar
+    LOCALCLASSPATH="$JAXB_HOME"/lib/jaxb-api.jar:"$JAXB_HOME"/lib/jaxb-xjc.jar
 else
-    LOCALCLASSPATH="$JAXB_HOME"/lib/jaxb-api.jar:"$LOCALCLASSPATH"
+    LOCALCLASSPATH="$JAXB_HOME"/lib/jaxb-api.jar:"$JAXB_HOME"/lib/jaxb-xjc.jar:"$LOCALCLASSPATH"
 fi
 
+
+if [ -n "$JAVA_HOME" ]
+then
+    JAVA="$JAVA_HOME"/bin/java
+    LOCALCLASSPATH="$JAVA_HOME"/lib/tools.jar:"$LOCALCLASSPATH"
+else
+    JAVA=java
+    JAVACMD=`which $JAVA`
+    BINDIR=`dirname $JAVACMD`
+    LOCALCLASSPATH="$BINDIR"/../lib/tools.jar:"$LOCALCLASSPATH"
+fi
 [ `expr \`uname\` : 'CYGWIN'` -eq 6 ] &&
 {
     LOCALCLASSPATH=`cygpath -w -p ${LOCALCLASSPATH}`
 }
-
-if [ -n "$JAVA_HOME" ]
-then
-    APT="$JAVA_HOME"/bin/apt
-else
-    APT=apt
-fi
 
 if [ `expr \`uname\` : 'CYGWIN'` -eq 6 ]
 then
@@ -65,4 +69,4 @@ then
 fi
 
 
-exec "$APT" $XJC_OPTS -cp "$LOCALCLASSPATH" -factorypath "$JAXB_HOME"/lib/jaxb-xjc.jar -factory com.sun.tools.jxc.apt.SchemaGenerator -nocompile "$@"
+exec "$JAVA"  $XJC_OPTS -cp "$LOCALCLASSPATH" com.sun.tools.jxc.apt.SchemaGeneratorWrapper "$@"
