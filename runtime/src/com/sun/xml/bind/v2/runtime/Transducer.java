@@ -68,12 +68,9 @@ public interface Transducer<ValueT> {
      * @throws AccessorException
      *      if the transducer is used to parse an user bean that uses {@link XmlValue},
      *      then this exception may occur when it tries to set the leaf value to the bean.
-     * @throws RuntimeException
-     *      if the lexical form is incorrect. The method may throw a RuntimeException,
-     *      but it shouldn't cause the entire unmarshalling to fail.
      * @throws SAXException
-     *      if the parse method found an error, the error is reported, and then
-     *      the processing is aborted. 
+     *      if the lexical form is incorrect, the error should be reported
+     *      and SAXException may thrown (or it can return null to recover.)
      */
     ValueT parse(CharSequence lexical) throws AccessorException, SAXException;
 }
