@@ -178,7 +178,10 @@ public final class CElementInfo extends AbstractCTypeInfoImpl implements Element
         CClassInfo s = getScope();
         if(s!=null)
             b.append(s.getSqueezedName());
-        b.append( model.getNameConverter().toClassName(tagName.getLocalPart()));
+        if(className!=null)
+            b.append(className);
+        else
+            b.append( model.getNameConverter().toClassName(tagName.getLocalPart()));
         return b.toString();
     }
 
