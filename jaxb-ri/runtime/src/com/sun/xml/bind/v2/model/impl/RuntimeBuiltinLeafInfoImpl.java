@@ -525,8 +525,13 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
         new RuntimeBuiltinLeafInfoImpl<QName>(QName.class,
             createXS("QName")
             ) {
-            public QName parse(CharSequence text) {
-                return DatatypeConverterImpl._parseQName(text.toString(),UnmarshallingContext.getInstance());
+            public QName parse(CharSequence text) throws SAXException {
+                try {
+                    return DatatypeConverterImpl._parseQName(text.toString(),UnmarshallingContext.getInstance());
+                } catch (IllegalArgumentException e) {
+                    UnmarshallingContext.getInstance().handleError(e);
+                    return null;
+                }
             }
 
             public String print(QName v) {
@@ -575,8 +580,12 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
             }
 
             public XMLGregorianCalendar parse(CharSequence lexical) {
-                TODO.checkSpec("JSR222 Issue #42");
-                return datatypeFactory.newXMLGregorianCalendar(lexical.toString());
+                try {
+                    return datatypeFactory.newXMLGregorianCalendar(lexical.toString());
+                } catch (Exception e) {
+                    UnmarshallingContext.getInstance().handleError(e);
+                    return null;
+                }
             }
         },
         new RuntimeBuiltinLeafInfoImpl<Void>(Void.class) {
@@ -621,19 +630,4 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
             throw new Error(Messages.FAILED_TO_INITIALE_DATATYPE_FACTORY.format(),e);
         }
     }
-
-    // TODO: think about how to handle those primitive types
-    // shall we just create BeanInfo for them and that will be it?
-
-//        // we don't want to have multiple Java classes for the same XML type,
-//        // so those "secondary" types are listed here out side of built-in BeanInfo.
-//        add( leaves, factory, nav.getPrimitive(Short.TYPE), "short" );
-//        add( leaves, factory, nav.getPrimitive(Byte.TYPE), "byte" );
-//        add( leaves, factory, nav.getPrimitive(Integer.TYPE), "int" );
-//        add( leaves, factory, nav.getPrimitive(Long.TYPE), "long" );
-//        add( leaves, factory, nav.getPrimitive(Boolean.TYPE), "boolean" );
-//        add( leaves, factory, nav.getPrimitive(Float.TYPE), "float" );
-//        add( leaves, factory, nav.getPrimitive(Double.TYPE), "double" );
-//        TODO.checkSpec("default mapping for char is not defined yet");
-//        add( leaves, factory, nav.getPrimitive(Character.TYPE), "unsignedShort" );
 }
