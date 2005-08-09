@@ -56,7 +56,7 @@ public class AnnotationUseTest {
        JFieldVar field = cls.field(JMod.PRIVATE,cm.DOUBLE,"y");
 
         //Adding more annotations which are member value pairs
-        JAnnotationUse ause = field.annotate(cm.ref(Retention.class));
+        JAnnotationUse ause = field.annotate(Retention.class);
         ause.param("name","book") ;
         ause.param("targetNamespace",5) ;
 

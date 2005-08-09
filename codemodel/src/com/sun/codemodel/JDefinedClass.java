@@ -439,10 +439,13 @@ public class JDefinedClass
     }
 
     /**
-     * Returns an iterator that walks the fields defined in this class.
+     * Returns all the fields declred in this class.
+     * The returned {@link Map} is a read-only live view.
+     *
+     * @return always non-null.
      */
-    public Collection<JFieldVar> fields() {
-        return fields.values();
+    public Map<String,JFieldVar> fields() {
+        return Collections.unmodifiableMap(fields);
     }
 
     /**
