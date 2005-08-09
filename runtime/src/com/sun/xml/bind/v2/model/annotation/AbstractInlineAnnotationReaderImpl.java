@@ -62,7 +62,7 @@ public abstract class AbstractInlineAnnotationReaderImpl<TypeT,ClassDeclT,FieldT
 
         if(x && y) {
             // both are present. have getMethodAnnotation report an error
-            getMethodAnnotation(annotation,propertyName,getter,setter,srcPos);
+            getMethodAnnotation(annotation,getter,setter,srcPos);
         }
 
         return x||y;
