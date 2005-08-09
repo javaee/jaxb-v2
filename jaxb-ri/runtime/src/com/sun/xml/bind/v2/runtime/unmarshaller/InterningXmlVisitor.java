@@ -25,13 +25,18 @@ public final class InterningXmlVisitor implements XmlVisitor {
         next.endDocument();
     }
 
-    public void startElement( String nsUri, String localName, String qname, Attributes atts ) throws SAXException {
-        attributes.setAttributes(atts);
-        next.startElement(intern(nsUri), intern(localName), intern(qname), attributes);
+    public void startElement(TagName tagName ) throws SAXException {
+        attributes.setAttributes(tagName.atts);
+        tagName.atts = attributes;
+        tagName.uri = intern(tagName.uri);
+        tagName.local = intern(tagName.local);
+        next.startElement(tagName);
     }
 
-    public void endElement( String nsUri, String localName, String qname ) throws SAXException {
-        next.endElement(intern(nsUri), intern(localName), intern(qname));
+    public void endElement(TagName tagName ) throws SAXException {
+        tagName.uri = intern(tagName.uri);
+        tagName.local = intern(tagName.local);
+        next.endElement(tagName);
     }
 
     public void startPrefixMapping( String prefix, String nsUri ) throws SAXException {

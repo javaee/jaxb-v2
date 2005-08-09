@@ -31,6 +31,10 @@ abstract class PropertyImpl<BeanT> implements Property<BeanT> {
     public void serializeURIs(BeanT o, XMLSerializer w) throws SAXException, AccessorException {
     }
 
+    public boolean hasSerializeURIAction() {
+        return false;
+    }
+
     public Accessor getElementPropertyAccessor(String nsUri, String localName) {
         // default implementation. should be overrided
         return null;

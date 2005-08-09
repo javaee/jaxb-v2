@@ -17,7 +17,7 @@ public final class DefaultValueLoaderDecorator extends Loader {
     }
 
     @Override
-    public void startElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+    public void startElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
         // install the default value, but don't override the one given by the parent loader
         if(state.elementDefaultValue==null)
             state.elementDefaultValue = defaultValue;

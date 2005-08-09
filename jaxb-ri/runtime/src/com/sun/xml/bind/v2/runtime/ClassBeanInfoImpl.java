@@ -58,7 +58,6 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
      */
     private RuntimeClassInfo ci;
 
-    private final Accessor declaredAttWildcard;
     private final Accessor inheritedAttWildcard;
     private final Transducer xducer;
     protected final ClassBeanInfoImpl superClazz;
@@ -73,16 +72,17 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
      */
     private /*final*/ AttributeProperty[] attributeProperties;
 
+    /**
+     * {@link Property}s that need to receive {@link Property#serializeURIs(Object, XMLSerializer)} callback.
+     */
+    private /*final*/ Property[] uriProperties;
+
 
     /*package*/ ClassBeanInfoImpl(JAXBContextImpl owner, RuntimeClassInfo ci) {
         super(owner,ci,ci.getClazz(),ci.getTypeName(),ci.isElement(),false,true);
 
         this.ci = ci;
         this.inheritedAttWildcard = ci.getAttributeWildcard();
-        if(ci.declaresAttributeWildcard())
-            this.declaredAttWildcard = inheritedAttWildcard;
-        else
-            this.declaredAttWildcard = null;
         this.xducer = ci.getTransducer();
 
         if(ci.getBaseClass()==null)
@@ -140,18 +140,30 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
                 hasElementOnlyContentModel(false);
         }
 
-        // create a list of attribute handlers
+        // create a list of attribute/URI handlers
         List<AttributeProperty> attProps = new FinalArrayList<AttributeProperty>();
+        List<Property> uriProps = new FinalArrayList<Property>();
         for (ClassBeanInfoImpl bi = this; bi != null; bi = bi.superClazz) {
             for (int i = bi.properties.length - 1; i >= 0; i--) {
                 Property p = bi.properties[i];
                 if(p instanceof AttributeProperty)
                     attProps.add((AttributeProperty) p);
+                if(p.hasSerializeURIAction())
+                    uriProps.add(p);
             }
         }
         if(grammar.c14nSupport)
             Collections.sort(attProps);
-        attributeProperties = attProps.toArray(new AttributeProperty[attProps.size()]);
+
+        if(attProps.isEmpty())
+            attributeProperties = EMPTY_PROPERTIES;
+        else
+            attributeProperties = attProps.toArray(new AttributeProperty[attProps.size()]);
+
+        if(uriProps.isEmpty())
+            uriProperties = EMPTY_PROPERTIES;
+        else
+            uriProperties = uriProps.toArray(new Property[uriProps.size()]);
     }
 
     public void wrapUp() {
@@ -268,14 +280,12 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
     }
 
     public void serializeURIs(BeanT bean, XMLSerializer target) throws SAXException {
-        if(superClazz!=null)
-            superClazz.serializeURIs(bean,target);
         try {
-            for( Property p : properties )
+            for( Property p : uriProperties )
                 p.serializeURIs(bean,target);
 
-            if(declaredAttWildcard!=null) {
-                Map<QName,Object> map = (Map<QName,Object>)declaredAttWildcard.get(bean);
+            if(inheritedAttWildcard!=null) {
+                Map<QName,Object> map = (Map<QName,Object>)inheritedAttWildcard.get(bean);
                 target.attWildcardAsURIs(map,null);
             }
         } catch (AccessorException e) {
@@ -290,5 +300,7 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
     public Transducer<BeanT> getTransducer() {
         return xducer;
     }
+
+    private static final AttributeProperty[] EMPTY_PROPERTIES = new AttributeProperty[0];
 }
 

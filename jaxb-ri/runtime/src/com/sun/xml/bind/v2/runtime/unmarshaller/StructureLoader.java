@@ -3,6 +3,7 @@ package com.sun.xml.bind.v2.runtime.unmarshaller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
@@ -103,7 +104,7 @@ public final class StructureLoader extends Loader {
     }
 
     @Override
-    public void startElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+    public void startElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
         UnmarshallingContext context = state.getContext();
 
         // create the object to unmarshal
@@ -177,7 +178,7 @@ public final class StructureLoader extends Loader {
     }
 
     @Override
-    public void childElement(UnmarshallingContext.State state, EventArg arg) throws SAXException {
+    public void childElement(UnmarshallingContext.State state, TagName arg) throws SAXException {
         ChildLoader child = childUnmarshallers.get(arg.uri,arg.local);
         if(child==null) {
             child = catchAll;
@@ -192,12 +193,17 @@ public final class StructureLoader extends Loader {
     }
 
     @Override
+    public Collection<QName> getExpectedChildElements() {
+        return childUnmarshallers.keySet();
+    }
+
+    @Override
     public void text(UnmarshallingContext.State state, CharSequence text) throws SAXException {
         if(textHandler!=null)
             textHandler.loader.text(state,text);
     }
 
-    public void leaveElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+    public void leaveElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
         state.getContext().endScope(frameSize);
         fireAfterUnmarshal(beanInfo, state.target, state.prev);
     }

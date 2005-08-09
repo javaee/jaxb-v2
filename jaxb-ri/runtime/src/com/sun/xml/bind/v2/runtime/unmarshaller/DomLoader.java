@@ -70,15 +70,15 @@ public class DomLoader<ResultT extends Result> extends Loader {
         this.dom = dom;
     }
 
-    public void startElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+    public void startElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
         UnmarshallingContext context = state.getContext();
         if (state.target == null)
             state.target = new State(context);
 
-        State s = ((State) state.target);
+        State s = (State) state.target;
         try {
             s.declarePrefixes(context, context.getNewlyDeclaredPrefixes());
-            s.handler.startElement(ea.uri, ea.local, ea.qname, ea.atts);
+            s.handler.startElement(ea.uri, ea.local, ea.getQname(), ea.atts);
         } catch (SAXException e) {
             context.handleError(e);
             throw e;
@@ -86,7 +86,7 @@ public class DomLoader<ResultT extends Result> extends Loader {
     }
 
 
-    public void childElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+    public void childElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
         state.loader = this;
         State s = (State) state.prev.target;
         s.depth++;
@@ -103,12 +103,12 @@ public class DomLoader<ResultT extends Result> extends Loader {
         }
     }
 
-    public void leaveElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+    public void leaveElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
         State s = (State) state.target;
         UnmarshallingContext context = state.getContext();
 
         try {
-            s.handler.endElement(ea.uri, ea.local, ea.qname);
+            s.handler.endElement(ea.uri, ea.local, ea.getQname());
             s.undeclarePrefixes(context.getNewlyDeclaredPrefixes());
         } catch( SAXException e ) {
             context.handleError(e);

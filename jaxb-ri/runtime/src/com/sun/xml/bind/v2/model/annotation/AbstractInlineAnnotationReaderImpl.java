@@ -32,7 +32,7 @@ public abstract class AbstractInlineAnnotationReaderImpl<TypeT,ClassDeclT,FieldT
         return errorHandler;
     }
 
-    public final <A extends Annotation> A getMethodAnnotation(Class<A> annotation, String propertyName, MethodT getter, MethodT setter, Locatable srcPos) {
+    public final <A extends Annotation> A getMethodAnnotation(Class<A> annotation, MethodT getter, MethodT setter, Locatable srcPos) {
         A a1 = getter==null?null:getMethodAnnotation(annotation,getter,srcPos);
         A a2 = setter==null?null:getMethodAnnotation(annotation,setter,srcPos);
 

@@ -12,7 +12,6 @@ import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,8 +32,8 @@ import javax.xml.validation.SchemaFactory;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.reader.xmlschema.parser.SchemaConstraintChecker;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
+import com.sun.tools.xjc.util.XMLStreamReaderToContentHandler;
 import com.sun.xml.bind.marshaller.DataWriter;
-import com.sun.xml.bind.v2.stax.XMLStreamReaderToContentHandler;
 import com.sun.xml.xsom.parser.JAXPParser;
 import com.sun.xml.xsom.parser.XMLParser;
 
@@ -212,10 +211,9 @@ public final class DOMForest {
      * Poor-man's base URI.
      */
     public String getSystemId( Document dom ) {
-        for( Iterator itr=core.entrySet().iterator(); itr.hasNext(); ) {
-            Map.Entry e = (Map.Entry)itr.next();
-            if( e.getValue()==dom )
-                return (String)e.getKey();
+        for (Map.Entry<String,Document> e : core.entrySet()) {
+            if (e.getValue() == dom)
+                return e.getKey();
         }
         return null;
     }

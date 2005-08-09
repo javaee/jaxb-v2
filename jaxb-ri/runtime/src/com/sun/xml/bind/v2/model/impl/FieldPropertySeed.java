@@ -21,7 +21,7 @@ class FieldPropertySeed<TypeT,ClassDeclT,FieldT,MethodT> implements
     }
 
     public <A extends Annotation> A readAnnotation(Class<A> a) {
-        return parent.reader().getFieldAnnotation(a,getName(),field,this);
+        return parent.reader().getFieldAnnotation(a, field,this);
     }
 
     public boolean hasAnnotation(Class<? extends Annotation> annotationType) {

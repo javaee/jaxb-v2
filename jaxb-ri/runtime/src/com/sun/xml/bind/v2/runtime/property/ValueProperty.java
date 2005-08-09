@@ -52,6 +52,10 @@ public final class ValueProperty<BeanT,ListT,ItemT> extends PropertyImpl<BeanT> 
         xacc.declareNamespace(o,w);
     }
 
+    public boolean hasSerializeURIAction() {
+        return xacc.useNamespace();
+    }
+
     public void buildChildElementUnmarshallers(UnmarshallerChain chainElem, QNameMap<ChildLoader> handlers) {
         handlers.put(StructureLoaderBuilder.TEXT_HANDLER,
                 new ChildLoader(new ValuePropertyLoader(xacc),null));

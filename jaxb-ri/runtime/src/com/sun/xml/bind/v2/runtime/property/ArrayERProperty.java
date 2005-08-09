@@ -1,6 +1,7 @@
 package com.sun.xml.bind.v2.runtime.property;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -12,7 +13,7 @@ import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
-import com.sun.xml.bind.v2.runtime.unmarshaller.EventArg;
+import com.sun.xml.bind.v2.runtime.unmarshaller.TagName;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Receiver;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Scope;
@@ -56,13 +57,15 @@ abstract class ArrayERProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,Li
             this.children = children;
         }
 
-        public void startElement(UnmarshallingContext.State state, EventArg ea) {
+        @Override
+        public void startElement(UnmarshallingContext.State state, TagName ea) {
             state.getContext().startScope(1);
         }
 
         private final QNameMap<ChildLoader> children;
 
-        public void childElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+        @Override
+        public void childElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
             ChildLoader child = children.get(ea.uri,ea.local);
             if(child!=null) {
                 state.loader = child.loader;
@@ -72,8 +75,14 @@ abstract class ArrayERProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,Li
             }
         }
 
-        public void leaveElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+        @Override
+        public void leaveElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
             state.getContext().endScope(1);
+        }
+
+        @Override
+        public Collection<QName> getExpectedChildElements() {
+            return children.keySet();
         }
     }
 

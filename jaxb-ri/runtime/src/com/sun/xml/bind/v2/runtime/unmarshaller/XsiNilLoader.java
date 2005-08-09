@@ -23,14 +23,14 @@ public class XsiNilLoader extends ProxyLoader {
         assert defaultLoader!=null;
     }
 
-    protected Loader selectLoader(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+    protected Loader selectLoader(UnmarshallingContext.State state, TagName ea) throws SAXException {
         int idx = ea.atts.getIndex(WellKnownNamespace.XML_SCHEMA_INSTANCE,"nil");
 
         if(idx!=-1) {
             String value = ea.atts.getValue(idx);
             ea.eatAttribute(idx);
             if(DatatypeConverterImpl._parseBoolean(value)) {
-                onNil(state,ea);
+                onNil(state);
                 return Discarder.INSTANCE;
             }
         }
@@ -41,7 +41,7 @@ public class XsiNilLoader extends ProxyLoader {
     /**
      * Called when xsi:nil='true' was found.
      */
-    protected void onNil(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+    protected void onNil(UnmarshallingContext.State state) throws SAXException {
     }
 
 
@@ -53,7 +53,7 @@ public class XsiNilLoader extends ProxyLoader {
             this.acc = acc;
         }
 
-        protected void onNil(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+        protected void onNil(UnmarshallingContext.State state) throws SAXException {
             try {
                 acc.set(state.prev.target,null);
             } catch (AccessorException e) {
@@ -74,7 +74,7 @@ public class XsiNilLoader extends ProxyLoader {
             this.lister = lister;
         }
 
-        protected void onNil(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+        protected void onNil(UnmarshallingContext.State state) throws SAXException {
             state.getContext().getScope(offset).add(acc,lister,null);
         }
     }

@@ -37,7 +37,7 @@ class GetterSetterPropertySeed<TypeT,ClassDeclT,FieldT,MethodT> implements
     }
 
     public <A extends Annotation> A readAnnotation(Class<A> annotation) {
-        return parent.reader().getMethodAnnotation(annotation,getName(),getter,setter,this);
+        return parent.reader().getMethodAnnotation(annotation, getter,setter,this);
     }
 
     public boolean hasAnnotation(Class<? extends Annotation> annotationType) {

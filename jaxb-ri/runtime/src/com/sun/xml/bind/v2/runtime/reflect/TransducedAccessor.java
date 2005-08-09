@@ -229,7 +229,7 @@ public abstract class TransducedAccessor<BeanT> {
          *      if the resolution needs to be deferred, in which case it will be retried
          *      after the unmarshalling is completed.
          */
-        private boolean resolveId(BeanT bean, String id, UnmarshallingContext context) throws AccessorException, SAXException {
+        private boolean resolveId(BeanT bean, String id, UnmarshallingContext context) throws AccessorException {
             TargetT t = (TargetT)context.getObjectFromId(id);
             if(t==null)     return false;
 
@@ -240,7 +240,7 @@ public abstract class TransducedAccessor<BeanT> {
             return true;
         }
 
-        public void parse(final BeanT bean, CharSequence lexical) throws AccessorException, SAXException {
+        public void parse(final BeanT bean, CharSequence lexical) throws AccessorException {
             final String idref = WhiteSpaceProcessor.trim(lexical).toString();
             final UnmarshallingContext context = UnmarshallingContext.getInstance();
             if(!resolveId(bean,idref,context)) {

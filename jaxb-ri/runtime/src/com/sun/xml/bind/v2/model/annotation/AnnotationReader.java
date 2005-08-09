@@ -49,8 +49,8 @@ public interface AnnotationReader<TypeT,ClassDeclT,FieldT,MethodT> {
     /**
      * Reads an annotation on a property that consists of a field.
      */
-    <A extends Annotation> A getFieldAnnotation(Class<A> annotation, String propertyName,
-        FieldT field, Locatable srcpos );
+    <A extends Annotation> A getFieldAnnotation(Class<A> annotation,
+                                                FieldT field, Locatable srcpos);
 
     /**
      * Checks if the given field has an annotation.
@@ -61,8 +61,8 @@ public interface AnnotationReader<TypeT,ClassDeclT,FieldT,MethodT> {
      * Reads an annotation on a property that consists of a getter and a setter.
      *
      */
-    <A extends Annotation> A getMethodAnnotation(Class<A> annotation, String propertyName,
-       MethodT getter, MethodT setter, Locatable srcpos );
+    <A extends Annotation> A getMethodAnnotation(Class<A> annotation,
+                                                 MethodT getter, MethodT setter, Locatable srcpos);
 
     /**
      * Checks if the given method has an annotation.

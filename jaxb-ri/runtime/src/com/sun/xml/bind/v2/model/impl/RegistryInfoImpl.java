@@ -55,7 +55,7 @@ final class RegistryInfoImpl<T,C,F,M> implements Locatable, RegistryInfo<T,C> {
                 continue;
             }
 
-            ElementInfoImpl<T,C,F,M> ei = null;
+            ElementInfoImpl<T,C,F,M> ei;
             try {
                 ei = builder.createElementInfo(this,m);
             } catch (IllegalAnnotationException e) {

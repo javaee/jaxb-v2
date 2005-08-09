@@ -51,6 +51,12 @@ public interface Property<BeanT> extends StructureLoaderBuilder {
      */
     public void serializeURIs(BeanT beanT, XMLSerializer target) throws SAXException, AccessorException;
 
+    /**
+     * Returns true if
+     * {@link #serializeURIs(Object,XMLSerializer)} performs some meaningful action.
+     */
+    public boolean hasSerializeURIAction();
+
 //    /**
 //     * Builds the unmarshaller.
 //     *

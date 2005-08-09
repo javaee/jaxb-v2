@@ -73,7 +73,7 @@ class EnumLeafInfoImpl<T,C,F,M>
         EnumConstantImpl<T,C,F,M> last = null;
         for( F constant : nav().getEnumConstants(clazz) ) {
             String name = nav().getFieldName(constant);
-            XmlEnumValue xev = builder.reader.getFieldAnnotation(XmlEnumValue.class, name, constant, this);
+            XmlEnumValue xev = builder.reader.getFieldAnnotation(XmlEnumValue.class, constant, this);
 
             String literal;
             if(xev==null)   literal = name;

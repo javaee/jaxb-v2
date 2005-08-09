@@ -1,6 +1,5 @@
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
-import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 /**
@@ -45,17 +44,9 @@ public interface XmlVisitor {
      * Notifies a start tag of a new element.
      *
      * namespace URIs and local names must be interned.
-     *
-     * @param atts
-     *      the attributes of this element. must not be null.
-     *      need not be immutable; the caller may reuse the same
-     *      {@link Attributes} object for multiple elements.
-     *
-     *      Implementataions are carefully done to allow {@link AttributesEx} to be passed
-     *      in this parameter, allowing efficient typed attribute values to be used for the unmarshalling. 
      */
-    void startElement( String nsUri, String localName, String qname, Attributes atts ) throws SAXException;
-    void endElement( String nsUri, String localName, String qname ) throws SAXException;
+    void startElement(TagName tagName) throws SAXException;
+    void endElement(TagName tagName) throws SAXException;
 
     /**
      * Called before {@link #startElement} event to notify a new namespace binding.

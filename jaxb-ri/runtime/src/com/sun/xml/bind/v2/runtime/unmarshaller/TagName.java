@@ -6,16 +6,27 @@ import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * Parameter of the {enter|leave}{element|attribute} event.
+ * Represents an XML tag name (and attributes for start tags.)
  *
  * <p>
- * For {@link UnmarshallingEventHandler}s, this object should be
- * considered as immutable. But it is made mutable so that
- * {@link UnmarshallingContext} can reuse them.
+ * This object is used so reduce the number of method call parameters
+ * among unmarshallers.
  *
- * @author Kohsuke Kawaguchi (kk@kohsuke.org)
+ * An instance of this is expected to be reused by the caller of
+ * {@link XmlVisitor}. Note that the rest of the unmarshaller may
+ * modify any of the fields while processing an event (such as to
+ * intern strings, replace attributes),
+ * so {@link XmlVisitor} should reset all fields for each use.
+ *
+ * <p>
+ * The 'qname' parameter, which holds the qualified name of the tag
+ * (such as 'foo:bar' or 'zot'), is not used in the typical unmarshalling
+ * route and it's also expensive to compute for some input.
+ * Thus this parameter is computed lazily.
+ *
+ * @author Kohsuke Kawaguchi
  */
-public class EventArg {
+public abstract class TagName {
     /**
      * URI of the attribute/element name.
      *
@@ -30,13 +41,6 @@ public class EventArg {
     public String local;
 
     /**
-     * Rawname of the attribute/element name (e.g., "foo:bar")
-     *
-     * Never be null. Interned.
-     */
-    public String qname;
-
-    /**
      * Used only for the enterElement event.
      * Otherwise the value is undefined.
      *
@@ -44,14 +48,7 @@ public class EventArg {
      */
     public Attributes atts;
 
-    public EventArg() {
-    }
-
-    public EventArg(String uri, String local, String qname, Attributes atts) {
-        this.uri = uri;
-        this.local = local;
-        this.qname = qname;
-        this.atts = atts;
+    public TagName() {
     }
 
     /**
@@ -68,15 +65,15 @@ public class EventArg {
         return this.local==name.localName && this.uri==name.nsUri;
     }
 
-    /**
-     * @return
-     *      Can be empty but always non-null. NOT interned.
-     */
-    public final String getPrefix() {
-        int idx = qname.indexOf(':');
-        if(idx<0)   return "";
-        else        return qname.substring(0,idx);
-    }
+//    /**
+//     * @return
+//     *      Can be empty but always non-null. NOT interned.
+//     */
+//    public final String getPrefix() {
+//        int idx = qname.indexOf(':');
+//        if(idx<0)   return "";
+//        else        return qname.substring(0,idx);
+//    }
 
     public String toString() {
         return '{'+uri+'}'+local;
@@ -93,4 +90,11 @@ public class EventArg {
         a.removeAttribute(idx);
         atts = a;
     }
+
+    /**
+     * Gets the qualified name of the tag.
+     *
+     * @return never null.
+     */
+    public abstract String getQname();
 }
