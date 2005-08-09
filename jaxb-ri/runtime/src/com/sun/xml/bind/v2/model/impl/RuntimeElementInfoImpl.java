@@ -50,7 +50,7 @@ final class RuntimeElementInfoImpl extends ElementInfoImpl<Type,Class,Field,Meth
                 return Accessor.JAXB_ELEMENT_VALUE;
             else
                 return Accessor.JAXB_ELEMENT_VALUE.adapt(
-                        (Class)getAdapter().defaultType,adapterType);
+                        (Class)getAdapter().defaultType,(Class)adapterType);
         }
 
         public Type getRawType() {
