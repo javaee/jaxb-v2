@@ -8,6 +8,7 @@ import java.util.TreeMap;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Arrays;
+import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.namespace.QName;
@@ -206,7 +207,7 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
         ValueT v = acc.get(o);
         if(v!=null) {
             bareStartTag(w,tagName,v);
-            for( Map.Entry e : v.entrySet() ) {
+            for( Map.Entry e : (Set<Map.Entry>)v.entrySet() ) {
                 bareStartTag(w,entryTag,null);
 
                 Object key = e.getKey();
