@@ -362,7 +362,8 @@ public class JDefinedClass
         JExpression init) {
         JFieldVar f = new JFieldVar(owner(),JMods.forField(mods), type, name, init);
 
-        fields.put(name, f);
+        if(fields.put(name, f)!=null)
+            throw new IllegalArgumentException("trying to create the same field twice: "+name);
 
         return f;
     }
