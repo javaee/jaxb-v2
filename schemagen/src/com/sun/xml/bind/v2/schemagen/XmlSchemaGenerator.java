@@ -194,12 +194,17 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
     public void add( EnumLeafInfo<TypeT,ClassDeclT> envm ) {
         assert envm!=null;
 
-        final String namespaceURI = envm.getTypeName().getNamespaceURI();
-        Namespace n = getNamespace(namespaceURI);
-        n.enums.add(envm);
+        final QName typeName = envm.getTypeName();
+        if (typeName != null) {
+            final String namespaceURI = typeName.getNamespaceURI();
+            Namespace n = getNamespace(namespaceURI);
+            n.enums.add(envm);
 
-        // search for foreign namespace references
-        n.addDependencyTo(envm.getBaseType().getTypeName());
+            // search for foreign namespace references
+            n.addDependencyTo(envm.getBaseType().getTypeName());
+        } else { //annonymous
+            return;
+        }
     }
 
     /**
