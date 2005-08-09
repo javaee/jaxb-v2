@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.Map;
+import java.util.Collection;
+import java.util.HashSet;
 
 import javax.xml.namespace.QName;
 
@@ -256,6 +258,14 @@ public final class QNameMap<ValueT> {
         return null;
     }
 
+    public Collection<QName> keySet() {
+        Set<QName> r = new HashSet<QName>();
+        for (Entry<ValueT> e : entrySet) {
+            r.add(e.createQName());
+        }
+        return r;
+    }
+
     private abstract class HashIterator<E> implements Iterator<E> {
         Entry<ValueT> next;	// next entry to return
         int index;		// current slot
@@ -378,7 +388,7 @@ public final class QNameMap<ValueT> {
 
     public Set<Entry<ValueT>> entrySet() {
         Set<Entry<ValueT>> es = entrySet;
-        return (es != null ? es : (entrySet = new EntrySet()));
+        return es != null ? es : (entrySet = new EntrySet());
     }
 
     private Iterator<Entry<ValueT>> newEntryIterator() {

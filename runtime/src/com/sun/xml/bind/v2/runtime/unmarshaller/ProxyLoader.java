@@ -4,7 +4,7 @@ import org.xml.sax.SAXException;
 
 /**
  * {@link Loader} that delegates the processing to another {@link Loader}
- * at {@link #startElement(UnmarshallingContext.State, EventArg)}.
+ * at {@link #startElement(UnmarshallingContext.State, TagName)}.
  *
  * @author Kohsuke Kawaguchi
  */
@@ -13,7 +13,7 @@ public abstract class ProxyLoader extends Loader {
         super(false);
     }
 
-    public final void startElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+    public final void startElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
         Loader loader = selectLoader(state,ea);
         state.loader = loader;
         loader.startElement(state,ea);
@@ -24,10 +24,10 @@ public abstract class ProxyLoader extends Loader {
      *
      * @return never null.
      */
-    protected abstract Loader selectLoader(UnmarshallingContext.State state, EventArg ea) throws SAXException;
+    protected abstract Loader selectLoader(UnmarshallingContext.State state, TagName ea) throws SAXException;
 
     @Override
-    public final void leaveElement(UnmarshallingContext.State state, EventArg ea) {
+    public final void leaveElement(UnmarshallingContext.State state, TagName ea) {
         // this loader is used just to forward to another loader,
         // so we should never get this event.
         throw new IllegalStateException();

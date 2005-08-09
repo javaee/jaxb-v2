@@ -17,7 +17,7 @@ import com.sun.xml.bind.v2.runtime.property.PropertyFactory;
 import com.sun.xml.bind.v2.runtime.property.UnmarshallerChain;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
-import com.sun.xml.bind.v2.runtime.unmarshaller.EventArg;
+import com.sun.xml.bind.v2.runtime.unmarshaller.TagName;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Intercepter;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
@@ -112,6 +112,10 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
             public void serializeURIs(JAXBElement o, XMLSerializer target) {
             }
 
+            public boolean hasSerializeURIAction() {
+                return false;
+            }
+
             public String getIdValue(JAXBElement o) {
                 return null;
             }
@@ -146,7 +150,7 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
             this.core = core;
         }
 
-        public final void startElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+        public final void startElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
             state.loader = core;
             state.intercepter = this;
 

@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: Discarder.java,v 1.2 2005-08-04 03:08:47 kohsuke Exp $
+ * @(#)$Id: Discarder.java,v 1.3 2005-08-09 18:36:27 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -26,7 +26,7 @@ package com.sun.xml.bind.v2.runtime.unmarshaller;
     }
 
     @Override
-    public void childElement(UnmarshallingContext.State state, EventArg ea) {
+    public void childElement(UnmarshallingContext.State state, TagName ea) {
         state.target = null;
         // registering this allows the discarder to process the whole subtree.
         state.loader = this;

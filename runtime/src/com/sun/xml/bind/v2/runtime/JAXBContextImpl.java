@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.45 2005-08-04 04:13:06 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.46 2005-08-09 18:36:30 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -74,8 +74,8 @@ import com.sun.xml.bind.v2.runtime.output.Encoded;
 import com.sun.xml.bind.v2.runtime.property.AttributeProperty;
 import com.sun.xml.bind.v2.runtime.property.Property;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
-import com.sun.xml.bind.v2.runtime.unmarshaller.EventArg;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.TagName;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 
@@ -90,7 +90,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -470,7 +470,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
      * @return
      *      null if the given name pair is not recognized.
      */
-    public final Loader selectRootLoader( UnmarshallingContext.State state, EventArg ea ) {
+    public final Loader selectRootLoader( UnmarshallingContext.State state, TagName ea ) {
         JaxBeanInfo beanInfo = rootMap.get(ea.uri,ea.local);
         if(beanInfo==null)
             // TODO: this is probably the right place to handle @xsi:type

@@ -64,8 +64,12 @@ public final class AttributeProperty<BeanT> extends PropertyImpl<BeanT>
     }
 
     public void serializeURIs(BeanT o, XMLSerializer w) throws AccessorException, SAXException {
-        if(xacc.useNamespace() && xacc.hasValue(o))
+        if(xacc.hasValue(o))
             xacc.declareNamespace(o,w);
+    }
+
+    public boolean hasSerializeURIAction() {
+        return xacc.useNamespace();
     }
 
     public void buildChildElementUnmarshallers(UnmarshallerChain chainElem, QNameMap<ChildLoader> handlers) {

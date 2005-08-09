@@ -47,7 +47,6 @@ import com.sun.xml.bind.marshaller.SAX2DOMEx;
 import com.sun.xml.bind.marshaller.XMLWriter;
 import com.sun.xml.bind.v2.AssociationMap;
 import com.sun.xml.bind.v2.FatalAdapter;
-import com.sun.xml.bind.v2.stax.StAXConnector;
 import com.sun.xml.bind.v2.runtime.output.C14nXmlOutput;
 import com.sun.xml.bind.v2.runtime.output.Encoded;
 import com.sun.xml.bind.v2.runtime.output.ForkXmlOutput;
@@ -58,7 +57,6 @@ import com.sun.xml.bind.v2.runtime.output.XMLEventWriterOutput;
 import com.sun.xml.bind.v2.runtime.output.XMLStreamWriterOutput;
 import com.sun.xml.bind.v2.runtime.output.XmlOutput;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
-import com.sun.xml.bind.v2.runtime.unmarshaller.XmlVisitor;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;

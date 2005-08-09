@@ -177,7 +177,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         return nav().getClassName(clazz);
     }
 
-    public <A extends Annotation> A readAnnotation(Class<A> a) throws IllegalAnnotationException {
+    public <A extends Annotation> A readAnnotation(Class<A> a) {
         return reader().getClassAnnotation(a,clazz,this);
     }
 

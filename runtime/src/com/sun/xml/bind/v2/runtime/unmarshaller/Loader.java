@@ -1,8 +1,12 @@
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
-import javax.xml.bind.ValidationEvent;
+import java.util.Collection;
+import java.util.Collections;
+
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.helpers.ValidationEventImpl;
+import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 
@@ -42,7 +46,7 @@ public abstract class Loader {
      * @param ea
      *      info about the start tag. never null.
      */
-    public void startElement(UnmarshallingContext.State state,EventArg ea) throws SAXException {
+    public void startElement(UnmarshallingContext.State state,TagName ea) throws SAXException {
     }
 
     /**
@@ -56,12 +60,19 @@ public abstract class Loader {
      * <p>
      * The default implementation reports an error saying an element is unexpected.
      */
-    public void childElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+    public void childElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
         // notify the error
-        reportError(Messages.UNEXPECTED_ELEMENT.format(ea.uri,ea.local,/*TODO*/""), true );
+        reportError(Messages.UNEXPECTED_ELEMENT.format(ea.uri,ea.local,computeExpectedElements()), true );
         // then recover by ignoring the whole element.
         state.loader = Discarder.INSTANCE;
         state.receiver = null;
+    }
+
+    /**
+     * Returns a set of tag names expected as possible child elements in this context.
+     */
+    public Collection<QName> getExpectedChildElements() {
+        return Collections.emptyList();
     }
 
     /**
@@ -89,7 +100,7 @@ public abstract class Loader {
     /**
      * Called when this loaderis an active loaderand we see an end tag.
      */
-    public void leaveElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+    public void leaveElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
     }
 
 
@@ -108,6 +119,23 @@ public abstract class Loader {
 //
 //
 //
+    /**
+     * Computes the names of possible root elements for a better error diagnosis.
+     */
+    private String computeExpectedElements() {
+        StringBuilder r = new StringBuilder();
+
+        for( QName n : getExpectedChildElements() ) {
+            if(r.length()!=0)   r.append(',');
+            r.append("<{").append(n.getNamespaceURI()).append('}').append(n.getLocalPart()).append('>');
+        }
+        if(r.length()==0) {
+            return "(unknown)";
+        }
+
+        return r.toString();
+    }
+
     /**
      * Fires the beforeUnmarshal event if necessary.
      *

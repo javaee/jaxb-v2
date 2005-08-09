@@ -5,8 +5,12 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Arrays;
 
 import javax.xml.stream.XMLStreamException;
+import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.ClassFactory;
@@ -20,7 +24,7 @@ import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
-import com.sun.xml.bind.v2.runtime.unmarshaller.EventArg;
+import com.sun.xml.bind.v2.runtime.unmarshaller.TagName;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Receiver;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
@@ -46,7 +50,6 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
     private final Name valueTag;
 
     private final boolean nillable;
-    private RuntimeMapPropertyInfo prop;   // reset to null in the wrapUp method to avoid memory leak
 
     private JaxBeanInfo keyBeanInfo;
     private JaxBeanInfo valueBeanInfo;
@@ -60,7 +63,6 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
     public SingleMapNodeProperty(JAXBContextImpl context, RuntimeMapPropertyInfo prop) {
         super(context, prop);
         acc = prop.getAccessor().optimize();
-        this.prop = prop;
         this.tagName = context.nameBuilder.createElementName(prop.getXmlName());
         this.entryTag = context.nameBuilder.createElementName("","entry");
         this.keyTag = context.nameBuilder.createElementName("","key");
@@ -112,7 +114,7 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
      */
     private final Loader itemsLoader = new Loader(false) {
         @Override
-        public void startElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+        public void startElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
             // create or obtain the Map object
             try {
                 BeanT target = (BeanT)state.prev.target;
@@ -131,12 +133,17 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
         }
 
         @Override
-        public void childElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+        public void childElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
             if(ea.matches(entryTag)) {
                 state.loader = entryLoader;
             } else {
                 super.childElement(state,ea);
             }
+        }
+
+        @Override
+        public Collection<QName> getExpectedChildElements() {
+            return Collections.singleton(entryTag.toQName());
         }
     };
 
@@ -147,18 +154,19 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
      */
     private final Loader entryLoader = new Loader(false) {
         @Override
-        public void startElement(UnmarshallingContext.State state, EventArg ea) {
+        public void startElement(UnmarshallingContext.State state, TagName ea) {
             state.target = new Object[2];  // this is inefficient
         }
 
         @Override
-        public void leaveElement(UnmarshallingContext.State state, EventArg ea) {
+        public void leaveElement(UnmarshallingContext.State state, TagName ea) {
             Object[] keyValue = (Object[])state.target;
             Map map = (Map) state.prev.target;
             map.put(keyValue[0],keyValue[1]);
         }
 
-        public void childElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+        @Override
+        public void childElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
             if(ea.matches(keyTag)) {
                 state.loader = keyLoader;
                 state.receiver = keyReceiver;
@@ -170,6 +178,11 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
                 return;
             }
             super.childElement(state,ea);
+        }
+
+        @Override
+        public Collection<QName> getExpectedChildElements() {
+            return Arrays.asList(keyTag.toQName(),valueTag.toQName());
         }
     };
 
@@ -193,7 +206,7 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
         ValueT v = acc.get(o);
         if(v!=null) {
             bareStartTag(w,tagName,v);
-            for( Map.Entry e : ((Map<?,?>)v).entrySet() ) {
+            for( Map.Entry e : v.entrySet() ) {
                 bareStartTag(w,entryTag,null);
 
                 Object key = e.getKey();
@@ -232,10 +245,5 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
         if(tagName.equals(nsUri,localName))
             return acc;
         return null;
-    }
-
-    public void wrapUp() {
-        super.wrapUp();
-        prop = null;
     }
 }

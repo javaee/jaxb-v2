@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collection;
+import java.util.Collections;
 
 import javax.xml.stream.XMLStreamException;
+import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.model.runtime.RuntimeArrayInfo;
-import com.sun.xml.bind.v2.runtime.unmarshaller.EventArg;
+import com.sun.xml.bind.v2.runtime.unmarshaller.TagName;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Receiver;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
@@ -44,21 +47,28 @@ final class ArrayBeanInfoImpl  extends JaxBeanInfo {
         private final XsiTypeLoader itemLoader = new XsiTypeLoader(itemBeanInfo);
 
         @Override
-        public void startElement(UnmarshallingContext.State state, EventArg ea) {
+        public void startElement(UnmarshallingContext.State state, TagName ea) {
             state.target = new ArrayList();
         }
 
-        public void leaveElement(UnmarshallingContext.State state, EventArg ea) {
+        @Override
+        public void leaveElement(UnmarshallingContext.State state, TagName ea) {
             state.target = toArray((List)state.target);
         }
 
-        public void childElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+        @Override
+        public void childElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
             if(ea.matches("","item")) {
                 state.loader = itemLoader;
                 state.receiver = this;
             } else {
                 super.childElement(state,ea);
             }
+        }
+
+        @Override
+        public Collection<QName> getExpectedChildElements() {
+            return Collections.singleton(new QName("","item"));
         }
 
         public void receive(UnmarshallingContext.State state, Object o) {

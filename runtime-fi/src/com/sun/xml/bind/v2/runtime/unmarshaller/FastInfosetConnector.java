@@ -1,15 +1,13 @@
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
-import com.sun.xml.bind.WhiteSpaceProcessor;
-import com.sun.xml.bind.v2.stax.StAXConnector;
-import com.sun.xml.fastinfoset.stax.StAXDocumentParser;
-import javax.xml.bind.ValidationEventLocator;
-import javax.xml.bind.helpers.ValidationEventLocatorImpl;
-
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
+
+import com.sun.xml.bind.WhiteSpaceProcessor;
+import com.sun.xml.fastinfoset.stax.StAXDocumentParser;
+
 import org.jvnet.fastinfoset.EncodingAlgorithmIndexes;
-import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
 /**
@@ -17,15 +15,10 @@ import org.xml.sax.SAXException;
  *
  * @author Paul Sandoz.
  */
-public class FastInfosetConnector implements StAXConnector {
+final class FastInfosetConnector extends StAXConnector {
 
     // event source
     private final StAXDocumentParser fastInfosetStreamReader;
-
-    // event sink
-    private final XmlVisitor visitor;
-
-    private final UnmarshallingContext context;
 
     // Flag set to true if there is octets instead of characters
     boolean hasBase64Data = false;
@@ -40,10 +33,9 @@ public class FastInfosetConnector implements StAXConnector {
 
     public FastInfosetConnector(StAXDocumentParser fastInfosetStreamReader,
             XmlVisitor visitor) {
+        super(visitor);
         fastInfosetStreamReader.setStringInterning(true);
         this.fastInfosetStreamReader = fastInfosetStreamReader;
-        this.visitor = visitor;
-        this.context = visitor.getContext();
     }
 
     public void bridge() throws XMLStreamException {
@@ -71,62 +63,27 @@ public class FastInfosetConnector implements StAXConnector {
         }
     }
 
-    private void handleEndDocument() throws SAXException {
-        visitor.endDocument();
+    protected Location getCurrentLocation() {
+        return fastInfosetStreamReader.getLocation();
     }
 
-    private void handleStartDocument() throws SAXException {
-        final Locator locator = new Locator() {
-            public int getColumnNumber() {
-                return fastInfosetStreamReader.getLocation().getColumnNumber();
-            }
-            public int getLineNumber() {
-                return fastInfosetStreamReader.getLocation().getLineNumber();
-            }
-            public String getPublicId() {
-                return fastInfosetStreamReader.getLocation().getPublicId();
-            }
-            public String getSystemId() {
-                return fastInfosetStreamReader.getLocation().getSystemId();
-            }
-        };
-
-        visitor.startDocument(new LocatorEx() {
-            public ValidationEventLocator getLocation() {
-                return new ValidationEventLocatorImpl(locator);
-            }
-            public String getPublicId() {
-                return locator.getPublicId();
-            }
-            public String getSystemId() {
-                return locator.getSystemId();
-            }
-            public int getLineNumber() {
-                return locator.getLineNumber();
-            }
-            public int getColumnNumber() {
-                return locator.getColumnNumber();
-            }
-        });
+    protected String getCurrentQName() {
+        return fastInfosetStreamReader.getNameString();
     }
 
-    private void handleStartElement() throws XMLStreamException {
-        try {
-            processText(true);
+    private void handleStartElement() throws SAXException {
+        processText(true);
 
-            for (int i = 0; i < fastInfosetStreamReader.getNamespaceCount(); i++) {
-                visitor.startPrefixMapping(fastInfosetStreamReader.getNamespacePrefix(i),
-                        fastInfosetStreamReader.getNamespaceURI(i));
-            }
-
-            visitor.startElement(
-                    fastInfosetStreamReader.getNamespaceURI(),
-                    fastInfosetStreamReader.getLocalName(),
-                    fastInfosetStreamReader.getNameString(),
-                    fastInfosetStreamReader.getAttributesHolder());
-        } catch (SAXException e) {
-            throw new XMLStreamException(e);
+        for (int i = 0; i < fastInfosetStreamReader.getNamespaceCount(); i++) {
+            visitor.startPrefixMapping(fastInfosetStreamReader.getNamespacePrefix(i),
+                    fastInfosetStreamReader.getNamespaceURI(i));
         }
+
+        tagName.uri = fastInfosetStreamReader.getNamespaceURI();
+        tagName.local = fastInfosetStreamReader.getLocalName();
+        tagName.atts = fastInfosetStreamReader.getAttributesHolder();
+
+        visitor.startElement(tagName);
     }
 
     private void handleCharacters() {
@@ -164,20 +121,16 @@ public class FastInfosetConnector implements StAXConnector {
         }
     }
 
-    private void handleEndElement() throws XMLStreamException {
-        try {
-            processText(false);
+    private void handleEndElement() throws SAXException {
+        processText(false);
 
-            visitor.endElement(
-                    fastInfosetStreamReader.getNamespaceURI(),
-                    fastInfosetStreamReader.getLocalName(),
-                    fastInfosetStreamReader.getNameString());
+        tagName.uri = fastInfosetStreamReader.getNamespaceURI();
+        tagName.local = fastInfosetStreamReader.getLocalName();
 
-            for (int i = fastInfosetStreamReader.getNamespaceCount() - 1; i >= 0; i--) {
-                visitor.endPrefixMapping(fastInfosetStreamReader.getNamespacePrefix(i));
-            }
-        } catch (SAXException e) {
-            throw new XMLStreamException(e);
+        visitor.endElement(tagName);
+
+        for (int i = fastInfosetStreamReader.getNamespaceCount() - 1; i >= 0; i--) {
+            visitor.endPrefixMapping(fastInfosetStreamReader.getNamespacePrefix(i));
         }
     }
 

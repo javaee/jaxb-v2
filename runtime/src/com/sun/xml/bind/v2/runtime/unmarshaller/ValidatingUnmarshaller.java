@@ -46,14 +46,14 @@ final class ValidatingUnmarshaller implements XmlVisitor {
         next.endDocument();
     }
 
-    public void startElement( String nsUri, String localName, String qname, Attributes atts ) throws SAXException {
-        validator.startElement(nsUri,localName,qname,atts);
-        next.startElement(nsUri, localName, qname, atts);
+    public void startElement(TagName tagName) throws SAXException {
+        validator.startElement(tagName.uri,tagName.local,tagName.getQname(),tagName.atts);
+        next.startElement(tagName);
     }
 
-    public void endElement( String nsUri, String localName, String qname ) throws SAXException {
-        validator.endElement(nsUri,localName,qname);
-        next.endElement(nsUri, localName, qname);
+    public void endElement(TagName tagName ) throws SAXException {
+        validator.endElement(tagName.uri,tagName.local,tagName.getQname());
+        next.endElement(tagName);
     }
 
     public void startPrefixMapping(String prefix, String nsUri) throws SAXException {

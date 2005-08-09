@@ -30,7 +30,7 @@ public final class InlineAnnotationReaderImpl extends AbstractInlineAnnotationRe
         return LocatableAnnotation.create(clazz.getAnnotation(a),srcPos);
     }
 
-    public <A extends Annotation> A getFieldAnnotation(Class<A> a, String propertyName, FieldDeclaration f, Locatable srcPos) {
+    public <A extends Annotation> A getFieldAnnotation(Class<A> a, FieldDeclaration f, Locatable srcPos) {
         return LocatableAnnotation.create(f.getAnnotation(a),srcPos);
     }
 

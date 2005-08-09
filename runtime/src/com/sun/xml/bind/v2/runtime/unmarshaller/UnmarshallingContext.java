@@ -9,6 +9,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Collection;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBElement;
@@ -30,7 +31,6 @@ import com.sun.xml.bind.v2.runtime.Coordinator;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 
-import org.xml.sax.Attributes;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -73,12 +73,6 @@ public final class UnmarshallingContext extends Coordinator
      * on {@link Unmarshaller} could be changed after the handler is created.
      */
     /*package*/ JaxBeanInfo expectedType;
-
-
-    /**
-     * Cached and reused {@link EventArg} to avoid GC.
-     */
-    private final EventArg eventArg = new EventArg();
 
     /**
      * This flag is set to true at the startDocument event
@@ -161,9 +155,9 @@ public final class UnmarshallingContext extends Coordinator
          * If this element has an element default value.
          *
          * This should be set by either a parent {@link Loader} when
-         * {@link Loader#childElement(State, EventArg)} is called
+         * {@link Loader#childElement(State, TagName)} is called
          * or by a child {@link Loader} when
-         * {@link Loader#startElement(State, EventArg)} is called.
+         * {@link Loader#startElement(State, TagName)} is called.
          */
         public String elementDefaultValue;
 
@@ -331,16 +325,16 @@ public final class UnmarshallingContext extends Coordinator
             root.loader = DEFAULT_ROOT_LOADER;
     }
 
-    public void startElement(String nsUri, String localName, String qname, Attributes atts) throws SAXException {
+    public void startElement(TagName tagName) throws SAXException {
         pushCoordinator();
         try {
-            _startElement(nsUri,localName,qname,atts);
+            _startElement(tagName);
         } finally {
             popCoordinator();
         }
     }
 
-    private void _startElement(String nsUri, String localName, String qname, Attributes atts) throws SAXException {
+    private void _startElement(TagName tagName) throws SAXException {
 
         // remember the current element if we are interested in it.
         // because the inner peer might not be found while we consume
@@ -349,20 +343,14 @@ public final class UnmarshallingContext extends Coordinator
         if( assoc!=null )
             currentElement = scanner.getCurrentElement();
 
-        EventArg ea = eventArg;
-        ea.uri = nsUri;
-        ea.local = localName;
-        ea.qname = qname;
-        ea.atts = atts;
-
         Loader h = current.loader;
         current.push();
 
         // tell the parent about the new child
-        h.childElement(current,ea);
+        h.childElement(current,tagName);
         assert current.loader!=null;   // the childElement should register this
         // and tell the new child that you are activated
-        current.loader.startElement(current,ea);
+        current.loader.startElement(current,tagName);
     }
 
     public void text(CharSequence pcdata) throws SAXException {
@@ -381,19 +369,13 @@ public final class UnmarshallingContext extends Coordinator
         }
     }
 
-    public final void endElement( String nsUri, String localName, String qname ) throws SAXException {
+    public final void endElement(TagName tagName) throws SAXException {
         pushCoordinator();
         try {
-            EventArg ea = eventArg;
-            ea.uri = nsUri;
-            ea.local = localName;
-            ea.qname = qname;
-            ea.atts = null;
-
             State child = current;
 
             // tell the child that your time is up
-            child.loader.leaveElement(child,ea);
+            child.loader.leaveElement(child,tagName);
 
             // child.pop will erase them so store them now
             Object target = child.target;
@@ -892,7 +874,7 @@ public final class UnmarshallingContext extends Coordinator
     private static final Loader EXPECTED_TYPE_ROOT_LOADER = new ExpectedTypeRootLoader();
 
     /**
-     * The loader that receives the root element to {@link #childElement(State, EventArg)}.
+     * The loader that receives the root element to {@link #childElement(State, TagName)}.
      */
     private static abstract class AbstractRootLoader extends Loader implements Receiver {
         protected AbstractRootLoader() {
@@ -900,11 +882,11 @@ public final class UnmarshallingContext extends Coordinator
         }
 
         // this loaderwill never be used as a child of another loader
-        public void startElement(UnmarshallingContext.State state, EventArg ea) {
+        public void startElement(UnmarshallingContext.State state, TagName ea) {
             throw new IllegalStateException();
         }
 
-        public void leaveElement(UnmarshallingContext.State state, EventArg ea) {
+        public void leaveElement(UnmarshallingContext.State state, TagName ea) {
             throw new IllegalStateException();
         }
     }
@@ -918,7 +900,7 @@ public final class UnmarshallingContext extends Coordinator
          * Receives the root element and determines how to start
          * unmarshalling.
          */
-        public void childElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+        public void childElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
             UnmarshallingContext context = state.getContext();
             Loader loader = context.getJAXBContext().selectRootLoader(state,ea);
             if(loader==null) {
@@ -928,27 +910,16 @@ public final class UnmarshallingContext extends Coordinator
                 // an XML parser by your self and you forgot to call
                 // the SAXParserFactory.setNamespaceAware(true). When this happens, you see
                 // the namespace URI is reported as empty whereas you expect something else.
-                throw new SAXParseException(
-                    Messages.UNEXPECTED_ELEMENT.format(
-                        ea.uri, ea.local, computeExpectedRootElements(context) ),
-                    context.getLocator() );
+                super.childElement(state,ea);
+                return;
             }
             state.loader = loader;
             state.receiver = this;
         }
 
-        /**
-         * Computes the names of possible root elements for a better error diagnosis.
-         */
-        private String computeExpectedRootElements(UnmarshallingContext context) {
-            StringBuilder r = new StringBuilder();
-
-            for( QName n : context.getJAXBContext().getValidRootNames() ) {
-                if(r.length()!=0)   r.append(',');
-                r.append("<{").append(n.getNamespaceURI()).append('}').append(n.getLocalPart()).append('>');
-            }
-
-            return r.toString();
+        @Override
+        public Collection<QName> getExpectedChildElements() {
+            return getInstance().getJAXBContext().getValidRootNames();
         }
 
         public void receive(State state, Object o) {
@@ -965,7 +936,7 @@ public final class UnmarshallingContext extends Coordinator
          * Receives the root element and determines how to start
          * unmarshalling.
          */
-        public void childElement(UnmarshallingContext.State state, EventArg ea) {
+        public void childElement(UnmarshallingContext.State state, TagName ea) {
             UnmarshallingContext context = state.getContext();
 
             // unmarshals the specified type

@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: UnmarshallerImpl.java,v 1.19 2005-08-05 20:52:48 kohsuke Exp $
+ * @(#)$Id: UnmarshallerImpl.java,v 1.20 2005-08-09 18:36:28 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -43,9 +43,6 @@ import com.sun.xml.bind.unmarshaller.Messages;
 import com.sun.xml.bind.v2.AssociationMap;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
-import com.sun.xml.bind.v2.stax.StAXConnector;
-import com.sun.xml.bind.v2.stax.XMLEventReaderToContentHandler;
-import com.sun.xml.bind.v2.stax.XMLStreamReaderToContentHandler;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -315,8 +312,10 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
 
             // Quick hack until SJSXP fixes 6270116
             boolean isZephyr = reader.getClass().getName().equals("com.sun.xml.stream.XMLReaderImpl");
-            SAXConnector h = getUnmarshallerHandler(!isZephyr,expectedType);
-            connector = new XMLStreamReaderToContentHandler(reader,h);
+            XmlVisitor h = createUnmarshallerHandler(null,false,expectedType);
+            if(!isZephyr)
+                h = new InterningXmlVisitor(h);
+            connector = new StAXStreamConnector(reader,h);
             context = h.getContext();
         }
 
@@ -357,9 +356,13 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
                         Messages.ILLEGAL_READER_STATE,event.getEventType()));
             }
 
-            UnmarshallerHandler h = getUnmarshallerHandler(true,expectedType);
-            new XMLEventReaderToContentHandler(reader, h).bridge();
-            return h.getResult();
+            // Quick hack until SJSXP fixes 6270116
+            boolean isZephyr = reader.getClass().getName().equals("com.sun.xml.stream.XMLReaderImpl");
+            XmlVisitor h = createUnmarshallerHandler(null,false,expectedType);
+            if(!isZephyr)
+                h = new InterningXmlVisitor(h);
+            new StAXEventConnector(reader,h).bridge();
+            return h.getContext().getResult();
         } catch (XMLStreamException e) {
             throw handleStreamException(e);
         }
@@ -371,7 +374,7 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
     }
 
     private static JAXBException handleStreamException(XMLStreamException e) {
-        // XMLStreamReaderToContentHandler wraps SAXException to XMLStreamException.
+        // StAXStreamConnector wraps SAXException to XMLStreamException.
         // XMLStreamException doesn't print its nested stack trace when it prints
         // its stack trace, so if we wrap XMLStreamException in JAXBException,
         // it becomes harder to find out the real problem.

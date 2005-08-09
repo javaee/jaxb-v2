@@ -4,16 +4,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.core.Adapter;
-import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.runtime.RuntimeClassInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementPropertyInfo;
@@ -23,7 +21,6 @@ import com.sun.xml.bind.v2.model.runtime.RuntimeTypeRef;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
-import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -53,7 +50,7 @@ final class RuntimeElementInfoImpl extends ElementInfoImpl<Type,Class,Field,Meth
                 return Accessor.JAXB_ELEMENT_VALUE;
             else
                 return Accessor.JAXB_ELEMENT_VALUE.adapt(
-                        (Class)getAdapter().defaultType,(Class)adapterType);
+                        (Class)getAdapter().defaultType,adapterType);
         }
 
         public Type getRawType() {

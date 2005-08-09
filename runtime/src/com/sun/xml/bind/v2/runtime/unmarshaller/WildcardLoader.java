@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: WildcardLoader.java,v 1.1 2005-08-04 03:08:50 kohsuke Exp $
+ * @(#)$Id: WildcardLoader.java,v 1.2 2005-08-09 18:36:29 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -36,7 +36,7 @@ public final class WildcardLoader extends ProxyLoader {
         this.mode = mode;
     }
 
-    protected Loader selectLoader(UnmarshallingContext.State state, EventArg ea) {
+    protected Loader selectLoader(UnmarshallingContext.State state, TagName ea) {
         UnmarshallingContext context = state.getContext();
 
         if(mode.allowTypedObject) {

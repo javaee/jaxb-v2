@@ -15,26 +15,23 @@ import java.util.List;
  */
 class NameUtil {
     protected boolean isPunct(char c) {
-        return (c == '-' || c == '.' || c == ':' || c == '_' || c == '\u00b7'
-                || c == '\u0387' || c == '\u06dd' || c == '\u06de');
+        return c == '-' || c == '.' || c == ':' || c == '_' || c == '\u00b7' || c == '\u0387' || c == '\u06dd' || c == '\u06de';
     }
 
-    protected final boolean isDigit(char c) {
-        return ((c >= '0' && c <= '9') || Character.isDigit(c));
+    protected static final boolean isDigit(char c) {
+        return c >= '0' && c <= '9' || Character.isDigit(c);
     }
 
-    protected final boolean isUpper(char c) {
-        return ((c >= 'A' && c <= 'Z') || Character.isUpperCase(c));
+    protected static final boolean isUpper(char c) {
+        return c >= 'A' && c <= 'Z' || Character.isUpperCase(c);
     }
 
-    protected final boolean isLower(char c) {
-        return ((c >= 'a' && c <= 'z') || Character.isLowerCase(c));
+    protected static final boolean isLower(char c) {
+        return c >= 'a' && c <= 'z' || Character.isLowerCase(c);
     }
 
     protected boolean isLetter(char c) {
-        return ((c >= 'A' && c <= 'Z')
-                || (c >= 'a' && c <= 'z')
-                || Character.isLetter(c));
+        return c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z' || Character.isLetter(c);
     }
 
     /**

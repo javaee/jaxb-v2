@@ -16,7 +16,7 @@ import org.xml.sax.SAXException;
  *
  * @author Kohsuke Kawaguchi
  */
-public class SAXConnector implements UnmarshallerHandler {
+public final class SAXConnector implements UnmarshallerHandler {
 
     private LocatorEx loc;
 
@@ -24,11 +24,19 @@ public class SAXConnector implements UnmarshallerHandler {
      * SAX may fire consective characters event, but we don't allow it.
      * so use this buffer to perform buffering.
      */
-    private StringBuilder buffer = new StringBuilder();
+    private final StringBuilder buffer = new StringBuilder();
 
 
     private final XmlVisitor next;
     private final UnmarshallingContext context;
+
+    private static final class TagNameImpl extends TagName {
+        String qname;
+        public String getQname() {
+            return qname;
+        }
+    }
+    private final TagNameImpl tagName = new TagNameImpl();
 
 
     /**
@@ -102,12 +110,19 @@ public class SAXConnector implements UnmarshallerHandler {
 
         processText(true);
 
-        next.startElement(uri,local,qname,atts);
+        tagName.uri = uri;
+        tagName.local = local;
+        tagName.qname = qname;
+        tagName.atts = atts;
+        next.startElement(tagName);
     }
 
     public void endElement(String uri, String localName, String qName) throws SAXException {
         processText(false);
-        next.endElement(uri,localName,qName);
+        tagName.uri = uri;
+        tagName.local = localName;
+        tagName.qname = qName;
+        next.endElement(tagName);
     }
 
 
@@ -120,21 +135,17 @@ public class SAXConnector implements UnmarshallerHandler {
         characters(buf,start,len);
     }
 
-    public void processingInstruction(String target, String data) throws SAXException {
-        ; // nop
+    public void processingInstruction(String target, String data) {
+        // nop
     }
 
-    public void skippedEntity(String name) throws SAXException {
-        ; // nop
+    public void skippedEntity(String name) {
+        // nop
     }
 
     private void processText( boolean ignorable ) throws SAXException {
         if( context.expectText() && (!ignorable || !WhiteSpaceProcessor.isWhiteSpace(buffer)))
             next.text(buffer);
-
-        // avoid excessive object allocation, but also avoid
-        // keeping a huge array inside StringBuffer.
-        if(buffer.length()<1024)    buffer.setLength(0);
-        else                        buffer = new StringBuilder();
+        buffer.setLength(0);
     }
 }

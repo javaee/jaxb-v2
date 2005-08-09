@@ -26,7 +26,7 @@ public class XsiTypeLoader extends Loader {
         this.defaultBeanInfo = defaultBeanInfo;
     }
 
-    public void startElement(UnmarshallingContext.State state, EventArg ea) throws SAXException {
+    public void startElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
         UnmarshallingContext context = state.getContext();
 
         // look for @xsi:type

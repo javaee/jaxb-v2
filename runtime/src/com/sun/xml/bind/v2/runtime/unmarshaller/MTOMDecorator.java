@@ -53,10 +53,10 @@ final class MTOMDecorator implements XmlVisitor {
         next.endDocument();
     }
 
-    public void startElement( String nsUri, String localName, String qname, Attributes atts ) throws SAXException {
-        if(localName=="Include" && nsUri==WellKnownNamespace.XOP) {
+    public void startElement(TagName tagName) throws SAXException {
+        if(tagName.local=="Include" && tagName.uri==WellKnownNamespace.XOP) {
             // found xop:Include
-            String href = atts.getValue("href");
+            String href = tagName.atts.getValue("href");
             DataHandler attachment = au.getAttachmentAsDataHandler(href);
             if(attachment==null) {
                 // report an error and ignore
@@ -68,17 +68,17 @@ final class MTOMDecorator implements XmlVisitor {
             inXopInclude = true;
             followXop = true;
         } else
-            next.startElement(nsUri, localName, qname, atts);
+            next.startElement(tagName);
     }
 
-    public void endElement( String nsUri, String localName, String qname ) throws SAXException {
+    public void endElement(TagName tagName) throws SAXException {
         if(inXopInclude) {
             // consume </xop:Include> by ourselves.
             inXopInclude = false;
             followXop = true;
             return;
         }
-        next.endElement(nsUri,localName,qname);
+        next.endElement(tagName);
     }
 
     public void startPrefixMapping(String prefix, String nsUri) throws SAXException {
