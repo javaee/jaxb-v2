@@ -61,7 +61,7 @@ public class PluginImpl extends Plugin {
     private void augument(ClassOutline co) {
         for (JMethod m : co.implClass.methods())
             annotate(m);
-        for (JFieldVar f : co.implClass.fields())
+        for (JFieldVar f : co.implClass.fields().values())
             annotate(f);
     }
 
