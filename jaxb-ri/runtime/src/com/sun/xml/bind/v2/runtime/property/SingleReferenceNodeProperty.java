@@ -65,10 +65,12 @@ final class SingleReferenceNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT
         if(v!=null) {
             try {
                 JaxBeanInfo bi = w.grammar.getBeanInfo(v,domHandler==null);
-                if(bi!=null)
-                    bi.serializeRoot(v,w);
-                else
+                if(bi.jaxbType==Object.class && domHandler!=null)
+                    // even if 'v' is a DOM node, it always derive from Object,
+                    // so the getBeanInfo returns BeanInfo for Object
                     w.writeDom(v,domHandler,o,fieldName);
+                else
+                    bi.serializeRoot(v,w);
             } catch (JAXBException e) {
                 w.reportError(fieldName,e);
                 // recover by ignoring this property
