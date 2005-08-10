@@ -291,17 +291,33 @@ public final class JCodeModel {
     /**
      * Obtains a reference to an existing class from its fully-qualified
      * class name.
-     * 
-     * @exception ClassNotFoundException
-     *      If the specified class is not available in the current class path.
+     *
+     * <p>
+     * First, this method attempts to load the class of the given name.
+     * If that fails, we assume that the class is derived straight from
+     * {@link Object}, and return a {@link JClass}.
      */
-    public JClass ref(String fullyQualifiedClassName) throws ClassNotFoundException {
+    public JClass ref(String fullyQualifiedClassName) {
         try {
             // try the context class loader first
             return ref(Thread.currentThread().getContextClassLoader().loadClass(fullyQualifiedClassName));
         } catch (ClassNotFoundException e) {
-            // then the default mechanism.
+            ;
+        }
+        // then the default mechanism.
+        try {
             return ref(Class.forName(fullyQualifiedClassName));
+        } catch (ClassNotFoundException e1) {
+            ;
+        }
+
+        // assume it's not visible to us.
+        try {
+            JDefinedClass cls = _class(fullyQualifiedClassName);
+            cls.hide();
+            return cls;
+        } catch (JClassAlreadyExistsException e) {
+            return e.getExistingClass();
         }
     }
 
