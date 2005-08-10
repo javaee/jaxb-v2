@@ -130,7 +130,7 @@ final class ArrayBeanInfoImpl  extends JaxBeanInfo {
         target.reportError(
                 new ValidationEventImpl(
                         ValidationEvent.ERROR,
-                        Messages.UNABLE_TO_MARSHAL_NON_ELEMENT.format(typeName),
+                        Messages.UNABLE_TO_MARSHAL_NON_ELEMENT.format(array.getClass().getName()),
                         null,
                         null));
     }

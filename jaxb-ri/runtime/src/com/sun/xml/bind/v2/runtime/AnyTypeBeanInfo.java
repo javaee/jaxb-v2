@@ -99,7 +99,7 @@ final class AnyTypeBeanInfo extends JaxBeanInfo<Object> {
         target.reportError(
                 new ValidationEventImpl(
                         ValidationEvent.ERROR,
-                        Messages.UNABLE_TO_MARSHAL_NON_ELEMENT.format(typeName),
+                        Messages.UNABLE_TO_MARSHAL_NON_ELEMENT.format(element.getClass().getName()),
                         null,
                         null));
     }

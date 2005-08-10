@@ -251,7 +251,7 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
             target.reportError(
                     new ValidationEventImpl(
                             ValidationEvent.ERROR,
-                            Messages.UNABLE_TO_MARSHAL_NON_ELEMENT.format(typeName),
+                            Messages.UNABLE_TO_MARSHAL_NON_ELEMENT.format(bean.getClass().getName()),
                             null,
                             null));
         }
