@@ -40,22 +40,50 @@ final class FastInfosetConnector extends StAXConnector {
 
     public void bridge() throws XMLStreamException {
         try {
+            // remembers the nest level of elements to know when we are done.
+            int depth=0;
+
+            // if the parser is at the start tag, proceed to the first element
+            int event = fastInfosetStreamReader.getEventType();
+            if(event == XMLStreamConstants.START_DOCUMENT) {
+                // nextTag doesn't correctly handle DTDs
+                while( !fastInfosetStreamReader.isStartElement() )
+                    event = fastInfosetStreamReader.next();
+            }
+            
+                  
+            if( event!=XMLStreamConstants.START_ELEMENT)
+                throw new IllegalStateException("The current event is not START_ELEMENT\n but " + event);
+            
             handleStartDocument();
 
-            while (fastInfosetStreamReader.hasNext()) {
-                final int event = fastInfosetStreamReader.next();
+            OUTER:
+            while(true) {
+                // These are all of the events listed in the javadoc for
+                // XMLEvent.
+                // The spec only really describes 11 of them.
                 switch (event) {
                     case XMLStreamConstants.START_ELEMENT :
                         handleStartElement();
+                        depth++;
                         break;
                     case XMLStreamConstants.END_ELEMENT :
+                        depth--;
                         handleEndElement();
+                        if(depth==0)    break OUTER;
                         break;
                     case XMLStreamConstants.CHARACTERS :
+                    case XMLStreamConstants.CDATA :
+                    case XMLStreamConstants.SPACE :
                         handleCharacters();
                         break;
+                    // otherwise simply ignore
                 }
+                
+                event=fastInfosetStreamReader.next();
             }
+
+            fastInfosetStreamReader.next();    // move beyond the end tag.
 
             handleEndDocument();
         } catch (SAXException e) {
