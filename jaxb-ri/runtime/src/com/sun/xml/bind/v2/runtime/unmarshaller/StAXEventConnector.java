@@ -1,4 +1,4 @@
-/* $Id: StAXEventConnector.java,v 1.1 2005-08-09 18:36:28 kohsuke Exp $
+/* $Id: StAXEventConnector.java,v 1.2 2005-08-10 22:18:17 kohsuke Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -197,6 +197,7 @@ final class StAXEventConnector extends StAXConnector {
             }
 
             buffer.append(next.asCharacters().getData());
+            staxEventReader.nextEvent();    // consume
         }
     }
 
