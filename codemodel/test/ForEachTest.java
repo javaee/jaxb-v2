@@ -33,7 +33,7 @@ public class ForEachTest {
 		JVar $list =
 			m.body().decl(arrayListclass, "alist", JExpr._new(arrayListclass));
 		
-		JClass $integerclass = cm.ref("java.lang.Integer");
+		JClass $integerclass = cm.ref(Integer.class);
 		JForEach foreach = m.body().forEach($integerclass, "count", $list);
 		JVar $count1 = foreach.var();
 		foreach.body().assign(JExpr.ref("getCount"), JExpr.lit(10));
