@@ -146,10 +146,11 @@ public abstract class Loader {
         if(beanInfo.lookForLifecycleMethods()) {
             UnmarshallingContext context = state.getContext();
             Unmarshaller.Listener listener = context.parent.getListener();
-            if(listener!=null)
-                listener.beforeUnmarshal(child, state.prev.target);
             if(beanInfo.hasBeforeUnmarshalMethod()) {
                 beanInfo.invokeBeforeUnmarshalMethod(context.parent, child, state.prev.target);
+            }
+            if(listener!=null) {
+                listener.beforeUnmarshal(child, state.prev.target);
             }
         }
     }

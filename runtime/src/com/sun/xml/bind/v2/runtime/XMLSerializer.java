@@ -592,16 +592,16 @@ public final class XMLSerializer extends Coordinator {
      * @param currentTarget
      */
     private void fireBeforeMarshalEvents(final JaxBeanInfo beanInfo, Object currentTarget) {
-        // invoke external listener before bean embedded listener
-        Marshaller.Listener externalListener = marshaller.getListener();
-        if (externalListener != null) {
-            externalListener.beforeMarshal(currentTarget);
-        }
-
-        // then invoke bean embedded listener
+        // first invoke bean embedded listener
         if (beanInfo.hasBeforeMarshalMethod()) {
             Method m = beanInfo.getLifecycleMethods().getBeforeMarshal();
             fireMarshalEvent(currentTarget, m);
+        }
+
+        // then invoke external listener
+        Marshaller.Listener externalListener = marshaller.getListener();
+        if (externalListener != null) {
+            externalListener.beforeMarshal(currentTarget);
         }
     }
 
