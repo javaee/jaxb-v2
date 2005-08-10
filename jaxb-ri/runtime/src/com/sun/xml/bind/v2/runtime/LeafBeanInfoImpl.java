@@ -3,6 +3,8 @@ package com.sun.xml.bind.v2.runtime;
 import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
+import javax.xml.bind.helpers.ValidationEventImpl;
+import javax.xml.bind.ValidationEvent;
 
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.model.runtime.RuntimeLeafInfo;
@@ -74,7 +76,12 @@ final class LeafBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
     }
 
     public final void serializeRoot(BeanT bean, XMLSerializer target) throws SAXException, IOException, XMLStreamException {
-        serializeBody(bean,target);
+        target.reportError(
+                new ValidationEventImpl(
+                        ValidationEvent.ERROR,
+                        Messages.UNABLE_TO_MARSHAL_NON_ELEMENT.format(typeName),
+                        null,
+                        null));
     }
 
     public final void serializeURIs(BeanT bean, XMLSerializer target) throws SAXException {

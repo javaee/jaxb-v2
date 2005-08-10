@@ -5,6 +5,8 @@ import java.lang.reflect.Array;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.helpers.ValidationEventImpl;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.WhiteSpaceProcessor;
@@ -126,7 +128,12 @@ final class ValueListBeanInfoImpl extends JaxBeanInfo {
     }
 
     public final void serializeRoot(Object array, XMLSerializer target) throws SAXException, IOException, XMLStreamException {
-        serializeBody(array,target);
+        target.reportError(
+                new ValidationEventImpl(
+                        ValidationEvent.ERROR,
+                        Messages.UNABLE_TO_MARSHAL_NON_ELEMENT.format(typeName),
+                        null,
+                        null));
     }
 
     public final Transducer getTransducer() {

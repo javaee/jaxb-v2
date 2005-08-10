@@ -9,6 +9,8 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.bind.helpers.ValidationEventImpl;
+import javax.xml.bind.ValidationEvent;
 
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.ClassFactory;
@@ -245,8 +247,14 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
     }
 
     public void serializeRoot(BeanT bean, XMLSerializer target) throws SAXException, IOException, XMLStreamException {
-        if(tagName==null)
-            serializeBody(bean,target);
+        if(tagName==null) {
+            target.reportError(
+                    new ValidationEventImpl(
+                            ValidationEvent.ERROR,
+                            Messages.UNABLE_TO_MARSHAL_NON_ELEMENT.format(typeName),
+                            null,
+                            null));
+        }
         else {
             target.startElement(tagName,bean);
             target.childAsSoleContent(bean,null);

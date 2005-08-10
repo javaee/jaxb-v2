@@ -9,6 +9,8 @@ import java.util.Collections;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.namespace.QName;
+import javax.xml.bind.helpers.ValidationEventImpl;
+import javax.xml.bind.ValidationEvent;
 
 import com.sun.xml.bind.v2.model.runtime.RuntimeArrayInfo;
 import com.sun.xml.bind.v2.runtime.unmarshaller.TagName;
@@ -125,7 +127,12 @@ final class ArrayBeanInfoImpl  extends JaxBeanInfo {
     }
 
     public final void serializeRoot(Object array, XMLSerializer target) throws SAXException, IOException, XMLStreamException {
-        serializeBody(array,target);
+        target.reportError(
+                new ValidationEventImpl(
+                        ValidationEvent.ERROR,
+                        Messages.UNABLE_TO_MARSHAL_NON_ELEMENT.format(typeName),
+                        null,
+                        null));
     }
 
     public final void serializeURIs(Object array, XMLSerializer target) {
