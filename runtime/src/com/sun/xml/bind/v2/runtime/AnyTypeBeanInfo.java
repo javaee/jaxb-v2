@@ -3,6 +3,8 @@ package com.sun.xml.bind.v2.runtime;
 import java.io.IOException;
 
 import javax.xml.bind.annotation.W3CDomHandler;
+import javax.xml.bind.helpers.ValidationEventImpl;
+import javax.xml.bind.ValidationEvent;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
@@ -94,7 +96,12 @@ final class AnyTypeBeanInfo extends JaxBeanInfo<Object> {
     }
 
     public void serializeRoot(Object element, XMLSerializer target) throws SAXException {
-        target.writeDom((Element)element,domHandler,null,null);
+        target.reportError(
+                new ValidationEventImpl(
+                        ValidationEvent.ERROR,
+                        Messages.UNABLE_TO_MARSHAL_NON_ELEMENT.format(typeName),
+                        null,
+                        null));
     }
 
     public void serializeURIs(Object element, XMLSerializer target) {
