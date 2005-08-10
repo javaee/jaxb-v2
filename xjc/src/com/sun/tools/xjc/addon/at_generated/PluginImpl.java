@@ -33,16 +33,7 @@ public class PluginImpl extends Plugin {
 
     public boolean run( Outline model, Options opt, ErrorHandler errorHandler ) {
         // we want this to work without requring JSR-250 jar.
-        String name = "javax.annotation.Generated";
-        try {
-            annotation = model.getCodeModel().ref(name);
-        } catch (ClassNotFoundException e) {
-            try {
-                annotation = model.getCodeModel()._class(name,ClassType.ANNOTATION_TYPE_DECL);
-            } catch (JClassAlreadyExistsException x) {
-                annotation = x.getExistingClass();
-            }
-        }
+        annotation = model.getCodeModel().ref("javax.annotation.Generated");
 
         for( ClassOutline co : model.getClasses() )
             augument(co);

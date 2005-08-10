@@ -218,24 +218,20 @@ public final class JAnnotationUse extends JAnnotationValue {
     }
 
 
-    /**
-     * This can be used to add annotations inside annotations
-     * for e.g  &#64;XmlCollection(values= &#64;XmlCollectionItem(type=Foo.class))
-     * @param className
-     *         The classname of the annotation to be included
-     * @return
-     *         The JAnnotationUse that can be used as a member within this JAnnotationUse
-     * @deprecated
-     *      use {@link JAnnotationArrayMember#annotate}
-     */
-    public JAnnotationUse annotate(String className) {
-        try {
-            JAnnotationUse annotationUse = new JAnnotationUse(owner().ref(className));
-            return annotationUse;
-        } catch (ClassNotFoundException e) {
-            throw new NoClassDefFoundError(e.getMessage());
-        }
-    }
+//    /**
+//     * This can be used to add annotations inside annotations
+//     * for e.g  &#64;XmlCollection(values= &#64;XmlCollectionItem(type=Foo.class))
+//     * @param className
+//     *         The classname of the annotation to be included
+//     * @return
+//     *         The JAnnotationUse that can be used as a member within this JAnnotationUse
+//     * @deprecated
+//     *      use {@link JAnnotationArrayMember#annotate}
+//     */
+//    public JAnnotationUse annotate(String className) {
+//        JAnnotationUse annotationUse = new JAnnotationUse(owner().ref(className));
+//        return annotationUse;
+//    }
 
     /**
      * This can be used to add annotations inside annotations
