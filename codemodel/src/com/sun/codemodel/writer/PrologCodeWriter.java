@@ -5,8 +5,8 @@
 package com.sun.codemodel.writer;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.Writer;
 
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JPackage;
@@ -18,9 +18,7 @@ import com.sun.codemodel.JPackage;
  * @author
  *  Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-public class PrologCodeWriter implements CodeWriter {
-    
-    private final CodeWriter core;
+public class PrologCodeWriter extends FilterCodeWriter {
     
     /** prolog comment */
     private final String prolog;
@@ -37,19 +35,19 @@ public class PrologCodeWriter implements CodeWriter {
      *      a valid Java comment, so the caller can just pass strings like
      *      "abc\ndef" 
      */
-    public PrologCodeWriter( CodeWriter core, String prolog ) throws IOException {
-        this.core = core;
+    public PrologCodeWriter( CodeWriter core, String prolog ) {
+        super(core);
         this.prolog = prolog;
     }
     
     
-    public OutputStream open(JPackage pkg, String fileName) throws IOException {
-        OutputStream fos = core.open(pkg,fileName);
+    public Writer openSource(JPackage pkg, String fileName) throws IOException {
+        Writer w = super.openSource(pkg,fileName);
         
-        PrintWriter out = new PrintWriter(fos);
+        PrintWriter out = new PrintWriter(w);
         
         // write prolog if this is a java source file
-        if( ( prolog != null ) && ( fileName.endsWith( ".java" ) ) ) {
+        if( prolog != null ) {
             out.println( "//" );
             
             String s = prolog;
@@ -63,10 +61,6 @@ public class PrologCodeWriter implements CodeWriter {
         }
         out.flush();    // we can't close the stream for that would close the undelying stream.
         
-        return fos;
-    }
-    
-    public void close() throws IOException {
-        core.close();
+        return w;
     }
 }

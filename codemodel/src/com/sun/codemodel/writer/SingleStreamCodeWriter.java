@@ -22,7 +22,7 @@ import com.sun.codemodel.JPackage;
  * @author
  * 	Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-public class SingleStreamCodeWriter implements CodeWriter {
+public class SingleStreamCodeWriter extends CodeWriter {
     
     private final PrintStream out;
     
@@ -34,7 +34,7 @@ public class SingleStreamCodeWriter implements CodeWriter {
         out = new PrintStream(os);
     }
 
-    public OutputStream open(JPackage pkg, String fileName) throws IOException {
+    public OutputStream openBinary(JPackage pkg, String fileName) throws IOException {
         String pkgName = pkg.name();
         if(pkgName.length()!=0)     pkgName += '.';
         
@@ -43,7 +43,7 @@ public class SingleStreamCodeWriter implements CodeWriter {
             "-----------------------------------");
             
         return new FilterOutputStream(out) {
-            public void close() throws IOException {
+            public void close() {
                 // don't let this stream close
             }
         };

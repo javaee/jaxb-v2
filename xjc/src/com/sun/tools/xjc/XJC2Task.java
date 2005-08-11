@@ -16,6 +16,7 @@ import java.util.List;
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
+import com.sun.codemodel.writer.FilterCodeWriter;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Util;
 
@@ -462,14 +463,12 @@ public class XJC2Task extends Task {
      * {@link CodeWriter} that produces progress messages
      * as Ant verbose messages.
      */
-    private class AntProgressCodeWriter implements CodeWriter {
+    private class AntProgressCodeWriter extends FilterCodeWriter {
         public AntProgressCodeWriter( CodeWriter output ) {
-            this.output = output;
+            super(output);
         }
 
-        private final CodeWriter output;
-    
-        public OutputStream open(JPackage pkg, String fileName) throws IOException {
+        public OutputStream openBinary(JPackage pkg, String fileName) throws IOException {
             if(pkg.isUnnamed())
                 log( "generating " + fileName, Project.MSG_VERBOSE );
             else
@@ -477,13 +476,8 @@ public class XJC2Task extends Task {
                     pkg.name().replace('.',File.separatorChar)+
                     File.separatorChar+fileName, Project.MSG_VERBOSE );
         
-            return output.open(pkg,fileName);
+            return super.openBinary(pkg,fileName);
         }
-    
-        public void close() throws IOException {
-            output.close();
-        }
-
     }
     
     /**
