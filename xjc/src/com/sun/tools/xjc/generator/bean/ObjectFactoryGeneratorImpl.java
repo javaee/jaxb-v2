@@ -181,7 +181,7 @@ abstract class ObjectFactoryGeneratorImpl extends ObjectFactoryGenerator {
         JVar $value = m.param(exposedType,"value");
 
         JExpression declaredType;
-        if(implType.boxify().isParameterized())
+        if(implType.boxify().isParameterized() || !exposedType.equals(implType))
             declaredType = JExpr.cast(classRef,implType.boxify().dotclass());
         else
             declaredType = implType.boxify().dotclass();
