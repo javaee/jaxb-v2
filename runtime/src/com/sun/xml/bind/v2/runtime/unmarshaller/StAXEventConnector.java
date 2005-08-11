@@ -1,4 +1,4 @@
-/* $Id: StAXEventConnector.java,v 1.2 2005-08-10 22:18:17 kohsuke Exp $
+/* $Id: StAXEventConnector.java,v 1.3 2005-08-11 00:35:13 kohsuke Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -78,6 +78,8 @@ final class StAXEventConnector extends StAXConnector {
      * so use this buffer to perform buffering.
      */
     private final StringBuilder buffer = new StringBuilder();
+
+    private boolean seenText;
 
     /**
      * Construct a new StAX to SAX adapter that will convert a StAX event
@@ -162,6 +164,8 @@ final class StAXEventConnector extends StAXConnector {
         if(!context.expectText())
             return;     // text isn't expected. simply skip
 
+        seenText = true;
+
         // check the next event
         XMLEvent next;
         while(true) {
@@ -212,6 +216,10 @@ final class StAXEventConnector extends StAXConnector {
     }
 
     private void handleEndElement(EndElement event) throws SAXException {
+        if(!seenText && context.expectText()) {
+            visitor.text("");
+        }
+
         // fire endElement
         QName qName = event.getName();
         tagName.uri = fixNull(qName.getNamespaceURI());
@@ -223,6 +231,8 @@ final class StAXEventConnector extends StAXConnector {
             String prefix = fixNull((String)i.next());
             visitor.endPrefixMapping(prefix);
         }
+
+        seenText = false;
     }
 
     private void handleStartElement(StartElement event) throws SAXException {
@@ -242,6 +252,8 @@ final class StAXEventConnector extends StAXConnector {
         tagName.local = localName;
         tagName.atts = getAttributes(event);
         visitor.startElement(tagName);
+
+        seenText = false;
     }
 
 
