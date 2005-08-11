@@ -79,6 +79,6 @@ final class JTypeWildcard extends JClass {
         if(bound._extends()==null)
             f.p("?");   // instead of "? extends Object"
         else
-            f.p("? extends").t(bound);
+            f.p("? extends").g(bound);
     }
 }
