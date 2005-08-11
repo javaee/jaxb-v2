@@ -71,10 +71,12 @@ class ArrayReferenceNodeProperty<BeanT,ListT,ItemT> extends ArrayERProperty<Bean
                         w.text((String)item,null);
                     } else {
                         JaxBeanInfo bi = w.grammar.getBeanInfo(item,domHandler==null);
-                        if(bi!=null)
-                            bi.serializeRoot(item,w);
-                        else
+                        if(bi.jaxbType==Object.class && domHandler!=null)
+                            // even if 'v' is a DOM node, it always derive from Object,
+                            // so the getBeanInfo returns BeanInfo for Object
                             w.writeDom(item,domHandler,o,fieldName);
+                        else
+                            bi.serializeRoot(item,w);
                     }
                 }
             } catch (JAXBException e) {
