@@ -17,5 +17,5 @@ public class BIXDom extends BIDom {
 
     // unsupported yet
     @XmlAttribute
-    String type;
+    String type = "w3c";
 }
