@@ -73,7 +73,7 @@ abstract class StAXConnector {
     }
 
     protected final String getQName(String prefix, String localName) {
-        if(prefix==null)
+        if(prefix==null || prefix.length()==0)
             return localName;
         else
             return prefix + ':' + localName;
