@@ -565,10 +565,16 @@ public class Options
                         // try to instanciate the object
                         impl = impl.trim();
                         if(classNames.add(impl)) {
+                            Class implClass = classLoader.loadClass(impl);
+                            if(!clazz.isAssignableFrom(implClass)) {
+                                if(debug) {
+                                    System.out.println(impl+" is not a subclass of "+clazz+". Skipping");
+                                }
+                                continue;
+                            }
                             if(debug) {
                                 System.out.println("Attempting to instanciate "+impl);
                             }
-                            Class implClass = classLoader.loadClass(impl);
                             a.add((T)implClass.newInstance());
                         }
                     }
