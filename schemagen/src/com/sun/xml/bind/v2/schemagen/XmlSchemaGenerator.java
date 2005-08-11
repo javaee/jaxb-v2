@@ -804,6 +804,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 writeTypeRef(lst,t, "itemType");
                 if(tn.getNamespaceURI().length()>0)
                     e.form("qualified");    // TODO: what if the URI != tns?
+                return;
             }
 
             if (ep.isCollection()) {
