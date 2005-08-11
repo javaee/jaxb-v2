@@ -10,11 +10,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
-import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,9 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
-import com.sun.codemodel.util.EncoderFactory;
-import com.sun.codemodel.util.UnicodeEscapeWriter;
 
 
 /**
@@ -426,35 +421,14 @@ public final class JPackage implements JDeclaration, JGenerable, JClassContainer
         // write resources
         for (JResourceFile rsrc : resources) {
             CodeWriter cw = rsrc.isResource() ? res : src;
-            OutputStream os = new BufferedOutputStream(cw.open(this, rsrc.name()));
+            OutputStream os = new BufferedOutputStream(cw.openBinary(this, rsrc.name()));
             rsrc.build(os);
             os.close();
         }
     }
 
     private JFormatter createJavaSourceFileWriter(CodeWriter src, String className) throws IOException {
-        Writer bw = new BufferedWriter(
-            new OutputStreamWriter(src.open(this,className+".java")));
-
-        // create writer
-        try {
-            bw = new UnicodeEscapeWriter(bw) {
-                // can't change this signature to Encoder because
-                // we can't have Encoder in method signature
-                private final Object encoder = EncoderFactory.createEncoder(System.getProperty("file.encoding"));;
-                protected boolean requireEscaping(int ch) {
-                    // control characters
-                    if( ch<0x20 && " \t\r\n".indexOf(ch)==-1 )  return true;
-                    // check ASCII chars, for better performance
-                    if( ch<0x80 )       return false;
-
-                    return !((CharsetEncoder)encoder).canEncode((char)ch);
-                }
-            };
-        } catch( Throwable t ) {
-            bw = new UnicodeEscapeWriter(bw);
-        }
-
+        Writer bw = new BufferedWriter(src.openSource(this,className+".java"));
         JFormatter f = new JFormatter(new PrintWriter(bw));
         return f;
     }

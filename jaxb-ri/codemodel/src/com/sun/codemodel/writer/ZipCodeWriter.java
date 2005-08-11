@@ -19,7 +19,7 @@ import com.sun.codemodel.JPackage;
  * @author
  * 	Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-public class ZipCodeWriter implements CodeWriter {
+public class ZipCodeWriter extends CodeWriter {
     /**
      * @param target
      *      Zip file will be written to this stream.
@@ -36,7 +36,7 @@ public class ZipCodeWriter implements CodeWriter {
     
     private final OutputStream filter;
         
-    public OutputStream open(JPackage pkg, String fileName) throws IOException {
+    public OutputStream openBinary(JPackage pkg, String fileName) throws IOException {
         String name = fileName;
         if(!pkg.isUnnamed())    name = toDirName(pkg)+name;
         

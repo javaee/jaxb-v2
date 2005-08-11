@@ -20,7 +20,7 @@ import com.sun.codemodel.JPackage;
  * @author
  * 	Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-public class FileCodeWriter implements CodeWriter {
+public class FileCodeWriter extends CodeWriter {
 
     /** The target directory to put source code. */
     private final File target;
@@ -43,7 +43,7 @@ public class FileCodeWriter implements CodeWriter {
     }
     
     
-    public OutputStream open(JPackage pkg, String fileName) throws IOException {
+    public OutputStream openBinary(JPackage pkg, String fileName) throws IOException {
         return new FileOutputStream(getFile(pkg,fileName));
     }
     

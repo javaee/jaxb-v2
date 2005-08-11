@@ -6,33 +6,28 @@ import java.io.OutputStream;
 
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JPackage;
+import com.sun.codemodel.writer.FilterCodeWriter;
 
 /**
  * {@link CodeWriter} that reports progress to {@link XJCListener}.
  */
-final class ProgressCodeWriter implements CodeWriter {
+final class ProgressCodeWriter extends FilterCodeWriter {
     public ProgressCodeWriter( CodeWriter output, XJCListener progress ) {
-        this.output = output;
+        super(output);
         this.progress = progress;
         if(progress==null)
             throw new IllegalArgumentException();
     }
 
-    private final CodeWriter output;
     private final XJCListener progress;
 
-    public OutputStream open(JPackage pkg, String fileName) throws IOException {
+    public OutputStream openBinary(JPackage pkg, String fileName) throws IOException {
         String name = pkg.name().replace('.',File.separatorChar);
         if(name.length()!=0)    name +=     File.separatorChar;
         name += fileName;
 
         progress.generatedFile(name);
 
-        return output.open(pkg,fileName);
+        return super.openBinary(pkg,fileName);
     }
-
-    public void close() throws IOException {
-        output.close();
-    }
-
 }
