@@ -403,22 +403,37 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
 
     public void setProperty(String name, Object value) throws PropertyException {
         if( INDENT_STRING.equals(name) ) {
+            checkString(name, value);
             indent = (String)value;
             return;
         }
         if( ENCODING_HANDLER.equals(name) ) {
+            if(!(value instanceof CharacterEscapeHandler))
+                throw new PropertyException(
+                    com.sun.xml.bind.v2.runtime.Messages.MUST_BE_X.format(
+                            name,
+                            CharacterEscapeHandler.class.getName(),
+                            value.getClass().getName() ) );
             escapeHandler = (CharacterEscapeHandler)value;
             return;
         }
         if( PREFIX_MAPPER.equals(name) ) {
+            if(!(value instanceof NamespacePrefixMapper))
+                throw new PropertyException(
+                    com.sun.xml.bind.v2.runtime.Messages.MUST_BE_X.format(
+                            name,
+                            NamespacePrefixMapper.class.getName(),
+                            value.getClass().getName() ) );
             prefixMapper = (NamespacePrefixMapper)value;
             return;
         }
         if( XMLDECLARATION.equals(name) ) {
+            checkBoolean(name, value);
             printXmlDeclaration = (Boolean) value;
             return;
         }
         if( XML_HEADERS.equals(name) ) {
+            checkString(name, value);
             header = (String)value;
             return;
         }
@@ -426,6 +441,29 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         super.setProperty(name, value);
     }
 
+    /*
+     * assert that the given object is a Boolean
+     */
+    private void checkBoolean( String name, Object value ) throws PropertyException {
+        if(!(value instanceof Boolean))
+            throw new PropertyException(
+                com.sun.xml.bind.v2.runtime.Messages.MUST_BE_X.format(
+                        name,
+                        Boolean.class.getName(),
+                        value.getClass().getName() ) );
+    }
+
+    /*
+     * assert that the given object is a String
+     */
+    private void checkString( String name, Object value ) throws PropertyException {
+        if(!(value instanceof String))
+            throw new PropertyException(
+                com.sun.xml.bind.v2.runtime.Messages.MUST_BE_X.format(
+                        name,
+                        String.class.getName(),
+                        value.getClass().getName() ) );
+    }
 
     @Override
     public <A extends XmlAdapter> void setAdapter(Class<A> type, A adapter) {
@@ -479,11 +517,11 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         externalListener = listener;
     }
 
-    private static final String INDENT_STRING = "com.sun.xml.bind.indentString";
-    private static final String PREFIX_MAPPER = "com.sun.xml.bind.namespacePrefixMapper";
-    private static final String ENCODING_HANDLER = "com.sun.xml.bind.characterEscapeHandler";
-    private static final String XMLDECLARATION = "com.sun.xml.bind.xmlDeclaration";
-    private static final String XML_HEADERS = "com.sun.xml.bind.xmlHeaders";
+    protected static final String INDENT_STRING = "com.sun.xml.bind.indentString";
+    protected static final String PREFIX_MAPPER = "com.sun.xml.bind.namespacePrefixMapper";
+    protected static final String ENCODING_HANDLER = "com.sun.xml.bind.characterEscapeHandler";
+    protected static final String XMLDECLARATION = "com.sun.xml.bind.xmlDeclaration";
+    protected static final String XML_HEADERS = "com.sun.xml.bind.xmlHeaders";
 
     /**
      * Reference to FI's XMLStreamWriter class, if FI can be loaded.

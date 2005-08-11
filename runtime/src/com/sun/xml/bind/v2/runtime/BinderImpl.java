@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: BinderImpl.java,v 1.8 2005-07-27 21:17:40 kohsuke Exp $
+ * @(#)$Id: BinderImpl.java,v 1.9 2005-08-11 23:00:35 ryan_shoemaker Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -13,6 +13,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.Binder;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.PropertyException;
+import javax.xml.bind.Marshaller;
 import javax.xml.validation.Schema;
 
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
@@ -166,5 +168,73 @@ public class BinderImpl<XmlNode> extends Binder<XmlNode> {
 
     public ValidationEventHandler getEventHandler() {
         return getUnmarshaller().getEventHandler();
+    }
+
+    public Object getProperty(String name) throws PropertyException {
+        if (name == null)
+            throw new IllegalArgumentException(Messages.NULL_PROPERTY_NAME.format());
+
+        // exclude RI properties that don't make sense for Binder
+        if (excludeProperty(name)) {
+            throw new PropertyException(name);
+        }
+
+        Object prop = null;
+        PropertyException pe = null;
+
+        try {
+            prop = getMarshaller().getProperty(name);
+            return prop;
+        } catch (PropertyException p) {
+            pe = p;
+        }
+
+        try {
+            prop = getUnmarshaller().getProperty(name);
+            return prop;
+        } catch (PropertyException p) {
+            pe = p;
+        }
+
+        pe.setStackTrace(Thread.currentThread().getStackTrace());
+        throw pe;
+    }
+
+    public void setProperty(String name, Object value) throws PropertyException {
+        if (name == null)
+            throw new IllegalArgumentException(Messages.NULL_PROPERTY_NAME.format());
+
+        // exclude RI properties that don't make sense for Binder
+        if (excludeProperty(name)) {
+            throw new PropertyException(name, value);
+        }
+
+        PropertyException pe = null;
+
+        try {
+            getMarshaller().setProperty(name, value);
+            return;
+        } catch (PropertyException p) {
+            pe = p;
+        }
+
+        try {
+            getUnmarshaller().setProperty(name, value);
+            return;
+        } catch (PropertyException p) {
+            pe = p;
+        }
+
+        // replace the stacktrace - we don't want to see a trace
+        // originating from Un|Marshaller.setProperty
+        pe.setStackTrace(Thread.currentThread().getStackTrace());
+        throw pe;
+    }
+
+    private boolean excludeProperty(String name) {
+        return name.equals(
+                MarshallerImpl.ENCODING_HANDLER) ||
+                        name.equals(MarshallerImpl.XMLDECLARATION) ||
+                        name.equals(MarshallerImpl.XML_HEADERS);
     }
 }
