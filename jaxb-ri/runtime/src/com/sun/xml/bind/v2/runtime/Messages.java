@@ -18,6 +18,9 @@ enum Messages {
     DANGLING_IDREF, // 1 arg
     NULL_OUTPUT_RESOLVER, // 0 args
     UNABLE_TO_MARSHAL_NON_ELEMENT, // 1 arg
+    UNSUPPORTED_PROPERTY, // 1 arg
+    NULL_PROPERTY_NAME, // 0 args
+    MUST_BE_X, // 3 args
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());
