@@ -32,7 +32,7 @@
   </xs:element>
   <xs:element name="dom">
     <xs:complexType>
-      <xs:attribute name="type" use="required"/>
+      <xs:attribute name="type" default="w3c"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="serializable">
