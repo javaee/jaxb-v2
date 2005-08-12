@@ -1,6 +1,5 @@
 package com.sun.xml.bind.v2.model.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -12,14 +11,15 @@ import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlInlineBinaryData;
 import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlSchema;
-import javax.xml.bind.annotation.XmlInlineBinaryData;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
-import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.FinalArrayList;
+import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
@@ -87,6 +87,7 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     private final PropertyImpl property;
     private final MimeType expectedMimeType;
     private final boolean inlineBinary;
+    private final QName schemaType;
 
     /**
      * Singleton instance of {@link ElementPropertyInfo} for this element.
@@ -171,6 +172,10 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
         public MimeType getExpectedMimeType() {
             return expectedMimeType;
+        }
+
+        public QName getSchemaType() {
+            return schemaType;
         }
 
         public boolean inlineBinaryData() {
@@ -271,6 +276,13 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         }
         this.expectedMimeType = mt;
         this.inlineBinary = reader().hasMethodAnnotation(XmlInlineBinaryData.class,method);
+        XmlSchemaType xst = reader().getMethodAnnotation(XmlSchemaType.class,method,this);
+        if(xst!=null) {
+            schemaType = new QName(xst.namespace(),xst.name());
+        } else {
+            schemaType = null;
+        }
+        // TODO: share with PropertyInfo until here
     }
 
     final QName parseElementName(XmlElementDecl e) {

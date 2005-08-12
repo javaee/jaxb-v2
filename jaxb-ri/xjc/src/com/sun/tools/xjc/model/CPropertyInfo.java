@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JJavaName;
@@ -59,6 +60,10 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
     public JExpression defaultValue;
 
     private final CCustomizations customizations;
+    /**
+     * @see #getSchemaType() 
+     */
+    public QName schemaType;
 
     protected CPropertyInfo(String name, boolean collection,
                             CCustomizations customizations, Locator locator) {
@@ -206,6 +211,10 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
 
     public CCustomizations getCustomizations() {
         return customizations;
+    }
+
+    public QName getSchemaType() {
+        return schemaType;
     }
 
     /**
