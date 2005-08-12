@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlInlineBinaryData;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.TODO;
@@ -48,6 +49,7 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     private final MimeType expectedMimeType;
     private final boolean inlineBinary;
+    private final QName schemaType;
 
     protected final ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> parent;
 
@@ -77,6 +79,13 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         }
         this.expectedMimeType = mt;
         this.inlineBinary = seed.hasAnnotation(XmlInlineBinaryData.class);
+
+        XmlSchemaType xst = seed.readAnnotation(XmlSchemaType.class);
+        if(xst!=null) {
+            schemaType = new QName(xst.namespace(),xst.name());
+        } else {
+            schemaType = null;
+        }
     }
 
     public ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> parent() {
@@ -147,6 +156,10 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     public final boolean inlineBinaryData() {
         return inlineBinary;
+    }
+
+    public QName getSchemaType() {
+        return schemaType;
     }
 
     public final boolean isCollection() {

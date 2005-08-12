@@ -6,14 +6,16 @@ import javax.activation.MimeType;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.namespace.QName;
 
 /**
  * Information about a JAXB-bound property.
  *
  * <p>
- * All the JAXB annotations are already reflected to the model so that
- * the caller doesn't have to worry about them. For this reason, you
- * cannot access annotations on properties.
+ * All the JAXB annotations are already incorporated into the model so that
+ * the caller doesn't have to worry about reading them. For this reason, you
+ * cannot access annotations on properties directly.
  *
  * @author Kohsuke Kawaguchi
  */
@@ -96,4 +98,11 @@ public interface PropertyInfo<TypeT,ClassDeclT> {
      * it should be always inlined.
      */
     boolean inlineBinaryData();
+
+    /**
+     * The effective value of {@link XmlSchemaType} annotation, if any.
+     *
+     * @return maye be null.
+     */
+    QName getSchemaType();
 }
