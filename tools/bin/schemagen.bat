@@ -22,7 +22,7 @@ goto END
 :CHECKJAVAHOME
 if not "%JAVA_HOME%" == "" goto USE_JAVA_HOME
 
-set APT=apt
+set JAVA=java
 goto SETCLASSPATH
 
 :USE_JAVA_HOME
