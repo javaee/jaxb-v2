@@ -10,7 +10,6 @@ import java.util.List;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.runtime.RuntimeClassInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementInfo;
@@ -28,8 +27,8 @@ import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 final class RuntimeElementInfoImpl extends ElementInfoImpl<Type,Class,Field,Method>
     implements RuntimeElementInfo {
     
-    public RuntimeElementInfoImpl(RuntimeModelBuilder modelBuilder, Locatable upstream, Method method) throws IllegalAnnotationException {
-        super(modelBuilder, upstream, method);
+    public RuntimeElementInfoImpl(RuntimeModelBuilder modelBuilder, RegistryInfoImpl registry, Method method) throws IllegalAnnotationException {
+        super(modelBuilder, registry, method);
 
         Adapter<Type,Class> a = getProperty().getAdapter();
 
