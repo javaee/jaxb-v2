@@ -504,6 +504,13 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 return;
             }
 
+            // type name override
+            if(typeRef.getSource().getSchemaType()!=null) {
+                th._attribute(refAttName,typeRef.getSource().getSchemaType());
+                return;
+            }
+
+
             // normal type generation
             writeTypeRef(th, typeRef.getTarget(), refAttName);
         }
@@ -526,10 +533,14 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
          * or writes out the definition of the anonymous type in place (if the referenced
          * type is not a global type.)
          *
+         * @param th
+         *      the TXW interface to which the attribute will be written.
+         * @param type
+         *      type to be referenced.
          * @param refAttName
          *      The name of the attribute used when referencing a type by QName.
          */
-        private void writeTypeRef(TypeHost th, NonElement<TypeT, ClassDeclT> type, String refAttName) {
+        private void writeTypeRef(TypeHost th, NonElement<TypeT,ClassDeclT> type, String refAttName) {
             if(type.getTypeName()==null) {
                 if(type instanceof ClassInfo) {
                     writeClass( (ClassInfo<TypeT,ClassDeclT>)type, th );
