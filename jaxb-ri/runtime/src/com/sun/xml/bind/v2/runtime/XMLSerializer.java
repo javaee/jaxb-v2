@@ -19,6 +19,7 @@ import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.ValidationEventLocator;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.DomHandler;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.attachment.AttachmentMarshaller;
 import javax.xml.bind.helpers.NotIdentifiableEventImpl;
 import javax.xml.bind.helpers.ValidationEventImpl;
@@ -813,6 +814,27 @@ public final class XMLSerializer extends Coordinator {
 
     public boolean getInlineBinaryFlag() {
         return inlineBinaryFlag;
+    }
+
+    /**
+     * Field used to support an {@link XmlSchemaType} annotation.
+     *
+     * <p>
+     * When we are marshalling a property with an effective {@link XmlSchemaType},
+     * this field is set to hold the QName of that type. The {@link Transducer} that
+     * actually converts a Java object into XML can look this property to decide
+     * how to marshal the value.
+     */
+    private QName schemaType;
+
+    public QName setSchemaType(QName st) {
+        QName old = schemaType;
+        schemaType = st;
+        return old;
+    }
+
+    public QName getSchemaType() {
+        return schemaType;
     }
 
     void reconcileID() throws SAXException {

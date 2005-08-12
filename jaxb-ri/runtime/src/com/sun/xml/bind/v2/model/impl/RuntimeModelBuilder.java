@@ -21,6 +21,7 @@ import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.MimeTypedTransducer;
+import com.sun.xml.bind.v2.runtime.SchemaTypeTransducer;
 import com.sun.xml.bind.v2.runtime.InlineBinaryTransducer;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 
@@ -106,6 +107,9 @@ public class RuntimeModelBuilder extends ModelBuilder<Type,Class,Field,Method> {
 
         if(src.inlineBinaryData())
             t = new InlineBinaryTransducer(t);
+
+        if(src.getSchemaType()!=null)
+            t = new SchemaTypeTransducer(t,src.getSchemaType());
 
         return t;
     }
