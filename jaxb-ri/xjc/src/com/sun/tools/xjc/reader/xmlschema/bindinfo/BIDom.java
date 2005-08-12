@@ -13,8 +13,6 @@ import com.sun.tools.xjc.reader.Const;
 /**
  * DOM customization.
  *
- * TODO
- * 
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
