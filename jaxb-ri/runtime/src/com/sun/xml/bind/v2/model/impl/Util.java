@@ -3,10 +3,14 @@ package com.sun.xml.bind.v2.model.impl;
 import javax.xml.namespace.QName;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSchemaTypes;
+import javax.xml.bind.annotation.XmlMimeType;
+import javax.activation.MimeType;
+import javax.activation.MimeTypeParseException;
 
 import com.sun.xml.bind.v2.model.annotation.AnnotationSource;
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
+import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 
 /**
  * Common code between {@link PropertyInfoImpl} and {@link ElementInfoImpl}.
@@ -44,5 +48,21 @@ final class Util {
         }
 
         return null;
+    }
+    
+    static MimeType calcExpectedMediaType(AnnotationSource primarySource,
+                        ModelBuilder builder ) {
+        XmlMimeType xmt = primarySource.readAnnotation(XmlMimeType.class);
+        if(xmt==null)
+            return null;
+        
+        try {
+            return new MimeType(xmt.value());
+        } catch (MimeTypeParseException e) {
+            builder.reportError(new IllegalAnnotationException(
+                Messages.ILLEGAL_MIME_TYPE.format(xmt.value(),e.getMessage()),
+                xmt
+            ));
+        }
     }
 }

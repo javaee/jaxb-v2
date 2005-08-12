@@ -60,24 +60,13 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         this.parent = parent;
         this.id = calcId();
 
-        XmlMimeType xmt = seed.readAnnotation(XmlMimeType.class);
-        MimeType mt = null;
-        if(xmt!=null) {
-            if(!kind().canHaveXmlMimeType) {
-                parent.builder.reportError(new IllegalAnnotationException(
-                    Messages.ILLEGAL_ANNOTATION.format(XmlMimeType.class.getName()),
-                    xmt
-                ));
-            } else {
-                try {
-                    mt = new MimeType(xmt.value());
-                } catch (MimeTypeParseException e) {
-                    parent.builder.reportError(new IllegalAnnotationException(
-                        Messages.ILLEGAL_MIME_TYPE.format(xmt.value(),e.getMessage()),
-                        xmt
-                    ));
-                }
-            }
+        MimeType mt = Util.calcExpectedMediaType(seed,parent.builder);
+        if(mt!=null && !kind().canHaveXmlMimeType) {
+            parent.builder.reportError(new IllegalAnnotationException(
+                Messages.ILLEGAL_ANNOTATION.format(XmlMimeType.class.getName()),
+                seed.readAnnotation(XmlMimeType.class)
+            ));
+            mt = null;
         }
         this.expectedMimeType = mt;
         this.inlineBinary = seed.hasAnnotation(XmlInlineBinaryData.class);

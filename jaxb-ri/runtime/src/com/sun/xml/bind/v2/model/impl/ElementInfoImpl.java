@@ -278,22 +278,8 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
         property = createPropertyImpl();
 
-        // TODO: share with PropertyInfoImpl
-        XmlMimeType xmt = reader().getMethodAnnotation(XmlMimeType.class,method,this);
-        MimeType mt = null;
-        if(xmt!=null) {
-            try {
-                mt = new MimeType(xmt.value());
-            } catch (MimeTypeParseException e) {
-                builder.reportError(new IllegalAnnotationException(
-                    Messages.ILLEGAL_MIME_TYPE.format(xmt.value(),e.getMessage()),
-                    xmt
-                ));
-            }
-        }
-        this.expectedMimeType = mt;
+        this.expectedMimeType = Util.calcExpectedMediaType(property,builder);
         this.inlineBinary = reader().hasMethodAnnotation(XmlInlineBinaryData.class,method);
-        // TODO: share with PropertyInfo until here
         this.schemaType = Util.calcSchemaType(reader(),property,registry.registryClass,
                 nav().asDecl(getContentInMemoryType()),this);
     }
