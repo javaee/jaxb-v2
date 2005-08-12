@@ -12,11 +12,13 @@ import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlInlineBinaryData;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlSchemaTypes;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
+import com.sun.xml.bind.v2.model.annotation.AnnotationSource;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
@@ -79,14 +81,10 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         }
         this.expectedMimeType = mt;
         this.inlineBinary = seed.hasAnnotation(XmlInlineBinaryData.class);
-
-        XmlSchemaType xst = seed.readAnnotation(XmlSchemaType.class);
-        if(xst!=null) {
-            schemaType = new QName(xst.namespace(),xst.name());
-        } else {
-            schemaType = null;
-        }
+        this.schemaType = Util.calcSchemaType(reader(),seed,parent.clazz,
+                nav().asDecl(getIndividualType()),this);
     }
+
 
     public ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> parent() {
         return parent;

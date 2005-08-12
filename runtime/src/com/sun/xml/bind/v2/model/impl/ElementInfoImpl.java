@@ -1,5 +1,6 @@
 package com.sun.xml.bind.v2.model.impl;
 
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -14,12 +15,12 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlInlineBinaryData;
 import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlSchema;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.FinalArrayList;
 import com.sun.xml.bind.v2.TODO;
+import com.sun.xml.bind.v2.model.annotation.AnnotationSource;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
@@ -92,7 +93,10 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     /**
      * Singleton instance of {@link ElementPropertyInfo} for this element.
      */
-    protected class PropertyImpl implements ElementPropertyInfo<TypeT,ClassDeclT>, TypeRef<TypeT,ClassDeclT> {
+    protected class PropertyImpl implements
+            ElementPropertyInfo<TypeT,ClassDeclT>,
+            TypeRef<TypeT,ClassDeclT>,
+            AnnotationSource {
         //
         // TypeRef impl
         //
@@ -185,6 +189,19 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         public PropertyInfo<TypeT,ClassDeclT> getSource() {
             return this;
         }
+
+        //
+        //
+        // AnnotationSource impl
+        //
+        //
+        public <A extends Annotation> A readAnnotation(Class<A> annotationType) {
+            return reader().getMethodAnnotation(annotationType,method,ElementInfoImpl.this);
+        }
+
+        public boolean hasAnnotation(Class<? extends Annotation> annotationType) {
+            return reader().hasMethodAnnotation(annotationType,method);
+        }
     };
 
     /**
@@ -192,8 +209,8 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      *      The factory method on ObjectFactory that comes with {@link XmlElementDecl}.
      */
     public ElementInfoImpl(ModelBuilder<TypeT,ClassDeclT,FieldT,MethodT> builder,
-        Locatable upstream, MethodT m ) throws IllegalAnnotationException {
-        super(builder,upstream);
+        RegistryInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> registry, MethodT m ) throws IllegalAnnotationException {
+        super(builder,registry);
 
         this.method = m;
         anno = reader().getMethodAnnotation( XmlElementDecl.class, m, this );
@@ -276,13 +293,9 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         }
         this.expectedMimeType = mt;
         this.inlineBinary = reader().hasMethodAnnotation(XmlInlineBinaryData.class,method);
-        XmlSchemaType xst = reader().getMethodAnnotation(XmlSchemaType.class,method,this);
-        if(xst!=null) {
-            schemaType = new QName(xst.namespace(),xst.name());
-        } else {
-            schemaType = null;
-        }
         // TODO: share with PropertyInfo until here
+        this.schemaType = Util.calcSchemaType(reader(),property,registry.registryClass,
+                nav().asDecl(getContentInMemoryType()),this);
     }
 
     final QName parseElementName(XmlElementDecl e) {

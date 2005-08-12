@@ -26,7 +26,7 @@ public interface ElementInfo<TypeT,ClassDeclT> extends Element<TypeT,ClassDeclT>
      *
      * The type of the value this element holds.
      *
-     * Normally, this is the T of {@code IXmlElement<T>}.
+     * Normally, this is the T of {@code JAXBElement<T>}.
      * But if the property is adapted, this is the on-the-wire type.
      *
      * Or if the element has a list of values, then this field
