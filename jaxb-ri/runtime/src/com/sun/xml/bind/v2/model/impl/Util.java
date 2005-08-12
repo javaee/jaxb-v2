@@ -63,6 +63,7 @@ final class Util {
                 Messages.ILLEGAL_MIME_TYPE.format(xmt.value(),e.getMessage()),
                 xmt
             ));
+            return null;
         }
     }
 }
