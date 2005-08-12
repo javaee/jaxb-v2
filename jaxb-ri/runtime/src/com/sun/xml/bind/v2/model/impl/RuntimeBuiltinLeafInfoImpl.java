@@ -35,6 +35,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.datatype.DatatypeConstants;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
@@ -57,6 +58,7 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import org.xml.sax.SAXException;
 
 /**
+ *
  * @author Kohsuke Kawaguchi
  */
 public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<Type,Class>
@@ -573,10 +575,21 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
         },
         new RuntimeBuiltinLeafInfoImpl<XMLGregorianCalendar>(XMLGregorianCalendar.class, createXS("dateTime")) {
 
-            public String print(XMLGregorianCalendar xmlGregorianCalendar) {
-                // TODO: this doesn't guarantee the calendar to be printed in the xs:dateTime format.
-                TODO.prototype();
-                return xmlGregorianCalendar.toXMLFormat(); // ???
+            public String print(XMLGregorianCalendar cal) {
+                XMLSerializer xs = XMLSerializer.getInstance();
+
+                QName type = xs.getSchemaType();
+                if(type!=null) {
+                    String format = xmlGregorianCalendarFormatString.get(type);
+                    if(format!=null)
+                        return format(format,cal);
+                    // TODO:
+                    // we need to think about how to report an error where @XmlSchemaType
+                    // didn't take effect. a general case is when a transducer isn't even
+                    // written to look at that value.
+                }
+
+                return cal.toXMLFormat();
             }
 
             public XMLGregorianCalendar parse(CharSequence lexical) throws SAXException {
@@ -586,6 +599,78 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                     UnmarshallingContext.getInstance().handleError(e);
                     return null;
                 }
+            }
+
+            // code duplicated from JAXP RI 1.3. See 6277586
+            private String format( String format, XMLGregorianCalendar value ) {
+                StringBuilder buf = new StringBuilder();
+                int fidx=0,flen=format.length();
+
+                while(fidx<flen) {
+                    char fch = format.charAt(fidx++);
+                    if(fch!='%') {// not a meta char
+                        buf.append(fch);
+                        continue;
+                    }
+
+                    switch(format.charAt(fidx++)) {
+                    case 'Y':
+                        printNumber(buf,value.getEonAndYear(), 4);
+                        break;
+                    case 'M':
+                        printNumber(buf,value.getMonth(),2);
+                        break;
+                    case 'D':
+                        printNumber(buf,value.getDay(),2);
+                        break;
+                    case 'h':
+                        printNumber(buf,value.getHour(),2);
+                        break;
+                    case 'm':
+                        printNumber(buf,value.getMinute(),2);
+                        break;
+                    case 's':
+                        printNumber(buf,value.getSecond(),2);
+                if (value.getFractionalSecond() != null) {
+                    String frac = value.getFractionalSecond().toString();
+                    //skip leading zero.
+                    buf.append(frac.substring(1, frac.length()));
+                }
+                        break;
+                    case 'z':
+                int offset = value.getTimezone();
+                        if(offset == 0) {
+                    buf.append('Z');
+                } else if (offset != DatatypeConstants.FIELD_UNDEFINED) {
+                    if(offset<0) {
+                    buf.append('-');
+                    offset *= -1;
+                    } else {
+                    buf.append('+');
+                    }
+                    printNumber(buf,offset/60,2);
+                            buf.append(':');
+                            printNumber(buf,offset%60,2);
+                        }
+                        break;
+                    default:
+                        throw new InternalError();  // impossible
+                    }
+                }
+
+                return buf.toString();
+            }
+            private void printNumber( StringBuilder out, BigInteger number, int nDigits) {
+                String s = number.toString();
+                for( int i=s.length(); i<nDigits; i++ )
+                    out.append('0');
+                out.append(s);
+            }
+            private void printNumber( StringBuilder out, int number, int nDigits ) {
+                String s = String.valueOf(number);
+                for( int i=s.length(); i<nDigits; i++ )
+                    out.append('0');
+                out.append(s);
             }
         },
         new RuntimeBuiltinLeafInfoImpl<Void>(Void.class) {
@@ -629,5 +714,23 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
         } catch (DatatypeConfigurationException e) {
             throw new Error(Messages.FAILED_TO_INITIALE_DATATYPE_FACTORY.format(),e);
         }
+    }
+
+    /**
+     * Format string for the {@link XMLGregorianCalendar}.
+     */
+    private static final Map<QName,String> xmlGregorianCalendarFormatString = new HashMap<QName, String>();
+
+    static {
+        Map m = xmlGregorianCalendarFormatString;
+        // See 4971612: be careful for SCCS substitution
+        m.put(DatatypeConstants.DATETIME,   "%Y-%M-%DT%h:%m:%s"+ "%z");
+        m.put(DatatypeConstants.DATE,       "%Y-%M-%D" +"%z");
+        m.put(DatatypeConstants.TIME,       "%h:%m:%s"+ "%z");
+        m.put(DatatypeConstants.GMONTH,     "--%M--%z");
+        m.put(DatatypeConstants.GDAY,       "---%D" + "%z");
+        m.put(DatatypeConstants.GYEAR,      "%Y" + "%z");
+        m.put(DatatypeConstants.GYEARMONTH, "%Y-%M" + "%z");
+        m.put(DatatypeConstants.GMONTHDAY,  "--%M-%D" +"%z");
     }
 }
