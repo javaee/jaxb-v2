@@ -7,7 +7,10 @@ import com.sun.codemodel.JDefinedClass;
  * Outline object that provides per-{@link CElementInfo} information
  * for filling in methods/fields for a bean.
  *
- * This interface is accessible from {@link Outline}.
+ * This interface is accessible from {@link Outline}. This object is
+ * not created for all {@link CElementInfo}s.
+ * It is only for those {@link CElementInfo} that has a class.
+ * (IOW, {@link CElementInfo#hasClass()}
  * 
  * @author Kohsuke Kawaguchi
  */
