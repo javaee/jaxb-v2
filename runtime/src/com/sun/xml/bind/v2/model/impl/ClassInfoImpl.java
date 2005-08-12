@@ -87,7 +87,14 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      */
     private final String[] propOrder;
 
-    private final ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> baseClass;
+    /**
+     * Lazily computed.
+     *
+     * To avoid the cyclic references of the form C1 --base--> C2 --property--> C1.
+     */
+    private ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> baseClass;
+
+    private boolean baseClassComputed = false;
 
     /**
      * If this class has a declared (not inherited) attribute wildcard,  keep the reference
@@ -135,16 +142,18 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
                 typeName = parseTypeName(clazz,null);
             propOrder = DEFAULT_ORDER;
         }
-
-        // compute the base class
-        ClassDeclT s = nav().getSuperClass(clazz);
-        if(s==null || s==nav().asDecl(Object.class))
-            baseClass = null;
-        else
-            baseClass = (ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>) builder.getClassInfo(s,this);
     }
 
     public ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> getBaseClass() {
+        if(!baseClassComputed) {
+            baseClassComputed = true;
+            // compute the base class
+            ClassDeclT s = nav().getSuperClass(clazz);
+            if(s==null || s==nav().asDecl(Object.class))
+                baseClass = null;
+            else
+                baseClass = (ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>) builder.getClassInfo(s,this);
+        }
         return baseClass;
     }
 
@@ -154,7 +163,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      * The substitution hierarchy is the same as the inheritance hierarchy.
      */
     public final Element<TypeT,ClassDeclT> getSubstitutionHead() {
-        ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> c = baseClass;
+        ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> c = getBaseClass();
         while(c!=null && !c.isElement())
             c = c.getBaseClass();
         return c;
@@ -786,7 +795,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      * Gets the {@link PropertySeed} object for the inherited attribute wildcard.
      */
     private PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> getInheritedAttributeWildcard() {
-        for( ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> c=baseClass; c!=null; c=c.baseClass )
+        for( ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> c=getBaseClass(); c!=null; c=c.getBaseClass() )
             if(c.attributeWildcard!=null)
                 return c.attributeWildcard;
         return null;

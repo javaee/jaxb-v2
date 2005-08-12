@@ -122,6 +122,8 @@ public class ModelBuilder<TypeT,ClassDeclT,FieldT,MethodT> {
                 for( TypeInfo<TypeT,ClassDeclT> t : p.ref() )
                     ; // just compute a reference should be suffice
             }
+            ci.getBaseClass();
+            
             r = ci;
         }
 
