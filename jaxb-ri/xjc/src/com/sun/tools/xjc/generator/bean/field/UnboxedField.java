@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: UnboxedField.java,v 1.2 2005-05-06 21:24:16 kohsuke Exp $
+ * @(#)$Id: UnboxedField.java,v 1.3 2005-08-13 00:15:23 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -53,7 +53,9 @@ class UnboxedField extends AbstractFieldWithVar {
         
         createField();
 
-        assert prop.defaultValue==null;
+        // apparently a required attribute can be still defaulted.
+        // so this assertion is incorrect.
+        // assert prop.defaultValue==null;
 
         MethodWriter writer = outline.createMethodWriter();
         NameConverter nc = outline.parent().getModel().getNameConverter();
