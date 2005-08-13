@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.46 2005-08-09 18:36:30 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.47 2005-08-13 22:38:21 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -14,6 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -90,7 +91,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -514,7 +515,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
      * For diagnostic use.
      */
     public Set<QName> getValidRootNames() {
-        Set<QName> r = new TreeSet<QName>();
+        Set<QName> r = new TreeSet<QName>(QNAME_COMPARATOR);
         for (QNameMap.Entry e : rootMap.entrySet()) {
             r.add(e.createQName());
         }
@@ -818,4 +819,13 @@ public final class JAXBContextImpl extends JAXBRIContext {
         }
         return null;
     }
+
+    private static final Comparator<QName> QNAME_COMPARATOR = new Comparator<QName>() {
+        public int compare(QName lhs, QName rhs) {
+            int r = lhs.getLocalPart().compareTo(rhs.getLocalPart());
+            if(r!=0)    return r;
+
+            return lhs.getNamespaceURI().compareTo(rhs.getNamespaceURI());
+        }
+    }; ;
 }
