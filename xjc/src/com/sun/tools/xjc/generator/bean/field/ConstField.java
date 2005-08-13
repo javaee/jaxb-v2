@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: ConstField.java,v 1.2 2005-05-06 21:24:16 kohsuke Exp $
+ * @(#)$Id: ConstField.java,v 1.3 2005-08-13 22:36:02 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -49,7 +49,7 @@ final class ConstField extends AbstractField {
 
         // generate the constant
         $ref = outline.ref.field(JMod.PUBLIC|JMod.STATIC|JMod.FINAL,
-            ptype!=null?ptype:implType, prop.getName(false), prop.defaultValue );
+            ptype!=null?ptype:implType, prop.getName(true), prop.defaultValue );
         $ref.javadoc().append(prop.javadoc);
         
         annotate($ref);
