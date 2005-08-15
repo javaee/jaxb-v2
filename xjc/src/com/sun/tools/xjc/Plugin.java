@@ -109,7 +109,7 @@ public abstract class Plugin {
     /**
      * Run the add-on.
      * 
-     * @param model
+     * @param outline
      *      This object allows access to various generated code.
      * 
      * @param errorHandler
@@ -121,6 +121,6 @@ public abstract class Plugin {
      *      recovered gracefully, return false.
      */
     public abstract boolean run(
-        Outline model, Options opt, ErrorHandler errorHandler );
+        Outline outline, Options opt, ErrorHandler errorHandler );
         
 }
