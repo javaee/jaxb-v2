@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: BinderImpl.java,v 1.9 2005-08-11 23:00:35 ryan_shoemaker Exp $
+ * @(#)$Id: BinderImpl.java,v 1.10 2005-08-15 15:14:39 ryan_shoemaker Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -9,24 +9,23 @@
  */
 package com.sun.xml.bind.v2.runtime;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.Binder;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.PropertyException;
-import javax.xml.bind.Marshaller;
+import javax.xml.bind.ValidationEventHandler;
 import javax.xml.validation.Schema;
 
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
 import com.sun.xml.bind.v2.AssociationMap;
+import com.sun.xml.bind.v2.runtime.output.DOMOutput;
 import com.sun.xml.bind.v2.runtime.unmarshaller.InterningXmlVisitor;
 import com.sun.xml.bind.v2.runtime.unmarshaller.SAXConnector;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
-import com.sun.xml.bind.v2.runtime.output.DOMOutput;
 
-import org.xml.sax.SAXException;
-import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 /**
  * Implementation of {@link Binder}.
@@ -83,6 +82,8 @@ public class BinderImpl<XmlNode> extends Binder<XmlNode> {
     }
 
     public void marshal(Object jaxbObject, XmlNode xmlNode) throws JAXBException {
+        if ((xmlNode == null) || (jaxbObject == null))
+            throw new IllegalArgumentException();
         getMarshaller().marshal(jaxbObject,createOutput(xmlNode));
     }
 
@@ -114,6 +115,9 @@ public class BinderImpl<XmlNode> extends Binder<XmlNode> {
     }
 
     private Object associativeUnmarshal(XmlNode xmlNode, boolean inplace, Class expectedType) throws JAXBException {
+        if (xmlNode == null)
+            throw new IllegalArgumentException();
+
         InterningXmlVisitor handler = new InterningXmlVisitor(
             getUnmarshaller().createUnmarshallerHandler(scanner,inplace,context.getBeanInfo(expectedType,true)));
         scanner.setContentHandler(new SAXConnector(handler,scanner.getLocator()));
