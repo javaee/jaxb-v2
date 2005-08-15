@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.AccessorOrder;
 import javax.xml.bind.annotation.XmlAccessorOrder;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.annotation.XmlLocation;
@@ -410,10 +411,49 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         }
     }
 
+    private boolean isApplicable(XmlJavaTypeAdapter jta, PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> seed ) {
+        if(jta==null)   return false;
+
+        TypeT type = reader().getClassValue(jta,"type");
+        if(seed.getRawType().equals(type))
+            return true;
+
+        return false;
+    }
+
+    private XmlJavaTypeAdapter getApplicableAdapter(PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> seed) {
+        XmlJavaTypeAdapter jta = seed.readAnnotation(XmlJavaTypeAdapter.class);
+        if(jta!=null)
+            return jta;
+
+        // check the applicable adapters on the package
+        XmlJavaTypeAdapters jtas = reader().getPackageAnnotation(XmlJavaTypeAdapters.class, clazz, seed );
+        if(jtas!=null) {
+            for (XmlJavaTypeAdapter xjta : jtas.value()) {
+                if(isApplicable(xjta,seed))
+                    return xjta;
+            }
+        }
+        jta = reader().getPackageAnnotation(XmlJavaTypeAdapter.class, clazz, seed );
+        if(isApplicable(jta,seed))
+            return jta;
+
+        // then on the target class
+        ClassDeclT refType = nav().asDecl(seed.getRawType());
+        if(refType!=null) {
+            jta = reader().getClassAnnotation(XmlJavaTypeAdapter.class, refType, seed );
+            if(isApplicable(jta,seed))
+                return jta;
+        }
+
+        return null;
+    }
+
     private PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> adaptIfNecessary(PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> seed) {
-        XmlJavaTypeAdapter adapter = seed.readAnnotation(XmlJavaTypeAdapter.class);
-        if(adapter!=null)
-            return createAdaptedSeed(seed,new Adapter<TypeT,ClassDeclT>(adapter,reader(),nav()));
+        XmlJavaTypeAdapter xjta = getApplicableAdapter(seed);
+        if(xjta!=null)
+            seed = createAdaptedSeed(seed,new Adapter<TypeT,ClassDeclT>(xjta,reader(),nav()));
+
 
         // this is actually incorrect because it's OK to have an adapter and the attachment
         // at the same time.
