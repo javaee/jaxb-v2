@@ -600,7 +600,7 @@ public final class BeanGenerator implements Outline
             //   throw new IllegalArgumentException(...);
             // }
             {
-                JMethod m = type.method(JMod.PUBLIC|JMod.STATIC, type, "fromValue" );
+                JMethod m = type.method(JMod.PUBLIC|JMod.STATIC , type, "fromValue" );
                 JVar $v = m.param(baseExposedType,"v");
                 JForEach fe = m.body().forEach(type,"c", type.staticInvoke("values") );
                 JExpression eq;
