@@ -1,6 +1,8 @@
 package com.sun.xml.bind.v2.runtime.reflect;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Type;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.WeakHashMap;
+import java.util.concurrent.Callable;
 
 import javax.xml.bind.JAXBException;
 
@@ -18,6 +21,7 @@ import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.core.ID;
+import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Patcher;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
@@ -76,18 +80,27 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
      * @param idness
      *      ID-ness of the property.
      */
-    public static final <BeanT,PropT,ItemT,PackT> Lister<BeanT,PropT,ItemT,PackT> create(Class fieldType,ID idness) {
+    public static final <BeanT,PropT,ItemT,PackT> Lister<BeanT,PropT,ItemT,PackT> create(Type fieldType,ID idness) {
+        Class rawType = Navigator.REFLECTION.erasure(fieldType);
+        Class itemType;
+
         Lister l;
-        if( fieldType.isArray() )
-            l = getArrayLister(fieldType.getComponentType());
-        else
-        if( Collection.class.isAssignableFrom(fieldType) )
-            l = new CollectionLister(getImplClass(fieldType));
-        else
+        if( rawType.isArray() ) {
+            itemType = rawType.getComponentType();
+            l = getArrayLister(itemType);
+        } else
+        if( Collection.class.isAssignableFrom(rawType) ) {
+            Type bt = Navigator.REFLECTION.getBaseClass(fieldType,Collection.class);
+            if(bt instanceof ParameterizedType)
+                itemType = Navigator.REFLECTION.erasure(((ParameterizedType)bt).getActualTypeArguments()[0]);
+            else
+                itemType = Object.class;
+            l = new CollectionLister(getImplClass(rawType));
+        } else
             return null;
 
         if(idness==ID.IDREF)
-            l = new IDREFS(l);
+            l = new IDREFS(l,itemType);
 
         return l;
     }
@@ -170,7 +183,7 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
             acc.set(o,(ItemT[])Array.newInstance(itemType,0));
         }
 
-    };
+    }
 
     public static final class Pack<ItemT> extends ArrayList<ItemT> {
         private final Class<ItemT> itemType;
@@ -251,16 +264,21 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
         public void reset(BeanT bean, Accessor<BeanT, T> acc) throws AccessorException {
             acc.get(bean).clear();
         }
-    };
+    }
 
     /**
      * {@link Lister} for IDREFS.
      */
     private static final class IDREFS<BeanT,PropT> extends Lister<BeanT,PropT,String,IDREFS<BeanT,PropT>.Pack> {
         private final Lister<BeanT,PropT,Object,Object> core;
+        /**
+         * Expected type to which IDREF resolves to.
+         */
+        private final Class itemType;
 
-        public IDREFS(Lister<BeanT,PropT,Object,Object> core) {
+        public IDREFS(Lister core, Class itemType) {
             this.core = core;
+            this.itemType = itemType;
         }
 
         public ListIterator<String> iterator(PropT prop, XMLSerializer context) {
@@ -312,7 +330,17 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
                     Object pack = core.startPacking(bean,acc);
 
                     for( String id : idrefs ) {
-                        Object t = context.getObjectFromId(id);
+                        Callable callable = context.getObjectFromId(id,itemType);
+                        Object t;
+
+                        try {
+                            t = (callable!=null) ? callable.call() : null;
+                        } catch (SAXException e) {
+                            throw e;
+                        } catch (Exception e) {
+                            throw new SAXException(e);
+                        }
+
                         if(t==null) {
                             context.errorUnresolvedIDREF(bean,id);
                         } else {

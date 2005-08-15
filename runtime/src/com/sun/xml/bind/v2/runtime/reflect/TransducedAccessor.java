@@ -1,6 +1,7 @@
 package com.sun.xml.bind.v2.runtime.reflect;
 
 import java.io.IOException;
+import java.util.concurrent.Callable;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlValue;
@@ -222,37 +223,54 @@ public abstract class TransducedAccessor<BeanT> {
             }
         }
 
-        /**
-         * Resolves the ID and sets the resolved object to the field.
-         *
-         * @return false
-         *      if the resolution needs to be deferred, in which case it will be retried
-         *      after the unmarshalling is completed.
-         */
-        private boolean resolveId(BeanT bean, String id, UnmarshallingContext context) throws AccessorException {
-            TargetT t = (TargetT)context.getObjectFromId(id);
-            if(t==null)     return false;
-
+        private void assign( BeanT bean, TargetT t, UnmarshallingContext context ) throws AccessorException {
             if(!targetType.isInstance(t))
                 context.handleError(Messages.UNASSIGNABLE_TYPE.format(targetType,t.getClass()));
             else
                 acc.set(bean,t);
-            return true;
         }
 
-        public void parse(final BeanT bean, CharSequence lexical) throws AccessorException {
+        public void parse(final BeanT bean, CharSequence lexical) throws AccessorException, SAXException {
             final String idref = WhiteSpaceProcessor.trim(lexical).toString();
             final UnmarshallingContext context = UnmarshallingContext.getInstance();
-            if(!resolveId(bean,idref,context)) {
-                // if we can't resolve it now, resolve it later
+
+            final Callable callable = context.getObjectFromId(idref,acc.valueType);
+            if(callable==null) {
+                context.errorUnresolvedIDREF(bean,idref);
+                return;
+            }
+
+            TargetT t;
+            try {
+                t = (TargetT)callable.call();
+            } catch (SAXException e) {// from callable.call
+                throw e;
+            } catch (RuntimeException e) {// from callable.call
+                throw e;
+            } catch (Exception e) {// from callable.call
+                throw new SAXException(e);
+            }
+            if(t!=null) {
+                assign(bean,t,context);
+            } else {
+                // try again later
                 context.addPatcher(new Patcher() {
                     public void run() throws SAXException {
                         try {
-                            if(!resolveId(bean,idref,context)) {
+                            TargetT t = (TargetT)callable.call();
+                            if(t==null) {
                                 context.errorUnresolvedIDREF(bean,idref);
+                            } else {
+                                assign(bean,t,context);
                             }
                         } catch (AccessorException e) {
                             context.handleError(e);
+                        } catch (SAXException e) {// from callable.call
+                            throw e;
+                        } catch (RuntimeException e) {// from callable.call
+                            throw e;
+                        } catch (Exception e) {// from callable.call
+                            throw new SAXException(e);
                         }
                     }
                 });

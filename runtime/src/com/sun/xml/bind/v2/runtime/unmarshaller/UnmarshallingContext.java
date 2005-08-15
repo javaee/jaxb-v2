@@ -3,13 +3,13 @@ package com.sun.xml.bind.v2.runtime.unmarshaller;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
+import java.util.concurrent.Callable;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBElement;
@@ -23,6 +23,7 @@ import javax.xml.bind.helpers.ValidationEventLocatorImpl;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
+import com.sun.xml.bind.IDResolver;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
 import com.sun.xml.bind.v2.AssociationMap;
@@ -72,7 +73,12 @@ public final class UnmarshallingContext extends Coordinator
      * to {@link UnmarshallingContext} when it is created. The property
      * on {@link Unmarshaller} could be changed after the handler is created.
      */
-    /*package*/ JaxBeanInfo expectedType;
+    private JaxBeanInfo expectedType;
+
+    /**
+     * Handles ID/IDREF.
+     */
+    private IDResolver idResolver;
 
     /**
      * This flag is set to true at the startDocument event
@@ -240,10 +246,11 @@ public final class UnmarshallingContext extends Coordinator
         allocateMoreStates();
     }
 
-    public void reset(InfosetScanner scanner,boolean isInplaceMode, JaxBeanInfo expectedType) {
+    public void reset(InfosetScanner scanner,boolean isInplaceMode, JaxBeanInfo expectedType, IDResolver idResolver) {
         this.scanner = scanner;
         this.isInplaceMode = isInplaceMode;
         this.expectedType = expectedType;
+        this.idResolver = idResolver;
     }
 
     public JAXBContextImpl getJAXBContext() {
@@ -304,7 +311,7 @@ public final class UnmarshallingContext extends Coordinator
         }
     }
 
-    public void startDocument(LocatorEx locator) {
+    public void startDocument(LocatorEx locator) throws SAXException {
         this.locator = locator;
         // reset the object
         result = null;
@@ -323,6 +330,8 @@ public final class UnmarshallingContext extends Coordinator
             root.loader = EXPECTED_TYPE_ROOT_LOADER;
         else
             root.loader = DEFAULT_ROOT_LOADER;
+
+        idResolver.startDocument(this);
     }
 
     public void startElement(TagName tagName) throws SAXException {
@@ -395,6 +404,8 @@ public final class UnmarshallingContext extends Coordinator
 
     public void endDocument() throws SAXException {
         runPatchers();
+        idResolver.endDocument();
+
         isUnmarshalInProgress = false;
         currentElement = null;
         locator = null;
@@ -605,9 +616,6 @@ public final class UnmarshallingContext extends Coordinator
         }
     }
 
-    /** Records ID->Object map. */
-    private Hashtable<String,Object> idmap = null;
-
     /**
      * Adds the object which is currently being unmarshalled
      * to the ID table.
@@ -628,8 +636,7 @@ public final class UnmarshallingContext extends Coordinator
     //
     // I believe this is an implementation choice, not the spec issue.
     // -kk
-    public String addToIdTable( String id ) {
-        if(idmap==null)     idmap = new Hashtable<String,Object>();
+    public String addToIdTable( String id ) throws SAXException {
         // Hmm...
         // in cases such as when ID is used as an attribute, or as @XmlValue
         // the target wilil be current.target.
@@ -639,22 +646,21 @@ public final class UnmarshallingContext extends Coordinator
         Object o = current.target;
         if(o==null)
             o = current.prev.target;
-        idmap.put( id, o );
+        idResolver.bind(id,o);
         return id;
     }
 
     /**
      * Looks up the ID table and gets associated object.
      *
-     * @return
-     *      If there is no object associated with the given id,
-     *      this method returns null.
+     * <p>
+     * The exception thrown from {@link Callable#call()} means the unmarshaller should abort
+     * right away.
+     *
+     * @see IDResolver#resolve(String, Class)
      */
-    // TODO: maybe we should throw UnmarshallingException
-    // if we don't find ID.
-    public Object getObjectFromId( String id ) {
-        if(idmap==null)     return null;
-        return idmap.get(id);
+    public Callable getObjectFromId( String id, Class targetType ) throws SAXException {
+        return idResolver.resolve(id,targetType);
     }
 
 //
