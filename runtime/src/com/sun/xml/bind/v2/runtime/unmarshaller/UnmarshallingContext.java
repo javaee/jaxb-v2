@@ -874,28 +874,10 @@ public final class UnmarshallingContext extends Coordinator
     private static final Loader EXPECTED_TYPE_ROOT_LOADER = new ExpectedTypeRootLoader();
 
     /**
-     * The loader that receives the root element to {@link #childElement(State, TagName)}.
-     */
-    private static abstract class AbstractRootLoader extends Loader implements Receiver {
-        protected AbstractRootLoader() {
-            super(false);
-        }
-
-        // this loaderwill never be used as a child of another loader
-        public void startElement(UnmarshallingContext.State state, TagName ea) {
-            throw new IllegalStateException();
-        }
-
-        public void leaveElement(UnmarshallingContext.State state, TagName ea) {
-            throw new IllegalStateException();
-        }
-    }
-
-    /**
      * Root loader that uses the tag name and possibly its @xsi:type
      * to decide how to start unmarshalling.
      */
-    private static final class DefaultRootLoader extends AbstractRootLoader {
+    private static final class DefaultRootLoader extends Loader implements Receiver {
         /**
          * Receives the root element and determines how to start
          * unmarshalling.
@@ -905,12 +887,7 @@ public final class UnmarshallingContext extends Coordinator
             Loader loader = context.getJAXBContext().selectRootLoader(state,ea);
             if(loader==null) {
                 // the registry doesn't know about this element.
-                //
-                // the no.1 cause of this problem is that your application is configuring
-                // an XML parser by your self and you forgot to call
-                // the SAXParserFactory.setNamespaceAware(true). When this happens, you see
-                // the namespace URI is reported as empty whereas you expect something else.
-                super.childElement(state,ea);
+                reportUnexpectedChildElement(ea,false);
                 return;
             }
             state.loader = loader;
@@ -931,7 +908,7 @@ public final class UnmarshallingContext extends Coordinator
      * Root loader that uses {@link UnmarshallingContext#expectedType}
      * to decide how to start unmarshalling.
      */
-    private static final class ExpectedTypeRootLoader extends AbstractRootLoader {
+    private static final class ExpectedTypeRootLoader extends Loader implements Receiver {
         /**
          * Receives the root element and determines how to start
          * unmarshalling.
