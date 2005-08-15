@@ -7,6 +7,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 import com.sun.mirror.apt.AnnotationProcessorFactory;
+import com.sun.tools.xjc.BadCommandLineException;
 
 /**
  * Wrapper class that will invoke the  {@link SchemaGenerator} and should
@@ -25,6 +26,19 @@ public class SchemaGeneratorWrapper  {
             if (arg.equals("-help")) {
                 usage();
                 System.exit(0);
+            }
+
+            try {
+                parseArguments(args);
+            } catch (BadCommandLineException e) {
+                // there was an error in the command line.
+                // print usage and abort.
+                if(e.getMessage()!=null) {
+                    System.out.println(e.getMessage());
+                    System.out.println();
+                     usage();
+                     System.exit(-1);
+                }
             }
         }
 
@@ -63,6 +77,36 @@ public class SchemaGeneratorWrapper  {
 
     private static void usage( ) {
         System.out.println(Messages.USAGE.format());
+    }
+
+
+    private static void parseArguments(String[] args) throws BadCommandLineException {
+
+        for (int i = 0 ; i <args.length; i++) {
+            if (args[i].charAt(0)== '-') {
+                int j = parseArgument(args,i);
+                if(j==0)
+                    throw new BadCommandLineException(
+                            Messages.UNRECOGNIZED_PARAMETER.format(args[i]));
+                i += (j-1);
+            }
+        }
+
+    }
+    private static int parseArgument( String[] args, int i ) throws BadCommandLineException {
+        if (args[i].equals("-d")) {
+            if (i == args.length - 1)
+                throw new BadCommandLineException(
+                        (Messages.NO_FILE_SPECIFIED.format()));
+            File targetDir = new File(args[++i]);
+            if( !targetDir.exists() )
+                throw new BadCommandLineException(
+                        Messages.NON_EXISTENT_FILE.format(targetDir));
+            return 2;
+        }
+
+        return 0;
+
     }
 
 }
