@@ -592,7 +592,7 @@ public final class BeanGenerator implements Outline
             }
 
             // [RESULT]
-            // public <Const> fromValue(<valueType> v) {
+            // public static <Const> fromValue(<valueType> v) {
             //   for( <Const> c : <Const>.values() ) {
             //       if(c.value == v)   // or equals
             //           return c;
@@ -600,7 +600,7 @@ public final class BeanGenerator implements Outline
             //   throw new IllegalArgumentException(...);
             // }
             {
-                JMethod m = type.method(JMod.PUBLIC, type, "fromValue" );
+                JMethod m = type.method(JMod.PUBLIC|JMod.STATIC, type, "fromValue" );
                 JVar $v = m.param(baseExposedType,"v");
                 JForEach fe = m.body().forEach(type,"c", type.staticInvoke("values") );
                 JExpression eq;
