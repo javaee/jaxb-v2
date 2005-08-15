@@ -391,7 +391,8 @@ public final class ConversionFinder extends BindingComponent {
                 // this will even override names specified by the user. that's crazy.
                 name = "VALUE_"+(idx++);
             } else {
-                BIEnumMember mem = members.get(facet.getValue());
+                String facetValue = facet.getValue();
+                BIEnumMember mem = members.get(facetValue);
                 if( mem==null )
                     // look at the one attached to the facet object
                     mem = builder.getBindInfo(facet).get(BIEnumMember.class);
@@ -400,10 +401,19 @@ public final class ConversionFinder extends BindingComponent {
                     name = mem.name;
                     mdoc = mem.javadoc;
                 }
-            }
 
-            if(name==null)
-                name = model.getNameConverter().toConstantName(facet.getValue());
+                if(name==null) {
+                    StringBuilder sb = new StringBuilder();
+                    for( int i=0; i<facetValue.length(); i++) {
+                        char ch = facetValue.charAt(i);
+                        if(Character.isJavaIdentifierPart(ch))
+                            sb.append(ch);
+                        else
+                            sb.append('_');
+                    }
+                    name = model.getNameConverter().toConstantName(sb.toString());
+                }
+            }
 
             if(!JJavaName.isJavaIdentifier(name))
                 return null;    // unable to generate a name
