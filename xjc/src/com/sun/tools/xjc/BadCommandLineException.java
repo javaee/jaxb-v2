@@ -8,10 +8,10 @@ package com.sun.tools.xjc;
  * Signals a bad command line argument.
  */
 public class BadCommandLineException extends Exception {
-    BadCommandLineException(String msg) {
+    public BadCommandLineException(String msg) {
         super(msg);
     }
-    BadCommandLineException() {
+    public BadCommandLineException() {
         this(null);
     }
 }
