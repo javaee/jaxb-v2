@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: UnmarshallerImpl.java,v 1.20 2005-08-09 18:36:28 kohsuke Exp $
+ * @(#)$Id: UnmarshallerImpl.java,v 1.21 2005-08-15 23:29:29 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -37,6 +37,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 
 import com.sun.xml.bind.DatatypeConverterImpl;
+import com.sun.xml.bind.IDResolver;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
 import com.sun.xml.bind.unmarshaller.Messages;
@@ -82,6 +83,7 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
      * The attachment unmarshaller used to support MTOM and swaRef.
      */
     private AttachmentUnmarshaller attachmentUnmarshaller;
+    private IDResolver idResolver = new DefaultIDResolver();
 
     public UnmarshallerImpl( JAXBContextImpl context, AssociationMap assoc ) {
         this.context = context;
@@ -123,7 +125,7 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
      */
     public final XmlVisitor createUnmarshallerHandler(InfosetScanner scanner, boolean inplace, JaxBeanInfo expectedType ) {
 
-        coordinator.reset(scanner,inplace,expectedType);
+        coordinator.reset(scanner,inplace,expectedType,idResolver);
         XmlVisitor unmarshaller = coordinator;
 
         // delegate to JAXP 1.3 for validation if the client provided a schema
@@ -388,9 +390,20 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
         return new UnmarshalException(e);
     }
 
+    public Object getProperty(String name) throws PropertyException {
+        if(name.equals(IDResolver.class.getName())) {
+            return idResolver;
+        }
+        return super.getProperty(name);
+    }
+
     public void setProperty(String name, Object value) throws PropertyException {
         if(name.equals(FACTORY)) {
             coordinator.setFactories(value);
+            return;
+        }
+        if(name.equals(IDResolver.class.getName())) {
+            idResolver = (IDResolver)value;
             return;
         }
         super.setProperty(name, value);
