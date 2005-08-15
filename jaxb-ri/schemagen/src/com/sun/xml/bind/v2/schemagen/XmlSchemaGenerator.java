@@ -125,30 +125,37 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
         return n;
     }
 
-    private Namespace getNamespace( ClassInfo<TypeT,ClassDeclT> c ) {
-        return getNamespace(c.getTypeName().getNamespaceURI());
-    }
-
     /**
      * Adds a new class to the list of classes to be written.
+     *
+     * <p>
+     * A {@link ClassInfo} may have two namespaces --- one for the element name
+     * and the other for the type name. If they are different, we put the same
+     * {@link ClassInfo} to two {@link Namespace}s.
      */
     public void add( ClassInfo<TypeT,ClassDeclT> clazz ) {
         assert clazz!=null;
-        // we need the namespace of the type and the element to be the same.
-        // TODO: check with the spec if this is reasonable.
 
-        String ns;
+        String nsUri = null;
+
         if(clazz.isElement()) {
-            ns = clazz.getElementName().getNamespaceURI();
-            assert clazz.getTypeName()==null || clazz.getTypeName().getNamespaceURI().equals(ns);
-        } else {
-            QName tn = clazz.getTypeName();
-            if(tn==null)
-                return; // anonymous type
-            ns = tn.getNamespaceURI();
+            // put element -> type reference
+            nsUri = clazz.getElementName().getNamespaceURI();
+            Namespace ns = getNamespace(nsUri);
+            ns.classes.add(clazz);
+            ns.addDependencyTo(clazz.getTypeName());
         }
 
-        Namespace n = getNamespace(ns);
+        QName tn = clazz.getTypeName();
+        if(tn!=null) {
+            nsUri = tn.getNamespaceURI();
+        } else {
+            // anonymous type
+            if(nsUri==null)
+                return;
+        }
+
+        Namespace n = getNamespace(nsUri);
         n.classes.add(clazz);
 
         // search properties for foreign namespace references
@@ -421,13 +428,17 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 for (ClassInfo<TypeT, ClassDeclT> c : classes) {
                     Element<TypeT,ClassDeclT> e = c.asElement();
                     if (e != null) {
-                        writeTopLevelClass(c, e, schema);
+                        // ClassInfo can have two namespaces URIs (one for type, another for element),
+                        // so make sure that we want to write this here.
+                        if(uri.equals(e.getElementName().getNamespaceURI()))
+                            writeTopLevelClass(c, e, schema);
                     }
                     if (c.getTypeName()==null) {
                         // don't generate anything if it's an anonymous type
                         continue;
                     }
-                    writeClass(c, schema);
+                    if(uri.equals(c.getTypeName().getNamespaceURI()))
+                        writeClass(c, schema);
                     schema._pcdata(newline);
                 }
                 for (EnumLeafInfo<TypeT, ClassDeclT> e : enums) {
