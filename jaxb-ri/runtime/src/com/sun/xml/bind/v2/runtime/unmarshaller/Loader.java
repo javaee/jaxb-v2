@@ -61,11 +61,14 @@ public abstract class Loader {
      * The default implementation reports an error saying an element is unexpected.
      */
     public void childElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
-        // notify the error
-        reportError(Messages.UNEXPECTED_ELEMENT.format(ea.uri,ea.local,computeExpectedElements()), true );
-        // then recover by ignoring the whole element.
+        // notify the error, then recover by ignoring the whole element.
+        reportUnexpectedChildElement(ea, true);
         state.loader = Discarder.INSTANCE;
         state.receiver = null;
+    }
+
+    protected final void reportUnexpectedChildElement(TagName ea, boolean canRecover) throws SAXException {
+        reportError(Messages.UNEXPECTED_ELEMENT.format(ea.uri,ea.local,computeExpectedElements()), canRecover );
     }
 
     /**
