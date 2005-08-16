@@ -915,12 +915,12 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             //   <attribute name="foo" type="xs:int"/>
             // </>
             //
-            // or it could also be an in-lined type
+            // or it could also be an in-lined type (attr ref)
             //
             LocalAttribute localAttribute = attr.attribute();
 
             final String attrURI = ap.getXmlName().getNamespaceURI();
-            if( attrURI.equals(uri)) {
+            if (attrURI.equals("") || attrURI.equals(uri)) {
                 localAttribute.name(ap.getXmlName().getLocalPart());
 
                 TypeHost th; String refAtt;
@@ -932,12 +932,12 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                     refAtt = "type";
                 }
                 writeTypeRef(th, ap, refAtt);
+
+                if (!attrURI.equals("")) {
+                    localAttribute.form("qualified");
+                }
             } else { // generate an attr ref
                 localAttribute.ref(ap.getXmlName());
-            }
-
-            if ((!attrURI.equals("")) && attrURI.equals(uri)) {
-                localAttribute.form("qualified");
             }
 
             if(ap.isRequired()) {
