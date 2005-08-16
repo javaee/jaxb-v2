@@ -3,7 +3,6 @@ package com.sun.xml.bind.v2.runtime.unmarshaller;
 import com.sun.xml.bind.v2.runtime.Name;
 
 import org.xml.sax.Attributes;
-import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Represents an XML tag name (and attributes for start tags.)
@@ -77,18 +76,6 @@ public abstract class TagName {
 
     public String toString() {
         return '{'+uri+'}'+local;
-    }
-
-    /**
-     * Removes the specified attribute.
-     *
-     * This isn't used frequently, so it doesn't need to be fast.
-     */
-    // TODO: not sure if it should be here
-    public void eatAttribute(int idx) {
-        AttributesImpl a = new AttributesImpl(atts);
-        a.removeAttribute(idx);
-        atts = a;
     }
 
     /**

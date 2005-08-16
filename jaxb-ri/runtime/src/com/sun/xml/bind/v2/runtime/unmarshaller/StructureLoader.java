@@ -9,6 +9,7 @@ import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.QNameMap;
+import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 import com.sun.xml.bind.v2.runtime.property.AttributeProperty;
@@ -146,6 +147,8 @@ public final class StructureLoader extends Loader {
                     } else
                     if(attCatchAll!=null) {
                         String qname = atts.getQName(i);
+                        if(atts.getURI(i).equals(WellKnownNamespace.XML_SCHEMA_INSTANCE))
+                            continue;   // xsi:* attributes are meant to be processed by us, not by user apps.
                         Object o = state.target;
                         Map<QName,String> map = attCatchAll.get(o);
                         if(map==null) {
