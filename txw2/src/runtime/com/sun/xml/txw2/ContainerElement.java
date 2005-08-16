@@ -21,8 +21,6 @@ final class ContainerElement implements InvocationHandler, TypedXmlWriter {
 
     final Document document;
 
-    private final Class<? extends TypedXmlWriter> facadeType;
-
     /**
      * Initially, point to the start tag token, but
      * once we know we are done with the start tag, we will reset it to null
@@ -58,10 +56,9 @@ final class ContainerElement implements InvocationHandler, TypedXmlWriter {
      */
     private boolean blocked;
 
-    public ContainerElement(Document document,ContainerElement parent,String nsUri, String localName, Class<? extends TypedXmlWriter> facadeType) {
+    public ContainerElement(Document document,ContainerElement parent,String nsUri, String localName) {
         this.parent = parent;
         this.document = document;
-        this.facadeType = facadeType;
         this.nsUri = nsUri;
         this.startTag = new StartTag(this,nsUri,localName);
         tail = startTag;
@@ -91,7 +88,7 @@ final class ContainerElement implements InvocationHandler, TypedXmlWriter {
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if(method.getDeclaringClass()==TypedXmlWriter.class) {
+        if(method.getDeclaringClass()==TypedXmlWriter.class || method.getDeclaringClass()==Object.class) {
             // forward to myself
             try {
                 return method.invoke(this,args);
@@ -214,10 +211,6 @@ final class ContainerElement implements InvocationHandler, TypedXmlWriter {
         return nsUri;
     }
 
-    public Object createFacade() {
-        return Proxy.newProxyInstance(facadeType.getClassLoader(),new Class[]{facadeType},this);
-    }
-
     /**
      * Appends this child object to the tail.
      */
@@ -331,8 +324,12 @@ final class ContainerElement implements InvocationHandler, TypedXmlWriter {
         return _element(TXW.getTagName(contentModel),contentModel);
     }
 
+    public <T extends TypedXmlWriter> T _cast(Class<T> facadeType) {
+        return facadeType.cast(Proxy.newProxyInstance(facadeType.getClassLoader(),new Class[]{facadeType},this));
+    }
+
     public <T extends TypedXmlWriter> T _element(String nsUri, String localName, Class<T> contentModel) {
-        ContainerElement child = new ContainerElement(document,this,nsUri,localName,contentModel);
+        ContainerElement child = new ContainerElement(document,this,nsUri,localName);
         addChild(child.startTag);
         tail = child.endTag;
 
@@ -349,6 +346,6 @@ final class ContainerElement implements InvocationHandler, TypedXmlWriter {
 
         this.lastOpenChild = child;
 
-        return (T)child.createFacade();
+        return child._cast(contentModel);
     }
 }
