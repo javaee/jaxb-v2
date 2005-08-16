@@ -400,7 +400,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
             // we can't overload the meaning of set(null).
             // if it's a collection, we need to be able to unset it so that we can distinguish
             // null list and empty list.
-            r = new IsSetFieldRenderer( r, prop.isUnboxable()||prop.isCollection(), true );
+            r = new IsSetFieldRenderer( r, prop.isOptionalPrimitive()||prop.isCollection(), true );
         }
 
         prop.realization = r;
