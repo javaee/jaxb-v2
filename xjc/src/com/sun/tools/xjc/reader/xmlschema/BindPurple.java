@@ -52,6 +52,7 @@ public class BindPurple extends ColorBinder {
                 Ring.get(JCodeModel.class),
                 use.getFixedValue(),use.getContext());
             if(prop.defaultValue==null)
+                // unable to come up with the constant value.
                 toConstant = false;
         } else
         if(!attType.isCollection()) {
