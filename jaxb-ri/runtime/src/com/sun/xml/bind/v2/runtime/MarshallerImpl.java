@@ -84,9 +84,6 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     /** Object that handles character escaping. */
     private CharacterEscapeHandler escapeHandler = null;
 
-    /** Whether the xml declaration will be printed or not. */
-    private boolean printXmlDeclaration = true;
-
     /** XML BLOB written after the XML declaration. */
     private String header=null;
 
@@ -343,8 +340,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         else
             xw = new XMLWriter(w,encoding,ceh);
 
-        // Marshaller.JAXB_FRAGMENT property overrides our c.s.x.b.xmlDeclaration vendor property
-        xw.setXmlDecl(printXmlDeclaration && !isFragment());
+        xw.setXmlDecl(!isFragment());
         xw.setHeader(header);
         return new SAXOutput(xw);   // TODO: don't we need a better writer?
     }
@@ -394,7 +390,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         if( PREFIX_MAPPER.equals(name) )
             return prefixMapper;
         if( XMLDECLARATION.equals(name) )
-            return printXmlDeclaration;
+            return !isFragment();
         if( XML_HEADERS.equals(name) )
             return header;
 
@@ -429,7 +425,9 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         }
         if( XMLDECLARATION.equals(name) ) {
             checkBoolean(name, value);
-            printXmlDeclaration = (Boolean) value;
+            // com.sun.xml.bind.xmlDeclaration is an alias for JAXB_FRAGMENT
+            // setting it to false is treated the same as setting fragment to true.
+            super.setProperty(JAXB_FRAGMENT, !(Boolean)value);
             return;
         }
         if( XML_HEADERS.equals(name) ) {

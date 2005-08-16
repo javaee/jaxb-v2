@@ -225,10 +225,19 @@ public abstract class NamespacePrefixMapper {
   	  </td></tr>
     </table>
   
-		<p>
-			When set to true, the marshaller will print out the XML declaration (you'll see &lt;?xml version='1.0' encoding='<i>encoding</i>' standalone='yes' ?> in the output.) When set to false, the marshaller will not write this declaration.
-		<p>
-			Turning this option to false could be useful if you are inserting the output of the XML into another XML.
+		<p> This experimental JAXB RI 1.0.x property has been adopted as a standard in JAXB 2.0.  The 2.0 RI will
+		    continue to support this property, but client code should be using the <a href="api/Marshaller.html#JAXB_FRAGMENT">
+		    Marshaller.JAXB_FRAGMENT</a> property instead.  Please refer to the <a href="api/Marshaller.html#supportedProps">Marshaller
+		    javadoc</a> for a complete description of the behavior.
+
+        <p> In JAXB 2.0, calling:<br>
+            <blockquote>marshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);</blockquote>
+            is equivalent to calling:<br>
+            <blockquote>marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);</blockquote>
+
+        <p> JAXB 1.0 generated code and clients will continue to work exactly the same on the JAXB 2.0 runtime as
+            they did on the JAXB 1.0 runtime.
+		<p> Enabling fragment marshalling could be useful if you are inserting the output of the XML into another XML.
 		<p>
 			Also, this option can be used when you need to print out things like DOCTYPE declarations or XML stylesheet processing instructions. See the following code for example.
     </p>
@@ -239,19 +248,13 @@ PrintWriter out = ...;
 out.println("&lt;xml version='1.0'?>");
 out.println("&lt;!DOCTYPE foo SYSTEM 'dummy.dtd'>");
 
-marshaller.setProperty("com.sun.xml.bind.xmlDeclaration",Boolean.FALSE);
+marshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
 marshaller.marshal( jaxbObject, out );
 </pre>
-    <h4>Limitations</h4>
-    <p>
-			DOM and SAX are not capable of representing the XML declaration. As a result, when marshalling to DOM Node or SAX <code>ContentHandler</code>, this setting will not take effect. In other words, this setting takes effect only when you are marshalling to <code>Writer</code> or <code>OutputStream</code>.
-    </p>
-
-
 	<hr/>
 	<font size="-1">
-	  $Revision: 1.1 $<br/>
-	  $Date: 2005-04-15 20:03:05 $
+	  $Revision: 1.2 $<br/>
+	  $Date: 2005-08-16 21:33:37 $
 	</font>
   </body>
 </html>
