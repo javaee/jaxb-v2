@@ -221,4 +221,21 @@ public interface TypedXmlWriter {
      * @see #_element(String, String, Class)
      */
     <T extends TypedXmlWriter> T _element( Class<T> contentModel );
+
+    /**
+     * Returns a different interface for this typed XML Writer.
+     *
+     * <p>
+     * Semantically, this operation is a 'cast' --- it returns the same underlying
+     * writer in a different interface. The returned new writer and the current writer
+     * will write to the same element.
+     *
+     * <p>
+     * But this is different from Java's ordinary cast because the returned object
+     * is not always the same as the current object.
+     *
+     * @return
+     *      always return non-null.
+     */
+    <T extends TypedXmlWriter> T _cast( Class<T> targetInterface );
 }
