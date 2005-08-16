@@ -850,11 +850,9 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     }
 
     public final boolean isSimpleType() {
-        for (PropertyInfo p : getProperties()) {
-            if(p.kind()!=PropertyKind.VALUE)
-                return false;
-        }
-        return true;
+        List<? extends PropertyInfo> props = getProperties();
+        if(props.size()!=1)     return false;
+        return props.get(0).kind()==PropertyKind.VALUE;
     }
 
     /**
