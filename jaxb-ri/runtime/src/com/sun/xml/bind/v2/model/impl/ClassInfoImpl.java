@@ -30,6 +30,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.AccessorOrder;
 import javax.xml.bind.annotation.XmlAccessorOrder;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
 import javax.xml.namespace.QName;
@@ -735,7 +737,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     private static final Class<? extends Annotation>[] jaxbAnnotations = new Class[]{
         XmlElement.class, XmlAttribute.class, XmlValue.class, XmlElementRef.class,
         XmlElements.class, XmlElementRefs.class, XmlElementWrapper.class,
-        XmlJavaTypeAdapter.class, XmlAnyElement.class
+        XmlJavaTypeAdapter.class, XmlAnyElement.class, XmlID.class, XmlIDREF.class
     };
 
     /**
