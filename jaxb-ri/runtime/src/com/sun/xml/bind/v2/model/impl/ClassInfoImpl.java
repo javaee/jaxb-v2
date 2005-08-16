@@ -208,14 +208,20 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
         // find properties from fields
         for( FieldT f : nav().getDeclaredFields(clazz) ) {
-            if( nav().isStaticField(f) )
-                continue;
-            if(at==AccessType.FIELD
-            ||(at==AccessType.PUBLIC_MEMBER && nav().isPublicField(f))
-            || hasFieldAnnotation(f))
-                addProperty(adaptIfNecessary(createFieldSeed(f)));
-            else
-                checkFieldXmlLocation(f);
+            if( nav().isStaticField(f) ) {
+                // static fields are bound only when there's explicit annotation.
+                if(hasFieldAnnotation(f))
+                    addProperty(adaptIfNecessary(createFieldSeed(f)));
+                else
+                    continue;
+            } else {
+                if(at==AccessType.FIELD
+                ||(at==AccessType.PUBLIC_MEMBER && nav().isPublicField(f))
+                || hasFieldAnnotation(f))
+                    addProperty(adaptIfNecessary(createFieldSeed(f)));
+                else
+                    checkFieldXmlLocation(f);
+            }
         }
 
         findGetterSetterProperties(at);

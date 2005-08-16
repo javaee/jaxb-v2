@@ -196,7 +196,7 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
     /**
      * {@link Accessor} that uses Java reflection to access a field.
      */
-    public static final class FieldReflection<BeanT,ValueT> extends Accessor<BeanT,ValueT> implements PrivilegedAction<Void> {
+    public static class FieldReflection<BeanT,ValueT> extends Accessor<BeanT,ValueT> implements PrivilegedAction<Void> {
         public final Field f;
 
         private static final Logger logger = Logger.getLogger(FieldReflection.class.getName());
@@ -252,6 +252,24 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
                 return acc;
             else
                 return this;
+        }
+    }
+
+    /**
+     * Read-only access to {@link Field}. Used to handle a static field.
+     */
+    public static final class ReadOnlyFieldReflection<BeanT,ValueT> extends FieldReflection<BeanT,ValueT>{
+        public ReadOnlyFieldReflection(Field f) {
+            super(f);
+        }
+
+        public void set(BeanT bean, ValueT value) {
+            // noop
+        }
+
+        @Override
+        public Accessor<BeanT,ValueT> optimize() {
+            return this;
         }
     }
 

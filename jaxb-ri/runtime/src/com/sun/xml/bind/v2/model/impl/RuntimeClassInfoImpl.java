@@ -3,6 +3,7 @@ package com.sun.xml.bind.v2.model.impl;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
@@ -144,9 +145,15 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
 
     @Override
     protected RuntimePropertySeed createFieldSeed(Field field) {
+        Accessor.FieldReflection acc;
+        if(Modifier.isStatic(field.getModifiers()))
+            acc = new Accessor.ReadOnlyFieldReflection(field);
+        else
+            acc = new Accessor.FieldReflection(field);
+
         return new RuntimePropertySeed(
             super.createFieldSeed(field),
-            new Accessor.FieldReflection(field) );
+                acc );
     }
 
     @Override
