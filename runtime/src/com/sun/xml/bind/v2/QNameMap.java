@@ -260,7 +260,7 @@ public final class QNameMap<ValueT> {
 
     public Collection<QName> keySet() {
         Set<QName> r = new HashSet<QName>();
-        for (Entry<ValueT> e : entrySet) {
+        for (Entry<ValueT> e : entrySet()) {
             r.add(e.createQName());
         }
         return r;
