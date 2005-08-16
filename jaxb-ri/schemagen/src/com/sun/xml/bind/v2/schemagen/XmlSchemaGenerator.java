@@ -919,8 +919,8 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             //
             LocalAttribute localAttribute = attr.attribute();
 
-            // TODO: correct @form handling
-            if( ap.getXmlName().getNamespaceURI().equals(uri)) {
+            final String attrURI = ap.getXmlName().getNamespaceURI();
+            if( attrURI.equals(uri)) {
                 localAttribute.name(ap.getXmlName().getLocalPart());
 
                 TypeHost th; String refAtt;
@@ -934,6 +934,10 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 writeTypeRef(th, ap, refAtt);
             } else { // generate an attr ref
                 localAttribute.ref(ap.getXmlName());
+            }
+
+            if ((!attrURI.equals("")) && attrURI.equals(uri)) {
+                localAttribute.form("qualified");
             }
 
             if(ap.isRequired()) {
