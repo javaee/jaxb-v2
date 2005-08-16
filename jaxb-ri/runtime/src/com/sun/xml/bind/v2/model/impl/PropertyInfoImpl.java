@@ -128,6 +128,11 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     private ID calcId() {
         if(seed.hasAnnotation(XmlID.class)) {
+            // check the type
+            if(!seed.getRawType().equals(nav().ref(String.class)))
+                parent.builder.reportError(new IllegalAnnotationException(
+                    Messages.ID_MUST_BE_STRING.format(getName()), seed )
+                );
             return ID.ID;
         } else
         if(seed.hasAnnotation(XmlIDREF.class)) {
@@ -167,7 +172,6 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      * Derived class can do additional actions to complete the model.
      */
     protected void link() {
-    
     }
 
     /**
