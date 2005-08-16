@@ -53,10 +53,11 @@ public class DomLoader<ResultT extends Result> extends Loader {
         }
 
         private void declarePrefixes( UnmarshallingContext context, String[] prefixes ) throws SAXException {
-            for( int i=prefixes.length-1; i>=0; i-- )
-                handler.startPrefixMapping(
-                    prefixes[i],
-                    context.getNamespaceURI(prefixes[i]) );
+            for( int i=prefixes.length-1; i>=0; i-- ) {
+                String nsUri = context.getNamespaceURI(prefixes[i]);
+                if(nsUri==null)     throw new IllegalStateException(prefixes[i]+" isn't bound");
+                handler.startPrefixMapping(prefixes[i],nsUri );
+            }
         }
 
         private void undeclarePrefixes( String[] prefixes ) throws SAXException {
