@@ -28,7 +28,6 @@ public class XsiNilLoader extends ProxyLoader {
 
         if(idx!=-1) {
             String value = ea.atts.getValue(idx);
-            ea.eatAttribute(idx);
             if(DatatypeConverterImpl._parseBoolean(value)) {
                 onNil(state);
                 return Discarder.INSTANCE;

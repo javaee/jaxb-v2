@@ -45,9 +45,7 @@ public class XsiTypeLoader extends Loader {
                 reportError(Messages.NOT_A_QNAME.format(value),true);
             } else {
                 beanInfo =  context.getJAXBContext().getGlobalType(type);
-                if(beanInfo!=null) {
-                    ea.eatAttribute(idx);
-                } else {
+                if(beanInfo==null) {
                     reportError(Messages.UNRECOGNIZED_TYPE_NAME.format(value),true);
                     beanInfo = defaultBeanInfo;  // try to recover by using the default target type.
                 }
