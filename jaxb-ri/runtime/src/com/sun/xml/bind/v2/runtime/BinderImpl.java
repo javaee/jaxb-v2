@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: BinderImpl.java,v 1.10 2005-08-15 15:14:39 ryan_shoemaker Exp $
+ * @(#)$Id: BinderImpl.java,v 1.11 2005-08-16 14:49:07 ryan_shoemaker Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -106,11 +106,11 @@ public class BinderImpl<XmlNode> extends Binder<XmlNode> {
         return (JAXBElement)associativeUnmarshal(xmlNode,true,expectedType);
     }
 
-    public void setSchema(Schema schema) throws JAXBException {
+    public void setSchema(Schema schema) {
         getUnmarshaller().setSchema(schema);
     }
 
-    public Schema getSchema() throws JAXBException {
+    public Schema getSchema() {
         return getUnmarshaller().getSchema();
     }
 
