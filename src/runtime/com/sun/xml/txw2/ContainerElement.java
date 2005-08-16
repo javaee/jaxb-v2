@@ -110,7 +110,7 @@ final class ContainerElement implements InvocationHandler, TypedXmlWriter {
             return proxy; // allow method chaining
         }
         if(xv!=null) {
-            if(xv!=null || xe!=null)
+            if(xe!=null)
                 throw new IllegalAnnotationException(method.toString());
 
             _pcdata(args);
