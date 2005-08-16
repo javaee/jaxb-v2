@@ -61,7 +61,7 @@ public abstract class TXW {
     public static <T extends TypedXmlWriter> T create( Class<T> rootElement, XmlSerializer out ) {
         Document doc = new Document(out);
         QName n = getTagName(rootElement);
-        return (T)new ContainerElement(doc,null,n.getNamespaceURI(),n.getLocalPart(),rootElement).createFacade();
+        return new ContainerElement(doc,null,n.getNamespaceURI(),n.getLocalPart())._cast(rootElement);
     }
 
     /**
@@ -77,6 +77,6 @@ public abstract class TXW {
      * @see #create(Class,XmlSerializer)
      */
     public static <T extends TypedXmlWriter> T create( QName tagName, Class<T> rootElement, XmlSerializer out ) {
-        return (T)new ContainerElement(new Document(out),null,tagName.getNamespaceURI(),tagName.getLocalPart(),rootElement).createFacade();
+        return new ContainerElement(new Document(out),null,tagName.getNamespaceURI(),tagName.getLocalPart())._cast(rootElement);
     }
 }
