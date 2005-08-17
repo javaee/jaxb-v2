@@ -72,12 +72,12 @@ final class ContentModelBinder extends DPatternWalker {
         RawTypeSet rts = RawTypeSetBuilder.build(compiler, p, optional? Multiplicity.STAR : Multiplicity.PLUS);
         if(rts.canBeTypeRefs) {
             CElementPropertyInfo prop = new CElementPropertyInfo(
-                    calcName(p),REPEATED_ELEMENT,ID.NONE,null,null,p.getLocation(),!optional);
+                    calcName(p),REPEATED_ELEMENT,ID.NONE,null,null,null,p.getLocation(),!optional);
             rts.addTo(prop);
             clazz.addProperty(prop);
         } else {
             CReferencePropertyInfo prop = new CReferencePropertyInfo(
-                    calcName(p),true,false/*TODO*/,null,p.getLocation());
+                    calcName(p),true,false/*TODO*/,null,null,p.getLocation());
             rts.addTo(prop);
             clazz.addProperty(prop);
         }
@@ -90,7 +90,7 @@ final class ContentModelBinder extends DPatternWalker {
         QName name = p.getName().listNames().iterator().next();
 
         CAttributePropertyInfo ap = new CAttributePropertyInfo(
-           calcName(p), null, p.getLocation(), name,
+           calcName(p), null,null/*TODO*/, p.getLocation(), name,
                 p.getChild().accept(compiler.typeUseBinder),
                 !insideOptional);
         clazz.addProperty(ap);

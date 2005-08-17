@@ -1,6 +1,7 @@
 package com.sun.tools.xjc.model;
 
 import com.sun.tools.xjc.Plugin;
+import com.sun.xml.xsom.XSComponent;
 
 import org.xml.sax.Locator;
 
@@ -27,4 +28,14 @@ public interface CCustomizable {
      * @return never null.
      */
     Locator getLocator();
+
+    /**
+     * If this model object is built from XML Schema,
+     * this property returns a schema component from which the model is built.
+     *
+     * @return
+     *      null if the model is built from sources other than XML Schema
+     *      (such as DTD.)
+     */
+    XSComponent getSchemaComponent();
 }

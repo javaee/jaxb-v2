@@ -189,7 +189,7 @@ final class Element extends Term implements Comparable<Element> {
         String className = owner.model.getNameConverter().toClassName(name);
         QName tagName = new QName("",name);
 
-        return new CClassInfo(owner.model,owner.getTargetPackage(),className,locator,null,tagName,null/*TODO*/);
+        return new CClassInfo(owner.model,owner.getTargetPackage(),className,locator,null,tagName,null,null/*TODO*/);
     }
 
     void bind() {
@@ -200,7 +200,7 @@ final class Element extends Term implements Comparable<Element> {
 
         switch(contentModelType) {
         case DTDEventListener.CONTENT_MODEL_ANY:
-            CReferencePropertyInfo rp = new CReferencePropertyInfo("Content",true,true,null/*TODO*/,locator);
+            CReferencePropertyInfo rp = new CReferencePropertyInfo("Content",true,true,null,null/*TODO*/,locator);
             rp.setWildcard(WildcardMode.SKIP);
             ci.addProperty(rp);
             return;
@@ -212,7 +212,7 @@ final class Element extends Term implements Comparable<Element> {
 
             if(ci!=null) {
                 // if this element is mapped to a class, just put one property
-                CValuePropertyInfo p = new CValuePropertyInfo("value", null/*TODO*/,locator,getConversion());
+                CValuePropertyInfo p = new CValuePropertyInfo("value", null,null/*TODO*/,locator,getConversion());
                 ci.addProperty(p);
             }
             return;
@@ -258,7 +258,7 @@ final class Element extends Term implements Comparable<Element> {
                         name.append("Or");
                     name.append(owner.model.getNameConverter().toPropertyName(e.name));
                 }
-                p = new CElementPropertyInfo(name.toString(), REPEATED_ELEMENT, ID.NONE, null, null/*TODO*/, locator, !b.isOptional );
+                p = new CElementPropertyInfo(name.toString(), REPEATED_ELEMENT, ID.NONE, null, null,null/*TODO*/, locator, !b.isOptional );
                 for( Element e : b.elements ) {
                     CClassInfo child = owner.getOrCreateElement(e.name).getClassInfo();
                     assert child!=null; // we are requiring them to be classes.
@@ -278,7 +278,7 @@ final class Element extends Term implements Comparable<Element> {
                 }
 
                 p = new CElementPropertyInfo(propName,
-                    refType.isCollection()?REPEATED_VALUE:NOT_REPEATED, ID.NONE, null, null/*TODO*/, locator, !b.isOptional );
+                    refType.isCollection()?REPEATED_VALUE:NOT_REPEATED, ID.NONE, null, null,null/*TODO*/, locator, !b.isOptional );
 
                 p.getTypes().add(new CTypeRef((CNonElement)refType.getInfo(),new QName("",name),false,null));
             }

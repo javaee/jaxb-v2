@@ -9,6 +9,7 @@ import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.xml.bind.v2.model.core.ArrayInfo;
 import com.sun.xml.bind.v2.model.impl.ArrayInfoImpl;
+import com.sun.xml.xsom.XSComponent;
 
 import org.xml.sax.Locator;
 
@@ -22,8 +23,8 @@ public final class CArrayInfo extends AbstractCTypeInfoImpl implements ArrayInfo
 
     private final QName typeName;
 
-    public CArrayInfo(Model model,CNonElement itemType, CCustomizations customizations) {
-        super(model,customizations);
+    public CArrayInfo(Model model,CNonElement itemType, XSComponent source, CCustomizations customizations) {
+        super(model,source,customizations);
         this.itemType = itemType;
         assert itemType.getTypeName()!=null;
         this.typeName = ArrayInfoImpl.calcArrayTypeName(itemType.getTypeName());

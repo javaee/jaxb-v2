@@ -256,7 +256,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
         if(name==null)
             name = defaultName;
 
-        return wrapUp(new CValuePropertyInfo(name, getCustomizations(source),source.getLocator(), tu ),source);
+        return wrapUp(new CValuePropertyInfo(name, source,getCustomizations(source),source.getLocator(), tu ),source);
     }
 
     public CAttributePropertyInfo createAttributeProperty( XSAttributeUse use, TypeUse tu ) {
@@ -279,7 +279,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
         markAsAcknowledged();
         constantPropertyErrorCheck();
 
-        return wrapUp(new CAttributePropertyInfo(name,getCustomizations(use),use.getLocator(), n, tu, use.isRequired() ),use);
+        return wrapUp(new CAttributePropertyInfo(name,use,getCustomizations(use),use.getLocator(), n, tu, use.isRequired() ),use);
     }
 
     /**
@@ -310,7 +310,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
                 name, types.getCollectionMode(),
                 types.id(),
                 types.getExpectedMimeType(),
-                getCustomizations(source),
+                source, getCustomizations(source),
                 source.getLocator(), types.isRequired()),
             source);
 
@@ -337,7 +337,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
             new CReferencePropertyInfo(
                 name,
                 types.getCollectionMode().isRepeated()||isMixed,
-                isMixed,
+                isMixed, source,
                 getCustomizations(source), source.getLocator() ),
             source);
 

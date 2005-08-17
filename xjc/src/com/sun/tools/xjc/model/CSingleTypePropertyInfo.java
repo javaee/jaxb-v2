@@ -6,6 +6,7 @@ import java.util.Collections;
 import javax.activation.MimeType;
 
 import com.sun.xml.bind.v2.model.core.ID;
+import com.sun.xml.xsom.XSComponent;
 
 import org.xml.sax.Locator;
 
@@ -15,8 +16,8 @@ import org.xml.sax.Locator;
 abstract class CSingleTypePropertyInfo extends CPropertyInfo {
     protected final TypeUse type;
 
-    protected CSingleTypePropertyInfo(String name, TypeUse type, CCustomizations customizations, Locator locator) {
-        super(name, type.isCollection(), customizations, locator);
+    protected CSingleTypePropertyInfo(String name, TypeUse type, XSComponent source, CCustomizations customizations, Locator locator) {
+        super(name, type.isCollection(), source, customizations, locator);
         this.type = type;
     }
 

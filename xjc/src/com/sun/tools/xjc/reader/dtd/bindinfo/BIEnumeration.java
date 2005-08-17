@@ -53,7 +53,7 @@ public final class BIEnumeration implements BIConversion
                 DOMUtil.getAttribute(dom,"name"),
                 CBuiltinLeafInfo.STRING,
                 buildMemberList(parent.model,dom),
-                null/*TODO*/,
+                null, null/*TODO*/,
                 DOM4JLocator.getLocationInfo(dom)));
     }
     
@@ -69,7 +69,7 @@ public final class BIEnumeration implements BIConversion
                 DOMUtil.getAttribute(dom,"name"),
                 CBuiltinLeafInfo.STRING,
                 buildMemberList(parent.parent.model,dom),
-                null/*TODO*/,
+                null, null/*TODO*/,
                 DOM4JLocator.getLocationInfo(dom) ));
     }
     

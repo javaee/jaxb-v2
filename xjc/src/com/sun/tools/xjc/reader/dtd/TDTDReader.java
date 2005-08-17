@@ -309,7 +309,7 @@ public class TDTDReader extends DTDHandlerBase
             use = builtinConversions.get(attributeType);
 
         CPropertyInfo r = new CAttributePropertyInfo(
-            propName, null/*TODO*/, copyLocator(), qname, use, required );
+            propName, null,null/*TODO*/, copyLocator(), qname, use, required );
 
         if(defaultValue!=null)
             // TODO: what does it mean for us to require a cast here?

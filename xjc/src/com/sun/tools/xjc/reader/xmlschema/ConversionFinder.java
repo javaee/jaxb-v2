@@ -365,7 +365,7 @@ public final class ConversionFinder extends BindingComponent {
         else
             scope = getClassSelector().getClassScope();
         CEnumLeafInfo xducer = new CEnumLeafInfo( model, typeName, scope,
-            className, baseDt, memberList,
+            className, baseDt, memberList, type,
             builder.getBindInfo(type).toCustomizationList(), loc );
         xducer.javadoc = javadoc;
 

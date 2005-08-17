@@ -87,7 +87,7 @@ public final class BIElement
         String name = name();
         QName tagName = new QName("",name);
 
-        this.clazz = new CClassInfo(parent.model,parent.getTargetPackage(),className,getLocation(),null,tagName,null/*TODO*/);
+        this.clazz = new CClassInfo(parent.model,parent.getTargetPackage(),className,getLocation(),null,tagName,null,null/*TODO*/);
     }
 
     /**

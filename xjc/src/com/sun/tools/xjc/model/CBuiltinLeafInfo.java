@@ -35,6 +35,7 @@ import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.impl.BuiltinLeafInfoImpl;
+import com.sun.xml.xsom.XSComponent;
 
 import org.relaxng.datatype.ValidationContext;
 import org.xml.sax.Locator;
@@ -116,6 +117,10 @@ public abstract class CBuiltinLeafInfo extends BuiltinLeafInfoImpl<NType,NClass>
 
     public Locator getLocator() {
         return Model.EMPTY_LOCATOR;
+    }
+
+    public final XSComponent getSchemaComponent() {
+        throw new UnsupportedOperationException("TODO. If you hit this, let us know.");
     }
 
     /**

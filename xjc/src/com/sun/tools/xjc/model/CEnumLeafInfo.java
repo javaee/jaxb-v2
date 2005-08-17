@@ -21,6 +21,7 @@ import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.runtime.Location;
+import com.sun.xml.xsom.XSComponent;
 
 import org.relaxng.datatype.ValidationContext;
 import org.xml.sax.Locator;
@@ -47,6 +48,8 @@ public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, 
     public final String shortName;
 
     private final QName typeName;
+
+    private final XSComponent source;
 
     /**
      * Represents the underlying type of this enumeration
@@ -78,21 +81,20 @@ public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, 
 
     public String javadoc;
 
-    /**
-     * @param _members
-     */
     public CEnumLeafInfo(Model model,
                          QName typeName,
                          CClassInfoParent container,
                          String shortName,
                          CNonElement base,
                          Collection<CEnumConstant> _members,
+                         XSComponent source,
                          CCustomizations customizations,
                          Locator _sourceLocator) {
         this.parent = container;
         this.shortName = shortName;
         this.base = base;
         this.members = _members;
+        this.source = source;
         if(customizations==null)
             customizations = CCustomizations.EMPTY;
         this.customizations = customizations;
@@ -124,6 +126,10 @@ public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, 
 
     public NClass getClazz() {
         return this;
+    }
+
+    public XSComponent getSchemaComponent() {
+        return source;
     }
 
     public JClass toType(Outline o, Aspect aspect) {

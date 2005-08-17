@@ -9,6 +9,7 @@ import com.sun.tools.xjc.model.nav.NType;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.outline.Aspect;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
+import com.sun.xml.xsom.XSComponent;
 
 import org.relaxng.datatype.ValidationContext;
 

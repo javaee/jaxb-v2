@@ -176,7 +176,7 @@ public final class RELAXNGCompiler {
                 CEnumLeafInfo xducer = new CEnumLeafInfo(model, null,
                         new CClassInfoParent.Package(pkg), def.getName(), base,
                         new ArrayList<CEnumConstant>(members),
-                        null/*TODO*/, cp.getLocation());
+                        null, null/*TODO*/, cp.getLocation());
 
                 classes.put(cp,new CTypeInfo[]{xducer});
             }
@@ -222,7 +222,7 @@ public final class RELAXNGCompiler {
             String name = model.getNameConverter().toClassName(n.getLocalPart());
 
             bindQueue.put(
-                types[i++] = new CClassInfo(model,pkg,name,p.getLocation(),null,n,null/*TODO*/),
+                types[i++] = new CClassInfo(model,pkg,name,p.getLocation(),null,n,null,null/*TODO*/),
                 p.getChild() );
         }
 

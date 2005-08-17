@@ -26,6 +26,7 @@ import com.sun.xml.bind.v2.model.core.Element;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XSType;
+import com.sun.xml.xsom.XSComponent;
 
 import org.xml.sax.Locator;
 
@@ -182,16 +183,18 @@ public final class RawTypeSet {
         public final QName elementName;
         public final TypeUse target;
         public final Locator locator;
+        public final XSComponent source;
         public final CCustomizations custs;
         public final boolean nillable;
         public final String defaultValue;
 
-        public XmlTypeRef(QName elementName, TypeUse target, boolean nillable, String defaultValue, CCustomizations custs, Locator loc) {
+        public XmlTypeRef(QName elementName, TypeUse target, boolean nillable, String defaultValue, XSComponent source, CCustomizations custs, Locator loc) {
             assert elementName!=null;
             assert target!=null;
 
             this.elementName = elementName;
             this.target = target;
+            this.source = source;
             this.custs = custs;
             this.nillable = nillable;
             this.defaultValue = defaultValue;
@@ -199,14 +202,14 @@ public final class RawTypeSet {
         }
 
         public XmlTypeRef(QName elementName, XSType target, boolean nillable, String defaultValue) {
-            this(elementName,Ring.get(ClassSelector.class).bindToType(target), nillable, defaultValue,
+            this(elementName,Ring.get(ClassSelector.class).bindToType(target), nillable, defaultValue, target,
                     Ring.get(BGMBuilder.class).getBindInfo(target).toCustomizationList(),
                     target.getLocator());
         }
 
         public XmlTypeRef(XSElementDecl decl) {
             this(new QName(decl.getTargetNamespace(),decl.getName()),bindToType(decl),
-                    decl.isNillable(), decl.getDefaultValue(),
+                    decl.isNillable(), decl.getDefaultValue(), decl,
                     Ring.get(BGMBuilder.class).getBindInfo(decl).toCustomizationList(),
                     decl.getLocator());
         }
@@ -231,11 +234,11 @@ public final class RawTypeSet {
             if(target instanceof CClassInfo && Ring.get(BIGlobalBinding.class).isSimpleMode()) {
                 CClassInfo bean = new CClassInfo(model,scope,
                                 model.getNameConverter().toClassName(elementName.getLocalPart()),
-                                locator,null,elementName,custs);
+                                locator,null,elementName,source,custs);
                 bean.setBaseClass((CClassInfo)target);
                 prop.getElements().add(bean);
             } else {
-                CElementInfo e = new CElementInfo(model,elementName,scope,target,defaultValue,custs,locator);
+                CElementInfo e = new CElementInfo(model,elementName,scope,target,defaultValue,source,custs,locator);
                 prop.getElements().add(e);
             }
         }
