@@ -21,6 +21,7 @@ import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
 import com.sun.xml.bind.v2.model.core.Element;
+import com.sun.xml.xsom.XSComponent;
 
 import org.xml.sax.Locator;
 
@@ -97,12 +98,12 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
     private boolean hasAttributeWildcard;
 
 
-    public CClassInfo(Model model,JPackage pkg, String shortName, Locator location, QName typeName, QName elementName, CCustomizations customizations) {
-        this(model,model.getPackage(pkg),shortName,location,typeName,elementName,customizations);
+    public CClassInfo(Model model,JPackage pkg, String shortName, Locator location, QName typeName, QName elementName, XSComponent source, CCustomizations customizations) {
+        this(model,model.getPackage(pkg),shortName,location,typeName,elementName,source,customizations);
     }
 
-    public CClassInfo(Model model,CClassInfoParent p, String shortName, Locator location, QName typeName, QName elementName, CCustomizations customizations) {
-        super(model,customizations);
+    public CClassInfo(Model model,CClassInfoParent p, String shortName, Locator location, QName typeName, QName elementName, XSComponent source, CCustomizations customizations) {
+        super(model,source,customizations);
         this.model = model;
         this.parent = p;
         this.shortName = model.allocator.assignClassName(parent,shortName);
@@ -113,8 +114,8 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
         model.add(this);
     }
 
-    public CClassInfo(Model model,JCodeModel cm, String fullName, Locator location, QName typeName, QName elementName, CCustomizations customizations) {
-        super(model,customizations);
+    public CClassInfo(Model model,JCodeModel cm, String fullName, Locator location, QName typeName, QName elementName, XSComponent source, CCustomizations customizations) {
+        super(model,source,customizations);
         this.model = model;
         int idx = fullName.indexOf('.');
         if(idx<0) {

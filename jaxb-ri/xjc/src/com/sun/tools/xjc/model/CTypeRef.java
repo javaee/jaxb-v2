@@ -10,6 +10,10 @@ import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.Util;
 
 /**
+ * {@link TypeRef} for XJC.
+ * 
+ * TODO: do we need the source schema component support here?
+ *
  * @author Kohsuke Kawaguchi
  */
 public final class CTypeRef implements TypeRef<NType,NClass> {

@@ -83,7 +83,7 @@ final class DefaultClassBinder implements ClassBinder
 
             JPackage pkg = selector.getPackage(type.getTargetNamespace());
 
-            return new CClassInfo(model,pkg,deriveName(type),type.getLocator(),getTypeName(type),null,bi.toCustomizationList());
+            return new CClassInfo(model,pkg,deriveName(type),type.getLocator(),getTypeName(type),null,type,bi.toCustomizationList());
         } else {
             boolean parentIsType = selector.isBound(type.getScope());
 
@@ -107,7 +107,7 @@ final class DefaultClassBinder implements ClassBinder
 
             if(sb!=null)    className = sb.mangleAnonymousTypeClassName(className);
 
-            return new CClassInfo(model, selector.getClassScope(), className, type.getLocator(), null, null, bi.toCustomizationList() );
+            return new CClassInfo(model, selector.getClassScope(), className, type.getLocator(), null, null, type, bi.toCustomizationList() );
         }
     }
 
@@ -160,7 +160,7 @@ final class DefaultClassBinder implements ClassBinder
                     // and collapses element and complex type.
                     r = new CClassInfo( model, selector.getClassScope(),
                         deriveName(decl), decl.getLocator(),
-                        null, tagName, custs );
+                        null, tagName, decl, custs );
                 } else {
                     String className = null;
                     if(getGlobalBinding().isGenerateElementClass()) {
@@ -173,7 +173,7 @@ final class DefaultClassBinder implements ClassBinder
                     stb.refererStack.push(decl);    // referer is element
                     r = new CElementInfo(model, tagName, selector.getClassScope(), className,
                             selector.bindToType(decl.getType()), decl.getDefaultValue(),
-                            custs, decl.getLocator());
+                            decl, custs, decl.getLocator());
                     stb.refererStack.pop();
                 }
             }
@@ -215,7 +215,7 @@ final class DefaultClassBinder implements ClassBinder
 
         if(getGlobalBinding().isSimpleTypeSubstitution() && type.isGlobal()) {
             return new CClassInfo(model,selector.getClassScope(),
-                    deriveName(type), type.getLocator(), getTypeName(type), null, null );
+                    deriveName(type), type.getLocator(), getTypeName(type), null, type, null );
         }
 
         return never();
@@ -347,12 +347,12 @@ final class DefaultClassBinder implements ClassBinder
 
             return new CElementInfo(model, elementName,
                     selector.getClassScope(), clsName, content,
-                    e.getDefaultValue(),
+                    e.getDefaultValue(), e,
                     bindInfo.toCustomizationList(), decl.getLocation() );
             // TODO: support javadoc and userSpecifiedImplClass
         } else {
             CClassInfo bt = new CClassInfo(model,selector.getClassScope(),
-                    clsName, decl.getLocation(), typeName, elementName, bindInfo.toCustomizationList() );
+                    clsName, decl.getLocation(), typeName, elementName, component, bindInfo.toCustomizationList() );
 
             // set javadoc class comment.
             if(decl.getJavadoc()!=null )
@@ -422,4 +422,4 @@ final class DefaultClassBinder implements ClassBinder
 
         return name;
     }
-};
+}

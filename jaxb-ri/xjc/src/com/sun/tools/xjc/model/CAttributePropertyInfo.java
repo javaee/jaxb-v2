@@ -6,6 +6,7 @@ import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.xml.bind.v2.model.core.AttributePropertyInfo;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
+import com.sun.xml.xsom.XSComponent;
 
 import org.xml.sax.Locator;
 
@@ -19,9 +20,9 @@ public final class CAttributePropertyInfo extends CSingleTypePropertyInfo implem
     private final QName attName;
     private final boolean isRequired;
 
-    public CAttributePropertyInfo(String name, CCustomizations customizations,
+    public CAttributePropertyInfo(String name, XSComponent source, CCustomizations customizations,
                                   Locator locator, QName attName, TypeUse type, boolean required ) {
-        super(name, type, customizations, locator);
+        super(name, type, source, customizations, locator);
         isRequired = required;
         this.attName = attName;
     }

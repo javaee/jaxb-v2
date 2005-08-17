@@ -21,6 +21,7 @@ import com.sun.tools.xjc.model.nav.NavigatorImpl;
 import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.xml.bind.v2.model.core.ElementInfo;
+import com.sun.xml.xsom.XSComponent;
 
 import org.xml.sax.Locator;
 
@@ -83,15 +84,15 @@ public final class CElementInfo extends AbstractCTypeInfoImpl implements Element
     /**
      * Creates an element in the given package.
      */
-    public CElementInfo(Model model,QName tagName, JPackage _package, TypeUse contentType, String defaultValue, CCustomizations customizations, Locator location ) {
-        this(model,tagName,model.getPackage(_package),contentType,defaultValue, customizations, location);
+    public CElementInfo(Model model,QName tagName, JPackage _package, TypeUse contentType, String defaultValue, XSComponent source, CCustomizations customizations, Locator location ) {
+        this(model,tagName,model.getPackage(_package),contentType,defaultValue, source, customizations, location);
     }
 
     /**
      * Creates an element in the given parent.
      */
-    public CElementInfo(Model model,QName tagName, CClassInfoParent parent, TypeUse contentType, String defaultValue, CCustomizations customizations, Locator location ) {
-        super(model,customizations);
+    public CElementInfo(Model model,QName tagName, CClassInfoParent parent, TypeUse contentType, String defaultValue, XSComponent source, CCustomizations customizations, Locator location ) {
+        super(model,source,customizations);
         this.tagName = tagName;
         this.model = model;
         this.parent = parent;
@@ -99,7 +100,7 @@ public final class CElementInfo extends AbstractCTypeInfoImpl implements Element
                 contentType.isCollection()?REPEATED_VALUE:NOT_REPEATED,
                 contentType.idUse(),
                 contentType.getExpectedMimeType(),
-                null,location,true);
+                source,null,location,true);
         this.property.setAdapter(contentType.getAdapterUse());
         property.getTypes().add(new CTypeRef((CNonElement)contentType.getInfo(),tagName,true,defaultValue));
         this.type = NavigatorImpl.createParameterizedType(
@@ -113,8 +114,8 @@ public final class CElementInfo extends AbstractCTypeInfoImpl implements Element
     /**
      * Creates an element with a class in th given parent.
      */
-    public CElementInfo(Model model,QName tagName, CClassInfoParent parent, String className, TypeUse contentType, String defaultValue, CCustomizations customizations, Locator location ) {
-        this(model,tagName,parent,contentType,defaultValue,customizations,location);
+    public CElementInfo(Model model,QName tagName, CClassInfoParent parent, String className, TypeUse contentType, String defaultValue, XSComponent source, CCustomizations customizations, Locator location ) {
+        this(model,tagName,parent,contentType,defaultValue,source,customizations,location);
         this.className = className;
     }
 

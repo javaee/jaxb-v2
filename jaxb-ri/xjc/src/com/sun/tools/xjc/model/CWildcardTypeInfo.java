@@ -7,6 +7,7 @@ import com.sun.tools.xjc.model.nav.NavigatorImpl;
 import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.xml.bind.v2.model.core.WildcardTypeInfo;
+import com.sun.xml.xsom.XSComponent;
 
 import org.w3c.dom.Element;
 import org.xml.sax.Locator;
@@ -20,7 +21,7 @@ import org.xml.sax.Locator;
  */
 public final class CWildcardTypeInfo extends AbstractCTypeInfoImpl implements WildcardTypeInfo<NType,NClass> {
     private CWildcardTypeInfo() {
-        super(null,null);
+        super(null,null,null);
     }
 
     public static final CWildcardTypeInfo INSTANCE = new CWildcardTypeInfo();

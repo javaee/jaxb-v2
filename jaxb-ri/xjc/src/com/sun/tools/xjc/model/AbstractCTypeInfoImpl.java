@@ -7,6 +7,7 @@ import com.sun.codemodel.JExpression;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.runtime.Location;
+import com.sun.xml.xsom.XSComponent;
 
 import org.relaxng.datatype.ValidationContext;
 
@@ -24,12 +25,15 @@ abstract class AbstractCTypeInfoImpl implements CTypeInfo {
 
     private final CCustomizations customizations;
 
-    protected AbstractCTypeInfoImpl(Model model, CCustomizations customizations) {
+    private final XSComponent source;
+
+    protected AbstractCTypeInfoImpl(Model model, XSComponent source, CCustomizations customizations) {
         if(customizations==null)
             customizations = CCustomizations.EMPTY;
         else
             customizations.setParent(model,this);
         this.customizations = customizations;
+        this.source = source;
     }
 
     public final boolean isCollection() {
@@ -46,6 +50,10 @@ abstract class AbstractCTypeInfoImpl implements CTypeInfo {
 
     public final ID idUse() {
         return ID.NONE;
+    }
+
+    public final XSComponent getSchemaComponent() {
+        return source;
     }
 
     /**

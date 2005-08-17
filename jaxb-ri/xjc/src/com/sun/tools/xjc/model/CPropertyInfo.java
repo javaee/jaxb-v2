@@ -16,6 +16,7 @@ import com.sun.tools.xjc.model.nav.NType;
 import com.sun.xml.bind.v2.NameConverter;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.Util;
+import com.sun.xml.xsom.XSComponent;
 
 import org.xml.sax.Locator;
 
@@ -32,6 +33,11 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
 
     @XmlTransient
     public final Locator locator;
+
+    /**
+     * @see #getSource()
+     */
+    private final XSComponent source;
 
     /**
      * If the base type of the property is overriden,
@@ -65,7 +71,7 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
      */
     public QName schemaType;
 
-    protected CPropertyInfo(String name, boolean collection,
+    protected CPropertyInfo(String name, boolean collection, XSComponent source,
                             CCustomizations customizations, Locator locator) {
         this.publicName = name;
         String n = NameConverter.standard.toVariableName(name);
@@ -79,6 +85,7 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
             this.customizations = CCustomizations.EMPTY;
         else
             this.customizations = customizations;
+        this.source = source;
     }
 
     // called from CClassInfo when added
@@ -95,6 +102,18 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
 
     public Locator getLocator() {
         return locator;
+    }
+
+    /**
+     * If this model object is built from XML Schema,
+     * this property returns a schema component from which the model is built.
+     *
+     * @return
+     *      null if the model is built from sources other than XML Schema
+     *      (such as DTD.)
+     */
+    public final XSComponent getSchemaComponent() {
+        return source;
     }
 
     public abstract CAdapter getAdapter();

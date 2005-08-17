@@ -15,6 +15,7 @@ import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.ReferencePropertyInfo;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
+import com.sun.xml.xsom.XSComponent;
 
 import org.xml.sax.Locator;
 
@@ -33,9 +34,9 @@ public final class CReferencePropertyInfo extends CPropertyInfo implements Refer
     private final boolean isMixed;
     private WildcardMode wildcard;
 
-    public CReferencePropertyInfo(String name, boolean collection, boolean isMixed,
+    public CReferencePropertyInfo(String name, boolean collection, boolean isMixed, XSComponent source,
                                   CCustomizations customizations, Locator locator) {
-        super(name, collection||isMixed, customizations, locator );
+        super(name, collection||isMixed, source, customizations, locator );
         this.isMixed = isMixed;
     }
 

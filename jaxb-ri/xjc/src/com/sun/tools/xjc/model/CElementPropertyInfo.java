@@ -13,6 +13,7 @@ import com.sun.tools.xjc.reader.RawTypeSet;
 import com.sun.xml.bind.v2.model.core.ElementPropertyInfo;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
+import com.sun.xml.xsom.XSComponent;
 
 import org.xml.sax.Locator;
 
@@ -56,9 +57,9 @@ public final class CElementPropertyInfo extends CPropertyInfo implements Element
     };
 
     // TODO: shouldn't they get id and expectedMimeType from TypeUses of CTypeRef?
-    public CElementPropertyInfo(String name, CollectionMode collection, ID id, MimeType expectedMimeType,
+    public CElementPropertyInfo(String name, CollectionMode collection, ID id, MimeType expectedMimeType, XSComponent source,
                                 CCustomizations customizations, Locator locator, boolean required) {
-        super(name, collection.col, customizations, locator);
+        super(name, collection.col, source, customizations, locator);
         this.required = required;
         this.id = id;
         this.expectedMimeType = expectedMimeType;

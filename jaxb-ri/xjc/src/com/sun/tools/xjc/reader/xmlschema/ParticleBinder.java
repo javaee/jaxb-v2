@@ -56,8 +56,8 @@ public final class ParticleBinder extends BindingComponent {
         if(checker.hasNameCollision()) {
             CReferencePropertyInfo prop = new CReferencePropertyInfo(
                 getCurrentBean().getBaseClass()==null?"Content":"Rest",
-                true, false,
-                    builder.getBindInfo(p).toCustomizationList(),
+                true, false, p,
+                builder.getBindInfo(p).toCustomizationList(),
                 p.getLocator() );
             RawTypeSetBuilder.build(p,false).addTo(prop);
             prop.javadoc = Messages.format( Messages.MSG_FALLBACK_JAVADOC,
