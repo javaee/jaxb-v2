@@ -168,14 +168,14 @@ public class PackageRenameTask extends MatchingTask {
                 line = "package "+replace(pkgName);
             }
             else
-            if(meat.startsWith("import ")) {
-                String pkgName = meat.substring(7).trim();
-                line = "import "+replace(pkgName);
-            }
-            else
             if(meat.startsWith("import static ")) {
                 String pkgName = meat.substring(14).trim();
                 line = "import static "+replace(pkgName);
+            }
+            else
+            if(meat.startsWith("import ")) {
+                String pkgName = meat.substring(7).trim();
+                line = "import "+replace(pkgName);
             }
 
             w.println(line);
