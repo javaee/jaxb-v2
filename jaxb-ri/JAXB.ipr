@@ -469,6 +469,7 @@
       <module fileurl="file://$PROJECT_DIR$/tools/installer-builder/installer-builder.iml" filepath="$PROJECT_DIR$/tools/installer-builder/installer-builder.iml" />
       <module fileurl="file://$PROJECT_DIR$/javadoc/javadoc.iml" filepath="$PROJECT_DIR$/javadoc/javadoc.iml" />
       <module fileurl="file://$PROJECT_DIR$/jaxb-ri.iml" filepath="$PROJECT_DIR$/jaxb-ri.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tools/package-rename-task/package-rename-task.iml" filepath="$PROJECT_DIR$/tools/package-rename-task/package-rename-task.iml" />
       <module fileurl="file://$PROJECT_DIR$/tools/pretty-printer/pretty-printer.iml" filepath="$PROJECT_DIR$/tools/pretty-printer/pretty-printer.iml" />
       <module fileurl="file://$PROJECT_DIR$/runtime/runtime.iml" filepath="$PROJECT_DIR$/runtime/runtime.iml" />
       <module fileurl="file://$PROJECT_DIR$/runtime-api/runtime-api.iml" filepath="$PROJECT_DIR$/runtime-api/runtime-api.iml" />
@@ -562,8 +563,8 @@
       <SOURCES>
         <root url="jar://$PROJECT_DIR$/tools/lib/redist/jaxb-api-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/jsr173_1.0_src.jar!/src" />
-        <root url="jar://$PROJECT_DIR$/tools/lib/src/txw2-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/activation-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/txw2-src.zip!/runtime" />
       </SOURCES>
     </library>
     <library name="compiler-libs">
