@@ -22,7 +22,7 @@ import javax.xml.bind.Unmarshaller;
 import org.oasis.ubl.order.OrderType;
 
 /*
- * $Id: PrintOrder.java,v 1.1 2005-04-15 20:07:31 kohsuke Exp $
+ * $Id: PrintOrder.java,v 1.2 2005-08-17 16:21:29 jfialli Exp $
  *
  * Copyright 2003 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -142,6 +142,7 @@ public class PrintOrder {
             double subtotal = qty * price;
             total += subtotal;
 
+	    form.setCurrency(lineItem.getItemPriceCurrency());
             System.out.println("\n"
                                + (i + 1)
                                + ". Part No.: "
