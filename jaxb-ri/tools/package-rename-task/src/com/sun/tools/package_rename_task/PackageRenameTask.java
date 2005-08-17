@@ -144,6 +144,9 @@ public class PackageRenameTask extends MatchingTask {
                 } catch (IOException e) {
                     // ignore
                 }
+            // avoid careless users from modifying them
+            // because those changes will be lost.
+            dst.setReadOnly();
         }
     }
 
@@ -168,6 +171,11 @@ public class PackageRenameTask extends MatchingTask {
             if(meat.startsWith("import ")) {
                 String pkgName = meat.substring(7).trim();
                 line = "import "+replace(pkgName);
+            }
+            else
+            if(meat.startsWith("import static ")) {
+                String pkgName = meat.substring(14).trim();
+                line = "import static "+replace(pkgName);
             }
 
             w.println(line);
