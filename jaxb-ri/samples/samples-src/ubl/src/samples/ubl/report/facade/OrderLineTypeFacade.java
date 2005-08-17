@@ -71,6 +71,19 @@ public class OrderLineTypeFacade {
     }
 
     /**
+     * Returns the currency of the price associated with a line item.
+     *
+     * <p>
+     * Both java.util.Currency and UBL currency IDs follow
+     * ISO 4217 currency codes.
+     *
+     * @return Currency of price
+     */
+    public java.util.Currency getItemPriceCurrency() {
+	return java.util.Currency.getInstance(getTheItemPrice().getPriceAmount().getAmountCurrencyID());
+    }
+
+    /**
      * Returns the quantity associated with a line item.
      *
      * @return an <code>int</code> representing the quantity of this line item
@@ -92,7 +105,7 @@ public class OrderLineTypeFacade {
     private BasePriceType getTheItemPrice() {
         return (BasePriceType) lineItem.getLineItem().getItem().getBasePrice().get(0);
     }
- 
+
     static public class Iterator implements java.util.Iterator {
         java.util.Iterator iter;
         
