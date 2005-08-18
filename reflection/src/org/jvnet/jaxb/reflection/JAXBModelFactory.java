@@ -1,16 +1,14 @@
 package org.jvnet.jaxb.reflection;
 
-import java.util.Collection;
-import java.lang.reflect.Method;
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.util.Collection;
 
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
 import com.sun.xml.bind.v2.model.annotation.RuntimeAnnotationReader;
 import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
+import com.sun.xml.bind.v2.model.core.ErrorHandler;
 import com.sun.xml.bind.v2.model.core.Ref;
 import com.sun.xml.bind.v2.model.core.TypeInfoSet;
-import com.sun.xml.bind.v2.model.core.ErrorHandler;
 import com.sun.xml.bind.v2.model.impl.ModelBuilder;
 import com.sun.xml.bind.v2.model.impl.RuntimeModelBuilder;
 import com.sun.xml.bind.v2.model.nav.Navigator;
@@ -48,7 +46,7 @@ public abstract class JAXBModelFactory {
         ErrorHandler errorHandler,
         Collection<C> classes ) {
 
-        ModelBuilder<T,C,F,M> builder = new ModelBuilder(reader,navigator,null);
+        ModelBuilder<T,C,F,M> builder = new ModelBuilder<T,C,F,M>(reader,navigator,null);
         builder.setErrorHandler(errorHandler);
         for( C c : classes )
             builder.getTypeInfo(new Ref<T,C>(navigator.use(c)));
