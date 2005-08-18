@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+ Copyright 2004 Sun Microsystems, Inc. All rights reserved.
+ SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+-->
+<project name="jaxb" basedir=".">
+  <description>
+    Common task/macro definitions.
+  </description>
+
+  <!-- architecture document generator -->
+  <macrodef name="arch-doc">
+    <element name="params"/>
+    <attribute name="title"/>
+    <attribute name="destdir"/>
+    <attribute name="access" default="package" />
+    <sequential>
+      <ant dir="tools/taglets" target="compile"/>
+      <mkdir dir="@{destdir}"/>
+      <javadoc
+        destdir="@{destdir}"
+        use="true"
+        author="false"
+        version="false"
+        windowtitle="@{title}"
+        doctitle="@{title}"
+        access="@{access}">
+        <!--arg line="-J-Xdebug -J-Xrunjdwp:transport=dt_socket,server=y,address=8000" /-->
+
+        <doclet name="com.sun.xml.bind.taglets.CustomHtmlDoclet"
+          path="${jaxb.root}/tools/taglets/build/classes">
+        </doclet>
+        <arg value="-quiet"/>
+
+        <params/>
+
+        <link href="https://jaxb.dev.java.net/nonav/jaxb20-pr/api/"
+          offline="true" packagelistloc="${jaxb.root}/tools/javadoc-link/jaxb-api"/>
+        <link href="http://java.sun.com/j2se/1.5.0/docs/api/"
+          offline="true" packagelistloc="${jaxb.root}/tools/javadoc-link/j2se5.0"/>
+        <link href="https://xsom.dev.java.net/nonav/javadoc/"
+          offline="true" packagelistloc="${jaxb.root}/tools/javadoc-link/xsom"/>
+
+        <classpath>
+          <fileset dir="${jaxb.libs}/" includes="**/*.jar"/>
+        </classpath>
+      </javadoc>
+    </sequential>
+  </macrodef>
+
+</project>
