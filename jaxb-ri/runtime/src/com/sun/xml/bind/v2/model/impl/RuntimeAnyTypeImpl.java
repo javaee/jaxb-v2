@@ -9,7 +9,7 @@ import com.sun.xml.bind.v2.runtime.Transducer;
 /**
  * @author Kohsuke Kawaguchi
  */
-public final class RuntimeAnyTypeImpl extends AnyTypeImpl<Type,Class> implements RuntimeNonElement {
+final class RuntimeAnyTypeImpl extends AnyTypeImpl<Type,Class> implements RuntimeNonElement {
     private RuntimeAnyTypeImpl() {
         super(Navigator.REFLECTION);
     }
@@ -18,5 +18,5 @@ public final class RuntimeAnyTypeImpl extends AnyTypeImpl<Type,Class> implements
         return null;
     }
 
-    public static final RuntimeNonElement theInstance = new RuntimeAnyTypeImpl();
+    static final RuntimeNonElement theInstance = new RuntimeAnyTypeImpl();
 }

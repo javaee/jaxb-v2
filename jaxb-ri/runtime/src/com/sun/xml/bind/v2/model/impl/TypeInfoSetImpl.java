@@ -176,6 +176,10 @@ class TypeInfoSetImpl<TypeT,ClassDeclT,FieldT,MethodT> implements
         return getClassInfo(d);
     }
 
+    public NonElement<TypeT,ClassDeclT> getAnyTypeInfo() {
+        return anyType;
+    }
+
     /**
      * This method is used to add a root reference to a model.
      */

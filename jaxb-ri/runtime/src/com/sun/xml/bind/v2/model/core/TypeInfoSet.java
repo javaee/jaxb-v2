@@ -38,6 +38,11 @@ public interface TypeInfoSet<TypeT,ClassDeclT,FieldT,MethodT> {
     NonElement<TypeT,ClassDeclT> getTypeInfo( TypeT type );
 
     /**
+     * Gets the {@link TypeInfo} for the any type.
+     */
+    NonElement<TypeT,ClassDeclT> getAnyTypeInfo();
+
+    /**
      * Returns a {@link ClassInfo}, {@link ArrayInfo}, or {@link LeafInfo}
      * for the given bean.
      *

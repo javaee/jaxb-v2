@@ -14,7 +14,7 @@ import com.sun.xml.bind.v2.model.annotation.Locatable;
  *
  * @author Kohsuke Kawaguchi
  */
-public class AnyTypeImpl<T,C> implements NonElement<T,C> {
+class AnyTypeImpl<T,C> implements NonElement<T,C> {
 
     private final T type;
     private final Navigator<T,C,?,?> nav;

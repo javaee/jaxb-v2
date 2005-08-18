@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.model.core.TypeInfoSet;
+import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.nav.ReflectionNavigator;
 
 /**
@@ -21,6 +22,7 @@ public interface RuntimeTypeInfoSet extends TypeInfoSet<Type,Class,Field,Method>
     Map<Type,? extends RuntimeBuiltinLeafInfo> builtins();
     Map<Class,? extends RuntimeEnumLeafInfo> enums();
     RuntimeNonElement getTypeInfo( Type type );
+    RuntimeNonElement getAnyTypeInfo();
     RuntimeNonElement getClassInfo( Class type );
     RuntimeElementInfo getElementInfo( Class scope, QName name );
     Map<QName,? extends RuntimeElementInfo> getElementMappings( Class scope );
