@@ -285,6 +285,14 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         return properties;
     }
 
+    public PropertyInfo<TypeT,ClassDeclT> getProperty(String name) {
+        for( PropertyInfo<TypeT,ClassDeclT> p: getProperties() ) {
+            if(p.getName().equals(name))
+                return p;
+        }
+        return null;
+    }
+
     /**
      * This hook is used by {@link RuntimeClassInfoImpl} to look for {@link XmlLocation}.
      */

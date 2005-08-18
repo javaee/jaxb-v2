@@ -76,6 +76,24 @@ public interface ClassInfo<TypeT,ClassDeclT> extends NonElement<TypeT,ClassDeclT
     List<? extends PropertyInfo<TypeT,ClassDeclT>> getProperties();
 
     /**
+     * Gets the property that has the specified name.
+     *
+     * <p>
+     * This is just a convenience method for:
+     * <pre>
+     * for( PropertyInfo p : getProperties() ) {
+     *   if(p.getName().equals(name))
+     *     return p;
+     * }
+     * return null;
+     * </pre>
+     *
+     * @return null
+     *      if the property was not found.
+     */
+    PropertyInfo<TypeT,ClassDeclT> getProperty(String name);
+
+    /**
      * If the class has properties, return true.  This is only
      * true if the Collection object returned by {@link #getProperties()}
      * is not empty.

@@ -84,6 +84,12 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
         return (List<? extends RuntimePropertyInfo>)super.getProperties();
     }
 
+    @Override
+    public RuntimePropertyInfo getProperty(String name) {
+        return (RuntimePropertyInfo)super.getProperty(name);
+    }
+
+
     public void link() {
         super.link();
         getTransducer();    // populate the transducer

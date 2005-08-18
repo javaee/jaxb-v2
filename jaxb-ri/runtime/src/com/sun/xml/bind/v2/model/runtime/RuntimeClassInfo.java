@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.model.core.ClassInfo;
+import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.annotation.XmlLocation;
 
@@ -20,6 +21,8 @@ public interface RuntimeClassInfo extends ClassInfo<Type,Class>, RuntimeNonEleme
 
     // refined to return RuntimePropertyInfo
     List<? extends RuntimePropertyInfo> getProperties();
+    RuntimePropertyInfo getProperty(String name);
+
 
     /**
      * If {@link #hasAttributeWildcard()} is true,
