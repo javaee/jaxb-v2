@@ -51,7 +51,7 @@
     <rename srcdir="${runtime-api.root}/arch-doc" />
 
     <mkdir dir="${reflection.classes}"/>
-    <javac srcdir="${reflection.root}/build/src" destdir="${reflection.classes}">
+    <javac srcdir="${reflection.root}/build/src:${reflection.src}" destdir="${reflection.classes}">
       <classpath>
         <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
         <fileset dir="${jaxb.libs.runtime2}" includes="**/*.jar"/>
