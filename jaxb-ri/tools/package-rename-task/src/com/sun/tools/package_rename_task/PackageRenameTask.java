@@ -71,8 +71,8 @@ public class PackageRenameTask extends MatchingTask {
 
         int count = 0;
 
-        for( int i=0; i<includedFiles.length; i++ ) {
-            if(process(includedFiles[i].replace('\\','/')))
+        for (String file : includedFiles) {
+            if (process(file.replace('\\', '/')))
                 count++;
         }
 
