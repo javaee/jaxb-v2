@@ -47,7 +47,7 @@
     </macrodef>
 
     <!-- rename packages -->
-    <rename srcdir="${runtime.src}" />
+    <rename srcdir="${runtime.src}" excludes="com/sun/xml/bind/v2/package-info.java"/>
     <rename srcdir="${runtime.root}/build/src" />
     <rename srcdir="${runtime-api.src}" />
     <rename srcdir="${runtime-api.root}/arch-doc" />
