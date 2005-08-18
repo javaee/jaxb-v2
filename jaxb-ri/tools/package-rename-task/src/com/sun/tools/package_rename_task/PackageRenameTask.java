@@ -16,6 +16,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Ant task that renames FQCN references in source files.
@@ -25,6 +27,7 @@ import java.io.PrintWriter;
  * @author Kohsuke Kawaguchi
  */
 public class PackageRenameTask extends MatchingTask {
+
     public PackageRenameTask() {
         setTaskName("package-rename");
     }
@@ -36,17 +39,8 @@ public class PackageRenameTask extends MatchingTask {
      */
     private File destDir;
 
-    /**
-     * The prefix to be replaced.
-     *
-     * For example, if from="com.sun." and to="org.jvnet.",
-     * "com.sun.xml.bind" gets renamed to "org.jvnet.xml.bind".
-     */
-    private String from;
-    /**
-     * The new prefix.
-     */
-    private String to;
+    private final List<Mapping> mappings = new ArrayList<Mapping>();
+
 
     private byte[] buffer = new byte[8192];
 
@@ -58,12 +52,10 @@ public class PackageRenameTask extends MatchingTask {
         this.destDir = destDir;
     }
 
-    public void setFrom(String from) {
-        this.from = from;
-    }
-
-    public void setTo(String to) {
-        this.to = to;
+    public Mapping createMapping() {
+        Mapping m = new Mapping();
+        mappings.add(m);
+        return m;
     }
 
     public void execute() throws BuildException {
@@ -71,10 +63,8 @@ public class PackageRenameTask extends MatchingTask {
             throw new BuildException("@srcdir isn't specified");
         if(destDir==null)
             throw new BuildException("@destdir isn't specified");
-        if(from==null)
-            throw new BuildException("@from isn't specified");
-        if(to==null)
-            throw new BuildException("@to isn't specified");
+        if(mappings.isEmpty())
+            throw new BuildException("no <mapping> is specified");
 
         DirectoryScanner ds = super.getDirectoryScanner(srcDir);
         String[] includedFiles = ds.getIncludedFiles();
@@ -117,6 +107,8 @@ public class PackageRenameTask extends MatchingTask {
 
         try {
             fis = new FileInputStream(src);
+            if(dst.exists())
+                dst.delete();
             fos = new FileOutputStream(dst);
 
             // just copy non-Java files
@@ -186,15 +178,20 @@ public class PackageRenameTask extends MatchingTask {
      * Replaces the typeName's prefix if applicable
      */
     private String replace(String typeName) {
-        if(typeName.startsWith(from)) {
-            String tail = typeName.substring(from.length());
-            if(tail.length()==0 || !Character.isJavaIdentifierPart(tail.charAt(0)))
-                return to+tail;
-        }
-        if(typeName.startsWith(from.replace('.','/'))) {
-            String tail = typeName.substring(from.length());
-            if(tail.length()==0 || !Character.isJavaIdentifierPart(tail.charAt(0)))
-                return to.replace('.','/')+tail;
+        for( Mapping m : mappings ) {
+            String from = m.getFrom();
+            String to = m.getTo();
+
+            if(typeName.startsWith(from)) {
+                String tail = typeName.substring(from.length());
+                if(tail.length()==0 || !Character.isJavaIdentifierPart(tail.charAt(0)))
+                    return to+tail;
+            }
+            if(typeName.startsWith(from.replace('.','/'))) {
+                String tail = typeName.substring(from.length());
+                if(tail.length()==0 || !Character.isJavaIdentifierPart(tail.charAt(0)))
+                    return to.replace('.','/')+tail;
+            }
         }
 
         return typeName;
