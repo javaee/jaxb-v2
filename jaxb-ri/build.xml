@@ -32,11 +32,13 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.29 2005-08-03 19:19:57 ryan_shoemaker Exp $
+       $Id: build.xml,v 1.30 2005-08-18 19:30:01 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
     <property file="${basedir}/build.properties" />
+
+    <import file="build-taskdefs.xml" />
     
     <target name="init">
         <!-- this property is used by "xjc -version" and is also set in each of the
@@ -67,53 +69,30 @@
         <ant dir="tools"               target="compile" />
     </target>
 
+
+
     <target name="architecture-document"
             description="generate architecture documents (which is just a glorified javadoc)">
-      <ant dir="tools/taglets" target="compile" />
-      <mkdir dir="${jaxb.root}/build/javadoc" />
-      <javadoc
-            destdir="${jaxb.root}/build/javadoc"
-            use="true"
-            author="false"
-            version="false"
-            windowtitle="JAXB RI"
-            doctitle="JAXB RI"
-            access="package">
-        <!--arg line="-J-Xdebug -J-Xrunjdwp:transport=dt_socket,server=y,address=8000" /-->
+      <arch-doc destdir="${jaxb.root}/build/javadoc" title="JAXB RI">
+        <params>
+          <packageset dir="${jaxb.root}/javadoc"/>
+          <group title="Root Architecture Document" packages="jaxb" />
 
-        <doclet name="com.sun.xml.bind.taglets.CustomHtmlDoclet"
-                path="${jaxb.root}/tools/taglets/build/classes">
-        </doclet>
-        <arg value="-quiet"/>
+          <packageset dir="${codemodel.src}"/>
+          <group title="CodeModel" packages="com.sun.codemodel*" />
 
-        <packageset dir="${jaxb.root}/javadoc"/>
-        <group title="Root Architecture Document" packages="jaxb" />
+          <packageset dir="${runtime.src}"/>
+          <packageset dir="${runtime-api.src}"/>
+          <packageset dir="${runtime-api.root}/arch-doc"/>
+          <packageset dir="${schemagen.src}"/>
+          <group title="Runtime API for JAX-WS" packages="com.sun.xml.bind.api" />
+          <group title="Runtime" packages="com.sun.xml.bind*" />
 
-        <packageset dir="${codemodel.src}"/>
-        <group title="CodeModel" packages="com.sun.codemodel*" />
-
-        <packageset dir="${runtime.src}"/>
-        <packageset dir="${runtime-api.src}"/>
-        <packageset dir="${runtime-api.root}/arch-doc"/>
-        <packageset dir="${schemagen.src}"/>
-        <group title="Runtime API for JAX-WS" packages="com.sun.xml.bind.api" />
-        <group title="Runtime" packages="com.sun.xml.bind*" />
-
-        <packageset dir="${xjc.src}"/>
-        <group title="XJC API for JAX-WS" packages="com.sun.tools.xjc.api" />
-        <group title="XJC" packages="com.sun.tools.xjc*:com.sun.tools.jxc*" />
-
-        <link href="https://jaxb.dev.java.net/nonav/jaxb20-pr/api/"
-          offline="true" packagelistloc="${jaxb.root}/tools/javadoc-link/jaxb-api"   />
-        <link href="http://java.sun.com/j2se/1.5.0/docs/api/"
-          offline="true" packagelistloc="${jaxb.root}/tools/javadoc-link/j2se5.0"  />
-        <link href="https://xsom.dev.java.net/nonav/javadoc/"
-          offline="true" packagelistloc="${jaxb.root}/tools/javadoc-link/xsom"  />
-
-        <classpath>
-          <fileset dir="${jaxb.libs}/" includes="**/*.jar" />
-        </classpath>
-      </javadoc>
+          <packageset dir="${xjc.src}"/>
+          <group title="XJC API for JAX-WS" packages="com.sun.tools.xjc.api" />
+          <group title="XJC" packages="com.sun.tools.xjc*:com.sun.tools.jxc*" />
+        </params>
+      </arch-doc>
     </target>
 
     <!-- process sample app meta data -->
