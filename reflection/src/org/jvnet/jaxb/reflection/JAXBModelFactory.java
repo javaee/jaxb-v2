@@ -23,6 +23,7 @@ import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfoSet;
  */
 // this is a facade to ModelBuilder
 public abstract class JAXBModelFactory {
+    private JAXBModelFactory() {} // no instanciation please
 
     /**
      * Creates a new JAXB model from
