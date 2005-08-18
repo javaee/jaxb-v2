@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 
-import com.sun.xml.bind.v2.FlattenIterator;
+import com.sun.xml.bind.v2.util.FlattenIterator;
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
 import com.sun.xml.bind.v2.model.core.BuiltinLeafInfo;
 import com.sun.xml.bind.v2.model.core.ClassInfo;

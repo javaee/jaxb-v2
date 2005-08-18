@@ -8,7 +8,8 @@ import javax.activation.DataHandler;
 
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
-import com.sun.xml.bind.v2.ByteArrayOutputStreamEx;
+import com.sun.xml.bind.v2.util.ByteArrayOutputStreamEx;
+import com.sun.xml.bind.v2.util.ByteArrayOutputStreamEx;
 
 /**
  * Fed to unmarshaller when the 'text' data is actually

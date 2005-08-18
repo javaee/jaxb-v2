@@ -1,6 +1,8 @@
 package com.sun.xml.bind.v2.runtime;
 
-import com.sun.xml.bind.v2.QNameMap;
+import com.sun.xml.bind.v2.util.QNameMap;
+import com.sun.xml.bind.v2.util.QNameMap;
+
 import java.util.HashMap;
 import java.util.Map;
 

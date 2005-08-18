@@ -3,6 +3,8 @@ package com.sun.xml.bind.v2;
 import java.util.HashSet;
 import java.util.List;
 
+import com.sun.xml.bind.v2.util.FinalArrayList;
+
 /**
  * Methods that convert strings into various formats.
  *

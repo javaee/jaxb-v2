@@ -8,7 +8,7 @@ import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
 
-import com.sun.xml.bind.v2.FinalArrayList;
+import com.sun.xml.bind.v2.util.FinalArrayList;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
