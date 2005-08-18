@@ -9,7 +9,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.v2.WellKnownNamespace;
-import com.sun.xml.bind.v2.model.impl.RuntimeAnyTypeImpl;
+import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfo;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.unmarshaller.DomLoader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
@@ -28,8 +28,8 @@ import org.xml.sax.SAXException;
  */
 final class AnyTypeBeanInfo extends JaxBeanInfo<Object> {
 
-    public AnyTypeBeanInfo(JAXBContextImpl grammar) {
-        super(grammar, RuntimeAnyTypeImpl.theInstance, Object.class, new QName(WellKnownNamespace.XML_SCHEMA,"anyType"), false, true, false);
+    public AnyTypeBeanInfo(JAXBContextImpl grammar,RuntimeTypeInfo anyTypeInfo) {
+        super(grammar, anyTypeInfo, Object.class, new QName(WellKnownNamespace.XML_SCHEMA,"anyType"), false, true, false);
     }
 
     public String getElementNamespaceURI(Object element) {

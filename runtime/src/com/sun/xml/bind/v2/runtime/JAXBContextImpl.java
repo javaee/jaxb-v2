@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.47 2005-08-13 22:38:21 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.48 2005-08-18 19:27:59 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -58,7 +58,6 @@ import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.Ref;
-import com.sun.xml.bind.v2.model.impl.RuntimeAnyTypeImpl;
 import com.sun.xml.bind.v2.model.impl.RuntimeBuiltinLeafInfoImpl;
 import com.sun.xml.bind.v2.model.impl.RuntimeModelBuilder;
 import com.sun.xml.bind.v2.model.nav.Navigator;
@@ -91,7 +90,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -241,7 +240,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
         // this one is so that we can handle plain JAXBElements.
         beanInfoMap.put(JAXBElement.class,new ElementBeanInfoImpl(this));
 
-        getOrCreate(RuntimeAnyTypeImpl.theInstance);
+        getOrCreate(typeSet.getAnyTypeInfo());
 
         // then link them all!
         for (JaxBeanInfo bi : beanInfos.values())
@@ -384,11 +383,11 @@ public final class JAXBContextImpl extends JAXBRIContext {
         }
         if(e instanceof RuntimeArrayInfo)
             return getOrCreate((RuntimeArrayInfo)e);
-        if(e==RuntimeAnyTypeImpl.theInstance) {
+        if(e.getType()==Object.class) {
             // anyType
             JaxBeanInfo bi = beanInfoMap.get(Object.class);
             if(bi==null) {
-                bi = new AnyTypeBeanInfo(this);
+                bi = new AnyTypeBeanInfo(this,e);
                 beanInfoMap.put(Object.class,bi);
             }
             return bi;
