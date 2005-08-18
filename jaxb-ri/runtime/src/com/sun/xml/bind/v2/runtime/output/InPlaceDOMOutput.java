@@ -1,6 +1,6 @@
 package com.sun.xml.bind.v2.runtime.output;
 
-import com.sun.xml.bind.v2.AssociationMap;
+import com.sun.xml.bind.v2.runtime.AssociationMap;
 import com.sun.xml.bind.marshaller.SAX2DOMEx;
 
 import org.w3c.dom.Node;
