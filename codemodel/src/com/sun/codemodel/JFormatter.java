@@ -219,6 +219,14 @@ public final class JFormatter {
         return this;
     }
 
+    public JFormatter t(JType type) {
+        if(type.isReference()) {
+            return t((JClass)type);
+        } else {
+            return g(type);
+        }
+    }
+
     /**
      * Print a type name.
      *
@@ -368,6 +376,9 @@ public final class JFormatter {
                 importedClasses.add(tl.getClasses().get(0));
             }
         }
+
+        // the class itself that we will be generating is always accessible
+        importedClasses.add(c);
 
         // then print the declaration
         mode = Mode.PRINTING;
