@@ -91,7 +91,7 @@
       <fileset dir="${reflection.root}/build/src" />
     </zip>
 
-    <zip file="${reflection.root}/build/jaxb2-reflection.${build.id}.zip">
+    <zip file="${reflection.root}/build/jaxb2-reflection.zip">
       <zipfileset prefix="jaxb2-reflection"
         dir="${reflection.root}/build" includes="jaxb2-reflection.jar" />
       <zipfileset prefix="jaxb2-reflection"
@@ -111,7 +111,7 @@
     <installerBuilder
       jarFile="${reflection.root}/build/jaxb2-reflection.${build.id}.jar"
       licenseFile="${jaxb.root}/CDDL_ver_1_0.txt"
-      zipFile="${reflection.root}/build/jaxb2-reflection.${build.id}.zip" />
+      zipFile="${reflection.root}/build/jaxb2-reflection.zip" />
   </target>
 
   <target name="clean">
