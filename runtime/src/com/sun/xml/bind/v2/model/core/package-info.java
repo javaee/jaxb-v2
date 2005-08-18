@@ -1,4 +1,6 @@
-
+/**
+ * The in-memory model of the JAXB-bound beans.
+ */ 
 @XmlSchema(namespace="http://jaxb.dev.java.net/xjc/model",elementFormDefault=QUALIFIED)
 package com.sun.xml.bind.v2.model.core;
 
