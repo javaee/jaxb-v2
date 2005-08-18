@@ -23,6 +23,8 @@
   <target name="compile"
     description="creates a distribution bundle for the JAXB2 reflection library">
 
+    <ant dir="${runtime.root}" target="codegen" />
+
     <!-- build the package rename task -->
     <ant dir="${jaxb.root}/tools/package-rename-task" target="jar" />
     <taskdef name="package-rename" classname="com.sun.tools.package_rename_task.PackageRenameTask">
