@@ -125,9 +125,12 @@
         </classpath>
       </apgen>
     </target>
-    
+
+    <target name="codegen" depends="generate-array-listers,generate-annotation-proxies"
+            description="run all the code generators in the runtime" />
+
     <!-- compile Java source files -->
-    <target name="compile" depends="generate-array-listers,generate-annotation-proxies"
+    <target name="compile" depends="codegen"
                 description="compile all runtime src into jaxb-ri/runtime/build/classes">
         <mkdir dir="${runtime.classes}" />
 
