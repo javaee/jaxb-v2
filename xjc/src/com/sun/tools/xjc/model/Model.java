@@ -2,10 +2,10 @@ package com.sun.tools.xjc.model;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -19,7 +19,6 @@ import com.sun.codemodel.JPackage;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.Plugin;
-import com.sun.tools.xjc.reader.xmlschema.Messages;
 import com.sun.tools.xjc.api.ClassNameAllocator;
 import com.sun.tools.xjc.generator.bean.BeanGenerator;
 import com.sun.tools.xjc.generator.bean.ImplStructureStrategy;
@@ -27,13 +26,14 @@ import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.tools.xjc.model.nav.NavigatorImpl;
 import com.sun.tools.xjc.outline.Outline;
+import com.sun.tools.xjc.reader.xmlschema.Messages;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
-import com.sun.xml.bind.v2.util.FlattenIterator;
 import com.sun.xml.bind.v2.NameConverter;
-import com.sun.xml.bind.v2.util.FlattenIterator;
+import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.Ref;
 import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.nav.Navigator;
+import com.sun.xml.bind.v2.util.FlattenIterator;
 
 import org.xml.sax.Locator;
 import org.xml.sax.helpers.LocatorImpl;
@@ -299,6 +299,10 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void> {
         if(leaf!=null)      return leaf;
 
         return getClassInfo(getNavigator().asDecl(type));
+    }
+
+    public CBuiltinLeafInfo getAnyTypeInfo() {
+        return CBuiltinLeafInfo.ANYTYPE;
     }
 
     public CNonElement getTypeInfo(Ref<NType,NClass> ref) {
