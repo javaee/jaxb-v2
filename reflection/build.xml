@@ -5,7 +5,7 @@
  SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
 -->
 
-<project name="reflection" basedir=".." default="dist">
+<project name="reflection" basedir=".." default="compile">
   <description>
     Reflection Library Sub-Project
     ==============================
@@ -20,8 +20,7 @@
   <property file="${basedir}/build.properties" />
   <import file="${jaxb.root}/build-taskdefs.xml" />
 
-
-  <target name="dist"
+  <target name="compile"
     description="creates a distribution bundle for the JAXB2 reflection library">
 
     <!-- build the package rename task -->
@@ -49,15 +48,18 @@
     <rename srcdir="${runtime.root}/build/src" />
     <rename srcdir="${runtime-api.src}" />
     <rename srcdir="${runtime-api.root}/arch-doc" />
+    <rename srcdir="${reflection.src}" />
 
     <mkdir dir="${reflection.classes}"/>
-    <javac srcdir="${reflection.root}/build/src:${reflection.src}" destdir="${reflection.classes}">
+    <javac srcdir="${reflection.root}/build/src" destdir="${reflection.classes}">
       <classpath>
         <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
         <fileset dir="${jaxb.libs.runtime2}" includes="**/*.jar"/>
       </classpath>
     </javac>
+  </target>
 
+  <target name="javadoc" depends="compile" >
     <arch-doc destdir="${reflection.root}/build/javadoc" title="JAXB2 reflection library" access="public">
       <params>
         <packageset dir="${reflection.root}/build/src">
@@ -69,6 +71,44 @@
         </packageset>
       </params>
     </arch-doc>
+  </target>
+
+  <target name="jar" depends="compile">
+    <jar jarfile="${reflection.root}/build/jaxb2-reflection.jar">
+      <fileset dir="${reflection.classes}" />
+    </jar>
+  </target>
+
+  <target name="dist" depends="javadoc, jar">
+    <!-- build id can be overridden -->
+    <tstamp />
+    <property name="build.id" value="${DSTAMP}" />
+
+    <zip file="${reflection.root}/build/src.zip">
+      <fileset dir="${reflection.root}/build/src" />
+    </zip>
+
+    <zip file="${reflection.root}/build/jaxb2-reflection.${build.id}.zip">
+      <zipfileset prefix="jaxb2-reflection"
+        dir="${reflection.root}/build" includes="jaxb2-reflection.jar" />
+      <zipfileset prefix="jaxb2-reflection"
+        dir="${reflection.root}/build" includes="javadoc/**/*, src.zip"/>
+      <zipfileset fullpath="jaxb2-reflection/license.html"
+        dir="${jaxb.root}" includes="CDDL_ver_1_0.html"/>
+    </zip>
+
+    <ant dir="tools/installer-builder" />
+
+    <taskdef name="installerBuilder" classname="com.sun.tools.xjc.installer.builder.BuilderTask">
+        <classpath>
+            <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
+        </classpath>
+    </taskdef>
+
+    <installerBuilder
+      jarFile="${reflection.root}/build/jaxb2-reflection.${build.id}.jar"
+      licenseFile="${jaxb.root}/CDDL_ver_1_0.txt"
+      zipFile="${reflection.root}/build/jaxb2-reflection.${build.id}.zip" />
   </target>
 
   <target name="clean">
