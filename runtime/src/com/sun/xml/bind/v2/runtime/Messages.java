@@ -21,6 +21,9 @@ enum Messages {
     UNSUPPORTED_PROPERTY, // 1 arg
     NULL_PROPERTY_NAME, // 0 args
     MUST_BE_X, // 3 args
+    NOT_MARSHALLABLE, // 0 args
+    UNSUPPORTED_RESULT, // 0 args
+    UNSUPPORTED_ENCODING, // 1 arg
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());

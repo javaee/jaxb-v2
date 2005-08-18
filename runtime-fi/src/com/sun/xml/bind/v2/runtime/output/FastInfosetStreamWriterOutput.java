@@ -10,9 +10,11 @@ import com.sun.xml.fastinfoset.stax.StAXDocumentSerializer;
 import org.xml.sax.SAXException;
 
 /**
+ * {@link XmlOutput} for {@link StAXDocumentSerializer}. 
+ *
  * @author Paul Sandoz.
  */
-public class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
+public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
     private final StAXDocumentSerializer fiout;
 
     /**

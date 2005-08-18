@@ -4,12 +4,11 @@
  */
 
 /*
- * @(#)$Id: UnmarshallerImpl.java,v 1.21 2005-08-15 23:29:29 kohsuke Exp $
+ * @(#)$Id: UnmarshallerImpl.java,v 1.22 2005-08-18 16:08:20 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.net.URL;
 
 import javax.xml.bind.DatatypeConverter;
@@ -294,32 +293,8 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
                 Messages.format(Messages.ILLEGAL_READER_STATE,eventType));
         }
 
-        StAXConnector connector=null;
-        UnmarshallingContext context=null;
-
-        if (reader.getClass()==FI_STAX_READER_CLASS && FI_CONNECTOR_CTOR!=null) {
-            // check if this is FI.
-            XmlVisitor h = createUnmarshallerHandler(null,false,expectedType);
-            context = h.getContext();
-
-            try {
-                connector = FI_CONNECTOR_CTOR.newInstance(reader,h);
-            } catch (Exception t) {
-                ; // default to the normal codepath
-            }
-        }
-
-        if(connector==null) {
-            // this is the normal StAX codepath
-
-            // Quick hack until SJSXP fixes 6270116
-            boolean isZephyr = reader.getClass().getName().equals("com.sun.xml.stream.XMLReaderImpl");
-            XmlVisitor h = createUnmarshallerHandler(null,false,expectedType);
-            if(!isZephyr)
-                h = new InterningXmlVisitor(h);
-            connector = new StAXStreamConnector(reader,h);
-            context = h.getContext();
-        }
+        XmlVisitor h = createUnmarshallerHandler(null,false,expectedType);
+        StAXConnector connector=StAXStreamConnector.create(reader,h);
 
         try {
             connector.bridge();
@@ -327,7 +302,7 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
             throw handleStreamException(e);
         }
 
-        return context.getResult();
+        return h.getContext().getResult();
     }
 
     @Override
@@ -499,28 +474,5 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
     @Override
     public void setListener(Listener listener) {
         externalListener = listener;
-    }
-
-    /**
-     * Reference to FI's StAXReader class, if FI can be loaded.
-     */
-    private static final Class FI_STAX_READER_CLASS = initFIStAXReaderClass();
-    private static final Constructor<? extends StAXConnector> FI_CONNECTOR_CTOR = initFastInfosetConnectorClass();
-
-    private static Class initFIStAXReaderClass() {
-        try {
-            return UnmarshallerImpl.class.getClassLoader().loadClass("com.sun.xml.fastinfoset.stax.StAXDocumentParser");
-        } catch (Throwable e) {
-            return null;
-        }
-    }
-
-    private static Constructor<? extends StAXConnector> initFastInfosetConnectorClass() {
-        try {
-            Class c = UnmarshallerImpl.class.getClassLoader().loadClass("com.sun.xml.bind.v2.runtime.unmarshaller.FastInfosetConnector");
-            return c.getConstructor(FI_STAX_READER_CLASS,XmlVisitor.class);
-        } catch (Throwable e) {
-            return null;
-        }
     }
 }
