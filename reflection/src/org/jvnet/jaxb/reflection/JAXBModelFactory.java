@@ -15,6 +15,7 @@ import com.sun.xml.bind.v2.model.impl.ModelBuilder;
 import com.sun.xml.bind.v2.model.impl.RuntimeModelBuilder;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfoSet;
+import com.sun.xml.bind.v2.runtime.IllegalAnnotationsException;
 
 /**
  * Factory methods to build JAXB models.
@@ -100,5 +101,26 @@ public abstract class JAXBModelFactory {
         Class... classes ) {
 
         return create( new RuntimeInlineAnnotationReader(), errorHandler, classes );
+    }
+
+    /**
+     * Creates a new JAXB model from
+     * classes represented in <tt>java.lang.reflect</tt>.
+     *
+     * <p>
+     * This version reads annotations from the classes directly,
+     * and throw any error reported as an exception
+     *
+     * @return
+     *      null if any error was reported during the processing.
+     *      If no error is reported, a non-null valid object.
+     * @throws IllegalAnnotationsException
+     *      if there was any incorrect use of annotations in the specified set of classes.
+     */
+    public static RuntimeTypeInfoSet create(Class... classes ) throws IllegalAnnotationsException {
+        IllegalAnnotationsException.Builder errorListener = new IllegalAnnotationsException.Builder();
+        RuntimeTypeInfoSet r = create(errorListener, classes);
+        errorListener.check();
+        return r;
     }
 }
