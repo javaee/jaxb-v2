@@ -32,7 +32,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.30 2005-08-18 19:30:01 kohsuke Exp $
+       $Id: build.xml,v 1.31 2005-08-18 23:19:07 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -542,6 +542,7 @@ Class-Path: ${manifest.classpath}
           <ant dir="tools"              target="clean"/>
           <ant dir="apgen"              target="clean" />
           <ant dir="schemagen"          target="clean" />
+          <ant dir="reflection"         target="clean" />
         </parallel>
     </target>
 
