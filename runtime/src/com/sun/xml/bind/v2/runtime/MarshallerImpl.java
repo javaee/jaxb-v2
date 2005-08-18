@@ -43,8 +43,6 @@ import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import com.sun.xml.bind.marshaller.NioEscapeHandler;
 import com.sun.xml.bind.marshaller.SAX2DOMEx;
 import com.sun.xml.bind.marshaller.XMLWriter;
-import com.sun.xml.bind.v2.AssociationMap;
-import com.sun.xml.bind.v2.util.FatalAdapter;
 import com.sun.xml.bind.v2.util.FatalAdapter;
 import com.sun.xml.bind.v2.runtime.output.C14nXmlOutput;
 import com.sun.xml.bind.v2.runtime.output.Encoded;

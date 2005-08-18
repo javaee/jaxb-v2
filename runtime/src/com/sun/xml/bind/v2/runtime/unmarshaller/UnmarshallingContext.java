@@ -26,7 +26,7 @@ import javax.xml.namespace.QName;
 import com.sun.xml.bind.IDResolver;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
-import com.sun.xml.bind.v2.AssociationMap;
+import com.sun.xml.bind.v2.runtime.AssociationMap;
 import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.runtime.Coordinator;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;

@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: BinderImpl.java,v 1.11 2005-08-16 14:49:07 ryan_shoemaker Exp $
+ * @(#)$Id: BinderImpl.java,v 1.12 2005-08-18 23:09:28 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -17,7 +17,6 @@ import javax.xml.bind.ValidationEventHandler;
 import javax.xml.validation.Schema;
 
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
-import com.sun.xml.bind.v2.AssociationMap;
 import com.sun.xml.bind.v2.runtime.output.DOMOutput;
 import com.sun.xml.bind.v2.runtime.unmarshaller.InterningXmlVisitor;
 import com.sun.xml.bind.v2.runtime.unmarshaller.SAXConnector;

@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AssociationMap.java,v 1.3 2005-05-11 23:13:40 kohsuke Exp $
+ * @(#)$Id: AssociationMap.java,v 1.1 2005-08-18 23:09:27 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.xml.bind.v2;
+package com.sun.xml.bind.v2.runtime;
 
 import java.util.HashMap;
 import java.util.Map;
