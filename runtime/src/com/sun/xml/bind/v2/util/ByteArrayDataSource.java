@@ -1,4 +1,4 @@
-package com.sun.xml.bind.v2;
+package com.sun.xml.bind.v2.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.48 2005-08-18 19:27:59 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.49 2005-08-18 20:23:09 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -52,8 +52,9 @@ import com.sun.xml.bind.api.SchemaOutputResolver;
 import com.sun.xml.bind.api.TypeReference;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.bind.util.Which;
-import com.sun.xml.bind.v2.QNameMap;
+import com.sun.xml.bind.v2.util.QNameMap;
 import com.sun.xml.bind.v2.WellKnownNamespace;
+import com.sun.xml.bind.v2.util.QNameMap;
 import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.NonElement;
@@ -90,7 +91,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 

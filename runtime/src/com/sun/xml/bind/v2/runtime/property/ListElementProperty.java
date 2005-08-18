@@ -5,7 +5,7 @@ import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
-import com.sun.xml.bind.v2.QNameMap;
+import com.sun.xml.bind.v2.util.QNameMap;
 import com.sun.xml.bind.v2.model.core.ElementPropertyInfo;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementPropertyInfo;

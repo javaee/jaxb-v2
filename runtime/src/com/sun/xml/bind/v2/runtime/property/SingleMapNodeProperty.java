@@ -15,7 +15,7 @@ import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.ClassFactory;
-import com.sun.xml.bind.v2.QNameMap;
+import com.sun.xml.bind.v2.util.QNameMap;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.nav.ReflectionNavigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimeMapPropertyInfo;

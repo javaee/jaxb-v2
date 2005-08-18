@@ -1,4 +1,4 @@
-package com.sun.xml.bind.v2;
+package com.sun.xml.bind.v2.util;
 
 import java.util.ArrayList;
 import java.util.Collection;

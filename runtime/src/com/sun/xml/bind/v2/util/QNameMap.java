@@ -1,4 +1,4 @@
-package com.sun.xml.bind.v2;
+package com.sun.xml.bind.v2.util;
 import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;

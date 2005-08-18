@@ -2,7 +2,7 @@ package com.sun.xml.bind.v2.runtime.property;
 
 import javax.xml.namespace.QName;
 
-import com.sun.xml.bind.v2.QNameMap;
+import com.sun.xml.bind.v2.util.QNameMap;
 import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.StructureLoader;

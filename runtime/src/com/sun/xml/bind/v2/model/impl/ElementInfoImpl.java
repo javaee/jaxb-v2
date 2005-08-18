@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
-import com.sun.xml.bind.v2.FinalArrayList;
+import com.sun.xml.bind.v2.util.FinalArrayList;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.AnnotationSource;
 import com.sun.xml.bind.v2.model.annotation.Locatable;

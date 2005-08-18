@@ -8,8 +8,9 @@ import java.util.Collection;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.api.AccessorException;
-import com.sun.xml.bind.v2.QNameMap;
+import com.sun.xml.bind.v2.util.QNameMap;
 import com.sun.xml.bind.v2.WellKnownNamespace;
+import com.sun.xml.bind.v2.util.QNameMap;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 import com.sun.xml.bind.v2.runtime.property.AttributeProperty;

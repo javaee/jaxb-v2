@@ -14,7 +14,7 @@ import javax.xml.bind.ValidationEvent;
 
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.ClassFactory;
-import com.sun.xml.bind.v2.FinalArrayList;
+import com.sun.xml.bind.v2.util.FinalArrayList;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.runtime.RuntimeClassInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;

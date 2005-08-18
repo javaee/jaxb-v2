@@ -7,7 +7,7 @@ package com.sun.xml.bind.v2.runtime.unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.ValidatorHandler;
 
-import com.sun.xml.bind.v2.FatalAdapter;
+import com.sun.xml.bind.v2.util.FatalAdapter;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

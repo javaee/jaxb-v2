@@ -9,7 +9,8 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.namespace.QName;
 
-import com.sun.xml.bind.v2.FinalArrayList;
+import com.sun.xml.bind.v2.util.FinalArrayList;
+import com.sun.xml.bind.v2.util.FinalArrayList;
 import com.sun.xml.bind.v2.model.core.ElementPropertyInfo;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
