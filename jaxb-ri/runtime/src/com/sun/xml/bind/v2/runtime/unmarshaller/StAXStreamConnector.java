@@ -1,4 +1,4 @@
-/* $Id: StAXStreamConnector.java,v 1.1 2005-08-09 18:36:28 kohsuke Exp $
+/* $Id: StAXStreamConnector.java,v 1.2 2005-08-18 16:08:20 kohsuke Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -33,6 +33,8 @@
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
+import java.lang.reflect.Constructor;
+
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -53,6 +55,30 @@ import org.xml.sax.SAXException;
  */
 final class StAXStreamConnector extends StAXConnector {
 
+    /**
+     * Creates a {@link StAXConnector} from {@link XMLStreamReader}.
+     *
+     * This method checks if the parser is FI parser and acts accordingly.
+     */
+    public static StAXConnector create(XMLStreamReader reader, XmlVisitor visitor) {
+        if (reader.getClass()==FI_STAX_READER_CLASS && FI_CONNECTOR_CTOR!=null) {
+            // check if this is FI.
+            try {
+                return FI_CONNECTOR_CTOR.newInstance(reader,visitor);
+            } catch (Exception t) {
+                // default to the normal codepath
+            }
+        }
+
+        // Quick hack until SJSXP fixes 6270116
+        boolean isZephyr = reader.getClass().getName().equals("com.sun.xml.stream.XMLReaderImpl");
+        if(!isZephyr)
+            visitor = new InterningXmlVisitor(visitor);
+        return new StAXStreamConnector(reader,visitor);
+    }
+
+
+    
     // StAX event source
     private final XMLStreamReader staxStreamReader;
 
@@ -62,7 +88,7 @@ final class StAXStreamConnector extends StAXConnector {
      */
     private final StringBuilder buffer = new StringBuilder();
 
-    public StAXStreamConnector(XMLStreamReader staxStreamReader, XmlVisitor visitor) {
+    private StAXStreamConnector(XMLStreamReader staxStreamReader, XmlVisitor visitor) {
         super(visitor);
         this.staxStreamReader = staxStreamReader;
     }
@@ -252,5 +278,30 @@ final class StAXStreamConnector extends StAXConnector {
         if( context.expectText() && (!ignorable || !WhiteSpaceProcessor.isWhiteSpace(buffer)))
             visitor.text(buffer);
         buffer.setLength(0);
+    }
+
+
+
+    /**
+     * Reference to FI's StAXReader class, if FI can be loaded.
+     */
+    private static final Class FI_STAX_READER_CLASS = initFIStAXReaderClass();
+    private static final Constructor<? extends StAXConnector> FI_CONNECTOR_CTOR = initFastInfosetConnectorClass();
+
+    private static Class initFIStAXReaderClass() {
+        try {
+            return UnmarshallerImpl.class.getClassLoader().loadClass("com.sun.xml.fastinfoset.stax.StAXDocumentParser");
+        } catch (Throwable e) {
+            return null;
+        }
+    }
+
+    private static Constructor<? extends StAXConnector> initFastInfosetConnectorClass() {
+        try {
+            Class c = UnmarshallerImpl.class.getClassLoader().loadClass("com.sun.xml.bind.v2.runtime.unmarshaller.FastInfosetConnector");
+            return c.getConstructor(FI_STAX_READER_CLASS,XmlVisitor.class);
+        } catch (Throwable e) {
+            return null;
+        }
     }
 }

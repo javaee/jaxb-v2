@@ -13,7 +13,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.lang.reflect.Constructor;
 
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBException;
@@ -39,7 +38,6 @@ import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
 import com.sun.xml.bind.marshaller.DataWriter;
 import com.sun.xml.bind.marshaller.DumbEscapeHandler;
-import com.sun.xml.bind.marshaller.Messages;
 import com.sun.xml.bind.marshaller.MinimumEscapeHandler;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import com.sun.xml.bind.marshaller.NioEscapeHandler;
@@ -56,7 +54,6 @@ import com.sun.xml.bind.v2.runtime.output.UTF8XmlOutput;
 import com.sun.xml.bind.v2.runtime.output.XMLEventWriterOutput;
 import com.sun.xml.bind.v2.runtime.output.XMLStreamWriterOutput;
 import com.sun.xml.bind.v2.runtime.output.XmlOutput;
-import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -125,19 +122,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     }
 
     public void marshal(Object obj, XMLStreamWriter writer) throws JAXBException {
-        XmlOutput out=null;
-        if(writer.getClass()==FI_STAX_WRITER_CLASS && FI_OUTPUT_CTOR!=null) {
-            // this is FI. Try to use the optimized runtime code
-            try {
-                out = FI_OUTPUT_CTOR.newInstance(writer);
-            } catch (Exception e) {
-                // use the normal StAX codepath as a back up.
-                // TODO: where should we report this problem?
-            }
-        }
-        if(out==null)   // default
-            out = new XMLStreamWriterOutput(writer);
-        write(obj, out, new StAXPostInitAction(writer,serializer));
+        write(obj, XMLStreamWriterOutput.create(writer), new StAXPostInitAction(writer,serializer));
     }
 
     public void marshal(Object obj, XMLEventWriter writer) throws JAXBException {
@@ -199,8 +184,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         }
 
         // unsupported parameter type
-        throw new MarshalException(
-            Messages.format( Messages.UNSUPPORTED_RESULT ) );
+        throw new MarshalException(Messages.UNSUPPORTED_RESULT.format());
     }
 
     /**
@@ -240,7 +224,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         throws JAXBException {
 
         if( obj == null )
-            throw new IllegalArgumentException(Messages.format(Messages.NOT_MARSHALLABLE));
+            throw new IllegalArgumentException(Messages.NOT_MARSHALLABLE.format());
 
         if( schema!=null ) {
             // send the output to the validator as well
@@ -376,7 +360,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
                 encoding );
         } catch( UnsupportedEncodingException e ) {
             throw new MarshalException(
-                Messages.format( Messages.UNSUPPORTED_ENCODING, encoding ),
+                Messages.UNSUPPORTED_ENCODING.format(encoding),
                 e );
         }
     }
@@ -406,7 +390,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         if( ENCODING_HANDLER.equals(name) ) {
             if(!(value instanceof CharacterEscapeHandler))
                 throw new PropertyException(
-                    com.sun.xml.bind.v2.runtime.Messages.MUST_BE_X.format(
+                    Messages.MUST_BE_X.format(
                             name,
                             CharacterEscapeHandler.class.getName(),
                             value.getClass().getName() ) );
@@ -416,7 +400,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         if( PREFIX_MAPPER.equals(name) ) {
             if(!(value instanceof NamespacePrefixMapper))
                 throw new PropertyException(
-                    com.sun.xml.bind.v2.runtime.Messages.MUST_BE_X.format(
+                    Messages.MUST_BE_X.format(
                             name,
                             NamespacePrefixMapper.class.getName(),
                             value.getClass().getName() ) );
@@ -445,7 +429,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     private void checkBoolean( String name, Object value ) throws PropertyException {
         if(!(value instanceof Boolean))
             throw new PropertyException(
-                com.sun.xml.bind.v2.runtime.Messages.MUST_BE_X.format(
+                Messages.MUST_BE_X.format(
                         name,
                         Boolean.class.getName(),
                         value.getClass().getName() ) );
@@ -457,7 +441,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     private void checkString( String name, Object value ) throws PropertyException {
         if(!(value instanceof String))
             throw new PropertyException(
-                com.sun.xml.bind.v2.runtime.Messages.MUST_BE_X.format(
+                Messages.MUST_BE_X.format(
                         name,
                         String.class.getName(),
                         value.getClass().getName() ) );
@@ -520,27 +504,4 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     protected static final String ENCODING_HANDLER = "com.sun.xml.bind.characterEscapeHandler";
     protected static final String XMLDECLARATION = "com.sun.xml.bind.xmlDeclaration";
     protected static final String XML_HEADERS = "com.sun.xml.bind.xmlHeaders";
-
-    /**
-     * Reference to FI's XMLStreamWriter class, if FI can be loaded.
-     */
-    private static final Class FI_STAX_WRITER_CLASS = initFIStAXWriterClass();
-    private static final Constructor<? extends XmlOutput> FI_OUTPUT_CTOR = initFastInfosetOutputClass();
-
-    private static Class initFIStAXWriterClass() {
-        try {
-            return MarshallerImpl.class.getClassLoader().loadClass("com.sun.xml.fastinfoset.stax.StAXDocumentSerializer");
-        } catch (Throwable e) {
-            return null;
-        }
-    }
-
-    private static Constructor<? extends XmlOutput> initFastInfosetOutputClass() {
-        try {
-            Class c = UnmarshallerImpl.class.getClassLoader().loadClass("com.sun.xml.bind.v2.runtime.output.FastInfosetStreamWriterOutput");
-            return c.getConstructor(FI_STAX_WRITER_CLASS);
-        } catch (Throwable e) {
-            return null;
-        }
-    }
 }

@@ -5,7 +5,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 /**
- * Property that maps to the following schema fragment:
+ * Property that maps to the following schema fragment.
  *
  * <pre><xmp>
  * <xs:complexType>
