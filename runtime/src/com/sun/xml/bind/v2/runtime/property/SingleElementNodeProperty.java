@@ -127,7 +127,7 @@ final class SingleElementNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT> 
 
         for (TypeRef<Type,Class> e : prop.getTypes()) {
             JaxBeanInfo bi = context.getOrCreate((RuntimeTypeInfo) e.getTarget());
-            Loader l = new XsiTypeLoader(bi);
+            Loader l = bi.getLoader(context,true);
             if(e.getDefaultValue()!=null)
                 l = new DefaultValueLoaderDecorator(l,e.getDefaultValue());
             if(nillable)

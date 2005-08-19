@@ -127,7 +127,7 @@ final class ValueListBeanInfoImpl extends JaxBeanInfo {
         // noop
     }
 
-    public final void serializeRoot(Object array, XMLSerializer target) throws SAXException, IOException, XMLStreamException {
+    public final void serializeRoot(Object array, XMLSerializer target) throws SAXException {
         target.reportError(
                 new ValidationEventImpl(
                         ValidationEvent.ERROR,
@@ -140,7 +140,8 @@ final class ValueListBeanInfoImpl extends JaxBeanInfo {
         return null;
     }
 
-    public final Loader getLoader() {
+    public final Loader getLoader(JAXBContextImpl context, boolean typeSubstitutionCapable) {
+        // type substitution impossible
         return loader;
     }
 }

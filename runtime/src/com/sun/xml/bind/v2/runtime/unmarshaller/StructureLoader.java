@@ -38,18 +38,18 @@ public final class StructureLoader extends Loader {
      * Since creating new QNames is expensive use this optimized
      * version of the map
      */
-    private final QNameMap<ChildLoader> childUnmarshallers;
+    private final QNameMap<ChildLoader> childUnmarshallers = new QNameMap<ChildLoader>();
 
     /**
      * Loader that processes elements that didn't match anf of the {@link #childUnmarshallers}.
      * Can be null.
      */
-    private final ChildLoader catchAll;
+    private /*final*/ ChildLoader catchAll;
 
     /**
      * If we have a loader for processing text. Otherwise null.
      */
-    private final ChildLoader textHandler;
+    private /*final*/ ChildLoader textHandler;
 
     /**
      * Unmarshallers for attribute values.
@@ -61,24 +61,31 @@ public final class StructureLoader extends Loader {
      * This will receive all the attributes
      * that were not processed. Never be null.
      */
-    private final Accessor<Object,Map<QName,String>> attCatchAll;
+    private /*final*/ Accessor<Object,Map<QName,String>> attCatchAll;
 
     private final JaxBeanInfo beanInfo;
 
     /**
      * The number of scopes this dispatcher needs to keep active.
      */
-    private final int frameSize;
+    private /*final*/ int frameSize;
 
     // this class is potentially useful for general audience, not just for ClassBeanInfoImpl,
     // but since right now that is the only user, we make the construction code very specific
     // to ClassBeanInfoImpl. See rev.1.5 of this file for the original general purpose definition.
-    public StructureLoader( JAXBContextImpl context, ClassBeanInfoImpl beanInfo, Accessor<?,Map<QName,String>> attWildcard) {
+    public StructureLoader(ClassBeanInfoImpl beanInfo) {
         super(true);
-
         this.beanInfo = beanInfo;
-        this.childUnmarshallers = new QNameMap<ChildLoader>();
+    }
 
+    /**
+     * Completes the initialization.
+     *
+     * <p>
+     * To fix the cyclic reference issue, the main part of the initialization needs to be done
+     * after a {@link StructureLoader} is set to {@link ClassBeanInfoImpl#loader}.
+     */
+    public void init( JAXBContextImpl context, ClassBeanInfoImpl beanInfo, Accessor<?,Map<QName,String>> attWildcard) {
         UnmarshallerChain chain = new UnmarshallerChain(context);
         for (ClassBeanInfoImpl bi = beanInfo; bi != null; bi = bi.superClazz) {
             for (int i = bi.properties.length - 1; i >= 0; i--) {

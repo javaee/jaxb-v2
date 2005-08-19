@@ -94,7 +94,7 @@ class ArrayReferenceNodeProperty<BeanT,ListT,ItemT> extends ArrayERProperty<Bean
 
         for( QNameMap.Entry<JaxBeanInfo> n : expectedElements.entrySet() ) {
             final JaxBeanInfo beanInfo = n.getValue();
-            loaders.put(n.nsUri,n.localName,new ChildLoader(new XsiTypeLoader(beanInfo),recv));
+            loaders.put(n.nsUri,n.localName,new ChildLoader(beanInfo.getLoader(chain.context,true),recv));
         }
 
         if(isMixed) {

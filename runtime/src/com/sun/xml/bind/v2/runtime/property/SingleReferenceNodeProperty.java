@@ -80,7 +80,7 @@ final class SingleReferenceNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT
 
     public void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<ChildLoader> handlers) {
         for (QNameMap.Entry<JaxBeanInfo> n : expectedElements.entrySet())
-            handlers.put(n.nsUri,n.localName, new ChildLoader(new XsiTypeLoader(n.getValue()),acc));
+            handlers.put(n.nsUri,n.localName, new ChildLoader(n.getValue().getLoader(chain.context,true),acc));
 
         if(domHandler!=null)
             handlers.put(CATCH_ALL,new ChildLoader(new WildcardLoader(domHandler,wcMode),acc));
