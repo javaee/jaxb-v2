@@ -133,7 +133,7 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
     protected void link(JAXBContextImpl grammar) {
         if(uriProperties!=null)
             return; // avoid linking twice
-        
+
         super.link(grammar);
 
         if(superClazz!=null)
@@ -285,8 +285,8 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
     public Loader getLoader(JAXBContextImpl context, boolean typeSubstitutionCapable) {
         if(loader==null) {
             StructureLoader sl = new StructureLoader(this);
-            sl.init(context,this,ci.getAttributeWildcard());
             loader = sl;
+            sl.init(context,this,ci.getAttributeWildcard());
             if(ci.hasSubClasses())
                 loaderWithTypeSubst = new XsiTypeLoader(this);
             else
