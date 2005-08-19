@@ -35,17 +35,17 @@ import org.xml.sax.helpers.LocatorImpl;
  *
  * @author Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
+public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
 
     /**
      * Properties of this bean class but not its ancestor classes.
      */
-    protected final Property[] properties;
+    public final Property<BeanT>[] properties;
 
     /**
      * Non-null if this bean has an ID property.
      */
-    private Property idProperty;
+    private Property<? super BeanT> idProperty;
 
     /**
      * Immutable configured loader for this class.
@@ -60,11 +60,15 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
      */
     private RuntimeClassInfo ci;
 
-    private final Accessor inheritedAttWildcard;
-    private final Transducer xducer;
-    protected final ClassBeanInfoImpl superClazz;
+    private final Accessor<? super BeanT,Map<QName,String>> inheritedAttWildcard;
+    private final Transducer<BeanT> xducer;
 
-    private final Accessor<BeanT,Locator> xmlLocatorField;
+    /**
+     * {@link ClassBeanInfoImpl} that represents the super class of {@link #jaxbType}.
+     */
+    public final ClassBeanInfoImpl<? super BeanT> superClazz;
+
+    private final Accessor<? super BeanT,Locator> xmlLocatorField;
 
     private final Name tagName;
 
@@ -72,12 +76,12 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
      * The {@link AttributeProperty}s for this type and all its ancestors.
      * If {@link JAXBContextImpl#c14nSupport} is true, this is sorted alphabetically.
      */
-    private /*final*/ AttributeProperty[] attributeProperties;
+    private /*final*/ AttributeProperty<BeanT>[] attributeProperties;
 
     /**
      * {@link Property}s that need to receive {@link Property#serializeURIs(Object, XMLSerializer)} callback.
      */
-    private /*final*/ Property[] uriProperties;
+    private /*final*/ Property<BeanT>[] uriProperties;
 
 
     /*package*/ ClassBeanInfoImpl(JAXBContextImpl owner, RuntimeClassInfo ci) {
@@ -176,29 +180,7 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
     }
 
     private Loader createLoader(JAXBContextImpl grammar) {
-        List<Property> propList = new FinalArrayList<Property>();
-        List<AttributeProperty> atts = new FinalArrayList<AttributeProperty>();
-
-        for (ClassBeanInfoImpl bi = this; bi != null; bi = bi.superClazz) {
-            for (int i = bi.properties.length - 1; i >= 0; i--) {
-                Property p = bi.properties[i];
-
-                switch(p.getKind()) {
-                case ATTRIBUTE:
-                    atts.add((AttributeProperty)p);
-                    break;
-                case ELEMENT:
-                case REFERENCE:
-                case MAP:
-                case VALUE:
-                    propList.add(p);
-                    break;
-                }
-            }
-        }
-
-        Accessor<?,Map<QName,String>> attw = ci.getAttributeWildcard();
-        return new StructureLoader(grammar,this,propList,atts,attw);
+        return new StructureLoader(grammar,this,ci.getAttributeWildcard());
     }
 
 
@@ -226,7 +208,7 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
         try {
             if(superClazz!=null)
                 superClazz.reset(bean,context);
-            for( Property p : properties )
+            for( Property<BeanT> p : properties )
                 p.reset(bean);
             return true;
         } catch (AccessorException e) {
@@ -266,7 +248,7 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
         if(superClazz!=null)
             superClazz.serializeBody(bean,target);
         try {
-            for( Property p : properties )
+            for( Property<BeanT> p : properties )
                 p.serializeBody(bean,target, null);
         } catch (AccessorException e) {
             target.reportError(null,e);
@@ -275,11 +257,11 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
 
     public void serializeAttributes(BeanT bean, XMLSerializer target) throws SAXException, IOException, XMLStreamException {
         try {
-            for( AttributeProperty p : attributeProperties )
+            for( AttributeProperty<BeanT> p : attributeProperties )
                 p.serializeAttributes(bean,target);
 
             if(inheritedAttWildcard!=null) {
-                Map<QName,Object> map = (Map<QName,Object>)inheritedAttWildcard.get(bean);
+                Map<QName,String> map = inheritedAttWildcard.get(bean);
                 target.attWildcardAsAttributes(map,null);
             }
         } catch (AccessorException e) {
@@ -289,11 +271,11 @@ final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
 
     public void serializeURIs(BeanT bean, XMLSerializer target) throws SAXException {
         try {
-            for( Property p : uriProperties )
+            for( Property<BeanT> p : uriProperties )
                 p.serializeURIs(bean,target);
 
             if(inheritedAttWildcard!=null) {
-                Map<QName,Object> map = (Map<QName,Object>)inheritedAttWildcard.get(bean);
+                Map<QName,String> map = inheritedAttWildcard.get(bean);
                 target.attWildcardAsURIs(map,null);
             }
         } catch (AccessorException e) {

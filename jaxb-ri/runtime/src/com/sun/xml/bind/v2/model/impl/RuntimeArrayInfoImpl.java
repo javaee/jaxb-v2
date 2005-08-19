@@ -25,7 +25,7 @@ final class RuntimeArrayInfoImpl extends ArrayInfoImpl<Type,Class,Field,Method> 
         return (RuntimeNonElement)super.getItemType();
     }
 
-    public Transducer getTransducer() {
+    public <V> Transducer<V> getTransducer() {
         return null;
     }
 }

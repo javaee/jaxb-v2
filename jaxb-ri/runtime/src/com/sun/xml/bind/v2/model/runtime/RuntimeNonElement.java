@@ -15,5 +15,5 @@ public interface RuntimeNonElement extends NonElement<Type,Class>, RuntimeTypeIn
      *
      * @see RuntimeNonElementRef#getTransducer()
      */
-    Transducer getTransducer();
+    <V> Transducer<V> getTransducer();
 }

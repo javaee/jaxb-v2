@@ -1,23 +1,23 @@
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.api.AccessorException;
-import com.sun.xml.bind.v2.util.QNameMap;
 import com.sun.xml.bind.v2.WellKnownNamespace;
-import com.sun.xml.bind.v2.util.QNameMap;
+import com.sun.xml.bind.v2.runtime.ClassBeanInfoImpl;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 import com.sun.xml.bind.v2.runtime.property.AttributeProperty;
+import com.sun.xml.bind.v2.runtime.property.Property;
 import com.sun.xml.bind.v2.runtime.property.StructureLoaderBuilder;
 import com.sun.xml.bind.v2.runtime.property.UnmarshallerChain;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
+import com.sun.xml.bind.v2.util.QNameMap;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -28,9 +28,6 @@ import org.xml.sax.SAXException;
  * <p>
  * This loader works with a single {@link JaxBeanInfo} and handles
  * attributes, child elements, or child text.
- *
- * <p>
- * TODO: create an object
  *
  * @author Kohsuke Kawaguchi
  */
@@ -58,7 +55,7 @@ public final class StructureLoader extends Loader {
      * Unmarshallers for attribute values.
      * May be null if no attribute is expected and {@link #attCatchAll}==null.
      */
-    private final QNameMap<TransducedAccessor> attUnmarshallers;
+    private /*final*/ QNameMap<TransducedAccessor> attUnmarshallers;
 
     /**
      * This will receive all the attributes
@@ -73,34 +70,49 @@ public final class StructureLoader extends Loader {
      */
     private final int frameSize;
 
-    // TODO: revisit the parameters we take
-    public StructureLoader( JAXBContextImpl context, JaxBeanInfo beanInfo,
-                    List<? extends StructureLoaderBuilder> properties,
-                    List<AttributeProperty> attributes,
-                    Accessor<?,Map<QName,String>> attWildcard) {
+    // this class is potentially useful for general audience, not just for ClassBeanInfoImpl,
+    // but since right now that is the only user, we make the construction code very specific
+    // to ClassBeanInfoImpl. See rev.1.5 of this file for the original general purpose definition.
+    public StructureLoader( JAXBContextImpl context, ClassBeanInfoImpl beanInfo, Accessor<?,Map<QName,String>> attWildcard) {
         super(true);
 
         this.beanInfo = beanInfo;
         this.childUnmarshallers = new QNameMap<ChildLoader>();
 
         UnmarshallerChain chain = new UnmarshallerChain(context);
-        for( StructureLoaderBuilder p : properties ) {
-            p.buildChildElementUnmarshallers(chain,childUnmarshallers);
+        for (ClassBeanInfoImpl bi = beanInfo; bi != null; bi = bi.superClazz) {
+            for (int i = bi.properties.length - 1; i >= 0; i--) {
+                Property p = bi.properties[i];
+
+                switch(p.getKind()) {
+                case ATTRIBUTE:
+                    if(attUnmarshallers==null)
+                        attUnmarshallers = new QNameMap<TransducedAccessor>();
+                    AttributeProperty ap = (AttributeProperty) p;
+                    attUnmarshallers.put(ap.attName.toQName(),ap.xacc);
+                    break;
+                case ELEMENT:
+                case REFERENCE:
+                case MAP:
+                case VALUE:
+                    p.buildChildElementUnmarshallers(chain,childUnmarshallers);
+                    break;
+                }
+            }
         }
 
         this.frameSize = chain.getScopeSize();
 
         textHandler = childUnmarshallers.get(StructureLoaderBuilder.TEXT_HANDLER);
-
         catchAll = childUnmarshallers.get(StructureLoaderBuilder.CATCH_ALL);
 
-        if(!attributes.isEmpty() || attWildcard!=null) {
+        if(attWildcard!=null) {
             attCatchAll = (Accessor<Object,Map<QName,String>>) attWildcard;
-            this.attUnmarshallers = new QNameMap<TransducedAccessor>();
-            for( AttributeProperty p : attributes )
-                attUnmarshallers.put(p.attName.toQName(),p.xacc);
+            // we use attUnmarshallers==null as a sign to skip the attribute processing
+            // altogether, so if we have an att wildcard we need to have an empty qname map.
+            if(attUnmarshallers==null)
+                attUnmarshallers = EMPTY;
         } else {
-            attUnmarshallers = null;
             attCatchAll = null;
         }
     }
@@ -211,4 +223,6 @@ public final class StructureLoader extends Loader {
         state.getContext().endScope(frameSize);
         fireAfterUnmarshal(beanInfo, state.target, state.prev);
     }
+
+    private static final QNameMap<TransducedAccessor> EMPTY = new QNameMap<TransducedAccessor>();
 }
