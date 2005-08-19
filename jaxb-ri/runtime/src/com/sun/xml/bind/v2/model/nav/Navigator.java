@@ -270,8 +270,8 @@ public interface Navigator<T,C,F,M> {
     /**
      * Computes the erasure
      */
-    <T> T erasure(T contentInMemoryType);
-    // This unused T is necessary to make ReflectionNavigator.erasure work nicely
+    <P> T erasure(T contentInMemoryType);
+    // This unused P is necessary to make ReflectionNavigator.erasure work nicely
 
     /**
      * Returns true if this is an abstract class.
