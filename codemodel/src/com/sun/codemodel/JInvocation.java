@@ -107,10 +107,10 @@ public final class JInvocation extends JExpressionImpl implements JStatement {
     public void generate(JFormatter f) {
         if (isConstructor && type.isArray()) {
             // [RESULT] new T[]{arg1,arg2,arg3,...};
-            f.p("new").t(type).p('{');
+            f.p("new").g(type).p('{');
         } else {
             if (isConstructor)
-                f.p("new").t(type).p('(');
+                f.p("new").g(type).p('(');
             else if (object != null)
                 f.g(object).p('.').p(name).p('(');
             else
