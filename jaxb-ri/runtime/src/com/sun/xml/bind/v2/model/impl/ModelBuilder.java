@@ -33,16 +33,16 @@ import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
  *
  * @author Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-public class ModelBuilder<TypeT,ClassDeclT,FieldT,MethodT> {
+public class ModelBuilder<T,C,F,M> {
 
     /**
      * {@link TypeInfo}s that are built will go into this set.
      */
-    final TypeInfoSetImpl<TypeT,ClassDeclT,FieldT,MethodT> typeInfoSet;
+    final TypeInfoSetImpl<T,C,F,M> typeInfoSet;
 
-    public final AnnotationReader<TypeT,ClassDeclT,FieldT,MethodT> reader;
+    public final AnnotationReader<T,C,F,M> reader;
 
-    public final Navigator<TypeT,ClassDeclT,FieldT,MethodT> nav;
+    public final Navigator<T,C,F,M> nav;
 
     /**
      * Used to detect collisions among global type names.
@@ -78,8 +78,8 @@ public class ModelBuilder<TypeT,ClassDeclT,FieldT,MethodT> {
 
 
     public ModelBuilder(
-        AnnotationReader<TypeT,ClassDeclT,FieldT,MethodT> reader,
-        Navigator<TypeT,ClassDeclT,FieldT,MethodT> navigator,
+        AnnotationReader<T,C,F,M> reader,
+        Navigator<T,C,F,M> navigator,
         String defaultNamespaceRemap ) {
 
         this.reader = reader;
@@ -91,7 +91,7 @@ public class ModelBuilder<TypeT,ClassDeclT,FieldT,MethodT> {
         typeInfoSet = createTypeInfoSet();
     }
 
-    protected TypeInfoSetImpl<TypeT,ClassDeclT,FieldT,MethodT> createTypeInfoSet() {
+    protected TypeInfoSetImpl<T,C,F,M> createTypeInfoSet() {
         return new TypeInfoSetImpl(nav,reader,BuiltinLeafInfoImpl.createLeaves(nav));
     }
 
@@ -103,23 +103,23 @@ public class ModelBuilder<TypeT,ClassDeclT,FieldT,MethodT> {
      * Return type is either {@link ClassInfo} or {@link LeafInfo} (for types like
      * {@link String} or {@link Enum}-derived ones)
      */
-    public NonElement<TypeT,ClassDeclT> getClassInfo( ClassDeclT clazz, Locatable upstream ) {
+    public NonElement<T,C> getClassInfo( C clazz, Locatable upstream ) {
         assert clazz!=null;
-        NonElement<TypeT,ClassDeclT> r = typeInfoSet.getClassInfo(clazz);
+        NonElement<T,C> r = typeInfoSet.getClassInfo(clazz);
         if(r!=null)
             return r;
 
         if(nav.isEnum(clazz)) {
-            EnumLeafInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> li = createEnumLeafInfo(clazz,upstream);
+            EnumLeafInfoImpl<T,C,F,M> li = createEnumLeafInfo(clazz,upstream);
             typeInfoSet.add(li);
             r = li;
         } else {
-            ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> ci = createClassInfo(clazz,upstream);
+            ClassInfoImpl<T,C,F,M> ci = createClassInfo(clazz,upstream);
             typeInfoSet.add(ci);
 
             // compute the closure by eagerly expanding references
-            for( PropertyInfo<TypeT,ClassDeclT> p : ci.getProperties() ) {
-                for( TypeInfo<TypeT,ClassDeclT> t : p.ref() )
+            for( PropertyInfo<T,C> p : ci.getProperties() ) {
+                for( TypeInfo<T,C> t : p.ref() )
                     ; // just compute a reference should be suffice
             }
             ci.getBaseClass();
@@ -135,7 +135,7 @@ public class ModelBuilder<TypeT,ClassDeclT,FieldT,MethodT> {
     /**
      * Checks the uniqueness of the type name.
      */
-    private void addTypeName(NonElement<TypeT, ClassDeclT> r) {
+    private void addTypeName(NonElement<T, C> r) {
         QName t = r.getTypeName();
         if(t==null)     return;
 
@@ -155,19 +155,19 @@ public class ModelBuilder<TypeT,ClassDeclT,FieldT,MethodT> {
      * @return
      *      always non-null.
      */
-    public NonElement<TypeT,ClassDeclT> getTypeInfo(TypeT t,Locatable upstream) {
-        NonElement<TypeT,ClassDeclT> r = typeInfoSet.getTypeInfo(t);
+    public NonElement<T,C> getTypeInfo(T t,Locatable upstream) {
+        NonElement<T,C> r = typeInfoSet.getTypeInfo(t);
         if(r!=null)     return r;
 
         if(nav.isArray(t)) { // no need for checking byte[], because above typeInfoset.getTypeInfo() would return non-null
-            ArrayInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> ai =
+            ArrayInfoImpl<T,C,F,M> ai =
                 createArrayInfo(upstream, t);
             addTypeName(ai);
             typeInfoSet.add(ai);
             return ai;
         }
 
-        ClassDeclT c = nav.asDecl(t);
+        C c = nav.asDecl(t);
         assert c!=null : t.toString()+" must be a leaf, but we failed to recognize it.";
         return getClassInfo(c,upstream);
     }
@@ -175,10 +175,10 @@ public class ModelBuilder<TypeT,ClassDeclT,FieldT,MethodT> {
     /**
      * This method is used to add a root reference to a model.
      */
-    public NonElement<TypeT,ClassDeclT> getTypeInfo(Ref<TypeT,ClassDeclT> ref) {
+    public NonElement<T,C> getTypeInfo(Ref<T,C> ref) {
         // TODO: handle XmlValueList
         assert !ref.valueList;
-        ClassDeclT c = nav.asDecl(ref.type);
+        C c = nav.asDecl(ref.type);
         if(c!=null && reader.getClassAnnotation(XmlRegistry.class,c,null/*TODO: is this right?*/)!=null) {
             addRegistry(c,null);
             return null;    // TODO: is this correct?
@@ -187,22 +187,22 @@ public class ModelBuilder<TypeT,ClassDeclT,FieldT,MethodT> {
     }
 
 
-    protected EnumLeafInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> createEnumLeafInfo(ClassDeclT clazz,Locatable upstream) {
-        return new EnumLeafInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>(this,upstream,clazz,nav.use(clazz));
+    protected EnumLeafInfoImpl<T,C,F,M> createEnumLeafInfo(C clazz,Locatable upstream) {
+        return new EnumLeafInfoImpl<T,C,F,M>(this,upstream,clazz,nav.use(clazz));
     }
 
-    protected ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> createClassInfo(
-            ClassDeclT clazz, Locatable upstream ) {
-        return new ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>(this,upstream,clazz);
+    protected ClassInfoImpl<T,C,F,M> createClassInfo(
+            C clazz, Locatable upstream ) {
+        return new ClassInfoImpl<T,C,F,M>(this,upstream,clazz);
     }
 
-    protected ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> createElementInfo(
-        RegistryInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> registryInfo, MethodT m) throws IllegalAnnotationException {
-        return new ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>(this,registryInfo,m);
+    protected ElementInfoImpl<T,C,F,M> createElementInfo(
+        RegistryInfoImpl<T,C,F,M> registryInfo, M m) throws IllegalAnnotationException {
+        return new ElementInfoImpl<T,C,F,M>(this,registryInfo,m);
     }
 
-    protected ArrayInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> createArrayInfo(Locatable upstream, TypeT arrayType) {
-        return new ArrayInfoImpl<TypeT, ClassDeclT, FieldT, MethodT>(this,upstream,arrayType);
+    protected ArrayInfoImpl<T,C,F,M> createArrayInfo(Locatable upstream, T arrayType) {
+        return new ArrayInfoImpl<T, C, F, M>(this,upstream,arrayType);
     }
 
 
@@ -210,8 +210,8 @@ public class ModelBuilder<TypeT,ClassDeclT,FieldT,MethodT> {
      * Visits a class with {@link XmlRegistry} and records all the element mappings
      * in it.
      */
-    public RegistryInfo<TypeT,ClassDeclT> addRegistry(ClassDeclT registryClass, Locatable upstream ) {
-        return new RegistryInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>(this,upstream,registryClass);
+    public RegistryInfo<T,C> addRegistry(C registryClass, Locatable upstream ) {
+        return new RegistryInfoImpl<T,C,F,M>(this,upstream,registryClass);
     }
 
     private boolean linked;
@@ -227,7 +227,7 @@ public class ModelBuilder<TypeT,ClassDeclT,FieldT,MethodT> {
      *      fully built {@link TypeInfoSet} that represents the model,
      *      or null if there was an error.
      */
-    public TypeInfoSet<TypeT,ClassDeclT,FieldT,MethodT> link() {
+    public TypeInfoSet<T,C,F,M> link() {
 
         assert !linked;
         linked = true;

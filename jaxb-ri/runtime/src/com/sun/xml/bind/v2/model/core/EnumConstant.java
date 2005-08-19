@@ -20,14 +20,14 @@ import javax.xml.bind.annotation.XmlEnumValue;
  * @see EnumLeafInfo
  * @author Kohsuke Kawaguchi
  */
-public interface EnumConstant<TypeT,ClassDeclT> {
+public interface EnumConstant<T,C> {
 
     /**
      * Gets the {@link EnumLeafInfo} to which this constant belongs to.
      *
      * @return never null.
      */
-    EnumLeafInfo<TypeT,ClassDeclT> getEnclosingClass();
+    EnumLeafInfo<T,C> getEnclosingClass();
 
     /**
      * Lexical value of this constant.

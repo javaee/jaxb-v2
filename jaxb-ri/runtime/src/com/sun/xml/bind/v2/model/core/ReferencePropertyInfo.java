@@ -10,7 +10,7 @@ import javax.xml.namespace.QName;
  *
  * @author Kohsuke Kawaguchi
  */
-public interface ReferencePropertyInfo<TypeT,ClassDeclT> extends PropertyInfo<TypeT,ClassDeclT> {
+public interface ReferencePropertyInfo<T,C> extends PropertyInfo<T,C> {
     /**
      * Returns the information about the possible elements in this property.
      *
@@ -31,7 +31,7 @@ public interface ReferencePropertyInfo<TypeT,ClassDeclT> extends PropertyInfo<Ty
      * @return
      *      Always non-null. Contains at least one entry.
      */
-    Set<? extends Element<TypeT,ClassDeclT>> getElements();
+    Set<? extends Element<T,C>> getElements();
 
     /**
      * {@inheritDoc}.
@@ -39,7 +39,7 @@ public interface ReferencePropertyInfo<TypeT,ClassDeclT> extends PropertyInfo<Ty
      * If this {@link ReferencePropertyInfo} has a wildcard in it,
      * then the returned list will contain {@link WildcardTypeInfo}. 
      */
-    Collection<? extends TypeInfo<TypeT,ClassDeclT>> ref();
+    Collection<? extends TypeInfo<T,C>> ref();
 
     /**
      * Gets the wrapper element name.
@@ -80,5 +80,5 @@ public interface ReferencePropertyInfo<TypeT,ClassDeclT> extends PropertyInfo<Ty
      * @return null
      *      if the wildcard is not allowed on this element.
      */
-    ClassDeclT getDOMHandler();
+    C getDOMHandler();
 }

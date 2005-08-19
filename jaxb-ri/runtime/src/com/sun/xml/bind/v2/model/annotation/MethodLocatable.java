@@ -8,12 +8,12 @@ import com.sun.xml.bind.v2.runtime.Location;
  * 
  * @author Kohsuke Kawaguchi
  */
-public class MethodLocatable<MethodT> implements Locatable {
+public class MethodLocatable<M> implements Locatable {
     private final Locatable upstream;
-    private final MethodT method;
-    private final Navigator<?,?,?,MethodT> nav;
+    private final M method;
+    private final Navigator<?,?,?,M> nav;
 
-    public MethodLocatable(Locatable upstream, MethodT method, Navigator<?,?,?,MethodT> nav) {
+    public MethodLocatable(Locatable upstream, M method, Navigator<?,?,?,M> nav) {
         this.upstream = upstream;
         this.method = method;
         this.nav = nav;

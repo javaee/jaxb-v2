@@ -13,8 +13,8 @@ import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
  *
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
-public abstract class AbstractInlineAnnotationReaderImpl<TypeT,ClassDeclT,FieldT,MethodT>
-    implements AnnotationReader<TypeT,ClassDeclT,FieldT,MethodT> {
+public abstract class AbstractInlineAnnotationReaderImpl<T,C,F,M>
+    implements AnnotationReader<T,C,F,M> {
 
     private ErrorHandler errorHandler;
 
@@ -32,7 +32,7 @@ public abstract class AbstractInlineAnnotationReaderImpl<TypeT,ClassDeclT,FieldT
         return errorHandler;
     }
 
-    public final <A extends Annotation> A getMethodAnnotation(Class<A> annotation, MethodT getter, MethodT setter, Locatable srcPos) {
+    public final <A extends Annotation> A getMethodAnnotation(Class<A> annotation, M getter, M setter, Locatable srcPos) {
         A a1 = getter==null?null:getMethodAnnotation(annotation,getter,srcPos);
         A a2 = setter==null?null:getMethodAnnotation(annotation,setter,srcPos);
 
@@ -56,9 +56,9 @@ public abstract class AbstractInlineAnnotationReaderImpl<TypeT,ClassDeclT,FieldT
         }
     }
 
-    public boolean hasMethodAnnotation(Class<? extends Annotation> annotation, String propertyName, MethodT getter, MethodT setter, Locatable srcPos) {
-        boolean x = getter==null?false:hasMethodAnnotation(annotation,getter);
-        boolean y = setter==null?false:hasMethodAnnotation(annotation,setter);
+    public boolean hasMethodAnnotation(Class<? extends Annotation> annotation, String propertyName, M getter, M setter, Locatable srcPos) {
+        boolean x = ( getter != null && hasMethodAnnotation(annotation, getter) );
+        boolean y = ( setter != null && hasMethodAnnotation(annotation, setter) );
 
         if(x && y) {
             // both are present. have getMethodAnnotation report an error
@@ -73,5 +73,5 @@ public abstract class AbstractInlineAnnotationReaderImpl<TypeT,ClassDeclT,FieldT
      *
      * Used for error messages.
      */
-    protected abstract String fullName(MethodT m);
+    protected abstract String fullName(M m);
 }

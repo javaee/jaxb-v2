@@ -14,19 +14,19 @@ import com.sun.xml.bind.v2.model.nav.Navigator;
  *
  * @author Kohsuke Kawaguchi
  */
-public interface TypeInfoSet<TypeT,ClassDeclT,FieldT,MethodT> {
+public interface TypeInfoSet<T,C,F,M> {
 
     /**
      * {@link Navigator} for this model.
      */
-    Navigator<TypeT,ClassDeclT,FieldT,MethodT> getNavigator();
+    Navigator<T,C,F,M> getNavigator();
 
 //  turns out we can't have AnnotationReader in XJC, so it's impossible to have this here.
 //  perhaps we should revisit this in the future.
 //    /**
 //     * {@link AnnotationReader} for this model.
 //     */
-//    AnnotationReader<TypeT,ClassDeclT,FieldT,MethodT> getReader();
+//    AnnotationReader<T,C,F,M> getReader();
 
     /**
      * Returns a {@link TypeInfo} for the given type.
@@ -35,12 +35,12 @@ public interface TypeInfoSet<TypeT,ClassDeclT,FieldT,MethodT> {
      *      null if the specified type cannot be bound by JAXB, or
      *      not known to this set.
      */
-    NonElement<TypeT,ClassDeclT> getTypeInfo( TypeT type );
+    NonElement<T,C> getTypeInfo( T type );
 
     /**
      * Gets the {@link TypeInfo} for the any type.
      */
-    NonElement<TypeT,ClassDeclT> getAnyTypeInfo();
+    NonElement<T,C> getAnyTypeInfo();
 
     /**
      * Returns a {@link ClassInfo}, {@link ArrayInfo}, or {@link LeafInfo}
@@ -48,33 +48,33 @@ public interface TypeInfoSet<TypeT,ClassDeclT,FieldT,MethodT> {
      *
      * <p>
      * This method is almost like refinement of {@link #getTypeInfo(Object)} except
-     * our ClassDeclT cannot derive from TypeT.
+     * our C cannot derive from T.
      *
      * @return
      *      null if the specified type is not bound by JAXB or otherwise
      *      unknown to this set.
      */
-    NonElement<TypeT,ClassDeclT> getClassInfo( ClassDeclT type );
+    NonElement<T,C> getClassInfo( C type );
 
     /**
      * Returns all the {@link ArrayInfo}s known to this set.
      */
-    Map<? extends TypeT,? extends ArrayInfo<TypeT,ClassDeclT>> arrays();
+    Map<? extends T,? extends ArrayInfo<T,C>> arrays();
 
     /**
      * Returns all the {@link ClassInfo}s known to this set.
      */
-    Map<ClassDeclT,? extends ClassInfo<TypeT,ClassDeclT>> beans();
+    Map<C,? extends ClassInfo<T,C>> beans();
 
     /**
      * Returns all the {@link BuiltinLeafInfo}s known to this set.
      */
-    Map<TypeT,? extends BuiltinLeafInfo<TypeT,ClassDeclT>> builtins();
+    Map<T,? extends BuiltinLeafInfo<T,C>> builtins();
 
     /**
      * Returns all the {@link EnumLeafInfo}s known to this set.
      */
-    Map<ClassDeclT,? extends EnumLeafInfo<TypeT,ClassDeclT>> enums();
+    Map<C,? extends EnumLeafInfo<T,C>> enums();
 
     /**
      * Returns a {@link ElementInfo} for the given element.
@@ -84,12 +84,12 @@ public interface TypeInfoSet<TypeT,ClassDeclT,FieldT,MethodT> {
      *      Otherwise return a local element in the given scope if available,
      *      then look for a global element next.
      */
-    ElementInfo<TypeT,ClassDeclT> getElementInfo( ClassDeclT scope, QName name );
+    ElementInfo<T,C> getElementInfo( C scope, QName name );
 
     /**
      * Returns a type information for the given reference.
      */
-    NonElement<TypeT,ClassDeclT> getTypeInfo(Ref<TypeT,ClassDeclT> ref);
+    NonElement<T,C> getTypeInfo(Ref<T,C> ref);
 
     /**
      * Returns all  {@link ElementInfo}s in the given scope.
@@ -97,12 +97,12 @@ public interface TypeInfoSet<TypeT,ClassDeclT,FieldT,MethodT> {
      * @param scope
      *      if non-null, this method only returns the local element mapping.
      */
-    Map<QName,? extends ElementInfo<TypeT,ClassDeclT>> getElementMappings( ClassDeclT scope );
+    Map<QName,? extends ElementInfo<T,C>> getElementMappings( C scope );
 
     /**
      * Returns all the {@link ElementInfo} known to this set.
      */
-    Iterable<? extends ElementInfo<TypeT,ClassDeclT>> getAllElements();
+    Iterable<? extends ElementInfo<T,C>> getAllElements();
 
 
     /**
@@ -122,7 +122,7 @@ public interface TypeInfoSet<TypeT,ClassDeclT,FieldT,MethodT> {
      *
      * For debug only.
      *
-     * TODO: not sure if this actually works. We don't really know what are TypeT,ClassDeclT.
+     * TODO: not sure if this actually works. We don't really know what are T,C.
      */
     public void dump( Result out ) throws JAXBException;
 }

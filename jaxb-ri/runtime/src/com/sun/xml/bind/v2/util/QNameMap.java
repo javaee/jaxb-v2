@@ -20,7 +20,7 @@ import com.sun.xml.bind.v2.runtime.Name;
  *
  * @since JAXB 2.0
  */
-public final class QNameMap<ValueT> {
+public final class QNameMap<V> {
     /**
      * The default initial capacity - MUST be a power of two.
      */
@@ -36,7 +36,7 @@ public final class QNameMap<ValueT> {
     /**
      * The table, resized as necessary. Length MUST Always be a power of two.
      */
-    transient Entry<ValueT>[] table = new Entry[DEFAULT_INITIAL_CAPACITY];
+    transient Entry<V>[] table = new Entry[DEFAULT_INITIAL_CAPACITY];
 
     /**
      * The number of key-value mappings contained in this identity hash map.
@@ -60,7 +60,7 @@ public final class QNameMap<ValueT> {
     /**
      * Gives an entrySet view of this map
      */
-    private Set<Entry<ValueT>> entrySet = null;
+    private Set<Entry<V>> entrySet = null;
 
     public QNameMap() {
         threshold = (int)(DEFAULT_INITIAL_CAPACITY * DEFAULT_LOAD_FACTOR);
@@ -78,7 +78,7 @@ public final class QNameMap<ValueT> {
      * @param value value to be associated with the specified key.
      *
      */
-    public void put(String namespaceUri,String localname, ValueT value ) {
+    public void put(String namespaceUri,String localname, V value ) {
         //keys cannot be null
         assert localname !=null;
         assert namespaceUri !=null;
@@ -89,7 +89,7 @@ public final class QNameMap<ValueT> {
         int hash = hash(localname);
         int i = indexFor(hash, table.length);
 
-        for (Entry<ValueT> e = table[i]; e != null; e = e.next) {
+        for (Entry<V> e = table[i]; e != null; e = e.next) {
             if (e.hash == hash && localname == e.localName && namespaceUri==e.nsUri) {
                 e.value = value;
                 return;
@@ -100,11 +100,11 @@ public final class QNameMap<ValueT> {
 
     }
 
-    public void put(QName name, ValueT value ) {
+    public void put(QName name, V value ) {
         put(name.getNamespaceURI(),name.getLocalPart(),value);
     }
 
-    public void put(Name name, ValueT value ) {
+    public void put(Name name, V value ) {
         put(name.nsUri,name.localName,value);
     }
 
@@ -118,13 +118,13 @@ public final class QNameMap<ValueT> {
      *          <tt>null</tt> if the map contains no mapping for this set of keys.
      * @see #put(String,String, Object)
      */
-    public ValueT get( String nsUri, String localPart ) {
-        Entry<ValueT> e = getEntry(nsUri,localPart);
+    public V get( String nsUri, String localPart ) {
+        Entry<V> e = getEntry(nsUri,localPart);
         if(e==null) return null;
         else        return e.value;
     }
 
-    public ValueT get( QName name ) {
+    public V get( QName name ) {
         return get(name.getNamespaceURI(),name.getLocalPart());
     }
 
@@ -145,7 +145,7 @@ public final class QNameMap<ValueT> {
      * @param map mappings to be stored in this map.
      *
      */
-    public QNameMap<ValueT> putAll(QNameMap<? extends ValueT> map) {
+    public QNameMap<V> putAll(QNameMap<? extends V> map) {
         int numKeysToBeAdded = map.size();
         if (numKeysToBeAdded == 0)
             return this;
@@ -162,7 +162,7 @@ public final class QNameMap<ValueT> {
                 resize(newCapacity);
         }
 
-        for( Entry<? extends ValueT> e : map.entrySet() )
+        for( Entry<? extends V> e : map.entrySet() )
             put(e.nsUri,e.localName,e.getValue());
         return this;
     }
@@ -195,9 +195,9 @@ public final class QNameMap<ValueT> {
      * method to resize the table if appropriate.
      *
      */
-    private void addEntry(int hash, String nsUri, String localName, ValueT value, int bucketIndex) {
-        Entry<ValueT> e = table[bucketIndex];
-        table[bucketIndex] = new Entry<ValueT>(hash, nsUri, localName, value, e);
+    private void addEntry(int hash, String nsUri, String localName, V value, int bucketIndex) {
+        Entry<V> e = table[bucketIndex];
+        table[bucketIndex] = new Entry<V>(hash, nsUri, localName, value, e);
         if (size++ >= threshold)
             resize(2 * table.length);
     }
@@ -225,15 +225,15 @@ public final class QNameMap<ValueT> {
     /**
      * Transfer all entries from current table to newTable.
      */
-    private void transfer(Entry<ValueT>[] newTable) {
-        Entry<ValueT>[] src = table;
+    private void transfer(Entry<V>[] newTable) {
+        Entry<V>[] src = table;
         int newCapacity = newTable.length;
         for (int j = 0; j < src.length; j++) {
-            Entry<ValueT> e = src[j];
+            Entry<V> e = src[j];
             if (e != null) {
                 src[j] = null;
                 do {
-                    Entry<ValueT> next = e.next;
+                    Entry<V> next = e.next;
                     int i = indexFor(e.hash, newCapacity);
                     e.next = newTable[i];
                     newTable[i] = e;
@@ -250,8 +250,8 @@ public final class QNameMap<ValueT> {
      * <p>
      * This method is useful to obtain the value from a map that only contains one element.
      */
-    public Entry<ValueT> getOne() {
-        for( Entry<ValueT> e : table ) {
+    public Entry<V> getOne() {
+        for( Entry<V> e : table ) {
             if(e!=null)
                 return e;
         }
@@ -260,20 +260,20 @@ public final class QNameMap<ValueT> {
 
     public Collection<QName> keySet() {
         Set<QName> r = new HashSet<QName>();
-        for (Entry<ValueT> e : entrySet()) {
+        for (Entry<V> e : entrySet()) {
             r.add(e.createQName());
         }
         return r;
     }
 
     private abstract class HashIterator<E> implements Iterator<E> {
-        Entry<ValueT> next;	// next entry to return
+        Entry<V> next;	// next entry to return
         int index;		// current slot
 
         HashIterator() {
-            Entry<ValueT>[] t = table;
+            Entry<V>[] t = table;
             int i = t.length;
-            Entry<ValueT> n = null;
+            Entry<V> n = null;
             if (size != 0) { // advance to first entry
                 while (i > 0 && (n = t[--i]) == null)
                     ;
@@ -286,13 +286,13 @@ public final class QNameMap<ValueT> {
             return next != null;
         }
 
-        Entry<ValueT> nextEntry() {
-            Entry<ValueT> e = next;
+        Entry<V> nextEntry() {
+            Entry<V> e = next;
             if (e == null)
                 throw new NoSuchElementException();
 
-            Entry<ValueT> n = e.next;
-            Entry<ValueT>[] t = table;
+            Entry<V> n = e.next;
+            Entry<V>[] t = table;
             int i = index;
             while (n == null && i > 0)
                 n = t[--i];
@@ -386,29 +386,29 @@ public final class QNameMap<ValueT> {
         }
     }
 
-    public Set<Entry<ValueT>> entrySet() {
-        Set<Entry<ValueT>> es = entrySet;
+    public Set<Entry<V>> entrySet() {
+        Set<Entry<V>> es = entrySet;
         return es != null ? es : (entrySet = new EntrySet());
     }
 
-    private Iterator<Entry<ValueT>> newEntryIterator() {
+    private Iterator<Entry<V>> newEntryIterator() {
         return new EntryIterator();
     }
 
-    private class EntryIterator extends HashIterator<Entry<ValueT>> {
-        public Entry<ValueT> next() {
+    private class EntryIterator extends HashIterator<Entry<V>> {
+        public Entry<V> next() {
             return nextEntry();
         }
     }
-    private class EntrySet extends AbstractSet<Entry<ValueT>> {
-        public Iterator<Entry<ValueT>> iterator() {
+    private class EntrySet extends AbstractSet<Entry<V>> {
+        public Iterator<Entry<V>> iterator() {
             return newEntryIterator();
         }
         public boolean contains(Object o) {
             if (!(o instanceof Entry))
                 return false;
-            Entry<ValueT> e = (Entry<ValueT>) o;
-            Entry<ValueT> candidate = getEntry(e.nsUri,e.localName);
+            Entry<V> e = (Entry<V>) o;
+            Entry<V> candidate = getEntry(e.nsUri,e.localName);
             return candidate != null && candidate.equals(e);
         }
         public boolean remove(Object o) {
@@ -419,14 +419,14 @@ public final class QNameMap<ValueT> {
         }
     }
 
-    private Entry<ValueT> getEntry(String nsUri,String localName) {
+    private Entry<V> getEntry(String nsUri,String localName) {
         // strings must be interned
         assert nsUri==nsUri.intern();
         assert localName==localName.intern();
 
         int hash = hash(localName);
         int i = indexFor(hash, table.length);
-        Entry<ValueT> e = table[i];
+        Entry<V> e = table[i];
         while (e != null && !(localName == e.localName && nsUri == e.nsUri))
             e = e.next;
         return e;
@@ -436,7 +436,7 @@ public final class QNameMap<ValueT> {
         StringBuilder buf = new StringBuilder();
         buf.append('{');
 
-        for( Entry<ValueT> e : entrySet() ) {
+        for( Entry<V> e : entrySet() ) {
             if(buf.length()>1)
                 buf.append(',');
             buf.append('[');

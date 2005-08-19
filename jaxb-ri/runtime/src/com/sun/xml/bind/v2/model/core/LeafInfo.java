@@ -13,5 +13,5 @@ package com.sun.xml.bind.v2.model.core;
  *
  * @author Kohsuke Kawaguchi
  */
-public interface LeafInfo<TypeT,ClassDeclT> extends NonElement<TypeT,ClassDeclT> {
+public interface LeafInfo<T,C> extends NonElement<T,C> {
 }
