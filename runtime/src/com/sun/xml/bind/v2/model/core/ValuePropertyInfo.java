@@ -5,5 +5,5 @@ package com.sun.xml.bind.v2.model.core;
  *
  * @author Kohsuke Kawaguchi
  */
-public interface ValuePropertyInfo<TypeT,ClassDeclT> extends PropertyInfo<TypeT,ClassDeclT>, NonElementRef<TypeT,ClassDeclT> {
+public interface ValuePropertyInfo<T,C> extends PropertyInfo<T,C>, NonElementRef<T,C> {
 }

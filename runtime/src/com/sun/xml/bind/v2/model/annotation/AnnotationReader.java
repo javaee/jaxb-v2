@@ -35,7 +35,7 @@ import com.sun.xml.bind.v2.model.core.ErrorHandler;
  *
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
-public interface AnnotationReader<TypeT,ClassDeclT,FieldT,MethodT> {
+public interface AnnotationReader<T,C,F,M> {
 
     /**
      * Sets the error handler that receives errors found
@@ -50,30 +50,30 @@ public interface AnnotationReader<TypeT,ClassDeclT,FieldT,MethodT> {
      * Reads an annotation on a property that consists of a field.
      */
     <A extends Annotation> A getFieldAnnotation(Class<A> annotation,
-                                                FieldT field, Locatable srcpos);
+                                                F field, Locatable srcpos);
 
     /**
      * Checks if the given field has an annotation.
      */
-    boolean hasFieldAnnotation(Class<? extends Annotation> annotationType, FieldT field);
+    boolean hasFieldAnnotation(Class<? extends Annotation> annotationType, F field);
 
     /**
      * Reads an annotation on a property that consists of a getter and a setter.
      *
      */
     <A extends Annotation> A getMethodAnnotation(Class<A> annotation,
-                                                 MethodT getter, MethodT setter, Locatable srcpos);
+                                                 M getter, M setter, Locatable srcpos);
 
     /**
      * Checks if the given method has an annotation.
      */
-    boolean hasMethodAnnotation(Class<? extends Annotation> annotation, String propertyName, MethodT getter, MethodT setter, Locatable srcPos);
+    boolean hasMethodAnnotation(Class<? extends Annotation> annotation, String propertyName, M getter, M setter, Locatable srcPos);
 
     // TODO: we do need this to read certain annotations,
     // but that shows inconsistency wrt the spec. consult the spec team about the abstraction.
-    <A extends Annotation> A getMethodAnnotation(Class<A> annotation, MethodT method, Locatable srcpos );
+    <A extends Annotation> A getMethodAnnotation(Class<A> annotation, M method, Locatable srcpos );
 
-    boolean hasMethodAnnotation(Class<? extends Annotation> annotation, MethodT method );
+    boolean hasMethodAnnotation(Class<? extends Annotation> annotation, M method );
 
     /**
      * Reads an annotation on a parameter of the method.
@@ -82,17 +82,17 @@ public interface AnnotationReader<TypeT,ClassDeclT,FieldT,MethodT> {
      *      if the annotation was not found.
      */ 
     <A extends Annotation> A getMethodParameterAnnotation(
-            Class<A> annotation, MethodT method, int paramIndex, Locatable srcPos );
+            Class<A> annotation, M method, int paramIndex, Locatable srcPos );
 
     /**
      * Reads an annotation on a class.
      */
-    <A extends Annotation> A getClassAnnotation(Class<A> annotation, ClassDeclT clazz, Locatable srcpos) ;
+    <A extends Annotation> A getClassAnnotation(Class<A> annotation, C clazz, Locatable srcpos) ;
 
     /**
      * Reads an annotation on the package that the given class belongs to.
      */
-    <A extends Annotation> A getPackageAnnotation(Class<A> annotation, ClassDeclT clazz, Locatable srcpos);
+    <A extends Annotation> A getPackageAnnotation(Class<A> annotation, C clazz, Locatable srcpos);
 
     /**
      * Reads a value of an annotation that returns a Class object.
@@ -105,5 +105,5 @@ public interface AnnotationReader<TypeT,ClassDeclT,FieldT,MethodT> {
      * @param name
      *      The name of the annotation parameter to be read.
      */
-    TypeT getClassValue( Annotation a, String name );
+    T getClassValue( Annotation a, String name );
 }

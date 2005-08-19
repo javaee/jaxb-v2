@@ -217,7 +217,7 @@ class TypeInfoSetImpl<TypeT,ClassDeclT,FieldT,MethodT> implements
      *
      * <p>
      * This method is almost like refinement of {@link #getTypeInfo(Object)} except
-     * our ClassDeclT cannot derive from TypeT.
+     * our C cannot derive from T.
      *
      * @return
      *      null if the specified type is not bound by JAXB or otherwise
@@ -307,7 +307,7 @@ class TypeInfoSetImpl<TypeT,ClassDeclT,FieldT,MethodT> implements
      *
      * For debug only.
      *
-     * TODO: not sure if this actually works. We don't really know what are TypeT,ClassDeclT.
+     * TODO: not sure if this actually works. We don't really know what are T,C.
      */
     public void dump( Result out ) throws JAXBException {
         JAXBContext context = JAXBContext.newInstance(this.getClass());

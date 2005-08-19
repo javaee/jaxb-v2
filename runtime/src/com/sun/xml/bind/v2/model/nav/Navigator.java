@@ -20,25 +20,25 @@ import com.sun.xml.bind.v2.runtime.Location;
  *
  *
  * <h2>Parameterization</h2>
- * <h3>ClassDeclT</h3>
+ * <h3>C</h3>
  * <p>
  * A Java class declaration (not an interface, a class and an enum.)
  *
- * <h3>TypeT</h3>
+ * <h3>T</h3>
  * <p>
  * A Java type. This includs declaration, but also includes such
  * things like arrays, primitive types, parameterized types, and etc.
  *
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
-public interface Navigator<TypeT,ClassDeclT,FieldT,MethodT> {
+public interface Navigator<T,C,F,M> {
     /**
      * Gets the base class of the specified class.
      *
      * @return
      *      null if the parameter represents {@link Object}.
      */
-    ClassDeclT getSuperClass(ClassDeclT clazz);
+    C getSuperClass(C clazz);
 
     /**
      * Gets the parameterization of the given base type.
@@ -65,13 +65,13 @@ public interface Navigator<TypeT,ClassDeclT,FieldT,MethodT> {
      *      The use of {@code baseType} in {@code type}.
      *      or null if the type is not assignable to the base type.
      */
-    TypeT getBaseClass(TypeT type, ClassDeclT baseType);
+    T getBaseClass(T type, C baseType);
 
     /**
      * Gets the fully-qualified name of the class.
      * ("java.lang.Object" for {@link Object})
      */
-    String getClassName(ClassDeclT clazz);
+    String getClassName(C clazz);
 
     /**
      * Gets the display name of the type object
@@ -79,7 +79,7 @@ public interface Navigator<TypeT,ClassDeclT,FieldT,MethodT> {
      * @return
      *      a human-readable name that the type represents.
      */
-    String getTypeName(TypeT rawType);
+    String getTypeName(T rawType);
 
     /**
      * Gets the short name of the class ("Object" for {@link Object}.)
@@ -87,106 +87,106 @@ public interface Navigator<TypeT,ClassDeclT,FieldT,MethodT> {
      * For nested classes, this method should just return the inner name.
      * (for example "Inner" for "com.acme.Outer$Inner".
      */
-    String getClassShortName(ClassDeclT clazz);
+    String getClassShortName(C clazz);
 
     /**
      * Gets all the declared fields of the given class.
      */
-    Collection<? extends FieldT> getDeclaredFields(ClassDeclT clazz);
+    Collection<? extends F> getDeclaredFields(C clazz);
 
     /**
      * Gets all the declared methods of the given class.
      */
-    Collection<? extends MethodT> getDeclaredMethods(ClassDeclT clazz);
+    Collection<? extends M> getDeclaredMethods(C clazz);
 
     /**
      * Gets the class that declares the given field.
      */
-    ClassDeclT getDeclaringClassForField(FieldT field);
+    C getDeclaringClassForField(F field);
 
     /**
      * Gets the class that declares the given method.
      */
-    ClassDeclT getDeclaringClassForMethod(MethodT method);
+    C getDeclaringClassForMethod(M method);
 
     /**
      * Gets the type of the field.
      */
-    TypeT getFieldType(FieldT f);
+    T getFieldType(F f);
 
     /**
      * Gets the name of the field.
      */
-    String getFieldName(FieldT field);
+    String getFieldName(F field);
 
     /**
      * Gets the name of the method, such as "toString" or "equals".
      */
-    String getMethodName(MethodT m);
+    String getMethodName(M m);
 
     /**
      * Gets the return type of a method.
      */
-    TypeT getReturnType(MethodT m);
+    T getReturnType(M m);
 
     /**
      * Returns the list of parameters to the method.
      */
-    TypeT[] getMethodParameters(MethodT method);
+    T[] getMethodParameters(M method);
 
     /**
      * Returns true if the method is static.
      */
-    boolean isStaticMethod(MethodT method);
+    boolean isStaticMethod(M method);
 
     /**
      * Checks if {@code sub} is a sub-type of {@code sup}.
      *
-     * TODO: should this method take TypeT or ClassDeclT?
+     * TODO: should this method take T or C?
      */
-    boolean isSubClassOf(TypeT sub, TypeT sup);
+    boolean isSubClassOf(T sub, T sup);
 
     /**
-     * Gets the representation of the given Java type in {@code TypeT}.
+     * Gets the representation of the given Java type in {@code T}.
      *
      * @param c
      *      can be a primitive, array, class, or anything.
-     *      (therefore the return type has to be TypeT, not ClassDeclT)
+     *      (therefore the return type has to be T, not C)
      */
-    TypeT ref(Class c);
+    T ref(Class c);
 
     /**
-     * Gets the TypeT for the given ClassDeclT.
+     * Gets the T for the given C.
      */
-    TypeT use(ClassDeclT c);
+    T use(C c);
 
     /**
      * If the given type is an use of class declaration,
-     * returns the type casted as {@code ClassDeclT}.
+     * returns the type casted as {@code C}.
      * Otherwise null.
      *
      * <p>
      * TODO: define the exact semantics.
      */
-    ClassDeclT asDecl(TypeT type);
+    C asDecl(T type);
 
     /**
-     * Gets the {@code ClassDeclT} representation for the given class.
+     * Gets the {@code C} representation for the given class.
      *
      * The behavior is undefined if the class object represents
      * primitives, arrays, and other types that are not class declaration.
      */
-    ClassDeclT asDecl(Class c);
+    C asDecl(Class c);
 
     /**
      * Checks if the type is an array type.
      */
-    boolean isArray(TypeT t);
+    boolean isArray(T t);
 
     /**
      * Checks if the type is an array type but not byte[].
      */
-    boolean isArrayButNotByteArray(TypeT t);
+    boolean isArrayButNotByteArray(T t);
 
     /**
      * Gets the component type of the array.
@@ -194,7 +194,7 @@ public interface Navigator<TypeT,ClassDeclT,FieldT,MethodT> {
      * @param t
      *      must be an array.
      */
-    TypeT getComponentType(TypeT t);
+    T getComponentType(T t);
 
 
     /** The singleton instance. */
@@ -212,17 +212,17 @@ public interface Navigator<TypeT,ClassDeclT,FieldT,MethodT> {
      *
      * @see #isParameterizedType(Object)
      */
-    TypeT getTypeArgument(TypeT t, int i);
+    T getTypeArgument(T t, int i);
 
     /**
      * Returns true if t is a parameterized type.
      */
-    boolean isParameterizedType(TypeT t);
+    boolean isParameterizedType(T t);
 
     /**
      * Checks if the given type is a primitive type.
      */
-    boolean isPrimitive(TypeT t);
+    boolean isPrimitive(T t);
 
     /**
      * Returns the representation for the given primitive type.
@@ -230,58 +230,58 @@ public interface Navigator<TypeT,ClassDeclT,FieldT,MethodT> {
      * @param primitiveType
      *      must be Class objects like {@link Integer#TYPE}.
      */
-    TypeT getPrimitive(Class primitiveType);
+    T getPrimitive(Class primitiveType);
 
     /**
      * Returns a location of the specified class.
      */
-    Location getClassLocation(ClassDeclT clazz);
+    Location getClassLocation(C clazz);
 
-    Location getFieldLocation(FieldT field);
+    Location getFieldLocation(F field);
 
-    Location getMethodLocation(MethodT getter);
+    Location getMethodLocation(M getter);
 
     /**
      * Returns true if the given class has a no-arg default constructor.
      * The constructor does not need to be public.
      */
-    boolean hasDefaultConstructor(ClassDeclT clazz);
+    boolean hasDefaultConstructor(C clazz);
 
     /**
      * Returns true if the field is static.
      */
-    boolean isStaticField(FieldT field);
+    boolean isStaticField(F field);
 
     /**
      * Returns true if the method is public.
      */
-    boolean isPublicMethod(MethodT method);
+    boolean isPublicMethod(M method);
 
     /**
      * Returns true if the field is public.
      */
-    boolean isPublicField(FieldT field);
+    boolean isPublicField(F field);
 
     /**
      * Returns true if this is an enum class.
      */
-    boolean isEnum(ClassDeclT clazz);
+    boolean isEnum(C clazz);
 
     /**
      * Computes the erasure
      */
-    <T> TypeT erasure(TypeT contentInMemoryType);
+    <T> T erasure(T contentInMemoryType);
     // This unused T is necessary to make ReflectionNavigator.erasure work nicely
 
     /**
      * Returns true if this is an abstract class.
      */
-    boolean isAbstract(ClassDeclT clazz);
+    boolean isAbstract(C clazz);
 
     /**
      * Returns true if this is a final class.
      */
-    boolean isFinal(ClassDeclT clazz);
+    boolean isFinal(C clazz);
 
     /**
      * Gets the enumeration constants from an enum class.
@@ -292,10 +292,10 @@ public interface Navigator<TypeT,ClassDeclT,FieldT,MethodT> {
      * @return
      *      can be empty but never null.
      */ 
-    FieldT[] getEnumConstants(ClassDeclT clazz);
+    F[] getEnumConstants(C clazz);
 
     /**
      * Gets the representation of the primitive "void" type.
      */
-    TypeT getVoidType();
+    T getVoidType();
 }

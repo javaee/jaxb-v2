@@ -8,12 +8,12 @@ import com.sun.xml.bind.v2.runtime.Location;
  *
  * @author Kohsuke Kawaguchi
  */
-public class FieldLocatable<FieldT> implements Locatable {
+public class FieldLocatable<F> implements Locatable {
     private final Locatable upstream;
-    private final FieldT field;
-    private final Navigator<?,?,FieldT,?> nav;
+    private final F field;
+    private final Navigator<?,?,F,?> nav;
 
-    public FieldLocatable(Locatable upstream, FieldT field, Navigator<?,?,FieldT,?> nav) {
+    public FieldLocatable(Locatable upstream, F field, Navigator<?,?,F,?> nav) {
         this.upstream = upstream;
         this.field = field;
         this.nav = nav;

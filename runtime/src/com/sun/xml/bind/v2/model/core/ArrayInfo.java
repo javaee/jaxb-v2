@@ -11,11 +11,11 @@ package com.sun.xml.bind.v2.model.core;
  *
  * @author Kohsuke Kawaguchi
  */
-public interface ArrayInfo<TypeT,ClassDeclT> extends NonElement<TypeT,ClassDeclT> {
+public interface ArrayInfo<T,C> extends NonElement<T,C> {
     /**
      * T of T[]. The type of the items of the array.
      *
      * @return  never null
      */
-    NonElement<TypeT,ClassDeclT> getItemType();
+    NonElement<T,C> getItemType();
 }

@@ -8,12 +8,12 @@ import com.sun.xml.bind.v2.runtime.Location;
  * 
  * @author Kohsuke Kawaguchi
  */
-public class ClassLocatable<ClassDeclT> implements Locatable {
+public class ClassLocatable<C> implements Locatable {
     private final Locatable upstream;
-    private final ClassDeclT clazz;
-    private final Navigator<?,ClassDeclT,?,?> nav;
+    private final C clazz;
+    private final Navigator<?,C,?,?> nav;
 
-    public ClassLocatable(Locatable upstream, ClassDeclT clazz, Navigator<?,ClassDeclT,?,?> nav) {
+    public ClassLocatable(Locatable upstream, C clazz, Navigator<?,C,?,?> nav) {
         this.upstream = upstream;
         this.clazz = clazz;
         this.nav = nav;

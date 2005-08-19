@@ -11,7 +11,7 @@ import javax.xml.namespace.QName;
  *
  * @author Kohsuke Kawaguchi
  */
-public interface BuiltinLeafInfo<TypeT,ClassDeclT> extends LeafInfo<TypeT,ClassDeclT> {
+public interface BuiltinLeafInfo<T,C> extends LeafInfo<T,C> {
     /**
      * {@inheritDoc}
      *

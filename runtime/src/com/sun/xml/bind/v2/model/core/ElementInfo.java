@@ -11,7 +11,7 @@ import javax.xml.bind.JAXBElement;
  *
  * @author Kohsuke Kawaguchi
  */
-public interface ElementInfo<TypeT,ClassDeclT> extends Element<TypeT,ClassDeclT> {
+public interface ElementInfo<T,C> extends Element<T,C> {
 
     /**
      * Gets the object that represents the value property.
@@ -19,7 +19,7 @@ public interface ElementInfo<TypeT,ClassDeclT> extends Element<TypeT,ClassDeclT>
      * @return
      *      non-null.
      */
-    ElementPropertyInfo<TypeT,ClassDeclT> getProperty();
+    ElementPropertyInfo<T,C> getProperty();
 
     /**
      * Short for <code>getProperty().ref().get(0)</code>.
@@ -34,7 +34,7 @@ public interface ElementInfo<TypeT,ClassDeclT> extends Element<TypeT,ClassDeclT>
      *
      * @see #getContentInMemoryType()
      */
-    NonElement<TypeT,ClassDeclT> getContentType();
+    NonElement<T,C> getContentType();
 
     /**
      * T of {@code JAXBElement<T>}.
@@ -44,7 +44,7 @@ public interface ElementInfo<TypeT,ClassDeclT> extends Element<TypeT,ClassDeclT>
      *
      * @see #getContentType()
      */
-    TypeT getContentInMemoryType();
+    T getContentInMemoryType();
 
     /**
      * Returns the representation for {@link JAXBElement}&lt;<i>contentInMemoryType</i>&gt;.
@@ -52,14 +52,14 @@ public interface ElementInfo<TypeT,ClassDeclT> extends Element<TypeT,ClassDeclT>
      * <p>
      * This returns the signature in Java and thus isn't affected by the adapter.
      */
-    TypeT getType();
+    T getType();
 
     /**
      * @inheritDoc
      *
      * {@link ElementInfo} can only substitute {@link ElementInfo}. 
      */
-    ElementInfo<TypeT,ClassDeclT> getSubstitutionHead();
+    ElementInfo<T,C> getSubstitutionHead();
 
     /**
      * All the {@link ElementInfo}s whose {@link #getSubstitutionHead()} points
@@ -68,5 +68,5 @@ public interface ElementInfo<TypeT,ClassDeclT> extends Element<TypeT,ClassDeclT>
      * @return
      *      can be empty but never null.
      */
-    Collection<? extends ElementInfo<TypeT,ClassDeclT>> getSubstitutionMembers();
+    Collection<? extends ElementInfo<T,C>> getSubstitutionMembers();
 }

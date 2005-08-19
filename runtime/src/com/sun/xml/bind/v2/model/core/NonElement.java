@@ -11,7 +11,7 @@ import javax.xml.namespace.QName;
  *
  * @author Kohsuke Kawaguchi
  */
-public interface NonElement<TypeT,ClassDeclT> extends TypeInfo<TypeT,ClassDeclT> {
+public interface NonElement<T,C> extends TypeInfo<T,C> {
     /**
      * Gets the XML type name of the class.
      *

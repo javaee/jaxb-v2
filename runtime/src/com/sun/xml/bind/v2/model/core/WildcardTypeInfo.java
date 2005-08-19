@@ -7,5 +7,5 @@ package com.sun.xml.bind.v2.model.core;
  *
  * @author Kohsuke Kawaguchi
  */
-public interface WildcardTypeInfo<TypeT,ClassDeclT> extends TypeInfo<TypeT,ClassDeclT> {
+public interface WildcardTypeInfo<T,C> extends TypeInfo<T,C> {
 }

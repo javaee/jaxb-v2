@@ -9,7 +9,7 @@ import javax.xml.namespace.QName;
  *
  * @author Kohsuke Kawaguchi
  */
-public interface Element<TypeT,ClassDeclT> extends TypeInfo<TypeT,ClassDeclT> {
+public interface Element<T,C> extends TypeInfo<T,C> {
     /**
      * Gets the element name of the class.
      *
@@ -27,10 +27,10 @@ public interface Element<TypeT,ClassDeclT> extends TypeInfo<TypeT,ClassDeclT> {
      * @return
      *      null if no such element exists.
      */
-    Element<TypeT,ClassDeclT> getSubstitutionHead();
+    Element<T,C> getSubstitutionHead();
 
     /**
      * If non-null, this element is only active inside the given scope.
      */
-    ClassInfo<TypeT,ClassDeclT> getScope();
+    ClassInfo<T,C> getScope();
 }

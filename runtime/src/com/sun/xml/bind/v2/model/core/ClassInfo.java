@@ -34,7 +34,7 @@ import javax.xml.namespace.QName;
  *
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
-public interface ClassInfo<TypeT,ClassDeclT> extends NonElement<TypeT,ClassDeclT> {
+public interface ClassInfo<T,C> extends NonElement<T,C> {
 
     /**
      * Obtains the information about the base class.
@@ -42,12 +42,12 @@ public interface ClassInfo<TypeT,ClassDeclT> extends NonElement<TypeT,ClassDeclT
      * @return null
      *      if this info extends from {@link Object}.
      */
-    ClassInfo<TypeT,ClassDeclT> getBaseClass();
+    ClassInfo<T,C> getBaseClass();
 
     /**
      * Gets the declaration this object is wrapping.
      */
-    ClassDeclT getClazz();
+    C getClazz();
 
     /**
      * Gets the fully-qualified name of the class.
@@ -73,7 +73,7 @@ public interface ClassInfo<TypeT,ClassDeclT> extends NonElement<TypeT,ClassDeclT
      * @return
      *      always non-null, but can be empty.
      */
-    List<? extends PropertyInfo<TypeT,ClassDeclT>> getProperties();
+    List<? extends PropertyInfo<T,C>> getProperties();
 
     /**
      * Gets the property that has the specified name.
@@ -91,7 +91,7 @@ public interface ClassInfo<TypeT,ClassDeclT> extends NonElement<TypeT,ClassDeclT
      * @return null
      *      if the property was not found.
      */
-    PropertyInfo<TypeT,ClassDeclT> getProperty(String name);
+    PropertyInfo<T,C> getProperty(String name);
 
     /**
      * If the class has properties, return true.  This is only
@@ -129,7 +129,7 @@ public interface ClassInfo<TypeT,ClassDeclT> extends NonElement<TypeT,ClassDeclT
      * @return
      *      null if {@link #isElement()}==false, non-null if {@link #isElement()}==true.
      */
-    Element<TypeT,ClassDeclT> asElement();
+    Element<T,C> asElement();
 
     /**
      * Returns true if the properties of this class is ordered in XML.

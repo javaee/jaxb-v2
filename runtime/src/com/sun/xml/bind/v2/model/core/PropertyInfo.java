@@ -19,12 +19,12 @@ import javax.xml.namespace.QName;
  *
  * @author Kohsuke Kawaguchi
  */
-public interface PropertyInfo<TypeT,ClassDeclT> {
+public interface PropertyInfo<T,C> {
 
     /**
      * Gets the {@link ClassInfo} or {@link ElementInfo} to which this property belongs.
      */
-    TypeInfo<TypeT,ClassDeclT> parent();
+    TypeInfo<T,C> parent();
 
     /**
      * Gets the name of the property.
@@ -61,7 +61,7 @@ public interface PropertyInfo<TypeT,ClassDeclT> {
      * @return
      *      non-null read-only collection.
      */
-    Collection<? extends TypeInfo<TypeT,ClassDeclT>> ref();
+    Collection<? extends TypeInfo<T,C>> ref();
 
     /**
      * Gets the kind of this proeprty.
@@ -75,7 +75,7 @@ public interface PropertyInfo<TypeT,ClassDeclT> {
      * @return
      *      null if the property is not adapted.
      */
-    Adapter<TypeT,ClassDeclT> getAdapter();
+    Adapter<T,C> getAdapter();
 
     /**
      * Returns the IDness of the value of this element.

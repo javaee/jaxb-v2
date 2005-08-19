@@ -3,7 +3,7 @@ package com.sun.xml.bind.v2.model.core;
 /**
  * @author Kohsuke Kawaguchi
  */
-public interface EnumLeafInfo<TypeT,ClassDeclT> extends LeafInfo<TypeT,ClassDeclT> {
+public interface EnumLeafInfo<T,C> extends LeafInfo<T,C> {
     /**
      * The same as {@link #getType()} but an {@link EnumLeafInfo}
      * is guaranteed to represent an enum declaration, which is a
@@ -12,7 +12,7 @@ public interface EnumLeafInfo<TypeT,ClassDeclT> extends LeafInfo<TypeT,ClassDecl
      * @return
      *      always non-null.
      */
-    ClassDeclT getClazz();
+    C getClazz();
 
     /**
      * Returns the base type of the enumeration.
@@ -34,7 +34,7 @@ public interface EnumLeafInfo<TypeT,ClassDeclT> extends LeafInfo<TypeT,ClassDecl
      * @return
      *      never null.
      */
-    NonElement<TypeT,ClassDeclT> getBaseType();
+    NonElement<T,C> getBaseType();
 
     /**
      * Returns the read-only list of enumeration constants.

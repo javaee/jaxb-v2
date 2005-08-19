@@ -10,7 +10,7 @@ import javax.xml.namespace.QName;
  * @author Kohsuke Kawaguchi
  */
 // TODO: there seems to be too much interactions between switches, and that's no good.
-public interface ElementPropertyInfo<TypeT,ClassDeclT> extends PropertyInfo<TypeT,ClassDeclT> {
+public interface ElementPropertyInfo<T,C> extends PropertyInfo<T,C> {
     /**
      * Returns the information about the possible types in this property.
      *
@@ -18,7 +18,7 @@ public interface ElementPropertyInfo<TypeT,ClassDeclT> extends PropertyInfo<Type
      *      Always non-null. Contains at least one entry.
      *      If {@link #isValueList()}==true, there's always exactly one type.
      */
-    List<? extends TypeRef<TypeT,ClassDeclT>> getTypes();
+    List<? extends TypeRef<T,C>> getTypes();
 
     /**
      * Gets the wrapper element name.
