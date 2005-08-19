@@ -1,6 +1,8 @@
 package com.sun.xml.bind.v2.model.core;
 
 /**
+ * {@link NonElement} that represents an {@link Enum} class.
+ *
  * @author Kohsuke Kawaguchi
  */
 public interface EnumLeafInfo<T,C> extends LeafInfo<T,C> {
