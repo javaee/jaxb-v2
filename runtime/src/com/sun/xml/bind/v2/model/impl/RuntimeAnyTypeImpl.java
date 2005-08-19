@@ -14,7 +14,7 @@ final class RuntimeAnyTypeImpl extends AnyTypeImpl<Type,Class> implements Runtim
         super(Navigator.REFLECTION);
     }
 
-    public Transducer getTransducer() {
+    public <V> Transducer<V> getTransducer() {
         return null;
     }
 

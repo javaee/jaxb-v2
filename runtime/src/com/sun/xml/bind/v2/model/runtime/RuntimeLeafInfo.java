@@ -15,7 +15,7 @@ public interface RuntimeLeafInfo extends LeafInfo<Type,Class>, RuntimeNonElement
      * @return
      *      always non-null.
      */
-    Transducer getTransducer();
+    <V> Transducer<V> getTransducer();
 
     /**
      * The same as {@link #getType()} but returns the type as a {@link Class}.

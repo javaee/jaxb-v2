@@ -97,12 +97,12 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
 
     private Accessor<?,Map<QName,String>> attributeWildcardAccessor;
 
-    public Accessor<?,Map<QName,String>> getAttributeWildcard() {
+    public <B> Accessor<B,Map<QName,String>> getAttributeWildcard() {
         for( RuntimeClassInfoImpl c=this; c!=null; c=c.getBaseClass() ) {
             if(c.attributeWildcard!=null) {
                 if(c.attributeWildcardAccessor==null)
                     c.attributeWildcardAccessor = c.createAttributeWildcardAccessor();
-                return c.attributeWildcardAccessor;
+                return (Accessor<B,Map<QName,String>>)c.attributeWildcardAccessor;
             }
         }
         return null;
