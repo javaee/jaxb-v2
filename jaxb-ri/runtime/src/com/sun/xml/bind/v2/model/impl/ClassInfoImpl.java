@@ -100,6 +100,8 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     private boolean baseClassComputed = false;
 
+    private boolean hasSubClasses = false;
+
     /**
      * If this class has a declared (not inherited) attribute wildcard,  keep the reference
      * to it.
@@ -155,8 +157,10 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             ClassDeclT s = nav().getSuperClass(clazz);
             if(s==null || s==nav().asDecl(Object.class))
                 baseClass = null;
-            else
+            else {
                 baseClass = (ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>) builder.getClassInfo(s,this);
+                baseClass.hasSubClasses = true;
+            }
         }
         return baseClass;
     }
@@ -832,8 +836,12 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         return propOrder!=null;
     }
 
-    public boolean isFinal() {
+    public final boolean isFinal() {
         return nav().isFinal(clazz);
+    }
+
+    public final boolean hasSubClasses() {
+        return hasSubClasses;
     }
 
     public final boolean hasAttributeWildcard() {

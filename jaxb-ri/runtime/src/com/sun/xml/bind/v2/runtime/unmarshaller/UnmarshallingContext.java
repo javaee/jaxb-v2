@@ -927,7 +927,7 @@ public final class UnmarshallingContext extends Coordinator
             state.prev.target = new JAXBElement(qn,context.expectedType.jaxbType,null,null);
 
             state.receiver = this;
-            state.loader = new XsiTypeLoader(context.expectedType);
+            state.loader = context.expectedType.getLoader(null,true);
         }
 
         public void receive(State state, Object o) {

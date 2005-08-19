@@ -9,7 +9,6 @@ import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.util.QNameMap;
-import com.sun.xml.bind.v2.util.QNameMap;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementInfo;
@@ -22,6 +21,7 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.TagName;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Intercepter;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiTypeLoader;
 
 import org.xml.sax.SAXException;
 
@@ -206,7 +206,7 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
         return e.getName().getLocalPart();
     }
 
-    public Loader getLoader() {
+    public Loader getLoader(JAXBContextImpl context, boolean typeSubstitutionCapable) {
         return loader;
     }
 

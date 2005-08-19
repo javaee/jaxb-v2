@@ -176,7 +176,7 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
         for (RuntimeTypeRef typeRef : prop.getTypes()) {
 
             Name tagName = chain.context.nameBuilder.createElementName(typeRef.getTagName());
-            Loader item = createItemUnmarshaller(typeRef);
+            Loader item = createItemUnmarshaller(chain,typeRef);
 
             if(typeRef.isNillable())
                 item = new XsiNilLoader.Array(item,acc,offset,lister);
@@ -203,14 +203,15 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
      * When unmarshalling the body of item, the Pack of {@link Lister} is available
      * as the handler state.
      *
+     * @param chain
      * @param typeRef
      */
-    private final Loader createItemUnmarshaller(RuntimeTypeRef typeRef) {
+    private Loader createItemUnmarshaller(UnmarshallerChain chain, RuntimeTypeRef typeRef) {
         if(PropertyFactory.isLeaf(typeRef.getSource())) {
             final Transducer xducer = typeRef.getTransducer();
             return new TextLoader(xducer);
         } else {
-            return new XsiTypeLoader(refs.get(typeRef));
+            return refs.get(typeRef).getLoader(chain.context,true);
         }
     }
 

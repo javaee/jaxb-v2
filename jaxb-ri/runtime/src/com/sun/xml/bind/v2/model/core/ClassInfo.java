@@ -147,6 +147,11 @@ public interface ClassInfo<T,C> extends NonElement<T,C> {
     boolean isFinal();
 
     /**
+     * True if there's a known sub-type of this class in {@link TypeInfoSet}.
+     */
+    boolean hasSubClasses();
+
+    /**
      * Returns true if this bean class has an attribute wildcard.
      *
      * <p>

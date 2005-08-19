@@ -4,7 +4,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.49 2005-08-18 20:23:09 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.50 2005-08-19 21:58:10 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -54,7 +54,6 @@ import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.bind.util.Which;
 import com.sun.xml.bind.v2.util.QNameMap;
 import com.sun.xml.bind.v2.WellKnownNamespace;
-import com.sun.xml.bind.v2.util.QNameMap;
 import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.NonElement;
@@ -91,7 +90,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -477,25 +476,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
             // TODO: this is probably the right place to handle @xsi:type
             return null;
 
-        // objects are created by the Loader that loads it.
-//        // try the outer peer of the current element first
-//        Object child = context.getOuterPeer();
-//        if(!beanInfo.jaxbType.isInstance(child))
-//            child = null;   // unexpected type
-//
-//        if(child!=null) {
-//            if(!beanInfo.reset(child,context))
-//                child = null;
-//        }
-//
-//        if(child==null)
-//            child = context.createInstance(beanInfo);
-//
-//        context.recordOuterPeer(child);
-
-        Loader l = beanInfo.getLoader();
-
-        return l;
+        return beanInfo.getLoader(this,true);
     }
 
     /**

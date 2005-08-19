@@ -100,8 +100,8 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
     }
 
     public void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<ChildLoader> handlers) {
-        keyLoader = new XsiTypeLoader(keyBeanInfo);
-        valueLoader = new XsiTypeLoader(valueBeanInfo);
+        keyLoader = keyBeanInfo.getLoader(chain.context,true);
+        valueLoader = valueBeanInfo.getLoader(chain.context,true);
         handlers.put(tagName,new ChildLoader(itemsLoader,null));
     }
 

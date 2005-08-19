@@ -144,6 +144,10 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
         this.hasAttributeWildcard = hasAttributeWildcard;
     }
 
+    public boolean hasSubClasses() {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * Returns true iff a new attribute wildcard property needs to be
      * declared on this class.

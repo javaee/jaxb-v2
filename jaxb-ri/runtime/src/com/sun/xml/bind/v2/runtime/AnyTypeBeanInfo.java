@@ -13,6 +13,7 @@ import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfo;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.unmarshaller.DomLoader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiTypeLoader;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
@@ -128,10 +129,14 @@ final class AnyTypeBeanInfo extends JaxBeanInfo<Object> {
         return null;
     }
 
-    public Loader getLoader() {
-        return domLoader;
+    public Loader getLoader(JAXBContextImpl context, boolean typeSubstitutionCapable) {
+        if(typeSubstitutionCapable)
+            return substLoader;
+        else
+            return domLoader;
     }
 
     private static final W3CDomHandler domHandler = new W3CDomHandler();
     private static final DomLoader domLoader = new DomLoader(domHandler);
+    private final XsiTypeLoader substLoader = new XsiTypeLoader(this);
 }

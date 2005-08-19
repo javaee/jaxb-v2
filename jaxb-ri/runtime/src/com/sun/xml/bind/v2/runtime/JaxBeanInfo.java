@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JaxBeanInfo.java,v 1.7 2005-08-04 22:58:25 kohsuke Exp $
+ * @(#)$Id: JaxBeanInfo.java,v 1.8 2005-08-19 21:58:10 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -294,10 +294,23 @@ public abstract class JaxBeanInfo<BeanT> {
     /**
      * Gets the {@link Loader} that will unmarshall the given object.
      *
+     * @param context
+     *      The {@link JAXBContextImpl} object that governs this object.
+     *      This object is taken as a parameter so that {@link JaxBeanInfo} doesn't have
+     *      to store them on its own.
+     *
+     *      When this method is invoked from within the unmarshaller, tihs parameter can be
+     *      null (because the loader is constructed already.)
+     *
+     * @param typeSubstitutionCapable
+     *      If true, the returned {@link Loader} is capable of recognizing @xsi:type (if necessary)
+     *      and unmarshals a subtype. This allowes an optimization where this bean info
+     *      is guaranteed not to have a type substitution.
+     *      If false, the returned {@link Loader} doesn't look for @xsi:type.
      * @return
      *      must return non-null valid object
      */
-    public abstract Loader getLoader();
+    public abstract Loader getLoader(JAXBContextImpl context, boolean typeSubstitutionCapable);
 
     /**
      * If the bean's representation in XML is just a text,

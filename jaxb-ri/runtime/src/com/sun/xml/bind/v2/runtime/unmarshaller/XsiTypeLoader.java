@@ -60,7 +60,7 @@ public class XsiTypeLoader extends Loader {
             }
         }
 
-        Loader loader = beanInfo.getLoader();
+        Loader loader = beanInfo.getLoader(null,false);
         state.loader = loader;
         loader.startElement(state,ea);
     }

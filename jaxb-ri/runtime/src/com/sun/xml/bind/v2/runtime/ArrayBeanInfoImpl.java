@@ -3,21 +3,20 @@ package com.sun.xml.bind.v2.runtime;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
-import javax.xml.stream.XMLStreamException;
-import javax.xml.namespace.QName;
-import javax.xml.bind.helpers.ValidationEventImpl;
 import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.helpers.ValidationEventImpl;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.v2.model.runtime.RuntimeArrayInfo;
-import com.sun.xml.bind.v2.runtime.unmarshaller.TagName;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Receiver;
+import com.sun.xml.bind.v2.runtime.unmarshaller.TagName;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
-import com.sun.xml.bind.v2.runtime.unmarshaller.XsiTypeLoader;
 
 import org.xml.sax.SAXException;
 
@@ -38,15 +37,16 @@ final class ArrayBeanInfoImpl  extends JaxBeanInfo {
         this.itemType = jaxbType.getComponentType();
         this.itemBeanInfo = owner.getOrCreate(rai.getItemType());
 
-        loader = new ArrayLoader();
+        loader = new ArrayLoader(owner);
     }
 
     private final class ArrayLoader extends Loader implements Receiver {
-        public ArrayLoader() {
+        public ArrayLoader(JAXBContextImpl owner) {
             super(false);
+            itemLoader = itemBeanInfo.getLoader(owner,true);
         }
 
-        private final XsiTypeLoader itemLoader = new XsiTypeLoader(itemBeanInfo);
+        private final Loader itemLoader;
 
         @Override
         public void startElement(UnmarshallingContext.State state, TagName ea) {
@@ -143,7 +143,8 @@ final class ArrayBeanInfoImpl  extends JaxBeanInfo {
         return null;
     }
 
-    public final Loader getLoader() {
+    public final Loader getLoader(JAXBContextImpl context, boolean typeSubstitutionCapable) {
+        // type substitution not possible
         return loader;
     }
 }

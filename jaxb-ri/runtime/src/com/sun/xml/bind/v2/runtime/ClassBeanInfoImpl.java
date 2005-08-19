@@ -25,6 +25,7 @@ import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.StructureLoader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiTypeLoader;
 
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -54,6 +55,7 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
      * Set from the link method, but considered final.
      */
     private Loader loader;
+    private Loader loaderWithTypeSubst;
 
     /**
      * Set only until the link phase to avoid leaking memory.
@@ -129,13 +131,15 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
 
     @Override
     protected void link(JAXBContextImpl grammar) {
-        if(loader!=null)      return; // avoid linkng twice.
+        if(uriProperties!=null)
+            return; // avoid linking twice
+        
+        super.link(grammar);
 
         if(superClazz!=null)
             superClazz.link(grammar);
 
-        // create unmarshaller. our unmarshaller is immutable
-        loader = createLoader(grammar);
+        getLoader(grammar,true);    // make sure to build the loader if we haven't done so.
 
         // propagate values from super class
         if(superClazz!=null) {
@@ -178,11 +182,6 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
         ci = null;
         super.wrapUp();
     }
-
-    private Loader createLoader(JAXBContextImpl grammar) {
-        return new StructureLoader(grammar,this,ci.getAttributeWildcard());
-    }
-
 
     public String getElementNamespaceURI(BeanT bean) {
         return tagName.nsUri;
@@ -283,8 +282,21 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
         }
     }
 
-    public Loader getLoader() {
-        return loader;
+    public Loader getLoader(JAXBContextImpl context, boolean typeSubstitutionCapable) {
+        if(loader==null) {
+            StructureLoader sl = new StructureLoader(this);
+            sl.init(context,this,ci.getAttributeWildcard());
+            loader = sl;
+            if(ci.hasSubClasses())
+                loaderWithTypeSubst = new XsiTypeLoader(this);
+            else
+                // optimization. we know there can be no @xsi:type
+                loaderWithTypeSubst = loader;
+        }
+        if(typeSubstitutionCapable)
+            return loaderWithTypeSubst;
+        else
+            return loader;
     }
 
     public Transducer<BeanT> getTransducer() {
