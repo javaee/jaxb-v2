@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: AssociationMap.java,v 1.2 2005-08-19 18:44:00 kohsuke Exp $
+ * @(#)$Id: AssociationMap.java,v 1.3 2005-08-19 18:47:12 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -26,7 +26,7 @@ import java.util.HashSet;
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-final class AssociationMap<XmlNode> {
+public final class AssociationMap<XmlNode> {
     final static class Entry<XmlNode> {
         /** XML element. */
     	private XmlNode element;
