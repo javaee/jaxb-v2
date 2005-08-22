@@ -1,11 +1,13 @@
 package com.sun.xml.bind.api;
 
 import java.io.OutputStream;
+import java.io.InputStream;
 import java.net.URL;
 
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.bind.JAXBException;
+import javax.xml.transform.Source;
 
 import org.w3c.dom.Node;
 
@@ -73,8 +75,10 @@ public abstract class Bridge<T> {
     /**
      * Unmarshals the specified type object.
      *
-     * @param url
-     *      the URL to unmarshal.
+     * @param in
+     *      the parser must be pointing at a start tag
+     *      that encloses the XML type that this {@link Bridge} is
+     *      instanciated for.
      *
      * @return
      *      never null.
@@ -83,9 +87,26 @@ public abstract class Bridge<T> {
      *      if there was an error while unmarshalling.
      *
      * @since 2.0 EA1
-     * @deprecated is this method still in use?
      */
-    public abstract T unmarshal(BridgeContext context,URL url) throws JAXBException;
+    public abstract T unmarshal(BridgeContext context, Source in) throws JAXBException;
+
+    /**
+     * Unmarshals the specified type object.
+     *
+     * @param in
+     *      the parser must be pointing at a start tag
+     *      that encloses the XML type that this {@link Bridge} is
+     *      instanciated for.
+     *
+     * @return
+     *      never null.
+     *
+     * @throws JAXBException
+     *      if there was an error while unmarshalling.
+     *
+     * @since 2.0 EA1
+     */
+    public abstract T unmarshal(BridgeContext context, InputStream in) throws JAXBException;
 
     /**
      * Gets the {@link TypeReference} from which this bridge was created.
