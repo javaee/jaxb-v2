@@ -4,11 +4,12 @@
  */
 
 /*
- * @(#)$Id: UnmarshallerImpl.java,v 1.23 2005-08-18 23:09:26 kohsuke Exp $
+ * @(#)$Id: UnmarshallerImpl.java,v 1.24 2005-08-22 22:27:48 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 import javax.xml.bind.DatatypeConverter;
@@ -224,6 +225,26 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
         throw new IllegalArgumentException();
     }
 
+    public Object unmarshal0( Source source, JaxBeanInfo expectedType ) throws JAXBException {
+        if(source instanceof SAXSource) {
+            SAXSource ss = (SAXSource)source;
+
+            XMLReader reader = ss.getXMLReader();
+            if( reader == null )
+                reader = getXMLReader();
+
+            return unmarshal0( reader, ss.getInputSource(), expectedType );
+        }
+        if(source instanceof StreamSource) {
+            return unmarshal0( getXMLReader(), streamSourceToInputSource((StreamSource)source), expectedType );
+        }
+        if(source instanceof DOMSource)
+            return unmarshal0( ((DOMSource)source).getNode(), expectedType );
+
+        // we don't handle other types of Source
+        throw new IllegalArgumentException();
+    }
+
 
     public final ValidationEventHandler getEventHandler() {
         try {
@@ -345,9 +366,8 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
         }
     }
 
-    // remove this method when you remove this use from BridgeImpl
-    public Object unmarshal0( URL input, JaxBeanInfo expectedType ) throws JAXBException {
-        return unmarshal0(getXMLReader(),new InputSource(input.toExternalForm()),expectedType);
+    public Object unmarshal0( InputStream input, JaxBeanInfo expectedType ) throws JAXBException {
+        return unmarshal0(getXMLReader(),new InputSource(input),expectedType);
     }
 
     private static JAXBException handleStreamException(XMLStreamException e) {

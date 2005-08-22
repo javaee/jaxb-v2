@@ -1,5 +1,6 @@
 package com.sun.xml.bind.v2.runtime;
 
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 
@@ -7,7 +8,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.Source;
 
 import com.sun.xml.bind.api.Bridge;
 import com.sun.xml.bind.api.BridgeContext;
@@ -60,9 +61,13 @@ final class BridgeImpl<T> extends Bridge<T> {
         return ((JAXBElement<T>)u.unmarshal0(in,bi)).getValue();
     }
 
-    public T unmarshal(BridgeContext context, URL in) throws JAXBException {
+    public T unmarshal(BridgeContext context, Source in) throws JAXBException {
         UnmarshallerImpl u = ((BridgeContextImpl)context).unmarshaller;
-        // remove this unmarshal0 method when you remove this method
+        return ((JAXBElement<T>)u.unmarshal0(in,bi)).getValue();
+    }
+
+    public T unmarshal(BridgeContext context, InputStream in) throws JAXBException {
+        UnmarshallerImpl u = ((BridgeContextImpl)context).unmarshaller;
         return ((JAXBElement<T>)u.unmarshal0(in,bi)).getValue();
     }
 

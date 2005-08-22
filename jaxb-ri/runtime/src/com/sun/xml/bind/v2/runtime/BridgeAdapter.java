@@ -1,6 +1,7 @@
 package com.sun.xml.bind.v2.runtime;
 
 import java.io.OutputStream;
+import java.io.InputStream;
 import java.net.URL;
 
 import javax.xml.bind.JAXBException;
@@ -9,6 +10,7 @@ import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.transform.Source;
 
 import com.sun.xml.bind.api.Bridge;
 import com.sun.xml.bind.api.BridgeContext;
@@ -69,8 +71,12 @@ final class BridgeAdapter<OnWire,InMemory> extends Bridge<InMemory> {
         return adaptU(context, core.unmarshal(context,in));
     }
 
-    public InMemory unmarshal(BridgeContext context, URL url) throws JAXBException {
-        return adaptU(context, core.unmarshal(context,url));
+    public InMemory unmarshal(BridgeContext context, Source in) throws JAXBException {
+        return adaptU(context, core.unmarshal(context,in));
+    }
+
+    public InMemory unmarshal(BridgeContext context, InputStream in) throws JAXBException {
+        return adaptU(context, core.unmarshal(context,in));
     }
 
     public TypeReference getTypeReference() {
