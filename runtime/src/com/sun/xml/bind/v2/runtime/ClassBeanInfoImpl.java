@@ -284,14 +284,18 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
 
     public Loader getLoader(JAXBContextImpl context, boolean typeSubstitutionCapable) {
         if(loader==null) {
+            // these variables have to be set before they are initialized,
+            // because the initialization may build other loaders and they may refer to this.
             StructureLoader sl = new StructureLoader(this);
             loader = sl;
-            sl.init(context,this,ci.getAttributeWildcard());
             if(ci.hasSubClasses())
                 loaderWithTypeSubst = new XsiTypeLoader(this);
             else
                 // optimization. we know there can be no @xsi:type
                 loaderWithTypeSubst = loader;
+
+
+            sl.init(context,this,ci.getAttributeWildcard());
         }
         if(typeSubstitutionCapable)
             return loaderWithTypeSubst;
