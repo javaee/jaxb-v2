@@ -1,7 +1,7 @@
 package com.sun.xml.bind.v2.model.impl;
 
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.xml.bind.JAXBElement;
@@ -78,7 +78,7 @@ class ReferencePropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      */
     private void calcTypes() {
         XmlElementRef[] ann;
-        types = new HashSet<Element<TypeT,ClassDeclT>>();
+        types = new LinkedHashSet<Element<TypeT,ClassDeclT>>();
         XmlElementRefs refs = seed.readAnnotation(XmlElementRefs.class);
         XmlElementRef ref = seed.readAnnotation(XmlElementRef.class);
 
