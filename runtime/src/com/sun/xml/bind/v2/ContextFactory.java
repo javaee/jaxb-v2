@@ -153,11 +153,10 @@ public class ContextFactory {
                     continue;
                 }
                 int dot = className.indexOf('.');
-                if (dot < 1) {
-                    throw new JAXBException(Messages.ILLEGAL_ENTRY.format(resource));
+                if (dot != -1) {
+                    throw new JAXBException(Messages.ILLEGAL_ENTRY.format(className));
                 }
 
-                className = className.substring(0, dot);
                 try {
                     classes.add(classLoader.loadClass(pkg + '.' + className));
                 } catch (ClassNotFoundException e) {
