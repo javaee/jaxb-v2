@@ -132,6 +132,7 @@ public final class ConversionFinder extends BindingComponent {
         m.put("byte",           CBuiltinLeafInfo.BYTE);
         m.put("double",         CBuiltinLeafInfo.DOUBLE);
         m.put("QName",          CBuiltinLeafInfo.QNAME);
+        m.put("NOTATION",       CBuiltinLeafInfo.QNAME);
         m.put("dateTime",       CBuiltinLeafInfo.CALENDAR);
         m.put("date",           CBuiltinLeafInfo.CALENDAR);
         m.put("time",           CBuiltinLeafInfo.CALENDAR);
