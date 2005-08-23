@@ -27,13 +27,22 @@ public class XsiTypeLoader extends Loader {
     }
 
     public void startElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
+        JaxBeanInfo beanInfo = parseXsiType(state, ea);
+        if(beanInfo==null)
+            beanInfo = defaultBeanInfo;
+
+        Loader loader = beanInfo.getLoader(null,false);
+        state.loader = loader;
+        loader.startElement(state,ea);
+    }
+
+    /*pacakge*/ static JaxBeanInfo parseXsiType(UnmarshallingContext.State state, TagName ea) throws SAXException {
         UnmarshallingContext context = state.getContext();
+        JaxBeanInfo beanInfo = null;
 
         // look for @xsi:type
         Attributes atts = ea.atts;
         int idx = atts.getIndex(WellKnownNamespace.XML_SCHEMA_INSTANCE,"type");
-
-        JaxBeanInfo beanInfo = defaultBeanInfo;
 
         if(idx>=0) {
             // we'll consume the value only when it's a recognized value,
@@ -44,24 +53,20 @@ public class XsiTypeLoader extends Loader {
             if(type==null) {
                 reportError(Messages.NOT_A_QNAME.format(value),true);
             } else {
-                beanInfo =  context.getJAXBContext().getGlobalType(type);
+                beanInfo = context.getJAXBContext().getGlobalType(type);
                 if(beanInfo==null) {
                     reportError(Messages.UNRECOGNIZED_TYPE_NAME.format(value),true);
-                    beanInfo = defaultBeanInfo;  // try to recover by using the default target type.
                 }
                 // TODO: resurrect the following check
-//                    else
-//                    if(!target.isAssignableFrom(actual)) {
-//                        reportError(context,
-//                            Messages.UNSUBSTITUTABLE_TYPE.format(value,actual.getName(),target.getName()),
-//                            true);
-//                        actual = targetBeanInfo;  // ditto
-//                    }
+        //                    else
+        //                    if(!target.isAssignableFrom(actual)) {
+        //                        reportError(context,
+        //                            Messages.UNSUBSTITUTABLE_TYPE.format(value,actual.getName(),target.getName()),
+        //                            true);
+        //                        actual = targetBeanInfo;  // ditto
+        //                    }
             }
         }
-
-        Loader loader = beanInfo.getLoader(null,false);
-        state.loader = loader;
-        loader.startElement(state,ea);
+        return beanInfo;
     }
 }

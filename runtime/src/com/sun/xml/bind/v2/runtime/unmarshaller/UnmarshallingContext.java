@@ -889,14 +889,26 @@ public final class UnmarshallingContext extends Coordinator
          * unmarshalling.
          */
         public void childElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
-            UnmarshallingContext context = state.getContext();
-            Loader loader = context.getJAXBContext().selectRootLoader(state,ea);
-            if(loader==null) {
-                // the registry doesn't know about this element.
+            JAXBContextImpl jaxbContext = state.getContext().getJAXBContext();
+
+            Loader loader = jaxbContext.selectRootLoader(state,ea);
+            if(loader!=null) {
+                state.loader = loader;
+                state.receiver = this;
+                return;
+            }
+
+            // the registry doesn't know about this element.
+            // try its xsi:type
+            JaxBeanInfo beanInfo = XsiTypeLoader.parseXsiType(state, ea);
+            if(beanInfo==null) {
+                // we don't even know its xsi:type
                 reportUnexpectedChildElement(ea,false);
                 return;
             }
-            state.loader = loader;
+
+            state.loader = beanInfo.getLoader(null,false);
+            state.prev.backup = new JAXBElement<Object>(ea.createQName(),Object.class,null);
             state.receiver = this;
         }
 
@@ -906,6 +918,10 @@ public final class UnmarshallingContext extends Coordinator
         }
 
         public void receive(State state, Object o) {
+            if(state.backup!=null) {
+                ((JAXBElement<Object>)state.backup).setValue(o);
+                o = state.backup;
+            }
             state.getContext().result = o;
         }
     }
@@ -1022,7 +1038,7 @@ public final class UnmarshallingContext extends Coordinator
      * When called from within the realm of the unmarshaller, this method
      * returns the current {@link UnmarshallingContext} in charge.
      */
-    public static final UnmarshallingContext getInstance() {
+    public static    UnmarshallingContext getInstance() {
         return (UnmarshallingContext)Coordinator._getInstance();
     }
 }
