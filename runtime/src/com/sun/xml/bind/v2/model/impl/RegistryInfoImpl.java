@@ -1,6 +1,6 @@
 package com.sun.xml.bind.v2.model.impl;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElementDecl;
@@ -30,7 +30,7 @@ final class RegistryInfoImpl<T,C,F,M> implements Locatable, RegistryInfo<T,C> {
     /**
      * Types that are referenced from this registry.
      */
-    private final Set<TypeInfo<T,C>> references = new HashSet<TypeInfo<T,C>>();
+    private final Set<TypeInfo<T,C>> references = new LinkedHashSet<TypeInfo<T,C>>();
 
     /**
      * Picks up references in this registry to other types.
