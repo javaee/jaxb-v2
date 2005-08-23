@@ -1,5 +1,7 @@
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
+import javax.xml.namespace.QName;
+
 import com.sun.xml.bind.v2.runtime.Name;
 
 import org.xml.sax.Attributes;
@@ -25,6 +27,7 @@ import org.xml.sax.Attributes;
  *
  * @author Kohsuke Kawaguchi
  */
+@SuppressWarnings({"StringEquality"})
 public abstract class TagName {
     /**
      * URI of the attribute/element name.
@@ -84,4 +87,23 @@ public abstract class TagName {
      * @return never null.
      */
     public abstract String getQname();
+
+    /**
+     * Gets the prefix. This is slow.
+     *
+     * @return can be "" but never null.
+     */
+    public String getPrefix() {
+        String qname = getQname();
+        int idx = qname.indexOf(':');
+        if(idx<0)   return "";
+        else        return qname.substring(0,idx);
+    }
+
+    /**
+     * Creates {@link QName}.
+     */
+    public QName createQName() {
+        return new QName(uri,local,getPrefix());
+    }
 }
