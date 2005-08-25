@@ -150,6 +150,7 @@
 		<zip	zipfile="build/${stage}.zip">
 			<zipfileset dir="." includes="build/xsom.jar" fullpath="${stage}/xsom.jar" />
 			<zipfileset dir="." includes="build/xsom14.jar" fullpath="${stage}/xsom14.jar" />
+			<zipfileset dir="." includes="license.txt" prefix="${stage}" />
 			<zipfileset dir="build/javadoc" includes="**/*.*" prefix="${stage}/javadoc" />
 			<zipfileset dir="doc" includes="**/*.*" prefix="${stage}" />
 			<zipfileset dir="examples" includes="**/*" prefix="${stage}/examples" />
@@ -168,7 +169,7 @@
 				<include name="build/src/**/*" />
 				<include name="build.xml" />
 				<include name="CVS/*" />
-				<include name="JRL.txt" />
+				<include name="license.txt" />
 				<include name="lib/**/*" />
 			</zipfileset>
 		</zip>
@@ -193,7 +194,7 @@
 			</manifest>
 			<zipfileset file="build/xsom-src.zip" fullpath="package.zip" />
 			<zipfileset dir="build/installer" includes="**/*" excludes="license.txt, META-INF/MANIFEST.MF" />
-			<zipfileset dir="." includes="JRL.txt" fullpath="license.txt"/>
+			<zipfileset dir="." includes="license.txt" />
 		</jar>
 		
 		<!-- pack it into a class -->
