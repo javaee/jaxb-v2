@@ -24,17 +24,17 @@ public class JVar extends JExpressionImpl implements JDeclaration, JAssignmentTa
     /**
      * JType of the variable
      */
-    JType type;
+    private JType type;
 
     /**
      * Name of the variable
      */
-    String name;
+    private String name;
 
     /**
      * Initialization of the variable in its declaration
      */
-    JExpression init;
+    private JExpression init;
 
     /**
      * Annotations on this variable. Lazily created.
@@ -88,6 +88,17 @@ public class JVar extends JExpressionImpl implements JDeclaration, JAssignmentTa
      */
     public JType type() {
         return type;
+    }
+
+    /**
+     * Sets the type of this variable.
+     */
+    public JType type(JType newType) {
+        JType r = type;
+        if(newType==null)
+            throw new IllegalArgumentException();
+        type = newType;
+        return r;
     }
 
 
