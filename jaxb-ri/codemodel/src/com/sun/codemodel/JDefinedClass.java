@@ -449,6 +449,17 @@ public class JDefinedClass
     }
 
     /**
+     * Removes a {@link JFieldVar} from this class.
+     *
+     * @throws IllegalArgumentException
+     *      if the given field is not a field on this class. 
+     */
+    public void removeField(JFieldVar field) {
+        if(fields.remove(field.name())!=field)
+            throw new IllegalArgumentException();
+    }
+
+    /**
      * Creates, if necessary, and returns the static initializer
      * for this class.
      *
