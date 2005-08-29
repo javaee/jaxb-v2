@@ -85,6 +85,8 @@ public class JVar extends JExpressionImpl implements JDeclaration, JAssignmentTa
 
     /**
      * Return the type of this variable.
+     * @return
+     *      always non-null.
      */
     public JType type() {
         return type;
@@ -92,6 +94,12 @@ public class JVar extends JExpressionImpl implements JDeclaration, JAssignmentTa
 
     /**
      * Sets the type of this variable.
+     *
+     * @param newType
+     *      must not be null.
+     *
+     * @return
+     *      the old type value. always non-null.
      */
     public JType type(JType newType) {
         JType r = type;
