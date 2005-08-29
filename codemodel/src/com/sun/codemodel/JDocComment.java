@@ -63,7 +63,7 @@ public class JDocComment extends JCommentPart implements JGenerable {
      * Append a text to an @param tag.
      */
     public JCommentPart addParam( JVar param ) {
-        return addParam( param.name );
+        return addParam( param.name() );
     }
 
 

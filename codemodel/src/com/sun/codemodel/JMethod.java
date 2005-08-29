@@ -306,7 +306,7 @@ public class JMethod extends JGenerifiableImpl implements JDeclaration, JAnnotat
 			return false;
 
 		for (int i = 0; i < p.length; i++)
-			if (!p[i].type.equals(argTypes[i]))
+			if (!p[i].type().equals(argTypes[i]))
 				return false;
 
 		return true;
@@ -375,7 +375,7 @@ public class JMethod extends JGenerifiableImpl implements JDeclaration, JAnnotat
 		if (hasVarArgs()) {
 			if (!first)
 				f.p(',');
-			f.g(varParam.type);
+			f.g(varParam.type());
 			f.p("... ");
 			f.id(varParam.name());
 		}
