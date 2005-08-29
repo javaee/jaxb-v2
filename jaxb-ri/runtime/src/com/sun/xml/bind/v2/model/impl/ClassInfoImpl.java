@@ -525,7 +525,8 @@ class ClassInfoImpl<T,C,F,M>
     private void addProperty( PropertySeed<T,C,F,M> seed ) {
         XmlAttribute a = seed.readAnnotation(XmlAttribute.class);
         XmlValue v = seed.readAnnotation(XmlValue.class);
-        XmlElement e = seed.readAnnotation(XmlElement.class);
+        XmlElement e1 = seed.readAnnotation(XmlElement.class);
+        XmlElements e2 = seed.readAnnotation(XmlElements.class);
         XmlElementRef r1 = seed.readAnnotation(XmlElementRef.class);
         XmlElementRefs r2 = seed.readAnnotation(XmlElementRefs.class);
         XmlTransient t = seed.readAnnotation(XmlTransient.class);
@@ -535,11 +536,11 @@ class ClassInfoImpl<T,C,F,M>
         //TODO: xae and other things
 
         // these are mutually exclusive annotations
-        int count = (a!=null?1:0)+(v!=null?1:0)+(e!=null?1:0)+(r1!=null?1:0)+(r2!=null?1:0)+(t!=null?1:0)+(aa!=null?1:0);
+        int count = (a!=null?1:0)+(v!=null?1:0)+(e1!=null?1:0)+(e2!=null?1:0)+(r1!=null?1:0)+(r2!=null?1:0)+(t!=null?1:0)+(aa!=null?1:0);
 
         try {
             if(count>1) {
-                List<Annotation> err = makeSet(a,v,e,r1,r2,t,aa);
+                List<Annotation> err = makeSet(a,v,e1,e2,r1,r2,t,aa);
                 throw new ConflictException(err);
             }
 
