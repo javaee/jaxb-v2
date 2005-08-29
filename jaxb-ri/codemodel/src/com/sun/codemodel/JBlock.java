@@ -7,16 +7,22 @@ package com.sun.codemodel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 
 /**
- * A block of Java code.  A block may contain statements and
- * local-variable declarations.
+ * A block of Java code, which may contain statements and local declarations.
+ *
+ * <p>
+ * {@link JBlock} contains a large number of factory methods that creates new
+ * statements/declarations. Those newly created statements/declarations are
+ * inserted into the {@link #pos() "current position"}. The position advances
+ * one every time you add a new instruction.
  */
 public final class JBlock implements JGenerable, JStatement {
 
     /**
      * Declarations and statements contained in this block.
-     * Either {@link JStatement} or {@link JVar}.
+     * Either {@link JStatement} or {@link JDeclaration}.
      */
     private final List<Object> content = new ArrayList<Object>();
 
@@ -25,7 +31,12 @@ public final class JBlock implements JGenerable, JStatement {
      */
     private boolean bracesRequired = true;
     private boolean indentRequired = true;
-    
+
+    /**
+     * Current position.
+     */
+    private int pos;
+
     public JBlock() {
         this(true,true);
     }
@@ -34,8 +45,52 @@ public final class JBlock implements JGenerable, JStatement {
         this.bracesRequired = bracesRequired;
         this.indentRequired = indentRequired;
     }
-    
-    
+
+    /**
+     * Returns a read-only view of {@link JStatement}s and {@link JDeclaration}
+     * in this block.
+     */
+    public List<Object> getContents() {
+        return Collections.unmodifiableList(content);
+    }
+
+    private <T> T insert( T statementOrDeclaration ) {
+        content.add(pos,statementOrDeclaration);
+        pos++;
+        return statementOrDeclaration;
+    }
+
+    /**
+     * Gets the current position to which new statements will be inserted.
+     *
+     * For example if the value is 0, newly created instructions will be
+     * inserted at the very beginning of the block.
+     *
+     * @see #pos(int)
+     */
+    public int pos() {
+        return pos;
+    }
+
+    /**
+     * Sets the current position.
+     *
+     * @return
+     *      the old value of the current position.
+     * @throws IllegalArgumentException
+     *      if the new position value is illegal.
+     *
+     * @see #pos()
+     */
+    public int pos(int newPos) {
+        int r = pos;
+        if(newPos>content.size() || newPos<0)
+            throw new IllegalArgumentException();
+        pos = newPos;
+
+        return r;
+    }
+
 
     /**
      * Adds a local variable declaration to this block
@@ -89,7 +144,7 @@ public final class JBlock implements JGenerable, JStatement {
      */
     public JVar decl(int mods, JType type, String name, JExpression init) {
         JVar v = new JVar(JMods.forVar(mods), type, name, init);
-        content.add(v);
+        insert(v);
         bracesRequired = true;
         indentRequired = true;
         return v;
@@ -105,12 +160,12 @@ public final class JBlock implements JGenerable, JStatement {
      *        Right hand side expression
      */
     public JBlock assign(JAssignmentTarget lhs, JExpression exp) {
-        content.add(new JAssignment(lhs, exp));
+        insert(new JAssignment(lhs, exp));
         return this;
     }
 
     public JBlock assignPlus(JAssignmentTarget lhs, JExpression exp) {
-        content.add(new JAssignment(lhs, exp, "+"));
+        insert(new JAssignment(lhs, exp, "+"));
         return this;
     }
 
@@ -128,7 +183,7 @@ public final class JBlock implements JGenerable, JStatement {
      */
     public JInvocation invoke(JExpression expr, String method) {
         JInvocation i = new JInvocation(expr, method);
-        content.add(i);
+        insert(i);
         return i;
     }
 
@@ -153,7 +208,7 @@ public final class JBlock implements JGenerable, JStatement {
      */
     public JInvocation staticInvoke(JClass type, String method) {
         JInvocation i = new JInvocation(type, method);
-        content.add(i);
+        insert(i);
         return i;
     }
 
@@ -167,7 +222,7 @@ public final class JBlock implements JGenerable, JStatement {
      */
     public JInvocation invoke(String method) {
         JInvocation i = new JInvocation((JExpression)null, method);
-        content.add(i);
+        insert(i);
         return i;
     }
 
@@ -192,7 +247,7 @@ public final class JBlock implements JGenerable, JStatement {
      * @return This block
      */
     public JBlock add(JStatement s) { // ## Needed?
-        content.add(s);
+        insert(s);
         return this;
     }
 
@@ -205,9 +260,7 @@ public final class JBlock implements JGenerable, JStatement {
      * @return Newly generated conditional statement
      */
     public JConditional _if(JExpression expr) {
-        JConditional c = new JConditional(expr);
-        content.add(c);
-        return c;
+        return insert(new JConditional(expr));
     }
 
     /**
@@ -216,9 +269,7 @@ public final class JBlock implements JGenerable, JStatement {
      * @return Newly generated For statement
      */
     public JForLoop _for() {
-        JForLoop f = new JForLoop();
-        content.add(f);
-        return f;
+        return insert(new JForLoop());
     }
 
     /**
@@ -227,18 +278,14 @@ public final class JBlock implements JGenerable, JStatement {
      * @return Newly generated While statement
      */
     public JWhileLoop _while(JExpression test) {
-        JWhileLoop w = new JWhileLoop(test);
-        content.add(w);
-        return w;
+        return insert(new JWhileLoop(test));
     }
 
     /**
      * Create a switch/case statement and add it to this block
      */
     public JSwitch _switch(JExpression test) {
-        JSwitch s = new JSwitch(test);
-        content.add(s);
-        return s;
+        return insert(new JSwitch(test));
     }
 
     /**
@@ -247,9 +294,7 @@ public final class JBlock implements JGenerable, JStatement {
      * @return Newly generated Do statement
      */
     public JDoLoop _do(JExpression test) {
-        JDoLoop d = new JDoLoop(test);
-        content.add(d);
-        return d;
+        return insert(new JDoLoop(test));
     }
 
     /**
@@ -258,30 +303,28 @@ public final class JBlock implements JGenerable, JStatement {
      * @return Newly generated Try statement
      */
     public JTryBlock _try() {
-        JTryBlock t = new JTryBlock();
-        content.add(t);
-        return t;
+        return insert(new JTryBlock());
     }
 
     /**
      * Create a return statement and add it to this block
      */
     public void _return() {
-        content.add(new JReturn(null));
+        insert(new JReturn(null));
     }
 
     /**
      * Create a return statement and add it to this block
      */
     public void _return(JExpression exp) {
-        content.add(new JReturn(exp));
+        insert(new JReturn(exp));
     }
 
     /**
      * Create a throw statement and add it to this block
      */
     public void _throw(JExpression exp) {
-        content.add(new JThrow(exp));
+        insert(new JThrow(exp));
     }
 
     /**
@@ -290,18 +333,18 @@ public final class JBlock implements JGenerable, JStatement {
     public void _break() {
         _break(null);
     }
-    
+
     public void _break(JLabel label) {
-        content.add(new JBreak(label));
+        insert(new JBreak(label));
     }
-    
+
     /**
      * Create a label, which can be referenced from
      * <code>continue</code> and <code>break</code> statements.
      */
     public JLabel label(String name) {
         JLabel l = new JLabel(name);
-        content.add(l);
+        insert(l);
         return l;
     }
 
@@ -309,7 +352,7 @@ public final class JBlock implements JGenerable, JStatement {
      * Create a continue statement and add it to this block
      */
     public void _continue(JLabel label) {
-        content.add(new JContinue(label));
+        insert(new JContinue(label));
     }
 
     public void _continue() {
@@ -323,8 +366,7 @@ public final class JBlock implements JGenerable, JStatement {
         JBlock b = new JBlock();
         b.bracesRequired = false;
         b.indentRequired = false;
-        content.add(b);
-        return b;
+        return insert(b);
     }
 
     /**
@@ -370,17 +412,15 @@ public final class JBlock implements JGenerable, JStatement {
     }
 
     /**
-	 * Creates an enhanced For statement based on j2se 1.5 JLS
-	 * and add it to this block
-	 *
-	 * @return Newly generated enhanced For statement per j2se 1.5 
-	 * specification
-	*/
+     * Creates an enhanced For statement based on j2se 1.5 JLS
+     * and add it to this block
+     *
+     * @return Newly generated enhanced For statement per j2se 1.5
+     * specification
+    */
     public JForEach forEach(JType varType, String name, JExpression collection) {
-    	JForEach forEach = new JForEach( varType, name, collection);
-    	content.add(forEach);
-    	return forEach;
-    	
+        return insert(new JForEach( varType, name, collection));
+
     }
     public void state(JFormatter f) {
         f.g(this);
