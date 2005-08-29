@@ -40,7 +40,6 @@ import com.sun.xml.bind.annotation.XmlLocation;
 import com.sun.xml.bind.v2.util.FinalArrayList;
 import com.sun.xml.bind.v2.NameConverter;
 import com.sun.xml.bind.v2.TODO;
-import com.sun.xml.bind.v2.util.FinalArrayList;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.annotation.MethodLocatable;
 import com.sun.xml.bind.v2.model.core.Adapter;
@@ -60,11 +59,11 @@ import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
  *
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
-class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
-    extends TypeInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
-    implements ClassInfo<TypeT,ClassDeclT>, Element<TypeT,ClassDeclT> {
+class ClassInfoImpl<T,C,F,M>
+    extends TypeInfoImpl<T,C,F,M>
+    implements ClassInfo<T,C>, Element<T,C> {
 
-    protected final ClassDeclT clazz;
+    protected final C clazz;
 
     /**
      * @see #getElementName()
@@ -81,7 +80,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      *
      * @see #getProperties()
      */
-    private FinalArrayList<PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>> properties;
+    private FinalArrayList<PropertyInfoImpl<T,C,F,M>> properties;
 
     /**
      * The property order.
@@ -97,7 +96,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      *
      * To avoid the cyclic references of the form C1 --base--> C2 --property--> C1.
      */
-    private ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> baseClass;
+    private ClassInfoImpl<T,C,F,M> baseClass;
 
     private boolean baseClassComputed = false;
 
@@ -109,9 +108,9 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      *
      * This parameter is initialized at the construction time and never change.
      */
-    protected /*final*/ PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> attributeWildcard;
+    protected /*final*/ PropertySeed<T,C,F,M> attributeWildcard;
 
-    ClassInfoImpl(ModelBuilder<TypeT,ClassDeclT,FieldT,MethodT> builder, Locatable upstream, ClassDeclT clazz) {
+    ClassInfoImpl(ModelBuilder<T,C,F,M> builder, Locatable upstream, C clazz) {
         super(builder,upstream);
         this.clazz = clazz;
         assert clazz!=null;
@@ -151,15 +150,15 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         }
     }
 
-    public ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> getBaseClass() {
+    public ClassInfoImpl<T,C,F,M> getBaseClass() {
         if(!baseClassComputed) {
             baseClassComputed = true;
             // compute the base class
-            ClassDeclT s = nav().getSuperClass(clazz);
+            C s = nav().getSuperClass(clazz);
             if(s==null || s==nav().asDecl(Object.class))
                 baseClass = null;
             else {
-                baseClass = (ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>) builder.getClassInfo(s,this);
+                baseClass = (ClassInfoImpl<T,C,F,M>) builder.getClassInfo(s,this);
                 baseClass.hasSubClasses = true;
             }
         }
@@ -171,14 +170,14 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      *
      * The substitution hierarchy is the same as the inheritance hierarchy.
      */
-    public final Element<TypeT,ClassDeclT> getSubstitutionHead() {
-        ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> c = getBaseClass();
+    public final Element<T,C> getSubstitutionHead() {
+        ClassInfoImpl<T,C,F,M> c = getBaseClass();
         while(c!=null && !c.isElement())
             c = c.getBaseClass();
         return c;
     }
 
-    public final ClassDeclT getClazz() {
+    public final C getClazz() {
         return clazz;
     }
 
@@ -187,7 +186,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         return null;
     }
 
-    public final TypeT getType() {
+    public final T getType() {
         return nav().use(clazz);
     }
 
@@ -196,7 +195,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      * it has an ID property.
      */
     public boolean canBeReferencedByIDREF() {
-        for (PropertyInfo<TypeT,ClassDeclT> p : getProperties()) {
+        for (PropertyInfo<T,C> p : getProperties()) {
             if(p.id()== ID.ID)
                 return true;
         }
@@ -211,23 +210,23 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         return reader().getClassAnnotation(a,clazz,this);
     }
 
-    public Element<TypeT,ClassDeclT> asElement() {
+    public Element<T,C> asElement() {
         if(isElement())
             return this;
         else
             return null;
     }
 
-    public List<? extends PropertyInfo<TypeT,ClassDeclT>> getProperties() {
+    public List<? extends PropertyInfo<T,C>> getProperties() {
         if(properties!=null)    return properties;
 
         // check the access type first
         AccessType at = getAccessType();
 
-        properties = new FinalArrayList<PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>>();
+        properties = new FinalArrayList<PropertyInfoImpl<T,C,F,M>>();
 
         // find properties from fields
-        for( FieldT f : nav().getDeclaredFields(clazz) ) {
+        for( F f : nav().getDeclaredFields(clazz) ) {
             if( nav().isStaticField(f) ) {
                 // static fields are bound only when there's explicit annotation.
                 if(hasFieldAnnotation(f))
@@ -302,8 +301,8 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         return properties;
     }
 
-    public PropertyInfo<TypeT,ClassDeclT> getProperty(String name) {
-        for( PropertyInfo<TypeT,ClassDeclT> p: getProperties() ) {
+    public PropertyInfo<T,C> getProperty(String name) {
+        for( PropertyInfo<T,C> p: getProperties() ) {
             if(p.getName().equals(name))
                 return p;
         }
@@ -313,7 +312,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     /**
      * This hook is used by {@link RuntimeClassInfoImpl} to look for {@link XmlLocation}.
      */
-    protected void checkFieldXmlLocation(FieldT f) {
+    protected void checkFieldXmlLocation(F f) {
     }
 
     /**
@@ -353,14 +352,14 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     /**
      * Returns true if the given field has a JAXB annotation
      */
-    private boolean hasFieldAnnotation(FieldT f) {
+    private boolean hasFieldAnnotation(F f) {
         for (Class<? extends Annotation> a : jaxbAnnotations)
             if(reader().hasFieldAnnotation(a,f))
                 return true;
         return false;
     }
 
-    private boolean hasMethodAnnotation(MethodT m) {
+    private boolean hasMethodAnnotation(M m) {
         for (Class<? extends Annotation> a : jaxbAnnotations)
             if(reader().hasMethodAnnotation(a,m))
                 return true;
@@ -445,17 +444,17 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         }
     }
 
-    private boolean isApplicable(XmlJavaTypeAdapter jta, PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> seed ) {
+    private boolean isApplicable(XmlJavaTypeAdapter jta, PropertySeed<T,C,F,M> seed ) {
         if(jta==null)   return false;
 
-        TypeT type = reader().getClassValue(jta,"type");
+        T type = reader().getClassValue(jta,"type");
         if(seed.getRawType().equals(type))
             return true;
 
         return false;
     }
 
-    private XmlJavaTypeAdapter getApplicableAdapter(PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> seed) {
+    private XmlJavaTypeAdapter getApplicableAdapter(PropertySeed<T,C,F,M> seed) {
         XmlJavaTypeAdapter jta = seed.readAnnotation(XmlJavaTypeAdapter.class);
         if(jta!=null)
             return jta;
@@ -473,7 +472,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             return jta;
 
         // then on the target class
-        ClassDeclT refType = nav().asDecl(seed.getRawType());
+        C refType = nav().asDecl(seed.getRawType());
         if(refType!=null) {
             jta = reader().getClassAnnotation(XmlJavaTypeAdapter.class, refType, seed );
             if(isApplicable(jta,seed))
@@ -483,10 +482,10 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         return null;
     }
 
-    private PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> adaptIfNecessary(PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> seed) {
+    private PropertySeed<T,C,F,M> adaptIfNecessary(PropertySeed<T,C,F,M> seed) {
         XmlJavaTypeAdapter xjta = getApplicableAdapter(seed);
         if(xjta!=null)
-            seed = createAdaptedSeed(seed,new Adapter<TypeT,ClassDeclT>(xjta,reader(),nav()));
+            seed = createAdaptedSeed(seed,new Adapter<T,C>(xjta,reader(),nav()));
 
 
         // this is actually incorrect because it's OK to have an adapter and the attachment
@@ -495,7 +494,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         XmlAttachmentRef xsa = seed.readAnnotation(XmlAttachmentRef.class);
         if(xsa!=null)
             return createAdaptedSeed(seed,
-                new Adapter<TypeT,ClassDeclT>(owner.nav.asDecl(SwaRefAdapter.class),owner.nav));
+                new Adapter<T,C>(owner.nav.asDecl(SwaRefAdapter.class),owner.nav));
 
         return seed;
     }
@@ -523,7 +522,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     /**
      * Called only from {@link #getProperties()}.
      */
-    private void addProperty( PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> seed ) {
+    private void addProperty( PropertySeed<T,C,F,M> seed ) {
         XmlAttribute a = seed.readAnnotation(XmlAttribute.class);
         XmlValue v = seed.readAnnotation(XmlValue.class);
         XmlElement e = seed.readAnnotation(XmlElement.class);
@@ -610,24 +609,24 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         }
     }
 
-    protected ReferencePropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> createReferenceProperty(PropertySeed<TypeT, ClassDeclT, FieldT, MethodT> seed) {
-        return new ReferencePropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>(this,seed);
+    protected ReferencePropertyInfoImpl<T,C,F,M> createReferenceProperty(PropertySeed<T, C, F, M> seed) {
+        return new ReferencePropertyInfoImpl<T,C,F,M>(this,seed);
     }
 
-    protected AttributePropertyInfoImpl<TypeT, ClassDeclT, FieldT, MethodT> createAttributeProperty(PropertySeed<TypeT, ClassDeclT, FieldT, MethodT> seed) {
-        return new AttributePropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>(this,seed);
+    protected AttributePropertyInfoImpl<T, C, F, M> createAttributeProperty(PropertySeed<T, C, F, M> seed) {
+        return new AttributePropertyInfoImpl<T,C,F,M>(this,seed);
     }
 
-    protected ValuePropertyInfoImpl<TypeT, ClassDeclT, FieldT, MethodT> createValueProperty(PropertySeed<TypeT, ClassDeclT, FieldT, MethodT> seed) {
-        return new ValuePropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>(this,seed);
+    protected ValuePropertyInfoImpl<T, C, F, M> createValueProperty(PropertySeed<T, C, F, M> seed) {
+        return new ValuePropertyInfoImpl<T,C,F,M>(this,seed);
     }
 
-    protected ElementPropertyInfoImpl<TypeT, ClassDeclT, FieldT, MethodT> createElementProperty(PropertySeed<TypeT, ClassDeclT, FieldT, MethodT> seed) {
-        return new ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>(this,seed);
+    protected ElementPropertyInfoImpl<T, C, F, M> createElementProperty(PropertySeed<T, C, F, M> seed) {
+        return new ElementPropertyInfoImpl<T,C,F,M>(this,seed);
     }
 
-    protected MapPropertyInfoImpl<TypeT, ClassDeclT, FieldT, MethodT> createMapProperty(PropertySeed<TypeT, ClassDeclT, FieldT, MethodT> seed) {
-        return new MapPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>(this,seed);
+    protected MapPropertyInfoImpl<T, C, F, M> createMapProperty(PropertySeed<T, C, F, M> seed) {
+        return new MapPropertyInfoImpl<T,C,F,M>(this,seed);
     }
 
 
@@ -640,11 +639,11 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         // in the first step we accumulate getters and setters
         // into this map keyed by the property name.
         // TODO: allocating three maps seem to be redundant
-        Map<String,MethodT> getters = new LinkedHashMap<String,MethodT>();
-        Map<String,MethodT> setters = new LinkedHashMap<String,MethodT>();
+        Map<String,M> getters = new LinkedHashMap<String,M>();
+        Map<String,M> setters = new LinkedHashMap<String,M>();
 
-        Collection<? extends MethodT> methods = nav().getDeclaredMethods(clazz);
-        for( MethodT method : methods ) {
+        Collection<? extends M> methods = nav().getDeclaredMethods(clazz);
+        for( M method : methods ) {
             boolean used = false;   // if this method is added to getters or setters
             String name = nav().getMethodName(method);
             int arity = nav().getMethodParameters(method).length;
@@ -693,8 +692,8 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
         // then look for read/write properties.
         for (String name : complete) {
-            MethodT getter = getters.get(name);
-            MethodT setter = setters.get(name);
+            M getter = getters.get(name);
+            M setter = setters.get(name);
 
             boolean getterHasAnnotation = getter!=null && hasMethodAnnotation(getter);
             boolean setterHasAnnotation = setter!=null && hasMethodAnnotation(setter);
@@ -711,8 +710,8 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
                             nav().getTypeName(nav().getReturnType(getter)),
                             nav().getTypeName(nav().getMethodParameters(setter)[0])
                         ),
-                        new MethodLocatable<MethodT>( this, getter, nav()),
-                        new MethodLocatable<MethodT>( this, setter, nav())));
+                        new MethodLocatable<M>( this, getter, nav()),
+                        new MethodLocatable<M>( this, setter, nav())));
                     continue;
                 }
 
@@ -737,8 +736,8 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      * If the method has an explicit annotation, allow it to participate
      * to the processing even if it lacks the setter or the getter.
      */
-    private void resurrect(Map<String, MethodT> methods, Set<String> complete) {
-        for (Map.Entry<String, MethodT> e : methods.entrySet()) {
+    private void resurrect(Map<String, M> methods, Set<String> complete) {
+        for (Map.Entry<String, M> e : methods.entrySet()) {
             if(complete.contains(e.getKey()))
                 continue;
             if(hasMethodAnnotation(e.getValue()))
@@ -750,7 +749,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      * Makes sure that the method doesn't have any annotation, if it does,
      * report it as an error
      */
-    private void ensureNoAnnotation(MethodT method) {
+    private void ensureNoAnnotation(M method) {
         for (Class<? extends Annotation> a : jaxbAnnotations)
             if(reader().hasMethodAnnotation(a,method)) {
                 builder.reportError(new IllegalAnnotationException(
@@ -798,19 +797,19 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      * <p>
      * Derived class can override this method to create a sub-class.
      */
-    protected PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> createFieldSeed(FieldT f) {
-        return new FieldPropertySeed<TypeT,ClassDeclT,FieldT,MethodT>(this, f);
+    protected PropertySeed<T,C,F,M> createFieldSeed(F f) {
+        return new FieldPropertySeed<T,C,F,M>(this, f);
     }
 
     /**
      * Creates a new {@link GetterSetterPropertySeed} object.
      */
-    protected PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> createAccessorSeed(MethodT getter, MethodT setter) {
-        return new GetterSetterPropertySeed<TypeT,ClassDeclT,FieldT,MethodT>(this, getter,setter);
+    protected PropertySeed<T,C,F,M> createAccessorSeed(M getter, M setter) {
+        return new GetterSetterPropertySeed<T,C,F,M>(this, getter,setter);
     }
 
-    protected PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> createAdaptedSeed(PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> seed, Adapter a) {
-        return new AdaptedPropertySeed<TypeT,ClassDeclT,FieldT,MethodT>(seed,a);
+    protected PropertySeed<T,C,F,M> createAdaptedSeed(PropertySeed<T,C,F,M> seed, Adapter a) {
+        return new AdaptedPropertySeed<T,C,F,M>(seed,a);
     }
 
     /**
@@ -872,8 +871,8 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     /**
      * Gets the {@link PropertySeed} object for the inherited attribute wildcard.
      */
-    private PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> getInheritedAttributeWildcard() {
-        for( ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> c=getBaseClass(); c!=null; c=c.getBaseClass() )
+    private PropertySeed<T,C,F,M> getInheritedAttributeWildcard() {
+        for( ClassInfoImpl<T,C,F,M> c=getBaseClass(); c!=null; c=c.getBaseClass() )
             if(c.attributeWildcard!=null)
                 return c.attributeWildcard;
         return null;
@@ -902,7 +901,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
         // property name collision cehck
         Map<String,PropertyInfoImpl> names = new HashMap<String,PropertyInfoImpl>();
-        for( PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> p : properties ) {
+        for( PropertyInfoImpl<T,C,F,M> p : properties ) {
             p.link();
             PropertyInfoImpl old = names.put(p.getName(),p);
             if(old!=null) {
