@@ -1,5 +1,7 @@
 package com.sun.xml.bind.v2.model.core;
 
+import javax.xml.bind.annotation.XmlIDREF;
+
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 
 
@@ -17,4 +19,9 @@ public interface TypeInfo<T,C> extends Locatable {
      *      always non-null.
      */
     T getType();
+
+    /**
+     * True if this type is a valid target from a property annotated with {@link XmlIDREF}.
+     */
+    boolean canBeReferencedByIDREF();
 }

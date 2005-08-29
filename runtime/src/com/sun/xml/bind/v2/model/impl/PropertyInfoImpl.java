@@ -3,7 +3,6 @@ package com.sun.xml.bind.v2.model.impl;
 import java.util.Collection;
 
 import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlID;
@@ -11,14 +10,11 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlInlineBinaryData;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSchemaTypes;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
-import com.sun.xml.bind.v2.model.annotation.AnnotationSource;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
@@ -33,13 +29,13 @@ import com.sun.xml.bind.v2.runtime.Location;
  *
  * @author Kohsuke Kawaguchi
  */
-abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
-    implements PropertyInfo<TypeT,ClassDeclT>, Locatable, Comparable<PropertyInfoImpl> /*by their names*/ {
+abstract class PropertyInfoImpl<T,C,F,M>
+    implements PropertyInfo<T,C>, Locatable, Comparable<PropertyInfoImpl> /*by their names*/ {
 
     /**
      * Object that reads annotations.
      */
-    protected final PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> seed;
+    protected final PropertySeed<T,C,F,M> seed;
 
     /**
      * Lazily computed.
@@ -53,9 +49,9 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     private final boolean inlineBinary;
     private final QName schemaType;
 
-    protected final ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> parent;
+    protected final ClassInfoImpl<T,C,F,M> parent;
 
-    protected PropertyInfoImpl(ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> parent, PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> spi) {
+    protected PropertyInfoImpl(ClassInfoImpl<T,C,F,M> parent, PropertySeed<T,C,F,M> spi) {
         this.seed = spi;
         this.parent = parent;
         this.id = calcId();
@@ -75,30 +71,30 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     }
 
 
-    public ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> parent() {
+    public ClassInfoImpl<T,C,F,M> parent() {
         return parent;
     }
 
-    protected final Navigator<TypeT,ClassDeclT,FieldT,MethodT> nav() {
+    protected final Navigator<T,C,F,M> nav() {
         return parent.nav();
     }
-    protected final AnnotationReader<TypeT,ClassDeclT,FieldT,MethodT> reader() {
+    protected final AnnotationReader<T,C,F,M> reader() {
         return parent.reader();
     }
 
-    public TypeT getRawType() {
+    public T getRawType() {
         return seed.getRawType();
     }
 
-    public TypeT getIndividualType() {
-        TypeT raw = getRawType();
+    public T getIndividualType() {
+        T raw = getRawType();
         if(!isCollection()) {
             return raw;
         } else {
             if(nav().isArrayButNotByteArray(raw))
                 return nav().getComponentType(raw);
 
-            TypeT bt = nav().getBaseClass(raw, nav().asDecl(Collection.class) );
+            T bt = nav().getBaseClass(raw, nav().asDecl(Collection.class) );
             if(nav().isParameterizedType(bt))
                 return nav().getTypeArgument(bt,0);
             else
@@ -110,9 +106,9 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         return seed.getName();
     }
 
-    public Adapter<TypeT,ClassDeclT> getAdapter() {
+    public Adapter<T,C> getAdapter() {
         if(seed instanceof AdaptedPropertySeed)
-            return ((AdaptedPropertySeed<TypeT,ClassDeclT,FieldT,MethodT>)seed).adapter;
+            return ((AdaptedPropertySeed<T,C,F,M>)seed).adapter;
         else
             return null;
     }
@@ -156,7 +152,7 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     public final boolean isCollection() {
         if(isCollection==null) {
-            TypeT t = seed.getRawType();
+            T t = seed.getRawType();
             if(nav().isSubClassOf(t,nav().ref(Collection.class))
             || nav().isArrayButNotByteArray(t))
                 isCollection = true;
@@ -172,6 +168,15 @@ abstract class PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      * Derived class can do additional actions to complete the model.
      */
     protected void link() {
+        if(id==ID.IDREF) {
+            // make sure that the refereced type has ID
+            for (TypeInfo<T,C> ti : ref()) {
+                if(!ti.canBeReferencedByIDREF())
+                    parent.builder.reportError(new IllegalAnnotationException(
+                    Messages.INVALID_IDREF.format(
+                        parent.builder.nav.getTypeName(ti.getType())), this ));
+            }
+        }
     }
 
     /**

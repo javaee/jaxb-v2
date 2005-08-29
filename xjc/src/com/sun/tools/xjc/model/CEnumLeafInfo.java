@@ -124,6 +124,14 @@ public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, 
         return this;
     }
 
+    /**
+     * @deprecated
+     *      why are you calling the method whose return value is known?
+     */
+    public boolean canBeReferencedByIDREF() {
+        return false;
+    }
+
     public NClass getClazz() {
         return this;
     }

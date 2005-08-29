@@ -69,6 +69,16 @@ public class ArrayInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         return arrayType;
     }
 
+    /**
+     * Leaf-type cannot be referenced from IDREF.
+     *
+     * @deprecated
+     *      why are you calling a method whose return value is always known?
+     */
+    public final boolean canBeReferencedByIDREF() {
+        return false;
+    }
+
     public Location getLocation() {
         return this;
     }

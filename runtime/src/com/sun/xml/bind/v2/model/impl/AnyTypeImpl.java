@@ -1,6 +1,7 @@
 package com.sun.xml.bind.v2.model.impl;
 
 import javax.xml.namespace.QName;
+import javax.xml.bind.annotation.XmlIDREF;
 
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.runtime.Location;
@@ -42,6 +43,16 @@ class AnyTypeImpl<T,C> implements NonElement<T,C> {
 
     public Location getLocation() {
         return nav.getClassLocation(nav.asDecl(Object.class));
+    }
+
+    /**
+     * xs:anyType can be referenced from {@link XmlIDREF}.
+     *
+     * @deprecated
+     *      why are you calling a method whose return value is always known?
+     */
+    public final boolean canBeReferencedByIDREF() {
+        return true;
     }
 
     private static final QName name = new QName(WellKnownNamespace.XML_SCHEMA,"anyType");
