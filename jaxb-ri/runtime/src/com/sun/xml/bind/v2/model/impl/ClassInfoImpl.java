@@ -49,6 +49,7 @@ import com.sun.xml.bind.v2.model.core.Element;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
+import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
@@ -188,6 +189,18 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     public final TypeT getType() {
         return nav().use(clazz);
+    }
+
+    /**
+     * A {@link ClassInfo} can be referenced by {@link XmlIDREF} if
+     * it has an ID property.
+     */
+    public boolean canBeReferencedByIDREF() {
+        for (PropertyInfo<TypeT,ClassDeclT> p : getProperties()) {
+            if(p.id()== ID.ID)
+                return true;
+        }
+        return false;
     }
 
     public final String getName() {
@@ -887,6 +900,7 @@ class ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     /*package*/ void link() {
         getProperties();    // make sure properties!=null
 
+        // property name collision cehck
         Map<String,PropertyInfoImpl> names = new HashMap<String,PropertyInfoImpl>();
         for( PropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> p : properties ) {
             p.link();

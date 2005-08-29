@@ -30,6 +30,16 @@ abstract class LeafInfoImpl<TypeT,ClassDeclT> implements LeafInfo<TypeT,ClassDec
         return type;
     }
 
+    /**
+     * Leaf-type cannot be referenced from IDREF.
+     *
+     * @deprecated
+     *      why are you calling a method whose return value is always known?
+     */
+    public final boolean canBeReferencedByIDREF() {
+        return false;
+    }
+
     public QName getTypeName() {
         return typeName;
     }

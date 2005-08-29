@@ -327,6 +327,16 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         return elementType;
     }
 
+    /**
+     * Leaf-type cannot be referenced from IDREF.
+     *
+     * @deprecated
+     *      why are you calling a method whose return value is always known?
+     */
+    public final boolean canBeReferencedByIDREF() {
+        return false;
+    }
+
     private ID calcId() {
         // TODO: share code with PropertyInfoImpl
         if(reader().hasMethodAnnotation(XmlID.class,method)) {

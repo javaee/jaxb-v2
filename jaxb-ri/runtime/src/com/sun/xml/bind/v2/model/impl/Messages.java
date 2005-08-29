@@ -44,6 +44,7 @@ enum Messages {
     XMLVALUE_IN_DERIVED_TYPE, // 0 args
     SIMPLE_TYPE_IS_REQUIRED, // 1 arg
     PROPERTY_COLLISION, // 1 arg
+    INVALID_IDREF, // 1 arg
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());

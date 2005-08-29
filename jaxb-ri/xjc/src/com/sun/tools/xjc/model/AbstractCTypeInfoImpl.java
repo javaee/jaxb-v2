@@ -57,6 +57,15 @@ abstract class AbstractCTypeInfoImpl implements CTypeInfo {
     }
 
     /**
+     * @deprecated
+     *      why are you calling an unimplemented method?
+     */
+    public final boolean canBeReferencedByIDREF() {
+        // we aren't doing any error check in XJC, so no point in implementing this method.
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * No default {@link MimeType}.
      */
     public MimeType getExpectedMimeType() {
