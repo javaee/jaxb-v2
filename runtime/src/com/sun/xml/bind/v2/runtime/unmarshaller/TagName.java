@@ -57,7 +57,7 @@ public abstract class TagName {
      * Checks if the given name pair matches this name.
      */
     public final boolean matches( String nsUri, String local ) {
-        return this.uri==nsUri && this.local==local;
+        return this.uri.equals(nsUri) && this.local.equals(local);
     }
 
     /**
