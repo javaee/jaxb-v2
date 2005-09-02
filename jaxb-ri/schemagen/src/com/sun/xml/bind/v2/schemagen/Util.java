@@ -83,7 +83,7 @@ public final class Util {
      * equal or either of them are null.
      */
     public static boolean equalsIgnoreCase(String s, String t) {
-        if (s == t) return true;
+        if (s.equals(t)) return true;
         if ((s != null) && (t != null)) {
             return s.equalsIgnoreCase(t);
         }
