@@ -633,7 +633,7 @@ public final class XMLSerializer extends Coordinator {
         if(attributes==null)    return;
         for( Map.Entry<QName,String> e : attributes.entrySet() ) {
             QName n = e.getKey();
-            attribute(n.getNamespaceURI(),n.getLocalPart(),e.getValue().toString());
+            attribute(n.getNamespaceURI(),n.getLocalPart(),e.getValue());
         }
     }
 
