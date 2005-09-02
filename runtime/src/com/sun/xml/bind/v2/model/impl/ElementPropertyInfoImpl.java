@@ -15,6 +15,7 @@ import com.sun.xml.bind.v2.model.core.ElementPropertyInfo;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.model.core.TypeRef;
+import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 
 /**
  * Common {@link ElementPropertyInfo} implementation used for both
@@ -70,6 +71,11 @@ class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
             if(xe!=null && xes!=null) {
                 // TODO: report an error
+                parent.builder.reportError(new IllegalAnnotationException(
+                        Messages.MUTUALLY_EXCLUSIVE_ANNOTATIONS.format(
+                                nav().getClassName(parent.getClazz())+'#'+seed.getName(),
+                                xe.annotationType().getName(), xes.annotationType().getName()),
+                        xe, xes ));
             }
 
             isRequired = true;

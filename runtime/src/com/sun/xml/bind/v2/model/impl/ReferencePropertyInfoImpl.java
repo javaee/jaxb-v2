@@ -20,6 +20,7 @@ import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.ReferencePropertyInfo;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
 import com.sun.xml.bind.v2.model.nav.Navigator;
+import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -84,6 +85,11 @@ class ReferencePropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
         if(refs!=null && ref!=null) {
             // TODO: report an error
+            parent.builder.reportError(new IllegalAnnotationException(
+                    Messages.MUTUALLY_EXCLUSIVE_ANNOTATIONS.format(
+                    nav().getClassName(parent.getClazz())+'#'+seed.getName(),
+                    ref.annotationType().getName(), refs.annotationType().getName()),
+                    ref, refs ));
         }
 
         if(refs!=null)
