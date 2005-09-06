@@ -45,6 +45,12 @@ public abstract class JType implements JGenerable, Comparable {
     
     /**
      * Gets the full name of the type.
+     *
+     * See http://java.sun.com/docs/books/jls/second_edition/html/names.doc.html#25430 for the details.
+     *
+     * @return
+     *      Strings like "int", "java.lang.String",
+     *      "java.io.File[]". Never null.
      */
     public abstract String fullName();
 
