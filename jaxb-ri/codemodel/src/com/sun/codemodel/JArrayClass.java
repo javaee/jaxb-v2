@@ -34,6 +34,10 @@ final class JArrayClass extends JClass {
         return componentType.fullName()+"[]";
     }
 
+    public String binaryName() {
+        return componentType.binaryName()+"[]";
+    }
+
     public void generate(JFormatter f) {
         f.g(componentType).p("[]");
     }

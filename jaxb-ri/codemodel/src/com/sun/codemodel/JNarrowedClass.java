@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: JNarrowedClass.java,v 1.6 2005-07-16 00:04:01 kohsuke Exp $
+ * @(#)$Id: JNarrowedClass.java,v 1.7 2005-09-07 00:10:07 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -73,7 +73,7 @@ class JNarrowedClass extends JClass {
     }
     
     public String fullName() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append(basis.fullName());
         buf.append('<');
         boolean first = true;
@@ -83,6 +83,22 @@ class JNarrowedClass extends JClass {
             else
                 buf.append(',');
             buf.append(c.fullName());
+        }
+        buf.append('>');
+        return buf.toString();
+    }
+
+    public String binaryName() {
+        StringBuilder buf = new StringBuilder();
+        buf.append(basis.binaryName());
+        buf.append('<');
+        boolean first = true;
+        for (JClass c : args) {
+            if(first)
+                first = false;
+            else
+                buf.append(',');
+            buf.append(c.binaryName());
         }
         buf.append('>');
         return buf.toString();
