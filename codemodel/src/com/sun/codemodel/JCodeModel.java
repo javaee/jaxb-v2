@@ -457,6 +457,10 @@ public final class JCodeModel {
             return _class.getName().replace('$','.');
         }
 
+        public String binaryName() {
+            return _class.getName();
+        }
+
         public JPackage _package() {
             String name = fullName();
 

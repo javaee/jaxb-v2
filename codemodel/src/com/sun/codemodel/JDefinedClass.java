@@ -311,6 +311,13 @@ public class JDefinedClass
             return p.name() + '.' + name();
     }
 
+    public String binaryName() {
+        if (outer instanceof JDefinedClass)
+            return ((JDefinedClass) outer).binaryName() + '$' + name();
+        else
+            return fullName();
+    }
+
     public boolean isInterface() {
         return this.classType==ClassType.INTERFACE;
     }
