@@ -35,7 +35,8 @@
         // proper handling of anonymous types
         return new AttributeDeclImpl( $runtime.currentSchema, tns, name,
           annotation, locator, fa, isLocal,
-          defaultValue, fixedValue, $runtime.createValidationContext(),
+          $runtime.createXmlString(defaultValue),
+          $runtime.createXmlString(fixedValue),
           type );
       }
       private Ref.SimpleType type;
@@ -177,7 +178,8 @@
             else
               owner.addAttributeUse(attDeclName,
                 new AttributeUseImpl( $runtime.currentSchema, annotation,locator,fa,decl,
-                  defaultValue, fixedValue, $runtime.createValidationContext(),
+                  $runtime.createXmlString(defaultValue),
+                  $runtime.createXmlString(fixedValue),
                   "required".equals(use)));
           </cc:java>
         </element>

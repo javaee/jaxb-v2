@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: XSAttributeUse.java,v 1.1 2005-04-14 22:06:19 kohsuke Exp $
+ * @(#)$Id: XSAttributeUse.java,v 1.2 2005-09-08 22:49:31 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -28,7 +28,7 @@ public interface XSAttributeUse extends XSComponent
      * Note that if a default value is specified in the attribute
      * declaration, this method returns that value.
      */
-    String getDefaultValue();
+    XmlString getDefaultValue();
 
     /**
      * Gets the fixed value of this attribute use, if one is specified.
@@ -36,15 +36,5 @@ public interface XSAttributeUse extends XSComponent
      * Note that if a fixed value is specified in the attribute
      * declaration, this method returns that value.
      */
-    String getFixedValue();
-
-    /**
-     * Gets the context in which the default/fixed value
-     * constraint should be interpreted.
-     * 
-     * <p>
-     * The primary use of the ValidationContext is to resolve the
-     * namespace prefix of the value when it is a QName.
-     */
-    ValidationContext getContext();
+    XmlString getFixedValue();
 }

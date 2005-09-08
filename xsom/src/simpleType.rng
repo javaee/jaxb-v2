@@ -160,7 +160,7 @@
     <cc:java>
     	result = new FacetImpl( $runtime.currentSchema,
     		annotation, locator, fa, $localName/*name of the facet*/,
-    		value, $runtime.createValidationContext(), $runtime.parseBoolean(fixed) );
+    		$runtime.createXmlString(value), $runtime.parseBoolean(fixed) );
     </cc:java>
   </define>
   

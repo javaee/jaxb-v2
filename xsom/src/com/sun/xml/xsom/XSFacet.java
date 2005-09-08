@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: XSFacet.java,v 1.1 2005-04-14 22:06:20 kohsuke Exp $
+ * @(#)$Id: XSFacet.java,v 1.2 2005-09-08 22:49:31 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -8,8 +8,6 @@
  * 
  */
 package com.sun.xml.xsom;
-
-import org.relaxng.datatype.ValidationContext;
 
 /**
  * Facet for a simple type.
@@ -23,16 +21,7 @@ public interface XSFacet extends XSComponent
     String getName();
     
     /** Gets the value of the facet. */
-    String getValue();
-    
-    /**
-     * Gets the context in which the facet value was found.
-     * 
-     * <p>
-     * The primary use of the ValidationContext is to resolve the
-     * namespace prefix of the value when it is a QName.
-     */
-    ValidationContext getContext();
+    XmlString getValue();
     
     /** Returns true if this facet is "fixed". */
     boolean isFixed();

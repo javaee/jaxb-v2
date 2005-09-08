@@ -54,9 +54,8 @@
             tns,
             name,
             !isGlobal,
-            defaultValue,
-            fixedValue,
-            $runtime.createValidationContext(),
+            $runtime.createXmlString(defaultValue),
+            $runtime.createXmlString(fixedValue),
             $runtime.parseBoolean(nillable),
             $runtime.parseBoolean(abstractValue),
             type,
@@ -216,7 +215,7 @@
     <cc:java-body>
       private XPathImpl makeResult() {
         return new XPathImpl($runtime.currentSchema,ann,$runtime.copyLocator(),fa,
-          xpath,$runtime.createValidationContext());
+          $runtime.createXmlString(xpath));
       }
     </cc:java-body>
 

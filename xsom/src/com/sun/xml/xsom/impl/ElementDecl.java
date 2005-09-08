@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: ElementDecl.java,v 1.2 2005-09-08 22:20:18 kohsuke Exp $
+ * @(#)$Id: ElementDecl.java,v 1.3 2005-09-08 22:49:29 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -16,6 +16,7 @@ import com.sun.xml.xsom.XSTerm;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.XSIdentityConstraint;
+import com.sun.xml.xsom.XmlString;
 import com.sun.xml.xsom.impl.parser.PatcherManager;
 import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSTermFunction;
@@ -36,7 +37,7 @@ public class ElementDecl extends DeclarationImpl implements XSElementDecl, Ref.T
         AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl fa,
         String _tns, String _name, boolean _anonymous,
         
-        String _defv, String _fixedv, ValidationContext _context,
+        XmlString _defv, XmlString _fixedv,
         boolean _nillable, boolean _abstract,
         Ref.Type _type, Ref.Element _substHead,
         int _substDisallowed, int _substExcluded,
@@ -46,7 +47,6 @@ public class ElementDecl extends DeclarationImpl implements XSElementDecl, Ref.T
         
         this.defaultValue = _defv;
         this.fixedValue = _fixedv;
-        this.context = _context;
         this.nillable = _nillable;
         this._abstract = _abstract;
         this.type = _type;
@@ -62,14 +62,11 @@ public class ElementDecl extends DeclarationImpl implements XSElementDecl, Ref.T
             throw new IllegalArgumentException();
     }
     
-    private String defaultValue;
-    public String getDefaultValue() { return defaultValue; }
+    private XmlString defaultValue;
+    public XmlString getDefaultValue() { return defaultValue; }
     
-    private String fixedValue;
-    public String getFixedValue() { return fixedValue; }
-
-    private final ValidationContext context;
-    public ValidationContext getContext() { return context; }
+    private XmlString fixedValue;
+    public XmlString getFixedValue() { return fixedValue; }
 
     private boolean nillable;
     public boolean isNillable() { return nillable; }

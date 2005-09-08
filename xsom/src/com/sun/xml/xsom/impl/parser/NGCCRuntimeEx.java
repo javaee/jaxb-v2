@@ -1,6 +1,7 @@
 package com.sun.xml.xsom.impl.parser;
 
 import com.sun.xml.xsom.XSDeclaration;
+import com.sun.xml.xsom.XmlString;
 import com.sun.xml.xsom.impl.ForeignAttributesImpl;
 import com.sun.xml.xsom.impl.SchemaImpl;
 import com.sun.xml.xsom.impl.UName;
@@ -342,7 +343,12 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
     public ValidationContext createValidationContext() {
         return currentContext;
     }
-    
+
+    public XmlString createXmlString(String value) {
+        if(value==null)     return null;
+        else    return new XmlString(value,createValidationContext());
+    }
+
     public void startPrefixMapping( String prefix, String uri ) throws SAXException {
         super.startPrefixMapping(prefix,uri);
         currentContext = new Context(prefix,uri,currentContext);
