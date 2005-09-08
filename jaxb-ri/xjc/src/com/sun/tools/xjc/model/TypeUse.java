@@ -68,6 +68,21 @@ public interface TypeUse {
      * done by combining adapting, listifying, and
      * {@link CBuiltinLeafInfo#createConstant(JCodeModel, String, ValidationContext)}.
      *
+     * <p>
+     * For example, to create a constant 1 for <tt>xs:int</tt>, you'd do:
+     * <pre>
+     * CBuiltinLeafInfo.INT.createConstant( codeModel, "1", null );
+     * </pre>
+     *
+     * @param context
+     *      Used to resolve namespace prefixes in the lexical representation to
+     *      namespace URIs when generating a constant for context-dependent datatypes
+     *      (such as QName.) Passing null for such datatypes cause this method to
+     *      return null.
+     *
+     *      When processing context-independent datatypes (such as
+     *      int or string), this parameter is simply ignored.
+     *
      * @throws IllegalStateException
      *      if the type isn't bound to a text in XML.
      *
