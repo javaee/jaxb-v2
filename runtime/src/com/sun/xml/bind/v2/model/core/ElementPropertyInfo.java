@@ -12,7 +12,31 @@ import javax.xml.namespace.QName;
 // TODO: there seems to be too much interactions between switches, and that's no good.
 public interface ElementPropertyInfo<T,C> extends PropertyInfo<T,C> {
     /**
-     * Returns the information about the possible types in this property.
+     * Returns the information about the types allowed in this property.
+     *
+     * <p>
+     * In a simple case like the following, an element property only has
+     * one {@link TypeRef} that points to {@link String} and tag name "foo".
+     * <pre>
+     * &#64;XmlElement
+     * String abc;
+     * </pre>
+     *
+     * <p>
+     * However, in a general case an element property can be heterogeneous,
+     * meaning you can put different types in it, each with a different tag name
+     * (and a few other settings.)
+     * <pre>
+     * // list can contain String or Integer.
+     * &#64;XmlElements({
+     *   &#64;XmlElement(name="a",type=String.class),
+     *   &#64;XmlElement(name="b",type=Integer.class),
+     * })
+     * List&lt;Object> abc;
+     * </pre>
+     * <p>
+     * In this case this method returns a list of two {@link TypeRef}s.
+     *
      *
      * @return
      *      Always non-null. Contains at least one entry.

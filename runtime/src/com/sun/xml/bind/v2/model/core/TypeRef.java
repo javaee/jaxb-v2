@@ -3,7 +3,7 @@ package com.sun.xml.bind.v2.model.core;
 import javax.xml.namespace.QName;
 
 /**
- * Information about a type referenced from an element property.
+ * Information about a type referenced from {@link ElementPropertyInfo}.
  *
  * @author Kohsuke Kawaguchi
  */
