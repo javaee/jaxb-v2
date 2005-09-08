@@ -50,7 +50,7 @@ public class BindPurple extends ColorBinder {
         if(toConstant) {
             prop.defaultValue = attType.createConstant(
                 Ring.get(JCodeModel.class),
-                use.getFixedValue(),use.getContext());
+                use.getFixedValue());
             if(prop.defaultValue==null)
                 // unable to come up with the constant value.
                 toConstant = false;
@@ -64,12 +64,12 @@ public class BindPurple extends ColorBinder {
                 // don't support default values if it's a list
                 prop.defaultValue = attType.createConstant(
                     Ring.get(JCodeModel.class),
-                    use.getDefaultValue(),use.getContext());
+                    use.getDefaultValue());
             } else
             if(use.getFixedValue()!=null) {
                 prop.defaultValue = attType.createConstant(
                     Ring.get(JCodeModel.class),
-                    use.getFixedValue(),use.getContext());
+                    use.getFixedValue());
             }
         }
 

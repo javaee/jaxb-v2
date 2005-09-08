@@ -5,6 +5,8 @@ import java.util.Iterator;
 
 import javax.xml.namespace.NamespaceContext;
 
+import com.sun.xml.xsom.XmlString;
+
 import org.relaxng.datatype.ValidationContext;
 
 /**
@@ -13,14 +15,14 @@ import org.relaxng.datatype.ValidationContext;
  * @author Kohsuke Kawaguchi
  */
 public final class NamespaceContextAdapter implements NamespaceContext {
-    private ValidationContext context;
+    private XmlString xstr;
 
-    public NamespaceContextAdapter(ValidationContext context) {
-        this.context = context;
+    public NamespaceContextAdapter(XmlString xstr) {
+        this.xstr = xstr;
     }
 
     public String getNamespaceURI(String prefix) {
-        return context.resolveNamespacePrefix(prefix);
+        return xstr.resolvePrefix(prefix);
     }
 
     public String getPrefix(String namespaceURI) {

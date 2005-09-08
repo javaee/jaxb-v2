@@ -22,6 +22,7 @@ import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.xsom.XSComponent;
+import com.sun.xml.xsom.XmlString;
 
 import org.relaxng.datatype.ValidationContext;
 import org.xml.sax.Locator;
@@ -180,7 +181,7 @@ public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, 
         return false;
     }
 
-    public JExpression createConstant(JCodeModel codeModel, String literal, ValidationContext context) {
+    public JExpression createConstant(JCodeModel codeModel, XmlString literal) {
         // it is difficult to generate constants for enums,
         // because when this method is called we still haven't generated the enum class yet,
         // which seems to point to a general problem that default value expression computation

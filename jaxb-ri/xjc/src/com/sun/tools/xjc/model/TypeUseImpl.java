@@ -9,6 +9,7 @@ import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JStringLiteral;
 import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.model.core.ID;
+import com.sun.xml.xsom.XmlString;
 
 import org.relaxng.datatype.ValidationContext;
 
@@ -77,13 +78,13 @@ final class TypeUseImpl implements TypeUse {
     }
 
 
-    public JExpression createConstant(JCodeModel codeModel, String lexical, ValidationContext context) {
+    public JExpression createConstant(JCodeModel codeModel, XmlString lexical) {
         if(isCollection())  return null;
 
-        if(adapter==null)     return coreType.createConstant(codeModel, lexical,context);
+        if(adapter==null)     return coreType.createConstant(codeModel, lexical);
 
         // [RESULT] new Adapter().unmarshal(CONSTANT);
-        JExpression cons = coreType.createConstant(codeModel, lexical, context);
+        JExpression cons = coreType.createConstant(codeModel, lexical);
         Class<? extends XmlAdapter> atype = adapter.getAdapterIfKnown();
 
         // try to run the adapter now rather than later.

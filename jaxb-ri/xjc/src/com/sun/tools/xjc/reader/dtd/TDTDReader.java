@@ -38,6 +38,7 @@ import com.sun.tools.xjc.reader.dtd.bindinfo.BindInfo;
 import com.sun.tools.xjc.util.CodeModelClassFactory;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
 import com.sun.xml.bind.v2.NameConverter;
+import com.sun.xml.xsom.XmlString;
 
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -314,7 +315,7 @@ public class TDTDReader extends DTDHandlerBase
         if(defaultValue!=null)
             // TODO: what does it mean for us to require a cast here?
             // is this an indication that our model is broken?
-            r.defaultValue = use.getInfo().createConstant(codeModel,defaultValue,null);
+            r.defaultValue = use.getInfo().createConstant(codeModel,new XmlString(defaultValue));
 
         return r;
     }
