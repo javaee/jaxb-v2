@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: XSElementDecl.java,v 1.1 2005-04-14 22:06:20 kohsuke Exp $
+ * @(#)$Id: XSElementDecl.java,v 1.2 2005-09-08 22:20:18 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -8,6 +8,8 @@
  * 
  */
 package com.sun.xml.xsom;
+
+import org.relaxng.datatype.ValidationContext;
 
 import java.util.Set;
 import java.util.List;
@@ -114,7 +116,16 @@ public interface XSElementDecl extends XSDeclaration, XSTerm
     // TODO: identitiy constraints
     // TODO: scope
 
-    // TODO: exclusive. should it be Object (so that it can be typed?)
     String getDefaultValue();
     String getFixedValue();
+
+    /**
+     * Gets the context in which the default/fixed value
+     * constraint should be interpreted.
+     *
+     * <p>
+     * The primary use of the ValidationContext is to resolve the
+     * namespace prefix of the value when it is a QName.
+     */
+    ValidationContext getContext();
 }

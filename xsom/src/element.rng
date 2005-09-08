@@ -56,6 +56,7 @@
             !isGlobal,
             defaultValue,
             fixedValue,
+            $runtime.createValidationContext(),
             $runtime.parseBoolean(nillable),
             $runtime.parseBoolean(abstractValue),
             type,

@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: ElementDecl.java,v 1.1 2005-04-14 22:06:25 kohsuke Exp $
+ * @(#)$Id: ElementDecl.java,v 1.2 2005-09-08 22:20:18 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -23,6 +23,7 @@ import com.sun.xml.xsom.visitor.XSTermVisitor;
 import com.sun.xml.xsom.visitor.XSVisitor;
 import com.sun.xml.xsom.visitor.XSTermFunctionWithParam;
 import org.xml.sax.Locator;
+import org.relaxng.datatype.ValidationContext;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -35,7 +36,8 @@ public class ElementDecl extends DeclarationImpl implements XSElementDecl, Ref.T
         AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl fa,
         String _tns, String _name, boolean _anonymous,
         
-        String _defv, String _fixedv, boolean _nillable, boolean _abstract,
+        String _defv, String _fixedv, ValidationContext _context,
+        boolean _nillable, boolean _abstract,
         Ref.Type _type, Ref.Element _substHead,
         int _substDisallowed, int _substExcluded,
         List<IdentityConstraintImpl> idConstraints ) {
@@ -44,6 +46,7 @@ public class ElementDecl extends DeclarationImpl implements XSElementDecl, Ref.T
         
         this.defaultValue = _defv;
         this.fixedValue = _fixedv;
+        this.context = _context;
         this.nillable = _nillable;
         this._abstract = _abstract;
         this.type = _type;
@@ -64,7 +67,10 @@ public class ElementDecl extends DeclarationImpl implements XSElementDecl, Ref.T
     
     private String fixedValue;
     public String getFixedValue() { return fixedValue; }
-    
+
+    private final ValidationContext context;
+    public ValidationContext getContext() { return context; }
+
     private boolean nillable;
     public boolean isNillable() { return nillable; }
     
