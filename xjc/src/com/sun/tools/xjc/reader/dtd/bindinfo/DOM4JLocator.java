@@ -5,8 +5,8 @@
 
 package com.sun.tools.xjc.reader.dtd.bindinfo;
 
-import org.xml.sax.Locator;
 import org.w3c.dom.Element;
+import org.xml.sax.Locator;
 
 class DOM4JLocator
 {

@@ -2,11 +2,11 @@ package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
 import java.util.ArrayList;
 
-import org.xml.sax.XMLFilter;
+import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
-import org.xml.sax.Attributes;
+import org.xml.sax.XMLFilter;
 import org.xml.sax.helpers.XMLFilterImpl;
 
 /**

@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: XJC.java,v 1.1 2005-04-15 20:08:58 kohsuke Exp $
+ * @(#)$Id: XJC.java,v 1.2 2005-09-08 23:29:21 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -9,11 +9,11 @@
  */
 package com.sun.tools.xjc.api;
 
+import com.sun.codemodel.JJavaName;
 import com.sun.tools.xjc.api.impl.j2s.JavaCompilerImpl;
 import com.sun.tools.xjc.api.impl.s2j.SchemaCompilerImpl;
 import com.sun.tools.xjc.reader.Util;
 import com.sun.xml.bind.v2.NameConverter;
-import com.sun.codemodel.JJavaName;
 
 /**
  * Entry point to the JAXB RI interface.

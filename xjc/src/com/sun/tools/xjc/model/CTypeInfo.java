@@ -6,13 +6,10 @@ import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JType;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
-import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.outline.Aspect;
+import com.sun.tools.xjc.outline.Outline;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
-import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XmlString;
-
-import org.relaxng.datatype.ValidationContext;
 
 /**
  * {@link TypeInfo} at the compile-time.

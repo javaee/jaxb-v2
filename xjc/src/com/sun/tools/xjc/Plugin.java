@@ -5,11 +5,11 @@
 package com.sun.tools.xjc;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
 
-import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.model.CPluginCustomization;
+import com.sun.tools.xjc.outline.Outline;
 
 import org.xml.sax.ErrorHandler;
 

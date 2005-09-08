@@ -1,8 +1,8 @@
 package com.sun.tools.xjc.util;
 
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 import java.text.ParseException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Utility class to parse a string

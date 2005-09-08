@@ -4,13 +4,13 @@ import java.util.List;
 
 import com.sun.tools.xjc.api.Property;
 import com.sun.tools.xjc.api.TypeAndAnnotation;
+import com.sun.tools.xjc.model.CAdapter;
 import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CElementInfo;
 import com.sun.tools.xjc.model.CElementPropertyInfo;
 import com.sun.tools.xjc.model.CTypeInfo;
 import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.model.TypeUseFactory;
-import com.sun.tools.xjc.model.CAdapter;
 
 /**
  * @author Kohsuke Kawaguchi

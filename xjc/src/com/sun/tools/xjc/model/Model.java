@@ -29,7 +29,6 @@ import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.reader.xmlschema.Messages;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
 import com.sun.xml.bind.v2.NameConverter;
-import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.Ref;
 import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.nav.Navigator;

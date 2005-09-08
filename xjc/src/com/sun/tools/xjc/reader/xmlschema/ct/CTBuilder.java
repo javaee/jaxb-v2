@@ -6,11 +6,11 @@ package com.sun.tools.xjc.reader.xmlschema.ct;
 
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.reader.Ring;
+import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.tools.xjc.reader.xmlschema.BindGreen;
 import com.sun.tools.xjc.reader.xmlschema.ClassSelector;
 import com.sun.tools.xjc.reader.xmlschema.ParticleBinder;
 import com.sun.tools.xjc.reader.xmlschema.SimpleTypeBuilder;
-import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSSchemaSet;
 

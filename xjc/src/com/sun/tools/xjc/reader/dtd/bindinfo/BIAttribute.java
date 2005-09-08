@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
 import com.sun.tools.xjc.generator.bean.field.UntypedListFieldRenderer;
 
-import org.w3c.dom.Element;
 import org.w3c.dom.Attr;
+import org.w3c.dom.Element;
 
 /** &lt;attribute> declaration in the binding file. */
 public class BIAttribute

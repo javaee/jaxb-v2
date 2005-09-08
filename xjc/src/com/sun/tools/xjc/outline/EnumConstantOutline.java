@@ -1,9 +1,9 @@
 package com.sun.tools.xjc.outline;
 
 import com.sun.codemodel.JEnumConstant;
+import com.sun.tools.xjc.generator.bean.BeanGenerator;
 import com.sun.tools.xjc.model.CEnumConstant;
 import com.sun.tools.xjc.model.CEnumLeafInfo;
-import com.sun.tools.xjc.generator.bean.BeanGenerator;
 
 /**
  * Outline object that provides per-{@link CEnumConstant} information.

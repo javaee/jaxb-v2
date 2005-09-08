@@ -1,12 +1,12 @@
 package com.sun.tools.xjc.model.nav;
 
+import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
-import java.lang.reflect.Modifier;
 
 import com.sun.codemodel.JClass;
-import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.outline.Aspect;
+import com.sun.tools.xjc.outline.Outline;
 
 /**
  * @author Kohsuke Kawaguchi

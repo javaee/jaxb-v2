@@ -1,7 +1,5 @@
 package com.sun.tools.xjc.api.util;
 
-import static com.sun.mirror.apt.Filer.Location.CLASS_TREE;
-import static com.sun.mirror.apt.Filer.Location.SOURCE_TREE;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -10,6 +8,9 @@ import java.io.Writer;
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JPackage;
 import com.sun.mirror.apt.Filer;
+
+import static com.sun.mirror.apt.Filer.Location.CLASS_TREE;
+import static com.sun.mirror.apt.Filer.Location.SOURCE_TREE;
 
 /**
  * {@link CodeWriter} that generates source code to {@link Filer}.

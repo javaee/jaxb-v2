@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: UntypedListField.java,v 1.3 2005-05-06 21:49:18 kohsuke Exp $
+ * @(#)$Id: UntypedListField.java,v 1.4 2005-09-08 23:29:22 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -9,8 +9,8 @@
  */
 package com.sun.tools.xjc.generator.bean.field;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;

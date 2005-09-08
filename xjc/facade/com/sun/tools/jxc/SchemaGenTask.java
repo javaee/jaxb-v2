@@ -1,16 +1,16 @@
 package com.sun.tools.jxc;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.sun.mirror.apt.AnnotationProcessorFactory;
 import com.sun.tools.jxc.apt.SchemaGenerator;
 
-import org.apache.tools.ant.types.Commandline;
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.types.Commandline;
 
 
 /**

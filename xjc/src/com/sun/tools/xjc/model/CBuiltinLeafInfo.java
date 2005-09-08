@@ -38,7 +38,6 @@ import com.sun.xml.bind.v2.model.impl.BuiltinLeafInfoImpl;
 import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XmlString;
 
-import org.relaxng.datatype.ValidationContext;
 import org.xml.sax.Locator;
 
 /**

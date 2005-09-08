@@ -6,8 +6,8 @@ package com.sun.tools.xjc.outline;
 
 import java.util.Set;
 
-import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlSchema;
 
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JPackage;

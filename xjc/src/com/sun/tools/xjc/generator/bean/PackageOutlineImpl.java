@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: PackageOutlineImpl.java,v 1.10 2005-08-05 18:01:32 kohsuke Exp $
+ * @(#)$Id: PackageOutlineImpl.java,v 1.11 2005-09-08 23:29:24 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -10,10 +10,10 @@
 package com.sun.tools.xjc.generator.bean;
 
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlSchema;
@@ -21,6 +21,7 @@ import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JPackage;
+import com.sun.tools.xjc.generator.annotation.spec.XmlSchemaWriter;
 import com.sun.tools.xjc.model.CAttributePropertyInfo;
 import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CElementPropertyInfo;
@@ -30,7 +31,6 @@ import com.sun.tools.xjc.model.CReferencePropertyInfo;
 import com.sun.tools.xjc.model.CValuePropertyInfo;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.outline.PackageOutline;
-import com.sun.tools.xjc.generator.annotation.spec.XmlSchemaWriter;
 
 /**
  * {@link PackageOutline} enhanced with schema2java specific

@@ -1,13 +1,14 @@
 package com.sun.tools.xjc.reader.xmlschema.ct;
 
-import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.model.CBuiltinLeafInfo;
+import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.reader.RawTypeSet;
 import com.sun.tools.xjc.reader.xmlschema.RawTypeSetBuilder;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
-import static com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeBindingMode.FALLBACK_CONTENT;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSContentType;
+
+import static com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeBindingMode.FALLBACK_CONTENT;
 
 /**
  * @author Kohsuke Kawaguchi

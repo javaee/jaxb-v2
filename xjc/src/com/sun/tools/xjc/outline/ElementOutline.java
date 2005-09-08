@@ -1,7 +1,7 @@
 package com.sun.tools.xjc.outline;
 
-import com.sun.tools.xjc.model.CElementInfo;
 import com.sun.codemodel.JDefinedClass;
+import com.sun.tools.xjc.model.CElementInfo;
 
 /**
  * Outline object that provides per-{@link CElementInfo} information

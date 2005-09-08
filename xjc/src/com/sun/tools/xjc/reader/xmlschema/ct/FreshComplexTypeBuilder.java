@@ -4,16 +4,16 @@
  */
 package com.sun.tools.xjc.reader.xmlschema.ct;
 
+import com.sun.tools.xjc.model.CPropertyInfo;
+import com.sun.tools.xjc.model.TypeUse;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSContentType;
+import com.sun.xml.xsom.XSModelGroup;
 import com.sun.xml.xsom.XSParticle;
 import com.sun.xml.xsom.XSSimpleType;
-import com.sun.xml.xsom.XSModelGroup;
 import com.sun.xml.xsom.XSTerm;
 import com.sun.xml.xsom.visitor.XSContentTypeVisitor;
-import com.sun.tools.xjc.model.TypeUse;
-import com.sun.tools.xjc.model.CPropertyInfo;
-import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
 
 import static com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeBindingMode.FALLBACK_CONTENT;
 import static com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeBindingMode.NORMAL;

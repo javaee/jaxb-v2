@@ -1,8 +1,8 @@
 package com.sun.tools.xjc.model.nav;
 
 import com.sun.codemodel.JType;
-import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.outline.Aspect;
+import com.sun.tools.xjc.outline.Outline;
 
 /**
  * A type.

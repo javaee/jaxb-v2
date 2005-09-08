@@ -1,7 +1,7 @@
 package com.sun.tools.xjc.model;
 
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
 
 import javax.activation.MimeType;
 
