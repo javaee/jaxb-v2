@@ -27,6 +27,7 @@ import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSComponent;
+import com.sun.xml.xsom.XmlString;
 
 import org.xml.sax.Locator;
 
@@ -186,9 +187,9 @@ public final class RawTypeSet {
         public final XSComponent source;
         public final CCustomizations custs;
         public final boolean nillable;
-        public final String defaultValue;
+        public final XmlString defaultValue;
 
-        public XmlTypeRef(QName elementName, TypeUse target, boolean nillable, String defaultValue, XSComponent source, CCustomizations custs, Locator loc) {
+        public XmlTypeRef(QName elementName, TypeUse target, boolean nillable, XmlString defaultValue, XSComponent source, CCustomizations custs, Locator loc) {
             assert elementName!=null;
             assert target!=null;
 
@@ -201,7 +202,7 @@ public final class RawTypeSet {
             this.locator = loc;
         }
 
-        public XmlTypeRef(QName elementName, XSType target, boolean nillable, String defaultValue) {
+        public XmlTypeRef(QName elementName, XSType target, boolean nillable, XmlString defaultValue) {
             this(elementName,Ring.get(ClassSelector.class).bindToType(target), nillable, defaultValue, target,
                     Ring.get(BGMBuilder.class).getBindInfo(target).toCustomizationList(),
                     target.getLocator());
