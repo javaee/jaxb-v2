@@ -10,6 +10,7 @@ import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.outline.Aspect;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.xsom.XSComponent;
+import com.sun.xml.xsom.XmlString;
 
 import org.relaxng.datatype.ValidationContext;
 
@@ -32,7 +33,7 @@ public interface CTypeInfo extends TypeInfo<NType,NClass>, TypeUse, CCustomizabl
      *      if the class that this info represents isn't mapping to
      *      a text in XML.
      */
-    JExpression createConstant(JCodeModel codeModel, String lexical, ValidationContext context);
+    JExpression createConstant(JCodeModel codeModel, XmlString lexical);
 
     /**
      * Returns the {@link JClass} that represents the class being bound,

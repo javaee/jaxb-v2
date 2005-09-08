@@ -8,6 +8,7 @@ import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.xsom.XSComponent;
+import com.sun.xml.xsom.XmlString;
 
 import org.relaxng.datatype.ValidationContext;
 
@@ -77,7 +78,7 @@ abstract class AbstractCTypeInfoImpl implements CTypeInfo {
     }
 
     // this is just a convenient default
-    public JExpression createConstant(JCodeModel codeModel, String lexical, ValidationContext context) {
+    public JExpression createConstant(JCodeModel codeModel, XmlString lexical) {
         return null;
     }
 

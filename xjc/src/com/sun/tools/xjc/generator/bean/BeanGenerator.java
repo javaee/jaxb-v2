@@ -73,6 +73,7 @@ import com.sun.tools.xjc.outline.PackageOutline;
 import com.sun.tools.xjc.util.CodeModelClassFactory;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
+import com.sun.xml.xsom.XmlString;
 
 /**
  * Generates fields and accessors.
@@ -560,7 +561,7 @@ public final class BeanGenerator implements Outline
             // ASSUMPTION: datatype is outline-independent
             JEnumConstant constRef = type.enumConstant(constName);
             if(needsValue)
-                constRef.arg(e.base.createConstant(codeModel, mem.getLexicalValue(), null ));
+                constRef.arg(e.base.createConstant(codeModel, new XmlString(mem.getLexicalValue())));
 
             if(!mem.getLexicalValue().equals(constName))
                 constRef.annotate2(XmlEnumValueWriter.class).value(mem.getLexicalValue());

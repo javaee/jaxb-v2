@@ -392,7 +392,7 @@ public final class ConversionFinder extends BindingComponent {
                 // this will even override names specified by the user. that's crazy.
                 name = "VALUE_"+(idx++);
             } else {
-                String facetValue = facet.getValue();
+                String facetValue = facet.getValue().value;
                 BIEnumMember mem = members.get(facetValue);
                 if( mem==null )
                     // look at the one attached to the facet object
@@ -419,7 +419,7 @@ public final class ConversionFinder extends BindingComponent {
             if(!JJavaName.isJavaIdentifier(name))
                 return null;    // unable to generate a name
 
-            memberList.add(new CEnumConstant(name,mdoc,facet.getValue()));
+            memberList.add(new CEnumConstant(name,mdoc,facet.getValue().value));
         }
         return memberList;
     }
@@ -614,13 +614,13 @@ public final class ConversionFinder extends BindingComponent {
     private boolean isRestrictedTo0And1(XSSimpleType type) {
         XSFacet pattern = type.getFacet(XSFacet.FACET_PATTERN);
         if(pattern!=null) {
-            String v = pattern.getValue();
+            String v = pattern.getValue().value;
             if(v.equals("0|1") || v.equals("1|0") || v.equals("\\d"))
                 return true;
         }
         XSFacet enumf = type.getFacet(XSFacet.FACET_ENUMERATION);
         if(enumf!=null) {
-            String v = enumf.getValue();
+            String v = enumf.getValue().value;
             if(v.equals("0") || v.equals("1"))
                 return true;
         }
@@ -631,7 +631,7 @@ public final class ConversionFinder extends BindingComponent {
         XSFacet me = type.getFacet(facetName);
         if(me==null)
             return null;
-        BigInteger bi = DatatypeConverterImpl._parseInteger(me.getValue());
+        BigInteger bi = DatatypeConverterImpl._parseInteger(me.getValue().value);
         if(offset!=0)
             bi = bi.add(BigInteger.valueOf(offset));
         return bi;
