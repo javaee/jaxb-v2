@@ -23,11 +23,23 @@ public final class XmlString {
     /**
      * Used to resole in-scope namespace bindings.
      */
-    private final ValidationContext context;
+    public final ValidationContext context;
 
+    /**
+     * Creates a new {@link XmlString} from a lexical representation and in-scope namespaces.
+     */
     public XmlString(String value, ValidationContext context) {
         this.value = value;
         this.context = context;
+        if(context==null)
+            throw new IllegalArgumentException();
+    }
+
+    /**
+     * Creates a new {@link XmlString} with empty in-scope namespace bindings.
+     */
+    public XmlString(String value) {
+        this(value,NULL_CONTEXT);
     }
 
     /**
@@ -57,4 +69,24 @@ public final class XmlString {
     public String toString() {
         return value;
     }
+
+    private static final ValidationContext NULL_CONTEXT = new ValidationContext() {
+        public String resolveNamespacePrefix(String s) {
+            if(s.length()==0)   return "";
+            if(s.equals("xml")) return "http://www.w3.org/XML/1998/namespace";
+            return null;
+        }
+
+        public String getBaseUri() {
+            return null;
+        }
+
+        public boolean isUnparsedEntity(String s) {
+            return false;
+        }
+
+        public boolean isNotation(String s) {
+            return false;
+        }
+    };
 }
