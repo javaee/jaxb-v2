@@ -1,9 +1,9 @@
 package com.sun.tools.xjc.generator.bean;
 
-import com.sun.tools.xjc.model.Model;
-import com.sun.tools.xjc.model.CElementInfo;
-import com.sun.tools.xjc.outline.Aspect;
 import com.sun.codemodel.JPackage;
+import com.sun.tools.xjc.model.CElementInfo;
+import com.sun.tools.xjc.model.Model;
+import com.sun.tools.xjc.outline.Aspect;
 
 /**
  * Generates public ObjectFactory.

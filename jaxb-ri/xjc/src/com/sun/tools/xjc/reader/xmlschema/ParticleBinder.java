@@ -5,25 +5,25 @@
 package com.sun.tools.xjc.reader.xmlschema;
 
 import java.text.ParseException;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
+import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.model.CReferencePropertyInfo;
-import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIDeclaration;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
 import com.sun.xml.xsom.XSElementDecl;
-import com.sun.xml.xsom.XSParticle;
-import com.sun.xml.xsom.XSTerm;
 import com.sun.xml.xsom.XSModelGroup;
 import com.sun.xml.xsom.XSModelGroupDecl;
+import com.sun.xml.xsom.XSParticle;
+import com.sun.xml.xsom.XSTerm;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.visitor.XSTermVisitor;
 

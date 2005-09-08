@@ -1,8 +1,5 @@
 package com.sun.tools.xjc.reader.xmlschema;
 
-import static com.sun.tools.xjc.model.Multiplicity.ONE;
-import static com.sun.tools.xjc.model.Multiplicity.ZERO;
-
 import com.sun.tools.xjc.model.Multiplicity;
 import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XSModelGroup;
@@ -10,6 +7,9 @@ import com.sun.xml.xsom.XSModelGroupDecl;
 import com.sun.xml.xsom.XSParticle;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.visitor.XSTermFunction;
+
+import static com.sun.tools.xjc.model.Multiplicity.ONE;
+import static com.sun.tools.xjc.model.Multiplicity.ZERO;
 
 /**
  * Counts {@link Multiplicity} for a particle/term.

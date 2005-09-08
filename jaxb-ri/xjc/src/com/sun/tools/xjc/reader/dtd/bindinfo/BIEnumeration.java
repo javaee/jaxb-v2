@@ -12,8 +12,8 @@ import com.sun.tools.xjc.model.CBuiltinLeafInfo;
 import com.sun.tools.xjc.model.CClassInfoParent;
 import com.sun.tools.xjc.model.CEnumConstant;
 import com.sun.tools.xjc.model.CEnumLeafInfo;
-import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.model.Model;
+import com.sun.tools.xjc.model.TypeUse;
 
 import org.w3c.dom.Element;
 

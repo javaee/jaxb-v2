@@ -3,8 +3,8 @@ package com.sun.tools.xjc.model.nav;
 import java.lang.reflect.Type;
 
 import com.sun.codemodel.JType;
-import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.outline.Aspect;
+import com.sun.tools.xjc.outline.Outline;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 
 /**

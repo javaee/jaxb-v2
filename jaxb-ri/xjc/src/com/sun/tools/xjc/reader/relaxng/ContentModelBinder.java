@@ -1,25 +1,25 @@
 package com.sun.tools.xjc.reader.relaxng;
 
-import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.REPEATED_ELEMENT;
-
 import javax.xml.namespace.QName;
 
+import com.sun.tools.xjc.model.CAttributePropertyInfo;
 import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CElementPropertyInfo;
 import com.sun.tools.xjc.model.CReferencePropertyInfo;
-import com.sun.tools.xjc.model.CAttributePropertyInfo;
 import com.sun.tools.xjc.model.Multiplicity;
 import com.sun.tools.xjc.reader.RawTypeSet;
 import com.sun.xml.bind.v2.model.core.ID;
 
+import org.kohsuke.rngom.digested.DAttributePattern;
 import org.kohsuke.rngom.digested.DChoicePattern;
 import org.kohsuke.rngom.digested.DMixedPattern;
+import org.kohsuke.rngom.digested.DOneOrMorePattern;
+import org.kohsuke.rngom.digested.DOptionalPattern;
 import org.kohsuke.rngom.digested.DPattern;
 import org.kohsuke.rngom.digested.DPatternWalker;
-import org.kohsuke.rngom.digested.DOptionalPattern;
-import org.kohsuke.rngom.digested.DOneOrMorePattern;
-import org.kohsuke.rngom.digested.DAttributePattern;
 import org.kohsuke.rngom.digested.DZeroOrMorePattern;
+
+import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.REPEATED_ELEMENT;
 
 /**
  * Recursively visits {@link DPattern} and

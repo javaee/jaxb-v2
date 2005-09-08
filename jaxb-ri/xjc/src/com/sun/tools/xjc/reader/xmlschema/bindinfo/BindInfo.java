@@ -4,13 +4,13 @@
  */
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
+import java.io.FilterWriter;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.io.FilterWriter;
-import java.io.IOException;
 
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
@@ -19,22 +19,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import com.sun.codemodel.JDocComment;
 import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.model.CPluginCustomization;
 import com.sun.tools.xjc.model.Model;
-import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.tools.xjc.reader.Ring;
+import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.xml.bind.annotation.XmlLocation;
-import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.marshaller.MinimumEscapeHandler;
+import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.xsom.XSComponent;
 
-import org.xml.sax.Locator;
 import org.w3c.dom.Element;
+import org.xml.sax.Locator;
 
 /**
  * Container for customization declarations.

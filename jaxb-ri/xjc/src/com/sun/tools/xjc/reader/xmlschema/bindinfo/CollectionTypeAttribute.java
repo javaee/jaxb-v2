@@ -1,11 +1,10 @@
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
-import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlValue;
 
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
 import com.sun.tools.xjc.generator.bean.field.UntypedListFieldRenderer;
-import com.sun.tools.xjc.generator.bean.field.DefaultFieldRenderer;
 import com.sun.tools.xjc.model.Model;
 
 /**

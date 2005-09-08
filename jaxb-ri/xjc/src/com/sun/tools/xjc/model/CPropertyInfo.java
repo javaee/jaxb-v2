@@ -6,10 +6,10 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JJavaName;
 import com.sun.codemodel.JType;
-import com.sun.codemodel.JClass;
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;

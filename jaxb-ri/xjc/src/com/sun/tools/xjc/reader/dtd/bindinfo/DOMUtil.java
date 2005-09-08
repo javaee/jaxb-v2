@@ -1,11 +1,11 @@
 package com.sun.tools.xjc.reader.dtd.bindinfo;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * @author Kohsuke Kawaguchi

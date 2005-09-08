@@ -4,7 +4,6 @@
  */
 package com.sun.tools.xjc.reader.xmlschema.parser;
 
-import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.reader.internalizer.AbstractReferenceFinderImpl;
 import com.sun.tools.xjc.reader.internalizer.DOMForest;
 import com.sun.tools.xjc.reader.internalizer.InternalizationLogic;

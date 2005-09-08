@@ -8,8 +8,6 @@ import com.sun.tools.xjc.model.nav.NType;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.xsom.XmlString;
 
-import org.relaxng.datatype.ValidationContext;
-
 /**
  * Information about how another type is referenced.
  *

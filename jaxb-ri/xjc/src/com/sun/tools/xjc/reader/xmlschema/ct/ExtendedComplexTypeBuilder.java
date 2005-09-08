@@ -22,8 +22,8 @@ import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.visitor.XSTermFunction;
 
-import org.kohsuke.rngom.nc.NameClass;
 import org.kohsuke.rngom.nc.ChoiceNameClass;
+import org.kohsuke.rngom.nc.NameClass;
 import org.kohsuke.rngom.nc.SimpleNameClass;
 
 /**

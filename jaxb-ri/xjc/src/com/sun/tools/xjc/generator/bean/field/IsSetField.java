@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: IsSetField.java,v 1.2 2005-08-05 18:01:31 kohsuke Exp $
+ * @(#)$Id: IsSetField.java,v 1.3 2005-09-08 23:29:22 kohsuke Exp $
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -10,7 +10,6 @@
 package com.sun.tools.xjc.generator.bean.field;
 
 import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;

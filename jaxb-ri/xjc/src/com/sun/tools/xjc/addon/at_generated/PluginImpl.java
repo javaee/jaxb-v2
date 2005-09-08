@@ -1,17 +1,15 @@
 package com.sun.tools.xjc.addon.at_generated;
 
-import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JAnnotatable;
 import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMethod;
 import com.sun.tools.xjc.Driver;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.Plugin;
 import com.sun.tools.xjc.outline.ClassOutline;
-import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.outline.EnumOutline;
+import com.sun.tools.xjc.outline.Outline;
 
 import org.xml.sax.ErrorHandler;
 

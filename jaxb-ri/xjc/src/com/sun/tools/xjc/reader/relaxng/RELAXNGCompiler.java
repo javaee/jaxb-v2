@@ -26,9 +26,9 @@ import org.kohsuke.rngom.digested.DChoicePattern;
 import org.kohsuke.rngom.digested.DDefine;
 import org.kohsuke.rngom.digested.DElementPattern;
 import org.kohsuke.rngom.digested.DPattern;
-import org.kohsuke.rngom.digested.DValuePattern;
 import org.kohsuke.rngom.digested.DPatternWalker;
 import org.kohsuke.rngom.digested.DRefPattern;
+import org.kohsuke.rngom.digested.DValuePattern;
 import org.kohsuke.rngom.nc.NameClass;
 import org.kohsuke.rngom.xml.util.WellKnownNamespaces;
 

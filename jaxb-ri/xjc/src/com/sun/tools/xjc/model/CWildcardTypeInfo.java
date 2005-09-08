@@ -7,7 +7,6 @@ import com.sun.tools.xjc.model.nav.NavigatorImpl;
 import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.xml.bind.v2.model.core.WildcardTypeInfo;
-import com.sun.xml.xsom.XSComponent;
 
 import org.w3c.dom.Element;
 import org.xml.sax.Locator;

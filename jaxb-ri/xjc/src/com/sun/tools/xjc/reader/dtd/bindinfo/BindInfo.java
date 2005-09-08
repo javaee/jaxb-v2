@@ -27,7 +27,6 @@ import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.util.CodeModelClassFactory;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
 import com.sun.tools.xjc.util.ForkContentHandler;
-import com.sun.tools.xjc.util.ForkContentHandler;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

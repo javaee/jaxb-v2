@@ -10,8 +10,8 @@ import java.util.StringTokenizer;
 
 import com.sun.tools.xjc.model.CClassInfo;
 
-import org.xml.sax.Locator;
 import org.w3c.dom.Element;
+import org.xml.sax.Locator;
 
 /**
  * &lt;constructor> declaration in the binding file.

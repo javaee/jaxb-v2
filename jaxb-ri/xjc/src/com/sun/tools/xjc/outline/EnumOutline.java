@@ -1,7 +1,7 @@
 package com.sun.tools.xjc.outline;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.sun.codemodel.JDefinedClass;
 import com.sun.tools.xjc.model.CEnumLeafInfo;

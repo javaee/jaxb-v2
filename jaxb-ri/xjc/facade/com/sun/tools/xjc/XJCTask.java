@@ -2,14 +2,14 @@ package com.sun.tools.xjc;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Iterator;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DynamicConfigurator;
-import org.apache.tools.ant.Task;
 import org.apache.tools.ant.IntrospectionHelper;
+import org.apache.tools.ant.Task;
 
 /**
  * Captures the properties and then delegate to XJC1 or XJC2 by looking at

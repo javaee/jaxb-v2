@@ -1,11 +1,11 @@
 package com.sun.tools.xjc.util;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.text.ParseException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;

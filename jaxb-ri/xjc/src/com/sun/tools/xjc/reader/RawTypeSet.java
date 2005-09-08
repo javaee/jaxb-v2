@@ -24,9 +24,9 @@ import com.sun.tools.xjc.reader.xmlschema.SimpleTypeBuilder;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIGlobalBinding;
 import com.sun.xml.bind.v2.model.core.Element;
 import com.sun.xml.bind.v2.model.core.ID;
+import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XSType;
-import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XmlString;
 
 import org.xml.sax.Locator;

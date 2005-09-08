@@ -4,10 +4,10 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.CodeWriter;
-import com.sun.tools.xjc.Plugin;
+import com.sun.codemodel.JCodeModel;
 import com.sun.tools.xjc.Options;
+import com.sun.tools.xjc.Plugin;
 
 /**
  * {@link JAXBModel} that exposes additional information available

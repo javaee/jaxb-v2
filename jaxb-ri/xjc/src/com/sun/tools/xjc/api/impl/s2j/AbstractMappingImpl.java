@@ -1,8 +1,8 @@
 package com.sun.tools.xjc.api.impl.s2j;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collection;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 

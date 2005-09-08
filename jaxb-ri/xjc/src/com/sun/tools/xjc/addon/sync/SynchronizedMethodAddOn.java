@@ -5,12 +5,11 @@
 package com.sun.tools.xjc.addon.sync;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 import com.sun.codemodel.JMethod;
 import com.sun.tools.xjc.BadCommandLineException;
-import com.sun.tools.xjc.Plugin;
 import com.sun.tools.xjc.Options;
+import com.sun.tools.xjc.Plugin;
 import com.sun.tools.xjc.outline.ClassOutline;
 import com.sun.tools.xjc.outline.Outline;
 

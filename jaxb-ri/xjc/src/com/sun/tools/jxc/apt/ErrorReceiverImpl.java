@@ -1,8 +1,8 @@
 package com.sun.tools.jxc.apt;
 
-import com.sun.tools.xjc.ErrorReceiver;
-import com.sun.mirror.apt.Messager;
 import com.sun.mirror.apt.AnnotationProcessorEnvironment;
+import com.sun.mirror.apt.Messager;
+import com.sun.tools.xjc.ErrorReceiver;
 
 import org.xml.sax.SAXParseException;
 

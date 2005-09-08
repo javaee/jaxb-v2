@@ -1,8 +1,5 @@
 package com.sun.tools.xjc.reader.dtd;
 
-import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.NOT_REPEATED;
-import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.REPEATED_VALUE;
-import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.REPEATED_ELEMENT;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -15,10 +12,10 @@ import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CElementPropertyInfo;
 import com.sun.tools.xjc.model.CNonElement;
 import com.sun.tools.xjc.model.CPropertyInfo;
+import com.sun.tools.xjc.model.CReferencePropertyInfo;
 import com.sun.tools.xjc.model.CTypeRef;
 import com.sun.tools.xjc.model.CValuePropertyInfo;
 import com.sun.tools.xjc.model.TypeUse;
-import com.sun.tools.xjc.model.CReferencePropertyInfo;
 import com.sun.tools.xjc.reader.dtd.bindinfo.BIConversion;
 import com.sun.tools.xjc.reader.dtd.bindinfo.BIElement;
 import com.sun.xml.bind.v2.model.core.ID;
@@ -26,6 +23,10 @@ import com.sun.xml.bind.v2.model.core.WildcardMode;
 import com.sun.xml.dtdparser.DTDEventListener;
 
 import org.xml.sax.Locator;
+
+import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.NOT_REPEATED;
+import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.REPEATED_VALUE;
+import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.REPEATED_ELEMENT;
 
 /**
  * DTD Element.

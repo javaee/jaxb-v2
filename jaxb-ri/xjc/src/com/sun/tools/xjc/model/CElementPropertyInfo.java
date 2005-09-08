@@ -4,8 +4,8 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.namespace.QName;
 import javax.activation.MimeType;
+import javax.xml.namespace.QName;
 
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;

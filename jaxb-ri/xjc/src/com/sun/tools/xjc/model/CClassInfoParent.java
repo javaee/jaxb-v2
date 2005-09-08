@@ -1,8 +1,5 @@
 package com.sun.tools.xjc.model;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.sun.codemodel.JPackage;
 
 /**
