@@ -223,6 +223,7 @@ public abstract class CBuiltinLeafInfo extends BuiltinLeafInfoImpl<NType,NClass>
     };
     public static final CBuiltinLeafInfo QNAME = new Builtin(QName.class,"QName") {
         public JExpression createConstant(JCodeModel codeModel, String lexical, ValidationContext context) {
+            if(context==null)       return null;
             QName qn = DatatypeConverterImpl._parseQName(lexical,new NamespaceContextAdapter(context));
             return JExpr._new(codeModel.ref(QName.class))
                 .arg(qn.getNamespaceURI())
