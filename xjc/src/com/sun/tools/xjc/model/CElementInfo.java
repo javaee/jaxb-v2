@@ -1,7 +1,5 @@
 package com.sun.tools.xjc.model;
 
-import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.REPEATED_VALUE;
-import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.NOT_REPEATED;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -22,8 +20,12 @@ import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.xml.bind.v2.model.core.ElementInfo;
 import com.sun.xml.xsom.XSComponent;
+import com.sun.xml.xsom.XmlString;
 
 import org.xml.sax.Locator;
+
+import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.REPEATED_VALUE;
+import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.NOT_REPEATED;
 
 /**
  * {@link ElementInfo} implementation for the compile-time model.
@@ -81,17 +83,17 @@ public final class CElementInfo extends AbstractCTypeInfoImpl implements Element
 
     private final CElementPropertyInfo property;
 
-    /**
-     * Creates an element in the given package.
-     */
-    public CElementInfo(Model model,QName tagName, JPackage _package, TypeUse contentType, String defaultValue, XSComponent source, CCustomizations customizations, Locator location ) {
-        this(model,tagName,model.getPackage(_package),contentType,defaultValue, source, customizations, location);
-    }
+//    /**
+//     * Creates an element in the given package.
+//     */
+//    public CElementInfo(Model model,QName tagName, JPackage _package, TypeUse contentType, String defaultValue, XSComponent source, CCustomizations customizations, Locator location ) {
+//        this(model,tagName,model.getPackage(_package),contentType,defaultValue, source, customizations, location);
+//    }
 
     /**
      * Creates an element in the given parent.
      */
-    public CElementInfo(Model model,QName tagName, CClassInfoParent parent, TypeUse contentType, String defaultValue, XSComponent source, CCustomizations customizations, Locator location ) {
+    public CElementInfo(Model model,QName tagName, CClassInfoParent parent, TypeUse contentType, XmlString defaultValue, XSComponent source, CCustomizations customizations, Locator location ) {
         super(model,source,customizations);
         this.tagName = tagName;
         this.model = model;
@@ -112,9 +114,9 @@ public final class CElementInfo extends AbstractCTypeInfoImpl implements Element
     }
 
     /**
-     * Creates an element with a class in th given parent.
+     * Creates an element with a class in the given parent.
      */
-    public CElementInfo(Model model,QName tagName, CClassInfoParent parent, String className, TypeUse contentType, String defaultValue, XSComponent source, CCustomizations customizations, Locator location ) {
+    public CElementInfo(Model model,QName tagName, CClassInfoParent parent, String className, TypeUse contentType, XmlString defaultValue, XSComponent source, CCustomizations customizations, Locator location ) {
         this(model,tagName,parent,contentType,defaultValue,source,customizations,location);
         this.className = className;
     }

@@ -5,9 +5,10 @@ import javax.xml.namespace.QName;
 
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
-import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
+import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.runtime.Util;
+import com.sun.xml.xsom.XmlString;
 
 /**
  * {@link TypeRef} for XJC.
@@ -28,9 +29,9 @@ public final class CTypeRef implements TypeRef<NType,NClass> {
     private final QName elementName;
 
     private final boolean nillable;
-    private String defaultValue;
+    public final XmlString defaultValue;
 
-    public CTypeRef(CNonElement type, QName elementName, boolean nillable, String defaultValue) {
+    public CTypeRef(CNonElement type, QName elementName, boolean nillable, XmlString defaultValue) {
         assert type!=null;
         assert elementName!=null;
 
@@ -52,8 +53,17 @@ public final class CTypeRef implements TypeRef<NType,NClass> {
         return nillable;
     }
 
+    /**
+     * Inside XJC, use {@link #defaultValue} that has context information.
+     * This method is to override the one defined in the runtime model. 
+     *
+     * @see #defaultValue
+     */
     public String getDefaultValue() {
-        return defaultValue;
+        if(defaultValue!=null)
+            return defaultValue.value;
+        else
+            return null;
     }
 
     public boolean isLeaf() {
