@@ -40,7 +40,7 @@
         </javac>
         
         <copy toDir="${runtime-fi.classes}">
-            <fileset dir="${runtime.src}" includes="**/*.properties" />
+            <fileset dir="${runtime-fi.src}" includes="**/*.properties" />
         </copy>
 
         <!-- expose the build version to the DefaultJAXBContextImpl class so
