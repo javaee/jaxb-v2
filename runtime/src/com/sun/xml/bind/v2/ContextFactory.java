@@ -152,8 +152,8 @@ public class ContextFactory {
                     className = in.readLine();
                     continue;
                 }
-                int dot = className.indexOf('.');
-                if (dot != -1) {
+
+                if (className.endsWith(".class")) {
                     throw new JAXBException(Messages.ILLEGAL_ENTRY.format(className));
                 }
 
