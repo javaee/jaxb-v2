@@ -2,11 +2,11 @@ package com.sun.xml.bind.v2.runtime;
 
 import java.io.IOException;
 
+import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.namespace.QName;
 
-import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.core.NonElement;
-import com.sun.xml.bind.api.SchemaOutputResolver;
+import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 
 /**
  * Implemented by the schema generators.

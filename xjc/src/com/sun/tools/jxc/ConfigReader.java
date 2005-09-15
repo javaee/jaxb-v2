@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Result;
@@ -24,7 +25,6 @@ import com.sun.tools.jxc.gen.config.Schema;
 import com.sun.tools.xjc.SchemaCache;
 import com.sun.tools.xjc.api.Reference;
 import com.sun.tools.xjc.util.ForkContentHandler;
-import com.sun.xml.bind.api.SchemaOutputResolver;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;

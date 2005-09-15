@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.namespace.QName;
 
 import com.sun.mirror.apt.AnnotationProcessor;
@@ -18,7 +19,6 @@ import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.api.J2SJAXBModel;
 import com.sun.tools.xjc.api.Reference;
 import com.sun.tools.xjc.api.XJC;
-import com.sun.xml.bind.api.SchemaOutputResolver;
 
 import org.xml.sax.SAXException;
 
