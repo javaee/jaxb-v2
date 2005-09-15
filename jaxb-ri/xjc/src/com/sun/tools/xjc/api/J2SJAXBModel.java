@@ -2,9 +2,8 @@ package com.sun.tools.xjc.api;
 
 import java.io.IOException;
 
+import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.namespace.QName;
-
-import com.sun.xml.bind.api.SchemaOutputResolver;
 
 /**
  * {@link JAXBModel} that exposes additional information available

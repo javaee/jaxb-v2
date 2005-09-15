@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
@@ -26,7 +27,6 @@ import com.sun.mirror.declaration.TypeDeclaration;
 import com.sun.tools.xjc.api.J2SJAXBModel;
 import com.sun.tools.xjc.api.Reference;
 import com.sun.tools.xjc.api.XJC;
-import com.sun.xml.bind.api.SchemaOutputResolver;
 
 /**
  * {@link AnnotationProcessorFactory} that implements the schema generator

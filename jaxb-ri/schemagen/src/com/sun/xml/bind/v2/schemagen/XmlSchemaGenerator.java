@@ -15,13 +15,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.activation.MimeType;
+import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 
 import com.sun.xml.bind.Util;
-import com.sun.xml.bind.api.SchemaOutputResolver;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.model.core.Adapter;

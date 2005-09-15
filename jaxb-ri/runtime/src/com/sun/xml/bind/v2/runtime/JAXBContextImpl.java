@@ -19,7 +19,7 @@
  */
 
 /*
- * @(#)$Id: JAXBContextImpl.java,v 1.51 2005-09-10 19:07:42 kohsuke Exp $
+ * @(#)$Id: JAXBContextImpl.java,v 1.52 2005-09-15 18:33:27 ryan_shoemaker Exp $
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -42,6 +42,7 @@ import javax.xml.bind.Binder;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBIntrospector;
+import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.bind.Validator;
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -63,11 +64,9 @@ import com.sun.xml.bind.api.Bridge;
 import com.sun.xml.bind.api.BridgeContext;
 import com.sun.xml.bind.api.JAXBRIContext;
 import com.sun.xml.bind.api.RawAccessor;
-import com.sun.xml.bind.api.SchemaOutputResolver;
 import com.sun.xml.bind.api.TypeReference;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.bind.util.Which;
-import com.sun.xml.bind.v2.util.QNameMap;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
 import com.sun.xml.bind.v2.model.core.Adapter;
@@ -93,6 +92,7 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.TagName;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
+import com.sun.xml.bind.v2.util.QNameMap;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -105,7 +105,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
