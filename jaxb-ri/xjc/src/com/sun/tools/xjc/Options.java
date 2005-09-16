@@ -617,4 +617,9 @@ public class Options
             return (T[])Array.newInstance(clazz,0);
         }
     }
+
+    // this is a convenient place to expose the build version to xjc plugins
+    public static String getBuildID() {
+        return Messages.format(Messages.BUILD_ID);
+    }
 }
