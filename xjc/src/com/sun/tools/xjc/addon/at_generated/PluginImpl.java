@@ -22,6 +22,7 @@ import org.xml.sax.ErrorHandler;
  * @author Kohsuke Kawaguchi
  */
 public class PluginImpl extends Plugin {
+
     public String getOptionName() {
         return "mark-generated";
     }
@@ -68,12 +69,22 @@ public class PluginImpl extends Plugin {
                 .param("comment", "JAXB RI v" + Options.getBuildID());
     }
 
+    // cache the timestamp so that all the @Generated annotations match
+    private String date = null;
+
+    /**
+     * calculate the date value in ISO8601 format for the @Generated annotation
+     * @return the date value
+     */
     private String getISO8601Date() {
-        StringBuffer date = new StringBuffer();
-        date.append((new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ")).format(new Date()));
-        // hack to get ISO 8601 style timezone - is there a better way that doesn't require
-        // a bunch of timezone offset calculations?
-        date.insert(date.length()-2, ':');
-        return date.toString();
+        if(date==null) {
+            StringBuffer tstamp = new StringBuffer();
+            tstamp.append((new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ")).format(new Date()));
+            // hack to get ISO 8601 style timezone - is there a better way that doesn't require
+            // a bunch of timezone offset calculations?
+            tstamp.insert(date.length()-2, ':');
+            date = tstamp.toString();
+        }
+        return date;
     }
 }
