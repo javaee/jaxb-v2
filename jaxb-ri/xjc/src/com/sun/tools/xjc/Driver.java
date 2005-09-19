@@ -44,6 +44,7 @@ import com.sun.tools.xjc.util.Util;
 import com.sun.tools.xjc.writer.SignatureWriter;
 
 import org.xml.sax.SAXParseException;
+import org.xml.sax.SAXException;
 
 
 /**
@@ -164,7 +165,7 @@ public class Driver {
             public void info(SAXParseException exception) {
                 cer.info(exception);
             }
-        };
+        }
 
         return run(args,new Listener());
     }
@@ -189,8 +190,7 @@ public class Driver {
      *      All non-zero values indicate an error. The error message
      *      will be sent to the specified PrintStream.
      */
-    public static int run(String[] args, XJCListener listener)
-        throws Exception {
+    public static int run(String[] args, XJCListener listener) throws BadCommandLineException {
         
         // recognize those special options before we start parsing options.
         for (String arg : args) {
@@ -246,9 +246,17 @@ public class Driver {
             if( opt.mode==Mode.FOREST ) {
                 // dump DOM forest and quit
                 ModelLoader loader  = new ModelLoader( opt, new JCodeModel(), receiver );
-                DOMForest forest = loader.buildDOMForest(new XMLSchemaInternalizationLogic());
-                forest.dump(System.out);
-                return 0;
+                try {
+                    DOMForest forest = loader.buildDOMForest(new XMLSchemaInternalizationLogic());
+                    forest.dump(System.out);
+                    return 0;
+                } catch (SAXException e) {
+                    // the error should have already been reported
+                } catch (IOException e) {
+                    receiver.error(e);
+                }
+
+                return -1;
             }
             
             
@@ -264,33 +272,39 @@ public class Driver {
             }
 
             switch (opt.mode) {
-                case SIGNATURE :
+            case SIGNATURE :
+                try {
                     SignatureWriter.write(
                         BeanGenerator.generate(model,receiver),
                         new OutputStreamWriter(System.out));
-                    break;
+                    return 0;
+                } catch (IOException e) {
+                    receiver.error(e);
+                    return -1;
+                }
 
-                case CODE :
-                case DRYRUN :
-                case ZIP :
-                    {
-                        // generate actual code
-                        receiver.debug("generating code");
-                        {// don't want to hold outline in memory for too long.
-                            Outline outline = model.generateCode(opt,receiver);
-                            if(outline==null) {
-                                listener.message(
-                                    Messages.format(Messages.FAILED_TO_GENERATE_CODE));
-                                return -1;
-                            }
-
-                            listener.compiled(outline);
+            case CODE :
+            case DRYRUN :
+            case ZIP :
+                {
+                    // generate actual code
+                    receiver.debug("generating code");
+                    {// don't want to hold outline in memory for too long.
+                        Outline outline = model.generateCode(opt,receiver);
+                        if(outline==null) {
+                            listener.message(
+                                Messages.format(Messages.FAILED_TO_GENERATE_CODE));
+                            return -1;
                         }
 
-                        if( opt.mode == Mode.DRYRUN )
-                            break;  // enough
+                        listener.compiled(outline);
+                    }
 
-                        // then print them out
+                    if( opt.mode == Mode.DRYRUN )
+                        break;  // enough
+
+                    // then print them out
+                    try {
                         CodeWriter cw;
                         if( opt.mode==Mode.ZIP ) {
                             OutputStream os;
@@ -307,11 +321,15 @@ public class Driver {
                             cw = new ProgressCodeWriter(cw,listener);
                         }
                         model.codeModel.build(cw);
-
-                        break;
+                    } catch (IOException e) {
+                        receiver.error(e);
+                        return -1;
                     }
-                default :
-                    assert false;
+
+                    break;
+                }
+            default :
+                assert false;
             }
     
             return 0;
@@ -373,7 +391,7 @@ public class Driver {
         public boolean noNS = false;
         
         /** Parse XJC-specific options. */
-        protected int parseArgument(String[] args, int i) throws BadCommandLineException, IOException {
+        protected int parseArgument(String[] args, int i) throws BadCommandLineException {
             if (args[i].equals("-noNS")) {
                 noNS = true;
                 return 1;
@@ -431,7 +449,7 @@ public class Driver {
     /**
      * Creates a configured CodeWriter that produces files into the specified directory.
      */
-    public static CodeWriter createCodeWriter( CodeWriter core ) throws IOException {
+    public static CodeWriter createCodeWriter( CodeWriter core ) {
 
         // generate format syntax: <date> 'at' <time>
         String format =

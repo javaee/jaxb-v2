@@ -342,8 +342,6 @@ public class XJC2Task extends Task {
             options.parseArguments(cmdLine.getArguments());
         } catch( BadCommandLineException e ) {
             throw new BuildException(e.getMessage(),e);
-        } catch( IOException e ) {
-            throw new BuildException(e);
         }
         
         if( !producesSpecified ) {
@@ -376,16 +374,11 @@ public class XJC2Task extends Task {
         // TODO: I don't know if I should send output to stdout
         ErrorReceiver errorReceiver = new ErrorReceiverImpl();
         
-        Model model;
-        try {
-            model = ModelLoader.load( options, new JCodeModel(), errorReceiver );
-            
-            if(model==null)
-                throw new BuildException("unable to parse the schema. Error messages should have been provided");
-        } catch( IOException e ) {
-            throw new BuildException("Unable to read files: "+e.getMessage(),e);
-        }
-        
+        Model model = ModelLoader.load( options, new JCodeModel(), errorReceiver );
+
+        if(model==null)
+            throw new BuildException("unable to parse the schema. Error messages should have been provided");
+
         try {
 
             if(model.generateCode(options,errorReceiver)==null)

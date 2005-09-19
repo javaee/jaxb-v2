@@ -167,4 +167,11 @@ class Messages
 
     static final String DEFAULT_PACKAGE_WARNING = // 0 args
         "Driver.DefaultPackageWarning";
+
+    static final String NOT_A_VALID_FILENAME = // 2 args
+        "Driver.NotAValidFileName";
+    static final String FAILED_TO_PARSE_CATALOG = // 2 args
+        "Driver.FailedToParseCatalog";
+    static final String NOT_A_FILE_NOR_URL = // 1 arg
+        "Driver.NotAFileNorURL";
 }

@@ -26,6 +26,11 @@ public class BadCommandLineException extends Exception {
     public BadCommandLineException(String msg) {
         super(msg);
     }
+
+    public BadCommandLineException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
     public BadCommandLineException() {
         this(null);
     }
