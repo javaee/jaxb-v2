@@ -199,7 +199,7 @@ public class Options
     /**
      * Recursively scan directories and add all XSD files in it.
      */
-    public void addGrammarRecursive( File dir ) throws MalformedURLException {
+    public void addGrammarRecursive( File dir ) {
         File[] files = dir.listFiles();
         if(files==null)     return; // work defensively
 
@@ -259,12 +259,18 @@ public class Options
      * @exception BadCommandLineException
      *      If the callee wants to provide a custom message for an error.
      */
-    protected int parseArgument( String[] args, int i ) throws BadCommandLineException, IOException {
+    protected int parseArgument( String[] args, int i ) throws BadCommandLineException {
         if (args[i].equals("-classpath") || args[i].equals("-cp")) {
             if (i == args.length - 1)
                 throw new BadCommandLineException(
                     Messages.format(Messages.MISSING_CLASSPATH));
-            classpaths.add(new File(args[++i]).toURL());
+            File file = new File(args[++i]);
+            try {
+                classpaths.add(file.toURL());
+            } catch (MalformedURLException e) {
+                throw new BadCommandLineException(
+                    Messages.format(Messages.NOT_A_VALID_FILENAME,file),e);
+            }
             return 2;
         }
         if (args[i].equals("-d")) {
@@ -398,8 +404,14 @@ public class Options
             if (i == args.length - 1)
                 throw new BadCommandLineException(
                     Messages.format(Messages.MISSING_CATALOG));
-            
-            addCatalog(new File(args[++i]));
+
+            File catalogFile = new File(args[++i]);
+            try {
+                addCatalog(catalogFile);
+            } catch (IOException e) {
+                throw new BadCommandLineException(
+                    Messages.format(Messages.FAILED_TO_PARSE_CATALOG,catalogFile,e.getMessage()),e);
+            }
             return 2;
         }
         if (args[i].equals("-source")) {
@@ -432,9 +444,13 @@ public class Options
                 pluginURIs.addAll(aug.getCustomizationURIs());
                 return 1;
             }
-                    
-            int r = aug.parseArgument(this,args,i);
-            if(r!=0)    return r;
+
+            try {
+                int r = aug.parseArgument(this,args,i);
+                if(r!=0)    return r;
+            } catch (IOException e) {
+                throw new BadCommandLineException(e.getMessage(),e);
+            }
         }
         
         return 0;   // unrecognized
@@ -457,7 +473,7 @@ public class Options
      * @exception BadCommandLineException
      *      thrown when there's a problem in the command-line arguments
      */
-    public void parseArguments( String[] args ) throws BadCommandLineException, IOException {
+    public void parseArguments( String[] args ) throws BadCommandLineException {
 
         for (int i = 0; i < args.length; i++) {
             if(args[i].length()==0)
@@ -469,7 +485,13 @@ public class Options
                         Messages.format(Messages.UNRECOGNIZED_PARAMETER, args[i]));
                 i += (j-1);
             } else {
-                Object src = Util.getFileOrURL(args[i]);
+                Object src;
+                try {
+                    src = Util.getFileOrURL(args[i]);
+                } catch (IOException e) {
+                    throw new BadCommandLineException(
+                        Messages.format(Messages.NOT_A_FILE_NOR_URL,args[i]));
+                }
                 if(src instanceof URL) {
                     addGrammar(new InputSource(Util.escapeSpace(((URL)src).toExternalForm())));
                 } else {

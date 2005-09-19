@@ -23,6 +23,8 @@
  */
 package com.sun.tools.xjc;
 
+import java.io.IOException;
+
 import com.sun.tools.xjc.api.ErrorListener;
 
 import org.xml.sax.ErrorHandler;
@@ -71,6 +73,10 @@ public abstract class ErrorReceiver  implements ErrorHandler, ErrorListener {
 
     public final void error( String msg, Exception e ) {
         error( new SAXParseException(msg,null,e) );
+    }
+
+    public void error(Exception e) {
+        error(e.getMessage(),e);
     }
 
     /**
@@ -152,6 +158,5 @@ public abstract class ErrorReceiver  implements ErrorHandler, ErrorListener {
         
       return url;
   }
-
 }
 

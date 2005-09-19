@@ -123,9 +123,6 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
             // parsers are required to report an error to ErrorHandler,
             // so we should never see this error.
             e.printStackTrace();
-        } catch (IOException e) {
-            fatalError(new SAXParseException(
-                e.getMessage(), source.getPublicId(), source.getSystemId(),-1,-1, e));
         }
     }
 

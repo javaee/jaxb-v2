@@ -87,7 +87,7 @@ public final class ModelLoader {
     /**
      * A convenience method to load schemas into a BGM.
      */
-    public static Model load( Options opt, JCodeModel codeModel, ErrorReceiver er ) throws IOException {
+    public static Model load( Options opt, JCodeModel codeModel, ErrorReceiver er ) {
         return new ModelLoader(opt,codeModel,er).load();
     }
     
@@ -98,7 +98,7 @@ public final class ModelLoader {
         this.errorReceiver = new ErrorReceiverFilter(er);
     }
 
-    private Model load() throws IOException {
+    private Model load() {
         Model grammar;
 
         if(!sanityCheck())
@@ -276,9 +276,12 @@ public final class ModelLoader {
 
     /**
      * Builds DOMForest and performs the internalization.
+     *
+     * @throws SAXException
+     *      when a fatal happe
      */
     public DOMForest buildDOMForest( InternalizationLogic logic ) 
-        throws SAXException, IOException {
+        throws SAXException {
     
         // parse into DOM forest
         DOMForest forest = new DOMForest(logic);
@@ -314,7 +317,7 @@ public final class ModelLoader {
     /**
      * Parses a set of XML Schema files into an annotated grammar.
      */
-    private XSSchemaSet loadXMLSchema() throws SAXException, IOException {
+    private XSSchemaSet loadXMLSchema() throws SAXException {
         
         if( opt.strictCheck && !SchemaConstraintChecker.check(opt.getGrammars(),errorReceiver,opt.entityResolver)) {
             // schema error. error should have been reported
@@ -344,7 +347,7 @@ public final class ModelLoader {
      * A WSDL file may contain multiple &lt;xsd:schema> elements.
      */
     private XSSchemaSet loadWSDL()
-        throws SAXException, IOException {
+        throws SAXException {
 
         
         // build DOMForest just like we handle XML Schema
@@ -464,7 +467,7 @@ public final class ModelLoader {
     /**
      * Parses a RELAX NG grammar into an annotated grammar.
      */
-    private Model loadRELAXNG() throws IOException, SAXException {
+    private Model loadRELAXNG() throws SAXException {
 
         // build DOM forest
         final DOMForest forest = buildDOMForest( new RELAXNGInternalizationLogic() );

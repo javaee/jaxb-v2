@@ -233,7 +233,7 @@ public final class DOMForest {
         return null;
     }
 
-    public Document parse( InputSource source, boolean root ) throws SAXException, IOException {
+    public Document parse( InputSource source, boolean root ) throws SAXException {
         if( source.getSystemId()==null )
             throw new IllegalArgumentException();
         
@@ -333,7 +333,7 @@ public final class DOMForest {
         return x;
    }
     
-    public Document parse( String systemId, InputSource inputSource, boolean root ) throws SAXException, IOException {
+    public Document parse( String systemId, InputSource inputSource, boolean root ) throws SAXException {
         Document dom = documentBuilder.newDocument();
 
         systemId = normalizeSystemId(systemId);
@@ -355,6 +355,8 @@ public final class DOMForest {
         } catch( ParserConfigurationException e ) {
             // in practice, this exception won't happen.
             e.printStackTrace();
+        } catch( IOException e ) {
+            errorReceiver.error(e.getMessage(),e);
         }
         
         return dom;
