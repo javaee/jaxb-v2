@@ -21,9 +21,8 @@ package com.sun.codemodel;
 
 
 import java.lang.annotation.Annotation;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 /**
  * Represents an annotation on a program element.
@@ -42,12 +41,8 @@ public final class JAnnotationUse extends JAnnotationValue {
 
     /**
      * Map of member values.
-     *
-     * <p>
-     * Use ordered map to keep the code generation the same on any JVM.
-     * Lazily created.
      */
-    private SortedMap<String,JAnnotationValue> memberValues;
+    private Map<String,JAnnotationValue> memberValues;
 
     JAnnotationUse(JClass clazz){
         this.clazz = clazz;
@@ -58,8 +53,10 @@ public final class JAnnotationUse extends JAnnotationValue {
     }
 
     private void addValue(String name, JAnnotationValue annotationValue) {
+        // Use ordered map to keep the code generation the same on any JVM.
+        // Lazily created.
         if(memberValues==null)
-            memberValues = new TreeMap<String, JAnnotationValue>();
+            memberValues = new LinkedHashMap<String, JAnnotationValue>();
         memberValues.put(name,annotationValue);
     }
 
@@ -284,7 +281,7 @@ public final class JAnnotationUse extends JAnnotationValue {
     }
 
     private boolean isOptimizable() {
-        return memberValues.size()==1 && memberValues.firstKey().equals("value");
+        return memberValues.size()==1 && memberValues.containsKey("value");
     }
 }
 
