@@ -26,7 +26,7 @@
 
 -->
 
-<project name="runtime" default="create.pkg">
+<project name="linux-rpm" default="create.pkg">
 
   <!-- The distribution directory -->
   <property name="dist.home"    value="../dist"/>
