@@ -234,7 +234,7 @@ public abstract class JaxBeanInfo<BeanT> {
      */
     public abstract BeanT createInstance(UnmarshallingContext context) throws IllegalAccessException, InvocationTargetException, InstantiationException, SAXException;
 
-    /**s
+    /**
      * Resets the object to the initial state, as if the object
      * is created fresh.
      * 
