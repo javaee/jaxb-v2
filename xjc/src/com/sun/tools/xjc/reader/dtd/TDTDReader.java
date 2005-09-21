@@ -232,17 +232,15 @@ public class TDTDReader extends DTDHandlerBase
         for( Map.Entry<BIInterface,JClass> e : decls.entrySet() ) {
             BIInterface decl = e.getKey();
             JClass c = e.getValue();
-            
-            String[] members = decl.members();
-            for( int i=0; i<members.length; i++ ) {
-                InterfaceAcceptor acc = fromName.get(members[i]);
-                if(acc==null) {
+
+            for (String member : decl.members()) {
+                InterfaceAcceptor acc = fromName.get(member);
+                if (acc == null) {
                     // there is no such class/interface
                     // TODO: error location
-                    error(
-                        decl.getSourceLocation(),
-                        Messages.ERR_BINDINFO_NON_EXISTENT_INTERFACE_MEMBER,
-                        members[i] );
+                    error(decl.getSourceLocation(),
+                            Messages.ERR_BINDINFO_NON_EXISTENT_INTERFACE_MEMBER,
+                            member);
                     continue;
                 }
 
