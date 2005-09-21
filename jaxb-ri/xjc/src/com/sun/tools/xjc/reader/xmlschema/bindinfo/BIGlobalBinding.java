@@ -21,7 +21,6 @@ package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,7 +29,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 import com.sun.codemodel.ClassType;
@@ -276,10 +274,19 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
 
     /**
      * Globally-defined conversion customizations.
+     *
+     * @see #setGlobalConversions
      */
+    @XmlTransient
+    private final Map<QName,BIConversion> globalConversions = new HashMap<QName, BIConversion>();
+
+    // method for JAXB unmarshaller
     @XmlElement(name="javaType")
-    @XmlJavaTypeAdapter(GlobalConversionsAdapter.class)
-    private final Map<QName,BIConversion> globalConversions = Collections.emptyMap();
+    private void setGlobalConversions(GlobalConversion[] convs) {
+        for (GlobalConversion u : convs) {
+            globalConversions.put(u.xmlType,u);
+        }
+    }
 
     //
     // these customizations were valid in 1.0, but in 2.0 we don't
@@ -418,16 +425,5 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
     static final class GlobalConversion extends BIConversion.User {
         @XmlAttribute
         QName xmlType;
-    }
-
-    static final class GlobalConversionsAdapter
-        extends ReadOnlyAdapter<List<GlobalConversion>,Map<QName,BIConversion>> {
-        public Map<QName,BIConversion> unmarshal(List<GlobalConversion> users) throws Exception {
-            Map<QName,BIConversion> r = new HashMap<QName, BIConversion>();
-            for (GlobalConversion u : users) {
-                r.put(u.xmlType,u);
-            }
-            return r;
-        }
     }
 }

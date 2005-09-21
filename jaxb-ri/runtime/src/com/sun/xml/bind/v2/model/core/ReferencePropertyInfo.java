@@ -81,4 +81,6 @@ public interface ReferencePropertyInfo<T,C> extends PropertyInfo<T,C> {
      *      if the wildcard is not allowed on this element.
      */
     C getDOMHandler();
+
+    Adapter<T,C> getAdapter();
 }

@@ -28,12 +28,14 @@ abstract class SingleTypePropertyInfoImpl<T,C,F,M>
      */
     private NonElement<T,C> type;
 
-    public SingleTypePropertyInfoImpl(ClassInfoImpl<T,C,F,M> classInfo, PropertySeed<T,C,F,M> propertySeed) {
-        super(classInfo, propertySeed);
-        if(seed instanceof RuntimeClassInfoImpl.RuntimePropertySeed)
-            this.acc = ((RuntimeClassInfoImpl.RuntimePropertySeed)seed).getAccessor();
-        else
-            this.acc = null;
+    public SingleTypePropertyInfoImpl(ClassInfoImpl<T,C,F,M> classInfo, PropertySeed<T,C,F,M> seed) {
+        super(classInfo, seed);
+        Accessor rawAcc = ((RuntimeClassInfoImpl.RuntimePropertySeed)seed).getAccessor();
+        if(getAdapter()!=null && !isCollection())
+            // adapter for a single-value property is handled by accessor.
+            // adapter for a collection property is handled by lister.
+            rawAcc = rawAcc.adapt(getAdapter());
+        this.acc = rawAcc;
     }
 
     public List<? extends NonElement<T,C>> ref() {

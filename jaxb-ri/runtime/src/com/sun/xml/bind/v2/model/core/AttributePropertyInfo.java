@@ -32,4 +32,6 @@ public interface AttributePropertyInfo<T,C> extends PropertyInfo<T,C>, NonElemen
      *      must be non-null.
      */
     QName getXmlName();
+
+    Adapter<T,C> getAdapter();
 }

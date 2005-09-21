@@ -26,6 +26,7 @@ import java.util.Map;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
@@ -76,8 +77,7 @@ public final class BIEnum extends AbstractDeclarationImpl {
      *
      * Always return non-null.
      */
-    @XmlElement(name="typesafeEnumMember")
-    @XmlJavaTypeAdapter(AdapterImpl.class)
+    @XmlTransient
     public final Map<String,BIEnumMember> members = new HashMap<String,BIEnumMember>();
 
     public QName getName() { return NAME; }
@@ -92,6 +92,13 @@ public final class BIEnum extends AbstractDeclarationImpl {
     public static final QName NAME = new QName(
         Const.JAXB_NSURI, "enum" );
 
+    // setter method for JAXB runtime
+    @XmlElement(name="typesafeEnumMember")
+    private void setMembers(BIEnumMember2[] mems) {
+        for (BIEnumMember2 e : mems)
+            members.put(e.value,e);
+    }
+
 
 
     /**
@@ -104,15 +111,5 @@ public final class BIEnum extends AbstractDeclarationImpl {
         @XmlAttribute(required=true)
         String value;
     }
-
-    static final class AdapterImpl extends ReadOnlyAdapter<List<BIEnumMember2>,Map<String,BIEnumMember>> {
-        public Map<String, BIEnumMember> unmarshal(List<BIEnumMember2> biEnumMembers) throws Exception {
-            Map<String,BIEnumMember> m = new HashMap<String,BIEnumMember>();
-            for (BIEnumMember2 e : biEnumMembers)
-                m.put(e.value,e);
-            return m;
-        }
-    }
-
 }
 

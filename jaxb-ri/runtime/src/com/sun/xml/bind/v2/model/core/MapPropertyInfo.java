@@ -69,4 +69,8 @@ public interface MapPropertyInfo<T,C> extends PropertyInfo<T,C> {
      * @return never null.
      */
     NonElement<T,C> getValueType();
+
+    // TODO
+    // Adapter<T,C> getKeyAdapter();
+    // Adapter<T,C> getValueAdapter();
 }

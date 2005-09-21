@@ -38,7 +38,7 @@ public abstract class OptimizedAccessorFactory {
      * @return null
      *      if for some reason it fails to create an optimized version.
      */
-    public static final Accessor get(Method getter, Method setter) {
+    public static final <B,V> Accessor<B,V> get(Method getter, Method setter) {
         // make sure the method signatures are what we expect
         if(getter.getParameterTypes().length!=0)
             return null;
@@ -93,7 +93,7 @@ public abstract class OptimizedAccessorFactory {
         if(opt==null)
             return null;
 
-        Accessor acc = instanciate(opt);
+        Accessor<B,V> acc = instanciate(opt);
         if(acc!=null)
             logger.log(Level.FINE,"Using optimized Accessor for "+getter+" and "+setter);
         return acc;
@@ -106,7 +106,7 @@ public abstract class OptimizedAccessorFactory {
      * @return null
      *      if for some reason it fails to create an optimized version.
      */
-    public static final Accessor get(Field field) {
+    public static final <B,V> Accessor<B,V> get(Field field) {
         int mods = field.getModifiers();
         if(Modifier.isPrivate(mods) || Modifier.isFinal(mods))
             // we can't access private fields
@@ -140,15 +140,15 @@ public abstract class OptimizedAccessorFactory {
         if(opt==null)
             return null;
 
-        Accessor acc = instanciate(opt);
+        Accessor<B,V> acc = instanciate(opt);
         if(acc!=null)
             logger.log(Level.FINE,"Using optimized Accessor for "+field);
         return acc;
     }
 
-    private static Accessor instanciate(Class opt) {
+    private static <B,V> Accessor<B,V> instanciate(Class opt) {
         try {
-            return (Accessor)opt.newInstance();
+            return (Accessor<B,V>)opt.newInstance();
         } catch (InstantiationException e) {
             logger.log(Level.INFO,"failed to load an optimized Accessor",e);
         } catch (IllegalAccessException e) {

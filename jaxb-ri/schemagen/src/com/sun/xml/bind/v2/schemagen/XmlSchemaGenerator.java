@@ -539,6 +539,8 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             return (o.equals(adapter.adapterType));
         }
 
+        private int depth;
+
         /**
          * Writes a type attribute (if the referenced type is a global type)
          * or writes out the definition of the anonymous type in place (if the referenced
@@ -554,7 +556,12 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
         private void writeTypeRef(TypeHost th, NonElement<TypeT,ClassDeclT> type, String refAttName) {
             if(type.getTypeName()==null) {
                 if(type instanceof ClassInfo) {
+                    depth++;
+                    for( int i=0; i<depth; i++ )
+                        System.out.print("  ");
+                    System.out.println(((ClassInfo<TypeT,ClassDeclT>)type).getClazz());
                     writeClass( (ClassInfo<TypeT,ClassDeclT>)type, th );
+                    depth--;
                 } else {
                     writeEnum( (EnumLeafInfo<TypeT,ClassDeclT>)type, (SimpleTypeHost)th);
                 }

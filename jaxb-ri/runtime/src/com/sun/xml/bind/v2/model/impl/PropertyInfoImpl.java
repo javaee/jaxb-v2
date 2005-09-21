@@ -10,6 +10,8 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlInlineBinaryData;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.TODO;
@@ -37,11 +39,7 @@ abstract class PropertyInfoImpl<T,C,F,M>
      */
     protected final PropertySeed<T,C,F,M> seed;
 
-    /**
-     * Lazily computed.
-     * @see #isCollection()
-     */
-    private Boolean isCollection;
+    private final boolean isCollection;
 
     private final ID id;
 
@@ -50,6 +48,8 @@ abstract class PropertyInfoImpl<T,C,F,M>
     private final QName schemaType;
 
     protected final ClassInfoImpl<T,C,F,M> parent;
+
+    private final Adapter<T,C> adapter;
 
     protected PropertyInfoImpl(ClassInfoImpl<T,C,F,M> parent, PropertySeed<T,C,F,M> spi) {
         this.seed = spi;
@@ -68,6 +68,20 @@ abstract class PropertyInfoImpl<T,C,F,M>
         this.inlineBinary = seed.hasAnnotation(XmlInlineBinaryData.class);
         this.schemaType = Util.calcSchemaType(reader(),seed,parent.clazz,
                 nav().asDecl(getIndividualType()),this);
+
+        T t = seed.getRawType();
+        if(nav().isSubClassOf(t,nav().ref(Collection.class))
+        || nav().isArrayButNotByteArray(t))
+            this.isCollection = true;
+        else
+            this.isCollection = false;
+
+        XmlJavaTypeAdapter xjta = getApplicableAdapter(getIndividualType());
+        if(xjta==null) {
+            adapter = null;
+        } else {
+            adapter = new Adapter<T,C>(xjta,reader(),nav());
+        }
     }
 
 
@@ -87,6 +101,8 @@ abstract class PropertyInfoImpl<T,C,F,M>
     }
 
     public T getIndividualType() {
+        if(adapter!=null)
+            return adapter.defaultType;
         T raw = getRawType();
         if(!isCollection()) {
             return raw;
@@ -106,11 +122,53 @@ abstract class PropertyInfoImpl<T,C,F,M>
         return seed.getName();
     }
 
+    /**
+     * Checks if the given adapter is applicable to the declared property type.
+     */
+    private boolean isApplicable(XmlJavaTypeAdapter jta, T declaredType ) {
+        if(jta==null)   return false;
+
+        T type = reader().getClassValue(jta,"type");
+        if(declaredType.equals(type))
+            return true;
+
+        return false;
+    }
+
+    private XmlJavaTypeAdapter getApplicableAdapter(T type) {
+        XmlJavaTypeAdapter jta = seed.readAnnotation(XmlJavaTypeAdapter.class);
+        if(jta!=null)
+            return jta;
+
+        // check the applicable adapters on the package
+        XmlJavaTypeAdapters jtas = reader().getPackageAnnotation(XmlJavaTypeAdapters.class, parent.clazz, seed );
+        if(jtas!=null) {
+            for (XmlJavaTypeAdapter xjta : jtas.value()) {
+                if(isApplicable(xjta,type))
+                    return xjta;
+            }
+        }
+        jta = reader().getPackageAnnotation(XmlJavaTypeAdapter.class, parent.clazz, seed );
+        if(isApplicable(jta,type))
+            return jta;
+
+        // then on the target class
+        C refType = nav().asDecl(seed.getRawType());
+        if(refType!=null) {
+            jta = reader().getClassAnnotation(XmlJavaTypeAdapter.class, refType, seed );
+            if(isApplicable(jta,type))
+                return jta;
+        }
+
+        return null;
+    }
+
+    /**
+     * This is the default implementation of the getAdapter method
+     * defined on many of the {@link PropertyInfo}-derived classes.
+     */
     public Adapter<T,C> getAdapter() {
-        if(seed instanceof AdaptedPropertySeed)
-            return ((AdaptedPropertySeed<T,C,F,M>)seed).adapter;
-        else
-            return null;
+        return adapter;
     }
 
 
@@ -151,14 +209,6 @@ abstract class PropertyInfoImpl<T,C,F,M>
     }
 
     public final boolean isCollection() {
-        if(isCollection==null) {
-            T t = seed.getRawType();
-            if(nav().isSubClassOf(t,nav().ref(Collection.class))
-            || nav().isArrayButNotByteArray(t))
-                isCollection = true;
-            else
-                isCollection = false;
-        }
         return isCollection;
     }
 

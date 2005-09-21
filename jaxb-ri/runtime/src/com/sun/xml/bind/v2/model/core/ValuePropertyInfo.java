@@ -6,4 +6,5 @@ package com.sun.xml.bind.v2.model.core;
  * @author Kohsuke Kawaguchi
  */
 public interface ValuePropertyInfo<T,C> extends PropertyInfo<T,C>, NonElementRef<T,C> {
+    Adapter<T,C> getAdapter();
 }
