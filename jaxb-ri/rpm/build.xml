@@ -35,7 +35,7 @@
   <property name="rpm.prod.name"    value="Sun Java(TM) Enterprise System"/>
 
   <!-- The RPM release number -->
-  <property name="rpm.release" value="3"/>
+  <property name="rpm.release" value="5"/>
 
   <!-- The rpm build directory -->
   <property name="rpm.build.dir"    value="${basedir}/../build/rpm/JAXB"/>
@@ -115,7 +115,8 @@
       <fileset dir="${dist.home}/lib">
         <exclude name="jaxb-api-src.zip"/>
         <exclude name="jaxb-api-doc.zip"/>
-        <!-- TODO: exclude jsr173_1.0_api.jar and activation.jar ??? -->
+        <exclude name="jsr173_1.0_api.jar"/>
+        <exclude name="activation.jar"/>
       </fileset>
     </copy>
 

@@ -106,7 +106,8 @@
       <fileset dir="${dist.home}/lib">
         <exclude name="jaxb-api-doc.zip"/>
         <exclude name="jaxb-api-src.zip"/>
-        <!-- TODO: exclude jsr173_1.0_api.jar and activation.jar ??? -->
+        <exclude name="jsr173_1.0_api.jar"/>
+        <exclude name="activation.jar"/>
       </fileset>
     </copy>
 
