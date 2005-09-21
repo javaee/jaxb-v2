@@ -3,10 +3,10 @@ package com.sun.tools.xjc.model;
 import javax.activation.MimeType;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JStringLiteral;
+import com.sun.tools.xjc.outline.Outline;
 import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.xsom.XmlString;
@@ -76,13 +76,13 @@ final class TypeUseImpl implements TypeUse {
     }
 
 
-    public JExpression createConstant(JCodeModel codeModel, XmlString lexical) {
+    public JExpression createConstant(Outline outline, XmlString lexical) {
         if(isCollection())  return null;
 
-        if(adapter==null)     return coreType.createConstant(codeModel, lexical);
+        if(adapter==null)     return coreType.createConstant(outline, lexical);
 
         // [RESULT] new Adapter().unmarshal(CONSTANT);
-        JExpression cons = coreType.createConstant(codeModel, lexical);
+        JExpression cons = coreType.createConstant(outline, lexical);
         Class<? extends XmlAdapter> atype = adapter.getAdapterIfKnown();
 
         // try to run the adapter now rather than later.
@@ -95,10 +95,10 @@ final class TypeUseImpl implements TypeUse {
                     return JExpr.lit((String)value);
                 }
             } catch (Exception e) {
-                ; // assume that we can't eagerly bind this
+                // assume that we can't eagerly bind this
             }
         }
 
-        return JExpr._new(adapter.getAdapterClass(codeModel)).invoke("unmarshal").arg(cons);
+        return JExpr._new(adapter.getAdapterClass(outline.getCodeModel())).invoke("unmarshal").arg(cons);
     }
 }

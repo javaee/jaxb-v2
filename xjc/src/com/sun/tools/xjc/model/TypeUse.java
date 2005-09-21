@@ -5,6 +5,7 @@ import javax.activation.MimeType;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JExpression;
 import com.sun.tools.xjc.model.nav.NType;
+import com.sun.tools.xjc.outline.Outline;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.xsom.XmlString;
 
@@ -63,15 +64,13 @@ public interface TypeUse {
      * Creates a constant for the given lexical value.
      *
      * <p>
-     * Creating a constant for a {@link TypeUse} can be
-     * done by combining adapting, listifying, and
-     * {@link TypeUse#createConstant(JCodeModel,XmlString)}.
-     *
-     * <p>
      * For example, to create a constant 1 for <tt>xs:int</tt>, you'd do:
      * <pre>
      * CBuiltinLeafInfo.INT.createConstant( codeModel, "1", null );
      * </pre>
+     *
+     * <p>
+     * This method is invoked at the backend as a part of the code generation process.
      *
      * @throws IllegalStateException
      *      if the type isn't bound to a text in XML.
@@ -80,5 +79,5 @@ public interface TypeUse {
      *      if the constant cannot be created for this {@link TypeUse}
      *      (such as when it's a collection)
      */
-    JExpression createConstant(JCodeModel codeModel, XmlString lexical);
+    JExpression createConstant(Outline outline, XmlString lexical);
 }

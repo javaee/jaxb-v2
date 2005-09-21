@@ -1,7 +1,7 @@
 package com.sun.tools.xjc.reader.xmlschema;
 
-import com.sun.codemodel.JCodeModel;
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
+import com.sun.tools.xjc.model.CDefaultValue;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.reader.Ring;
@@ -48,9 +48,7 @@ public class BindPurple extends ColorBinder {
         CPropertyInfo prop = pc.createAttributeProperty( use, attType );
 
         if(toConstant) {
-            prop.defaultValue = attType.createConstant(
-                Ring.get(JCodeModel.class),
-                use.getFixedValue());
+            prop.defaultValue = CDefaultValue.create(attType,use.getFixedValue());
             if(prop.defaultValue==null)
                 // unable to come up with the constant value.
                 toConstant = false;
@@ -62,14 +60,10 @@ public class BindPurple extends ColorBinder {
                 // this attribute use has a default value.
                 // the item type is guaranteed to be a leaf type... or TODO: is it really so?
                 // don't support default values if it's a list
-                prop.defaultValue = attType.createConstant(
-                    Ring.get(JCodeModel.class),
-                    use.getDefaultValue());
+                prop.defaultValue = CDefaultValue.create(attType,use.getDefaultValue());
             } else
             if(use.getFixedValue()!=null) {
-                prop.defaultValue = attType.createConstant(
-                    Ring.get(JCodeModel.class),
-                    use.getFixedValue());
+                prop.defaultValue = CDefaultValue.create(attType,use.getFixedValue());
             }
         }
 

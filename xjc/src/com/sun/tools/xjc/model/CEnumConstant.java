@@ -10,7 +10,7 @@ import com.sun.xml.bind.v2.model.core.EnumConstant;
  * @author Kohsuke Kawaguchi
  */
 public final class CEnumConstant implements EnumConstant<NType,NClass> {
-    /** Name of the constant, or null to default. */
+    /** Name of the constant. */
     public final String name;
     /** Javadoc comment. Can be null. */
     public final String javadoc;

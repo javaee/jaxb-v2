@@ -25,7 +25,6 @@ import javax.activation.MimeType;
 import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JClass;
-import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JExpression;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
@@ -52,6 +51,11 @@ import org.xml.sax.Locator;
  */
 public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, CNonElement
 {
+    /**
+     * The {@link Model} object to which this bean belongs.
+     */
+    public final Model model;
+
     /**
      * The parent into which the enum class should be generated.
      */
@@ -105,6 +109,7 @@ public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, 
                          XSComponent source,
                          CCustomizations customizations,
                          Locator _sourceLocator) {
+        this.model = model;
         this.parent = container;
         this.shortName = shortName;
         this.base = base;
@@ -195,11 +200,14 @@ public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, 
         return false;
     }
 
-    public JExpression createConstant(JCodeModel codeModel, XmlString literal) {
-        // it is difficult to generate constants for enums,
-        // because when this method is called we still haven't generated the enum class yet,
-        // which seems to point to a general problem that default value expression computation
-        // is done too early.
+    public JExpression createConstant(Outline outline, XmlString literal) {
+        // correctly identifying which constant it maps to is hard, so
+        // here I'm cheating
+        JClass type = toType(outline,Aspect.EXPOSED);
+        for (CEnumConstant mem : members) {
+            if(mem.getLexicalValue().equals(literal.value))
+                return type.staticRef(mem.getName());
+        }
         return null;
     }
 

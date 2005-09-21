@@ -24,15 +24,6 @@ import com.sun.xml.xsom.XmlString;
 public interface CTypeInfo extends TypeInfo<NType,NClass>, TypeUse, CCustomizable {
 
     /**
-     * Given a text in XML, generates a constant of the mapped Java class.
-     *
-     * @throws IllegalStateException
-     *      if the class that this info represents isn't mapping to
-     *      a text in XML.
-     */
-    JExpression createConstant(JCodeModel codeModel, XmlString lexical);
-
-    /**
      * Returns the {@link JClass} that represents the class being bound,
      * under the given {@link Outline}.
      *

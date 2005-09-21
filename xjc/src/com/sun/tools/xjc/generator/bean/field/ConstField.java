@@ -58,8 +58,12 @@ final class ConstField extends AbstractField {
         JPrimitiveType ptype = implType.boxify().getPrimitiveType();
 
         // generate the constant
+        JExpression defaultValue = null;
+        if(prop.defaultValue!=null)
+            defaultValue = prop.defaultValue.compute(outline.parent());
+
         $ref = outline.ref.field(JMod.PUBLIC|JMod.STATIC|JMod.FINAL,
-            ptype!=null?ptype:implType, prop.getName(true), prop.defaultValue );
+            ptype!=null?ptype:implType, prop.getName(true), defaultValue );
         $ref.javadoc().append(prop.javadoc);
         
         annotate($ref);

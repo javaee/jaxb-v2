@@ -83,7 +83,9 @@ class SingleField extends AbstractFieldWithVar {
         // #endif
         //     return value;
         // }
-        JExpression defaultValue = prop.defaultValue;
+        JExpression defaultValue = null;
+        if(prop.defaultValue!=null)
+            defaultValue = prop.defaultValue.compute(outline.parent());
 
         // if Type is a wrapper and we have a default value,
         // we can use the primitive type.
