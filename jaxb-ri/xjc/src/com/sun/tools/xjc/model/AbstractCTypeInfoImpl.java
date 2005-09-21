@@ -9,6 +9,7 @@ import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XmlString;
+import com.sun.tools.xjc.outline.Outline;
 
 /**
  * Partial implementation of {@link CTypeInfo}.
@@ -76,7 +77,7 @@ abstract class AbstractCTypeInfoImpl implements CTypeInfo {
     }
 
     // this is just a convenient default
-    public JExpression createConstant(JCodeModel codeModel, XmlString lexical) {
+    public JExpression createConstant(Outline outline, XmlString lexical) {
         return null;
     }
 

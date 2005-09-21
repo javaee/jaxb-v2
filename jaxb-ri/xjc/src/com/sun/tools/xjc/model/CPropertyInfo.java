@@ -7,7 +7,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JClass;
-import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JJavaName;
 import com.sun.codemodel.JType;
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
@@ -35,7 +34,7 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
     public final Locator locator;
 
     /**
-     * @see #getSource()
+     * @see #getSchemaComponent()
      */
     private final XSComponent source;
 
@@ -62,8 +61,7 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
      * If {@link #isCollection} is true, this field is always null,
      * for we don't handle default values for a list.
      */
-    @XmlJavaTypeAdapter(Util.ToStringAdapter.class)
-    public JExpression defaultValue;
+    public CDefaultValue defaultValue;
 
     private final CCustomizations customizations;
     /**

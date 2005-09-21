@@ -576,7 +576,7 @@ public final class BeanGenerator implements Outline
             // ASSUMPTION: datatype is outline-independent
             JEnumConstant constRef = type.enumConstant(constName);
             if(needsValue)
-                constRef.arg(e.base.createConstant(codeModel, new XmlString(mem.getLexicalValue())));
+                constRef.arg(e.base.createConstant(this, new XmlString(mem.getLexicalValue())));
 
             if(!mem.getLexicalValue().equals(constName))
                 constRef.annotate2(XmlEnumValueWriter.class).value(mem.getLexicalValue());

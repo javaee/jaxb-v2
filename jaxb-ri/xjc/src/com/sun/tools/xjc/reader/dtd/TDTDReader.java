@@ -41,6 +41,7 @@ import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.model.TypeUseFactory;
+import com.sun.tools.xjc.model.CDefaultValue;
 import com.sun.tools.xjc.reader.ModelChecker;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.dtd.bindinfo.BIAttribute;
@@ -328,9 +329,7 @@ public class TDTDReader extends DTDHandlerBase
             propName, null,null/*TODO*/, copyLocator(), qname, use, required );
 
         if(defaultValue!=null)
-            // TODO: what does it mean for us to require a cast here?
-            // is this an indication that our model is broken?
-            r.defaultValue = use.getInfo().createConstant(codeModel,new XmlString(defaultValue));
+            r.defaultValue = CDefaultValue.create( use, new XmlString(defaultValue) );
 
         return r;
     }

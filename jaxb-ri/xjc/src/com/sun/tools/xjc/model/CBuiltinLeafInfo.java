@@ -169,7 +169,7 @@ public abstract class CBuiltinLeafInfo extends BuiltinLeafInfoImpl<NType,NClass>
         public NoConstantBuiltin(Class c, String typeName) {
             super(c, typeName);
         }
-        public JExpression createConstant(JCodeModel codeModel, XmlString lexical) {
+        public JExpression createConstant(Outline outline, XmlString lexical) {
             return null;
         }
     }
@@ -182,49 +182,49 @@ public abstract class CBuiltinLeafInfo extends BuiltinLeafInfoImpl<NType,NClass>
 
     public static final CBuiltinLeafInfo ANYTYPE = new NoConstantBuiltin(Object.class,"anyType");
     public static final CBuiltinLeafInfo STRING = new Builtin(String.class,"string") {
-            public JExpression createConstant(JCodeModel codeModel, XmlString lexical) {
+            public JExpression createConstant(Outline outline, XmlString lexical) {
                 return JExpr.lit(lexical.value);
             }
     };
     public static final CBuiltinLeafInfo BOOLEAN = new Builtin(Boolean.class,"boolean") {
-            public JExpression createConstant(JCodeModel codeModel, XmlString lexical) {
+            public JExpression createConstant(Outline outline, XmlString lexical) {
                 return JExpr.lit(DatatypeConverterImpl._parseBoolean(lexical.value));
             }
     };
     public static final CBuiltinLeafInfo INT = new Builtin(Integer.class,"int") {
-        public JExpression createConstant(JCodeModel codeModel, XmlString lexical) {
+        public JExpression createConstant(Outline outline, XmlString lexical) {
             return JExpr.lit(DatatypeConverterImpl._parseInt(lexical.value));
         }
     };
     public static final CBuiltinLeafInfo LONG = new Builtin(Long.class,"long") {
-        public JExpression createConstant(JCodeModel codeModel, XmlString lexical) {
+        public JExpression createConstant(Outline outline, XmlString lexical) {
             return JExpr.lit(DatatypeConverterImpl._parseLong(lexical.value));
         }
     };
     public static final CBuiltinLeafInfo BYTE = new Builtin(Byte.class,"byte") {
-        public JExpression createConstant(JCodeModel codeModel, XmlString lexical) {
+        public JExpression createConstant(Outline outline, XmlString lexical) {
             return JExpr.lit(DatatypeConverterImpl._parseByte(lexical.value));
         }
     };
     public static final CBuiltinLeafInfo SHORT = new Builtin(Short.class,"short") {
-        public JExpression createConstant(JCodeModel codeModel, XmlString lexical) {
+        public JExpression createConstant(Outline outline, XmlString lexical) {
             return JExpr.lit(DatatypeConverterImpl._parseShort(lexical.value));
         }
     };
     public static final CBuiltinLeafInfo FLOAT = new Builtin(Float.class,"float") {
-        public JExpression createConstant(JCodeModel codeModel, XmlString lexical) {
+        public JExpression createConstant(Outline outline, XmlString lexical) {
             return JExpr.lit(DatatypeConverterImpl._parseFloat(lexical.value));
         }
     };
     public static final CBuiltinLeafInfo DOUBLE = new Builtin(Double.class,"double") {
-        public JExpression createConstant(JCodeModel codeModel, XmlString lexical) {
+        public JExpression createConstant(Outline outline, XmlString lexical) {
             return JExpr.lit(DatatypeConverterImpl._parseDouble(lexical.value));
         }
     };
     public static final CBuiltinLeafInfo QNAME = new Builtin(QName.class,"QName") {
-        public JExpression createConstant(JCodeModel codeModel, XmlString lexical) {
+        public JExpression createConstant(Outline outline, XmlString lexical) {
             QName qn = DatatypeConverterImpl._parseQName(lexical.value,new NamespaceContextAdapter(lexical));
-            return JExpr._new(codeModel.ref(QName.class))
+            return JExpr._new(outline.getCodeModel().ref(QName.class))
                 .arg(qn.getNamespaceURI())
                 .arg(qn.getLocalPart())
                 .arg(qn.getPrefix());
@@ -235,20 +235,20 @@ public abstract class CBuiltinLeafInfo extends BuiltinLeafInfoImpl<NType,NClass>
     public static final CBuiltinLeafInfo DURATION = new NoConstantBuiltin(Duration.class,"duration");
 
     public static final CBuiltinLeafInfo BIG_INTEGER = new Builtin(BigInteger.class,"integer") {
-        public JExpression createConstant(JCodeModel codeModel, XmlString lexical) {
-            return JExpr._new(codeModel.ref(BigInteger.class)).arg(lexical.value.trim());
+        public JExpression createConstant(Outline outline, XmlString lexical) {
+            return JExpr._new(outline.getCodeModel().ref(BigInteger.class)).arg(lexical.value.trim());
         }
     };
 
     public static final CBuiltinLeafInfo BIG_DECIMAL = new Builtin(BigDecimal.class,"decimal") {
-        public JExpression createConstant(JCodeModel codeModel, XmlString lexical) {
-            return JExpr._new(codeModel.ref(BigDecimal.class)).arg(lexical.value.trim());
+        public JExpression createConstant(Outline outline, XmlString lexical) {
+            return JExpr._new(outline.getCodeModel().ref(BigDecimal.class)).arg(lexical.value.trim());
         }
     };
 
     public static final CBuiltinLeafInfo BASE64_BYTE_ARRAY = new Builtin(byte[].class,"base64Binary") {
-        public JExpression createConstant(JCodeModel codeModel, XmlString lexical) {
-            return codeModel.ref(DatatypeConverter.class).staticInvoke("parseBase64Binary").arg(lexical.value);
+        public JExpression createConstant(Outline outline, XmlString lexical) {
+            return outline.getCodeModel().ref(DatatypeConverter.class).staticInvoke("parseBase64Binary").arg(lexical.value);
         }
     };
 
