@@ -38,7 +38,6 @@ import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 import com.sun.tools.xjc.generator.bean.ClassOutlineImpl;
 import com.sun.tools.xjc.model.CPropertyInfo;
-import com.sun.xml.bind.v2.TODO;
 
 /**
  * Common code for property renderer that generates a List as
@@ -121,9 +120,9 @@ abstract class AbstractListField extends AbstractField {
         generateAccessors();
     }
     private JFieldVar generateField() {
-        TODO.checkSpec("I hope we decide not to handle the default values for a list.");
-
-        JFieldVar ref = outline.implClass.field( JMod.PROTECTED, listT, prop.getName(false) );
+        // for the collectionType customization to take effect, the field needs to be strongly typed,
+        // not just List<Foo>.
+        JFieldVar ref = outline.implClass.field( JMod.PROTECTED, getCoreListType(), prop.getName(false) );
         annotate(ref);
         
         newListObjectExp = newCoreList();
