@@ -1,8 +1,8 @@
 package com.sun.xml.bind.v2.runtime.reflect;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Type;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,6 +21,7 @@ import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.core.ID;
+import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Patcher;
@@ -56,7 +57,7 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
      * Once the {@link #startPacking} is called, you can
      * add values to the pack by using this method.
      */
-    public abstract void addToPack( PackT pack, ItemT newValue );
+    public abstract void addToPack( PackT pack, ItemT newValue ) throws AccessorException;
 
     /**
      * Finally, call this method to
@@ -79,8 +80,12 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
      *      the type of the field that stores the collection
      * @param idness
      *      ID-ness of the property.
+     * @param adapter
+     *      adapter to be used for individual items. can be null.
      */
-    public static final <BeanT,PropT,ItemT,PackT> Lister<BeanT,PropT,ItemT,PackT> create(Type fieldType,ID idness) {
+    public static final <BeanT,PropT,ItemT,PackT>
+        Lister<BeanT,PropT,ItemT,PackT> create(Type fieldType,ID idness, Adapter<Type,Class> adapter) {
+
         Class rawType = Navigator.REFLECTION.erasure(fieldType);
         Class itemType;
 
@@ -102,6 +107,9 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
         if(idness==ID.IDREF)
             l = new IDREFS(l,itemType);
 
+        if(adapter!=null)
+            l = new AdaptedLister(l,adapter.adapterType);
+        
         return l;
     }
 

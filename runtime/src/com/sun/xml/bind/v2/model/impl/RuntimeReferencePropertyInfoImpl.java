@@ -19,7 +19,12 @@ class RuntimeReferencePropertyInfoImpl extends ReferencePropertyInfoImpl<Type,Cl
 
     public RuntimeReferencePropertyInfoImpl(RuntimeClassInfoImpl classInfo, PropertySeed<Type,Class,Field,Method> seed) {
         super(classInfo,seed);
-        this.acc = ((RuntimeClassInfoImpl.RuntimePropertySeed)seed).getAccessor();
+        Accessor rawAcc = ((RuntimeClassInfoImpl.RuntimePropertySeed)seed).getAccessor();
+        if(getAdapter()!=null && !isCollection())
+            // adapter for a single-value property is handled by accessor.
+            // adapter for a collection property is handled by lister.
+            rawAcc = rawAcc.adapt(getAdapter());
+        this.acc = rawAcc;
     }
 
     public Set<? extends RuntimeElement> getElements() {

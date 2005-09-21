@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashMap;
@@ -17,6 +18,8 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.JAXBRIContext;
 import com.sun.xml.bind.v2.ClassFactory;
+import com.sun.xml.bind.v2.model.core.Adapter;
+import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.Coordinator;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Receiver;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
@@ -128,62 +131,14 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
      * and performs the type adaption as necessary.
      */
     public final <T> Accessor<BeanT,T> adapt(Class<T> targetType, final Class<? extends XmlAdapter<T,ValueT>> adapter) {
-        final Accessor<BeanT,ValueT> extThis = this;
+        return new AdaptedAccessor<BeanT,ValueT,T>(targetType, this, adapter);
+    }
 
-        return new Accessor<BeanT,T>(targetType) {
-            public T get(BeanT bean) throws AccessorException {
-                ValueT v = extThis.get(bean);
-                if(v==null) return null;
-
-                XmlAdapter<T,ValueT> a = getAdapter();
-                try {
-                    return a.marshal(v);
-                } catch (Exception e) {
-                    throw new AccessorException(e);
-                }
-            }
-
-            public void set(BeanT bean, T o) throws AccessorException {
-                if(o==null)
-                    extThis.set(bean,null);
-                else {
-                    XmlAdapter<T, ValueT> a = getAdapter();
-                    try {
-                        extThis.set(bean,a.unmarshal(o));
-                    } catch (Exception e) {
-                        throw new AccessorException(e);
-                    }
-                }
-            }
-
-            public Object getUnadapted(BeanT bean) throws AccessorException {
-                return extThis.getUnadapted(bean);
-            }
-
-            public void setUnadapted(BeanT bean, Object value) throws AccessorException {
-                extThis.setUnadapted(bean,value);
-            }
-
-            /**
-             * Sometimes Adapters are used directly by JAX-WS outside any
-             * {@link Coordinator}. Use this lazily-created cached
-             * {@link XmlAdapter} in such cases.
-             */
-            private XmlAdapter<T, ValueT> staticAdapter;
-
-            private XmlAdapter<T, ValueT> getAdapter() {
-                Coordinator coordinator = Coordinator._getInstance();
-                if(coordinator!=null)
-                    return coordinator.getAdapter(adapter);
-                else {
-                    synchronized(this) {
-                        if(staticAdapter==null)
-                            staticAdapter = ClassFactory.create(adapter);
-                    }
-                    return staticAdapter;
-                }
-            }
-        };
+    public final <T> Accessor<BeanT,T> adapt(Adapter<Type,Class> adapter) {
+        return new AdaptedAccessor<BeanT,ValueT,T>(
+            (Class<T>)Navigator.REFLECTION.erasure(adapter.defaultType),
+            this,
+            adapter.adapterType);
     }
 
     /**
@@ -247,7 +202,7 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
 
         @Override
         public Accessor<BeanT,ValueT> optimize() {
-            Accessor acc = OptimizedAccessorFactory.get(f);
+            Accessor<BeanT,ValueT> acc = OptimizedAccessorFactory.get(f);
             if(acc!=null)
                 return acc;
             else
@@ -352,12 +307,12 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
         }
 
         @Override
-        public Accessor<BeanT, ValueT> optimize() {
+        public Accessor<BeanT,ValueT> optimize() {
             if(getter==null || setter==null)
                 // if we aren't complete, OptimizedAccessor won't always work
                 return this;
 
-            Accessor acc = OptimizedAccessorFactory.get(getter,setter);
+            Accessor<BeanT,ValueT> acc = OptimizedAccessorFactory.get(getter,setter);
             if(acc!=null)
                 return acc;
             else
@@ -415,4 +370,5 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
         uninitializedValues.put(long.class,Long.valueOf(0));
         uninitializedValues.put(short.class,Short.valueOf((short)0));
     }
+
 }

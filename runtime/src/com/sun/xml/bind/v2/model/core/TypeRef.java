@@ -9,16 +9,6 @@ import javax.xml.namespace.QName;
  */
 public interface TypeRef<T,C> extends NonElementRef<T,C> {
     /**
-     * The expected Java object type.
-     *
-     * The actual instance can be of a subclass of this type.
-     *
-     * @return
-     *      never null.
-     */
-    NonElement<T,C> getTarget();
-
-    /**
      * The associated element name.
      *
      * @return

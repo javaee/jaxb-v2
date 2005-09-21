@@ -13,45 +13,42 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.xml.bind.annotation.AccessType;
+import javax.xml.bind.annotation.AccessorOrder;
+import javax.xml.bind.annotation.XmlAccessorOrder;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyAttribute;
 import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
-import javax.xml.bind.annotation.AccessorOrder;
-import javax.xml.bind.annotation.XmlAccessorOrder;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.annotation.XmlLocation;
-import com.sun.xml.bind.v2.util.FinalArrayList;
 import com.sun.xml.bind.v2.NameConverter;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.annotation.MethodLocatable;
-import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
 import com.sun.xml.bind.v2.model.core.Element;
-import com.sun.xml.bind.v2.model.core.PropertyInfo;
-import com.sun.xml.bind.v2.model.core.TypeInfo;
-import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.ID;
+import com.sun.xml.bind.v2.model.core.PropertyInfo;
+import com.sun.xml.bind.v2.model.core.PropertyKind;
+import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
-import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
+import com.sun.xml.bind.v2.util.FinalArrayList;
 
 /**
  * A part of the {@link ClassInfo} that doesn't depend on a particular
@@ -230,14 +227,14 @@ class ClassInfoImpl<T,C,F,M>
             if( nav().isStaticField(f) ) {
                 // static fields are bound only when there's explicit annotation.
                 if(hasFieldAnnotation(f))
-                    addProperty(adaptIfNecessary(createFieldSeed(f)));
+                    addProperty(createFieldSeed(f));
                 else
                     continue;
             } else {
                 if(at==AccessType.FIELD
                 ||(at==AccessType.PUBLIC_MEMBER && nav().isPublicField(f))
                 || hasFieldAnnotation(f))
-                    addProperty(adaptIfNecessary(createFieldSeed(f)));
+                    addProperty(createFieldSeed(f));
                 else
                     checkFieldXmlLocation(f);
             }
@@ -442,61 +439,6 @@ class ClassInfoImpl<T,C,F,M>
                         Messages.PROPERTY_ORDER_CONTAINS_UNUSED_ENTRY.format(unusedName),ClassInfoImpl.this));
                 }
         }
-    }
-
-    private boolean isApplicable(XmlJavaTypeAdapter jta, PropertySeed<T,C,F,M> seed ) {
-        if(jta==null)   return false;
-
-        T type = reader().getClassValue(jta,"type");
-        if(seed.getRawType().equals(type))
-            return true;
-
-        return false;
-    }
-
-    private XmlJavaTypeAdapter getApplicableAdapter(PropertySeed<T,C,F,M> seed) {
-        XmlJavaTypeAdapter jta = seed.readAnnotation(XmlJavaTypeAdapter.class);
-        if(jta!=null)
-            return jta;
-
-        // check the applicable adapters on the package
-        XmlJavaTypeAdapters jtas = reader().getPackageAnnotation(XmlJavaTypeAdapters.class, clazz, seed );
-        if(jtas!=null) {
-            for (XmlJavaTypeAdapter xjta : jtas.value()) {
-                if(isApplicable(xjta,seed))
-                    return xjta;
-            }
-        }
-        jta = reader().getPackageAnnotation(XmlJavaTypeAdapter.class, clazz, seed );
-        if(isApplicable(jta,seed))
-            return jta;
-
-        // then on the target class
-        C refType = nav().asDecl(seed.getRawType());
-        if(refType!=null) {
-            jta = reader().getClassAnnotation(XmlJavaTypeAdapter.class, refType, seed );
-            if(isApplicable(jta,seed))
-                return jta;
-        }
-
-        return null;
-    }
-
-    private PropertySeed<T,C,F,M> adaptIfNecessary(PropertySeed<T,C,F,M> seed) {
-        XmlJavaTypeAdapter xjta = getApplicableAdapter(seed);
-        if(xjta!=null)
-            seed = createAdaptedSeed(seed,new Adapter<T,C>(xjta,reader(),nav()));
-
-
-        // this is actually incorrect because it's OK to have an adapter and the attachment
-        // at the same time.
-
-        XmlAttachmentRef xsa = seed.readAnnotation(XmlAttachmentRef.class);
-        if(xsa!=null)
-            return createAdaptedSeed(seed,
-                new Adapter<T,C>(owner.nav.asDecl(SwaRefAdapter.class),owner.nav));
-
-        return seed;
     }
 
     public boolean hasProperties() {
@@ -716,7 +658,7 @@ class ClassInfoImpl<T,C,F,M>
                     continue;
                 }
 
-                addProperty(adaptIfNecessary(createAccessorSeed(getter, setter)));
+                addProperty(createAccessorSeed(getter, setter));
             }
         }
         // done with complete pairs
@@ -807,10 +749,6 @@ class ClassInfoImpl<T,C,F,M>
      */
     protected PropertySeed<T,C,F,M> createAccessorSeed(M getter, M setter) {
         return new GetterSetterPropertySeed<T,C,F,M>(this, getter,setter);
-    }
-
-    protected PropertySeed<T,C,F,M> createAdaptedSeed(PropertySeed<T,C,F,M> seed, Adapter a) {
-        return new AdaptedPropertySeed<T,C,F,M>(seed,a);
     }
 
     /**

@@ -111,7 +111,8 @@ public abstract class TransducedAccessor<BeanT> {
 
         if(prop.isCollection()) {
             return new ListTransducedAccessorImpl(xducer,prop.getAccessor(),
-                    Lister.create(Navigator.REFLECTION.erasure(prop.getRawType()),prop.id()));
+                    Lister.create(Navigator.REFLECTION.erasure(prop.getRawType()),prop.id(),
+                    prop.getAdapter()));
         }
 
         if(prop.id()==ID.IDREF)

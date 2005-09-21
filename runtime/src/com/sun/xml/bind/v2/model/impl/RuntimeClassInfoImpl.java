@@ -170,17 +170,6 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
     }
 
     @Override
-    public RuntimePropertySeed createAdaptedSeed(PropertySeed<Type,Class,Field,Method> _seed,Adapter a) {
-        RuntimePropertySeed seed = (RuntimePropertySeed) _seed;
-        AdaptedPropertySeed<Type,Class,Field,Method> cp =
-            (AdaptedPropertySeed<Type,Class,Field,Method>)super.createAdaptedSeed(seed.core,a);
-
-        return new RuntimePropertySeed(cp,seed.getAccessor().adapt(
-            Navigator.REFLECTION.erasure(cp.adapter.defaultType),
-            cp.adapter.adapterType));
-    }
-
-    @Override
     protected void checkFieldXmlLocation(Field f) {
         if(reader().hasFieldAnnotation(XmlLocation.class,f))
             // TODO: check for XmlLocation signature

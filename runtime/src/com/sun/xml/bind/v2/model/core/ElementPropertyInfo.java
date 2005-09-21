@@ -85,4 +85,6 @@ public interface ElementPropertyInfo<T,C> extends PropertyInfo<T,C> {
      * TODO: define the semantics when this is a collection
      */
     boolean isRequired();
+
+    Adapter<T,C> getAdapter();
 }
