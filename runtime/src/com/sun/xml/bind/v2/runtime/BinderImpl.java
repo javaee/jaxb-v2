@@ -102,12 +102,12 @@ public class BinderImpl<XmlNode> extends Binder<XmlNode> {
     }
 
 
-    public Object unmarshal( XmlNode xmlNode ) throws JAXBException {
-        return associativeUnmarshal(xmlNode,false,null);
-    }
-
     public Object updateJAXB(XmlNode xmlNode) throws JAXBException {
         return associativeUnmarshal(xmlNode,true,null);
+    }
+
+    public Object unmarshal( XmlNode xmlNode ) throws JAXBException {
+        return associativeUnmarshal(xmlNode,false,null);
     }
 
     public <T> JAXBElement<T> unmarshal(XmlNode xmlNode, Class<T> expectedType) throws JAXBException {
@@ -127,8 +127,12 @@ public class BinderImpl<XmlNode> extends Binder<XmlNode> {
         if (xmlNode == null)
             throw new IllegalArgumentException();
 
+        JaxBeanInfo bi = null;
+        if(expectedType!=null)
+            bi = context.getBeanInfo(expectedType, true);
+
         InterningXmlVisitor handler = new InterningXmlVisitor(
-            getUnmarshaller().createUnmarshallerHandler(scanner,inplace,context.getBeanInfo(expectedType,true)));
+            getUnmarshaller().createUnmarshallerHandler(scanner,inplace,bi));
         scanner.setContentHandler(new SAXConnector(handler,scanner.getLocator()));
         try {
             scanner.scan(xmlNode);

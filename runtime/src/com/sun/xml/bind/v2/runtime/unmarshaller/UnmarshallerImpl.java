@@ -17,10 +17,6 @@
  * own identifying information: Portions Copyright [yyyy]
  * [name of copyright owner]
  */
-
-/*
- * @(#)$Id: UnmarshallerImpl.java,v 1.25 2005-09-10 19:07:43 kohsuke Exp $
- */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
 import java.io.IOException;

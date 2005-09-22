@@ -7,7 +7,7 @@
         <city>Cambridge</city>
         <state>MA</state>
         <zip>12345</zip>
-	<schemaEvolveAddedElement>42</schemaEvolveAddedElement>
+	<schemaEvolveAddedElement>42</schemaEvolveAddedElement> 
     </shipTo>
     <billTo country="US" schemaEvolveAddedAttribute="bar">
         <name>Robert Smith</name>
@@ -15,7 +15,7 @@
         <city>Cambridge</city>
         <state>MA</state>
         <zip>12345</zip>
-	<schemaEvolveAddedElement>49</schemaEvolveAddedElement>
+	<schemaEvolveAddedElement>49</schemaEvolveAddedElement> 
     </billTo>
     <items>
         <!-- list of items: XML comments preserved by binder -->

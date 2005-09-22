@@ -9,7 +9,7 @@ import com.sun.xml.bind.v2.runtime.reflect.Accessor;
  */
 public class MethodAccessor_Ref extends Accessor {
     public MethodAccessor_Ref() {
-        super(Byte.class);
+        super(Ref.class);
     }
 
     public Object get(Object bean) {

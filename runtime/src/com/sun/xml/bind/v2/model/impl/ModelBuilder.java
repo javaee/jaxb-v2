@@ -2,6 +2,8 @@ package com.sun.xml.bind.v2.model.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
@@ -17,6 +19,7 @@ import com.sun.xml.bind.v2.model.core.Ref;
 import com.sun.xml.bind.v2.model.core.RegistryInfo;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.model.core.TypeInfoSet;
+import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 
@@ -63,6 +66,11 @@ public class ModelBuilder<T,C,F,M> {
      * When there's no replacement, this field is set to "".
      */
     public final String defaultNsUri;
+
+    /**
+     * Packages whose registries are already added.
+     */
+    private final Set<String> registries = new HashSet<String>();
 
     /**
      * @see #setErrorHandler
@@ -119,11 +127,22 @@ public class ModelBuilder<T,C,F,M> {
 
             // compute the closure by eagerly expanding references
             for( PropertyInfo<T,C> p : ci.getProperties() ) {
-                for( TypeInfo<T,C> t : p.ref() )
+                if(p.kind()== PropertyKind.REFERENCE) {
+                    // make sure that we have a registry for this package
+                    String pkg = nav.getPackageName(ci.getClazz());
+                    if(registries.add(pkg)) {
+                        // insert the package's object factory
+                        ClassDeclT c = nav.findClass(pkg + ".ObjectFactory",ci.getClazz());
+                        if(c!=null)
+                            addRegistry(c,(Locatable)p);
+                    }
+                }
+
+                for( TypeInfo<TypeT,ClassDeclT> t : p.ref() )
                     ; // just compute a reference should be suffice
             }
             ci.getBaseClass();
-            
+
             r = ci;
         }
 
@@ -180,7 +199,8 @@ public class ModelBuilder<T,C,F,M> {
         assert !ref.valueList;
         C c = nav.asDecl(ref.type);
         if(c!=null && reader.getClassAnnotation(XmlRegistry.class,c,null/*TODO: is this right?*/)!=null) {
-            addRegistry(c,null);
+            if(registries.add(nav.getPackageName(c)))
+                addRegistry(c,null);
             return null;    // TODO: is this correct?
         } else
             return getTypeInfo(ref.type,null);

@@ -221,6 +221,38 @@ public abstract class JAXBRIContext extends JAXBContext {
     public abstract String getBuildId();
 
     /**
+     * Computes a Java identifier from a local name.
+     *
+     * <p>
+     * This method faithfully implements the name mangling rule as specified in the JAXB spec.
+     *
+     * <p>
+     * In JAXB, a collision with a Java reserved word (such as "return") never happens.
+     * Accordingly, this method may return an identifier that collides with reserved words.
+     *
+     * <p>
+     * Use {@link JJavaName#isJavaIdentifier(String)} to check for such collision.
+     *
+     * @return
+     *      Typically, this method returns "nameLikeThis".
+     *
+     * @see JJavaName#isJavaIdentifier(String)
+     */
+    public abstract String mangleNameToVariableName(String localName);
+
+    /**
+     * Computes a Java class name from a local name.
+     *
+     * <p>
+     * This method faithfully implements the name mangling rule as specified in the JAXB spec.
+     *
+     * @return
+     *      Typically, this method returns "NameLikeThis".
+     */
+    public abstract String mangleNameToClassName(String localName);
+
+
+    /**
      * The property that you can specify to {@link JAXBContext#newInstance}
      * to reassign the default namespace URI to something else at the runtime.
      *
