@@ -647,7 +647,11 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                     ValuePropertyInfo vp = (ValuePropertyInfo)c.getProperties().get(0);
                     SimpleType st = ((SimpleTypeHost)parent).simpleType();
                     writeName(c, st);
-                    st.restriction().base(vp.getTarget().getTypeName());
+                    if(vp.isCollection()) {
+                        writeTypeRef(st.list(),vp.getTarget(),"itemType");
+                    } else {
+                        writeTypeRef(st.restriction(),vp.getTarget(),"base");
+                    }
                     return;
                 } else {
                     // [RESULT 1 - complexType with simpleContent]
