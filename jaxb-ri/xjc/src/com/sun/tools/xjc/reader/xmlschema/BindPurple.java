@@ -1,6 +1,6 @@
 package com.sun.tools.xjc.reader.xmlschema;
 
-import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
+import com.sun.tools.xjc.generator.bean.field.ConstFieldRenderer;
 import com.sun.tools.xjc.model.CDefaultValue;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.model.TypeUse;
@@ -40,18 +40,14 @@ public class BindPurple extends ColorBinder {
         BIProperty pc = BIProperty.getCustomization(use);
 
         // map to a constant property ?
-        boolean toConstant =
-            pc.isConstantProperty() &&
-            hasFixedValue;
+        boolean toConstant = pc.isConstantProperty() && hasFixedValue;
         TypeUse attType = bindAttDecl(use.getDecl());
 
         CPropertyInfo prop = pc.createAttributeProperty( use, attType );
 
         if(toConstant) {
             prop.defaultValue = CDefaultValue.create(attType,use.getFixedValue());
-            if(prop.defaultValue==null)
-                // unable to come up with the constant value.
-                toConstant = false;
+            prop.realization = new ConstFieldRenderer(prop.realization);
         } else
         if(!attType.isCollection()) {
             // don't support a collection default value. That's difficult to do.
@@ -66,11 +62,6 @@ public class BindPurple extends ColorBinder {
                 prop.defaultValue = CDefaultValue.create(attType,use.getFixedValue());
             }
         }
-
-        if(toConstant)
-            // specify a realization of this field so that it will be
-            // realized as a constant property
-            prop.realization = FieldRenderer.CONST;
 
         getCurrentBean().addProperty(prop);
     }
