@@ -4,6 +4,8 @@ import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.xml.bind.v2.model.core.EnumConstant;
 
+import org.xml.sax.Locator;
+
 /**
  * Enumeration constant.
  *
@@ -19,14 +21,17 @@ public final class CEnumConstant implements EnumConstant<NType,NClass> {
 
     private CEnumLeafInfo parent;
 
+    private final Locator locator;
+
     /**
      * @param name
      */
-    public CEnumConstant(String name, String javadoc, String lexical) {
+    public CEnumConstant(String name, String javadoc, String lexical, Locator loc) {
         assert name!=null;
         this.name = name;
         this.javadoc = javadoc;
         this.lexical = lexical;
+        this.locator = loc;
     }
 
     public CEnumLeafInfo getEnclosingClass() {
@@ -43,5 +48,9 @@ public final class CEnumConstant implements EnumConstant<NType,NClass> {
 
     public String getName() {
         return name;
+    }
+
+    public Locator getLocator() {
+        return locator;
     }
 }

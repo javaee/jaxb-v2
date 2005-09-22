@@ -113,6 +113,10 @@ public class Messages
     static final String MSG_FALLBACK_JAVADOC =
         "DefaultParticleBinder.FallbackJavadoc"; // arg:1
 
+    static final String ERR_ENUM_MEMBER_NAME_COLLISION =
+        "ERR_ENUM_MEMBER_NAME_COLLISION";
+    static final String ERR_ENUM_MEMBER_NAME_COLLISION_RELATED =
+        "ERR_ENUM_MEMBER_NAME_COLLISION_RELATED";
 
     // they are shared from the model
     public static final String ERR_UNACKNOWLEDGED_CUSTOMIZATION =
