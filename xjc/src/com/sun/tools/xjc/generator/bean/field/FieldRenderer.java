@@ -59,9 +59,6 @@ public interface FieldRenderer {
     //
     // field renderers
     //
-    public static final FieldRenderer CONST
-        = new GenericFieldRenderer(ConstField.class);
-    
     public static final FieldRenderer DEFAULT
         = new DefaultFieldRenderer();
     
