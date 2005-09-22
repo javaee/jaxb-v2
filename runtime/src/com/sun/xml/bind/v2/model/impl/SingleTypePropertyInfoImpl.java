@@ -3,11 +3,11 @@ package com.sun.xml.bind.v2.model.impl;
 import java.util.Collections;
 import java.util.List;
 
+import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
-import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.runtime.RuntimeNonElementRef;
-import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfo;
+import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
@@ -31,7 +31,7 @@ abstract class SingleTypePropertyInfoImpl<T,C,F,M>
 
     public SingleTypePropertyInfoImpl(ClassInfoImpl<T,C,F,M> classInfo, PropertySeed<T,C,F,M> seed) {
         super(classInfo, seed);
-        if(this instanceof RuntimeTypeInfo) {
+        if(this instanceof RuntimePropertyInfo) {
             Accessor rawAcc = ((RuntimeClassInfoImpl.RuntimePropertySeed)seed).getAccessor();
             if(getAdapter()!=null && !isCollection())
                 // adapter for a single-value property is handled by accessor.
