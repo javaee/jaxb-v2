@@ -24,6 +24,8 @@ import com.sun.tools.xjc.api.impl.j2s.JavaCompilerImpl;
 import com.sun.tools.xjc.api.impl.s2j.SchemaCompilerImpl;
 import com.sun.tools.xjc.reader.Util;
 import com.sun.xml.bind.v2.NameConverter;
+import com.sun.xml.bind.api.JAXBRIContext;
+import com.sun.codemodel.JJavaName;
 
 /**
  * Entry point to the JAXB RI interface.
@@ -122,6 +124,8 @@ public final class XJC {
      *      Typically, this method returns "nameLikeThis".
      *
      * @see JJavaName#isJavaIdentifier(String)
+     *
+     * @deprecated use {@link JAXBRIContext#mangleNameToVariableName(String)}
      */
     public static final String mangleNameToVariableName(String localName) {
         return NameConverter.standard.toVariableName(localName);
@@ -135,6 +139,8 @@ public final class XJC {
      *
      * @return
      *      Typically, this method returns "NameLikeThis".
+     *
+     * @deprecated use {@link JAXBRIContext#mangleNameToClassName(String)} 
      */
     public static final String mangleNameToClassName(String localName) {
         return NameConverter.standard.toClassName(localName);

@@ -36,8 +36,8 @@
 	<classpathentry exported="true" kind="lib" path="tools/lib/rebundle/runtime/isorelax.jar"/>
 	<classpathentry kind="lib" path="tools/lib/rebundle/compiler/resolver.jar"/>
 	<classpathentry kind="lib" path="tools/lib/rebundle/runtime2/txw2.jar"/>
-	<classpathentry kind="lib" path="/JAXB 2.0 unit test/tools/lib/util/junit.jar"/>
 	<classpathentry sourcepath="tools/lib/src/sjsxp-src.zip" kind="lib" path="tools/lib/util/sjsxp.jar"/>
 	<classpathentry kind="lib" path="tools/lib/rebundle/compiler/relaxngDatatype.jar"/>
+	<classpathentry kind="var" path="JUNIT_HOME/junit.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

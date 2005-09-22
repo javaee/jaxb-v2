@@ -941,7 +941,6 @@ public final class UnmarshallingContext extends Coordinator
             // unmarshals the specified type
             QName qn = new QName(ea.uri,ea.local);
             state.prev.target = new JAXBElement(qn,context.expectedType.jaxbType,null,null);
-
             state.receiver = this;
             state.loader = context.expectedType.getLoader(null,true);
         }
@@ -949,6 +948,7 @@ public final class UnmarshallingContext extends Coordinator
         public void receive(State state, Object o) {
             JAXBElement e = (JAXBElement)state.target;
             e.setValue(o);
+            state.getContext().recordOuterPeer(e);
             state.getContext().result = e;
         }
     }

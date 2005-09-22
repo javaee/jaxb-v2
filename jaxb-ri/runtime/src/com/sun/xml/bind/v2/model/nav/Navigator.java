@@ -298,4 +298,22 @@ public interface Navigator<T,C,F,M> {
      * Gets the representation of the primitive "void" type.
      */
     T getVoidType();
+
+    /**
+     * Gets the package name of the given class.
+     *
+     * @return
+     *      i.e. "", "java.lang" but not null.
+     */
+    String getPackageName(C clazz);
+
+    /**
+     * Finds the class/interface/enum/annotation of the given name.
+     *
+     * @param referencePoint
+     *      The class that refers to the specified class.
+     * @return
+     *      null if not found.
+     */
+    C findClass(String className, C referencePoint);
 }

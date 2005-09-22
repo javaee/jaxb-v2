@@ -264,4 +264,14 @@ public final class NavigatorImpl implements Navigator<NType,NClass,Void,Void> {
     public NType getVoidType() {
         return ref(void.class);
     }
+
+    public String getPackageName(NClass clazz) {
+        // TODO: implement this method later
+        throw new UnsupportedOperationException();
+    }
+
+    public NClass findClass(String className, NClass referencePoint) {
+        // TODO: implement this method later
+        throw new UnsupportedOperationException();
+    }
 }

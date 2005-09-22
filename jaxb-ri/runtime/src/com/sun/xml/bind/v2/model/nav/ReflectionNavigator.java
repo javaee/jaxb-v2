@@ -455,6 +455,20 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
         return Void.class;
     }
 
+    public String getPackageName(Class clazz) {
+        return clazz.getPackage().getName();
+    }
+
+    public Class findClass(String className, Class referencePoint) {
+        try {
+	    ClassLoader cl = referencePoint.getClassLoader();
+	    if(cl==null)  cl = ClassLoader.getSystemClassLoader();
+            return cl.loadClass(className);
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
+    }
+
 
     /**
      * JDK 5.0 has a bug of createing {@link GenericArrayType} where it shouldn't.

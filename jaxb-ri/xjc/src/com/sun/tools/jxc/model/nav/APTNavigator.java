@@ -232,6 +232,14 @@ public class APTNavigator implements Navigator<TypeMirror,TypeDeclaration,FieldD
         return env.getTypeUtils().getVoidType();
     }
 
+    public String getPackageName(TypeDeclaration clazz) {
+        return clazz.getPackage().getQualifiedName();
+    }
+
+    public TypeDeclaration findClass(String className, TypeDeclaration referencePoint) {
+        return env.getTypeDeclaration(className);
+    }
+
     public boolean isArray(TypeMirror t) {
         return t instanceof ArrayType;
     }
