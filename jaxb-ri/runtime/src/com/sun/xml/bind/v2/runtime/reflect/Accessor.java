@@ -17,14 +17,12 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.JAXBRIContext;
-import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.nav.Navigator;
-import com.sun.xml.bind.v2.runtime.Coordinator;
+import com.sun.xml.bind.v2.runtime.reflect.opt.OptimizedAccessorFactory;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Receiver;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
-import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
-import com.sun.xml.bind.v2.runtime.reflect.opt.OptimizedAccessorFactory;
 
 import org.xml.sax.SAXException;
 
