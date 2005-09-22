@@ -132,13 +132,13 @@ public class ModelBuilder<T,C,F,M> {
                     String pkg = nav.getPackageName(ci.getClazz());
                     if(registries.add(pkg)) {
                         // insert the package's object factory
-                        ClassDeclT c = nav.findClass(pkg + ".ObjectFactory",ci.getClazz());
+                        C c = nav.findClass(pkg + ".ObjectFactory",ci.getClazz());
                         if(c!=null)
                             addRegistry(c,(Locatable)p);
                     }
                 }
 
-                for( TypeInfo<TypeT,ClassDeclT> t : p.ref() )
+                for( TypeInfo<T,C> t : p.ref() )
                     ; // just compute a reference should be suffice
             }
             ci.getBaseClass();
