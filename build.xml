@@ -47,7 +47,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.34 2005-09-22 04:05:07 ryan_shoemaker Exp $
+       $Id: build.xml,v 1.35 2005-09-22 22:36:55 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -238,7 +238,8 @@
                 </section>
               </manifest>
               <jar jarfile="${jaxb.dist}/lib/jaxb-impl.jar"
-                   manifest="${runtime.root}/build/manifest.rt">
+                   manifest="${runtime.root}/build/manifest.rt"
+                   duplicate="fail">
                   <fileset dir="${runtime.classes}"/>
                   <fileset dir="${runtime-fi.classes}"/>
                   <fileset dir="${runtime-api.classes}"/>
@@ -550,6 +551,7 @@ Class-Path: ${manifest.classpath}
           <ant dir="codemodel"          target="clean-codemodel" />
           <ant dir="runtime-api"        target="clean" />
           <ant dir="runtime"            target="clean" />
+          <ant dir="runtime-fi"         target="clean" />
           <ant dir="runtime-deprecated" target="clean-runtime-deprecated" />
           <ant dir="xjc"                target="clean" />
           <ant dir="pkg"                target="clean-pkg" />
