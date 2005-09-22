@@ -154,8 +154,9 @@ public final class RELAXNGCompiler {
                                 continue OUTER; // different type name
                         }
 
-                        members.add(new CEnumConstant(model.getNameConverter().toConstantName(c.getValue()),
-                            null, c.getValue()
+                        members.add(new CEnumConstant(
+                            model.getNameConverter().toConstantName(c.getValue()),
+                            null, c.getValue(), c.getLocation()
                         ));
                     } else
                         continue OUTER; // not a value

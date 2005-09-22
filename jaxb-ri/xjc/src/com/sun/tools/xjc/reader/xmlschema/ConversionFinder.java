@@ -356,12 +356,20 @@ public final class ConversionFinder extends BindingComponent {
 
         // if the member names collide, re-generate numbered constant names.
         List<CEnumConstant> memberList = buildCEnumConstants(type, false, members);
-        if(memberList==null || checkMemberNameCollision(memberList)) {
+        if(memberList==null || checkMemberNameCollision(memberList)!=null) {
             switch(mode) {
             case SKIP:
                 // abort
                 return null;
             case ERROR:
+                // error
+                CEnumConstant[] collision = checkMemberNameCollision(memberList);
+                getErrorReporter().error( collision[0].getLocator(),
+                    Messages.ERR_ENUM_MEMBER_NAME_COLLISION,
+                    collision[0].getName() );
+                getErrorReporter().error( collision[1].getLocator(),
+                    Messages.ERR_ENUM_MEMBER_NAME_COLLISION_RELATED );
+                break;
             case GENERATE:
                 // generate
                 memberList = buildCEnumConstants(type,true,members);
@@ -434,21 +442,27 @@ public final class ConversionFinder extends BindingComponent {
             if(!JJavaName.isJavaIdentifier(name))
                 return null;    // unable to generate a name
 
-            memberList.add(new CEnumConstant(name,mdoc,facet.getValue().value));
+            memberList.add(new CEnumConstant(name,mdoc,facet.getValue().value,facet.getLocator()));
         }
         return memberList;
     }
 
     /**
-     * Returns true if {@link CEnumConstant}s have name collisions among them.
+     * Returns non-null if {@link CEnumConstant}s have name collisions among them.
+     *
+     * @return
+     *      if there's a collision, return two {@link CEnumConstant}s that collided.
+     *      otherwise return null.
      */
-    private boolean checkMemberNameCollision( List<CEnumConstant> memberList ) {
-        Set<String> names = new HashSet<String>();
+    private CEnumConstant[] checkMemberNameCollision( List<CEnumConstant> memberList ) {
+        Map<String,CEnumConstant> names = new HashMap<String,CEnumConstant>();
         for (CEnumConstant c : memberList) {
-            if(!names.add(c.getName()))
-                return true;    // collision detected
+            CEnumConstant old = names.put(c.getName(),c);
+            if(old!=null)
+                // collision detected
+                return new CEnumConstant[]{old,c};
         }
-        return false;
+        return null;
     }
 
 
