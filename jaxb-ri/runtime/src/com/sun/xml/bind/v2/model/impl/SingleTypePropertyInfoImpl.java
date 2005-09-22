@@ -7,6 +7,7 @@ import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.runtime.RuntimeNonElementRef;
+import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfo;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
@@ -30,12 +31,15 @@ abstract class SingleTypePropertyInfoImpl<T,C,F,M>
 
     public SingleTypePropertyInfoImpl(ClassInfoImpl<T,C,F,M> classInfo, PropertySeed<T,C,F,M> seed) {
         super(classInfo, seed);
-        Accessor rawAcc = ((RuntimeClassInfoImpl.RuntimePropertySeed)seed).getAccessor();
-        if(getAdapter()!=null && !isCollection())
-            // adapter for a single-value property is handled by accessor.
-            // adapter for a collection property is handled by lister.
-            rawAcc = rawAcc.adapt(getAdapter());
-        this.acc = rawAcc;
+        if(this instanceof RuntimeTypeInfo) {
+            Accessor rawAcc = ((RuntimeClassInfoImpl.RuntimePropertySeed)seed).getAccessor();
+            if(getAdapter()!=null && !isCollection())
+                // adapter for a single-value property is handled by accessor.
+                // adapter for a collection property is handled by lister.
+                rawAcc = rawAcc.adapt(getAdapter());
+            this.acc = rawAcc;
+        } else
+            this.acc = null;
     }
 
     public List<? extends NonElement<T,C>> ref() {
