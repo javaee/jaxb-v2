@@ -18,7 +18,7 @@
  own identifying information: Portions Copyright [yyyy]
  [name of copyright owner]
 -->
-<project name="jaxb" basedir=".">
+<project name="jaxb-taskdefs" basedir=".">
   <description>
     Common task/macro definitions.
   </description>
