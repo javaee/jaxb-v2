@@ -30,13 +30,10 @@ public class SchemaGeneratorClassLoader extends URLClassLoader {
     }
 
     public Class loadClass (String s) throws ClassNotFoundException {
-        //ToDo check if this can be made faster
-        for (int i = 0; i < packagePrefixes.size(); i++ ) {
-            String packprefix = packagePrefixes.get(i);
-            if (s.startsWith(packprefix) ) {
+        for( String prefix : packagePrefixes ) {
+            if (s.startsWith(prefix) ) {
                 return findClass(s);
             }
-
         }
         return getParent().loadClass(s);
     }
