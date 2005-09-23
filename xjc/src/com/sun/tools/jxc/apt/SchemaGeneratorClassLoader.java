@@ -22,7 +22,7 @@ public class SchemaGeneratorClassLoader extends URLClassLoader {
      * List of package prefixes we want to mask the
      * parent classLoader from loading
      */
-    private final List packagePrefixes;
+    private final List<String> packagePrefixes;
 
     protected SchemaGeneratorClassLoader(ClassLoader parent,URL... urls) {
         super(urls,parent);
@@ -32,7 +32,7 @@ public class SchemaGeneratorClassLoader extends URLClassLoader {
     public Class loadClass (String s) throws ClassNotFoundException {
         //ToDo check if this can be made faster
         for (int i = 0; i < packagePrefixes.size(); i++ ) {
-            String packprefix = (String)packagePrefixes.get(i);
+            String packprefix = packagePrefixes.get(i);
             if (s.startsWith(packprefix) ) {
                 return findClass(s);
             }
@@ -74,9 +74,9 @@ public class SchemaGeneratorClassLoader extends URLClassLoader {
      * @return
      *       List of package prefixes e.g com.sun.tools.xjc.driver
      */
-    private  List getPackagePrefixes() {
+    private  List<String> getPackagePrefixes() {
 
-        ArrayList prefixes = new ArrayList() ;
+        ArrayList<String> prefixes = new ArrayList<String>() ;
         //TODO check if more prefixes need to be added
 
         prefixes.add("com.sun.tools.jxc.");
