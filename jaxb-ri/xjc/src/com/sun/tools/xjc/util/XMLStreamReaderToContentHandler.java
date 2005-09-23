@@ -197,13 +197,9 @@ public class XMLStreamReaderToContentHandler {
             // start namespace bindings
             int nsCount = staxStreamReader.getNamespaceCount();
             for (int i = 0; i < nsCount; i++) {
-                String prefix = staxStreamReader.getNamespacePrefix(i);
-                if (prefix == null) { // true for default namespace
-                    prefix = "";
-                }
                 saxHandler.startPrefixMapping(
-                    prefix,
-                    staxStreamReader.getNamespaceURI(i));
+                    fixNull(staxStreamReader.getNamespacePrefix(i)),
+                    fixNull(staxStreamReader.getNamespaceURI(i)));
             }
 
             // fire startElement
@@ -223,6 +219,11 @@ public class XMLStreamReaderToContentHandler {
         } catch (SAXException e) {
             throw new XMLStreamException(e);
         }
+    }
+
+    private static String fixNull(String s) {
+        if(s==null)     return "";
+        else            return s;
     }
 
     /**

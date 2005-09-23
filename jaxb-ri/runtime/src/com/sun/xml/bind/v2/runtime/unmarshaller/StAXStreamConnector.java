@@ -1,4 +1,4 @@
-/* $Id: StAXStreamConnector.java,v 1.2 2005-08-18 16:08:20 kohsuke Exp $
+/* $Id: StAXStreamConnector.java,v 1.3 2005-09-23 22:58:58 kohsuke Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -176,10 +176,9 @@ final class StAXStreamConnector extends StAXConnector {
         // start namespace bindings
         int nsCount = staxStreamReader.getNamespaceCount();
         for (int i = 0; i < nsCount; i++) {
-            String prefix = fixNull(staxStreamReader.getNamespacePrefix(i));
             visitor.startPrefixMapping(
-                prefix,
-                staxStreamReader.getNamespaceURI(i));
+                fixNull(staxStreamReader.getNamespacePrefix(i)),
+                fixNull(staxStreamReader.getNamespaceURI(i)));
         }
 
         // fire startElement
