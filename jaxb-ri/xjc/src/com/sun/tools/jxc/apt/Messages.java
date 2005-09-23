@@ -12,6 +12,7 @@ enum Messages {
     // Accessor
     NON_EXISTENT_FILE, // 1 arg
     NO_FILE_SPECIFIED, // 0 args
+    NO_CLASSPATH_SPECIFIED, // 0 args
     UNRECOGNIZED_PARAMETER, //1 arg
     USAGE, //0 args
     ;
