@@ -8,7 +8,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
-import com.sun.xml.bind.v2.util.QNameMap;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementInfo;
@@ -17,11 +16,12 @@ import com.sun.xml.bind.v2.runtime.property.PropertyFactory;
 import com.sun.xml.bind.v2.runtime.property.UnmarshallerChain;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
-import com.sun.xml.bind.v2.runtime.unmarshaller.TagName;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Intercepter;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.TagName;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
-import com.sun.xml.bind.v2.runtime.unmarshaller.XsiTypeLoader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Discarder;
+import com.sun.xml.bind.v2.util.QNameMap;
 
 import org.xml.sax.SAXException;
 
@@ -32,7 +32,7 @@ import org.xml.sax.SAXException;
  */
 final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
 
-    private final Loader loader;
+    private Loader loader;
 
     private final Property property;
 
@@ -45,14 +45,6 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
         super(grammar,rei,(Class<JAXBElement>)rei.getType(),null,true,false,true);
 
         this.property = PropertyFactory.create(grammar,rei.getProperty());
-
-//        this.unmarshaller = property.createUnmarshallerHandler(grammar,Unmarshaller.REVERT_TO_PARENT);
-        UnmarshallerChain c = new UnmarshallerChain(grammar);
-        QNameMap<ChildLoader> result = new QNameMap<ChildLoader>();
-        property.buildChildElementUnmarshallers(c,result);
-        assert result.size()==1;    // ElementBeanInfoImpl only has one tag name
-        this.loader = new IntercepterLoader(result.getOne().getValue().loader);
-
 
         tagName = rei.getElementName();
         expectedType = Navigator.REFLECTION.erasure(rei.getContentInMemoryType());
@@ -135,7 +127,6 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
             public void wrapUp() {
             }
         };
-        this.loader = null;
     }
 
     /**
@@ -207,6 +198,18 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
     }
 
     public Loader getLoader(JAXBContextImpl context, boolean typeSubstitutionCapable) {
+        if(loader==null) {
+            // this has to be done lazily to avoid cyclic reference issue
+            UnmarshallerChain c = new UnmarshallerChain(context);
+            QNameMap<ChildLoader> result = new QNameMap<ChildLoader>();
+            property.buildChildElementUnmarshallers(c,result);
+            if(result.size()==1)
+                // for ElementBeanInfoImpl created from RuntimeElementInfo
+                this.loader = new IntercepterLoader(result.getOne().getValue().loader);
+            else
+                // for special ElementBeanInfoImpl only used for marshalling
+                this.loader = Discarder.INSTANCE;
+        }
         return loader;
     }
 
@@ -259,5 +262,10 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
     public void wrapUp() {
         super.wrapUp();
         property.wrapUp();
+    }
+
+    public void link(JAXBContextImpl grammar) {
+        super.link(grammar);
+        getLoader(grammar,true);    // make sure to build them, if we hadn't done so
     }
 }
