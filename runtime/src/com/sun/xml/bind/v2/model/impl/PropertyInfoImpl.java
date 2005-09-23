@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlInlineBinaryData;
+import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
 import javax.xml.namespace.QName;
@@ -25,6 +26,7 @@ import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
+import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
 
 /**
  * Default partial implementation for {@link PropertyInfo}.
@@ -78,7 +80,13 @@ abstract class PropertyInfoImpl<T,C,F,M>
 
         XmlJavaTypeAdapter xjta = getApplicableAdapter(getIndividualType());
         if(xjta==null) {
-            adapter = null;
+            // ugly ugly hack, but we implement swaRef as adapter
+            XmlAttachmentRef xsa = seed.readAnnotation(XmlAttachmentRef.class);
+            if(xsa!=null) {
+                adapter = new Adapter<T,C>(nav().asDecl(SwaRefAdapter.class),nav());
+            } else {
+                adapter = null;
+            }
         } else {
             adapter = new Adapter<T,C>(xjta,reader(),nav());
         }
