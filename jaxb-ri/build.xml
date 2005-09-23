@@ -47,7 +47,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.35 2005-09-22 22:36:55 kohsuke Exp $
+       $Id: build.xml,v 1.36 2005-09-23 21:59:33 ryan_shoemaker Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -582,6 +582,7 @@ Class-Path: ${manifest.classpath}
              
         <!-- compile each of the jaxb sub-projects into ${build.home} -->
         <antcall target="dist">
+            <param name="codemodel.build"   value="${build.home}/codemodel/build"/>
             <param name="codemodel.classes" value="${build.home}/codemodel/build/classes"/>
             <param name="runtime.classes"   value="${build.home}/runtime/build/classes"/>
             <param name="xjc.classes"       value="${build.home}/xjc/build/classes"/>
@@ -623,8 +624,10 @@ Class-Path: ${manifest.classpath}
         <jar jarfile="${dist.home}/lib/jaxb-xjc.jar"
              manifest="${xjc.root}/manifest.xjc.jwsdp">
              <!-- unfortunately, we have to unjar and rejar the files to preserve the
-                  other META-INF files -->
-             <fileset dir="${dist.home}/lib/tmp"/>
+                  other META-INF files, also need to strip out the resolver code -->
+             <fileset dir="${dist.home}/lib/tmp">
+                <exclude name="com/sun/org/apache/xml/internal/resolver/"/>
+             </fileset>
         </jar>
         <delete dir="${dist.home}/lib/tmp"/>
         <delete file="${dist.home}/lib/jaxb-xjc.jar.orig"/>
@@ -637,6 +640,8 @@ Class-Path: ${manifest.classpath}
                 <exclude name="lib/jaxp-api.jar"/>
                 <exclude name="lib/jaxb-api-doc.zip"/>
                 <exclude name="**/api/"/>
+                <exclude name="lib/jsr173_1.0_api.jar"/>
+                <exclude name="lib/activation.jar"/>
             </fileset>
         </copy>
         
@@ -722,17 +727,17 @@ Class-Path: ${manifest.classpath}
       </condition>
     </target>
 
-    <!-- assumes dist target has been run -->
+    <!-- assumes wspack target has been run -->
     <target name="create.pkg" depends="check.os" if="is.unix">
       <ant dir="pkg" target="deploy-pkg"/>
     </target>
 
-    <!-- assumes dist target has been run -->
+    <!-- assumes wspack target has been run -->
     <target name="create.rpm" depends="check.os" if="is.unix">
       <ant dir="rpm" target="deploy-rpm"/>
     </target>
 
-    <!-- assumes dist target has been run -->
+    <!-- assumes dist or wspack target has been run -->
     <target name="create.zip" description="Create JAXB zip file distribution">
       <!-- The zip build directory -->
       <property name="zip.build.dir"    value="${basedir}/build/zip"/>
@@ -754,7 +759,7 @@ Class-Path: ${manifest.classpath}
           <fileset dir="${jaxb.dist}/lib">
             <exclude name="jaxb-api-doc.zip"/>
             <exclude name="jaxb-api-src.zip"/>
-            <!-- TODO: exclude jsr173_1.0_api.jar and activation.jar ??? -->
+            <!-- jsr173_1.0_api.jar and activation.jar are excluded by the wspack target -->
           </fileset>
         </copy>
       </parallel>

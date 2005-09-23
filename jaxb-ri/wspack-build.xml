@@ -21,7 +21,7 @@
 -->
 
 
-<project name="go" basedir="." default="doit">
+<project name="wspack-driver" basedir="." default="doit">
 
     <!-- little utility build file for mimicking how the jwsdp
          calls our main build.xml 'wspack' target -->
