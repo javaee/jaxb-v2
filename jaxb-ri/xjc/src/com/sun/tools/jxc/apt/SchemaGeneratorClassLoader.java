@@ -24,10 +24,9 @@ public class SchemaGeneratorClassLoader extends URLClassLoader {
      */
     private final List packagePrefixes;
 
-    protected SchemaGeneratorClassLoader(URL[] urls,ClassLoader parent) {
+    protected SchemaGeneratorClassLoader(ClassLoader parent,URL... urls) {
         super(urls,parent);
         packagePrefixes = getPackagePrefixes();
-
     }
 
     public Class loadClass (String s) throws ClassNotFoundException {

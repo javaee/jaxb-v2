@@ -20,26 +20,39 @@ import com.sun.tools.xjc.BadCommandLineException;
  */
 public class SchemaGeneratorWrapper  {
 
-
-
+    /**
+     * Runs the schema generator.
+     */
     public static void main (String[] args) throws Exception {
         ClassLoader cl = SchemaGeneratorWrapper.class.getClassLoader();
 
-        SchemaGeneratorClassLoader classLoader = new SchemaGeneratorClassLoader(getURLS(),cl);
+        SchemaGeneratorClassLoader classLoader = new SchemaGeneratorClassLoader(cl,getToolsJar());
 
-        run(args, classLoader);
+        System.exit(run(args, classLoader));
     }
 
-    public static void run(String[] args, ClassLoader classLoader) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    /**
+     * Runs the schema generator.
+     *
+     * @param classLoader
+     *      the schema generator will run in this classLoader.
+     *      It needs to be able to load APT and JAXB RI classes. Note that
+     *      JAXB RI classes refer to APT classes. Must not be null.
+     *
+     * @return
+     *      exit code. 0 if success.
+     *
+     */
+    public static int run(String[] args, ClassLoader classLoader) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         final Options options = new Options();
         if (args.length ==0) {
             usage();
-            System.exit(0);
+            return 0;
         }
         for (String arg : args) {
             if (arg.equals("-help")) {
                 usage();
-                System.exit(0);
+                return 0;
             }
 
             try {
@@ -48,34 +61,26 @@ public class SchemaGeneratorWrapper  {
             } catch (BadCommandLineException e) {
                 // there was an error in the command line.
                 // print usage and abort.
-                if(e.getMessage()!=null) {
-                    System.out.println(e.getMessage());
-                    System.out.println();
-                    usage();
-                    System.exit(-1);
-                }
+                System.out.println(e.getMessage());
+                System.out.println();
+                usage();
+                return -1;
             }
         }
 
 
-        Class schemagenRunner = classLoader.loadClass("com.sun.tools.jxc.apt.SchemaGeneratorRunner");
-        Method mainMethod = schemagenRunner.getDeclaredMethod("main", new Class[]{String[].class});
-        ArrayList<String> newargs = new ArrayList(Arrays.asList(args));
+        Class schemagenRunner = classLoader.loadClass(SchemaGeneratorRunner.class.getName());
+        Method mainMethod = schemagenRunner.getDeclaredMethod("main", String[].class);
+        ArrayList<String> newargs = new ArrayList<String>(Arrays.asList(args));
 
         if (options.classpath != null ) {
             newargs.add("-cp");
             newargs.add(options.classpath);
-
-       }
+        }
 
         String[] argsarray = newargs.toArray(new String[newargs.size()]);
-        try {
-            mainMethod.invoke(null,new Object[]{argsarray});
-        } catch (IllegalAccessException e) {
-            throw e;
-        } catch (InvocationTargetException e) {
-            throw e;
-        }
+        mainMethod.invoke(null,new Object[]{argsarray});
+        return 0;
     }
 
 
@@ -83,7 +88,7 @@ public class SchemaGeneratorWrapper  {
      * Returns a class loader that can load classes from JDK tools.jar.
      *
      */
-    private static URL[]  getURLS() throws Exception {
+    private static URL getToolsJar() throws Exception {
 
         File jreHome = new File(System.getProperty("java.home"));
         File toolsJar = new File( jreHome.getParent(), "lib/tools.jar" );
@@ -94,9 +99,7 @@ public class SchemaGeneratorWrapper  {
 
         }
 
-        return new URL[]{toolsJar.toURL()};
-
-
+        return toolsJar.toURL();
     }
 
     private static void usage( ) {
