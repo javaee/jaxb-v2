@@ -126,22 +126,7 @@ abstract class AbstractListField extends AbstractField {
         annotate(ref);
         
         newListObjectExp = newCoreList();
-            
-//        // generate default values
-//        if(defaultValues!=null) {
-//            JInvocation initializer;
-//            JType arrayType = prop.type.array();
-//            // if there are default values, create an array for them.
-//
-//            // [RESULT] static final protected T[] XX_defaultValues = new T[]{...}
-//            $defValues = outline.implClass.field(JMod.STATIC|JMod.FINAL|JMod.PROTECTED,
-//                arrayType,prop.getName()+"_defaultValues",
-//                initializer=JExpr._new(arrayType));
-//
-//            for( int i=0; i<defaultValues.length; i++ )
-//               initializer.arg( defaultValues[i].generateConstant() );
-//        }
-
+        
         return ref;
     }
     
