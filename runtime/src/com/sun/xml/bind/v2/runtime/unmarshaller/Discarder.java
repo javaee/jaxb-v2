@@ -19,7 +19,7 @@
  */
 
 /*
- * @(#)$Id: Discarder.java,v 1.4 2005-09-10 19:07:43 kohsuke Exp $
+ * @(#)$Id: Discarder.java,v 1.5 2005-09-23 17:59:21 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -33,8 +33,8 @@ package com.sun.xml.bind.v2.runtime.unmarshaller;
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-/*package*/ final class Discarder extends Loader {
-    static final Loader INSTANCE = new Discarder();
+public final class Discarder extends Loader {
+    public static final Loader INSTANCE = new Discarder();
 
     private Discarder() {
         super(false);
