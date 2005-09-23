@@ -1,14 +1,14 @@
 package com.sun.tools.jxc.apt;
 
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.List;
-import java.util.ArrayList;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ByteArrayOutputStream;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 /**
+ * {@link ClassLoader} that loads APT and JAXB RI classes so that they can reference each other.
+ *
  * This classloader invoked by the  {@link SchemaGeneratorWrapper} is responsible
  * for masking classes which are loaded by the parent class loader so that the child classloader
  * classes living in different jars are loaded  before the parent class loader 
@@ -34,16 +34,16 @@ public class SchemaGeneratorClassLoader extends URLClassLoader {
         super(urls,parent);
     }
 
-    public Class loadClass (String s) throws ClassNotFoundException {
+    public Class loadClass (String className) throws ClassNotFoundException {
         for( String prefix : packagePrefixes ) {
-            if (s.startsWith(prefix) ) {
-                return findClass(s);
+            if (className.startsWith(prefix) ) {
+                // we need to load those classes in this class loader
+                // without delegation.
+                return findClass(className);
             }
         }
-        return getParent().loadClass(s);
+        return getParent().loadClass(className);
     }
-
-
 
     protected Class findClass(String name) throws ClassNotFoundException {
 
