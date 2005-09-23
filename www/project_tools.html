@@ -1,0 +1,71 @@
+</div>
+<script id="eraser">
+  // hide all default navigation bars
+  
+  // get to the block
+  var div = document.getElementById("eraser").previousSibling;
+  for( n=div; n!=null; n=n.previousSibling ) {
+    if(n.nodeType==1) { // if element
+      if(n.className=="body") { // kill all the link items
+        n.style.display = "none";
+      }
+      if(n.className=="label") { // change the title
+        n.innerHTML = "<strong>JAXB project</strong>";
+      }
+    }
+  }
+  
+  // delete the "get involved" block
+  getInvolved = document.getElementById("communitylinks");
+  getInvolved.parentNode.removeChild(getInvolved);
+</script>
+
+
+
+<div class="body">
+	<div>
+		<a href="/servlets/ProjectHome">Project home</a>
+	</div>
+	<div>
+		<a href="/servlets/ProjectMemberList">Membership</a>
+	</div>
+</div>
+<div class="body">
+	<div>
+		<a href="/servlets/ProjectNewsList">Announcements</a>
+	</div>
+	<div>
+		<a href="http://forums.java.net/jive/forum.jspa?forumID=46&start=0">Discussion forums</a>
+	</div>
+	<div>
+		<a href="/servlets/ProjectMailingListList">Mailing lists</a>
+	</div>
+</div>  
+<div class="body">
+	<div>
+		<a href="/servlets/ProjectDocumentList">Downloads</a>
+	</div>
+	<div>
+		<a href="/source/browse/jaxb/">Version control - CVS</a>
+	</div>
+	<div>
+		<a href="http://fisheye.cenqua.com/java.net/viewrep/jaxb2-sources">FishEye</a>
+	</div>
+</div>
+<div class="body">
+	<div>
+		<a href="/servlets/ProjectIssues">Issue tracker</a>
+	</div>
+	<div>
+	  <form name="ProjectIssuesForm" method="get" action="https://jaxb.dev.java.net/issues/show_bug.cgi">
+	    <input type="submit" value="Go to" /> # <input name="id" size="3" />
+	  </form>
+	</div>
+</div>
+<div class=body>
+	<div>
+	  <a href="https://jaxb.dev.java.net/faq/index.html">FAQ</a>
+	</div>
+	<div>
+	  <a href="http://wiki.java.net/bin/view/Javawsxml/JaxbSI">Wiki</a>
+	</div>
