@@ -85,7 +85,11 @@ public class UntypedListField extends AbstractListField {
      *      for this field.
      */
     protected UntypedListField(ClassOutlineImpl context, CPropertyInfo prop, JClass coreList) {
-        super(context, prop);
+        // the JAXB runtime picks ArrayList if the signature is List,
+        // so don't do eager allocation if it's ArrayList.
+        // otherwise we need to do eager allocation so that the collection type specified by the user
+        // will be used.
+        super(context, prop, !coreList.name().equals("java.util.ArrayList"));
         this.coreList = coreList.narrow(exposedType.boxify());
         generate();
     }

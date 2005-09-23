@@ -78,7 +78,7 @@ final class ArrayField extends AbstractListField {
     private JMethod $getAll;
     
     ArrayField(ClassOutlineImpl context, CPropertyInfo prop) {
-        super(context,prop);
+        super(context,prop,false);
         generate();
     }
     

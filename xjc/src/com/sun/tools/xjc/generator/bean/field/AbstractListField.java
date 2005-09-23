@@ -92,12 +92,22 @@ abstract class AbstractListField extends AbstractField {
 
     protected final JClass listT = codeModel.ref(List.class).narrow(exposedType.boxify());
 
-    
+    /**
+     * True to create a new instance of List eagerly in the constructor.
+     * False otherwise.
+     *
+     * <p>
+     * Setting it to true makes the generated code slower (as more list instances need to be
+     * allocated), but it works correctly if the user specifies the custom type of a list.
+     */
+    private final boolean eagerInstanciation;
+
     /**
      * Call {@link #generate()} method right after this.
      */
-    protected AbstractListField(ClassOutlineImpl outline, CPropertyInfo prop) {
+    protected AbstractListField(ClassOutlineImpl outline, CPropertyInfo prop, boolean eagerInstanciation) {
         super(outline,prop);
+        this.eagerInstanciation = eagerInstanciation;
 
         if( implType instanceof JPrimitiveType ) {
             // primitive types don't have this tricky distinction
@@ -112,8 +122,10 @@ abstract class AbstractListField extends AbstractField {
         field=generateField();
         
         internalGetter = outline.implClass.method(JMod.PROTECTED,listT,"_get"+prop.getName(true));
-        internalGetter.body()._if(field.eq(JExpr._null()))._then()
-            .assign(field,lazyInitializer);
+        if(!eagerInstanciation) {
+            internalGetter.body()._if(field.eq(JExpr._null()))._then()
+                .assign(field,lazyInitializer);
+        }
         internalGetter.body()._return(field);
         
         // generate the rest of accessors
@@ -122,11 +134,14 @@ abstract class AbstractListField extends AbstractField {
     private JFieldVar generateField() {
         // for the collectionType customization to take effect, the field needs to be strongly typed,
         // not just List<Foo>.
-        JFieldVar ref = outline.implClass.field( JMod.PROTECTED, getCoreListType(), prop.getName(false) );
+        JFieldVar ref = outline.implClass.field( JMod.PROTECTED, listT, prop.getName(false) );
         annotate(ref);
-        
-        newListObjectExp = newCoreList();
-        
+
+        if(eagerInstanciation)
+            ref.init(newCoreList());
+        else
+            newListObjectExp = newCoreList();
+
         return ref;
     }
     
