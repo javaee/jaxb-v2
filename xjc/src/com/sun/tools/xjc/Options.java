@@ -36,11 +36,11 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.sun.org.apache.xml.internal.resolver.CatalogManager;
+import com.sun.org.apache.xml.internal.resolver.tools.CatalogResolver;
 import com.sun.tools.xjc.api.ClassNameAllocator;
 import com.sun.tools.xjc.reader.Util;
 
-import org.apache.xml.resolver.CatalogManager;
-import org.apache.xml.resolver.tools.CatalogResolver;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
