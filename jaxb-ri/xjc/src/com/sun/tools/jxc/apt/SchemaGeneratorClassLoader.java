@@ -47,7 +47,7 @@ public class SchemaGeneratorClassLoader extends URLClassLoader {
 
     protected Class findClass(String name) throws ClassNotFoundException {
 
-        StringBuffer sb = new StringBuffer(name.length() + 6);
+        StringBuilder sb = new StringBuilder(name.length() + 6);
         sb.append(name.replace('.','/')).append(".class");
 
         InputStream is = getResourceAsStream(sb.toString());
