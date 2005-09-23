@@ -62,27 +62,27 @@
     <target name="jar"
             depends="compile"
             description="create codemodel.jar and source zip">
-        <jar destfile="${codemodel.root}/build/codemodel.jar">
+        <jar destfile="${codemodel.build}/codemodel.jar">
             <fileset dir="${codemodel.classes}" includes="**/*.class" />
             <fileset dir="${codemodel.src}" includes="**/*.properties" />
         </jar>
-        <zip destfile="${codemodel.root}/build/codemodel-src.zip">
+        <zip destfile="${codemodel.build}/codemodel-src.zip">
             <fileset dir="${codemodel.src}" />
         </zip>
     </target>
     
     <target name="annotation-compiler" depends="jar"
             description="build annotation compiler">
-        <mkdir dir="${codemodel.root}/build/ac-classes"/>
-        <javac srcdir="${codemodel.root}/annotation-compiler" destdir="${codemodel.root}/build/ac-classes"
+        <mkdir dir="${codemodel.build}/ac-classes"/>
+        <javac srcdir="${codemodel.root}/annotation-compiler" destdir="${codemodel.build}/ac-classes"
             debug="true" optimize="true">
             <classpath>
                 <pathelement path="${codemodel.classes}"/>
                 <fileset dir="${jaxb.libs.redist}" includes="ant.jar"/>
             </classpath>
         </javac>
-        <jar destfile="${codemodel.root}/build/codemodel-annotation-compiler.jar">
-            <fileset dir="${codemodel.root}/build/ac-classes"/>
+        <jar destfile="${codemodel.build}/codemodel-annotation-compiler.jar">
+            <fileset dir="${codemodel.build}/ac-classes"/>
             <manifest>
               <attribute name="Class-Path" value="codemodel.jar"/>
             </manifest>
