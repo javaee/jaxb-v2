@@ -79,8 +79,7 @@ public class SchemaGeneratorWrapper  {
         }
 
         String[] argsarray = newargs.toArray(new String[newargs.size()]);
-        mainMethod.invoke(null,new Object[]{argsarray});
-        return 0;
+        return (Integer)mainMethod.invoke(null,new Object[]{argsarray});
     }
 
 
