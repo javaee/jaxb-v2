@@ -26,4 +26,10 @@ public interface TypeAndAnnotation {
      * at the point of reference.
      */
     void annotate( JAnnotatable programElement );
+
+    /**
+     * Two {@link TypeAndAnnotation} are equal if they
+     * has the same type and annotations.
+     */
+    boolean equals(Object o);
 }
