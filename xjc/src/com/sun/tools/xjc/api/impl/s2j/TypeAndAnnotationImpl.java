@@ -66,4 +66,14 @@ final class TypeAndAnnotationImpl implements TypeAndAnnotation {
         builder.append(getTypeClass());
         return builder.toString();
     }
+
+    public boolean equals(Object o) {
+        if (!(o instanceof TypeAndAnnotationImpl)) return false;
+        TypeAndAnnotationImpl that = (TypeAndAnnotationImpl) o;
+        return this.typeUse==that.typeUse;
+    }
+
+    public int hashCode() {
+        return typeUse.hashCode();
+    }
 }
