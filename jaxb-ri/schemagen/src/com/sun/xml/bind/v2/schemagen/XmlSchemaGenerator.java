@@ -863,6 +863,11 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                         occurs = compositor;
                     }
                 }
+            } else {
+                if (ep.getTypes().size() > 1) {
+                    compositor = compositor.choice();
+                    occurs = compositor;
+                }
             }
 
 
