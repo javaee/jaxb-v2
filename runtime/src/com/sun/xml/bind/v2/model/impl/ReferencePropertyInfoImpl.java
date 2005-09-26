@@ -19,31 +19,34 @@ import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.ReferencePropertyInfo;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
+import com.sun.xml.bind.v2.model.core.RegistryInfo;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 
 /**
+ * Implementation of {@link ReferencePropertyInfo}.
+ *
  * @author Kohsuke Kawaguchi
  */
-class ReferencePropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
-    extends ERPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
-    implements ReferencePropertyInfo<TypeT,ClassDeclT>
+class ReferencePropertyInfoImpl<T,C,F,M>
+    extends ERPropertyInfoImpl<T,C,F,M>
+    implements ReferencePropertyInfo<T,C>
 {
     /**
      * Lazily computed.
      * @see #getElements()
      */
-    private Set<Element<TypeT,ClassDeclT>> types;
+    private Set<Element<T,C>> types;
 
     private final boolean isMixed;
 
     private final WildcardMode wildcard;
-    private final ClassDeclT domHandler;
+    private final C domHandler;
 
 
     public ReferencePropertyInfoImpl(
-        ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> classInfo,
-        PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> seed) {
+        ClassInfoImpl<T,C,F,M> classInfo,
+        PropertySeed<T,C,F,M> seed) {
 
         super(classInfo, seed);
 
@@ -59,7 +62,7 @@ class ReferencePropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         }
     }
 
-    public Set<? extends Element<TypeT,ClassDeclT>> ref() {
+    public Set<? extends Element<T,C>> ref() {
         return getElements();
     }
 
@@ -67,19 +70,22 @@ class ReferencePropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         return PropertyKind.REFERENCE;
     }
 
-    public Set<? extends Element<TypeT,ClassDeclT>> getElements() {
+    public Set<? extends Element<T,C>> getElements() {
         if(types==null)
-            calcTypes();
+            calcTypes(false);
         assert types!=null;
         return types;
     }
 
     /**
      * Compute {@link #types}.
+     *
+     * @param last
+     *      if true, every {@link XmlElementRef} must yield at least one type.
      */
-    private void calcTypes() {
+    private void calcTypes(boolean last) {
         XmlElementRef[] ann;
-        types = new LinkedHashSet<Element<TypeT,ClassDeclT>>();
+        types = new LinkedHashSet<Element<T,C>>();
         XmlElementRefs refs = seed.readAnnotation(XmlElementRefs.class);
         XmlElementRef ref = seed.readAnnotation(XmlElementRef.class);
 
@@ -101,67 +107,113 @@ class ReferencePropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         }
 
         if(ann!=null) {
-            Navigator<TypeT,ClassDeclT,FieldT,MethodT> nav = nav();
-            AnnotationReader<TypeT,ClassDeclT,FieldT,MethodT> reader = reader();
+            Navigator<T,C,F,M> nav = nav();
+            AnnotationReader<T,C,F,M> reader = reader();
 
-            final TypeT defaultType = nav.ref(XmlElementRef.DEFAULT.class);
-            final ClassDeclT je = nav.asDecl(JAXBElement.class);
+            final T defaultType = nav.ref(XmlElementRef.DEFAULT.class);
+            final C je = nav.asDecl(JAXBElement.class);
 
             for( XmlElementRef r : ann ) {
-                TypeT type = reader.getClassValue(r,"type");
+                boolean yield;
+                T type = reader.getClassValue(r,"type");
                 if( type.equals(defaultType) ) type = nav.erasure(getIndividualType());
                 if(nav.getBaseClass(type,je)!=null)
-                    addGenericElement(r);
+                    yield = addGenericElement(r);
                 else
-                    addAllSubtypes(type);
+                    yield = addAllSubtypes(type);
+
+                if(last && !yield) {
+                    // a reference didn't produce any type.
+                    // diagnose the problem
+                    if(type.equals(nav.ref(JAXBElement.class))) {
+                        // no XmlElementDecl
+                        String packageName = nav.getPackageName(parent.clazz);
+                        RegistryInfo<T,C> reg = parent.builder.getRegistry(packageName);
+                        if(reg!=null) {
+                            parent.builder.reportError(new IllegalAnnotationException(
+                                Messages.NO_XML_ELEMENT_DECL.format(
+                                    nav().getClassName(reg.getClazz()),
+                                    r.name()),
+                                this
+                            ));
+                        } else {
+                            parent.builder.reportError(new IllegalAnnotationException(
+                                Messages.NO_REGISTRY_CLASS.format(packageName),
+                                this
+                            ));
+                        }
+                    } else {
+                        parent.builder.reportError(new IllegalAnnotationException(
+                            Messages.INVALID_XML_ELEMENT_REF.format(),this));
+                    }
+
+                    // reporting one error would do.
+                    // often the element ref field is using @XmlElementRefs
+                    // to point to multiple JAXBElements.
+                    // reporting one error for each @XmlElemetnRef is thus often redundant. 
+                    return;
+                }
             }
         }
 
         types = Collections.unmodifiableSet(types);
     }
 
-    private void addGenericElement(XmlElementRef r) {
+    /**
+     * @return
+     *      true if the reference yields at least one type
+     */
+    private boolean addGenericElement(XmlElementRef r) {
         String nsUri = r.namespace();
         if(nsUri.length()==0)
             nsUri = parent.builder.defaultNsUri;
         // TODO: check spec. defaulting of localName.
-        addGenericElement(parent.owner.getElementInfo(parent.getClazz(),new QName(nsUri,r.name())));
+        return addGenericElement(parent.owner.getElementInfo(parent.getClazz(),new QName(nsUri,r.name())));
     }
 
-    private void addGenericElement(ElementInfo<TypeT,ClassDeclT> ei) {
+    private boolean addGenericElement(ElementInfo<T,C> ei) {
         if(ei==null)
-            // this can happen when we don't have the whole TypeInfos.
-            // TODO: it is an error if this condition holds during the link phase
-            return;
+            return false;
         types.add(ei);
-        for( ElementInfo<TypeT,ClassDeclT> subst : ei.getSubstitutionMembers() )
+        for( ElementInfo<T,C> subst : ei.getSubstitutionMembers() )
             addGenericElement(subst);
+        return true;
     }
 
-    private void addAllSubtypes(TypeT type) {
-        Navigator<TypeT,ClassDeclT,FieldT,MethodT> nav = nav();
+    private boolean addAllSubtypes(T type) {
+        Navigator<T,C,F,M> nav = nav();
 
         // this allows the explicitly referenced type to be sucked in to the model
-        NonElement<TypeT,ClassDeclT> t = parent.builder.getClassInfo(nav.asDecl(type),this);
+        NonElement<T,C> t = parent.builder.getClassInfo(nav.asDecl(type),this);
         if(!(t instanceof ClassInfo))
             // this is leaf.
-            return;
+            return false;
 
-        ClassInfo<TypeT,ClassDeclT> c = (ClassInfo<TypeT,ClassDeclT>) t;
-        if(c!=null && c.isElement())
+        boolean result = false;
+
+        ClassInfo<T,C> c = (ClassInfo<T,C>) t;
+        if(c!=null && c.isElement()) {
             types.add(c.asElement());
+            result = true;
+        }
 
         // look for other possible types
-        for( ClassInfo<TypeT,ClassDeclT> ci : parent.owner.beans().values() ) {
-            if(ci.isElement() && nav.isSubClassOf(ci.getType(),type))
+        for( ClassInfo<T,C> ci : parent.owner.beans().values() ) {
+            if(ci.isElement() && nav.isSubClassOf(ci.getType(),type)) {
                 types.add(ci.asElement());
+                result = true;
+            }
         }
 
         // don't allow local elements to substitute.
-        for( ElementInfo<TypeT,ClassDeclT> ei : parent.owner.getElementMappings(null).values()) {
-            if(nav.isSubClassOf(ei.getType(),type))
+        for( ElementInfo<T,C> ei : parent.owner.getElementMappings(null).values()) {
+            if(nav.isSubClassOf(ei.getType(),type)) {
                 types.add(ei);
+                result = true;
+            }
         }
+
+        return result;
     }
 
 
@@ -171,7 +223,7 @@ class ReferencePropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         // until we get the whole thing into TypeInfoSet,
         // we never really know what are all the possible types that can be assigned on this field.
         // so recompute this value when we have all the information.
-        calcTypes();
+        calcTypes(true);
 
     }
 
@@ -184,7 +236,7 @@ class ReferencePropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         return wildcard;
     }
 
-    public final ClassDeclT getDOMHandler() {
+    public final C getDOMHandler() {
         return domHandler;
     }
 }
