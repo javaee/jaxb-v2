@@ -67,4 +67,4 @@ then
 fi
 
 
-exec "$APT" $APT_OPTS $XJC_OPTS -factorypath "$JAXB_HOME"/dist/lib/jaxb-xjc.jar -factory com.sun.tools.jxc.apt.SchemaGenerator -nocompile "$@"
+exec "$APT" $APT_OPTS $XJC_OPTS -factorypath "$JAXB_HOME"/dist/lib/jaxb-xjc.jar -factory com.sun.tools.jxc.SchemaGeneratorFacade -nocompile "$@"

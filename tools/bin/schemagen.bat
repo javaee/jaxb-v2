@@ -59,7 +59,7 @@ if not "%XJC_OPTS%" == "" goto LAUNCHSCHEMAGENWITHOPTS
 goto END
 
 :LAUNCHSCHEMAGENWITHOPTS
-%JAVA% %XJC_OPTS% -cp %LOCALCLASSPATH% com.sun.tools.jxc.apt.SchemaGeneratorWrapper %*
+%JAVA% %XJC_OPTS% -cp %LOCALCLASSPATH% com.sun.tools.jxc.SchemaGeneratorFacade %*
 goto END
 
 

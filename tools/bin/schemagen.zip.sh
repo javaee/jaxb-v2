@@ -55,4 +55,4 @@ else
     APT=apt
 fi
  
-$APT $XJC_OPTS -cp "$CLASSPATH" -factorypath $WEBSERVICES_LIB/jaxb/lib/jaxb-xjc.jar -factory com.sun.tools.jxc.apt.SchemaGenerator -nocompile "$@"
+$APT $XJC_OPTS -cp "$CLASSPATH" -factorypath $WEBSERVICES_LIB/jaxb/lib/jaxb-xjc.jar -factory com.sun.tools.jxc.SchemaGeneratorFacade -nocompile "$@"
