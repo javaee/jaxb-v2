@@ -2,8 +2,6 @@ package com.sun.xml.bind.v2.model.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
@@ -15,11 +13,11 @@ import com.sun.xml.bind.v2.model.core.ErrorHandler;
 import com.sun.xml.bind.v2.model.core.LeafInfo;
 import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
+import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.Ref;
 import com.sun.xml.bind.v2.model.core.RegistryInfo;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.model.core.TypeInfoSet;
-import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 
@@ -70,7 +68,7 @@ public class ModelBuilder<T,C,F,M> {
     /**
      * Packages whose registries are already added.
      */
-    private final Set<String> registries = new HashSet<String>();
+    private final Map<String,RegistryInfoImpl> registries = new HashMap<String,RegistryInfoImpl>();
 
     /**
      * @see #setErrorHandler
@@ -130,7 +128,7 @@ public class ModelBuilder<T,C,F,M> {
                 if(p.kind()== PropertyKind.REFERENCE) {
                     // make sure that we have a registry for this package
                     String pkg = nav.getPackageName(ci.getClazz());
-                    if(registries.add(pkg)) {
+                    if(!registries.containsKey(pkg)) {
                         // insert the package's object factory
                         C c = nav.findClass(pkg + ".ObjectFactory",ci.getClazz());
                         if(c!=null)
@@ -199,7 +197,7 @@ public class ModelBuilder<T,C,F,M> {
         assert !ref.valueList;
         C c = nav.asDecl(ref.type);
         if(c!=null && reader.getClassAnnotation(XmlRegistry.class,c,null/*TODO: is this right?*/)!=null) {
-            if(registries.add(nav.getPackageName(c)))
+            if(!registries.containsKey(nav.getPackageName(c)))
                 addRegistry(c,null);
             return null;    // TODO: is this correct?
         } else
@@ -231,7 +229,21 @@ public class ModelBuilder<T,C,F,M> {
      * in it.
      */
     public RegistryInfo<T,C> addRegistry(C registryClass, Locatable upstream ) {
-        return new RegistryInfoImpl<T,C,F,M>(this,upstream,registryClass);
+        RegistryInfoImpl<T,C,F,M> r = new RegistryInfoImpl<T,C,F,M>(this,upstream,registryClass);
+        registries.put(r.getPackageName(),r);
+        return r;
+    }
+
+    /**
+     * Gets a {@link RegistryInfo} for the given package.
+     *
+     * @return
+     *      null if no registry exists for the package.
+     *      unlike other getXXX methods on this class,
+     *      this method is side-effect free.
+     */
+    public RegistryInfo<T,C> getRegistry(String packageName) {
+        return registries.get(packageName);
     }
 
     private boolean linked;

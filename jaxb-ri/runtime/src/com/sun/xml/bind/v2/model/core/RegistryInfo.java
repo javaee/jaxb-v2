@@ -19,4 +19,9 @@ public interface RegistryInfo<T,C> {
      * Returns all the references to other types in this registry.
      */
     Set<TypeInfo<T,C>> getReferences();
+
+    /**
+     * Returns the class with {@link XmlRegistry}.
+     */
+    C getClazz();
 }

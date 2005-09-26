@@ -81,4 +81,15 @@ final class RegistryInfoImpl<T,C,F,M> implements Locatable, RegistryInfo<T,C> {
     public Set<TypeInfo<T,C>> getReferences() {
         return references;
     }
+
+    /**
+     * Gets the name of the package that this registry governs.
+     */
+    public String getPackageName() {
+        return nav.getPackageName(registryClass);
+    }
+
+    public C getClazz() {
+        return registryClass;
+    }
 }
