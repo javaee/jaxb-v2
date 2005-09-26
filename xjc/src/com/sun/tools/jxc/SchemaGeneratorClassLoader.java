@@ -42,11 +42,9 @@ final class SchemaGeneratorClassLoader extends URLClassLoader {
                 return findClass(className);
             }
         }
-        if (getParent()!=null) {
-           return getParent().loadClass(className);
-        } else {
-           return super.loadClass(className);
-        }
+
+        return super.loadClass(className);
+
     }
 
     protected Class findClass(String name) throws ClassNotFoundException {
