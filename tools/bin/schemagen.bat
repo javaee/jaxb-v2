@@ -46,20 +46,20 @@ goto SETCLASSPATH
 
 :SETCLASSPATH
 if "%CLASSPATH%" == "" goto NOUSERCLASSPATH
-set LOCALCLASSPATH=%JAXB_HOME%\lib\jaxb-api.jar;%JAXB_HOME%\lib\jaxb-xjc.jar;%JAVA_HOME%/lib/tools.jar;%CLASSPATH%
+set LOCALCLASSPATH=%JAXB_HOME%\lib\jaxb-xjc.jar;%CLASSPATH%
 goto LAUNCHSCHEMAGEN
 
 :NOUSERCLASSPATH
-set LOCALCLASSPATH=%JAXB_HOME%\lib\jaxb-api.jar;%JAXB_HOME%\lib\jaxb-xjc.jar;%JAVA_HOME%/lib/tools.jar
+set LOCALCLASSPATH=%JAXB_HOME%\lib\jaxb-xjc.jar
 goto LAUNCHSCHEMAGEN
 
 :LAUNCHSCHEMAGEN
 if not "%XJC_OPTS%" == "" goto LAUNCHSCHEMAGENWITHOPTS
-%JAVA%  -cp %LOCALCLASSPATH% com.sun.tools.jxc.apt.SchemaGeneratorWrapper %*
+%JAVA% -cp %LOCALCLASSPATH% com.sun.tools.jxc.SchemaGeneratorFacade %*
 goto END
 
 :LAUNCHSCHEMAGENWITHOPTS
-%JAVA% %XJC_OPTS% -cp %LOCALCLASSPATH% com.sun.tools.jxc.SchemaGeneratorFacade %*
+%JAVA% %SCHEMAGEN_OPTS% -cp %LOCALCLASSPATH% com.sun.tools.jxc.SchemaGeneratorFacade %*
 goto END
 
 
