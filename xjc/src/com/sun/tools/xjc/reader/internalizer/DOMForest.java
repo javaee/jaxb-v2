@@ -360,9 +360,15 @@ public final class DOMForest {
             reader.parse(inputSource);
         } catch( ParserConfigurationException e ) {
             // in practice, this exception won't happen.
-            e.printStackTrace();
+            errorReceiver.error(e.getMessage(),e);
+            core.remove(systemId);
+            rootDocuments.remove(systemId);
+            return null;
         } catch( IOException e ) {
             errorReceiver.error(e.getMessage(),e);
+            core.remove(systemId);
+            rootDocuments.remove(systemId);
+            return null;
         }
         
         return dom;

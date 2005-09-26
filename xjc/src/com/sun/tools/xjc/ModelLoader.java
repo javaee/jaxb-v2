@@ -296,7 +296,9 @@ public final class ModelLoader {
         
         // parse external binding files
         for (InputSource value : opt.getBindFiles()) {
-            Element root = forest.parse(value, true).getDocumentElement();
+            Document dom = forest.parse(value, true);
+            if(dom==null)       continue;   // error must have been reported
+            Element root = dom.getDocumentElement();
             // TODO: it somehow doesn't feel right to do a validation in the Driver class.
             // think about moving it to somewhere else.
             if (!root.getNamespaceURI().equals(Const.JAXB_NSURI)
