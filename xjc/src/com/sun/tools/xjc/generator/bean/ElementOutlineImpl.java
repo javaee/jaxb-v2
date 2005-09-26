@@ -32,12 +32,13 @@ final class ElementOutlineImpl extends ElementOutline {
               parent.getClassFactory().createClass(
                       parent.getContainer( ei.parent, Aspect.EXPOSED ), ei.shortName(), ei.getLocator() ));
         this.parent = parent;
+        parent.elements.put(ei,this);
 
         JCodeModel cm = parent.getCodeModel();
 
         implClass._extends(
             cm.ref(JAXBElement.class).narrow(
-                ei.getContentInMemoryType().toType(parent,Aspect.EXPOSED).boxify()));
+                target.getContentInMemoryType().toType(parent,Aspect.EXPOSED).boxify()));
 
         if(ei.hasClass()) {
             JType implType = ei.getContentInMemoryType().toType(parent,Aspect.IMPLEMENTATION);
