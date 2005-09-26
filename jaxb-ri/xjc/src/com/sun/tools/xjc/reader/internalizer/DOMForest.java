@@ -332,7 +332,13 @@ public final class DOMForest {
         
         return x;
    }
-    
+
+    /**
+     * Parses the given document and add it to the DOM forest.
+     *
+     * @return
+     *      null if there was a parse error. otherwise non-null.
+     */
     public Document parse( String systemId, InputSource inputSource, boolean root ) throws SAXException {
         Document dom = documentBuilder.newDocument();
 
