@@ -1,34 +1,34 @@
-package com.sun.tools.jxc.apt;
+package com.sun.tools.jxc;
 
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.net.URL;
+import java.io.File;
 
+import com.sun.tools.jxc.apt.*;
 import com.sun.tools.xjc.BadCommandLineException;
+import com.sun.mirror.apt.AnnotationProcessorFactory;
 
 /**
- * Wrapper class that will invoke the  {@link SchemaGeneratorRunner} and should
- * be called by the schemagen scripts
- * It checks for existence of tools.jar and sets the
- * {@link SchemaGeneratorClassLoader}
- *
+ * CLI entry-point to the schema generator.
  *
  * @author Bhakti Mehta
  */
-public class SchemaGeneratorWrapper  {
-
+public class SchemaGenerator {
     /**
      * Runs the schema generator.
      */
-    public static void main (String[] args) throws Exception {
-        ClassLoader cl = SchemaGeneratorWrapper.class.getClassLoader();
-
-        SchemaGeneratorClassLoader classLoader = new SchemaGeneratorClassLoader(cl,getToolsJar());
-
-        System.exit(run(args, classLoader));
+    public static void main(String[] args) throws Exception {
+        try {
+            ClassLoader cl = SchemaGenerator.class.getClassLoader();
+            ClassLoader classLoader = new SchemaGeneratorClassLoader(cl,getToolsJar());
+            System.exit(run(args, classLoader));
+        } catch (UnsupportedClassVersionError e) {
+            System.err.println("schemagen requires JDK 5.0 or later. Please download it from http://java.sun.com/j2se/1.5/");
+        }
     }
 
     /**
@@ -56,7 +56,6 @@ public class SchemaGeneratorWrapper  {
             }
 
             try {
-
                 options.parseArguments(args);
             } catch (BadCommandLineException e) {
                 // there was an error in the command line.
@@ -69,9 +68,9 @@ public class SchemaGeneratorWrapper  {
         }
 
 
-        Class schemagenRunner = classLoader.loadClass(SchemaGeneratorRunner.class.getName());
-        Method mainMethod = schemagenRunner.getDeclaredMethod("main", String[].class);
-        ArrayList<String> newargs = new ArrayList<String>(Arrays.asList(args));
+        Class schemagenRunner = classLoader.loadClass(Runner.class.getName());
+        Method mainMethod = schemagenRunner.getDeclaredMethod("main",String[].class);
+        List<String> newargs = new ArrayList<String>(Arrays.asList(args));
 
         if (options.classpath != null ) {
             newargs.add("-cp");
@@ -79,7 +78,7 @@ public class SchemaGeneratorWrapper  {
         }
 
         String[] argsarray = newargs.toArray(new String[newargs.size()]);
-        return (Integer)mainMethod.invoke(null,new Object[]{argsarray});
+        return ((Integer)mainMethod.invoke(null,new Object[]{argsarray}));
     }
 
 
@@ -95,7 +94,6 @@ public class SchemaGeneratorWrapper  {
         if (!toolsJar.exists()) {
             throw new RuntimeException("Unable to locate tools.jar. "
                     + "Expected to find it in " + toolsJar.getPath());
-
         }
 
         return toolsJar.toURL();
@@ -105,9 +103,14 @@ public class SchemaGeneratorWrapper  {
         System.out.println(Messages.USAGE.format());
     }
 
+    public static final class Runner {
+        public static int main(String[] args) throws Exception {
+            ClassLoader cl = Runner.class.getClassLoader();
+            Class apt = cl.loadClass("com.sun.tools.apt.Main");
+            Method processMethod = apt.getMethod("process",
+                    new Class[]{AnnotationProcessorFactory.class, String[].class});
 
+            return (Integer) processMethod.invoke(null, new com.sun.tools.jxc.apt.SchemaGenerator(), args);
+        }
+    }
 }
-
-
-
-

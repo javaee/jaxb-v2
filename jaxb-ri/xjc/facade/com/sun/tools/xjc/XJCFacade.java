@@ -63,7 +63,4 @@ public class XJCFacade {
         // than in here.
         return "2.0";
     }
-
-
-
 }

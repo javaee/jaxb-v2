@@ -14,7 +14,6 @@ enum Messages {
     NO_FILE_SPECIFIED, // 0 args
     NO_CLASSPATH_SPECIFIED, // 0 args
     UNRECOGNIZED_PARAMETER, //1 arg
-    USAGE, //0 args
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getPackage().getName() +".MessageBundle");
