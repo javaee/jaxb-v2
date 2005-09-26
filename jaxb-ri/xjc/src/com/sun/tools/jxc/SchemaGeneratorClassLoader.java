@@ -9,7 +9,7 @@ import java.net.URLClassLoader;
 /**
  * {@link ClassLoader} that loads APT and JAXB RI classes so that they can reference each other.
  *
- * This classloader invoked by the  {@link SchemaGeneratorWrapper} is responsible
+ * This classloader invoked by the  {@link SchemaGenerator} is responsible
  * for masking classes which are loaded by the parent class loader so that the child classloader
  * classes living in different jars are loaded  before the parent class loader 
  * loads classes
@@ -42,7 +42,11 @@ final class SchemaGeneratorClassLoader extends URLClassLoader {
                 return findClass(className);
             }
         }
-        return getParent().loadClass(className);
+        if (getParent()!=null) {
+           return getParent().loadClass(className);
+        } else {
+           return super.loadClass(className);
+        }
     }
 
     protected Class findClass(String name) throws ClassNotFoundException {
