@@ -155,6 +155,17 @@ public final class JCodeModel {
     }
 
     /**
+     * Creates a dummy, unknown {@link JClass} that represents a given name.
+     *
+     * <p>
+     * This method is useful when the code generation needs to include the user-specified
+     * class that may or may not exist, and only thing known about it is a class name.
+     */
+    public JClass directClass(String name) {
+        return new JDirectClass(this,name);
+    }
+
+    /**
      * Creates a new generated class.
      *
      * @exception JClassAlreadyExistsException
@@ -317,23 +328,17 @@ public final class JCodeModel {
             // try the context class loader first
             return ref(Thread.currentThread().getContextClassLoader().loadClass(fullyQualifiedClassName));
         } catch (ClassNotFoundException e) {
-            ;
+            // fall through
         }
         // then the default mechanism.
         try {
             return ref(Class.forName(fullyQualifiedClassName));
         } catch (ClassNotFoundException e1) {
-            ;
+            // fall through
         }
 
         // assume it's not visible to us.
-        try {
-            JDefinedClass cls = _class(fullyQualifiedClassName);
-            cls.hide();
-            return cls;
-        } catch (JClassAlreadyExistsException e) {
-            return e.getExistingClass();
-        }
+        return new JDirectClass(this,fullyQualifiedClassName);
     }
 
     /**
