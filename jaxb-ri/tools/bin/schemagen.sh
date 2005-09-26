@@ -84,4 +84,4 @@ then
 fi
 
 
-exec "$JAVA"  $XJC_OPTS -cp "$LOCALCLASSPATH" com.sun.tools.jxc.apt.SchemaGeneratorWrapper "$@"
+exec "$JAVA"  $XJC_OPTS -cp "$LOCALCLASSPATH" com.sun.tools.jxc.SchemaGeneratorFacade "$@"

@@ -51,7 +51,7 @@ set APT=%JAVA_HOME%\bin\apt
 goto LAUNCHSCHEMAGEN
 
 :LAUNCHSCHEMAGEN
-"%APT%" %XJC_OPTS% -cp "%CLASSPATH%" -factorypath %WEBSERVICES_LIB%\jaxb\lib\jaxb-xjc.jar -factory com.sun.tools.jxc.apt.SchemaGenerator -nocompile %*
+"%APT%" %XJC_OPTS% -cp "%CLASSPATH%" -factorypath %WEBSERVICES_LIB%\jaxb\lib\jaxb-xjc.jar -factory com.sun.tools.jxc.SchemaGeneratorFacade -nocompile %*
 goto END
 
 :END
