@@ -36,14 +36,15 @@ import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.NOT_RE
  *
  * @author Kohsuke Kawaguchi
  */
-public final class CElementInfo extends AbstractCTypeInfoImpl implements ElementInfo<NType,NClass>, CElement, CTypeInfo, NType {
+public final class CElementInfo extends AbstractCTypeInfoImpl
+    implements ElementInfo<NType,NClass>, CElement, CTypeInfo, NType, CClassInfoParent {
 
     private final QName tagName;
 
     /**
      * Represents {@code JAXBElement&lt;ContentType>}.
      */
-    private final NType type;
+    private NType type;
 
     /**
      * If this element produces its own class, the short name of that class.
@@ -81,23 +82,47 @@ public final class CElementInfo extends AbstractCTypeInfoImpl implements Element
      */
     private final Model model;
 
-    private final CElementPropertyInfo property;
-
-//    /**
-//     * Creates an element in the given package.
-//     */
-//    public CElementInfo(Model model,QName tagName, JPackage _package, TypeUse contentType, String defaultValue, XSComponent source, CCustomizations customizations, Locator location ) {
-//        this(model,tagName,model.getPackage(_package),contentType,defaultValue, source, customizations, location);
-//    }
+    private CElementPropertyInfo property;
 
     /**
      * Creates an element in the given parent.
+     *
+     * <p>
+     * When using this construction, {@link #initContentType(TypeUse, XSComponent, XmlString)}
+     * must not be invoked.
      */
     public CElementInfo(Model model,QName tagName, CClassInfoParent parent, TypeUse contentType, XmlString defaultValue, XSComponent source, CCustomizations customizations, Locator location ) {
         super(model,source,customizations);
         this.tagName = tagName;
         this.model = model;
         this.parent = parent;
+        this.location = location;
+        if(contentType!=null)
+            initContentType(contentType, source, defaultValue);
+
+        model.add(this);
+    }
+
+    /**
+     * Creates an element with a class in the given parent.
+     *
+     * <p>
+     * When using this construction, the caller must use
+     * {@link #initContentType(TypeUse, XSComponent, XmlString)} to fill in the content type
+     * later.
+     *
+     * This is to avoid a circular model construction dependency between buidling a type
+     * inside an element and element itself. To build a content type, you need to have
+     * {@link CElementInfo} for a parent, so we can't take it as a constructor parameter.
+     */
+    public CElementInfo(Model model,QName tagName, CClassInfoParent parent, String className, CCustomizations customizations, Locator location ) {
+        this(model,tagName,parent,null,null,null,customizations,location);
+        this.className = className;
+    }
+
+    public void initContentType(TypeUse contentType, XSComponent source, XmlString defaultValue) {
+        assert this.property==null; // must not be called twice
+
         this.property = new CElementPropertyInfo("Value",
                 contentType.isCollection()?REPEATED_VALUE:NOT_REPEATED,
                 contentType.idUse(),
@@ -108,17 +133,6 @@ public final class CElementInfo extends AbstractCTypeInfoImpl implements Element
         this.type = NavigatorImpl.createParameterizedType(
             NavigatorImpl.theInstance.ref(JAXBElement.class),
             getContentInMemoryType() );
-        this.location = location;
-
-        model.add(this);
-    }
-
-    /**
-     * Creates an element with a class in the given parent.
-     */
-    public CElementInfo(Model model,QName tagName, CClassInfoParent parent, String className, TypeUse contentType, XmlString defaultValue, XSComponent source, CCustomizations customizations, Locator location ) {
-        this(model,tagName,parent,contentType,defaultValue,source,customizations,location);
-        this.className = className;
     }
 
     public final String getDefaultValue() {
@@ -230,6 +244,14 @@ public final class CElementInfo extends AbstractCTypeInfoImpl implements Element
             if(r.length()==0)   return className;
             else                return r+'.'+className;
         }
+    }
+
+    public <T> T accept(Visitor<T> visitor) {
+        return visitor.onElement(this);
+    }
+
+    public JPackage getOwnerPackage() {
+        return parent.getOwnerPackage();
     }
 
     public String shortName() {

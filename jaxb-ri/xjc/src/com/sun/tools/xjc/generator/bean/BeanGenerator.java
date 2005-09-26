@@ -127,7 +127,7 @@ public final class BeanGenerator implements Outline
     /**
      * elements that generate classes to the generated classes.
      */
-    private final Map<CElementInfo,ElementOutlineImpl> elements = new HashMap<CElementInfo,ElementOutlineImpl>();
+    /*package*/ final Map<CElementInfo,ElementOutlineImpl> elements = new HashMap<CElementInfo,ElementOutlineImpl>();
 
 
 
@@ -291,6 +291,11 @@ public final class BeanGenerator implements Outline
             return getClazz(bean).ref;
         }
 
+        public JClassContainer onElement(CElementInfo element) {
+            // hmm...
+            return getElement(element).implClass;
+        }
+
         public JClassContainer onPackage(JPackage pkg) {
             return model.strategy.getPackage(pkg,Aspect.EXPOSED);
         }
@@ -300,6 +305,10 @@ public final class BeanGenerator implements Outline
         new CClassInfoParent.Visitor<JClassContainer>() {
         public JClassContainer onBean(CClassInfo bean) {
             return getClazz(bean).implClass;
+        }
+
+        public JClassContainer onElement(CElementInfo element) {
+            return getElement(element).implClass;
         }
 
         public JClassContainer onPackage(JPackage pkg) {
@@ -398,10 +407,8 @@ public final class BeanGenerator implements Outline
     public ElementOutlineImpl getElement(CElementInfo ei) {
         ElementOutlineImpl def = elements.get(ei);
         if(def==null && ei.hasClass()) {
-            // create one
+            // create one. in the constructor it adds itself to the elements.
             def = new ElementOutlineImpl(this,ei);
-
-            elements.put(ei,def);
         }
         return def;
     }

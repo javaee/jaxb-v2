@@ -28,6 +28,7 @@ public interface CClassInfoParent {
     public static interface Visitor<T> {
         T onBean( CClassInfo bean );
         T onPackage( JPackage pkg );
+        T onElement( CElementInfo element );
     }
 
     /**

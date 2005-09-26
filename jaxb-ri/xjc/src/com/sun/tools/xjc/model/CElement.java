@@ -9,7 +9,7 @@ import com.sun.xml.bind.v2.model.core.Element;
  *
  * @author Kohsuke Kawaguchi
  */
-public interface CElement extends CTypeInfo, Element<NType,NClass> {
+public interface CElement extends CTypeInfo, Element<NType,NClass>, CClassInfoParent {
     /**
      * Marks this element as an abstract element.
      */

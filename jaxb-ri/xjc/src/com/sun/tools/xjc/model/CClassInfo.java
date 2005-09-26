@@ -203,6 +203,10 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
             return bean.parent.accept(this)+bean.shortName;
         }
 
+        public String onElement(CElementInfo element) {
+            return element.parent.accept(this)+element.shortName();
+        }
+
         public String onPackage(JPackage pkg) {
             return "";
         }

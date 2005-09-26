@@ -29,6 +29,7 @@ import com.sun.tools.xjc.model.CElement;
 import com.sun.tools.xjc.model.CElementInfo;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.model.TypeUse;
+import com.sun.tools.xjc.model.CClassInfoParent;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIClass;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIGlobalBinding;
@@ -100,29 +101,32 @@ final class DefaultClassBinder implements ClassBinder
 
             return new CClassInfo(model,pkg,deriveName(type),type.getLocator(),getTypeName(type),null,type,bi.toCustomizationList());
         } else {
-            boolean parentIsType = selector.isBound(type.getScope());
+            CElement parentType = selector.isBound(type.getScope());
 
             String className;
 
+            CClassInfoParent scope;
+
             // local ones use their parents' names.
-            if( parentIsType ) {
+            if( parentType!=null ) {
                 // for local ones, we first attempt an optimization.
                 if( isCollapsable(type.getScope()) )
                     return null;    // don't bind it to a complex type
 
+                scope = parentType;
                 className = "Type";
             } else {
-                className = builder.getNameConverter().toClassName(type.getScope().getName());
                 // since the parent element isn't bound to a type, merge the customizations associated to it, too.
 //                custs = CCustomizations.merge( custs, builder.getBindInfo(type.getScope()).toCustomizationList());
+                className = builder.getNameConverter().toClassName(type.getScope().getName());
+
+                BISchemaBinding sb = builder.getBindInfo(
+                    type.getOwnerSchema() ).get(BISchemaBinding.class);
+                if(sb!=null)    className = sb.mangleAnonymousTypeClassName(className);
+                scope = selector.getClassScope();
             }
 
-            BISchemaBinding sb = builder.getBindInfo(
-                type.getOwnerSchema() ).get(BISchemaBinding.class);
-
-            if(sb!=null)    className = sb.mangleAnonymousTypeClassName(className);
-
-            return new CClassInfo(model, selector.getClassScope(), className, type.getLocator(), null, null, type, bi.toCustomizationList() );
+            return new CClassInfo(model, scope, className, type.getLocator(), null, null, type, bi.toCustomizationList() );
         }
     }
 
@@ -182,14 +186,15 @@ final class DefaultClassBinder implements ClassBinder
                         className = getGlobalBinding().nameConverter.toClassName(decl.getName());
                     }
 
-                    selector.boudElements.put(decl,className!=null);
-
                     // otherwise map global elements to JAXBElement
+                    CElementInfo cei = new CElementInfo(
+                        model, tagName, selector.getClassScope(), className, custs, decl.getLocator());
+                    selector.boundElements.put(decl,cei);
+
                     stb.refererStack.push(decl);    // referer is element
-                    r = new CElementInfo(model, tagName, selector.getClassScope(), className,
-                            selector.bindToType(decl.getType()), decl.getDefaultValue(),
-                            decl, custs, decl.getLocator());
+                    cei.initContentType( selector.bindToType(decl.getType()), decl, decl.getDefaultValue() );
                     stb.refererStack.pop();
+                    r = cei;
                 }
             }
         }
@@ -355,15 +360,18 @@ final class DefaultClassBinder implements ClassBinder
 
         if (component instanceof XSElementDecl && !isCollapsable((XSElementDecl)component)) {
             XSElementDecl e = ((XSElementDecl)component);
-            selector.boudElements.put(e,true);
-            stb.refererStack.push(component);    // referer is element
-            TypeUse content = selector.bindToType(e.getType());
-            stb.refererStack.pop();
 
-            return new CElementInfo(model, elementName,
-                    selector.getClassScope(), clsName, content,
-                    e.getDefaultValue(), e,
+            CElementInfo cei = new CElementInfo(model, elementName,
+                    selector.getClassScope(), clsName,
                     bindInfo.toCustomizationList(), decl.getLocation() );
+            selector.boundElements.put(e,cei);
+
+            stb.refererStack.push(component);    // referer is element
+            cei.initContentType(
+                selector.bindToType(e.getType()),
+                e,e.getDefaultValue());
+            stb.refererStack.pop();
+            return cei;
             // TODO: support javadoc and userSpecifiedImplClass
         } else {
             CClassInfo bt = new CClassInfo(model,selector.getClassScope(),

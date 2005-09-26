@@ -36,6 +36,7 @@ import com.sun.tools.xjc.model.CClassInfoParent;
 import com.sun.tools.xjc.model.CElement;
 import com.sun.tools.xjc.model.CTypeInfo;
 import com.sun.tools.xjc.model.TypeUse;
+import com.sun.tools.xjc.model.CElementInfo;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.Util;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
@@ -90,7 +91,7 @@ public final class ClassSelector extends BindingComponent {
      * OTOH, types need to know whether its parent is bound to a class to decide
      * which class name to use.
      */
-    /*package*/ final Map<XSComponent,Boolean> boudElements = new HashMap<XSComponent,Boolean>();
+    /*package*/ final Map<XSComponent,CElementInfo> boundElements = new HashMap<XSComponent,CElementInfo>();
 
     /**
      * A list of {@link Binding}s object that needs to be built.
@@ -250,15 +251,11 @@ public final class ClassSelector extends BindingComponent {
     /**
      * Checks if the given component is bound to a class.
      */
-    public final boolean isBound( XSComponent x ) {
-        if(bindMap.containsKey(x))
-            return true;
-
-        Boolean r = boudElements.get(x);
+    public final CElement isBound( XSElementDecl x ) {
+        CElementInfo r = boundElements.get(x);
         if(r!=null)
             return r;
-
-        return bindToType(x)!=null;
+        return bindToType(x);
     }
 
     /**
