@@ -84,7 +84,6 @@ class ReferencePropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         XmlElementRef ref = seed.readAnnotation(XmlElementRef.class);
 
         if(refs!=null && ref!=null) {
-            // TODO: report an error
             parent.builder.reportError(new IllegalAnnotationException(
                     Messages.MUTUALLY_EXCLUSIVE_ANNOTATIONS.format(
                     nav().getClassName(parent.getClazz())+'#'+seed.getName(),
