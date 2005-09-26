@@ -232,9 +232,6 @@ public class TypeUtil {
     /**
      * Obtains a {@link JType} object for the string representation
      * of a type.
-     * 
-     * Reports an error if the type is not found. In that case,
-     * a reference to {@link Object} will be returned.
      */
     public static JType getType( JCodeModel codeModel,
         String typeName, ErrorReceiver errorHandler, Locator errorSource ) {
@@ -249,13 +246,7 @@ public class TypeUtil {
                 ,errorSource));
 
             // recover by assuming that it's a class that derives from Object
-            try {
-                JDefinedClass cls = codeModel._class(typeName);
-                cls.hide();
-                return cls;
-            } catch (JClassAlreadyExistsException e) {
-                return e.getExistingClass();
-            }
+            return codeModel.directClass(typeName);
         }
     }
     
