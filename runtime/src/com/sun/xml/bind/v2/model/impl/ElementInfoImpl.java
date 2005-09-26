@@ -279,7 +279,7 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         this.expectedMimeType = Util.calcExpectedMediaType(property,builder);
         this.inlineBinary = reader().hasMethodAnnotation(XmlInlineBinaryData.class,method);
         this.schemaType = Util.calcSchemaType(reader(),property,registry.registryClass,
-                nav().asDecl(getContentInMemoryType()),this);
+                getContentInMemoryType(),this);
     }
 
     final QName parseElementName(XmlElementDecl e) {

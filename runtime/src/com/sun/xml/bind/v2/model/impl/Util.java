@@ -1,14 +1,14 @@
 package com.sun.xml.bind.v2.model.impl;
 
-import javax.xml.namespace.QName;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSchemaTypes;
-import javax.xml.bind.annotation.XmlMimeType;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
+import javax.xml.bind.annotation.XmlMimeType;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlSchemaTypes;
+import javax.xml.namespace.QName;
 
-import com.sun.xml.bind.v2.model.annotation.AnnotationSource;
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
+import com.sun.xml.bind.v2.model.annotation.AnnotationSource;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 
@@ -20,7 +20,7 @@ import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 final class Util {
     static <T,C,F,M> QName calcSchemaType(
             AnnotationReader<T,C,F,M> reader,
-            AnnotationSource primarySource, C enclosingClass, C individualType, Locatable src ) {
+            AnnotationSource primarySource, C enclosingClass, T individualType, Locatable src ) {
 
         XmlSchemaType xst = primarySource.readAnnotation(XmlSchemaType.class);
         if(xst!=null) {
