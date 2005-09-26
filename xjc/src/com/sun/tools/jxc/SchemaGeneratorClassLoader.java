@@ -1,4 +1,4 @@
-package com.sun.tools.jxc.apt;
+package com.sun.tools.jxc;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,7 +17,7 @@ import java.net.URLClassLoader;
  *
  * @author Bhakti Mehta
  */
-public class SchemaGeneratorClassLoader extends URLClassLoader {
+final class SchemaGeneratorClassLoader extends URLClassLoader {
     /**
      * List of package prefixes we want to mask the
      * parent classLoader from loading
@@ -30,11 +30,11 @@ public class SchemaGeneratorClassLoader extends URLClassLoader {
         "com.sun.mirror."
     };
 
-    protected SchemaGeneratorClassLoader(ClassLoader parent,URL... urls) {
+    SchemaGeneratorClassLoader(ClassLoader parent,URL... urls) {
         super(urls,parent);
     }
 
-    public Class loadClass (String className) throws ClassNotFoundException {
+    public Class loadClass(String className) throws ClassNotFoundException {
         for( String prefix : packagePrefixes ) {
             if (className.startsWith(prefix) ) {
                 // we need to load those classes in this class loader
