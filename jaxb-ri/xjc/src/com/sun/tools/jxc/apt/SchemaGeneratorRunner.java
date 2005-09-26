@@ -12,8 +12,8 @@ import com.sun.mirror.apt.AnnotationProcessorFactory;
  *
  * @author Bhakti Mehta
  */
-class SchemaGeneratorRunner {
-    static int main(String[] args) throws Exception {
+public final class SchemaGeneratorRunner {
+    public static int main(String[] args) throws Exception {
         ClassLoader cl = SchemaGeneratorRunner.class.getClassLoader();
         Class apt = cl.loadClass("com.sun.tools.apt.Main");
         Method processMethod = apt.getMethod("process",
