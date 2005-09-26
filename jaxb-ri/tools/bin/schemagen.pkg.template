@@ -9,23 +9,11 @@
 #
 WEBSERVICES_LIB=%WEBSERVICES_LIB%
 
-#
-# Set CLASSPATH
-#
-# TODO: figure out where to find jsr173_1.0_api.jar and activation.jar
-#
-CLASSPATH=`tr '\n' ':' <<EOF
-$WEBSERVICES_LIB/jaxb-api.jar
-$WEBSERVICES_LIB/jaxb-impl.jar
-$WEBSERVICES_LIB/jaxb1-impl.jar
-$WEBSERVICES_LIB/jaxb-xjc.jar
-EOF`
-
 if [ -n "$JAVA_HOME" ]
 then
-    APT=$JAVA_HOME/bin/apt
+    JAVA=$JAVA_HOME/bin/java
 else
-    APT=apt
+    JAVA=java
 fi
 
-$APT $XJC_OPTS -cp "$CLASSPATH" -factorypath %WEBSERVICES_LIB%/jaxb-xjc.jar -factory com.sun.tools.jxc.SchemaGeneratorFacade -nocompile "$@"
+exec $JAVA $XJC_OPTS -cp $WEBSERVICES_LIB/jaxb-xjc.jar com.sun.tools.jxc.SchemaGeneratorFacade "$@"

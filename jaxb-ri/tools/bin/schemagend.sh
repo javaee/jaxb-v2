@@ -54,12 +54,12 @@ fi
 
 if [ -n "$JAVA_HOME" ]
 then
-    APT="$JAVA_HOME"/bin/apt
+    JAVA="$JAVA_HOME"/bin/java
 else
-    APT=apt
+    JAVA=apt
 fi
 
-APT_OPTS="-J-Xdebug -J-Xnoagent -J-Djava.compiler=NONE -J-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000'"
+DEBUG_OPTS="-J-Xdebug -J-Xnoagent -J-Djava.compiler=NONE -J-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000'"
 
 if [ `expr \`uname\` : 'CYGWIN'` -eq 6 ]
 then
@@ -67,4 +67,4 @@ then
 fi
 
 
-exec "$APT" $APT_OPTS $XJC_OPTS -factorypath "$JAXB_HOME"/dist/lib/jaxb-xjc.jar -factory com.sun.tools.jxc.SchemaGeneratorFacade -nocompile "$@"
+exec "$JAVA" $DEBUG_OPTS $SCHEMAGEN_OPTS -cp "$JAXB_HOME"/dist/lib/jaxb-xjc.jar com.sun.tools.jxc.SchemaGeneratorFacade "$@"

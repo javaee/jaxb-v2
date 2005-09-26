@@ -38,21 +38,11 @@ done
 
 WEBSERVICES_LIB=$PRG/../../..
 
-# TODO: figure out where to find jsr173_1.0_api.jar and activation.jar
-
-# Set CLASSPATH
-CLASSPATH=`tr '\n' ':' <<EOF
-$WEBSERVICES_LIB/jaxb/lib/jaxb-api.jar
-$WEBSERVICES_LIB/jaxb/lib/jaxb-xjc.jar
-$WEBSERVICES_LIB/jaxb/lib/jaxb-impl.jar
-$WEBSERVICES_LIB/jaxb/lib/jaxb1-impl.jar
-EOF`
-
 if [ -n "$JAVA_HOME" ]
 then
-    APT=$JAVA_HOME/bin/apt
+    JAVA=$JAVA_HOME/bin/java
 else
-    APT=apt
+    JAVA=java
 fi
  
-$APT $XJC_OPTS -cp "$CLASSPATH" -factorypath $WEBSERVICES_LIB/jaxb/lib/jaxb-xjc.jar -factory com.sun.tools.jxc.SchemaGeneratorFacade -nocompile "$@"
+$JAVA $SCHEMAGEN_OPTS -cp "$WEBSERVICES_LIB/jaxb/lib/jaxb-xjc.jar" com.sun.tools.jxc.SchemaGeneratorFacade "$@"
