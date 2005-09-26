@@ -24,6 +24,7 @@ public class SchemaGenerator {
     public static void main(String[] args) throws Exception {
         try {
             ClassLoader cl = SchemaGenerator.class.getClassLoader();
+            if(cl==null)    cl = ClassLoader.getSystemClassLoader();
             ClassLoader classLoader = new SchemaGeneratorClassLoader(cl,getToolsJar());
             System.exit(run(args, classLoader));
         } catch (UnsupportedClassVersionError e) {
