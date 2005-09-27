@@ -111,7 +111,11 @@ public abstract class PropertyFactory {
         RuntimeTypeInfo rti = types.iterator().next();
         if(!(rti instanceof RuntimeNonElement)) return false;
 
-        if(((RuntimeNonElement)rti).getTransducer()==null && info.id()!=ID.IDREF)
+        if(info.id()==ID.IDREF)
+            // IDREF is always handled as leaf -- Transducer maps IDREF String back to an object
+            return true;
+
+        if(((RuntimeNonElement)rti).getTransducer()==null)
             // Transducer!=null means definitely binds to PCDATA.
             // even if transducer==null, a referene might be IDREF,
             // in which case it will still produce PCDATA in this reference.
