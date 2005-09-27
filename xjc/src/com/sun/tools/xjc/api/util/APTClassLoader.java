@@ -65,6 +65,15 @@ public final class APTClassLoader extends URLClassLoader {
 
             buf = baos.toByteArray();
 
+            // define package if not defined yet
+            int i = name.lastIndexOf('.');
+            if (i != -1) {
+                String pkgname = name.substring(0, i);
+                Package pkg = getPackage(pkgname);
+                if(pkg==null)
+                    definePackage(pkgname, null, null, null, null, null, null, null);
+            }
+
             return defineClass(name,buf,0,buf.length);
         } catch (IOException e) {
             throw new ClassNotFoundException(name,e);
