@@ -5,12 +5,12 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.net.URL;
-import java.io.File;
 
-import com.sun.tools.jxc.apt.*;
-import com.sun.tools.xjc.BadCommandLineException;
 import com.sun.mirror.apt.AnnotationProcessorFactory;
+import com.sun.tools.jxc.apt.Options;
+import com.sun.tools.xjc.BadCommandLineException;
+import com.sun.tools.xjc.api.util.APTClassLoader;
+import com.sun.tools.xjc.api.util.ToolsJarNotFoundException;
 
 /**
  * CLI entry-point to the schema generator.
@@ -22,15 +22,34 @@ public class SchemaGenerator {
      * Runs the schema generator.
      */
     public static void main(String[] args) throws Exception {
+        System.exit(run(args));
+    }
+
+    public static int run(String[] args) throws Exception {
         try {
             ClassLoader cl = SchemaGenerator.class.getClassLoader();
             if(cl==null)    cl = ClassLoader.getSystemClassLoader();
-            ClassLoader classLoader = new SchemaGeneratorClassLoader(cl,getToolsJar());
-            System.exit(run(args, classLoader));
+            ClassLoader classLoader = new APTClassLoader(cl,packagePrefixes);
+            return run(args, classLoader);
         } catch (UnsupportedClassVersionError e) {
             System.err.println("schemagen requires JDK 5.0 or later. Please download it from http://java.sun.com/j2se/1.5/");
+            return -1;
+        } catch( ToolsJarNotFoundException e) {
+            System.err.println(e.getMessage());
+            return -1;
         }
     }
+
+    /**
+     * List of package prefixes we want to load in the same package
+     */
+    private static final String[] packagePrefixes = {
+        "com.sun.tools.jxc.",
+        "com.sun.tools.xjc.",
+        "com.sun.tools.apt.",
+        "com.sun.tools.javac.",
+        "com.sun.mirror."
+    };
 
     /**
      * Runs the schema generator.
@@ -80,24 +99,6 @@ public class SchemaGenerator {
 
         String[] argsarray = newargs.toArray(new String[newargs.size()]);
         return ((Integer)mainMethod.invoke(null,new Object[]{argsarray}));
-    }
-
-
-    /**
-     * Returns a class loader that can load classes from JDK tools.jar.
-     *
-     */
-    private static URL getToolsJar() throws Exception {
-
-        File jreHome = new File(System.getProperty("java.home"));
-        File toolsJar = new File( jreHome.getParent(), "lib/tools.jar" );
-
-        if (!toolsJar.exists()) {
-            throw new RuntimeException("Unable to locate tools.jar. "
-                    + "Expected to find it in " + toolsJar.getPath());
-        }
-
-        return toolsJar.toURL();
     }
 
     private static void usage( ) {
