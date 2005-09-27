@@ -1,37 +1,37 @@
-package com.sun.tools.jxc;
+package com.sun.tools.xjc.api.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.MalformedURLException;
 
 /**
- * {@link ClassLoader} that loads APT and JAXB RI classes so that they can reference each other.
- *
- * This classloader invoked by the  {@link SchemaGenerator} is responsible
- * for masking classes which are loaded by the parent class loader so that the child classloader
- * classes living in different jars are loaded  before the parent class loader 
- * loads classes
- *
+ * {@link ClassLoader} that loads APT and specified classes
+ * both into the same classloader, so that they can reference each other.
  *
  * @author Bhakti Mehta
+ * @since 2.0 beta
  */
-final class SchemaGeneratorClassLoader extends URLClassLoader {
+public final class APTClassLoader extends URLClassLoader {
     /**
      * List of package prefixes we want to mask the
      * parent classLoader from loading
      */
-    private static final String[] packagePrefixes = {
-        "com.sun.tools.jxc.",
-        "com.sun.tools.xjc.",
-        "com.sun.tools.apt.",
-        "com.sun.tools.javac.",
-        "com.sun.mirror."
-    };
+    private final String[] packagePrefixes;
 
-    SchemaGeneratorClassLoader(ClassLoader parent,URL... urls) {
-        super(urls,parent);
+    /**
+     *
+     * @param packagePrefixes
+     *      The package prefixes that are forced to resolve within this class loader.
+     * @param parent
+     *      The parent class loader to delegate to.
+     */
+    public APTClassLoader(ClassLoader parent, String[] packagePrefixes) throws ToolsJarNotFoundException {
+        super(new URL[]{getToolsJar()},parent);
+        this.packagePrefixes = packagePrefixes;
     }
 
     public Class loadClass(String className) throws ClassNotFoundException {
@@ -68,6 +68,25 @@ final class SchemaGeneratorClassLoader extends URLClassLoader {
             return defineClass(name,buf,0,buf.length);
         } catch (IOException e) {
             throw new ClassNotFoundException(name,e);
+        }
+    }
+
+    /**
+     * Returns a class loader that can load classes from JDK tools.jar.
+     */
+    private static URL getToolsJar() throws ToolsJarNotFoundException {
+        File jreHome = new File(System.getProperty("java.home"));
+        File toolsJar = new File( jreHome.getParent(), "lib/tools.jar" );
+
+        if (!toolsJar.exists()) {
+            throw new ToolsJarNotFoundException(toolsJar);
+        }
+
+        try {
+            return toolsJar.toURL();
+        } catch (MalformedURLException e) {
+            // impossible
+            throw new AssertionError(e);
         }
     }
 }
