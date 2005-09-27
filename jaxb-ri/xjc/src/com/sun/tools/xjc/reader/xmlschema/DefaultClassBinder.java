@@ -24,12 +24,11 @@ import com.sun.codemodel.JJavaName;
 import com.sun.codemodel.JPackage;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.model.CClassInfo;
+import com.sun.tools.xjc.model.CClassInfoParent;
 import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.model.CElement;
 import com.sun.tools.xjc.model.CElementInfo;
 import com.sun.tools.xjc.model.Model;
-import com.sun.tools.xjc.model.TypeUse;
-import com.sun.tools.xjc.model.CClassInfoParent;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIClass;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIGlobalBinding;
@@ -104,15 +103,18 @@ final class DefaultClassBinder implements ClassBinder
             CElement parentType = selector.isBound(type.getScope());
 
             String className;
-
             CClassInfoParent scope;
 
-            // local ones use their parents' names.
-            if( parentType!=null ) {
-                // for local ones, we first attempt an optimization.
-                if( isCollapsable(type.getScope()) )
-                    return null;    // don't bind it to a complex type
+            // for local ones, we first attempt an optimization.
+            if( parentType!=null && isCollapsable(type.getScope()) )
+                // don't bind it to a complex type, and let the single class
+                // represent both element and this complex type
+                return null;
 
+            if( parentType!=null
+             && parentType instanceof CElementInfo
+             && ((CElementInfo)parentType).hasClass() ) {
+                // special case where we put a nested 'Type' element
                 scope = parentType;
                 className = "Type";
             } else {
