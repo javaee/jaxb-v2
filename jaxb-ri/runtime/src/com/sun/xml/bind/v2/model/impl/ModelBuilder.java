@@ -68,7 +68,7 @@ public class ModelBuilder<T,C,F,M> {
     /**
      * Packages whose registries are already added.
      */
-    private final Map<String,RegistryInfoImpl> registries = new HashMap<String,RegistryInfoImpl>();
+    /*package*/ final Map<String,RegistryInfoImpl> registries = new HashMap<String,RegistryInfoImpl>();
 
     /**
      * @see #setErrorHandler
@@ -230,7 +230,6 @@ public class ModelBuilder<T,C,F,M> {
      */
     public RegistryInfo<T,C> addRegistry(C registryClass, Locatable upstream ) {
         RegistryInfoImpl<T,C,F,M> r = new RegistryInfoImpl<T,C,F,M>(this,upstream,registryClass);
-        registries.put(r.getPackageName(),r);
         return r;
     }
 

@@ -39,6 +39,7 @@ final class RegistryInfoImpl<T,C,F,M> implements Locatable, RegistryInfo<T,C> {
         this.nav = builder.nav;
         this.registryClass = registryClass;
         this.upstream = upstream;
+        builder.registries.put(getPackageName(),this);
 
         for( M m : nav.getDeclaredMethods(registryClass) ) {
             XmlElementDecl em = builder.reader.getMethodAnnotation(
