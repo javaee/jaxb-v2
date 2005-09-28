@@ -160,6 +160,8 @@ class TypeInfoSetImpl<TypeT,ClassDeclT,FieldT,MethodT> implements
      *      not known to this set.
      */
     public NonElement<TypeT,ClassDeclT> getTypeInfo( TypeT type ) {
+        type = nav.erasure(type);   // replace type variables by their bounds
+
         LeafInfo<TypeT,ClassDeclT> l = builtins.get(type);
         if(l!=null)     return l;
 
