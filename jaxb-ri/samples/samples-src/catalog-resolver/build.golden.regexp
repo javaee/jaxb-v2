@@ -3,12 +3,6 @@ compile\:
      \[echo\] Compiling the schema\.\.\.
     \[mkdir\] Created dir\: .*
       \[xjc\] Compiling .*
-      \[xjc\] \[WARNING\] warning\: \"blockDefault\" attribute of \<schema\> is not supported
-      \[xjc\]   line 3 of xml\.xsd
-
-      \[xjc\] \[WARNING\] warning\: \"finalDefault\" attribute of \<schema\> is not supported
-      \[xjc\]   line 3 of xml\.xsd
-
       \[xjc\] Writing output to .*
      \[echo\] Compiling the java source files\.\.\.
     \[mkdir\] Created dir\: .*
