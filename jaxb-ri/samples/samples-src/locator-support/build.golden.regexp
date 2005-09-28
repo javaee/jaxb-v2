@@ -8,7 +8,6 @@ compile\:
      \[echo\] Compiling the java source files\.\.\.
     \[mkdir\] Created dir\: .*
     \[javac\] Compiling \d+ source files to .*
-     \[copy\] Copying 2 files to .*
 
 run\:
      \[echo\] done

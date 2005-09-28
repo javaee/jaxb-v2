@@ -1,4 +1,4 @@
-<sample since="1.0.2" exclude="true">
+<sample since="1.0.2">
     <title>locator-support</title>
     <description><![CDATA[
         This sample shows how to use the new non-standard locator support.  By 
