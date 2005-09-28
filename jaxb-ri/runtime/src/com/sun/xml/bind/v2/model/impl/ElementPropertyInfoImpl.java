@@ -70,7 +70,6 @@ class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             XmlElements xes = seed.readAnnotation(XmlElements.class);
 
             if(xe!=null && xes!=null) {
-                // TODO: report an error
                 parent.builder.reportError(new IllegalAnnotationException(
                         Messages.MUTUALLY_EXCLUSIVE_ANNOTATIONS.format(
                                 nav().getClassName(parent.getClazz())+'#'+seed.getName(),
