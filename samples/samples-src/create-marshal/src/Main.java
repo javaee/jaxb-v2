@@ -36,7 +36,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import primer.po.*;
 
 /*
- * $Id: Main.java,v 1.2 2005-09-10 19:08:00 kohsuke Exp $
+ * $Id: Main.java,v 1.3 2005-09-28 18:27:32 ryan_shoemaker Exp $
  *
  * Copyright 2003 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -86,7 +86,7 @@ public class Main {
             Items items = new Items();
             
             // get a reference to the ItemType list
-            List itemList = items.getItem();
+            List<Items.Item> itemList = items.getItem();
             
             // start adding ItemType objects into it
             itemList.add( createItem( "Nosferatu - Special Edition (1929)", 
@@ -111,10 +111,13 @@ public class Main {
             // set the required Items list
             po.setItems( items );
            
+	    // create an element for marshalling
+	    JAXBElement<PurchaseOrderType> poElement = (new ObjectFactory()).createPurchaseOrder(po);
+
             // create a Marshaller and marshal to System.out
             Marshaller m = jc.createMarshaller();
             m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-            m.marshal( po, System.out );
+            m.marshal( poElement, System.out );
             
         } catch( JAXBException je ) {
             je.printStackTrace();
@@ -142,7 +145,7 @@ public class Main {
     public static Items.Item createItem( String productName,
                                          BigInteger quantity,
                                          BigDecimal price,
-                                         JAXBElement<String> comment,
+                                         String comment,
                                          XMLGregorianCalendar shipDate,
                                          String partNum ) {
    

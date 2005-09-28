@@ -1,4 +1,4 @@
-<sample since="1.0" exclude="true">
+<sample since="1.0">
     <title>create-marshal (formerly SampleApp3)</title>
     <description><![CDATA[
         This sample application demonstrates how to use the ObjectFactory 
