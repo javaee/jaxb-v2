@@ -1,5 +1,5 @@
 /*
- * $Id: GoldenFileProcessor.java,v 1.2 2005-09-10 19:08:23 kohsuke Exp $
+ * $Id: GoldenFileProcessor.java,v 1.3 2005-09-28 20:32:43 ryan_shoemaker Exp $
  */
 
 /*
@@ -35,7 +35,7 @@ import org.kohsuke.args4j.CmdLineParser;
  * @author <ul>
  *         <li>Ryan Shoemaker, Sun Microsystems, Inc.</li>
  *         </ul>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class GoldenFileProcessor implements Processor {
 
@@ -102,6 +102,9 @@ public class GoldenFileProcessor implements Processor {
                 System.out.println("error: line " + line + " doesn't match");
                 System.out.println("regexp: " + stripBackslashes(tLine));
                 System.out.println("xmlout: " + fLine);
+                System.out.println("Complete trace of build output:\n>>>>>>>>>>");
+                System.out.println(getFileAsString(file));
+                System.out.println("<<<<<<<<<<");
             }
 
             return matches;
