@@ -1,5 +1,5 @@
 /*
- * $Id: GoldenFileProcessor.java,v 1.3 2005-09-28 20:32:43 ryan_shoemaker Exp $
+ * $Id: GoldenFileProcessor.java,v 1.4 2005-09-28 21:34:48 ryan_shoemaker Exp $
  */
 
 /*
@@ -35,7 +35,7 @@ import org.kohsuke.args4j.CmdLineParser;
  * @author <ul>
  *         <li>Ryan Shoemaker, Sun Microsystems, Inc.</li>
  *         </ul>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class GoldenFileProcessor implements Processor {
 
@@ -137,7 +137,7 @@ public class GoldenFileProcessor implements Processor {
             BufferedReader br = new BufferedReader(new FileReader(f));
             String line = br.readLine();
             while (line != null) {
-                sb.append(line);
+                sb.append(line).append('\n');
                 line = br.readLine();
             }
         } catch (Exception e) {
