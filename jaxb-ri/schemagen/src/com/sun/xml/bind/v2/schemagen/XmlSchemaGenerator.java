@@ -704,7 +704,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             ComplexType ct = ((ComplexTypeHost)parent).complexType();
             writeName(c,ct);
             if(c.isFinal())
-                ct._final("extension restriction");            
+                ct._final("extension restriction");
             if(c.isAbstract())
                 ct._abstract(true);
 
@@ -845,8 +845,15 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             if (ep.isCollection()) {
                 if (ename != null) { // wrapped collection
                     LocalElement e = compositor.element();
-                    if(ename.getNamespaceURI().length()>0)
-                        e.form("qualified");    // TODO: what if the URI != tns?
+                    if(ename.getNamespaceURI().length()>0) {
+                        if (!ename.getNamespaceURI().equals(this.uri)) {
+                            // table 8-25: Property/field element wrapper with ref attribute
+                            e.ref(new QName(ename.getNamespaceURI(), ename.getLocalPart()));
+                            return;
+                        } else {
+                            e.form("qualified");
+                        }
+                    }
                     ComplexType p = e.name(ename.getLocalPart()).complexType();
                     if(ep.isCollectionNillable()) {
                         e.nillable(true);
