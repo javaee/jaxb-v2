@@ -25,12 +25,28 @@ public final class RuntimeInlineAnnotationReader extends AbstractInlineAnnotatio
         return field.isAnnotationPresent(annotationType);
     }
 
+    public Annotation[] getAllFieldAnnotations(Field field, Locatable srcPos) {
+        Annotation[] r = field.getAnnotations();
+        for( int i=0; i<r.length; i++ ) {
+            r[i] = LocatableAnnotation.create(r[i],srcPos);
+        }
+        return r;
+    }
+
     public <A extends Annotation> A getMethodAnnotation(Class<A> annotation, Method method, Locatable srcPos) {
         return LocatableAnnotation.create(method.getAnnotation(annotation),srcPos);
     }
 
     public boolean hasMethodAnnotation(Class<? extends Annotation> annotation, Method method) {
         return method.isAnnotationPresent(annotation);
+    }
+
+    public Annotation[] getAllMethodAnnotations(Method method, Locatable srcPos) {
+        Annotation[] r = method.getAnnotations();
+        for( int i=0; i<r.length; i++ ) {
+            r[i] = LocatableAnnotation.create(r[i],srcPos);
+        }
+        return r;
     }
 
     public <A extends Annotation> A getMethodParameterAnnotation(Class<A> annotation, Method method, int paramIndex, Locatable srcPos) {

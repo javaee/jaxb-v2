@@ -200,7 +200,7 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         public boolean hasAnnotation(Class<? extends Annotation> annotationType) {
             return reader().hasMethodAnnotation(annotationType,method);
         }
-    };
+    }
 
     /**
      * @param m

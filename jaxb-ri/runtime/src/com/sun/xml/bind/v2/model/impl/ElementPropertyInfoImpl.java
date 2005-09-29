@@ -50,15 +50,17 @@ class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     private Boolean isRequired;
 
     /**
-     * Lazily computed.
      * @see #isValueList()
      */
-    private Boolean isValueList;
+    private final boolean isValueList;
 
     ElementPropertyInfoImpl(
         ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> parent,
         PropertySeed<TypeT,ClassDeclT,FieldT,MethodT> propertySeed) {
         super(parent, propertySeed);
+
+        isValueList = seed.hasAnnotation(XmlList.class);
+
     }
 
     public List<? extends TypeRefImpl<TypeT,ClassDeclT>> getTypes() {
@@ -78,8 +80,6 @@ class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             }
 
             isRequired = true;
-
-            isValueList = seed.hasAnnotation(XmlList.class);
 
             if(xe!=null)
                 ann = new XmlElement[]{xe};
@@ -125,8 +125,6 @@ class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     }
 
     public boolean isValueList() {
-        if(isValueList==null)
-            getTypes(); // compute the value
         return isValueList;
     }
 
@@ -148,6 +146,20 @@ class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         super.link();
         for (TypeRefImpl<TypeT, ClassDeclT> ref : getTypes() ) {
             ref.link();
+        }
+
+        if(isValueList()) {
+            // check if all the item types are simple types
+            // this can't be done when we compute types because
+            // not all TypeInfos are available yet
+            for (TypeRefImpl<TypeT,ClassDeclT> ref : types) {
+                if(!ref.getTarget().isSimpleType()) {
+                    parent.builder.reportError(new IllegalAnnotationException(
+                    Messages.XMLLIST_NEEDS_SIMPLETYPE.format(
+                        nav().getTypeName(ref.getTarget().getType())), this ));
+                    break;
+                }
+            }
         }
     }
 }
