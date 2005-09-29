@@ -1,5 +1,5 @@
 /*
- * $Id: GoldenFileProcessor.java,v 1.5 2005-09-29 14:27:17 ryan_shoemaker Exp $
+ * $Id: GoldenFileProcessor.java,v 1.6 2005-09-29 17:20:16 ryan_shoemaker Exp $
  */
 
 /*
@@ -35,7 +35,7 @@ import org.kohsuke.args4j.CmdLineParser;
  * @author <ul>
  *         <li>Ryan Shoemaker, Sun Microsystems, Inc.</li>
  *         </ul>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class GoldenFileProcessor implements Processor {
 
@@ -49,15 +49,16 @@ public class GoldenFileProcessor implements Processor {
         File buildDotGoldenRegexp = new File(dir, "build.golden.regexp");
         
         if(!buildDotGoldenRegexp.exists()) {
+            trace("FAILED: Golden file missing", verbose);
             return false;
         }
         
         boolean match = match(buildDotOut, buildDotGoldenRegexp);
         if(match) {
-            trace("output matches golden file", verbose);
+            trace("PASSED: output matches golden file", verbose);
             return true;
         } else {
-            trace("output differs from golden file", verbose);
+            trace("FAILED: output differs from golden file", verbose);
             return false;
         }
     }
