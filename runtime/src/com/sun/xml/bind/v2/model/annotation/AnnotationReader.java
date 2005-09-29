@@ -58,6 +58,11 @@ public interface AnnotationReader<T,C,F,M> {
     boolean hasFieldAnnotation(Class<? extends Annotation> annotationType, F field);
 
     /**
+     * Gets all the annotations on a field.
+     */
+    Annotation[] getAllFieldAnnotations(F field, Locatable srcPos);
+
+    /**
      * Reads an annotation on a property that consists of a getter and a setter.
      *
      */
@@ -68,6 +73,14 @@ public interface AnnotationReader<T,C,F,M> {
      * Checks if the given method has an annotation.
      */
     boolean hasMethodAnnotation(Class<? extends Annotation> annotation, String propertyName, M getter, M setter, Locatable srcPos);
+
+    /**
+     * Gets all the annotations on a method.
+     *
+     * @param srcPos
+     *      the location from which this annotation is read.
+     */
+    Annotation[] getAllMethodAnnotations(M method, Locatable srcPos);
 
     // TODO: we do need this to read certain annotations,
     // but that shows inconsistency wrt the spec. consult the spec team about the abstraction.

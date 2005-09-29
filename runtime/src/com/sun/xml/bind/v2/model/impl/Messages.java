@@ -48,6 +48,9 @@ enum Messages {
     INVALID_XML_ELEMENT_REF, // 0 arg
     NO_XML_ELEMENT_DECL, // 2 args
     NO_REGISTRY_CLASS, // 1 arg
+
+    ANNOTATION_NOT_ALLOWED, // 1 arg
+    XMLLIST_NEEDS_SIMPLETYPE, // 1 arg
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());

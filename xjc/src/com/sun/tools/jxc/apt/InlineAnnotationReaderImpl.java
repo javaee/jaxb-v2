@@ -2,11 +2,15 @@ package com.sun.tools.jxc.apt;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.ArrayList;
 
 import com.sun.mirror.declaration.FieldDeclaration;
 import com.sun.mirror.declaration.MethodDeclaration;
 import com.sun.mirror.declaration.ParameterDeclaration;
 import com.sun.mirror.declaration.TypeDeclaration;
+import com.sun.mirror.declaration.AnnotationMirror;
+import com.sun.mirror.declaration.Declaration;
 import com.sun.mirror.type.MirroredTypeException;
 import com.sun.mirror.type.TypeMirror;
 import com.sun.xml.bind.v2.model.annotation.AbstractInlineAnnotationReaderImpl;
@@ -38,12 +42,43 @@ public final class InlineAnnotationReaderImpl extends AbstractInlineAnnotationRe
         return f.getAnnotation(annotationType)!=null;
     }
 
+    public Annotation[] getAllFieldAnnotations(FieldDeclaration field, Locatable srcPos) {
+        return getAllAnnotations(field,srcPos);
+    }
+
     public <A extends Annotation> A getMethodAnnotation(Class<A> a, MethodDeclaration method, Locatable srcPos) {
         return LocatableAnnotation.create(method.getAnnotation(a),srcPos);
     }
 
     public boolean hasMethodAnnotation(Class<? extends Annotation> a, MethodDeclaration method) {
         return method.getAnnotation(a)!=null;
+    }
+
+    private static final Annotation[] EMPTY_ANNOTATION = new Annotation[0];
+
+    public Annotation[] getAllMethodAnnotations(MethodDeclaration method, Locatable srcPos) {
+        return getAllAnnotations(method,srcPos);
+    }
+
+    /**
+     * Gets all the annotations on the given declaration.
+     */
+    private Annotation[] getAllAnnotations(Declaration decl, Locatable srcPos) {
+        List<Annotation> r = new ArrayList<Annotation>();
+
+        for( AnnotationMirror m : decl.getAnnotationMirrors() ) {
+            try {
+                String fullName = m.getAnnotationType().getDeclaration().getQualifiedName();
+                Class type = getClass().getClassLoader().loadClass(fullName);
+                Annotation annotation = decl.getAnnotation(type);
+                if(annotation!=null)
+                    r.add( LocatableAnnotation.create(annotation,srcPos) );
+            } catch (ClassNotFoundException e) {
+                // just continue
+            }
+        }
+
+        return r.toArray(EMPTY_ANNOTATION);
     }
 
     public <A extends Annotation> A getMethodParameterAnnotation(Class<A> a, MethodDeclaration m, int paramIndex, Locatable srcPos) {

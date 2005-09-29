@@ -31,8 +31,12 @@ import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
+import javax.xml.bind.annotation.XmlInlineBinaryData;
+import javax.xml.bind.annotation.XmlMimeType;
+import javax.xml.bind.annotation.XmlAttachmentRef;
+import javax.xml.bind.annotation.XmlList;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.annotation.XmlLocation;
@@ -178,7 +182,7 @@ class ClassInfoImpl<T,C,F,M>
         return clazz;
     }
 
-    public ClassInfoImpl getScope() {
+    public ClassInfoImpl<T,C,F,M> getScope() {
         TODO.checkSpec("Do we have scope for classes?");
         return null;
     }
@@ -224,17 +228,16 @@ class ClassInfoImpl<T,C,F,M>
 
         // find properties from fields
         for( F f : nav().getDeclaredFields(clazz) ) {
+            Annotation[] annotations = reader().getAllFieldAnnotations(f,this);
             if( nav().isStaticField(f) ) {
                 // static fields are bound only when there's explicit annotation.
-                if(hasFieldAnnotation(f))
-                    addProperty(createFieldSeed(f));
-                else
-                    continue;
+                if(hasJAXBAnnotation(annotations))
+                    addProperty(createFieldSeed(f),annotations);
             } else {
                 if(at==AccessType.FIELD
                 ||(at==AccessType.PUBLIC_MEMBER && nav().isPublicField(f))
-                || hasFieldAnnotation(f))
-                    addProperty(createFieldSeed(f));
+                || hasJAXBAnnotation(annotations))
+                    addProperty(createFieldSeed(f),annotations);
                 else
                     checkFieldXmlLocation(f);
             }
@@ -347,23 +350,6 @@ class ClassInfoImpl<T,C,F,M>
     }
 
     /**
-     * Returns true if the given field has a JAXB annotation
-     */
-    private boolean hasFieldAnnotation(F f) {
-        for (Class<? extends Annotation> a : jaxbAnnotations)
-            if(reader().hasFieldAnnotation(a,f))
-                return true;
-        return false;
-    }
-
-    private boolean hasMethodAnnotation(M m) {
-        for (Class<? extends Annotation> a : jaxbAnnotations)
-            if(reader().hasMethodAnnotation(a,m))
-                return true;
-        return false;
-    }
-
-    /**
      * Compares orders among {@link PropertyInfoImpl} according to {@link ClassInfoImpl#propOrder}.
      *
      * <p>
@@ -446,7 +432,17 @@ class ClassInfoImpl<T,C,F,M>
     }
 
 
-    private static final <T> List<T> makeSet( T... args ) {
+    /**
+     * Picks the first non-null argument, or null if all arguments are null.
+     */
+    private static <T> T pickOne( T... args ) {
+        for( T arg : args )
+            if(arg!=null)
+                return arg;
+        return null;
+    }
+
+    private static <T> List<T> makeSet( T... args ) {
         List<T> l = new FinalArrayList<T>();
         for( T arg : args )
             if(arg!=null)   l.add(arg);
@@ -462,37 +458,235 @@ class ClassInfoImpl<T,C,F,M>
     }
 
     /**
-     * Called only from {@link #getProperties()}.
+     * Represents 6 groups of secondary annotations
      */
-    private void addProperty( PropertySeed<T,C,F,M> seed ) {
-        XmlAttribute a = seed.readAnnotation(XmlAttribute.class);
-        XmlValue v = seed.readAnnotation(XmlValue.class);
-        XmlElement e1 = seed.readAnnotation(XmlElement.class);
-        XmlElements e2 = seed.readAnnotation(XmlElements.class);
-        XmlElementRef r1 = seed.readAnnotation(XmlElementRef.class);
-        XmlElementRefs r2 = seed.readAnnotation(XmlElementRefs.class);
-        XmlTransient t = seed.readAnnotation(XmlTransient.class);
-        XmlAnyAttribute aa = seed.readAnnotation(XmlAnyAttribute.class);
+    private static enum SecondaryAnnotation {
+        JAVA_TYPE       (0x01, XmlJavaTypeAdapter.class),
+        ID_IDREF        (0x02, XmlID.class, XmlIDREF.class),
+        BINARY          (0x04, XmlInlineBinaryData.class, XmlMimeType.class, XmlAttachmentRef.class),
+        ELEMENT_WRAPPER (0x08, XmlElementWrapper.class),
+        LIST            (0x10, XmlList.class),
+        SCHEMA_TYPE     (0x20, XmlSchemaType.class);
 
-        XmlAnyElement xae = seed.readAnnotation(XmlAnyElement.class);
-        //TODO: xae and other things
+        /**
+         * Each constant gets an unique bit mask so that the presence/absence
+         * of them can be represented in a single byte.
+         */
+        final int bitMask;
+        /**
+         * List of annotations that belong to this member.
+         */
+        final Class<? extends Annotation>[] members;
 
-        // these are mutually exclusive annotations
-        int count = (a!=null?1:0)+(v!=null?1:0)+(e1!=null?1:0)+(e2!=null?1:0)+(r1!=null?1:0)+(r2!=null?1:0)+(t!=null?1:0)+(aa!=null?1:0);
+        SecondaryAnnotation(int bitMask, Class<? extends Annotation>... members) {
+            this.bitMask = bitMask;
+            this.members = members;
+        }
+    }
+
+    private static final SecondaryAnnotation[] SECONDARY_ANNOTATIONS = SecondaryAnnotation.values();
+
+    /**
+     * Represents 7 groups of properties.
+     *
+     * Each instance is also responsible for rejecting annotations
+     * that are not allowed on that kind.
+     */
+    private static enum PropertyGroup {
+        TRANSIENT       (false,false,false,false,false,false),
+        ANY_ATTRIBUTE   (true, false,false,false,false,false),
+        ATTRIBUTE       (true, true, true, false,true, true ),
+        VALUE           (true, true, true, false,true, true ),
+        ELEMENT         (true, true, true, true, true, true ),
+        ELEMENT_REF     (true, false,false,true, false,false),
+        MAP             (false,false,false,true, false,false);
+
+        /**
+         * Bit mask that represents secondary annotations that are allowed on this group.
+         *
+         * T = not allowed, F = allowed
+         */
+        final int allowedsecondaryAnnotations;
+
+        PropertyGroup(boolean... bits) {
+            int mask = 0;
+            assert bits.length==SECONDARY_ANNOTATIONS.length;
+            for( int i=0; i<bits.length; i++ ) {
+                if(bits[i])
+                    mask |= SECONDARY_ANNOTATIONS[i].bitMask;
+            }
+            allowedsecondaryAnnotations = ~mask;
+        }
+
+        boolean allows(SecondaryAnnotation a) {
+            return (allowedsecondaryAnnotations&a.bitMask)==0;
+        }
+    }
+
+    private static final Annotation[] EMPTY_ANNOTATIONS = new Annotation[0];
+
+    /**
+     * All the annotations in JAXB to their internal index.
+     */
+    private static final HashMap<Class,Integer> ANNOTATION_NUMBER_MAP = new HashMap<Class,Integer>();
+    static {
+        Class[] annotations = {
+            XmlTransient.class,     // 0
+            XmlAnyAttribute.class,  // 1
+            XmlAttribute.class,     // 2
+            XmlValue.class,         // 3
+            XmlElement.class,       // 4
+            XmlElements.class,      // 5
+            XmlElementRef.class,    // 6
+            XmlElementRefs.class,   // 7
+            XmlAnyElement.class,    // 8
+        };
+
+        HashMap<Class,Integer> m = ANNOTATION_NUMBER_MAP;
+
+        // characterizing annotations
+        for( Class c : annotations )
+            m.put(c, m.size() );
+
+        // secondary annotations
+        int index = 20;
+        for( SecondaryAnnotation sa : SECONDARY_ANNOTATIONS ) {
+            for( Class member : sa.members )
+                m.put(member,index);
+            index++;
+        }
+    }
+
+    /**
+     * Called only from {@link #getProperties()}.
+     *
+     * <p>
+     * This is where we decide the type of the property and checks for annotations
+     * that are not allowed.
+     *
+     * @param annotations
+     *      all annotations on this property. It's the same as
+     *      {@code seed.readAllAnnotation()}, but taken as a parameter
+     *      because the caller should know it already.
+     */
+    private void addProperty( PropertySeed<T,C,F,M> seed, Annotation[] annotations ) {
+        // since typically there's a very few annotations on a method,
+        // this runs faster than checking for each annotation via readAnnotation(A)
+
+
+        // characterizing annotations. these annotations (or lack thereof) decides
+        // the kind of the property it goes to.
+        // I wish I could use an array...
+        XmlTransient t = null;
+        XmlAnyAttribute aa = null;
+        XmlAttribute a = null;
+        XmlValue v = null;
+        XmlElement e1 = null;
+        XmlElements e2 = null;
+        XmlElementRef r1 = null;
+        XmlElementRefs r2 = null;
+        XmlAnyElement xae = null;
+
+        // encountered secondary annotations are accumulated into a bit mask
+        int secondaryAnnotations = 0;
+
+        for( Annotation ann : annotations ) {
+            Integer index = ANNOTATION_NUMBER_MAP.get(ann.annotationType());
+            if(index==null) continue;
+            switch(index) {
+            case 0:     t   = (XmlTransient) ann; break;
+            case 1:     aa  = (XmlAnyAttribute) ann; break;
+            case 2:     a   = (XmlAttribute) ann; break;
+            case 3:     v   = (XmlValue) ann; break;
+            case 4:     e1  = (XmlElement) ann; break;
+            case 5:     e2  = (XmlElements) ann; break;
+            case 6:     r1  = (XmlElementRef) ann; break;
+            case 7:     r2  = (XmlElementRefs) ann; break;
+            case 8:     xae = (XmlAnyElement) ann; break;
+            default:
+                // secondary annotations
+                secondaryAnnotations |= (1<<(index-20));
+                break;
+            }
+        }
 
         try {
-            if(count>1) {
-                List<Annotation> err = makeSet(a,v,e1,e2,r1,r2,t,aa);
+            // determine the group kind, and also count the numbers, since
+            // characterizing annotations are mutually exclusive.
+            PropertyGroup group = null;
+            int groupCount = 0;
+
+            if(t!=null) {
+                group = PropertyGroup.TRANSIENT;
+                groupCount++;
+            }
+            if(aa!=null) {
+                group = PropertyGroup.ANY_ATTRIBUTE;
+                groupCount++;
+            }
+            if(a!=null) {
+                group = PropertyGroup.ATTRIBUTE;
+                groupCount++;
+            }
+            if(v!=null) {
+                group = PropertyGroup.VALUE;
+                groupCount++;
+            }
+            if(e1!=null || e2!=null) {
+                group = PropertyGroup.ELEMENT;
+                groupCount++;
+            }
+            if(r1!=null || r2!=null || xae!=null) {
+                group = PropertyGroup.ELEMENT_REF;
+                groupCount++;
+            }
+
+            if(groupCount>1) {
+                // collision between groups
+                List<Annotation> err = makeSet(t,aa,a,v,pickOne(e1,e2),pickOne(r1,r2,xae));
                 throw new ConflictException(err);
             }
 
-            if(t!=null) {
-                // a transient property
-                return;
+            if(group==null) {
+                // if no characterizing annotation was found, it's either element or map
+                // sniff the signature and then decide.
+                assert groupCount==0;
+
+                // UGLY: the presence of XmlJavaTypeAdapter makes it an element property. ARGH.
+                if(nav().isSubClassOf( seed.getRawType(), nav().ref(Map.class) )
+                && !seed.hasAnnotation(XmlJavaTypeAdapter.class))
+                    group = PropertyGroup.MAP;
+                else
+                    group = PropertyGroup.ELEMENT;
             }
 
-            if(aa!=null) {
-                // this property is attribute wildcard
+            // group determined by now
+            // make sure that there are no prohibited secondary annotations
+            if( (secondaryAnnotations&group.allowedsecondaryAnnotations)!=0 ) {
+                // uh oh. find the offending annotation
+                for( SecondaryAnnotation sa : SECONDARY_ANNOTATIONS ) {
+                    if(group.allows(sa))
+                        continue;
+                    for( Class<? extends Annotation> m : sa.members ) {
+                        Annotation offender = seed.readAnnotation(m);
+                        if(offender!=null) {
+                            // found it
+                            builder.reportError(new IllegalAnnotationException(
+                                Messages.ANNOTATION_NOT_ALLOWED.format(m.getSimpleName()),offender));
+                            return;
+                        }
+                    }
+                }
+                // there must have been an offender
+                assert false;
+            }
+
+            // actually create annotations
+            switch(group) {
+            case TRANSIENT:
+                return;
+            case ANY_ATTRIBUTE:
+                // an attribute wildcard property
                 if(attributeWildcard!=null) {
                     builder.reportError(new IllegalAnnotationException(
                         Messages.TWO_ATTRIBUTE_WILDCARDS.format(
@@ -518,25 +712,23 @@ class ClassInfoImpl<T,C,F,M>
 
 
                 return;
-            }
-
-            if(v!=null) {
-                properties.add(createValueProperty(seed));
-            } else
-            if(a!=null) {
+            case ATTRIBUTE:
                 properties.add(createAttributeProperty(seed));
-            } else
-            if(r1!=null || r2!=null || xae!=null) {
+                return;
+            case VALUE:
+                properties.add(createValueProperty(seed));
+                return;
+            case ELEMENT:
+                properties.add(createElementProperty(seed));
+                return;
+            case ELEMENT_REF:
                 properties.add(createReferenceProperty(seed));
-            } else {
-                // either an element property or a map property.
-                // sniff the signature and then decide.
-                // UGLY: the presence of XmlJavaTypeAdapter makes it an element property. ARGH.
-                if(nav().isSubClassOf( seed.getRawType(), nav().ref(Map.class) )
-                && !seed.hasAnnotation(XmlJavaTypeAdapter.class))
-                    properties.add(createMapProperty(seed));
-                else
-                    properties.add(createElementProperty(seed));
+                return;
+            case MAP:
+                properties.add(createMapProperty(seed));
+                return;
+            default:
+                assert false;
             }
         } catch( ConflictException x ) {
             // report a conflicting annotation
@@ -638,8 +830,11 @@ class ClassInfoImpl<T,C,F,M>
             M getter = getters.get(name);
             M setter = setters.get(name);
 
-            boolean getterHasAnnotation = getter!=null && hasMethodAnnotation(getter);
-            boolean setterHasAnnotation = setter!=null && hasMethodAnnotation(setter);
+            Annotation[] ga = getter!=null ? reader().getAllMethodAnnotations(getter,this) : EMPTY_ANNOTATIONS;
+            Annotation[] sa = setter!=null ? reader().getAllMethodAnnotations(setter,this) : EMPTY_ANNOTATIONS;
+
+            boolean getterHasAnnotation = hasJAXBAnnotation(ga);
+            boolean setterHasAnnotation = hasJAXBAnnotation(sa);
 
             if (at==AccessType.PROPERTY
             || (at==AccessType.PUBLIC_MEMBER && (getter==null || nav().isPublicMethod(getter)) && (setter==null || nav().isPublicMethod(setter)))
@@ -658,7 +853,20 @@ class ClassInfoImpl<T,C,F,M>
                     continue;
                 }
 
-                addProperty(createAccessorSeed(getter, setter));
+                // merge annotations from two list
+                Annotation[] r;
+                if(ga.length==0) {
+                    r = sa;
+                } else
+                if(sa.length==0) {
+                    r = ga;
+                } else {
+                    r = new Annotation[ga.length+sa.length];
+                    System.arraycopy(ga,0,r,0,ga.length);
+                    System.arraycopy(sa,0,r,ga.length,sa.length);
+                }
+
+                addProperty(createAccessorSeed(getter, setter),r);
             }
         }
         // done with complete pairs
@@ -683,7 +891,7 @@ class ClassInfoImpl<T,C,F,M>
         for (Map.Entry<String, M> e : methods.entrySet()) {
             if(complete.contains(e.getKey()))
                 continue;
-            if(hasMethodAnnotation(e.getValue()))
+            if(hasJAXBAnnotation(reader().getAllMethodAnnotations(e.getValue(),this)))
                 complete.add(e.getKey());
         }
     }
@@ -693,20 +901,34 @@ class ClassInfoImpl<T,C,F,M>
      * report it as an error
      */
     private void ensureNoAnnotation(M method) {
-        for (Class<? extends Annotation> a : jaxbAnnotations)
-            if(reader().hasMethodAnnotation(a,method)) {
+        Annotation[] annotations = reader().getAllMethodAnnotations(method,this);
+        for( Annotation a : annotations ) {
+            if(isJAXBAnnotation(a)) {
                 builder.reportError(new IllegalAnnotationException(
                     Messages.ANNOTATION_ON_WRONG_METHOD.format(),
-                    reader().getMethodAnnotation(a,method,this)));
+                    a));
+                return;
             }
+        }
     }
 
+    /**
+     * Returns true if a given annotation is a JAXB annotation.
+     */
+    private static boolean isJAXBAnnotation(Annotation a) {
+        return ANNOTATION_NUMBER_MAP.containsKey(a.annotationType());
+    }
 
-    private static final Class<? extends Annotation>[] jaxbAnnotations = new Class[]{
-        XmlElement.class, XmlAttribute.class, XmlValue.class, XmlElementRef.class,
-        XmlElements.class, XmlElementRefs.class, XmlElementWrapper.class,
-        XmlJavaTypeAdapter.class, XmlAnyElement.class, XmlID.class, XmlIDREF.class
-    };
+    /**
+     * Returns true if the array contains a JAXB annotation.
+     */
+    private static boolean hasJAXBAnnotation(Annotation[] annotations) {
+        for( Annotation a : annotations )
+            if(isJAXBAnnotation(a))
+                return true;
+        return false;
+    }
+
 
     /**
      * Returns "Foo" from "getFoo" or "isFoo".
