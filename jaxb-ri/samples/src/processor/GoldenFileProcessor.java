@@ -1,5 +1,5 @@
 /*
- * $Id: GoldenFileProcessor.java,v 1.4 2005-09-28 21:34:48 ryan_shoemaker Exp $
+ * $Id: GoldenFileProcessor.java,v 1.5 2005-09-29 14:27:17 ryan_shoemaker Exp $
  */
 
 /*
@@ -35,7 +35,7 @@ import org.kohsuke.args4j.CmdLineParser;
  * @author <ul>
  *         <li>Ryan Shoemaker, Sun Microsystems, Inc.</li>
  *         </ul>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class GoldenFileProcessor implements Processor {
 
@@ -103,7 +103,7 @@ public class GoldenFileProcessor implements Processor {
                 System.out.println("regexp: " + stripBackslashes(tLine));
                 System.out.println("xmlout: " + fLine);
                 System.out.println("Complete trace of build output:\n>>>>>>>>>>");
-                System.out.println(getFileAsString(file));
+                System.out.println(getFileAsString(file, true));
                 System.out.println("<<<<<<<<<<");
             }
 
@@ -129,14 +129,17 @@ public class GoldenFileProcessor implements Processor {
      * return the contents of the file as a String
      * 
      * @param f source file
+     * @param lineNumbers true if you want to prepend line numbers to the output
      * @return contents of f as a String
      */
-    String getFileAsString(File f) {
+    String getFileAsString(File f, boolean lineNumbers) {
+        int lineNo = 1;
         StringBuffer sb = new StringBuffer();
         try {
             BufferedReader br = new BufferedReader(new FileReader(f));
             String line = br.readLine();
             while (line != null) {
+                if(lineNumbers) sb.append(String.format("%4d: ", lineNo++));
                 sb.append(line).append('\n');
                 line = br.readLine();
             }
