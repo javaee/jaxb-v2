@@ -704,7 +704,9 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             ComplexType ct = ((ComplexTypeHost)parent).complexType();
             writeName(c,ct);
             if(c.isFinal())
-                ct._final("extension restriction");
+                ct._final("extension restriction");            
+            if(c.isAbstract())
+                ct._abstract(true);
 
             // hold the ct open in case we need to generate @mixed below...
             ct.block();
