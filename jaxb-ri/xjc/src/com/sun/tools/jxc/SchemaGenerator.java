@@ -48,6 +48,7 @@ public class SchemaGenerator {
         "com.sun.tools.xjc.",
         "com.sun.tools.apt.",
         "com.sun.tools.javac.",
+        "com.sun.tools.javadoc.",
         "com.sun.mirror."
     };
 
