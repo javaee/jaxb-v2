@@ -44,9 +44,9 @@ public final class ValueProperty<BeanT,ListT,ItemT> extends PropertyImpl<BeanT> 
     }
 
     public final void serializeBody(BeanT o, XMLSerializer w, Object outerPeer) throws SAXException, AccessorException, IOException, XMLStreamException {
-        if(xacc.hasValue(o)) {
-            w.text(xacc.print(o),fieldName);
-        }
+        CharSequence value = xacc.print(o);
+        if(value!=null)
+            w.text(value,fieldName);
     }
 
     public void serializeURIs(BeanT o, XMLSerializer w) throws SAXException, AccessorException {

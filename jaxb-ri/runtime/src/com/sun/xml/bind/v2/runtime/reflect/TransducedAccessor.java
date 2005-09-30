@@ -150,7 +150,9 @@ public abstract class TransducedAccessor<BeanT> {
         }
 
         public void declareNamespace(BeanT bean, XMLSerializer w) throws AccessorException {
-            xducer.declareNamespace(acc.get(bean),w);
+            Object o = acc.get(bean);
+            if(o!=null)
+                xducer.declareNamespace(o,w);
         }
 
         @Override
@@ -187,7 +189,7 @@ public abstract class TransducedAccessor<BeanT> {
         }
 
         public boolean hasValue(BeanT bean) throws AccessorException {
-            return acc.get(bean)!=null;
+            return acc.getUnadapted(bean)!=null;
         }
     }
 

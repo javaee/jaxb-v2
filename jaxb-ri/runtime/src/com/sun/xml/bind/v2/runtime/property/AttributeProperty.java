@@ -60,13 +60,13 @@ public final class AttributeProperty<BeanT> extends PropertyImpl<BeanT>
      * @see JaxBeanInfo#serializeAttributes(Object, XMLSerializer)
      */
     public void serializeAttributes(BeanT o, XMLSerializer w) throws SAXException, AccessorException, IOException, XMLStreamException {
-        if(xacc.hasValue(o))
-            w.attribute(attName,xacc.print(o).toString());
+        CharSequence value = xacc.print(o);
+        if(value!=null)
+            w.attribute(attName,value.toString());
     }
 
     public void serializeURIs(BeanT o, XMLSerializer w) throws AccessorException, SAXException {
-        if(xacc.hasValue(o))
-            xacc.declareNamespace(o,w);
+        xacc.declareNamespace(o,w);
     }
 
     public boolean hasSerializeURIAction() {
