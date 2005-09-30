@@ -47,7 +47,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.36 2005-09-23 21:59:33 ryan_shoemaker Exp $
+       $Id: build.xml,v 1.37 2005-09-30 16:29:59 ryan_shoemaker Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -605,11 +605,11 @@ Class-Path: ${manifest.classpath}
         ${jes.rpm.private}/activation.jar
         ${jes.svr4}/activation.jar
         ${jes.zip}/activation.jar
-        jsr173-api.jar
-        ${jwsdp.shared}/jsr173-api.jar
-        ${jes.rpm.private}/jsr173-api.jar
-        ${jes.svr4}/jsr173-api.jar
-        ${jes.zip}/jsr173-api.jar
+        jsr173_api.jar
+        ${jwsdp.shared}/jsr173_api.jar
+        ${jes.rpm.private}/jsr173_api.jar
+        ${jes.svr4}/jsr173_api.jar
+        ${jes.zip}/jsr173_api.jar
           " />
         <echo file="${xjc.root}/manifest.xjc.jwsdp" 
               append="true"
