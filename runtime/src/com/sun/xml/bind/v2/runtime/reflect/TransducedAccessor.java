@@ -62,6 +62,9 @@ public abstract class TransducedAccessor<BeanT> {
      *
      * <p>
      * Use {@link XMLSerializer#getInstance()} to access to the namespace bindings
+     *
+     * @return
+     *      if the accessor didn't yield a value, return null.
      */
     public abstract CharSequence print(BeanT o) throws AccessorException, SAXException;
 
@@ -181,7 +184,9 @@ public abstract class TransducedAccessor<BeanT> {
         }
 
         public CharSequence print(BeanT bean) throws AccessorException {
-            return xducer.print(acc.get(bean));
+            Object o = acc.get(bean);
+            if(o==null)     return null;
+            return xducer.print(o);
         }
 
         public void parse(BeanT bean, CharSequence lexical) throws AccessorException, SAXException {
