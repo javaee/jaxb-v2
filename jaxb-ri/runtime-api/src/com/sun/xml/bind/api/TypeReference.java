@@ -19,7 +19,7 @@ public final class TypeReference {
     /**
      * The associated XML element name that the JAX-RPC uses with this type reference.
      *
-     * Always non-null.
+     * Always non-null. Strings are interned.
      */
     public final QName tagName;
 
@@ -38,12 +38,12 @@ public final class TypeReference {
     public final Annotation[] annotations;
 
     public TypeReference(QName tagName, Type type, Annotation... annotations) {
-        this.tagName = tagName;
-        this.type = type;
-        this.annotations = annotations;
-
         if(tagName==null || type==null || annotations==null)
             throw new IllegalArgumentException();
+
+        this.tagName = new QName(tagName.getNamespaceURI().intern(), tagName.getLocalPart().intern(), tagName.getPrefix());
+        this.type = type;
+        this.annotations = annotations;
     }
 
     /**
