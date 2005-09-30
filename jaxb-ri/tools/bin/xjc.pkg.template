@@ -12,12 +12,7 @@ WEBSERVICES_LIB=%WEBSERVICES_LIB%
 #
 # Set CLASSPATH
 #
-CLASSPATH=`tr '\n' ':' <<EOF
-$WEBSERVICES_LIB/jaxb-api.jar
-$WEBSERVICES_LIB/jaxb-impl.jar
-$WEBSERVICES_LIB/jaxb1-impl.jar
-$WEBSERVICES_LIB/jaxb-xjc.jar
-EOF`
+CLASSPATH=${WEBSERVICES_LIB}/jaxb-api.jar:${WEBSERVICES_LIB}/jaxb-impl.jar:${WEBSERVICES_LIB}/jaxb1-impl.jar:${WEBSERVICES_LIB}/jaxb-xjc.jar
 
 if [ -n "$JAVA_HOME" ]
 then
