@@ -72,11 +72,8 @@ abstract class PropertyInfoImpl<T,C,F,M>
                 getIndividualType(),this);
 
         T t = seed.getRawType();
-        if(nav().isSubClassOf(t,nav().ref(Collection.class))
-        || nav().isArrayButNotByteArray(t))
-            this.isCollection = true;
-        else
-            this.isCollection = false;
+        this.isCollection = nav().isSubClassOf(t, nav().ref(Collection.class))
+                         || nav().isArrayButNotByteArray(t);
 
         XmlJavaTypeAdapter xjta = getApplicableAdapter(getIndividualType());
         if(xjta==null) {
@@ -137,10 +134,8 @@ abstract class PropertyInfoImpl<T,C,F,M>
         if(jta==null)   return false;
 
         T type = reader().getClassValue(jta,"type");
-        if(declaredType.equals(type))
-            return true;
+        return declaredType.equals(type);
 
-        return false;
     }
 
     private XmlJavaTypeAdapter getApplicableAdapter(T type) {
@@ -164,7 +159,7 @@ abstract class PropertyInfoImpl<T,C,F,M>
         C refType = nav().asDecl(seed.getRawType());
         if(refType!=null) {
             jta = reader().getClassAnnotation(XmlJavaTypeAdapter.class, refType, seed );
-            if(isApplicable(jta,type))
+            if(jta!=null) // the one on the type always apply.
                 return jta;
         }
 
@@ -277,7 +272,7 @@ abstract class PropertyInfoImpl<T,C,F,M>
             return calcXmlName("##default","##default");
     }
 
-    private final QName calcXmlName(String uri,String local) {
+    private QName calcXmlName(String uri,String local) {
         // compute the default
         TODO.checkSpec();
         if(local.length()==0 || local.equals("##default"))
