@@ -219,6 +219,8 @@ public abstract class TransducedAccessor<BeanT> {
 
         public String print(BeanT bean) throws AccessorException, SAXException {
             TargetT target = acc.get(bean);
+            if(target==null)    return null;
+            
             XMLSerializer w = XMLSerializer.getInstance();
             try {
                 String id = w.grammar.getBeanInfo(target,true).getId(target,w);
