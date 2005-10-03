@@ -15,6 +15,7 @@ import com.sun.xml.bind.v2.model.core.ElementPropertyInfo;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.model.core.TypeRef;
+import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 
 /**
@@ -149,15 +150,19 @@ class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         }
 
         if(isValueList()) {
-            // check if all the item types are simple types
-            // this can't be done when we compute types because
-            // not all TypeInfos are available yet
-            for (TypeRefImpl<TypeT,ClassDeclT> ref : types) {
-                if(!ref.getTarget().isSimpleType()) {
-                    parent.builder.reportError(new IllegalAnnotationException(
-                    Messages.XMLLIST_NEEDS_SIMPLETYPE.format(
-                        nav().getTypeName(ref.getTarget().getType())), this ));
-                    break;
+            // ugly test, because IDREF's are represented as text on the wire,
+            // it's OK to be a value list in that case.
+            if(id()!= ID.IDREF) {
+                // check if all the item types are simple types
+                // this can't be done when we compute types because
+                // not all TypeInfos are available yet
+                for (TypeRefImpl<TypeT,ClassDeclT> ref : types) {
+                    if(!ref.getTarget().isSimpleType()) {
+                        parent.builder.reportError(new IllegalAnnotationException(
+                        Messages.XMLLIST_NEEDS_SIMPLETYPE.format(
+                            nav().getTypeName(ref.getTarget().getType())), this ));
+                        break;
+                    }
                 }
             }
         }
