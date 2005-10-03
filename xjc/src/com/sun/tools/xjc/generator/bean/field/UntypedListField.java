@@ -89,7 +89,7 @@ public class UntypedListField extends AbstractListField {
         // so don't do eager allocation if it's ArrayList.
         // otherwise we need to do eager allocation so that the collection type specified by the user
         // will be used.
-        super(context, prop, !coreList.name().equals("java.util.ArrayList"));
+        super(context, prop, !coreList.fullName().equals("java.util.ArrayList"));
         this.coreList = coreList.narrow(exposedType.boxify());
         generate();
     }
