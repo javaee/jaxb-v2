@@ -56,7 +56,7 @@ public final class BISchemaBinding extends AbstractDeclarationImpl {
         @XmlElement
         NamingRule modelGroupName = defaultNamingRule;
         @XmlElement
-        NamingRule anonymousTypeName = new NamingRule("","Type");
+        NamingRule anonymousTypeName = defaultNamingRule;
     }
 
     @XmlElement
