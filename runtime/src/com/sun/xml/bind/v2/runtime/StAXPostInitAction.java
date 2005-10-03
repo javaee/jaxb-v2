@@ -9,7 +9,8 @@ import javax.xml.stream.XMLStreamWriter;
  * from a StAX writer.
  *
  * <p>
- * It's always used either with {@link XMLStreamWriter} or {@link XMLEventWriter},
+ * It's always used either with {@link XMLStreamWriter}, {@link XMLEventWriter}, or bare
+ * {@link NamespaceContext},
  * but to reduce the # of classes in the runtime I wrote only one class that handles both.
  *
  * @author Kohsuke Kawaguchi
@@ -17,24 +18,34 @@ import javax.xml.stream.XMLStreamWriter;
 final class StAXPostInitAction implements Runnable {
     private final XMLStreamWriter xsw;
     private final XMLEventWriter xew;
+    private final NamespaceContext nsc;
     private final XMLSerializer serializer;
 
     StAXPostInitAction(XMLStreamWriter xsw,XMLSerializer serializer) {
         this.xsw = xsw;
         this.xew = null;
+        this.nsc = null;
         this.serializer = serializer;
     }
 
     StAXPostInitAction(XMLEventWriter xew,XMLSerializer serializer) {
         this.xsw = null;
         this.xew = xew;
+        this.nsc = null;
+        this.serializer = serializer;
+    }
+
+    StAXPostInitAction(NamespaceContext nsc,XMLSerializer serializer) {
+        this.xsw = null;
+        this.xew = null;
+        this.nsc = nsc;
         this.serializer = serializer;
     }
 
     public void run() {
-        NamespaceContext ns;
+        NamespaceContext ns = nsc;
         if(xsw!=null)   ns = xsw.getNamespaceContext();
-        else            ns = xew.getNamespaceContext();
+        if(xew!=null)   ns = xew.getNamespaceContext();
 
         // StAX javadoc isn't very clear on the behavior,
         // so work defensively in anticipation of broken implementations.

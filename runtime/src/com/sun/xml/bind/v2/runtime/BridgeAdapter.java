@@ -1,8 +1,7 @@
 package com.sun.xml.bind.v2.runtime;
 
-import java.io.OutputStream;
 import java.io.InputStream;
-import java.net.URL;
+import java.io.OutputStream;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.MarshalException;
@@ -11,6 +10,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.Source;
+import javax.xml.namespace.NamespaceContext;
 
 import com.sun.xml.bind.api.Bridge;
 import com.sun.xml.bind.api.BridgeContext;
@@ -42,8 +42,8 @@ final class BridgeAdapter<OnWire,InMemory> extends Bridge<InMemory> {
         core.marshal(context,adaptM(context,inMemory),output);
     }
 
-    public void marshal(BridgeContext context, InMemory inMemory, OutputStream output) throws JAXBException {
-        core.marshal(context,adaptM(context,inMemory),output);
+    public void marshal(BridgeContext context, InMemory inMemory, OutputStream output, NamespaceContext nsc) throws JAXBException {
+        core.marshal(context,adaptM(context,inMemory),output,nsc);
     }
 
     public void marshal(BridgeContext context, InMemory inMemory, Node output) throws JAXBException {
