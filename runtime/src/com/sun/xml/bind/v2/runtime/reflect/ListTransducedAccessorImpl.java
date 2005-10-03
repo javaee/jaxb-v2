@@ -61,23 +61,24 @@ public final class ListTransducedAccessorImpl<BeanT,ListT,ItemT,PackT> extends T
     // perhaps we should directly write to XMLSerializer,
     // or maybe add more methods like writeLeafElement.
     public String print(BeanT o) throws AccessorException, SAXException {
-        StringBuffer buf = new StringBuffer();
         ListT list = acc.get(o);
 
-        if(list!=null) {
-            XMLSerializer w = XMLSerializer.getInstance();
-            ListIterator<ItemT> itr = lister.iterator(list, w);
+        if(list==null)
+            return null;
 
-            while(itr.hasNext()) {
-                try {
-                    ItemT item = itr.next();
-                    if (item != null) {
-                        if(buf.length()>0)  buf.append(' ');
-                        buf.append(xducer.print(item));
-                    }
-                } catch (JAXBException e) {
-                    w.reportError(null,e);
+        StringBuilder buf = new StringBuilder();
+        XMLSerializer w = XMLSerializer.getInstance();
+        ListIterator<ItemT> itr = lister.iterator(list, w);
+
+        while(itr.hasNext()) {
+            try {
+                ItemT item = itr.next();
+                if (item != null) {
+                    if(buf.length()>0)  buf.append(' ');
+                    buf.append(xducer.print(item));
                 }
+            } catch (JAXBException e) {
+                w.reportError(null,e);
             }
         }
         return buf.toString();
