@@ -2,10 +2,10 @@ package com.sun.xml.bind.v2.runtime;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.Source;
@@ -46,9 +46,14 @@ final class BridgeImpl<T> extends Bridge<T> {
         m.write(tagName,bi,t,XMLStreamWriterOutput.create(output),new StAXPostInitAction(output,m.serializer));
     }
 
-    public void marshal(BridgeContext context, T t, OutputStream output) throws JAXBException {
+    public void marshal(BridgeContext context, T t, OutputStream output, NamespaceContext nsContext) throws JAXBException {
         MarshallerImpl m = ((BridgeContextImpl)context).marshaller;
-        m.write(tagName,bi,t,m.createWriter(output),null);
+
+        Runnable pia = null;
+        if(nsContext!=null)
+            pia = new StAXPostInitAction(nsContext,m.serializer);
+
+        m.write(tagName,bi,t,m.createWriter(output),pia);
     }
 
     public void marshal(BridgeContext context, T t, Node output) throws JAXBException {

@@ -8,6 +8,7 @@ import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
+import javax.xml.namespace.NamespaceContext;
 
 import org.w3c.dom.Node;
 
@@ -45,12 +46,16 @@ public abstract class Bridge<T> {
      * Marshals the specified type object with the implicit element name
      * associated with this instance of {@link Bridge}.
      *
+     * @param nsContext
+     *      if this marshalling is done to marshal a subelement, this {@link NamespaceContext}
+     *      represents in-scope namespace bindings available for that element. Can be null,
+     *      in which case JAXB assumes no in-scope namespaces.
      * @throws JAXBException
      *      if there was an error while marshalling.
      *
      * @since 2.0 EA1
      */
-    public abstract void marshal(BridgeContext context,T object,OutputStream output) throws JAXBException;
+    public abstract void marshal(BridgeContext context,T object,OutputStream output, NamespaceContext nsContext) throws JAXBException;
 
     public abstract void marshal(BridgeContext context,T object,Node output) throws JAXBException;
 
