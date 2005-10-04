@@ -102,7 +102,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -774,7 +774,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
                     public void set(Object bean, Object value) throws AccessorException {
                         acc.setUnadapted(bean,value);
                     }
-                }; ;
+                };
         }
         throw new JAXBException(new QName(nsUri,localName)+" is not a valid property on "+wrapperBean);
     }
