@@ -11,11 +11,11 @@ import com.sun.xml.bind.api.AccessorException;
  *
  * @author Kohsuke Kawaguchi
  */
-public class NullSafeAccessor<B,V> extends Accessor<B,V> {
+public class NullSafeAccessor<B,V,P> extends Accessor<B,V> {
     private final Accessor<B,V> core;
-    private final Lister lister;
+    private final Lister<B,V,?,P> lister;
 
-    public NullSafeAccessor(Accessor<B,V> core, Lister lister) {
+    public NullSafeAccessor(Accessor<B,V> core, Lister<B,V,?,P> lister) {
         super(core.getValueType());
         this.core = core;
         this.lister = lister;
@@ -25,7 +25,7 @@ public class NullSafeAccessor<B,V> extends Accessor<B,V> {
         V v = core.get(bean);
         if(v==null) {
             // creates a new object
-            Object pack = lister.startPacking(bean,core);
+            P pack = lister.startPacking(bean,core);
             lister.endPacking(pack,bean,core);
             v = core.get(bean);
         }
