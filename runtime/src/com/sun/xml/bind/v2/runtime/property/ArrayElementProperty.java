@@ -225,7 +225,7 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
                     // null (just like any user apps), but since we are providing a raw accessor,
                     // which just grabs the value from the field, we wrap it so that it won't return
                     // null.
-                    return new NullSafeAccessor(acc);
+                    return new NullSafeAccessor(acc,lister);
             }
         }
         return null;
