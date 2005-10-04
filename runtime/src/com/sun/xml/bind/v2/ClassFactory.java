@@ -5,6 +5,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.HashSet;
+import java.util.TreeSet;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.security.AccessController;
@@ -134,4 +139,12 @@ public final class ClassFactory {
         // and returns null
         return null;
     }
+
+    public static final Class[] COLLECTION_IMPL_CLASSES = new Class[] {
+        ArrayList.class,
+        LinkedList.class,
+        HashSet.class,
+        TreeSet.class,
+        Stack.class,
+    };
 }

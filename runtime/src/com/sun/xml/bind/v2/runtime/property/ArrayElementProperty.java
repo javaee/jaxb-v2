@@ -23,6 +23,7 @@ import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.reflect.ListIterator;
 import com.sun.xml.bind.v2.runtime.reflect.Lister;
+import com.sun.xml.bind.v2.runtime.reflect.NullSafeAccessor;
 import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.DefaultValueLoaderDecorator;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
@@ -220,7 +221,11 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
         } else {
             for (TagAndType tt : typeMap.values()) {
                 if(tt.tagName.equals(nsUri,localName))
-                    return acc;
+                    // when we can't distinguish null and empty list, JAX-WS doesn't want to see
+                    // null (just like any user apps), but since we are providing a raw accessor,
+                    // which just grabs the value from the field, we wrap it so that it won't return
+                    // null.
+                    return new NullSafeAccessor(acc);
             }
         }
         return null;

@@ -115,16 +115,8 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
         return l;
     }
 
-    private static final Class[] implClasses = new Class[] {
-        ArrayList.class,
-        LinkedList.class,
-        HashSet.class,
-        TreeSet.class,
-        Stack.class,
-    };
-
     private static Class getImplClass(Class fieldType) {
-        return ClassFactory.inferImplClass(fieldType,implClasses);
+        return ClassFactory.inferImplClass(fieldType,ClassFactory.COLLECTION_IMPL_CLASSES);
     }
 
     /**
