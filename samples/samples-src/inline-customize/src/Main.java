@@ -33,7 +33,7 @@ import javax.xml.bind.Unmarshaller;
 import primer.myPo.*;
 
 /*
- * $Id: Main.java,v 1.2 2005-09-10 19:08:06 kohsuke Exp $
+ * $Id: Main.java,v 1.3 2005-10-04 16:02:19 ryan_shoemaker Exp $
  *
  * Copyright 2003 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -77,7 +77,7 @@ public class Main {
 	    while( iter.hasNext()) {
 		
                 // update to 20% off sale price	
-                Items.ItemType item = (Items.ItemType)iter.next();
+                Items.Item item = (Items.Item)iter.next();
             	item.setPrice(item.getPrice().multiply(new BigDecimal("0.80")));
                 
                 //Calculate sales tax for specific states
