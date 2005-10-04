@@ -539,8 +539,6 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             return (o.equals(adapter.adapterType));
         }
 
-        private int depth;
-
         /**
          * Writes a type attribute (if the referenced type is a global type)
          * or writes out the definition of the anonymous type in place (if the referenced
@@ -556,12 +554,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
         private void writeTypeRef(TypeHost th, NonElement<TypeT,ClassDeclT> type, String refAttName) {
             if(type.getTypeName()==null) {
                 if(type instanceof ClassInfo) {
-                    depth++;
-                    for( int i=0; i<depth; i++ )
-                        System.out.print("  ");
-                    System.out.println(((ClassInfo<TypeT,ClassDeclT>)type).getClazz());
                     writeClass( (ClassInfo<TypeT,ClassDeclT>)type, th );
-                    depth--;
                 } else {
                     writeEnum( (EnumLeafInfo<TypeT,ClassDeclT>)type, (SimpleTypeHost)th);
                 }
@@ -887,8 +880,28 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 LocalElement e = compositor.element();
                 if (occurs == null) occurs = e;
                 QName tn = t.getTagName();
-                e.name(tn.getLocalPart());
-                writeTypeRef(e,t, "type");
+
+                boolean useElementRef = false;
+
+                // check if we can put <element ref />
+                if(t.getTarget() instanceof Element) {
+                    Element te = (Element) t.getTarget();
+                    QName targetTagName = te.getElementName();
+                    useElementRef = targetTagName!=null && targetTagName.equals(tn);
+                }
+
+                if(t.isNillable() || t.getDefaultValue()!=null)
+                    useElementRef = false;  // can't put those attributes on <element ref>
+
+                if(useElementRef) {
+                    e.ref(tn);
+                } else {
+                    e.name(tn.getLocalPart());
+                    writeTypeRef(e,t, "type");
+                    if(tn.getNamespaceURI().length()>0)
+                        e.form("qualified");    // TODO: what if the URI != tns?
+                }
+
                 if (t.isNillable()) {
                     e.nillable(true);
                 } else {
@@ -896,8 +909,6 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 }
                 if(t.getDefaultValue()!=null)
                     e._default(t.getDefaultValue());
-                if(tn.getNamespaceURI().length()>0)
-                    e.form("qualified");    // TODO: what if the URI != tns?
             }
 
             if (ep.isCollection()) {
