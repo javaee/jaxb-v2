@@ -17,29 +17,21 @@ import com.sun.xml.bind.v2.ClassFactory;
  */
 public class NullSafeAccessor<B,V extends Collection> extends Accessor<B,V> {
     private final Accessor<B,V> core;
-    private final Class<? extends V> implClass;
+    private final Lister lister;
 
-    public NullSafeAccessor(Accessor<B,V> core) {
+    public NullSafeAccessor(Accessor<B,V> core, Lister lister) {
         super(core.getValueType());
         this.core = core;
-        this.implClass = ClassFactory.inferImplClass(getValueType(),ClassFactory.COLLECTION_IMPL_CLASSES);
+        this.lister = lister;
     }
 
     public V get(B bean) throws AccessorException {
         V v = core.get(bean);
         if(v==null) {
-            try {
-                v = ClassFactory.create0(implClass);
-            } catch (IllegalAccessException e) {
-                throw new AccessorException(e);
-            } catch (InvocationTargetException e) {
-                throw new AccessorException(e);
-            } catch (InstantiationException e) {
-                throw new AccessorException(e);
-            }
-            // not sure if we should do this. given the way JAX-WS uses it,
-            // probably not.
-            // core.set(bean,v);
+            // creates a new object
+            Object pack = lister.startPacking(bean,core);
+            lister.endPacking(pack,bean,core);
+            v = core.get(bean);
         }
         return v;
     }
