@@ -15,7 +15,7 @@ import com.sun.xml.bind.v2.ClassFactory;
  *
  * @author Kohsuke Kawaguchi
  */
-public class NullSafeAccessor<B,V extends Collection> extends Accessor<B,V> {
+public class NullSafeAccessor<B,V> extends Accessor<B,V> {
     private final Accessor<B,V> core;
     private final Lister lister;
 
