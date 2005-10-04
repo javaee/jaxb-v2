@@ -1,10 +1,6 @@
 package com.sun.xml.bind.v2.runtime.reflect;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-
 import com.sun.xml.bind.api.AccessorException;
-import com.sun.xml.bind.v2.ClassFactory;
 
 /**
  * {@link Accessor} wrapper that replaces a null with an empty collection.
