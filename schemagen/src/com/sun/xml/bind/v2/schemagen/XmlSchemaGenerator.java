@@ -86,7 +86,7 @@ import static com.sun.xml.bind.v2.schemagen.Util.*;
  * @author Ryan Shoemaker
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
-public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implements SchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> {
+public final class XmlSchemaGenerator<T,C,F,M> implements SchemaGenerator<T,C,F,M> {
 
     private static final Logger logger = Util.getClassLogger();
 
@@ -104,11 +104,11 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
     /** model navigator **/
     private Navigator navigator;
 
-    public XmlSchemaGenerator( Navigator<TypeT,ClassDeclT,FieldT,MethodT> navigator) {
+    public XmlSchemaGenerator( Navigator<T,C,F,M> navigator) {
         this.navigator = navigator;
     }
 
-    public void fill(TypeInfoSet<TypeT,ClassDeclT,FieldT,MethodT> types) {
+    public void fill(TypeInfoSet<T,C,F,M> types) {
         addAllClasses(types.beans().values());
         addAllElements(types.getElementMappings(null).values());
         addAllEnums(types.enums().values());
@@ -133,7 +133,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
      * and the other for the type name. If they are different, we put the same
      * {@link ClassInfo} to two {@link Namespace}s.
      */
-    public void add( ClassInfo<TypeT,ClassDeclT> clazz ) {
+    public void add( ClassInfo<T,C> clazz ) {
         assert clazz!=null;
 
         String nsUri = null;
@@ -159,12 +159,12 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
         n.classes.add(clazz);
 
         // search properties for foreign namespace references
-        for( PropertyInfo<TypeT, ClassDeclT> p : clazz.getProperties()) {
+        for( PropertyInfo<T, C> p : clazz.getProperties()) {
             n.processForeignNamespaces(p);
         }
 
         // recurse on baseTypes to make sure that we can refer to them in the schema
-        ClassInfo<TypeT,ClassDeclT> bc = clazz.getBaseClass();
+        ClassInfo<T,C> bc = clazz.getBaseClass();
         if (bc != null)
             add(bc);
     }
@@ -172,15 +172,15 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
     /**
      * Adds all the {@link ClassInfo}s in the given collection.
      */
-    public void addAllClasses( Iterable<? extends ClassInfo<TypeT,ClassDeclT>> col ) {
-        for( ClassInfo<TypeT,ClassDeclT> ci : col )
+    public void addAllClasses( Iterable<? extends ClassInfo<T,C>> col ) {
+        for( ClassInfo<T,C> ci : col )
             add(ci);
     }
 
     /**
      * Adds a new element to the list of elements to be written.
      */
-    public void add( ElementInfo<TypeT,ClassDeclT> elem ) {
+    public void add( ElementInfo<T,C> elem ) {
         assert elem!=null;
 
         Namespace n = getNamespace(elem.getElementName().getNamespaceURI());
@@ -193,12 +193,12 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
     /**
      * Adds all the {@link ElementInfo}s in the given collection.
      */
-    public void addAllElements( Iterable<? extends ElementInfo<TypeT,ClassDeclT>> col ) {
-        for( ElementInfo<TypeT,ClassDeclT> ei : col )
+    public void addAllElements( Iterable<? extends ElementInfo<T,C>> col ) {
+        for( ElementInfo<T,C> ei : col )
             add(ei);
     }
 
-    public void add( EnumLeafInfo<TypeT,ClassDeclT> envm ) {
+    public void add( EnumLeafInfo<T,C> envm ) {
         assert envm!=null;
 
         final QName typeName = envm.getTypeName();
@@ -209,20 +209,20 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
 
             // search for foreign namespace references
             n.addDependencyTo(envm.getBaseType().getTypeName());
-        } else { //annonymous
-            return;
         }
+
+        //annonymous
     }
 
     /**
      * Adds all the {@link EnumLeafInfo}s in the given collection.
      */
-    public void addAllEnums( Iterable<? extends EnumLeafInfo<TypeT,ClassDeclT>> col ) {
-        for( EnumLeafInfo<TypeT,ClassDeclT> ei : col )
+    public void addAllEnums( Iterable<? extends EnumLeafInfo<T,C>> col ) {
+        for( EnumLeafInfo<T,C> ei : col )
             add(ei);
     }
 
-    public void add( ArrayInfo<TypeT,ClassDeclT> a ) {
+    public void add( ArrayInfo<T,C> a ) {
         assert a!=null;
 
         final String namespaceURI = a.getTypeName().getNamespaceURI();
@@ -233,8 +233,8 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
         n.addDependencyTo(a.getItemType().getTypeName());
     }
 
-    public void addAllArrays( Iterable<? extends ArrayInfo<TypeT,ClassDeclT>> col ) {
-        for( ArrayInfo<TypeT,ClassDeclT> a : col)
+    public void addAllArrays( Iterable<? extends ArrayInfo<T,C>> col ) {
+        for( ArrayInfo<T,C> a : col)
             add(a);
     }
 
@@ -247,7 +247,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
      *      The type this element refers to.
      *      Can be null, in which case the element refers to an empty anonymous complex type.
      */
-    public void add( QName tagName, NonElement<TypeT,ClassDeclT> type ) {
+    public void add( QName tagName, NonElement<T,C> type ) {
 
         Namespace n = getNamespace(tagName.getNamespaceURI());
         n.additionalElementDecls.put(tagName.getLocalPart(),type);
@@ -321,27 +321,27 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
         /**
          * List of classes in this namespace.
          */
-        private final Set<ClassInfo<TypeT,ClassDeclT>> classes = new LinkedHashSet<ClassInfo<TypeT,ClassDeclT>>();
+        private final Set<ClassInfo<T,C>> classes = new LinkedHashSet<ClassInfo<T,C>>();
 
         /**
          * Set of elements in this namespace
          */
-        private final Set<ElementInfo<TypeT,ClassDeclT>> elements = new LinkedHashSet<ElementInfo<TypeT,ClassDeclT>>();
+        private final Set<ElementInfo<T,C>> elements = new LinkedHashSet<ElementInfo<T,C>>();
 
         /**
          * Set of enums in this namespace
          */
-        private Set<EnumLeafInfo<TypeT,ClassDeclT>> enums = new LinkedHashSet<EnumLeafInfo<TypeT,ClassDeclT>>();
+        private Set<EnumLeafInfo<T,C>> enums = new LinkedHashSet<EnumLeafInfo<T,C>>();
 
         /**
          * Set of arrays in this namespace
          */
-        private Set<ArrayInfo<TypeT,ClassDeclT>> arrays = new LinkedHashSet<ArrayInfo<TypeT,ClassDeclT>>();
+        private Set<ArrayInfo<T,C>> arrays = new LinkedHashSet<ArrayInfo<T,C>>();
 
         /**
          * Additional element declarations.
          */
-        private Map<String,NonElement<TypeT,ClassDeclT>> additionalElementDecls = new HashMap<String, NonElement<TypeT, ClassDeclT>>();
+        private Map<String,NonElement<T,C>> additionalElementDecls = new HashMap<String, NonElement<T, C>>();
 
         /**
          * Additional namespace declarations to be made. Taken from {@link XmlSchema#xmlns}.
@@ -362,8 +362,8 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
          *
          * @param p the PropertyInfo
          */
-        private void processForeignNamespaces(PropertyInfo<TypeT, ClassDeclT> p) {
-            for( TypeInfo<TypeT, ClassDeclT> t : p.ref()) {
+        private void processForeignNamespaces(PropertyInfo<T, C> p) {
+            for( TypeInfo<T, C> t : p.ref()) {
                 if(t instanceof Element) {
                     addDependencyTo(((Element)t).getElementName());
                 }
@@ -421,12 +421,12 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 }
 
                 // then write each component
-                for(ElementInfo<TypeT, ClassDeclT> e : elements) {
+                for(ElementInfo<T, C> e : elements) {
                     writeElement(e, schema);
                     schema._pcdata(newline);
                 }
-                for (ClassInfo<TypeT, ClassDeclT> c : classes) {
-                    Element<TypeT,ClassDeclT> e = c.asElement();
+                for (ClassInfo<T, C> c : classes) {
+                    Element<T,C> e = c.asElement();
                     if (e != null) {
                         // ClassInfo can have two namespaces URIs (one for type, another for element),
                         // so make sure that we want to write this here.
@@ -441,7 +441,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                         writeClass(c, schema);
                     schema._pcdata(newline);
                 }
-                for (EnumLeafInfo<TypeT, ClassDeclT> e : enums) {
+                for (EnumLeafInfo<T, C> e : enums) {
                     if (e.getTypeName()==null) {
                         // don't generate anything if it's an anonymous type
                         continue;
@@ -449,11 +449,11 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                     writeEnum(e,schema);
                     schema._pcdata(newline);
                 }
-                for (ArrayInfo<TypeT, ClassDeclT> a : arrays) {
+                for (ArrayInfo<T, C> a : arrays) {
                     writeArray(a,schema);
                     schema._pcdata(newline);
                 }
-                for (Map.Entry<String,NonElement<TypeT,ClassDeclT>> e : additionalElementDecls.entrySet()) {
+                for (Map.Entry<String,NonElement<T,C>> e : additionalElementDecls.entrySet()) {
                     writeElementDecl(e.getKey(),e.getValue(),schema);
                     schema._pcdata(newline);
                 }
@@ -466,7 +466,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             }
         }
 
-        private void writeElementDecl(String localName, NonElement<TypeT,ClassDeclT> value, Schema schema) {
+        private void writeElementDecl(String localName, NonElement<T,C> value, Schema schema) {
             TopLevelElement e = schema.element().name(localName);
             if(value!=null)
                 writeTypeRef(e,value, "type");
@@ -487,7 +487,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
          * and attribute in a type-safe way, so we will compromise for now and
          * use _attribute().
          */
-        private void writeTypeRef(TypeHost th, NonElementRef<TypeT, ClassDeclT> typeRef, String refAttName) {
+        private void writeTypeRef(TypeHost th, NonElementRef<T, C> typeRef, String refAttName) {
             // ID / IDREF handling
             switch(typeRef.getSource().id()) {
             case ID:
@@ -529,10 +529,9 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
         /**
          * Examine the specified element ref and determine if a swaRef attribute needs to be generated
          * @param typeRef
-         * @return
          */
-        private boolean generateSwaRefAdapter(NonElementRef<TypeT,ClassDeclT> typeRef) {
-            final Adapter<TypeT,ClassDeclT> adapter = typeRef.getSource().getAdapter();
+        private boolean generateSwaRefAdapter(NonElementRef<T,C> typeRef) {
+            final Adapter<T,C> adapter = typeRef.getSource().getAdapter();
             if (adapter == null) return false;
             final Object o = navigator.asDecl(SwaRefAdapter.class);
             if (o == null) return false;
@@ -551,12 +550,12 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
          * @param refAttName
          *      The name of the attribute used when referencing a type by QName.
          */
-        private void writeTypeRef(TypeHost th, NonElement<TypeT,ClassDeclT> type, String refAttName) {
+        private void writeTypeRef(TypeHost th, NonElement<T,C> type, String refAttName) {
             if(type.getTypeName()==null) {
                 if(type instanceof ClassInfo) {
-                    writeClass( (ClassInfo<TypeT,ClassDeclT>)type, th );
+                    writeClass( (ClassInfo<T,C>)type, th );
                 } else {
-                    writeEnum( (EnumLeafInfo<TypeT,ClassDeclT>)type, (SimpleTypeHost)th);
+                    writeEnum( (EnumLeafInfo<T,C>)type, (SimpleTypeHost)th);
                 }
             } else {
                 th._attribute(refAttName,type.getTypeName());
@@ -566,7 +565,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
         /**
          * writes the schema definition for the given array class
          */
-        private void writeArray(ArrayInfo<TypeT, ClassDeclT> a, Schema schema) {
+        private void writeArray(ArrayInfo<T, C> a, Schema schema) {
             ComplexType ct = schema.complexType().name(a.getTypeName().getLocalPart());
             ct._final("#all");
             LocalElement le = ct.sequence().element().name("item");
@@ -579,7 +578,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
         /**
          * writes the schema definition for the specified type-safe enum in the given TypeHost
          */
-        private void writeEnum(EnumLeafInfo<TypeT, ClassDeclT> e, SimpleTypeHost th) {
+        private void writeEnum(EnumLeafInfo<T, C> e, SimpleTypeHost th) {
             SimpleType st = th.simpleType();
             writeName(e,st);
 
@@ -598,14 +597,14 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
          * @param e the element info
          * @param schema the schema writer
          */
-        private void writeElement(ElementInfo<TypeT, ClassDeclT> e, Schema schema) {
+        private void writeElement(ElementInfo<T, C> e, Schema schema) {
             TopLevelElement elem = schema.element();
             elem.name(e.getElementName().getLocalPart());
             writeTypeRef( elem, e.getContentType(), "type");
             elem.commit();
         }
 
-        private void writeTopLevelClass(ClassInfo<TypeT, ClassDeclT> c, Element<TypeT, ClassDeclT> e, TypeHost schema) {
+        private void writeTopLevelClass(ClassInfo<T, C> c, Element<T, C> e, TypeHost schema) {
             // ClassInfo objects only represent JAXB beans, not primitives or built-in types
             // if the class is also mapped to an element (@XmlElement), generate such a decl.
             //
@@ -628,7 +627,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
          * @param c the class info
          * @param parent the writer of the parent element into which the type will be defined
          */
-        private void writeClass(ClassInfo<TypeT,ClassDeclT> c, TypeHost parent) {
+        private void writeClass(ClassInfo<T,C> c, TypeHost parent) {
             // special handling for value properties
             if (containsValueProp(c)) {
                 if (c.getProperties().size() == 1) {
@@ -637,7 +636,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                     // <simpleType name="foo">
                     //   <xs:restriction base="xs:int"/>
                     // </>
-                    ValuePropertyInfo vp = (ValuePropertyInfo)c.getProperties().get(0);
+                    ValuePropertyInfo<T,C> vp = (ValuePropertyInfo<T,C>)c.getProperties().get(0);
                     SimpleType st = ((SimpleTypeHost)parent).simpleType();
                     writeName(c, st);
                     if(vp.isCollection()) {
@@ -665,10 +664,10 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                         ct._final("extension restriction");
 
                     SimpleExtension se = ct.simpleContent().extension();
-                    for (PropertyInfo p : c.getProperties()) {
+                    for (PropertyInfo<T,C> p : c.getProperties()) {
                         switch (p.kind()) {
                         case ATTRIBUTE:
-                            handleAttributeProp((AttributePropertyInfo) p,se);
+                            handleAttributeProp((AttributePropertyInfo<T,C>)p,se);
                             break;
                         case VALUE:
                             TODO.checkSpec("what if vp.isCollection() == true?");
@@ -711,7 +710,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             ComplexExtension ce = null;
 
             // if there is a base class, we need to generate an extension in the schema
-            final ClassInfo<TypeT,ClassDeclT> bc = c.getBaseClass();
+            final ClassInfo<T,C> bc = c.getBaseClass();
             if (bc != null) {
                 ce = ct.complexContent().extension();
                 ce.base(bc.getTypeName());
@@ -739,7 +738,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
                 // write some out of order attributes to handle min/maxOccurs
                 compositor.block();
 
-                for (PropertyInfo p : c.getProperties()) {
+                for (PropertyInfo<T,C> p : c.getProperties()) {
                     // handling for <complexType @mixed='true' ...>
                     if(p instanceof ReferencePropertyInfo && ((ReferencePropertyInfo)p).isMixed()) {
                         ct.mixed(true);
@@ -767,13 +766,13 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
         /**
          * Writes the name attribute if it's named.
          */
-        private void writeName(NonElement<TypeT,ClassDeclT> c, TypedXmlWriter xw) {
+        private void writeName(NonElement<T,C> c, TypedXmlWriter xw) {
             QName tn = c.getTypeName();
             if(tn!=null)
                 xw._attribute("name",tn.getLocalPart());  // named
         }
 
-        private boolean containsValueProp(ClassInfo<TypeT, ClassDeclT> c) {
+        private boolean containsValueProp(ClassInfo<T, C> c) {
             for (PropertyInfo p : c.getProperties()) {
                 if (p instanceof ValuePropertyInfo) return true;
             }
@@ -783,19 +782,19 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
         /**
          * write the schema definition(s) for the specified property
          */
-        private void writeProperty(PropertyInfo p, AttrDecls attr, ExplicitGroup compositor) {
+        private void writeProperty(PropertyInfo<T,C> p, AttrDecls attr, ExplicitGroup compositor) {
             switch(p.kind()) {
             case ELEMENT:
-                handleElementProp((ElementPropertyInfo)p, compositor);
+                handleElementProp((ElementPropertyInfo<T,C>)p, compositor);
                 break;
             case ATTRIBUTE:
-                handleAttributeProp((AttributePropertyInfo)p, attr);
+                handleAttributeProp((AttributePropertyInfo<T,C>)p, attr);
                 break;
             case REFERENCE:
-                handleReferenceProp((ReferencePropertyInfo)p, compositor);
+                handleReferenceProp((ReferencePropertyInfo<T,C>)p, compositor);
                 break;
             case MAP:
-                handleMapProp((MapPropertyInfo)p, compositor);
+                handleMapProp((MapPropertyInfo<T,C>)p, compositor);
                 break;
             case VALUE:
                 // value props handled above in writeClass()
@@ -818,12 +817,12 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
          * @param ep the element property
          * @param compositor the schema compositor (sequence or all)
          */
-        private void handleElementProp(ElementPropertyInfo<TypeT,ClassDeclT> ep, ExplicitGroup compositor) {
+        private void handleElementProp(ElementPropertyInfo<T,C> ep, ExplicitGroup compositor) {
             QName ename = ep.getXmlName();
             Occurs occurs = null;
 
             if (ep.isValueList()) {
-                TypeRef t = ep.getTypes().get(0);
+                TypeRef<T,C> t = ep.getTypes().get(0);
                 LocalElement e = compositor.element();
 
                 QName tn = t.getTagName();
@@ -876,7 +875,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             boolean allNillable = true; // remain true after the next for loop if all TypeRefs are nillable
 
             // fill in the content model
-            for (TypeRef t : ep.getTypes()) {
+            for (TypeRef<T,C> t : ep.getTypes()) {
                 LocalElement e = compositor.element();
                 if (occurs == null) occurs = e;
                 QName tn = t.getTagName();
@@ -930,7 +929,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
          * @param ap the attribute
          * @param attr the schema definition to which the attribute will be added
          */
-        private void handleAttributeProp(AttributePropertyInfo ap, AttrDecls attr) {
+        private void handleAttributeProp(AttributePropertyInfo<T,C> ap, AttrDecls attr) {
             // attr is either a top-level ComplexType or a ComplexExtension
             //
             // [RESULT]
@@ -992,7 +991,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
          * @param rp
          * @param compositor
          */
-        private void handleReferenceProp(ReferencePropertyInfo<TypeT,ClassDeclT> rp, ExplicitGroup compositor) {
+        private void handleReferenceProp(ReferencePropertyInfo<T,C> rp, ExplicitGroup compositor) {
             QName ename = rp.getXmlName();
             Occurs occurs = null;
 
@@ -1020,7 +1019,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
 
             // fill in content model
             TODO.checkSpec("should we loop in the case of a non-collection ep?");
-            for (Element<TypeT, ClassDeclT> e : rp.getElements()) {
+            for (Element<T, C> e : rp.getElements()) {
                 LocalElement eref = compositor.element();
                 if (occurs == null) occurs = eref;
                 eref.ref(e.getElementName());
@@ -1047,7 +1046,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
          * @param mp the map property
          * @param compositor the schema compositor (sequence or all)
          */
-        private void handleMapProp(MapPropertyInfo<TypeT,ClassDeclT> mp, ExplicitGroup compositor) {
+        private void handleMapProp(MapPropertyInfo<T,C> mp, ExplicitGroup compositor) {
             QName ename = mp.getXmlName();
 
             LocalElement e = compositor.element();
@@ -1066,7 +1065,7 @@ public final class XmlSchemaGenerator<TypeT,ClassDeclT,FieldT,MethodT> implement
             writeKeyOrValue(seq, "value", mp.getValueType());
         }
 
-        private void writeKeyOrValue(ExplicitGroup seq, String tagName, NonElement<TypeT, ClassDeclT> typeRef) {
+        private void writeKeyOrValue(ExplicitGroup seq, String tagName, NonElement<T, C> typeRef) {
             LocalElement key = seq.element().name(tagName);
             key.minOccurs(0);
             writeTypeRef(key, typeRef, "type");
