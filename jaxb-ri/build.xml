@@ -47,7 +47,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.37 2005-09-30 16:29:59 ryan_shoemaker Exp $
+       $Id: build.xml,v 1.38 2005-10-06 19:12:56 kk122374 Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -415,7 +415,7 @@ Class-Path: ${manifest.classpath}
         <tstamp />
         
         <property name="bin.installer.stage" value="${jaxb.root}/build/bin-installer" />
-        <property name="bin.installer.className" value="JAXB_RI_${DSTAMP}" />
+        <property name="bin.installer.className" value="JAXB2_${DSTAMP}" />
         <property name="bin.installer.jar" value="${jaxb.root}/build/${bin.installer.className}.jar" />
         
         <mkdir dir="${bin.installer.stage}"/>
@@ -456,7 +456,7 @@ Class-Path: ${manifest.classpath}
         <tstamp />
         
         <property name="src.installer.stage" value="${jaxb.root}/build/src-installer" />
-        <property name="src.installer.className" value="JAXB_RI_src_${DSTAMP}" />
+        <property name="src.installer.className" value="JAXB2_src_${DSTAMP}" />
         <property name="src.installer.class" value="${jaxb.root}/build/${src.installer.className}.jar" />
         <property name="src.installer.tmp" value="${jaxb.root}/build/src-tmp" />
 
