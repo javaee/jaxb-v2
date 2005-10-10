@@ -89,10 +89,14 @@ public class XMLEventWriterOutput extends XmlOutputAbstractImpl {
                 localName));
     }
 
-    public void text(CharSequence value, boolean needsSeparatingWhitespace) throws IOException, SAXException, XMLStreamException {
+    public void text(String value, boolean needsSeparatingWhitespace) throws IOException, SAXException, XMLStreamException {
         if(needsSeparatingWhitespace)
             out.add(sp);
-        out.add(ef.createCharacters(value.toString()));
+        out.add(ef.createCharacters(value));
+    }
+
+    public void text(Pcdata value, boolean needsSeparatingWhitespace) throws IOException, SAXException, XMLStreamException {
+        text(value.toString(),needsSeparatingWhitespace);
     }
 
     public void flush() throws IOException, XMLStreamException {

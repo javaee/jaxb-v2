@@ -14,7 +14,7 @@ import org.xml.sax.SAXException;
  *
  * @author Kohsuke Kawaguchi
  */
-public final class ListTransducedAccessorImpl<BeanT,ListT,ItemT,PackT> extends TransducedAccessor<BeanT> {
+public final class ListTransducedAccessorImpl<BeanT,ListT,ItemT,PackT> extends DefaultTransducedAccessor<BeanT> {
     /**
      * {@link Transducer} for each item type.
      */

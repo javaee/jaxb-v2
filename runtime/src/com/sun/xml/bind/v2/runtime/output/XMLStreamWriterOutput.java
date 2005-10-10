@@ -41,6 +41,8 @@ public class XMLStreamWriterOutput extends XmlOutputAbstractImpl {
 
     private final XMLStreamWriter out;
 
+    private final char[] buf = new char[256];
+
     protected XMLStreamWriterOutput(XMLStreamWriter out) {
         this.out = out;
     }
@@ -95,13 +97,24 @@ public class XMLStreamWriterOutput extends XmlOutputAbstractImpl {
         out.writeEndElement();
     }
 
-    public void text(CharSequence value, boolean needsSeparatingWhitespace) throws IOException, SAXException, XMLStreamException {
+    public void text(String value, boolean needsSeparatingWhitespace) throws IOException, SAXException, XMLStreamException {
         if(needsSeparatingWhitespace)
             out.writeCharacters(" ");
-        out.writeCharacters(value.toString());
+        out.writeCharacters(value);
     }
 
+    public void text(Pcdata value, boolean needsSeparatingWhitespace) throws IOException, SAXException, XMLStreamException {
+        if(needsSeparatingWhitespace)
+            out.writeCharacters(" ");
 
+        int len = value.length();
+        if(len <buf.length) {
+            value.writeTo(buf,len);
+            out.writeCharacters(buf,0,len);
+        } else {
+            out.writeCharacters(value.toString());
+        }
+    }
 
 
     /**

@@ -8,7 +8,8 @@ import javax.activation.DataHandler;
 
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
-import com.sun.xml.bind.v2.util.ByteArrayOutputStreamEx;
+import com.sun.xml.bind.v2.runtime.output.Pcdata;
+import com.sun.xml.bind.v2.runtime.output.UTF8XmlOutput;
 import com.sun.xml.bind.v2.util.ByteArrayOutputStreamEx;
 
 /**
@@ -25,11 +26,11 @@ import com.sun.xml.bind.v2.util.ByteArrayOutputStreamEx;
  * that could be possibly attached.
  *
  * @see XmlVisitor#text(CharSequence)
- * @see XMLSerializer#text(CharSequence,String)
+ * @see XMLSerializer#text(Pcdata,String)
  *
  * @author Kohsuke Kawaguchi
  */
-public final class Base64Data implements CharSequence {
+public final class Base64Data extends Pcdata {
 
     // either dataHandler or (data,dataLen,mimeType?) must be present
 
@@ -229,5 +230,16 @@ public final class Base64Data implements CharSequence {
     public String toString() {
         get();  // fill in the buffer
         return DatatypeConverterImpl._printBase64Binary(data, 0, dataLen);
+    }
+
+    public void writeTo(char[] buf, int start) {
+        get();
+        DatatypeConverterImpl._printBase64Binary(data, 0, dataLen, buf, start);
+    }
+
+    public void writeTo(UTF8XmlOutput output) throws IOException {
+        // TODO: this is inefficient if the data source is note byte[] but DataHandler
+        get();
+        output.text(data,dataLen);
     }
 }

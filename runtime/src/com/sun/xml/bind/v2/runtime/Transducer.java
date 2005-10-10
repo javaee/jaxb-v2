@@ -1,6 +1,9 @@
 package com.sun.xml.bind.v2.runtime;
 
+import java.io.IOException;
+
 import javax.xml.bind.annotation.XmlValue;
+import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
@@ -73,4 +76,18 @@ public interface Transducer<ValueT> {
      *      and SAXException may thrown (or it can return null to recover.)
      */
     ValueT parse(CharSequence lexical) throws AccessorException, SAXException;
+
+    /**
+     * Sends the result of the {@link #print(Object)} operation
+     * to one of the {@link XMLSerializer#text(String, String)} method,
+     * but with the best representation of the value, not necessarily String.
+     */
+    void writeText(XMLSerializer w, ValueT o, String fieldName) throws IOException, SAXException, XMLStreamException, AccessorException;
+
+    /**
+     * Sends the result of the {@link #print(Object)} operation
+     * to one of the {@link XMLSerializer#leafElement(Name, String, String)} method.
+     * but with the best representation of the value, not necessarily String.
+     */
+    void writeLeafElement(XMLSerializer w, Name tagName, ValueT o, String fieldName) throws IOException, SAXException, XMLStreamException, AccessorException;
 }

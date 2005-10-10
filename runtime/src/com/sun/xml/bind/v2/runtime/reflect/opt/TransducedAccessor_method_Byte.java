@@ -2,6 +2,7 @@ package com.sun.xml.bind.v2.runtime.reflect.opt;
 
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
+import com.sun.xml.bind.v2.runtime.reflect.DefaultTransducedAccessor;
 
 /**
  * Template {@link TransducedAccessor} for a byte field.
@@ -13,7 +14,7 @@ import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
  *
  * @see TransducedAccessor#get
  */
-public final class TransducedAccessor_method_Byte extends TransducedAccessor {
+public final class TransducedAccessor_method_Byte extends DefaultTransducedAccessor {
     public String print(Object o) {
         return DatatypeConverterImpl._printByte( ((Bean)o).get_byte() );
     }

@@ -110,15 +110,15 @@ public final class IndentingUTF8XmlOutput extends UTF8XmlOutput {
     }
 
     @Override
-    public void text(CharSequence value, boolean needSP) throws IOException {
+    public void text(String value, boolean needSP) throws IOException {
         seenText = true;
         super.text(value, needSP);
     }
 
     @Override
-    public void text(int value) throws IOException, SAXException, XMLStreamException {
+    public void text(Pcdata value, boolean needSP) throws IOException {
         seenText = true;
-        super.text(value);
+        super.text(value, needSP);
     }
 
     @Override

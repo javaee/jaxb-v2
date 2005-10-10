@@ -1,5 +1,10 @@
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
+import java.io.IOException;
+
+import com.sun.xml.bind.v2.runtime.output.Pcdata;
+import com.sun.xml.bind.v2.runtime.output.UTF8XmlOutput;
+
 /**
  * Typed {@link CharSequence} for int[].
  *
@@ -14,7 +19,7 @@ package com.sun.xml.bind.v2.runtime.unmarshaller;
  *
  * @author Kohsuke Kawaguchi
  */
-public class IntArrayData implements CharSequence {
+public final class IntArrayData extends Pcdata {
 
     private int[] data;
     private int start;
@@ -75,5 +80,18 @@ public class IntArrayData implements CharSequence {
         }
 
         return literal;
+    }
+
+    public String toString() {
+        return literal.toString();
+    }
+
+    public void writeTo(UTF8XmlOutput output) throws IOException {
+        int p = start;
+        for( int i=len; i>0; i-- ) {
+            if(i!=len)
+                output.write(' ');
+            output.text(data[p++]);
+        }
     }
 }

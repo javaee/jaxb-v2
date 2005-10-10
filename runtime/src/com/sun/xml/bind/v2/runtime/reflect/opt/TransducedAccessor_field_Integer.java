@@ -9,6 +9,7 @@ import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
+import com.sun.xml.bind.v2.runtime.reflect.DefaultTransducedAccessor;
 
 import org.xml.sax.SAXException;
 
@@ -22,7 +23,7 @@ import org.xml.sax.SAXException;
  *
  * @see TransducedAccessor#get
  */
-public final class TransducedAccessor_field_Integer extends TransducedAccessor {
+public final class TransducedAccessor_field_Integer extends DefaultTransducedAccessor {
     public String print(Object o) {
         return DatatypeConverterImpl._printInt( ((Bean)o).f_int );
     }
@@ -36,7 +37,7 @@ public final class TransducedAccessor_field_Integer extends TransducedAccessor {
     }
 
     @Override
-    public void writeLeafElement(Object o, Name tagName, String fieldName, XMLSerializer w) throws SAXException, AccessorException, IOException, XMLStreamException {
+    public void writeLeafElement(XMLSerializer w, Name tagName, Object o, String fieldName) throws SAXException, AccessorException, IOException, XMLStreamException {
         w.leafElement(tagName, ((Bean)o).f_int, fieldName );
     }
 }

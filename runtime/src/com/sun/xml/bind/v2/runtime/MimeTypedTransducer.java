@@ -1,8 +1,10 @@
 package com.sun.xml.bind.v2.runtime;
 
 import java.awt.*;
+import java.io.IOException;
 
 import javax.activation.MimeType;
+import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
 
@@ -18,28 +20,15 @@ import org.xml.sax.SAXException;
  *
  * @author Kohsuke Kawaguchi
  */
-public final class MimeTypedTransducer<V> implements Transducer<V> {
-    private final Transducer<V> core;
-
+public final class MimeTypedTransducer<V> extends FilterTransducer<V> {
     private final MimeType expectedMimeType;
 
     public MimeTypedTransducer(Transducer<V> core,MimeType expectedMimeType) {
-        this.core = core;
+        super(core);
         this.expectedMimeType = expectedMimeType;
     }
 
-    public boolean isDefault() {
-        return false;
-    }
-
-    public boolean useNamespace() {
-        return core.useNamespace();
-    }
-
-    public void declareNamespace( V o, XMLSerializer w ) throws AccessorException {
-        core.declareNamespace(o, w);
-    }
-
+    @Override
     public CharSequence print(V o) throws AccessorException {
         XMLSerializer w = XMLSerializer.getInstance();
         MimeType old = w.setExpectedMimeType(expectedMimeType);
@@ -50,7 +39,23 @@ public final class MimeTypedTransducer<V> implements Transducer<V> {
         }
     }
 
-    public V parse(CharSequence lexical) throws AccessorException, SAXException {
-        return core.parse(lexical);
+    @Override
+    public void writeText(XMLSerializer w, V o, String fieldName) throws IOException, SAXException, XMLStreamException, AccessorException {
+        MimeType old = w.setExpectedMimeType(expectedMimeType);
+        try {
+            core.writeText(w, o, fieldName);
+        } finally {
+            w.setExpectedMimeType(old);
+        }
+    }
+
+    @Override
+    public void writeLeafElement(XMLSerializer w, Name tagName, V o, String fieldName) throws IOException, SAXException, XMLStreamException, AccessorException {
+        MimeType old = w.setExpectedMimeType(expectedMimeType);
+        try {
+            core.writeLeafElement(w, tagName, o, fieldName);
+        } finally {
+            w.setExpectedMimeType(old);
+        }
     }
 }

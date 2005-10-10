@@ -1,6 +1,9 @@
 package com.sun.xml.bind.v2.runtime;
 
+import java.io.IOException;
+
 import javax.activation.MimeType;
+import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
 
@@ -11,25 +14,12 @@ import org.xml.sax.SAXException;
  *
  * @author Kohsuke Kawaguchi
  */
-public class InlineBinaryTransducer<V> implements Transducer<V> {
-    private final Transducer<V> core;
-
+public class InlineBinaryTransducer<V> extends FilterTransducer<V> {
     public InlineBinaryTransducer(Transducer<V> core) {
-        this.core = core;
+        super(core);
     }
 
-    public boolean isDefault() {
-        return false;
-    }
-
-    public boolean useNamespace() {
-        return core.useNamespace();
-    }
-
-    public void declareNamespace( V o, XMLSerializer w ) throws AccessorException {
-        core.declareNamespace(o, w);
-    }
-
+    @Override
     public CharSequence print(V o) throws AccessorException {
         XMLSerializer w = XMLSerializer.getInstance();
         boolean old = w.setInlineBinaryFlag(true);
@@ -40,7 +30,23 @@ public class InlineBinaryTransducer<V> implements Transducer<V> {
         }
     }
 
-    public V parse(CharSequence lexical) throws AccessorException, SAXException {
-        return core.parse(lexical);
+    @Override
+    public void writeText(XMLSerializer w, V o, String fieldName) throws IOException, SAXException, XMLStreamException, AccessorException {
+        boolean old = w.setInlineBinaryFlag(true);
+        try {
+            core.writeText(w,o,fieldName);
+        } finally {
+            w.setInlineBinaryFlag(old);
+        }
+    }
+
+    @Override
+    public void writeLeafElement(XMLSerializer w, Name tagName, V o, String fieldName) throws IOException, SAXException, XMLStreamException, AccessorException {
+        boolean old = w.setInlineBinaryFlag(true);
+        try {
+            core.writeLeafElement(w, tagName, o, fieldName);
+        } finally {
+            w.setInlineBinaryFlag(old);
+        }
     }
 }

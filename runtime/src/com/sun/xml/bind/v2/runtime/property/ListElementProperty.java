@@ -33,7 +33,7 @@ final class ListElementProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,L
     /**
      * Converts all the values to a list and back.
      */
-    private final TransducedAccessor xacc;
+    private final TransducedAccessor<BeanT> xacc;
 
     public ListElementProperty(JAXBContextImpl grammar, RuntimeElementPropertyInfo prop) {
         super(grammar, prop);
@@ -67,10 +67,10 @@ final class ListElementProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,L
                 xacc.declareNamespace(o,w);
                 w.endNamespaceDecls(list);
                 w.endAttributes();
-                w.text(xacc.print(o),fieldName);
+                xacc.writeText(w,o,fieldName);
                 w.endElement();
             } else {
-                w.leafElement(tagName,xacc.print(o),fieldName);
+                xacc.writeLeafElement(w, tagName, o, fieldName);
             }
         }
     }

@@ -23,6 +23,7 @@ import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.MimeTypedTransducer;
 import com.sun.xml.bind.v2.runtime.SchemaTypeTransducer;
 import com.sun.xml.bind.v2.runtime.InlineBinaryTransducer;
+import com.sun.xml.bind.v2.runtime.FilterTransducer;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 
 import org.xml.sax.SAXException;
@@ -122,29 +123,12 @@ public class RuntimeModelBuilder extends ModelBuilder<Type,Class,Field,Method> {
      * This transducer wraps another {@link Transducer} and adds
      * handling for ID.
      */
-    private static final class IDTransducerImpl<ValueT> implements Transducer<ValueT> {
-        private final Transducer<ValueT> core;
-
+    private static final class IDTransducerImpl<ValueT> extends FilterTransducer<ValueT> {
         public IDTransducerImpl(Transducer<ValueT> core) {
-            this.core = core;
+            super(core);
         }
 
-        public boolean isDefault() {
-            return false;
-        }
-
-        public boolean useNamespace() {
-            return core.useNamespace();
-        }
-
-        public void declareNamespace( ValueT o, XMLSerializer w ) throws AccessorException {
-            core.declareNamespace(o, w);
-        }
-
-        public CharSequence print(ValueT o) throws AccessorException {
-            return core.print(o);
-        }
-
+        @Override
         public ValueT parse(CharSequence lexical) throws AccessorException, SAXException {
             String value = WhiteSpaceProcessor.trim(lexical).toString();
             UnmarshallingContext.getInstance().addToIdTable(value);

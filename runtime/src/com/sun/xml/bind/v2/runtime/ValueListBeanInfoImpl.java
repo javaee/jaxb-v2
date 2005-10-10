@@ -82,7 +82,7 @@ final class ValueListBeanInfoImpl extends JaxBeanInfo {
         for( int i=0; i<len; i++ )  {
             Object item = Array.get(array,i);
             try {
-                target.text(xducer.print(item),"arrayItem");
+                xducer.writeText(target,item,"arrayItem");
             } catch (AccessorException e) {
                 target.reportError("arrayItem",e);
             }

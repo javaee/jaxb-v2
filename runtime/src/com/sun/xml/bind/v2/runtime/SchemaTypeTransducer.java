@@ -1,7 +1,10 @@
 package com.sun.xml.bind.v2.runtime;
 
+import java.io.IOException;
+
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
 
@@ -18,27 +21,15 @@ import org.xml.sax.SAXException;
  * @see XMLSerializer#schemaType
  * @author Kohsuke Kawaguchi
  */
-public class SchemaTypeTransducer<V> implements Transducer<V> {
-    private final Transducer<V> core;
+public class SchemaTypeTransducer<V> extends FilterTransducer<V> {
     private final QName schemaType;
 
     public SchemaTypeTransducer(Transducer<V> core, QName schemaType) {
-        this.core = core;
+        super(core);
         this.schemaType = schemaType;
     }
 
-    public boolean isDefault() {
-        return false;
-    }
-
-    public boolean useNamespace() {
-        return core.useNamespace();
-    }
-
-    public void declareNamespace( V o, XMLSerializer w ) throws AccessorException {
-        core.declareNamespace(o, w);
-    }
-
+    @Override
     public CharSequence print(V o) throws AccessorException {
         XMLSerializer w = XMLSerializer.getInstance();
         QName old = w.setSchemaType(schemaType);
@@ -49,7 +40,23 @@ public class SchemaTypeTransducer<V> implements Transducer<V> {
         }
     }
 
-    public V parse(CharSequence lexical) throws AccessorException, SAXException {
-        return core.parse(lexical);
+    @Override
+    public void writeText(XMLSerializer w, V o, String fieldName) throws IOException, SAXException, XMLStreamException, AccessorException {
+        QName old = w.setSchemaType(schemaType);
+        try {
+            core.writeText(w,o,fieldName);
+        } finally {
+            w.setSchemaType(old);
+        }
+    }
+
+    @Override
+    public void writeLeafElement(XMLSerializer w, Name tagName, V o, String fieldName) throws IOException, SAXException, XMLStreamException, AccessorException {
+        QName old = w.setSchemaType(schemaType);
+        try {
+            core.writeLeafElement(w, tagName, o, fieldName);
+        } finally {
+            w.setSchemaType(old);
+        }
     }
 }

@@ -86,19 +86,6 @@ public abstract class XmlOutputAbstractImpl implements XmlOutput {
     public abstract void endTag(int prefix, String localName) throws IOException, SAXException, XMLStreamException;
 
     /**
-     *
-     * @param value
-     *      this string can contain characters that might need escaping
-     *      (such as '&amp;' or '>')
-     * @param needsSeparatingWhitespace
-     */
-    public abstract void text( CharSequence value, boolean needsSeparatingWhitespace ) throws IOException, SAXException, XMLStreamException;
-
-    public void text( int value ) throws IOException, SAXException, XMLStreamException {
-        text(Integer.toString(value),false);
-    }
-
-    /**
      * Flush the output.
      *
      * @see OutputStream#flush()

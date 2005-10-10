@@ -59,7 +59,7 @@ final class SingleElementLeafProperty<BeanT> extends PropertyImpl<BeanT> {
     public void serializeBody(BeanT o, XMLSerializer w, Object outerPeer) throws SAXException, AccessorException, IOException, XMLStreamException {
         boolean hasValue = xacc.hasValue(o);
         if(hasValue) {
-            xacc.writeLeafElement(o,tagName,fieldName,w);
+            xacc.writeLeafElement(w, tagName, o, fieldName);
         } else
         if(nillable) {
             w.startElement(tagName,null);

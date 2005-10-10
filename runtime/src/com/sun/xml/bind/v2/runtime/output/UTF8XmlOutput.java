@@ -7,6 +7,7 @@ import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
+import com.sun.xml.bind.DatatypeConverterImpl;
 
 import org.xml.sax.SAXException;
 
@@ -207,19 +208,24 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
         write('>');
     }
 
-    public void text(CharSequence value, boolean needSP) throws IOException {
+    public void text(String value, boolean needSP) throws IOException {
         if(needSP)
             write(' ');
         doText(value,false);
     }
 
-    private void doText(CharSequence value,boolean isAttribute) throws IOException {
+    public void text(Pcdata value, boolean needSP) throws IOException {
+        if(needSP)
+            write(' ');
+        value.writeTo(this);
+    }
+
+    private void doText(String value,boolean isAttribute) throws IOException {
         textBuffer.setEscape(value,isAttribute);
         textBuffer.write(this);
     }
 
-    @Override
-    public void text(int value) throws IOException, SAXException, XMLStreamException {
+    public final void text(int value) throws IOException {
         /*
          * TODO
          * Change to use the octet buffer directly
@@ -243,7 +249,45 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
         write(buf,idx,11-idx);
     }
 
-    protected final void write(int i) throws IOException {
+    /**
+     * Writes the given byte[] as base64 encoded binary to the output.
+     *
+     * <p>
+     * Being defined on this class allows this method to access the buffer directly,
+     * which translates to a better performance.
+     */
+    public void text(byte[] data, int dataLen) throws IOException {
+        int start = 0;
+
+        while(dataLen>0) {
+            // how many bytes (in data) can we write without overflowing the buffer?
+            int batchSize = Math.min(((_octetBuffer.length-_octetBufferIndex)/4)*3,dataLen);
+
+            // write the batch
+            _octetBufferIndex = DatatypeConverterImpl._printBase64Binary(data,start,batchSize,_octetBuffer,_octetBufferIndex);
+
+            start += batchSize;
+            dataLen -= batchSize;
+
+            if(_octetBufferIndex==_octetBuffer.length)
+                flushBuffer();
+        }
+    }
+
+//
+//
+// series of the write method that places bytes to the output
+// (by doing some buffering internal to this class)
+//
+
+    /**
+     * Writes one byte directly into the buffer.
+     *
+     * <p>
+     * This method can be used somewhat like the {@code text} method,
+     * but it doesn't perform character escaping.
+     */
+    public final void write(int i) throws IOException {
         if (_octetBufferIndex < _octetBuffer.length) {
             _octetBuffer[_octetBufferIndex++] = (byte)i;
         } else {
@@ -280,7 +324,7 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
 
 
 
-    static final byte[] toBytes(String s) {
+    static byte[] toBytes(String s) {
         byte[] buf = new byte[s.length()];
         for( int i=s.length()-1; i>=0; i-- )
             buf[i] = (byte)s.charAt(i);
