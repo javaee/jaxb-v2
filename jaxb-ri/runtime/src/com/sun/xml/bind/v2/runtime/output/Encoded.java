@@ -67,7 +67,7 @@ public final class Encoded {
      * @param isAttribute
      *      if true, characters like \t, \r, and \n are also escaped.
      */
-    public final void setEscape(CharSequence text, boolean isAttribute) {
+    public final void setEscape(String text, boolean isAttribute) {
         int length = text.length();
         ensureSize(length*6+1);     // in the worst case the text is like """""", so we need 6 bytes per char
 

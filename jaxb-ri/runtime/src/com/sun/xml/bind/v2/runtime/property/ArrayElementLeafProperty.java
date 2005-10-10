@@ -43,6 +43,6 @@ final class ArrayElementLeafProperty<BeanT,ListT,ItemT> extends ArrayElementProp
         w.endAttributes();
         // this is leaf, so by definition there's no type substitution
         // if there's, we'll be using ArrayElementNodeProperty
-        w.text(xducer.print(item), fieldName);
+        xducer.writeText(w,item,fieldName);
     }
 }

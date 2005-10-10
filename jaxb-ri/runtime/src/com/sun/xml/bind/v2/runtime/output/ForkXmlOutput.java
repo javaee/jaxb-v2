@@ -53,12 +53,6 @@ public final class ForkXmlOutput extends XmlOutputAbstractImpl {
     }
 
     @Override
-    public void text(int value) throws IOException, SAXException, XMLStreamException {
-        lhs.text(value);
-        rhs.text(value);
-    }
-
-    @Override
     public void flush() throws IOException, XMLStreamException {
         lhs.flush();
         rhs.flush();
@@ -84,9 +78,13 @@ public final class ForkXmlOutput extends XmlOutputAbstractImpl {
         rhs.endTag(prefix,localName);
     }
 
-    public void text(CharSequence value, boolean needsSeparatingWhitespace) throws IOException, SAXException, XMLStreamException {
+    public void text(String value, boolean needsSeparatingWhitespace) throws IOException, SAXException, XMLStreamException {
         lhs.text(value,needsSeparatingWhitespace);
         rhs.text(value,needsSeparatingWhitespace);
     }
 
+    public void text(Pcdata value, boolean needsSeparatingWhitespace) throws IOException, SAXException, XMLStreamException {
+        lhs.text(value,needsSeparatingWhitespace);
+        rhs.text(value,needsSeparatingWhitespace);
+    }
 }

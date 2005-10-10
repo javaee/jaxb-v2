@@ -7,8 +7,6 @@ import javax.xml.bind.annotation.XmlValue;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
-import com.sun.xml.bind.v2.util.QNameMap;
-import com.sun.xml.bind.v2.util.QNameMap;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.runtime.RuntimeValuePropertyInfo;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
@@ -17,6 +15,7 @@ import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
 import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.ValuePropertyLoader;
+import com.sun.xml.bind.v2.util.QNameMap;
 
 import org.xml.sax.SAXException;
 
@@ -28,13 +27,13 @@ import org.xml.sax.SAXException;
  *
  * @author Bhakti Mehta (bhakti.mehta@sun.com)
  */
-public final class ValueProperty<BeanT,ListT,ItemT> extends PropertyImpl<BeanT> {
+public final class ValueProperty<BeanT> extends PropertyImpl<BeanT> {
 
     /**
      * Heart of the conversion logic.
      */
     private final TransducedAccessor<BeanT> xacc;
-    private final Accessor acc;
+    private final Accessor<BeanT,?> acc;
 
 
     public ValueProperty(JAXBContextImpl grammar, RuntimeValuePropertyInfo prop) {
@@ -44,9 +43,8 @@ public final class ValueProperty<BeanT,ListT,ItemT> extends PropertyImpl<BeanT> 
     }
 
     public final void serializeBody(BeanT o, XMLSerializer w, Object outerPeer) throws SAXException, AccessorException, IOException, XMLStreamException {
-        CharSequence value = xacc.print(o);
-        if(value!=null)
-            w.text(value,fieldName);
+        if(xacc.hasValue(o))
+            xacc.writeText(w,o,fieldName);
     }
 
     public void serializeURIs(BeanT o, XMLSerializer w) throws SAXException, AccessorException {

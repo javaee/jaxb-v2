@@ -47,7 +47,7 @@ import com.sun.xml.bind.v2.TODO;
  * This class is responsible for whitespace normalization.
  *
  * @author <ul><li>Ryan Shoemaker, Sun Microsystems, Inc.</li></ul>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since JAXB1.0
  */
 public final class DatatypeConverterImpl implements DatatypeConverterInterface {
@@ -607,45 +607,107 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         return map;
     }
 
-    public static final char encode( int i ) {
+    public static char encode( int i ) {
         return encodeMap[i&0x3F];
+    }
+
+    public static byte encodeByte( int i ) {
+        return (byte)encodeMap[i&0x3F];
     }
 
     public static String _printBase64Binary(byte[] input) {
         return _printBase64Binary(input, 0, input.length);
     }
     public static String _printBase64Binary(byte[] input, int offset, int len) {
-        StringBuilder r = new StringBuilder(len*4/3); /* rough estimate*/
+        char[] buf = new char[((len+2)/3)*4];
+        int ptr = _printBase64Binary(input,offset,len,buf,0);
+        assert ptr==buf.length;
+        return new String(buf);
+    }
 
+    /**
+     * Encodes a byte array into a char array by doing base64 encoding.
+     *
+     * The caller must supply a big enough buffer.
+     *
+     * @return
+     *      the value of {@code ptr+((len+2)/3)*4}, which is the new offset
+     *      in the output buffer where the further bytes should be placed.
+     */
+    public static int _printBase64Binary(byte[] input, int offset, int len, char[] buf, int ptr) {
         for( int i=offset; i<len; i+=3 ) {
             switch( len-i ) {
             case 1:
-                r.append( encode(input[i]>>2) );
-                r.append( encode(((input[i])&0x3)<<4) );
-                r.append("==");
+                buf[ptr++] = encode(input[i]>>2);
+                buf[ptr++] = encode(((input[i])&0x3)<<4);
+                buf[ptr++] = '=';
+                buf[ptr++] = '=';
                 break;
             case 2:
-                r.append( encode(input[i]>>2) );
-                r.append( encode(
+                buf[ptr++] = encode(input[i]>>2);
+                buf[ptr++] = encode(
                             ((input[i]&0x3)<<4) |
-                            ((input[i+1]>>4)&0xF)) );
-                r.append( encode((input[i+1]&0xF)<<2) );
-                r.append('=');
+                            ((input[i+1]>>4)&0xF));
+                buf[ptr++] = encode((input[i+1]&0xF)<<2);
+                buf[ptr++] = '=';
                 break;
             default:
-                r.append( encode(input[i]>>2) );
-                r.append( encode(
+                buf[ptr++] = encode(input[i]>>2);
+                buf[ptr++] = encode(
                             ((input[i]&0x3)<<4) |
-                            ((input[i+1]>>4)&0xF)) );
-                r.append( encode(
+                            ((input[i+1]>>4)&0xF));
+                buf[ptr++] = encode(
                             ((input[i+1]&0xF)<<2)|
-                            ((input[i+2]>>6)&0x3)) );
-                r.append( encode(input[i+2]&0x3F) );
+                            ((input[i+2]>>6)&0x3));
+                buf[ptr++] = encode(input[i+2]&0x3F);
+                break;
+            }
+        }
+        return ptr;
+    }
+
+    /**
+     * Encodes a byte array into another byte array by first doing base64 encoding
+     * then encoding the result in ASCII.
+     *
+     * The caller must supply a big enough buffer.
+     *
+     * @return
+     *      the value of {@code ptr+((len+2)/3)*4}, which is the new offset
+     *      in the output buffer where the further bytes should be placed.
+     */
+    public static int _printBase64Binary(byte[] input, int offset, int len, byte[] out, int ptr) {
+        byte[] buf = out;
+        for( int i=offset; i<len; i+=3 ) {
+            switch( len-i ) {
+            case 1:
+                buf[ptr++] = encodeByte(input[i]>>2);
+                buf[ptr++] = encodeByte(((input[i])&0x3)<<4);
+                buf[ptr++] = '=';
+                buf[ptr++] = '=';
+                break;
+            case 2:
+                buf[ptr++] = encodeByte(input[i]>>2);
+                buf[ptr++] = encodeByte(
+                            ((input[i]&0x3)<<4) |
+                            ((input[i+1]>>4)&0xF));
+                buf[ptr++] = encodeByte((input[i+1]&0xF)<<2);
+                buf[ptr++] = '=';
+                break;
+            default:
+                buf[ptr++] = encodeByte(input[i]>>2);
+                buf[ptr++] = encodeByte(
+                            ((input[i]&0x3)<<4) |
+                            ((input[i+1]>>4)&0xF));
+                buf[ptr++] = encodeByte(
+                            ((input[i+1]&0xF)<<2)|
+                            ((input[i+2]>>6)&0x3));
+                buf[ptr++] = encodeByte(input[i+2]&0x3F);
                 break;
             }
         }
 
-        return r.toString();
+        return ptr;
     }
 
     private static CharSequence removeOptionalPlus(CharSequence s) {

@@ -129,15 +129,24 @@ public interface XmlOutput {
     public void endTag(int prefix, String localName) throws IOException, SAXException, XMLStreamException;
 
     /**
+     * Writes XML text with character escaping, if necessary.
      *
      * @param value
      *      this string can contain characters that might need escaping
      *      (such as '&amp;' or '>')
      * @param needsSeparatingWhitespace
      */
-    public void text( CharSequence value, boolean needsSeparatingWhitespace ) throws IOException, SAXException, XMLStreamException;
+    public void text( String value, boolean needsSeparatingWhitespace ) throws IOException, SAXException, XMLStreamException;
 
-    public void text( int value ) throws IOException, SAXException, XMLStreamException;
+    /**
+     * Writes XML text with character escaping, if necessary.
+     *
+     * @param value
+     *      this string can contain characters that might need escaping
+     *      (such as '&amp;' or '>')
+     * @param needsSeparatingWhitespace
+     */
+    public void text( Pcdata value, boolean needsSeparatingWhitespace ) throws IOException, SAXException, XMLStreamException;
 
     /**
      * Flush the output.

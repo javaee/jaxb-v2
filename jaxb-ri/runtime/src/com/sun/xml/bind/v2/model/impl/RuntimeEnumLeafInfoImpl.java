@@ -6,6 +6,9 @@ import java.lang.reflect.Type;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.IOException;
+
+import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.model.annotation.FieldLocatable;
@@ -15,6 +18,7 @@ import com.sun.xml.bind.v2.model.runtime.RuntimeNonElement;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
+import com.sun.xml.bind.v2.runtime.Name;
 
 import org.xml.sax.SAXException;
 
@@ -51,7 +55,7 @@ final class RuntimeEnumLeafInfoImpl<T extends Enum<T>,B> extends EnumLeafInfoImp
             try {
                 constant.setAccessible(true);
             } catch (SecurityException e) {
-                ; // in case the constant is already accessible, swallow this error.
+                // in case the constant is already accessible, swallow this error.
                 // if the constant is indeed not accessible, we will get IllegalAccessException
                 // in the following line, and that is not too late.
             }
@@ -106,5 +110,13 @@ final class RuntimeEnumLeafInfoImpl<T extends Enum<T>,B> extends EnumLeafInfoImp
         }
 
         return parseMap.get(b);
+    }
+
+    public void writeText(XMLSerializer w, T t, String fieldName) throws IOException, SAXException, XMLStreamException, AccessorException {
+        baseXducer.writeText(w,printMap.get(t),fieldName);
+    }
+
+    public void writeLeafElement(XMLSerializer w, Name tagName, T o, String fieldName) throws IOException, SAXException, XMLStreamException, AccessorException {
+        baseXducer.writeLeafElement(w,tagName,printMap.get(o),fieldName);
     }
 }

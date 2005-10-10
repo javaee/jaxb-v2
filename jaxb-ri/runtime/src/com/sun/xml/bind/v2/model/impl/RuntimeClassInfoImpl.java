@@ -7,8 +7,10 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
+import java.io.IOException;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.annotation.XmlLocation;
 import com.sun.xml.bind.api.AccessorException;
@@ -24,6 +26,7 @@ import com.sun.xml.bind.v2.model.runtime.RuntimeValuePropertyInfo;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
+import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
@@ -275,6 +278,14 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
 
             xacc.parse(inst,lexical);
             return inst;
+        }
+
+        public void writeText(XMLSerializer w, BeanT o, String fieldName) throws IOException, SAXException, XMLStreamException, AccessorException {
+            xacc.writeText(w,o,fieldName);
+        }
+
+        public void writeLeafElement(XMLSerializer w, Name tagName, BeanT o, String fieldName) throws IOException, SAXException, XMLStreamException, AccessorException {
+            xacc.writeLeafElement(w,tagName,o,fieldName);
         }
     }
 }

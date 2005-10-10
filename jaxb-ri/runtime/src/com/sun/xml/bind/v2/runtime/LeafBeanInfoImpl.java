@@ -68,7 +68,7 @@ final class LeafBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
         // so this code is only used for example when you have multiple XmlElement on a property
         // and some of them are leaves. Hence this doesn't need to be super-fast.
         try {
-            w.text(xducer.print(bean),null);
+            xducer.writeText(w,bean,null);
         } catch (AccessorException e) {
             w.reportError(null,e);
         }

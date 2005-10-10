@@ -29,10 +29,10 @@ import java.util.Set;
 import javax.activation.MimeType;
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.ValidationEventLocator;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.DomHandler;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.attachment.AttachmentMarshaller;
@@ -46,7 +46,6 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.sax.SAXResult;
 
-import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import com.sun.xml.bind.util.ValidationEventLocatorExImpl;
@@ -54,8 +53,10 @@ import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.model.runtime.RuntimeBuiltinLeafInfo;
 import com.sun.xml.bind.v2.runtime.output.MTOMXmlOutput;
 import com.sun.xml.bind.v2.runtime.output.NamespaceContextImpl;
+import com.sun.xml.bind.v2.runtime.output.Pcdata;
 import com.sun.xml.bind.v2.runtime.output.XmlOutput;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Base64Data;
+import com.sun.xml.bind.v2.runtime.unmarshaller.IntData;
 
 import org.xml.sax.SAXException;
 
@@ -161,6 +162,11 @@ public final class XMLSerializer extends Coordinator {
      * Cached instance of {@link Base64Data}.
      */
     private Base64Data base64Data;
+
+    /**
+     * Cached instance of {@link IntData}.
+     */
+    private final IntData intData = new IntData();
 
     public AttachmentMarshaller attachmentMarshaller;
 
@@ -272,7 +278,7 @@ public final class XMLSerializer extends Coordinator {
         textHasAlreadyPrinted = false;
     }
 
-    public void leafElement( Name tagName, CharSequence data, String fieldName ) throws SAXException, IOException, XMLStreamException {
+    public void leafElement( Name tagName, String data, String fieldName ) throws SAXException, IOException, XMLStreamException {
         if(seenRoot) {
             textHasAlreadyPrinted = false;
             nse = nse.push();
@@ -282,22 +288,39 @@ public final class XMLSerializer extends Coordinator {
             out.endTag(tagName);
             nse = nse.pop();
         } else {
-            leafElementSlow(tagName, data);
+            // root element has additional processing like xsi:schemaLocation,
+            // so we need to go the slow way
+            startElement(tagName,null);
+            endNamespaceDecls(null);
+            endAttributes();
+            out.text(data,false);
+            endElement();
         }
     }
 
-    public void leafElement( Name tagName, int data, String fieldName ) throws SAXException, IOException, XMLStreamException {
+    public void leafElement( Name tagName, Pcdata data, String fieldName ) throws SAXException, IOException, XMLStreamException {
         if(seenRoot) {
             textHasAlreadyPrinted = false;
             nse = nse.push();
             out.beginStartTag(tagName);
             out.endStartTag();
-            out.text(data);
+            out.text(data,false);
             out.endTag(tagName);
             nse = nse.pop();
         } else {
-            leafElementSlow(tagName,DatatypeConverterImpl._printInt(data));
+            // root element has additional processing like xsi:schemaLocation,
+            // so we need to go the slow way
+            startElement(tagName,null);
+            endNamespaceDecls(null);
+            endAttributes();
+            out.text(data,false);
+            endElement();
         }
+    }
+
+    public void leafElement( Name tagName, int data, String fieldName ) throws SAXException, IOException, XMLStreamException {
+        intData.reset(data);
+        leafElement(tagName,intData,fieldName);
     }
 
     // TODO: consider some of these in future if we expand the writer to use something other than SAX
@@ -310,41 +333,15 @@ public final class XMLSerializer extends Coordinator {
 //    void leafElement( QName tagName, double value, String fieldName ) throws SAXException;
 //    void leafElement( QName tagName, boolean value, String fieldName ) throws SAXException;
 
-    /**
-     * Root elements have additional work (such as producing xsi:schemaLocation or declaring namespaces),
-     * so we have to take the slow way.
-     */
-    private void leafElementSlow(Name tagName, CharSequence data) throws IOException, XMLStreamException, SAXException {
-        startElement(tagName,null);
-        endNamespaceDecls(null);
-        endAttributes();
-        out.text(data,false);
-        endElement();
-    }
-
 
     /**
      * Marshalls text.
      *
      * <p>
-     * This method can be called (i) after the startAttribute method
-     * and (ii) before the endAttribute method, to marshal attribute values.
+     * This method can be called after the {@link #endAttributes()}
+     * method to marshal texts inside elements.
      * If the method is called more than once, those texts are considered
      * as separated by whitespaces. For example,
-     *
-     * <pre>
-     * c.startAttribute();
-     * c.text("abc");
-     * c.text("def");
-     * c.endAttribute("","foo");
-     * </pre>
-     *
-     * will generate foo="abc def".
-     *
-     * <p>
-     * Similarly, this method can be called after the endAttributes
-     * method to marshal texts inside elements. The same rule about
-     * multiple invokations apply to this case, too. For example,
      *
      * <pre>
      * c.startElement("","foo");
@@ -360,7 +357,7 @@ public final class XMLSerializer extends Coordinator {
      *
      * will generate <code>&lt;foo>abc def&lt;bar/>ghi&lt;/foo></code>.
      */
-    public void text( CharSequence text, String fieldName ) throws SAXException, IOException, XMLStreamException {
+    public void text( String text, String fieldName ) throws SAXException, IOException, XMLStreamException {
         // If the assertion fails, it must be a bug of xjc.
         // right now, we are not expecting the text method to be called.
         if(text==null) {
@@ -371,8 +368,22 @@ public final class XMLSerializer extends Coordinator {
         out.text(text,textHasAlreadyPrinted);
         textHasAlreadyPrinted = true;
     }
-    
-    
+
+    /**
+     * The {@link #text(String, String)} method that takes {@link Pcdata}.
+     */
+    public void text( Pcdata text, String fieldName ) throws SAXException, IOException, XMLStreamException {
+        // If the assertion fails, it must be a bug of xjc.
+        // right now, we are not expecting the text method to be called.
+        if(text==null) {
+            reportMissingObjectError(fieldName);
+            return;
+        }
+
+        out.text(text,textHasAlreadyPrinted);
+        textHasAlreadyPrinted = true;
+    }
+
     public void attribute(String uri, String local, String value) throws SAXException {
         int prefix;
         if(uri.length()==0) {
@@ -391,8 +402,10 @@ public final class XMLSerializer extends Coordinator {
         }
     }
 
-    public void attribute(Name name, String value) throws IOException, XMLStreamException {
-        out.attribute(name,value);
+    public void attribute(Name name, CharSequence value) throws IOException, XMLStreamException {
+        // TODO: consider having the version that takes Pcdata.
+        // it's common for an element to have int attributes
+        out.attribute(name,value.toString());
     }
 
     public NamespaceContext2 getNamespaceContext() {
@@ -925,7 +938,7 @@ public final class XMLSerializer extends Coordinator {
      * When called from within the realm of the marshaller, this method
      * returns the current {@link XMLSerializer} in charge.
      */
-    public static final XMLSerializer getInstance() {
+    public static XMLSerializer getInstance() {
         return (XMLSerializer)Coordinator._getInstance();
     }
 }

@@ -73,7 +73,11 @@ public final class MTOMXmlOutput extends XmlOutputAbstractImpl {
         next.endTag(prefix, localName);
     }
 
-    public void text( CharSequence value, boolean needsSeparatingWhitespace ) throws IOException, SAXException, XMLStreamException {
+    public void text( String value, boolean needsSeparatingWhitespace ) throws IOException, SAXException, XMLStreamException {
+        next.text(value,needsSeparatingWhitespace);
+    }
+
+    public void text( Pcdata value, boolean needsSeparatingWhitespace ) throws IOException, SAXException, XMLStreamException {
         if(value instanceof Base64Data && !serializer.getInlineBinaryFlag()) {
             Base64Data b64d = (Base64Data) value;
             String cid;
@@ -96,10 +100,6 @@ public final class MTOMXmlOutput extends XmlOutputAbstractImpl {
             }
         }
         next.text(value, needsSeparatingWhitespace);
-    }
-
-    public void text(int value) throws IOException, SAXException, XMLStreamException {
-        next.text(value);
     }
 
     public void flush() throws IOException, XMLStreamException {

@@ -17,5 +17,10 @@
     <orderEntry type="module" module-name="runtime-api" exported="" />
     <orderEntryProperties />
   </component>
+  <component name="org.mevenide.idea.module.ModuleSettings">
+    <favoriteGoals>
+      <list size="0" />
+    </favoriteGoals>
+  </component>
 </module>
 

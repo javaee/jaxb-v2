@@ -127,9 +127,9 @@ public abstract class TransducedAccessor<BeanT> {
         }
 
         if(xducer.useNamespace())
-            return new DefaultContextDependentTransducedAccessorImpl( xducer, prop.getAccessor() );
+            return new CompositeContextDependentTransducedAccessorImpl( xducer, prop.getAccessor() );
         else
-            return new DefaultTransducedAccessorImpl( xducer, prop.getAccessor() );
+            return new CompositeTransducedAccessorImpl( xducer, prop.getAccessor() );
     }
 
     /**
@@ -137,13 +137,16 @@ public abstract class TransducedAccessor<BeanT> {
      * without any attributes.
      * Can be overridden for improved performance.
      */
-    public void writeLeafElement(BeanT o, Name tagName, String fieldName, XMLSerializer w) throws SAXException, AccessorException, IOException, XMLStreamException {
-        assert !useNamespace(); // otherwise the derived class shall override this method
-        w.leafElement(tagName,print(o),fieldName);
-    }
+    public abstract void writeLeafElement(XMLSerializer w, Name tagName, BeanT o, String fieldName) throws SAXException, AccessorException, IOException, XMLStreamException;
 
-    static class DefaultContextDependentTransducedAccessorImpl<BeanT> extends DefaultTransducedAccessorImpl<BeanT> {
-        public DefaultContextDependentTransducedAccessorImpl(Transducer xducer, Accessor acc) {
+    /**
+     * Invokes one of the {@link XMLSerializer#text(String, String)} method
+     * with the representation of data bested suited for this transduced accessor.
+     */
+    public abstract void writeText(XMLSerializer w, BeanT o, String fieldName) throws AccessorException, SAXException, IOException, XMLStreamException;
+
+    static class CompositeContextDependentTransducedAccessorImpl<BeanT,ValueT> extends CompositeTransducedAccessorImpl<BeanT,ValueT> {
+        public CompositeContextDependentTransducedAccessorImpl(Transducer<ValueT> xducer, Accessor<BeanT,ValueT> acc) {
             super(xducer, acc);
             assert xducer.useNamespace();
         }
@@ -153,38 +156,38 @@ public abstract class TransducedAccessor<BeanT> {
         }
 
         public void declareNamespace(BeanT bean, XMLSerializer w) throws AccessorException {
-            Object o = acc.get(bean);
+            ValueT o = acc.get(bean);
             if(o!=null)
                 xducer.declareNamespace(o,w);
         }
 
         @Override
-        public void writeLeafElement(BeanT o, Name tagName, String fieldName, XMLSerializer w) throws SAXException, AccessorException, IOException, XMLStreamException {
+        public void writeLeafElement(XMLSerializer w, Name tagName, BeanT o, String fieldName) throws SAXException, AccessorException, IOException, XMLStreamException {
             w.startElement(tagName,null);
             declareNamespace(o,w);
             w.endNamespaceDecls(null);
             w.endAttributes();
-            w.text(print(o),fieldName);
+            xducer.writeText(w,acc.get(o),fieldName);
             w.endElement();
         }
     }
 
 
     /**
-     * Default implementation of {@link TransducedAccessor} that
+     * Implementation of {@link TransducedAccessor} that
      * simply combines a {@link Transducer} and {@link Accessor}.
      */
-    static class DefaultTransducedAccessorImpl<BeanT> extends TransducedAccessor<BeanT> {
-        protected final Transducer xducer;
-        protected final Accessor acc;
+    static class CompositeTransducedAccessorImpl<BeanT,ValueT> extends TransducedAccessor<BeanT> {
+        protected final Transducer<ValueT> xducer;
+        protected final Accessor<BeanT,ValueT> acc;
 
-        public DefaultTransducedAccessorImpl(Transducer xducer, Accessor acc) {
+        public CompositeTransducedAccessorImpl(Transducer<ValueT> xducer, Accessor<BeanT,ValueT> acc) {
             this.xducer = xducer;
             this.acc = acc.optimize();
         }
 
         public CharSequence print(BeanT bean) throws AccessorException {
-            Object o = acc.get(bean);
+            ValueT o = acc.get(bean);
             if(o==null)     return null;
             return xducer.print(o);
         }
@@ -196,6 +199,16 @@ public abstract class TransducedAccessor<BeanT> {
         public boolean hasValue(BeanT bean) throws AccessorException {
             return acc.getUnadapted(bean)!=null;
         }
+
+        @Override
+        public void writeLeafElement(XMLSerializer w, Name tagName, BeanT o, String fieldName) throws SAXException, AccessorException, IOException, XMLStreamException {
+            xducer.writeLeafElement(w,tagName,acc.get(o),fieldName);
+        }
+
+        @Override
+        public void writeText(XMLSerializer w, BeanT o, String fieldName) throws AccessorException, SAXException, IOException, XMLStreamException {
+            xducer.writeText(w,acc.get(o),fieldName);
+        }
     }
 
     /**
@@ -204,7 +217,7 @@ public abstract class TransducedAccessor<BeanT> {
      * BeanT: the type of the bean that contains this the IDREF field.
      * TargetT: the type of the bean pointed by IDREF.
      */
-    private static final class IDREFTransducedAccessorImpl<BeanT,TargetT> extends TransducedAccessor<BeanT> {
+    private static final class IDREFTransducedAccessorImpl<BeanT,TargetT> extends DefaultTransducedAccessor<BeanT> {
         private final Accessor<BeanT,TargetT> acc;
         /**
          * The object that an IDREF resolves to should be

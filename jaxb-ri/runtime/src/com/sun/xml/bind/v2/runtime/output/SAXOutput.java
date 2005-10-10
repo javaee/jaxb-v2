@@ -110,18 +110,31 @@ public class SAXOutput extends XmlOutputAbstractImpl {
         return qname;
     }
 
-    public void text(CharSequence value, boolean needsSP) throws SAXException {
+    public void text(String value, boolean needsSP) throws IOException, SAXException, XMLStreamException {
         int vlen = value.length();
         if(buf.length<=vlen) {
             buf = new char[Math.max(buf.length*2,vlen+1)];
         }
         if(needsSP) {
-            value.toString().getChars(0,vlen,buf,1);
+            value.getChars(0,vlen,buf,1);
             buf[0] = ' ';
         } else {
-            value.toString().getChars(0,vlen,buf,0);
+            value.getChars(0,vlen,buf,0);
         }
         out.characters(buf,0,vlen+(needsSP?1:0));
     }
 
+    public void text(Pcdata value, boolean needsSP) throws IOException, SAXException, XMLStreamException {
+        int vlen = value.length();
+        if(buf.length<=vlen) {
+            buf = new char[Math.max(buf.length*2,vlen+1)];
+        }
+        if(needsSP) {
+            value.writeTo(buf,1);
+            buf[0] = ' ';
+        } else {
+            value.writeTo(buf,0);
+        }
+        out.characters(buf,0,vlen+(needsSP?1:0));
+    }
 }
