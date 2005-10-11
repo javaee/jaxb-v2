@@ -109,7 +109,7 @@ public class XMLStreamWriterOutput extends XmlOutputAbstractImpl {
 
         int len = value.length();
         if(len <buf.length) {
-            value.writeTo(buf,len);
+            value.writeTo(buf,0);
             out.writeCharacters(buf,0,len);
         } else {
             out.writeCharacters(value.toString());
