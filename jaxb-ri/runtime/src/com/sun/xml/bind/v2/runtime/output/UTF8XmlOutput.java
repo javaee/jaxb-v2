@@ -269,7 +269,7 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
             start += batchSize;
             dataLen -= batchSize;
 
-            if(_octetBufferIndex==_octetBuffer.length)
+            if(batchSize<dataLen)
                 flushBuffer();
         }
     }
