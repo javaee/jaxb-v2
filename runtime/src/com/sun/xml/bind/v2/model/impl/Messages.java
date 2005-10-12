@@ -51,6 +51,7 @@ enum Messages {
 
     ANNOTATION_NOT_ALLOWED, // 1 arg
     XMLLIST_NEEDS_SIMPLETYPE, // 1 arg
+    XMLLIST_ON_SINGLE_PROPERTY, // 0 arg
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());

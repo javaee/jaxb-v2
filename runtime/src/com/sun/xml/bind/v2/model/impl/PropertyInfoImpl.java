@@ -207,7 +207,7 @@ abstract class PropertyInfoImpl<T,C,F,M>
         return inlineBinary;
     }
 
-    public QName getSchemaType() {
+    public final QName getSchemaType() {
         return schemaType;
     }
 

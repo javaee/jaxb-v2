@@ -165,6 +165,11 @@ class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
                     }
                 }
             }
+
+            if(!isCollection())
+                parent.builder.reportError(new IllegalAnnotationException(
+                    Messages.XMLLIST_ON_SINGLE_PROPERTY.format(), this
+                ));
         }
     }
 }
