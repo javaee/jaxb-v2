@@ -26,14 +26,16 @@ import java.util.ResourceBundle;
 /**
  * Formats error messages.
  */
-class Messages
+enum Messages
 {
+    ERR_CANNOT_BE_BOUND_TO_SIMPLETYPE,
+    ERR_UNDEFINED_SIMPLE_TYPE,
+    ERR_ILLEGAL_FIXEDATTR
+    ;
+
     /** Loads a string resource and formats it with specified arguments. */
-    static String format( String property, Object... args ) {
-        String text = ResourceBundle.getBundle(Messages.class.getPackage().getName() + ".MessageBundle").getString(property);
+    String format( Object... args ) {
+        String text = ResourceBundle.getBundle(Messages.class.getPackage().getName() + ".MessageBundle").getString(name());
         return MessageFormat.format(text,args);
     }
-    
-    static final String ERR_UNDEFINED_SIMPLE_TYPE = // arg:1
-        "UndefinedSimpleType";
 }

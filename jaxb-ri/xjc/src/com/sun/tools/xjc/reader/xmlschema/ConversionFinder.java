@@ -169,7 +169,7 @@ public final class ConversionFinder extends BindingComponent {
 
     /** Public entry point. */
     public TypeUse find( XSSimpleType type, XSComponent referer ) {
-        XSComponent oldr = referer;
+        XSComponent oldr = this.referer;
         this.referer = referer;
         TypeUse r = type.apply(functor);
         this.referer = oldr;
@@ -269,7 +269,7 @@ public final class ConversionFinder extends BindingComponent {
      * mapped to a type-safe enum. This method enforces this
      * constraint.
      */
-    private boolean canBeMappedToTypeSafeEnum( XSSimpleType type ) {
+    public static boolean canBeMappedToTypeSafeEnum( XSSimpleType type ) {
         do {
             if( WellKnownNamespace.XML_SCHEMA.equals(type.getTargetNamespace()) ) {
                 // type must be derived from one of these types

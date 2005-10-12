@@ -37,16 +37,16 @@ import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.generator.bean.ImplStructureStrategy;
+import static com.sun.tools.xjc.generator.bean.ImplStructureStrategy.BEAN_ONLY;
 import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.reader.Ring;
+import com.sun.tools.xjc.reader.xmlschema.ConversionFinder;
 import com.sun.tools.xjc.util.ReadOnlyAdapter;
 import com.sun.xml.bind.v2.NameConverter;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.xsom.XSDeclaration;
 import com.sun.xml.xsom.XSSchemaSet;
 import com.sun.xml.xsom.XSSimpleType;
-
-import static com.sun.tools.xjc.generator.bean.ImplStructureStrategy.BEAN_ONLY;
 
 /**
  * Global binding customization. The code is highly temporary.
@@ -140,6 +140,26 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
 
     public LocalScoping getFlattenClasses() {
         return flattenClasses;
+    }
+
+    /**
+     * Performs error check
+     */
+    public void errorCheck() {
+        ErrorReceiver er = Ring.get(ErrorReceiver.class);
+        for (QName n : enumBaseTypes) {
+            XSSchemaSet xs = Ring.get(XSSchemaSet.class);
+            XSSimpleType st = xs.getSimpleType(n.getNamespaceURI(), n.getLocalPart());
+            if(st==null) {
+                er.error(loc,Messages.ERR_UNDEFINED_SIMPLE_TYPE.format(n));
+                continue;
+            }
+
+            if(!ConversionFinder.canBeMappedToTypeSafeEnum(st)) {
+                er.error(loc,Messages.ERR_CANNOT_BE_BOUND_TO_SIMPLETYPE.format(n));
+                continue;
+            }
+        }
     }
 
     private static enum UnderscoreBinding {
@@ -332,8 +352,6 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
         if(enumBaseTypes==null)
             enumBaseTypes = Collections.singleton(new QName(WellKnownNamespace.XML_SCHEMA,"string"));
 
-
-
         this.defaultProperty = new BIProperty(getLocation(),null,null,null,
                 collectionType, fixedAttributeAsConstantProperty, optionalProperty, false );
         defaultProperty.setParent(parent); // don't forget to initialize the defaultProperty
@@ -353,7 +371,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
             if(st==null) {
                 Ring.get(ErrorReceiver.class).error(
                     getLocation(),
-                    Messages.format(Messages.ERR_UNDEFINED_SIMPLE_TYPE,name)
+                    Messages.ERR_UNDEFINED_SIMPLE_TYPE.format(name)
                 );
                 continue; // abort
             }
