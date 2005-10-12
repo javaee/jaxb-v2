@@ -12,7 +12,7 @@
   <jaxb:bindings schemaLocation="cd-UBL-1.0/xsd/codelist/UBL-CodeList-AcknowledgementResponseCode-1.0.xsd" node="/xsd:schema">
     <jaxb:globalBindings
         fixedAttributeAsConstantProperty="false"
-        typesafeEnumBase="xsd:NCname"/>
+        typesafeEnumBase="xsd:NCName"/>
     <jaxb:bindings node="./xsd:simpleType[@name='AcknowledgementResponseCodeContentType']">
       <jaxb:typesafeEnumClass/>
     </jaxb:bindings>
