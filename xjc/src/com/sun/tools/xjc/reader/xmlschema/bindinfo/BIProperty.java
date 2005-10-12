@@ -500,7 +500,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
             if( !hasFixedValue.find(getOwner()) ) {
                 Ring.get(ErrorReceiver.class).error(
                     getLocation(),
-                    Messages.format(ERR_ILLEGAL_FIXEDATTR)
+                    Messages.ERR_ILLEGAL_FIXEDATTR.format()
                 );
                 // set this value to null to avoid the same error to be reported more than once.
                 isConstantProperty = null;
@@ -645,9 +645,6 @@ public final class BIProperty extends AbstractDeclarationImpl {
     /** Name of this declaration. */
     public static final QName NAME = new QName(
         Const.JAXB_NSURI, "property" );
-
-    private static final String ERR_ILLEGAL_FIXEDATTR =
-        "BIProperty.IllegalFixedAttributeAsConstantProperty";
 
     public BIConversion.User getConv() {
         if(baseType!=null)

@@ -170,7 +170,6 @@ public class BGMBuilder extends BindingComponent {
         model.rootInterface = globalBinding.getSuperInterface();
 
         // check XJC extensions and realize them
-
         BISerializable serial = globalBinding.getSerializable();
         if(serial!=null) {
             model.serializable = true;
@@ -182,6 +181,8 @@ public class BGMBuilder extends BindingComponent {
 
         // attach global conversions to the appropriate simple types
         globalBinding.dispatchGlobalConversions(schemas);
+
+        globalBinding.errorCheck();
     }
 
     /**
