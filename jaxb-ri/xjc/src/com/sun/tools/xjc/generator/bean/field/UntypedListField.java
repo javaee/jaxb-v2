@@ -26,14 +26,11 @@ import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
-import com.sun.codemodel.JForLoop;
 import com.sun.codemodel.JMethod;
-import com.sun.codemodel.JOp;
 import com.sun.codemodel.JVar;
 import com.sun.tools.xjc.generator.bean.ClassOutlineImpl;
 import com.sun.tools.xjc.generator.bean.MethodWriter;
 import com.sun.tools.xjc.model.CPropertyInfo;
-import com.sun.tools.xjc.outline.FieldAccessor;
 import com.sun.xml.bind.v2.NameConverter;
 
 /**
@@ -97,45 +94,21 @@ public class UntypedListField extends AbstractListField {
     protected final JClass getCoreListType() {
         return coreList;
     }
-    
-    public void generateAccessors() {
-        
-        final MethodWriter writer = outline.createMethodWriter();
-        final Accessor acc = (Accessor)create(JExpr._this());
-        
-        final JExpression refT = acc.ref(true);
-        final JExpression refF = acc.ref(false);
 
-        JBlock body;
+    @Override
+    public void generateAccessors() {
+        final MethodWriter writer = outline.createMethodWriter();
+        final Accessor acc = create(JExpr._this());
 
         // [RESULT]
         // List getXXX() {
-        // #ifdef default value
-        //     if(!<ref>.isModified() && <ref>.isEmpty() ) {
-        //         // fill in the default values
-        //         for( int i=0; i<defaultValues.length; i++ )
-        //             <ref>.add(box(defaultValues[i]));
-        //         <ref>.setModified(false);
-        //     }
-        // #endif
         //     return <ref>;
         // }
         $get = writer.declareMethod(listT,"get"+prop.getName(true));
         writer.javadoc().append(prop.javadoc);
-        body = $get.body();
-        if($defValues!=null) {
-            JBlock then = body._if(
-                JOp.cand( acc.hasSetValue().not(), refF.invoke("isEmpty") ) )._then();
-            JForLoop loop = then._for();
-            JVar $i = loop.init(codeModel.INT,"__i",JExpr.lit(0));
-            loop.test($i.lt($defValues.ref("length")));
-            loop.update($i.incr());
-            loop.body().invoke(refT,"add").arg(acc.box($defValues.component($i)));
-            
-            then.invoke(refT,"setModified").arg(JExpr.FALSE);
-        }
-        body._return(refF);
-
+        JBlock block = $get.body();
+        fixNullRef(block);  // avoid using an internal getter
+        block._return(acc.ref(true));
 
         String pname = NameConverter.standard.toVariableName(prop.getName(true));
         writer.javadoc().append(
@@ -160,7 +133,7 @@ public class UntypedListField extends AbstractListField {
             .append(listPossibleTypes(prop));
     }
 
-    public FieldAccessor create(JExpression targetObject) {
+    public Accessor create(JExpression targetObject) {
         return new Accessor(targetObject);
     }
 
