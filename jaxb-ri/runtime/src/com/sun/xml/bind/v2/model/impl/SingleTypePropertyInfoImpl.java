@@ -3,6 +3,8 @@ package com.sun.xml.bind.v2.model.impl;
 import java.util.Collections;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlList;
+
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
@@ -65,6 +67,12 @@ abstract class SingleTypePropertyInfoImpl<T,C,F,M>
             parent.builder.reportError(new IllegalAnnotationException(
                 Messages.SIMPLE_TYPE_IS_REQUIRED.format(),
                 seed
+            ));
+        }
+
+        if(!isCollection() && seed.hasAnnotation(XmlList.class)) {
+            parent.builder.reportError(new IllegalAnnotationException(
+                Messages.XMLLIST_ON_SINGLE_PROPERTY.format(), this
             ));
         }
     }
