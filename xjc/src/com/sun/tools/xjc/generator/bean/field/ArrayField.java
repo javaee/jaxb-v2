@@ -35,7 +35,6 @@ import com.sun.codemodel.JVar;
 import com.sun.tools.xjc.generator.bean.ClassOutlineImpl;
 import com.sun.tools.xjc.generator.bean.MethodWriter;
 import com.sun.tools.xjc.model.CPropertyInfo;
-import com.sun.tools.xjc.outline.FieldAccessor;
 
 /**
  * Realizes a property as an "indexed property"
@@ -85,53 +84,22 @@ final class ArrayField extends AbstractListField {
     public void generateAccessors() {
         
         MethodWriter writer = outline.createMethodWriter();
-        Accessor acc = (Accessor)create(JExpr._this());
+        Accessor acc = create(JExpr._this());
         
         JVar $idx,$value; JBlock body;
         JType arrayType = exposedType.array();
         
         // [RESULT] T[] getX() {
-        // #ifdef default value
-        //     if( !<var>.isModified() ) {
-        //         T[] r = new T[defaultValues.length];
-        //         System.arraycopy( defaultValues, 0, r, 0, r,length );
-        //         return r;
-        //     }
-        // #else
         //     if( <var>==null )    return new T[0];
-        // #endif
         //     return (T[]) <var>.toArray(new T[<var>.size()]);
         // }
         $getAll = writer.declareMethod( exposedType.array(),"get"+prop.getName(true));
         writer.javadoc().append(prop.javadoc);
         body = $getAll.body();
-        
-        if($defValues!=null) {
-            JBlock then = body._if( acc.hasSetValue().not() )._then();
-            JVar $r = then.decl( exposedType.array(), "r",JExpr.newArray(exposedType, $defValues.ref("length")));
-            
-            // [RESULT]
-            // System.arraycopy( defaultValues, 0, r, 0, defaultValues.length );
-            then.staticInvoke( codeModel.ref(System.class), "arraycopy")
-                .arg( $defValues ).arg( JExpr.lit(0) )
-                .arg( $r ).arg( JExpr.lit(0) ).arg( $defValues.ref("length") );
-  //            } else {
-  //                // need to copy them manually to unbox values
-  //                // [RESULT]
-  //                // for( int i=0; i<r.length; i++ )
-  //                //     r[i] = defaultValues[i];
-  //                JForLoop loop = then._for();
-  //                JVar $i = loop.init(codeModel.INT,"__i",JExpr.lit(0));
-  //                loop.test($i.lt($r.ref("length")));
-  //                loop.update($i.incr());
-  //                loop.body().assign( $r.component($i), unbox($defValues.component($i)) );
-  //            }
-            then._return($r);   
-        } else {
-            body._if( acc.ref(true).eq(JExpr._null()) )._then()
-                ._return(JExpr.newArray(exposedType,0));
-        }
-        
+
+        body._if( acc.ref(true).eq(JExpr._null()) )._then()
+            ._return(JExpr.newArray(exposedType,0));
+
         if(primitiveType==null) {
             body._return(JExpr.cast(arrayType,
                 acc.ref(true).invoke("toArray").arg( JExpr.newArray(implType,acc.ref(true).invoke("size")) )));
@@ -156,26 +124,15 @@ final class ArrayField extends AbstractListField {
                         
         // [RESULT]
         // ET getX(int idx) {
-        // #ifdef default value
-        //     if( !<var>.isModified() ) {
-        //         return defaultValues[idx];
-        //     }
-        // #else
         //     if( <var>==null )    throw new IndexOutOfBoundsException();
-        // #endif
         //     return unbox(<var>.get(idx));
         // }
         JMethod $get = writer.declareMethod(exposedType,"get"+prop.getName(true));
         $idx = writer.addParameter(codeModel.INT,"idx");
-        
-        if($defValues!=null) {
-            JBlock then = $get.body()._if( acc.hasSetValue().not() )._then();
-            then._return($defValues.component($idx));
-        } else {
-            $get.body()._if(acc.ref(true).eq(JExpr._null()))._then()
-                ._throw(JExpr._new(codeModel.ref(IndexOutOfBoundsException.class)));
-        }
-                    
+
+        $get.body()._if(acc.ref(true).eq(JExpr._null()))._then()
+            ._throw(JExpr._new(codeModel.ref(IndexOutOfBoundsException.class)));
+
         writer.javadoc().append(prop.javadoc);
         $get.body()._return(acc.unbox(acc.ref(true).invoke("get").arg($idx) ));
 
@@ -183,22 +140,12 @@ final class ArrayField extends AbstractListField {
 
                         
         // [RESULT] int getXLength() {
-        // #ifdef default values
-        //     if( !storage.isModified() )
-        //         return defaultValues.length;
-        // #else
         //     if( <var>==null )    throw new IndexOutOfBoundsException();
-        // #endif
         //     return <ref>.size();
         // }
         JMethod $getLength = writer.declareMethod(codeModel.INT,"get"+prop.getName(true)+"Length");
-        if($defValues!=null) {
-            $getLength.body()._if( acc.hasSetValue().not() )._then()
-                ._return($defValues.ref("length"));
-        } else {
-            $getLength.body()._if(acc.ref(true).eq(JExpr._null()))._then()
+        $getLength.body()._if(acc.ref(true).eq(JExpr._null()))._then()
                 ._return(JExpr.lit(0));
-        }
         $getLength.body()._return(acc.ref(true).invoke("size"));
         
                         
@@ -249,7 +196,7 @@ final class ArrayField extends AbstractListField {
         return codeModel.ref(ArrayList.class).narrow(exposedType.boxify());
     }
     
-    public FieldAccessor create(JExpression targetObject) {
+    public Accessor create(JExpression targetObject) {
         return new Accessor(targetObject);
     }
 }

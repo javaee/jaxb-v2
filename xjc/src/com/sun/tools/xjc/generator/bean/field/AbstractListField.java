@@ -25,11 +25,9 @@ import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
-import com.sun.codemodel.JExpressionImpl;
 import com.sun.codemodel.JFieldRef;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JForLoop;
-import com.sun.codemodel.JFormatter;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JOp;
@@ -51,29 +49,13 @@ import com.sun.tools.xjc.model.CPropertyInfo;
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 abstract class AbstractListField extends AbstractField {
-    // TODO: if we can get rid of default value handling, this will become a whole lot easier!
-
-    /**
-     * Expression object that represents how a new List object
-     * should be built.
-     */
-    private JExpression newListObjectExp;
-    /**
-     * Reference to the array of default values, if there is a default value.
-     * Otherwise null.
-     */
-    protected JVar $defValues = null;
-    private JExpression lazyInitializer = new JExpressionImpl() {
-        public void generate(JFormatter f) {
-            newListObjectExp.generate(f);
-        }
-    };
-    
     /** The field that stores the list. */
     protected JFieldVar field;
     
     /**
-     * a method that lazily initializes a List
+     * a method that lazily initializes a List.
+     * Lazily created.
+     *
      * [RESULT]
      * List _getFoo() {
      *   if(field==null)
@@ -81,8 +63,8 @@ abstract class AbstractListField extends AbstractField {
      *   return field;
      * }
      */
-    protected JMethod internalGetter;
-    
+    private JMethod internalGetter;
+
     /**
      * If this collection property is a collection of a primitive type,
      * this variable refers to that primitive type.
@@ -118,33 +100,37 @@ abstract class AbstractListField extends AbstractField {
     }
     
     protected final void generate() {
-        
-        field=generateField();
-        
-        internalGetter = outline.implClass.method(JMod.PROTECTED,listT,"_get"+prop.getName(true));
-        if(!eagerInstanciation) {
-            internalGetter.body()._if(field.eq(JExpr._null()))._then()
-                .assign(field,lazyInitializer);
-        }
-        internalGetter.body()._return(field);
-        
+
+        // for the collectionType customization to take effect, the field needs to be strongly typed,
+        // not just List<Foo>.
+        field = outline.implClass.field( JMod.PROTECTED, listT, prop.getName(false) );
+        annotate(field);
+
         // generate the rest of accessors
         generateAccessors();
     }
-    private JFieldVar generateField() {
-        // for the collectionType customization to take effect, the field needs to be strongly typed,
-        // not just List<Foo>.
-        JFieldVar ref = outline.implClass.field( JMod.PROTECTED, listT, prop.getName(false) );
-        annotate(ref);
 
-        if(eagerInstanciation)
-            ref.init(newCoreList());
-        else
-            newListObjectExp = newCoreList();
-
-        return ref;
+    private void generateInternalGetter() {
+        internalGetter = outline.implClass.method(JMod.PROTECTED,listT,"_get"+prop.getName(true));
+        if(!eagerInstanciation) {
+            fixNullRef(internalGetter.body());
+        } else {
+            field.init(newCoreList());
+        }
+        internalGetter.body()._return(field);
     }
-    
+
+    /**
+     * Generates statement(s) so that the successive {@link Accessor#ref(boolean)} with
+     * true will always return a non-null list.
+     *
+     * This is useful to avoid generating redundant internal getter.
+     */
+    protected final void fixNullRef(JBlock block) {
+        block._if(field.eq(JExpr._null()))._then()
+            .assign(field,newCoreList());
+    }
+
     public JBlock getOnSetEventHandler() {
         // TODO: implement this method later
         throw new UnsupportedOperationException();
@@ -218,8 +204,9 @@ abstract class AbstractListField extends AbstractField {
         protected final JExpression ref(boolean canBeNull) {
             if(canBeNull)
                 return field;
-            else
-                return $target.invoke(internalGetter);
+            if(internalGetter==null)
+                generateInternalGetter();
+            return $target.invoke(internalGetter);
         }
 
         public void add( JBlock body, JExpression newValue ) {
