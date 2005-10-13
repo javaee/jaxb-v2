@@ -27,7 +27,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import com.sun.tools.xjc.model.CClassInfo;
-import com.sun.xml.bind.v2.NameConverter;
+import com.sun.xml.bind.api.impl.NameConverter;
 
 import org.w3c.dom.Element;
 import org.xml.sax.Locator;

@@ -1,9 +1,8 @@
-package com.sun.xml.bind.v2;
+package com.sun.xml.bind.api.impl;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-
-import com.sun.xml.bind.v2.util.FinalArrayList;
 
 /**
  * Methods that convert strings into various formats.
@@ -20,15 +19,15 @@ class NameUtil {
         return c == '-' || c == '.' || c == ':' || c == '_' || c == '\u00b7' || c == '\u0387' || c == '\u06dd' || c == '\u06de';
     }
 
-    protected static final boolean isDigit(char c) {
+    protected static boolean isDigit(char c) {
         return c >= '0' && c <= '9' || Character.isDigit(c);
     }
 
-    protected static final boolean isUpper(char c) {
+    protected static boolean isUpper(char c) {
         return c >= 'A' && c <= 'Z' || Character.isUpperCase(c);
     }
 
-    protected static final boolean isLower(char c) {
+    protected static boolean isLower(char c) {
         return c >= 'a' && c <= 'z' || Character.isLowerCase(c);
     }
 
@@ -156,7 +155,7 @@ class NameUtil {
      * {"Abc", "100","Ghi"}.
      */
     public List<String> toWordList(String s) {
-        FinalArrayList<String> ss = new FinalArrayList<String>();
+        ArrayList<String> ss = new ArrayList<String>();
         int n = s.length();
         for (int i = 0; i < n;) {
 
@@ -385,7 +384,7 @@ class NameUtil {
             // and 5.0 keywords
             "enum"
             };
-        for( int i=0; i<words.length; i++ )
-            reservedKeywords.add(words[i]);
+        for (String word : words)
+            reservedKeywords.add(word);
     }
 }

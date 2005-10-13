@@ -1,4 +1,4 @@
-package com.sun.xml.bind.v2;
+package com.sun.xml.bind.api.impl;
 
 /**
  * Converts aribitrary strings into Java identifiers.
@@ -85,7 +85,7 @@ public interface NameConverter
         public String toPackageName( String s ) {
             return toMixedCaseName(toWordList(s), false );
         }
-    };
+    }
 
     /**
      * JAX-PRC compatible name converter implementation.
@@ -103,7 +103,7 @@ public interface NameConverter
         }
 
         protected int classify(char c0) {
-            if(c0=='_') return OTHER_LETTER;
+            if(c0=='_') return NameUtil.OTHER_LETTER;
             return super.classify(c0);
         }
     };
@@ -114,7 +114,7 @@ public interface NameConverter
     public static final NameConverter smart = new Standard() {
         public String toConstantName( String token ) {
             String name = super.toConstantName(token);
-            if( isJavaIdentifier(name) )
+            if( NameUtil.isJavaIdentifier(name) )
                 return name;
             else
                 return '_'+name;

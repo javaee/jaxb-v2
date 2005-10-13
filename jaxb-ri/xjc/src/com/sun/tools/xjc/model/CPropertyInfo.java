@@ -12,7 +12,7 @@ import com.sun.codemodel.JType;
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
-import com.sun.xml.bind.v2.NameConverter;
+import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.Util;
 import com.sun.xml.xsom.XSComponent;

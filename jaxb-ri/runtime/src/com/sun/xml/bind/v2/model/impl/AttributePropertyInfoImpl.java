@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.namespace.QName;
 
-import com.sun.xml.bind.v2.NameConverter;
+import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.bind.v2.model.core.AttributePropertyInfo;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 

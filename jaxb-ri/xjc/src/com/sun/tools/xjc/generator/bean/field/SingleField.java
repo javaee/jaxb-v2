@@ -32,7 +32,7 @@ import com.sun.tools.xjc.generator.bean.ClassOutlineImpl;
 import com.sun.tools.xjc.generator.bean.MethodWriter;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.outline.FieldAccessor;
-import com.sun.xml.bind.v2.NameConverter;
+import com.sun.xml.bind.api.impl.NameConverter;
 
 /**
  * Realizes a property through one getter and one setter.

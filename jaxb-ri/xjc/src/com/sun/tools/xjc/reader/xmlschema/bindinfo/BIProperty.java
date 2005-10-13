@@ -41,7 +41,7 @@ import com.sun.tools.xjc.reader.RawTypeSet;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.TypeUtil;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
-import com.sun.xml.bind.v2.NameConverter;
+import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSAttGroupDecl;
 import com.sun.xml.xsom.XSAttributeDecl;

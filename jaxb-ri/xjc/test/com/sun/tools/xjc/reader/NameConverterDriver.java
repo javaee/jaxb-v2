@@ -20,7 +20,7 @@
 
 package com.sun.tools.xjc.reader;
 
-import com.sun.xml.bind.v2.NameConverter;
+import com.sun.xml.bind.api.impl.NameConverter;
 
 
 public class NameConverterDriver

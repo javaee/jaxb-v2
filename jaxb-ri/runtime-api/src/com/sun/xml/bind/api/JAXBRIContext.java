@@ -30,6 +30,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.namespace.QName;
 
+import com.sun.xml.bind.api.impl.NameConverter;
+
 /**
  * {@link JAXBContext} enhanced with JAXB RI specific functionalities.
  *
@@ -238,7 +240,9 @@ public abstract class JAXBRIContext extends JAXBContext {
      *
      * @see JJavaName#isJavaIdentifier(String)
      */
-    public abstract String mangleNameToVariableName(String localName);
+    public static String mangleNameToVariableName(String localName) {
+        return NameConverter.standard.toVariableName(localName);
+    }
 
     /**
      * Computes a Java class name from a local name.
@@ -249,7 +253,9 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @return
      *      Typically, this method returns "NameLikeThis".
      */
-    public abstract String mangleNameToClassName(String localName);
+    public static String mangleNameToClassName(String localName) {
+        return NameConverter.standard.toClassName(localName);
+    }
 
 
     /**

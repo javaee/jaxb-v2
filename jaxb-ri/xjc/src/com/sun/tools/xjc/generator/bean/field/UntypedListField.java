@@ -31,7 +31,7 @@ import com.sun.codemodel.JVar;
 import com.sun.tools.xjc.generator.bean.ClassOutlineImpl;
 import com.sun.tools.xjc.generator.bean.MethodWriter;
 import com.sun.tools.xjc.model.CPropertyInfo;
-import com.sun.xml.bind.v2.NameConverter;
+import com.sun.xml.bind.api.impl.NameConverter;
 
 /**
  * Realizes a property as an untyped {@link List}.
@@ -126,7 +126,7 @@ public class UntypedListField extends AbstractListField {
             "</pre>\n"+
             "\n\n"
         );
-        
+
         writer.javadoc().append(
             "<p>\n" +
             "Objects of the following type(s) are allowed in the list\n")
@@ -141,7 +141,7 @@ public class UntypedListField extends AbstractListField {
         protected Accessor( JExpression $target ) {
             super($target);
         }
-        
+
         public void toRawValue(JBlock block, JVar $var) {
             // [RESULT]
             // $<var>.addAll(bean.getLIST());
