@@ -20,7 +20,7 @@ import com.sun.tools.xjc.model.CNonElement;
 import com.sun.tools.xjc.model.CTypeInfo;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.model.TypeUse;
-import com.sun.xml.bind.v2.NameConverter;
+import com.sun.xml.bind.api.impl.NameConverter;
 
 import org.kohsuke.rngom.digested.DChoicePattern;
 import org.kohsuke.rngom.digested.DDefine;
@@ -87,7 +87,7 @@ public final class RELAXNGCompiler {
     public RELAXNGCompiler(DPattern grammar, JCodeModel codeModel, Options opts) {
         this.grammar = grammar;
         this.opts = opts;
-        this.model = new Model(opts,codeModel,NameConverter.smart,opts.classNameAllocator);
+        this.model = new Model(opts,codeModel, NameConverter.smart,opts.classNameAllocator);
 
         datatypes.put("",DatatypeLib.BUILTIN);
         datatypes.put(WellKnownNamespaces.XML_SCHEMA_DATATYPES,DatatypeLib.XMLSCHEMA);

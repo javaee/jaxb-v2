@@ -21,7 +21,7 @@
     import com.sun.codemodel.*;
     import com.sun.tools.xjc.generator.bean.field.*;
     import com.sun.tools.xjc.model.*;
-    import com.sun.xml.bind.v2.NameConverter;
+    import com.sun.xml.bind.api.impl.NameConverter;
     import com.sun.xml.bind.v2.WellKnownNamespace;
     import com.sun.xml.bind.marshaller.SAX2DOMEx;
     import com.sun.tools.xjc.reader.xmlschema.bindinfo.*;

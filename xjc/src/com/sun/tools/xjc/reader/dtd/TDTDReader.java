@@ -50,7 +50,7 @@ import com.sun.tools.xjc.reader.dtd.bindinfo.BIInterface;
 import com.sun.tools.xjc.reader.dtd.bindinfo.BindInfo;
 import com.sun.tools.xjc.util.CodeModelClassFactory;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
-import com.sun.xml.bind.v2.NameConverter;
+import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.dtdparser.DTDHandlerBase;
 import com.sun.xml.dtdparser.DTDParser;
 import com.sun.xml.dtdparser.InputEntity;

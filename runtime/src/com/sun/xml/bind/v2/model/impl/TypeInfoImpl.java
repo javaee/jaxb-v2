@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
-import com.sun.xml.bind.v2.NameConverter;
+import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
@@ -60,7 +60,7 @@ abstract class TypeInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     protected final AnnotationReader<TypeT,ClassDeclT,FieldT,MethodT> reader() {
         return owner.reader;
-    }    
+    }
 
     protected final QName parseTypeName(ClassDeclT clazz) {
         return parseTypeName( clazz, reader().getClassAnnotation(XmlType.class,clazz,this) );

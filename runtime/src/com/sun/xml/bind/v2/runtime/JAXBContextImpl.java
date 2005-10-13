@@ -64,7 +64,7 @@ import com.sun.xml.bind.api.TypeReference;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.bind.util.Which;
 import com.sun.xml.bind.v2.WellKnownNamespace;
-import com.sun.xml.bind.v2.NameConverter;
+import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.NonElement;
@@ -102,7 +102,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -709,14 +709,6 @@ public final class JAXBContextImpl extends JAXBRIContext {
             // impossible given that JAXBRIContext has been successfully built in the first place
             throw new AssertionError(e);
         }
-    }
-
-    public final String mangleNameToVariableName(String localName) {
-        return NameConverter.standard.toVariableName(localName);
-    }
-
-    public final String mangleNameToClassName(String localName) {
-        return NameConverter.standard.toClassName(localName);
     }
 
     /**

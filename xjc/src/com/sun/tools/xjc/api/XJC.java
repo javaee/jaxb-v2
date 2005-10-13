@@ -23,9 +23,8 @@ import com.sun.codemodel.JJavaName;
 import com.sun.tools.xjc.api.impl.j2s.JavaCompilerImpl;
 import com.sun.tools.xjc.api.impl.s2j.SchemaCompilerImpl;
 import com.sun.tools.xjc.reader.Util;
-import com.sun.xml.bind.v2.NameConverter;
+import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.bind.api.JAXBRIContext;
-import com.sun.codemodel.JJavaName;
 
 /**
  * Entry point to the JAXB RI interface.
@@ -43,7 +42,7 @@ public final class XJC {
     public static final JavaCompiler createJavaCompiler() {
         return new JavaCompilerImpl();
     }
-    
+
     /**
      * Gets a fresh {@link SchemaCompiler}.
      * 

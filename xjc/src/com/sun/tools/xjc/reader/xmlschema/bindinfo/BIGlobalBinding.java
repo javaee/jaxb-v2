@@ -42,7 +42,7 @@ import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.ConversionFinder;
 import com.sun.tools.xjc.util.ReadOnlyAdapter;
-import com.sun.xml.bind.v2.NameConverter;
+import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.xsom.XSDeclaration;
 import com.sun.xml.xsom.XSSchemaSet;
