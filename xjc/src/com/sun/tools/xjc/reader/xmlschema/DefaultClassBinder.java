@@ -435,14 +435,14 @@ final class DefaultClassBinder implements ClassBinder
     private String deriveName( String name, XSComponent comp ) {
         XSSchema owner = comp.getOwnerSchema();
 
+        name = builder.getNameConverter().toClassName(name);
+
         if( owner!=null ) {
             BISchemaBinding sb = builder.getBindInfo(
                 owner).get(BISchemaBinding.class);
 
             if(sb!=null)    name = sb.mangleClassName(name,comp);
         }
-
-        name = builder.getNameConverter().toClassName(name);
 
         return name;
     }
