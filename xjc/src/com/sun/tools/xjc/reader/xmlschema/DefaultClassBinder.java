@@ -184,9 +184,8 @@ final class DefaultClassBinder implements ClassBinder
                         null, tagName, decl, custs );
                 } else {
                     String className = null;
-                    if(getGlobalBinding().isGenerateElementClass()) {
-                        className = getGlobalBinding().nameConverter.toClassName(decl.getName());
-                    }
+                    if(getGlobalBinding().isGenerateElementClass())
+                        className = deriveName(decl);
 
                     // otherwise map global elements to JAXBElement
                     CElementInfo cei = new CElementInfo(
