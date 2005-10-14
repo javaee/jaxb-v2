@@ -1,6 +1,5 @@
 package com.sun.tools.xjc.reader.xmlschema;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,9 +32,6 @@ import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSAttributeUse;
 import com.sun.xml.xsom.XSComponent;
-import com.sun.xml.xsom.XSElementDecl;
-import com.sun.xml.xsom.XSModelGroup;
-import com.sun.xml.xsom.XSModelGroupDecl;
 import com.sun.xml.xsom.XSParticle;
 import com.sun.xml.xsom.XSSchema;
 import com.sun.xml.xsom.XSSchemaSet;
@@ -44,7 +40,6 @@ import com.sun.xml.xsom.XSTerm;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.util.XSFinder;
-import com.sun.xml.xsom.visitor.XSTermVisitor;
 
 import org.xml.sax.Locator;
 
@@ -148,10 +143,21 @@ public class BGMBuilder extends BindingComponent {
             BindInfo bi = getBindInfo(s);
 
             BIGlobalBinding gb = bi.get(BIGlobalBinding.class);
+            if(gb==null)
+                continue;
 
-            if(gb!=null && globalBinding==null) {
+            if(globalBinding==null) {
                 globalBinding = gb;
                 globalBinding.markAsAcknowledged();
+            } else {
+                // acknowledge this customization and report an error
+                // otherwise the user will see "customization is attached to a wrong place" error,
+                // which is incorrect
+                gb.markAsAcknowledged();
+                getErrorReporter().error( gb.getLocation(),
+                    Messages.ERR_MULTIPLE_GLOBAL_BINDINGS);
+                getErrorReporter().error( globalBinding.getLocation(),
+                    Messages.ERR_MULTIPLE_GLOBAL_BINDINGS_OTHER);
             }
         }
 
