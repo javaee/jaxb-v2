@@ -30,8 +30,13 @@ public final class APTClassLoader extends URLClassLoader {
      *      The parent class loader to delegate to.
      */
     public APTClassLoader(ClassLoader parent, String[] packagePrefixes) throws ToolsJarNotFoundException {
-        super(new URL[]{getToolsJar()},parent);
-        this.packagePrefixes = packagePrefixes;
+        super(getToolsJar(parent),parent);
+        if(getURLs().length==0)
+            // if tools.jar was found in our classloader, no need to create
+            // a parallel classes
+            this.packagePrefixes = new String[0];
+        else
+            this.packagePrefixes = packagePrefixes;
     }
 
     public Class loadClass(String className) throws ClassNotFoundException {
@@ -82,8 +87,22 @@ public final class APTClassLoader extends URLClassLoader {
 
     /**
      * Returns a class loader that can load classes from JDK tools.jar.
+     * @param parent
      */
-    private static URL getToolsJar() throws ToolsJarNotFoundException {
+    private static URL[] getToolsJar(ClassLoader parent) throws ToolsJarNotFoundException {
+
+        try {
+            parent.loadClass("com.sun.tools.javac.Main");
+            parent.loadClass("com.sun.tools.apt.Main");
+            return new URL[0];
+            // we can already load them in the parent class loader.
+            // so no need to look for tools.jar.
+            // this happens when we are run inside IDE/Ant, or
+            // in Mac OS.
+        } catch (ClassNotFoundException e) {
+            // otherwise try to find tools.jar
+        }
+
         File jreHome = new File(System.getProperty("java.home"));
         File toolsJar = new File( jreHome.getParent(), "lib/tools.jar" );
 
@@ -92,7 +111,7 @@ public final class APTClassLoader extends URLClassLoader {
         }
 
         try {
-            return toolsJar.toURL();
+            return new URL[]{toolsJar.toURL()};
         } catch (MalformedURLException e) {
             // impossible
             throw new AssertionError(e);
