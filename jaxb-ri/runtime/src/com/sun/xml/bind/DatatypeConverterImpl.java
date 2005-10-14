@@ -47,7 +47,7 @@ import com.sun.xml.bind.v2.TODO;
  * This class is responsible for whitespace normalization.
  *
  * @author <ul><li>Ryan Shoemaker, Sun Microsystems, Inc.</li></ul>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since JAXB1.0
  */
 public final class DatatypeConverterImpl implements DatatypeConverterInterface {
@@ -678,7 +678,8 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
      */
     public static int _printBase64Binary(byte[] input, int offset, int len, byte[] out, int ptr) {
         byte[] buf = out;
-        for( int i=offset; i<len; i+=3 ) {
+        int max = len+offset;
+        for( int i=offset; i<max; i+=3 ) {
             switch( len-i ) {
             case 1:
                 buf[ptr++] = encodeByte(input[i]>>2);
