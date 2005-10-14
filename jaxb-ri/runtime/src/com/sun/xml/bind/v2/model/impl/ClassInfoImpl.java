@@ -780,6 +780,10 @@ class ClassInfoImpl<T,C,F,M>
         Collection<? extends M> methods = nav().getDeclaredMethods(clazz);
         for( M method : methods ) {
             boolean used = false;   // if this method is added to getters or setters
+
+            if(nav().isBridgeMethod(method))
+                continue;   // ignore
+
             String name = nav().getMethodName(method);
             int arity = nav().getMethodParameters(method).length;
 
