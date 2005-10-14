@@ -2,10 +2,10 @@ package com.sun.xml.bind.v2.runtime.unmarshaller;
 
 import javax.activation.DataHandler;
 import javax.xml.bind.attachment.AttachmentUnmarshaller;
+import javax.xml.namespace.NamespaceContext;
 
 import com.sun.xml.bind.v2.WellKnownNamespace;
 
-import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 /**
@@ -45,8 +45,8 @@ final class MTOMDecorator implements XmlVisitor {
         this.au = au;
     }
 
-    public void startDocument(LocatorEx loc) throws SAXException {
-        next.startDocument(loc);
+    public void startDocument(LocatorEx loc, NamespaceContext nsContext) throws SAXException {
+        next.startDocument(loc,nsContext);
     }
 
     public void endDocument() throws SAXException {

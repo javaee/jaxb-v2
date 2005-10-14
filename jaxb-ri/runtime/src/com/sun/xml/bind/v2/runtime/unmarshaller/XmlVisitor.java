@@ -1,5 +1,7 @@
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
+import javax.xml.namespace.NamespaceContext;
+
 import org.xml.sax.SAXException;
 
 /**
@@ -37,7 +39,26 @@ import org.xml.sax.SAXException;
  * @author Kohsuke Kawaguchi
  */
 public interface XmlVisitor {
-    void startDocument(LocatorEx locator) throws SAXException;
+    /**
+     * Notifies a start of the document.
+     *
+     * @param locator
+     *      This live object returns the location information as the parsing progresses.
+     *      must not be null.
+     * @param nsContext
+     *      Some broken XML APIs can't iterate all the in-scope namespace bindings,
+     *      which makes it impossible to emulate {@link #startPrefixMapping(String, String)} correctly
+     *      when unmarshalling a subtree. Connectors that use such an API can
+     *      pass in additional {@link NamespaceContext} object that knows about the
+     *      in-scope namespace bindings. Otherwise (and normally) it is null.
+     *
+     *      <p>
+     *      Ideally this object should be immutable and only represent the namespace URI bindings
+     *      in the context (those done above the element that JAXB started unmarshalling),
+     *      but it can also work even if it changes as the parsing progress (to include
+     *      namespaces declared on the current element being parsed.)
+     */
+    void startDocument(LocatorEx locator, NamespaceContext nsContext) throws SAXException;
     void endDocument() throws SAXException;
 
     /**

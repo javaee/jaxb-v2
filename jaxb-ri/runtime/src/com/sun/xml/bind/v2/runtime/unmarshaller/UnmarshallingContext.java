@@ -122,6 +122,10 @@ public final class UnmarshallingContext extends Coordinator
 
     private Object currentElement;
 
+    /**
+     * @see XmlVisitor#startDocument(LocatorEx, NamespaceContext)
+     */
+    private NamespaceContext environmentNamespaceContext;
 
 
     /**
@@ -311,8 +315,9 @@ public final class UnmarshallingContext extends Coordinator
         }
     }
 
-    public void startDocument(LocatorEx locator) throws SAXException {
+    public void startDocument(LocatorEx locator, NamespaceContext nsContext) throws SAXException {
         this.locator = locator;
+        this.environmentNamespaceContext = nsContext;
         // reset the object
         result = null;
         current = root;
@@ -409,6 +414,7 @@ public final class UnmarshallingContext extends Coordinator
         isUnmarshalInProgress = false;
         currentElement = null;
         locator = null;
+        environmentNamespaceContext = null;
 
         // at the successful completion, scope must be all closed
         assert root==current;
@@ -692,6 +698,10 @@ public final class UnmarshallingContext extends Coordinator
             if(prefix.equals(nsBind[i]))
                 return nsBind[i+1];
         }
+
+        if(environmentNamespaceContext!=null)
+            environmentNamespaceContext.getNamespaceURI(prefix);
+
         return null;
     }
 
@@ -773,6 +783,9 @@ public final class UnmarshallingContext extends Coordinator
                 if( getNamespaceURI(nsBind[i]).equals(nsBind[i+1]) )
                     // make sure that this prefix is still effective.
                     return nsBind[i];
+
+        if(environmentNamespaceContext!=null)
+            return environmentNamespaceContext.getPrefix(uri);
 
         return null;
     }
