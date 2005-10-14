@@ -700,7 +700,8 @@ public final class UnmarshallingContext extends Coordinator
         }
 
         if(environmentNamespaceContext!=null)
-            environmentNamespaceContext.getNamespaceURI(prefix);
+            // temporary workaround until Zephyr fixes 6337180
+            return environmentNamespaceContext.getNamespaceURI(prefix.intern());
 
         return null;
     }
