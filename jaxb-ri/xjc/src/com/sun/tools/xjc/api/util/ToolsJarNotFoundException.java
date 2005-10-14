@@ -20,7 +20,7 @@ public final class ToolsJarNotFoundException extends Exception {
         this.toolsJar = toolsJar;
     }
 
-    private static final String calcMessage(File toolsJar) {
+    private static String calcMessage(File toolsJar) {
         return Messages.TOOLS_JAR_NOT_FOUND.format(toolsJar.getPath());
     }
 }
