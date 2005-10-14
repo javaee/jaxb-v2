@@ -41,6 +41,7 @@ import com.sun.xml.xsom.XSParticle;
 import com.sun.xml.xsom.XSTerm;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.visitor.XSTermVisitor;
+import com.sun.codemodel.JJavaName;
 
 /**
  * Binds the content models.
@@ -99,11 +100,11 @@ public final class ParticleBinder extends BindingComponent {
     /**
      * Gets the BIProperty object that applies to the given particle.
      */
-    private final BIProperty getLocalPropCustomization( XSParticle p ) {
+    private BIProperty getLocalPropCustomization( XSParticle p ) {
         return getLocalCustomization(p,BIProperty.class);
     }
 
-    private final <T extends BIDeclaration> T getLocalCustomization( XSParticle p, Class<T> type ) {
+    private <T extends BIDeclaration> T getLocalCustomization( XSParticle p, Class<T> type ) {
         // check the property customization of this component first
         T cust = builder.getBindInfo(p).get(type);
         if(cust!=null)  return cust;
@@ -120,7 +121,7 @@ public final class ParticleBinder extends BindingComponent {
      * Computes the label of a given particle.
      * Usually, the getLabel method should be used instead.
      */
-    private final String computeLabel( XSParticle p ) {
+    private String computeLabel( XSParticle p ) {
         // if the particle carries a customization, use that value.
         // since we are binding content models, it's always non-constant properties.
         BIProperty cust = getLocalPropCustomization(p);
@@ -140,16 +141,16 @@ public final class ParticleBinder extends BindingComponent {
         // if it fails, compute the default name according to the spec.
         if(t.isElementDecl())
             // for element, take the element name.
-            return makeJavaName(t.asElementDecl().getName());
+            return makeJavaName(p,t.asElementDecl().getName());
         if(t.isModelGroupDecl())
             // for named model groups, take that name
-            return makeJavaName(t.asModelGroupDecl().getName());
+            return makeJavaName(p,t.asModelGroupDecl().getName());
         if(t.isWildcard())
             // the spec says it will map to "any" by default.
-            return "Any";
+            return makeJavaName(p,"Any");
         if(t.isModelGroup()) {
             try {
-                return builder.getSpecDefaultName(t.asModelGroup());
+                return getSpecDefaultName(t.asModelGroup(),isRepeated(p));
             } catch( ParseException e ) {
                 // unable to generate a name.
                 getErrorReporter().error(t.getLocator(),
@@ -165,8 +166,17 @@ public final class ParticleBinder extends BindingComponent {
     }
 
     /** Converts an XML name to the corresponding Java name. */
-    private String makeJavaName( String xmlName ) {
-        return builder.getNameConverter().toPropertyName(xmlName);
+    private String makeJavaName( XSParticle p, String xmlName ) {
+        String name = builder.getNameConverter().toPropertyName(xmlName);
+        if(builder.getGlobalBinding().isSimpleMode() && isRepeated(p) )
+            name = JJavaName.getPluralForm(name);
+        return name;
+    }
+
+    private boolean isRepeated(XSParticle p) {
+        int m = p.getMaxOccurs();
+        if(m==XSParticle.UNBOUNDED)     return true;
+        return m>1;
     }
 
     private CClassInfo getCurrentBean() {
@@ -482,5 +492,81 @@ public final class ParticleBinder extends BindingComponent {
 
             insideOptionalParticle = oldIOP;
         }
+    }
+
+
+    /**
+     * Computes a name from unnamed model group by following the spec.
+     *
+     * Taking first three elements and combine them.
+     *
+     * @param repeated
+     *      if the said model group is repeated more than once
+     *
+     * @exception ParseException
+     *      If the method cannot generate a name. For example, when
+     *      a model group doesn't contain any element reference/declaration
+     *      at all.
+     */
+    private String getSpecDefaultName( XSModelGroup mg, final boolean repeated ) throws ParseException {
+
+        final StringBuilder name = new StringBuilder();
+
+        mg.visit(new XSTermVisitor() {
+            /**
+             * Count the number of tokens we combined.
+             * We will concat up to 3.
+             */
+            private int count=0;
+
+            /**
+             * Is the current particple/term repeated?
+             */
+            private boolean rep = repeated;
+
+            public void wildcard(XSWildcard wc) {
+                append("any");
+            }
+
+            public void modelGroupDecl(XSModelGroupDecl mgd) {
+                modelGroup(mgd.getModelGroup());
+            }
+
+            public void modelGroup(XSModelGroup mg) {
+                String operator;
+                if(mg.getCompositor()==XSModelGroup.CHOICE)     operator = "Or";
+                else                                            operator = "And";
+
+                int size = mg.getSize();
+                for( int i=0; i<size; i++ ) {
+                    XSParticle p = mg.getChild(i);
+                    boolean oldRep = rep;
+                    rep |= isRepeated(p);
+                    p.getTerm().visit(this);
+                    rep = oldRep;
+
+                    if(count==3)    return; // we have enough
+                    if(i!=size-1)   name.append(operator);
+                }
+            }
+
+            public void elementDecl(XSElementDecl ed) {
+                append(ed.getName());
+            }
+
+            private void append(String token) {
+                if( count<3 ) {
+                    token = builder.getNameConverter().toClassName(token);
+                    if(builder.getGlobalBinding().isSimpleMode() && rep )
+                        token = JJavaName.getPluralForm(token);
+                    name.append(token);
+                    count++;
+                }
+            }
+        });
+
+        if(name.length()==0) throw new ParseException("no element",-1);
+
+        return name.toString();
     }
 }

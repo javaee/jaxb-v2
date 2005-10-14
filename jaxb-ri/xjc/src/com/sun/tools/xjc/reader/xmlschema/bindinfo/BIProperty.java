@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JType;
+import com.sun.codemodel.JJavaName;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
 import com.sun.tools.xjc.generator.bean.field.IsSetFieldRenderer;
@@ -268,8 +269,11 @@ public final class BIProperty extends AbstractDeclarationImpl {
         constantPropertyErrorCheck();
 
         String name = getPropertyName(forConstant);
-        if(name==null)
+        if(name==null) {
             name = defaultName;
+            if(tu.isCollection() && getBuilder().getGlobalBinding().isSimpleMode())
+                name = JJavaName.getPluralForm(name);
+        }
 
         return wrapUp(new CValuePropertyInfo(name, source,getCustomizations(source),source.getLocator(), tu ),source);
     }
@@ -287,6 +291,8 @@ public final class BIProperty extends AbstractDeclarationImpl {
                 name = conv.toConstantName(use.getDecl().getName());
             else
                 name = conv.toPropertyName(use.getDecl().getName());
+            if(tu.isCollection() && getBuilder().getGlobalBinding().isSimpleMode())
+                name = JJavaName.getPluralForm(name);
         }
 
         QName n = new QName(use.getDecl().getTargetNamespace(),use.getDecl().getName());
