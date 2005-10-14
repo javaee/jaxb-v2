@@ -266,11 +266,12 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
             // write the batch
             _octetBufferIndex = DatatypeConverterImpl._printBase64Binary(data,start,batchSize,_octetBuffer,_octetBufferIndex);
 
+            if(batchSize<dataLen)
+                flushBuffer();
+            
             start += batchSize;
             dataLen -= batchSize;
 
-            if(batchSize<dataLen)
-                flushBuffer();
         }
     }
 
