@@ -37,8 +37,8 @@ final class ChoiceContentComplexTypeBuilder extends CTBuilder {
         if( mg.getCompositor()!=XSModelGroup.CHOICE )
             return false;
 
-        if( p.getMaxOccurs()>1 || p.getMaxOccurs()==XSParticle.UNBOUNDED )
-            return false;   // repeating particle.
+        if( p.isRepeated() )
+            return false;
 
         return true;
     }

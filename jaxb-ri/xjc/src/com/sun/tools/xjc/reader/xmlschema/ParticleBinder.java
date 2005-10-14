@@ -150,7 +150,7 @@ public final class ParticleBinder extends BindingComponent {
             return makeJavaName(p,"Any");
         if(t.isModelGroup()) {
             try {
-                return getSpecDefaultName(t.asModelGroup(),isRepeated(p));
+                return getSpecDefaultName(t.asModelGroup(),p.isRepeated());
             } catch( ParseException e ) {
                 // unable to generate a name.
                 getErrorReporter().error(t.getLocator(),
@@ -168,15 +168,9 @@ public final class ParticleBinder extends BindingComponent {
     /** Converts an XML name to the corresponding Java name. */
     private String makeJavaName( XSParticle p, String xmlName ) {
         String name = builder.getNameConverter().toPropertyName(xmlName);
-        if(builder.getGlobalBinding().isSimpleMode() && isRepeated(p) )
+        if(builder.getGlobalBinding().isSimpleMode() && p.isRepeated() )
             name = JJavaName.getPluralForm(name);
         return name;
-    }
-
-    private boolean isRepeated(XSParticle p) {
-        int m = p.getMaxOccurs();
-        if(m==XSParticle.UNBOUNDED)     return true;
-        return m>1;
     }
 
     private CClassInfo getCurrentBean() {
@@ -249,8 +243,7 @@ public final class ParticleBinder extends BindingComponent {
 
             XSTerm t = p.getTerm();
 
-            if(p.getMaxOccurs()!=1
-            &&(t.isModelGroup() || t.isModelGroupDecl())) {
+            if(p.isRepeated() && (t.isModelGroup() || t.isModelGroupDecl())) {
                 // a repeated model group gets its own property
                 mark(p);
                 return;
@@ -459,7 +452,7 @@ public final class ParticleBinder extends BindingComponent {
                 getCurrentBean().addProperty(prop);
             } else {
                 // repeated model groups should have been marked already
-                assert p.getMaxOccurs()==0 || p.getMaxOccurs()==1;
+                assert !p.isRepeated();
 
                 boolean oldIOP = insideOptionalParticle;
                 insideOptionalParticle |= p.getMinOccurs()==0;
@@ -541,7 +534,7 @@ public final class ParticleBinder extends BindingComponent {
                 for( int i=0; i<size; i++ ) {
                     XSParticle p = mg.getChild(i);
                     boolean oldRep = rep;
-                    rep |= isRepeated(p);
+                    rep |= p.isRepeated();
                     p.getTerm().visit(this);
                     rep = oldRep;
 
