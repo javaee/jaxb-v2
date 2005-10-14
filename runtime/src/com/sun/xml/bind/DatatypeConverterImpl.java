@@ -47,7 +47,7 @@ import com.sun.xml.bind.v2.TODO;
  * This class is responsible for whitespace normalization.
  *
  * @author <ul><li>Ryan Shoemaker, Sun Microsystems, Inc.</li></ul>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since JAXB1.0
  */
 public final class DatatypeConverterImpl implements DatatypeConverterInterface {
@@ -294,6 +294,9 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         int end = length;
         while(end>start && WhiteSpaceProcessor.isWhiteSpace(text.charAt(end-1)))
             end--;
+
+        if(end==start)
+            throw new IllegalArgumentException("input is empty");
 
 
         String uri;
