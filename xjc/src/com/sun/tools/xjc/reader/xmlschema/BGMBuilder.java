@@ -394,66 +394,6 @@ public class BGMBuilder extends BindingComponent {
     }
 
     /**
-     * Computes a name from unnamed model group by following the spec.
-     *
-     * Taking first three elements and combine them.
-     *
-     * @exception ParseException
-     *      If the method cannot generate a name. For example, when
-     *      a model group doesn't contain any element reference/declaration
-     *      at all.
-     */
-    String getSpecDefaultName( XSModelGroup mg ) throws ParseException {
-
-        final StringBuffer name = new StringBuffer();
-
-        mg.visit(new XSTermVisitor() {
-            /**
-             * Count the number of tokens we combined.
-             * We will concat up to 3.
-             */
-            private int count=0;
-
-            public void wildcard(XSWildcard wc) {
-                append("any");
-            }
-
-            public void modelGroupDecl(XSModelGroupDecl mgd) {
-                modelGroup(mgd.getModelGroup());
-            }
-
-            public void modelGroup(XSModelGroup mg) {
-                String operator;
-                if(mg.getCompositor()==XSModelGroup.CHOICE)     operator = "Or";
-                else                                            operator = "And";
-
-                int size = mg.getSize();
-                for( int i=0; i<size; i++ ) {
-                    mg.getChild(i).getTerm().visit(this);
-                    if(count==3)    return; // we have enough
-                    if(i!=size-1)   name.append(operator);
-                }
-            }
-
-            public void elementDecl(XSElementDecl ed) {
-                append(ed.getName());
-            }
-
-            private void append(String token) {
-                if( count<3 ) {
-                    name.append(
-                        getNameConverter().toClassName(token));
-                    count++;
-                }
-            }
-        });
-
-        if(name.length()==0) throw new ParseException("no element",-1);
-
-        return name.toString();
-    }
-
-    /**
      * Returns true if the component should be processed by purple.
      */
     private final XSFinder toPurple = new XSFinder() {
