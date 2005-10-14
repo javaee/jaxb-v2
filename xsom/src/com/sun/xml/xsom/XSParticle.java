@@ -37,6 +37,11 @@ public interface XSParticle extends XSContentType
      */
     int getMaxOccurs();
 
+    /**
+     * True if the maxOccurs is neither 0 or 1.
+     */
+    boolean isRepeated();
+
     public static final int UNBOUNDED = -1;
 
     XSTerm getTerm();

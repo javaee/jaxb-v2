@@ -52,7 +52,11 @@ public class ParticleImpl extends ComponentImpl implements XSParticle, ContentTy
     
     private int maxOccurs;
     public int getMaxOccurs() { return maxOccurs; }
-    
+
+    public boolean isRepeated() {
+        return maxOccurs!=0 && maxOccurs!=1;
+    }
+
     private int minOccurs;
     public int getMinOccurs() { return minOccurs; }
     
