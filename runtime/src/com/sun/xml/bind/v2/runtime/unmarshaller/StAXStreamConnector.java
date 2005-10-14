@@ -1,4 +1,4 @@
-/* $Id: StAXStreamConnector.java,v 1.3 2005-09-23 22:58:58 kohsuke Exp $
+/* $Id: StAXStreamConnector.java,v 1.4 2005-10-14 00:57:08 kohsuke Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -111,7 +111,7 @@ final class StAXStreamConnector extends StAXConnector {
             if( event!=XMLStreamConstants.START_ELEMENT)
                 throw new IllegalStateException("The current event is not START_ELEMENT\n but " + event);
             
-            handleStartDocument();
+            handleStartDocument(staxStreamReader.getNamespaceContext());
 
             OUTER:
             while(true) {

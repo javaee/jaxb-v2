@@ -54,8 +54,10 @@ final class FastInfosetConnector extends StAXConnector {
                   
             if( event!=XMLStreamConstants.START_ELEMENT)
                 throw new IllegalStateException("The current event is not START_ELEMENT\n but " + event);
-            
-            handleStartDocument();
+
+            // TODO: we don't have to rely on this hack --- we can just emulate
+            // start/end prefix mappings. But for now, I'll rely on this hack.
+            handleStartDocument(fastInfosetStreamReader.getNamespaceContext());
 
             OUTER:
             while(true) {

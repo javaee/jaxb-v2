@@ -1,4 +1,4 @@
-/* $Id: StAXEventConnector.java,v 1.3 2005-08-11 00:35:13 kohsuke Exp $
+/* $Id: StAXEventConnector.java,v 1.4 2005-10-14 00:57:08 kohsuke Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -111,7 +111,7 @@ final class StAXEventConnector extends StAXConnector {
                 event = staxEventReader.nextEvent();
             } while( !event.isStartElement() );
 
-            handleStartDocument();
+            handleStartDocument(event.asStartElement().getNamespaceContext());
 
             OUTER:
             while(true) {

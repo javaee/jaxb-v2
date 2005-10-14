@@ -84,7 +84,7 @@ public final class SAXConnector implements UnmarshallerHandler {
     }
 
     public void startDocument() throws SAXException {
-        next.startDocument(loc);
+        next.startDocument(loc,null);
     }
 
     public void endDocument() throws SAXException {

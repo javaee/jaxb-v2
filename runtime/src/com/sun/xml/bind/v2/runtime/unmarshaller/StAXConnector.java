@@ -4,6 +4,7 @@ import javax.xml.bind.ValidationEventLocator;
 import javax.xml.bind.helpers.ValidationEventLocatorImpl;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.namespace.NamespaceContext;
 
 import org.xml.sax.SAXException;
 
@@ -43,7 +44,7 @@ abstract class StAXConnector {
      */
     protected abstract String getCurrentQName();
 
-    protected final void handleStartDocument() throws SAXException {
+    protected final void handleStartDocument(NamespaceContext nsc) throws SAXException {
         visitor.startDocument(new LocatorEx() {
             public ValidationEventLocator getLocation() {
                 return new ValidationEventLocatorImpl(this);
@@ -60,7 +61,7 @@ abstract class StAXConnector {
             public String getSystemId() {
                 return getCurrentLocation().getSystemId();
             }
-        });
+        },nsc);
     }
 
     protected final void handleEndDocument() throws SAXException {

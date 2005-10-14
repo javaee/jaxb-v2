@@ -21,10 +21,10 @@ package com.sun.xml.bind.v2.runtime.unmarshaller;
 
 import javax.xml.validation.Schema;
 import javax.xml.validation.ValidatorHandler;
+import javax.xml.namespace.NamespaceContext;
 
 import com.sun.xml.bind.v2.util.FatalAdapter;
 
-import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 /**
@@ -50,10 +50,12 @@ final class ValidatingUnmarshaller implements XmlVisitor {
         validator.setErrorHandler(new FatalAdapter(getContext()));
     }
 
-    public void startDocument(LocatorEx locator) throws SAXException {
+    public void startDocument(LocatorEx locator, NamespaceContext nsContext) throws SAXException {
+        // when nsContext is non-null, validator won't probably work correctly.
+        // should we warn?
         validator.setDocumentLocator(locator);
         validator.startDocument();
-        next.startDocument(locator);
+        next.startDocument(locator,nsContext);
     }
 
     public void endDocument() throws SAXException {

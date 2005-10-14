@@ -1,5 +1,7 @@
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
+import javax.xml.namespace.NamespaceContext;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -17,8 +19,8 @@ public final class InterningXmlVisitor implements XmlVisitor {
         this.next = next;
     }
 
-    public void startDocument(LocatorEx locator) throws SAXException {
-        next.startDocument(locator);
+    public void startDocument(LocatorEx locator, NamespaceContext nsContext) throws SAXException {
+        next.startDocument(locator,nsContext);
     }
 
     public void endDocument() throws SAXException {
