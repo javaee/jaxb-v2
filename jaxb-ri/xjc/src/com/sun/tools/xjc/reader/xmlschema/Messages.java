@@ -124,6 +124,8 @@ public class Messages
     public static final String ERR_UNACKNOWLEDGED_CUSTOMIZATION_LOCATION =
         "UnusedCustomizationChecker.UnacknolwedgedCustomization.Relevant"; // arg:0
 
-
-
+    public static final String ERR_MULTIPLE_GLOBAL_BINDINGS =
+        "ERR_MULTIPLE_GLOBAL_BINDINGS";
+    public static final String ERR_MULTIPLE_GLOBAL_BINDINGS_OTHER =
+        "ERR_MULTIPLE_GLOBAL_BINDINGS_OTHER";
 }
