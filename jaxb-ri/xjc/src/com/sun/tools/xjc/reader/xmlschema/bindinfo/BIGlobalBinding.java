@@ -123,7 +123,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
     }
 
     public boolean isSimpleMode() {
-        return simpleMode;
+        return simpleMode!=null;
     }
 
     public EnumMemberMode getEnumMemberMode() {
@@ -260,8 +260,8 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
      * Generate the simpler optimized code, but not necessarily
      * conforming to the spec.
      */
-    @XmlElement(name="simpleMode",namespace=Const.XJC_EXTENSION_URI)
-    boolean simpleMode = false;
+    @XmlElement(name="simple",namespace=Const.XJC_EXTENSION_URI)
+    String simpleMode = null;
 
     /**
      * True to generate a class for elements by default.
