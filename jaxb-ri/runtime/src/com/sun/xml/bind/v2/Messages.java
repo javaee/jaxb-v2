@@ -31,7 +31,8 @@ enum Messages {
     ERROR_LOADING_CLASS,    // 2 args
     INVALID_PROPERTY_VALUE, // 2 args
     UNSUPPORTED_PROPERTY,   // 1 arg
-    BROKEN_CONTEXTPATH      // 1 arg
+    BROKEN_CONTEXTPATH,     // 1 arg
+    NO_DEFAULT_CONSTRUCTOR_IN_INNER_CLASS, // 1 arg
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());

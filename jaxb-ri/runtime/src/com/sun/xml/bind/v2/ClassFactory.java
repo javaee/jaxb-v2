@@ -59,7 +59,14 @@ public final class ClassFactory {
                         cons = clazz.getDeclaredConstructor(emptyClass);
                     } catch (NoSuchMethodException e) {
                         logger.log(Level.INFO,"No default constructor found on "+clazz,e);
-                        throw new NoSuchMethodError(e.getMessage());
+                        NoSuchMethodError exp;
+                        if(clazz.getDeclaringClass()!=null && !Modifier.isStatic(clazz.getModifiers())) {
+                            exp = new NoSuchMethodError(Messages.NO_DEFAULT_CONSTRUCTOR_IN_INNER_CLASS.format(clazz.getName()));
+                        } else {
+                            exp = new NoSuchMethodError(e.getMessage());
+                        }
+                        exp.initCause(e);
+                        throw exp;
                     }
 
                     int classMod = clazz.getModifiers();
