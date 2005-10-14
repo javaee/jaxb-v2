@@ -316,4 +316,9 @@ public interface Navigator<T,C,F,M> {
      *      null if not found.
      */
     C findClass(String className, C referencePoint);
+
+    /**
+     * Returns true if this method is a bridge method as defined in JLS.
+     */
+    boolean isBridgeMethod(M method);
 }

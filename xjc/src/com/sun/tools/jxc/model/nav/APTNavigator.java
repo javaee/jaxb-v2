@@ -240,6 +240,10 @@ public class APTNavigator implements Navigator<TypeMirror,TypeDeclaration,FieldD
         return env.getTypeDeclaration(className);
     }
 
+    public boolean isBridgeMethod(MethodDeclaration method) {
+        return method.getModifiers().contains(Modifier.VOLATILE);
+    }
+
     public boolean isArray(TypeMirror t) {
         return t instanceof ArrayType;
     }

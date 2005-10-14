@@ -469,6 +469,10 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
         }
     }
 
+    public boolean isBridgeMethod(Method method) {
+        return method.isBridge();
+    }
+
 
     /**
      * JDK 5.0 has a bug of createing {@link GenericArrayType} where it shouldn't.

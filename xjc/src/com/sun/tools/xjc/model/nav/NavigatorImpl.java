@@ -274,4 +274,8 @@ public final class NavigatorImpl implements Navigator<NType,NClass,Void,Void> {
         // TODO: implement this method later
         throw new UnsupportedOperationException();
     }
+
+    public boolean isBridgeMethod(Void method) {
+        throw new UnsupportedOperationException();
+    }
 }
