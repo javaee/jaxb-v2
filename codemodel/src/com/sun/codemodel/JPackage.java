@@ -75,6 +75,11 @@ public final class JPackage implements JDeclaration, JGenerable, JClassContainer
     private List<JAnnotationUse> annotations = null;
 
     /**
+     * package javadoc.
+     */
+    private JDocComment jdoc = null;
+
+    /**
      * JPackage constructor
      *
      * @param name
@@ -288,7 +293,19 @@ public final class JPackage implements JDeclaration, JGenerable, JClassContainer
     public Iterator propertyFiles() {
         return resources.iterator();
     }
-    
+
+    /**
+     * Creates, if necessary, and returns the package javadoc for this
+     * JDefinedClass.
+     *
+     * @return JDocComment containing javadocs for this class
+     */
+    public JDocComment javadoc() {
+        if (jdoc == null)
+            jdoc = new JDocComment(owner());
+        return jdoc;
+    }
+
     /**
      * Removes a class from this package.
      */
@@ -421,12 +438,16 @@ public final class JPackage implements JDeclaration, JGenerable, JClassContainer
         }
 
         // write package annotations
-        if(annotations!=null) {
+        if(annotations!=null || jdoc!=null) {
             JFormatter f = createJavaSourceFileWriter(src,"package-info");
+
+            if (jdoc != null)
+                f.g(jdoc);
+
             // TODO: think about importing
             if (annotations != null){
-                for( int i=0; i<annotations.size(); i++ )
-                    f.g(annotations.get(i)).nl();
+                for (JAnnotationUse a : annotations)
+                    f.g(a).nl();
             }
             f.d(this);
 
@@ -444,7 +465,6 @@ public final class JPackage implements JDeclaration, JGenerable, JClassContainer
 
     private JFormatter createJavaSourceFileWriter(CodeWriter src, String className) throws IOException {
         Writer bw = new BufferedWriter(src.openSource(this,className+".java"));
-        JFormatter f = new JFormatter(new PrintWriter(bw));
-        return f;
+        return new JFormatter(new PrintWriter(bw));
     }
 }
