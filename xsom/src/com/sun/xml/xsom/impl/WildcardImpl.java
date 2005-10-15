@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.Collections;
 import java.util.Collection;
+import java.util.HashSet;
 
 import org.xml.sax.Locator;
 
@@ -55,7 +56,7 @@ public abstract class WildcardImpl extends ComponentImpl implements XSWildcard, 
             return new Any(owner,null,null,null,mode);
         
         if(this instanceof Finite && rhs instanceof Finite) {
-            Set values = new java.util.HashSet();
+            Set<String> values = new HashSet<String>();
             values.addAll( ((Finite)this).names );
             values.addAll( ((Finite)rhs ).names );
             return new Finite(owner,null,null,null,values,mode);
@@ -66,8 +67,8 @@ public abstract class WildcardImpl extends ComponentImpl implements XSWildcard, 
                 ((Other)rhs).otherNamespace) )
                 return new Other(owner,null,null,null, ((Other)this).otherNamespace, mode );
             else
-                throw new UnsupportedOperationException(
-                    "union is not expressible");
+                // this somewhat strange rule is indeed in the spec
+                return new Other(owner,null,null,null, "", mode );
         }
         
         Other o;
@@ -128,7 +129,7 @@ public abstract class WildcardImpl extends ComponentImpl implements XSWildcard, 
     
     public final static class Finite extends WildcardImpl implements XSWildcard.Union {
         public Finite( SchemaImpl owner, AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl _fa,
-                    Set ns, int _mode ) {
+                    Set<String> ns, int _mode ) {
             super(owner,_annon,_loc,_fa,_mode);
             names = ns;
             namesView = Collections.unmodifiableSet(names);
