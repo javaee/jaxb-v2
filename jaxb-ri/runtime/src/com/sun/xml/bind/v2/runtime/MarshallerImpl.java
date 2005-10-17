@@ -116,6 +116,9 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     /** Marshaller.Listener */
     private Listener externalListener = null;
 
+    /** Configured for c14n? */
+    private boolean c14nSupport;
+
     /**
      * @param assoc
      *      non-null if the marshaller is working inside {@link BinderImpl}.
@@ -127,6 +130,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         context = c;
         this.assoc = assoc;
         serializer = new XMLSerializer(this);
+        c14nSupport = context.c14nSupport;
 
         try {
             setEventHandler(this);
@@ -361,8 +365,8 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
             if(isFormattedOutput())
                 return new IndentingUTF8XmlOutput(os,indent,table);
             else {
-                if(context.c14nSupport)
-                    return new C14nXmlOutput(os,table);
+                if(c14nSupport)
+                    return new C14nXmlOutput(os,table,context.c14nSupport);
                 else
                     return new UTF8XmlOutput(os,table);
             }
