@@ -65,6 +65,7 @@ import javax.xml.bind.Marshaller;
  *  <li>List up all the in-scope namespaces declared in ancestor elements,
  *      and add them to the inclusive namespace prefix list.
  *  <li>Do not  
+ * </ol>
  *
  * <h2>Unsupported Features</h2>
  * <p>
