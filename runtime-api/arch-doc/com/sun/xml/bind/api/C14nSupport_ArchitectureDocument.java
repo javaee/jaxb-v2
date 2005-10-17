@@ -7,15 +7,24 @@ import javax.xml.bind.Marshaller;
  * <h1>Canonical XML Support in the JAXB RI</h1>
  *
  * <p>
- * The JAXB RI marshaller can be configured to marshal canonical XML.
- * To do so, you specify true to the {@link JAXBRIContext#newInstance} method.
+ * The JAXB RI marshaller or {@link JAXBRIContext} can be configured to marshal
+ * canonical XML. There are two ways to do this:
+ *
+ * <ol>
+ *  <li>If you know in advance that you'll need c14n, use
+ *      {@link JAXBRIContext#newInstance} to create a new {@link JAXBContext}
+ *      with c14n. In this way, every marshaller created from this {@link JAXBRIContext}
+ *      will do c14n. This also runs faster than the second option.
+ *  <li>use {@link Marshaller#setProperty(String, Object)} with {@link JAXBRIContext#CANONICALIZATION_SUPPORT}
+ *      to enable c14n on a marshaller instance.
+ * </ol>
  *
  * <h2>Supported C14n Modes</h2>
  * <h3>(Inclusive) Canonicalization</h3>
  * <p>
- * If you create {@link JAXBContext} with the c14n support, {@link Marshaller}s created
- * from such {@link JAXBContext} will automatically generate canonical XML documents
- * (in the sense of <a href="http://www.w3.org/TR/2001/REC-xml-c14n-20010315">the Canonical XML spec</a>)
+ * Regardless of which two ways you took to configure JAXB,
+ * generated canonical XML documents will follow
+ * <a href="http://www.w3.org/TR/2001/REC-xml-c14n-20010315">the Canonical XML spec</a>
  * provided that you marshal it to UTF-8 (which is the spec requirement) and
  * don't turn on the formatting (which is our implementation requirement.)
  *

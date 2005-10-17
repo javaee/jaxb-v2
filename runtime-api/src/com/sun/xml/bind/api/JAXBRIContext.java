@@ -28,6 +28,7 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.SchemaOutputResolver;
+import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.api.impl.NameConverter;
@@ -288,6 +289,7 @@ public abstract class JAXBRIContext extends JAXBContext {
 
     /**
      * The property that you can specify to {@link JAXBContext#newInstance}
+     * and {@link Marshaller#setProperty(String, Object)}
      * to enable the c14n marshalling support in the {@link JAXBContext}.
      *
      * @see C14nSupport_ArchitectureDocument

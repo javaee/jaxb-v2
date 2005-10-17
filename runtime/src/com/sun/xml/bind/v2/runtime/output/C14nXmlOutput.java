@@ -2,12 +2,13 @@ package com.sun.xml.bind.v2.runtime.output;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Collections;
 
-import com.sun.xml.bind.v2.util.FinalArrayList;
-import com.sun.xml.bind.v2.util.FinalArrayList;
-import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.api.C14nSupport_ArchitectureDocument;
+import com.sun.xml.bind.api.JAXBRIContext;
+import com.sun.xml.bind.v2.runtime.Name;
+import com.sun.xml.bind.v2.util.FinalArrayList;
 
 /**
  * {@link XmlOutput} that generates canonical XML.
@@ -16,13 +17,20 @@ import com.sun.xml.bind.api.C14nSupport_ArchitectureDocument;
  * @author Kohsuke Kawaguchi
  */
 public class C14nXmlOutput extends UTF8XmlOutput {
-    public C14nXmlOutput(OutputStream out, Encoded[] localNames) {
+    public C14nXmlOutput(OutputStream out, Encoded[] localNames, boolean namedAttributesAreOrdered) {
         super(out, localNames);
+        this.namedAttributesAreOrdered = namedAttributesAreOrdered;
+
+        for( int i=0; i<staticAttributes.length; i++ )
+            staticAttributes[i] = new StaticAttribute();
     }
 
-    // used to buffer attributes
-    private Name[] names = new Name[8];
-    private String[] values = new String[8];
+    /**
+     * Hosts statically known attributes.
+     *
+     * {@link StaticAttribute} instances are reused.
+     */
+    private StaticAttribute[] staticAttributes = new StaticAttribute[8];
     private int len = 0;
 
     /**
@@ -38,6 +46,43 @@ public class C14nXmlOutput extends UTF8XmlOutput {
      * see {@link C14nSupport_ArchitectureDocument} for more details.
      */
     private final FinalArrayList<DynamicAttribute> otherAttributes = new FinalArrayList<DynamicAttribute>();
+
+    /**
+     * True if {@link JAXBRIContext} is created with c14n support on,
+     * in which case all named attributes are sorted by the marshaller
+     * and we won't have to do it here.
+     */
+    private final boolean namedAttributesAreOrdered;
+
+    final class StaticAttribute implements Comparable<StaticAttribute> {
+        Name name;
+        String value;
+
+        public void set(Name name, String value) {
+            this.name = name;
+            this.value = value;
+        }
+
+        void write() throws IOException {
+            C14nXmlOutput.super.attribute(name,value);
+        }
+
+        DynamicAttribute toDynamicAttribute() {
+            int nsUriIndex = name.nsUriIndex;
+            int prefix;
+            if(nsUriIndex==-1)
+                prefix = -1;
+            else
+                prefix = nsUriIndex2prefixIndex[nsUriIndex];
+            return new DynamicAttribute(
+                prefix, name.localName, value );
+        }
+
+        public int compareTo(StaticAttribute that) {
+            return this.name.compareTo(that.name);
+        }
+
+    }
 
     final class DynamicAttribute implements Comparable<DynamicAttribute> {
         final int prefix;
@@ -64,20 +109,17 @@ public class C14nXmlOutput extends UTF8XmlOutput {
 
     @Override
     public void attribute(Name name, String value) throws IOException {
-        if(names.length==len) {
+        if(staticAttributes.length==len) {
             // reallocate
             int newLen = len*2;
-            Name[] n = new Name[newLen];
-            String[] v = new String[newLen];
-            System.arraycopy(names,0,n,0,len);
-            System.arraycopy(values,0,v,0,len);
-            names = n;
-            values = v;
+            StaticAttribute[] newbuf = new StaticAttribute[newLen];
+            System.arraycopy(staticAttributes,0,newbuf,0,len);
+            for(int i=len;i<newLen;i++)
+                staticAttributes[i] = new StaticAttribute();
+            staticAttributes = newbuf;
         }
 
-        names[len] = name;
-        values[len] = value;
-        len++;
+        staticAttributes[len++].set(name,value);
     }
 
     @Override
@@ -88,24 +130,22 @@ public class C14nXmlOutput extends UTF8XmlOutput {
     @Override
     public void endStartTag() throws IOException {
         if(otherAttributes.isEmpty()) {
-            // this is the common case
-            for( int i=0; i<len; i++ )
-                super.attribute(names[i],values[i]);
-            len = 0;
+            if(len!=0) {
+                // sort is expensive even for size 0 array,
+                // so it's worth checking len==0
+                if(!namedAttributesAreOrdered)
+                    Arrays.sort(staticAttributes,0,len);
+                // this is the common case
+                for( int i=0; i<len; i++ )
+                    staticAttributes[i].write();
+                len = 0;
+            }
         } else {
             // this is the exceptional case
 
             // sort all the attributes, not just the other attributes
-            for( int i=0; i<len; i++ ) {
-                int nsUriIndex = names[i].nsUriIndex;
-                int prefix;
-                if(nsUriIndex==-1)
-                    prefix = -1;
-                else
-                    prefix = nsUriIndex2prefixIndex[nsUriIndex];
-                otherAttributes.add(new DynamicAttribute(
-                    prefix, names[i].localName, values[i] ));
-            }
+            for( int i=0; i<len; i++ )
+                otherAttributes.add(staticAttributes[i].toDynamicAttribute());
             len = 0;
             Collections.sort(otherAttributes);
 
