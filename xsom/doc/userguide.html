@@ -19,7 +19,7 @@
 <h1 style="text-align:center">XSOM User's Guide</h1>
 <div align=right style="font-size:smaller">
 By <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke Kawaguchi</a><br>
-$Id: userguide.html,v 1.1 2005-04-14 22:06:06 kohsuke Exp $
+$Id: userguide.html,v 1.2 2005-10-18 22:12:49 kohsuke Exp $
 </div>
 
 <h1>Parsing a schema</h1>
@@ -107,7 +107,7 @@ XSSchemaSet sset = parser.getResult();
 </p><p>
 	By default, all the annotations are ignored, but you can easily parse them into a DOM tree or an application-specific data structure.
 </p><p>
-	For details, see <code>com.sun.xml.xsom.impl.parser.AnnotationParser</code> and <code>AnnotationParserFactory</code>. An annotation parser can be attached to XSOMParser through the setAnnotationParser method.
+	For details, see <code>com.sun.xml.xsom.impl.parser.AnnotationParser</code> and <code>AnnotationParserFactory</code>. An annotation parser can be attached to XSOMParser through the setAnnotationParser method. There's also a convenient utility class called <tt>DomAnnotationParserFactory</tt> that parses annotations into DOM.
 </p>
 
 
