@@ -156,6 +156,7 @@
             debug="${compile.debug}" optimize="${compile.optimize}"
             deprecation="${compile.deprecation}" >
             <classpath refid="javac.classpath" />
+            <compilerarg line="${runtime.compilerarg}"/>
         </javac>
         
         <copy toDir="${runtime.classes}">
