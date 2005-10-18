@@ -565,8 +565,19 @@ public final class XMLSerializer extends Coordinator {
                 if(actual==expected)
                     asExpected = true;
                 else {
-                    getNamespaceContext().declareNamespace(WellKnownNamespace.XML_SCHEMA_INSTANCE,"xsi",true);
-                    getNamespaceContext().declareNamespace(actual.typeName.getNamespaceURI(),null,false);
+                    if(actual.typeName==null) {
+                        reportError(new ValidationEventImpl(
+                                ValidationEvent.ERROR,
+                                Messages.SUBSTITUTED_BY_ANONYMOUS_TYPE.format(
+                                    expected.jaxbType.getName(),
+                                    child.getClass().getName(),
+                                    actual.jaxbType.getName()),
+                                getCurrentLocation(fieldName)));
+                        // recover by not printing @xsi:type
+                    } else {
+                        getNamespaceContext().declareNamespace(WellKnownNamespace.XML_SCHEMA_INSTANCE,"xsi",true);
+                        getNamespaceContext().declareNamespace(actual.typeName.getNamespaceURI(),null,false);
+                    }
                 }
             }
             actual.serializeURIs(child,this);

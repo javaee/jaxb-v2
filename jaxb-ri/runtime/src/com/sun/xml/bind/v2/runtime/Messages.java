@@ -24,6 +24,7 @@ enum Messages {
     NOT_MARSHALLABLE, // 0 args
     UNSUPPORTED_RESULT, // 0 args
     UNSUPPORTED_ENCODING, // 1 arg
+    SUBSTITUTED_BY_ANONYMOUS_TYPE, // 3 arg
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());
