@@ -25,16 +25,19 @@ package com.sun.xml.xsom;
  * @author
  *  Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-public interface XSModelGroup extends XSComponent, XSTerm
+public interface XSModelGroup extends XSComponent, XSTerm, Iterable<XSParticle>
 {
     /**
      * Type-safe enumeration for kind of model groups.
      * Constants are defined in the {@link XSModelGroup} interface.
      */
-    public static final class Compositor {
+    public static enum Compositor {
+        ALL("all"),CHOICE("choice"),SEQUENCE("sequence");
+
         private Compositor(String _value) {
             this.value = _value;
         }
+
         private final String value;
         /**
          * Returns the human-readable compositor name.
@@ -49,15 +52,15 @@ public interface XSModelGroup extends XSComponent, XSTerm
     /**
      * A constant that represents "all" compositor.
      */
-    static final Compositor ALL = new Compositor("all");
+    static final Compositor ALL = Compositor.ALL;
     /**
      * A constant that represents "sequence" compositor.
      */
-    static final Compositor SEQUENCE = new Compositor("sequence");
+    static final Compositor SEQUENCE = Compositor.SEQUENCE;
     /**
      * A constant that represents "choice" compositor.
      */
-    static final Compositor CHOICE = new Compositor("choice");
+    static final Compositor CHOICE = Compositor.CHOICE;
 
     Compositor getCompositor();
 
