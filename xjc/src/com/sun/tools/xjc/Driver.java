@@ -58,7 +58,7 @@ public class Driver {
         try {
             System.setProperty("java.net.useSystemProxies","true");
         } catch (SecurityException e) {
-            ; // failing to set this property isn't fatal
+            // failing to set this property isn't fatal
         }
 
         if( Util.getSystemProperty(Driver.class,"noThreadSwap")!=null )
@@ -432,8 +432,8 @@ public class Driver {
         
         if( Options.allPlugins.size()!=0 ) {
             System.out.println(Messages.format(Messages.ADDON_USAGE));
-            for( int i=0; i<Options.allPlugins.size(); i++ ) {
-                System.out.println(Options.allPlugins.get(i).getUsage());
+            for (Plugin p : Options.allPlugins) {
+                System.out.println(p.getUsage());
             }
         }
     }
