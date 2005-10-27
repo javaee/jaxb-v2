@@ -1,7 +1,7 @@
 #
 # Schema for sample app metadata files (sample.meta)
 # 
-# $Id: sample.rnc,v 1.1 2005-04-15 20:07:44 kohsuke Exp $
+# $Id: sample.rnc,v 1.2 2005-10-27 20:16:49 kohsuke Exp $
 # 
 # 
 start = sample
@@ -54,7 +54,7 @@ sample =
             # but @targetDir will be controlld by the directory structure.
             # <produces> will be also controlled by the directory structure.
             element xjc {
-              attribute * - targetDir { text }*,
+              attribute * - target { text }*,
               element * - produces { anyContent }*
             }* &
 

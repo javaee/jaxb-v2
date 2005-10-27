@@ -7,7 +7,7 @@
   reference is "{$var}", whereas Ant uses ${var} syntax.
   So it's quite confusing. To escape ${var}, write it as: ${{var}}.
  
- $Id: build-script.xsl,v 1.5 2005-10-12 14:49:24 ryan_shoemaker Exp $
+ $Id: build-script.xsl,v 1.6 2005-10-27 20:16:48 kohsuke Exp $
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
   
@@ -136,7 +136,7 @@
             <!-- add @target and copy the rest -->
             <xsl:copy>
               <xsl:copy-of select="./@*"/>
-              <xsl:attribute name="target">
+              <xsl:attribute name="destdir">
                 <xsl:value-of select="$dir.jaxb"/>
               </xsl:attribute>
               <xsl:copy-of select="./*"/>
