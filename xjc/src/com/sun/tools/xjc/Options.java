@@ -100,8 +100,6 @@ public class Options
      */
     public EntityResolver entityResolver = null;
 
-    ;
-
     /**
      * Type of input schema language. One of the <code>SCHEMA_XXX</code>
      * constants.

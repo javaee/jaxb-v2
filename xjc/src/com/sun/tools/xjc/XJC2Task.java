@@ -36,6 +36,7 @@ import com.sun.codemodel.JPackage;
 import com.sun.codemodel.writer.FilterCodeWriter;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Util;
+import com.sun.tools.xjc.util.ForkEntityResolver;
 
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
@@ -46,6 +47,7 @@ import org.apache.tools.ant.types.Commandline;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
+import org.apache.tools.ant.types.XMLCatalog;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 
@@ -100,7 +102,10 @@ public class XJC2Task extends Task {
     
     /** Additional command line arguments. */
     private final Commandline cmdLine = new Commandline();
-    
+
+    /** for resolving entities such as dtds */
+    private XMLCatalog xmlCatalog = null;
+
     
     /**
      * Parses the schema attribute. This attribute will be used when
@@ -223,7 +228,18 @@ public class XJC2Task extends Task {
         
         throw new BuildException("Unrecognizable stack size: "+ss);
     }
-    
+
+    /**
+     * Add the catalog to our internal catalog
+     *
+     * @param xmlCatalog the XMLCatalog instance to use to look up DTDs
+     */
+    public void addConfiguredXMLCatalog(XMLCatalog xmlCatalog) {
+        if(this.xmlCatalog==null)
+            this.xmlCatalog = new XMLCatalog();
+        this.xmlCatalog.addConfiguredXMLCatalog(xmlCatalog);
+    }
+
     /**
      * Controls whether files should be generated in read-only mode or not
      */
@@ -375,6 +391,14 @@ public class XJC2Task extends Task {
             options.parseArguments(cmdLine.getArguments());
         } catch( BadCommandLineException e ) {
             throw new BuildException(e.getMessage(),e);
+        }
+
+        if(xmlCatalog!=null) {
+            if(options.entityResolver==null) {
+                options.entityResolver = xmlCatalog;
+            } else {
+                options.entityResolver = new ForkEntityResolver(options.entityResolver,xmlCatalog);
+            }
         }
         
         if( !producesSpecified ) {
