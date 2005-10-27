@@ -481,14 +481,17 @@ public final class BeanGenerator implements Outline
             xrew.name(localPart);
             if(!namespaceURI.equals(mostUsedNamespaceURI)) // only generate if necessary
                 xrew.namespace(namespaceURI);
+        }
 
-            // [RESULT]
-            // @XmlType(name="foo", targetNamespace="bar://baz", propOrder={"p1", "p2", ...})
+        if(target.isOrdered()) {
             for(CPropertyInfo p : target.getProperties() ) {
                 if( ! (p instanceof CAttributePropertyInfo )) {
                     xtw.propOrder(p.getName(false));
                 }
             }
+        } else {
+            // produce empty array
+            xtw.getAnnotationUse().paramArray("propOrder");
         }
 
         for( CPropertyInfo prop : target.getProperties() ) {
