@@ -341,12 +341,12 @@ public final class XmlSchemaGenerator<T,C,F,M> implements SchemaGenerator<T,C,F,
         /**
          * Additional element declarations.
          */
-        private Map<String,NonElement<T,C>> additionalElementDecls = new HashMap<String, NonElement<T, C>>();
+        private Map<String,NonElement<T,C>> additionalElementDecls = new HashMap<String,NonElement<T,C>>();
 
         /**
          * Additional namespace declarations to be made. Taken from {@link XmlSchema#xmlns}.
          */
-        private Map<String,String> xmlNs = new HashMap<String, String>();
+        private Map<String,String> xmlNs = new HashMap<String,String>();
 
         public Namespace(String uri) {
             this.uri = uri;
