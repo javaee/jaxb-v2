@@ -20,7 +20,7 @@
  [name of copyright owner]
 -->
 
-<!-- $Id: build.xml,v 1.18 2005-09-23 21:59:33 ryan_shoemaker Exp $ -->
+<!-- $Id: build.xml,v 1.19 2005-10-27 20:40:10 kohsuke Exp $ -->
 <project name="xjc" basedir=".." default="compile">
 
   <description>
@@ -144,9 +144,6 @@
 
         <mkdir dir="${xjc.classes}" />
 
-        <!-- always delete these prop files so that the latest build id can be set -->
-        <delete file="${xjc.classes}/com/sun/tools/xjc/MessageBundle*.properties"/>
-
         <javac srcdir="${xjc.src}:${xjc.gensrc}" destdir="${xjc.classes}"
             debug="${compile.debug}" optimize="${compile.optimize}"
             deprecation="${compile.deprecation}" >
@@ -160,23 +157,21 @@
         </javac>
 
         <copy toDir="${xjc.classes}">
-            <fileset dir="${xjc.src}" includes="**/*.properties" />
-            <fileset dir="${xjc.src}" includes="**/*.purified.rng" />
-            <fileset dir="${xjc.src}" includes="**/dtd/bindinfo/bindingfile.rng" />
-            <fileset dir="${xjc.src}" includes="**/*.xsd" />
+          <fileset dir="${xjc.src}" includes="**/*.purified.rng" />
+          <fileset dir="${xjc.src}" includes="**/dtd/bindinfo/bindingfile.rng" />
+          <fileset dir="${xjc.src}" includes="**/*.xsd" />
         </copy>
         
-        <!-- pick up the service info for the XJC addon modules -->
-        <copy todir="${xjc.classes}/META-INF">
-            <fileset dir="${xjc.src}/META-INF" />
-        </copy>
+        <!-- always delete these prop files so that the latest build id can be set -->
+        <delete file="${xjc.classes}/com/sun/tools/xjc/MessageBundle*.properties"/>
 
-        <!-- insert the RI version number into the file prolog message that
-             is placed at the head of every generated file and the output
-             message for "xjc -version" -->
-        <replace dir="${xjc.classes}/com/sun/tools/xjc" includes="MessageBundle*.properties">
-            <replacefilter token="@@BUILD_VERSION@@" value="${build.version}"/>
-        </replace>
+        <copy toDir="${xjc.classes}">
+          <fileset dir="${xjc.src}" includes="**/*.properties" />
+          <filterset begintoken="@@" endtoken="@@">
+            <filter token="BUILD_VERSION" value="${build.version}"/>
+            <filter token="JAXB_VERSION" value="${release.impl.version}"/>
+          </filterset>
+        </copy>
         
         <!-- clean up the xjc runtime java source code -->
         <java classname="SourceTidy">
@@ -185,11 +180,6 @@
           </classpath>
           <arg path="${xjc.classes}/com/sun/tools/xjc/runtime" />
         </java>
-        
-        <!-- version string used by the VersionGenerator -->
-        <replace dir="${xjc.classes}/com/sun/tools/xjc/generator/bean" includes="MessageBundle*.properties">
-            <replacefilter token="@@JAXB_VERSION@@" value="${release.impl.version}"/>
-        </replace>
     </target>
     
     
