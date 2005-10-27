@@ -66,6 +66,11 @@
           <td>Base directory to place the generated schema files</td>
           <td>No</td>
         </tr>
+        <tr>
+          <td>classpath</td>
+          <td>Works just like the nested &lt;classpath>element</td>
+          <td>No</td>
+        </tr>
         <!--
         <tr>
           <td></td>
@@ -79,13 +84,19 @@
     <p><code>xjc</code> supports all the nested elements defined by <a href="http://ant.apache.org/manual/CoreTasks/javac.html">the javac task</a>, the following nested element parameters.</p>
 
     <blockquote>
-	  <h3>schema</h3>
-	
-	  <p>
-	    Control the file name of the generated schema. This element takes a mandatory <tt>namespace</tt> attribute and a mandaotry <tt>file</tt> attribute. When this element is present, the schema document generated for the specified namespace will be placed in the specified file name.
-	  </p><p>
-	    The file name is interpreted as relative to the destdir attribute. In the absence of the destdir attribute, file names are relative to the project base directory. This element can be specified multiple times.
-	  </p>
+      <h3>schema</h3>
+    
+      <p>
+        Control the file name of the generated schema. This element takes a mandatory <tt>namespace</tt> attribute and a mandaotry <tt>file</tt> attribute. When this element is present, the schema document generated for the specified namespace will be placed in the specified file name.
+      </p><p>
+        The file name is interpreted as relative to the destdir attribute. In the absence of the destdir attribute, file names are relative to the project base directory. This element can be specified multiple times.
+      </p>
+      
+      <h3>classpath</h3>
+    
+      <p>
+        A <a href="http://ant.apache.org/manual/using.html#path">path-like structure</a> that represents the classpath. If your Java sources/classes depend on other libraries, they need to be available in the classpath.
+      </p>
     </blockquote>
 
 
@@ -106,16 +117,16 @@
   &lt;source  dir="src" includes="org/acme/foo/**/*.java"/&gt;
   &lt;schema namespace="http://foo.org/" file="foo.xsd" /&gt;
   &lt;schema namespace="" file="bar.xsd" /&gt;
-&lt;/xjc&gt;
+&lt;/schemagen&gt;
       </pre>
     </blockquote>
 
 
-	<hr/>
-	<font size="-1">
-	  $Revision: 1.1 $<br/>
-	  $Date: 2005-04-15 20:03:04 $
-	</font>
+    <hr/>
+    <font size="-1">
+      $Revision: 1.2 $<br/>
+      $Date: 2005-10-27 18:53:01 $
+    </font>
   </body>
 </html>
 

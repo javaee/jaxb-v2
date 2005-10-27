@@ -68,10 +68,10 @@ Options:
   -nv                :  do not perform strict validation of the input schema(s)
   -extension         :  allow vendor extensions - do not strictly follow the
                         Compatibility Rules and App E.2 from the JAXB Spec
-  -b &lt;file>          :  specify external bindings files (each <file> must have its own -b)
+  -b &lt;file>          :  specify external bindings files (each &lt;file> must have its own -b)
   -d &lt;dir>           :  generated files will go into this directory
   -p &lt;pkg>           :  specifies the target package
-  -proxy &lt;proxy>     :  set HTTP/HTTPS proxy. Format is [user[:password]@]proxyHost[:proxyPort]
+  -httpproxy &lt;proxy> :  set HTTP/HTTPS proxy. Format is [user[:password]@]proxyHost[:proxyPort]
   -classpath &lt;arg>   :  specify where to find user class files
   -catalog &lt;file>    :  specify catalog files to resolve external entity references
                         support TR9401, XCatalog, and OASIS XML Catalog format.
@@ -82,6 +82,7 @@ Options:
   -relaxng-compact   :  treat input as RELAX NG compact syntax (experimental,unsupported)
   -dtd               :  treat input as XML DTD (experimental,unsupported)
   -wsdl              :  treat input as WSDL and compile schemas inside it (experimental,unsupported)
+  -verbose           :  be extra verbose
   -quiet             :  suppress compiler output
   -help              :  display this help message
   -version           :  display version information
@@ -282,8 +283,8 @@ Options:
     
 	<hr/>
 	<font size="-1">
-	  $Revision: 1.3 $<br/>
-	  $Date: 2005-10-27 17:45:35 $
+	  $Revision: 1.4 $<br/>
+	  $Date: 2005-10-27 18:53:02 $
 	</font>
   </body>
 </html>    
