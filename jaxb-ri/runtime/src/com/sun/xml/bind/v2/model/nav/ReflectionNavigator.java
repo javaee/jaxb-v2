@@ -456,7 +456,10 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
     }
 
     public String getPackageName(Class clazz) {
-        return clazz.getPackage().getName();
+        String name = clazz.getName();
+        int idx = name.lastIndexOf('.');
+        if(idx<0)   return "";
+        else        return name.substring(0,idx);
     }
 
     public Class findClass(String className, Class referencePoint) {
