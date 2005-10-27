@@ -31,8 +31,7 @@
 	    <blockquote>
           <ol>
             <!--li><tt>% export PATH=&lt;your JWSDP@@JWSDP_VERSION@@ installation directory>/jaxb/bin:$JWSDP_HOME/jwsdp-shared/bin:$PATH</tt></li-->
-            <li><tt>% export PATH=$JAXB_HOME/bin:$PATH</tt></li>
-            <li><tt>% $JAXB_HOME/bin/xjc.sh -help</tt></li>
+            <li><tt>% /path/to/jaxb/bin/xjc.sh -help</tt></li>
           </ol>
         </blockquote>
       </blockquote>
@@ -42,12 +41,12 @@
 	    <blockquote>
 	      <ol>
             <!--li><tt>&gt; set PATH=&lt;your JWSDP@@JWSDP_VERSION@@ installation directory>\jaxb\bin;%JWSDP_HOME%\jwsdp-shared\bin;%PATH%</tt></li-->
-            <li><tt>&gt; set PATH=%JAXB_HOME%\bin;$PATH</tt></li>
-	        <li><tt>&gt; %JAXB_HOME%\bin\xjc.bat -help</tt></li>
+	        <li><tt>&gt; c:\path\to\jaxb\bin\xjc.bat -help</tt></li>
           </ol>
         </blockquote>
       </blockquote>
 
+	<!-- XJC_OPTS will not be advertized as it won't be available in XJC in mustang
 	<blockquote>
 	  <h4>Environment Variables</h4>
 	    <blockquote>
@@ -58,7 +57,7 @@
 	            you would specify these options via the ANT_OPTS evironment variable.</li>
 	      </ul>
 	    </blockquote>
-	</blockquote>
+	</blockquote-->
 
 	<blockquote>
 	  <h4>Output</h4>
@@ -115,6 +114,9 @@ Options:
             <dd><tt>&gt; java -jar %JAXB_HOME%\lib\jaxb-xjc.jar -help</tt></dd>
           </dl>
         </blockquote>
+        <p>
+          This is equivalent of running "xjc.sh" or "xjc.bat", and it allows you to set the JVM parameters.
+        </p>
       </blockquote>
 	</blockquote>
 	
@@ -158,7 +160,7 @@ Options:
 	    <dd>Specifying a target package via this command-line option overrides
 	        any binding customization for package name and the default package
 	        name algorithm defined in the specification.</dd>
-		<dt><b>-proxy &lt;proxy></b></dt>
+		<dt><b>-httpproxy &lt;proxy></b></dt>
 		<dd>Specify the HTTP/HTTPS proxy. The format is [user[:password]@]proxyHost[:proxyPort].  The old <tt>-host</tt>
 		    and <tt>-port</tt> are still supported by the RI for backwards compatibility, but they have been deprecated.</dd>
 		<dt><b>-classpath &lt;arg&gt;</b></dt>
@@ -195,6 +197,9 @@ Options:
 		<dt><b>-quiet</b></dt>
 		<dd>Suppress compiler output, such as progress information and warnings.</a>.
 		    </dd>
+		<dt><b>-verbose</b></dt>
+		<dd>Be extra verbose, such as printing informational messages or displaying stack traces upon some errors.</a>.
+		    </dd>
 		<dt><b>-help</b></dt>
 		<dd>Display a brief summary of the compiler switches.</dd>
 		<dt><b>-version</b></dt>
@@ -224,7 +229,7 @@ Options:
     <blockquote>
       <dl>
         <dt><b>-host & -port</b></dt>
-        <dd>These options have been deprecated and replaced with the <b>-proxy</b> option.  For
+        <dd>These options have been deprecated and replaced with the <b>-httpproxy</b> option.  For
             backwards compatibility, we will continue to support these options, but they will no
             longer be documented and may be removed from future releases.</dd>
         <dt><b>-use-runtime</b></dt>
@@ -277,8 +282,8 @@ Options:
     
 	<hr/>
 	<font size="-1">
-	  $Revision: 1.2 $<br/>
-	  $Date: 2005-06-17 18:55:58 $
+	  $Revision: 1.3 $<br/>
+	  $Date: 2005-10-27 17:45:35 $
 	</font>
   </body>
 </html>    

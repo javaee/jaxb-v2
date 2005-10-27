@@ -161,7 +161,7 @@ public final class ModelLoader {
             // parsing error in the input document.
             // this error must have been reported to the user vis error handler
             // so don't print it again.
-            if (opt.debugMode) {
+            if (opt.verbose) {
                 // however, a bug in XJC might throw unexpected SAXException.
                 // thus when one is debugging, it is useful to print what went
                 // wrong.

@@ -301,6 +301,7 @@ public class Options
         }
         if (args[i].equals("-debug")) {
             debugMode = true;
+            verbose = true;
             return 1;
         }
         if (args[i].equals("-nv")) {
@@ -354,7 +355,7 @@ public class Options
             compatibilityMode = EXTENSION;
             return 1;
         }
-        if (args[i].equals("-proxy")) {
+        if (args[i].equals("-httpproxy")) {
             if (i == args.length - 1 || args[i + 1].startsWith("-")) {
                 throw new BadCommandLineException(
                     Messages.format(Messages.MISSING_PROXY));
@@ -380,7 +381,7 @@ public class Options
             return 2;
         }
         if (args[i].equals("-host")) {
-            // legacy option. we use -proxy for more control
+            // legacy option. we use -httpproxy for more control
             if (i == args.length - 1 || args[i + 1].startsWith("-")) {
                 throw new BadCommandLineException(
                     Messages.format(Messages.MISSING_PROXYHOST));
@@ -389,7 +390,7 @@ public class Options
             return 2;
         }
         if (args[i].equals("-port")) {
-            // legacy option. we use -proxy for more control
+            // legacy option. we use -httpproxy for more control
             if (i == args.length - 1 || args[i + 1].startsWith("-")) {
                 throw new BadCommandLineException(
                     Messages.format(Messages.MISSING_PROXYPORT));

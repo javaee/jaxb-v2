@@ -83,8 +83,10 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
         opts.compatibilityMode = Options.EXTENSION;
         forest.setErrorHandler(this);
 
-        if(System.getProperty("xjc-api.test")!=null)
+        if(System.getProperty("xjc-api.test")!=null) {
             opts.debugMode = true;
+            opts.verbose = true;
+        }
     }
     
     public ContentHandler getParserHandler( String systemId ) {
