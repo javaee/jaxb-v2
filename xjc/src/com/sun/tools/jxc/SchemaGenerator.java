@@ -3,7 +3,6 @@ package com.sun.tools.jxc;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.sun.mirror.apt.AnnotationProcessorFactory;
@@ -95,15 +94,38 @@ public class SchemaGenerator {
 
         Class schemagenRunner = classLoader.loadClass(Runner.class.getName());
         Method mainMethod = schemagenRunner.getDeclaredMethod("main",String[].class);
-        List<String> newargs = new ArrayList<String>(Arrays.asList(args));
+
+        List<String> aptargs = new ArrayList<String>();
+
+        if(hasClass(options.arguments))
+            aptargs.add("-XclassesAsDecls");
 
         if (options.classpath != null ) {
-            newargs.add("-cp");
-            newargs.add(options.classpath);
+            aptargs.add("-cp");
+            aptargs.add(options.classpath);
         }
 
-        String[] argsarray = newargs.toArray(new String[newargs.size()]);
-        return ((Integer)mainMethod.invoke(null,new Object[]{argsarray}));
+        if(options.targetDir!=null) {
+            aptargs.add("-d");
+            aptargs.add(options.targetDir.getPath());
+        }
+
+        aptargs.addAll(options.arguments);
+
+        String[] argsarray = aptargs.toArray(new String[aptargs.size()]);
+        return (Integer)mainMethod.invoke(null,new Object[]{argsarray});
+    }
+
+    /**
+     * Returns true if the list of arguments have an argument
+     * that looks like a class name.
+     */
+    private static boolean hasClass(List<String> args) {
+        for (String arg : args) {
+            if(!arg.endsWith(".java"))
+                return true;
+        }
+        return false;
     }
 
     private static void usage( ) {
