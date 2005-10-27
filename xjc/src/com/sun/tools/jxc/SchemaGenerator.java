@@ -68,26 +68,30 @@ public class SchemaGenerator {
         final Options options = new Options();
         if (args.length ==0) {
             usage();
-            return 0;
+            return -1;
         }
         for (String arg : args) {
             if (arg.equals("-help")) {
                 usage();
-                return 0;
+                return -1;
             }
 
-            try {
-                options.parseArguments(args);
-            } catch (BadCommandLineException e) {
-                // there was an error in the command line.
-                // print usage and abort.
-                System.out.println(e.getMessage());
-                System.out.println();
-                usage();
+            if (arg.equals("-version")) {
+                System.out.println(Messages.VERSION.format());
                 return -1;
             }
         }
 
+        try {
+            options.parseArguments(args);
+        } catch (BadCommandLineException e) {
+            // there was an error in the command line.
+            // print usage and abort.
+            System.out.println(e.getMessage());
+            System.out.println();
+            usage();
+            return -1;
+        }
 
         Class schemagenRunner = classLoader.loadClass(Runner.class.getName());
         Method mainMethod = schemagenRunner.getDeclaredMethod("main",String[].class);
