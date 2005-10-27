@@ -51,7 +51,7 @@ import org.xml.sax.SAXException;
  * CUI of XJC.
  */
 public class Driver {
-    
+
     public static void main(final String[] args) throws Exception {
         // use the platform default proxy if available.
         // see sun.net.spi.DefaultProxySelector for details.
@@ -63,12 +63,12 @@ public class Driver {
 
         if( Util.getSystemProperty(Driver.class,"noThreadSwap")!=null )
             _main(args);    // for the ease of debugging
-        
+
         // run all the work in another thread so that the -Xss option
         // will take effect when compiling a large schema. See
         // http://developer.java.sun.com/developer/bugParade/bugs/4362291.html
         final Throwable[] ex = new Throwable[1];
-        
+
         Thread th = new Thread() {
             public void run() {
                 try {
@@ -80,7 +80,7 @@ public class Driver {
         };
         th.start();
         th.join();
-        
+
         if(ex[0]!=null) {
             // re-throw
             if( ex[0] instanceof Exception )
@@ -89,7 +89,7 @@ public class Driver {
                 throw (Error)ex[0];
         }
     }
-    
+
     private static void _main( String[] args ) throws Exception {
         try {
             System.exit(run( args, System.err, System.out ));
@@ -106,7 +106,7 @@ public class Driver {
         }
     }
 
-        
+
 
     /**
      * Performs schema compilation and prints the status/error into the
@@ -173,11 +173,11 @@ public class Driver {
     /**
      * Performs schema compilation and prints the status/error into the
      * specified PrintStream.
-     * 
+     *
      * <p>
      * This method could be used to trigger XJC from other tools,
      * such as Ant or IDE.
-     * 
+     *
      * @param    args
      *        specified command line parameters. If there is an error
      *        in the parameters, {@link BadCommandLineException} will
@@ -191,7 +191,7 @@ public class Driver {
      *      will be sent to the specified PrintStream.
      */
     public static int run(String[] args, XJCListener listener) throws BadCommandLineException {
-        
+
         // recognize those special options before we start parsing options.
         for (String arg : args) {
             if (arg.equals("-help")) {
@@ -207,7 +207,7 @@ public class Driver {
                 return -1;
             }
         }
-        
+
         final OptionsEx opt = new OptionsEx();
         opt.setSchemaLanguage(Language.XMLSCHEMA);  // disable auto-guessing
         opt.parseArguments(args);
@@ -231,10 +231,10 @@ public class Driver {
             if( !opt.quiet ) {
                 listener.message(Messages.format(Messages.PARSING_SCHEMA));
             }
-    
+
             ErrorReceiver receiver = new ErrorReceiverFilter(listener) {
                 public void info(SAXParseException exception) {
-                    if(opt.debugMode)   // only print them in the debug mode
+                    if(opt.verbose)
                         super.info(exception);
                 }
                 public void warning(SAXParseException exception) {
@@ -258,15 +258,15 @@ public class Driver {
 
                 return -1;
             }
-            
-            
+
+
             Model model = ModelLoader.load( opt, new JCodeModel(), receiver );
-    
+
             if (model == null) {
                 listener.message(Messages.format(Messages.PARSE_FAILED));
                 return -1;
             }
-            
+
             if( !opt.quiet ) {
                 listener.message(Messages.format(Messages.COMPILING_SCHEMA));
             }
@@ -331,10 +331,10 @@ public class Driver {
             default :
                 assert false;
             }
-    
+
             return 0;
         } catch( StackOverflowError e ) {
-            if(opt.debugMode)
+            if(opt.verbose)
                 // in the debug mode, propagate the error so that
                 // the full stack trace will be dumped to the screen.
                 throw e;

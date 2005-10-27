@@ -22,6 +22,8 @@ package com.sun.tools.xjc;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.StringWriter;
+import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -56,7 +58,6 @@ import org.xml.sax.SAXParseException;
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 public class XJC2Task extends Task {
-
     public XJC2Task() {
         super();
         classpath = new Path(null);
@@ -67,7 +68,13 @@ public class XJC2Task extends Task {
     
     /** User-specified stack size. */
     private long stackSize = -1;
-    
+
+    /**
+     * False to continue the build even if the compilation fails.
+     */
+    private boolean failonerror = true;
+
+
     /**
      * True if we will remove all the old output files before
      * invoking XJC.
@@ -170,9 +177,19 @@ public class XJC2Task extends Task {
             throw new BuildException(e);
         }
     }
+
+    /**
+     * Mostly for our SQE teams and not to be advertized.
+     */
+    public void setFailonerror(boolean value) {
+        failonerror = value;
+    }
     
     /**
-     * Sets the stack size of the XJC invocation
+     * Sets the stack size of the XJC invocation.
+     *
+     * @deprecated
+     *      not much need for JAXB2, as we now use much less stack.
      */
     public void setStackSize( String ss ) {
         try {
@@ -227,11 +244,20 @@ public class XJC2Task extends Task {
     
     /**
      * Sets the directory to produce generated source files.
+     *
+     * @deprecated  Use {@link #setDestdir(File)}
      */
     public void setTarget( File dir ) {
         this.options.targetDir = dir;
     }
-    
+
+    /**
+     * Sets the directory to produce generated source files.
+     */
+    public void setDestdir( File dir ) {
+        this.options.targetDir = dir;
+    }
+
     /** Nested &lt;depends> element. */
     public void addConfiguredDepends( FileSet fs ) {
         addIndividualFilesTo( fs, dependsSet );
@@ -320,7 +346,14 @@ public class XJC2Task extends Task {
             }
         } catch( BuildException e ) {
             log("failure in the XJC task. Use the Ant -verbose switch for more details");
-            throw e;
+            if(failonerror)
+                throw e;
+            else {
+                StringWriter sw = new StringWriter();
+                e.printStackTrace(new PrintWriter(sw));
+                getProject().log(sw.toString(),Project.MSG_WARN);
+                // continue
+            }
         }
     }
     
