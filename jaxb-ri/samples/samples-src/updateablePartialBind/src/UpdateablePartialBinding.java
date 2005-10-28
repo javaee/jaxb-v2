@@ -19,6 +19,7 @@
  */
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -216,9 +217,9 @@ public class UpdateablePartialBinding {
         }
     }
 
-    static public void saveDocument(Document document, File output) throws TransformerException {
+    static public void saveDocument(Document document, File output) throws TransformerException, IOException {
         Transformer t = TransformerFactory.newInstance().newTransformer();
-        t.transform(new DOMSource(document),new StreamResult(output));
+        t.transform(new DOMSource(document),new StreamResult(new FileOutputStream(output)));
     }
 
 
