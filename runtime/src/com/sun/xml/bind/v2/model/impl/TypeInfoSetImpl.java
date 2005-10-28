@@ -167,8 +167,7 @@ class TypeInfoSetImpl<TypeT,ClassDeclT,FieldT,MethodT> implements
         if(l!=null)     return l;
 
         if( nav.isArray(type) ) {
-            ArrayInfoImpl<TypeT, ClassDeclT, FieldT, MethodT> a = arrays.get(type);
-            return a;
+            return arrays.get(type);
         }
 
         if(nav.ref(Object.class).equals(type))
@@ -318,7 +317,7 @@ class TypeInfoSetImpl<TypeT,ClassDeclT,FieldT,MethodT> implements
             if(xnf!=XmlNsForm.UNSET)
                 return xnf;
         }
-        return XmlNsForm.UNQUALIFIED;
+        return XmlNsForm.UNSET;
     }
 
     public final XmlNsForm getAttributeFormDefault(String nsUri) {
@@ -334,7 +333,7 @@ class TypeInfoSetImpl<TypeT,ClassDeclT,FieldT,MethodT> implements
             if(xnf!=XmlNsForm.UNSET)
                 return xnf;
         }
-        return XmlNsForm.UNQUALIFIED;
+        return XmlNsForm.UNSET;
     }
 
     /**
