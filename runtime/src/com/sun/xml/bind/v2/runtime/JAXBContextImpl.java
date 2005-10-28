@@ -21,10 +21,9 @@ package com.sun.xml.bind.v2.runtime;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
-import java.lang.reflect.Method;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -66,15 +65,12 @@ import com.sun.xml.bind.api.TypeReference;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.bind.util.Which;
 import com.sun.xml.bind.v2.WellKnownNamespace;
-import com.sun.xml.bind.v2.schemagen.XmlSchemaGenerator;
-import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.Ref;
 import com.sun.xml.bind.v2.model.impl.RuntimeBuiltinLeafInfoImpl;
 import com.sun.xml.bind.v2.model.impl.RuntimeModelBuilder;
-import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.model.nav.ReflectionNavigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimeArrayInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeBuiltinLeafInfo;
@@ -92,6 +88,7 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.TagName;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
+import com.sun.xml.bind.v2.schemagen.XmlSchemaGenerator;
 import com.sun.xml.bind.v2.util.QNameMap;
 
 import org.w3c.dom.Document;
@@ -105,7 +102,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -217,6 +214,8 @@ public final class JAXBContextImpl extends JAXBRIContext {
             JaxBeanInfo bi = getOrCreate(e);
             if( bi.typeName!=null )
                 typeMap.put( bi.typeName, bi );
+            if(e.isElement())
+                rootMap.put( e.getElementName(), bi );
         }
 
         for (RuntimeArrayInfo a : typeSet.arrays().values()) {

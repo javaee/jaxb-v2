@@ -192,7 +192,7 @@ class ReferencePropertyInfoImpl<T,C,F,M>
         boolean result = false;
 
         ClassInfo<T,C> c = (ClassInfo<T,C>) t;
-        if(c!=null && c.isElement()) {
+        if(c.isElement()) {
             types.add(c.asElement());
             result = true;
         }

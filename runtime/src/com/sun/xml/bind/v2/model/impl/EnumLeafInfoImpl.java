@@ -4,20 +4,24 @@ import java.util.Iterator;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.core.EnumConstant;
 import com.sun.xml.bind.v2.model.core.EnumLeafInfo;
 import com.sun.xml.bind.v2.model.core.NonElement;
+import com.sun.xml.bind.v2.model.core.Element;
+import com.sun.xml.bind.v2.model.core.ClassInfo;
 import com.sun.xml.bind.v2.runtime.Location;
 
 /**
+ * {@link EnumLeafInfo} implementation.
+ *
  * @author Kohsuke Kawaguchi
  */
-class EnumLeafInfoImpl<T,C,F,M>
-    extends TypeInfoImpl<T,C,F,M>
-    implements EnumLeafInfo<T,C>, Iterable {
+class EnumLeafInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
+        implements EnumLeafInfo<T,C>, Element<T,C>, Iterable<EnumConstantImpl<T,C,F,M>> {
 
     /**
      * The enum class whose information this object represents.
@@ -39,6 +43,12 @@ class EnumLeafInfoImpl<T,C,F,M>
     private EnumConstantImpl<T,C,F,M> firstConstant;
 
     /**
+     * If this enum is also bound to an element, that tag name.
+     * Or else null.
+     */
+    private QName elementName;
+
+    /**
      * @param clazz
      * @param type
      *      clazz and type should both point to the enum class
@@ -50,6 +60,8 @@ class EnumLeafInfoImpl<T,C,F,M>
         super(builder,upstream);
         this.clazz = clazz;
         this.type = type;
+
+        elementName = parseElementName(clazz);
 
         // compute the type name
         // TODO: I guess it must be allowed for enums to have @XmlElement
@@ -135,7 +147,42 @@ class EnumLeafInfoImpl<T,C,F,M>
         super.link();
     }
 
-    public Iterator<? extends EnumConstantImpl<T,C,F,M>> iterator() {
+    /**
+     * No substitution.
+     *
+     * @deprecated if you are invoking this method directly, there's something wrong.
+     */
+    public Element<T, C> getSubstitutionHead() {
+        return null;
+    }
+
+    public QName getElementName() {
+        return elementName;
+    }
+
+    public boolean isElement() {
+        return elementName!=null;
+    }
+
+    public Element<T,C> asElement() {
+        if(isElement())
+            return this;
+        else
+            return null;
+    }
+
+    /**
+     * When a bean binds to an element, it's always through {@link XmlRootElement},
+     * so this method always return null.
+     *
+     * @deprecated
+     *      you shouldn't be invoking this method on {@link ClassInfoImpl}.
+     */
+    public ClassInfo<T,C> getScope() {
+        return null;
+    }
+
+    public Iterator<EnumConstantImpl<T,C,F,M>> iterator() {
         return new Iterator<EnumConstantImpl<T,C,F,M>>() {
             private EnumConstantImpl<T,C,F,M> next = firstConstant;
             public boolean hasNext() {

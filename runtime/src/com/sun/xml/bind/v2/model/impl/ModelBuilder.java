@@ -48,7 +48,7 @@ public class ModelBuilder<T,C,F,M> {
     /**
      * Used to detect collisions among global type names.
      */
-    private final Map<QName,TypeInfo> typeNames = new HashMap<QName, TypeInfo>();
+    private final Map<QName,TypeInfo> typeNames = new HashMap<QName,TypeInfo>();
 
     /**
      * JAXB doesn't want to use namespaces unless we are told to, but WS-I BP

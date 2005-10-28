@@ -1,7 +1,5 @@
 package com.sun.xml.bind.v2.model.core;
 
-
-
 /**
  * Either {@link BuiltinLeafInfo} or {@link EnumLeafInfo}.
  *
@@ -13,5 +11,5 @@ package com.sun.xml.bind.v2.model.core;
  *
  * @author Kohsuke Kawaguchi
  */
-public interface LeafInfo<T,C> extends NonElement<T,C> {
+public interface LeafInfo<T,C> extends MaybeElement<T,C> {
 }

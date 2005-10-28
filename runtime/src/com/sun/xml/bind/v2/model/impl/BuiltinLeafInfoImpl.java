@@ -7,6 +7,7 @@ import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.model.core.BuiltinLeafInfo;
 import com.sun.xml.bind.v2.model.core.LeafInfo;
+import com.sun.xml.bind.v2.model.core.Element;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 
 /**
@@ -32,6 +33,27 @@ public class BuiltinLeafInfoImpl<TypeT,ClassDeclT> extends LeafInfoImpl<TypeT,Cl
      */
     public final QName[] getTypeNames() {
         return typeNames;
+    }
+
+    /**
+     * @deprecated always return false at this level.
+     */
+    public final boolean isElement() {
+        return false;
+    }
+
+    /**
+     * @deprecated always return null at this level.
+     */
+    public final QName getElementName() {
+        return null;
+    }
+
+    /**
+     * @deprecated always return null at this level.
+     */
+    public final Element<TypeT,ClassDeclT> asElement() {
+        return null;
     }
 
     /**

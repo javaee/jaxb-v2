@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlAccessorOrder;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyAttribute;
 import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
@@ -26,21 +27,18 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlInlineBinaryData;
+import javax.xml.bind.annotation.XmlList;
+import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchema;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
-import javax.xml.bind.annotation.XmlInlineBinaryData;
-import javax.xml.bind.annotation.XmlMimeType;
-import javax.xml.bind.annotation.XmlAttachmentRef;
-import javax.xml.bind.annotation.XmlList;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.annotation.XmlLocation;
-import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.annotation.MethodLocatable;
@@ -122,12 +120,7 @@ class ClassInfoImpl<T,C,F,M>
                 Messages.NO_DEFAULT_CONSTRUCTOR.format(nav().getClassName(clazz)), this ));
 
         // compute the element name
-        XmlRootElement e = reader().getClassAnnotation(XmlRootElement.class,clazz,this);
-        if(e==null)
-            elementName = null;
-        else {
-            elementName = parseElementName(e);
-        }
+        elementName = parseElementName(clazz);
 
         // compute the type name
         XmlType t = reader().getClassAnnotation(XmlType.class,clazz,this);
@@ -182,8 +175,14 @@ class ClassInfoImpl<T,C,F,M>
         return clazz;
     }
 
+    /**
+     * When a bean binds to an element, it's always through {@link XmlRootElement},
+     * so this method always return null.
+     *
+     * @deprecated
+     *      you shouldn't be invoking this method on {@link ClassInfoImpl}.
+     */
     public ClassInfoImpl<T,C,F,M> getScope() {
-        TODO.checkSpec("Do we have scope for classes?");
         return null;
     }
 
@@ -975,30 +974,6 @@ class ClassInfoImpl<T,C,F,M>
      */
     protected PropertySeed<T,C,F,M> createAccessorSeed(M getter, M setter) {
         return new GetterSetterPropertySeed<T,C,F,M>(this, getter,setter);
-    }
-
-    /**
-     * Parses an {@link XmlRootElement} annotation on a class
-     * and determine the name.
-     */
-    final QName parseElementName(XmlRootElement e) {
-        String local = e.name();
-        if(local.equals("##default")) {
-            // if defaulted...
-            local = NameConverter.standard.toVariableName(nav().getClassShortName(clazz));
-        }
-        String nsUri = e.namespace();
-        if(nsUri.equals("##default")) {
-            // if defaulted ...
-            XmlSchema xs = reader().getPackageAnnotation(XmlSchema.class,clazz,this);
-            if(xs!=null)
-                nsUri = xs.namespace();
-            else {
-                nsUri = builder.defaultNsUri;
-            }
-        }
-
-        return new QName(nsUri.intern(),local.intern());
     }
 
     public final boolean isElement() {

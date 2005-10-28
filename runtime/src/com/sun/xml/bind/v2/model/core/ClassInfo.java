@@ -3,7 +3,6 @@ package com.sun.xml.bind.v2.model.core;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.namespace.QName;
 
 /**
  * Information about JAXB-bound class.
@@ -34,7 +33,7 @@ import javax.xml.namespace.QName;
  *
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
-public interface ClassInfo<T,C> extends NonElement<T,C> {
+public interface ClassInfo<T,C> extends MaybeElement<T,C> {
 
     /**
      * Obtains the information about the base class.
@@ -101,35 +100,9 @@ public interface ClassInfo<T,C> extends NonElement<T,C> {
     boolean hasProperties();
 
     /**
-     * If the class is bound to an element, return true.
-     *
-     * <p>
-     * Note that when this is true, the class is bound to both an element
-     * and a type.
-     */
-    boolean isElement();
-
-    /**
      * If this class is abstract and thus shall never be directly instanciated.
      */
     boolean isAbstract();
-
-    /**
-     * Gets the element name of the class, if the class is bound
-     * to an element.
-     *
-     * @return
-     *      non-null iff {@link #isElement()}.
-     */
-    QName getElementName();
-
-    /**
-     * Returns the {@link Element} aspect of this {@link ClassInfo}.
-     *
-     * @return
-     *      null if {@link #isElement()}==false, non-null if {@link #isElement()}==true.
-     */
-    Element<T,C> asElement();
 
     /**
      * Returns true if the properties of this class is ordered in XML.

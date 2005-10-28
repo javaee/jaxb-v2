@@ -34,6 +34,7 @@ import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.core.EnumLeafInfo;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.NonElement;
+import com.sun.xml.bind.v2.model.core.Element;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XmlString;
@@ -125,6 +126,8 @@ public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, 
             mem.setParent(this);
 
         model.add(this);
+
+        // TODO: can we take advantage of the fact that enum can be XmlRootElement?
     }
 
     /**
@@ -150,6 +153,18 @@ public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, 
      */
     public boolean canBeReferencedByIDREF() {
         return false;
+    }
+
+    public boolean isElement() {
+        return false;
+    }
+
+    public QName getElementName() {
+        return null;
+    }
+
+    public Element<NType,NClass> asElement() {
+        return null;
     }
 
     public NClass getClazz() {
