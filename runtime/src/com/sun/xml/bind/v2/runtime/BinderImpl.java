@@ -25,6 +25,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.PropertyException;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.validation.Schema;
+import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
 import com.sun.xml.bind.v2.runtime.output.DOMOutput;
@@ -170,6 +171,14 @@ public class BinderImpl<XmlNode> extends Binder<XmlNode> {
         Node ns = e.getNextSibling();
         Node p = e.getParentNode();
         p.removeChild(e);
+
+        // if the type object is passed, the following step is necessary to make
+        // the marshalling successful.
+        JaxBeanInfo bi = context.getBeanInfo(jaxbObject, true);
+        if(!bi.isElement())
+            jaxbObject = new JAXBElement(new QName(e.getNamespaceURI(),e.getLocalName()),bi.jaxbType,jaxbObject);
+
+
         getMarshaller().marshal(jaxbObject,p);
         Node newNode = p.getLastChild();
         p.removeChild(newNode);
