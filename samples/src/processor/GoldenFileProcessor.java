@@ -1,5 +1,5 @@
 /*
- * $Id: GoldenFileProcessor.java,v 1.6 2005-09-29 17:20:16 ryan_shoemaker Exp $
+ * $Id: GoldenFileProcessor.java,v 1.7 2005-10-28 23:58:02 kohsuke Exp $
  */
 
 /*
@@ -7,12 +7,12 @@
  * of the Common Development and Distribution License
  * (the "License").  You may not use this file except
  * in compliance with the License.
- * 
+ *
  * You can obtain a copy of the license at
  * https://jwsdp.dev.java.net/CDDLv1.0.html
  * See the License for the specific language governing
  * permissions and limitations under the License.
- * 
+ *
  * When distributing Covered Code, include this CDDL
  * HEADER in each file and include the License file at
  * https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
@@ -35,24 +35,18 @@ import org.kohsuke.args4j.CmdLineParser;
  * @author <ul>
  *         <li>Ryan Shoemaker, Sun Microsystems, Inc.</li>
  *         </ul>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class GoldenFileProcessor implements Processor {
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see processor.Processor#process(java.io.File)
-     */
     public boolean process(File dir, boolean verbose) {
         File buildDotOut = new File(dir, "build.out");
         File buildDotGoldenRegexp = new File(dir, "build.golden.regexp");
-        
+
         if(!buildDotGoldenRegexp.exists()) {
-            trace("FAILED: Golden file missing", verbose);
+            trace("FAILED: Golden file missing : "+buildDotGoldenRegexp, verbose);
             return false;
         }
-        
+
         boolean match = match(buildDotOut, buildDotGoldenRegexp);
         if(match) {
             trace("PASSED: output matches golden file", verbose);
@@ -66,7 +60,7 @@ public class GoldenFileProcessor implements Processor {
     /**
      * return true if the contents of file matches the multi-line
      * regular expression in template.
-     * 
+     *
      * @param file source file
      * @param template mnulti-line regular expression template
      * @return true if the file matches the regular expression, false otherwise
@@ -76,7 +70,7 @@ public class GoldenFileProcessor implements Processor {
 //            .compile(getFileAsString(template), Pattern.MULTILINE)
 //            .matcher(getFileAsString(file))
 //            .matches();
-        
+
         // braindead line-by-line pattern match to narrow down the
         // cause of unit test failures
         try {
@@ -98,7 +92,7 @@ public class GoldenFileProcessor implements Processor {
                 } catch (Exception e) {
                     return false;
                 }
-            } while (matches && fLine != null && tLine != null);
+            } while (matches);
             if (!matches) {
                 System.out.println("error: line " + line + " doesn't match");
                 System.out.println("regexp: " + stripBackslashes(tLine));
@@ -112,7 +106,7 @@ public class GoldenFileProcessor implements Processor {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        
+
         return true;
     }
 
@@ -128,7 +122,7 @@ public class GoldenFileProcessor implements Processor {
 
     /**
      * return the contents of the file as a String
-     * 
+     *
      * @param f source file
      * @param lineNumbers true if you want to prepend line numbers to the output
      * @return contents of f as a String
@@ -150,11 +144,6 @@ public class GoldenFileProcessor implements Processor {
         return sb.toString();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see processor.Processor#addCmdLineOptions(org.kohsuke.args4j.CmdLineParser)
-     */
     public void addCmdLineOptions(CmdLineParser parser) {
         // no-op
     }
@@ -163,7 +152,5 @@ public class GoldenFileProcessor implements Processor {
         if(verbose) {
             System.out.println("GoldenFileProcessor: " + msg);
         }
-        
     }
-
 }
