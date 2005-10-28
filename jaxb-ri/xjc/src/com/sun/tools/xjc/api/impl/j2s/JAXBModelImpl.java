@@ -102,10 +102,8 @@ final class JAXBModelImpl implements J2SJAXBModel {
                 }
             }
             ElementInfo<TypeMirror,TypeDeclaration> ei = types.getElementInfo(null,entry.getKey());
-            if(ei!=null && ei.getContentType()==xt) {
+            if(ei!=null && ei.getContentType()==xt)
                 itr.remove();
-                continue;
-            }
         }
     }
 
@@ -132,15 +130,12 @@ final class JAXBModelImpl implements J2SJAXBModel {
         Ref<TypeMirror, TypeDeclaration> ref = new Ref<TypeMirror, TypeDeclaration>(
             reader,types.getNavigator(),r.type,xjta,xl);
 
-        NonElement<TypeMirror,TypeDeclaration> ti = types.getTypeInfo(ref);
-        return ti;
+        return types.getTypeInfo(ref);
     }
 
     public void generateSchema(SchemaOutputResolver outputResolver, ErrorListener errorListener) throws IOException {
         XmlSchemaGenerator<TypeMirror,TypeDeclaration,FieldDeclaration,MethodDeclaration> xsdgen
-            = new XmlSchemaGenerator<TypeMirror,TypeDeclaration,FieldDeclaration,MethodDeclaration>( types.getNavigator() );
-
-        xsdgen.fill(types);
+            = new XmlSchemaGenerator<TypeMirror,TypeDeclaration,FieldDeclaration,MethodDeclaration>( types.getNavigator(), types );
 
         for (Map.Entry<QName,Reference> e : additionalElementDecls.entrySet()) {
             Reference value = e.getValue();

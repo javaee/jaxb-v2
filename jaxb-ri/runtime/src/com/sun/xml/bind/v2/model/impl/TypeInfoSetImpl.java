@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlNs;
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
@@ -302,6 +303,38 @@ class TypeInfoSetImpl<TypeT,ClassDeclT,FieldT,MethodT> implements
         Map<String,String> r = xmlNsCache.get(namespaceUri);
         if(r!=null)     return r;
         else            return Collections.emptyMap();
+    }
+
+    public final XmlNsForm getElementFormDefault(String nsUri) {
+        for (ClassInfoImpl<TypeT, ClassDeclT, FieldT, MethodT> ci : beans().values()) {
+            XmlSchema xs = reader.getPackageAnnotation( XmlSchema.class, ci.getClazz(), null );
+            if(xs==null)
+                continue;
+
+            if(!xs.namespace().equals(nsUri))
+                continue;
+
+            XmlNsForm xnf = xs.elementFormDefault();
+            if(xnf!=XmlNsForm.UNSET)
+                return xnf;
+        }
+        return XmlNsForm.UNQUALIFIED;
+    }
+
+    public final XmlNsForm getAttributeFormDefault(String nsUri) {
+        for (ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> ci : beans().values()) {
+            XmlSchema xs = reader.getPackageAnnotation( XmlSchema.class, ci.getClazz(), null );
+            if(xs==null)
+                continue;
+
+            if(!xs.namespace().equals(nsUri))
+                continue;
+
+            XmlNsForm xnf = xs.attributeFormDefault();
+            if(xnf!=XmlNsForm.UNSET)
+                return xnf;
+        }
+        return XmlNsForm.UNQUALIFIED;
     }
 
     /**

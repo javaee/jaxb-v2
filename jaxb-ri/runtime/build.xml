@@ -34,14 +34,23 @@
     <!-- import build properties -->
     <property file="${basedir}/build.properties" />
 
-    <!-- classpath -->
-    <path id="javac.classpath">
-        <pathelement path="${runtime-api.classes}" />
-        <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
-        <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
-        <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
-    </path>
-    
+  <!-- classpath -->
+  <path id="javac.classpath">
+    <pathelement path="${runtime-api.classes}"/>
+    <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
+    <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
+    <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
+  </path>
+  
+  <path id="txw.classpath">
+    <path refid="javac.classpath"/>
+    <pathelement path="${jaxb.libs.runtime2}/txw2.jar"/>
+    <pathelement path="${jaxb.libs.util}/txwc2.jar"/>
+    <pathelement path="${jaxb.libs.util}/args4j-1.0-RC.jar"/>
+    <pathelement path="${jaxb.libs.compiler}/rngom.jar"/>
+    <pathelement path="${codemodel.classes}"/>
+  </path>
+
     
     <target name="generate-array-listers">
         <macrodef name="generateCopiesForPrimitives">
@@ -141,7 +150,20 @@
       </apgen>
     </target>
 
-    <target name="codegen" depends="generate-array-listers,generate-annotation-proxies"
+    <target name="txwc"
+      description="generate the s4s generator library code">
+
+      <taskdef name="txwc" classname="com.sun.tools.txw2.TxwTask">
+        <classpath refid="txw.classpath"/>
+      </taskdef>
+      <mkdir dir="${runtime.root}/build/src" />
+      <txwc schema="${runtime.src}/com/sun/xml/bind/v2/schemagen/xmlschema/xmlschema-for-jaxb.rng"
+        destdir="${runtime.root}/build/src"
+        package="com.sun.xml.bind.v2.schemagen.xmlschema"
+        methodChaining="true"/>
+    </target>
+
+    <target name="codegen" depends="generate-array-listers,generate-annotation-proxies,txwc"
             description="run all the code generators in the runtime" />
 
     <!-- compile Java source files -->
