@@ -372,6 +372,14 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     schema._namespace(e.getValue(),e.getKey());
                 }
 
+                attributeFormDefault = Form.get(types.getAttributeFormDefault(uri));
+                attributeFormDefault.declare("attributeFormDefault",schema);
+
+                elementFormDefault = Form.get(types.getElementFormDefault(uri));
+                // TODO: if elementFormDefault is UNSET, figure out the right default value to use
+                elementFormDefault.declare("elementFormDefault",schema);
+
+
                 // declare XML Schema namespace to be xs, but allow the user to override it.
                 // if 'xs' is used for other things, we'll just let TXW assign a random prefix
                 if(!xmlNs.containsValue(WellKnownNamespace.XML_SCHEMA)
@@ -802,8 +810,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                 e.name(tn.getLocalPart());
                 com.sun.xml.bind.v2.schemagen.xmlschema.List lst = e.simpleType().list();
                 writeTypeRef(lst,t, "itemType");
-                if(tn.getNamespaceURI().length()>0)
-                    e.form("qualified");    // TODO: what if the URI != tns?
+                elementFormDefault.writeForm(e,tn);
                 return;
             }
 
@@ -815,10 +822,10 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                             // table 8-25: Property/field element wrapper with ref attribute
                             e.ref(new QName(ename.getNamespaceURI(), ename.getLocalPart()));
                             return;
-                        } else {
-                            e.form("qualified");
                         }
                     }
+                    elementFormDefault.writeForm(e,ename);
+
                     ComplexType p = e.name(ename.getLocalPart()).complexType();
                     if(ep.isCollectionNillable()) {
                         e.nillable(true);
@@ -870,8 +877,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                 } else {
                     e.name(tn.getLocalPart());
                     writeTypeRef(e,t, "type");
-                    if(tn.getNamespaceURI().length()>0)
-                        e.form("qualified");    // TODO: what if the URI != tns?
+                    elementFormDefault.writeForm(e,tn);
                 }
 
                 if (t.isNillable()) {
@@ -941,9 +947,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                 }
                 writeTypeRef(th, ap, refAtt);
 
-                if (!attrURI.equals("")) {
-                    localAttribute.form("qualified");
-                }
+                attributeFormDefault.writeForm(localAttribute,ap.getXmlName());
             } else { // generate an attr ref
                 localAttribute.ref(ap.getXmlName());
             }
@@ -972,8 +976,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                 if (ename != null) { // wrapped collection
                     LocalElement e = compositor.element();
                     ComplexType p = e.name(ename.getLocalPart()).complexType();
-                    if(ename.getNamespaceURI().length()>0)
-                        e.form("qualified");    // TODO: handle elements from other namespaces more gracefully
+                    elementFormDefault.writeForm(e,ename);
                     if(rp.isCollectionNillable())
                         e.nillable(true);
                     if (rp.getElements().size() == 1) {
@@ -1023,8 +1026,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             QName ename = mp.getXmlName();
 
             LocalElement e = compositor.element();
-            if(ename.getNamespaceURI().length()>0)
-                e.form("qualified");    // TODO: what if the URI != tns?
+            elementFormDefault.writeForm(e,ename);
             if(mp.isCollectionNillable())
                 e.nillable(true);
             ComplexType p = e.name(ename.getLocalPart()).complexType();
