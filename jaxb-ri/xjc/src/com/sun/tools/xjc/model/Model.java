@@ -10,6 +10,7 @@ import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 
@@ -233,7 +234,7 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void> {
         // check for unused plug-in customizations.
         // these can be only checked after the plug-ins run, so it's here.
         // the JAXB bindings are checked by XMLSchema's builder.
-        Set check = new HashSet();
+        Set<CCustomizations> check = new HashSet<CCustomizations>();
         for( CCustomizations c=customizations; c!=null; c=c.next ) {
             if(!check.add(c)) {
                 throw new AssertionError(); // detect a loop
@@ -257,11 +258,6 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void> {
         if(ehf.hadError())
             o = null;
         return o;
-    }
-
-    private String fixNull(String s) {
-        if(s==null) return "";
-        else        return s;
     }
 
     /**
@@ -359,6 +355,14 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void> {
      */
     public Map<String, String> getXmlNs(String namespaceUri) {
         return Collections.emptyMap();
+    }
+
+    public XmlNsForm getElementFormDefault(String nsUri) {
+        throw new UnsupportedOperationException();
+    }
+
+    public XmlNsForm getAttributeFormDefault(String nsUri) {
+        throw new UnsupportedOperationException();
     }
 
     public void dump(Result out) {
