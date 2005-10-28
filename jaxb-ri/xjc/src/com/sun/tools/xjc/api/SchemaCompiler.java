@@ -162,8 +162,26 @@ public interface SchemaCompiler {
      * @param packageName
      *      Java pckage name such as "org.foo.bar". Use "" to represent the root package,
      *      and null to defer to the default computation algorithm.
+     *
+     * @see #forcePackageName(String)
      */
     void setDefaultPackageName( String packageName );
+
+    /**
+     * Forces all the JAXB-generated classes to go into the specific package.
+     *
+     * <p>
+     * This setting takes precedence over the {@link #setDefaultPackageName(String)}
+     * or any of the customization found in the JAXB binding files. This method
+     * is designed to implement the semantics of the command-line '-p' option.
+     *
+     * <p>
+     * This somewhat ugly semantics actually have a long history now and too late
+     * to change.
+     *
+     * @see #setDefaultPackageName(String)
+     */
+    void forcePackageName( String packageName );
 
     /**
      * Sets the {@link ClassNameAllocator} to be used for the binding operation.

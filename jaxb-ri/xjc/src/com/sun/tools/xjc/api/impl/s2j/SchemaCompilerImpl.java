@@ -160,6 +160,10 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
         opts.defaultPackage2 = packageName;
     }
 
+    public void forcePackageName(String packageName) {
+        opts.defaultPackage = packageName;
+    }
+
     public void setClassNameAllocator(ClassNameAllocator allocator) {
         opts.classNameAllocator = allocator;
     }
