@@ -121,13 +121,6 @@
       <maximumHeapSize value="128" />
       <properties />
     </buildFile>
-    <buildFile url="file://$PROJECT_DIR$/schemagen/build.xml">
-      <additionalClassPath />
-      <antReference projectDefault="true" />
-      <customJdkName value="" />
-      <maximumHeapSize value="128" />
-      <properties />
-    </buildFile>
     <buildFile url="file://$PROJECT_DIR$/../jaxb-unit/build.xml">
       <additionalClassPath />
       <antReference projectDefault="true" />
@@ -171,6 +164,44 @@
       <properties />
     </buildFile>
   </component>
+  <component name="BSFConsole">
+    <sendcommandbycontrolenter>false</sendcommandbycontrolenter>
+    <restoresystemstreams>false</restoresystemstreams>
+    <outwaitsforerr>false</outwaitsforerr>
+    <errwaitsforout>false</errwaitsforout>
+    <storedupsinrecentcommands>false</storedupsinrecentcommands>
+    <moduleforclasspath />
+    <includeoutputpath>false</includeoutputpath>
+    <includetestsoutputpath>false</includetestsoutputpath>
+    <languages>
+      <language name="ant" engine="org.kos.bsfconsoleplugin.languages.AntConsoleBSFEngine" />
+      <language name="beanshell" engine="bsh.util.BeanShellBSFEngine" />
+      <language name="netrexx" engine="org.apache.bsf.engines.netrexx.NetRexxEngine" />
+      <language name="xslt" engine="org.apache.bsf.engines.xslt.XSLTEngine" />
+      <language name="beanbasic" engine="org.apache.bsf.engines.beanbasic.BeanBasicEngine" />
+      <language name="bml" engine="org.apache.bml.ext.BMLEngine" />
+      <language name="groovy" engine="org.codehaus.groovy.bsf.GroovyEngine" />
+      <language name="jacl" engine="org.apache.bsf.engines.jacl.JaclEngine" />
+      <language name="java" engine="org.apache.bsf.engines.java.JavaEngine" />
+      <language name="javaclass" engine="org.apache.bsf.engines.javaclass.JavaClassEngine" />
+      <language name="javascript" engine="org.apache.bsf.engines.javascript.JavaScriptEngine" />
+      <language name="jpython" engine="org.apache.bsf.engines.jpython.JPythonEngine" />
+      <language name="jruby" engine="org.jruby.javasupport.bsf.JRubyEngine" />
+      <language name="jscript" engine="org.apache.bsf.engines.activescript.ActiveScriptEngine" />
+      <language name="judoscript" engine="com.judoscript.BSFJudoEngine" />
+      <language name="jython" engine="org.apache.bsf.engines.jython.JythonEngine" />
+      <language name="lotusscript" engine="org.apache.bsf.engines.lotusscript.LsEngine" />
+      <language name="perl" engine="org.apache.bsf.engines.perl.PerlEngine" />
+      <language name="perlscript" engine="org.apache.bsf.engines.activescript.ActiveScriptEngine" />
+      <language name="pnuts" engine="pnuts.ext.PnutsBSFEngine" />
+      <language name="vbscript" engine="org.apache.bsf.engines.activescript.ActiveScriptEngine" />
+    </languages>
+    <startupscripts />
+    <preferredrecentcommandsdividerlocations />
+    <BSFConsoleSearchOptions searchfromcursor="false">
+      <recentsearches />
+    </BSFConsoleSearchOptions>
+  </component>
   <component name="CodeStyleSettingsManager">
     <option name="PER_PROJECT_SETTINGS">
       <value>
@@ -182,6 +213,8 @@
             <option name="TAB_SIZE" value="2" />
             <option name="USE_TAB_CHARACTER" value="false" />
             <option name="SMART_TABS" value="false" />
+            <option name="LABEL_INDENT_SIZE" value="0" />
+            <option name="LABEL_INDENT_ABSOLUTE" value="false" />
           </value>
         </option>
         <option name="INDENT_CASE_FROM_SWITCH" value="false" />
@@ -224,6 +257,9 @@
     </wildcardResourcePatterns>
   </component>
   <component name="DataSourceManagerImpl" />
+  <component name="DependenciesAnalyzeManager">
+    <option name="myForwardDirection" value="false" />
+  </component>
   <component name="DependencyValidationManager" />
   <component name="EntryPointsManager">
     <entry_points>
@@ -270,7 +306,6 @@
     <option name="DEPRECATION" value="true" />
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
     <option name="MAXIMUM_HEAP_SIZE" value="128" />
-    <option name="USE_GENERICS_COMPILER" value="true" />
   </component>
   <component name="JavadocGenerationManager">
     <option name="OUTPUT_DIRECTORY" />
@@ -497,7 +532,6 @@
       <module fileurl="file://$PROJECT_DIR$/runtime-deprecated/runtime-deprecated.iml" filepath="$PROJECT_DIR$/runtime-deprecated/runtime-deprecated.iml" />
       <module fileurl="file://$PROJECT_DIR$/runtime-fi/runtime-fi.iml" filepath="$PROJECT_DIR$/runtime-fi/runtime-fi.iml" />
       <module fileurl="file://$PROJECT_DIR$/samples/samples.iml" filepath="$PROJECT_DIR$/samples/samples.iml" />
-      <module fileurl="file://$PROJECT_DIR$/schemagen/schemagen.iml" filepath="$PROJECT_DIR$/schemagen/schemagen.iml" />
       <module fileurl="file://$PROJECT_DIR$/tools/taglets/taglets.iml" filepath="$PROJECT_DIR$/tools/taglets/taglets.iml" />
       <module fileurl="file://$PROJECT_DIR$/../jaxb-unit/test/test.iml" filepath="$PROJECT_DIR$/../jaxb-unit/test/test.iml" />
       <module fileurl="file://$PROJECT_DIR$/xjc/xjc.iml" filepath="$PROJECT_DIR$/xjc/xjc.iml" />
@@ -684,5 +718,6 @@
     <option name="INSTRUMENT_CLASSES" value="true" />
     <option name="COPY_FORMS_RUNTIME_TO_OUTPUT" value="true" />
   </component>
+  <UsedPathMacros />
 </project>
 

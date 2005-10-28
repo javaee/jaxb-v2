@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlSchema;
+import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 
@@ -116,6 +117,30 @@ public interface TypeInfoSet<T,C,F,M> {
      *      Could be empty but never null.
      */
     Map<String,String> getXmlNs(String namespaceUri);
+
+    /**
+     * Gets the reasonable {@link XmlNsForm} for the given namespace URI.
+     *
+     * <p>
+     * The spec doesn't define very precisely what the {@link XmlNsForm} value
+     * for the given namespace would be, so this method is implemented in rather
+     * ad-hoc way. It should work as what most people expect for simple cases.
+     *
+     * @return never null.
+     */
+    XmlNsForm getElementFormDefault(String nsUri);
+
+    /**
+     * Gets the reasonable {@link XmlNsForm} for the given namespace URI.
+     *
+     * <p>
+     * The spec doesn't define very precisely what the {@link XmlNsForm} value
+     * for the given namespace would be, so this method is implemented in rather
+     * ad-hoc way. It should work as what most people expect for simple cases.
+     *
+     * @return never null.
+     */
+    XmlNsForm getAttributeFormDefault(String nsUri);
 
     /**
      * Dumps this model into XML.

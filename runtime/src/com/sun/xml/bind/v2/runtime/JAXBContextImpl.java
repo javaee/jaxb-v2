@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -64,6 +66,7 @@ import com.sun.xml.bind.api.TypeReference;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.bind.util.Which;
 import com.sun.xml.bind.v2.WellKnownNamespace;
+import com.sun.xml.bind.v2.schemagen.XmlSchemaGenerator;
 import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
 import com.sun.xml.bind.v2.model.core.Adapter;
@@ -102,7 +105,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.56 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -649,27 +652,8 @@ public final class JAXBContextImpl extends JAXBRIContext {
             throw new AssertionError(e);
         }
 
-        SchemaGenerator xsdgen;
-        try {
-            ClassLoader cl = this.getClass().getClassLoader();
-            Class clazz;
-            if(cl!=null)
-                clazz = cl.loadClass( "com.sun.xml.bind.v2.schemagen.XmlSchemaGenerator");
-            else
-                clazz = Class.forName("com.sun.xml.bind.v2.schemagen.XmlSchemaGenerator");
-
-            xsdgen = (SchemaGenerator)clazz.getConstructor(Navigator.class).newInstance(tis.getNavigator());
-        } catch (ClassNotFoundException e) {
-            throw new UnsupportedOperationException(e);
-        } catch (InstantiationException e) {
-            throw new UnsupportedOperationException(e);
-        } catch (IllegalAccessException e) {
-            throw new UnsupportedOperationException(e);
-        } catch (NoSuchMethodException e) {
-            throw new UnsupportedOperationException(e);
-        } catch (InvocationTargetException e) {
-            throw new UnsupportedOperationException(e);
-        }
+        XmlSchemaGenerator<Type,Class, Field, Method> xsdgen =
+                new XmlSchemaGenerator<Type,Class, Field, Method>(tis.getNavigator(),tis);
 
         // JAX-RPC uses Bridge objects that collide with
         // @XmlRootElement.
@@ -694,8 +678,6 @@ public final class JAXBContextImpl extends JAXBRIContext {
                 xsdgen.add(tr.tagName,typeInfo);
             }
         }
-
-        xsdgen.fill(tis);
 
         xsdgen.write(outputResolver);
     }

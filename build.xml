@@ -47,7 +47,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.39 2005-10-27 19:35:45 kohsuke Exp $
+       $Id: build.xml,v 1.40 2005-10-28 00:32:42 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -79,7 +79,6 @@
         <ant dir="runtime"             target="compile" />
         <ant dir="runtime-fi"          target="compile" />
         <ant dir="runtime-deprecated"  target="compile-runtime-deprecated" />
-        <ant dir="schemagen"           target="compile" />
         <ant dir="xjc"                 target="compile" />
         <ant dir="tools"               target="compile" />
     </target>
@@ -99,7 +98,6 @@
           <packageset dir="${runtime.src}"/>
           <packageset dir="${runtime-api.src}"/>
           <packageset dir="${runtime-api.root}/arch-doc"/>
-          <packageset dir="${schemagen.src}"/>
           <group title="Runtime API for JAX-WS" packages="com.sun.xml.bind.api" />
           <group title="Runtime" packages="com.sun.xml.bind*" />
 
@@ -243,7 +241,6 @@
                   <fileset dir="${runtime.classes}"/>
                   <fileset dir="${runtime-fi.classes}"/>
                   <fileset dir="${runtime-api.classes}"/>
-                  <fileset dir="${schemagen.classes}"/>
                   <fileset dir="${runtime.src}" includes="META-INF/**/*" />
                   <zipgroupfileset dir="${jaxb.libs.runtime2}" includes="*.jar" />
               </jar>
@@ -389,7 +386,6 @@ Class-Path: ${manifest.classpath}
         <zip zipfile="${jaxb.dist}/lib/jaxb-impl.src.zip">
           <fileset dir="${runtime.src}"/>
           <fileset dir="${runtime-api.src}"/>
-          <fileset dir="${schemagen.src}"/>
         </zip>
         <sequential>
           <mkdir dir="tmp" />
@@ -486,12 +482,6 @@ Class-Path: ${manifest.classpath}
             <zipfileset dir="${codemodel.src}" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
                 <patternset refid="src-includes"/>
             </zipfileset>
-            <zipfileset dir="${schemagen.src}" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
-                <patternset refid="src-includes"/>
-            </zipfileset>
-            <zipfileset dir="${schemagen.gensrc}" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
-                <patternset refid="src-includes"/>
-            </zipfileset>
             <zipfileset dir="${jaxb.root}" includes="src-installer-build.xml"
                 fullpath="jaxb-ri-${DSTAMP}/build.xml"/>
             <!-- additional jar files -->
@@ -559,7 +549,6 @@ Class-Path: ${manifest.classpath}
           <ant dir="samples"            target="clean-samples"/>
           <ant dir="tools"              target="clean"/>
           <ant dir="apgen"              target="clean" />
-          <ant dir="schemagen"          target="clean" />
           <ant dir="reflection"         target="clean" />
         </parallel>
     </target>

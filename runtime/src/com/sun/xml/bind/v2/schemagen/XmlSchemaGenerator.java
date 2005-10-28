@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 
 import javax.activation.MimeType;
 import javax.xml.bind.SchemaOutputResolver;
-import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
@@ -44,7 +43,6 @@ import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.core.ValuePropertyInfo;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
 import com.sun.xml.bind.v2.model.nav.Navigator;
-import com.sun.xml.bind.v2.runtime.SchemaGenerator;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
 import com.sun.xml.bind.v2.schemagen.xmlschema.Any;
 import com.sun.xml.bind.v2.schemagen.xmlschema.AttrDecls;
@@ -78,7 +76,7 @@ import static com.sun.xml.bind.v2.schemagen.Util.*;
  * A client must invoke methods in the following order:
  * <ol>
  *  <li>Create a new {@link XmlSchemaGenerator}
- *  <li>Invoke {@link #add} or {@link #addAllClasses} repeatedly
+ *  <li>Invoke {@link #add()} methods if necessary, multiple times.
  *  <li>Invoke {@link #write}
  *  <li>Discard the object
  * </ol>
@@ -86,7 +84,7 @@ import static com.sun.xml.bind.v2.schemagen.Util.*;
  * @author Ryan Shoemaker
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
-public final class XmlSchemaGenerator<T,C,F,M> implements SchemaGenerator<T,C,F,M> {
+public final class XmlSchemaGenerator<T,C,F,M> {
 
     private static final Logger logger = Util.getClassLogger();
 
@@ -104,18 +102,21 @@ public final class XmlSchemaGenerator<T,C,F,M> implements SchemaGenerator<T,C,F,
     /** model navigator **/
     private Navigator navigator;
 
-    public XmlSchemaGenerator( Navigator<T,C,F,M> navigator) {
+    private final TypeInfoSet<T,C,F,M> types;
+
+    public XmlSchemaGenerator( Navigator<T,C,F,M> navigator, TypeInfoSet<T,C,F,M> types ) {
         this.navigator = navigator;
-    }
+        this.types = types;
 
-    public void fill(TypeInfoSet<T,C,F,M> types) {
-        addAllClasses(types.beans().values());
-        addAllElements(types.getElementMappings(null).values());
-        addAllEnums(types.enums().values());
-        addAllArrays(types.arrays().values());
-
-        for (Map.Entry<String, Namespace> e : namespaces.entrySet())
-            e.getValue().xmlNs.putAll( types.getXmlNs(e.getKey()) );
+        // populate the object
+        for( ClassInfo<T,C> ci : types.beans().values() )
+            add(ci);
+        for( ElementInfo<T,C> ei1 : types.getElementMappings(null).values() )
+            add(ei1);
+        for( EnumLeafInfo<T,C> ei : types.enums().values() )
+            add(ei);
+        for( ArrayInfo<T,C> a : types.arrays().values())
+            add(a);
     }
 
     private Namespace getNamespace(String uri) {
@@ -170,14 +171,6 @@ public final class XmlSchemaGenerator<T,C,F,M> implements SchemaGenerator<T,C,F,
     }
 
     /**
-     * Adds all the {@link ClassInfo}s in the given collection.
-     */
-    public void addAllClasses( Iterable<? extends ClassInfo<T,C>> col ) {
-        for( ClassInfo<T,C> ci : col )
-            add(ci);
-    }
-
-    /**
      * Adds a new element to the list of elements to be written.
      */
     public void add( ElementInfo<T,C> elem ) {
@@ -188,14 +181,6 @@ public final class XmlSchemaGenerator<T,C,F,M> implements SchemaGenerator<T,C,F,
 
         // search for foreign namespace references
         n.processForeignNamespaces(elem.getProperty());
-    }
-
-    /**
-     * Adds all the {@link ElementInfo}s in the given collection.
-     */
-    public void addAllElements( Iterable<? extends ElementInfo<T,C>> col ) {
-        for( ElementInfo<T,C> ei : col )
-            add(ei);
     }
 
     public void add( EnumLeafInfo<T,C> envm ) {
@@ -214,14 +199,6 @@ public final class XmlSchemaGenerator<T,C,F,M> implements SchemaGenerator<T,C,F,
         //annonymous
     }
 
-    /**
-     * Adds all the {@link EnumLeafInfo}s in the given collection.
-     */
-    public void addAllEnums( Iterable<? extends EnumLeafInfo<T,C>> col ) {
-        for( EnumLeafInfo<T,C> ei : col )
-            add(ei);
-    }
-
     public void add( ArrayInfo<T,C> a ) {
         assert a!=null;
 
@@ -231,11 +208,6 @@ public final class XmlSchemaGenerator<T,C,F,M> implements SchemaGenerator<T,C,F,
 
         // search for foreign namespace references
         n.addDependencyTo(a.getItemType().getTypeName());
-    }
-
-    public void addAllArrays( Iterable<? extends ArrayInfo<T,C>> col ) {
-        for( ArrayInfo<T,C> a : col)
-            add(a);
     }
 
     /**
@@ -343,10 +315,8 @@ public final class XmlSchemaGenerator<T,C,F,M> implements SchemaGenerator<T,C,F,
          */
         private Map<String,NonElement<T,C>> additionalElementDecls = new HashMap<String,NonElement<T,C>>();
 
-        /**
-         * Additional namespace declarations to be made. Taken from {@link XmlSchema#xmlns}.
-         */
-        private Map<String,String> xmlNs = new HashMap<String,String>();
+        private Form attributeFormDefault;
+        private Form elementFormDefault;
 
         public Namespace(String uri) {
             this.uri = uri;
@@ -394,6 +364,9 @@ public final class XmlSchemaGenerator<T,C,F,M> implements SchemaGenerator<T,C,F,
         private void writeTo(Result result, Map<Namespace,Result> out) throws IOException {
             try {
                 Schema schema = TXW.create(Schema.class,ResultFactory.createSerializer(result));
+
+                // additional namespace declarations to be made.
+                Map<String, String> xmlNs = types.getXmlNs(uri);
 
                 for (Map.Entry<String, String> e : xmlNs.entrySet()) {
                     schema._namespace(e.getValue(),e.getKey());
