@@ -22,7 +22,6 @@
     <orderEntry type="library" name="JAM" level="project" />
     <orderEntry type="library" name="rebundle/compiler" level="project" />
     <orderEntry type="library" name="ant" level="project" />
-    <orderEntry type="module" module-name="schemagen" />
     <orderEntryProperties />
   </component>
   <component name="org.mevenide.idea.module.ModuleSettings">
