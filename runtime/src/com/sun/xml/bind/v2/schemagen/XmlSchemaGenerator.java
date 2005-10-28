@@ -61,6 +61,7 @@ import com.sun.xml.bind.v2.schemagen.xmlschema.SimpleType;
 import com.sun.xml.bind.v2.schemagen.xmlschema.SimpleTypeHost;
 import com.sun.xml.bind.v2.schemagen.xmlschema.TopLevelElement;
 import com.sun.xml.bind.v2.schemagen.xmlschema.TypeHost;
+import com.sun.xml.bind.v2.schemagen.xmlschema.List;
 import com.sun.xml.txw2.TXW;
 import com.sun.xml.txw2.TxwException;
 import com.sun.xml.txw2.TypedXmlWriter;
@@ -808,7 +809,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
                 QName tn = t.getTagName();
                 e.name(tn.getLocalPart());
-                com.sun.xml.bind.v2.schemagen.xmlschema.List lst = e.simpleType().list();
+                List lst = e.simpleType().list();
                 writeTypeRef(lst,t, "itemType");
                 elementFormDefault.writeForm(e,tn);
                 return;
