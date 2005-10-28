@@ -2,6 +2,7 @@ package com.sun.xml.bind.v2.model.impl;
 
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.api.impl.NameConverter;
@@ -60,6 +61,37 @@ abstract class TypeInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     protected final AnnotationReader<TypeT,ClassDeclT,FieldT,MethodT> reader() {
         return owner.reader;
+    }
+
+    /**
+     * Parses an {@link XmlRootElement} annotation on a class
+     * and determine the element name.
+     *
+     * @return null
+     *      if none was found.
+     */
+    protected final QName parseElementName(ClassDeclT clazz) {
+        XmlRootElement e = reader().getClassAnnotation(XmlRootElement.class,clazz,this);
+        if(e==null)
+            return null;
+
+        String local = e.name();
+        if(local.equals("##default")) {
+            // if defaulted...
+            local = NameConverter.standard.toVariableName(nav().getClassShortName(clazz));
+        }
+        String nsUri = e.namespace();
+        if(nsUri.equals("##default")) {
+            // if defaulted ...
+            XmlSchema xs = reader().getPackageAnnotation(XmlSchema.class,clazz,this);
+            if(xs!=null)
+                nsUri = xs.namespace();
+            else {
+                nsUri = builder.defaultNsUri;
+            }
+        }
+
+        return new QName(nsUri.intern(),local.intern());
     }
 
     protected final QName parseTypeName(ClassDeclT clazz) {

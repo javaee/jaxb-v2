@@ -2,15 +2,15 @@ package com.sun.xml.bind.v2.runtime;
 
 import java.io.IOException;
 
-import javax.xml.stream.XMLStreamException;
-import javax.xml.bind.helpers.ValidationEventImpl;
 import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.helpers.ValidationEventImpl;
+import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.model.runtime.RuntimeLeafInfo;
-import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.TextLoader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.unmarshaller.XsiTypeLoader;
 
 import org.xml.sax.SAXException;
@@ -35,20 +35,30 @@ final class LeafBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
 
     private final Transducer<BeanT> xducer;
 
+    /**
+     * Non-null only if the leaf is also an element.
+     */
+    private final Name tagName;
+
     public LeafBeanInfoImpl(JAXBContextImpl grammar, RuntimeLeafInfo li) {
-        super(grammar,li,li.getClazz(),li.getTypeName(),false,true,false);
+        super(grammar,li,li.getClazz(),li.getTypeName(),li.isElement(),true,false);
 
         xducer = li.getTransducer();
         loader = new TextLoader(xducer);
         loaderWithSubst = new XsiTypeLoader(this);
+
+        if(isElement())
+            tagName = grammar.nameBuilder.createElementName(li.getElementName());
+        else
+            tagName = null;
     }
 
     public final String getElementNamespaceURI(BeanT _) {
-        throw new UnsupportedOperationException();
+        return tagName.nsUri;
     }
 
     public final String getElementLocalName(BeanT _) {
-        throw new UnsupportedOperationException();
+        return tagName.localName;
     }
 
     public BeanT createInstance(UnmarshallingContext context) {
@@ -79,12 +89,19 @@ final class LeafBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
     }
 
     public final void serializeRoot(BeanT bean, XMLSerializer target) throws SAXException, IOException, XMLStreamException {
-        target.reportError(
+        if(tagName==null) {
+            target.reportError(
                 new ValidationEventImpl(
-                        ValidationEvent.ERROR,
-                        Messages.UNABLE_TO_MARSHAL_NON_ELEMENT.format(bean.getClass().getName()),
-                        null,
-                        null));
+                    ValidationEvent.ERROR,
+                    Messages.UNABLE_TO_MARSHAL_NON_ELEMENT.format(bean.getClass().getName()),
+                    null,
+                    null));
+        }
+        else {
+            target.startElement(tagName,bean);
+            target.childAsSoleContent(bean,null);
+            target.endElement();
+        }
     }
 
     public final void serializeURIs(BeanT bean, XMLSerializer target) throws SAXException {

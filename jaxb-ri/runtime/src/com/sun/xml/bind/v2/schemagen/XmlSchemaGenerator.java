@@ -42,6 +42,7 @@ import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.core.ValuePropertyInfo;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
+import com.sun.xml.bind.v2.model.core.MaybeElement;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
 import com.sun.xml.bind.v2.schemagen.xmlschema.Any;
@@ -187,17 +188,29 @@ public final class XmlSchemaGenerator<T,C,F,M> {
     public void add( EnumLeafInfo<T,C> envm ) {
         assert envm!=null;
 
-        final QName typeName = envm.getTypeName();
-        if (typeName != null) {
-            final String namespaceURI = typeName.getNamespaceURI();
-            Namespace n = getNamespace(namespaceURI);
-            n.enums.add(envm);
+        String nsUri = null;
 
-            // search for foreign namespace references
-            n.addDependencyTo(envm.getBaseType().getTypeName());
+        if(envm.isElement()) {
+            // put element -> type reference
+            nsUri = envm.getElementName().getNamespaceURI();
+            Namespace ns = getNamespace(nsUri);
+            ns.enums.add(envm);
+            ns.addDependencyTo(envm.getTypeName());
         }
 
-        //annonymous
+        final QName typeName = envm.getTypeName();
+        if (typeName != null) {
+            nsUri = typeName.getNamespaceURI();
+        } else {
+            if(nsUri==null)
+                return; // anonymous type
+        }
+
+        Namespace n = getNamespace(nsUri);
+        n.enums.add(envm);
+
+        // search for foreign namespace references
+        n.addDependencyTo(envm.getBaseType().getTypeName());
     }
 
     public void add( ArrayInfo<T,C> a ) {
@@ -408,13 +421,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     schema._pcdata(newline);
                 }
                 for (ClassInfo<T, C> c : classes) {
-                    Element<T,C> e = c.asElement();
-                    if (e != null) {
-                        // ClassInfo can have two namespaces URIs (one for type, another for element),
-                        // so make sure that we want to write this here.
-                        if(uri.equals(e.getElementName().getNamespaceURI()))
-                            writeTopLevelClass(c, e, schema);
-                    }
+                    writeTopLevelClass(c,schema);
                     if (c.getTypeName()==null) {
                         // don't generate anything if it's an anonymous type
                         continue;
@@ -424,11 +431,13 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     schema._pcdata(newline);
                 }
                 for (EnumLeafInfo<T, C> e : enums) {
+                    writeTopLevelClass(e,schema);
                     if (e.getTypeName()==null) {
                         // don't generate anything if it's an anonymous type
                         continue;
                     }
-                    writeEnum(e,schema);
+                    if(uri.equals(e.getTypeName().getNamespaceURI()))
+                        writeEnum(e,schema);
                     schema._pcdata(newline);
                 }
                 for (ArrayInfo<T, C> a : arrays) {
@@ -586,13 +595,16 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             elem.commit();
         }
 
-        private void writeTopLevelClass(ClassInfo<T, C> c, Element<T, C> e, TypeHost schema) {
-            // ClassInfo objects only represent JAXB beans, not primitives or built-in types
-            // if the class is also mapped to an element (@XmlElement), generate such a decl.
-            //
-            // this processing only applies to top-level ClassInfos
+        private void writeTopLevelClass(MaybeElement<T,C> c, TypeHost schema) {
+            if(!c.isElement())
+                return; // not an element
 
-            QName ename = e.getElementName();
+            // MaybeElements can have a different namespace between element and type,
+            // so make sure that we want to write this here.
+            if(!uri.equals(c.getElementName().getNamespaceURI()))
+                return;
+
+            QName ename = c.asElement().getElementName();
             assert ename.getNamespaceURI().equals(uri);
             // [RESULT]
             // <element name="foo" type="int"/>
