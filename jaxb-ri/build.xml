@@ -47,7 +47,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.40 2005-10-28 00:32:42 kohsuke Exp $
+       $Id: build.xml,v 1.41 2005-10-31 19:15:07 ryan_shoemaker Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -231,8 +231,9 @@
                 <source dir="${runtime.classes}" includes="**/*.class" />
               </stripper-->
               <manifest mode="update" file="${runtime.root}/build/manifest.rt">
+                <attribute name="Class-Path" value="jaxb-api.jar activation.jar jsr173_1.0_api.jar jaxb1-impl.jar" /> <!-- added for JES4 script compatibility -->
                 <section name="com.sun.xml.bind.v2.runtime">
-                  <attribute name="Implementation-Version" value="${build.version}" /> 
+                  <attribute name="Implementation-Version" value="${build.version}" />
                 </section>
               </manifest>
               <jar jarfile="${jaxb.dist}/lib/jaxb-impl.jar"
