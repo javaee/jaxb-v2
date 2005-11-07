@@ -165,28 +165,15 @@ final class FastInfosetConnector extends StAXConnector {
     }
 
     private void processText(boolean ignorable) throws SAXException {
-        if (firstCIIChunk == true) {
-            return;
-        }
         firstCIIChunk = true;
-
-        // If there are characters
-        if (buffer.length() > 0) {
-            if (!ignorable || !WhiteSpaceProcessor.isWhiteSpace(buffer)) {
+        if(context.expectText() && (!ignorable || !WhiteSpaceProcessor.isWhiteSpace(buffer))) {
+            if (!hasBase64Data) {
                 visitor.text(buffer);
-            }
-
-            // avoid excessive object allocation, but also avoid
-            // keeping a huge array inside StringBuffer.
-            if (buffer.length()<1024) {
                 buffer.setLength(0);
             } else {
-                buffer = new StringBuilder();
+                visitor.text(base64Data);
+                hasBase64Data = false;
             }
-        // If there are octets
-        } else if (hasBase64Data) {
-            visitor.text(base64Data);
-            hasBase64Data = false;
         }
     }
 }
