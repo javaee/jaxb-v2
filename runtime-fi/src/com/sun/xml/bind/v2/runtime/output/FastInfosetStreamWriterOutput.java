@@ -28,7 +28,7 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
         this.fiout = out;
     }
 
-    public void text(CharSequence value, boolean needsSeparatingWhitespace) throws IOException, SAXException, XMLStreamException {
+    public void text(Pcdata value, boolean needsSeparatingWhitespace) throws IOException, SAXException, XMLStreamException {
         if(needsSeparatingWhitespace) {
             fiout.writeCharacters(" ");
         }
