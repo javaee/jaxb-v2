@@ -7,7 +7,7 @@
   reference is "{$var}", whereas Ant uses ${var} syntax.
   So it's quite confusing. To escape ${var}, write it as: ${{var}}.
  
- $Id: build-script.xsl,v 1.6 2005-10-27 20:16:48 kohsuke Exp $
+ $Id: build-script.xsl,v 1.7 2005-11-29 21:38:58 paradhya Exp $
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
   
@@ -245,6 +245,7 @@
         <fileset dir="${{jwsdp.home}}" includes="jaxb/lib/*.jar" />
         <fileset dir="${{jwsdp.home}}" includes="sjsxp/lib/*.jar" />
         <fileset dir="${{jwsdp.home}}" includes="jwsdp-shared/lib/activation.jar" />
+        <fileset dir="${{jwsdp.home}}" includes="jwsdp-shared/lib/resolver.jar" />
       </xsl:when>
       <!-- for the workspace test -->
       <xsl:when test="$target='workspace'">
