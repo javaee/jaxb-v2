@@ -658,6 +658,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                         ct._final("extension restriction");
 
                     SimpleExtension se = ct.simpleContent().extension();
+                    se.block(); // because we might have attribute before value
                     for (PropertyInfo<T,C> p : c.getProperties()) {
                         switch (p.kind()) {
                         case ATTRIBUTE:
@@ -675,6 +676,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                             throw new IllegalStateException();
                         }
                     }
+                    se.commit();
                 }
                 TODO.schemaGenerator("figure out what to do if bc != null");
                 TODO.checkSpec("handle sec 8.9.5.2, bullet #4");
