@@ -199,7 +199,11 @@ class ClassInfoImpl<T,C,F,M>
             if(p.id()== ID.ID)
                 return true;
         }
-        return false;
+        ClassInfoImpl<T, C, F, M> base = getBaseClass();
+        if(base!=null)
+            return base.canBeReferencedByIDREF();
+        else
+            return false;
     }
 
     public final String getName() {
