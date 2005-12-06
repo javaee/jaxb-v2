@@ -470,7 +470,7 @@ public final class JCodeModel {
         }
 
         public String name() {
-            return _class.getSimpleName();
+            return _class.getSimpleName().replace('$','.');
         }
 
         public String fullName() {
