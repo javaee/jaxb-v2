@@ -2,8 +2,9 @@
 <sample since="1.0">
     <title>RI-specific customizations</title>
     <description><![CDATA[
-			This example demonstrates how to use the <jxb:serializable>   
-			and <jxb:superClass> vendor extensions provided by Sun's JAXB RI.
+			This example demonstrates how to use 
+			<xjc:superClass> vendor extensions provided by Sun's JAXB RI,
+			as well as <jaxb:serializable> customization.
     ]]></description>
         
     <readme/>

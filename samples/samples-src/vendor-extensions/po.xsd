@@ -6,7 +6,7 @@
   <xsd:annotation>
     <xsd:appinfo>
       <jaxb:globalBindings>
-        <xjc:serializable uid="1"/>
+        <jaxb:serializable uid="1"/>
         <xjc:superClass name="primer.BaseClass"/>
       </jaxb:globalBindings>
     </xsd:appinfo>
