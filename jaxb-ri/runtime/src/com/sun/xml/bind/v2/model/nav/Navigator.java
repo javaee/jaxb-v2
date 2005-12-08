@@ -95,7 +95,15 @@ public interface Navigator<T,C,F,M> {
     Collection<? extends F> getDeclaredFields(C clazz);
 
     /**
-     * Gets all the declared methods of the given class.
+     * Gets all the declared methods of the given class
+     * (regardless of their access modifiers, regardless
+     * of whether they override methods of the base classes.)
+     *
+     * <p>
+     * Note that this method does not list methods declared on base classes.
+     *
+     * @return
+     *      can be empty but always non-null. 
      */
     Collection<? extends M> getDeclaredMethods(C clazz);
 
