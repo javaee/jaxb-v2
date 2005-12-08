@@ -25,7 +25,7 @@
 -->
 
 <project name="jaxb" basedir="." default="compile">
-
+...
     <description>
         JAXB-RI Master Project
         ======================
@@ -47,7 +47,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.41 2005-10-31 19:15:07 ryan_shoemaker Exp $
+       $Id: build.xml,v 1.42 2005-12-08 20:04:41 ryan_shoemaker Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -585,6 +585,7 @@ Class-Path: ${manifest.classpath}
 
         <property name="jaxp.jars"          value="../../jaxp/lib"/>
         <property name="jwsdp.shared"       value="../../jwsdp-shared/lib"/>
+        <property name="sjsxp.jars"         value="../../sjsxp/lib"/>
         <property name="jes.rpm"            value="/opt/sun/share/lib"/>
         <property name="jes.rpm.private"    value="/opt/sun/private/share/lib"/>
         <property name="jes.svr4"           value="/usr/share/lib"/>
@@ -597,7 +598,7 @@ Class-Path: ${manifest.classpath}
         ${jes.svr4}/activation.jar
         ${jes.zip}/activation.jar
         jsr173_api.jar
-        ${jwsdp.shared}/jsr173_api.jar
+        ${sjsxp.jars}/jsr173_api.jar
         ${jes.rpm.private}/jsr173_api.jar
         ${jes.svr4}/jsr173_api.jar
         ${jes.zip}/jsr173_api.jar
