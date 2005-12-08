@@ -13,7 +13,7 @@ public abstract class Util {
      *
      * @since 2.0
      */
-    public static final Logger getClassLogger() {
+    public static Logger getClassLogger() {
         try {
             StackTraceElement[] trace = Thread.currentThread().getStackTrace();
             return Logger.getLogger(trace[1].getClassName());
@@ -25,7 +25,7 @@ public abstract class Util {
     /**
      * Reads the system property value and takes care of {@link SecurityException}.
      */
-    public static final String getSystemProperty(String name) {
+    public static String getSystemProperty(String name) {
         try {
             return System.getProperty(name);
         } catch( SecurityException e ) {
