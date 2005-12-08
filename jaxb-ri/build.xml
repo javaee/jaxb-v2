@@ -46,13 +46,20 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.43 2005-12-08 20:38:11 ryan_shoemaker Exp $
+       $Id: build.xml,v 1.44 2005-12-08 21:37:21 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
     <property file="${basedir}/build.properties" />
 
     <import file="build-taskdefs.xml" />
+
+    <!--
+      when building jars for Maven, we want to put suffix
+      (sometimes with version like '-2.0.beta1', with date '-20051208', or with '-SNAPSHOT')
+      this property lets you do that.
+    -->
+    <property name="jar.suffix" value="" />
     
     <target name="init">
         <!-- this property is used by "xjc -version" and is also set in each of the
@@ -230,12 +237,12 @@
                 <source dir="${runtime.classes}" includes="**/*.class" />
               </stripper-->
               <manifest mode="update" file="${runtime.root}/build/manifest.rt">
-                <attribute name="Class-Path" value="jaxb-api.jar activation.jar jsr173_1.0_api.jar jaxb1-impl.jar" /> <!-- added for JES4 script compatibility -->
+                <attribute name="Class-Path" value="jaxb-api.jar activation.jar jsr173_1.0_api.jar jaxb1-impl${jar.suffix}.jar" /> <!-- added for JES4 script compatibility -->
                 <section name="com.sun.xml.bind.v2.runtime">
-                  <attribute name="Implementation-Version" value="${build.version}" />
+                  <attribute name="Implementation-Version" value="${build.version}" /> 
                 </section>
               </manifest>
-              <jar jarfile="${jaxb.dist}/lib/jaxb-impl.jar"
+              <jar jarfile="${jaxb.dist}/lib/jaxb-impl${jar.suffix}.jar"
                    manifest="${runtime.root}/build/manifest.rt"
                    duplicate="fail">
                   <fileset dir="${runtime.classes}"/>
@@ -256,7 +263,7 @@
               <unzip dest="${jaxb.root}/build/jaxb-1-impl-rejar">
                 <fileset dir="${jaxb.libs.runtime}" includes="*.jar" />
               </unzip>
-              <jar jarfile="${jaxb.dist}/lib/jaxb1-impl.jar"
+              <jar jarfile="${jaxb.dist}/lib/jaxb1-impl${jar.suffix}.jar"
                    manifest="${runtime.root}/build/manifest.rt1">
                   <!-- can't use zipgroupfileset because of the duplicate version.properties -->
                   <fileset dir="${jaxb.root}/build/jaxb-1-impl-rejar"/>
@@ -276,7 +283,7 @@
                    and yes, it's OK to have new lines and spaces inbetween.
               -->
               <property name="manifest.classpath"
-                value="jaxb-api.jar jaxb-impl.jar jsr173_1.0_api.jar activation.jar" />
+                value="jaxb-api.jar jaxb-impl${jar.suffix}.jar jsr173_1.0_api.jar activation.jar" />
               <echo file="${xjc.root}/manifest.xjc" append="true"
 >Main-Class: com.sun.tools.xjc.XJCFacade
 Class-Path: ${manifest.classpath}
@@ -291,7 +298,7 @@ Class-Path: ${manifest.classpath}
               <unzip dest="${jaxb.root}/build/jaxb-xjc-rejar">
                 <fileset dir="${jaxb.libs.compiler}" includes="*.jar" />
               </unzip>
-              <jar jarfile="${jaxb.dist}/lib/jaxb-xjc.jar"
+              <jar jarfile="${jaxb.dist}/lib/jaxb-xjc${jar.suffix}.jar"
                    manifest="${xjc.root}/manifest.xjc"
                    duplicate="fail">
                   <!-- can't use zipgroupfileset because of the duplicate LICENSE.txt -->
