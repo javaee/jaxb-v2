@@ -25,7 +25,6 @@
 -->
 
 <project name="jaxb" basedir="." default="compile">
-...
     <description>
         JAXB-RI Master Project
         ======================
@@ -47,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.42 2005-12-08 20:04:41 ryan_shoemaker Exp $
+       $Id: build.xml,v 1.43 2005-12-08 20:38:11 ryan_shoemaker Exp $
     </description>
 
     <!-- initialize build properties -->
