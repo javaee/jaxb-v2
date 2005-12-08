@@ -56,6 +56,9 @@ public class StreamSerializer implements XmlSerializer {
     }
 
     public StreamSerializer(StreamResult streamResult) {
+        // if this method opened a stream, let it close it
+        final OutputStream[] autoClose = new OutputStream[1];
+
         if (streamResult.getWriter() != null)
             writer = createWriter(streamResult.getWriter());
         else if (streamResult.getOutputStream() != null)
@@ -66,7 +69,9 @@ public class StreamSerializer implements XmlSerializer {
             fileURL = convertURL(fileURL);
 
             try {
-                writer = createWriter(new FileOutputStream(fileURL));
+                FileOutputStream fos = new FileOutputStream(fileURL);
+                autoClose[0] = fos;
+                writer = createWriter(fos);
             } catch (IOException e) {
                 throw new TxwException(e);
             }
@@ -74,7 +79,19 @@ public class StreamSerializer implements XmlSerializer {
             throw new IllegalArgumentException();
 
         // now delegate to the SaxSerializer
-        serializer = new SaxSerializer(writer,writer);
+        serializer = new SaxSerializer(writer,writer) {
+            public void endDocument() {
+                super.endDocument();
+                if(autoClose[0]!=null) {
+                    try {
+                        autoClose[0].close();
+                    } catch (IOException e) {
+                        throw new TxwException(e);
+                    }
+                    autoClose[0] = null;
+                }
+            }
+        };
     }
 
     private StreamSerializer(XMLWriter writer) {
@@ -147,20 +164,20 @@ public class StreamSerializer implements XmlSerializer {
     }
 
     // other supporting code
-    private static final XMLWriter createWriter(Writer w) {
+    private static XMLWriter createWriter(Writer w) {
         // buffering improves the performance
         DataWriter dw = new DataWriter(new BufferedWriter(w));
         dw.setIndentStep("  ");
         return dw;
     }
 
-    private static final XMLWriter createWriter(OutputStream os, String encoding) throws UnsupportedEncodingException {
+    private static XMLWriter createWriter(OutputStream os, String encoding) throws UnsupportedEncodingException {
         XMLWriter writer = createWriter(new OutputStreamWriter(os,encoding));
         writer.setEncoding(encoding);
         return writer;
     }
 
-    private static final XMLWriter createWriter(OutputStream os) {
+    private static XMLWriter createWriter(OutputStream os) {
         try {
             return createWriter(os,"UTF-8");
         } catch (UnsupportedEncodingException e) {
