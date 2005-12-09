@@ -891,7 +891,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                 if (occurs == null) occurs = e;
                 QName tn = t.getTagName();
 
-                if(canBeDirectElementRef(t,tn) || (!tn.getNamespaceURI().equals(uri) && uri.length()>0)) {
+                if(canBeDirectElementRef(t,tn) || (!tn.getNamespaceURI().equals(uri) && tn.getNamespaceURI().length()>0)) {
                     e.ref(tn);
                 } else {
                     e.name(tn.getLocalPart());
