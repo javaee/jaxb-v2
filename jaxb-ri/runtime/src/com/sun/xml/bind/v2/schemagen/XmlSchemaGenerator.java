@@ -23,6 +23,7 @@ import javax.xml.transform.stream.StreamResult;
 import com.sun.xml.bind.Util;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.WellKnownNamespace;
+import static com.sun.xml.bind.v2.WellKnownNamespace.XML_SCHEMA;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.ArrayInfo;
 import com.sun.xml.bind.v2.model.core.AttributePropertyInfo;
@@ -33,6 +34,7 @@ import com.sun.xml.bind.v2.model.core.ElementPropertyInfo;
 import com.sun.xml.bind.v2.model.core.EnumConstant;
 import com.sun.xml.bind.v2.model.core.EnumLeafInfo;
 import com.sun.xml.bind.v2.model.core.MapPropertyInfo;
+import com.sun.xml.bind.v2.model.core.MaybeElement;
 import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.NonElementRef;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
@@ -42,9 +44,9 @@ import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.core.ValuePropertyInfo;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
-import com.sun.xml.bind.v2.model.core.MaybeElement;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
+import static com.sun.xml.bind.v2.schemagen.Util.*;
 import com.sun.xml.bind.v2.schemagen.xmlschema.Any;
 import com.sun.xml.bind.v2.schemagen.xmlschema.AttrDecls;
 import com.sun.xml.bind.v2.schemagen.xmlschema.ComplexExtension;
@@ -52,6 +54,7 @@ import com.sun.xml.bind.v2.schemagen.xmlschema.ComplexType;
 import com.sun.xml.bind.v2.schemagen.xmlschema.ComplexTypeHost;
 import com.sun.xml.bind.v2.schemagen.xmlschema.ExplicitGroup;
 import com.sun.xml.bind.v2.schemagen.xmlschema.Import;
+import com.sun.xml.bind.v2.schemagen.xmlschema.List;
 import com.sun.xml.bind.v2.schemagen.xmlschema.LocalAttribute;
 import com.sun.xml.bind.v2.schemagen.xmlschema.LocalElement;
 import com.sun.xml.bind.v2.schemagen.xmlschema.Occurs;
@@ -60,16 +63,13 @@ import com.sun.xml.bind.v2.schemagen.xmlschema.SimpleExtension;
 import com.sun.xml.bind.v2.schemagen.xmlschema.SimpleRestrictionModel;
 import com.sun.xml.bind.v2.schemagen.xmlschema.SimpleType;
 import com.sun.xml.bind.v2.schemagen.xmlschema.SimpleTypeHost;
+import com.sun.xml.bind.v2.schemagen.xmlschema.TopLevelAttribute;
 import com.sun.xml.bind.v2.schemagen.xmlschema.TopLevelElement;
 import com.sun.xml.bind.v2.schemagen.xmlschema.TypeHost;
-import com.sun.xml.bind.v2.schemagen.xmlschema.List;
 import com.sun.xml.txw2.TXW;
 import com.sun.xml.txw2.TxwException;
 import com.sun.xml.txw2.TypedXmlWriter;
 import com.sun.xml.txw2.output.ResultFactory;
-
-import static com.sun.xml.bind.v2.WellKnownNamespace.*;
-import static com.sun.xml.bind.v2.schemagen.Util.*;
 
 /**
  * Generates a set of W3C XML Schema documents from a set of Java classes.
@@ -78,9 +78,9 @@ import static com.sun.xml.bind.v2.schemagen.Util.*;
  * A client must invoke methods in the following order:
  * <ol>
  *  <li>Create a new {@link XmlSchemaGenerator}
- *  <li>Invoke {@link #add()} methods if necessary, multiple times.
+ *  <li>Invoke {@link #add} methods, multiple times if necessary.
  *  <li>Invoke {@link #write}
- *  <li>Discard the object
+ *  <li>Discard the {@link XmlSchemaGenerator}.
  * </ol>
  *
  * @author Ryan Shoemaker
@@ -106,9 +106,16 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
     private final TypeInfoSet<T,C,F,M> types;
 
+    /**
+     * Representation for xs:string.
+     */
+    private final NonElement<T,C> stringType;
+
     public XmlSchemaGenerator( Navigator<T,C,F,M> navigator, TypeInfoSet<T,C,F,M> types ) {
         this.navigator = navigator;
         this.types = types;
+
+        this.stringType = types.getTypeInfo(navigator.ref(String.class));
 
         // populate the object
         for( ClassInfo<T,C> ci : types.beans().values() )
@@ -162,8 +169,17 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         n.classes.add(clazz);
 
         // search properties for foreign namespace references
-        for( PropertyInfo<T, C> p : clazz.getProperties()) {
+        for( PropertyInfo<T,C> p : clazz.getProperties()) {
             n.processForeignNamespaces(p);
+            if (p instanceof AttributePropertyInfo) {
+                AttributePropertyInfo<T,C> ap = (AttributePropertyInfo<T,C>) p;
+                String aUri = ap.getXmlName().getNamespaceURI();
+                if(aUri.length()>0) {
+                    // global attribute
+                    getNamespace(aUri).addGlobalAttribute(ap);
+                    n.addDependencyTo(ap.getXmlName());
+                }
+            }
         }
 
         // recurse on baseTypes to make sure that we can refer to them in the schema
@@ -270,15 +286,11 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
         // then write'em all
         for( Namespace n : namespaces.values() ) {
-            final Result result = out.get(n);
-            if(result!=null) { // null result means no schema for that namespace
+            Result result = out.get(n);
+            if(result!=null) {
                 n.writeTo( result, out );
                 if(result instanceof StreamResult) {
-                    // TODO: handle other Result implementations?
-                    // handling StreamResult is at least good enough for schemagen since SchemaGenerator
-                    // uses a StreamResult by default.  Besides, is anyone ever really going to send the
-                    // schema to a DOM tree or SAX events?
-                    final OutputStream outputStream = ((StreamResult)result).getOutputStream();
+                    OutputStream outputStream = ((StreamResult)result).getOutputStream();
                     if(outputStream != null) {
                         outputStream.close(); // fix for bugid: 6291301
                     } else {
@@ -297,7 +309,6 @@ public final class XmlSchemaGenerator<T,C,F,M> {
      */
     private class Namespace {
         final String uri;
-        final StringBuilder newline = new StringBuilder("\n");
 
         /**
          * Other {@link Namespace}s that this namespace depends on.
@@ -329,6 +340,11 @@ public final class XmlSchemaGenerator<T,C,F,M> {
          */
         private Map<String,NonElement<T,C>> additionalElementDecls = new HashMap<String,NonElement<T,C>>();
 
+        /**
+         * Global attributes keyed by their local names.
+         */
+        private Map<String,GlobalAttribute> attributes = new TreeMap<String,GlobalAttribute>();
+
         private Form attributeFormDefault;
         private Form elementFormDefault;
 
@@ -341,12 +357,14 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         /**
          * Process the given PropertyInfo looking for references to namespaces that
          * are foreign to the given namespace.  Any foreign namespace references
-         * found are added to the given namespaces dependency list and an <import>
+         * found are added to the given namespaces dependency list and an &lt;import>
          * is generated for it.
          *
          * @param p the PropertyInfo
          */
         private void processForeignNamespaces(PropertyInfo<T, C> p) {
+            // TODO: missing the correct handling of anonymous type,
+            // which requires recursive checks
             for( TypeInfo<T, C> t : p.ref()) {
                 if(t instanceof Element) {
                     addDependencyTo(((Element)t).getElementName());
@@ -448,6 +466,9 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     writeElementDecl(e.getKey(),e.getValue(),schema);
                     schema._pcdata(newline);
                 }
+
+                for (GlobalAttribute ga : attributes.values())
+                    ga.writeTo(schema);
 
                 // close the schema
                 schema.commit();
@@ -1060,6 +1081,45 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             key.minOccurs(0);
             writeTypeRef(key, typeRef, "type");
         }
+
+        public void addGlobalAttribute(AttributePropertyInfo<T,C> ap) {
+            String localPart = ap.getXmlName().getLocalPart();
+            GlobalAttribute ga = attributes.get(localPart);
+            if(ga==null) {
+                ga = new GlobalAttribute(localPart, ap.getTarget());
+                attributes.put(localPart,ga);
+            } else {
+                ga.addType(ap.getTarget());
+            }
+        }
+
+
+        /**
+         * Keeps track of what global attributes need to be generated.
+         */
+        final class GlobalAttribute {
+            private final String localName;
+            private NonElement<T,C> type;
+
+            GlobalAttribute(String localName, NonElement<T,C> t) {
+                this.localName = localName;
+                this.type = t;
+            }
+
+            void addType(NonElement<T,C> t) {
+                if(this.type==t)
+                    return;
+                // inconsistent types. fall back to string.
+                this.type = stringType;
+            }
+
+            void writeTo(Schema schema) {
+                TopLevelAttribute a = schema.attribute();
+
+                a.name(localName);
+                writeTypeRef(a,type,"type");
+            }
+        }
     }
 
 
@@ -1155,44 +1215,6 @@ public final class XmlSchemaGenerator<T,C,F,M> {
     }
 
     /**
-     * {@link SchemaOutputResolver} that wraps the user-specified resolver
-     * and makes sure that it's following the contract.
-     *
-     * <p>
-     * This protects the rest of the {@link XmlSchemaGenerator} from client programming
-     * error.
-     */
-    private static final class FoolProofResolver extends SchemaOutputResolver {
-        private final SchemaOutputResolver resolver;
-
-        public FoolProofResolver(SchemaOutputResolver resolver) {
-            assert resolver!=null;
-            this.resolver = resolver;
-        }
-
-        public Result createOutput(String namespaceUri, String suggestedFileName) throws IOException {
-            logger.entering(getClass().getName(),"createOutput",new Object[]{namespaceUri,suggestedFileName});
-            Result r = resolver.createOutput(namespaceUri,suggestedFileName);
-            if(r!=null) {
-                String sysId = r.getSystemId();
-                logger.finer("system ID = "+sysId);
-                if(sysId!=null) {
-                    // TODO: make sure that the system Id is absolute
-
-                    // don't use java.net.URI, because it doesn't allow some characters (like SP)
-                    // which can legally used as file names.
-
-                    // but don't use java.net.URL either, because it doesn't allow a made-up URI
-                    // like kohsuke://foo/bar/zot
-                } else
-                    throw new AssertionError("system ID cannot be null");
-            }
-            logger.exiting(getClass().getName(),"createOutput",r);
-            return r;
-        }
-    }
-
-    /**
      * JAX-RPC wants the namespaces to be sorted in the reverse order
      * so that the empty namespace "" comes to the very end. Don't ask me why.
      */
@@ -1201,4 +1223,6 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             return -lhs.compareTo(rhs);
         }
     };
+
+    private static final String newline = "\n";
 }
