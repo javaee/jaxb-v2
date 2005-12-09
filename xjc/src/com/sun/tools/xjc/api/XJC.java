@@ -24,8 +24,9 @@ import com.sun.tools.xjc.api.impl.s2j.SchemaCompilerImpl;
 import com.sun.tools.xjc.reader.Util;
 
 /**
- * Entry point to the JAXB RI interface.
- * 
+ * Entry point to the programatic API to access
+ * schema compiler (XJC) and schema generator (schemagen).
+ *
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
