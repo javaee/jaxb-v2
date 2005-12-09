@@ -111,11 +111,17 @@ public final class XmlSchemaGenerator<T,C,F,M> {
      */
     private final NonElement<T,C> stringType;
 
+    /**
+     * Represents xs:anyType.
+     */
+    private final NonElement<T,C> anyType;
+
     public XmlSchemaGenerator( Navigator<T,C,F,M> navigator, TypeInfoSet<T,C,F,M> types ) {
         this.navigator = navigator;
         this.types = types;
 
         this.stringType = types.getTypeInfo(navigator.ref(String.class));
+        this.anyType = types.getAnyTypeInfo();
 
         // populate the object
         for( ClassInfo<T,C> ci : types.beans().values() )
@@ -180,6 +186,16 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     n.addDependencyTo(ap.getXmlName());
                 }
             }
+            if (p instanceof ElementPropertyInfo) {
+                ElementPropertyInfo<T,C> ep = (ElementPropertyInfo<T,C>) p;
+                for (TypeRef<T,C> tref : ep.getTypes()) {
+                    String eUri = tref.getTagName().getNamespaceURI();
+                    if(eUri.length()>0 && !eUri.equals(n.uri)) {
+                        getNamespace(eUri).addGlobalElement(tref);
+                        n.addDependencyTo(tref.getTagName());
+                    }
+                }
+            }
         }
 
         // recurse on baseTypes to make sure that we can refer to them in the schema
@@ -194,8 +210,9 @@ public final class XmlSchemaGenerator<T,C,F,M> {
     public void add( ElementInfo<T,C> elem ) {
         assert elem!=null;
 
-        Namespace n = getNamespace(elem.getElementName().getNamespaceURI());
-        n.elements.add(elem);
+        QName name = elem.getElementName();
+        Namespace n = getNamespace(name.getNamespaceURI());
+        n.elementDecls.put(name.getLocalPart(),n.new ElementWithType(elem.getContentType()));
 
         // search for foreign namespace references
         n.processForeignNamespaces(elem.getProperty());
@@ -252,7 +269,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
     public void add( QName tagName, NonElement<T,C> type ) {
 
         Namespace n = getNamespace(tagName.getNamespaceURI());
-        n.additionalElementDecls.put(tagName.getLocalPart(),type);
+        n.elementDecls.put(tagName.getLocalPart(), n.new ElementWithType(type));
 
         // search for foreign namespace references
         if(type!=null)
@@ -321,29 +338,24 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         private final Set<ClassInfo<T,C>> classes = new LinkedHashSet<ClassInfo<T,C>>();
 
         /**
-         * Set of elements in this namespace
-         */
-        private final Set<ElementInfo<T,C>> elements = new LinkedHashSet<ElementInfo<T,C>>();
-
-        /**
          * Set of enums in this namespace
          */
-        private Set<EnumLeafInfo<T,C>> enums = new LinkedHashSet<EnumLeafInfo<T,C>>();
+        private final Set<EnumLeafInfo<T,C>> enums = new LinkedHashSet<EnumLeafInfo<T,C>>();
 
         /**
          * Set of arrays in this namespace
          */
-        private Set<ArrayInfo<T,C>> arrays = new LinkedHashSet<ArrayInfo<T,C>>();
+        private final Set<ArrayInfo<T,C>> arrays = new LinkedHashSet<ArrayInfo<T,C>>();
 
         /**
-         * Additional element declarations.
+         * Global attribute declarations keyed by their local names.
          */
-        private Map<String,NonElement<T,C>> additionalElementDecls = new HashMap<String,NonElement<T,C>>();
+        private final MultiMap<String,NonElement<T,C>> attributeDecls = new MultiMap<String,NonElement<T,C>>(stringType);
 
         /**
-         * Global attributes keyed by their local names.
+         * Global element declarations to be written, keyed by their local names.
          */
-        private Map<String,GlobalAttribute> attributes = new TreeMap<String,GlobalAttribute>();
+        private final MultiMap<String,ElementDeclaration> elementDecls = new MultiMap<String,ElementDeclaration>(new ElementWithType(anyType));
 
         private Form attributeFormDefault;
         private Form elementFormDefault;
@@ -422,6 +434,12 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                 if(uri.length()!=0)
                     schema.targetNamespace(uri);
 
+                // declare prefixes for them at this level, so that we can avoid redundant
+                // namespace declarations
+                for (Namespace ns : depends) {
+                    schema._namespace(ns.uri);
+                }
+
                 schema._pcdata(newline);
 
                 // refer to other schemas
@@ -434,8 +452,8 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                 }
 
                 // then write each component
-                for(ElementInfo<T, C> e : elements) {
-                    writeElement(e, schema);
+                for (Map.Entry<String,ElementDeclaration> e : elementDecls.entrySet()) {
+                    e.getValue().writeTo(e.getKey(),schema);
                     schema._pcdata(newline);
                 }
                 for (ClassInfo<T, C> c : classes) {
@@ -462,13 +480,12 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     writeArray(a,schema);
                     schema._pcdata(newline);
                 }
-                for (Map.Entry<String,NonElement<T,C>> e : additionalElementDecls.entrySet()) {
-                    writeElementDecl(e.getKey(),e.getValue(),schema);
+                for (Map.Entry<String,NonElement<T,C>> e : attributeDecls.entrySet()) {
+                    TopLevelAttribute a = schema.attribute();
+                    a.name(e.getKey());
+                    writeTypeRef(a,e.getValue(),"type");
                     schema._pcdata(newline);
                 }
-
-                for (GlobalAttribute ga : attributes.values())
-                    ga.writeTo(schema);
 
                 // close the schema
                 schema.commit();
@@ -476,16 +493,6 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                 logger.log(Level.INFO,e.getMessage(),e);
                 throw new IOException(e.getMessage());
             }
-        }
-
-        private void writeElementDecl(String localName, NonElement<T,C> value, Schema schema) {
-            TopLevelElement e = schema.element().name(localName);
-            if(value!=null)
-                writeTypeRef(e,value, "type");
-            else {
-                e.complexType();    // refer to the nested empty complex type
-            }
-            e.commit();
         }
 
         /**
@@ -601,19 +608,6 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                 base.enumeration().value(c.getLexicalValue());
             }
             st.commit();
-        }
-
-        /**
-         * writes the schema definition for the specified element to the schema writer
-         *
-         * @param e the element info
-         * @param schema the schema writer
-         */
-        private void writeElement(ElementInfo<T, C> e, Schema schema) {
-            TopLevelElement elem = schema.element();
-            elem.name(e.getElementName().getLocalPart());
-            writeTypeRef( elem, e.getContentType(), "type");
-            elem.commit();
         }
 
         private void writeTopLevelClass(MaybeElement<T,C> c, TypeHost schema) {
@@ -855,6 +849,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     LocalElement e = compositor.element();
                     if(ename.getNamespaceURI().length()>0) {
                         if (!ename.getNamespaceURI().equals(this.uri)) {
+                            // TODO: we need to generate the corresponding element declaration for this
                             // table 8-25: Property/field element wrapper with ref attribute
                             e.ref(new QName(ename.getNamespaceURI(), ename.getLocalPart()));
                             return;
@@ -896,19 +891,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                 if (occurs == null) occurs = e;
                 QName tn = t.getTagName();
 
-                boolean useElementRef = false;
-
-                // check if we can put <element ref />
-                if(t.getTarget() instanceof Element) {
-                    Element te = (Element) t.getTarget();
-                    QName targetTagName = te.getElementName();
-                    useElementRef = targetTagName!=null && targetTagName.equals(tn);
-                }
-
-                if(t.isNillable() || t.getDefaultValue()!=null)
-                    useElementRef = false;  // can't put those attributes on <element ref>
-
-                if(useElementRef) {
+                if(canBeDirectElementRef(t,tn) || (!tn.getNamespaceURI().equals(uri) && uri.length()>0)) {
                     e.ref(tn);
                 } else {
                     e.name(tn.getLocalPart());
@@ -935,6 +918,26 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     occurs.minOccurs(0);
                 } // else minOccurs defaults to 1
             }
+        }
+
+        /**
+         * Checks if we can collapse
+         * &lt;element name='foo' type='t' /> to &lt;element ref='foo' />.
+         *
+         * This is possible if we already have such declaration to begin with.
+         */
+        private boolean canBeDirectElementRef(TypeRef<T, C> t, QName tn) {
+            if(t.isNillable() || t.getDefaultValue()!=null)
+                // can't put those attributes on <element ref>
+                return false;
+
+            if(t.getTarget() instanceof Element) {
+                Element te = (Element) t.getTarget();
+                QName targetTagName = te.getElementName();
+                return targetTagName!=null && targetTagName.equals(tn);
+            }
+
+            return false;
         }
 
 
@@ -1068,6 +1071,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             ComplexType p = e.name(ename.getLocalPart()).complexType();
 
             // TODO: entry, key, and value are always unqualified. that needs to be fixed, too.
+            // TODO: we need to generate the corresponding element declaration, if they are qualified
             e = p.sequence().element();
             e.name("entry").minOccurs(0).maxOccurs("unbounded");
 
@@ -1083,41 +1087,71 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         }
 
         public void addGlobalAttribute(AttributePropertyInfo<T,C> ap) {
-            String localPart = ap.getXmlName().getLocalPart();
-            GlobalAttribute ga = attributes.get(localPart);
-            if(ga==null) {
-                ga = new GlobalAttribute(localPart, ap.getTarget());
-                attributes.put(localPart,ga);
-            } else {
-                ga.addType(ap.getTarget());
-            }
+            attributeDecls.put( ap.getXmlName().getLocalPart(), ap.getTarget() );
         }
 
+        public void addGlobalElement(TypeRef<T,C> tref) {
+            elementDecls.put( tref.getTagName().getLocalPart(), new ElementWithType(tref.getTarget()) );
+        }
 
         /**
-         * Keeps track of what global attributes need to be generated.
+         * Represents a global element declaration to be written.
+         *
+         * <p>
+         * Because multiple properties can name the same global element even if
+         * they have different Java type, the schema generator first needs to
+         * walk through the model and decide what to generate for the given
+         * element declaration.
+         *
+         * <p>
+         * This class represents what will be written, and its {@link #equals(Object)}
+         * method is implemented in such a way that two identical declarations
+         * are considered as the same.
          */
-        final class GlobalAttribute {
-            private final String localName;
-            private NonElement<T,C> type;
+        abstract class ElementDeclaration {
+            /**
+             * Returns true if two {@link ElementDeclaration}s are representing
+             * the same schema fragment.
+             */
+            public abstract boolean equals(Object o);
+            public abstract int hashCode();
 
-            GlobalAttribute(String localName, NonElement<T,C> t) {
-                this.localName = localName;
-                this.type = t;
+            /**
+             * Generates the declaration.
+             */
+            public abstract void writeTo(String localName, Schema schema);
+        }
+
+        /**
+         * {@link ElementDeclaration} that refers to a {@link NonElement}.
+         */
+        class ElementWithType extends ElementDeclaration {
+            private final NonElement<T,C> type;
+
+            public ElementWithType(NonElement<T, C> type) {
+                this.type = type;
             }
 
-            void addType(NonElement<T,C> t) {
-                if(this.type==t)
-                    return;
-                // inconsistent types. fall back to string.
-                this.type = stringType;
+            public void writeTo(String localName, Schema schema) {
+                TopLevelElement e = schema.element().name(localName);
+                if(type!=null)
+                    writeTypeRef(e,type, "type");
+                else {
+                    e.complexType();    // refer to the nested empty complex type
+                }
+                e.commit();
             }
 
-            void writeTo(Schema schema) {
-                TopLevelAttribute a = schema.attribute();
+            public boolean equals(Object o) {
+                if (this == o) return true;
+                if (o == null || getClass() != o.getClass()) return false;
 
-                a.name(localName);
-                writeTypeRef(a,type,"type");
+                final ElementWithType that = (ElementWithType) o;
+                return type.equals(that.type);
+            }
+
+            public int hashCode() {
+                return type.hashCode();
             }
         }
     }
@@ -1193,9 +1227,9 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             StringBuffer relUri = new StringBuffer();
             relUri.append(relPath);
             if (theUri.getQuery() != null)
-                relUri.append('?' + theUri.getQuery());
+                relUri.append('?').append(theUri.getQuery());
             if (theUri.getFragment() != null)
-                relUri.append('#' + theUri.getFragment());
+                relUri.append('#').append(theUri.getFragment());
 
             return relUri.toString();
         } catch (URISyntaxException e) {
