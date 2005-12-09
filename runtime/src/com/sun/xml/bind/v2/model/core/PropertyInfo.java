@@ -17,6 +17,8 @@ import javax.xml.namespace.QName;
  * the caller doesn't have to worry about reading them. For this reason, you
  * cannot access annotations on properties directly.
  *
+ * TODO: don't we need a visitor?
+ *
  * @author Kohsuke Kawaguchi
  */
 public interface PropertyInfo<T,C> {
