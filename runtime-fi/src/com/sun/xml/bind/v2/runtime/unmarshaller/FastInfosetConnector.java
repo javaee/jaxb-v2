@@ -169,12 +169,12 @@ final class FastInfosetConnector extends StAXConnector {
         if(context.expectText() && (!ignorable || !WhiteSpaceProcessor.isWhiteSpace(buffer))) {
             if (!hasBase64Data) {
                 visitor.text(buffer);
-                buffer.setLength(0);
             } else {
                 visitor.text(base64Data);
                 hasBase64Data = false;
             }
         }
+        buffer.setLength(0);
     }
 }
 
