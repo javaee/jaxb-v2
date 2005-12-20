@@ -1,5 +1,6 @@
 package com.sun.xml.bind.v2.model.impl;
 
+import java.lang.reflect.Method;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
@@ -51,6 +52,7 @@ import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.bind.v2.util.FinalArrayList;
+
 
 /**
  * A part of the {@link ClassInfo} that doesn't depend on a particular
@@ -109,22 +111,23 @@ class ClassInfoImpl<T,C,F,M>
      */
     protected /*final*/ PropertySeed<T,C,F,M> attributeWildcard;
 
+    
+    /**
+     * @see #factoryMethod()
+     */
+    private M factoryMethod = null;
+    
     ClassInfoImpl(ModelBuilder<T,C,F,M> builder, Locatable upstream, C clazz) {
         super(builder,upstream);
         this.clazz = clazz;
         assert clazz!=null;
-
-        // the class must have the default constructor
-        if(!nav().hasDefaultConstructor(clazz))
-            builder.reportError(new IllegalAnnotationException(
-                Messages.NO_DEFAULT_CONSTRUCTOR.format(nav().getClassName(clazz)), this ));
 
         // compute the element name
         elementName = parseElementName(clazz);
 
         // compute the type name
         XmlType t = reader().getClassAnnotation(XmlType.class,clazz,this);
-        if(t!=null) {
+        if(t!=null) {            
             typeName = parseTypeName(clazz,t);
             String[] propOrder = t.propOrder();
             if(propOrder.length==0)
@@ -141,6 +144,14 @@ class ClassInfoImpl<T,C,F,M>
             else
                 typeName = parseTypeName(clazz,null);
             propOrder = DEFAULT_ORDER;
+        }
+        
+        // the class must have the default constructor
+        if(!nav().hasDefaultConstructor(clazz)){
+            if (!hasFactoryConstructor(t)){
+                builder.reportError(new IllegalAnnotationException(
+                Messages.NO_DEFAULT_CONSTRUCTOR.format(nav().getClassName(clazz)), this ));        
+            }     
         }
     }
 
@@ -1061,5 +1072,44 @@ class ClassInfoImpl<T,C,F,M>
         return nav().getClassLocation(clazz);
     }
 
+    /**
+     *  XmlType allows specification of factoryClass and
+     *  factoryMethod.  There are to be used if no default
+     *  constructor is found.
+     */
+    private  boolean hasFactoryConstructor(XmlType t){
+        if (t == null) return false;        
+        
+        String method = t.factoryMethod().trim();
+        T fClass = reader().getClassValue(t, "factoryClass");
+        if (method.length() > 0){
+            if(fClass.equals(nav().ref(XmlType.DEFAULT.class))){
+                fClass = nav().use(clazz);
+            }
+            for(M m: nav().getDeclaredMethods(nav().asDecl(fClass))){
+                //- Find the zero-arg public static method with the required return type
+                if (nav().getMethodName(m).equals(method) &&
+                    nav().getReturnType(m).equals(nav().use(clazz)) &&
+                    nav().getMethodParameters(m).length == 0 &&
+                    nav().isStaticMethod(m) && nav().isPublicMethod(m)){
+                    factoryMethod = m;
+                    break;
+                }
+            }
+            if (factoryMethod == null){
+                builder.reportError(new IllegalAnnotationException(
+                Messages.NO_FACTORY_METHOD.format(nav().getClassName(nav().asDecl(fClass)), method), this )); 
+            }
+        } else if(!fClass.equals(nav().ref(XmlType.DEFAULT.class))){
+            builder.reportError(new IllegalAnnotationException(
+                Messages.FACTORY_CLASS_NEEDS_FACTORY_METHOD.format(nav().getClassName(nav().asDecl(fClass))), this ));
+        }
+        return factoryMethod != null;
+    }
+
+   
+    public Method getFactoryMethod(){
+        return (Method) factoryMethod;
+    }
     private static final String[] DEFAULT_ORDER = new String[0];
 }

@@ -1,6 +1,7 @@
 package com.sun.xml.bind.v2.model.runtime;
 
 import java.lang.reflect.Type;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +24,8 @@ public interface RuntimeClassInfo extends ClassInfo<Type,Class>, RuntimeNonEleme
     List<? extends RuntimePropertyInfo> getProperties();
     RuntimePropertyInfo getProperty(String name);
 
-
+    Method getFactoryMethod();
+    
     /**
      * If {@link #hasAttributeWildcard()} is true,
      * returns the accessor to access the property.

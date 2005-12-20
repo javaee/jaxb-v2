@@ -52,6 +52,10 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
         super(modelBuilder, upstream, clazz);
     }
 
+    public Method getFactoryMethod(){
+        return super.getFactoryMethod();
+    }
+    
     public final RuntimeClassInfoImpl getBaseClass() {
         return (RuntimeClassInfoImpl)super.getBaseClass();
     }
