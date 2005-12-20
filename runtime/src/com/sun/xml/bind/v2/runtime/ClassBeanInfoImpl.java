@@ -2,6 +2,7 @@ package com.sun.xml.bind.v2.runtime;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -85,14 +86,16 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
      */
     private /*final*/ Property<BeanT>[] uriProperties;
 
-
+    private final Method factoryMethod;
+    
     /*package*/ ClassBeanInfoImpl(JAXBContextImpl owner, RuntimeClassInfo ci) {
         super(owner,ci,ci.getClazz(),ci.getTypeName(),ci.isElement(),false,true);
 
         this.ci = ci;
         this.inheritedAttWildcard = ci.getAttributeWildcard();
         this.xducer = ci.getTransducer();
-
+        this.factoryMethod = ci.getFactoryMethod();
+        
         if(ci.getBaseClass()==null)
             this.superClazz = null;
         else
@@ -192,7 +195,19 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
     }
 
     public BeanT createInstance(UnmarshallingContext context) throws IllegalAccessException, InvocationTargetException, InstantiationException, SAXException {
-        BeanT bean = ClassFactory.create0(jaxbType);
+        
+        BeanT bean = null;        
+        if (factoryMethod == null){
+           bean = ClassFactory.create0(jaxbType);
+        }else {
+            Object o = ClassFactory.create(factoryMethod);
+            if( jaxbType.isInstance(o) ){
+                bean = (BeanT)o;
+            } else {
+                throw new InstantiationException("The factory method didn't return a correct object");
+            }
+        }
+        
         if(xmlLocatorField!=null)
             // need to copy because Locator is mutable
             try {
