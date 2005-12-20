@@ -1,0 +1,19 @@
+
+compile\:
+     \[echo\] Generating schemas\.\.\.
+\[schemagen\] Generating schema from 3 source files
+\[schemagen\] Note\: Writing *.xsd
+     \[echo\] Compiling the java source files\.\.\.
+
+run\:
+     \[echo\] Running the sample application\.\.\.
+     \[java\] Ship To\: Robert Ore
+     \[java\] 24798 Cherry Avenue
+     \[java\] Old Town\, PA 95819
+     \[java\] Bill To\: Carol Sandwig
+     \[java\] 8 Indi St
+     \[java\] New Town\, MO 28591
+
+
+BUILD SUCCESSFUL
+Total time\: .*
