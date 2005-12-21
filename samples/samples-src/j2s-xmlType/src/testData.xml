@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<purchaseOrder>
+        <shipTo>
+                <name>Robert Ore</name>
+                <street>24798 Cherry Avenue</street>
+                <state>PA</state>
+                <city>Old Town</city>
+                <zip>95819</zip>
+        </shipTo>
+        <billTo>
+                <name>Carol Sandwig</name>
+                <street>8 Indi St</street>
+                <state>MO</state>
+                <city>New Town</city>
+                <zip>28591</zip>
+        </billTo>
+</purchaseOrder>
+
