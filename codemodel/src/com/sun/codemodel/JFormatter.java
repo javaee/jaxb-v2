@@ -412,7 +412,7 @@ public final class JFormatter {
             // suppress import statements for primitive types, built-in types,
             // types in the root package, and types in
             // the same package as the current type
-            if(!supressImport(clazz)) {
+            if(!supressImport(clazz, c)) {
                 p("import").p(clazz.fullName()).p(';').nl();
             }
         }
@@ -425,9 +425,10 @@ public final class JFormatter {
      * determine if an import statement should be supressed
      *
      * @param clazz JType that may or may not have an import
+     * @param c JType that is the current class being processed
      * @return true if an import statement should be suppressed, false otherwise
      */
-    private boolean supressImport(JClass clazz) {
+    private boolean supressImport(JClass clazz, JClass c) {
         if(clazz._package().isUnnamed())
             return true;
 
@@ -435,6 +436,9 @@ public final class JFormatter {
         if(packageName.equals("java.lang"))
             return true;    // no need to explicitly import java.lang classes
 
+        if (clazz._package() == c._package())
+            return true;    // no need to explicitly import classes in the local pkg
+        
         return false;
     }
 
