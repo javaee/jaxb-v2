@@ -2,15 +2,17 @@ package com.sun.xml.bind.v2.runtime;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.MarshalException;
 import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.Source;
-import javax.xml.namespace.NamespaceContext;
 
 import com.sun.xml.bind.api.Bridge;
 import com.sun.xml.bind.api.BridgeContext;
@@ -25,11 +27,11 @@ import org.xml.sax.SAXException;
  *
  * @author Kohsuke Kawaguchi
  */
-final class BridgeAdapter<OnWire,InMemory> extends Bridge<InMemory> {
-    private final Bridge<OnWire> core;
+final class BridgeAdapter<OnWire,InMemory> extends InternalBridge<InMemory> {
+    private final InternalBridge<OnWire> core;
     private final Class<? extends XmlAdapter<OnWire,InMemory>> adapter;
 
-    public BridgeAdapter(Bridge<OnWire> core, Class<? extends XmlAdapter<OnWire,InMemory>> adapter) {
+    public BridgeAdapter(InternalBridge<OnWire> core, Class<? extends XmlAdapter<OnWire,InMemory>> adapter) {
         this.core = core;
         this.adapter = adapter;
     }
@@ -52,17 +54,24 @@ final class BridgeAdapter<OnWire,InMemory> extends Bridge<InMemory> {
 
     private OnWire adaptM(BridgeContext context,InMemory v) throws JAXBException {
         MarshallerImpl m = getImpl(context).marshaller;
-        XmlAdapter<OnWire,InMemory> a = m.serializer.getAdapter(adapter);
-        m.serializer.setThreadAffinity();
-        m.serializer.pushCoordinator();
+        XMLSerializer serializer = m.serializer;
+        serializer.setThreadAffinity();
+        serializer.pushCoordinator();
+        try {
+            return _adaptM(serializer, v);
+        } finally {
+            serializer.popCoordinator();
+            serializer.resetThreadAffinity();
+        }
+    }
+
+    private OnWire _adaptM(XMLSerializer serializer, InMemory v) throws MarshalException {
+        XmlAdapter<OnWire,InMemory> a = serializer.getAdapter(adapter);
         try {
             return a.marshal(v);
         } catch (Exception e) {
-            m.serializer.handleError(e,v,null);
+            serializer.handleError(e,v,null);
             throw new MarshalException(e);
-        } finally {
-            m.serializer.popCoordinator();
-            m.serializer.resetThreadAffinity();
         }
     }
 
@@ -91,15 +100,18 @@ final class BridgeAdapter<OnWire,InMemory> extends Bridge<InMemory> {
         try {
             return a.unmarshal(v);
         } catch (Exception e) {
-            try {
-                u.coordinator.handleError(e);
-            } catch (SAXException e1) {
-                throw new UnmarshalException(e1);
-            }
             throw new UnmarshalException(e);
         } finally {
             u.coordinator.popCoordinator();
             u.coordinator.resetThreadAffinity();
+        }
+    }
+
+    void marshal(InMemory o, XMLSerializer out) throws IOException, SAXException, XMLStreamException {
+        try {
+            core.marshal(_adaptM( XMLSerializer.getInstance(), o ), out );
+        } catch (MarshalException e) {
+            ; // recover from error by not marshalling this element.
         }
     }
 }
