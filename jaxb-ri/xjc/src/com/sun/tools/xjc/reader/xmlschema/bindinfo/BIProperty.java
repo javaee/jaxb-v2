@@ -19,6 +19,9 @@
  */
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
@@ -126,6 +129,14 @@ public final class BIProperty extends AbstractDeclarationImpl {
 
     protected BIProperty() {}
 
+    @Override
+    public Collection<BIDeclaration> getChildren() {
+        BIConversion.User conv = getConv();
+        if(conv==null)
+            return super.getChildren();
+        else
+            return Collections.<BIDeclaration>singleton(conv);
+    }
 
     public void setParent( BindInfo parent ) {
         super.setParent(parent);

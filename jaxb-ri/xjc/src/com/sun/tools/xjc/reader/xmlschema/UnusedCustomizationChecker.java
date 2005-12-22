@@ -94,23 +94,28 @@ class UnusedCustomizationChecker extends BindingComponent implements XSVisitor, 
         if( !visitedComponents.add(c) )
             return false;   // already processed
 
-        for( BIDeclaration decl : builder.getBindInfo(c).getDecls() ) {
-            if( !decl.isAcknowledged() ) {
-                getErrorReporter().error(
-                    decl.getLocation(),
-                    Messages.ERR_UNACKNOWLEDGED_CUSTOMIZATION,
-                    decl.getName().getLocalPart()
-                    );
-                getErrorReporter().error(
-                    c.getLocator(),
-                    Messages.ERR_UNACKNOWLEDGED_CUSTOMIZATION_LOCATION);
-                // mark it as acknowledged to avoid
-                // duplicated error messages.
-                decl.markAsAcknowledged();
-            }
-        }
-        
+        for( BIDeclaration decl : builder.getBindInfo(c).getDecls() )
+            check(decl, c);
+
         return true;
+    }
+
+    private void check(BIDeclaration decl, XSComponent c) {
+        if( !decl.isAcknowledged() ) {
+            getErrorReporter().error(
+                decl.getLocation(),
+                Messages.ERR_UNACKNOWLEDGED_CUSTOMIZATION,
+                decl.getName().getLocalPart()
+                );
+            getErrorReporter().error(
+                c.getLocator(),
+                Messages.ERR_UNACKNOWLEDGED_CUSTOMIZATION_LOCATION);
+            // mark it as acknowledged to avoid
+            // duplicated error messages.
+            decl.markAsAcknowledged();
+        }
+        for (BIDeclaration d : decl.getChildren())
+            check(d,c);
     }
 
 

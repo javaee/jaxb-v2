@@ -19,6 +19,8 @@
  */
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
+import java.util.Collection;
+
 import javax.xml.namespace.QName;
 
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
@@ -84,5 +86,13 @@ public interface BIDeclaration {
      * its sibling components.
      */
     void onSetOwner();
+
+    /**
+     * Gets child {@link BIDeclaration}s if any.
+     *
+     * @return
+     *      can be empty but always non-null. read-only.
+     */
+    Collection<BIDeclaration> getChildren();
 }
 
