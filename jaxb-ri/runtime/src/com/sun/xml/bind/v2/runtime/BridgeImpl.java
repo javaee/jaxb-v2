@@ -2,12 +2,14 @@ package com.sun.xml.bind.v2.runtime;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.IOException;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.Source;
 
 import com.sun.xml.bind.api.Bridge;
@@ -19,13 +21,14 @@ import com.sun.xml.bind.v2.runtime.output.XMLStreamWriterOutput;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
 
 import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 /**
  * {@link Bridge} implementaiton.
  *
  * @author Kohsuke Kawaguchi
  */
-final class BridgeImpl<T> extends Bridge<T> {
+final class BridgeImpl<T> extends InternalBridge<T> {
 
     /**
      * Tag name associated with this {@link Bridge}.
@@ -78,6 +81,16 @@ final class BridgeImpl<T> extends Bridge<T> {
 
     public TypeReference getTypeReference() {
         return typeRef;
+    }
+
+    public void marshal(T value, XMLSerializer out) throws IOException, SAXException, XMLStreamException {
+        out.startElement(tagName,null);
+        if(value==null) {
+            out.writeXsiNilTrue();
+        } else {
+            out.childAsXsiType(value,null,bi);
+        }
+        out.endElement();
     }
 
 }

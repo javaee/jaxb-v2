@@ -59,6 +59,7 @@ import javax.xml.transform.sax.TransformerHandler;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.Bridge;
 import com.sun.xml.bind.api.BridgeContext;
+import com.sun.xml.bind.api.CompositeStructure;
 import com.sun.xml.bind.api.JAXBRIContext;
 import com.sun.xml.bind.api.RawAccessor;
 import com.sun.xml.bind.api.TypeReference;
@@ -102,7 +103,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.57 $
+ * @version $Revision: 1.58 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -253,6 +254,8 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
         // this one is so that we can handle plain JAXBElements.
         beanInfoMap.put(JAXBElement.class,new ElementBeanInfoImpl(this));
+        // another special BeanInfoImpl just for marshalling
+        beanInfoMap.put(CompositeStructure.class,new CompositeStructureBeanInfo(this));
 
         getOrCreate(typeSet.getAnyTypeInfo());
 
@@ -282,7 +285,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
             Name name = nameBuilder.createElementName(tr.tagName);
 
-            Bridge bridge;
+            InternalBridge bridge;
             if(xl==null)
                 bridge = new BridgeImpl(name,getBeanInfo(erasedType,true),tr);
             else
