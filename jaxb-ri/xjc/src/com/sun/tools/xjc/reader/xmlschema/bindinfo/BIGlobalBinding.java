@@ -40,7 +40,7 @@ import com.sun.tools.xjc.generator.bean.ImplStructureStrategy;
 import static com.sun.tools.xjc.generator.bean.ImplStructureStrategy.BEAN_ONLY;
 import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.reader.Ring;
-import com.sun.tools.xjc.reader.xmlschema.ConversionFinder;
+import com.sun.tools.xjc.reader.xmlschema.SimpleTypeBuilder;
 import com.sun.tools.xjc.util.ReadOnlyAdapter;
 import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.bind.v2.WellKnownNamespace;
@@ -155,7 +155,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
                 continue;
             }
 
-            if(!ConversionFinder.canBeMappedToTypeSafeEnum(st)) {
+            if(!SimpleTypeBuilder.canBeMappedToTypeSafeEnum(st)) {
                 er.error(loc,Messages.ERR_CANNOT_BE_BOUND_TO_SIMPLETYPE.format(n));
                 continue;
             }
