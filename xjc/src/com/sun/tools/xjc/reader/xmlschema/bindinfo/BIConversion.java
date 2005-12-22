@@ -82,7 +82,7 @@ public abstract class BIConversion extends AbstractDeclarationImpl {
      */
     public abstract TypeUse getTypeUse( XSSimpleType owner );
 
-    public final QName getName() { return NAME; }
+    public QName getName() { return NAME; }
     
     /** Name of the conversion declaration. */
     public static final QName NAME = new QName(
@@ -282,6 +282,12 @@ public abstract class BIConversion extends AbstractDeclarationImpl {
 
             return null;
         }
+
+        public QName getName() { return NAME; }
+
+        /** Name of the conversion declaration. */
+        public static final QName NAME = new QName(
+            Const.JAXB_NSURI, "javaType" );
     }
 }
 

@@ -19,6 +19,9 @@
  */
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import com.sun.codemodel.JCodeModel;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
@@ -68,12 +71,11 @@ abstract class AbstractDeclarationImpl implements BIDeclaration {
     public void onSetOwner() {
     }
 
+    public Collection<BIDeclaration> getChildren() {
+        return Collections.emptyList();
+    }
+
     public void markAsAcknowledged() {
         isAcknowledged = true;
-    }
-    
-    protected final static void _assert( boolean b ) {
-        if(!b)
-            throw new AssertionError();
     }
 }
