@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.sun.tools.xjc.model.CBuiltinLeafInfo;
 import com.sun.tools.xjc.model.TypeUse;
-import com.sun.tools.xjc.reader.xmlschema.ConversionFinder;
+import com.sun.tools.xjc.reader.xmlschema.SimpleTypeBuilder;
 
 import org.kohsuke.rngom.xml.util.WellKnownNamespaces;
 
@@ -46,6 +46,6 @@ final class DatatypeLib {
     static {
         BUILTIN.types.put("token",CBuiltinLeafInfo.TOKEN);
         BUILTIN.types.put("string",CBuiltinLeafInfo.STRING);
-        XMLSCHEMA.types.putAll(ConversionFinder.builtinConversions);
+        XMLSCHEMA.types.putAll(SimpleTypeBuilder.builtinConversions);
     }
 }

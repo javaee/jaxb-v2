@@ -57,9 +57,6 @@ import org.xml.sax.Locator;
  * A conversion declaration specifies how an XML type gets mapped
  * to a Java type.
  * 
- * <p>
- * This customization is acknowledged by the ConversionFinder.
- * 
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */

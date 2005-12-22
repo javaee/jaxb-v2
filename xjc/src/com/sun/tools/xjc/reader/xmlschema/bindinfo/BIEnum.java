@@ -31,16 +31,17 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 import com.sun.tools.xjc.reader.Const;
+import com.sun.tools.xjc.reader.xmlschema.SimpleTypeBuilder;
 import com.sun.tools.xjc.util.ReadOnlyAdapter;
 
 /**
  * Enumeration customization.
  * <p>
  * This customization binds a simple type to a type-safe enum class.
- * The actual binding process takes place in the ConversionFinder.
+ * The actual binding process takes place in {@link SimpleTypeBuilder}.
  * 
  * <p>
- * This customization is acknowledged by the ConversionFinder.
+ * This customization is acknowledged by {@link SimpleTypeBuilder}.
  * 
  * @author
  *  Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
