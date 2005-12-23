@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.Arrays;
 
 import javax.xml.bind.annotation.AccessType;
 import javax.xml.bind.annotation.AccessorOrder;
@@ -41,8 +42,7 @@ import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.annotation.XmlLocation;
 import com.sun.xml.bind.v2.TODO;
-import com.sun.xml.bind.v2.model.annotation.Locatable;
-import com.sun.xml.bind.v2.model.annotation.MethodLocatable;
+import com.sun.xml.bind.v2.model.annotation.*;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
 import com.sun.xml.bind.v2.model.core.Element;
 import com.sun.xml.bind.v2.model.core.ID;
@@ -471,6 +471,14 @@ class ClassInfoImpl<T,C,F,M>
         }
     }
 
+    private static final class DupliateException extends Exception {
+        final Annotation a1,a2;
+        public DupliateException(Annotation a1, Annotation a2) {
+            this.a1 = a1;
+            this.a2 = a2;
+        }
+    }
+
     /**
      * Represents 6 groups of secondary annotations
      */
@@ -571,6 +579,12 @@ class ClassInfoImpl<T,C,F,M>
         }
     }
 
+    private void checkConflict(Annotation a, Annotation b) throws DupliateException {
+        assert b!=null;
+        if(a!=null)
+            throw new DupliateException(a,b);
+    }
+
     /**
      * Called only from {@link #getProperties()}.
      *
@@ -604,27 +618,27 @@ class ClassInfoImpl<T,C,F,M>
         // encountered secondary annotations are accumulated into a bit mask
         int secondaryAnnotations = 0;
 
-        for( Annotation ann : annotations ) {
-            Integer index = ANNOTATION_NUMBER_MAP.get(ann.annotationType());
-            if(index==null) continue;
-            switch(index) {
-            case 0:     t   = (XmlTransient) ann; break;
-            case 1:     aa  = (XmlAnyAttribute) ann; break;
-            case 2:     a   = (XmlAttribute) ann; break;
-            case 3:     v   = (XmlValue) ann; break;
-            case 4:     e1  = (XmlElement) ann; break;
-            case 5:     e2  = (XmlElements) ann; break;
-            case 6:     r1  = (XmlElementRef) ann; break;
-            case 7:     r2  = (XmlElementRefs) ann; break;
-            case 8:     xae = (XmlAnyElement) ann; break;
-            default:
-                // secondary annotations
-                secondaryAnnotations |= (1<<(index-20));
-                break;
-            }
-        }
-
         try {
+            for( Annotation ann : annotations ) {
+                Integer index = ANNOTATION_NUMBER_MAP.get(ann.annotationType());
+                if(index==null) continue;
+                switch(index) {
+                case 0:     checkConflict(t  ,ann); t   = (XmlTransient) ann; break;
+                case 1:     checkConflict(aa ,ann); aa  = (XmlAnyAttribute) ann; break;
+                case 2:     checkConflict(a  ,ann); a   = (XmlAttribute) ann; break;
+                case 3:     checkConflict(v  ,ann); v   = (XmlValue) ann; break;
+                case 4:     checkConflict(e1 ,ann); e1  = (XmlElement) ann; break;
+                case 5:     checkConflict(e2 ,ann); e2  = (XmlElements) ann; break;
+                case 6:     checkConflict(r1 ,ann); r1  = (XmlElementRef) ann; break;
+                case 7:     checkConflict(r2 ,ann); r2  = (XmlElementRefs) ann; break;
+                case 8:     checkConflict(xae,ann); xae = (XmlAnyElement) ann; break;
+                default:
+                    // secondary annotations
+                    secondaryAnnotations |= (1<<(index-20));
+                    break;
+                }
+            }
+
             // determine the group kind, and also count the numbers, since
             // characterizing annotations are mutually exclusive.
             PropertyGroup group = null;
@@ -755,6 +769,13 @@ class ClassInfoImpl<T,C,F,M>
                     err.get(0), err.get(1) ));
 
             // recover by ignoring this property
+        } catch( DupliateException e ) {
+            // both are present
+            builder.reportError(new IllegalAnnotationException(
+                Messages.DUPLICATE_ANNOTATIONS.format(e.a1.annotationType().getName()),
+                e.a1, e.a2 ));
+            // recover by ignoring this property
+
         }
     }
 
@@ -848,8 +869,8 @@ class ClassInfoImpl<T,C,F,M>
             M getter = getters.get(name);
             M setter = setters.get(name);
 
-            Annotation[] ga = getter!=null ? reader().getAllMethodAnnotations(getter,this) : EMPTY_ANNOTATIONS;
-            Annotation[] sa = setter!=null ? reader().getAllMethodAnnotations(setter,this) : EMPTY_ANNOTATIONS;
+            Annotation[] ga = getter!=null ? reader().getAllMethodAnnotations(getter,new MethodLocatable<M>(this,getter,nav())) : EMPTY_ANNOTATIONS;
+            Annotation[] sa = setter!=null ? reader().getAllMethodAnnotations(setter,new MethodLocatable<M>(this,setter,nav())) : EMPTY_ANNOTATIONS;
 
             boolean getterHasAnnotation = hasJAXBAnnotation(ga);
             boolean setterHasAnnotation = hasJAXBAnnotation(sa);
