@@ -145,6 +145,23 @@ public final class SimpleTypeBuilder extends BindingComponent {
     }
 
     /**
+     * A version of the {@link #build(XSSimpleType)} method
+     * used to bind the definition of a class generated from
+     * the given simple type.
+     */
+    public TypeUse buildDef( XSSimpleType type ) {
+        XSSimpleType oldi = initiatingType;
+        this.initiatingType = type;
+
+        TypeUse e = type.apply(composer);
+
+        initiatingType = oldi;
+
+        return e;
+    }
+
+
+    /**
      * Returns a javaType customization specified to the referer, if present.
      * @return can be null.
      */
@@ -241,7 +258,9 @@ public final class SimpleTypeBuilder extends BindingComponent {
         }
     }
 
-
+    /**
+     * Recursively decend the type inheritance chain to find a binding.
+     */
     TypeUse compose( XSSimpleType t ) {
         TypeUse e = find(t);
         if(e!=null)     return e;
