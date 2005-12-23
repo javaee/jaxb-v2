@@ -22,7 +22,7 @@ package com.sun.codemodel;
 import java.util.Iterator;
 
 /**
- * The common aspec of a package and a class.
+ * The common aspect of a package and a class.
  */
 public interface JClassContainer {
     
