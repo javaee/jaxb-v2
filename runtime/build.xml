@@ -246,9 +246,10 @@
         
         <formatter type="brief" usefile="false" />
         
-        <classpath path="${runtime.classes}"/>
-        <classpath path="${runtime.test.classes}"/>
         <classpath>
+          <pathelement path="${runtime.classes}"/>
+          <pathelement path="${runtime-api.classes}" />
+          <pathelement path="${runtime.test.classes}"/>
           <fileset dir="${jaxb.libs.util}" includes="*.jar" />
           <fileset dir="${jaxb.libs.test}" includes="*.jar"/>
         </classpath>
