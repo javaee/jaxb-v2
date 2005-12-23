@@ -235,6 +235,7 @@
         <classpath refid="javac.classpath" />
         <classpath>
           <pathelement path="${runtime.classes}" />
+          <pathelement path="${runtime-api.classes}" />
           <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
         </classpath>
       </javac>
