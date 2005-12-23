@@ -42,9 +42,8 @@ abstract class ColorBinder extends BindingComponent implements XSVisitor {
         BIProperty prop = BIProperty.getCustomization(type);
 
         SimpleTypeBuilder stb = Ring.get(SimpleTypeBuilder.class);
-        TypeUse use = type.apply(stb.composer);
-
-        CPropertyInfo p = prop.createValueProperty(propName,false,type,use);
+        // since we are building the simple type here, use buildDef
+        CPropertyInfo p = prop.createValueProperty(propName,false,type,stb.buildDef(type));
         getCurrentBean().addProperty(p);
     }
 
