@@ -36,7 +36,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import primer.po.*;
 
 /*
- * $Id: Main.java,v 1.3 2005-09-28 18:27:32 ryan_shoemaker Exp $
+ * $Id: Main.java,v 1.4 2005-12-23 20:08:24 kohsuke Exp $
  *
  * Copyright 2003 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -90,19 +90,19 @@ public class Main {
             
             // start adding ItemType objects into it
             itemList.add( createItem( "Nosferatu - Special Edition (1929)", 
-                                      new BigInteger( "5" ), 
+                                      5, 
                                       new BigDecimal( "19.99" ), 
                                       null,
                                       null,
                                       "242-NO" ) );
             itemList.add( createItem( "The Mummy (1959)", 
-                                      new BigInteger( "3" ), 
+                                      3, 
                                       new BigDecimal( "19.98" ), 
                                       null,
                                       null,
                                       "242-MU" ) );
             itemList.add( createItem( "Godzilla and Mothra: Battle for Earth/Godzilla vs. King Ghidora", 
-                                      new BigInteger( "3" ), 
+                                      3, 
                                       new BigDecimal( "27.95" ), 
                                       null,
                                       null,
@@ -143,7 +143,7 @@ public class Main {
     }
     
     public static Items.Item createItem( String productName,
-                                         BigInteger quantity,
+                                         int quantity,
                                          BigDecimal price,
                                          String comment,
                                          XMLGregorianCalendar shipDate,
