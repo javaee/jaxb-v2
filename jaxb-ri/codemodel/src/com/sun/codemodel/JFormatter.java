@@ -436,9 +436,14 @@ public final class JFormatter {
         if(packageName.equals("java.lang"))
             return true;    // no need to explicitly import java.lang classes
 
-        if (clazz._package() == c._package())
-            return true;    // no need to explicitly import classes in the local pkg
-        
+        if (clazz._package() == c._package()){            
+            // inner classes require an import stmt
+            // It is not possible to remove importation of local 
+            // classes because of this.
+            if (clazz.fullName().equals(c.fullName())) {
+                return true;    // no need to explicitly import a class into itself
+            }
+        }
         return false;
     }
 
