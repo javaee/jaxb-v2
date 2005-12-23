@@ -718,10 +718,7 @@ public class JDefinedClass
             return classes.values().toArray(new JClass[classes.values().size()]);
     }
 
-    /**
-     * Returns the class in which this class is nested, or <tt>null</tt> if
-     * this is a top-level class.
-     */
+    @Override
     public JClass outer() {
         if (outer.isClass())
             return (JClass) outer;
