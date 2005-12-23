@@ -481,6 +481,12 @@ public final class JCodeModel {
             return _class.getName();
         }
 
+        public JClass outer() {
+            Class p = _class.getDeclaringClass();
+            if(p==null)     return null;
+            return ref(p);
+        }
+
         public JPackage _package() {
             String name = fullName();
 

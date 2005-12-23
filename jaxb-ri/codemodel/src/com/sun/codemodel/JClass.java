@@ -55,6 +55,14 @@ public abstract class JClass extends JType
      * TODO: shall we move move this down?
      */
     abstract public JPackage _package();
+
+    /**
+     * Returns the class in which this class is nested, or <tt>null</tt> if
+     * this is a top-level class.
+     */
+    public JClass outer() {
+        return null;
+    }
 	
     private final JCodeModel _owner;
     /** Gets the JCodeModel object to which this object belongs. */

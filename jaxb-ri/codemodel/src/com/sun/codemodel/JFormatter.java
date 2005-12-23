@@ -53,7 +53,7 @@ public final class JFormatter {
          * Print the actual source code.
          */
         PRINTING
-    };
+    }
 
     /**
      * The current running mode.
@@ -287,7 +287,7 @@ public final class JFormatter {
             if(collectedReferences.containsKey(id)) {
                 if( !collectedReferences.get(id).getClasses().isEmpty() ) {
                     for( JClass type : collectedReferences.get(id).getClasses() ) {
-                        if ((type instanceof JDefinedClass) && ((JDefinedClass)type).outer()!=null) {
+                        if (type.outer()!=null) {
                             collectedReferences.get(id).setId(false);
                             return this;
                         }
@@ -439,8 +439,8 @@ public final class JFormatter {
         if (clazz._package() == c._package()){ 
             // inner classes require an import stmt.
             // All other pkg local classes do not need an
-            // import stmt for ref. 
-            if (clazz.fullName().indexOf(".", packageName.length()+1) == -1) {
+            // import stmt for ref.
+            if(clazz.outer()==null) {
                 return true;    // no need to explicitly import a class into itself
             }
         }
