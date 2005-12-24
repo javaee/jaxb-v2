@@ -47,7 +47,7 @@ public class SequenceDiagramTask extends MatchingTask {
 
         try {
             for (String path : ds.getIncludedFiles())
-                generate(new File(src,path),new File(dst,path));
+                generate(new File(src,path),new File(dst,path+".png"));
         } catch (IOException e) {
             throw new BuildException(e);
         }
