@@ -50,7 +50,7 @@ abstract class ImageGeneratingTag extends FileGeneratingTag {
 
         try {
             System.out.println("Generating an image to "+imageFile);
-            generateImage(tag.text(),imageFile);
+            ImageGenerator.generateImage(serviceURL,getContents(tag),imageFile);
             System.out.println("done");
         } catch (IOException e) {
             throw new Error(e);
@@ -61,23 +61,10 @@ abstract class ImageGeneratingTag extends FileGeneratingTag {
     }
 
     /**
-     * Generates an image.
+     * Gets the text that generates image.
      */
-    private void generateImage(String contents, File out) throws IOException {
-        HttpURLConnection con = (HttpURLConnection)serviceURL.openConnection();
-        con.setDoOutput(true);
-        con.setDoInput(true);
-        con.connect();
-        copy(new ByteArrayInputStream(contents.getBytes()),con.getOutputStream());
-        con.getOutputStream().close();
-        OutputStream os = new FileOutputStream(out);
-        if(con.getResponseCode()>=300) {
-            ByteArrayOutputStream w = new ByteArrayOutputStream();
-            copy(con.getErrorStream(),w);
-            throw new Error(new String(w.toByteArray()));
-        }
-        copy(con.getInputStream(),os);
-        con.getInputStream().close();
-        os.close();
+    protected String getContents(Tag tag) {
+        return tag.text();
     }
+
 }

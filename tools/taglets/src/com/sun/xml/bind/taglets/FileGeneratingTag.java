@@ -87,13 +87,5 @@ abstract class FileGeneratingTag implements Taglet {
         counts.put(doc,i+1);
         return i;
     }
-
-    protected static final void copy(InputStream r, OutputStream w) throws IOException {
-        byte[] buf = new byte[256];
-        int len;
-
-        while((len=r.read(buf))>=0)
-            w.write(buf,0,len);
-    }
 }
 
