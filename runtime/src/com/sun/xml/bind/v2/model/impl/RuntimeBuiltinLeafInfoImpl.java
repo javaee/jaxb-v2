@@ -1,7 +1,7 @@
 package com.sun.xml.bind.v2.model.impl;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -77,7 +79,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
     }
 
 
-    public final Transducer<T> getTransducer() {
+    public final Transducer getTransducer() {
         return this;
     }
 
@@ -153,11 +155,11 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
             return s;
         }
         @Override
-        public final void writeText(XMLSerializer w, String o, String fieldName) throws IOException, SAXException, XMLStreamException, AccessorException {
+        public final void writeText(XMLSerializer w, String o, String fieldName) throws IOException, SAXException, XMLStreamException {
             w.text(o,fieldName);
         }
         @Override
-        public final void writeLeafElement(XMLSerializer w, Name tagName, String o, String fieldName) throws IOException, SAXException, XMLStreamException, AccessorException {
+        public final void writeLeafElement(XMLSerializer w, Name tagName, String o, String fieldName) throws IOException, SAXException, XMLStreamException {
             w.leafElement(tagName,o,fieldName);
         }
     };
@@ -169,7 +171,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
      * This corresponds to the built-in Java classes that are specified to be
      * handled differently than ordinary classes. See table 8-2 "Mapping of Standard Java classes".
      */
-    public static final RuntimeBuiltinLeafInfoImpl<?>[] builtinBeanInfos = new RuntimeBuiltinLeafInfoImpl<?>[] {
+    public static final List<RuntimeBuiltinLeafInfoImpl<?>> builtinBeanInfos = Arrays.asList(
 
         /*
             There are cases where more than one Java classes map to the same XML type.
@@ -194,7 +196,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                 return (char)DatatypeConverterImpl._parseInt(text);
             }
             public String print(Character v) {
-                return Integer.toString(v.charValue());
+                return Integer.toString(v);
             }
         },
         new StringImpl<Calendar>(Calendar.class, createXS("dateTime")) {
@@ -243,20 +245,6 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
             }
             public String print(URL v) {
                 return v.toExternalForm();
-            }
-        },
-        new StringImpl<UUID>(UUID.class, createXS("string")) {
-            public UUID parse(CharSequence text) throws SAXException {
-                TODO.checkSpec("JSR222 Issue #42");
-                try {
-                    return UUID.fromString(WhiteSpaceProcessor.trim(text).toString());
-                } catch (IllegalArgumentException e) {
-                    UnmarshallingContext.getInstance().handleError(e);
-                    return null;
-                }
-            }
-            public String print(UUID v) {
-                return v.toString();
             }
         },
         new StringImpl<Class>(Class.class, createXS("string")) {
@@ -738,7 +726,16 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
             }
         }
         // TODO: complete this table
-    };
+    );
+
+    static {
+        // UUID may fail to load if we are running on JDK 1.4. Handle gracefully
+        try {
+            builtinBeanInfos.add(new UUIDImpl());
+        } catch (LinkageError e) {
+            // ignore
+        }
+    }
 
     private static byte[] decodeBase64(CharSequence text) {
         if (text instanceof Base64Data) {
@@ -784,5 +781,30 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
         m.put(DatatypeConstants.GYEAR,      "%Y" + "%z");
         m.put(DatatypeConstants.GYEARMONTH, "%Y-%M" + "%z");
         m.put(DatatypeConstants.GMONTHDAY,  "--%M-%D" +"%z");
+    }
+
+    /**
+     * {@link RuntimeBuiltinLeafInfoImpl} for {@link UUID}.
+     *
+     * This class is given a name so that failing to load this class won't cause a fatal problem.
+     */
+    private static class UUIDImpl extends StringImpl<UUID> {
+        public UUIDImpl() {
+            super(UUID.class, RuntimeBuiltinLeafInfoImpl.createXS("string"));
+        }
+
+        public UUID parse(CharSequence text) throws SAXException {
+            TODO.checkSpec("JSR222 Issue #42");
+            try {
+                return UUID.fromString(WhiteSpaceProcessor.trim(text).toString());
+            } catch (IllegalArgumentException e) {
+                UnmarshallingContext.getInstance().handleError(e);
+                return null;
+            }
+        }
+
+        public String print(UUID v) {
+            return v.toString();
+        }
     }
 }
