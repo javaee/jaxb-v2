@@ -62,5 +62,32 @@
       </javadoc>
     </sequential>
   </macrodef>
-
+  
+  <!--
+    import files to CVS
+    
+    For example, <cvs-import src="build/doc" dest="jaxb/www/doc" />
+  -->
+  <macrodef name="cvs-import">
+    <attribute name="src"/>
+    <attribute name="dest"/>
+    <attribute name="cvsroot"/>
+    <sequential>
+      <tstamp />
+      <echo>importing to CVS...</echo>
+      <cvs dest="@{src}">
+        <commandline>
+          <argument value="-d@{cvsroot}"/>
+          <argument line="-z9 import -ko"/>
+          <argument value="-W"/>
+          <argument line="*.jar -kb"/>
+          <argument value="-m"/>
+          <argument value="deploying new jars to the java.net maven repository"/>
+          
+          <argument value="@{dest}"/>
+          <argument line="deployment-to-maven-repository t${DSTAMP}${TSTAMP}" />
+        </commandline>
+      </cvs>
+    </sequential>
+  </macrodef>
 </project>
