@@ -1,14 +1,13 @@
 package com.sun.xml.bind.api;
 
-import java.io.OutputStream;
 import java.io.InputStream;
-import java.net.URL;
+import java.io.OutputStream;
 
-import javax.xml.stream.XMLStreamWriter;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.bind.JAXBException;
-import javax.xml.transform.Source;
 import javax.xml.namespace.NamespaceContext;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+import javax.xml.transform.Source;
 
 import org.w3c.dom.Node;
 
