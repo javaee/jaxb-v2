@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.44 2005-12-08 21:37:21 kohsuke Exp $
+       $Id: build.xml,v 1.45 2006-01-03 01:09:08 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -531,6 +531,23 @@ Class-Path: ${manifest.classpath}
     <target name="installers"
             depends="bin-installer,src-installer"
             description="build both the binary and the source installer" />
+    
+    <target name="deploy-maven"
+            depends="dist"
+            description="deploy to java.net Maven repository">
+        
+        <delete dir="build/maven" />
+        <mkdir dir="build/maven" />
+        
+        <copy todir="build/maven">
+            <fileset dir="dist/lib" includes="jaxb*.jar" excludes="jaxb-api.jar" />
+        </copy>
+        <copy tofile="build/maven/jaxb-api${jar.suffix}.jar" file="dist/lib/jaxb-api.jar" />
+        
+        <cvs-import cvsroot=":pserver:${user.name}@kohsuke.sfbay:/cvs"
+          src="build/maven"
+          dest="jaxb/repo/jars" />
+    </target>
     
     <!-- clean all of the builds -->
     <target name="clean"
