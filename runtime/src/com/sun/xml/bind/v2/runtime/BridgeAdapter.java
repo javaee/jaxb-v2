@@ -13,6 +13,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.Source;
+import javax.xml.transform.Result;
 
 import com.sun.xml.bind.api.Bridge;
 import com.sun.xml.bind.api.BridgeContext;
@@ -21,6 +22,7 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
 
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
+import org.xml.sax.ContentHandler;
 
 /**
  * {@link Bridge} decorator for {@link XmlAdapter}.
@@ -50,6 +52,14 @@ final class BridgeAdapter<OnWire,InMemory> extends InternalBridge<InMemory> {
 
     public void marshal(BridgeContext context, InMemory inMemory, Node output) throws JAXBException {
         core.marshal(context,adaptM(context,inMemory),output);
+    }
+
+    public void marshal(BridgeContext context, InMemory inMemory, ContentHandler contentHandler) throws JAXBException {
+        core.marshal(context,adaptM(context,inMemory),contentHandler);
+    }
+
+    public void marshal(BridgeContext context, InMemory inMemory, Result result) throws JAXBException {
+        core.marshal(context,adaptM(context,inMemory),result);
     }
 
     private OnWire adaptM(BridgeContext context,InMemory v) throws JAXBException {

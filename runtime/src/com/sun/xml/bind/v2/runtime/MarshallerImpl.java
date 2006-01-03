@@ -48,6 +48,7 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.Schema;
 import javax.xml.validation.ValidatorHandler;
+import javax.sql.rowset.spi.XmlWriter;
 
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
@@ -151,32 +152,32 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         write(obj, output, null );
     }
 
-    public void marshal(Object target,Result result) throws JAXBException {
-        if (result instanceof SAXResult) {
-            write(target, new SAXOutput(((SAXResult) result).getHandler()), null);
-            return;
-        }
+    /**
+     * Creates {@link XmlOutput} from the given {@link Result} object.
+     */
+    final XmlOutput createXmlOutput(Result result) throws JAXBException {
+        if (result instanceof SAXResult)
+            return new SAXOutput(((SAXResult) result).getHandler());
+
         if (result instanceof DOMResult) {
             final Node node = ((DOMResult) result).getNode();
 
             if (node == null) {
                 Document doc = JAXBContextImpl.createDom();
                 ((DOMResult) result).setNode(doc);
-                write(target, new SAXOutput(new SAX2DOMEx(doc)), null );
+                return new SAXOutput(new SAX2DOMEx(doc));
             } else {
-                write(target, new SAXOutput(new SAX2DOMEx(node)), new DomPostInitAction(node,serializer));
+                return new SAXOutput(new SAX2DOMEx(node));
             }
-
-            return;
         }
         if (result instanceof StreamResult) {
             StreamResult sr = (StreamResult) result;
             XmlOutput w = null;
 
             if (sr.getWriter() != null)
-                w = createWriter(sr.getWriter());
+                return createWriter(sr.getWriter());
             else if (sr.getOutputStream() != null)
-                w = createWriter(sr.getOutputStream());
+                return createWriter(sr.getOutputStream());
             else if (sr.getSystemId() != null) {
                 String fileURL = sr.getSystemId();
 
@@ -188,22 +189,33 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
                 } // otherwise assume that it's a file name
 
                 try {
-                    w = createWriter(new FileOutputStream(fileURL));
+                    return createWriter(new FileOutputStream(fileURL));
                 } catch (IOException e) {
                     throw new MarshalException(e);
                 }
             }
-
-            if (w == null)
-                throw new IllegalArgumentException();
-
-            write(target, w, null);
-            return;
         }
 
         // unsupported parameter type
         throw new MarshalException(Messages.UNSUPPORTED_RESULT.format());
     }
+
+    /**
+     * Creates an appropriate post-init action object.
+     */
+    final Runnable createPostInitAction(Result result) {
+        if (result instanceof DOMResult) {
+            Node node = ((DOMResult) result).getNode();
+            return new DomPostInitAction(node,serializer);
+        }
+        return null;
+    }
+
+    public void marshal(Object target,Result result) throws JAXBException {
+
+        write(target, createXmlOutput(result), createPostInitAction(result));
+    }
+
 
     /**
      * Used by {@link BridgeImpl} to write an arbitrary object.
