@@ -8,8 +8,10 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.Source;
+import javax.xml.transform.Result;
 
 import org.w3c.dom.Node;
+import org.xml.sax.ContentHandler;
 
 /**
  * Mini-marshaller/unmarshaller that is specialized for a particular
@@ -57,6 +59,16 @@ public abstract class Bridge<T> {
     public abstract void marshal(BridgeContext context,T object,OutputStream output, NamespaceContext nsContext) throws JAXBException;
 
     public abstract void marshal(BridgeContext context,T object,Node output) throws JAXBException;
+
+    /**
+     * @since 2.0 EA4
+     */
+    public abstract void marshal(BridgeContext context,T object, ContentHandler contentHandler) throws JAXBException;
+
+    /**
+     * @since 2.0 EA4
+     */
+    public abstract void marshal(BridgeContext context,T object, Result result) throws JAXBException;
 
     /**
      * Unmarshals the specified type object.
