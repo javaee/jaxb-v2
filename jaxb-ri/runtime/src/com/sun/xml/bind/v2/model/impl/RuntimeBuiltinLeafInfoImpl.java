@@ -179,7 +179,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
     public static final List<RuntimeBuiltinLeafInfoImpl<?>> builtinBeanInfos;
 
     static {
-        RuntimeBuiltinLeafInfoImpl[] array = new RuntimeBuiltinLeafInfoImpl[] {
+        RuntimeBuiltinLeafInfoImpl[] secondary = new RuntimeBuiltinLeafInfoImpl[] {
             /*
                 There are cases where more than one Java classes map to the same XML type.
                 But when we see the same XML type in an incoming document, we only pick
@@ -441,8 +441,10 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                     bd.set(new byte[0],"application/xml");
                     return bd;
                 }
-            },
+            }
+        };
 
+        RuntimeBuiltinLeafInfoImpl[] primary = new RuntimeBuiltinLeafInfoImpl[] {
             /*
                 primary bindings
             */
@@ -734,8 +736,8 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
             }
         };
 
-        List<RuntimeBuiltinLeafInfoImpl<?>> l = new ArrayList<RuntimeBuiltinLeafInfoImpl<?>>(array.length);
-        for (RuntimeBuiltinLeafInfoImpl<?> item : array)
+        List<RuntimeBuiltinLeafInfoImpl<?>> l = new ArrayList<RuntimeBuiltinLeafInfoImpl<?>>(secondary.length+primary.length+1);
+        for (RuntimeBuiltinLeafInfoImpl<?> item : secondary)
             l.add(item);
 
         // UUID may fail to load if we are running on JDK 1.4. Handle gracefully
@@ -744,6 +746,9 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
         } catch (LinkageError e) {
             // ignore
         }
+
+        for (RuntimeBuiltinLeafInfoImpl<?> item : primary)
+            l.add(item);
 
         builtinBeanInfos = Collections.unmodifiableList(l);
     }
