@@ -1,7 +1,7 @@
 package com.sun.xml.bind.v2.model.impl;
 
-import java.lang.reflect.Method;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.Arrays;
 
 import javax.xml.bind.annotation.AccessType;
 import javax.xml.bind.annotation.AccessorOrder;
@@ -42,7 +41,8 @@ import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.annotation.XmlLocation;
 import com.sun.xml.bind.v2.TODO;
-import com.sun.xml.bind.v2.model.annotation.*;
+import com.sun.xml.bind.v2.model.annotation.Locatable;
+import com.sun.xml.bind.v2.model.annotation.MethodLocatable;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
 import com.sun.xml.bind.v2.model.core.Element;
 import com.sun.xml.bind.v2.model.core.ID;
@@ -113,7 +113,7 @@ class ClassInfoImpl<T,C,F,M>
 
     
     /**
-     * @see #factoryMethod()
+     * @see #getFactoryMethod()
      */
     private M factoryMethod = null;
     
@@ -127,8 +127,9 @@ class ClassInfoImpl<T,C,F,M>
 
         // compute the type name
         XmlType t = reader().getClassAnnotation(XmlType.class,clazz,this);
-        if(t!=null) {            
-            typeName = parseTypeName(clazz,t);
+        typeName = parseTypeName(clazz,t);
+
+        if(t!=null) {
             String[] propOrder = t.propOrder();
             if(propOrder.length==0)
                 this.propOrder = null;   // unordered
@@ -139,10 +140,6 @@ class ClassInfoImpl<T,C,F,M>
                     this.propOrder = propOrder;
             }
         } else {
-            if(elementName!=null)
-                typeName = elementName;
-            else
-                typeName = parseTypeName(clazz,null);
             propOrder = DEFAULT_ORDER;
         }
         
