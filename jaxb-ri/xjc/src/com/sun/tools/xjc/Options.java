@@ -63,7 +63,7 @@ public class Options
     /** If the "-quiet" option is specified. */
     public boolean quiet;
 
-    /** If the -readOnly option is specified */
+    /** If the -readOnly option is specified. */
     public boolean readOnly;
     
     /**
@@ -71,6 +71,13 @@ public class Options
      * The exact meaning depends on the schema language.
      */
     public boolean strictCheck =true;
+
+    /**
+     * If -explicit-annotation option is specified.
+     * <p>
+     * This generates code that works around issues specific to 1.4 runtime.
+     */
+    public boolean runtime14 = false;
     
     /**
      * strictly follow the compatibility rules and reject schemas that
@@ -316,6 +323,10 @@ public class Options
         }
         if (args[i].equals("-quiet")) {
             quiet = true;
+            return 1;
+        }
+        if (args[i].equals("-XexplicitAnnotation")) {
+            runtime14 = true;
             return 1;
         }
         if (args[i].equals("-b")) {
