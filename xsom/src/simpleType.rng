@@ -21,13 +21,41 @@
   		private SimpleTypeImpl result;
   		
   		private Locator locator;
-  	</cc:java-body>
+
+      private Set finalSet;
+
+      private Set makeFinalSet(String finalValue) {
+        if(finalValue==null)
+          return Collections.EMPTY_SET;
+
+        Set s = new HashSet();
+        StringTokenizer tokens = new StringTokenizer(finalValue);
+        while(tokens.hasMoreTokens()) {
+          String token = tokens.nextToken();
+          if(token.equals("#all")) {
+            s.add(XSVariety.ATOMIC);
+            s.add(XSVariety.UNION);
+            s.add(XSVariety.LIST);
+          }
+          if(token.equals("list")) {
+            s.add(XSVariety.LIST);
+          }
+          if(token.equals("union")) {
+            s.add(XSVariety.UNION);
+          }
+          if(token.equals("restriction")) {
+            s.add(XSVariety.ATOMIC);
+          }
+        }
+        return s;
+      }
+    </cc:java-body>
     <element name="simpleType">
     	<cc:java>locator=$runtime.copyLocator();</cc:java>
       <optional>
         <attribute name="final">
-          <empty/>
-          <!-- to workaround a problem in RelaxNGCC, we need empty here -->
+          finalValue = <text />
+          <!--
           <choice>
             <value>#all</value>
             <list>
@@ -40,6 +68,7 @@
               </zeroOrMore>
             </list>
           </choice>
+          -->
         </attribute>
       </optional>
       <!--optional>
@@ -57,20 +86,23 @@
       <optional>
         annotation = <ref name="annotation"/>(null,AnnotationContext.SIMPLETYPE_DECL);
       </optional>
+
+      finalSet = makeFinalSet(finalValue);
+
       <choice>
       	<ref name="simpleType.restriction"
-      		cc:alias="result" cc:with-params="annotation,locator,fa,name" />
+      		cc:alias="result" cc:with-params="annotation,locator,fa,name,finalSet" />
       	<ref name="simpleType.list"
-      		cc:alias="result" cc:with-params="annotation,locator,fa,name" />
+      		cc:alias="result" cc:with-params="annotation,locator,fa,name,finalSet" />
       	<ref name="simpleType.union"
-      		cc:alias="result" cc:with-params="annotation,locator,fa,name" />
+      		cc:alias="result" cc:with-params="annotation,locator,fa,name,finalSet" />
       </choice>
     </element>
   </define>
   
   
   <define name="simpleType.restriction" cc:class="SimpleType_Restriction"
-  		cc:params="AnnotationImpl annotation,Locator locator,ForeignAttributesImpl fa,String name"
+  		cc:params="AnnotationImpl annotation,Locator locator,ForeignAttributesImpl fa,String name,Set finalSet"
   		cc:return-type="RestrictionSimpleTypeImpl"
   		cc:return-value="result">
   	
@@ -109,7 +141,7 @@
       <!-- create the result object -->
       <cc:java>
       	result = new RestrictionSimpleTypeImpl(
-					$runtime.currentSchema, annotation, locator, fa, name, name==null, baseType );
+					$runtime.currentSchema, annotation, locator, fa, name, name==null, finalSet, baseType );
       </cc:java>
       <zeroOrMore>
         <ref name="facet" cc:alias="facet"/>
@@ -166,7 +198,7 @@
   
   
   <define name="simpleType.list" cc:class="SimpleType_List"
-  		cc:params="AnnotationImpl annotation,Locator locator,ForeignAttributesImpl fa,String name"
+  		cc:params="AnnotationImpl annotation,Locator locator,ForeignAttributesImpl fa,String name,Set finalSet"
   		cc:return-type="ListSimpleTypeImpl"
   		cc:return-value="result">
   	
@@ -206,13 +238,13 @@
     <cc:java>
     	result = new ListSimpleTypeImpl(
     		$runtime.currentSchema, annotation, locator, fa,
-    		name, name==null, itemType );
+    		name, name==null, finalSet, itemType );
     </cc:java>
   </define>
   
   
   <define name="simpleType.union" cc:class="SimpleType_Union"
-  		cc:params="AnnotationImpl annotation,Locator locator,ForeignAttributesImpl fa,String name"
+  		cc:params="AnnotationImpl annotation,Locator locator,ForeignAttributesImpl fa,String name,Set finalSet"
   		cc:return-type="UnionSimpleTypeImpl"
   		cc:return-value="result">
   	
@@ -263,7 +295,7 @@
     </element>
     <cc:java>
 			result = new UnionSimpleTypeImpl(
-				$runtime.currentSchema, annotation, locator, fa, name, name==null,
+				$runtime.currentSchema, annotation, locator, fa, name, name==null, finalSet,
 				(Ref.SimpleType[])members.toArray(new Ref.SimpleType[members.size()]) );
     </cc:java>
   </define>

@@ -29,20 +29,21 @@ import com.sun.xml.xsom.visitor.XSSimpleTypeFunction;
 import com.sun.xml.xsom.visitor.XSSimpleTypeVisitor;
 
 import java.util.Iterator;
+import java.util.Set;
 
 public class UnionSimpleTypeImpl extends SimpleTypeImpl implements XSUnionSimpleType
 {
     public UnionSimpleTypeImpl( SchemaImpl _parent,
-        AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl _fa,
-        String _name, boolean _anonymous,
-        Ref.SimpleType[] _members ) {
-        
-        super(_parent,_annon,_loc,_fa,_name,_anonymous,
+                                AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl _fa,
+                                String _name, boolean _anonymous, Set<XSVariety> finalSet,
+                                Ref.SimpleType[] _members ) {
+
+        super(_parent,_annon,_loc,_fa,_name,_anonymous, finalSet,
             _parent.parent.anySimpleType);
-        
+
         this.memberTypes = _members;
     }
-        
+
     private final Ref.SimpleType[] memberTypes;
     public XSSimpleType getMember( int idx ) { return memberTypes[idx].getType(); }
     public int getMemberSize() { return memberTypes.length; }
@@ -73,7 +74,7 @@ public class UnionSimpleTypeImpl extends SimpleTypeImpl implements XSUnionSimple
 
     // union type by itself doesn't have any facet. */
     public XSFacet getFacet( String name ) { return null; }
-    
+
     public XSVariety getVariety() { return XSVariety.LIST; }
 
     public boolean isUnion() { return true; }

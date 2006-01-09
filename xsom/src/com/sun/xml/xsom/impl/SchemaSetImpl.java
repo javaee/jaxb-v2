@@ -296,6 +296,7 @@ public class SchemaSetImpl implements XSSchemaSet
         public boolean isRestriction() { return true; }
         public boolean isList() { return false; }
         public boolean isUnion() { return false; }
+        public boolean isFinal(XSVariety v) { return false; }
         public XSRestrictionSimpleType asRestriction() { return this; }
         public XSListSimpleType asList() { return null; }
         public XSUnionSimpleType asUnion() { return null; }

@@ -122,7 +122,7 @@
                 
                 contentSimpleType = new RestrictionSimpleTypeImpl(
                   $runtime.currentSchema, null/*?*/, locator2, null,
-                  null, true, baseContentType );
+                  null, true, Collections.EMPTY_SET, baseContentType );
                 contentType = contentSimpleType;
               </cc:java>
               <zeroOrMore>

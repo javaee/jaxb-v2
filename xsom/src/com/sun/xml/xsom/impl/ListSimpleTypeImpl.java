@@ -28,22 +28,24 @@ import com.sun.xml.xsom.XSVariety;
 import com.sun.xml.xsom.visitor.XSSimpleTypeFunction;
 import com.sun.xml.xsom.visitor.XSSimpleTypeVisitor;
 
+import java.util.Set;
+
 public class ListSimpleTypeImpl extends SimpleTypeImpl implements XSListSimpleType
 {
     public ListSimpleTypeImpl( SchemaImpl _parent,
-        AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl _fa,
-        String _name, boolean _anonymous,
-        Ref.SimpleType _itemType ) {
-        
-        super(_parent,_annon,_loc,_fa,_name,_anonymous,
+                               AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl _fa,
+                               String _name, boolean _anonymous, Set<XSVariety> finalSet,
+                               Ref.SimpleType _itemType ) {
+
+        super(_parent,_annon,_loc,_fa,_name,_anonymous, finalSet,
             _parent.parent.anySimpleType);
-        
+
         this.itemType = _itemType;
     }
-        
+
     private final Ref.SimpleType itemType;
     public XSSimpleType getItemType() { return itemType.getType(); }
-    
+
     public void visit( XSSimpleTypeVisitor visitor ) {
         visitor.listSimpleType(this);
     }
@@ -53,7 +55,7 @@ public class ListSimpleTypeImpl extends SimpleTypeImpl implements XSListSimpleTy
 
     // list type by itself doesn't have any facet. */
     public XSFacet getFacet( String name ) { return null; }
-    
+
     public XSVariety getVariety() { return XSVariety.LIST; }
 
     public boolean isList() { return true; }

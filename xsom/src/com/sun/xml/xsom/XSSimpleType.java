@@ -52,6 +52,15 @@ public interface XSSimpleType extends XSType, XSContentType
      * Gets the variety of this simple type.
      */
     XSVariety getVariety();
+
+    /**
+     * Returns true if this type definition is marked as 'final'
+     * with respect to the given {@link XSVariety}.
+     *
+     * @return
+     *      true if the type is marked final.
+     */
+    boolean isFinal(XSVariety v);
     
     
     /**

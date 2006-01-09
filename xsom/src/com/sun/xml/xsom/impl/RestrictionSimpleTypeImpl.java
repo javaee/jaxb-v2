@@ -30,15 +30,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class RestrictionSimpleTypeImpl extends SimpleTypeImpl implements XSRestrictionSimpleType {
 
     public RestrictionSimpleTypeImpl( SchemaImpl _parent,
-        AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl _fa,
-        String _name, boolean _anonymous,
-        Ref.SimpleType _baseType ) {
-            
-        super( _parent, _annon, _loc, _fa, _name, _anonymous, _baseType );
+                                      AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl _fa,
+                                      String _name, boolean _anonymous, Set<XSVariety> finalSet,
+                                      Ref.SimpleType _baseType ) {
+
+        super( _parent, _annon, _loc, _fa, _name, _anonymous, finalSet, _baseType );
     }
 
 
@@ -75,13 +76,13 @@ public class RestrictionSimpleTypeImpl extends SimpleTypeImpl implements XSRestr
     public XSFacet getFacet( String name ) {
         XSFacet f = getDeclaredFacet(name);
         if(f!=null)     return f;
-        
+
         // none was found on this datatype. check the base type.
         return getSimpleBaseType().getFacet(name);
     }
 
     public XSVariety getVariety() { return getSimpleBaseType().getVariety(); }
-    
+
     public void visit( XSSimpleTypeVisitor visitor ) {
         visitor.restrictionSimpleType(this);
     }

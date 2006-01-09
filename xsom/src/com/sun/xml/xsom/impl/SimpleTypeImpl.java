@@ -27,11 +27,14 @@ import com.sun.xml.xsom.XSRestrictionSimpleType;
 import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSUnionSimpleType;
+import com.sun.xml.xsom.XSVariety;
 import com.sun.xml.xsom.visitor.XSContentTypeFunction;
 import com.sun.xml.xsom.visitor.XSContentTypeVisitor;
 import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSVisitor;
 import org.xml.sax.Locator;
+
+import java.util.Set;
 
 public abstract class SimpleTypeImpl extends DeclarationImpl
     implements XSSimpleType, ContentTypeImpl, Ref.SimpleType
@@ -43,11 +46,13 @@ public abstract class SimpleTypeImpl extends DeclarationImpl
         ForeignAttributesImpl _fa,
         String _name,
         boolean _anonymous,
+        Set<XSVariety> finalSet,
         Ref.SimpleType _baseType) {
 
         super(_parent, _annon, _loc, _fa, _parent.getTargetNamespace(), _name, _anonymous);
 
         this.baseType = _baseType;
+        this.finalSet = finalSet;
     }
 
     private Ref.SimpleType baseType;
@@ -55,18 +60,24 @@ public abstract class SimpleTypeImpl extends DeclarationImpl
     public XSType[] listSubstitutables() {
         return Util.listSubstitutables(this);
     }
-    
+
     public void redefine( SimpleTypeImpl st ) {
         baseType = st;
     }
-    
+
     public XSType getBaseType() { return baseType.getType(); }
     public XSSimpleType getSimpleBaseType() { return baseType.getType(); }
 
-    
+    private final Set<XSVariety> finalSet;
+
+    public boolean isFinal(XSVariety v) {
+        return finalSet.contains(v);
+    }
+
+
     public final int getDerivationMethod() { return XSType.RESTRICTION; }
-    
-    
+
+
     public final XSSimpleType asSimpleType()  { return this; }
     public final XSComplexType asComplexType(){ return null; }
 
@@ -94,9 +105,9 @@ public abstract class SimpleTypeImpl extends DeclarationImpl
     public XSRestrictionSimpleType asRestriction() { return null; }
     public XSListSimpleType asList() { return null; }
     public XSUnionSimpleType asUnion() { return null; }
-    
-    
-    
+
+
+
 
     public final void visit( XSVisitor visitor ) {
         visitor.simpleType(this);
@@ -110,7 +121,7 @@ public abstract class SimpleTypeImpl extends DeclarationImpl
     public final Object apply( XSContentTypeFunction function ) {
         return function.simpleType(this);
     }
-    
+
     // Ref.ContentType implementation
     public XSContentType getContentType() { return this; }
     // Ref.SimpleType implementation
