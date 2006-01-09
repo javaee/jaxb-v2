@@ -15,7 +15,8 @@ public abstract class Util {
      */
     public static Logger getClassLogger() {
         try {
-            StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+//            StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+            StackTraceElement[] trace = new Exception().getStackTrace();
             return Logger.getLogger(trace[1].getClassName());
         } catch( SecurityException _ ) {
             return Logger.getLogger("com.sun.xml.bind"); // use the default

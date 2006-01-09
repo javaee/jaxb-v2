@@ -246,6 +246,13 @@ public class XJC2Task extends Task {
     public void setReadonly( boolean flg ) {
         this.options.readOnly = flg;
     }
+
+    /**
+     * @see Options#runtime14
+     */
+    public void setXexplicitAnnotation( boolean flg) {
+        this.options.runtime14 = flg;
+    }
     
     /**
      * Controls whether the compiler will run in the strict

@@ -253,7 +253,11 @@ abstract class AbstractField implements FieldOutline {
         }
 
         // generate the type property?
-        if( !jtype.equals(exposedType) ) {
+        //
+        // when generating code for 1.4, the runtime can't infer that ArrayList<Foo> derives
+        // from Collection<Foo> (because List isn't parameterized), so always expclitly
+        // generate @XmlElement(type=...)
+        if( !jtype.equals(exposedType) || (parent().parent().getModel().options.runtime14 && prop.isCollection())) {
             if(xew == null) xew = getXew(checkWrapper, field);
             xew.type(jtype);
         }
