@@ -60,6 +60,8 @@ abstract class ArrayERProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,Li
         @Override
         public void startElement(UnmarshallingContext.State state, TagName ea) {
             state.getContext().startScope(1);
+            // inherit the target so that our children can access its target 
+            state.target = state.prev.target;
         }
 
         private final QNameMap<ChildLoader> children;
