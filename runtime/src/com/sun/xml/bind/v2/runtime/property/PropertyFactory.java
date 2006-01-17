@@ -50,7 +50,8 @@ public abstract class PropertyFactory {
         propImpls = new Constructor[implClasses.length];
         for( int i=0; i<propImpls.length; i++ ) {
             if(implClasses[i]!=null)
-                propImpls[i] = implClasses[i].getConstructors()[0];
+                // this pointless casting necessary for Mustang
+                propImpls[i] = (Constructor)implClasses[i].getConstructors()[0];
         }
     }
 
