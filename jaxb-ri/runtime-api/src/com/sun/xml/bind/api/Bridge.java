@@ -125,6 +125,22 @@ public abstract class Bridge<T> {
     public abstract T unmarshal(BridgeContext context, InputStream in) throws JAXBException;
 
     /**
+     * Unmarshals the specified type object.
+     *
+     * @param n
+     *      Node to be unmarshalled.
+     *
+     * @return
+     *      never null.
+     *
+     * @throws JAXBException
+     *      if there was an error while unmarshalling.
+     *
+     * @since 2.0 FCS
+     */
+    public abstract T unmarshal(BridgeContext context, Node n) throws JAXBException;
+
+    /**
      * Gets the {@link TypeReference} from which this bridge was created.
      */
     public abstract TypeReference getTypeReference();

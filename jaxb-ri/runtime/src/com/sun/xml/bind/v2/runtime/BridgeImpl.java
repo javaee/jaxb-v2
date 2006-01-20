@@ -91,6 +91,11 @@ final class BridgeImpl<T> extends InternalBridge<T> {
         return ((JAXBElement<T>)u.unmarshal0(in,bi)).getValue();
     }
 
+    public T unmarshal(BridgeContext context, Node n) throws JAXBException {
+        UnmarshallerImpl u = ((BridgeContextImpl)context).unmarshaller;
+        return ((JAXBElement<T>)u.unmarshal0(n,bi)).getValue();
+    }
+
     public TypeReference getTypeReference() {
         return typeRef;
     }
