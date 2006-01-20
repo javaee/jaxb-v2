@@ -98,6 +98,10 @@ final class BridgeAdapter<OnWire,InMemory> extends InternalBridge<InMemory> {
         return adaptU(context, core.unmarshal(context,in));
     }
 
+    public InMemory unmarshal(BridgeContext context, Node n) throws JAXBException {
+        return adaptU(context, core.unmarshal(context,n));
+    }
+
     public TypeReference getTypeReference() {
         return core.getTypeReference();
     }
