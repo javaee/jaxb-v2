@@ -252,8 +252,22 @@ abstract class AbstractField implements FieldOutline {
             xew.namespace(generatedNS);
         }
 
+        // generate the required() property?
+        CElementPropertyInfo ep = (CElementPropertyInfo) prop;
+        if(ep.isRequired() && exposedType.isReference()) {
+            if(xew == null) xew = getXew(checkWrapper, field);
+            xew.required(true);
+        }
+
         // generate the type property?
-        //
+
+        // I'm not too sure if this is the right place to handle this, but
+        // if the schema definition is requiring this element, we should point to a primitive type,
+        // not wrapper type (to correctly carry forward the required semantics.)
+        // if it's a collection, we can't use a primitive, however.
+        if(ep.isRequired() && !prop.isCollection())
+            jtype = jtype.unboxify();
+
         // when generating code for 1.4, the runtime can't infer that ArrayList<Foo> derives
         // from Collection<Foo> (because List isn't parameterized), so always expclitly
         // generate @XmlElement(type=...)
