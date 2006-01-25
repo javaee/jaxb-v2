@@ -14,11 +14,11 @@ import com.sun.tools.xjc.outline.FieldOutline;
  *
  * @author Kohsuke Kawaguchi
  */
-public class ConstFieldRenderer implements FieldRenderer {
+final class ConstFieldRenderer implements FieldRenderer {
 
     private final FieldRenderer fallback;
 
-    public ConstFieldRenderer(FieldRenderer fallback) {
+    protected ConstFieldRenderer(FieldRenderer fallback) {
         this.fallback = fallback;
     }
 

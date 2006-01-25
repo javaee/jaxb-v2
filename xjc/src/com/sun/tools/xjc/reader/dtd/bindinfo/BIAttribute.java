@@ -22,7 +22,7 @@ package com.sun.tools.xjc.reader.dtd.bindinfo;
 import java.util.ArrayList;
 
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
-import com.sun.tools.xjc.generator.bean.field.UntypedListFieldRenderer;
+import com.sun.tools.xjc.generator.bean.field.FieldRendererFactory;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
@@ -42,7 +42,7 @@ public class BIAttribute
     
     private final BIElement parent;
     private final Element element;
-    
+
     /** Gets the name of this attribute-property declaration. */
     public final String name() {
         return element.getAttribute("name");
@@ -75,9 +75,11 @@ public class BIAttribute
         if(a==null)     return null;
         
         String v = element.getAttribute("collection").trim();
-        if(v.equals("array"))   return FieldRenderer.ARRAY;
+
+        FieldRendererFactory frf = parent.parent.model.options.getFieldRendererFactory();
+        if(v.equals("array"))   return frf.getArray();
         if(v.equals("list"))
-            return new UntypedListFieldRenderer(
+            return frf.getList(
                 parent.parent.codeModel.ref(ArrayList.class));
         
         // the correctness of the attribute value must be 

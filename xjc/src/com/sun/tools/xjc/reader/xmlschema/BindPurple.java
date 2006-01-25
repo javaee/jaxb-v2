@@ -1,6 +1,5 @@
 package com.sun.tools.xjc.reader.xmlschema;
 
-import com.sun.tools.xjc.generator.bean.field.ConstFieldRenderer;
 import com.sun.tools.xjc.model.CDefaultValue;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.model.TypeUse;
@@ -47,7 +46,7 @@ public class BindPurple extends ColorBinder {
 
         if(toConstant) {
             prop.defaultValue = CDefaultValue.create(attType,use.getFixedValue());
-            prop.realization = new ConstFieldRenderer(prop.realization);
+            prop.realization = builder.fieldRendererFactory.getConst(prop.realization);
         } else
         if(!attType.isCollection()) {
             // don't support a collection default value. That's difficult to do.

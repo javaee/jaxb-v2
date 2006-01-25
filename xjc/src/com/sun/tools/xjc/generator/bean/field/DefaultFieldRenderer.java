@@ -36,14 +36,19 @@ import com.sun.tools.xjc.outline.FieldOutline;
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-public class DefaultFieldRenderer implements FieldRenderer {
+final class DefaultFieldRenderer implements FieldRenderer {
+
+    private final FieldRendererFactory frf;
     
     /**
-     * Use {@link FieldRenderer#DEFAULT}.
+     * Use {@link FieldRendererFactory#getDefault()}.
      */
-    DefaultFieldRenderer() {}
+    DefaultFieldRenderer(FieldRendererFactory frf) {
+        this.frf = frf;
+    }
 
-    public DefaultFieldRenderer( FieldRenderer defaultCollectionFieldRenderer ) {
+    public DefaultFieldRenderer(FieldRendererFactory frf, FieldRenderer defaultCollectionFieldRenderer ) {
+        this.frf = frf;
         this.defaultCollectionFieldRenderer = defaultCollectionFieldRenderer;
     }
     
@@ -57,19 +62,19 @@ public class DefaultFieldRenderer implements FieldRenderer {
     private FieldRenderer decideRenderer(ClassOutlineImpl outline,CPropertyInfo prop) {
         if(!prop.isCollection()) {
             // non-collection field
-            
+
             // TODO: check for bidning info for optionalPrimitiveType=boxed or
             // noHasMethod=false and noDeletedMethod=false
             if(prop.isUnboxable())
                 // this one uses a primitive type as much as possible
-                return FieldRenderer.REQUIRED_UNBOXED;
+                return frf.getRequiredUnboxed();
             else
                 // otherwise use the default non-collection field
-                return FieldRenderer.SINGLE;
+                return frf.getSingle();
         }
         
         if( defaultCollectionFieldRenderer==null ) {
-            return new UntypedListFieldRenderer(outline.parent().getCodeModel().ref(ArrayList.class));
+            return frf.getList(outline.parent().getCodeModel().ref(ArrayList.class));
         }
         
         // this field is a collection field.
