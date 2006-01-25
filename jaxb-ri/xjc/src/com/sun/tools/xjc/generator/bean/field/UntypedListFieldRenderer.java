@@ -34,7 +34,7 @@ public final class UntypedListFieldRenderer implements FieldRenderer {
 
     private JClass coreList;
 
-    public UntypedListFieldRenderer( JClass coreList ) {
+    protected UntypedListFieldRenderer( JClass coreList ) {
         this.coreList = coreList;
     }
     

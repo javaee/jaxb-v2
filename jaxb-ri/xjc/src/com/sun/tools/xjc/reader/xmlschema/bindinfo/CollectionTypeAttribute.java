@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlValue;
 
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
 import com.sun.tools.xjc.generator.bean.field.UntypedListFieldRenderer;
+import com.sun.tools.xjc.generator.bean.field.FieldRendererFactory;
 import com.sun.tools.xjc.model.Model;
 
 /**
@@ -28,13 +29,13 @@ final class CollectionTypeAttribute {
     }
 
     private FieldRenderer calcFr(Model m) {
+        FieldRendererFactory frf = m.options.getFieldRendererFactory();
         if (collectionType==null)
-            return FieldRenderer.DEFAULT;
+            return frf.getDefault();
 
         if (collectionType.equals("indexed"))
-            return FieldRenderer.ARRAY;
+            return frf.getArray();
 
-        return new UntypedListFieldRenderer(
-            m.codeModel.ref(collectionType));
+        return frf.getList(m.codeModel.ref(collectionType));
     }
 }

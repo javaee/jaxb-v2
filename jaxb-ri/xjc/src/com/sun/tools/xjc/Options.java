@@ -40,6 +40,8 @@ import com.sun.org.apache.xml.internal.resolver.CatalogManager;
 import com.sun.org.apache.xml.internal.resolver.tools.CatalogResolver;
 import com.sun.tools.xjc.api.ClassNameAllocator;
 import com.sun.tools.xjc.reader.Util;
+import com.sun.tools.xjc.generator.bean.field.FieldRendererFactory;
+import com.sun.tools.xjc.model.Model;
 
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -163,14 +165,61 @@ public class Options
      */
     public boolean packageLevelAnnotations = true;
 
+    /**
+     * This {@link FieldRendererFactory} determines how the fields are generated.
+     */
+    private FieldRendererFactory fieldRendererFactory = new FieldRendererFactory();
+    /**
+     * Used to detect if two {@link Plugin}s try to overwrite {@link #fieldRendererFactory}.
+     */
+    private Plugin fieldRendererFactoryOwner = null;
+
     static {
         for( Plugin aug : findServices(Plugin.class) )
             allPlugins.add(aug);
     }
 
+    /**
+     * Gets the active {@link FieldRendererFactory} that shall be used to build {@link Model}.
+     *
+     * @return always non-null.
+     */
+    public FieldRendererFactory getFieldRendererFactory() {
+        return fieldRendererFactory;
+    }
+
+    /**
+     * Sets the {@link FieldRendererFactory}.
+     *
+     * <p>
+     * This method is for plugins to call to set a custom {@link FieldRendererFactory}.
+     *
+     * @param frf
+     *      The {@link FieldRendererFactory} to be installed. Must not be null.
+     * @param owner
+     *      Identifies the plugin that owns this {@link FieldRendererFactory}.
+     *      When two {@link Plugin}s try to call this method, this allows XJC
+     *      to report it as a user-friendly error message.
+     *
+     * @throws BadCommandLineException
+     *      If a conflit happens, this exception carries a user-friendly error
+     *      message, indicating a conflict.
+     */
+    public void setFieldRendererFactory(FieldRendererFactory frf, Plugin owner) throws BadCommandLineException {
+        // since this method is for plugins, make it bit more fool-proof than usual
+        if(frf==null)
+            throw new IllegalArgumentException();
+        if(fieldRendererFactoryOwner!=null) {
+            throw new BadCommandLineException(
+                Messages.format(Messages.FIELD_RENDERER_CONFLICT,
+                    fieldRendererFactoryOwner.getOptionName(),
+                    owner.getOptionName() ));
+        }
+        this.fieldRendererFactoryOwner = owner;
+        this.fieldRendererFactory = frf;
+    }
 
 
-    
     public Language getSchemaLanguage() {
         if( schemaLanguage==null)
             schemaLanguage = guessSchemaLanguage();
@@ -448,15 +497,16 @@ public class Options
         }
 
         // see if this is one of the extensions
-        for( Plugin aug : allPlugins ) {
-            if( ('-'+aug.getOptionName()).equals(args[i]) ) {
-                activePlugins.add(aug);
-                pluginURIs.addAll(aug.getCustomizationURIs());
+        for( Plugin plugin : allPlugins ) {
+            if( ('-'+plugin.getOptionName()).equals(args[i]) ) {
+                activePlugins.add(plugin);
+                plugin.onActivated(this);
+                pluginURIs.addAll(plugin.getCustomizationURIs());
                 return 1;
             }
 
             try {
-                int r = aug.parseArgument(this,args,i);
+                int r = plugin.parseArgument(this,args,i);
                 if(r!=0)    return r;
             } catch (IOException e) {
                 throw new BadCommandLineException(e.getMessage(),e);

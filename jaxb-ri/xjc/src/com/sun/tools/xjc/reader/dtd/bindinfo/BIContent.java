@@ -22,8 +22,8 @@ package com.sun.tools.xjc.reader.dtd.bindinfo;
 import java.util.ArrayList;
 
 import com.sun.codemodel.JClass;
+import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
-import com.sun.tools.xjc.generator.bean.field.UntypedListFieldRenderer;
 
 import org.w3c.dom.Element;
 
@@ -43,6 +43,7 @@ public class BIContent
     private BIContent( Element e, BIElement _parent ) {
         this.element = e;
         this.parent = _parent;
+        this.opts = parent.parent.model.options;
     }
     
     /** The particle element which this object is wrapping. */
@@ -50,6 +51,8 @@ public class BIContent
     
     /** The parent object.*/
     protected final BIElement parent;
+
+    private final Options opts;
     
     /**
      * Gets the realization of this particle, if any.
@@ -62,9 +65,9 @@ public class BIContent
         if(v==null)     return null;
         
         v = v.trim();
-        if(v.equals("array"))   return FieldRenderer.ARRAY;
+        if(v.equals("array"))   return opts.getFieldRendererFactory().getArray();
         if(v.equals("list"))
-            return new UntypedListFieldRenderer(
+            return opts.getFieldRendererFactory().getList(
                 parent.parent.codeModel.ref(ArrayList.class));
         
         // the correctness of the attribute value must be 

@@ -54,9 +54,9 @@ import com.sun.xml.bind.api.impl.NameConverter;
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-class SingleField extends AbstractFieldWithVar {
+public class SingleField extends AbstractFieldWithVar {
 
-    SingleField(ClassOutlineImpl context, CPropertyInfo prop) {
+    protected SingleField(ClassOutlineImpl context, CPropertyInfo prop) {
         this(context,prop,false);
     }
 
@@ -66,7 +66,7 @@ class SingleField extends AbstractFieldWithVar {
      *      forces the setter/getter to expose the primitive type.
      *      it's a pointless customization, but it's nevertheless in the spec.
      */
-    SingleField(ClassOutlineImpl context, CPropertyInfo prop, boolean forcePrimitiveAccess ) {
+    protected SingleField(ClassOutlineImpl context, CPropertyInfo prop, boolean forcePrimitiveAccess ) {
         super(context, prop);
         assert !exposedType.isPrimitive() && !implType.isPrimitive();
         

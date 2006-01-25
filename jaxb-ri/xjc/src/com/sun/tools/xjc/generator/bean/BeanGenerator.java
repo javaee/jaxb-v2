@@ -673,7 +673,7 @@ public final class BeanGenerator implements Outline
         FieldRenderer fr = prop.realization;
         if(fr==null)
             // none is specified. use the default factory
-            fr = FieldRenderer.DEFAULT;
+            fr = model.options.getFieldRendererFactory().getDefault();
 
         FieldOutline field = fr.generate(cc,prop);
         fields.put(prop,field);

@@ -25,6 +25,7 @@ import java.util.List;
 
 import com.sun.tools.xjc.model.CPluginCustomization;
 import com.sun.tools.xjc.outline.Outline;
+import com.sun.tools.xjc.generator.bean.field.FieldRendererFactory;
 
 import org.xml.sax.ErrorHandler;
 
@@ -45,8 +46,12 @@ public abstract class Plugin {
 
     /**
      * Gets the option name to turn on this add-on.
+     *
+     * <p>
      * For example, if "abc" is returned, "-abc" will
-     * turn on this extension.
+     * turn on this plugin. A plugin needs to be turned
+     * on explicitly, or else no other methods of {@link Plugin}
+     * will be invoked.
      */
     public abstract String getOptionName();
 
@@ -68,10 +73,30 @@ public abstract class Plugin {
      * The callee doesn't need to recognize the option that the
      * getOptionName method returns.
      *
+     * <p>
+     * Once a plugin is activated, this method is called
+     * for options that XJC didn't recognize. This allows
+     * a plugin to define additional options to customize
+     * its behavior.
+     *
+     * <p>
+     * Since options can appear in no particular order,
+     * XJC allows sub-options of a plugin to show up before
+     * the option that activates a plugin (one that's returned
+     * by {@link #getOptionName().)
+     *
+     * But nevertheless a {@link Plugin} needs to be activated
+     * to participate in further processing.
+     *
      * @return
      *      0 if the argument is not understood.
+     *      Otherwise return the number of tokens that are
+     *      consumed, including the option itself.
+     *      (so if you have an option like "-foo 3", return 2.)
      * @exception BadCommandLineException
      *      If the option was recognized but there's an error.
+     *      This halts the argument parsing process and causes
+     *      XJC to abort, reporting an error.
      */
     public int parseArgument( Options opt, String[] args, int i ) throws BadCommandLineException, IOException {
         return 0;
@@ -122,7 +147,37 @@ public abstract class Plugin {
     }
 
     /**
+     * Notifies a plugin that it's activated.
+     *
+     * <p>
+     * This method is called when a plugin is activated
+     * through the command line option (as specified by {@link #getOptionName()}.
+     *
+     * <p>
+     * This is a good opportunity to use
+     * {@link Options#setFieldRendererFactory(FieldRendererFactory, Plugin)}
+     * if a plugin so desires.
+     *
+     * <p>
+     * Noop by default.
+     *
+     * @since JAXB 2.0 EA4
+     */
+    public void onActivated(Options opts) throws BadCommandLineException {
+        // noop
+    }
+
+    /**
      * Run the add-on.
+     *
+     * <p>
+     * This method is invoked after XJC has internally finished
+     * the code generation. Plugins can tweak some of the generated
+     * code (or add more code) by using {@link Outline} and {@link Options}.
+     *
+     * <p>
+     * Note that this method is invoked only when a {@link Plugin}
+     * is activated.
      * 
      * @param outline
      *      This object allows access to various generated code.

@@ -174,4 +174,7 @@ class Messages
         "Driver.FailedToParseCatalog";
     static final String NOT_A_FILE_NOR_URL = // 1 arg
         "Driver.NotAFileNorURL";
+
+    static final String FIELD_RENDERER_CONFLICT = // 2 args
+        "FIELD_RENDERER_CONFLICT";
 }

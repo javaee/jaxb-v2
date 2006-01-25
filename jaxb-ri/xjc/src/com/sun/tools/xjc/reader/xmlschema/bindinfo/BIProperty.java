@@ -28,10 +28,11 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
-import com.sun.codemodel.JType;
 import com.sun.codemodel.JJavaName;
+import com.sun.codemodel.JType;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
+import com.sun.tools.xjc.generator.bean.field.FieldRendererFactory;
 import com.sun.tools.xjc.generator.bean.field.IsSetFieldRenderer;
 import com.sun.tools.xjc.model.CAttributePropertyInfo;
 import com.sun.tools.xjc.model.CCustomizations;
@@ -405,24 +406,26 @@ public final class BIProperty extends AbstractDeclarationImpl {
             CollectionTypeAttribute ct = getCollectionType();
             r = ct.get(getBuilder().model);
         } else {
+            FieldRendererFactory frf = getBuilder().fieldRendererFactory;
+
             if(prop.isOptionalPrimitive()) {
                 // the property type can be primitive type if we are to ignore absence
                 switch(opm) {
                 case PRIMITIVE:
-                    r = FieldRenderer.REQUIRED_UNBOXED;
+                    r = frf.getRequiredUnboxed();
                     break;
                 case WRAPPER:
                     // force the wrapper type
-                    r = FieldRenderer.SINGLE;
+                    r = frf.getSingle();
                     break;
                 case ISSET:
-                    r = FieldRenderer.SINGLE_PRIMITIVE_ACCESS;
+                    r = frf.getSinglePrimitiveAccess();
                     break;
                 default:
                     throw new Error();
                 }
             } else {
-                r = FieldRenderer.DEFAULT;
+                r = frf.getDefault();
             }
         }
         if(opm==OptionalPropertyMode.ISSET) {

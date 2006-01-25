@@ -37,7 +37,7 @@ import com.sun.tools.xjc.outline.FieldOutline;
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-class IsSetField extends AbstractField {
+public class IsSetField extends AbstractField {
 
     private final FieldOutline core;
 

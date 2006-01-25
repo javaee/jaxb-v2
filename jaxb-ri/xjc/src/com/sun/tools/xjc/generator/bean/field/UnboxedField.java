@@ -39,7 +39,7 @@ import com.sun.xml.bind.api.impl.NameConverter;
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-class UnboxedField extends AbstractFieldWithVar {
+public class UnboxedField extends AbstractFieldWithVar {
 
     /**
      * Code fragment that gets executed when the set method
@@ -53,7 +53,7 @@ class UnboxedField extends AbstractFieldWithVar {
     private final JPrimitiveType ptype;
 
 
-    UnboxedField( ClassOutlineImpl outline, CPropertyInfo prop ) {
+    protected UnboxedField( ClassOutlineImpl outline, CPropertyInfo prop ) {
         super(outline,prop);
         // primitive types don't have this distintion
         assert implType==exposedType;

@@ -56,24 +56,24 @@ public interface FieldRenderer {
      */
     public FieldOutline generate( ClassOutlineImpl context, CPropertyInfo prop );
     
-    //
-    // field renderers
-    //
-    public static final FieldRenderer DEFAULT
-        = new DefaultFieldRenderer();
-    
-    public static final FieldRenderer ARRAY
-        = new GenericFieldRenderer(ArrayField.class);
-    
-    public static final FieldRenderer REQUIRED_UNBOXED
-        = new GenericFieldRenderer(UnboxedField.class);
-    
-    public static final FieldRenderer SINGLE
-        = new GenericFieldRenderer(SingleField.class);
-
-    public static final FieldRenderer SINGLE_PRIMITIVE_ACCESS
-        = new GenericFieldRenderer(SinglePrimitiveAccessField.class);
-
-    public static final FieldRenderer JAXB_DEFAULT
-        = new DefaultFieldRenderer();
+//    //
+//    // field renderers
+//    //
+//    public static final FieldRenderer DEFAULT
+//        = new DefaultFieldRenderer();
+//
+//    public static final FieldRenderer ARRAY
+//        = new GenericFieldRenderer(ArrayField.class);
+//
+//    public static final FieldRenderer REQUIRED_UNBOXED
+//        = new GenericFieldRenderer(UnboxedField.class);
+//
+//    public static final FieldRenderer SINGLE
+//        = new GenericFieldRenderer(SingleField.class);
+//
+//    public static final FieldRenderer SINGLE_PRIMITIVE_ACCESS
+//        = new GenericFieldRenderer(SinglePrimitiveAccessField.class);
+//
+//    public static final FieldRenderer JAXB_DEFAULT
+//        = new DefaultFieldRenderer();
 }

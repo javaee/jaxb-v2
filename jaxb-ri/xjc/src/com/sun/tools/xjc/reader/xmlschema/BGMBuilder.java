@@ -14,6 +14,7 @@ import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.fmt.JTextFile;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.Options;
+import com.sun.tools.xjc.generator.bean.field.FieldRendererFactory;
 import com.sun.tools.xjc.model.CClassInfoParent;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.ModelChecker;
@@ -70,7 +71,7 @@ public class BGMBuilder extends BindingComponent {
             Ring.add(CodeModelClassFactory.class,new CodeModelClassFactory(ef));
 
             BGMBuilder builder = new BGMBuilder(opts.defaultPackage,opts.defaultPackage2,
-                opts.compatibilityMode==Options.EXTENSION);
+                opts.compatibilityMode==Options.EXTENSION,opts.getFieldRendererFactory());
             builder._build();
 
             if(ef.hadError())   return null;
@@ -104,15 +105,17 @@ public class BGMBuilder extends BindingComponent {
 
     public final Model model = Ring.get(Model.class);
 
+    public final FieldRendererFactory fieldRendererFactory;
 
 
 
 
-    protected BGMBuilder( String defaultPackage1, String defaultPackage2, boolean _inExtensionMode ) {
+    protected BGMBuilder(String defaultPackage1, String defaultPackage2, boolean _inExtensionMode, FieldRendererFactory fieldRendererFactory) {
         this.inExtensionMode = _inExtensionMode;
         this.defaultPackage1 = defaultPackage1;
         this.defaultPackage2 = defaultPackage2;
-        
+        this.fieldRendererFactory = fieldRendererFactory;
+
         DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
 
         promoteGlobalBindings();
