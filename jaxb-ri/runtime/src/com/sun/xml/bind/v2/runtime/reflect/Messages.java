@@ -10,6 +10,8 @@ enum Messages {
     // Accessor
     UNABLE_TO_ACCESS_NON_PUBLIC_FIELD,  // 2 args
     UNASSIGNABLE_TYPE, // 2 args
+    NO_SETTER, // 1 arg
+    NO_GETTER, // 1 arg
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());

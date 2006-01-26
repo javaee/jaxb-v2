@@ -171,9 +171,16 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
 
     @Override
     public RuntimePropertySeed createAccessorSeed(Method getter, Method setter) {
-        return new RuntimePropertySeed(
-            super.createAccessorSeed(getter,setter),
-            new Accessor.GetterSetterReflection(getter,setter) );
+        Accessor acc;
+        if(getter==null)
+            acc = new Accessor.SetterOnlyReflection(setter);
+        else
+        if(setter==null)
+            acc = new Accessor.GetterOnlyReflection(getter);
+        else
+            acc = new Accessor.GetterSetterReflection(getter, setter);
+
+        return new RuntimePropertySeed( super.createAccessorSeed(getter,setter), acc );
     }
 
     @Override

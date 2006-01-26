@@ -230,7 +230,7 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
     /**
      * {@link Accessor} that uses Java reflection to access a getter and a setter.
      */
-    public static final class GetterSetterReflection<BeanT,ValueT> extends Accessor<BeanT,ValueT> {
+    public static class GetterSetterReflection<BeanT,ValueT> extends Accessor<BeanT,ValueT> {
         public final Method getter;
         public final Method setter;
 
@@ -315,6 +315,40 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
                 return acc;
             else
                 return this;
+        }
+    }
+
+    /**
+     * A version of {@link GetterSetterReflection} thaat doesn't have any setter.
+     *
+     * <p>
+     * This provides a user-friendly error message.
+     */
+    public static class GetterOnlyReflection<BeanT,ValueT> extends GetterSetterReflection<BeanT,ValueT> {
+        public GetterOnlyReflection(Method getter) {
+            super(getter,null);
+        }
+
+        @Override
+        public void set(BeanT bean, ValueT value) throws AccessorException {
+            throw new AccessorException(Messages.NO_SETTER.format(getter.toString()));
+        }
+    }
+
+    /**
+     * A version of {@link GetterSetterReflection} thaat doesn't have any getter.
+     *
+     * <p>
+     * This provides a user-friendly error message.
+     */
+    public static class SetterOnlyReflection<BeanT,ValueT> extends GetterSetterReflection<BeanT,ValueT> {
+        public SetterOnlyReflection(Method setter) {
+            super(null,setter);
+        }
+
+        @Override
+        public void set(BeanT bean, ValueT value) throws AccessorException {
+            throw new AccessorException(Messages.NO_GETTER.format(setter.toString()));
         }
     }
 
