@@ -83,7 +83,7 @@ public abstract class OptimizedTransducedAccessorFactory {
                     field.getName() );
         }
 
-        if(acc instanceof Accessor.GetterSetterReflection) {
+        if(acc.getClass()==Accessor.GetterSetterReflection.class) {
             Accessor.GetterSetterReflection gacc = (Accessor.GetterSetterReflection) acc;
 
             if(gacc.getter==null || gacc.setter==null)
