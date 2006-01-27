@@ -108,6 +108,15 @@ public class JVar extends JExpressionImpl implements JDeclaration, JAssignmentTa
     }
 
     /**
+     * @return
+     *      the current modifiers of this method.
+     *      Always return non-null valid object.
+     */
+    public JMods mods() {
+        return mods;
+    }
+
+    /**
      * Sets the type of this variable.
      *
      * @param newType
