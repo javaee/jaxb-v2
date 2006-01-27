@@ -57,6 +57,13 @@ public class JMods implements JGenerable {
         this.mods = mods;
     }
 
+    /**
+     * Gets the bit-packed representaion of modifiers.
+     */
+    public int getValue() {
+        return mods;
+    }
+
     private static void check(int mods, int legal, String what) {
         if ((mods & ~legal) != 0)
             throw new IllegalArgumentException("Illegal modifiers for "
