@@ -415,12 +415,19 @@ public class JMethod extends JGenerifiableImpl implements JDeclaration, JAnnotat
 		}
 	}
 
-	/**
-	 * @return
-	 *      the current modifiers of this method.
-	 *      Always return non-null valid object. 
-	 */
-	public JMods getMods() {
+    /**
+     * @return
+     *      the current modifiers of this method.
+     *      Always return non-null valid object.
+     */
+    public JMods mods() {
+        return mods;
+    }
+
+    /**
+     * @deprecated use {@link #mods()} 
+     */
+    public JMods getMods() {
 		return mods;
 	}
 
