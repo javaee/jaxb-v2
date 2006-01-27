@@ -21,6 +21,7 @@ import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 
 import com.sun.xml.bind.Util;
+import com.sun.xml.bind.api.CompositeStructure;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import static com.sun.xml.bind.v2.WellKnownNamespace.XML_SCHEMA;
@@ -102,7 +103,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
     private final Map<String,Namespace> namespaces = new TreeMap<String,Namespace>(NAMESPACE_COMPARATOR);
 
     /** model navigator **/
-    private Navigator navigator;
+    private Navigator<T,C,F,M> navigator;
 
     private final TypeInfoSet<T,C,F,M> types;
 
@@ -153,6 +154,9 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         assert clazz!=null;
 
         String nsUri = null;
+
+        if(clazz.getClazz()==navigator.asDecl(CompositeStructure.class))
+            return; // this is a special class we introduced for JAX-WS that we *don't* want in the schema
 
         if(clazz.isElement()) {
             // put element -> type reference
@@ -267,6 +271,10 @@ public final class XmlSchemaGenerator<T,C,F,M> {
      *      Can be null, in which case the element refers to an empty anonymous complex type.
      */
     public void add( QName tagName, NonElement<T,C> type ) {
+
+        if(type.getType()==navigator.ref(CompositeStructure.class))
+            return; // this is a special class we introduced for JAX-WS that we *don't* want in the schema
+
 
         Namespace n = getNamespace(tagName.getNamespaceURI());
         n.elementDecls.put(tagName.getLocalPart(), n.new ElementWithType(type));
