@@ -13,9 +13,12 @@
     <orderEntry type="module" module-name="codemodel" />
     <orderEntry type="module" module-name="runtime" />
     <orderEntry type="module" module-name="xjc" />
-    <orderEntry type="module" module-name="runtime-api" />
-    <orderEntry type="module" module-name="schemagen" />
     <orderEntryProperties />
+  </component>
+  <component name="org.mevenide.idea.module.ModuleSettings">
+    <favoriteGoals>
+      <list size="0" />
+    </favoriteGoals>
   </component>
 </module>
 

@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.45 2006-01-03 01:09:08 kohsuke Exp $
+       $Id: build.xml,v 1.46 2006-01-28 01:16:24 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -81,7 +81,6 @@
         <ant dir="codemodel"           target="compile-codemodel" />
         <ant dir="codemodel"           target="annotation-compiler" />
         <ant dir="apgen"               target="compile" />
-        <ant dir="runtime-api"         target="compile" />
         <ant dir="runtime"             target="compile" />
         <ant dir="runtime-fi"          target="compile" />
         <ant dir="runtime-deprecated"  target="compile-runtime-deprecated" />
@@ -102,8 +101,7 @@
           <group title="CodeModel" packages="com.sun.codemodel*" />
 
           <packageset dir="${runtime.src}"/>
-          <packageset dir="${runtime-api.src}"/>
-          <packageset dir="${runtime-api.root}/arch-doc"/>
+          <packageset dir="${runtime.root}/arch-doc"/>
           <group title="Runtime API for JAX-WS" packages="com.sun.xml.bind.api" />
           <group title="Runtime" packages="com.sun.xml.bind*" />
 
@@ -247,7 +245,6 @@
                    duplicate="fail">
                   <fileset dir="${runtime.classes}"/>
                   <fileset dir="${runtime-fi.classes}"/>
-                  <fileset dir="${runtime-api.classes}"/>
                   <fileset dir="${runtime.src}" includes="META-INF/**/*" />
                   <zipgroupfileset dir="${jaxb.libs.runtime2}" includes="*.jar" />
               </jar>
@@ -392,7 +389,6 @@ Class-Path: ${manifest.classpath}
       <parallel>
         <zip zipfile="${jaxb.dist}/lib/jaxb-impl.src.zip">
           <fileset dir="${runtime.src}"/>
-          <fileset dir="${runtime-api.src}"/>
         </zip>
         <sequential>
           <mkdir dir="tmp" />
@@ -474,10 +470,7 @@ Class-Path: ${manifest.classpath}
             <zipfileset dir="${xjc.gensrc}" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
                 <patternset refid="src-includes"/>
             </zipfileset>
-            <zipfileset dir="${runtime-api.src}" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
-                <patternset refid="src-includes"/>
-            </zipfileset>
-            <zipfileset dir="${runtime-api.root}/arch-doc" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
+            <zipfileset dir="${runtime.root}/arch-doc" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
                 <patternset refid="src-includes"/>
             </zipfileset>
             <zipfileset dir="${runtime.src}" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
@@ -564,7 +557,6 @@ Class-Path: ${manifest.classpath}
 
           <!-- clean sub-projects -->
           <ant dir="codemodel"          target="clean-codemodel" />
-          <ant dir="runtime-api"        target="clean" />
           <ant dir="runtime"            target="clean" />
           <ant dir="runtime-fi"         target="clean" />
           <ant dir="runtime-deprecated" target="clean-runtime-deprecated" />

@@ -20,7 +20,7 @@
  [name of copyright owner]
 -->
 
-<!-- $Id: build.xml,v 1.19 2005-10-27 20:40:10 kohsuke Exp $ -->
+<!-- $Id: build.xml,v 1.20 2006-01-28 01:16:39 kohsuke Exp $ -->
 <project name="xjc" basedir=".." default="compile">
 
   <description>
@@ -38,7 +38,6 @@
     <path id="javac.classpath">
       <pathelement path="${codemodel.classes}" />
       <pathelement path="${runtime.classes}" />
-      <pathelement path="${runtime-api.classes}" />
       <pathelement path="${schemagen.classes}" />
       <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
       <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
@@ -233,7 +232,6 @@
         <pathelement path="${xjc.classes}" />
         <pathelement path="${codemodel.classes}" />
         <pathelement path="${runtime.classes}" />
-        <pathelement path="${runtime-api.classes}" />
         <pathelement path="${schemagen.classes}" />
         <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
         <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>

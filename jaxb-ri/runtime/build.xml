@@ -36,7 +36,6 @@
 
   <!-- classpath -->
   <path id="javac.classpath">
-    <pathelement path="${runtime-api.classes}"/>
     <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
     <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
     <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
@@ -203,7 +202,6 @@
             windowtitle="JAXB RI runtime"
             access="package">
             <fileset dir="${runtime.src}" includes="**/*.java"/>
-            <fileset dir="${runtime-api.src}" includes="**/*.java"/>
             <classpath refid="javac.classpath"/>
             <arg value="-quiet"/>
         </javadoc>
@@ -235,7 +233,6 @@
         <classpath refid="javac.classpath" />
         <classpath>
           <pathelement path="${runtime.classes}" />
-          <pathelement path="${runtime-api.classes}" />
           <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
         </classpath>
       </javac>
@@ -248,7 +245,6 @@
         
         <classpath>
           <pathelement path="${runtime.classes}"/>
-          <pathelement path="${runtime-api.classes}" />
           <pathelement path="${runtime.test.classes}"/>
           <fileset dir="${jaxb.libs.util}" includes="*.jar" />
           <fileset dir="${jaxb.libs.test}" includes="*.jar"/>

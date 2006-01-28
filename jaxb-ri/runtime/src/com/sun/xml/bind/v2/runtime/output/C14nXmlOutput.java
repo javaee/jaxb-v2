@@ -5,7 +5,6 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collections;
 
-import com.sun.xml.bind.api.C14nSupport_ArchitectureDocument;
 import com.sun.xml.bind.api.JAXBRIContext;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.util.FinalArrayList;
@@ -13,7 +12,7 @@ import com.sun.xml.bind.v2.util.FinalArrayList;
 /**
  * {@link XmlOutput} that generates canonical XML.
  *
- * @see C14nSupport_ArchitectureDocument
+ * @see com.sun.xml.bind.api.C14nSupport_ArchitectureDocument
  * @author Kohsuke Kawaguchi
  */
 public class C14nXmlOutput extends UTF8XmlOutput {
@@ -43,7 +42,7 @@ public class C14nXmlOutput extends UTF8XmlOutput {
      * (AKA attribute wildcard.)
      *
      * As long as this map is empty, there's no need for sorting.
-     * see {@link C14nSupport_ArchitectureDocument} for more details.
+     * see {@link com.sun.xml.bind.api.C14nSupport_ArchitectureDocument} for more details.
      */
     private final FinalArrayList<DynamicAttribute> otherAttributes = new FinalArrayList<DynamicAttribute>();
 
