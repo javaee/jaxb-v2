@@ -347,7 +347,7 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
         }
 
         @Override
-        public void set(BeanT bean, ValueT value) throws AccessorException {
+        public ValueT get(BeanT bean) throws AccessorException {
             throw new AccessorException(Messages.NO_GETTER.format(setter.toString()));
         }
     }
