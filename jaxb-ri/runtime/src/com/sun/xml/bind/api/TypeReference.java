@@ -68,7 +68,8 @@ public final class TypeReference {
      * Otherwise returns an identical type.
      */
     public TypeReference toItemType() {
-        assert annotations.length==0;   // not designed to work with adapters.
+        // if we are to reinstitute this check, check JAXB annotations only 
+        // assert annotations.length==0;   // not designed to work with adapters.
 
         Type base = Navigator.REFLECTION.getBaseClass(type, Collection.class);
         if(base==null)
