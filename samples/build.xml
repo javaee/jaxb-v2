@@ -50,7 +50,6 @@
     <path id="classpath">
         <pathelement path="." />
         <pathelement path="${samples.classes}" />
-        <pathelement path="${runtime-api.classes}" />
         <fileset dir="${jaxb.libs}" includes="**/*.jar"/>
         <pathelement path="${test.classes}" />
         <pathelement location="${env.JAVA_HOME}/lib/tools.jar"/>

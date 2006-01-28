@@ -6,6 +6,7 @@
     <exclude-output />
     <output-test url="file://$MODULE_DIR$/build/test" />
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/arch-doc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/build/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
@@ -15,7 +16,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="util" level="project" />
     <orderEntry type="library" exported="" name="runtime" level="project" />
-    <orderEntry type="module" module-name="runtime-api" exported="" />
     <orderEntryProperties />
   </component>
   <component name="org.mevenide.idea.module.ModuleSettings">

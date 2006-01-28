@@ -197,7 +197,9 @@
       <language name="vbscript" engine="org.apache.bsf.engines.activescript.ActiveScriptEngine" />
     </languages>
     <startupscripts />
-    <preferredrecentcommandsdividerlocations />
+    <preferredrecentcommandsdividerlocations>
+      <dividerlocationd language="beanshell" position="1339" />
+    </preferredrecentcommandsdividerlocations>
     <BSFConsoleSearchOptions searchfromcursor="false">
       <recentsearches />
     </BSFConsoleSearchOptions>
@@ -528,7 +530,6 @@
       <module fileurl="file://$PROJECT_DIR$/tools/package-rename-task/package-rename-task.iml" filepath="$PROJECT_DIR$/tools/package-rename-task/package-rename-task.iml" />
       <module fileurl="file://$PROJECT_DIR$/tools/pretty-printer/pretty-printer.iml" filepath="$PROJECT_DIR$/tools/pretty-printer/pretty-printer.iml" />
       <module fileurl="file://$PROJECT_DIR$/runtime/runtime.iml" filepath="$PROJECT_DIR$/runtime/runtime.iml" />
-      <module fileurl="file://$PROJECT_DIR$/runtime-api/runtime-api.iml" filepath="$PROJECT_DIR$/runtime-api/runtime-api.iml" />
       <module fileurl="file://$PROJECT_DIR$/runtime-deprecated/runtime-deprecated.iml" filepath="$PROJECT_DIR$/runtime-deprecated/runtime-deprecated.iml" />
       <module fileurl="file://$PROJECT_DIR$/runtime-fi/runtime-fi.iml" filepath="$PROJECT_DIR$/runtime-fi/runtime-fi.iml" />
       <module fileurl="file://$PROJECT_DIR$/samples/samples.iml" filepath="$PROJECT_DIR$/samples/samples.iml" />

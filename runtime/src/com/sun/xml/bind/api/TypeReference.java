@@ -2,8 +2,12 @@ package com.sun.xml.bind.api;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Collection;
 
 import javax.xml.namespace.QName;
+
+import com.sun.xml.bind.v2.model.nav.Navigator;
 
 /**
  * A reference to a JAXB-bound type.
@@ -56,5 +60,21 @@ public final class TypeReference {
                 return annotationType.cast(a);
         }
         return null;
+    }
+
+    /**
+     * Creates a {@link TypeReference} for the item type,
+     * if this {@link TypeReference} represents a collection type.
+     * Otherwise returns an identical type.
+     */
+    public TypeReference toItemType() {
+        assert annotations.length==0;   // not designed to work with adapters.
+
+        Type base = Navigator.REFLECTION.getBaseClass(type, Collection.class);
+        if(base==null)
+            return this;    // not a collection
+
+        return new TypeReference(tagName,
+            Navigator.REFLECTION.getTypeArgument(base,0));
     }
 }
