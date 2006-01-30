@@ -20,7 +20,7 @@
  [name of copyright owner]
 -->
 
-<!-- $Id: build.xml,v 1.20 2006-01-28 01:16:39 kohsuke Exp $ -->
+<!-- $Id: build.xml,v 1.21 2006-01-30 04:27:42 kohsuke Exp $ -->
 <project name="xjc" basedir=".." default="compile">
 
   <description>
@@ -248,6 +248,7 @@
             use="true"
             author="false"
             version="false"
+            useexternalfile="true"
             windowtitle="XJC"
             doctitle="XJC"
             access="package">
@@ -264,6 +265,7 @@
             sourcepath="${xjc.src}"
             destdir="xjc/build/api-docs"
             use="true"
+            useexternalfile="true"
             author="false"
             version="false"
             windowtitle="XJC API"
