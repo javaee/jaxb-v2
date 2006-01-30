@@ -112,6 +112,7 @@
             use="true"
             author="false"
             version="false"
+            useexternalfile="true"
             windowtitle="Code Model API"
             doctitle="Code Model API" />
     </target>

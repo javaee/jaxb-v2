@@ -200,6 +200,7 @@
             author="false"
             version="false"
             windowtitle="JAXB RI runtime"
+            useexternalfile="true"
             access="package">
             <fileset dir="${runtime.src}" includes="**/*.java"/>
             <classpath refid="javac.classpath"/>
