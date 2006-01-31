@@ -47,7 +47,7 @@ import org.xml.sax.Locator;
 /**
  * Root of the XML Schema binder.
  * 
- * <div><img src="doc-files/binding chart.png"/></div>
+ * <div><img src="doc-files/binding_chart.png"/></div>
  * 
  * @author Kohsuke Kawaguchi
  */

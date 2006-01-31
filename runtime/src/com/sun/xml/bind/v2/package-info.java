@@ -84,7 +84,7 @@
  * For more details, see the javadoc of each component.
  *
  * <div>
- *  <img src="doc-files/j2s architecture.gif"/>
+ *  <img src="doc-files/j2s_architecture.gif"/>
  * </div>
  *
  * <b><i>TODO: link to classes from above pictures</i></b>
