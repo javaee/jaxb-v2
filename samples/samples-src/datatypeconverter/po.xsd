@@ -48,7 +48,7 @@
         typesafeEnumMemberName="generateError"
         enableFailFastCheck="false"   
         generateIsSetMethod="false"
-        underscoreBinding="asCharInWord">
+        underscoreBinding="asCharInWord"/>
     <jxb:schemaBindings>
       <jxb:package name="primer.myPo">
          <jxb:javadoc><![CDATA[<body>Package level documentation for generated package primer.myPo.</body>]]>
