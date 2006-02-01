@@ -144,8 +144,8 @@ class ClassInfoImpl<T,C,F,M>
         }
         
         // the class must have the default constructor
-        if(!nav().hasDefaultConstructor(clazz)){
-            if (!hasFactoryConstructor(t)){
+        if (!hasFactoryConstructor(t)){
+            if(!nav().hasDefaultConstructor(clazz)){
                 builder.reportError(new IllegalAnnotationException(
                 Messages.NO_DEFAULT_CONSTRUCTOR.format(nav().getClassName(clazz)), this ));        
             }     
@@ -1094,11 +1094,14 @@ class ClassInfoImpl<T,C,F,M>
      *  XmlType allows specification of factoryClass and
      *  factoryMethod.  There are to be used if no default
      *  constructor is found.
+     *
+     * @return
+     *      true if the factory method was found. False if not.
      */
     private  boolean hasFactoryConstructor(XmlType t){
         if (t == null) return false;        
         
-        String method = t.factoryMethod().trim();
+        String method = t.factoryMethod();
         T fClass = reader().getClassValue(t, "factoryClass");
         if (method.length() > 0){
             if(fClass.equals(nav().ref(XmlType.DEFAULT.class))){
