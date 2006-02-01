@@ -1112,7 +1112,7 @@ class ClassInfoImpl<T,C,F,M>
                 if (nav().getMethodName(m).equals(method) &&
                     nav().getReturnType(m).equals(nav().use(clazz)) &&
                     nav().getMethodParameters(m).length == 0 &&
-                    nav().isStaticMethod(m) && nav().isPublicMethod(m)){
+                    nav().isStaticMethod(m)){
                     factoryMethod = m;
                     break;
                 }
