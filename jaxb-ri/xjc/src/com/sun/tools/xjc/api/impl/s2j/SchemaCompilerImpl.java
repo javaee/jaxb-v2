@@ -19,7 +19,6 @@
  */
 package com.sun.tools.xjc.api.impl.s2j;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -40,6 +39,7 @@ import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.reader.internalizer.DOMForest;
 import com.sun.tools.xjc.reader.xmlschema.parser.XMLSchemaInternalizationLogic;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
+import com.sun.xml.bind.util.SAXParseException2;
 import com.sun.xml.xsom.XSSchemaSet;
 
 import org.w3c.dom.Element;
