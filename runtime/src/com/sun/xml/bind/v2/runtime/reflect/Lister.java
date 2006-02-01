@@ -28,6 +28,7 @@ import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Patcher;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
+import com.sun.xml.bind.util.SAXException2;
 
 import org.xml.sax.SAXException;
 
@@ -342,7 +343,7 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
                         } catch (SAXException e) {
                             throw e;
                         } catch (Exception e) {
-                            throw new SAXException(e);
+                            throw new SAXException2(e);
                         }
 
                         if(t==null) {

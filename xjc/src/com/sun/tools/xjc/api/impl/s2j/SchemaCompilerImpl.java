@@ -112,7 +112,7 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
             // since parsing DOM shouldn't cause a SAX exception
             // and our handler will never throw it, it's not clear
             // if this will ever happen.
-            fatalError(new SAXParseException(
+            fatalError(new SAXParseException2(
                 e.getMessage(), null, systemId,-1,-1, e));
         }
     }

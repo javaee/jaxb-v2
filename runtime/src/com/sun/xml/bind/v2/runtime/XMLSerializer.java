@@ -49,6 +49,7 @@ import javax.xml.transform.sax.SAXResult;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import com.sun.xml.bind.util.ValidationEventLocatorExImpl;
+import com.sun.xml.bind.util.SAXException2;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.model.runtime.RuntimeBuiltinLeafInfo;
 import com.sun.xml.bind.v2.runtime.output.MTOMXmlOutput;
@@ -210,14 +211,14 @@ public final class XMLSerializer extends Coordinator {
         try {
             handler = marshaller.getEventHandler();
         } catch( JAXBException e ) {
-            throw new SAXException(e);
+            throw new SAXException2(e);
         }
 
         if(!handler.handleEvent(ve)) {
             if(ve.getLinkedException() instanceof Exception)
-                throw new SAXException((Exception)ve.getLinkedException());
+                throw new SAXException2((Exception)ve.getLinkedException());
             else
-                throw new SAXException(ve.getMessage());
+                throw new SAXException2(ve.getMessage());
         }
     }
 
@@ -396,9 +397,9 @@ public final class XMLSerializer extends Coordinator {
         try {
             out.attribute(prefix,local,value);
         } catch (IOException e) {
-            throw new SAXException(e);
+            throw new SAXException2(e);
         } catch (XMLStreamException e) {
-            throw new SAXException(e);
+            throw new SAXException2(e);
         }
     }
 

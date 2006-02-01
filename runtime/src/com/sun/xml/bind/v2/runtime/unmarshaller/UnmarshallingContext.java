@@ -24,6 +24,7 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.IDResolver;
+import com.sun.xml.bind.util.SAXParseException2;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
 import com.sun.xml.bind.v2.runtime.AssociationMap;
@@ -520,7 +521,7 @@ public final class UnmarshallingContext extends Coordinator
         if(!recover)    aborted = true;
 
         if( !canRecover || !recover )
-            throw new SAXParseException( event.getMessage(), locator,
+            throw new SAXParseException2( event.getMessage(), locator,
                 new UnmarshalException(
                     event.getMessage(),
                     event.getLinkedException() ) );

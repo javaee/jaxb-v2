@@ -75,14 +75,14 @@ public abstract class AbstractReferenceFinderImpl extends XMLFilterImpl {
             // but don't mark this document as a root.
             parent.parse(ref,false);
         } catch( URISyntaxException e ) {
-            SAXParseException spe = new SAXParseException(
+            SAXParseException spe = new SAXParseException2(
                 Messages.format(Messages.ERR_UNABLE_TO_PARSE,relativeRef,e.getMessage()),
                 locator, e );
                 
             fatalError(spe);
             throw spe;
         } catch( IOException e ) {
-            SAXParseException spe = new SAXParseException(
+            SAXParseException spe = new SAXParseException2(
                 Messages.format(Messages.ERR_UNABLE_TO_PARSE,relativeRef,e.getMessage()),
                 locator, e );
 

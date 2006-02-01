@@ -51,6 +51,7 @@ import com.sun.tools.xjc.reader.dtd.bindinfo.BindInfo;
 import com.sun.tools.xjc.util.CodeModelClassFactory;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
 import com.sun.xml.bind.api.impl.NameConverter;
+import com.sun.xml.bind.util.SAXParseException2;
 import com.sun.xml.dtdparser.DTDHandlerBase;
 import com.sun.xml.dtdparser.DTDParser;
 import com.sun.xml.dtdparser.InputEntity;
@@ -122,10 +123,10 @@ public class TDTDReader extends DTDHandlerBase
                 Ring.end(old);
             }
         } catch (IOException e) {
-            errorReceiver.error(new SAXParseException(e.getMessage(),null,e));
+            errorReceiver.error(new SAXParseException2(e.getMessage(),null,e));
             return null;
         } catch (SAXException e) {
-            errorReceiver.error(new SAXParseException(e.getMessage(),null,e));
+            errorReceiver.error(new SAXParseException2(e.getMessage(),null,e));
             return null;
         } catch (AbortException e) {
             // parsing was aborted but the error was already reported

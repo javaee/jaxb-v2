@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlValue;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.WhiteSpaceProcessor;
+import com.sun.xml.bind.util.SAXException2;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.impl.RuntimeModelBuilder;
@@ -271,7 +272,7 @@ public abstract class TransducedAccessor<BeanT> {
             } catch (RuntimeException e) {// from callable.call
                 throw e;
             } catch (Exception e) {// from callable.call
-                throw new SAXException(e);
+                throw new SAXException2(e);
             }
             if(t!=null) {
                 assign(bean,t,context);
@@ -293,7 +294,7 @@ public abstract class TransducedAccessor<BeanT> {
                         } catch (RuntimeException e) {// from callable.call
                             throw e;
                         } catch (Exception e) {// from callable.call
-                            throw new SAXException(e);
+                            throw new SAXException2(e);
                         }
                     }
                 });

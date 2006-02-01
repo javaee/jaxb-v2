@@ -24,6 +24,7 @@ import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.v2.util.FinalArrayList;
+import com.sun.xml.bind.util.SAXException2;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -97,9 +98,9 @@ final class ContentHandlerAdaptor extends DefaultHandler {
             prefixMap.clear();
             serializer.endAttributes();
         } catch (IOException e) {
-            throw new SAXException(e);
+            throw new SAXException2(e);
         } catch (XMLStreamException e) {
-            throw new SAXException(e);
+            throw new SAXException2(e);
         }
     }
 
@@ -114,9 +115,9 @@ final class ContentHandlerAdaptor extends DefaultHandler {
             flushText();
             serializer.endElement();
         } catch (IOException e) {
-            throw new SAXException(e);
+            throw new SAXException2(e);
         } catch (XMLStreamException e) {
-            throw new SAXException(e);
+            throw new SAXException2(e);
         }
     }
     

@@ -35,6 +35,7 @@ import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.util.DOMUtils;
 import com.sun.tools.xjc.util.EditDistance;
+import com.sun.xml.bind.util.SAXParseException2;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -421,7 +422,7 @@ class Internalizer {
     private void reportError( Element errorSource,
         String formattedMsg, Exception nestedException ) {
         
-        SAXParseException e = new SAXParseException( formattedMsg,
+        SAXParseException e = new SAXParseException2( formattedMsg,
             forest.locatorTable.getStartLocation(errorSource),
             nestedException );
         errorHandler.error(e);
