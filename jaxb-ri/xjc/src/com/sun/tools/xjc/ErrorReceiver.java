@@ -26,6 +26,7 @@ package com.sun.tools.xjc;
 import java.io.IOException;
 
 import com.sun.tools.xjc.api.ErrorListener;
+import com.sun.xml.bind.util.SAXParseException2;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
@@ -72,7 +73,7 @@ public abstract class ErrorReceiver  implements ErrorHandler, ErrorListener {
     }
 
     public final void error( String msg, Exception e ) {
-        error( new SAXParseException(msg,null,e) );
+        error( new SAXParseException2(msg,null,e) );
     }
 
     public void error(Exception e) {

@@ -42,6 +42,7 @@ import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.util.CodeModelClassFactory;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
 import com.sun.tools.xjc.util.ForkContentHandler;
+import com.sun.xml.bind.util.SAXParseException2;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -280,11 +281,11 @@ public class BindInfo
             if(controller.hadError())   throw new AbortException();
             return (Document)builder.getDOM();
         } catch( IOException e ) {
-            receiver.error( new SAXParseException(e.getMessage(),null,e) );
+            receiver.error( new SAXParseException2(e.getMessage(),null,e) );
         } catch( SAXException e ) {
-            receiver.error( new SAXParseException(e.getMessage(),null,e) );
+            receiver.error( new SAXParseException2(e.getMessage(),null,e) );
         } catch( ParserConfigurationException e ) {
-            receiver.error( new SAXParseException(e.getMessage(),null,e) );
+            receiver.error( new SAXParseException2(e.getMessage(),null,e) );
         }
         
         throw new AbortException();
