@@ -652,7 +652,7 @@ public final class BeanGenerator implements Outline
 
             // [RESULT]
             // public <Const> fromValue(String v) { return valueOf(v); }
-            JMethod m = type.method(JMod.PUBLIC, type, "fromValue" );
+            JMethod m = type.method(JMod.PUBLIC|JMod.STATIC, type, "fromValue" );
             m.body()._return( JExpr.invoke("valueOf").arg(m.param(String.class,"v")));
         }
 
