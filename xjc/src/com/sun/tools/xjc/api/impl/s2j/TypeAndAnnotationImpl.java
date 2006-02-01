@@ -1,5 +1,6 @@
 package com.sun.tools.xjc.api.impl.s2j;
 
+import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.bind.annotation.XmlList;
 
 import com.sun.codemodel.JAnnotatable;
@@ -10,9 +11,9 @@ import com.sun.tools.xjc.generator.annotation.spec.XmlJavaTypeAdapterWriter;
 import com.sun.tools.xjc.model.CAdapter;
 import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.model.nav.NType;
-import com.sun.tools.xjc.outline.Outline;
-
 import static com.sun.tools.xjc.outline.Aspect.EXPOSED;
+import com.sun.tools.xjc.outline.Outline;
+import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
 
 /**
  * {@link TypeAndAnnotation} implementation.
@@ -53,9 +54,17 @@ final class TypeAndAnnotationImpl implements TypeAndAnnotation {
             return; // nothing
 
         CAdapter adapterUse = typeUse.getAdapterUse();
-        if(adapterUse!=null)
-            programElement.annotate2(XmlJavaTypeAdapterWriter.class).value(
-                adapterUse.adapterType.toType(outline,EXPOSED));
+        if(adapterUse!=null) {
+            // ugly, ugly hack
+            if(adapterUse.getAdapterIfKnown()== SwaRefAdapter.class) {
+                programElement.annotate(XmlAttachmentRef.class);
+            } else {
+                // [RESULT]
+                // @XmlJavaTypeAdapter( Foo.class )
+                programElement.annotate2(XmlJavaTypeAdapterWriter.class).value(
+                    adapterUse.adapterType.toType(outline,EXPOSED));
+            }
+        }
         if(typeUse.isCollection())
             programElement.annotate(XmlList.class);
     }
