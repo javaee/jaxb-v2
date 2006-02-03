@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#ident	"$Id: i.jwsenv,v 1.4 2005-09-30 16:01:29 ryan_shoemaker Exp $"
+#ident	"$Id: i.jwsenv,v 1.1 2006-02-03 21:18:22 ryan_shoemaker Exp $"
 #
 # Copyright 2005 Sun Microsystems, Inc.  All rights reserved.
 # Use is subject to license terms.
@@ -11,7 +11,7 @@ PATH=/usr/bin:/usr/sbin
 while read src dest
 do
 	sed \
-		-e "s,\%WEBSERVICES_LIB\%,${BASEDIR}/usr/share/lib," \
+		-e "s,\%WEBSERVICES_LIB\%,${BASEDIR}/opt/SUNWjax/share/lib," \
 		-e "s,//,/,g" \
 		< $src > $dest
 	echo $dest
