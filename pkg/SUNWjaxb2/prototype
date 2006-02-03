@@ -18,7 +18,7 @@
 # [name of copyright owner]
 #
 
-#ident  "$Id: prototype,v 1.4 2005-09-10 19:07:37 kohsuke Exp $"
+#ident  "$Id: prototype,v 1.1 2006-02-03 21:18:23 ryan_shoemaker Exp $"
 #
 # This required package information file contains a list of package contents.
 # The 'pkgmk' command uses this file to identify the contents of a package
@@ -38,15 +38,15 @@ i i.jwsenv
 #
 # source locations relative to the prototype file
 #
-# SUNWjaxb
+# SUNWjaxb2
 #
 d none usr 755 root sys
 d none usr/bin 755 root bin
-e jwsenv usr/bin/xjc=usr/share/lib/install/templates/xjc.pkg.template 755 root bin
-e jwsenv usr/bin/schemagen=usr/share/lib/install/templates/schemagen.pkg.template 755 root bin
-d none usr/share 755 root sys
-d none usr/share/lib 755 root sys
-f none usr/share/lib/jaxb-api.jar 444 root sys
-f none usr/share/lib/jaxb-impl.jar 444 root sys
-f none usr/share/lib/jaxb1-impl.jar 444 root sys
-f none usr/share/lib/jaxb-xjc.jar 444 root sys
+e jwsenv opt/SUNWjax/bin/xjc=opt/SUNWjax/share/lib/install/templates/xjc.pkg.template 755 root bin
+e jwsenv opt/SUNWjax/bin/schemagen=opt/SUNWjax/share/lib/install/templates/schemagen.pkg.template 755 root bin
+d none opt/SUNWjax/share 755 root sys
+d none opt/SUNWjax/share/lib 755 root sys
+f none opt/SUNWjax/share/lib/jaxb-api.jar 444 root sys
+f none opt/SUNWjax/share/lib/jaxb-impl.jar 444 root sys
+f none opt/SUNWjax/share/lib/jaxb1-impl.jar 444 root sys
+f none opt/SUNWjax/share/lib/jaxb-xjc.jar 444 root sys
