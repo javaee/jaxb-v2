@@ -26,7 +26,7 @@
 
 -->
 
-<project name="linux-rpm" default="create.pkg">
+<project name="linux-rpm" default="deploy-rpm">
 
   <!-- The distribution directory -->
   <property name="dist.home"    value="../dist"/>
@@ -43,7 +43,8 @@
   <!-- The rpm distribution directory -->
   <property name="rpm.release.dir"    value="../rpm-dist"/>
 
-
+  <!-- JAXB build properties -->
+  <property file="../build.properties"/>
 
  <!-- =====================
         RPM DISTRIBUTION 
@@ -51,7 +52,7 @@
   <target name="deploy-rpm" description="Create JAXB rpm">
 
     <!-- assign prefix of where files will be installed on system -->
-    <property name="rpm.install.base"    value="/opt/sun"/>
+    <property name="rpm.install.base"    value="/opt/sun/share/jaxb"/>
 
     <!-- make sure this directory is initially clean -->
     <delete dir="${rpm.build.dir}/SOURCES"/>
@@ -97,26 +98,29 @@
       <replacetoken>@install.prefix@</replacetoken>
     </replace>
 
+    <!-- copy README -->
+    <copy todir="${rpm.build.dir}/SOURCES/sun-jaxb2-${release.impl.version}${rpm.install.base}"
+          file="README"/>
 
     <!-- copy script files into the right directory structure -->
-    <copy tofile="${rpm.build.dir}/SOURCES/sun-jaxb-${release.impl.version}${rpm.install.base}/bin/xjc" overwrite="yes">
+    <copy tofile="${rpm.build.dir}/SOURCES/sun-jaxb2-${release.impl.version}${rpm.install.base}/bin/xjc" overwrite="yes">
       <fileset dir="${basedir}/../tools/bin">
         <include name="xjc.pkg.template"/>
       </fileset>
     </copy>
-    <copy tofile="${rpm.build.dir}/SOURCES/sun-jaxb-${release.impl.version}${rpm.install.base}/bin/schemagen" overwrite="yes">
+    <copy tofile="${rpm.build.dir}/SOURCES/sun-jaxb2-${release.impl.version}${rpm.install.base}/bin/schemagen" overwrite="yes">
       <fileset dir="${basedir}/../tools/bin">
         <include name="schemagen.pkg.template"/>
       </fileset>
     </copy>
 
     <!-- replace basedir of library locations in template files -->
-    <replace dir="${rpm.build.dir}/SOURCES/sun-jaxb-${release.impl.version}${rpm.install.base}/bin" value="${rpm.install.base}/share/lib">
+    <replace dir="${rpm.build.dir}/SOURCES/sun-jaxb2-${release.impl.version}${rpm.install.base}/bin" value="${rpm.install.base}/lib">
       <replacetoken>%WEBSERVICES_LIB%</replacetoken>
     </replace>
 
     <!-- copy jaxb jar files into the right directory structure -->
-    <copy todir="${rpm.build.dir}/SOURCES/sun-jaxb-${release.impl.version}${rpm.install.base}/share/lib" overwrite="yes">
+    <copy todir="${rpm.build.dir}/SOURCES/sun-jaxb2-${release.impl.version}${rpm.install.base}/lib" overwrite="yes">
       <fileset dir="${dist.home}/lib">
         <exclude name="jaxb-api-src.zip"/>
         <exclude name="jaxb-api-doc.zip"/>
@@ -126,7 +130,7 @@
     </copy>
 
     <!-- compress jaxb files -->
-    <tar destfile="${rpm.build.dir}/SOURCES/sun-jaxb-${release.impl.version}.tar" basedir="${rpm.build.dir}/SOURCES"/>
+    <tar destfile="${rpm.build.dir}/SOURCES/sun-jaxb2-${release.impl.version}.tar" basedir="${rpm.build.dir}/SOURCES"/>
 
     <!-- build rpm -->
     <exec executable="rpmbuild" failonerror="true"
