@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.46 2006-01-28 01:16:24 kohsuke Exp $
+       $Id: build.xml,v 1.47 2006-02-03 22:18:51 ryan_shoemaker Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -60,7 +60,7 @@
       this property lets you do that.
     -->
     <property name="jar.suffix" value="" />
-    
+
     <target name="init">
         <!-- this property is used by "xjc -version" and is also set in each of the
              generated ObjectFactory classes.  It should be set via the RE build
@@ -117,9 +117,9 @@
             description="process sample.meta data">
         <ant dir="samples" target="process-samples"/>
     </target>
-    
-    
-    
+
+
+
     <!-- task that generates a manifest file -->
     <macrodef name="createManifest">
       <attribute name="extensionName"/>
@@ -145,20 +145,20 @@
 
 
     <!-- generate a distribution -->
-    <target name="dist" 
+    <target name="dist"
             depends="compile,integrate-1.0-compiler"
             description="create a distribution in jaxb-ri/dist">
         <mkdir dir="${jaxb.dist}" />
         <mkdir dir="${jaxb.dist}/bin" />
         <mkdir dir="${jaxb.dist}/lib" />
         <mkdir dir="${jaxb.dist}/docs/api" />
-        
-        
-        
+
+
+
         <parallel>
           <!-- copy docs -->
           <sequential>
-              <unzip src="${jaxb.libs.redist}/jaxb-api-doc.zip" 
+              <unzip src="${jaxb.libs.redist}/jaxb-api-doc.zip"
                      dest="${jaxb.dist}/docs/api" />
               <copy todir="${jaxb.dist}/docs" overwrite="true">
                   <fileset dir="${jaxb.docs}">
@@ -171,7 +171,7 @@
               </copy>
               <replace dir="${jaxb.dist}/docs">
                   <include name="**/*.html"/>
-                  <replacefilter token="@@SPEC_VERSION@@" 
+                  <replacefilter token="@@SPEC_VERSION@@"
                                  value="${release.spec.version}" />
                   <replacefilter token="@@IMPL_VERSION@@"
                                  value="${release.impl.version}"/>
@@ -179,7 +179,7 @@
                                  value="${release.impl.version.suffix}"/>
                   <replacefilter token="@@JWSDP_VERSION@@"
                                  value="${jwsdp.impl.version}"/>
-                  <replacefilter token="@@JWSDP_ROOTDIR@@" 
+                  <replacefilter token="@@JWSDP_ROOTDIR@@"
                                  value="${jwsdp.root.directory}"/>
               </replace>
               <java classname="com.sun.tools.tocproc.TocProcessor" fork="true" failonerror="true">
@@ -196,21 +196,21 @@
               </java>
               <delete file="${jaxb.dist}/docs/toc.xml"/>
           </sequential>
-          
+
           <!-- runtime javadoc -->
           <sequential>
               <ant dir="runtime" target="javadoc" />
               <zip zipfile="${jaxb.dist}/docs/jaxb-impl.javadoc.zip"
                    basedir="${runtime.root}/build/api" />
           </sequential>
-          
+
           <!-- xjc javadoc -->
           <sequential>
               <ant dir="xjc" target="javadoc" />
               <zip zipfile="${jaxb.dist}/docs/jaxb-xjc.javadoc.zip"
                    basedir="${xjc.root}/build/javadoc" />
           </sequential>
-          
+
           <!-- copy redist jars -->
           <sequential>
               <copy todir="${jaxb.dist}/lib">
@@ -220,8 +220,8 @@
                   </fileset>
               </copy>
           </sequential>
-          
-          
+
+
           <!-- JAXB 2.0 runtime jar-->
           <!-- generate jaxb-impl.jar for 2.0 runtime -->
           <sequential>
@@ -237,7 +237,7 @@
               <manifest mode="update" file="${runtime.root}/build/manifest.rt">
                 <attribute name="Class-Path" value="jaxb-api.jar activation.jar jsr173_1.0_api.jar jaxb1-impl${jar.suffix}.jar" /> <!-- added for JES4 script compatibility -->
                 <section name="com.sun.xml.bind.v2.runtime">
-                  <attribute name="Implementation-Version" value="${build.version}" /> 
+                  <attribute name="Implementation-Version" value="${build.version}" />
                 </section>
               </manifest>
               <jar jarfile="${jaxb.dist}/lib/jaxb-impl${jar.suffix}.jar"
@@ -249,8 +249,8 @@
                   <zipgroupfileset dir="${jaxb.libs.runtime2}" includes="*.jar" />
               </jar>
           </sequential>
-          
-          
+
+
           <!-- JAXB 1.0 runtime jar -->
           <!-- generate jaxb1-impl.jar for 1.0 runtime -->
           <!-- include the contents of the old jaxb-libs.jar -->
@@ -268,8 +268,8 @@
               </jar>
               <delete dir="${jaxb.root}/build/jaxb-1-impl-rejar"/>
           </sequential>
-          
-          
+
+
           <!-- generate jaxb-xjc.jar: xjc, codemodel, and schemagen subprojects -->
           <sequential>
               <createManifest file="${xjc.root}/manifest.xjc" extensionName="com.sun.tools.xjc" />
@@ -308,8 +308,8 @@ Class-Path: ${manifest.classpath}
               </jar>
               <delete dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
           </sequential>
-          
-          
+
+
           <!-- copy bin scripts -->
           <sequential>
               <copy file="${jaxb.root}/tools/bin/xjc.bat" todir="${jaxb.dist}/bin"/>
@@ -319,8 +319,8 @@ Class-Path: ${manifest.classpath}
               <chmod file="${jaxb.dist}/bin/xjc.sh" perm="ugo+rx"/>
               <chmod file="${jaxb.dist}/bin/schemagen.sh" perm="ugo+rx"/>
           </sequential>
-          
-          
+
+
           <!-- process samples -->
           <sequential>
               <!-- if wspack.home is set, then process samples as 'JWSDP',
@@ -330,7 +330,7 @@ Class-Path: ${manifest.classpath}
               </condition>
               <antcall target="process-sample.inwspack"/>
               <antcall target="process-sample.notinwspack"/>
-              
+
               <!-- copy sample apps -->
               <mkdir dir="${jaxb.dist}/samples"/>
               <copy todir="${jaxb.dist}/samples">
@@ -348,15 +348,15 @@ Class-Path: ${manifest.classpath}
           </sequential>
         </parallel>
     </target>
-    
+
     <target name="dist-zip" depends="dist"
         description="run dist then package the image to jaxb-ri.zip">
-        
+
         <zip destfile="${jaxb.root}/jaxb-ri.zip">
             <zipfileset dir="${jaxb.dist}" prefix="jaxb-ri" />
         </zip>
     </target>
-    
+
     <!-- this target will be run when the jwsdp build is driving.  It will
          cause the sample apps to have a jwsdp appropriate classpath -->
     <target name="process-sample.inwspack" if="in.wspack">
@@ -368,7 +368,7 @@ Class-Path: ${manifest.classpath}
             <replacefilter token="@@JAXB-RI_BUILD_PATH@@" />
         </replace-->
     </target>
-    
+
     <!-- this target will be run when building a standalone RI dist.  It
          will cause the sample apps to have an RI appropriate classpath -->
     <target name="process-sample.notinwspack" unless="in.wspack">
@@ -377,11 +377,11 @@ Class-Path: ${manifest.classpath}
         </ant>
         <!--replace dir="${jaxb.dist}/samples">
             <include name="**/build.xml"/>
-            <replacefilter token="@@JAXB-RI_BUILD_PATH@@" 
+            <replacefilter token="@@JAXB-RI_BUILD_PATH@@"
                            value="&lt;fileset dir=&quot;../..&quot; includes=&quot;lib/*.jar&quot; />" />
         </replace-->
     </target>
-    
+
     <target name="dist-zip-with-src" depends="src-zip, dist-zip"/>
 
     <target name="src-zip" depends="dist"
@@ -403,58 +403,58 @@ Class-Path: ${manifest.classpath}
         </sequential>
       </parallel>
     </target>
-    
-    
-    
-    
-    
+
+
+
+
+
     <target name="bin-installer"
             description="generate the binary distribution installer with the license click-through"
             depends="dist">
-        
+
         <tstamp />
-        
+
         <property name="bin.installer.stage" value="${jaxb.root}/build/bin-installer" />
         <property name="bin.installer.className" value="JAXB2_${DSTAMP}" />
         <property name="bin.installer.jar" value="${jaxb.root}/build/${bin.installer.className}.jar" />
-        
+
         <mkdir dir="${bin.installer.stage}"/>
         <zip destfile="${bin.installer.stage}/package.zip">
             <zipfileset dir="${jaxb.dist}" prefix="jaxb-ri-${DSTAMP}" />
         </zip>
-        
+
         <!-- build installer -->
         <ant dir="tools/installer" />
         <ant dir="tools/installer-builder" />
-        
+
         <taskdef name="installerBuilder" classname="com.sun.tools.xjc.installer.builder.BuilderTask">
             <classpath>
                 <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
             </classpath>
         </taskdef>
-        
+
         <installerBuilder
           jarFile="${bin.installer.jar}"
           licenseFile="${jaxb.root}/docs/license.txt"
           zipFile="${bin.installer.stage}/package.zip" />
-        
+
         <echo>binary installer produced at ${bin.installer.jar}</echo>
     </target>
-    
-    
-    
-    <patternset id="src-includes" 
+
+
+
+    <patternset id="src-includes"
                 description="This pattern set defines which files will be in/excluded in the src bundle">
         <include name="**/*.java"/>
         <include name="**/*.properties"/>
     </patternset>
-    
+
     <target name="src-installer"
             description="generate the source code distribution installer with the license click-through"
             depends="dist">
-        
+
         <tstamp />
-        
+
         <property name="src.installer.stage" value="${jaxb.root}/build/src-installer" />
         <property name="src.installer.className" value="JAXB2_src_${DSTAMP}" />
         <property name="src.installer.class" value="${jaxb.root}/build/${src.installer.className}.jar" />
@@ -493,7 +493,7 @@ Class-Path: ${manifest.classpath}
                 <include name="xsom-src.zip"/>
             </zipfileset>
         </zip>
-        
+
         <!-- test the generated source bundle -->
         <delete dir="${src.installer.tmp}" failonerror="false" />
         <mkdir dir="${src.installer.tmp}" />
@@ -502,46 +502,46 @@ Class-Path: ${manifest.classpath}
 
         <!-- delete the srctmp dir -->
         <delete dir="${src.installer.tmp}"/>
-        
+
         <!-- build installer -->
         <ant dir="tools/installer" />
         <ant dir="tools/installer-builder" />
-        
+
         <taskdef name="installerBuilder" classname="com.sun.tools.xjc.installer.builder.BuilderTask">
             <classpath>
                 <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
             </classpath>
         </taskdef>
-        
+
         <installerBuilder
           classFile="${src.installer.class}"
           licenseFile="${jaxb.root}/docs/license.txt"
           zipFile="${src.installer.stage}/package.zip" />
-        
+
         <echo>source installer produced at ${src.installer.class}</echo>
     </target>
-    
+
     <target name="installers"
             depends="bin-installer,src-installer"
             description="build both the binary and the source installer" />
-    
+
     <target name="deploy-maven"
             depends="dist"
             description="deploy to java.net Maven repository">
-        
+
         <delete dir="build/maven" />
         <mkdir dir="build/maven" />
-        
+
         <copy todir="build/maven">
             <fileset dir="dist/lib" includes="jaxb*.jar" excludes="jaxb-api.jar" />
         </copy>
         <copy tofile="build/maven/jaxb-api${jar.suffix}.jar" file="dist/lib/jaxb-api.jar" />
-        
+
         <cvs-import cvsroot=":pserver:${user.name}@kohsuke.sfbay:/cvs"
           src="build/maven"
           dest="jaxb/repo/jars" />
     </target>
-    
+
     <!-- clean all of the builds -->
     <target name="clean"
             description="clean dist, build, docs, and each sub-project">
@@ -576,16 +576,16 @@ Class-Path: ${manifest.classpath}
         <echo message=" build.home is set to ${build.home}"/>
         <echo message="  dist.home is set to ${dist.home}"/>
         <echo message="wspack.home is set to ${wspack.home}"/>
-        
+
         <!-- replicate the build dirs from our build in ${build.home} -->
         <mkdir dir="${build.home}/codemodel/build/classes"/>
         <mkdir dir="${build.home}/runtime/build/classes"/>
         <mkdir dir="${build.home}/xjc/build/classes"/>
-        
+
         <!-- we need to redefine some of the jaxb properties when being built
-             by wspack, so we will use <antcall> instead of listing an @depends 
+             by wspack, so we will use <antcall> instead of listing an @depends
              on the wspack target.  -->
-             
+
         <!-- compile each of the jaxb sub-projects into ${build.home} -->
         <antcall target="dist">
             <param name="codemodel.build"   value="${build.home}/codemodel/build"/>
@@ -594,27 +594,24 @@ Class-Path: ${manifest.classpath}
             <param name="xjc.classes"       value="${build.home}/xjc/build/classes"/>
             <param name="jaxb.dist"         value="${dist.home}"/>
         </antcall>
-        
+
         <!-- replace the manifest file in jaxb-xjc.jar -->
         <createManifest file="${xjc.root}/manifest.xjc.jwsdp" extensionName="com.sun.tools.xjc" />
 
         <property name="jaxp.jars"          value="../../jaxp/lib"/>
         <property name="jwsdp.shared"       value="../../jwsdp-shared/lib"/>
         <property name="sjsxp.jars"         value="../../sjsxp/lib"/>
-        <property name="jes.rpm"            value="/opt/sun/share/lib"/>
-        <property name="jes.rpm.private"    value="/opt/sun/private/share/lib"/>
-        <property name="jes.svr4"           value="/usr/share/lib"/>
+        <property name="jes.rpm"            value="/opt/sun/share/jaxb/lib"/>
+        <property name="jes.svr4"           value="/opt/SUNWjax/share/lib"/>
         <property name="jes.zip"            value="../../jwsdp-shared/lib"/>
 
         <property name="manifest.classpath" value="jaxb-api.jar jaxb-impl.jar jaxb1-impl.jar
         activation.jar
         ${jwsdp.shared}/activation.jar
-        ${jes.rpm.private}/activation.jar
         ${jes.svr4}/activation.jar
         ${jes.zip}/activation.jar
         jsr173_api.jar
         ${sjsxp.jars}/jsr173_api.jar
-        ${jes.rpm.private}/jsr173_api.jar
         ${jes.svr4}/jsr173_api.jar
         ${jes.zip}/jsr173_api.jar
           " />
