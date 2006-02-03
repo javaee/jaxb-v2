@@ -1,6 +1,6 @@
 %define _topdir @build.dir@
 Summary: Java Architecture for XML Binding 
-Name: sun-jaxb
+Name: sun-jaxb2
 Version: @jaxb.version@ 
 Release: @jaxb.release@ 
 License: Copyright 2005 Sun Microsystems, Inc.  All rights reserved.  Use is subject to license terms.
@@ -27,6 +27,7 @@ Java Architecture for XML Binding
 %clean
 
 %files
+%attr(755,root,root) @install.prefix@/README
 %attr(755,root,root) @install.prefix@/bin/xjc
 %attr(755,root,root) @install.prefix@/bin/schemagen
 %attr(-,root,root) @install.prefix@/share/lib/jaxb-api.jar
