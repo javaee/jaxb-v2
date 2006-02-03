@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.47 2006-02-03 22:18:51 ryan_shoemaker Exp $
+       $Id: build.xml,v 1.48 2006-02-03 23:01:35 ryan_shoemaker Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -601,18 +601,20 @@ Class-Path: ${manifest.classpath}
         <property name="jaxp.jars"          value="../../jaxp/lib"/>
         <property name="jwsdp.shared"       value="../../jwsdp-shared/lib"/>
         <property name="sjsxp.jars"         value="../../sjsxp/lib"/>
-        <property name="jes.rpm"            value="/opt/sun/share/jaxb/lib"/>
-        <property name="jes.svr4"           value="/opt/SUNWjax/share/lib"/>
+        <property name="jes.rpm"            value="../../lib"/>
+        <property name="jes.svr4"           value="."/>
         <property name="jes.zip"            value="../../jwsdp-shared/lib"/>
 
         <property name="manifest.classpath" value="jaxb-api.jar jaxb-impl.jar jaxb1-impl.jar
         activation.jar
         ${jwsdp.shared}/activation.jar
-        ${jes.svr4}/activation.jar
+        ${jes.svr4}/../../../../usr/share/lib/activation.jar
+        ${jes.rpm}/activation.jar
         ${jes.zip}/activation.jar
         jsr173_api.jar
         ${sjsxp.jars}/jsr173_api.jar
         ${jes.svr4}/jsr173_api.jar
+        ${jes.rpm}/jsr173_api.jar
         ${jes.zip}/jsr173_api.jar
           " />
         <echo file="${xjc.root}/manifest.xjc.jwsdp" 
