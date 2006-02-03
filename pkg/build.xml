@@ -98,14 +98,14 @@
     </copy>
 
     <!-- copy script files into the right directory structure -->
-    <copy todir="${pkg.build.dir}/${pkg.jaxb}/opt/SUNWjax/share/lib/install/templates" overwrite="yes">
+    <copy todir="${pkg.build.dir}/${pkg.jaxb}/SUNWjax/share/lib/install/templates" overwrite="yes">
       <fileset dir="${basedir}/../tools/bin">
         <include name="*.pkg.template"/>
       </fileset>
     </copy>
 
     <!-- copy jaxb jar files into the right directory structure -->
-    <copy todir="${pkg.build.dir}/${pkg.jaxb}/opt/SUNWjax/share/lib" overwrite="yes">
+    <copy todir="${pkg.build.dir}/${pkg.jaxb}/SUNWjax/share/lib" overwrite="yes">
       <fileset dir="${dist.home}/lib">
         <exclude name="jaxb-api-doc.zip"/>
         <exclude name="jaxb-api-src.zip"/>

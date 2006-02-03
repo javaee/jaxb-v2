@@ -2,7 +2,7 @@
 # Copyright 2004 Sun Microsystems, Inc.  All rights reserved.
 # Use is subject to license terms.
 #
-#ident	"$Id: pkginfo.tmpl,v 1.1 2006-02-03 21:18:22 ryan_shoemaker Exp $"
+#ident	"$Id: pkginfo.tmpl,v 1.2 2006-02-03 21:56:02 jitu Exp $"
 #
 #
 # This required package information file describes characteristics of the
@@ -15,7 +15,7 @@ ARCH="@arch@"
 VERSION="@jaxb.version@,REV=@datestamp@"
 SUNW_PRODNAME="@prod.name@"
 SUNW_PRODVERS="@jaxb.version@"
-SUNW_PKGTYPE="usr"
+#SUNW_PKGTYPE="usr"
 MAXINST="1000"
 CATEGORY="system"
 DESC="Java Architecture for XML Binding @jaxb.version@"
@@ -23,7 +23,7 @@ VENDOR="Sun Microsystems, Inc."
 HOTLINE="Please contact your local service provider"
 EMAIL=""
 CLASSES="none jwsenv"
-BASEDIR=/
+BASEDIR=/opt
 SUNW_PKGVERS="1.0"
 #VSTOCK="<reserved by Release Engineering for package part #>"
 #ISTATES="<developer defined>"
