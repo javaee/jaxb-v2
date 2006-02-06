@@ -17,6 +17,7 @@ import com.sun.mirror.declaration.FieldDeclaration;
 import com.sun.mirror.declaration.MethodDeclaration;
 import com.sun.mirror.declaration.TypeDeclaration;
 import com.sun.mirror.type.TypeMirror;
+import com.sun.mirror.type.PrimitiveType;
 import com.sun.tools.xjc.api.ErrorListener;
 import com.sun.tools.xjc.api.J2SJAXBModel;
 import com.sun.tools.xjc.api.Reference;
@@ -143,9 +144,9 @@ final class JAXBModelImpl implements J2SJAXBModel {
                 NonElement<TypeMirror, TypeDeclaration> typeInfo = refMap.get(value);
                 if(typeInfo==null)
                     throw new IllegalArgumentException(e.getValue()+" was not specified to JavaCompiler.bind");
-                xsdgen.add(e.getKey(),typeInfo);
+                xsdgen.add(e.getKey(),value.type instanceof PrimitiveType,typeInfo);
             } else {
-                xsdgen.add(e.getKey(),null);
+                xsdgen.add(e.getKey(),false,null);
             }
         }
 

@@ -216,7 +216,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
         QName name = elem.getElementName();
         Namespace n = getNamespace(name.getNamespaceURI());
-        n.elementDecls.put(name.getLocalPart(),n.new ElementWithType(elem.getContentType()));
+        n.elementDecls.put(name.getLocalPart(),n.new ElementWithType(true,elem.getContentType()));
 
         // search for foreign namespace references
         n.processForeignNamespaces(elem.getProperty());
@@ -270,14 +270,14 @@ public final class XmlSchemaGenerator<T,C,F,M> {
      *      The type this element refers to.
      *      Can be null, in which case the element refers to an empty anonymous complex type.
      */
-    public void add( QName tagName, NonElement<T,C> type ) {
+    public void add( QName tagName, boolean isNillable, NonElement<T,C> type ) {
 
         if(type!=null && type.getType()==navigator.ref(CompositeStructure.class))
             return; // this is a special class we introduced for JAX-WS that we *don't* want in the schema
 
 
         Namespace n = getNamespace(tagName.getNamespaceURI());
-        n.elementDecls.put(tagName.getLocalPart(), n.new ElementWithType(type));
+        n.elementDecls.put(tagName.getLocalPart(), n.new ElementWithType(isNillable,type));
 
         // search for foreign namespace references
         if(type!=null)
@@ -363,7 +363,8 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         /**
          * Global element declarations to be written, keyed by their local names.
          */
-        private final MultiMap<String,ElementDeclaration> elementDecls = new MultiMap<String,ElementDeclaration>(new ElementWithType(anyType));
+        private final MultiMap<String,ElementDeclaration> elementDecls =
+                new MultiMap<String,ElementDeclaration>(new ElementWithType(true,anyType));
 
         private Form attributeFormDefault;
         private Form elementFormDefault;
@@ -1099,7 +1100,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         }
 
         public void addGlobalElement(TypeRef<T,C> tref) {
-            elementDecls.put( tref.getTagName().getLocalPart(), new ElementWithType(tref.getTarget()) );
+            elementDecls.put( tref.getTagName().getLocalPart(), new ElementWithType(false,tref.getTarget()) );
         }
 
         /**
@@ -1134,17 +1135,19 @@ public final class XmlSchemaGenerator<T,C,F,M> {
          * {@link ElementDeclaration} that refers to a {@link NonElement}.
          */
         class ElementWithType extends ElementDeclaration {
+            private final boolean nillable;
             private final NonElement<T,C> type;
 
-            public ElementWithType(NonElement<T, C> type) {
+            public ElementWithType(boolean nillable,NonElement<T, C> type) {
                 this.type = type;
+                this.nillable = nillable;
             }
 
             public void writeTo(String localName, Schema schema) {
                 TopLevelElement e = schema.element().name(localName);
+                if(nillable)
+                    e.nillable(true);
                 if(type!=null) {
-                    if(!navigator.isPrimitive(type.getType()))
-                        e.nillable(true);
                     writeTypeRef(e,type, "type");
                 } else {
                     e.complexType();    // refer to the nested empty complex type
