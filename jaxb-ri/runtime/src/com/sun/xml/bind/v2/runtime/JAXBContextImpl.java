@@ -104,7 +104,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.59 $
+ * @version $Revision: 1.60 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -678,7 +678,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
                 xsdgen.add(tr.tagName,false,null);
             } else {
                 NonElement<Type,Class> typeInfo = getXmlType(tis,tr);
-                xsdgen.add(tr.tagName, Navigator.REFLECTION.isPrimitive(tr.type),typeInfo);
+                xsdgen.add(tr.tagName, !Navigator.REFLECTION.isPrimitive(tr.type),typeInfo);
             }
         }
 
