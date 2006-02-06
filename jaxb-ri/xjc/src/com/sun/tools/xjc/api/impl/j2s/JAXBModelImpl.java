@@ -144,7 +144,7 @@ final class JAXBModelImpl implements J2SJAXBModel {
                 NonElement<TypeMirror, TypeDeclaration> typeInfo = refMap.get(value);
                 if(typeInfo==null)
                     throw new IllegalArgumentException(e.getValue()+" was not specified to JavaCompiler.bind");
-                xsdgen.add(e.getKey(),value.type instanceof PrimitiveType,typeInfo);
+                xsdgen.add(e.getKey(),!(value.type instanceof PrimitiveType),typeInfo);
             } else {
                 xsdgen.add(e.getKey(),false,null);
             }
