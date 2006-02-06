@@ -1142,9 +1142,11 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
             public void writeTo(String localName, Schema schema) {
                 TopLevelElement e = schema.element().name(localName);
-                if(type!=null)
+                if(type!=null) {
+                    if(!navigator.isPrimitive(type.getType()))
+                        e.nillable(true);
                     writeTypeRef(e,type, "type");
-                else {
+                } else {
                     e.complexType();    // refer to the nested empty complex type
                 }
                 e.commit();
