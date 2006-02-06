@@ -272,7 +272,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
      */
     public void add( QName tagName, NonElement<T,C> type ) {
 
-        if(type.getType()==navigator.ref(CompositeStructure.class))
+        if(type!=null && type.getType()==navigator.ref(CompositeStructure.class))
             return; // this is a special class we introduced for JAX-WS that we *don't* want in the schema
 
 
