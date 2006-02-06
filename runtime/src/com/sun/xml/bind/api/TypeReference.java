@@ -2,7 +2,6 @@ package com.sun.xml.bind.api;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.List;
 import java.util.Collection;
 
 import javax.xml.namespace.QName;
