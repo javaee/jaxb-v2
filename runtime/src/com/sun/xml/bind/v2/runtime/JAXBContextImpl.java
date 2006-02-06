@@ -73,6 +73,7 @@ import com.sun.xml.bind.v2.model.core.Ref;
 import com.sun.xml.bind.v2.model.impl.RuntimeBuiltinLeafInfoImpl;
 import com.sun.xml.bind.v2.model.impl.RuntimeModelBuilder;
 import com.sun.xml.bind.v2.model.nav.ReflectionNavigator;
+import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimeArrayInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeBuiltinLeafInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeClassInfo;
@@ -103,7 +104,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.58 $
+ * @version $Revision: 1.59 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -674,10 +675,10 @@ public final class JAXBContextImpl extends JAXBRIContext {
                 continue;
 
             if(tr.type==void.class || tr.type==Void.class) {
-                xsdgen.add(tr.tagName,null);
+                xsdgen.add(tr.tagName,false,null);
             } else {
                 NonElement<Type,Class> typeInfo = getXmlType(tis,tr);
-                xsdgen.add(tr.tagName,typeInfo);
+                xsdgen.add(tr.tagName, Navigator.REFLECTION.isPrimitive(tr.type),typeInfo);
             }
         }
 
