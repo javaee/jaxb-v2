@@ -892,8 +892,6 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             }
 
 
-            boolean allNillable = true; // remain true after the next for loop if all TypeRefs are nillable
-
             // fill in the content model
             for (TypeRef<T,C> t : ep.getTypes()) {
                 LocalElement e = compositor.element();
@@ -910,8 +908,6 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
                 if (t.isNillable()) {
                     e.nillable(true);
-                } else {
-                    allNillable = false;
                 }
                 if(t.getDefaultValue()!=null)
                     e._default(t.getDefaultValue());
@@ -922,7 +918,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                 occurs.maxOccurs("unbounded");
                 occurs.minOccurs(0);
             } else {
-                if (!ep.isRequired() && !allNillable) {
+                if (!ep.isRequired()) {
                     // see Spec table 8-13
                     occurs.minOccurs(0);
                 } // else minOccurs defaults to 1
