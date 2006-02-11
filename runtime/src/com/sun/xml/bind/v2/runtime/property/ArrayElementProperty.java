@@ -18,7 +18,7 @@ import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.Transducer;
-import com.sun.xml.bind.v2.runtime.Util;
+import com.sun.xml.bind.v2.runtime.RuntimeUtil;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.reflect.ListIterator;
@@ -67,7 +67,7 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
         for (RuntimeTypeRef typeRef : types) {
             Class type = (Class)typeRef.getTarget().getType();
             if(type.isPrimitive())
-                type = Util.primitiveToBox.get(type);
+                type = RuntimeUtil.primitiveToBox.get(type);
 
             JaxBeanInfo beanInfo = grammar.getOrCreate(typeRef.getTarget());
             TagAndType tt = new TagAndType(

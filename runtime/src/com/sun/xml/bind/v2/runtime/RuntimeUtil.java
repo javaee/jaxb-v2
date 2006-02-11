@@ -18,7 +18,7 @@ import org.xml.sax.SAXException;
 /**
  * @author Kohsuke Kawaguchi
  */
-public class Util {
+public class RuntimeUtil {
     /**
      * XmlAdapter for printing arbitrary object by using {@link Object#toString()}.
      */

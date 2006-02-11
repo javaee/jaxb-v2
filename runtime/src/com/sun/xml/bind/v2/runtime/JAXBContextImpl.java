@@ -104,7 +104,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.60 $
+ * @version $Revision: 1.61 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -265,7 +265,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
             bi.link(this);
 
         // register primitives for boxed types just to make GrammarInfo fool-proof
-        for( Map.Entry<Class,Class> e : Util.primitiveToBox.entrySet() )
+        for( Map.Entry<Class,Class> e : RuntimeUtil.primitiveToBox.entrySet() )
             beanInfoMap.put( e.getKey(), beanInfoMap.get(e.getValue()) );
 
         // build bridges

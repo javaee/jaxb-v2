@@ -29,7 +29,7 @@ import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
-import com.sun.xml.bind.v2.runtime.Util;
+import com.sun.xml.bind.v2.runtime.RuntimeUtil;
 
 /**
  * Set of {@link TypeInfo}s.
@@ -73,7 +73,7 @@ class TypeInfoSetImpl<TypeT,ClassDeclT,FieldT,MethodT> implements
      * puts an unexpected class into a reference graph, this causes
      * an error to be reported on a class closer to the user's code.
      */
-    @XmlJavaTypeAdapter(Util.ToStringAdapter.class)
+    @XmlJavaTypeAdapter(RuntimeUtil.ToStringAdapter.class)
     private final Map<ClassDeclT,ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>> beans
             = new LinkedHashMap<ClassDeclT,ClassInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>>();
 
@@ -119,7 +119,7 @@ class TypeInfoSetImpl<TypeT,ClassDeclT,FieldT,MethodT> implements
         this.anyType = createAnyType();
 
         // register primitive types.
-        for (Map.Entry<Class, Class> e : Util.primitiveToBox.entrySet()) {
+        for (Map.Entry<Class, Class> e : RuntimeUtil.primitiveToBox.entrySet()) {
             this.builtins.put( nav.getPrimitive(e.getKey()), leaves.get(nav.ref(e.getValue())) );
         }
 
