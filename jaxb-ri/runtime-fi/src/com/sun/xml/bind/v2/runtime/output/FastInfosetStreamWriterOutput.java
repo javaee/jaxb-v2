@@ -17,18 +17,12 @@ import org.xml.sax.SAXException;
 public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
     private final StAXDocumentSerializer fiout;
 
-    /**
-     * @param out
-     *      this needs to be {@link StAXDocumentSerializer}.
-     *      but the signature is weak so that we can call this easily from the runtime
-     *      via reflection.
-     */
     public FastInfosetStreamWriterOutput(StAXDocumentSerializer out) {
         super(out);
         this.fiout = out;
     }
 
-    public void text(Pcdata value, boolean needsSeparatingWhitespace) throws IOException, SAXException, XMLStreamException {
+    public void text(Pcdata value, boolean needsSeparatingWhitespace) throws XMLStreamException {
         if(needsSeparatingWhitespace) {
             fiout.writeCharacters(" ");
         }
