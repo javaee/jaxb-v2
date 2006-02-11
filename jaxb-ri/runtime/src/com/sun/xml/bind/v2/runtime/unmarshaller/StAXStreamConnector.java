@@ -1,4 +1,4 @@
-/* $Id: StAXStreamConnector.java,v 1.4 2005-10-14 00:57:08 kohsuke Exp $
+/* $Id: StAXStreamConnector.java,v 1.5 2006-02-11 01:25:38 kohsuke Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -53,7 +53,7 @@ import org.xml.sax.SAXException;
  * @author Kohsuke Kawaguchi
  * @version JAXB 2.0
  */
-final class StAXStreamConnector extends StAXConnector {
+class StAXStreamConnector extends StAXConnector {
 
     /**
      * Creates a {@link StAXConnector} from {@link XMLStreamReader}.
@@ -61,12 +61,17 @@ final class StAXStreamConnector extends StAXConnector {
      * This method checks if the parser is FI parser and acts accordingly.
      */
     public static StAXConnector create(XMLStreamReader reader, XmlVisitor visitor) {
+        // try optimized codepath
         if (reader.getClass()==FI_STAX_READER_CLASS && FI_CONNECTOR_CTOR!=null) {
-            // check if this is FI.
             try {
                 return FI_CONNECTOR_CTOR.newInstance(reader,visitor);
             } catch (Exception t) {
-                // default to the normal codepath
+            }
+        }
+        if (STAX_EX_READER!=null && STAX_EX_READER.isAssignableFrom(reader.getClass())) {
+            try {
+                return STAX_EX_CONNECTOR_CTOR.newInstance(reader,visitor);
+            } catch (Exception t) {
             }
         }
 
@@ -86,9 +91,9 @@ final class StAXStreamConnector extends StAXConnector {
      * SAX may fire consective characters event, but we don't allow it.
      * so use this buffer to perform buffering.
      */
-    private final StringBuilder buffer = new StringBuilder();
+    protected final StringBuilder buffer = new StringBuilder();
 
-    private StAXStreamConnector(XMLStreamReader staxStreamReader, XmlVisitor visitor) {
+    protected StAXStreamConnector(XMLStreamReader staxStreamReader, XmlVisitor visitor) {
         super(visitor);
         this.staxStreamReader = staxStreamReader;
     }
@@ -265,7 +270,7 @@ final class StAXStreamConnector extends StAXConnector {
         }
     };
 
-    private void handleCharacters() {
+    protected void handleCharacters() throws XMLStreamException, SAXException {
         if( context.expectText() )
             buffer.append(
                 staxStreamReader.getTextCharacters(),
@@ -299,6 +304,30 @@ final class StAXStreamConnector extends StAXConnector {
         try {
             Class c = UnmarshallerImpl.class.getClassLoader().loadClass("com.sun.xml.bind.v2.runtime.unmarshaller.FastInfosetConnector");
             return c.getConstructor(FI_STAX_READER_CLASS,XmlVisitor.class);
+        } catch (Throwable e) {
+            return null;
+        }
+    }
+
+
+    //
+    // reference to StAXEx classes
+    //
+    private static final Class STAX_EX_READER = initStAXExReader();
+    private static final Constructor<? extends StAXConnector> STAX_EX_CONNECTOR_CTOR = initStAXExConnector();
+
+    private static Class initStAXExReader() {
+        try {
+            return UnmarshallerImpl.class.getClassLoader().loadClass("org.jvnet.staxex.XMLStreamReaderEx");
+        } catch (Throwable e) {
+            return null;
+        }
+    }
+
+    private static Constructor<? extends StAXConnector> initStAXExConnector() {
+        try {
+            Class c = UnmarshallerImpl.class.getClassLoader().loadClass("com.sun.xml.bind.v2.runtime.unmarshaller.StAXExConnector");
+            return c.getConstructor(STAX_EX_READER,XmlVisitor.class);
         } catch (Throwable e) {
             return null;
         }

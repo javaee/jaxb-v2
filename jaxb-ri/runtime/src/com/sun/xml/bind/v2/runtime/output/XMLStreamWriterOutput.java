@@ -6,8 +6,8 @@ import java.lang.reflect.Constructor;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.MarshallerImpl;
+import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
 
 import org.xml.sax.SAXException;
@@ -24,13 +24,17 @@ public class XMLStreamWriterOutput extends XmlOutputAbstractImpl {
      * This method recognizes an FI StAX writer.
      */
     public static XmlOutput create(XMLStreamWriter out) {
-        if(out.getClass()==FI_STAX_WRITER_CLASS && FI_OUTPUT_CTOR!=null) {
-            // this is FI. Try to use the optimized runtime code
+        // try optimized path
+        if(out.getClass()==FI_STAX_WRITER_CLASS) {
             try {
                 return FI_OUTPUT_CTOR.newInstance(out);
             } catch (Exception e) {
-                // use the normal StAX codepath as a back up.
-                // TODO: where should we report this problem?
+            }
+        }
+        if(STAXEX_WRITER_CLASS!=null && STAXEX_WRITER_CLASS.isAssignableFrom(out.getClass())) {
+            try {
+                return STAXEX_OUTPUT_CTOR.newInstance(out);
+            } catch (Exception e) {
             }
         }
 
@@ -135,6 +139,29 @@ public class XMLStreamWriterOutput extends XmlOutputAbstractImpl {
         try {
             Class c = UnmarshallerImpl.class.getClassLoader().loadClass("com.sun.xml.bind.v2.runtime.output.FastInfosetStreamWriterOutput");
             return c.getConstructor(FI_STAX_WRITER_CLASS);
+        } catch (Throwable e) {
+            return null;
+        }
+    }
+
+    //
+    // StAX-ex
+    //
+    private static final Class STAXEX_WRITER_CLASS = initStAXExWriterClass();
+    private static final Constructor<? extends XmlOutput> STAXEX_OUTPUT_CTOR = initStAXExOutputClass();
+
+    private static Class initStAXExWriterClass() {
+        try {
+            return MarshallerImpl.class.getClassLoader().loadClass("org.jvnet.staxex.XMLStreamWriterEx");
+        } catch (Throwable e) {
+            return null;
+        }
+    }
+
+    private static Constructor<? extends XmlOutput> initStAXExOutputClass() {
+        try {
+            Class c = UnmarshallerImpl.class.getClassLoader().loadClass("com.sun.xml.bind.v2.runtime.output.StAXExStreamWriterOutput");
+            return c.getConstructor(STAXEX_WRITER_CLASS);
         } catch (Throwable e) {
             return null;
         }
