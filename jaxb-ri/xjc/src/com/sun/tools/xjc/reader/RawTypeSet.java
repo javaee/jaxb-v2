@@ -11,6 +11,7 @@ import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.model.CElementInfo;
 import com.sun.tools.xjc.model.CElementPropertyInfo;
+import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.*;
 import com.sun.tools.xjc.model.CNonElement;
 import com.sun.tools.xjc.model.CReferencePropertyInfo;
 import com.sun.tools.xjc.model.CTypeRef;
@@ -30,10 +31,6 @@ import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XmlString;
 
 import org.xml.sax.Locator;
-
-import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.REPEATED_ELEMENT;
-import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.NOT_REPEATED;
-import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.REPEATED_VALUE;
 
 /**
  * Set of {@link Ref}.

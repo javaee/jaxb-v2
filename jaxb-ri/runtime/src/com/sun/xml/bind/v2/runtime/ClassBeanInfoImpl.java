@@ -32,6 +32,7 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.StructureLoader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.unmarshaller.XsiTypeLoader;
 import com.sun.xml.bind.v2.util.FinalArrayList;
+import com.sun.xml.bind.Util;
 
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -350,6 +351,6 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
 
     private static final AttributeProperty[] EMPTY_PROPERTIES = new AttributeProperty[0];
 
-    private static final Logger logger = com.sun.xml.bind.Util.getClassLogger();
+    private static final Logger logger = Util.getClassLogger();
 }
 

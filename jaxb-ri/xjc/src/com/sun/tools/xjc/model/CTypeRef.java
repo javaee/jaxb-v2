@@ -7,7 +7,7 @@ import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.model.core.TypeRef;
-import com.sun.xml.bind.v2.runtime.Util;
+import com.sun.xml.bind.v2.runtime.RuntimeUtil;
 import com.sun.xml.xsom.XmlString;
 
 /**
@@ -23,7 +23,7 @@ public final class CTypeRef implements TypeRef<NType,NClass> {
      *
      * This is the type used when 
      */
-    @XmlJavaTypeAdapter(Util.ToStringAdapter.class)
+    @XmlJavaTypeAdapter(RuntimeUtil.ToStringAdapter.class)
     private final CNonElement type;
 
     private final QName elementName;
