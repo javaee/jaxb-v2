@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.48 2006-02-03 23:01:35 ryan_shoemaker Exp $
+       $Id: build.xml,v 1.49 2006-02-11 01:27:12 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -83,6 +83,7 @@
         <ant dir="apgen"               target="compile" />
         <ant dir="runtime"             target="compile" />
         <ant dir="runtime-fi"          target="compile" />
+        <ant dir="runtime-staxex"      target="compile" />
         <ant dir="runtime-deprecated"  target="compile-runtime-deprecated" />
         <ant dir="xjc"                 target="compile" />
         <ant dir="tools"               target="compile" />
@@ -245,6 +246,7 @@
                    duplicate="fail">
                   <fileset dir="${runtime.classes}"/>
                   <fileset dir="${runtime-fi.classes}"/>
+                  <fileset dir="${runtime-staxex.classes}"/>
                   <fileset dir="${runtime.src}" includes="META-INF/**/*" />
                   <zipgroupfileset dir="${jaxb.libs.runtime2}" includes="*.jar" />
               </jar>
@@ -559,6 +561,7 @@ Class-Path: ${manifest.classpath}
           <ant dir="codemodel"          target="clean-codemodel" />
           <ant dir="runtime"            target="clean" />
           <ant dir="runtime-fi"         target="clean" />
+          <ant dir="runtime-staxex"     target="clean" />
           <ant dir="runtime-deprecated" target="clean-runtime-deprecated" />
           <ant dir="xjc"                target="clean" />
           <ant dir="pkg"                target="clean-pkg" />
@@ -800,6 +803,13 @@ Class-Path: ${manifest.classpath}
            dest="tools/lib/src/FastInfoset.src.zip" />
     </target>
 
+    <target name="integrate-stax-ex-hudson"
+            description="integrate the last successful stax-ex Hudson build">
+      <get src="http://kohsuke.sfbay/hudson/job/stax-ex/lastSuccessfulBuild/artifact/stax-ex/stax-ex/target/stax-ex.jar"
+           dest="tools/lib/util/stax-ex.jar" />
+      <get src="http://kohsuke.sfbay/hudson/job/stax-ex/lastSuccessfulBuild/artifact/stax-ex/stax-ex/target/stax-ex-src.zip"
+           dest="tools/lib/util/stax-ex-src.zip" />
+    </target>
 
     <target name="integrate-jsr222">
         <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api.jar"
