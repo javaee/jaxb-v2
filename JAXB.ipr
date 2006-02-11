@@ -3,7 +3,9 @@
   <component name="AntConfiguration">
     <defaultAnt bundledAnt="true" />
     <buildFile url="file://$PROJECT_DIR$/build.xml">
-      <additionalClassPath />
+      <additionalClassPath>
+        <entry path="file://$PROJECT_DIR$/tools/lib/util/installer-builder.jar" />
+      </additionalClassPath>
       <antReference projectDefault="true" />
       <customJdkName value="" />
       <maximumHeapSize value="128" />
@@ -122,41 +124,6 @@
       <properties />
     </buildFile>
     <buildFile url="file://$PROJECT_DIR$/../jaxb-unit/build.xml">
-      <additionalClassPath />
-      <antReference projectDefault="true" />
-      <customJdkName value="" />
-      <maximumHeapSize value="128" />
-      <properties />
-    </buildFile>
-    <buildFile url="file://$PROJECT_DIR$/../jaxb-unit/test/build.xml">
-      <additionalClassPath />
-      <antReference projectDefault="true" />
-      <customJdkName value="" />
-      <maximumHeapSize value="128" />
-      <properties />
-    </buildFile>
-    <buildFile url="file://$PROJECT_DIR$/pkg/build.xml">
-      <additionalClassPath />
-      <antReference projectDefault="true" />
-      <customJdkName value="" />
-      <maximumHeapSize value="128" />
-      <properties />
-    </buildFile>
-    <buildFile url="file://$PROJECT_DIR$/rpm/build.xml">
-      <additionalClassPath />
-      <antReference projectDefault="true" />
-      <customJdkName value="" />
-      <maximumHeapSize value="128" />
-      <properties />
-    </buildFile>
-    <buildFile url="file://$PROJECT_DIR$/build-taskdefs.xml">
-      <additionalClassPath />
-      <antReference projectDefault="true" />
-      <customJdkName value="" />
-      <maximumHeapSize value="128" />
-      <properties />
-    </buildFile>
-    <buildFile url="file://$PROJECT_DIR$/wspack-build.xml">
       <additionalClassPath />
       <antReference projectDefault="true" />
       <customJdkName value="" />
@@ -532,6 +499,7 @@
       <module fileurl="file://$PROJECT_DIR$/runtime/runtime.iml" filepath="$PROJECT_DIR$/runtime/runtime.iml" />
       <module fileurl="file://$PROJECT_DIR$/runtime-deprecated/runtime-deprecated.iml" filepath="$PROJECT_DIR$/runtime-deprecated/runtime-deprecated.iml" />
       <module fileurl="file://$PROJECT_DIR$/runtime-fi/runtime-fi.iml" filepath="$PROJECT_DIR$/runtime-fi/runtime-fi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/runtime-staxex/runtime-staxex.iml" filepath="$PROJECT_DIR$/runtime-staxex/runtime-staxex.iml" />
       <module fileurl="file://$PROJECT_DIR$/samples/samples.iml" filepath="$PROJECT_DIR$/samples/samples.iml" />
       <module fileurl="file://$PROJECT_DIR$/tools/taglets/taglets.iml" filepath="$PROJECT_DIR$/tools/taglets/taglets.iml" />
       <module fileurl="file://$PROJECT_DIR$/../jaxb-unit/test/test.iml" filepath="$PROJECT_DIR$/../jaxb-unit/test/test.iml" />
