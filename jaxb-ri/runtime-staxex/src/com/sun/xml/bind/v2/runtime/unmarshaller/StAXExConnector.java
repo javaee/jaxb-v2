@@ -36,10 +36,7 @@ final class StAXExConnector extends StAXStreamConnector {
                 // not adjacent to other text. So it's OK to fire it off right now.
                 visitor.text(binary);
             } else {
-                buffer.append(
-                    in.getTextCharacters(),
-                    in.getTextStart(),
-                    in.getTextLength() );
+                buffer.append(pcdata);
             }
         }
     }
