@@ -476,6 +476,35 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
         return method.isBridge();
     }
 
+    public boolean isOverriding(Method method) {
+        // this isn't actually correct,
+        // as the JLS considers
+        // class Derived extends Base<Integer> {
+        //   Integer getX() { ... }
+        // }
+        // class Base<T> {
+        //   T getX() { ... }
+        // }
+        // to be overrided. Handling this correctly needs a careful implementation
+
+        Class<?> s = method.getDeclaringClass().getSuperclass();
+        String name = method.getName();
+        Class[] params = method.getParameterTypes();
+
+        while(s!=null) {
+            try {
+                if(s.getDeclaredMethod(name,params)!=null)
+                    return true;
+            } catch (NoSuchMethodException e) {
+                ; // recursively go into the base class
+            }
+
+            s = s.getSuperclass();
+        }
+
+        return false;
+    }
+
 
     /**
      * JDK 5.0 has a bug of createing {@link GenericArrayType} where it shouldn't.
