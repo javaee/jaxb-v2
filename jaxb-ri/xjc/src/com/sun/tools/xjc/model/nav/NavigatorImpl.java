@@ -278,4 +278,8 @@ public final class NavigatorImpl implements Navigator<NType,NClass,Void,Void> {
     public boolean isBridgeMethod(Void method) {
         throw new UnsupportedOperationException();
     }
+
+    public boolean isOverriding(Void method) {
+        throw new UnsupportedOperationException();
+    }
 }

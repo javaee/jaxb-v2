@@ -29,6 +29,7 @@ import com.sun.mirror.type.ReferenceType;
 import com.sun.mirror.type.TypeMirror;
 import com.sun.mirror.type.TypeVariable;
 import com.sun.mirror.type.WildcardType;
+import com.sun.mirror.util.Declarations;
 import com.sun.mirror.util.SourcePosition;
 import com.sun.mirror.util.TypeVisitor;
 import com.sun.mirror.util.Types;
@@ -244,6 +245,23 @@ public class APTNavigator implements Navigator<TypeMirror,TypeDeclaration,FieldD
         return method.getModifiers().contains(Modifier.VOLATILE);
     }
 
+    public boolean isOverriding(MethodDeclaration method) {
+        ClassDeclaration sc = ((ClassDeclaration) method.getDeclaringType());
+
+        Declarations declUtil = env.getDeclarationUtils();
+
+        while(sc.getSuperclass()!=null) {
+            sc = sc.getSuperclass().getDeclaration();
+
+            for (MethodDeclaration m : sc.getMethods()) {
+                if(declUtil.overrides(method,m))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
     public boolean isArray(TypeMirror t) {
         return t instanceof ArrayType;
     }
@@ -299,7 +317,7 @@ public class APTNavigator implements Navigator<TypeMirror,TypeDeclaration,FieldD
         primitives.put(Double.TYPE,      PrimitiveType.Kind.DOUBLE);
         primitives.put(Character.TYPE,      PrimitiveType.Kind.CHAR);
 
-	}
+    }
 
     public TypeMirror getPrimitive(Class primitiveType) {
         assert primitiveType.isPrimitive();

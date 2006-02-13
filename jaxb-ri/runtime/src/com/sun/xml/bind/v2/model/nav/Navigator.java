@@ -329,4 +329,10 @@ public interface Navigator<T,C,F,M> {
      * Returns true if this method is a bridge method as defined in JLS.
      */
     boolean isBridgeMethod(M method);
+
+    /**
+     * Returns true if the given method is overriding another one
+     * defined in the base class.
+     */
+    boolean isOverriding(M method);
 }

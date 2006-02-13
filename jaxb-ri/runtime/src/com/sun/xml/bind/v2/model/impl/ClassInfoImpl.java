@@ -805,7 +805,6 @@ class ClassInfoImpl<T,C,F,M>
 
         // in the first step we accumulate getters and setters
         // into this map keyed by the property name.
-        // TODO: allocating three maps seem to be redundant
         Map<String,M> getters = new LinkedHashMap<String,M>();
         Map<String,M> setters = new LinkedHashMap<String,M>();
 
@@ -825,8 +824,6 @@ class ClassInfoImpl<T,C,F,M>
             }
 
             // don't look at XmlTransient. We'll deal with that later.
-
-            // TODO: if methods are overriding properties of a base class, ignore.
 
             // is this a get method?
             String propName = getPropertyNameFromGetMethod(name);
@@ -854,8 +851,7 @@ class ClassInfoImpl<T,C,F,M>
         }
 
         // compute the intersection
-        Set<String> complete = new TreeSet<String>();
-        complete.addAll(getters.keySet());
+        Set<String> complete = new TreeSet<String>(getters.keySet());
         complete.retainAll(setters.keySet());
 
         resurrect(getters, complete);
@@ -869,12 +865,18 @@ class ClassInfoImpl<T,C,F,M>
             Annotation[] ga = getter!=null ? reader().getAllMethodAnnotations(getter,new MethodLocatable<M>(this,getter,nav())) : EMPTY_ANNOTATIONS;
             Annotation[] sa = setter!=null ? reader().getAllMethodAnnotations(setter,new MethodLocatable<M>(this,setter,nav())) : EMPTY_ANNOTATIONS;
 
-            boolean getterHasAnnotation = hasJAXBAnnotation(ga);
-            boolean setterHasAnnotation = hasJAXBAnnotation(sa);
+            boolean hasAnnotation = hasJAXBAnnotation(ga) || hasJAXBAnnotation(sa);
+            boolean isOverriding = false;
+            if(!hasAnnotation) {
+                // checking if the method is overriding others isn't free,
+                // so we don't compute it if it's not necessary.
+                isOverriding = (getter!=null && nav().isOverriding(getter))
+                            || (setter!=null && nav().isOverriding(setter));
+            }
 
-            if (at==AccessType.PROPERTY
-            || (at==AccessType.PUBLIC_MEMBER && (getter==null || nav().isPublicMethod(getter)) && (setter==null || nav().isPublicMethod(setter)))
-            || getterHasAnnotation || setterHasAnnotation) {
+            if((at==AccessType.PROPERTY && !isOverriding)
+            || (at==AccessType.PUBLIC_MEMBER && isConsideredPublic(getter) && isConsideredPublic(setter) && !isOverriding)
+            || hasAnnotation) {
                 // make sure that the type is consistent
                 if(getter!=null && setter!=null
                 && !nav().getReturnType(getter).equals(nav().getMethodParameters(setter)[0])) {
@@ -917,6 +919,13 @@ class ClassInfoImpl<T,C,F,M>
         //   void setFoo(int x);
         // }
         // and how it will be XML-ized.
+    }
+
+    /**
+     * Returns true if the method is considered 'public'.
+     */
+    private boolean isConsideredPublic(M m) {
+        return m ==null || nav().isPublicMethod(m);
     }
 
     /**
