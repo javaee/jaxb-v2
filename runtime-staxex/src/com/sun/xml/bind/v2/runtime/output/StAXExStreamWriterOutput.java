@@ -1,13 +1,9 @@
 package com.sun.xml.bind.v2.runtime.output;
 
-import java.io.IOException;
-
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.v2.runtime.unmarshaller.Base64Data;
-import com.sun.xml.fastinfoset.stax.StAXDocumentSerializer;
 
-import org.xml.sax.SAXException;
 import org.jvnet.staxex.XMLStreamWriterEx;
 
 /**
