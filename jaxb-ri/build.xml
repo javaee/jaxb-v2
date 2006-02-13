@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.49 2006-02-11 01:27:12 kohsuke Exp $
+       $Id: build.xml,v 1.50 2006-02-13 18:19:52 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -818,7 +818,7 @@ Class-Path: ${manifest.classpath}
              dest="tools/lib/redist/jaxb-api-src.zip" />
         <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-doc.zip"
              dest="tools/lib/redist/jaxb-api-doc.zip" />
-     </target>
+    </target>
     
     
     <target name="integrate-xsom">
@@ -826,7 +826,7 @@ Class-Path: ${manifest.classpath}
              dest="tools/lib/rebundle/compiler/xsom.jar" />
         <get src="http://kohsuke.sfbay/hudson/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom-src.zip"
              dest="tools/lib/src/xsom-src.zip" />
-     </target>
+    </target>
     
     
     <target name="integrate-txw2">
@@ -836,7 +836,7 @@ Class-Path: ${manifest.classpath}
              dest="tools/lib/util/txwc2.jar" />
         <get src="http://kohsuke.sfbay/hudson/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2-src.zip"
              dest="tools/lib/src/txw2-src.zip" />
-     </target>
+    </target>
     
     
     <target name="integrate-rngom">
@@ -844,5 +844,5 @@ Class-Path: ${manifest.classpath}
              dest="tools/lib/rebundle/compiler/rngom.jar" />
         <get src="http://kohsuke.sfbay/hudson/job/rngom/lastSuccessfulBuild/artifact/rngom/rngom/build/rngom-src.zip"
              dest="tools/lib/src/rngom-src.zip" />
-     </target>
+    </target>
 </project>
