@@ -1,4 +1,4 @@
-/* $Id: StAXStreamConnector.java,v 1.5 2006-02-11 01:25:38 kohsuke Exp $
+/* $Id: StAXStreamConnector.java,v 1.6 2006-02-14 02:04:02 kohsuke Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -92,6 +92,12 @@ class StAXStreamConnector extends StAXConnector {
      * so use this buffer to perform buffering.
      */
     protected final StringBuilder buffer = new StringBuilder();
+
+    /**
+     * Set to true if the text() event is reported, and therefore
+     * the following text() event should be suppressed.
+     */
+    protected boolean textReported = false;
 
     protected StAXStreamConnector(XMLStreamReader staxStreamReader, XmlVisitor visitor) {
         super(visitor);
@@ -279,8 +285,13 @@ class StAXStreamConnector extends StAXConnector {
     }
 
     private void processText( boolean ignorable ) throws SAXException {
-        if( context.expectText() && (!ignorable || !WhiteSpaceProcessor.isWhiteSpace(buffer)))
-            visitor.text(buffer);
+        if( context.expectText() && (!ignorable || !WhiteSpaceProcessor.isWhiteSpace(buffer))) {
+            if(textReported) {
+                textReported = false;
+            } else {
+                visitor.text(buffer);
+            }
+        }
         buffer.setLength(0);
     }
 

@@ -35,6 +35,7 @@ final class StAXExConnector extends StAXStreamConnector {
                 // we make an assumption here that the binary data shows up on its own
                 // not adjacent to other text. So it's OK to fire it off right now.
                 visitor.text(binary);
+                textReported = true;
             } else {
                 buffer.append(pcdata);
             }
