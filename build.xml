@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.50 2006-02-13 18:19:52 kohsuke Exp $
+       $Id: build.xml,v 1.51 2006-02-14 01:51:21 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -391,6 +391,8 @@ Class-Path: ${manifest.classpath}
       <parallel>
         <zip zipfile="${jaxb.dist}/lib/jaxb-impl.src.zip">
           <fileset dir="${runtime.src}"/>
+          <fileset dir="${runtime-fi.src}"/>
+          <fileset dir="${runtime-staxex.src}"/>
         </zip>
         <sequential>
           <mkdir dir="tmp" />
