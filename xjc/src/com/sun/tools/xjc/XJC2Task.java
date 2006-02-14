@@ -110,6 +110,10 @@ public class XJC2Task extends Task {
     /**
      * Parses the schema attribute. This attribute will be used when
      * there is only one schema.
+     *
+     * @param schema
+     *      A file name (can be relative to base dir),
+     *      or an URL (must be absolute).
      */
     public void setSchema( String schema ) {
         try {
