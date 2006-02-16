@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.51 2006-02-14 01:51:21 kohsuke Exp $
+       $Id: build.xml,v 1.52 2006-02-16 20:00:34 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -846,5 +846,21 @@ Class-Path: ${manifest.classpath}
              dest="tools/lib/rebundle/compiler/rngom.jar" />
         <get src="http://kohsuke.sfbay/hudson/job/rngom/lastSuccessfulBuild/artifact/rngom/rngom/build/rngom-src.zip"
              dest="tools/lib/src/rngom-src.zip" />
+    </target>
+    
+    
+    <target name="integrate-istack-commons">
+        <property name="istack.commons.runtime" value="http://kohsuke.sfbay/hudson/job/istack-commons/lastSuccessfulBuild/artifact/istack-commons/istack-commons/runtime/build/" />
+        <property name="istack.commons.tools" value="http://kohsuke.sfbay/hudson/job/istack-commons/lastSuccessfulBuild/artifact/istack-commons/istack-commons/tools/build/" />
+        
+        <get src="${istack.commons.tools}/istack-commons-tools.jar"
+             dest="tools/lib/rebundle/compiler/istack-commons-tools.jar" />
+        <get src="${istack.commons.tools}/istack-commons-tools-src.zip"
+             dest="tools/lib/src/istack-commons-tools-src.zip" />
+        
+        <get src="${istack.commons.runtime}/istack-commons-runtime.jar"
+             dest="tools/lib/rebundle/runtime2/istack-commons-runtime.jar" />
+        <get src="${istack.commons.runtime}/istack-commons-runtime-src.zip"
+             dest="tools/lib/src/istack-commons-runtime-src.zip" />
     </target>
 </project>
