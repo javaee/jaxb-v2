@@ -85,30 +85,12 @@ final class ConstField extends AbstractField {
             super($target);
         }
 
-        public void toArray( JBlock block, JExpression $array ) {
-//            if(isCollection) {
-//                block.add(
-//                    codeModel.ref(System.class).staticInvoke("arraycopy")
-//                        .arg($ref).arg(JExpr.lit(0)).arg($array).arg(JExpr.lit(0))
-//                        .arg($ref.ref("length")));
-//            } else {
-                block.assign( $array.component(JExpr.lit(0)), $ref );
-//            }
-        }
         public void unsetValues( JBlock body ) {
             ;   // can't unset values
         }
         public JExpression hasSetValue() {
             return null;    // can't generate the isSet/unset methods
         }
-        public JExpression getContentValue() {
-            return $ref;
-        }
-
-        public void add(JBlock body, JExpression newValue) {
-            ; // can't override any value
-        }
-
         public void toRawValue(JBlock block, JVar $var) {
             // TODO: rethink abstraction. Those constant fields
             // don't have "access" to them.

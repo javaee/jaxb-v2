@@ -118,7 +118,7 @@ public class SingleField extends AbstractFieldWithVar {
         // [RESULT]
         // void setXXX(Type newVal) {
         //     this.value = newVal;
-        // }       
+        // }
         JMethod $set = writer.declareMethod( codeModel.VOID, "set"+prop.getName(true) );
         JType setterType = exposedType;
         if(forcePrimitiveAccess)    setterType = setterType.unboxify();
@@ -148,22 +148,11 @@ public class SingleField extends AbstractFieldWithVar {
             super($target);
         }
         
-        public void add( JBlock block, JExpression newValue ) {
-            block.assign($ref,newValue);               
-        }
-
-        public void toArray( JBlock block, JExpression $array ) {
-            block.assign( $array.component(JExpr.lit(0)), $ref );
-        }
-        
         public void unsetValues( JBlock body ) {
             body.assign( $ref, JExpr._null() );
         }
         public JExpression hasSetValue() {
             return $ref.ne( JExpr._null() );
-        }
-        public JExpression getContentValue() {
-            return $ref;
         }
     }
 }

@@ -204,36 +204,6 @@ abstract class AbstractListField extends AbstractField {
             return $target.invoke(internalGetter);
         }
 
-        public void add( JBlock body, JExpression newValue ) {
-            if( primitiveType!=null )
-                newValue = primitiveType.wrap(newValue);
-            body.invoke(ref(false),"add").arg(newValue);
-        }
-
-        public void toArray( JBlock block, JExpression $array ) {
-            // if the list is null, no need to copy to the array
-            block = block._if( field.ne(JExpr._null()) )._then();
-            
-            if( primitiveType==null ) {
-                // [RESULT]
-                // list.toArray( array );
-                block.invoke( ref(true), "toArray" ).arg($array);
-            } else {
-                // [RESULT]
-                // for( int idx=<length>-1; idx>=0; idx-- ) {
-                //     array[idx] = <unbox>(list.get(<idx>));
-                // }
-                JForLoop $for = block._for();
-                JVar $idx = $for.init(codeModel.INT,"q"+this.hashCode(), count().minus(JExpr.lit(1)) );
-                $for.test( $idx.gte(JExpr.lit(0)) );
-                $for.update( $idx.decr() );
-                
-                $for.body().assign( $array.component($idx),
-                    primitiveType.unwrap(
-                        JExpr.cast( primitiveType.boxify(), ref(true).invoke("get").arg($idx) )));
-            }
-        }
-
         public JExpression count() {
             return JOp.cond( field.eq(JExpr._null()), JExpr.lit(0), field.invoke("size") );
         }
@@ -244,10 +214,6 @@ abstract class AbstractListField extends AbstractField {
         public JExpression hasSetValue() {
             return field.ne(JExpr._null()).cand(field.invoke("isEmpty").not());
         }
-        public JExpression getContentValue() {
-            return ref(false);
-        }
-
     }
     
 }
