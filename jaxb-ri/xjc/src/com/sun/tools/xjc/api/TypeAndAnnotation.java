@@ -4,7 +4,7 @@ import com.sun.codemodel.JAnnotatable;
 import com.sun.codemodel.JType;
 
 /**
- *
+ * Java type and associated JAXB annotations.
  *
  * @author Kohsuke Kawaguchi
  */
