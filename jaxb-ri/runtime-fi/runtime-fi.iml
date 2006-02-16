@@ -23,6 +23,7 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="library" name="runtime" level="project" />
     <orderEntryProperties />
   </component>
   <component name="org.mevenide.idea.module.ModuleSettings">

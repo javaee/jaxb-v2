@@ -17,7 +17,7 @@ import javax.xml.bind.JAXBException;
 import com.sun.xml.bind.api.JAXBRIContext;
 import com.sun.xml.bind.api.TypeReference;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
-import com.sun.xml.bind.v2.util.FinalArrayList;
+import com.sun.istack.FinalArrayList;
 
 /**
  * This class is responsible for producing RI JAXBContext objects.  In

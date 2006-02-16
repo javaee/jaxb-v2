@@ -23,8 +23,8 @@ import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
 
-import com.sun.xml.bind.v2.util.FinalArrayList;
-import com.sun.xml.bind.util.SAXException2;
+import com.sun.istack.FinalArrayList;
+import com.sun.istack.SAXException2;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -41,7 +41,7 @@ final class ContentHandlerAdaptor extends DefaultHandler {
 
     /** Stores newly declared prefix-URI mapping. */
     private final FinalArrayList prefixMap = new FinalArrayList();
-    
+
     /** Events will be sent to this object. */
     private final XMLSerializer serializer;
     

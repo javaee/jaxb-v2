@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import com.sun.xml.bind.util.SAXParseException2;
+import com.sun.istack.SAXParseException2;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;

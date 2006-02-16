@@ -7,28 +7,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 import java.util.WeakHashMap;
-import java.util.LinkedList;
-import java.util.TreeSet;
 import java.util.concurrent.Callable;
 
 import javax.xml.bind.JAXBException;
 
+import com.sun.istack.SAXException2;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.TODO;
-import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.Adapter;
+import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Patcher;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
-import com.sun.xml.bind.util.SAXException2;
 
 import org.xml.sax.SAXException;
 
@@ -86,7 +82,7 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
      * @param adapter
      *      adapter to be used for individual items. can be null.
      */
-    public static final <BeanT,PropT,ItemT,PackT>
+    public static <BeanT,PropT,ItemT,PackT>
         Lister<BeanT,PropT,ItemT,PackT> create(Type fieldType,ID idness, Adapter<Type,Class> adapter) {
 
         Class rawType = Navigator.REFLECTION.erasure(fieldType);

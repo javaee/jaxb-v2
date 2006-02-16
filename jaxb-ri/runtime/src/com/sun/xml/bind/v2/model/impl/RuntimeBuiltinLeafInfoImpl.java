@@ -57,9 +57,9 @@ import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.output.Pcdata;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Base64Data;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
-import com.sun.xml.bind.v2.util.ByteArrayDataSource;
 import com.sun.xml.bind.v2.util.ByteArrayOutputStreamEx;
 import com.sun.xml.bind.v2.util.DataSourceSource;
+import com.sun.istack.ByteArrayDataSource;
 
 import org.xml.sax.SAXException;
 

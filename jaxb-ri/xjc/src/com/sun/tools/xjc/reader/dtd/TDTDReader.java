@@ -51,11 +51,11 @@ import com.sun.tools.xjc.reader.dtd.bindinfo.BindInfo;
 import com.sun.tools.xjc.util.CodeModelClassFactory;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
 import com.sun.xml.bind.api.impl.NameConverter;
-import com.sun.xml.bind.util.SAXParseException2;
 import com.sun.xml.dtdparser.DTDHandlerBase;
 import com.sun.xml.dtdparser.DTDParser;
 import com.sun.xml.dtdparser.InputEntity;
 import com.sun.xml.xsom.XmlString;
+import com.sun.istack.SAXParseException2;
 
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;

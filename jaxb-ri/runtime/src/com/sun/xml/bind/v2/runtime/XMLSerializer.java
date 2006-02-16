@@ -49,7 +49,6 @@ import javax.xml.transform.sax.SAXResult;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import com.sun.xml.bind.util.ValidationEventLocatorExImpl;
-import com.sun.xml.bind.util.SAXException2;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.model.runtime.RuntimeBuiltinLeafInfo;
 import com.sun.xml.bind.v2.runtime.output.MTOMXmlOutput;
@@ -58,6 +57,7 @@ import com.sun.xml.bind.v2.runtime.output.Pcdata;
 import com.sun.xml.bind.v2.runtime.output.XmlOutput;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Base64Data;
 import com.sun.xml.bind.v2.runtime.unmarshaller.IntData;
+import com.sun.istack.SAXException2;
 
 import org.xml.sax.SAXException;
 

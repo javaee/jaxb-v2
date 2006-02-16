@@ -24,7 +24,6 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.IDResolver;
-import com.sun.xml.bind.util.SAXParseException2;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
 import com.sun.xml.bind.v2.runtime.AssociationMap;
@@ -32,11 +31,11 @@ import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.runtime.Coordinator;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
+import com.sun.istack.SAXParseException2;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 /**
  * Center of the unmarshalling.

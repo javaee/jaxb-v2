@@ -7,7 +7,7 @@ import java.util.Collections;
 
 import com.sun.xml.bind.api.JAXBRIContext;
 import com.sun.xml.bind.v2.runtime.Name;
-import com.sun.xml.bind.v2.util.FinalArrayList;
+import com.sun.istack.FinalArrayList;
 
 /**
  * {@link XmlOutput} that generates canonical XML.
