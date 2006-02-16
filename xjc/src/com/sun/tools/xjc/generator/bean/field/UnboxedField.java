@@ -42,12 +42,6 @@ import com.sun.xml.bind.api.impl.NameConverter;
 public class UnboxedField extends AbstractFieldWithVar {
 
     /**
-     * Code fragment that gets executed when the set method
-     * is called. IOW, this is an event handler of the "onSet" event.
-     */
-    private JBlock onSetEvent;
-
-    /**
      * The primitive version of {@link #implType} and {@link #exposedType}.
      */
     private final JPrimitiveType ptype;
@@ -88,13 +82,11 @@ public class UnboxedField extends AbstractFieldWithVar {
         // [RESULT]
         // void setXXX( Type value ) {
         //     this.value = value;
-        //     /*onSetEventHandler*/
         // }
         JMethod $set = writer.declareMethod( codeModel.VOID, "set"+prop.getName(true) );
         JVar $value = writer.addParameter( ptype, "value" );
         body = $set.body();
         body.assign(JExpr._this().ref(ref()),$value);
-        onSetEvent = body;
         javadoc = prop.javadoc;
         if(javadoc.length()==0)
             javadoc = Messages.DEFAULT_SETTER_JAVADOC.format(nc.toVariableName(prop.getName(true)));
@@ -106,10 +98,6 @@ public class UnboxedField extends AbstractFieldWithVar {
         return super.getType(aspect).boxify().getPrimitiveType();
     }
 
-    public JBlock getOnSetEventHandler() {
-        return onSetEvent;
-    }
-    
     protected JType getFieldType() {
         return ptype;
     }

@@ -118,8 +118,6 @@ public class SingleField extends AbstractFieldWithVar {
         // [RESULT]
         // void setXXX(Type newVal) {
         //     this.value = newVal;
-        //     
-        //     /*onSetEventHandler*/
         // }       
         JMethod $set = writer.declareMethod( codeModel.VOID, "set"+prop.getName(true) );
         JType setterType = exposedType;
@@ -127,8 +125,7 @@ public class SingleField extends AbstractFieldWithVar {
         JVar $value = writer.addParameter( setterType, "value" );
         JBlock body = $set.body();
         body.assign(JExpr._this().ref(ref()),castToImplType($value));
-        onSetEvent = body;
-        
+
         javadoc = prop.javadoc;
         if(javadoc.length()==0)
             javadoc = Messages.DEFAULT_SETTER_JAVADOC.format(nc.toVariableName(prop.getName(true)));
@@ -138,18 +135,8 @@ public class SingleField extends AbstractFieldWithVar {
             .append(possibleTypes);
     }
 
-    /**
-     * Code fragment that gets executed when the set method
-     * is called. IOW, this is an event handler of the "onSet" event.
-     */
-    private JBlock onSetEvent;
-
     public final JType getFieldType() {
         return implType;
-    }
-
-    public final JBlock getOnSetEventHandler() {
-        return onSetEvent;
     }
 
     public FieldAccessor create(JExpression targetObject) {

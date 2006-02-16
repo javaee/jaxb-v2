@@ -19,7 +19,6 @@
  */
 package com.sun.tools.xjc.outline;
 
-import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JType;
 import com.sun.tools.xjc.model.CPropertyInfo;
@@ -62,30 +61,4 @@ public interface FieldOutline {
      *      will be accessed.
      */
     FieldAccessor create( JExpression targetObject );
-
-//    /**
-//     * Get the type of the object returned from the getValue method.
-//     *
-//     * @return
-//     *      A JClass object that represents the type. This method
-//     *      needs to return a JClass, not JPrimitiveType since
-//     *      the getContent method must be able to return null.
-//     */
-//    // TODO: do we still need this?
-//    JClass getContentValueType();
-
-    /**
-     * Get a code block that will be executed when the state of
-     * this field changes from a null state to a non-null state.
-     * (the unset state to the set state.)
-     *
-     * <p>
-     * This method can be called only after the generate method is
-     * called.
-     *
-     * @return
-     *      Always return non-null object.
-     */
-    // TODO: do we still need this?
-    JBlock getOnSetEventHandler();
 }

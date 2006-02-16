@@ -131,11 +131,6 @@ abstract class AbstractListField extends AbstractField {
             .assign(field,newCoreList());
     }
 
-    public JBlock getOnSetEventHandler() {
-        // TODO: implement this method later
-        throw new UnsupportedOperationException();
-    }
-
     public final JType getRawType() {
         return codeModel.ref(List.class).narrow(exposedType.boxify());
     }
