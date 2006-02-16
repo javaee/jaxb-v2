@@ -169,6 +169,9 @@ public final class CElementInfo extends AbstractCTypeInfoImpl
         return null;
     }
 
+    /**
+     * @deprecated why are you calling a method that returns this?
+     */
     public NType getType() {
         return this;
     }

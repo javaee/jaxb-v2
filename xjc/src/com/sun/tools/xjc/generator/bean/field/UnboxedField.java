@@ -105,25 +105,12 @@ public class UnboxedField extends AbstractFieldWithVar {
     public FieldAccessor create(JExpression targetObject) {
         return new Accessor(targetObject) {
             
-            public JExpression getContentValue() {
-                return ptype.wrap($ref);
-            }
-
-            public void toArray( JBlock block, JExpression $array ) {
-                block.assign( $array.component(JExpr.lit(0)), $ref );
-            }
-            
-            
             public void unsetValues( JBlock body ) {
                 // you can't unset a value
             }
             
             public JExpression hasSetValue() {
                 return JExpr.TRUE;
-            }
-
-            public void add( JBlock block, JExpression newValue ) {
-                block.assign($ref, newValue);
             }
         };
     }

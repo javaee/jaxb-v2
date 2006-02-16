@@ -103,20 +103,9 @@ public class IsSetField extends AbstractField {
         public void unsetValues( JBlock body ) {
             core.unsetValues(body);
         }
-        public void toArray( JBlock block, JExpression $array ) {
-            core.toArray(block,$array);
-        }
         public JExpression hasSetValue() {
             return core.hasSetValue();
         }
-        public JExpression getContentValue() {
-            return core.getContentValue();
-        }
-
-        public void add(JBlock body, JExpression newValue) {
-            core.add(body,newValue);
-        }
-
         public void toRawValue(JBlock block, JVar $var) {
             core.toRawValue(block,$var);
         }

@@ -12,7 +12,6 @@ import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CElement;
 import com.sun.tools.xjc.model.CElementInfo;
 import com.sun.tools.xjc.model.CElementPropertyInfo;
-import com.sun.tools.xjc.model.CNonElement;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.model.CReferencePropertyInfo;
 import com.sun.tools.xjc.model.CTypeRef;
@@ -80,7 +79,7 @@ abstract class AbstractMappingImpl<InfoT extends CElement> implements Mapping {
                     // content model like (A|B),C is not eligible
                     return null;
 
-                result.add(createPropertyImpl(ep,ref.get(0).getTagName(),ref.get(0).getTarget()));
+                result.add(createPropertyImpl(ep,ref.get(0).getTagName()));
             } else
             if (p instanceof ReferencePropertyInfo) {
                 CReferencePropertyInfo rp = (CReferencePropertyInfo) p;
@@ -91,12 +90,21 @@ abstract class AbstractMappingImpl<InfoT extends CElement> implements Mapping {
 
                 CElement ref = elements.iterator().next();
                 if(ref instanceof ClassInfo) {
-                    result.add(createPropertyImpl(rp,ref.getElementName(),(CNonElement)ref));
+                    result.add(createPropertyImpl(rp,ref.getElementName()));
                 } else {
                     CElementInfo eref = (CElementInfo)ref;
                     if(!eref.getSubstitutionMembers().isEmpty())
                         return null;    // elements with a substitution group isn't qualified for the wrapper style
-                    result.add(createPropertyImpl(rp,eref));
+
+                    // JAX-WS doesn't want to see JAXBElement, so we have to hide it for them.
+                    ElementAdapter fr;
+                    if(rp.isCollection())
+                        fr = new ElementCollectionAdapter(parent.outline.getField(rp), eref);
+                    else
+                        fr = new ElementSingleAdapter(parent.outline.getField(rp), eref);
+
+                    result.add(new PropertyImpl(this,
+                        fr, eref.getElementName()));
                 }
             } else
                 // to be eligible for the wrapper style, only elements are allowed.
@@ -108,13 +116,8 @@ abstract class AbstractMappingImpl<InfoT extends CElement> implements Mapping {
         return result;
     }
 
-    private Property createPropertyImpl(CPropertyInfo p, QName tagName, CNonElement type) {
+    private Property createPropertyImpl(CPropertyInfo p, QName tagName) {
         return new PropertyImpl(this,
             parent.outline.getField(p),tagName);
-    }
-
-    private Property createPropertyImpl(CReferencePropertyInfo rp, CElementInfo ref) {
-        return new PropertyImpl(this,
-            parent.outline.getField(rp),ref.getElementName());
     }
 }
