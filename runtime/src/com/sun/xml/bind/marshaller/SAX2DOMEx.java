@@ -32,7 +32,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import com.sun.xml.bind.util.Which;
-import com.sun.xml.bind.v2.util.FinalArrayList;
+import com.sun.istack.FinalArrayList;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

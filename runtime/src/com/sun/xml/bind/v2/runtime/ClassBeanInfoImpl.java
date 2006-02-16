@@ -31,8 +31,8 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.StructureLoader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.unmarshaller.XsiTypeLoader;
-import com.sun.xml.bind.v2.util.FinalArrayList;
 import com.sun.xml.bind.Util;
+import com.sun.istack.FinalArrayList;
 
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;

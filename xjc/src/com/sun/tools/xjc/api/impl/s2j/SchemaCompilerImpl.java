@@ -39,8 +39,8 @@ import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.reader.internalizer.DOMForest;
 import com.sun.tools.xjc.reader.xmlschema.parser.XMLSchemaInternalizationLogic;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
-import com.sun.xml.bind.util.SAXParseException2;
 import com.sun.xml.xsom.XSSchemaSet;
+import com.sun.istack.SAXParseException2;
 
 import org.w3c.dom.Element;
 import org.xml.sax.ContentHandler;

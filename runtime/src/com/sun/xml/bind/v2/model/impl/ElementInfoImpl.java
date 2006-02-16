@@ -16,7 +16,6 @@ import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
-import com.sun.xml.bind.v2.util.FinalArrayList;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.AnnotationSource;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
@@ -33,6 +32,7 @@ import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
+import com.sun.istack.FinalArrayList;
 
 /**
  * {@link ElementInfo} implementation.
@@ -207,7 +207,7 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      *      The factory method on ObjectFactory that comes with {@link XmlElementDecl}.
      */
     public ElementInfoImpl(ModelBuilder<TypeT,ClassDeclT,FieldT,MethodT> builder,
-        RegistryInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> registry, MethodT m ) throws IllegalAnnotationException {
+                           RegistryInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> registry, MethodT m ) throws IllegalAnnotationException {
         super(builder,registry);
 
         this.method = m;

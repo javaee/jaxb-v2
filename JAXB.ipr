@@ -582,6 +582,7 @@
         <root url="jar://$PROJECT_DIR$/tools/lib/util/sjsxp.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/redist/activation.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/runtime2/txw2.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/runtime2/istack-commons-runtime.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -589,6 +590,7 @@
         <root url="jar://$PROJECT_DIR$/tools/lib/src/jsr173_1.0_src.jar!/src" />
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/activation-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/txw2-src.zip!/runtime" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/istack-commons-runtime-src.zip!/" />
       </SOURCES>
     </library>
     <library name="compiler-libs">
@@ -649,16 +651,17 @@
         <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/rngom.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/dtd-parser-1.0.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/relaxngDatatype.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/istack-commons-tools.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
-        <root url="jar://$PROJECT_DIR$/tools/lib/src/resolver-src.zip!/src" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/txw2-src.zip!/runtime" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/xsom-src.zip!/build/src" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/xsom-src.zip!/src" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/rngom-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/dtd-parser-1.0-src.zip!/dtd-parser-1.0/src" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/relaxngDatatype-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/istack-commons-tools-src.zip!/" />
       </SOURCES>
     </library>
     <library name="ant">

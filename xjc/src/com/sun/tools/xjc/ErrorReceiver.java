@@ -23,10 +23,8 @@
  */
 package com.sun.tools.xjc;
 
-import java.io.IOException;
-
 import com.sun.tools.xjc.api.ErrorListener;
-import com.sun.xml.bind.util.SAXParseException2;
+import com.sun.istack.SAXParseException2;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
@@ -65,11 +63,11 @@ public abstract class ErrorReceiver  implements ErrorHandler, ErrorListener {
      *      can be null if the location is unknown
      */
     public final void error( Locator loc, String msg ) {
-        error( new SAXParseException(msg,loc) );
+        error( new SAXParseException2(msg,loc) );
     }
 
     public final void error( Locator loc, String msg, Exception e ) {
-        error( new SAXParseException(msg,loc,e) );
+        error( new SAXParseException2(msg,loc,e) );
     }
 
     public final void error( String msg, Exception e ) {

@@ -11,9 +11,9 @@ import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.WhiteSpaceProcessor;
 import com.sun.xml.bind.api.AccessorException;
-import com.sun.xml.bind.v2.util.FinalArrayList;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
+import com.sun.istack.FinalArrayList;
 
 import org.xml.sax.SAXException;
 

@@ -8,7 +8,6 @@ import javax.xml.bind.annotation.XmlValue;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.WhiteSpaceProcessor;
-import com.sun.xml.bind.util.SAXException2;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.impl.RuntimeModelBuilder;
@@ -21,6 +20,7 @@ import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.opt.OptimizedTransducedAccessorFactory;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Patcher;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
+import com.sun.istack.SAXException2;
 
 import org.xml.sax.SAXException;
 

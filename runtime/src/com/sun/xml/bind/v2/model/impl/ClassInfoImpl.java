@@ -51,7 +51,7 @@ import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
-import com.sun.xml.bind.v2.util.FinalArrayList;
+import com.sun.istack.FinalArrayList;
 
 
 /**
@@ -111,12 +111,12 @@ class ClassInfoImpl<T,C,F,M>
      */
     protected /*final*/ PropertySeed<T,C,F,M> attributeWildcard;
 
-    
+
     /**
      * @see #getFactoryMethod()
      */
     private M factoryMethod = null;
-    
+
     ClassInfoImpl(ModelBuilder<T,C,F,M> builder, Locatable upstream, C clazz) {
         super(builder,upstream);
         this.clazz = clazz;
@@ -142,13 +142,13 @@ class ClassInfoImpl<T,C,F,M>
         } else {
             propOrder = DEFAULT_ORDER;
         }
-        
+
         // the class must have the default constructor
         if (!hasFactoryConstructor(t)){
             if(!nav().hasDefaultConstructor(clazz)){
                 builder.reportError(new IllegalAnnotationException(
-                Messages.NO_DEFAULT_CONSTRUCTOR.format(nav().getClassName(clazz)), this ));        
-            }     
+                Messages.NO_DEFAULT_CONSTRUCTOR.format(nav().getClassName(clazz)), this ));
+            }
         }
     }
 
@@ -1108,8 +1108,8 @@ class ClassInfoImpl<T,C,F,M>
      *      true if the factory method was found. False if not.
      */
     private  boolean hasFactoryConstructor(XmlType t){
-        if (t == null) return false;        
-        
+        if (t == null) return false;
+
         String method = t.factoryMethod();
         T fClass = reader().getClassValue(t, "factoryClass");
         if (method.length() > 0){
@@ -1128,7 +1128,7 @@ class ClassInfoImpl<T,C,F,M>
             }
             if (factoryMethod == null){
                 builder.reportError(new IllegalAnnotationException(
-                Messages.NO_FACTORY_METHOD.format(nav().getClassName(nav().asDecl(fClass)), method), this )); 
+                Messages.NO_FACTORY_METHOD.format(nav().getClassName(nav().asDecl(fClass)), method), this ));
             }
         } else if(!fClass.equals(nav().ref(XmlType.DEFAULT.class))){
             builder.reportError(new IllegalAnnotationException(
@@ -1137,7 +1137,7 @@ class ClassInfoImpl<T,C,F,M>
         return factoryMethod != null;
     }
 
-   
+
     public Method getFactoryMethod(){
         return (Method) factoryMethod;
     }

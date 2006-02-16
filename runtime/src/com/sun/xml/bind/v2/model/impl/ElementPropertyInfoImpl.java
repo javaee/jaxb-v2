@@ -15,7 +15,7 @@ import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
-import com.sun.xml.bind.v2.util.FinalArrayList;
+import com.sun.istack.FinalArrayList;
 
 /**
  * Common {@link ElementPropertyInfo} implementation used for both
