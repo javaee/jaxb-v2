@@ -82,11 +82,6 @@ public class IsSetField extends AbstractField {
         }
     }
 
-
-    public JBlock getOnSetEventHandler() {
-        return core.getOnSetEventHandler();
-    }
-
     public JType getRawType() {
         return core.getRawType();
     }

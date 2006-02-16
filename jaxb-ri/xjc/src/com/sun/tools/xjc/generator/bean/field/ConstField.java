@@ -69,12 +69,6 @@ final class ConstField extends AbstractField {
         annotate($ref);
     }
     
-    public JBlock getOnSetEventHandler() {
-        // since this is a constant field, we will never fire this event.
-        // just return a dummy block.
-        return new JBlock();
-    }
-        
     public JType getRawType() {
 //        if( isCollection )      return getInfo().array();
         return exposedType;
