@@ -42,6 +42,7 @@ import com.sun.tools.xjc.api.ClassNameAllocator;
 import com.sun.tools.xjc.reader.Util;
 import com.sun.tools.xjc.generator.bean.field.FieldRendererFactory;
 import com.sun.tools.xjc.model.Model;
+import com.sun.xml.bind.api.impl.NameConverter;
 
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -174,6 +175,16 @@ public class Options
      */
     private Plugin fieldRendererFactoryOwner = null;
 
+    /**
+     * If this is non-null, we use this {@link NameConverter} over the one
+     * given in the schema/binding.
+     */
+    private NameConverter nameConverter = null;
+    /**
+     * Used to detect if two {@link Plugin}s try to overwrite {@link #nameConverter}.
+     */
+    private Plugin nameConverterOwner = null;
+
     static {
         for( Plugin aug : findServices(Plugin.class) )
             allPlugins.add(aug);
@@ -217,6 +228,47 @@ public class Options
         }
         this.fieldRendererFactoryOwner = owner;
         this.fieldRendererFactory = frf;
+    }
+
+
+    /**
+     * Gets the active {@link NameConverter} that shall be used to build {@link Model}.
+     *
+     * @return can be null, in which case it's up to the binding.
+     */
+    public NameConverter getNameConverter() {
+        return nameConverter;
+    }
+
+    /**
+     * Sets the {@link NameConverter}.
+     *
+     * <p>
+     * This method is for plugins to call to set a custom {@link NameConverter}.
+     *
+     * @param nc
+     *      The {@link NameConverter} to be installed. Must not be null.
+     * @param owner
+     *      Identifies the plugin that owns this {@link NameConverter}.
+     *      When two {@link Plugin}s try to call this method, this allows XJC
+     *      to report it as a user-friendly error message.
+     *
+     * @throws BadCommandLineException
+     *      If a conflit happens, this exception carries a user-friendly error
+     *      message, indicating a conflict.
+     */
+    public void setNameConverter(NameConverter nc, Plugin owner) throws BadCommandLineException {
+        // since this method is for plugins, make it bit more fool-proof than usual
+        if(nc==null)
+            throw new IllegalArgumentException();
+        if(nameConverter!=null) {
+            throw new BadCommandLineException(
+                Messages.format(Messages.NAME_CONVERTER_CONFLICT,
+                    nameConverterOwner.getOptionName(),
+                    owner.getOptionName() ));
+        }
+        this.nameConverterOwner = owner;
+        this.nameConverter = nc;
     }
 
 
@@ -274,7 +326,7 @@ public class Options
             URL baseURL = new File(".").getCanonicalFile().toURL(); 
             is.setSystemId( new URL(baseURL,is.getSystemId()).toExternalForm() );
         } catch( IOException e ) {
-            ; // ignore
+            // ignore
         }
         return is;
     }
@@ -672,7 +724,7 @@ public class Options
                             if(debug) {
                                 System.out.println("Attempting to instanciate "+impl);
                             }
-                            a.add((T)implClass.newInstance());
+                            a.add(clazz.cast(implClass.newInstance()));
                         }
                     }
                     reader.close();
@@ -685,6 +737,7 @@ public class Options
                         try {
                             reader.close();
                         } catch( IOException ex2 ) {
+                            // ignore
                         }
                     }
                 }

@@ -186,7 +186,8 @@ public class BGMBuilder extends BindingComponent {
         }
 
         // obtain the name conversion mode
-        model.setNameConverter(globalBinding.nameConverter);
+        if(globalBinding.nameConverter!=null)
+            model.setNameConverter(globalBinding.nameConverter);
 
         // attach global conversions to the appropriate simple types
         globalBinding.dispatchGlobalConversions(schemas);
