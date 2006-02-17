@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import javax.xml.bind.Binder;
 import javax.xml.bind.JAXBElement;
@@ -104,7 +106,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.61 $
+ * @version $Revision: 1.62 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -321,19 +323,24 @@ public final class JAXBContextImpl extends JAXBRIContext {
                 return r;
         }
 
-        RuntimeModelBuilder builder = new RuntimeModelBuilder(
+        final RuntimeModelBuilder builder = new RuntimeModelBuilder(
                 new RuntimeInlineAnnotationReader(),
                 defaultNsUri);
         IllegalAnnotationsException.Builder errorHandler = new IllegalAnnotationsException.Builder();
         builder.setErrorHandler(errorHandler);
 
-        for( Class c : classes )
-            builder.getTypeInfo(new Ref<Type,Class>(c));
+        RuntimeTypeInfoSet r = AccessController.doPrivileged(new PrivilegedAction<RuntimeTypeInfoSet>() {
+            public RuntimeTypeInfoSet run() {
+                for( Class c : classes )
+                    builder.getTypeInfo(new Ref<Type,Class>(c));
 
-        RuntimeTypeInfoSet r = builder.link();
+                return builder.link();
+            }
+        });
+                
         errorHandler.check();
         assert r!=null : "if no error was reported, the link must be a success";
-        
+
         typeInfoSetCache = new WeakReference<RuntimeTypeInfoSet>(r);
 
         return r;
