@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
 import com.sun.tools.xjc.reader.Const;
+import com.sun.xml.bind.api.impl.NameConverter;
 
 import org.xml.sax.Locator;
 
@@ -66,10 +67,11 @@ public final class BIClass extends AbstractDeclarationImpl {
      */
     public String getClassName() {
         if( className==null )   return null;
-        
-        BIGlobalBinding gb = getBuilder().getGlobalBinding();
 
-        if(gb.isJavaNamingConventionEnabled()) return gb.nameConverter.toClassName(className);
+        BIGlobalBinding gb = getBuilder().getGlobalBinding();
+        NameConverter nc = getBuilder().model.getNameConverter();
+
+        if(gb.isJavaNamingConventionEnabled()) return nc.toClassName(className);
         else
             // don't change it
             return className;

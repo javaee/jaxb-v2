@@ -36,6 +36,8 @@ import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.tools.xjc.ErrorReceiver;
+import com.sun.tools.xjc.Options;
+import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.generator.bean.ImplStructureStrategy;
 import static com.sun.tools.xjc.generator.bean.ImplStructureStrategy.BEAN_ONLY;
 import com.sun.tools.xjc.reader.Const;
@@ -340,6 +342,14 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
         String type;
     }
 
+    public void onSetOwner() {
+        super.onSetOwner();
+        // if one is given by options, use that
+        NameConverter nc = Ring.get(Model.class).options.getNameConverter();
+        if(nc!=null)
+            nameConverter = nc;
+    }
+
     /**
      * Creates a bind info object with the default values
      */
@@ -356,7 +366,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
                 collectionType, fixedAttributeAsConstantProperty, optionalProperty, false );
         defaultProperty.setParent(parent); // don't forget to initialize the defaultProperty
     }
-    
+
     /**
      * Moves global BIConversion to the right object.
      */

@@ -177,4 +177,7 @@ class Messages
 
     static final String FIELD_RENDERER_CONFLICT = // 2 args
         "FIELD_RENDERER_CONFLICT";
+
+    static final String NAME_CONVERTER_CONFLICT = // 2 args
+            "NAME_CONVERTER_CONFLICT";
 }

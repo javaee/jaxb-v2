@@ -126,8 +126,6 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void> {
      * Gets the name converter that shall be used to parse XML names into Java names.
      */
     public final NameConverter getNameConverter() {
-        // if this is null, the model builder must have botched the job.
-        assert nameConverter!=null;
         return nameConverter;
     }
 

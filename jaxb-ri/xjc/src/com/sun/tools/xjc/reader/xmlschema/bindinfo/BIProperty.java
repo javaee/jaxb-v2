@@ -167,10 +167,11 @@ public final class BIProperty extends AbstractDeclarationImpl {
     public String getPropertyName( boolean forConstant ) {
         if(name!=null) {
             BIGlobalBinding gb = getBuilder().getGlobalBinding();
+            NameConverter nc = getBuilder().model.getNameConverter();
 
             if( gb.isJavaNamingConventionEnabled() && !forConstant )
                 // apply XML->Java conversion
-                return gb.nameConverter.toPropertyName(name);
+                return nc.toPropertyName(name);
             else
                 return name;    // ... or don't change the value
         }
