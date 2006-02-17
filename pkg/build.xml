@@ -93,16 +93,12 @@
         <include name="prototype*"/>
         <include name="copyright"/>
         <include name="depend"/>
-        <include name="i.jwsenv"/>
       </fileset>
     </copy>
 
     <!-- copy script files into the right directory structure -->
-    <copy todir="${pkg.build.dir}/${pkg.jaxb}/SUNWjax/share/lib/install/templates" overwrite="yes">
-      <fileset dir="${basedir}/../tools/bin">
-        <include name="*.pkg.template"/>
-      </fileset>
-    </copy>
+    <copy file="${basedir}/../tools/bin/xjc.sh" tofile="${pkg.build.dir}/${pkg.jaxb}/SUNWjax/bin/xjc" overwrite="yes"/>
+    <copy file="${basedir}/../tools/bin/schemagen.sh" tofile="${pkg.build.dir}/${pkg.jaxb}/SUNWjax/bin/schemagen" overwrite="yes"/>
 
     <!-- copy jaxb jar files into the right directory structure -->
     <copy todir="${pkg.build.dir}/${pkg.jaxb}/SUNWjax/share/lib" overwrite="yes">
