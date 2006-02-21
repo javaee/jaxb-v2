@@ -105,12 +105,12 @@
     <!-- copy script files into the right directory structure -->
     <copy tofile="${rpm.build.dir}/SOURCES/sun-jaxb2-${release.impl.version}${rpm.install.base}/bin/xjc" overwrite="yes">
       <fileset dir="${basedir}/../tools/bin">
-        <include name="xjc.pkg.template"/>
+        <include name="xjc.rpm.template"/>
       </fileset>
     </copy>
     <copy tofile="${rpm.build.dir}/SOURCES/sun-jaxb2-${release.impl.version}${rpm.install.base}/bin/schemagen" overwrite="yes">
       <fileset dir="${basedir}/../tools/bin">
-        <include name="schemagen.pkg.template"/>
+        <include name="schemagen.rpm.template"/>
       </fileset>
     </copy>
 

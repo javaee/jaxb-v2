@@ -7,9 +7,7 @@
 #
 # Script to run xjc
 #
-
-bin_dir=`dirname $0`
-WEBSERVICES_LIB=`cd $bin_dir/../share/lib; pwd`
+WEBSERVICES_LIB=%WEBSERVICES_LIB%
 
 #
 # Set CLASSPATH
