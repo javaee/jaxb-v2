@@ -7,9 +7,7 @@
 #
 # Script to run schemagen
 #
-
-bin_dir=`dirname $0`
-WEBSERVICES_LIB=`cd $bin_dir/../share/lib; pwd`
+WEBSERVICES_LIB=%WEBSERVICES_LIB%
 
 if [ -n "$JAVA_HOME" ]
 then
