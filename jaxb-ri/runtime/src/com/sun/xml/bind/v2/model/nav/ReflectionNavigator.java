@@ -513,6 +513,10 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
         return false;
     }
 
+    public boolean isInterface(Class clazz) {
+        return clazz.isInterface();
+    }
+
 
     /**
      * JDK 5.0 has a bug of createing {@link GenericArrayType} where it shouldn't.

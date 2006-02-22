@@ -286,4 +286,8 @@ public final class NavigatorImpl implements Navigator<NType,NClass,Void,Void> {
     public boolean isOverriding(Void method) {
         throw new UnsupportedOperationException();
     }
+
+    public boolean isInterface(NClass clazz) {
+        throw new UnsupportedOperationException();
+    }
 }

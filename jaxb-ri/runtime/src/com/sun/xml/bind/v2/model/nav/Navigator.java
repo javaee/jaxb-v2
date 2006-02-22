@@ -346,4 +346,9 @@ public interface Navigator<T,C,F,M> {
      * defined in the base class.
      */
     boolean isOverriding(M method);
+
+    /**
+     * Returns true if 'clazz' is an interface.
+     */
+    boolean isInterface(C clazz);
 }
