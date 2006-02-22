@@ -141,8 +141,8 @@ public class RawTypeSetBuilder implements XSTermVisitor {
             prop.setWildcard(mode);
         }
 
-        protected boolean canBeType(RawTypeSet parent) {
-            return false;
+        protected RawTypeSet.Mode canBeType(RawTypeSet parent) {
+            return RawTypeSet.Mode.MUST_BE_REFERENCE;
         }
 
         protected boolean isListOfValues() {
@@ -175,12 +175,12 @@ public class RawTypeSetBuilder implements XSTermVisitor {
             prop.getElements().add(target);
         }
 
-        protected boolean canBeType(RawTypeSet parent) {
+        protected RawTypeSet.Mode canBeType(RawTypeSet parent) {
             // if element substitution can occur, no way it can be mapped to a list of types
             if(decl.getSubstitutables().size()>1)
-                return false;
+                return RawTypeSet.Mode.MUST_BE_REFERENCE;
 
-            return true;
+            return RawTypeSet.Mode.SHOULD_BE_TYPEREF;
         }
 
         protected boolean isListOfValues() {
@@ -217,10 +217,10 @@ public class RawTypeSetBuilder implements XSTermVisitor {
             prop.getElements().add(target);
         }
 
-        protected boolean canBeType(RawTypeSet parent) {
+        protected RawTypeSet.Mode canBeType(RawTypeSet parent) {
             // if element substitution can occur, no way it can be mapped to a list of types
             if(decl.getSubstitutables().size()>1)
-                return false;
+                return RawTypeSet.Mode.MUST_BE_REFERENCE;
 
             // we have no place to put an adater if this thing maps to a type
             CElementPropertyInfo p = target.getProperty();
@@ -229,10 +229,10 @@ public class RawTypeSetBuilder implements XSTermVisitor {
             // we have no place to put the special annotation, so we need JAXBElement.
             if(parent.refs.size()>1 || !parent.mul.isAtMostOnce()) {
                 if(p.getAdapter()!=null || p.id()!=ID.NONE)
-                    return false;
+                    return RawTypeSet.Mode.MUST_BE_REFERENCE;
             }
 
-            return true;
+            return RawTypeSet.Mode.SHOULD_BE_TYPEREF;
         }
 
         protected boolean isListOfValues() {

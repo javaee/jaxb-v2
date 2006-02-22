@@ -97,8 +97,8 @@ public final class RawTypeSetBuilder extends DPatternWalker {
             return false;
         }
 
-        protected boolean canBeType(RawTypeSet parent) {
-            return true;
+        protected RawTypeSet.Mode canBeType(RawTypeSet parent) {
+            return RawTypeSet.Mode.SHOULD_BE_TYPEREF;
         }
 
         protected void toElementRef(CReferencePropertyInfo prop) {

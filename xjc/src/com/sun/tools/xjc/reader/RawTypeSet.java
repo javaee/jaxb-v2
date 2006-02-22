@@ -45,7 +45,7 @@ public final class RawTypeSet {
     /**
      * True if this type set can form references to types.
      */
-    public final boolean canBeTypeRefs;
+    public final Mode canBeTypeRefs;
 
     /**
      * The occurence of the whole references.
@@ -72,6 +72,42 @@ public final class RawTypeSet {
         return !mul.isOptional();
     }
 
+
+    /**
+     * Represents the possible binding option for this {@link RawTypeSet}.
+     */
+    public enum Mode {
+        /**
+         * This {@link RawTypeSet} can be either an reference property or
+         * an element property, and XJC recommends element property.
+         */
+        SHOULD_BE_TYPEREF(0),
+        /**
+         * This {@link RawTypeSet} can be either an reference property or
+         * an element property, and XJC recommends reference property.
+         */
+        CAN_BE_TYPEREF(1),
+        /**
+         * This {@link RawTypeSet} can be only bound to a reference property.
+         */
+        MUST_BE_REFERENCE(2);
+
+        private final int rank;
+
+        Mode(int rank) {
+           this.rank = rank;
+        }
+
+        Mode or(Mode that) {
+            switch(Math.max(this.rank,that.rank)) {
+            case 0:     return SHOULD_BE_TYPEREF;
+            case 1:     return CAN_BE_TYPEREF;
+            case 2:     return MUST_BE_REFERENCE;
+            }
+            throw new AssertionError();
+        }
+    }
+
     /**
      * Returns true if {@link #refs} can form refs of types.
      *
@@ -83,30 +119,36 @@ public final class RawTypeSet {
      * If two refs derive from each other, they cannot form a list of refs
      * (because of a possible ambiguity).
      */
-    private boolean canBeTypeRefs() {
+    private Mode canBeTypeRefs() {
         Set<NType> types = new HashSet<NType>();
 
         collectionMode = mul.isAtMostOnce()?NOT_REPEATED:REPEATED_ELEMENT;
 
+        // the way we compute this is that we start from the most optimistic value,
+        // and then gradually degrade as we find something problematic.
+        Mode mode = Mode.SHOULD_BE_TYPEREF;
+
         for( Ref r : refs ) {
-            if(!r.canBeType(this))
-                return false;   // veto
+            mode = mode.or(r.canBeType(this));
+            if(mode== Mode.MUST_BE_REFERENCE)
+                return mode;    // no need to continue the processing
+
             if(!types.add(r.toTypeRef(null).getTarget().getType()))
-                return false;   // collision
+                return Mode.MUST_BE_REFERENCE;   // collision
             if(r.isListOfValues()) {
                 if(refs.size()>1 || !mul.isAtMostOnce())
-                    return false;   // restriction on @XmlList
+                    return Mode.MUST_BE_REFERENCE;   // restriction on @XmlList
                 collectionMode = REPEATED_VALUE;
             }
         }
-        return true;
+        return mode;
     }
 
 
 
 
     public void addTo(CElementPropertyInfo prop) {
-        assert canBeTypeRefs;
+        assert canBeTypeRefs!= Mode.MUST_BE_REFERENCE;
         if(mul.isZero())
             return; // the property can't have any value
 
@@ -159,7 +201,7 @@ public final class RawTypeSet {
          * @return false to veto.
          * @param parent
          */
-        protected abstract boolean canBeType(RawTypeSet parent);
+        protected abstract Mode canBeType(RawTypeSet parent);
         protected abstract boolean isListOfValues();
         /**
          * When this {@link RawTypeSet} binds to a {@link CElementPropertyInfo},
@@ -241,21 +283,21 @@ public final class RawTypeSet {
             }
         }
 
-        protected boolean canBeType(RawTypeSet parent) {
+        protected Mode canBeType(RawTypeSet parent) {
             // if we have an adapter or IDness, which requires special
             // annotation, and there's more than one element,
             // we have no place to put the special annotation, so we need JAXBElement.
             if(parent.refs.size()>1 || !parent.mul.isAtMostOnce()) {
                 if(target.getAdapterUse()!=null || target.idUse()!=ID.NONE)
-                    return false;
+                    return Mode.MUST_BE_REFERENCE;
             }
 
             // nillable and optional at the same time. needs an element wrapper to distinguish those
-            // two states.
+            // two states. But this is not a hard requirement.
             if(nillable && parent.mul.isOptional())
-                return false;
+                return Mode.CAN_BE_TYPEREF;
 
-            return true;
+            return Mode.SHOULD_BE_TYPEREF;
         }
 
         protected boolean isListOfValues() {
