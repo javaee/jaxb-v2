@@ -272,7 +272,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
     boolean generateElementClass = false;
 
     @XmlAttribute
-    Boolean generateElementProperty = false;
+    Boolean generateElementProperty = null;
 
     @XmlAttribute
     boolean choiceContentProperty = false;
