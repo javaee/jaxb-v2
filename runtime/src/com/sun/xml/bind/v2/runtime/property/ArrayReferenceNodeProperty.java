@@ -7,8 +7,6 @@ import javax.xml.bind.annotation.DomHandler;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.v2.ClassFactory;
-import com.sun.xml.bind.v2.util.QNameMap;
-import com.sun.xml.bind.v2.util.QNameMap;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElement;
@@ -23,7 +21,7 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Receiver;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.unmarshaller.WildcardLoader;
-import com.sun.xml.bind.v2.runtime.unmarshaller.XsiTypeLoader;
+import com.sun.xml.bind.v2.util.QNameMap;
 
 import org.xml.sax.SAXException;
 
@@ -130,6 +128,7 @@ class ArrayReferenceNodeProperty<BeanT,ListT,ItemT> extends ArrayERProperty<Bean
 
     @Override
     public Accessor getElementPropertyAccessor(String nsUri, String localName) {
+        // TODO: unwrap JAXBElement
         if(wrapperTagName!=null) {
             if(wrapperTagName.equals(nsUri,localName))
                 return acc;

@@ -30,7 +30,7 @@ import org.xml.sax.SAXException;
  *
  * @author Kohsuke Kawaguchi
  */
-final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
+public final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
 
     private Loader loader;
 
@@ -38,7 +38,7 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
 
     // used to create new instances of JAXBElement.
     private final QName tagName;
-    private final Class expectedType;
+    public final Class expectedType;
     private final Class scope;
 
     ElementBeanInfoImpl(JAXBContextImpl grammar, RuntimeElementInfo rei) {
@@ -214,7 +214,11 @@ final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
     }
 
     public final JAXBElement createInstance(UnmarshallingContext context) {
-        return new JAXBElement(tagName,expectedType,scope,null );
+        return createInstanceFromValue(null);
+    }
+
+    public final JAXBElement createInstanceFromValue(Object o) {
+        return new JAXBElement(tagName,expectedType,scope,o);
     }
 
     public boolean reset(JAXBElement e, UnmarshallingContext context) {

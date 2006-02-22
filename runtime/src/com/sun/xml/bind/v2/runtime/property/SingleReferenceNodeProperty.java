@@ -2,24 +2,25 @@ package com.sun.xml.bind.v2.runtime.property;
 
 import java.io.IOException;
 
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.DomHandler;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.ClassFactory;
-import com.sun.xml.bind.v2.util.QNameMap;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElement;
 import com.sun.xml.bind.v2.model.runtime.RuntimeReferencePropertyInfo;
+import com.sun.xml.bind.v2.runtime.ElementBeanInfoImpl;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.WildcardLoader;
-import com.sun.xml.bind.v2.runtime.unmarshaller.XsiTypeLoader;
+import com.sun.xml.bind.v2.util.QNameMap;
 
 import org.xml.sax.SAXException;
 
@@ -93,9 +94,33 @@ final class SingleReferenceNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT
 
     @Override
     public Accessor getElementPropertyAccessor(String nsUri, String localName) {
-        if(expectedElements.containsKey(nsUri,localName))
-            return acc;
-        else
+        JaxBeanInfo bi = expectedElements.get(nsUri, localName);
+        if(bi!=null) {
+            if(bi instanceof ElementBeanInfoImpl) {
+                final ElementBeanInfoImpl ebi = (ElementBeanInfoImpl) bi;
+                // a JAXBElement. We need to handle JAXBElement for JAX-WS
+                return new Accessor<BeanT,Object>(ebi.expectedType) {
+                    public Object get(BeanT bean) throws AccessorException {
+                        ValueT r = acc.get(bean);
+                        if(r instanceof JAXBElement) {
+                            return ((JAXBElement)r).getValue();
+                        } else
+                            // this is sloppy programming, but hey...
+                            return r;
+                    }
+
+                    public void set(BeanT bean, Object value) throws AccessorException {
+                        if(value!=null) {
+                            value = ebi.createInstanceFromValue(value);
+                        }
+                        acc.set(bean,(ValueT)value);
+                    }
+                };
+            } else {
+                // a custom element type, like @XmlRootElement class Foo { ... }
+                return acc;
+            }
+        } else
             return null;
     }
 }
