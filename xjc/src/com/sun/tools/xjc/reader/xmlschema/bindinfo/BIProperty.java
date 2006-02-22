@@ -238,7 +238,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
      * If true, the property will automatically be a reference property.
      * (Talk about confusing names!)
      */
-    public boolean generateElementProperty() {
+    private Boolean generateElementProperty() {
         if(generateElementProperty!=null)   return generateElementProperty;
         BIProperty next = getDefault();
         if(next!=null)      return next.generateElementProperty();
@@ -384,7 +384,11 @@ public final class BIProperty extends AbstractDeclarationImpl {
         String defaultName, boolean forConstant, XSParticle source,
         RawTypeSet types, boolean isNillable ) {
 
-        if(!types.canBeTypeRefs || generateElementProperty()) {
+        Boolean b = generateElementProperty();
+        if(b==null) // the user's specification always override what we compute
+            b = !types.canBeTypeRefs;
+        
+        if(b) {
             return createReferenceProperty(defaultName,forConstant,source,types,isNillable,false);
         } else {
             return createElementProperty(defaultName,forConstant,source,types);

@@ -272,6 +272,9 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
     boolean generateElementClass = false;
 
     @XmlAttribute
+    Boolean generateElementProperty = false;
+
+    @XmlAttribute
     boolean choiceContentProperty = false;
 
     @XmlAttribute
@@ -363,7 +366,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
             enumBaseTypes = Collections.singleton(new QName(WellKnownNamespace.XML_SCHEMA,"string"));
 
         this.defaultProperty = new BIProperty(getLocation(),null,null,null,
-                collectionType, fixedAttributeAsConstantProperty, optionalProperty, false );
+                collectionType, fixedAttributeAsConstantProperty, optionalProperty, generateElementProperty );
         defaultProperty.setParent(parent); // don't forget to initialize the defaultProperty
     }
 
