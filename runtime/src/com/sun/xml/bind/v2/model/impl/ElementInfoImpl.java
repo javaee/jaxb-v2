@@ -242,7 +242,7 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
         if(adapter==null) {
             // T of JAXBElement<T>
-            TypeT typeType = nav().getTypeArgument(baseClass,0);
+            TypeT typeType = nav().getMethodParameters(m)[0]; // getTypeArgument(baseClass,0) <-- this doesn't work as generated class might inherit from public content interface
             TypeT list = nav().getBaseClass(typeType,nav().asDecl(List.class));
             if(list==null) {
                 isCollection = false;
