@@ -210,6 +210,14 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
         return Arrays.asList(clazz.getDeclaredFields());
     }
 
+    public Field getDeclaredField(Class clazz, String fieldName) {
+        try {
+            return clazz.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            return null;
+        }
+    }
+
     public Collection<? extends Method> getDeclaredMethods(Class clazz) {
         return Arrays.asList(clazz.getDeclaredMethods());
     }

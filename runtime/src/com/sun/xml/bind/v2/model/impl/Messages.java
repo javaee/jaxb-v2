@@ -55,6 +55,8 @@ enum Messages {
     XMLLIST_ON_SINGLE_PROPERTY, // 0 arg
     NO_FACTORY_METHOD, // 2 args
     FACTORY_CLASS_NEEDS_FACTORY_METHOD, // 1 arg
+
+    MISSING_JAXB_PROPERTIES // 1arg
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());

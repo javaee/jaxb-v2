@@ -95,6 +95,17 @@ public interface Navigator<T,C,F,M> {
     Collection<? extends F> getDeclaredFields(C clazz);
 
     /**
+     * Gets the named field declared on the given class.
+     *
+     * This method doesn't visit ancestors, but does recognize
+     * non-public fields.
+     *
+     * @return
+     *      null if not found
+     */
+    F getDeclaredField(C clazz, String fieldName);
+
+    /**
      * Gets all the declared methods of the given class
      * (regardless of their access modifiers, regardless
      * of whether they override methods of the base classes.)

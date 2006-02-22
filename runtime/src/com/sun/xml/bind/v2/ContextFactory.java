@@ -170,4 +170,6 @@ public class ContextFactory {
             in.close();
         }
     }
+
+    public static final String USE_JAXB_PROPERTIES = "_useJAXBProperties";
 }
