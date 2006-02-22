@@ -20,6 +20,7 @@ import com.sun.mirror.declaration.MethodDeclaration;
 import com.sun.mirror.declaration.Modifier;
 import com.sun.mirror.declaration.ParameterDeclaration;
 import com.sun.mirror.declaration.TypeDeclaration;
+import com.sun.mirror.declaration.InterfaceDeclaration;
 import com.sun.mirror.type.ArrayType;
 import com.sun.mirror.type.ClassType;
 import com.sun.mirror.type.DeclaredType;
@@ -270,6 +271,10 @@ public class APTNavigator implements Navigator<TypeMirror,TypeDeclaration,FieldD
         }
 
         return false;
+    }
+
+    public boolean isInterface(TypeDeclaration clazz) {
+        return clazz instanceof InterfaceDeclaration;
     }
 
     public boolean isArray(TypeMirror t) {

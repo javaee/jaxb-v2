@@ -146,8 +146,14 @@ class ClassInfoImpl<T,C,F,M>
         // the class must have the default constructor
         if (!hasFactoryConstructor(t)){
             if(!nav().hasDefaultConstructor(clazz)){
+                Messages msg;
+                if(nav().isInterface(clazz))
+                    msg = Messages.CANT_HANDLE_INTERFACE;
+                else
+                    msg = Messages.NO_DEFAULT_CONSTRUCTOR;
+
                 builder.reportError(new IllegalAnnotationException(
-                Messages.NO_DEFAULT_CONSTRUCTOR.format(nav().getClassName(clazz)), this ));
+                    msg.format(nav().getClassName(clazz)), this ));
             }
         }
     }
