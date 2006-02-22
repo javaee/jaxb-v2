@@ -243,9 +243,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
         BIProperty next = getDefault();
         if(next!=null)      return next.generateElementProperty();
 
-        // globalBinding always has true or false in this property,
-        // so this can't happen
-        throw new AssertionError();
+        return null;
     }
 
 
@@ -384,11 +382,26 @@ public final class BIProperty extends AbstractDeclarationImpl {
         String defaultName, boolean forConstant, XSParticle source,
         RawTypeSet types, boolean isNillable ) {
 
-        Boolean b = generateElementProperty();
-        if(b==null) // the user's specification always override what we compute
-            b = !types.canBeTypeRefs;
-        
-        if(b) {
+        boolean generateRef;
+
+        switch(types.canBeTypeRefs) {
+        case CAN_BE_TYPEREF:
+        case SHOULD_BE_TYPEREF:
+            // it's up to the use
+            Boolean b = generateElementProperty();
+            if(b==null) // follow XJC recommendation
+                generateRef = types.canBeTypeRefs== RawTypeSet.Mode.CAN_BE_TYPEREF;
+            else // use the value user gave us
+                generateRef = b;
+            break;
+        case MUST_BE_REFERENCE:
+            generateRef = true;
+            break;
+        default:
+            throw new AssertionError();
+        }
+
+        if(generateRef) {
             return createReferenceProperty(defaultName,forConstant,source,types,isNillable,false);
         } else {
             return createElementProperty(defaultName,forConstant,source,types);
