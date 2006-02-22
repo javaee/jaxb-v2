@@ -89,6 +89,14 @@ public class APTNavigator implements Navigator<TypeMirror,TypeDeclaration,FieldD
         return sort(l);
     }
 
+    public FieldDeclaration getDeclaredField(TypeDeclaration clazz, String fieldName) {
+        for( FieldDeclaration fd : clazz.getFields() ) {
+            if(fd.getSimpleName().equals(fieldName))
+                return fd;
+        }
+        return null;
+    }
+
     public Collection<MethodDeclaration> getDeclaredMethods(TypeDeclaration c) {
         List<MethodDeclaration> l = new ArrayList<MethodDeclaration>(c.getMethods());
         return sort(l);

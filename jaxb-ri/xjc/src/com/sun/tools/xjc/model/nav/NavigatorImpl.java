@@ -63,6 +63,10 @@ public final class NavigatorImpl implements Navigator<NType,NClass,Void,Void> {
         throw new UnsupportedOperationException();
     }
 
+    public Void getDeclaredField(NClass clazz, String fieldName) {
+        throw new UnsupportedOperationException();
+    }
+
     public Collection<? extends Void> getDeclaredMethods(NClass nClass) {
         throw new UnsupportedOperationException();
     }

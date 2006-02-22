@@ -12,6 +12,7 @@ import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
+import com.sun.xml.bind.v2.ContextFactory;
 
 /**
  * Implementation of {@link RegistryInfo}.
@@ -40,6 +41,17 @@ final class RegistryInfoImpl<T,C,F,M> implements Locatable, RegistryInfo<T,C> {
         this.registryClass = registryClass;
         this.upstream = upstream;
         builder.registries.put(getPackageName(),this);
+
+        if(nav.getDeclaredField(registryClass,ContextFactory.USE_JAXB_PROPERTIES)!=null) {
+            // the user is trying to use ObjectFactory that we generate for interfaces,
+            // that means he's missing jaxb.properties
+            builder.reportError(new IllegalAnnotationException(
+                Messages.MISSING_JAXB_PROPERTIES.format(getPackageName()),
+                this
+            ));
+            // looking at members will only add more errors, so just abort now
+            return;
+        }
 
         for( M m : nav.getDeclaredMethods(registryClass) ) {
             XmlElementDecl em = builder.reader.getMethodAnnotation(
