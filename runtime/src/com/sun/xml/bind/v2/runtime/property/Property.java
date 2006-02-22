@@ -84,7 +84,7 @@ public interface Property<BeanT> extends StructureLoaderBuilder {
     PropertyKind getKind();
 
 
-    // UGLY HACK to support JAX-RPC
+    // UGLY HACK to support JAX-WS
     // if other clients want to access those functionalities,
     // we should design a better model
     /**
