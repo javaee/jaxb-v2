@@ -10,6 +10,8 @@ import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.Source;
 import javax.xml.transform.Result;
 
+import com.sun.istack.NotNull;
+
 import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 
@@ -41,7 +43,7 @@ public abstract class Bridge<T> {
      *
      * @since 2.0 EA1
      */
-    public abstract void marshal(BridgeContext context,T object,XMLStreamWriter output) throws JAXBException;
+    public abstract void marshal(@NotNull BridgeContext context,T object,XMLStreamWriter output) throws JAXBException;
 
     /**
      * Marshals the specified type object with the implicit element name
@@ -56,19 +58,19 @@ public abstract class Bridge<T> {
      *
      * @since 2.0 EA1
      */
-    public abstract void marshal(BridgeContext context,T object,OutputStream output, NamespaceContext nsContext) throws JAXBException;
+    public abstract void marshal(@NotNull BridgeContext context,T object,OutputStream output, NamespaceContext nsContext) throws JAXBException;
 
-    public abstract void marshal(BridgeContext context,T object,Node output) throws JAXBException;
-
-    /**
-     * @since 2.0 EA4
-     */
-    public abstract void marshal(BridgeContext context,T object, ContentHandler contentHandler) throws JAXBException;
+    public abstract void marshal(@NotNull BridgeContext context,T object,Node output) throws JAXBException;
 
     /**
      * @since 2.0 EA4
      */
-    public abstract void marshal(BridgeContext context,T object, Result result) throws JAXBException;
+    public abstract void marshal(@NotNull BridgeContext context,T object, ContentHandler contentHandler) throws JAXBException;
+
+    /**
+     * @since 2.0 EA4
+     */
+    public abstract void marshal(@NotNull BridgeContext context,T object, Result result) throws JAXBException;
 
     /**
      * Unmarshals the specified type object.
@@ -86,7 +88,7 @@ public abstract class Bridge<T> {
      *
      * @since 2.0 EA1
      */
-    public abstract T unmarshal(BridgeContext context,XMLStreamReader in) throws JAXBException;
+    public abstract @NotNull T unmarshal(@NotNull BridgeContext context, @NotNull XMLStreamReader in) throws JAXBException;
 
     /**
      * Unmarshals the specified type object.
@@ -104,7 +106,7 @@ public abstract class Bridge<T> {
      *
      * @since 2.0 EA1
      */
-    public abstract T unmarshal(BridgeContext context, Source in) throws JAXBException;
+    public abstract @NotNull T unmarshal(@NotNull BridgeContext context, @NotNull Source in) throws JAXBException;
 
     /**
      * Unmarshals the specified type object.

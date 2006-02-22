@@ -24,6 +24,8 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -34,8 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 import javax.xml.bind.Binder;
 import javax.xml.bind.JAXBElement;
@@ -58,6 +58,7 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 
+import com.sun.istack.NotNull;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.Bridge;
 import com.sun.xml.bind.api.BridgeContext;
@@ -74,8 +75,8 @@ import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.Ref;
 import com.sun.xml.bind.v2.model.impl.RuntimeBuiltinLeafInfoImpl;
 import com.sun.xml.bind.v2.model.impl.RuntimeModelBuilder;
-import com.sun.xml.bind.v2.model.nav.ReflectionNavigator;
 import com.sun.xml.bind.v2.model.nav.Navigator;
+import com.sun.xml.bind.v2.model.nav.ReflectionNavigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimeArrayInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeBuiltinLeafInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeClassInfo;
@@ -106,7 +107,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.62 $
+ * @version $Revision: 1.63 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -732,7 +733,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
         return bridges.get(ref);
     }
 
-    public BridgeContext createBridgeContext() {
+    public @NotNull BridgeContext createBridgeContext() {
         return new BridgeContextImpl(this);
     }
 

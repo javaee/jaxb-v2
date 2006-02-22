@@ -32,6 +32,8 @@ import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.api.impl.NameConverter;
+import com.sun.istack.NotNull;
+import com.sun.istack.Nullable;
 
 /**
  * {@link JAXBContext} enhanced with JAXB RI specific functionalities.
@@ -65,7 +67,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @param c14nSupport
      *      See {@link #CANONICALIZATION_SUPPORT} for the meaning of this parameter.
      */
-    public static final JAXBRIContext newInstance(Class[] classes, Collection<TypeReference> typeRefs, String defaultNamespaceRemap, boolean c14nSupport ) throws JAXBException {
+    public static JAXBRIContext newInstance(@NotNull Class[] classes, @Nullable Collection<TypeReference> typeRefs, @Nullable String defaultNamespaceRemap, boolean c14nSupport ) throws JAXBException {
         try {
             Class c = Class.forName("com.sun.xml.bind.v2.ContextFactory");
             Method method = c.getMethod("createContext",Class[].class,Collection.class,String.class,boolean.class);
@@ -100,7 +102,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      *
      * @since 2.0 EA1
      */
-    public abstract QName getElementName(Object o) throws JAXBException;
+    public abstract @Nullable QName getElementName(@NotNull Object o) throws JAXBException;
 
     /**
      * Creates a mini-marshaller/unmarshaller that can process a {@link TypeReference}.
@@ -110,7 +112,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      *
      * @since 2.0 EA1
      */
-    public abstract Bridge createBridge(TypeReference ref);
+    public abstract Bridge createBridge(@NotNull TypeReference ref);
 
     /**
      * Creates a new {@link BridgeContext} instance.
@@ -120,7 +122,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      *
      * @since 2.0 EA1
      */
-    public abstract BridgeContext createBridgeContext();
+    public abstract @NotNull BridgeContext createBridgeContext();
 
     /**
      * Gets a {@link RawAccessor} for the specified element property of the specified wrapper bean class.
@@ -168,7 +170,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      *
      * @since 2.0 EA2
      */
-    public abstract List<String> getKnownNamespaceURIs();
+    public abstract @NotNull List<String> getKnownNamespaceURIs();
 
 
     /**
@@ -195,7 +197,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @throws IOException
      *      if {@link SchemaOutputResolver} throws an {@link IOException}.
      */
-    public abstract void generateSchema(SchemaOutputResolver outputResolver) throws IOException;
+    public abstract void generateSchema(@NotNull SchemaOutputResolver outputResolver) throws IOException;
 
     /**
      * Returns the name of the XML Type bound to the
@@ -212,7 +214,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @return null
      *      if the referenced type is an anonymous and therefore doesn't have a name. 
      */
-    public abstract QName getTypeName(TypeReference tr);
+    public abstract QName getTypeName(@NotNull TypeReference tr);
 
     /**
      * Gets the build information of the JAXB runtime.
@@ -221,7 +223,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      *      may be null, if the runtime is loaded by a class loader that doesn't support
      *      the access to the manifest informatino.
      */
-    public abstract String getBuildId();
+    public abstract @NotNull String getBuildId();
 
     /**
      * Computes a Java identifier from a local name.
@@ -241,7 +243,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      *
      * @see JJavaName#isJavaIdentifier(String)
      */
-    public static String mangleNameToVariableName(String localName) {
+    public static @NotNull String mangleNameToVariableName(@NotNull String localName) {
         return NameConverter.standard.toVariableName(localName);
     }
 
@@ -254,7 +256,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @return
      *      Typically, this method returns "NameLikeThis".
      */
-    public static String mangleNameToClassName(String localName) {
+    public static @NotNull String mangleNameToClassName(@NotNull String localName) {
         return NameConverter.standard.toClassName(localName);
     }
 
