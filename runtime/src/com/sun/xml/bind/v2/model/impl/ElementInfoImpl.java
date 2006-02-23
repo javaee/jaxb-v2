@@ -39,17 +39,15 @@ import com.sun.istack.FinalArrayList;
  *
  * @author Kohsuke Kawaguchi
  */
-class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
-    extends TypeInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
-    implements ElementInfo<TypeT,ClassDeclT> {
+class ElementInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M> implements ElementInfo<T,C> {
 
     private final QName tagName;
 
-    private final NonElement<TypeT,ClassDeclT> contentType;
+    private final NonElement<T,C> contentType;
 
-    private final TypeT elementType;
+    private final T elementType;
 
-    private final ClassInfo<TypeT,ClassDeclT> scope;
+    private final ClassInfo<T,C> scope;
 
     /**
      * Annotation that controls the binding.
@@ -60,24 +58,24 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      * If this element can substitute another element, the element name.
      * @see #link()
      */
-    private ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> substitutionHead;
+    private ElementInfoImpl<T,C,F,M> substitutionHead;
 
     /**
      * Lazily constructed list of {@link ElementInfo}s that can substitute this element.
      * This could be null.
      * @see #link()
      */
-    private FinalArrayList<ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>> substitutionMembers;
+    private FinalArrayList<ElementInfoImpl<T,C,F,M>> substitutionMembers;
 
     /**
      * The factory method from which this mapping was created.
      */
-    private final MethodT method;
+    private final M method;
 
     /**
      * If the content type is adapter, return that adapter.
      */
-    private final Adapter<TypeT,ClassDeclT> adapter;
+    private final Adapter<T,C> adapter;
 
     private final boolean isCollection;
 
@@ -92,24 +90,24 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      * Singleton instance of {@link ElementPropertyInfo} for this element.
      */
     protected class PropertyImpl implements
-            ElementPropertyInfo<TypeT,ClassDeclT>,
-            TypeRef<TypeT,ClassDeclT>,
+            ElementPropertyInfo<T,C>,
+            TypeRef<T,C>,
             AnnotationSource {
         //
         // TypeRef impl
         //
-        public NonElement getTarget() {
+        public NonElement<T,C> getTarget() {
             return contentType;
         }
         public QName getTagName() {
             return tagName;
         }
 
-        public List<? extends TypeRef<TypeT,ClassDeclT>> getTypes() {
+        public List<? extends TypeRef<T,C>> getTypes() {
             return Collections.singletonList(this);
         }
 
-        public List<? extends NonElement<TypeT,ClassDeclT>> ref() {
+        public List<? extends NonElement<T,C>> ref() {
             return Collections.singletonList(contentType);
         }
 
@@ -133,7 +131,7 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
                 return v;
         }
 
-        public ElementInfoImpl parent() {
+        public ElementInfoImpl<T,C,F,M> parent() {
             return ElementInfoImpl.this;
         }
 
@@ -164,7 +162,7 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             return PropertyKind.ELEMENT;
         }
 
-        public Adapter<TypeT,ClassDeclT> getAdapter() {
+        public Adapter<T,C> getAdapter() {
             return adapter;
         }
 
@@ -184,7 +182,7 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             return inlineBinary;
         }
 
-        public PropertyInfo<TypeT,ClassDeclT> getSource() {
+        public PropertyInfo<T,C> getSource() {
             return this;
         }
 
@@ -206,8 +204,8 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
      * @param m
      *      The factory method on ObjectFactory that comes with {@link XmlElementDecl}.
      */
-    public ElementInfoImpl(ModelBuilder<TypeT,ClassDeclT,FieldT,MethodT> builder,
-                           RegistryInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> registry, MethodT m ) throws IllegalAnnotationException {
+    public ElementInfoImpl(ModelBuilder<T,C,F,M> builder,
+                           RegistryInfoImpl<T,C,F,M> registry, M m ) throws IllegalAnnotationException {
         super(builder,registry);
 
         this.method = m;
@@ -216,25 +214,26 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         assert anno instanceof Locatable;
 
         elementType = nav().getReturnType(m);
-        TypeT baseClass = nav().getBaseClass(elementType,nav().asDecl(JAXBElement.class));
+        T baseClass = nav().getBaseClass(elementType,nav().asDecl(JAXBElement.class));
         if(baseClass==null)
             throw new IllegalAnnotationException(
                 Messages.XML_ELEMENT_MAPPING_ON_NON_IXMLELEMENT_METHOD.format(nav().getMethodName(m)),
                 anno );
 
         tagName = parseElementName(anno);
+        T[] methodParams = nav().getMethodParameters(m);
 
         // adapter
-        Adapter<TypeT,ClassDeclT> a = null;
-        if(nav().getMethodParameters(m).length>0) {
+        Adapter<T,C> a = null;
+        if(methodParams.length>0) {
             XmlJavaTypeAdapter adapter = reader().getMethodAnnotation(XmlJavaTypeAdapter.class,m,this);
             if(adapter!=null)
-                a = new Adapter<TypeT,ClassDeclT>(adapter,reader(),nav());
+                a = new Adapter<T,C>(adapter,reader(),nav());
             else {
                 XmlAttachmentRef xsa = reader().getMethodAnnotation(XmlAttachmentRef.class,m,this);
                 if(xsa!=null) {
                     TODO.prototype("in APT swaRefAdapter isn't avaialble, so this returns null");
-                    a = new Adapter<TypeT,ClassDeclT>(owner.nav.asDecl(SwaRefAdapter.class),owner.nav);
+                    a = new Adapter<T,C>(owner.nav.asDecl(SwaRefAdapter.class),owner.nav);
                 }
             }
         }
@@ -242,8 +241,10 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
         if(adapter==null) {
             // T of JAXBElement<T>
-            TypeT typeType = nav().getMethodParameters(m)[0]; // getTypeArgument(baseClass,0) <-- this doesn't work as generated class might inherit from public content interface
-            TypeT list = nav().getBaseClass(typeType,nav().asDecl(List.class));
+            T typeType =
+                methodParams.length>0 ? methodParams[0] // this is more reliable, as it works even for ObjectFactory that sometimes have to return public types
+                : nav().getTypeArgument(baseClass,0); // fall back to infer from the return type if no parameter.
+            T list = nav().getBaseClass(typeType,nav().asDecl(List.class));
             if(list==null) {
                 isCollection = false;
                 contentType = builder.getTypeInfo(typeType,this);  // suck this type into the current set.
@@ -258,18 +259,18 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         }
 
         // scope
-        TypeT s = reader().getClassValue(anno,"scope");
+        T s = reader().getClassValue(anno,"scope");
         if(s.equals(nav().ref(XmlElementDecl.GLOBAL.class)))
             scope = null;
         else {
             // TODO: what happens if there's an error?
-            NonElement<TypeT,ClassDeclT> scp = builder.getClassInfo(nav().asDecl(s),this);
+            NonElement<T,C> scp = builder.getClassInfo(nav().asDecl(s),this);
             if(!(scp instanceof ClassInfo)) {
                 throw new IllegalAnnotationException(
                     Messages.SCOPE_IS_NOT_COMPLEXTYPE.format(nav().getTypeName(s)),
                     anno );
             }
-            scope = (ClassInfo<TypeT,ClassDeclT>)scp;
+            scope = (ClassInfo<T,C>)scp;
         }
 
         id = calcId();
@@ -303,15 +304,15 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         return new PropertyImpl();
     }
 
-    public ElementPropertyInfo<TypeT,ClassDeclT> getProperty() {
+    public ElementPropertyInfo<T,C> getProperty() {
         return property;
     }
 
-    public NonElement<TypeT,ClassDeclT> getContentType() {
+    public NonElement<T,C> getContentType() {
         return contentType;
     }
 
-    public TypeT getContentInMemoryType() {
+    public T getContentInMemoryType() {
         if(adapter==null) {
             return contentType.getType();
         } else {
@@ -323,7 +324,7 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         return tagName;
     }
 
-    public TypeT getType() {
+    public T getType() {
         return elementType;
     }
 
@@ -349,15 +350,15 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         }
     }
 
-    public ClassInfo<TypeT, ClassDeclT> getScope() {
+    public ClassInfo<T, C> getScope() {
         return scope;
     }
 
-    public ElementInfo<TypeT,ClassDeclT> getSubstitutionHead() {
+    public ElementInfo<T,C> getSubstitutionHead() {
         return substitutionHead;
     }
 
-    public Collection<? extends ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>> getSubstitutionMembers() {
+    public Collection<? extends ElementInfoImpl<T,C,F,M>> getSubstitutionMembers() {
         if(substitutionMembers==null)
             return Collections.emptyList();
         else
@@ -385,9 +386,9 @@ class ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         super.link();
     }
 
-    private void addSubstitutionMember(ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT> child) {
+    private void addSubstitutionMember(ElementInfoImpl<T,C,F,M> child) {
         if(substitutionMembers==null)
-            substitutionMembers = new FinalArrayList<ElementInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>>();
+            substitutionMembers = new FinalArrayList<ElementInfoImpl<T,C,F,M>>();
         substitutionMembers.add(child);
     }
 
