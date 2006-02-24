@@ -18,4 +18,6 @@ else
     JAVA=java
 fi
 
-exec $JAVA $XJC_OPTS -cp $WEBSERVICES_LIB/jaxb-xjc.jar com.sun.tools.jxc.SchemaGeneratorFacade "$@"
+CLASSPATH=$WEBSERVICES_LIB/jaxb-xjc.jar:$JAVA_HOME/lib/tools.jar
+
+exec $JAVA $XJC_OPTS -cp "$CLASSPATH" com.sun.tools.jxc.SchemaGeneratorFacade "$@"
