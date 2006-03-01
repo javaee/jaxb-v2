@@ -9,6 +9,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.namespace.QName;
 
+import com.sun.istack.Nullable;
+
 /**
  * Information about a JAXB-bound property.
  *
@@ -32,7 +34,11 @@ public interface PropertyInfo<T,C> {
      * Gets the name of the property.
      *
      * <p>
-     * For example, "foo" or "bar". <b>This doesn't directly affect XML</b>.
+     * For example, "foo" or "bar".
+     * Generally, a property name is different from XML,
+     * (although they are often related, as a property name is often
+     * computed from tag names / attribute names.)
+     * In fact, <b>property names do not directly affect XML</b>.
      * The property name uniquely identifies a property within a class.
      *
      * @see XmlType#propOrder()
@@ -104,7 +110,17 @@ public interface PropertyInfo<T,C> {
     /**
      * The effective value of {@link XmlSchemaType} annotation, if any.
      *
-     * @return maye be null.
+     * <p>
+     * If the property doesn't have {@link XmlSchemaType} annotation,
+     * this method returns null.
+     *
+     * <p>
+     * Since a type name is a property of a Java type, not a Java property,
+     * A schema type name of a Java type should be primarily obtained
+     * by using {@link NonElement#getTypeName()}. This method is to correctly
+     * implement the ugly semantics of {@link XmlSchemaType} (namely
+     * when this returns non-null, it overrides the type names of all types
+     * that are in this property.)
      */
-    QName getSchemaType();
+    @Nullable QName getSchemaType();
 }
