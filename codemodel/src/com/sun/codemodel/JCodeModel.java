@@ -390,12 +390,31 @@ public final class JCodeModel {
         }
 
         /**
-         * Parses a type name token T (which can be potentially of the form Tr&ly;T1,T2,...>.)
+         * Parses a type name token T (which can be potentially of the form Tr&ly;T1,T2,...>,
+         * or "? extends/super T".)
          *
          * @return the index of the character next to T.
          */
         JClass parseTypeName() throws ClassNotFoundException {
             int start = idx;
+
+            if(s.charAt(idx)=='?') {
+                // wildcard
+                idx++;
+                ws();
+                String head = s.substring(idx);
+                if(head.startsWith("extends")) {
+                    idx+=7;
+                    ws();
+                    return parseTypeName().wildcard();
+                } else
+                if(head.startsWith("super")) {
+                    throw new UnsupportedOperationException("? super T not implemented");
+                } else {
+                    // not supported
+                    throw new IllegalArgumentException("only extends/super can follow ?, but found "+s.substring(idx));
+                }
+            }
 
             while(idx<s.length()) {
                 char ch = s.charAt(idx);
@@ -418,6 +437,14 @@ public final class JCodeModel {
                 return parseArguments(clazz);
 
             return clazz;
+        }
+
+        /**
+         * Skips whitespaces
+         */
+        private void ws() {
+            while(Character.isWhitespace(s.charAt(idx)) && idx<s.length())
+                idx++;
         }
 
         /**
