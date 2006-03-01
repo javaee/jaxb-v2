@@ -89,6 +89,8 @@ public interface ClassInfo<T,C> extends MaybeElement<T,C> {
      *
      * @return null
      *      if the property was not found.
+     *
+     * @see PropertyInfo#getName() 
      */
     PropertyInfo<T,C> getProperty(String name);
 
