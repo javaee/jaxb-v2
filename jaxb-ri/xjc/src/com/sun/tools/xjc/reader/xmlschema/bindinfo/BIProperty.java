@@ -232,7 +232,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
     }
 
     // null if delegated
-    @XmlAttribute
+    // @XmlAttribute
     private Boolean generateElementProperty = null;
     /**
      * If true, the property will automatically be a reference property.
