@@ -39,48 +39,64 @@
     </licenses>
 
     <dependencies>
+
+        <!-- Maven plugin and api classes -->
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
             <version>2.0</version>
         </dependency>
+
+        <!-- Maven plugin and api classes -->
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-project</artifactId>
             <version>2.0</version>
         </dependency>
+
+        <!-- Core jaxb classes -->
         <dependency>
             <groupId>jaxb</groupId>
             <artifactId>jaxb-api</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
+
+        <!-- Core jaxb classes -->
         <dependency>
             <groupId>jaxb</groupId>
             <artifactId>jaxb-impl</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>jaxb</groupId>
-            <artifactId>jaxb-xjc</artifactId>
-            <version>2.0-SNAPSHOT</version>
-        </dependency>
+
+        <!-- Needed for since code overloads com.sun.tools.xjc.XJC2Task -->
         <dependency>
             <groupId>ant</groupId>
             <artifactId>ant</artifactId>
             <version>1.6</version>
         </dependency>
-        <dependency>  <!--for regular expressions file pattern matching-->
+
+        <!-- Regular expressions file pattern matching -->
+        <dependency>
             <groupId>oro</groupId>
             <artifactId>oro</artifactId>
             <version>2.0.8</version>
         </dependency>
 
+        <!-- Needed for xjc -->
+        <dependency>
+            <groupId>jaxb</groupId>
+            <artifactId>jaxb-xjc</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- Needed for xjc -->
         <dependency>
             <groupId>jaxb</groupId>
             <artifactId>activation</artifactId>
             <version>1.0.2</version>
         </dependency>
 
+        <!-- Needed for xjc -->
         <dependency>
             <groupId>jaxb</groupId>
             <artifactId>jsr173_api</artifactId>
@@ -105,6 +121,14 @@
             <id>kohsuke</id>
             <email>kk@kohsuke.org</email>
             <organization>Sun Microsystems</organization>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>MÆlfweald</id>
+            <name>Malachi de Ælfweald</name>
+            <email>malachid@gmail.com</email>
             <roles>
                 <role>Developer</role>
             </roles>
