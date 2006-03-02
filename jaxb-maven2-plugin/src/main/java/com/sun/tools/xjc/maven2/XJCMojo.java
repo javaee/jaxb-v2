@@ -212,6 +212,9 @@ public class XJCMojo extends AbstractMojo
             getLog().info("XJC compile using schema: " + schema);
             xjc2TaskAdapter.execute();
         }
+
+        if(project!=null)
+            project.addCompileSourceRoot(generateDirectory.getPath());
     }
 
     /**
