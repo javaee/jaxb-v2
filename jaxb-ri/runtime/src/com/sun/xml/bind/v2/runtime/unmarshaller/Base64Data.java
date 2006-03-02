@@ -3,8 +3,10 @@ package com.sun.xml.bind.v2.runtime.unmarshaller;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.activation.DataHandler;
+import javax.activation.DataSource;
 
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
@@ -85,9 +87,26 @@ public final class Base64Data extends Pcdata {
      * Gets the raw data.
      */
     public DataHandler getDataHandler() {
-        if(dataHandler==null)
-            // TODO
-            throw new UnsupportedOperationException();
+        if(dataHandler==null) {
+            dataHandler = new DataHandler(new DataSource() {
+                public String getContentType() {
+                    return getMimeType();
+                }
+
+                public InputStream getInputStream() {
+                    return new ByteArrayInputStream(data,0,dataLen);
+                }
+
+                public String getName() {
+                    return null;
+                }
+
+                public OutputStream getOutputStream() {
+                    throw new UnsupportedOperationException();
+                }
+            });
+        }
+        
         return dataHandler;
     }
 
