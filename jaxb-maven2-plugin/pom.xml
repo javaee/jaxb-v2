@@ -78,7 +78,6 @@
             <groupId>jaxb</groupId>
             <artifactId>activation</artifactId>
             <version>1.0.2</version>
-            <scope>test</scope>
         </dependency>
 
         <!--todo - Kohsuke is planning to post depedent sun jar jsr173 in repository-->
@@ -88,7 +87,6 @@
             <groupId>jaxb</groupId>
             <artifactId>jsr173_api</artifactId>
             <version>1.0</version>
-            <scope>test</scope>
         </dependency>
 
     </dependencies>
