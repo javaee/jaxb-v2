@@ -334,7 +334,7 @@ public class XJCMojo extends AbstractMojo
      */
     private static List<String> getFiles(File sourceDirectory,
                                          List<String> includePatterns,
-                                         List<String> excludePatterns)
+                                         List<String> excludePatterns) throws MojoExecutionException
     {
         // Compile a list of all files found by list of includePatterns
         List<String> includes = patternedList(sourceDirectory, includePatterns);
@@ -360,7 +360,7 @@ public class XJCMojo extends AbstractMojo
      * @param patterns        regular expression file name patterns
      * @return list of files that match the pattern.
      */
-    private static List<String> patternedList(File sourceDirectory, List<String> patterns)
+    private static List<String> patternedList(File sourceDirectory, List<String> patterns) throws MojoExecutionException
     {
         ArrayList<String> list = new ArrayList<String>(10);
         if (patterns != null)
@@ -369,6 +369,9 @@ public class XJCMojo extends AbstractMojo
             {
                 String[] matches = sourceDirectory.
                     list(new GlobFilenameFilter(pattern));
+                if(matches==null)
+                    throw new MojoExecutionException("No such directory "+sourceDirectory);
+
 
                 list.addAll(Arrays.asList(matches));
             }
