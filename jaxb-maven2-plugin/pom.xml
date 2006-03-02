@@ -6,18 +6,20 @@
     <version>1.0</version>
     <name>Maven JAXB Plugin</name>
     <inceptionYear>2006</inceptionYear>
-    <url>todo</url>
+    <url>https://jaxb.dev.java.net/</url>
+
     <description>
-        JAXB XJC Compiler for Maven 2
+        JAXB XJC Compiler for Maven 2.  Part of the JAXB 2.0 Project.
     </description>
+
     <organization>
         <name>java.net</name>
         <url>http://www.java.net/</url>
     </organization>
+
     <issueManagement>
         <url>https://jaxb.dev.java.net/issues</url>
     </issueManagement>
-
 
     <repositories>
         <repository>
@@ -27,6 +29,7 @@
             <layout>legacy</layout>
         </repository>
     </repositories>
+
     <licenses>
         <license>
             <name>Apache Software License, 2.0</name>
@@ -34,6 +37,7 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.maven</groupId>
@@ -71,18 +75,12 @@
             <version>2.0.8</version>
         </dependency>
 
-        <!--todo - Kohsuke is planning to post depedent sun jar activation in repository-->
-        <!--In the meantime the activation.jar can be manually installed in your local-->
-        <!--Maven 2 repository from http://java.sun.com/products/javabeans/glasgow/jaf.html-->
         <dependency>
             <groupId>jaxb</groupId>
             <artifactId>activation</artifactId>
             <version>1.0.2</version>
         </dependency>
 
-        <!--todo - Kohsuke is planning to post depedent sun jar jsr173 in repository-->
-        <!--In the meantime the jsr173.jar can be manually installed in your local-->
-        <!--Maven 2 repository from http://www.ibiblio.org/maven/xmlbeans/jars-->
         <dependency>
             <groupId>jaxb</groupId>
             <artifactId>jsr173_api</artifactId>
@@ -112,6 +110,7 @@
             </roles>
         </developer>
     </developers>
+
     <build>
         <plugins>
             <plugin>
