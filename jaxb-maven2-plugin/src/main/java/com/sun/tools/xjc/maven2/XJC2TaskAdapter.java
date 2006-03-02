@@ -5,8 +5,8 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.tools.ant.Project;
 
 /**
- * Inherit all the Ant XJC2Task behaviour and compensate for the
- * missing Ant project and Maven logging facility.
+ * Inherit all the Ant XJC2Task behaviour and compensate for the missing Ant
+ * project and Maven logging facility.
  */
 public class XJC2TaskAdapter extends XJC2Task
 {
@@ -15,6 +15,7 @@ public class XJC2TaskAdapter extends XJC2Task
 
     /**
      * Constructor
+     *
      * @param log The logging system to use.
      */
     public XJC2TaskAdapter(Log log)
@@ -27,22 +28,14 @@ public class XJC2TaskAdapter extends XJC2Task
     }
 
     /**
-     *
-     * @param string
-     */
- /*   public void log(String string)
-    {
-        log.info(string);
-    }  */
-
-    /**
      * Overloaded to route logging mesages from XJC2Task to the Maven logger.
+     *
      * @param message message to log.
      * @param logType message log level.
      */
     public void log(String message, int logType)
     {
-        switch(logType)
+        switch (logType)
         {
             case Project.MSG_WARN :
                 log.warn(message);
@@ -58,8 +51,10 @@ public class XJC2TaskAdapter extends XJC2Task
 
             case Project.MSG_VERBOSE :
                 // fall to default
+
             case Project.MSG_INFO :
                 // fall to default
+
             default:
                 log.info(message);
         }

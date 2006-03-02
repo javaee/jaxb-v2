@@ -184,23 +184,33 @@ public class XJCMojo extends AbstractMojo
             Arrays.asList(includeSchemas), excludeSchemas);
 
         // Get list of bindings
-        List<String> bindingsFilenames = patternedList(schemaDirectory, bindings);
+        List<String> bindingsFilenames =
+            patternedList(schemaDirectory, bindings);
 
         // Set xjc settings from defined in plugin configuration section
         if (isDefined(bindingsFilenames, 1))
-            xjc2TaskAdapter.setBinding(bindingsFilenames.get(0)); // todo - not sure how to map multiple bindings to schemas with maven settings yet.
+        {
+            xjc2TaskAdapter.setBinding(bindingsFilenames.get(0));
+            // todo - not sure how to map multiple bindings to schemas with maven settings yet. */
+        }
 
         if (generatePackage != null)
+        {
             xjc2TaskAdapter.setPackage(generatePackage);
+        }
 
         if (generateDirectory != null)
+        {
             xjc2TaskAdapter.setDestdir(generateDirectory);
+        }
 
         xjc2TaskAdapter.setReadonly(readOnly);
         xjc2TaskAdapter.setExtension(extension);
 
         if (catalog != null)
+        {
             xjc2TaskAdapter.setCatalog(catalog);
+        }
 
         xjc2TaskAdapter.setRemoveOldOutput(removeOldOutput);
 
@@ -213,8 +223,10 @@ public class XJCMojo extends AbstractMojo
             xjc2TaskAdapter.execute();
         }
 
-        if(project!=null)
+        if (project != null)
+        {
             project.addCompileSourceRoot(generateDirectory.getPath());
+        }
     }
 
     /**
@@ -229,14 +241,15 @@ public class XJCMojo extends AbstractMojo
         if (! isDefined(schemaDirectory, 1))
         {
             logSettings();
-
-            throw new MojoExecutionException("The <schemaDirectory> setting must be defined.");
+            throw new MojoExecutionException(
+                "The <schemaDirectory> setting must be defined.");
         }
 
         // Check "includeSchemas"
         if (! isDefined(includeSchemas, 1))
         {
-            getLog().info("The <includeSchemas> setting was not defined, assuming *.xsd.");
+            getLog().info(
+                "The <includeSchemas> setting was not defined, assuming *.xsd.");
             // default schema pattern if not defined
             includeSchemas = new String[]{"*.xsd"};
         }
@@ -337,7 +350,8 @@ public class XJCMojo extends AbstractMojo
      */
     private static List<String> getFiles(File sourceDirectory,
                                          List<String> includePatterns,
-                                         List<String> excludePatterns) throws MojoExecutionException
+                                         List<String> excludePatterns)
+        throws MojoExecutionException
     {
         // Compile a list of all files found by list of includePatterns
         List<String> includes = patternedList(sourceDirectory, includePatterns);
@@ -363,7 +377,9 @@ public class XJCMojo extends AbstractMojo
      * @param patterns        regular expression file name patterns
      * @return list of files that match the pattern.
      */
-    private static List<String> patternedList(File sourceDirectory, List<String> patterns) throws MojoExecutionException
+    private static List<String> patternedList(File sourceDirectory,
+                                              List<String> patterns)
+        throws MojoExecutionException
     {
         ArrayList<String> list = new ArrayList<String>(10);
         if (patterns != null)
@@ -372,9 +388,12 @@ public class XJCMojo extends AbstractMojo
             {
                 String[] matches = sourceDirectory.
                     list(new GlobFilenameFilter(pattern));
-                if(matches==null)
-                    throw new MojoExecutionException("No such directory "+sourceDirectory);
 
+                if (matches == null)
+                {
+                    throw new MojoExecutionException(
+                        "No such directory " + sourceDirectory);
+                }
 
                 list.addAll(Arrays.asList(matches));
             }
