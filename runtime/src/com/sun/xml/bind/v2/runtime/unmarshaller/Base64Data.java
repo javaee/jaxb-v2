@@ -13,6 +13,7 @@ import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.output.Pcdata;
 import com.sun.xml.bind.v2.runtime.output.UTF8XmlOutput;
 import com.sun.xml.bind.v2.util.ByteArrayOutputStreamEx;
+import com.sun.istack.Nullable;
 
 /**
  * Fed to unmarshaller when the 'text' data is actually
@@ -49,7 +50,7 @@ public final class Base64Data extends Pcdata {
      * Unused when {@link #dataHandler} is set.
      * Use {@link DataHandler#getContentType()} in that case.
      */
-    private String mimeType;
+    private @Nullable String mimeType;
 
     /**
      * Fills in the data object by a portion of the byte[].
@@ -57,7 +58,7 @@ public final class Base64Data extends Pcdata {
      * @param len
      *      data[0] to data[len-1] are treated as the data.
      */
-    public void set(byte[] data, int len, String mimeType) {
+    public void set(byte[] data, int len, @Nullable String mimeType) {
         this.data = data;
         this.dataLen = len;
         this.dataHandler = null;
@@ -70,7 +71,7 @@ public final class Base64Data extends Pcdata {
      * @param data
      *      this buffer may be owned directly by the unmarshaleld JAXB object.
      */
-    public void set(byte[] data,String mimeType) {
+    public void set(byte[] data,@Nullable String mimeType) {
         set(data,data.length,mimeType);
     }
 
@@ -106,7 +107,7 @@ public final class Base64Data extends Pcdata {
                 }
             });
         }
-        
+
         return dataHandler;
     }
 
