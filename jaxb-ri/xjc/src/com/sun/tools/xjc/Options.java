@@ -293,28 +293,36 @@ public class Options
         grammars.add(absolutize(is));
     }
 
-    public void addGrammar( File source ) {
+    private InputSource fileToInputSource( File source ) {
         try {
             String url = source.toURL().toExternalForm();
-            addGrammar(new InputSource(Util.escapeSpace(url)));
+            return new InputSource(Util.escapeSpace(url));
         } catch (MalformedURLException e) {
-            addGrammar(new InputSource(source.getPath()));
+            return new InputSource(source.getPath());
         }
+    }
+
+    public void addGrammar( File source ) {
+        addGrammar(fileToInputSource(source));
     }
 
     /**
      * Recursively scan directories and add all XSD files in it.
      */
     public void addGrammarRecursive( File dir ) {
+        addRecursive(dir,".xsd",grammars);
+    }
+
+    private  void addRecursive( File dir, String suffix, List<InputSource> result ) {
         File[] files = dir.listFiles();
         if(files==null)     return; // work defensively
 
         for( File f : files ) {
             if(f.isDirectory())
-                addGrammarRecursive(f);
+                addRecursive(f,suffix,result);
             else
-            if(f.getPath().endsWith(".xsd"))
-                addGrammar(f);
+            if(f.getPath().endsWith(suffix))
+                result.add(absolutize(fileToInputSource(f)));
         }
     }
 
@@ -343,7 +351,14 @@ public class Options
     public void addBindFile( InputSource is ) {
         bindFiles.add(absolutize(is));
     }
-    
+
+    /**
+     * Recursively scan directories and add all ".xjb" files in it.
+     */
+    public void addBindFileRecursive( File dir ) {
+        addRecursive(dir,".xjb",bindFiles);
+    }
+
     public final List<URL> classpaths = new ArrayList<URL>();
     /**
      * Gets a classLoader that can load classes specified via the
@@ -431,14 +446,11 @@ public class Options
             return 1;
         }
         if (args[i].equals("-b")) {
-            if (i == args.length - 1)
+            if (i==args.length-1 || args[i + 1].startsWith("-"))
                 throw new BadCommandLineException(
                     Messages.format(Messages.MISSING_FILENAME));
-            if (args[i + 1].startsWith("-")) {
-                throw new BadCommandLineException(
-                    Messages.format(Messages.MISSING_FILENAME));
-            }
-            addBindFile(Util.getInputSource(args[++i]));
+
+            addFile(args[i + 1],bindFiles,".xjb");
             return 2;
         }
         if (args[i].equals("-dtd")) {
@@ -567,7 +579,35 @@ public class Options
         
         return 0;   // unrecognized
     }
-    
+
+    /**
+     * Parses a token to a file (or a set of files)
+     * and add them as {@link InputSource} to the specified list.
+     *
+     * @param suffix
+     *      If the given token is a directory name, we do a recusive search
+     *      and find all files that have the given suffix.
+     */
+    private void addFile(String name, List<InputSource> target, String suffix) throws BadCommandLineException {
+        Object src;
+        try {
+            src = Util.getFileOrURL(name);
+        } catch (IOException e) {
+            throw new BadCommandLineException(
+                Messages.format(Messages.NOT_A_FILE_NOR_URL,name));
+        }
+        if(src instanceof URL) {
+            target.add(absolutize(new InputSource(Util.escapeSpace(((URL)src).toExternalForm()))));
+        } else {
+            File fsrc = (File)src;
+            if(fsrc.isDirectory()) {
+                addRecursive(fsrc,suffix,target);
+            } else {
+                target.add(absolutize(fileToInputSource(fsrc)));
+            }
+        }
+    }
+
     /**
      * Adds a new catalog file.
      */
@@ -597,23 +637,7 @@ public class Options
                         Messages.format(Messages.UNRECOGNIZED_PARAMETER, args[i]));
                 i += (j-1);
             } else {
-                Object src;
-                try {
-                    src = Util.getFileOrURL(args[i]);
-                } catch (IOException e) {
-                    throw new BadCommandLineException(
-                        Messages.format(Messages.NOT_A_FILE_NOR_URL,args[i]));
-                }
-                if(src instanceof URL) {
-                    addGrammar(new InputSource(Util.escapeSpace(((URL)src).toExternalForm())));
-                } else {
-                    File fsrc = (File)src;
-                    if(fsrc.isDirectory()) {
-                        addGrammarRecursive(fsrc);
-                    } else {
-                        addGrammar(fsrc);
-                    }
-                }
+                addFile(args[i],grammars,".xsd");
             }
         }
         
