@@ -131,7 +131,7 @@ final class FastInfosetConnector extends StAXConnector {
                 firstCIIChunk = false;
                 hasBase64Data = true;
                 // Clone the octets
-                base64Data.set(fastInfosetStreamReader.getTextAlgorithmBytesClone(), "");
+                base64Data.set(fastInfosetStreamReader.getTextAlgorithmBytesClone(),null);
                 return;
             // If a subsequent sequential chunk of CIIs
             } else {
