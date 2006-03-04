@@ -3,6 +3,7 @@ package com.sun.tools.xjc.reader.xmlschema;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
@@ -40,6 +41,7 @@ import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSTerm;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSWildcard;
+import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.util.XSFinder;
 
 import org.xml.sax.Locator;
@@ -106,6 +108,13 @@ public class BGMBuilder extends BindingComponent {
     public final Model model = Ring.get(Model.class);
 
     public final FieldRendererFactory fieldRendererFactory;
+
+    /**
+     * Lazily computed {@link RefererFinder}.
+     *
+     * @see #getReferer
+     */
+    private RefererFinder refFinder;
 
 
 
@@ -449,5 +458,16 @@ public class BGMBuilder extends BindingComponent {
         } catch (TransformerConfigurationException e) {
             throw new Error(e); // impossible
         }
+    }
+
+    /**
+     * Find all types that refer to the given complex type.
+     */
+    public Set<XSComponent> getReferer(XSType c) {
+        if(refFinder==null) {
+            refFinder = new RefererFinder();
+            refFinder.schemaSet(Ring.get(XSSchemaSet.class));
+        }
+        return refFinder.getReferer(c);
     }
 }

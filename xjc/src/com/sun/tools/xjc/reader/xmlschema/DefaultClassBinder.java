@@ -18,6 +18,8 @@
  * [name of copyright owner]
  */
 package com.sun.tools.xjc.reader.xmlschema;
+import java.util.Set;
+
 import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JJavaName;
@@ -55,6 +57,9 @@ import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.XSXPath;
+import com.sun.istack.Nullable;
+import com.sun.istack.NotNull;
+
 /**
  * Default classBinder implementation. Honors &lt;jaxb:class> customizations
  * and default bindings.
@@ -94,6 +99,14 @@ final class DefaultClassBinder implements ClassBinder
         BindInfo bi = builder.getBindInfo(type);
 
         if(type.isGlobal()) {
+            if(getGlobalBinding().isSimpleMode()) {
+                // in the simple mode, we may optimize it away
+                XSElementDecl referer = getSoleElementReferer(type);
+                if(referer!=null && isCollapsable(referer)) {
+                    return null; // yep. optimized away
+                }
+            }
+
             // by default, global ones get their own classes.
 
             JPackage pkg = selector.getPackage(type.getTargetNamespace());
@@ -158,10 +171,35 @@ final class DefaultClassBinder implements ClassBinder
             // because nillable needs JAXBElement to represent correctly
             return false;
 
+        if( getGlobalBinding().isSimpleMode() && decl.isGlobal()) {
+            // in the simple mode, we do more aggressive optimization, and get rid of
+            // a complex type class if it's only used once from a global element
+            Set<XSComponent> referer = builder.getReferer(decl.getType());
+            if(referer.size()==1) {
+                assert referer.contains(decl);  // I must be the sole referer
+                return true;
+            }
+        }
+
         if(!type.isLocal() || !type.isComplexType())
             return false;
 
         return true;
+    }
+
+    /**
+     * If only one {@link XSElementDecl} is refering to {@link XSType},
+     * return that element, otherwise null.
+     */
+    private @Nullable XSElementDecl getSoleElementReferer(@NotNull XSType t) {
+        Set<XSComponent> referer = builder.getReferer(t);
+        if(referer.size()!=1)   return null;
+
+        XSComponent r = referer.iterator().next();
+        if(r instanceof XSElementDecl)
+            return (XSElementDecl)r;
+        else
+            return null;
     }
 
     public CElement elementDecl(XSElementDecl decl) {
@@ -172,11 +210,8 @@ final class DefaultClassBinder implements ClassBinder
             CCustomizations custs = builder.getBindInfo(decl).toCustomizationList();
 
             if(decl.isGlobal()) {
-                if( getGlobalBinding().isSimpleMode() || isCollapsable(decl)) {
-                    // in a simple mode, we map every global element to a class
-                    // that derives from its complex type (or has a simple type).
-                    //
-                    // in the conforming mode, if a global element contains
+                if( isCollapsable(decl)) {
+                    // if a global element contains
                     // a collpsable complex type, we bind this element to a named one
                     // and collapses element and complex type.
                     r = new CClassInfo( model, selector.getClassScope(),
