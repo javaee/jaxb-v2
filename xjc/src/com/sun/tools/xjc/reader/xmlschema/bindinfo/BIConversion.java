@@ -293,7 +293,7 @@ public abstract class BIConversion extends AbstractDeclarationImpl {
     @XmlRootElement(name="javaType",namespace=Const.XJC_EXTENSION_URI)
     public static class UserAdapter extends BIConversion {
         @XmlAttribute(name="name")
-        private String type = "java.lang.String";
+        private String type = null;
 
         @XmlAttribute
         private String adapter = null;
@@ -306,11 +306,21 @@ public abstract class BIConversion extends AbstractDeclarationImpl {
 
             JCodeModel cm = getCodeModel();
 
+            JDefinedClass a;
+            try {
+                a = cm._class(adapter);
+                a.hide();   // we assume this is given by the user
+                a._extends(cm.ref(XmlAdapter.class).narrow(String.class).narrow(
+                        cm.ref(type)));
+            } catch (JClassAlreadyExistsException e) {
+                a = e.getExistingClass();
+            }
+
             // TODO: it's not correct to say that it adapts from String,
             // but OTOH I don't think we can compute that.
             typeUse = TypeUseFactory.adapt(
                     CBuiltinLeafInfo.STRING,
-                    new CAdapter(cm.ref(adapter)));
+                    new CAdapter(a));
 
             return typeUse;
         }
