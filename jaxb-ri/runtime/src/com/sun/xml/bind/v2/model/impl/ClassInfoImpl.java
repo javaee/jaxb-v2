@@ -13,8 +13,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.xml.bind.annotation.AccessType;
-import javax.xml.bind.annotation.AccessorOrder;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorOrder;
 import javax.xml.bind.annotation.XmlAccessorOrder;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyAttribute;
@@ -36,6 +36,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
+import javax.xml.bind.annotation.XmlAccessOrder;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
@@ -239,7 +240,7 @@ class ClassInfoImpl<T,C,F,M>
         if(properties!=null)    return properties;
 
         // check the access type first
-        AccessType at = getAccessType();
+        XmlAccessType at = getAccessType();
 
         properties = new FinalArrayList<PropertyInfoImpl<T,C,F,M>>();
 
@@ -251,8 +252,8 @@ class ClassInfoImpl<T,C,F,M>
                 if(hasJAXBAnnotation(annotations))
                     addProperty(createFieldSeed(f),annotations);
             } else {
-                if(at==AccessType.FIELD
-                ||(at==AccessType.PUBLIC_MEMBER && nav().isPublicField(f))
+                if(at==XmlAccessType.FIELD
+                ||(at==XmlAccessType.PUBLIC_MEMBER && nav().isPublicField(f))
                 || hasJAXBAnnotation(annotations))
                     addProperty(createFieldSeed(f),annotations);
                 else
@@ -263,8 +264,8 @@ class ClassInfoImpl<T,C,F,M>
         findGetterSetterProperties(at);
 
         if(propOrder==DEFAULT_ORDER || propOrder==null) {
-            AccessorOrder ao = getAccessorOrder();
-            if(ao==AccessorOrder.ALPHABETICAL)
+            XmlAccessOrder ao = getAccessorOrder();
+            if(ao==XmlAccessOrder.ALPHABETICAL)
                 Collections.sort(properties);
         } else {
             //sort them as specified
@@ -344,26 +345,26 @@ class ClassInfoImpl<T,C,F,M>
     }
 
     /**
-     * Computes the {@link AccessType} on this class by looking at {@link XmlAccessorType}
+     * Computes the {@link XmlAccessType} on this class by looking at {@link XmlAccessorType}
      * annotations.
      */
-    private AccessType getAccessType() {
+    private XmlAccessType getAccessType() {
         XmlAccessorType xat = getClassOrPackageAnnotation(XmlAccessorType.class);
         if(xat!=null)
             return xat.value();
         else
-            return AccessType.PUBLIC_MEMBER;
+            return XmlAccessType.PUBLIC_MEMBER;
     }
 
     /**
      * Gets the accessor order for this class by consulting {@link XmlAccessorOrder}.
      */
-    private AccessorOrder getAccessorOrder() {
+    private XmlAccessOrder getAccessorOrder() {
         XmlAccessorOrder xao = getClassOrPackageAnnotation(XmlAccessorOrder.class);
         if(xao!=null)
             return xao.value();
         else
-            return AccessorOrder.UNDEFINED;
+            return XmlAccessOrder.UNDEFINED;
     }
 
     /**
@@ -806,7 +807,7 @@ class ClassInfoImpl<T,C,F,M>
     /**
      * Adds properties that consists of accessors.
      */
-    private void findGetterSetterProperties(AccessType at) {
+    private void findGetterSetterProperties(XmlAccessType at) {
         TODO.checkSpec();   // TODO: I don't think the spec describes how properties are found
 
         // in the first step we accumulate getters and setters
@@ -880,8 +881,8 @@ class ClassInfoImpl<T,C,F,M>
                             || (setter!=null && nav().isOverriding(setter));
             }
 
-            if((at==AccessType.PROPERTY && !isOverriding)
-            || (at==AccessType.PUBLIC_MEMBER && isConsideredPublic(getter) && isConsideredPublic(setter) && !isOverriding)
+            if((at==XmlAccessType.PROPERTY && !isOverriding)
+            || (at==XmlAccessType.PUBLIC_MEMBER && isConsideredPublic(getter) && isConsideredPublic(setter) && !isOverriding)
             || hasAnnotation) {
                 // make sure that the type is consistent
                 if(getter!=null && setter!=null

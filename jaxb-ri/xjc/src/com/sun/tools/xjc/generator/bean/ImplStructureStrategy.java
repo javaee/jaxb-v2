@@ -3,7 +3,7 @@
  */
 package com.sun.tools.xjc.generator.bean;
 
-import javax.xml.bind.annotation.AccessType;
+import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
@@ -43,7 +43,7 @@ public enum ImplStructureStrategy {
                 parent,
                 JMod.PUBLIC|(parent.isPackage()?0:JMod.STATIC)|(bean.isAbstract()?JMod.ABSTRACT:0),
                 bean.shortName, bean.getLocator() );
-            impl.annotate2(XmlAccessorTypeWriter.class).value(AccessType.FIELD);
+            impl.annotate2(XmlAccessorTypeWriter.class).value(XmlAccessType.FIELD);
 
             return new Result(impl,impl);
         }
@@ -99,7 +99,7 @@ public enum ImplStructureStrategy {
                 parent,
                 JMod.PUBLIC|(parent.isPackage()?0:JMod.STATIC)|(bean.isAbstract()?JMod.ABSTRACT:0),
                 bean.shortName+"Impl", bean.getLocator() );
-            impl.annotate2(XmlAccessorTypeWriter.class).value(AccessType.FIELD);
+            impl.annotate2(XmlAccessorTypeWriter.class).value(XmlAccessType.FIELD);
 
             impl._implements(intf);
 
