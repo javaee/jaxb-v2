@@ -172,7 +172,10 @@
   <xs:element name="baseType">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="jaxb:javaType" minOccurs="0" />
+        <xs:choice minOccurs="0"><!-- XML Schema is brain dead -->
+          <xs:element ref="jaxb:javaType" />
+          <xs:element ref="xjc:javaType" />
+        </xs:choice>
       </xs:sequence>
       <xs:attribute name="name"/>
     </xs:complexType>
