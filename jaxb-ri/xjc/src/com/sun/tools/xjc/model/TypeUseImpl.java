@@ -99,6 +99,6 @@ final class TypeUseImpl implements TypeUse {
             }
         }
 
-        return JExpr._new(adapter.getAdapterClass(outline.getCodeModel())).invoke("unmarshal").arg(cons);
+        return JExpr._new(adapter.getAdapterClass(outline)).invoke("unmarshal").arg(cons);
     }
 }
