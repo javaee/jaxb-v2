@@ -5,7 +5,6 @@ import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import com.sun.codemodel.JClass;
-import com.sun.codemodel.JCodeModel;
 import com.sun.tools.xjc.model.nav.EagerNClass;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
@@ -70,10 +69,10 @@ public final class CAdapter extends Adapter<NType,NClass> {
         this.adapterClass2 = null;
     }
 
-    public JClass getAdapterClass(JCodeModel cm) {
+    public JClass getAdapterClass(Outline o) {
         if(adapterClass1==null)
-            adapterClass1 = cm.ref(adapterClass2);
-        return adapterClass1;
+            adapterClass1 = o.getCodeModel().ref(adapterClass2);
+        return adapterType.toType(o, Aspect.EXPOSED);
     }
 
     /**
