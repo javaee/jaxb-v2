@@ -30,6 +30,13 @@
       <xs:attribute name="name" use="required"/>
     </xs:complexType>
   </xs:element>
+  <xs:element name="javaType">
+    <xs:complexType>
+      <xs:attribute name="name" use="required"/>
+      <xs:attribute name="adapter" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="generateElementProperty" type="xs:boolean" />
   <xs:element name="dom">
     <xs:complexType>
       <xs:attribute name="type" default="w3c"/>
