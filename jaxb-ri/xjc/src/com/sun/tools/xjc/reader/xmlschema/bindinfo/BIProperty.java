@@ -132,7 +132,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
 
     @Override
     public Collection<BIDeclaration> getChildren() {
-        BIConversion.User conv = getConv();
+        BIConversion conv = getConv();
         if(conv==null)
             return super.getChildren();
         else
@@ -684,7 +684,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
     public static final QName NAME = new QName(
         Const.JAXB_NSURI, "property" );
 
-    public BIConversion.User getConv() {
+    public BIConversion getConv() {
         if(baseType!=null)
             return baseType.conv;
         else
@@ -700,7 +700,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
          * the simple type mapping at the point of reference.
          */
         @XmlElementRef
-        BIConversion.User conv;
+        BIConversion conv;
 
         /**
          * Java type name.

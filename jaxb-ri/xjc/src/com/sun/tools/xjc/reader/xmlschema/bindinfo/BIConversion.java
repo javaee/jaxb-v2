@@ -289,5 +289,31 @@ public abstract class BIConversion extends AbstractDeclarationImpl {
         public static final QName NAME = new QName(
             Const.JAXB_NSURI, "javaType" );
     }
+
+    @XmlRootElement(name="javaType",namespace=Const.XJC_EXTENSION_URI)
+    public static class UserAdapter extends BIConversion {
+        @XmlAttribute(name="name")
+        private String type = "java.lang.String";
+
+        @XmlAttribute
+        private String adapter = null;
+
+        private TypeUse typeUse;
+
+        public TypeUse getTypeUse(XSSimpleType owner) {
+            if(typeUse!=null)
+                return typeUse;
+
+            JCodeModel cm = getCodeModel();
+
+            // TODO: it's not correct to say that it adapts from String,
+            // but OTOH I don't think we can compute that.
+            typeUse = TypeUseFactory.adapt(
+                    CBuiltinLeafInfo.STRING,
+                    new CAdapter(cm.ref(adapter)));
+
+            return typeUse;
+        }
+    }
 }
 
