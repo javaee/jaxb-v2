@@ -50,6 +50,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.ValidatorHandler;
 
 import com.sun.xml.bind.DatatypeConverterImpl;
+import com.sun.xml.bind.api.JAXBRIContext;
 import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
 import com.sun.xml.bind.marshaller.DataWriter;
 import com.sun.xml.bind.marshaller.DumbEscapeHandler;
@@ -534,10 +535,11 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         externalListener = listener;
     }
 
+    // features supported
     protected static final String INDENT_STRING = "com.sun.xml.bind.indentString";
     protected static final String PREFIX_MAPPER = "com.sun.xml.bind.namespacePrefixMapper";
     protected static final String ENCODING_HANDLER = "com.sun.xml.bind.characterEscapeHandler";
     protected static final String XMLDECLARATION = "com.sun.xml.bind.xmlDeclaration";
     protected static final String XML_HEADERS = "com.sun.xml.bind.xmlHeaders";
-    protected static final String C14N = "com.sun.xml.bind.canonicalization";
+    protected static final String C14N = JAXBRIContext.CANONICALIZATION_SUPPORT;
 }
