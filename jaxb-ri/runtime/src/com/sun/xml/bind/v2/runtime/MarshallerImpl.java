@@ -48,7 +48,6 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.Schema;
 import javax.xml.validation.ValidatorHandler;
-import javax.sql.rowset.spi.XmlWriter;
 
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
@@ -59,7 +58,6 @@ import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import com.sun.xml.bind.marshaller.NioEscapeHandler;
 import com.sun.xml.bind.marshaller.SAX2DOMEx;
 import com.sun.xml.bind.marshaller.XMLWriter;
-import com.sun.xml.bind.v2.util.FatalAdapter;
 import com.sun.xml.bind.v2.runtime.output.C14nXmlOutput;
 import com.sun.xml.bind.v2.runtime.output.Encoded;
 import com.sun.xml.bind.v2.runtime.output.ForkXmlOutput;
@@ -69,6 +67,7 @@ import com.sun.xml.bind.v2.runtime.output.UTF8XmlOutput;
 import com.sun.xml.bind.v2.runtime.output.XMLEventWriterOutput;
 import com.sun.xml.bind.v2.runtime.output.XMLStreamWriterOutput;
 import com.sun.xml.bind.v2.runtime.output.XmlOutput;
+import com.sun.xml.bind.v2.util.FatalAdapter;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -172,7 +171,6 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         }
         if (result instanceof StreamResult) {
             StreamResult sr = (StreamResult) result;
-            XmlOutput w = null;
 
             if (sr.getWriter() != null)
                 return createWriter(sr.getWriter());
