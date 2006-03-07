@@ -22,6 +22,8 @@ package com.sun.xml.bind.v2.runtime;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -352,39 +354,45 @@ public abstract class JaxBeanInfo<BeanT> {
      * the JAXB bound type.
      */
     protected final void setLifecycleFlags() {
-        Method m;
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            public Void run() {
+                Method m;
 
-        // beforeUnmarshal
-        try {
-            m = jaxbType.getDeclaredMethod("beforeUnmarshal", unmarshalEventParams);
-            cacheLifecycleMethod(m, FLAG_HAS_BEFORE_UNMARSHAL_METHOD);
-        } catch (NoSuchMethodException e) {
-            // no-op, look for the next method
-        }
+                // beforeUnmarshal
+                try {
+                    m = jaxbType.getDeclaredMethod("beforeUnmarshal", unmarshalEventParams);
+                    cacheLifecycleMethod(m, FLAG_HAS_BEFORE_UNMARSHAL_METHOD);
+                } catch (NoSuchMethodException e) {
+                    // no-op, look for the next method
+                }
 
-        // afterUnmarshal
-        try {
-            m = jaxbType.getDeclaredMethod("afterUnmarshal", unmarshalEventParams);
-            cacheLifecycleMethod(m, FLAG_HAS_AFTER_UNMARSHAL_METHOD);
-        } catch (NoSuchMethodException e) {
-            // no-op, look for the next method
-        }
+                // afterUnmarshal
+                try {
+                    m = jaxbType.getDeclaredMethod("afterUnmarshal", unmarshalEventParams);
+                    cacheLifecycleMethod(m, FLAG_HAS_AFTER_UNMARSHAL_METHOD);
+                } catch (NoSuchMethodException e) {
+                    // no-op, look for the next method
+                }
 
-        // beforeMarshal
-        try {
-            m = jaxbType.getDeclaredMethod("beforeMarshal", marshalEventParams);
-            cacheLifecycleMethod(m, FLAG_HAS_BEFORE_MARSHAL_METHOD);
-        } catch (NoSuchMethodException e) {
-            // no-op, look for the next method
-        }
+                // beforeMarshal
+                try {
+                    m = jaxbType.getDeclaredMethod("beforeMarshal", marshalEventParams);
+                    cacheLifecycleMethod(m, FLAG_HAS_BEFORE_MARSHAL_METHOD);
+                } catch (NoSuchMethodException e) {
+                    // no-op, look for the next method
+                }
 
-        // afterMarshal
-        try {
-            m = jaxbType.getDeclaredMethod("afterMarshal", marshalEventParams);
-            cacheLifecycleMethod(m, FLAG_HAS_AFTER_MARSHAL_METHOD);
-        } catch (NoSuchMethodException e) {
-            // no-op
-        }
+                // afterMarshal
+                try {
+                    m = jaxbType.getDeclaredMethod("afterMarshal", marshalEventParams);
+                    cacheLifecycleMethod(m, FLAG_HAS_AFTER_MARSHAL_METHOD);
+                } catch (NoSuchMethodException e) {
+                    // no-op
+                }
+
+                return null;
+            }
+        });
     }
 
     /**
