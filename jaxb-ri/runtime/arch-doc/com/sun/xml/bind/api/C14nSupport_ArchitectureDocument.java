@@ -14,19 +14,23 @@ import javax.xml.bind.Marshaller;
  *  <li>If you know in advance that you'll need c14n, use
  *      {@link JAXBRIContext#newInstance} to create a new {@link JAXBContext}
  *      with c14n. In this way, every marshaller created from this {@link JAXBRIContext}
- *      will do c14n. This also runs faster than the second option.
+ *      will do c14n.
  *  <li>use {@link Marshaller#setProperty(String, Object)} with {@link JAXBRIContext#CANONICALIZATION_SUPPORT}
  *      to enable c14n on a marshaller instance.
  * </ol>
  *
- * <h2>Supported C14n Modes</h2>
- * <h3>(Inclusive) Canonicalization</h3>
  * <p>
- * Regardless of which two ways you took to configure JAXB,
- * generated canonical XML documents will follow
+ * The first option runs faster, because the JAXB RI can do a better optimization,
+ * but the end result is the same.
+ *
+ *
+ * <h2>Supported C14n Modes</h2>
+ * <h3>Inclusive Canonicalization</h3>
+ * <p>
+ * The generated canonical XML documents will follow
  * <a href="http://www.w3.org/TR/2001/REC-xml-c14n-20010315">the Canonical XML spec</a>
  * provided that you marshal it to UTF-8 (which is the spec requirement) and
- * don't turn on the formatting (which is our implementation requirement.)
+ * don't turn on the formatting.
  *
  * <p>
  * When using JAXB to marshal a tree canonically to be a subtree of a bigger document,
@@ -35,8 +39,34 @@ import javax.xml.bind.Marshaller;
  *
  * In particular, use
  * {@link com.sun.xml.bind.marshaller.NamespacePrefixMapper#getPreDeclaredNamespaceUris2()}
- * to make sure that the marshalling redeclares all the in-scope namespace bindings at
- * the root element.
+ * to make sure that the marshalling does not produce redundant namespace declarations
+ * at the first element it marshals. See below:
+ *
+ * <pre><xmp>
+ * <root xmlns="foo">
+ *   <abc>
+ *     ... suppose you are marshalling a subtree into here ...
+ *   </abc>
+ * </root>
+ *
+ * [[ if you don't use NamespacePrefixMapper ]]
+ * <root xmlns="foo">
+ *   <abc>
+ *     <child xmlns="foo">
+ *       <bar/>
+ *     </child>
+ *   </abc>
+ * </root>
+ *
+ * [[ use NamespacePrefixMapper and return "","foo" to get this ]]
+ * <root xmlns="foo">
+ *   <abc>
+ *     <child>
+ *       <bar/>
+ *     </child>
+ *   </abc>
+ * </root>
+ * </xmp></pre>
  *
  *
  *
@@ -45,11 +75,10 @@ import javax.xml.bind.Marshaller;
  * JAXB RI doesn't support exclusive canonicalization (xc14n) in its full generality,
  * but it can be used to performa xc14n if the application is in position to choose
  * the list of <a href="http://www.w3.org/TR/2002/REC-xml-exc-c14n-20020718/#def-InclusiveNamespaces-PrefixList">
- * "inclusive namespaces"</a>.
+ * "inclusive namespaces"</a> (which is the most normal case.)
  *
  * <p>
- * IOW, this support can be used when c14n is for producing a new signature, but not
- * when c14n is for verifying a signature.
+ * IOW, this support can be used when c14n is for producing a new signature.
  *
  * <p>
  * The exclusive c14n support in JAXB can be done by making "inclusive namespaces"
@@ -75,6 +104,12 @@ import javax.xml.bind.Marshaller;
  * This behavior is not implemented.
  *
  *
+ * <h2>Call For Help</h2>
+ * <p>
+ * The reason this feature is experimental is because the JAXB team feels uncomfortable
+ * with the understanding of the c14n specs. Therefore, we'd like to be able to change
+ * the way this mechanism works as we go forward, and that's why this feature is an
+ * experimental vendor extension. Any feedback on this feature is greatly appreciated.
  *
  *
  * <h2>Internals</h2>
