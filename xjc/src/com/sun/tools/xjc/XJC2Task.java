@@ -66,7 +66,7 @@ public class XJC2Task extends Task {
         options.setSchemaLanguage(Language.XMLSCHEMA);  // disable auto-guessing
     }
 
-    private final Options options = new Options();
+    public final Options options = new Options();
     
     /** User-specified stack size. */
     private long stackSize = -1;
