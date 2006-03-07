@@ -24,10 +24,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.validation.SchemaFactory;
 
 import com.sun.codemodel.JCodeModel;
+import com.sun.istack.SAXParseException2;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.ModelLoader;
 import com.sun.tools.xjc.Options;
@@ -40,7 +43,6 @@ import com.sun.tools.xjc.reader.internalizer.DOMForest;
 import com.sun.tools.xjc.reader.xmlschema.parser.XMLSchemaInternalizationLogic;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.xsom.XSSchemaSet;
-import com.sun.istack.SAXParseException2;
 
 import org.w3c.dom.Element;
 import org.xml.sax.ContentHandler;
@@ -177,6 +179,15 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
         // internalization
         forest.transform();
 
+        if(!NO_CORRECTNESS_CHECK) {
+            // correctness check
+            SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            sf.setErrorHandler(this);
+            forest.weakSchemaCorrectnessCheck(sf);
+            if(hadError)
+                return null;    // error in the correctness check. abort now
+        }
+
         JCodeModel codeModel = new JCodeModel();
 
         ModelLoader gl = new ModelLoader(opts,codeModel,this);
@@ -236,5 +247,20 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
         hadError = true;
         if(errorListener!=null)
             errorListener.fatalError(exception);
+    }
+
+    /**
+     * We use JAXP 1.3 to do a schema correctness check, but we know
+     * it doesn't always work. So in case some people hit the problem,
+     * this switch is here so that they can turn it off as a workaround.
+     */
+    private static boolean NO_CORRECTNESS_CHECK = false;
+
+    static {
+        try {
+            NO_CORRECTNESS_CHECK = Boolean.getBoolean(SchemaCompilerImpl.class+".noCorrectnessCheck");
+        } catch( Throwable t) {
+            // ignore
+        }
     }
 }

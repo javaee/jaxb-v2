@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -42,8 +43,10 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXSource;
 import javax.xml.validation.SchemaFactory;
 
+import com.sun.istack.NotNull;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.reader.xmlschema.parser.SchemaConstraintChecker;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
@@ -56,12 +59,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLFilterImpl;
-
-import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
 
 /**
@@ -409,7 +411,61 @@ public final class DOMForest {
     public void transform() {
         Internalizer.transform(this);
     }
-    
+
+    /**
+     * Performs the schema correctness check by using JAXP 1.3.
+     *
+     * <p>
+     * This is "weak", because {@link SchemaFactory#newSchema(Source[])}
+     * doesn't handle inclusions very correctly (it ends up parsing it
+     * from its original source, not in this tree), and because
+     * it doesn't handle two documents for the same namespace very
+     * well.
+     *
+     * <p>
+     * We should eventually fix JAXP (and Xerces), but meanwhile
+     * this weaker and potentially wrong correctness check is still
+     * better than nothing when used inside JAX-WS (JAXB CLI and Ant
+     * does a better job of checking this.)
+     *
+     * <p>
+     * To receive errors, use {@link SchemaFactory#setErrorHandler(ErrorHandler)}.
+     */
+    public void weakSchemaCorrectnessCheck(SchemaFactory sf) {
+        Source[] sources = new Source[getRootDocuments().size()];
+        int i=0;
+        for( String systemId : getRootDocuments() ) {
+            sources[i] = createSAXSource(systemId);
+        }
+
+        try {
+            sf.newSchema(sources);
+        } catch (SAXException e) {
+            // error should have been reported.
+        }
+    }
+
+    /**
+     * Creates a {@link SAXSource} that, when parsed, reads from this {@link DOMForest}
+     * (instead of parsing the original source identified by the system ID.)
+     */
+    public @NotNull SAXSource createSAXSource(String systemId) {
+        return new SAXSource(
+            // XMLReader that uses XMLParser to parse. We need to use XMLFilter to indrect
+            // handlers, since SAX allows handlers to be changed while parsing.
+            new XMLFilterImpl() {
+                public void parse(InputSource input) throws SAXException, IOException {
+                    createParser().parse(input,this,this,this);
+                }
+
+                public void parse(String systemId) throws SAXException, IOException {
+                    parse(new InputSource(systemId));
+                }
+            },
+            new InputSource(systemId)
+        );
+    }
+
     /**
      * Creates {@link XMLParser} for XSOM which reads documents from
      * this DOMForest rather than doing a fresh parse.
