@@ -405,6 +405,8 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
             return !isFragment();
         if( XML_HEADERS.equals(name) )
             return header;
+        if( C14N.equals(name) )
+            return c14nSupport;
 
         return super.getProperty(name);
     }
@@ -445,6 +447,11 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         if( XML_HEADERS.equals(name) ) {
             checkString(name, value);
             header = (String)value;
+            return;
+        }
+        if( C14N.equals(name) ) {
+            checkBoolean(name,value);
+            c14nSupport = (Boolean)value;
             return;
         }
 
@@ -532,4 +539,5 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     protected static final String ENCODING_HANDLER = "com.sun.xml.bind.characterEscapeHandler";
     protected static final String XMLDECLARATION = "com.sun.xml.bind.xmlDeclaration";
     protected static final String XML_HEADERS = "com.sun.xml.bind.xmlHeaders";
+    protected static final String C14N = "com.sun.xml.bind.canonicalization";
 }
