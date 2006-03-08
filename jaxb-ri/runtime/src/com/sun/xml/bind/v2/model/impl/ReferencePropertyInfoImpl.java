@@ -127,21 +127,11 @@ class ReferencePropertyInfoImpl<T,C,F,M>
                     // diagnose the problem
                     if(type.equals(nav.ref(JAXBElement.class))) {
                         // no XmlElementDecl
-                        String packageName = nav.getPackageName(parent.clazz);
-                        RegistryInfo<T,C> reg = parent.builder.getRegistry(packageName);
-                        if(reg!=null) {
-                            parent.builder.reportError(new IllegalAnnotationException(
-                                Messages.NO_XML_ELEMENT_DECL.format(
-                                    nav().getClassName(reg.getClazz()),
-                                    r.name()),
-                                this
-                            ));
-                        } else {
-                            parent.builder.reportError(new IllegalAnnotationException(
-                                Messages.NO_REGISTRY_CLASS.format(packageName),
-                                this
-                            ));
-                        }
+                        parent.builder.reportError(new IllegalAnnotationException(
+                            Messages.NO_XML_ELEMENT_DECL.format(
+                                getEffectiveNamespaceFor(r), r.name()),
+                            this
+                        ));
                     } else {
                         parent.builder.reportError(new IllegalAnnotationException(
                             Messages.INVALID_XML_ELEMENT_REF.format(),this));
@@ -164,11 +154,16 @@ class ReferencePropertyInfoImpl<T,C,F,M>
      *      true if the reference yields at least one type
      */
     private boolean addGenericElement(XmlElementRef r) {
+        String nsUri = getEffectiveNamespaceFor(r);
+        // TODO: check spec. defaulting of localName.
+        return addGenericElement(parent.owner.getElementInfo(parent.getClazz(),new QName(nsUri,r.name())));
+    }
+
+    private String getEffectiveNamespaceFor(XmlElementRef r) {
         String nsUri = r.namespace();
         if(nsUri.length()==0)
             nsUri = parent.builder.defaultNsUri;
-        // TODO: check spec. defaulting of localName.
-        return addGenericElement(parent.owner.getElementInfo(parent.getClazz(),new QName(nsUri,r.name())));
+        return nsUri;
     }
 
     private boolean addGenericElement(ElementInfo<T,C> ei) {
