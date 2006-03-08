@@ -45,6 +45,7 @@ public class SchemaGenerator {
     private static final String[] packagePrefixes = {
         "com.sun.tools.jxc.",
         "com.sun.tools.xjc.",
+        "com.sun.istack.tools.",
         "com.sun.tools.apt.",
         "com.sun.tools.javac.",
         "com.sun.tools.javadoc.",
