@@ -1,7 +1,5 @@
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
-import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
-
 import org.xml.sax.SAXException;
 
 /**
