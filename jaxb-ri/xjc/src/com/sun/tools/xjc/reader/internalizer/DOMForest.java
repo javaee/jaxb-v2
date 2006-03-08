@@ -432,10 +432,15 @@ public final class DOMForest {
      * To receive errors, use {@link SchemaFactory#setErrorHandler(ErrorHandler)}.
      */
     public void weakSchemaCorrectnessCheck(SchemaFactory sf) {
-        Source[] sources = new Source[getRootDocuments().size()];
+        SAXSource[] sources = new SAXSource[getRootDocuments().size()];
         int i=0;
         for( String systemId : getRootDocuments() ) {
             sources[i] = createSAXSource(systemId);
+            try {
+                sources[i].getXMLReader().setFeature("http://xml.org/sax/features/namespace-prefixes",true);
+            } catch (SAXException e) {
+                throw new AssertionError(e);    // Xerces wants this. See 6395322.
+            }
         }
 
         try {
@@ -450,20 +455,19 @@ public final class DOMForest {
      * (instead of parsing the original source identified by the system ID.)
      */
     public @NotNull SAXSource createSAXSource(String systemId) {
-        return new SAXSource(
+        ContentHandlerNamespacePrefixAdapter reader = new ContentHandlerNamespacePrefixAdapter(new XMLFilterImpl() {
             // XMLReader that uses XMLParser to parse. We need to use XMLFilter to indrect
             // handlers, since SAX allows handlers to be changed while parsing.
-            new XMLFilterImpl() {
-                public void parse(InputSource input) throws SAXException, IOException {
-                    createParser().parse(input,this,this,this);
-                }
+            public void parse(InputSource input) throws SAXException, IOException {
+                createParser().parse(input, this, this, this);
+            }
 
-                public void parse(String systemId) throws SAXException, IOException {
-                    parse(new InputSource(systemId));
-                }
-            },
-            new InputSource(systemId)
-        );
+            public void parse(String systemId) throws SAXException, IOException {
+                parse(new InputSource(systemId));
+            }
+        });
+
+        return new SAXSource(reader,new InputSource(systemId));
     }
 
     /**
