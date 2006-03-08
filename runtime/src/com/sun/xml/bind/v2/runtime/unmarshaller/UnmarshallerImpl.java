@@ -21,7 +21,6 @@ package com.sun.xml.bind.v2.runtime.unmarshaller;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBContext;
@@ -156,14 +155,14 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
         try {
             reader.setFeature("http://xml.org/sax/features/string-interning",true);
         } catch (SAXException e) {
-            ;
+            // if it fails that's fine. we'll work around on our side
         }
 
         try {
             if( reader.getFeature("http://xml.org/sax/features/string-interning") )
                 return false;   // no need for intern
         } catch (SAXException e) {
-            ; // unrecognized/unsupported
+            // unrecognized/unsupported
         }
         // otherwise we need intern
         return true;

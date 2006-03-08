@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.xml.sax.Attributes;
@@ -371,7 +370,7 @@ public class XMLWriter extends XMLFilterImpl
     }
     
 
-    private final HashMap locallyDeclaredPrefix = new HashMap();
+    private final HashMap<String,String> locallyDeclaredPrefix = new HashMap<String,String>();
     public void startPrefixMapping( String prefix, String uri ) throws SAXException {
         locallyDeclaredPrefix.put(prefix,uri);
     }
@@ -478,11 +477,9 @@ public class XMLWriter extends XMLFilterImpl
             
             // declare namespaces specified by the startPrefixMapping methods
             if(!locallyDeclaredPrefix.isEmpty()) {
-                Iterator itr = locallyDeclaredPrefix.entrySet().iterator();
-                while(itr.hasNext()) {
-                    Map.Entry e = (Map.Entry)itr.next();
-                    String p = (String)e.getKey();
-                    String u = (String)e.getValue();
+                for (Map.Entry<String,String> e : locallyDeclaredPrefix.entrySet()) {
+                    String p = e.getKey();
+                    String u = e.getValue();
                     if (u == null) {
                         u = "";
                     }
