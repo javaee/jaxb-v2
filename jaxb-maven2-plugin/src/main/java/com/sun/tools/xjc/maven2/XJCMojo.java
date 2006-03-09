@@ -22,29 +22,18 @@ package com.sun.tools.xjc.maven2;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
-import org.apache.oro.io.GlobFilenameFilter;
+import org.apache.tools.ant.DirectoryScanner;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * A mojo that uses JAXB to generate a collection of javabeans from an XSD. For
- * details on JAXB see <a href="https://jaxb.dev.java.net/">JAXB 2.0
- * Project</a>
+ * details on JAXB see <a href="https://jaxb.dev.java.net/">JAXB 2.0 Project</a>
  * <p/>
  *
  * @author Jonathan Johnson (jonjohnson@mail.com)
- *         <p/>
- * @todo Questions for kohsuke.kawaguchi@sun.com 1) Review settings (names,
- * defaults, types, descriptions, any missing?) 2) How to associate multiple
- * schema to multiple binding files? 3) Does this mojo have to verify if the
- * compile is necessary, does XJC2Task already do this for us?
- * @todo support include and excludes (see http://jira.codehaus.org/browse/MNG-643),
- * deep searching nested directories?
- * <p/>
+ *
  * @goal generate
  * @phase generate-sources
  * @description JAXB Generator plugin
@@ -54,7 +43,7 @@ public class XJCMojo extends AbstractMojo
     /**
      * The source directory containing *.xsd schema and *.xjb binding files.
      *
-     * @parameter expression="${basedir}/src/main/schemas"
+     * @parameter expression="${basedir}/src/main/resources"
      */
     protected File schemaDirectory;
 
@@ -62,32 +51,41 @@ public class XJCMojo extends AbstractMojo
      * A list of regular expression file search patterns to specify the schemas
      * to be processed.  Searching is based from the root of schemaDirectory. If
      * this is not set then all .xsd files in schemaDirectory will be
-     * processed.
-     * <p/>
+     * processed.  Default is *.xsd.
      *
-     * @todo In maven 2 how to set default for String[]? expression="*.xsd"
+     * todo In maven 2 how to set default for String[]? expression="*.xsd"
      */
     protected String[] includeSchemas;
 
     /**
      * A list of regular expression file search patterns to specify the schemas
-     * to be ecluded from the includeSchemas list.  Searching is based from the
+     * to be excluded from the includeSchemas list.  Searching is based from the
      * root of schemaDirectory.
      *
      * @parameter
      */
-    protected ArrayList<String> excludeSchemas;
+    protected String[] excludeSchemas;
 
     /**
      * A list of regular expression file search patterns to specify the binding
      * files to be processed.  Searching is based from the root of
      * schemaDirectory.  If this is not set then all .xjb files in
-     * schemaDirectory will be processed.  The binding file that will be applied
-     * to the schema file.
+     * schemaDirectory will be processed.   Default is *.xjb.
+     *
+     * todo In maven 2 how to set default for String[]? expression="*.xjb"
      *
      * @parameter
      */
-    protected ArrayList<String> bindings;
+    protected String[] includeBindings;
+
+    /**
+     * A list of regular expression file search patterns to specify the binding
+     * files to be excluded.  Searching is based from the root of
+     * schemaDirectory.
+     *
+     * @parameter
+     */
+    protected String[] excludeBindings;
 
     /**
      * If specified, generated code will be placed under this Java package.
@@ -168,7 +166,9 @@ public class XJCMojo extends AbstractMojo
         validateSettings();
 
         if (verbose)
+        {
             logSettings();
+        }
 
         // Create the destination path if it does not exist.
         if (!generateDirectory.exists())
@@ -180,18 +180,20 @@ public class XJCMojo extends AbstractMojo
         XJC2TaskAdapter xjc2TaskAdapter = new XJC2TaskAdapter(getLog());
 
         // Get list of schemas
-        List<String> schemaFilenames = getFiles(schemaDirectory,
-            Arrays.asList(includeSchemas), excludeSchemas);
+        String[] schemaFilenames = getFiles(schemaDirectory,
+            includeSchemas, excludeSchemas);
 
         // Get list of bindings
-        List<String> bindingsFilenames =
-            patternedList(schemaDirectory, bindings);
+        String[] bindingsFilenames = getFiles(schemaDirectory,
+            includeBindings, excludeBindings);
 
         // Set xjc settings from defined in plugin configuration section
         if (isDefined(bindingsFilenames, 1))
         {
-            xjc2TaskAdapter.setBinding(bindingsFilenames.get(0));
-            // todo - not sure how to map multiple bindings to schemas with maven settings yet. */
+            for (String name : bindingsFilenames)
+            {
+               xjc2TaskAdapter.setBinding(name);
+            }
         }
 
         if (generatePackage != null)
@@ -251,7 +253,16 @@ public class XJCMojo extends AbstractMojo
             getLog().info(
                 "The <includeSchemas> setting was not defined, assuming *.xsd.");
             // default schema pattern if not defined
-            includeSchemas = new String[]{"*.xsd"};
+            includeSchemas = new String[] {"*.xsd"};
+        }
+
+        // Check "includeBindings"
+        if (! isDefined(includeBindings, 1))
+        {
+            getLog().info(
+                "The <includeBindings> setting was not defined, assuming *.xjb.");
+            // default schema pattern if not defined
+            includeBindings = new String[] {"*.xjb"};
         }
     }
 
@@ -284,6 +295,36 @@ public class XJCMojo extends AbstractMojo
     }
 
     /**
+     * Go through each directory and get the files for this dir.
+     * @param searchRootDirectory
+     * @param includePatterns
+     * @param excludePatterns
+     * @return list of schemas found based on pattern criteria.
+     */
+    private static String[] getFiles(File searchRootDirectory,
+                                     String[] includePatterns,
+                                     String[] excludePatterns)
+    {
+        DirectoryScanner directoryScanner = new DirectoryScanner();
+        directoryScanner.setBasedir(searchRootDirectory);
+
+        directoryScanner.setIncludes(includePatterns);
+        directoryScanner.setExcludes(excludePatterns);
+
+        directoryScanner.scan();
+        String[] files = directoryScanner.getIncludedFiles();
+
+        // Prefix file names with base search root directory.
+        for (int i=0; i<files.length; i++)
+        {
+           files[i] = searchRootDirectory + File.separator + files[i];
+        }
+
+        return files;
+    }
+
+
+    /**
      * Log the configuration settings.  Shown when exception thrown or when
      * verbose is true.
      */
@@ -292,7 +333,8 @@ public class XJCMojo extends AbstractMojo
         getLog().info("schemaDirectory: " + schemaDirectory);
         getLog().info("includeSchemas: " + recursiveToString(includeSchemas));
         getLog().info("excludeSchemas: " + recursiveToString(excludeSchemas));
-        getLog().info("bindings: " + recursiveToString(bindings));
+        getLog().info("includeBindings: " + recursiveToString(includeBindings));
+        getLog().info("excludeBindings: " + recursiveToString(excludeBindings));
         getLog().info("generatePackage: " + generatePackage);
         getLog().info("generateDirectory: " + generateDirectory);
         getLog().info("readOnly: " + readOnly);
@@ -335,70 +377,5 @@ public class XJCMojo extends AbstractMojo
         }
 
         return setting == null ? "null" : setting.toString();
-    }
-
-    /**
-     * Get the list of files found in the source directory that match the list
-     * of include regular expression patterns and not not matched the exclude
-     * regular expression patterns.
-     *
-     * @param sourceDirectory directory where files are fitlered.
-     * @param includePatterns list of regular expression file name patterns.
-     * @param excludePatterns list of regular expression file name patterns.
-     * @return complete list of files found by combinging the include and
-     *         exclude results.
-     */
-    private static List<String> getFiles(File sourceDirectory,
-                                         List<String> includePatterns,
-                                         List<String> excludePatterns)
-        throws MojoExecutionException
-    {
-        // Compile a list of all files found by list of includePatterns
-        List<String> includes = patternedList(sourceDirectory, includePatterns);
-        List<String> excludes = patternedList(sourceDirectory, excludePatterns);
-
-        includes.removeAll(excludes);
-
-        // preprend sourceDirectory to each file list
-        List<String> absoluteIncludes = new ArrayList<String>(includes.size());
-        for (String filename : includes)
-        {
-            absoluteIncludes.add(sourceDirectory.getAbsolutePath() +
-                                 File.separatorChar + filename);
-        }
-
-        return absoluteIncludes;
-    }
-
-    /**
-     * Get the list of file that match the given pattern.
-     *
-     * @param sourceDirectory directory where files are filtered..
-     * @param patterns        regular expression file name patterns
-     * @return list of files that match the pattern.
-     */
-    private static List<String> patternedList(File sourceDirectory,
-                                              List<String> patterns)
-        throws MojoExecutionException
-    {
-        ArrayList<String> list = new ArrayList<String>(10);
-        if (patterns != null)
-        {
-            for (String pattern : patterns)
-            {
-                String[] matches = sourceDirectory.
-                    list(new GlobFilenameFilter(pattern));
-
-                if (matches == null)
-                {
-                    throw new MojoExecutionException(
-                        "No such directory " + sourceDirectory);
-                }
-
-                list.addAll(Arrays.asList(matches));
-            }
-        }
-
-        return list;
     }
 }

@@ -5,6 +5,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.Arrays;
 
 /**
  * Created by IntelliJ IDEA. User: Owner Date: Feb 8, 2006 Time: 12:10:35 AM To
