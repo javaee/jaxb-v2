@@ -441,6 +441,7 @@ public final class DOMForest {
             } catch (SAXException e) {
                 throw new AssertionError(e);    // Xerces wants this. See 6395322.
             }
+            i++;
         }
 
         try {
