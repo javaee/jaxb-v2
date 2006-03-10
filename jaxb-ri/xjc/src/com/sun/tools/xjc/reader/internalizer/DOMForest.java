@@ -24,9 +24,11 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,6 +50,7 @@ import javax.xml.validation.SchemaFactory;
 
 import com.sun.istack.NotNull;
 import com.sun.tools.xjc.ErrorReceiver;
+import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.reader.xmlschema.parser.SchemaConstraintChecker;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
 import com.sun.tools.xjc.util.XMLStreamReaderToContentHandler;
@@ -432,20 +435,23 @@ public final class DOMForest {
      * To receive errors, use {@link SchemaFactory#setErrorHandler(ErrorHandler)}.
      */
     public void weakSchemaCorrectnessCheck(SchemaFactory sf) {
-        SAXSource[] sources = new SAXSource[getRootDocuments().size()];
-        int i=0;
+        List<SAXSource> sources = new ArrayList<SAXSource>();
         for( String systemId : getRootDocuments() ) {
-            sources[i] = createSAXSource(systemId);
+            Document dom = get(systemId);
+            if (dom.getDocumentElement().getNamespaceURI().equals(Const.JAXB_NSURI))
+                continue;   // this isn't a schema. we have to do a negative check because if we see completely unrelated ns, we want to report that as an error
+
+            SAXSource ss = createSAXSource(systemId);
             try {
-                sources[i].getXMLReader().setFeature("http://xml.org/sax/features/namespace-prefixes",true);
+                ss.getXMLReader().setFeature("http://xml.org/sax/features/namespace-prefixes",true);
             } catch (SAXException e) {
                 throw new AssertionError(e);    // Xerces wants this. See 6395322.
             }
-            i++;
+            sources.add(ss);
         }
 
         try {
-            sf.newSchema(sources);
+            sf.newSchema(sources.toArray(new SAXSource[0]));
         } catch (SAXException e) {
             // error should have been reported.
         }
