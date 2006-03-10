@@ -101,7 +101,10 @@ abstract class AbstractListField extends AbstractField {
 
         // for the collectionType customization to take effect, the field needs to be strongly typed,
         // not just List<Foo>.
-        field = outline.implClass.field( JMod.PROTECTED, getCoreListType(), prop.getName(false) );
+        field = outline.implClass.field( JMod.PROTECTED, listT, prop.getName(false) );
+        if(eagerInstanciation)
+            field.init(newCoreList());
+
         annotate(field);
 
         // generate the rest of accessors
@@ -111,9 +114,8 @@ abstract class AbstractListField extends AbstractField {
     private void generateInternalGetter() {
         internalGetter = outline.implClass.method(JMod.PROTECTED,listT,"_get"+prop.getName(true));
         if(!eagerInstanciation) {
+            // if eagerly instanciated, the field can't be null
             fixNullRef(internalGetter.body());
-        } else {
-            field.init(newCoreList());
         }
         internalGetter.body()._return(field);
     }
