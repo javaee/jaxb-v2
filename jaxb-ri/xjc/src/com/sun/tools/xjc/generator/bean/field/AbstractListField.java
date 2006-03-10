@@ -27,13 +27,11 @@ import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JFieldRef;
 import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JForLoop;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JOp;
 import com.sun.codemodel.JPrimitiveType;
 import com.sun.codemodel.JType;
-import com.sun.codemodel.JVar;
 import com.sun.tools.xjc.generator.bean.ClassOutlineImpl;
 import com.sun.tools.xjc.model.CPropertyInfo;
 
@@ -103,7 +101,7 @@ abstract class AbstractListField extends AbstractField {
 
         // for the collectionType customization to take effect, the field needs to be strongly typed,
         // not just List<Foo>.
-        field = outline.implClass.field( JMod.PROTECTED, listT, prop.getName(false) );
+        field = outline.implClass.field( JMod.PROTECTED, getCoreListType(), prop.getName(false) );
         annotate(field);
 
         // generate the rest of accessors
