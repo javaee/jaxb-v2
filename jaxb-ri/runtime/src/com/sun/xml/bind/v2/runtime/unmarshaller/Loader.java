@@ -181,20 +181,20 @@ public abstract class Loader {
     /**
      * Last resort when something goes terribly wrong within the unmarshaller.
      */
-    protected static final void handleGenericException(Exception e) throws SAXException {
+    protected static void handleGenericException(Exception e) throws SAXException {
         handleGenericException(e,false);
     }
 
-    public static final void handleGenericException(Exception e, boolean canRecover) throws SAXException {
+    public static void handleGenericException(Exception e, boolean canRecover) throws SAXException {
         reportError(e.getMessage(), e, canRecover );
     }
 
 
-    protected static final void reportError(String msg, boolean canRecover) throws SAXException {
+    protected static void reportError(String msg, boolean canRecover) throws SAXException {
         reportError(msg, null, canRecover );
     }
 
-    public static final void reportError(String msg, Exception nested, boolean canRecover) throws SAXException {
+    public static void reportError(String msg, Exception nested, boolean canRecover) throws SAXException {
         UnmarshallingContext context = UnmarshallingContext.getInstance();
         context.handleEvent( new ValidationEventImpl(
             canRecover? ValidationEvent.ERROR : ValidationEvent.FATAL_ERROR,
@@ -207,10 +207,7 @@ public abstract class Loader {
      * This method is called by the generated derived class
      * when a datatype parse method throws an exception.
      */
-    protected static final void handleParseConversionException(UnmarshallingContext.State state, Exception e) throws SAXException {
-        if( e instanceof RuntimeException )
-            throw (RuntimeException)e;  // don't catch the runtime exception. just let it go.
-
+    protected static void handleParseConversionException(UnmarshallingContext.State state, Exception e) throws SAXException {
         // wrap it into a ParseConversionEvent and report it
         state.getContext().handleError(e);
     }
