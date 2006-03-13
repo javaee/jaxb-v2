@@ -77,11 +77,11 @@ public final class Multiplicity {
         return min==1 && max==1;
     }
     
-        /** returns true if the multiplicity is (0,1) */
-        public boolean isOptional() {
-            if(max==null) return false;
-            return min==0 && max==1;
-        }
+    /** returns true if the multiplicity is (0,1) */
+    public boolean isOptional() {
+        if(max==null) return false;
+        return min==0 && max==1;
+    }
         
     /** returns true if the multiplicity is (0,1) or (1,1). */
     public boolean isAtMostOnce() {
