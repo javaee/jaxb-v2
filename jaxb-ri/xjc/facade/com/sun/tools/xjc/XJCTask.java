@@ -128,11 +128,11 @@ public class XJCTask extends Task implements DynamicConfigurator {
      * {@link MaskingClassLoader} to prevent the parent
      * classLoader from loading
      */
-    private static List maskedPackages = Arrays.asList(
+    private static List maskedPackages = Arrays.asList(new String[]{
         "com.sun.tools.",
         "com.sun.codemodel.",
         "com.sun.relaxng.",
         "com.sun.xml.xsom."
-    );
+    });
 }
 
