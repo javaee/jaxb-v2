@@ -4,9 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
 
 /**
  * Load classes/resources from a side folder, so that
@@ -60,16 +58,9 @@ final class ParallelWorldClassLoader extends ClassLoader {
      */
     private final String prefix;
 
-    /**
-     * List of package prefixes we want to mask the
-     * parent classLoader from loading
-     */
-    private final List packagePrefixes;
-
     protected ParallelWorldClassLoader(ClassLoader parent,String prefix) {
         super(parent);
         this.prefix = prefix;
-        packagePrefixes = getPackagePrefixes();
     }
 
     protected Class findClass(String name) throws ClassNotFoundException {
@@ -108,38 +99,10 @@ final class ParallelWorldClassLoader extends ClassLoader {
     }
 
     protected URL findResource(String name) {
-        return getParent().getResource(prefix.concat(name));
+        return getParent().getResource(prefix+'/'+name);
     }
 
     protected Enumeration findResources(String name) throws IOException {
-        return getParent().getResources(prefix.concat(name));
+        return getParent().getResources(prefix+'.'+name);
     }
-
-    public Class loadClass (String s) throws ClassNotFoundException {
-        //ToDo check if this can be made faster
-        for (int i = 0; i < packagePrefixes.size(); i++ ) {
-            String packprefix = (String)packagePrefixes.get(i);
-            if (s.startsWith(packprefix) )
-                return findClass(s);
-
-        }
-        return getParent().loadClass(s);
-    }
-
-    /**
-     * The list of package prefixes we want the
-     * {@link MaskingClassLoader} to prevent the parent
-     * classLoader from loading
-     * @return
-     *       List of package prefixes e.g com.sun.tools.xjc.driver
-     */
-    private  List getPackagePrefixes() {
-
-        ArrayList prefixes = new ArrayList() ;
-        //TODO check if more prefixes need to be added
-
-        prefixes.add("com.sun.tools.xjc");
-        return prefixes;
-    }
-
 }

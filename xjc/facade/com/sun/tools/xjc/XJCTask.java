@@ -1,6 +1,7 @@
 package com.sun.tools.xjc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -55,7 +56,8 @@ public class XJCTask extends Task implements DynamicConfigurator {
                 cl = XJCTask.class.getClassLoader();
                 driver = cl.loadClass("com.sun.tools.xjc.XJC2Task");
             } else {
-                cl = new ParallelWorldClassLoader(MaskingClassLoader.class.getClassLoader(),source);
+                cl = new ParallelWorldClassLoader(new MaskingClassLoader(
+                    getClass().getClassLoader(),maskedPackages),source);
                 driver = cl.loadClass("com.sun.tools.xjc.XJCTask");
             }
             Task t = (Task)driver.newInstance();
@@ -120,5 +122,17 @@ public class XJCTask extends Task implements DynamicConfigurator {
             }
         }
     }
+
+    /**
+     * The list of package prefixes we want the
+     * {@link MaskingClassLoader} to prevent the parent
+     * classLoader from loading
+     */
+    private static List maskedPackages = Arrays.asList(
+        "com.sun.tools.",
+        "com.sun.codemodel.",
+        "com.sun.relaxng.",
+        "com.sun.xml.xsom."
+    );
 }
 
