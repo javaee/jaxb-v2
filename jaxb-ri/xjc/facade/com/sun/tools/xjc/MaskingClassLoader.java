@@ -1,50 +1,51 @@
 package com.sun.tools.xjc;
 
-
+import java.io.IOException;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Vector;
 
 /**
- * Dummy class that masks classes which are loaded by the parent
- * class loader so that the child class loader
- * classes living in different folders are loaded
- * before the parent class loader loads classes living the jar file publicly
- * visible
- *
- *
- * <p>
- * For example, with the following jar file:
- * <pre>
- *  /
- *  +- foo
- *     +- X.class
- *  +- bar
- *     +-foo
- *        +- X.class
- * </pre>
- * <p>
- * This is chained with the  {@link ParallelWorldClassLoader}(MaskingClassLoader.class.getClassLoader()) and
- * would load <tt>foo.X.class<tt> from
- * <tt>/bar/foo.X.class</tt> not the <tt>foo.X.class<tt> in the publicly visible place in the jar file, thus
- * masking the parent classLoader from loading the class from  <tt>foo.X.class<tt>
- * (note that X is defined in the  package foo, not
- * <tt>bar.foo.X</tt>.
- *
- *
- *
- * @author Bhakti Mehta
+ * {@link ClassLoader} that masks some packages available in the parent class loader.
+ * @author Kohsuke Kawaguchi
  */
-final class MaskingClassLoader extends ClassLoader {
+public class MaskingClassLoader extends ClassLoader {
 
+    private final String[] prefixList;
 
-    protected MaskingClassLoader(ClassLoader parent) {
+    public MaskingClassLoader(ClassLoader parent, List prefixList) {
         super(parent);
+        this.prefixList = (String[]) prefixList.toArray(new String[prefixList.size()]);
     }
 
-    protected Class findClass(String name) {
-      return null;
+    protected synchronized Class loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        if(matchesPrefix(name))
+            // we are hiding these packages from its parent.
+            throw new ClassNotFoundException();
+        return super.loadClass(name,resolve);
     }
 
-    public Class loadClass (String s) {
-        return null ;
+    public URL getResource(String name) {
+        if(matchesPrefix(name))
+            return null;
+        return super.getResource(name);
     }
+
+    public Enumeration getResources(String name) throws IOException {
+        if(matchesPrefix(name))
+            return new Vector().elements();
+        return super.getResources(name);
+    }
+
+    private boolean matchesPrefix(String name) {
+        for (int i = 0; i < prefixList.length; i++ ) {
+            String packprefix = prefixList[i];
+            if (name.startsWith(packprefix) )
+                return true;
+        }
+        return false;
+    }
+
 
 }
