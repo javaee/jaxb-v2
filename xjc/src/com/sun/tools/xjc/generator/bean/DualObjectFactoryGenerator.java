@@ -1,9 +1,9 @@
 package com.sun.tools.xjc.generator.bean;
 
 import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JPackage;
-import com.sun.codemodel.JMod;
 import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JPackage;
 import com.sun.tools.xjc.model.CElementInfo;
 import com.sun.tools.xjc.model.Model;
 import com.sun.xml.bind.v2.ContextFactory;
@@ -35,6 +35,6 @@ final class DualObjectFactoryGenerator extends ObjectFactoryGenerator {
     }
 
     public JDefinedClass getObjectFactory() {
-        return publicOFG.getObjectFactory();
+        return privateOFG.getObjectFactory();
     }
 }
