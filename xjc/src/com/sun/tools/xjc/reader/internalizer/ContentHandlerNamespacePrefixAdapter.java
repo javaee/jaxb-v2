@@ -33,16 +33,18 @@ final class ContentHandlerNamespacePrefixAdapter extends XMLFilterImpl {
     }
 
     public boolean getFeature(String name) throws SAXNotRecognizedException, SAXNotSupportedException {
-        if(name.equals(FEATURE))
+        if(name.equals(PREFIX_FEATURE))
             return namespacePrefixes;
         return super.getFeature(name);
     }
 
     public void setFeature(String name, boolean value) throws SAXNotRecognizedException, SAXNotSupportedException {
-        if(name.equals(FEATURE)) {
+        if(name.equals(PREFIX_FEATURE)) {
             this.namespacePrefixes = value;
             return;
         }
+        if(name.equals(NAMESPACE_FEATURE) && value)
+            return;
         super.setFeature(name, value);
     }
 
@@ -78,5 +80,6 @@ final class ContentHandlerNamespacePrefixAdapter extends XMLFilterImpl {
 
     private final AttributesImpl atts = new AttributesImpl();
 
-    private static final String FEATURE = "http://xml.org/sax/features/namespace-prefixes";
+    private static final String PREFIX_FEATURE = "http://xml.org/sax/features/namespace-prefixes";
+    private static final String NAMESPACE_FEATURE = "http://xml.org/sax/features/namespaces";
 }
