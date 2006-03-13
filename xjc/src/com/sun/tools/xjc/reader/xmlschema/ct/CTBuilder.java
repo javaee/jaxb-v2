@@ -24,7 +24,6 @@ import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.tools.xjc.reader.xmlschema.BindGreen;
 import com.sun.tools.xjc.reader.xmlschema.ClassSelector;
-import com.sun.tools.xjc.reader.xmlschema.ParticleBinder;
 import com.sun.tools.xjc.reader.xmlschema.SimpleTypeBuilder;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSSchemaSet;
@@ -61,6 +60,5 @@ abstract class CTBuilder {
     protected final ErrorReceiver errorReceiver = Ring.get(ErrorReceiver.class);
     protected final BindGreen green = Ring.get(BindGreen.class);
     protected final XSSchemaSet schemas = Ring.get(XSSchemaSet.class);
-    protected final ParticleBinder particleBinder = Ring.get(ParticleBinder.class);
     protected final BGMBuilder bgmBuilder = Ring.get(BGMBuilder.class);
 }

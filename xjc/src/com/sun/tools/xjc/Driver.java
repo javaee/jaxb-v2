@@ -27,6 +27,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JCodeModel;
@@ -36,15 +37,21 @@ import com.sun.codemodel.writer.ZipCodeWriter;
 import com.sun.tools.xjc.generator.bean.BeanGenerator;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.outline.Outline;
+import com.sun.tools.xjc.reader.gbind.Expression;
+import com.sun.tools.xjc.reader.gbind.Graph;
 import com.sun.tools.xjc.reader.internalizer.DOMForest;
+import com.sun.tools.xjc.reader.xmlschema.ExpressionBuilder;
 import com.sun.tools.xjc.reader.xmlschema.parser.XMLSchemaInternalizationLogic;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
 import com.sun.tools.xjc.util.NullStream;
 import com.sun.tools.xjc.util.Util;
 import com.sun.tools.xjc.writer.SignatureWriter;
+import com.sun.xml.xsom.XSComplexType;
+import com.sun.xml.xsom.XSParticle;
+import com.sun.xml.xsom.XSSchemaSet;
 
-import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 
 /**
@@ -259,7 +266,29 @@ public class Driver {
                 return -1;
             }
 
+            if( opt.mode==Mode.GBIND ) {
+                try {
+                    XSSchemaSet xss = new ModelLoader(opt, new JCodeModel(), receiver).loadXMLSchema();
+                    Iterator<XSComplexType> it = xss.iterateComplexTypes();
+                    while (it.hasNext()) {
+                        XSComplexType ct =  it.next();
+                        XSParticle p = ct.getContentType().asParticle();
+                        if(p==null)     continue;
 
+                        Expression tree = ExpressionBuilder.createTree(p);
+                        System.out.println("Graph for "+ct.getName());
+                        System.out.println(tree.toString());
+                        Graph g = new Graph(tree);
+                        System.out.println(g.toString());
+                        System.out.println();
+                    }
+                    return 0;
+                } catch (SAXException e) {
+                    // the error should have already been reported
+                }
+                return -1;
+            }
+            
             Model model = ModelLoader.load( opt, new JCodeModel(), receiver );
 
             if (model == null) {
@@ -371,7 +400,8 @@ public class Driver {
         // same as CODE but pack all the outputs into a zip and dumps to stdout
         ZIP,
 
-        ;
+        // testing a new binding mode
+        GBIND
     }
 
     

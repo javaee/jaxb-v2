@@ -13,6 +13,7 @@ import javax.xml.transform.TransformerFactory;
 
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.fmt.JTextFile;
+import com.sun.istack.NotNull;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.generator.bean.field.FieldRendererFactory;
@@ -41,7 +42,6 @@ import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSTerm;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSWildcard;
-import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.util.XSFinder;
 
 import org.xml.sax.Locator;
@@ -187,6 +187,8 @@ public class BGMBuilder extends BindingComponent {
         model.rootClass = globalBinding.getSuperClass();
         model.rootInterface = globalBinding.getSuperInterface();
 
+        particleBinder = globalBinding.isSimpleMode() ? new ExpressionParticleBinder() : new DefaultParticleBinder();
+
         // check XJC extensions and realize them
         BISerializable serial = globalBinding.getSerializable();
         if(serial!=null) {
@@ -214,10 +216,16 @@ public class BGMBuilder extends BindingComponent {
 
     /**
      * Gets the global bindings.
-     * @return
-     *      Always return non-null valid object.
      */
-    public BIGlobalBinding getGlobalBinding() { return globalBinding; }
+    public @NotNull BIGlobalBinding getGlobalBinding() { return globalBinding; }
+
+    
+    private ParticleBinder particleBinder;
+
+    /**
+     * Gets the particle binder for this binding.
+     */
+    public @NotNull ParticleBinder getParticleBinder() { return particleBinder; }
 
 
     /**

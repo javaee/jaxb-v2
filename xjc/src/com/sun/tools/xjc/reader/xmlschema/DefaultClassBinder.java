@@ -24,6 +24,8 @@ import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JJavaName;
 import com.sun.codemodel.JPackage;
+import com.sun.istack.NotNull;
+import com.sun.istack.Nullable;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CClassInfoParent;
@@ -57,8 +59,6 @@ import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.XSXPath;
-import com.sun.istack.Nullable;
-import com.sun.istack.NotNull;
 
 /**
  * Default classBinder implementation. Honors &lt;jaxb:class> customizations
@@ -175,7 +175,7 @@ final class DefaultClassBinder implements ClassBinder
             // in the simple mode, we do more aggressive optimization, and get rid of
             // a complex type class if it's only used once from a global element
             Set<XSComponent> referer = builder.getReferer(decl.getType());
-            if(referer.size()==1) {
+            if(referer.size()==1 && decl.isGlobal()) {
                 assert referer.contains(decl);  // I must be the sole referer
                 return true;
             }
