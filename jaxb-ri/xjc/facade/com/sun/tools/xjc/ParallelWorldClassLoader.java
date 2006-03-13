@@ -64,7 +64,7 @@ final class ParallelWorldClassLoader extends ClassLoader {
      * List of package prefixes we want to mask the
      * parent classLoader from loading
      */
-    private final List packagePrefixes;
+    private final List<String> packagePrefixes;
 
     protected ParallelWorldClassLoader(ClassLoader parent,String prefix) {
         super(parent);
@@ -82,7 +82,7 @@ final class ParallelWorldClassLoader extends ClassLoader {
 
         InputStream is = getParent().getResourceAsStream(sb.toString());
         if (is==null)
-            return null;
+            throw new ClassNotFoundException(name);
 
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -111,25 +111,16 @@ final class ParallelWorldClassLoader extends ClassLoader {
         return getParent().getResource(prefix.concat(name));
     }
 
-    protected Enumeration findResources(String name) throws IOException {
+    protected Enumeration<URL> findResources(String name) throws IOException {
         return getParent().getResources(prefix.concat(name));
     }
 
-    public Class loadClass (String s) {
-        try {
-            //ToDo check if this can be made faster
-            for (int i = 0; i < packagePrefixes.size(); i++ ) {
-                String packprefix = (String)packagePrefixes.get(i);
-                if (s.startsWith(packprefix) )
-                    return findClass(s);
-
-            }
-            return getParent().loadClass(s);
-
-        } catch(Exception e) {
-            e.printStackTrace();
+    public Class loadClass (String s) throws ClassNotFoundException {
+        for (String p : packagePrefixes) {
+            if (s.startsWith(p))
+                return findClass(s);
         }
-        return null ;
+        return getParent().loadClass(s);
     }
 
     /**
@@ -139,9 +130,9 @@ final class ParallelWorldClassLoader extends ClassLoader {
      * @return
      *       List of package prefixes e.g com.sun.tools.xjc.driver
      */
-    private  List getPackagePrefixes() {
+    private List<String> getPackagePrefixes() {
 
-        ArrayList prefixes = new ArrayList() ;
+        ArrayList<String> prefixes = new ArrayList<String>();
         //TODO check if more prefixes need to be added
 
         prefixes.add("com.sun.tools.xjc");
