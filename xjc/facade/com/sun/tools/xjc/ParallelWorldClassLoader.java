@@ -64,7 +64,7 @@ final class ParallelWorldClassLoader extends ClassLoader {
      * List of package prefixes we want to mask the
      * parent classLoader from loading
      */
-    private final List<String> packagePrefixes;
+    private final List packagePrefixes;
 
     protected ParallelWorldClassLoader(ClassLoader parent,String prefix) {
         super(parent);
@@ -111,14 +111,17 @@ final class ParallelWorldClassLoader extends ClassLoader {
         return getParent().getResource(prefix.concat(name));
     }
 
-    protected Enumeration<URL> findResources(String name) throws IOException {
+    protected Enumeration findResources(String name) throws IOException {
         return getParent().getResources(prefix.concat(name));
     }
 
     public Class loadClass (String s) throws ClassNotFoundException {
-        for (String p : packagePrefixes) {
-            if (s.startsWith(p))
+        //ToDo check if this can be made faster
+        for (int i = 0; i < packagePrefixes.size(); i++ ) {
+            String packprefix = (String)packagePrefixes.get(i);
+            if (s.startsWith(packprefix) )
                 return findClass(s);
+
         }
         return getParent().loadClass(s);
     }
@@ -130,9 +133,9 @@ final class ParallelWorldClassLoader extends ClassLoader {
      * @return
      *       List of package prefixes e.g com.sun.tools.xjc.driver
      */
-    private List<String> getPackagePrefixes() {
+    private  List getPackagePrefixes() {
 
-        ArrayList<String> prefixes = new ArrayList<String>();
+        ArrayList prefixes = new ArrayList() ;
         //TODO check if more prefixes need to be added
 
         prefixes.add("com.sun.tools.xjc");
