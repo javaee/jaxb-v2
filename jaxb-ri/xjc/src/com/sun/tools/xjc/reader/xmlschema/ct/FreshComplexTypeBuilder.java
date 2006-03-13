@@ -22,6 +22,8 @@ package com.sun.tools.xjc.reader.xmlschema.ct;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
+import static com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeBindingMode.FALLBACK_CONTENT;
+import static com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeBindingMode.NORMAL;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSContentType;
 import com.sun.xml.xsom.XSModelGroup;
@@ -29,9 +31,6 @@ import com.sun.xml.xsom.XSParticle;
 import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSTerm;
 import com.sun.xml.xsom.visitor.XSContentTypeVisitor;
-
-import static com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeBindingMode.FALLBACK_CONTENT;
-import static com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeBindingMode.NORMAL;
 
 /**
  * Builds a complex type that inherits from the anyType complex type.
@@ -66,9 +65,9 @@ final class FreshComplexTypeBuilder extends CTBuilder {
                 // determine the binding of this complex type.
 
                 builder.recordBindingMode(ct,
-                    particleBinder.checkFallback(p)?FALLBACK_CONTENT:NORMAL);
+                    bgmBuilder.getParticleBinder().checkFallback(p)?FALLBACK_CONTENT:NORMAL);
 
-                particleBinder.build(p);
+                bgmBuilder.getParticleBinder().build(p);
 
                 XSTerm term = p.getTerm();
                 if(term.isModelGroup() && term.asModelGroup().getCompositor()==XSModelGroup.ALL)

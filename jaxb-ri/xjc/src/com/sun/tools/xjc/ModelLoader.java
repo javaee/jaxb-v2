@@ -319,7 +319,7 @@ public final class ModelLoader {
     /**
      * Parses a set of XML Schema files into an annotated grammar.
      */
-    private XSSchemaSet loadXMLSchema() throws SAXException {
+    public XSSchemaSet loadXMLSchema() throws SAXException {
         
         if( opt.strictCheck && !SchemaConstraintChecker.check(opt.getGrammars(),errorReceiver,opt.entityResolver)) {
             // schema error. error should have been reported

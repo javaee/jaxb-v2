@@ -352,8 +352,8 @@ public final class BIProperty extends AbstractDeclarationImpl {
     }
 
     public CReferencePropertyInfo createReferenceProperty(
-        String defaultName, boolean forConstant, XSComponent source,
-        RawTypeSet types, boolean isNillable, boolean isMixed ) {
+            String defaultName, boolean forConstant, XSComponent source,
+            RawTypeSet types, boolean isMixed) {
 
         if(!types.refs.isEmpty())
             // if this property is empty, don't acknowleedge the customization
@@ -379,8 +379,8 @@ public final class BIProperty extends AbstractDeclarationImpl {
     }
 
     public CPropertyInfo createElementOrReferenceProperty(
-        String defaultName, boolean forConstant, XSParticle source,
-        RawTypeSet types, boolean isNillable ) {
+            String defaultName, boolean forConstant, XSParticle source,
+            RawTypeSet types) {
 
         boolean generateRef;
 
@@ -402,7 +402,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
         }
 
         if(generateRef) {
-            return createReferenceProperty(defaultName,forConstant,source,types,isNillable,false);
+            return createReferenceProperty(defaultName,forConstant,source,types, false);
         } else {
             return createElementProperty(defaultName,forConstant,source,types);
         }

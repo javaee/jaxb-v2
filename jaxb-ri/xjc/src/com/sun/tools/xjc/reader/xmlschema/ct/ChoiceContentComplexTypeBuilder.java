@@ -2,11 +2,10 @@ package com.sun.tools.xjc.reader.xmlschema.ct;
 
 import java.util.Collections;
 
+import static com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeBindingMode.NORMAL;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSModelGroup;
 import com.sun.xml.xsom.XSParticle;
-
-import static com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeBindingMode.NORMAL;
 
 /**
  * Binds a complex type whose immediate child is a choice
@@ -57,7 +56,7 @@ final class ChoiceContentComplexTypeBuilder extends CTBuilder {
 
         builder.recordBindingMode(ct,NORMAL);
 
-        particleBinder.build(p,Collections.singleton(p));
+        bgmBuilder.getParticleBinder().build(p,Collections.singleton(p));
 
         green.attContainer(ct);
     }

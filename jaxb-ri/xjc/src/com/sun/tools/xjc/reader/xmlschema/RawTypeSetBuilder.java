@@ -61,7 +61,15 @@ public class RawTypeSetBuilder implements XSTermVisitor {
 
     protected final BGMBuilder builder = Ring.get(BGMBuilder.class);
 
-    private RawTypeSetBuilder() {}
+    public RawTypeSetBuilder() {}
+
+
+    /**
+     * Gets the {@link RawTypeSet.Ref}s that were built.
+     */
+    public Set<RawTypeSet.Ref> getRefs() {
+        return refs;
+    }
 
     /**
      * Build up {@link #refs} and compute the total multiplicity of this {@link RawTypeSet.Ref} set.
