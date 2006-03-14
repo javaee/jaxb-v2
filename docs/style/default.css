@@ -115,6 +115,12 @@ DL.link-menu DT {
 	font-weight: bold;
 }
 
+DL.sample-list {
+	margin-left: 2em;
+}
+DL.sample-list DT {
+	font-weight: bold;
+}
 
 /*------------------------------ navigation bar ------------------------------*/
 .navbar {

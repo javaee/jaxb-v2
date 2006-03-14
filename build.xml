@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.54 2006-03-14 21:31:31 kohsuke Exp $
+       $Id: build.xml,v 1.55 2006-03-14 23:21:53 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -163,6 +163,16 @@
         <mkdir dir="${jaxb.dist}/lib" />
         <mkdir dir="${jaxb.dist}/docs/api" />
 
+        <!-- Process samples first. We need to decide which samples to ship first,
+             or otherwise we can't generate documentation.
+             
+             if wspack.home is set, then process samples as 'JWSDP',
+             otherwise process samples as 'RI' -->
+        <condition property="in.wspack">
+            <isset property="wspack.home"/>
+        </condition>
+        <antcall target="process-sample.inwspack"/>
+        <antcall target="process-sample.notinwspack"/>
 
 
         <parallel>
@@ -288,17 +298,8 @@ Class-Path: ${manifest.classpath}
           </sequential>
 
 
-          <!-- process samples -->
+          <!-- copy samples -->
           <sequential>
-              <!-- if wspack.home is set, then process samples as 'JWSDP',
-                   otherwise process samples as 'RI' -->
-              <condition property="in.wspack">
-                  <isset property="wspack.home"/>
-              </condition>
-              <antcall target="process-sample.inwspack"/>
-              <antcall target="process-sample.notinwspack"/>
-
-              <!-- copy sample apps -->
               <mkdir dir="${jaxb.dist}/samples"/>
               <copy todir="${jaxb.dist}/samples">
                   <fileset dir="${jaxb.root}/samples/work"

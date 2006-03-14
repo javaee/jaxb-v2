@@ -93,7 +93,7 @@
   
   
   <!--
-    generates documentation
+    generates documentation by TOC processor
   -->
   <macrodef name="generate-docs">
     <element name="source" />
@@ -102,6 +102,15 @@
       <copy todir="@{dest}" overwrite="true">
           <source />
       </copy>
+      
+      <!-- generate a list of sample applications in the distribution -->
+      <taskdef name="dirListGen" classname="com.sun.tools.tocproc.DirectoryListGenerator">
+        <classpath>
+          <fileset dir="${jaxb.libs.util}" includes="**/*.jar"/>
+        </classpath>
+      </taskdef>
+      <dirListGen dir="${jaxb.root}/samples/work" dest="@{dest}/samples.xml" />
+      
       <java classname="com.sun.tools.tocproc.TocProcessor" fork="true" failonerror="true">
           <classpath>
               <!-- make sure JAXP xalan comes before Apache xalan -->
@@ -110,6 +119,7 @@
               <fileset dir="${jaxb.libs.runtime}" includes="**/*.jar"/>
               <fileset dir="${jaxb.libs.compiler}" includes="**/*.jar"/>
           </classpath>
+          <arg path="build.properties"/>
           <arg value="@{dest}"/>
           <!-- if you need to attach debugger ... -->
           <!--jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000"/-->
@@ -129,6 +139,7 @@
                          value="${jwsdp.root.directory}"/>
       </replace>
       <delete file="@{dest}/toc.xml"/>
+      <delete file="@{dest}/samples.xml"/>
     </sequential>
   </macrodef>
 </project>

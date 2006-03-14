@@ -3,7 +3,7 @@
  Reads jaxb release note html files and inserts a toc based on the
  data in docs/toc.xml
   
- $Id: toc.xsl,v 1.3 2006-03-14 23:01:20 kohsuke Exp $
+ $Id: toc.xsl,v 1.4 2006-03-14 23:21:52 kohsuke Exp $
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
@@ -18,6 +18,9 @@
 
     <!-- current file name being processed -->
     <xsl:param name="fileName" />
+
+    <!-- current impl release version -->
+    <xsl:param name="release.impl.version" />
 
     <xsl:include href="html-extensions.xsl" />
     <xsl:include href="sample-list.xsl" />
