@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.52 2006-02-16 20:00:34 kohsuke Exp $
+       $Id: build.xml,v 1.53 2006-03-14 19:42:23 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -143,7 +143,16 @@
         </replace>
       </sequential>
     </macrodef>
-
+    
+    
+    <target name="test-docs" description="generate docs for a test">
+        <mkdir dir="build/docs" />
+        <generate-docs dest="build/docs">
+            <source>
+                <fileset dir="${jaxb.docs}" />
+            </source>
+        </generate-docs>
+    </target>
 
     <!-- generate a distribution -->
     <target name="dist"
@@ -161,41 +170,11 @@
           <sequential>
               <unzip src="${jaxb.libs.redist}/jaxb-api-doc.zip"
                      dest="${jaxb.dist}/docs/api" />
-              <copy todir="${jaxb.dist}/docs" overwrite="true">
-                  <fileset dir="${jaxb.docs}">
-                      <include name="**/*.html"/>
-                      <include name="**/*.css"/>
-                      <include name="**/*.txt"/>
-                      <include name="**/*.gif"/>
-                      <include name="**/toc.xml"/>
-                  </fileset>
-              </copy>
-              <replace dir="${jaxb.dist}/docs">
-                  <include name="**/*.html"/>
-                  <replacefilter token="@@SPEC_VERSION@@"
-                                 value="${release.spec.version}" />
-                  <replacefilter token="@@IMPL_VERSION@@"
-                                 value="${release.impl.version}"/>
-                  <replacefilter token="@@IMPL_VERSION_SUFFIX@@"
-                                 value="${release.impl.version.suffix}"/>
-                  <replacefilter token="@@JWSDP_VERSION@@"
-                                 value="${jwsdp.impl.version}"/>
-                  <replacefilter token="@@JWSDP_ROOTDIR@@"
-                                 value="${jwsdp.root.directory}"/>
-              </replace>
-              <java classname="com.sun.tools.tocproc.TocProcessor" fork="true" failonerror="true">
-                  <classpath>
-                      <!-- make sure JAXP xalan comes before Apache xalan -->
-                      <fileset dir="${jaxb.libs.redist}" includes="**/*.jar"/>
-                      <fileset dir="${jaxb.libs.util}" includes="**/*.jar"/>
-                      <fileset dir="${jaxb.libs.runtime}" includes="**/*.jar"/>
-                      <fileset dir="${jaxb.libs.compiler}" includes="**/*.jar"/>
-                  </classpath>
-                  <arg value="${jaxb.dist}/docs"/>
-                  <!-- if you need to attach debugger ... -->
-                  <!--jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000"/-->
-              </java>
-              <delete file="${jaxb.dist}/docs/toc.xml"/>
+              <generate-docs dest="${jaxb.dist}/docs">
+                  <source>
+                      <fileset dir="${jaxb.docs}" />
+                  </source>
+              </generate-docs>
           </sequential>
 
           <!-- runtime javadoc -->
