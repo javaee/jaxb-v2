@@ -503,6 +503,7 @@
       <module fileurl="file://$PROJECT_DIR$/samples/samples.iml" filepath="$PROJECT_DIR$/samples/samples.iml" />
       <module fileurl="file://$PROJECT_DIR$/tools/taglets/taglets.iml" filepath="$PROJECT_DIR$/tools/taglets/taglets.iml" />
       <module fileurl="file://$PROJECT_DIR$/../jaxb-unit/test/test.iml" filepath="$PROJECT_DIR$/../jaxb-unit/test/test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tools/toc-processor/toc-processor.iml" filepath="$PROJECT_DIR$/tools/toc-processor/toc-processor.iml" />
       <module fileurl="file://$PROJECT_DIR$/xjc/xjc.iml" filepath="$PROJECT_DIR$/xjc/xjc.iml" />
     </modules>
   </component>
@@ -545,11 +546,12 @@
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/bsh-reflect-2.0b1.jar!/" />
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/bsh-classgen-2.0b1.jar!/" />
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/jaxen-1.1-beta-4.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/util/ant-junit.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/util/nekohtml.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
         <root url="jar://$PROJECT_DIR$/tools/lib/src/sfx4j-1.0-RC-src.zip!/" />
-        <root url="jar://$PROJECT_DIR$/tools/lib/src/ant-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/ant-contrib-0.6-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/xsom-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/jsr173_1.0_src.jar!/" />
@@ -573,6 +575,7 @@
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/forehead.src.zip!/src/java" />
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/xalan-j_2_6_0-src.zip!/xalan-j_2_6_0/src" />
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/bsh-src.zip!/src" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/ant-src.zip!/apache-ant-1.6.2/src/main" />
       </SOURCES>
     </library>
     <library name="runtime">

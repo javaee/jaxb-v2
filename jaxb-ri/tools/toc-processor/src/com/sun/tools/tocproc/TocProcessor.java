@@ -1,5 +1,5 @@
 /*
- * $Id: TocProcessor.java,v 1.4 2006-03-14 23:01:20 kohsuke Exp $
+ * $Id: TocProcessor.java,v 1.5 2006-03-14 23:21:51 kohsuke Exp $
  */
 
 /*
@@ -25,8 +25,11 @@ package com.sun.tools.tocproc;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.net.URL;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -44,7 +47,7 @@ import org.cyberneko.html.parsers.DOMParser;
  * .html files in the jaxb release notes.
  *
  * @author Ryan Shoemaker, Sun Microsystems, Inc.
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TocProcessor {
 
@@ -57,17 +60,21 @@ public class TocProcessor {
     /** xml file describing the toc navigation bar */
     private File tocDotXml;
 
+    /** build.properties file. */
+    private File buildProperties;
+
     /** the name of the toc style sheet */
     private final String tocDotXsl = "toc.xsl";
 
     public TocProcessor(String[] args) {
-        if (args.length != 1)
+        if (args.length != 2)
             usage();
 
-        sourceDir = new File(args[0]);
+        buildProperties = new File(args[0]);
+        destDirName = args[1];
+        sourceDir = new File(destDirName);
         tocDotXml = new File(sourceDir, "toc.xml");
 
-        destDirName = args[0];
     }
 
     private void transform(String fileName, Source source) {
@@ -94,6 +101,13 @@ public class TocProcessor {
             
             transformer.setParameter("tocDotXml", tocDotXml.toURL().toExternalForm());
             transformer.setParameter("fileName", fileName);
+
+            // read build.properties and make everything available
+            Properties prop = new Properties();
+            prop.load(new FileInputStream(buildProperties));
+            for (Map.Entry<Object,Object> entry : prop.entrySet()) {
+                transformer.setParameter(entry.getKey().toString(),entry.getValue().toString());
+            }
 
             // run the transform
             transformer.transform(source, result);
@@ -131,7 +145,7 @@ public class TocProcessor {
     }
 
     private void usage() {
-        System.out.println("java TocProcessor <dir>");
+        System.out.println("java TocProcessor <path to $JAXB_HOME/build.properties> <dir>");
         System.out.println("\t<dir> must contain toc.xml");
         System.exit(-1);
     }

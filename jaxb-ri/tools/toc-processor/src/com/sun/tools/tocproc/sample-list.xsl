@@ -2,7 +2,7 @@
 <!--
  Template related to the generation of sample list.
 
- $Id: sample-list.xsl,v 1.1 2006-03-14 23:01:20 kohsuke Exp $
+ $Id: sample-list.xsl,v 1.2 2006-03-14 23:21:52 kohsuke Exp $
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
   <xsl:template match="SAMPLE-LIST">
@@ -12,10 +12,13 @@
         <xsl:variable name="meta" select="document(concat(@url,'/sample.meta'))" />
 
         <dt>
-          <xsl:value-of select="$meta/sample/title"/>
           <a href="../samples/{@name}">
-            (../samples/<xsl:value-of select="@name"/>)
+            <xsl:value-of select="$meta/sample/title"/>
           </a>
+          <!-- put 'new' icon on samples introduced in this release -->
+          <xsl:if test="$meta/sample[@since=$release.impl.version]">
+            <img src="new.gif" />
+          </xsl:if>
         </dt>
         <dd>
           <xsl:value-of select="$meta/sample/description" />
