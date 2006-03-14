@@ -1,5 +1,5 @@
 /*
- * $Id: TocProcessor.java,v 1.3 2006-03-14 02:45:17 kohsuke Exp $
+ * $Id: TocProcessor.java,v 1.4 2006-03-14 23:01:20 kohsuke Exp $
  */
 
 /*
@@ -7,12 +7,12 @@
  * of the Common Development and Distribution License
  * (the "License").  You may not use this file except
  * in compliance with the License.
- * 
+ *
  * You can obtain a copy of the license at
  * https://jwsdp.dev.java.net/CDDLv1.0.html
  * See the License for the specific language governing
  * permissions and limitations under the License.
- * 
+ *
  * When distributing Covered Code, include this CDDL
  * HEADER in each file and include the License file at
  * https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
@@ -28,6 +28,7 @@ import java.io.FileFilter;
 import java.io.FileWriter;
 import java.net.URL;
 
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
@@ -37,14 +38,13 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.cyberneko.html.parsers.DOMParser;
-import org.w3c.dom.Node;
 
 /**
  * This is a specialized processor that generates a toc navbar in each of the
  * .html files in the jaxb release notes.
- * 
+ *
  * @author Ryan Shoemaker, Sun Microsystems, Inc.
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TocProcessor {
 
@@ -70,7 +70,7 @@ public class TocProcessor {
         destDirName = args[0];
     }
 
-    private void transform(String fileName, Node node) {
+    private void transform(String fileName, Source source) {
         TransformerFactory tf = TransformerFactory.newInstance();
         if (!tf.getFeature(StreamSource.FEATURE)) {
             throw new TransformerFactoryConfigurationError(
@@ -88,10 +88,6 @@ public class TocProcessor {
             Transformer transformer =
                 tf.newTransformer(xsltSource);
 
-            // setup source and result
-            DOMSource source = new DOMSource(node);
-            
-            
             StreamResult result =
                 new StreamResult(
                     new FileWriter(destDirName + File.separator + fileName));
@@ -126,7 +122,7 @@ public class TocProcessor {
             for (int i = 0; i < htmlFiles.length; i++) {
                 File file = htmlFiles[i];
                 parser.parse(file.getCanonicalPath());
-                transform(file.getName(), parser.getDocument());
+                transform(file.getName(), new DOMSource(parser.getDocument(),file.getPath()));
             }
         } catch (Exception e) {
             e.printStackTrace();
