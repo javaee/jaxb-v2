@@ -20,6 +20,7 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 
+import com.sun.istack.Nullable;
 import com.sun.xml.bind.Util;
 import com.sun.xml.bind.api.CompositeStructure;
 import com.sun.xml.bind.v2.TODO;
@@ -196,7 +197,6 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     String eUri = tref.getTagName().getNamespaceURI();
                     if(eUri.length()>0 && !eUri.equals(n.uri)) {
                         getNamespace(eUri).addGlobalElement(tref);
-                        n.addDependencyTo(tref.getTagName());
                     }
                 }
             }
@@ -396,7 +396,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             }
         }
 
-        private void addDependencyTo(QName qname) {
+        private void addDependencyTo(@Nullable QName qname) {
             // even though the Element interface says getElementName() returns non-null,
             // ClassInfo always implements Element (even if an instance of ClassInfo might not be an Element).
             // so this check is still necessary
@@ -1097,6 +1097,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
         public void addGlobalElement(TypeRef<T,C> tref) {
             elementDecls.put( tref.getTagName().getLocalPart(), new ElementWithType(false,tref.getTarget()) );
+            addDependencyTo(tref.getTarget().getTypeName());
         }
 
         /**
