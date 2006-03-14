@@ -3,7 +3,7 @@
  Reads jaxb release note html files and inserts a toc based on the
  data in docs/toc.xml
   
- $Id: toc.xsl,v 1.2 2006-03-14 02:45:18 kohsuke Exp $
+ $Id: toc.xsl,v 1.3 2006-03-14 23:01:20 kohsuke Exp $
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
@@ -20,7 +20,8 @@
     <xsl:param name="fileName" />
 
     <xsl:include href="html-extensions.xsl" />
-    
+    <xsl:include href="sample-list.xsl" />
+
     <!-- trigger generation of the toc from toc.xml -->
     <xsl:template name="JAXB-TOC">
         <xsl:apply-templates select="document($tocDotXml)"/>
