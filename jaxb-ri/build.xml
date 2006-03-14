@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.53 2006-03-14 19:42:23 kohsuke Exp $
+       $Id: build.xml,v 1.54 2006-03-14 21:31:31 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -175,20 +175,6 @@
                       <fileset dir="${jaxb.docs}" />
                   </source>
               </generate-docs>
-          </sequential>
-
-          <!-- runtime javadoc -->
-          <sequential>
-              <ant dir="runtime" target="javadoc" />
-              <zip zipfile="${jaxb.dist}/docs/jaxb-impl.javadoc.zip"
-                   basedir="${runtime.root}/build/api" />
-          </sequential>
-
-          <!-- xjc javadoc -->
-          <sequential>
-              <ant dir="xjc" target="javadoc" />
-              <zip zipfile="${jaxb.dist}/docs/jaxb-xjc.javadoc.zip"
-                   basedir="${xjc.root}/build/javadoc" />
           </sequential>
 
           <!-- copy redist jars -->
