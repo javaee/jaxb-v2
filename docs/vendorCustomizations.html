@@ -29,8 +29,10 @@
 	<ul>
 		<li><a href="#superclass">&lt;xjc:superClass></a> - Extending a Common Super Class</li>
 		<li><a href="#superinterface">&lt;xjc:superInterface></a> - Extending a Common Super Interface</li>
-		<!--li><a href="#dom">&lt;xjc:dom></a> - Mapping to DOM</li-->
-		<!--li><a href=""></a></li-->
+		<li><a href="#javaType">&lt;xjc:javaType></a></li> - Enhanved &lt;jaxb:javaType> customization</li>
+		<!--
+		<li><a href="">&lt;></a></li>
+		-->
 	</ul>
 	
 	
@@ -41,17 +43,15 @@
 	The  
 	<tt>&lt;xjc:superClass&gt;</tt> customization can only occur within your
 	<tt>&lt;jaxb:globalBindings&gt;</tt> customization on the <tt>&lt;xs:schema&gt;</tt> 
-	element and will only be allowed when xjc is run with the &quot;<tt>-extension</tt>&quot;
-	switch:</p>
+	element:</p>
 
-	<blockquote>
-		<pre>
+<pre class=code>
 &lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
            xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
            <font color="red"
           >xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
            jaxb:extensionBindingPrefixes="xjc"</font>
-           jaxb:version="1.0">
+           jaxb:version="2.0">
 
     &lt;xs:annotation>
        &lt;xs:appinfo>
@@ -65,8 +65,7 @@
 .
 .
 &lt;/xs:schema>
-		</pre>
-	</blockquote>
+</pre>
 
 	<p>In the sample above, the <tt>&lt;xjc:superClass&gt;</tt> customization will
 	cause all of the generated implementation classes to extend the named class,
@@ -84,17 +83,15 @@
 	The  
 	<tt>&lt;xjc:superInterface&gt;</tt> customization can only occur within your
 	<tt>&lt;jaxb:globalBindings&gt;</tt> customization on the <tt>&lt;xs:schema&gt;</tt> 
-	element and will only be allowed when xjc is run with the &quot;<tt>-extension</tt>&quot;
-	switch:</p>
+	element:</p>
 
-	<blockquote>
-		<pre>
+<pre class=code>
 &lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
            xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
            <font color="red"
           >xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
            jaxb:extensionBindingPrefixes="xjc"</font>
-           jaxb:version="1.0">
+           jaxb:version="2.0">
 
     &lt;xs:annotation>
        &lt;xs:appinfo>
@@ -108,13 +105,47 @@
 .
 .
 &lt;/xs:schema>
-		</pre>
-	</blockquote>
+</pre>
 
 	<p>In the sample above, the <tt>&lt;xjc:superInterface&gt;</tt> customization will
 	cause all of the generated interfaces to extend the named interface,
 	<tt>org.acme.RocketBooster</tt>.</p>
 
+
+
+	<a name="javaType"></a>
+	<h3>Enhanced &lt;jaxb:javaType></h3>
+	<p>
+		The &lt;xjc:javaType> customization can be used just like the standard &lt;jaxb:javaType> customization, except that it allows you to specify an <code>XmlAdapter</code>-derived class, instead of parse&amp;print method pair.
+	
+	<p>
+		This customization can be used in all the places &lt;jaxb:javaType> is used, but nowhere else:
+<pre class=code>
+&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           <font color="red"
+          >xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+           jaxb:extensionBindingPrefixes="xjc"</font>
+           jaxb:version="2.0">
+  .
+  .
+  .
+  &lt;xsd:simpleType name="LayerRate_T">
+    &lt;xsd:annotation>&lt;xsd:appinfo>
+      <font color=red>&lt;xjc:javaType name="org.acme.foo.LayerRate"
+        adapter="org.acme.foo.LayerRateAdapter" /></font>
+    &lt;/xsd:appinfo>&lt;/xsd:annotation>
+    ... gory simple type definition here ...
+  &lt;/xsd:simpleType>
+&lt;/xsd:schema>
+</pre>
+
+	<p>
+		In the above example, <tt>LayerRate_T</tt> simple type is adapted by <tt>org.acme.foo.LayerRateAdapter</tt>, which extends from <tt>XmlAdapter</tt>.
+	
+	
+	
+	
 <!-- NOT AVAILABLE FOR 2.0 EA
 	<a name="dom"></a>
 	<h3>Mapping to DOM</h3>
@@ -188,8 +219,8 @@
 
     <hr>
     <div class="footer">
-      $Revision: 1.3 $<br>
-      $Date: 2006-03-14 17:45:33 $
+      $Revision: 1.4 $<br>
+      $Date: 2006-03-14 18:03:24 $
     </div>
   </body>
  </html>
