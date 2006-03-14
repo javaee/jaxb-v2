@@ -41,6 +41,8 @@
               url="schemagen.html"/>
     <document name="SchemaGen Ant Task"
               url="schemagenTask.html"/>
+    <document name="3rd Party Tools"
+              url="3rdparty.html" />
   </chapter>
   <chapter name="JAXB 1.0.x">
     <document name="Release Notes"
