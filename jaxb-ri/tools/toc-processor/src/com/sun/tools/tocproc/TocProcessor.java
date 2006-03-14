@@ -1,5 +1,5 @@
 /*
- * $Id: TocProcessor.java,v 1.2 2005-09-10 19:08:40 kohsuke Exp $
+ * $Id: TocProcessor.java,v 1.3 2006-03-14 02:45:17 kohsuke Exp $
  */
 
 /*
@@ -26,7 +26,7 @@ package com.sun.tools.tocproc;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileWriter;
-import java.io.InputStream;
+import java.net.URL;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -44,7 +44,7 @@ import org.w3c.dom.Node;
  * .html files in the jaxb release notes.
  * 
  * @author Ryan Shoemaker, Sun Microsystems, Inc.
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TocProcessor {
 
@@ -79,14 +79,12 @@ public class TocProcessor {
                     + " doesn't support StreamSource");
         }
 
-        InputStream xsltFile =
-            TocProcessor.class.getResourceAsStream(tocDotXsl);
+        URL xsltFile =
+            TocProcessor.class.getResource(tocDotXsl);
 
         try {
-            StreamSource xsltSource = new StreamSource(xsltFile);
-            // workaround for xalan bugid: 5008888
-            xsltSource.setSystemId("blarg");
-            
+            StreamSource xsltSource = new StreamSource(xsltFile.toExternalForm());
+
             Transformer transformer =
                 tf.newTransformer(xsltSource);
 
@@ -99,6 +97,7 @@ public class TocProcessor {
                     new FileWriter(destDirName + File.separator + fileName));
             
             transformer.setParameter("tocDotXml", tocDotXml.toURL().toExternalForm());
+            transformer.setParameter("fileName", fileName);
 
             // run the transform
             transformer.transform(source, result);
