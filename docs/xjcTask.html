@@ -1,6 +1,6 @@
 <html>
   <head>
-    <caption>Using  XJC with Ant</caption>
+    <caption>Using XJC with Ant</caption>
     <link rel="stylesheet" type="text/css" href="style/default.css">
   </head>
 
@@ -14,15 +14,13 @@
        <code>XJCTask</code>, 
        include the following statement in your <code>build.xml</code> file:</p>
 
-      <blockquote>
-        <pre><xmp>
+        <pre class=ant-example><xmp>
 <taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
   <classpath>
     <fileset dir="path/to/jaxb/lib" includes="*.jar" />
   </classpath>
 </taskdef>
-        </xmp></pre>
-      </blockquote>
+</xmp></pre>
 
     <p>This maps <code>XJCTask</code> to an Ant task named <code>xjc</code>.  For 
        detailed examples of using this task, refer to any of the <tt>build.xml</tt> 
@@ -30,14 +28,14 @@
 
     <h2>Synopsis</h2>
 
-    <h4>Environment Variables</h4>
+    <h3>Environment Variables</h3>
       <ul>
         <li><a href="http://wiki.apache.org/ant/TheElementsOfAntStyle">ANT_OPTS</a> - command-line arguments that should be passed to the JVM. For 
             example, you can define system properties or set the maximum Java heap 
             size here.</li>
       </ul>
 
-    <h4>Parameter Attributes</h4>
+    <h3>Parameter Attributes</h3>
     <p><code>xjc</code> supports the following parameter attributes.</p>
 
     <table border="1" summary="">
@@ -127,24 +125,25 @@
       </tbody>
     </table>
 
+		<h3>Nested Elements</h3>
+		<div class="nested-elements">
     <p><code>xjc</code> supports the following nested element parameters.</p>
 
-    <blockquote>
-	  <h3>schema</h3>
+	  <h4>schema</h4>
 	
 	  <p>To compile more than one schema at the same time, use a nested <code>
 	     &lt;schema&gt;</code> element, which has the same syntax as <a href=
          "http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html"><code>
          &lt;fileset&gt;</code></a>.</p>
 	
-	  <h3>binding</h3>
+	  <h4>binding</h4>
 	
 	  <p>To specify more than one  external binding file at the same time, use a 
 	     nested <code>&lt;binding&gt;</code> element, which has the same syntax as
          <a href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html"><code>
          &lt;fileset&gt;</code></a>.</p>
 	
-	  <h3>classpath</h3>
+	  <h4>classpath</h4>
 	
 	  <p>To specify locations of the user-defined classes necessary during the 
 	     compilation (such as an user-defined type that is used through a 
@@ -153,7 +152,7 @@
 	     "http://jakarta.apache.org/ant/manual/using.html#path">"path-like structure"
 	     </a>.</p>
 	
-	  <h3>arg</h3>
+	  <h4>arg</h4>
 	
 	  <p>Additional command line arguments passed to the XJC. For details 
 	     about the syntax, see 
@@ -177,7 +176,7 @@ there is no native support for
 	     must specify the appropriate nested &lt;<tt>arg</tt>&gt; elements.
 	  </p>
 	
-      <h3>depends</h3>
+      <h4>depends</h4>
 	
       <p>Files specified with this nested element will be taken into account when the 
          XJC task does the up-to-date check. See the up-to-date check section for 
@@ -185,7 +184,7 @@ there is no native support for
          "http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html"><code>
          &lt;fileset&gt;</code></a>.</p>
 	
-	  <h3>produces</h3>
+	  <h4>produces</h4>
 	
 	  <p>Files specified with this nested element will be taken into account when the 
 	     XJC task does the up-to-date check. See the up-to-date check section for 
@@ -193,10 +192,9 @@ there is no native support for
 	     "http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html"><code>
 	     &lt;fileset&gt;</code></a>.</p>
 	  
-	  <h3>xmlcatalog</h3>
+	  <h4>xmlcatalog</h4>
 	  <p>The <a href="http://ant.apache.org/manual/CoreTypes/xmlcatalog.html">xmlcatalog</a> element is used to resolve entities when parsing schema documents.</p>
-	  
-    </blockquote>
+    </div>
 
 
     <h2>Generated Resource Files</h2>
@@ -231,7 +229,7 @@ there is no native support for
        attribute. This option allows you to remove all the files that match the 
        "produces" filesets before a compilation. <em>Be careful when you use this 
        option so that you don't delete important files</em>.</p>
-
+    
 
     <h2>Schema Language Support</h2>
     <p>This release of the JAXB RI includes experimental support for RELAX NG, DTD, and
@@ -244,23 +242,19 @@ there is no native support for
     <p>Compile <code>myschema.xsd</code> and place the generated files under 
        <code>src/org/acme/foo</code>:</p>
 
-    <blockquote>
-      <pre>
+<pre class=ant-example>
 &lt;xjc schema="src/myschema.xsd" target="src" package="org.acme.foo"/&gt;
-      </pre>
-    </blockquote>
+</pre>
 
     <p>Compile all XML Schema files in the <code>src</code> directory and place the 
        generated files under the appropriate packages in the <code>src</code> 
        directory:</p>
 
-    <blockquote>
-      <pre>
+<pre class=ant-example>
 &lt;xjc target="src"&gt;
   &lt;schema  dir="src" includes="*.xsd"/&gt;
 &lt;/xjc&gt;
-      </pre>
-    </blockquote>
+</pre>
 
     <p>Compile all XML Schema files in the <code>src</code> directory together with 
        binding files in the same directory and places the generated files under the 
@@ -268,14 +262,12 @@ there is no native support for
        that binding files contain package customizations. This example doesn't search 
        subdirectories of the <code>src</code> directory to look for schema files.</p>
 
-    <blockquote>
-      <pre>
+<pre class=ant-example>
 &lt;xjc target="src">
   &lt;schema  dir="src" includes="*.xsd"/>
   &lt;binding dir="src" includes="*.xjb"/>
 &lt;/xjc>
-      </pre>
-    </blockquote>
+</pre>
 
 
     <p>Compile <code>abc.xsd</code> with an up-to-date check. Compilation only happens 
@@ -286,44 +278,38 @@ there is no native support for
     task is necessary because Ant's fileset requires the directory specified by the 
     <code>dir</code> attribute to exist.</p>
 
-    <blockquote>
-      <pre><xmp>
+<pre class=ant-example><xmp>
 <mkdir dir="src/org/acme/foo" />
 <xjc target="src" schema="abc.xsd" removeOldOutput="yes" package="org.acme.foo">
   <produces dir="src/org/acme/foo" includes="* impl/*" />
 </xjc>
-      </xmp></pre>
-    </blockquote>
+</xmp></pre>
 
 
     <p>More complicated example of up-to-date check. In this example, we assume that
     you have a large set of schema documents that reference each other, with DTDs that
     describe the schema documents. An explicit &lt;depends> is necessary so that when you update one of the DTDs, XJC will recompile your schema. But &lt;depends> don't have to re-specify all the schema files, because you've already done that via &lt;schema>.</p>
 
-    <blockquote>
-      <pre><xmp>
+<pre class=ant-example><xmp>
 <mkdir dir="src/org/acme/foo" />
 <xjc target="src" removeOldOutput="yes" package="org.acme.foo">
   <schema dir="schema" includes="*.xsd" />
   <depends dir="schema" includes="*.dtd" />
   <produces dir="build/generated-src/org/acme/foo" includes="**/*" />
 </xjc>
-      </xmp></pre>
-    </blockquote>
+</xmp></pre>
 
     <p>Compile all XML Schema files in the <code>src</code> directory and subdirectories, 
        excluding files named <code>debug.xsd</code>, and place the generated files under 
        the appropriate packages in the <code>src</code> directory. This example also 
        specifies the "<tt>-nv</tt>" option, which disables the strict schema correctness checking:</p>
 
-    <blockquote>
-      <pre>
+<pre class=ant-example>
 &lt;xjc target="src"&gt;
   &lt;schema dir="src" includes="**/*.xsd" excludes="**/debug.xsd"/&gt;
   &lt;arg value="-nv" />
 &lt;/xjc&gt;
-      </pre>
-    </blockquote>
+</pre>
 
     <p>If you depend on a proxy server to resolve the location of imported or included 
        schemas (as you might if you're behind a firewall), you need to make the hostname 
@@ -331,19 +317,17 @@ there is no native support for
        the environment variable <code>ANT_OPTS</code> to a string containing the 
        appropriate <code>java</code> options. For example, from DOS:</p>
 
-    <blockquote>
-      <pre>
+<pre class=ant-example>
 &gt; set ANT_OPTS=-Dhttp.proxyHost=webcache.east
 &gt; set ANT_OPTS=%ANT_OPTS% -Dhttp.proxyPort=8080
 &gt; ant
-      </pre>
-    </blockquote>
+</pre>
 
 	<hr/>
-	<font size="-1">
-	  $Revision: 1.5 $<br/>
-	  $Date: 2006-03-14 02:45:52 $
-	</font>
+	<div class="footer">
+	  $Revision: 1.6 $<br/>
+	  $Date: 2006-03-14 17:45:34 $
+	</div>
   </body>
 </html>
 

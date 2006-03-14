@@ -8,14 +8,14 @@
     <header />
     
     <p>
-      This document describes how to write a JAXB RI plugin to extend the code generation of the JAXB RI.
+      This document describes how to write an XJC plugin to extend the code generation of XJC.
     </p><p>
     
-    <h3>What Can A Plugin Do?</h3>
+    <h2>What Can A Plugin Do?</h2>
     <p>
-      A JAXB RI plugin participates in the code generation from a schema. It can define its own customizations that users can use to control it, it can access the code that the JAXB RI generates, and it can generate additional classes/methods/fields/annotations/comments.
+      An XJC plugin participates in the code generation from a schema. It can define its own customizations that users can use to control it, it can access the code that the JAXB RI generates, it can generate additional classes/methods/fields/annotations/comments, and it can also replace some of the pluggability points in the compilation process, such as XML name -> Java name conversion.
     </p><p>
-      As a show case of what a plugin can do, take a look at <a href="https://hyperjaxb.dev.java.net/">HyperJAXB</a> and <a href="https://jaxb-verification.dev.java.net/">JAXB-verification</a> projects.
+      As a show case of what a plugin can do, take a look at <a href="https://jaxb2-commons.dev.java.net/">plugins hosted at JAXB2-commons</a>.
     </p>
     
     
@@ -40,13 +40,15 @@
 </xmp></pre>
     
     <h3>Resources</h3>
-    <ol>
-      <li><a href="jaxb-xjc.javadoc.zip">Javadoc of XJC</a></li>
-      <li><a href="jaxb-impl.javadoc.zip">Javadoc of JAXB RI runtime</a></li>
-      <li><a href="https://jaxb.dev.java.net/servlets/ProjectMailingListList">the JAXB users mailing list</a> for posting questions</li>
-    </ol>
+    <p>
+    	See <a href="https://jaxb.dev.java.net/plugin.html">this page</a> for more detailed, up-to-date information. 
     <p>
       Although we will do our best to maintain the compatibility of the interfaces, it is still subject to change at this point.
-    </p>
+
+    <hr/>
+    <div class=footer>
+      $Revision: 1.3 $<br/>
+      $Date: 2006-03-14 17:45:30 $
+    </div>
   </body>
 </html>
