@@ -43,6 +43,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBIntrospector;
 import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.bind.Validator;
+import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
@@ -107,7 +108,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.63 $
+ * @version $Revision: 1.64 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -284,6 +285,12 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
             if(xjta!=null) {
                 a = new Adapter<Type,Class>(xjta.value(),nav);
+            }
+            if(tr.get(XmlAttachmentRef.class)!=null) {
+                a = new Adapter<Type,Class>(SwaRefAdapter.class,nav);
+            }
+
+            if(a!=null) {
                 erasedType = nav.erasure(a.defaultType);
             }
 
@@ -296,7 +303,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
                 bridge = new BridgeImpl(name,new ValueListBeanInfoImpl(this,erasedType),tr);
 
             if(a!=null)
-                bridge = new BridgeAdapter(bridge,xjta.value());
+                bridge = new BridgeAdapter(bridge,a.adapterType);
 
             bridges.put(tr,bridge);
         }
