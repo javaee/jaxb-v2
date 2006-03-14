@@ -35,11 +35,11 @@
   <chapter name="Tools">
     <document name="XJC" 
               url="xjc.html"/>
-    <document name="XJCTask"
+    <document name="XJC Ant Task"
               url="xjcTask.html"/>
     <document name="SchemaGen"
               url="schemagen.html"/>
-    <document name="schemagenTask"
+    <document name="SchemaGen Ant Task"
               url="schemagenTask.html"/>
   </chapter>
   <chapter name="JAXB 1.0.x">
@@ -64,7 +64,7 @@
     <document name="Overview"
               url="community.html"/>
     <document name="Java.net Homepage"
-              url="http://jaxb.dev.java.net"/>
+              url="https://jaxb.dev.java.net/"/>
     <document name="Mailing List"
               url="https://jaxb.dev.java.net/servlets/ProjectMailingListList"/>
     <document name="FAQ"
