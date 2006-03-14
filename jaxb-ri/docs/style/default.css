@@ -80,8 +80,40 @@ pre.code {
 	font-weight: bold;
 	padding: 0.5em;
 	margin-left: 2em;
+	margin-right: 2em;
 }
 
+DL.cli-options {/* list of command line options*/
+	margin-left: 2em;
+}
+
+DIV.footer {/* header on each HTML file that shows the revision */
+	text-align: right;
+	font-size: 0.8em;
+	padding-right: 80px;
+	background: url("sunlogo.gif") no-repeat right bottom;
+}
+
+DIV.nested-elements {/*Any synopsys, nested elements*/
+	margin-left: 2em;
+}
+
+PRE.ant-example {
+	/* same with PRE.code */
+	background-color: rgb(240,240,255);
+	border: 1px solid navy;
+	color: black;
+	font-weight: bold;
+	padding: 0.5em;
+	margin-left: 2em;
+	margin-right: 2em;
+}
+
+DL.link-menu DT {
+	margin-top: 1em;
+	margin-left: 1em;
+	font-weight: bold;
+}
 
 
 /*------------------------------ navigation bar ------------------------------*/

@@ -1,15 +1,15 @@
 <html>
-  <head>
-    <caption>Binding Compiler (xjc)</caption>
-    <link rel="stylesheet" type="text/css" href="style/default.css"/>
-  </head>
+<head>
+  <caption>Binding Compiler (xjc)</caption>
+  <link rel="stylesheet" type="text/css" href="style/default.css"/>
+</head>
 
-  <body>
-    <header />
+<body>
+  <header />
 
 
-    <p>
-	<h3>Launching xjc</h3>
+<p>
+	<h2>Launching xjc</h2>
 	<p>The binding compiler can be launched using the appropriate 
 	   <code>xjc</code> shell script in the <code>bin</code> directory 
 	   for your platform.  We also provide an Ant task to run the binding
@@ -112,45 +112,44 @@ Options:
 	</blockquote>
 	
 	<a name="switches"></a>
-	<h3>Summary of Command Line Options</h3>
-	<blockquote>
-	  <dl>
-	    <dt><b>-nv</b></dt>
-	    <dd>By default, the XJC binding compiler performs strict validation of the source schema before 
-	        processing it.  Use this option to disable strict schema validation.  This
-	        does not mean that the binding compiler will not perform any validation, it
-	        simply means that it will perform less-strict validation.</dd>
-	    <dt><b>-extension</b></dt>
-	    <dd>By default, the XJC binding compiler strictly enforces the rules outlined in the Compatibility
-	        chapter of the JAXB Specification.  Appendix E.2 defines a set of W3C XML
-	        Schema features that are not completely supported by JAXB v1.0.  In some
-	        cases, you may be allowed to use them in the &quot;-extension&quot; mode
-	        enabled by this switch.  In the default (strict) mode, you are also limited
-	        to using only the binding customizations defined in the specification.
-	        By using the &quot;-extension&quot; switch, you will be allowed to use the
-	        <a href="vendor.html">JAXB Vendor Extensions</a>.</dd>
-	    <dt><b>-b &lt;file&gt;</b></dt>
-	    <dd>Specify one or more external binding files to process. (Each binding file must
-	        have it's own <tt>&quot;-b&quot;</tt> switch.)  The syntax of the external
-	        binding files is extremely flexible.  You may have a single binding file
-	        that contains customizations for multiple schemas or you can break the
-	        customizations into multiple bindings files:<p>
-	        <blockquote>
-	        	<tt>xjc schema1.xsd schema2.xsd schema3.xsd -b bindings123.xjb<br>
-	        	    xjc schema1.xsd schema2.xsd schema3.xsd -b bindings1.xjb -b bindings2.xjb -b bindings3.xjb</tt>
-	        </blockquote>
-	        In addition, the ordering of the schema files and binding files on the
-	        command line does not matter.
-	        </dd>
-	    <dt><b>-d &lt;dir&gt;</b></dt>
-	    <dd>By default, the XJC binding compiler will generate the Java content classes in the current
-	        directory.  Use this option to specify an alternate output directory.
-	        The output directory must already exist, the XJC binding compiler will not create it for you.
-	        </dd>
-	    <dt><b>-p &lt;pkg&gt;</b></dt>
-	    <dd>Specifying a target package via this command-line option overrides
-	        any binding customization for package name and the default package
-	        name algorithm defined in the specification.</dd>
+	<h2>Summary of Command Line Options</h2>
+  <dl class="cli-options">
+    <dt><b>-nv</b></dt>
+    <dd>By default, the XJC binding compiler performs strict validation of the source schema before 
+        processing it.  Use this option to disable strict schema validation.  This
+        does not mean that the binding compiler will not perform any validation, it
+        simply means that it will perform less-strict validation.</dd>
+    <dt><b>-extension</b></dt>
+    <dd>By default, the XJC binding compiler strictly enforces the rules outlined in the Compatibility
+        chapter of the JAXB Specification.  Appendix E.2 defines a set of W3C XML
+        Schema features that are not completely supported by JAXB v1.0.  In some
+        cases, you may be allowed to use them in the &quot;-extension&quot; mode
+        enabled by this switch.  In the default (strict) mode, you are also limited
+        to using only the binding customizations defined in the specification.
+        By using the &quot;-extension&quot; switch, you will be allowed to use the
+        <a href="vendor.html">JAXB Vendor Extensions</a>.</dd>
+    <dt><b>-b &lt;file&gt;</b></dt>
+    <dd>Specify one or more external binding files to process. (Each binding file must
+        have it's own <tt>&quot;-b&quot;</tt> switch.)  The syntax of the external
+        binding files is extremely flexible.  You may have a single binding file
+        that contains customizations for multiple schemas or you can break the
+        customizations into multiple bindings files:<p>
+        <blockquote>
+        	<tt>xjc schema1.xsd schema2.xsd schema3.xsd -b bindings123.xjb<br>
+        	    xjc schema1.xsd schema2.xsd schema3.xsd -b bindings1.xjb -b bindings2.xjb -b bindings3.xjb</tt>
+        </blockquote>
+        In addition, the ordering of the schema files and binding files on the
+        command line does not matter.
+        </dd>
+    <dt><b>-d &lt;dir&gt;</b></dt>
+    <dd>By default, the XJC binding compiler will generate the Java content classes in the current
+        directory.  Use this option to specify an alternate output directory.
+        The output directory must already exist, the XJC binding compiler will not create it for you.
+        </dd>
+    <dt><b>-p &lt;pkg&gt;</b></dt>
+    <dd>Specifying a target package via this command-line option overrides
+        any binding customization for package name and the default package
+        name algorithm defined in the specification.</dd>
 		<dt><b>-httpproxy &lt;proxy></b></dt>
 		<dd>Specify the HTTP/HTTPS proxy. The format is [user[:password]@]proxyHost[:proxyPort].  The old <tt>-host</tt>
 		    and <tt>-port</tt> are still supported by the RI for backwards compatibility, but they have been deprecated.</dd>
@@ -198,8 +197,7 @@ Options:
 	    <dt><b>&lt;schema file/URL/dir></b></dt>
 	    <dd>Specify one or more schema files to compile.  If you specify a directory, then xjc
 	        will scan it for all schema files and compile them.</dd>
-      </dl>
-    </blockquote>
+    </dl>
 
 	<!--h3>Summary of Non-Standard Command Line Options</h3>
 	<blockquote>
@@ -216,29 +214,27 @@ Options:
       </dl>
     </blockquote-->
 
-    <h3>Summary of Deprecated and Removed Command Line Options</h3>
-    <blockquote>
-      <dl>
-        <dt><b>-host & -port</b></dt>
-        <dd>These options have been deprecated and replaced with the <b>-httpproxy</b> option.  For
-            backwards compatibility, we will continue to support these options, but they will no
-            longer be documented and may be removed from future releases.</dd>
-        <dt><b>-use-runtime</b></dt>
-        <dd>Since the JAXB 2.0 specification has defined a portable runtime, it is no longer
-            necessary for the JAXB RI to generate **/impl/runtime packages.  Therefore, this
-            switch is obsolete and has been removed.</dd>
-        <dt><b>-source</b></dt>
-        <dd>The -source compatibility switch was introduced in the first JAXB 2.0 Early Access
-            release.  We have decided to remove this switch from future releases of JAXB 2.0.
-            If you need to generate 1.0.x code, please use an installation of the 1.0.x codebase.</dd>
-         <dt><b>-Xlocator & -Xsync-methods</b></dt>
-         <dd>These switches have been disabled for now.  We plan on releasing this functionality
-             as a separate download in the future.</dd>
-      </dl>
-    </blockquote>
+    <h2>Summary of Deprecated and Removed Command Line Options</h2>
+    <dl class="cli-options">
+      <dt><b>-host & -port</b></dt>
+      <dd>These options have been deprecated and replaced with the <b>-httpproxy</b> option.  For
+          backwards compatibility, we will continue to support these options, but they will no
+          longer be documented and may be removed from future releases.</dd>
+      <dt><b>-use-runtime</b></dt>
+      <dd>Since the JAXB 2.0 specification has defined a portable runtime, it is no longer
+          necessary for the JAXB RI to generate **/impl/runtime packages.  Therefore, this
+          switch is obsolete and has been removed.</dd>
+      <dt><b>-source</b></dt>
+      <dd>The -source compatibility switch was introduced in the first JAXB 2.0 Early Access
+          release.  We have decided to remove this switch from future releases of JAXB 2.0.
+          If you need to generate 1.0.x code, please use an installation of the 1.0.x codebase.</dd>
+       <dt><b>-Xlocator & -Xsync-methods</b></dt>
+       <dd>These switches have been disabled for now.  We plan on releasing this functionality
+           as a separate download in the future.</dd>
+    </dl>
 
     <a name="restrictions"></a>
-    <h3>Compiler Restrictions</h3>
+    <h2>Compiler Restrictions</h2>
     <p>In general, it is safest to compile all related schemas as a single unit with
        the same binding compiler switches.</p>
        
@@ -270,11 +266,16 @@ Options:
             multiple schema files must be compiled at the same time.</li>
       </ul>
     
+    <a name="xjcresources"></a>
+    <h2>Generated Resource Files</h2>
+    <p>
+      XJC produces a set of packages containing Java source files and also <tt>jaxb.properties</tt> files, depending on the binding options you used for compilation. When generated, <tt>jaxb.properties</tt> files must be kept with the compiled source code and made available on the runtime classpath of your client applications:
+
     
 	<hr/>
-	<font size="-1">
-	  $Revision: 1.5 $<br/>
-	  $Date: 2006-03-14 02:45:52 $
-	</font>
+	<div class="footer">
+	  $Revision: 1.6 $<br/>
+	  $Date: 2006-03-14 17:45:34 $
+	</div>
   </body>
-</html>    
+</html>

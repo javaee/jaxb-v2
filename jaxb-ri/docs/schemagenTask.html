@@ -7,34 +7,30 @@
 <body>
   <header />
 
-<p>The <code>jaxb-xjc.jar</code> file contains the <code>SchemaGenTask.class</code>
-file, which allows the schema generator to be invoked from the <a
- href="http://jakarta.apache.org/ant">Ant</a> build tool. To use <code>SchemaGenTask</code>,
-include the following statement in your <code>build.xml</code> file:</p>
-<blockquote>
-  <pre><xmp>
-&lt;taskdef name="schemagen" classname="com.sun.tools.jxc.SchemaGenTask"&gt;
-  &lt;classpath&gt;
-    &lt;fileset dir="path/to/jaxb/lib" includes="*.jar" /&gt;
-  &lt;/classpath&gt;
-&lt;/taskdef&gt;
-        </xmp></pre>
-</blockquote>
-<p>This maps <code>SchemaGenTask</code> to an Ant task named <code>schemagen</code>.
-For detailed examples of using this task, refer to the <tt>build.xml</tt>
-files used by the java to schema <a href="samples.html">sample
-applications</a>.</p>
-<h2>Synopsis</h2>
-<h4>Environment Variables</h4>
-<ul>
-  <li><a href="http://wiki.apache.org/ant/TheElementsOfAntStyle">ANT_OPTS</a>
-- command-line arguments that should be passed to the JVM. For example,
-you can define system properties or set the maximum Java heap size here.</li>
-</ul>
-<h4>Parameter Attributes</h4>
-<p><code>schemagen</code> supports most of the attributes defined by <a
- href="http://ant.apache.org/manual/CoreTasks/javac.html">the javac task</a>,
-plus the following parameter attributes.</p>
+  <p>
+    The <code>jaxb-xjc.jar</code> file contains the <code>SchemaGenTask.class</code> file, which allows the schema generator to be invoked from the <a href="http://jakarta.apache.org/ant">Ant</a> build tool. To use <code>SchemaGenTask</code>, include the following statement in your <code>build.xml</code> file:</p>
+
+<pre class=ant-example><xmp>
+<taskdef name="schemagen" classname="com.sun.tools.jxc.SchemaGenTask">
+  <classpath>
+    <fileset dir="path/to/jaxb/lib" includes="*.jar" />
+  </classpath>
+</taskdef>
+</xmp></pre>
+
+  <p>
+    This maps <code>SchemaGenTask</code> to an Ant task named <code>schemagen</code>. For detailed examples of using this task, refer to the <tt>build.xml</tt> files used by the java to schema <a href="samples.html">sample applications</a>.
+
+	<h2>Synopsis</h2>
+	<h3>Environment Variables</h3>
+	<ul>
+	  <li><a href="http://wiki.apache.org/ant/TheElementsOfAntStyle">ANT_OPTS</a>
+			- command-line arguments that should be passed to the JVM. For example,
+			you can define system properties or set the maximum Java heap size here.</li>
+	</ul>
+
+	<h3>Parameter Attributes</h3>
+		<p><code>schemagen</code> supports most of the attributes defined by <a href="http://ant.apache.org/manual/CoreTasks/javac.html">the javac task</a>, plus the following parameter attributes.</p>
 <table summary="" border="1">
   <thead> <tr>
     <td><b>Attribute</b></td>
@@ -61,16 +57,14 @@ plus the following parameter attributes.</p>
         -->
   </tbody>
 </table>
+	<h3>Nested Elements</h3>
 <p><code>xjc</code> supports all the nested elements defined by <a
  href="http://ant.apache.org/manual/CoreTasks/javac.html">the javac task</a>,
 the following nested element parameters.</p>
-<blockquote>
-  <h3>schema</h3>
-  <p> Control the file name of the generated schema. This element takes
-a mandatory <tt>namespace</tt> attribute and a mandaotry <tt>file</tt>
-attribute. When this element is present, the schema document generated
-for the specified namespace will be placed in the specified file name. </p>
-  <p> The file name is interpreted as relative to the destdir
+	<div class="nested-elements">
+  	<h3>schema</h3>
+  	<p>Control the file name of the generated schema. This element takes a mandatory <tt>namespace</tt> attribute and a mandaotry <tt>file</tt> attribute. When this element is present, the schema document generated for the specified namespace will be placed in the specified file name. </p>
+  	<p> The file name is interpreted as relative to the destdir
 attribute. In the absence of the destdir attribute, file names are
 relative to the project base directory. This element can be specified
 multiple times. </p>
@@ -79,19 +73,29 @@ multiple times. </p>
 structure</a> that represents the classpath. If your Java
 sources/classes depend on other libraries, they need to be available in
 the classpath. </p>
-</blockquote>
+</div>
+
+
 <h2>Examples</h2>
 <p>Generate schema files from source files in the <tt>src</tt> dir and
-place them in the <tt>build/schemas</tt> directory. </p>
-<blockquote>
-  <pre>&lt;schemagen srcdir="src" destdir="build/schemas"&gt;<br>      </pre>
-</blockquote>
-<p>Compile a portion of the source tree.<br>
-</p>
-<blockquote>
-  <pre>&lt;schemagen destdir="build/schemas"&gt;<br>  &lt;src  path="src" /&gt;<br>  &lt;exclude name="Main.java"/&gt;<br>&lt;/schemagen&gt;<br>      </pre>
-</blockquote>
-<hr> <font size="-1"> $Revision: 1.4 $<br>
-$Date: 2006-03-14 02:45:50 $ </font>
+place them in the <tt>build/schemas</tt> directory.
+
+<pre class=ant-example><xmp>
+<schemagen srcdir="src" destdir="build/schemas">
+</xmp></pre>
+
+	<p>Compile a portion of the source tree.
+<pre class=ant-example><xmp>
+<schemagen destdir="build/schemas">
+  <src  path="src" />
+  <exclude name="Main.java"/>
+</schemagen>
+</xmp></pre>
+	
+	<hr/>
+	<div class="footer">
+	  $Revision: 1.5 $<br/>
+	  $Date: 2006-03-14 17:45:32 $
+	</div>
 </body>
 </html>

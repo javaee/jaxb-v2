@@ -27,6 +27,12 @@
               url="index.html"/>
     <document name="Release Notes" 
               url="ReleaseNotes.html"/>
+    <document name="Sample Apps"
+              url="samples.html"/>
+    <document name="Changelog" 
+              url="changelog2.html"/>
+  </chapter>
+  <chapter name="Tools">
     <document name="XJC" 
               url="xjc.html"/>
     <document name="XJCTask"
@@ -35,10 +41,6 @@
               url="schemagen.html"/>
     <document name="schemagenTask"
               url="schemagenTask.html"/>
-    <document name="Sample Apps"
-              url="samples.html"/>
-    <document name="Changelog" 
-              url="changelog2.html"/>
   </chapter>
   <chapter name="JAXB 1.0.x">
     <document name="Release Notes"
@@ -47,25 +49,23 @@
               url="changelog.html"/>
   </chapter>
   <chapter name="JAXB RI Extensions">
+    <document name="Overview" 
+              url="vendor.html"/>
     <document name="Runtime Properties" 
               url="vendorProperties.html"/>
     <document name="XJC Customizations" 
               url="vendorCustomizations.html"/>
+    <document name="DTD" 
+              url="vendorSchemaLangs.html"/>
     <document name="Develop Plugins" 
               url="developPlugins.html"/>
   </chapter>
-  <chapter name="JAXB RI Schema Languages">
-    <document name="W3C XML Schema" 
-              url="vendorSchemaLangs.html#xschema"/>
-    <document name="RELAX NG"
-              url="vendorSchemaLangs.html#relaxng"/>
-    <document name="DTD"
-              url="vendorSchemaLangs.html#dtd"/>
-  </chapter>
   <chapter name="JAXB Community">
+    <document name="Overview"
+              url="community.html"/>
     <document name="Java.net Homepage"
               url="http://jaxb.dev.java.net"/>
-    <document name="Developer interest list"
+    <document name="Mailing List"
               url="https://jaxb.dev.java.net/servlets/ProjectMailingListList"/>
     <document name="FAQ"
               url="https://jaxb.dev.java.net/faq/index.html"/>
