@@ -23,6 +23,8 @@
 
 <toc>
   <chapter name="JAXB 2.0">
+    <document name="Overview" 
+              url="index.html"/>
     <document name="Release Notes" 
               url="ReleaseNotes.html"/>
     <document name="XJC" 
