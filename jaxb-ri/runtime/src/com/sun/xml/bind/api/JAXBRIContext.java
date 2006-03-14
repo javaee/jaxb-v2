@@ -22,18 +22,20 @@ package com.sun.xml.bind.api;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.namespace.QName;
 
-import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.istack.NotNull;
 import com.sun.istack.Nullable;
+import com.sun.xml.bind.api.impl.NameConverter;
+import com.sun.xml.bind.v2.model.nav.Navigator;
 
 /**
  * {@link JAXBContext} enhanced with JAXB RI specific functionalities.
@@ -258,6 +260,36 @@ public abstract class JAXBRIContext extends JAXBContext {
      */
     public static @NotNull String mangleNameToClassName(@NotNull String localName) {
         return NameConverter.standard.toClassName(localName);
+    }
+
+    /**
+     * Gets the parameterization of the given base type.
+     *
+     * <p>
+     * For example, given the following
+     * <pre><xmp>
+     * interface Foo<T> extends List<List<T>> {}
+     * interface Bar extends Foo<String> {}
+     * </xmp></pre>
+     * This method works like this:
+     * <pre><xmp>
+     * getBaseClass( Bar, List ) = List<List<String>
+     * getBaseClass( Bar, Foo  ) = Foo<String>
+     * getBaseClass( Foo<? extends Number>, Collection ) = Collection<List<? extends Number>>
+     * getBaseClass( ArrayList<? extends BigInteger>, List ) = List<? extends BigInteger>
+     * </xmp></pre>
+     *
+     * @param type
+     *      The type that derives from {@code baseType}
+     * @param baseType
+     *      The class whose parameterization we are interested in.
+     * @return
+     *      The use of {@code baseType} in {@code type}.
+     *      or null if the type is not assignable to the base type.
+     * @since 2.0 FCS
+     */
+    public static @Nullable Type getBaseType(@NotNull Type type, @NotNull Class baseType) {
+        return Navigator.REFLECTION.getBaseClass(type,baseType);
     }
 
 
