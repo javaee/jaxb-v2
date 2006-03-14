@@ -101,19 +101,6 @@
     <sequential>
       <copy todir="@{dest}" overwrite="true">
           <source />
-          <!-- we need to write @@@@ to mean @@ because this is in macrodef -->
-          <filterset begintoken="@@@@" endtoken="@@@@">
-            <filter token="@@@@SPEC_VERSION@@@@"
-                           value="${release.spec.version}" />
-            <filter token="@@@@IMPL_VERSION@@@@"
-                           value="${release.impl.version}"/>
-            <filter token="@@@@IMPL_VERSION_SUFFIX@@@@"
-                           value="${release.impl.version.suffix}"/>
-            <filter token="@@@@JWSDP_VERSION@@@@"
-                           value="${jwsdp.impl.version}"/>
-            <filter token="@@@@JWSDP_ROOTDIR@@@@"
-                           value="${jwsdp.root.directory}"/>
-          </filterset>
       </copy>
       <java classname="com.sun.tools.tocproc.TocProcessor" fork="true" failonerror="true">
           <classpath>
@@ -127,6 +114,20 @@
           <!-- if you need to attach debugger ... -->
           <!--jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000"/-->
       </java>
+      <replace dir="@{dest}">
+          <include name="**/*.html"/>
+          <!-- we need to write @@@@ to mean @@ because this is in macrodef -->
+          <replacefilter token="@@@@SPEC_VERSION@@@@"
+                         value="${release.spec.version}" />
+          <replacefilter token="@@@@IMPL_VERSION@@@@"
+                         value="${release.impl.version}"/>
+          <replacefilter token="@@@@IMPL_VERSION_SUFFIX@@@@"
+                         value="${release.impl.version.suffix}"/>
+          <replacefilter token="@@@@JWSDP_VERSION@@@@"
+                         value="${jwsdp.impl.version}"/>
+          <replacefilter token="@@@@JWSDP_ROOTDIR@@@@"
+                         value="${jwsdp.root.directory}"/>
+      </replace>
       <delete file="@{dest}/toc.xml"/>
     </sequential>
   </macrodef>
