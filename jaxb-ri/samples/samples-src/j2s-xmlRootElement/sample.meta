@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<sample since="2.0" exclude="true">
+<sample since="2.0" >
     <title>Defining XML elements via @XmlRootElement</title>
     <description><![CDATA[
       This sample application demonstrates the use of annotation
