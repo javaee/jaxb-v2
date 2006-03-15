@@ -1,9 +1,11 @@
 
 compile\:
      \[echo\] Generating schemas\.\.\.
+    \[mkdir\] Created dir\: .*
 \[schemagen\] Generating schema from 3 source files
-\[schemagen\] Note\: Writing *.xsd
      \[echo\] Compiling the java source files\.\.\.
+    \[mkdir\] Created dir\: .*
+    \[javac\] Compiling \d+ source files to .*
 
 run\:
      \[echo\] Running the sample application\.\.\.
@@ -24,4 +26,4 @@ run\:
      \[java\] \<\/kitchenWorldBasket\>
 
 BUILD SUCCESSFUL
-Total time\: *
+Total time\: .*
