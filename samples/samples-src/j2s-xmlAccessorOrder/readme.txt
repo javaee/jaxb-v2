@@ -24,9 +24,9 @@ and @XmlType.propOrder.
 -- @XmlAccessorOrder
 
 @XmlAccessorOrder annotation imposes one of two element ordering 
-algorithms, AccessorOrder.UNDEFINED or AccessorOrder.ALPHABETICAL.  
-AccessorOrder.UNDEFINED is the default setting.  The order is dependent 
-on the system's reflection implementation.  AccessorOrder.ALPHABETICAL 
+algorithms, XmlAccessOrder.UNDEFINED or XmlAccessOrder.ALPHABETICAL.  
+XmlAccessOrder.UNDEFINED is the default setting.  The order is dependent 
+on the system's reflection implementation.  XmlAccessOrder.ALPHABETICAL 
 orders the elements in lexicographic order as determined by 
 java.lang.String.CompareTo(String anotherString).
 
@@ -38,8 +38,8 @@ When defined on a class the rule is active on the contents of that class.
 There can be multiple @XmlAccessorOrder annotations within a package.  
 The order of precedence is the inner most (class) annotation 
 takes precedence over the outter annotation.  For example if 
-@XmlAccessorOrder(AccessorOrder.ALPHABETICAL) is defined on a package 
-and @XmlAccessorOrder(AccessorOrder.UNDEFINED) is defined on a class
+@XmlAccessorOrder(XmlAccessOrder.ALPHABETICAL) is defined on a package 
+and @XmlAccessorOrder(XmlAccessOrder.UNDEFINED) is defined on a class
 in that package the contents of the generated schema type for the class 
 would be in an unspecified order and the contents of the generated schema 
 type for evey other class in the package would be alphabetical order.  
@@ -68,7 +68,7 @@ schema content is generated.
 
 
     CODE A:
-        @XmlAccessorOrder(AccessorOrder.ALPHABETICAL)
+        @XmlAccessorOrder(XmlAccessOrder.ALPHABETICAL)
         @XmlType(propOrder={"name", "city"})
         public class USAddress {
                 :
@@ -83,7 +83,7 @@ schema content is generated.
  
     CODE B:
         @XmlType(propOrder={"name", "city"})
-        @XmlAccessorOrder(AccessorOrder.ALPHABETICAL)
+        @XmlAccessorOrder(XmlAccessOrder.ALPHABETICAL)
         public class USAddress {
                 :
             public String getCity() {return city;}
