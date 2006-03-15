@@ -9,11 +9,18 @@ import com.sun.tools.xjc.model.Model;
 import com.sun.xml.bind.v2.ContextFactory;
 
 /**
+ * {@link ObjectFactoryGenerator} used when we generate
+ * interfaces and implementations in separate packages.
+ *
+ * <p>
+ * {@link #publicOFG} and {@link #privateOFG} gives you access to
+ * {@code ObjectFactory}s in both packages, if you need to.
+ *
  * @author Kohsuke Kawaguchi
  */
 final class DualObjectFactoryGenerator extends ObjectFactoryGenerator {
-    private final ObjectFactoryGenerator publicOFG;
-    private final ObjectFactoryGenerator privateOFG;
+    public final ObjectFactoryGenerator publicOFG;
+    public final ObjectFactoryGenerator privateOFG;
 
     DualObjectFactoryGenerator(BeanGenerator outline, Model model, JPackage targetPackage) {
         this.publicOFG = new PublicObjectFactoryGenerator(outline,model,targetPackage);
@@ -34,6 +41,9 @@ final class DualObjectFactoryGenerator extends ObjectFactoryGenerator {
         privateOFG.populate(cc);
     }
 
+    /**
+     * Returns the private version (which is what gets used at runtime.)
+     */
     public JDefinedClass getObjectFactory() {
         return privateOFG.getObjectFactory();
     }
