@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<sample since="1.0">
+<sample since="2.0">
     <title>Java to Schema Binding</title>
     <description><![CDATA[
       This sample application demonstrates marshalling, unmarshalling and
