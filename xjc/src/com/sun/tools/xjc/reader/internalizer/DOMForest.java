@@ -65,6 +65,7 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLFilterImpl;
 
@@ -454,6 +455,18 @@ public final class DOMForest {
             sf.newSchema(sources.toArray(new SAXSource[0]));
         } catch (SAXException e) {
             // error should have been reported.
+        } catch (RuntimeException e) {
+            // JAXP RI isn't very trustworthy when it comes to schema error check,
+            // and we know some cases where it just dies with NPE. So handle it gracefully.
+            // this masks a bug in the JAXP RI, but we need a release that we have to make.
+            try {
+                sf.getErrorHandler().warning(
+                    new SAXParseException(Messages.format(
+                        Messages.ERR_GENERAL_SCHEMA_CORRECTNESS_ERROR,e.getMessage()),
+                        null,null,-1,-1,e));
+            } catch (SAXException _) {
+                // ignore
+            }
         }
     }
 
