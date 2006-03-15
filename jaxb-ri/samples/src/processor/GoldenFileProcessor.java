@@ -1,5 +1,5 @@
 /*
- * $Id: GoldenFileProcessor.java,v 1.7 2005-10-28 23:58:02 kohsuke Exp $
+ * $Id: GoldenFileProcessor.java,v 1.8 2006-03-15 00:35:37 kohsuke Exp $
  */
 
 /*
@@ -32,10 +32,12 @@ import java.util.regex.Pattern;
 import org.kohsuke.args4j.CmdLineParser;
 
 /**
+ * Checks the build execution result against a golden file.
+ *
  * @author <ul>
  *         <li>Ryan Shoemaker, Sun Microsystems, Inc.</li>
  *         </ul>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class GoldenFileProcessor implements Processor {
     public boolean process(File dir, boolean verbose) {
