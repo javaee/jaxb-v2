@@ -5,7 +5,7 @@ compile\:
 \[schemagen\] Generating schema from 3 source files
      \[echo\] Compiling the java source files\.\.\.
     \[mkdir\] Created dir\: .*
-    \[javac\] Compiling \d+ source files to .*
+    \[javac\] Compiling 5 source files to .*
 
 run\:
      \[echo\] Running the sample application\.\.\.

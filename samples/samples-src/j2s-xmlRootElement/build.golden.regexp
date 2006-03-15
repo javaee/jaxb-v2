@@ -1,11 +1,11 @@
 
 compile\:
      \[echo\] Generating schemas\.\.\.
-\[schemagen\] Generating schema from 4 source files
-\[schemagen\] Note\: Writing *.xsd
-\[schemagen\] Note\: Writing *.xsd
+    \[mkdir\] Created dir\: .*
+\[schemagen\] Generating schema from 3 source files
      \[echo\] Compiling the java source files\.\.\.
-    \[javac\] Compiling 1 source file to .*
+    \[mkdir\] Created dir\: .*
+    \[javac\] Compiling 4 source files to .*
 
 run\:
      \[echo\] Running the sample application\.\.\.
@@ -28,4 +28,4 @@ run\:
      \[java\] \<\/purchaseOrder\>
 
 BUILD SUCCESSFUL
-Total time\: .* 
+Total time\: .*
