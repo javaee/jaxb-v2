@@ -65,7 +65,7 @@ final class SingleReferenceNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT
         ValueT v = acc.get(o);
         if(v!=null) {
             try {
-                JaxBeanInfo bi = w.grammar.getBeanInfo(v,domHandler==null);
+                JaxBeanInfo bi = w.grammar.getBeanInfo(v,true);
                 if(bi.jaxbType==Object.class && domHandler!=null)
                     // even if 'v' is a DOM node, it always derive from Object,
                     // so the getBeanInfo returns BeanInfo for Object
