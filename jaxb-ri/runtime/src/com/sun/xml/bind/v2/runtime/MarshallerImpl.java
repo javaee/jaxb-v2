@@ -19,9 +19,7 @@
  */
 package com.sun.xml.bind.v2.runtime;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -367,9 +365,9 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     }
 
     public XmlOutput createWriter( OutputStream os, String encoding ) throws JAXBException {
-        // buffering improves the performance, but not always
-        if(!(os instanceof BufferedOutputStream) && !(os instanceof ByteArrayOutputStream))
-            os = new BufferedOutputStream(os);
+        // UTF8XmlOutput does buffering on its own, and
+        // otherwise createWriter(Writer) inserts a buffering,
+        // so no point in doing a buffering here.
 
         if(encoding.equals("UTF-8")) {
             Encoded[] table = context.getUTF8NameTable();
