@@ -20,7 +20,9 @@
 package com.sun.xml.bind.v2.runtime;
 
 import java.io.BufferedWriter;
+import java.io.Closeable;
 import java.io.FileOutputStream;
+import java.io.Flushable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -103,11 +105,6 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     protected final XMLSerializer serializer;
 
     /**
-     * Non-null if we work inside a {@link BinderImpl}.
-     */
-    private final AssociationMap assoc;
-
-    /**
      * Non-null if we do the marshal-time validation.
      */
     private Schema schema;
@@ -118,6 +115,11 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     /** Configured for c14n? */
     private boolean c14nSupport;
 
+    // while createing XmlOutput those values may be set.
+    // if these are non-null they need to be cleaned up
+    private Flushable toBeFlushed;
+    private Closeable toBeClosed;
+
     /**
      * @param assoc
      *      non-null if the marshaller is working inside {@link BinderImpl}.
@@ -127,7 +129,6 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
 
         context = c;
-        this.assoc = assoc;
         serializer = new XMLSerializer(this);
         c14nSupport = context.c14nSupport;
 
@@ -186,7 +187,10 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
                 } // otherwise assume that it's a file name
 
                 try {
-                    return createWriter(new FileOutputStream(fileURL));
+                    FileOutputStream fos = new FileOutputStream(fileURL);
+                    assert toBeClosed==null;
+                    toBeClosed = fos;
+                    return createWriter(fos);
                 } catch (IOException e) {
                     throw new MarshalException(e);
                 }
@@ -209,7 +213,6 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     }
 
     public void marshal(Object target,Result result) throws JAXBException {
-
         write(target, createXmlOutput(result), createPostInitAction(result));
     }
 
@@ -219,67 +222,90 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
      */
     protected final <T> void write(Name rootTagName, JaxBeanInfo<T> bi, T obj, XmlOutput out,Runnable postInitAction) throws JAXBException {
         try {
-            prewrite(out, true, postInitAction);
-            serializer.startElement(rootTagName,null);
-            if(bi.jaxbType==Void.class || bi.jaxbType==void.class) {
-                // special case for void
-                serializer.endNamespaceDecls(null);
-                serializer.endAttributes();
-            } else { // normal cases
-                if(obj==null)
-                    serializer.writeXsiNilTrue();
-                else
-                    serializer.childAsXsiType(obj,"root",bi);
+            try {
+                prewrite(out, true, postInitAction);
+                serializer.startElement(rootTagName,null);
+                if(bi.jaxbType==Void.class || bi.jaxbType==void.class) {
+                    // special case for void
+                    serializer.endNamespaceDecls(null);
+                    serializer.endAttributes();
+                } else { // normal cases
+                    if(obj==null)
+                        serializer.writeXsiNilTrue();
+                    else
+                        serializer.childAsXsiType(obj,"root",bi);
+                }
+                serializer.endElement();
+                postwrite(out);
+            } catch( SAXException e ) {
+                throw new MarshalException(e);
+            } catch (IOException e) {
+                throw new MarshalException(e);
+            } catch (XMLStreamException e) {
+                throw new MarshalException(e);
+            } finally {
+                serializer.close();
             }
-            serializer.endElement();
-            postwrite(out);
-        } catch( SAXException e ) {
-            throw new MarshalException(e);
-        } catch (IOException e) {
-            throw new MarshalException(e);
-        } catch (XMLStreamException e) {
-            throw new MarshalException(e);
         } finally {
-            serializer.close();
+            cleanUp();
         }
     }
 
     /**
      * All the marshal method invocation eventually comes down to this call.
      */
-    private void write(Object obj, XmlOutput out, Runnable postInitAction)
-        throws JAXBException {
-
-        if( obj == null )
-            throw new IllegalArgumentException(Messages.NOT_MARSHALLABLE.format());
-
-        if( schema!=null ) {
-            // send the output to the validator as well
-            ValidatorHandler validator = schema.newValidatorHandler();
-            validator.setErrorHandler(new FatalAdapter(serializer));
-            // work around a bug in JAXP validator in Tiger
-            XMLFilterImpl f = new XMLFilterImpl() {
-                public void startPrefixMapping(String prefix, String uri) throws SAXException {
-                    super.startPrefixMapping(prefix.intern(), uri.intern());
-                }
-            };
-            f.setContentHandler(validator);
-            out = new ForkXmlOutput( new SAXOutput(f), out );
-        }
-
+    private void write(Object obj, XmlOutput out, Runnable postInitAction) throws JAXBException {
         try {
-            prewrite(out,isFragment(),postInitAction);
-            serializer.childAsRoot(obj);
-            postwrite(out);
-        } catch( SAXException e ) {
-            throw new MarshalException(e);
-        } catch (IOException e) {
-            throw new MarshalException(e);
-        } catch (XMLStreamException e) {
-            throw new MarshalException(e);
+            if( obj == null )
+                throw new IllegalArgumentException(Messages.NOT_MARSHALLABLE.format());
+
+            if( schema!=null ) {
+                // send the output to the validator as well
+                ValidatorHandler validator = schema.newValidatorHandler();
+                validator.setErrorHandler(new FatalAdapter(serializer));
+                // work around a bug in JAXP validator in Tiger
+                XMLFilterImpl f = new XMLFilterImpl() {
+                    public void startPrefixMapping(String prefix, String uri) throws SAXException {
+                        super.startPrefixMapping(prefix.intern(), uri.intern());
+                    }
+                };
+                f.setContentHandler(validator);
+                out = new ForkXmlOutput( new SAXOutput(f), out );
+            }
+
+            try {
+                prewrite(out,isFragment(),postInitAction);
+                serializer.childAsRoot(obj);
+                postwrite(out);
+            } catch( SAXException e ) {
+                throw new MarshalException(e);
+            } catch (IOException e) {
+                throw new MarshalException(e);
+            } catch (XMLStreamException e) {
+                throw new MarshalException(e);
+            } finally {
+                serializer.close();
+            }
         } finally {
-            serializer.close();
+            cleanUp();
         }
+    }
+
+    private void cleanUp() {
+        if(toBeFlushed!=null)
+            try {
+                toBeFlushed.flush();
+            } catch (IOException e) {
+                // ignore
+            }
+        if(toBeClosed!=null)
+            try {
+                toBeClosed.close();
+            } catch (IOException e) {
+                // ignore
+            }
+        toBeFlushed = null;
+        toBeClosed = null;
     }
 
     // common parts between two write methods.
@@ -336,9 +362,12 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     }
 
     public XmlOutput createWriter( Writer w, String encoding ) {
+        // XMLWriter doesn't do buffering, so do it here if it looks like a good idea
+        if(!(w instanceof BufferedWriter))
+            w = new BufferedWriter(w);
 
-        // buffering improves the performance
-        w = new BufferedWriter(w);
+        assert toBeFlushed==null;
+        toBeFlushed = w;
 
         CharacterEscapeHandler ceh = createEscapeHandler(encoding);
         XMLWriter xw;
@@ -347,8 +376,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
             DataWriter d = new DataWriter(w,encoding,ceh);
             d.setIndentStep(indent);
             xw=d;
-        }
-        else
+        } else
             xw = new XMLWriter(w,encoding,ceh);
 
         xw.setXmlDecl(!isFragment());
