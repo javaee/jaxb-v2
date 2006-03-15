@@ -197,6 +197,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     String eUri = tref.getTagName().getNamespaceURI();
                     if(eUri.length()>0 && !eUri.equals(n.uri)) {
                         getNamespace(eUri).addGlobalElement(tref);
+                        n.addDependencyTo(tref.getTagName());
                     }
                 }
             }
@@ -1093,6 +1094,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
         public void addGlobalAttribute(AttributePropertyInfo<T,C> ap) {
             attributeDecls.put( ap.getXmlName().getLocalPart(), ap.getTarget() );
+            addDependencyTo(ap.getTarget().getTypeName());
         }
 
         public void addGlobalElement(TypeRef<T,C> tref) {
