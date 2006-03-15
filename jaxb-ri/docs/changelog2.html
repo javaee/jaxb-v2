@@ -12,6 +12,24 @@
 
     <p>Please refer to the <a href="changelog.html">JAXB 1.0.x changelog</a> for older releases.</p>
     
+    <a name="2.0ea4"></a>
+    <h2>Notable Changes between 2.0 Early Access 3 and 2.0 First Customer Ship (FCS)</h2>
+    <ul>
+      <li>Java to schema samples are added
+      <li>Added &lt;xjc:javaType> vendor customization
+      <li>Added experimental &lt;xjc:simple> vendor customization, which brings in a new simpler and better binding mode
+      <li>The spec has renamed <tt>AccessType</tt> to <tt>XmlAccessType</tt>, and <tt>@AccessorType</tt> to <tt>@XmlAccessorType</tt>.
+      <li>Various error handling improvements
+      <li>Experimental canonicaliztion support is added.
+      <li>The '-b' option can now take a directory and recursively search for all "*.xjb" files.
+      <li>Fixed various issues regarding using JAXB from codef inside a restricted security sandbox.
+      <li>Added more pluggability points for plugins to customize the code generation behavior.
+      <li>Some of the code is split into a separate <tt>istack-commons</tt> project to promote more reuse among projects.
+      <li>Made a few changes so that RetroTranslator can translate the JAXB RI (and its generated code) to run it on JDK 1.4 and earlier
+      <li>Improved the quality of the generated code by removing unnecessary imports.
+      <li>Other countless bug fixes
+    </ul>
+    
     <a name="2.0ea3"></a>
     <h2>Notable Changes between 2.0 Early Access 2 and 2.0 Early Access 3</h2>
     <ul>
@@ -77,8 +95,8 @@
 
 	<hr/>
 	<div class=footer>
-	  $Revision: 1.5 $<br/>
-	  $Date: 2006-03-14 17:45:30 $
+	  $Revision: 1.6 $<br/>
+	  $Date: 2006-03-15 23:53:35 $
 	</div>
   </body>
 </html>
