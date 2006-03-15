@@ -182,7 +182,7 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
         if(!NO_CORRECTNESS_CHECK) {
             // correctness check
             SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            sf.setErrorHandler(this);
+            sf.setErrorHandler(new DowngradingErrorHandler(this));
             forest.weakSchemaCorrectnessCheck(sf);
             if(hadError)
                 return null;    // error in the correctness check. abort now
