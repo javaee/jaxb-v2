@@ -430,11 +430,7 @@ public class XMLWriter extends XMLFilterImpl
         try {
             write('\n');
             super.endDocument();
-            try {
-                flush();
-            } catch (IOException e) {
-                throw new SAXException(e);
-            }
+            flush();
         } catch( IOException e ) {
             throw new SAXException(e);
         }
