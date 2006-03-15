@@ -20,7 +20,7 @@
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
            xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
-           jxb:version="1.0">
+           jxb:version="2.0">
 
   <!-- Demonstrate how to fix this keyword usage error. -->
   <xs:element name="Class" type="xs:int"/>
