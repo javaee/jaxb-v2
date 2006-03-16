@@ -19,10 +19,14 @@
  */
 package com.sun.tools.xjc;
 
+import com.sun.istack.Nullable;
+
 /**
  * Signals a bad command line argument.
  */
 public class BadCommandLineException extends Exception {
+    private Options options;
+
     public BadCommandLineException(String msg) {
         super(msg);
     }
@@ -33,5 +37,17 @@ public class BadCommandLineException extends Exception {
 
     public BadCommandLineException() {
         this(null);
+    }
+
+    public void initOptions(Options opt) {
+        assert this.options==null;
+        this.options = opt;
+    }
+
+    /**
+     * Gets the partly parsed option object, if any.
+     */
+    public @Nullable Options getOptions() {
+        return options;
     }
 }

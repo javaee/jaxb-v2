@@ -121,7 +121,7 @@ public final class ExtensionBindingChecker extends XMLFilterImpl {
         this.options = options;
         setErrorHandler(handler);
 
-        for (Plugin plugin : Options.allPlugins)
+        for (Plugin plugin : options.getAllPlugins())
             recognizableExtensions.addAll(plugin.getCustomizationURIs());
         recognizableExtensions.add(Const.XJC_EXTENSION_URI);
     }
@@ -217,7 +217,7 @@ public final class ExtensionBindingChecker extends XMLFilterImpl {
 
                             // look for plug-in that handles this URI
                             Plugin owner = null;
-                            for( Plugin p : Options.allPlugins ) {
+                            for( Plugin p : options.getAllPlugins() ) {
                                 if(p.getCustomizationURIs().contains(uri)) {
                                     owner = p;
                                     break;

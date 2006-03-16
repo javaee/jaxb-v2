@@ -34,6 +34,7 @@ import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.writer.FileCodeWriter;
 import com.sun.codemodel.writer.PrologCodeWriter;
 import com.sun.codemodel.writer.ZipCodeWriter;
+import com.sun.istack.Nullable;
 import com.sun.tools.xjc.generator.bean.BeanGenerator;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.outline.Outline;
@@ -108,7 +109,7 @@ public class Driver {
                 System.out.println();
             }
 
-            usage( false );
+            usage(e.getOptions(),false);
             System.exit(-1);
         }
     }
@@ -201,23 +202,22 @@ public class Driver {
 
         // recognize those special options before we start parsing options.
         for (String arg : args) {
-            if (arg.equals("-help")) {
-                usage(false);
-                return -1;
-            }
             if (arg.equals("-version")) {
                 listener.message(Messages.format(Messages.VERSION));
-                return -1;
-            }
-            if (arg.equals("-private")) {
-                usage(true);
                 return -1;
             }
         }
 
         final OptionsEx opt = new OptionsEx();
         opt.setSchemaLanguage(Language.XMLSCHEMA);  // disable auto-guessing
-        opt.parseArguments(args);
+        try {
+            opt.parseArguments(args);
+        } catch (WeAreDone _) {
+            return -1;
+        } catch(BadCommandLineException e) {
+            e.initOptions(opt);
+            throw e;
+        }
 
         // display a warning if the user specified the default package
         // this should work, but is generally a bad idea
@@ -444,25 +444,42 @@ public class Driver {
                 throw new BadCommandLineException(
                     Messages.format(Messages.UNRECOGNIZED_MODE, args[i]));
             }
-            
+            if (args[i].equals("-help")) {
+                usage(this,false);
+                throw new WeAreDone();
+            }
+            if (args[i].equals("-private")) {
+                usage(this,true);
+                throw new WeAreDone();
+            }
+
             return super.parseArgument(args, i);
         }
     }
 
+    /**
+     * Used to signal that we've finished processing.
+     */
+    private static final class WeAreDone extends BadCommandLineException {}
+
 
     /**
      * Prints the usage screen and exits the process.
+     *
+     * @param opts
+     *      If the parsing of options have started, set a partly populated
+     *      {@link Options} object.
      */
-    protected static void usage( boolean privateUsage ) {
+    protected static void usage( @Nullable Options opts, boolean privateUsage ) {
         if( privateUsage ) {
             System.out.println(Messages.format(Messages.DRIVER_PRIVATE_USAGE));
         } else {
             System.out.println(Messages.format(Messages.DRIVER_PUBLIC_USAGE));
         }
         
-        if( Options.allPlugins.size()!=0 ) {
+        if( opts!=null && opts.getAllPlugins().size()!=0 ) {
             System.out.println(Messages.format(Messages.ADDON_USAGE));
-            for (Plugin p : Options.allPlugins) {
+            for (Plugin p : opts.getAllPlugins()) {
                 System.out.println(p.getUsage());
             }
         }
