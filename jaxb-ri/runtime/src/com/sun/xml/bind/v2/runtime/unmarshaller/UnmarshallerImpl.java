@@ -276,6 +276,12 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
         return unmarshal0(node,null);
     }
 
+    // just to make the the test harness happy by making this method accessible
+    @Deprecated
+    public final Object unmarshal( SAXSource source ) throws JAXBException {
+        return super.unmarshal(source);
+    }
+
     public final Object unmarshal0( Node node, JaxBeanInfo expectedType ) throws JAXBException {
         try {
             final DOMScanner scanner = new DOMScanner();
