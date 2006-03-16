@@ -54,7 +54,7 @@ set LOCALCLASSPATH=%JAXB_HOME%\lib\jaxb-xjc.jar
 goto LAUNCHSCHEMAGEN
 
 :LAUNCHSCHEMAGEN
-if not "%XJC_OPTS%" == "" goto LAUNCHSCHEMAGENWITHOPTS
+if not "%SCHEMAGEN_OPTS%" == "" goto LAUNCHSCHEMAGENWITHOPTS
 %JAVA% -cp %LOCALCLASSPATH% com.sun.tools.jxc.SchemaGeneratorFacade %*
 goto END
 
