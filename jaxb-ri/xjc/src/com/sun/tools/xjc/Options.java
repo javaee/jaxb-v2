@@ -39,9 +39,9 @@ import java.util.regex.Pattern;
 import com.sun.org.apache.xml.internal.resolver.CatalogManager;
 import com.sun.org.apache.xml.internal.resolver.tools.CatalogResolver;
 import com.sun.tools.xjc.api.ClassNameAllocator;
-import com.sun.tools.xjc.reader.Util;
 import com.sun.tools.xjc.generator.bean.field.FieldRendererFactory;
 import com.sun.tools.xjc.model.Model;
+import com.sun.tools.xjc.reader.Util;
 import com.sun.xml.bind.api.impl.NameConverter;
 
 import org.xml.sax.EntityResolver;
@@ -148,8 +148,11 @@ public class Options
 
     /**
      * All discovered {@link Plugin}s.
+     * This is lazily parsed, so that we can take '-cp' option into account.
+     *
+     * @see #getAllPlugins()
      */
-    public static final List<Plugin> allPlugins = new ArrayList<Plugin>();
+    private List<Plugin> allPlugins;
 
     /**
      * Set of URIs that plug-ins recognize as extension bindings.
@@ -184,11 +187,6 @@ public class Options
      * Used to detect if two {@link Plugin}s try to overwrite {@link #nameConverter}.
      */
     private Plugin nameConverterOwner = null;
-
-    static {
-        for( Plugin aug : findServices(Plugin.class) )
-            allPlugins.add(aug);
-    }
 
     /**
      * Gets the active {@link FieldRendererFactory} that shall be used to build {@link Model}.
@@ -271,6 +269,24 @@ public class Options
         this.nameConverter = nc;
     }
 
+    /**
+     * Gets all the {@link Plugin}s discovered so far.
+     *
+     * <p>
+     * A plugins are enumerated when this method is called for the first time,
+     * by taking {@link #classpaths} into account. That means
+     * "-cp plugin.jar" has to come before you specify options to enable it.
+     */
+    public List<Plugin> getAllPlugins() {
+        if(allPlugins==null) {
+            allPlugins = new ArrayList<Plugin>();
+            ClassLoader ucl = getUserClassLoader(getClass().getClassLoader());
+            for( Plugin aug : findServices(Plugin.class,ucl) )
+                allPlugins.add(aug);
+        }
+
+        return allPlugins;
+    }
 
     public Language getSchemaLanguage() {
         if( schemaLanguage==null)
@@ -561,7 +577,7 @@ public class Options
         }
 
         // see if this is one of the extensions
-        for( Plugin plugin : allPlugins ) {
+        for( Plugin plugin : getAllPlugins() ) {
             if( ('-'+plugin.getOptionName()).equals(args[i]) ) {
                 activePlugins.add(plugin);
                 plugin.onActivated(this);
@@ -695,10 +711,6 @@ public class Options
     
     
     
-    
-    private static <T> T[] findServices( Class<T> clazz ) {
-        return findServices( clazz, Driver.class.getClassLoader() );
-    }
     
     /**
      * Looks for all "META-INF/services/[className]" files and
