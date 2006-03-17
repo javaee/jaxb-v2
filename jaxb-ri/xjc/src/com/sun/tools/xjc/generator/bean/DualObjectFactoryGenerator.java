@@ -18,7 +18,7 @@ import com.sun.xml.bind.v2.ContextFactory;
  *
  * @author Kohsuke Kawaguchi
  */
-final class DualObjectFactoryGenerator extends ObjectFactoryGenerator {
+public final class DualObjectFactoryGenerator extends ObjectFactoryGenerator {
     public final ObjectFactoryGenerator publicOFG;
     public final ObjectFactoryGenerator privateOFG;
 
