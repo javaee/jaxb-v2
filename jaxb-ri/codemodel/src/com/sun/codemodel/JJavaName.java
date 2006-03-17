@@ -21,8 +21,8 @@
 package com.sun.codemodel;
 
 import java.util.HashSet;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Utility methods that convert arbitrary strings into Java identifiers.
@@ -206,22 +206,22 @@ public class JJavaName {
 
     static {
         String[] source = {
-              "(.+)child","$1children",
+              "(.*)child","$1children",
                  "(.+)fe","$1ves",
-              "(.+)mouse","$1mise",
+              "(.*)mouse","$1mise",
                   "(.+)f","$1ves",
                  "(.+)ch","$1ches",
                  "(.+)sh","$1shes",
-              "(.+)tooth","$1teeth",
+              "(.*)tooth","$1teeth",
                  "(.+)um","$1a",
                  "(.+)an","$1en",
                 "(.+)ato","$1atoes",
-              "(.+)basis","$1bases",
-               "(.+)axis","$1axes",
+              "(.*)basis","$1bases",
+               "(.*)axis","$1axes",
                  "(.+)is","$1ises",
                  "(.+)us","$1uses",
                   "(.+)s","$1s",
-               "(.+)foot","$1feet",
+               "(.*)foot","$1feet",
                  "(.+)ix","$1ixes",
                  "(.+)ex","$1ices",
                  "(.+)nx","$1nxes",
