@@ -59,4 +59,13 @@ public class XJC2TaskAdapter extends XJC2Task
                 log.info(message);
         }
     }
+
+    /**
+     * Perform strict validation of the input schema.
+     * @param strict true to perform validation of the input schemas.
+     */
+    public void setStrict(boolean strict)
+    {
+        super.options.strictCheck = strict;
+    }
 }

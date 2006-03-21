@@ -29,11 +29,11 @@ import java.util.Collection;
 
 /**
  * A mojo that uses JAXB to generate a collection of javabeans from an XSD. For
- * details on JAXB see <a href="https://jaxb.dev.java.net/">JAXB 2.0 Project</a>
+ * details on JAXB see <a href="https://jaxb.dev.java.net/">JAXB 2.0
+ * Project</a>
  * <p/>
  *
  * @author Jonathan Johnson (jonjohnson@mail.com)
- *
  * @goal generate
  * @phase generate-sources
  * @description JAXB Generator plugin
@@ -50,9 +50,9 @@ public class XJCMojo extends AbstractMojo
     /**
      * A list of regular expression file search patterns to specify the schemas
      * to be processed.  Searching is based from the root of schemaDirectory. If
-     * this is not set then all .xsd files in schemaDirectory will be
-     * processed.  Default is *.xsd.
-     *
+     * this is not set then all .xsd files in schemaDirectory will be processed.
+     * Default is *.xsd.
+     * <p/>
      * todo In maven 2 how to set default for String[]? expression="*.xsd"
      */
     protected String[] includeSchemas;
@@ -71,7 +71,7 @@ public class XJCMojo extends AbstractMojo
      * files to be processed.  Searching is based from the root of
      * schemaDirectory.  If this is not set then all .xjb files in
      * schemaDirectory will be processed.   Default is *.xjb.
-     *
+     * <p/>
      * todo In maven 2 how to set default for String[]? expression="*.xjb"
      *
      * @parameter
@@ -140,6 +140,13 @@ public class XJCMojo extends AbstractMojo
     protected boolean removeOldOutput;
 
     /**
+     * Perform strict validation of the input schema.
+     *
+     * @parameter expression="true"
+     */
+    protected boolean strict;
+
+    /**
      * If verbose all the configured settings that are to be passed to the xjc
      * compiler are logged.
      *
@@ -192,7 +199,7 @@ public class XJCMojo extends AbstractMojo
         {
             for (String name : bindingsFilenames)
             {
-               xjc2TaskAdapter.setBinding(name);
+                xjc2TaskAdapter.setBinding(name);
             }
         }
 
@@ -208,7 +215,7 @@ public class XJCMojo extends AbstractMojo
 
         xjc2TaskAdapter.setReadonly(readOnly);
         xjc2TaskAdapter.setExtension(extension);
-
+        xjc2TaskAdapter.setStrict(strict);
         if (catalog != null)
         {
             xjc2TaskAdapter.setCatalog(catalog);
@@ -229,6 +236,8 @@ public class XJCMojo extends AbstractMojo
         {
             project.addCompileSourceRoot(generateDirectory.getPath());
         }
+
+        xjc2TaskAdapter.setStrict(strict);
     }
 
     /**
@@ -253,7 +262,7 @@ public class XJCMojo extends AbstractMojo
             getLog().info(
                 "The <includeSchemas> setting was not defined, assuming *.xsd.");
             // default schema pattern if not defined
-            includeSchemas = new String[] {"*.xsd"};
+            includeSchemas = new String[]{"*.xsd"};
         }
 
         // Check "includeBindings"
@@ -262,7 +271,7 @@ public class XJCMojo extends AbstractMojo
             getLog().info(
                 "The <includeBindings> setting was not defined, assuming *.xjb.");
             // default schema pattern if not defined
-            includeBindings = new String[] {"*.xjb"};
+            includeBindings = new String[]{"*.xjb"};
         }
     }
 
@@ -296,6 +305,7 @@ public class XJCMojo extends AbstractMojo
 
     /**
      * Go through each directory and get the files for this dir.
+     *
      * @param searchRootDirectory
      * @param includePatterns
      * @param excludePatterns
@@ -315,9 +325,9 @@ public class XJCMojo extends AbstractMojo
         String[] files = directoryScanner.getIncludedFiles();
 
         // Prefix file names with base search root directory.
-        for (int i=0; i<files.length; i++)
+        for (int i = 0; i < files.length; i++)
         {
-           files[i] = searchRootDirectory + File.separator + files[i];
+            files[i] = searchRootDirectory + File.separator + files[i];
         }
 
         return files;
@@ -341,6 +351,7 @@ public class XJCMojo extends AbstractMojo
         getLog().info("extension: " + extension);
         getLog().info("catalog: " + catalog);
         getLog().info("removeOldOutput: " + removeOldOutput);
+        getLog().info("strict: " + strict);
         getLog().info("verbose: " + verbose);
     }
 
