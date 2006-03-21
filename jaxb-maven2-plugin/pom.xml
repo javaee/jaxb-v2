@@ -9,7 +9,7 @@
     <url>https://jaxb.dev.java.net/</url>
 
     <description>
-        JAXB XJC Compiler for Maven 2.  Part of the JAXB 2.0 Project.
+        JAXB XJC Compiler for Maven 2.  Part of the JAXB 2.0 RI Project.
     </description>
 
     <organization>
@@ -147,21 +147,30 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
             </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>surefire-report-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>changelog-maven-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <id>single-report</id>
+                        <configuration>
+                            <type>range</type>
+                            <range>30</range>
+                        </configuration>
+                        <reports>
+                            <report>changelog</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
         </plugins>
     </reporting>
-
-    <reports>
-        <report>maven-changelog-plugin</report>
-        <report>maven-changes-plugin</report>
-        <report>maven-developer-activity-plugin</report>
-        <report>maven-file-activity-plugin</report>
-        <report>maven-javadoc-plugin</report>
-        <report>maven-license-plugin</report>
-        <report>maven-junit-report-plugin</report>
-        <report>maven-jcoverage-plugin</report>
-        <report>maven-jxr-plugin</report>
-        <report>maven-linkcheck-plugin</report>
-    </reports>
 
     <mailingLists>
     </mailingLists>
