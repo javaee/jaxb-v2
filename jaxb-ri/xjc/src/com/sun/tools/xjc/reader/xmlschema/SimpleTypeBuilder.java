@@ -19,56 +19,57 @@
  */
 package com.sun.tools.xjc.reader.xmlschema;
 
-import java.util.Stack;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.ArrayList;
 import java.io.StringWriter;
 import java.math.BigInteger;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 
-import javax.xml.namespace.QName;
 import javax.activation.MimeTypeParseException;
+import javax.xml.namespace.QName;
 
+import com.sun.codemodel.JJavaName;
+import com.sun.codemodel.util.JavadocEscapeWriter;
 import com.sun.tools.xjc.model.CBuiltinLeafInfo;
+import com.sun.tools.xjc.model.CClassInfo;
+import com.sun.tools.xjc.model.CClassInfoParent;
+import com.sun.tools.xjc.model.CEnumConstant;
+import com.sun.tools.xjc.model.CEnumLeafInfo;
+import com.sun.tools.xjc.model.CNonElement;
+import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.model.TypeUseFactory;
-import com.sun.tools.xjc.model.CNonElement;
-import com.sun.tools.xjc.model.CEnumConstant;
-import com.sun.tools.xjc.model.CClassInfoParent;
-import com.sun.tools.xjc.model.CEnumLeafInfo;
-import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIConversion;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIEnum;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIEnumMember;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BindInfo;
-import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIEnumMember;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.EnumMemberMode;
-import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIEnum;
 import com.sun.tools.xjc.util.MimeTypeRange;
+import com.sun.xml.bind.DatatypeConverterImpl;
+import com.sun.xml.bind.v2.WellKnownNamespace;
+import static com.sun.xml.bind.v2.WellKnownNamespace.XML_MIME_URI;
+import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
 import com.sun.xml.xsom.XSAttributeDecl;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XSElementDecl;
+import com.sun.xml.xsom.XSFacet;
 import com.sun.xml.xsom.XSListSimpleType;
 import com.sun.xml.xsom.XSRestrictionSimpleType;
 import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSUnionSimpleType;
 import com.sun.xml.xsom.XSVariety;
-import com.sun.xml.xsom.XSFacet;
 import com.sun.xml.xsom.impl.util.SchemaWriter;
 import com.sun.xml.xsom.visitor.XSSimpleTypeFunction;
 import com.sun.xml.xsom.visitor.XSVisitor;
-import com.sun.xml.bind.v2.WellKnownNamespace;
-import static com.sun.xml.bind.v2.WellKnownNamespace.XML_MIME_URI;
-import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
-import com.sun.xml.bind.DatatypeConverterImpl;
-import com.sun.codemodel.util.JavadocEscapeWriter;
-import com.sun.codemodel.JJavaName;
 
 import org.xml.sax.Locator;
 
@@ -220,7 +221,6 @@ public final class SimpleTypeBuilder extends BindingComponent {
         if( top == type ) {
             // this means the simple type is built by itself and
             // not because it's referenced by something.
-            ;
         } else
             // unexpected referer type.
             assert false;
@@ -524,8 +524,13 @@ public final class SimpleTypeBuilder extends BindingComponent {
         TypeUse use = build(type.getSimpleBaseType());
         refererStack.pop();
 
-        assert !use.isCollection(); // TODO: what shall we do if the type safe enum is a list type?
+        if(use.isCollection())
+            return null;    // can't bind a list to enum constant
+
         CNonElement baseDt = (CNonElement)use.getInfo();   // for now just ignore that case
+
+        if(baseDt instanceof CClassInfo)
+            return null;    // can't bind to an enum if the base is a class, since we don't have the value constrctor
 
         // if the member names collide, re-generate numbered constant names.
         List<CEnumConstant> memberList = buildCEnumConstants(type, false, members);
