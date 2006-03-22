@@ -49,6 +49,7 @@ enum Messages {
     INVALID_IDREF, // 1 arg
     INVALID_XML_ELEMENT_REF, // 0 arg
     NO_XML_ELEMENT_DECL, // 2 args
+    XML_ELEMENT_WRAPPER_ON_NON_COLLECTION, // 1 arg
 
     ANNOTATION_NOT_ALLOWED, // 1 arg
     XMLLIST_NEEDS_SIMPLETYPE, // 1 arg
