@@ -3,6 +3,8 @@ package com.sun.xml.bind.v2.model.impl;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.namespace.QName;
 
+import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
+
 /**
  * Common part of {@link ElementPropertyInfoImpl} and {@link ReferencePropertyInfoImpl}.
  *
@@ -14,11 +16,18 @@ abstract class ERPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     public ERPropertyInfoImpl(ClassInfoImpl<TypeT, ClassDeclT, FieldT, MethodT> classInfo, PropertySeed<TypeT, ClassDeclT, FieldT, MethodT> propertySeed) {
         super(classInfo, propertySeed);
 
+        XmlElementWrapper e = seed.readAnnotation(XmlElementWrapper.class);
+
         boolean nil = false;
-        if(!isCollection())
+        if(!isCollection()) {
             xmlName = null;
-        else {
-            XmlElementWrapper e = seed.readAnnotation(XmlElementWrapper.class);
+            if(e!=null)
+                classInfo.builder.reportError(new IllegalAnnotationException(
+                    Messages.XML_ELEMENT_WRAPPER_ON_NON_COLLECTION.format(
+                        nav().getClassName(parent.getClazz())+'.'+seed.getName()),
+                    e
+                ));
+        } else {
             if(e!=null) {
                 xmlName = calcXmlName(e);
                 nil = e.nillable();
