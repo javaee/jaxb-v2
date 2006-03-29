@@ -20,6 +20,7 @@
         <xs:element ref="xjc:typeSubstitution"/>
         <xs:element ref="xjc:smartWildcardDefaultBinding"/>
         <xs:element ref="xjc:simple"/>
+        <xs:element ref="xjc:generateElementProperty"/>
         <xs:element ref="xjc:noMarshaller"/>
         <xs:element ref="xjc:noUnmarshaller"/>
         <xs:element ref="xjc:noValidator"/>
