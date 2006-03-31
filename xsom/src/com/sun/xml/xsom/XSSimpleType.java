@@ -62,7 +62,15 @@ public interface XSSimpleType extends XSType, XSContentType
      */
     boolean isFinal(XSVariety v);
     
-    
+    /**
+     * If this {@link XSSimpleType} is redefined by another simple type,
+     * return that component.
+     *
+     * @return null
+     *      if this component has not been redefined.
+     */
+    public XSSimpleType getRedefinedBy();
+
     /**
      * Gets the effective facet object of the given name.
      * 

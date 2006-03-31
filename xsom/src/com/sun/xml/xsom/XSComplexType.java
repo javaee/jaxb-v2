@@ -93,15 +93,4 @@ public interface XSComplexType extends XSType, XSAttContainer
      *      if this component has not been redefined.
      */
     public XSComplexType getRedefinedBy();
-
-    /**
-     * Returns the number of complex types that redefine this component.
-     *
-     * <p>
-     * For example, if A is redefined by B and B is redefined by C,
-     * A.getRedefinedCount()==2, B.getRedefinedCount()==1, and
-     * C.getRedefinedCount()==0.
-     */
-    public int getRedefinedCount();
-
 }

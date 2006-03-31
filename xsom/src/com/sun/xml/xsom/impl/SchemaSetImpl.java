@@ -301,6 +301,8 @@ public class SchemaSetImpl implements XSSchemaSet
         public XSListSimpleType asList() { return null; }
         public XSUnionSimpleType asUnion() { return null; }
         public XSSimpleType getType() { return this; } // Ref.SimpleType implementation
+        public XSSimpleType getRedefinedBy() { return null; }
+        public int getRedefinedCount() { return 0; }
 
         public XSType[] listSubstitutables() {
             return Util.listSubstitutables(this);

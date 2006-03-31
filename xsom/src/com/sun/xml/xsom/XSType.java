@@ -55,6 +55,25 @@ public interface XSType extends XSDeclaration {
      */
     XSType[] listSubstitutables();
 
+    /**
+     * If this {@link XSType} is redefined by another type,
+     * return that component.
+     *
+     * @return null
+     *      if this component has not been redefined.
+     */
+    XSType getRedefinedBy();
+
+    /**
+     * Returns the number of complex types that redefine this component.
+     *
+     * <p>
+     * For example, if A is redefined by B and B is redefined by C,
+     * A.getRedefinedCount()==2, B.getRedefinedCount()==1, and
+     * C.getRedefinedCount()==0.
+     */
+    int getRedefinedCount();
+
 
     /** Casts this object to XSSimpleType if possible, otherwise returns null. */
     XSSimpleType asSimpleType();

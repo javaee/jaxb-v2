@@ -63,6 +63,26 @@ public abstract class SimpleTypeImpl extends DeclarationImpl
 
     public void redefine( SimpleTypeImpl st ) {
         baseType = st;
+        st.redefinedBy = this;
+        redefiningCount = (short)(st.redefiningCount+1);
+    }
+
+    /**
+     * Number of times this component redefines other components.
+     */
+    private short redefiningCount = 0;
+
+    private SimpleTypeImpl redefinedBy = null;
+
+    public XSSimpleType getRedefinedBy() {
+        return redefinedBy;
+    }
+
+    public int getRedefinedCount() {
+        int i=0;
+        for( SimpleTypeImpl st =this.redefinedBy; st !=null; st =st.redefinedBy)
+            i++;
+        return i;
     }
 
     public XSType getBaseType() { return baseType.getType(); }
