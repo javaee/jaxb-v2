@@ -20,19 +20,16 @@
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.reader.xmlschema.SimpleTypeBuilder;
-import com.sun.tools.xjc.util.ReadOnlyAdapter;
 
 /**
  * Enumeration customization.
