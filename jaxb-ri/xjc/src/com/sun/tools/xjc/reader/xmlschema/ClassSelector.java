@@ -34,11 +34,10 @@ import com.sun.tools.xjc.model.CBuiltinLeafInfo;
 import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CClassInfoParent;
 import com.sun.tools.xjc.model.CElement;
+import com.sun.tools.xjc.model.CElementInfo;
 import com.sun.tools.xjc.model.CTypeInfo;
 import com.sun.tools.xjc.model.TypeUse;
-import com.sun.tools.xjc.model.CElementInfo;
 import com.sun.tools.xjc.reader.Ring;
-import com.sun.tools.xjc.reader.Util;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BISchemaBinding;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.LocalScoping;
@@ -464,7 +463,7 @@ public final class ClassSelector extends BindingComponent {
 
         // generate the package name from the targetNamespace
         if( name == null )
-            name = Util.getPackageNameFromNamespaceURI( targetNamespace );
+            name = builder.getNameConverter().toPackageName( targetNamespace );
 
         // hardcode a package name because the code doesn't compile
         // if it generated into the default java package

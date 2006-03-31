@@ -21,7 +21,7 @@ package com.sun.tools.xjc.api;
 
 import com.sun.tools.xjc.api.impl.j2s.JavaCompilerImpl;
 import com.sun.tools.xjc.api.impl.s2j.SchemaCompilerImpl;
-import com.sun.tools.xjc.reader.Util;
+import com.sun.xml.bind.api.impl.NameConverter;
 
 /**
  * Entry point to the programatic API to access
@@ -65,6 +65,6 @@ public final class XJC {
      */
     public static String getDefaultPackageName( String namespaceUri ) {
         if(namespaceUri==null)   throw new IllegalArgumentException();
-        return Util.getPackageNameFromNamespaceURI( namespaceUri );
+        return NameConverter.standard.toPackageName( namespaceUri );
     }
 }
