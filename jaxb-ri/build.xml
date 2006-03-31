@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.55 2006-03-14 23:21:53 kohsuke Exp $
+       $Id: build.xml,v 1.56 2006-03-31 01:36:45 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -715,7 +715,7 @@ Class-Path: ${manifest.classpath}
     </target>
 
     <!-- assumes dist or wspack target has been run -->
-    <target name="create.zip" description="Create JAXB zip file distribution">
+    <target name="create.zip" description="Create JAXB zip file distribution for JES">
       <!-- The zip build directory -->
       <property name="zip.build.dir"    value="${basedir}/build/zip"/>
 
@@ -725,14 +725,16 @@ Class-Path: ${manifest.classpath}
       <!-- make build and output directories -->
       <mkdir dir="${zip.build.dir}"/>
       <mkdir dir="${zip.release.dir}"/>
+      
+      <property name="zip.top" value="${zip.build.dir}/jaxb${release.impl.version}" />
 
       <!-- copy files into the right directory structure -->
       <parallel>
-        <copy tofile="${zip.build.dir}/jaxb/bin/xjc.bat"       file="${basedir}/tools/bin/xjc.zip.bat" />
-        <copy tofile="${zip.build.dir}/jaxb/bin/xjc.sh"        file="${basedir}/tools/bin/xjc.zip.sh" />
-        <copy tofile="${zip.build.dir}/jaxb/bin/schemagen.bat" file="${basedir}/tools/bin/schemagen.zip.bat" />
-        <copy tofile="${zip.build.dir}/jaxb/bin/schemagen.sh"  file="${basedir}/tools/bin/schemagen.zip.sh" />
-        <copy todir="${zip.build.dir}/jaxb/lib">
+        <copy tofile="${zip.top}/bin/xjc.bat"       file="${basedir}/tools/bin/xjc.zip.bat" />
+        <copy tofile="${zip.top}/bin/xjc.sh"        file="${basedir}/tools/bin/xjc.zip.sh" />
+        <copy tofile="${zip.top}/bin/schemagen.bat" file="${basedir}/tools/bin/schemagen.zip.bat" />
+        <copy tofile="${zip.top}/bin/schemagen.sh"  file="${basedir}/tools/bin/schemagen.zip.sh" />
+        <copy todir="${zip.top}/lib">
           <fileset dir="${jaxb.dist}/lib">
             <exclude name="jaxb-api-doc.zip"/>
             <exclude name="jaxb-api-src.zip"/>
