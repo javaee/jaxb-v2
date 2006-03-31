@@ -186,6 +186,8 @@ public class XJCMojo extends AbstractMojo
         // Create the xjc adapter
         XJC2TaskAdapter xjc2TaskAdapter = new XJC2TaskAdapter(getLog());
 
+        xjc2TaskAdapter.options.verbose = verbose;
+
         // Get list of schemas
         String[] schemaFilenames = getFiles(schemaDirectory,
             includeSchemas, excludeSchemas);
@@ -228,7 +230,10 @@ public class XJCMojo extends AbstractMojo
         {
             xjc2TaskAdapter.setSchema(schema);
 
-            getLog().info("XJC compile using schema: " + schema);
+            if (verbose)
+            {
+                getLog().info("XJC compile using schema: " + schema);
+            }
             xjc2TaskAdapter.execute();
         }
 
@@ -259,8 +264,11 @@ public class XJCMojo extends AbstractMojo
         // Check "includeSchemas"
         if (! isDefined(includeSchemas, 1))
         {
-            getLog().info(
-                "The <includeSchemas> setting was not defined, assuming *.xsd.");
+            if (verbose)
+            {
+                getLog().info(
+                    "The <includeSchemas> setting was not defined, assuming *.xsd.");
+            }
             // default schema pattern if not defined
             includeSchemas = new String[]{"*.xsd"};
         }
@@ -268,8 +276,11 @@ public class XJCMojo extends AbstractMojo
         // Check "includeBindings"
         if (! isDefined(includeBindings, 1))
         {
-            getLog().info(
-                "The <includeBindings> setting was not defined, assuming *.xjb.");
+            if (verbose)
+            {
+                getLog().info(
+                    "The <includeBindings> setting was not defined, assuming *.xjb.");
+            }
             // default schema pattern if not defined
             includeBindings = new String[]{"*.xjb"};
         }

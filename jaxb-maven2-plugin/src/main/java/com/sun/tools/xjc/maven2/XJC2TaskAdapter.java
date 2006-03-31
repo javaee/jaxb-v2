@@ -50,6 +50,10 @@ public class XJC2TaskAdapter extends XJC2Task
                 break;
 
             case Project.MSG_VERBOSE :
+                if (! super.options.verbose)
+                {
+                    return;
+                }
                 // fall to default
 
             case Project.MSG_INFO :
