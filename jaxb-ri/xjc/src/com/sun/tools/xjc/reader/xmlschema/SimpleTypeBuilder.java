@@ -392,6 +392,9 @@ public final class SimpleTypeBuilder extends BindingComponent {
         // if not, there will be a problem wrt the class name of this type safe enum type.
         if( type.isLocal() )    return false;
 
+        // if redefined, we should map the new definition, not the old one.
+        if( type.getRedefinedBy()!=null )   return false;
+
         List<XSFacet> facets = type.getDeclaredFacets(XSFacet.FACET_ENUMERATION);
         if( facets.isEmpty() || facets.size()>builder.getGlobalBinding().getDefaultEnumMemberSizeCap() )
             // if the type itself doesn't have the enumeration facet,
