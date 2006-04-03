@@ -74,7 +74,7 @@ public final class CodeModelClassFactory {
         JClassContainer parent, int mod, String name, Locator source, ClassType kind ) {
         
         try {
-            if(parent.isClass())
+            if(parent.isClass() && kind==ClassType.CLASS)
                 mod |= JMod.STATIC;
 
             JDefinedClass r = parent._class(mod,name,kind);
