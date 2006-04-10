@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.56 2006-03-31 01:36:45 kohsuke Exp $
+       $Id: build.xml,v 1.57 2006-04-10 20:41:54 jitu Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -712,6 +712,11 @@ Class-Path: ${manifest.classpath}
     <!-- assumes wspack target has been run -->
     <target name="create.rpm" depends="check.os" if="is.unix">
       <ant dir="rpm" target="deploy-rpm"/>
+    </target>
+
+    <!-- assumes wspack target has been run -->
+    <target name="create.hpux" depends="check.os" if="is.unix">
+      <ant dir="hpux" target="deploy-hpux"/>
     </target>
 
     <!-- assumes dist or wspack target has been run -->
