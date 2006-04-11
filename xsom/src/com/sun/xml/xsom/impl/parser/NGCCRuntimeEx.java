@@ -72,7 +72,7 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
      * This information is passed to AnnotationParser as
      * context information
      */
-    private final Stack elementNames = new Stack();
+    private final Stack<String> elementNames = new Stack<String>();
     
     NGCCRuntimeEx( ParserContext _parser ) {
         this(_parser,false);
@@ -281,7 +281,7 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
      * This method works correctly only when called by the annotation handler.
      */
     public String getAnnotationContextElementName() {
-        return (String)elementNames.get( elementNames.size()-2 );
+        return elementNames.get( elementNames.size()-2 );
     }
 
     /** Creates a copy of the current locator object. */
@@ -404,10 +404,9 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
     protected void unexpectedX(String token) throws SAXException {
         SAXParseException e = new SAXParseException(MessageFormat.format(
             "Unexpected {0} appears at line {1} column {2}",
-            new Object[]{
                 token,
-                new Integer(getLocator().getLineNumber()),
-                new Integer(getLocator().getColumnNumber()) }),
+                getLocator().getLineNumber(),
+                getLocator().getColumnNumber()),
             getLocator());
             
         parser.errorHandler.fatalError(e);
