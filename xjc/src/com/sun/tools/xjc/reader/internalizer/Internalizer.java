@@ -31,11 +31,11 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import com.sun.istack.SAXParseException2;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.util.DOMUtils;
 import com.sun.tools.xjc.util.EditDistance;
-import com.sun.istack.SAXParseException2;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -236,8 +236,14 @@ class Internalizer {
                 move(item, targetNodes);
             else {
                 if (!(target instanceof Element)) {
-                    reportError(item,
-                            Messages.format(Messages.CONTEXT_NODE_IS_NOT_ELEMENT));
+                    if(target instanceof Document) {
+                        // we set the context node to the document when @schemaLocation is used.
+                        reportError(item,
+                                Messages.format(Messages.NO_CONTEXT_NODE_SPECIFIED));
+                    } else {
+                        reportError(item,
+                                Messages.format(Messages.CONTEXT_NODE_IS_NOT_ELEMENT));
+                    }
                     return; // abort
                 }
 
