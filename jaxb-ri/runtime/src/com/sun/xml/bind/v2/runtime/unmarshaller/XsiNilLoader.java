@@ -4,7 +4,6 @@ import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
-import com.sun.xml.bind.v2.runtime.reflect.Lister;
 
 import org.xml.sax.SAXException;
 
@@ -62,19 +61,13 @@ public class XsiNilLoader extends ProxyLoader {
     }
 
     public static final class Array extends XsiNilLoader {
-        private final Accessor acc;
-        private final int offset;
-        private final Lister lister;
-
-        public Array(Loader core, Accessor acc, int offset, Lister lister) {
+        public Array(Loader core) {
             super(core);
-            this.acc = acc;
-            this.offset = offset;
-            this.lister = lister;
         }
 
-        protected void onNil(UnmarshallingContext.State state) throws SAXException {
-            state.getContext().getScope(offset).add(acc,lister,null);
+        protected void onNil(UnmarshallingContext.State state) {
+            // let the receiver add this to the lister
+            state.target = null;
         }
     }
 }
