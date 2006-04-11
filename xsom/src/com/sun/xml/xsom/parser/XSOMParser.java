@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
+import java.util.Set;
+import java.util.HashSet;
 
 import javax.xml.parsers.SAXParserFactory;
 
@@ -171,6 +173,17 @@ public final class XSOMParser {
     public XSSchemaSet getResult() throws SAXException {
         return context.getResult();
     }
+
+    /**
+     * Gets the set of {@link SchemaDocument} that represents
+     * parsed documents so far.
+     *
+     * @return
+     *      can be empty but never null.
+     */
+    public Set<SchemaDocument> getDocuments() {
+        return new HashSet<SchemaDocument>(context.parsedDocuments.keySet());
+    }
     
     public EntityResolver getEntityResolver() {
         return entityResolver;
@@ -227,9 +240,6 @@ public final class XSOMParser {
         this.apFactory = factory;
     }
 
-    /**
-     * @return
-     */
     public AnnotationParserFactory getAnnotationParserFactory() {
         return apFactory;
     }

@@ -7,6 +7,7 @@ import com.sun.xml.xsom.impl.SchemaImpl;
 import com.sun.xml.xsom.impl.UName;
 import com.sun.xml.xsom.impl.parser.state.NGCCRuntime;
 import com.sun.xml.xsom.impl.parser.state.Schema;
+import com.sun.xml.xsom.impl.parser.ParserContext.DocumentIdentity;
 import com.sun.xml.xsom.impl.util.Uri;
 import com.sun.xml.xsom.parser.AnnotationParser;
 import org.relaxng.datatype.ValidationContext;
@@ -73,14 +74,27 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
      * context information
      */
     private final Stack<String> elementNames = new Stack<String>();
-    
+
+    /**
+     * Points to the schema document (the parser of it) that included/imported
+     * this schema.
+     */
+    private final NGCCRuntimeEx referer;
+
+    /**
+     * Points to the {@link DocumentIdentity} that represents the
+     * schema document being parsed.
+     */
+    private ParserContext.DocumentIdentity docIdentity;
+
     NGCCRuntimeEx( ParserContext _parser ) {
-        this(_parser,false);
+        this(_parser,false,null);
     }
     
-    private NGCCRuntimeEx( ParserContext _parser, boolean chameleonMode ) {
+    private NGCCRuntimeEx( ParserContext _parser, boolean chameleonMode, NGCCRuntimeEx referer ) {
         this.parser = _parser;
         this.chameleonMode = chameleonMode;
+        this.referer = referer;
         
         // set up the default namespace binding
         currentContext = new Context("","",null);
@@ -150,7 +164,7 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
     
     /** Includes the specified schema. */
     public void includeSchema( String schemaLocation ) throws SAXException {
-        NGCCRuntimeEx runtime = new NGCCRuntimeEx(parser,chameleonMode);
+        NGCCRuntimeEx runtime = new NGCCRuntimeEx(parser,chameleonMode,this);
         runtime.currentSchema = this.currentSchema;
         runtime.blockDefault = this.blockDefault;
         runtime.finalDefault = this.finalDefault;
@@ -168,7 +182,7 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
     
     /** Imports the specified schema. */
     public void importSchema( String ns, String schemaLocation ) throws SAXException {
-        NGCCRuntimeEx newRuntime = new NGCCRuntimeEx(parser);
+        NGCCRuntimeEx newRuntime = new NGCCRuntimeEx(parser,false,this);
         InputSource source = resolveRelativeURL(ns,schemaLocation);
         if(source!=null)
             newRuntime.parseEntity( source, false, ns, getLocator() );
@@ -209,8 +223,7 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
      * @return true if the document has already been processed and thus
      *      needs to be skipped.
      */
-    public boolean hasAlreadyBeenRead( String targetNamespace ) {
-        
+    public boolean hasAlreadyBeenRead() {
         if( documentSystemId==null )
             // if the system Id is not provided, we can't test the identity,
             // so we have no choice but to read it.
@@ -223,12 +236,27 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
             // producing URLs could produce those two different forms,
             // we need to canonicalize one to the other.
             documentSystemId = "file:/"+documentSystemId.substring(8);
-            
-        ParserContext.DocumentIdentity docIdentity = new ParserContext.DocumentIdentity(
-            targetNamespace,
-            documentSystemId );
-            
-        return !parser.parsedDocuments.add(docIdentity);
+
+        assert docIdentity==null;
+        docIdentity = new ParserContext.DocumentIdentity(
+            currentSchema, documentSystemId );
+
+        ParserContext.DocumentIdentity existing = parser.parsedDocuments.get(docIdentity);
+        if(existing==null) {
+            parser.parsedDocuments.put(docIdentity,docIdentity);
+        } else {
+            docIdentity = existing;
+        }
+
+        assert docIdentity!=null;
+
+        if(referer!=null) {
+            assert referer.docIdentity!=null;
+            referer.docIdentity.references.add(this.docIdentity);
+            this.docIdentity.referers.add(referer.docIdentity);
+        }
+
+        return existing!=null;
     }
     
     /**

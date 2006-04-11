@@ -59,7 +59,7 @@
       }
       
       // multiple inclusion test.
-      if( $runtime.hasAlreadyBeenRead($runtime.currentSchema.getTargetNamespace()) ) {
+      if( $runtime.hasAlreadyBeenRead() ) {
           // skip this document
           $runtime.redirectSubtree(new DefaultHandler(),"","","" );
           return;
