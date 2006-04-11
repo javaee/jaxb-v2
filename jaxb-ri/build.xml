@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.57 2006-04-10 20:41:54 jitu Exp $
+       $Id: build.xml,v 1.58 2006-04-11 01:38:25 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -143,8 +143,8 @@
         </replace>
       </sequential>
     </macrodef>
-    
-    
+
+
     <target name="test-docs" description="generate docs for a test">
         <mkdir dir="build/docs" />
         <generate-docs dest="build/docs">
@@ -165,7 +165,7 @@
 
         <!-- Process samples first. We need to decide which samples to ship first,
              or otherwise we can't generate documentation.
-             
+
              if wspack.home is set, then process samples as 'JWSDP',
              otherwise process samples as 'RI' -->
         <condition property="in.wspack">
@@ -506,6 +506,12 @@ Class-Path: ${manifest.classpath}
             <fileset dir="dist/lib" includes="jaxb*.jar" excludes="jaxb-api.jar" />
         </copy>
         <copy tofile="build/maven/jaxb-api${jar.suffix}.jar" file="dist/lib/jaxb-api.jar" />
+        <checksum algorithm="md5">
+          <fileset dir="build/maven" includes="*.jar" />
+        </checksum>
+        <checksum algorithm="sha">
+          <fileset dir="build/maven" includes="*.jar" />
+        </checksum>
 
         <cvs-import cvsroot=":pserver:${user.name}@kohsuke.sfbay:/cvs"
           src="build/maven"
@@ -588,7 +594,7 @@ Class-Path: ${manifest.classpath}
         ${jes.rpm}/jsr173_api.jar
         ${jes.zip}/jsr173_api.jar
           " />
-        <echo file="${xjc.root}/manifest.xjc.jwsdp" 
+        <echo file="${xjc.root}/manifest.xjc.jwsdp"
               append="true"
 >Main-Class: com.sun.tools.xjc.XJCFacade
 Class-Path: ${manifest.classpath}
@@ -608,12 +614,12 @@ Class-Path: ${manifest.classpath}
         </jar>
         <delete dir="${dist.home}/lib/tmp"/>
         <delete file="${dist.home}/lib/jaxb-xjc.jar.orig"/>
-        
-        
+
+
         <!-- make the wspack dist, excluding unnecessary jaxb files -->
         <copy todir="${wspack.home}">
             <fileset dir="${dist.home}">
-                <exclude name="lib/jaxb-api-src.zip"/>   
+                <exclude name="lib/jaxb-api-src.zip"/>
                 <exclude name="lib/jaxp-api.jar"/>
                 <exclude name="lib/jaxb-api-doc.zip"/>
                 <exclude name="**/api/"/>
@@ -621,12 +627,12 @@ Class-Path: ${manifest.classpath}
                 <exclude name="lib/activation.jar"/>
             </fileset>
         </copy>
-        
+
     </target>
 
     <target name="srcbundle"
             description="Create a src bundle for licensees">
-             
+
         <!-- mkdir and copy entire tree minus private stuff -->
         <mkdir dir="${srcbundle.dist}"/>
         <copy todir="${srcbundle.dist}" includeemptydirs="true">
@@ -689,10 +695,10 @@ Class-Path: ${manifest.classpath}
         <move file="${srcbundle.dist}/src-build.xml"
               tofile="${srcbundle.dist}/build.xml"
               overwrite="true"/>
-        <move file="${srcbundle.dist}/src-build.properties" 
+        <move file="${srcbundle.dist}/src-build.properties"
               tofile="${srcbundle.dist}/build.properties"
               overwrite="true"/>
-        <move file="${srcbundle.dist}/src-build.readme" 
+        <move file="${srcbundle.dist}/src-build.readme"
               tofile="${srcbundle.dist}/HOWTO-buildingJAXB.txt"
               overwrite="true"/>
 
