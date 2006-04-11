@@ -17,8 +17,8 @@ import com.sun.xml.bind.v2.model.runtime.RuntimeTypeRef;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 import com.sun.xml.bind.v2.runtime.Name;
-import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.RuntimeUtil;
+import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.reflect.ListIterator;
@@ -148,18 +148,6 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
     }
 
     /**
-     * Compute the list of the expected class names. Used for error diagnosis.
-     */
-    private String getExpectedClassNameList() {
-        StringBuilder buf = new StringBuilder();
-        for (Class c : typeMap.keySet()) {
-            if(buf.length()>0)  buf.append(',');
-            buf.append(c.getName());
-        }
-        return buf.toString();
-    }
-
-    /**
      * Serializes one item of the property.
      */
     protected abstract void serializeItem(JaxBeanInfo expected, ItemT item, XMLSerializer w) throws SAXException, AccessorException, IOException, XMLStreamException;
@@ -178,7 +166,7 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
             Loader item = createItemUnmarshaller(chain,typeRef);
 
             if(typeRef.isNillable())
-                item = new XsiNilLoader.Array(item,acc,offset,lister);
+                item = new XsiNilLoader.Array(item);
             if(typeRef.getDefaultValue()!=null)
                 item = new DefaultValueLoaderDecorator(item,typeRef.getDefaultValue());
 
@@ -189,8 +177,6 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
     public final PropertyKind getKind() {
         return PropertyKind.ELEMENT;
     }
-
-;
 
     /**
      * Creates a loader handler that unmarshals the body of the item.
