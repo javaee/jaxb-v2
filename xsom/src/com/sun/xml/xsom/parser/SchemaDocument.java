@@ -87,6 +87,24 @@ public interface SchemaDocument {
     Set<SchemaDocument> getImportedDocuments(String targetNamespace);
 
     /**
+     * Returns true if this document includes the given document.
+     *
+     * <p>
+     * Note that this method returns false if this document
+     * imports the given document.
+     */
+    boolean includes(SchemaDocument doc);
+
+    /**
+     * Returns true if this document imports the given document.
+     *
+     * <p>
+     * Note that this method returns false if this document
+     * includes the given document.
+     */
+    boolean imports(SchemaDocument doc);
+
+    /**
      * Set of {@link SchemaDocument}s that include/import this document.
      *
      * <p>

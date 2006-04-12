@@ -1,11 +1,13 @@
 import com.sun.xml.xsom.XSSchemaSet;
 import com.sun.xml.xsom.impl.util.SchemaWriter;
 import com.sun.xml.xsom.parser.XSOMParser;
+import com.sun.xml.xsom.parser.SchemaDocument;
 import com.sun.xml.xsom.util.DomAnnotationParserFactory;
 import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.OutputStreamWriter;
+import java.util.Set;
 
 /**
  * Parses all the schemas specified as the command line arguments,
@@ -23,12 +25,14 @@ public class Dumper {
             // the parse method can by called many times
             for( int i=0; i<args.length; i++ )
                 reader.parse(new File(args[i]));
-            
+
             XSSchemaSet xss = reader.getResult();
             if(xss==null)
                 System.out.println("error");
             else
                 new SchemaWriter(new OutputStreamWriter(System.out)).visit(xss);
+
+            dump(reader.getDocuments());
         } catch( SAXException e ) {
             if(e.getException()!=null)
                 e.getException().printStackTrace();
@@ -36,5 +40,19 @@ public class Dumper {
                 e.printStackTrace();
             throw e;
         }
+    }
+
+    private static void dump(Set<SchemaDocument> documents) {
+        for (SchemaDocument doc : documents) {
+            System.out.println("Schema document: "+doc.getSystemId());
+            System.out.println("  target namespace: "+doc.getTargetNamespace());
+            for (SchemaDocument ref : doc.getReferencedDocuments()) {
+                System.out.print("    -> "+ref.getSystemId());
+                if(doc.includes(ref))
+                    System.out.print(" (include)");
+                System.out.println();
+            }
+        }
+
     }
 }

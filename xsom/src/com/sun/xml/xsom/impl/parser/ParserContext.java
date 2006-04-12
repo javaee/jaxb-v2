@@ -100,12 +100,26 @@ public class ParserContext {
         }
 
         public Set<SchemaDocument> getImportedDocuments(String targetNamespace) {
+            if(targetNamespace==null)
+                throw new IllegalArgumentException();
             Set<SchemaDocument> r = new HashSet<SchemaDocument>();
             for (DocumentIdentity doc : references) {
                 if(doc.getTargetNamespace().equals(targetNamespace))
                     r.add(doc);
             }
             return Collections.unmodifiableSet(r);
+        }
+
+        public boolean includes(SchemaDocument doc) {
+            if(!references.contains(doc))
+                return false;
+            return doc.getSchema()==schema;
+        }
+
+        public boolean imports(SchemaDocument doc) {
+            if(!references.contains(doc))
+                return false;
+            return doc.getSchema()!=schema;
         }
 
         public Set<SchemaDocument> getReferers() {
