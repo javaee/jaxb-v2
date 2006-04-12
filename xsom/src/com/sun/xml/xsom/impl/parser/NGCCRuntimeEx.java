@@ -251,7 +251,7 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
         assert docIdentity!=null;
 
         if(referer!=null) {
-            assert referer.docIdentity!=null;
+            assert referer.docIdentity!=null : "referer "+referer.documentSystemId+" has docIdentity==null";
             referer.docIdentity.references.add(this.docIdentity);
             this.docIdentity.referers.add(referer.docIdentity);
         }
