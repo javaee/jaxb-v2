@@ -45,6 +45,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 
+import com.sun.istack.ByteArrayDataSource;
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.WhiteSpaceProcessor;
 import com.sun.xml.bind.api.AccessorException;
@@ -59,7 +60,6 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.Base64Data;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.util.ByteArrayOutputStreamEx;
 import com.sun.xml.bind.v2.util.DataSourceSource;
-import com.sun.istack.ByteArrayDataSource;
 
 import org.xml.sax.SAXException;
 
@@ -303,7 +303,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                         return (BufferedImage)image;
 
                     } else {
-                        MediaTracker tracker = new MediaTracker(null/*not sure how this is used*/);
+                        MediaTracker tracker = new MediaTracker(new Component(){}); // not sure if this is the right thing to do.
                         tracker.addImage(image, 0);
                         try {
                             tracker.waitForAll();
@@ -313,7 +313,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                         BufferedImage bufImage = new BufferedImage(
                                 image.getWidth(null),
                                 image.getHeight(null),
-                                BufferedImage.TYPE_INT_RGB);
+                                BufferedImage.TYPE_INT_ARGB);
 
                         Graphics g = bufImage.createGraphics();
                         g.drawImage(image, 0, 0, null);
