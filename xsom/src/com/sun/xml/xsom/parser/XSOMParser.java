@@ -91,6 +91,12 @@ public final class XSOMParser {
 
     /**
      * Parses a new XML Schema document.
+     *
+     * <p>
+     * When using this method, XSOM does not know the system ID of
+     * this document, therefore, when this stream contains relative
+     * references to other schemas, XSOM will fail to resolve them.
+     * To specify an system ID with a stream, use {@link InputSource}
      */
     public void parse( InputStream is ) throws SAXException {
         parse(new InputSource(is));
@@ -98,6 +104,12 @@ public final class XSOMParser {
 
     /**
      * Parses a new XML Schema document.
+     *
+     * <p>
+     * When using this method, XSOM does not know the system ID of
+     * this document, therefore, when this reader contains relative
+     * references to other schemas, XSOM will fail to resolve them.
+     * To specify an system ID with a reader, use {@link InputSource}
      */
     public void parse( Reader reader ) throws SAXException {
         parse(new InputSource(reader));
@@ -126,6 +138,10 @@ public final class XSOMParser {
     
     /**
      * Parses a new XML Schema document.
+     *
+     * <p>
+     * Note that if the {@link InputSource} does not have a system ID,
+     * XSOM will fail to resolve them.
      */
     public void parse( InputSource source ) throws SAXException {
         context.parse(source);
