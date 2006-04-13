@@ -23,6 +23,8 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.types.selectors.FilenameSelector;
 
 import java.io.File;
 import java.util.Collection;
@@ -53,7 +55,7 @@ public class XJCMojo extends AbstractMojo
      * this is not set then all .xsd files in schemaDirectory will be processed.
      * Default is *.xsd.
      * <p/>
-     * todo In maven 2 how to set default for String[]? expression="*.xsd"
+     * todo In maven2 2 how to set default for String[]? expression="*.xsd"
      */
     protected String[] includeSchemas;
 
@@ -72,7 +74,7 @@ public class XJCMojo extends AbstractMojo
      * schemaDirectory.  If this is not set then all .xjb files in
      * schemaDirectory will be processed.   Default is *.xjb.
      * <p/>
-     * todo In maven 2 how to set default for String[]? expression="*.xjb"
+     * todo In maven2 2 how to set default for String[]? expression="*.xjb"
      *
      * @parameter
      */
@@ -163,7 +165,7 @@ public class XJCMojo extends AbstractMojo
     protected MavenProject project;
 
     /**
-     * Execute the maven mojo to invoke the xjc compiler based on configuration
+     * Execute the maven2 mojo to invoke the xjc compiler based on configuration
      * settings.
      *
      * @throws MojoExecutionException
@@ -218,6 +220,7 @@ public class XJCMojo extends AbstractMojo
         xjc2TaskAdapter.setReadonly(readOnly);
         xjc2TaskAdapter.setExtension(extension);
         xjc2TaskAdapter.setStrict(strict);
+
         if (catalog != null)
         {
             xjc2TaskAdapter.setCatalog(catalog);
@@ -225,24 +228,86 @@ public class XJCMojo extends AbstractMojo
 
         xjc2TaskAdapter.setRemoveOldOutput(removeOldOutput);
 
-        // Run the XJC compiler for each schema
-        for (String schema : schemaFilenames)
-        {
-            xjc2TaskAdapter.setSchema(schema);
-
-            if (verbose)
-            {
-                getLog().info("XJC compile using schema: " + schema);
-            }
-            xjc2TaskAdapter.execute();
-        }
-
         if (project != null)
         {
             project.addCompileSourceRoot(generateDirectory.getPath());
         }
 
-        xjc2TaskAdapter.setStrict(strict);
+        // Configure dependency artifacts to determine generation
+        FileSet dependencies = new FileSet();
+        dependencies.setDir(schemaDirectory);
+
+        // Bindings dependencies
+        if (isDefined(bindingsFilenames, 1))
+        {
+            for (String filename : bindingsFilenames)
+            {
+                if (verbose)
+                {
+                    getLog().debug("Binding dependency: " + filename);
+                }
+                dependencies.addFilename(createFilenameSelector(filename));
+            }
+        }
+
+        // Schemas dependencies
+        for (String filename : schemaFilenames)
+        {
+            if (verbose)
+            {
+                getLog().info("Schema dependency: " + filename);
+            }
+            dependencies.addFilename(createFilenameSelector(filename));
+        }
+
+        // Pom dependency - typically when configuration settings change.
+        if (project != null)
+        {
+            if (verbose)
+            {
+                getLog().info("pom dependency: " + project.getFile().getPath());
+            }
+            dependencies.addFilename(
+                createFilenameSelector(project.getFile().getPath()));
+        }
+
+        xjc2TaskAdapter.addConfiguredDepends(dependencies);
+
+        // Configure production artifacts to determine generation
+        FileSet products = new FileSet();
+        StringBuilder fullPath = new StringBuilder(256);
+        fullPath
+            .append(generateDirectory)
+            .append(File.separator)
+            .append(generatePackage.replace('.', File.separatorChar));
+        products.setDir(new File(fullPath.toString()));
+        products.addFilename(createFilenameSelector("*.java"));
+        xjc2TaskAdapter.addConfiguredProduces(products);
+
+        // Run the XJC compiler for each schema
+        for (String filename : schemaFilenames)
+        {
+            xjc2TaskAdapter.setSchema(filename);
+
+            if (verbose)
+            {
+                getLog().info("XJC compile using schema: " + filename);
+            }
+            xjc2TaskAdapter.execute();
+        }
+    }
+
+    /**
+     * Create a FilenameSelector from a filename.
+     *
+     * @param filename filename to wrap in FilenameSelector.
+     * @return the FilenameSelector based on the given filename.
+     */
+    private static FilenameSelector createFilenameSelector(String filename)
+    {
+        FilenameSelector selector = new FilenameSelector();
+        selector.setName(filename);
+        return selector;
     }
 
     /**
@@ -335,10 +400,11 @@ public class XJCMojo extends AbstractMojo
         directoryScanner.scan();
         String[] files = directoryScanner.getIncludedFiles();
 
-        // Prefix file names with base search root directory.
+        // Prepend with base dir.
         for (int i = 0; i < files.length; i++)
         {
-            files[i] = searchRootDirectory + File.separator + files[i];
+            files[i] =
+                directoryScanner.getBasedir() + File.separator + files[i];
         }
 
         return files;
