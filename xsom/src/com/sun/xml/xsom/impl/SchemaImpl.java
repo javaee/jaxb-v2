@@ -19,18 +19,19 @@
  */
 package com.sun.xml.xsom.impl;
 
+import com.sun.xml.xsom.ForeignAttributes;
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSAttGroupDecl;
 import com.sun.xml.xsom.XSAttributeDecl;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSElementDecl;
+import com.sun.xml.xsom.XSIdentityConstraint;
 import com.sun.xml.xsom.XSModelGroupDecl;
 import com.sun.xml.xsom.XSNotation;
 import com.sun.xml.xsom.XSSchema;
 import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSType;
-import com.sun.xml.xsom.XSIdentityConstraint;
-import com.sun.xml.xsom.ForeignAttributes;
+import com.sun.xml.xsom.parser.SchemaDocument;
 import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSVisitor;
 import org.xml.sax.Locator;
@@ -51,6 +52,10 @@ public class SchemaImpl implements XSSchema
         this.targetNamespace = tns;
         this.parent = _parent;
         this.locator = loc;
+    }
+
+    public SchemaDocument getSourceDocument() {
+        return null;
     }
 
     protected final SchemaSetImpl parent;

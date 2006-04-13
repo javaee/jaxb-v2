@@ -22,9 +22,10 @@ package com.sun.xml.xsom.impl;
 import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XSModelGroup;
 import com.sun.xml.xsom.XSModelGroupDecl;
+import com.sun.xml.xsom.XSParticle;
 import com.sun.xml.xsom.XSTerm;
 import com.sun.xml.xsom.XSWildcard;
-import com.sun.xml.xsom.XSParticle;
+import com.sun.xml.xsom.impl.parser.SchemaDocumentImpl;
 import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSTermFunction;
 import com.sun.xml.xsom.visitor.XSTermFunctionWithParam;
@@ -32,12 +33,12 @@ import com.sun.xml.xsom.visitor.XSTermVisitor;
 import com.sun.xml.xsom.visitor.XSVisitor;
 import org.xml.sax.Locator;
 
-import java.util.Iterator;
 import java.util.Arrays;
+import java.util.Iterator;
 
 public class ModelGroupImpl extends ComponentImpl implements XSModelGroup, Ref.Term
 {
-    public ModelGroupImpl( SchemaImpl owner, AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl _fa,
+    public ModelGroupImpl( SchemaDocumentImpl owner, AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl _fa,
                            Compositor _compositor, ParticleImpl[] _children ) {
 
         super(owner,_annon,_loc,_fa);

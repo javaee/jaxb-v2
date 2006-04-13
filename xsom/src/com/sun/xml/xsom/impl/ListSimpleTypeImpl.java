@@ -19,26 +19,26 @@
  */
 package com.sun.xml.xsom.impl;
 
-import org.xml.sax.Locator;
-
 import com.sun.xml.xsom.XSFacet;
 import com.sun.xml.xsom.XSListSimpleType;
 import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSVariety;
+import com.sun.xml.xsom.impl.parser.SchemaDocumentImpl;
 import com.sun.xml.xsom.visitor.XSSimpleTypeFunction;
 import com.sun.xml.xsom.visitor.XSSimpleTypeVisitor;
+import org.xml.sax.Locator;
 
 import java.util.Set;
 
 public class ListSimpleTypeImpl extends SimpleTypeImpl implements XSListSimpleType
 {
-    public ListSimpleTypeImpl( SchemaImpl _parent,
+    public ListSimpleTypeImpl( SchemaDocumentImpl _parent,
                                AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl _fa,
                                String _name, boolean _anonymous, Set<XSVariety> finalSet,
                                Ref.SimpleType _itemType ) {
 
         super(_parent,_annon,_loc,_fa,_name,_anonymous, finalSet,
-            _parent.parent.anySimpleType);
+            _parent.getSchema().parent.anySimpleType);
 
         this.itemType = _itemType;
     }

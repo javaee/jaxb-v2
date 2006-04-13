@@ -21,7 +21,8 @@ package com.sun.xml.xsom.impl;
 
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSComponent;
-import com.sun.xml.xsom.XSSchema;
+import com.sun.xml.xsom.impl.parser.SchemaDocumentImpl;
+import com.sun.xml.xsom.parser.SchemaDocument;
 import org.xml.sax.Locator;
 
 import java.util.ArrayList;
@@ -30,16 +31,25 @@ import java.util.List;
 
 public abstract class ComponentImpl implements XSComponent
 {
-    protected ComponentImpl( SchemaImpl _owner, AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl fa ) {
-        this.ownerSchema = _owner;
+    protected ComponentImpl( SchemaDocumentImpl _owner, AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl fa ) {
+        this.ownerDocument = _owner;
         this.annotation = _annon;
         this.locator = _loc;
         this.foreignAttributes = fa;
     }
 
-    protected final SchemaImpl ownerSchema;
-    public final XSSchema getOwnerSchema() { return ownerSchema; }
-    
+    protected final SchemaDocumentImpl ownerDocument;
+    public SchemaImpl getOwnerSchema() {
+        if(ownerDocument==null)
+            return null;
+        else
+            return ownerDocument.getSchema();
+    }
+
+    public SchemaDocument getSourceDocument() {
+        return ownerDocument;
+    }
+
     private final AnnotationImpl annotation;
     public final XSAnnotation getAnnotation() { return annotation; }
     

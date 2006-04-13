@@ -24,10 +24,10 @@ import com.sun.xml.xsom.XSAttributeDecl;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSContentType;
 import com.sun.xml.xsom.XSElementDecl;
+import com.sun.xml.xsom.XSIdentityConstraint;
 import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSTerm;
 import com.sun.xml.xsom.XSType;
-import com.sun.xml.xsom.XSIdentityConstraint;
 
 /**
  * Reference to other schema components.

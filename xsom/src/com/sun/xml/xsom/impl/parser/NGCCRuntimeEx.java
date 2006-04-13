@@ -7,17 +7,16 @@ import com.sun.xml.xsom.impl.SchemaImpl;
 import com.sun.xml.xsom.impl.UName;
 import com.sun.xml.xsom.impl.parser.state.NGCCRuntime;
 import com.sun.xml.xsom.impl.parser.state.Schema;
-import com.sun.xml.xsom.impl.parser.ParserContext.DocumentIdentity;
 import com.sun.xml.xsom.impl.util.Uri;
 import com.sun.xml.xsom.parser.AnnotationParser;
 import org.relaxng.datatype.ValidationContext;
 import org.xml.sax.Attributes;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-import org.xml.sax.EntityResolver;
 import org.xml.sax.helpers.LocatorImpl;
 
 import java.io.IOException;
@@ -83,10 +82,10 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
     private final NGCCRuntimeEx referer;
 
     /**
-     * Points to the {@link DocumentIdentity} that represents the
+     * Points to the {@link SchemaDocumentImpl} that represents the
      * schema document being parsed.
      */
-    private ParserContext.DocumentIdentity docIdentity;
+    public SchemaDocumentImpl document;
 
     NGCCRuntimeEx( ParserContext _parser ) {
         this(_parser,false,null);
@@ -240,23 +239,23 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
             // we need to canonicalize one to the other.
             documentSystemId = "file:/"+documentSystemId.substring(8);
 
-        assert docIdentity==null;
-        docIdentity = new ParserContext.DocumentIdentity(
+        assert document ==null;
+        document = new SchemaDocumentImpl(
             currentSchema, documentSystemId );
 
-        ParserContext.DocumentIdentity existing = parser.parsedDocuments.get(docIdentity);
+        SchemaDocumentImpl existing = parser.parsedDocuments.get(document);
         if(existing==null) {
-            parser.parsedDocuments.put(docIdentity,docIdentity);
+            parser.parsedDocuments.put(document,document);
         } else {
-            docIdentity = existing;
+            document = existing;
         }
 
-        assert docIdentity!=null;
+        assert document !=null;
 
         if(referer!=null) {
-            assert referer.docIdentity!=null : "referer "+referer.documentSystemId+" has docIdentity==null";
-            referer.docIdentity.references.add(this.docIdentity);
-            this.docIdentity.referers.add(referer.docIdentity);
+            assert referer.document !=null : "referer "+referer.documentSystemId+" has docIdentity==null";
+            referer.document.references.add(this.document);
+            this.document.referers.add(referer.document);
         }
 
         return existing!=null;

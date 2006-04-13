@@ -28,6 +28,7 @@ import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSUnionSimpleType;
 import com.sun.xml.xsom.XSVariety;
+import com.sun.xml.xsom.impl.parser.SchemaDocumentImpl;
 import com.sun.xml.xsom.visitor.XSContentTypeFunction;
 import com.sun.xml.xsom.visitor.XSContentTypeVisitor;
 import com.sun.xml.xsom.visitor.XSFunction;
@@ -40,7 +41,7 @@ public abstract class SimpleTypeImpl extends DeclarationImpl
     implements XSSimpleType, ContentTypeImpl, Ref.SimpleType
 {
     SimpleTypeImpl(
-        SchemaImpl _parent,
+        SchemaDocumentImpl _parent,
         AnnotationImpl _annon,
         Locator _loc,
         ForeignAttributesImpl _fa,

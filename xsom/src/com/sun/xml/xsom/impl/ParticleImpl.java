@@ -19,23 +19,24 @@
  */
 package com.sun.xml.xsom.impl;
 
-import org.xml.sax.Locator;
-
 import com.sun.xml.xsom.XSContentType;
 import com.sun.xml.xsom.XSParticle;
 import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSTerm;
 import com.sun.xml.xsom.impl.parser.DelayedRef;
+import com.sun.xml.xsom.impl.parser.SchemaDocumentImpl;
+import com.sun.xml.xsom.parser.SchemaDocument;
 import com.sun.xml.xsom.visitor.XSContentTypeFunction;
 import com.sun.xml.xsom.visitor.XSContentTypeVisitor;
 import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSVisitor;
+import org.xml.sax.Locator;
 
 import java.util.List;
 
 public class ParticleImpl extends ComponentImpl implements XSParticle, ContentTypeImpl
 {
-    public ParticleImpl( SchemaImpl owner, AnnotationImpl _ann,
+    public ParticleImpl( SchemaDocumentImpl owner, AnnotationImpl _ann,
         Ref.Term _term, Locator _loc, int _maxOccurs, int _minOccurs ) {
             
         super(owner,_ann,_loc,null);
@@ -43,7 +44,7 @@ public class ParticleImpl extends ComponentImpl implements XSParticle, ContentTy
         this.maxOccurs = _maxOccurs;
         this.minOccurs = _minOccurs;
     }
-    public ParticleImpl( SchemaImpl owner, AnnotationImpl _ann, Ref.Term _term, Locator _loc ) {
+    public ParticleImpl( SchemaDocumentImpl owner, AnnotationImpl _ann, Ref.Term _term, Locator _loc ) {
         this(owner,_ann,_term,_loc,1,1);
     }
     

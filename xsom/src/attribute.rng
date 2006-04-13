@@ -33,7 +33,7 @@
         else            tns = "";
         
         // proper handling of anonymous types
-        return new AttributeDeclImpl( $runtime.currentSchema, tns, name,
+        return new AttributeDeclImpl( $runtime.document, tns, name,
           annotation, locator, fa, isLocal,
           $runtime.createXmlString(defaultValue),
           $runtime.createXmlString(fixedValue),
@@ -99,7 +99,7 @@
       </optional>
       <cc:java>
         result = new AttGroupDeclImpl(
-          $runtime.currentSchema, annotation, locator, fa, name );
+          $runtime.document, annotation, locator, fa, name );
       </cc:java>
       <ref name="attributeUses" cc:with-params="result"/>
     </element>
@@ -177,7 +177,7 @@
               owner.addProhibitedAttribute(attDeclName);
             else
               owner.addAttributeUse(attDeclName,
-                new AttributeUseImpl( $runtime.currentSchema, annotation,locator,fa,decl,
+                new AttributeUseImpl( $runtime.document, annotation,locator,fa,decl,
                   $runtime.createXmlString(defaultValue),
                   $runtime.createXmlString(fixedValue),
                   "required".equals(use)));

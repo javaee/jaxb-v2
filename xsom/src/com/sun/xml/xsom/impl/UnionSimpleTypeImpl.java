@@ -19,27 +19,27 @@
  */
 package com.sun.xml.xsom.impl;
 
-import org.xml.sax.Locator;
-
 import com.sun.xml.xsom.XSFacet;
 import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSUnionSimpleType;
 import com.sun.xml.xsom.XSVariety;
+import com.sun.xml.xsom.impl.parser.SchemaDocumentImpl;
 import com.sun.xml.xsom.visitor.XSSimpleTypeFunction;
 import com.sun.xml.xsom.visitor.XSSimpleTypeVisitor;
+import org.xml.sax.Locator;
 
 import java.util.Iterator;
 import java.util.Set;
 
 public class UnionSimpleTypeImpl extends SimpleTypeImpl implements XSUnionSimpleType
 {
-    public UnionSimpleTypeImpl( SchemaImpl _parent,
+    public UnionSimpleTypeImpl( SchemaDocumentImpl _parent,
                                 AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl _fa,
                                 String _name, boolean _anonymous, Set<XSVariety> finalSet,
                                 Ref.SimpleType[] _members ) {
 
         super(_parent,_annon,_loc,_fa,_name,_anonymous, finalSet,
-            _parent.parent.anySimpleType);
+            _parent.getSchema().parent.anySimpleType);
 
         this.memberTypes = _members;
     }

@@ -19,9 +19,8 @@
  */
 package com.sun.xml.xsom.impl;
 
-import org.xml.sax.Locator;
-
 import com.sun.xml.xsom.XSAnnotation;
+import org.xml.sax.Locator;
 
 public class AnnotationImpl implements XSAnnotation
 {

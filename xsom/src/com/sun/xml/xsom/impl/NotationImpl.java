@@ -19,11 +19,11 @@
  */
 package com.sun.xml.xsom.impl;
 
-import org.xml.sax.Locator;
-
 import com.sun.xml.xsom.XSNotation;
+import com.sun.xml.xsom.impl.parser.SchemaDocumentImpl;
 import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSVisitor;
+import org.xml.sax.Locator;
 
 /**
  * 
@@ -32,10 +32,10 @@ import com.sun.xml.xsom.visitor.XSVisitor;
  */
 public class NotationImpl extends DeclarationImpl implements XSNotation {
     
-    public NotationImpl( SchemaImpl owner, AnnotationImpl _annon,
-        Locator _loc, ForeignAttributesImpl _fa, String _tns, String _name,
+    public NotationImpl( SchemaDocumentImpl owner, AnnotationImpl _annon,
+        Locator _loc, ForeignAttributesImpl _fa, String _name,
         String _publicId, String _systemId ) {
-        super(owner,_annon,_loc,_fa,_tns,_name,false);
+        super(owner,_annon,_loc,_fa,owner.getTargetNamespace(),_name,false);
         
         this.publicId = _publicId;
         this.systemId = _systemId;

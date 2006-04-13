@@ -19,22 +19,22 @@
  */
 package com.sun.xml.xsom.impl;
 
-import org.xml.sax.Locator;
-
 import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XSModelGroup;
 import com.sun.xml.xsom.XSModelGroupDecl;
 import com.sun.xml.xsom.XSTerm;
 import com.sun.xml.xsom.XSWildcard;
+import com.sun.xml.xsom.impl.parser.SchemaDocumentImpl;
 import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSTermFunction;
+import com.sun.xml.xsom.visitor.XSTermFunctionWithParam;
 import com.sun.xml.xsom.visitor.XSTermVisitor;
 import com.sun.xml.xsom.visitor.XSVisitor;
-import com.sun.xml.xsom.visitor.XSTermFunctionWithParam;
+import org.xml.sax.Locator;
 
 public class ModelGroupDeclImpl extends DeclarationImpl implements XSModelGroupDecl, Ref.Term
 {
-    public ModelGroupDeclImpl( SchemaImpl owner,
+    public ModelGroupDeclImpl( SchemaDocumentImpl owner,
         AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl _fa,
         String _targetNamespace, String _name,
         ModelGroupImpl _modelGroup ) {

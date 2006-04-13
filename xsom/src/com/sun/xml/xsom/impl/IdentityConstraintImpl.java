@@ -3,6 +3,7 @@ package com.sun.xml.xsom.impl;
 import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XSIdentityConstraint;
 import com.sun.xml.xsom.XSXPath;
+import com.sun.xml.xsom.impl.parser.SchemaDocumentImpl;
 import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSVisitor;
 import org.xml.sax.Locator;
@@ -24,7 +25,7 @@ public class IdentityConstraintImpl extends ComponentImpl implements XSIdentityC
     private final List<XSXPath> fields;
     private final Ref.IdentityConstraint refer;
 
-    public IdentityConstraintImpl(SchemaImpl _owner, AnnotationImpl _annon, Locator _loc,
+    public IdentityConstraintImpl(SchemaDocumentImpl _owner, AnnotationImpl _annon, Locator _loc,
         ForeignAttributesImpl fa, short category, String name, XPathImpl selector,
         List<XPathImpl> fields, Ref.IdentityConstraint refer) {
 
@@ -50,7 +51,7 @@ public class IdentityConstraintImpl extends ComponentImpl implements XSIdentityC
 
     public void setParent(ElementDecl parent) {
         this.parent = parent;
-        parent.ownerSchema.addIdentityConstraint(this);
+        parent.getOwnerSchema().addIdentityConstraint(this);
     }
 
     public XSElementDecl getParent() {

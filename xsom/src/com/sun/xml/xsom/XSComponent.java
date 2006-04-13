@@ -19,6 +19,7 @@
  */
 package com.sun.xml.xsom;
 
+import com.sun.xml.xsom.parser.SchemaDocument;
 import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSVisitor;
 import org.xml.sax.Locator;
@@ -80,6 +81,19 @@ public interface XSComponent
      * returns null since there is no owner component.
      */
     XSSchema getOwnerSchema();
+
+    /**
+     * Gets the {@link SchemaDocument} that indicates which document this component
+     * was defined in.
+     *
+     * @return
+     *      null for components that are built-in to XML Schema, such
+     *      as anyType, or "empty" {@link XSContentType}. This method also
+     *      returns null for {@link XSSchema}.
+     *      For all other user-defined
+     *      components this method returns non-null, even if they are local.
+     */
+    SchemaDocument getSourceDocument();
     
     /**
      * Accepts a visitor.

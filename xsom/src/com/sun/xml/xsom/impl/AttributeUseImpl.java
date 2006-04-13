@@ -19,18 +19,17 @@
  */
 package com.sun.xml.xsom.impl;
 
-import org.relaxng.datatype.ValidationContext;
-import org.xml.sax.Locator;
-
 import com.sun.xml.xsom.XSAttributeDecl;
 import com.sun.xml.xsom.XSAttributeUse;
 import com.sun.xml.xsom.XmlString;
+import com.sun.xml.xsom.impl.parser.SchemaDocumentImpl;
 import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSVisitor;
+import org.xml.sax.Locator;
 
 public class AttributeUseImpl extends ComponentImpl implements XSAttributeUse
 {
-    public AttributeUseImpl( SchemaImpl owner, AnnotationImpl ann, Locator loc, ForeignAttributesImpl fa, Ref.Attribute _decl,
+    public AttributeUseImpl( SchemaDocumentImpl owner, AnnotationImpl ann, Locator loc, ForeignAttributesImpl fa, Ref.Attribute _decl,
         XmlString def, XmlString fixed, boolean req ) {
         
         super(owner,ann,loc,fa);

@@ -262,9 +262,10 @@ public class SchemaSetImpl implements XSSchemaSet
         implements XSRestrictionSimpleType, Ref.SimpleType {
         
         AnySimpleType() {
-            super(
-                createSchema("http://www.w3.org/2001/XMLSchema",null),
-                null,null,null,"http://www.w3.org/2001/XMLSchema","anySimpleType",false);
+            super(null,null,null,null,"http://www.w3.org/2001/XMLSchema","anySimpleType",false);
+        }
+        public SchemaImpl getOwnerSchema() {
+            return createSchema("http://www.w3.org/2001/XMLSchema",null);
         }
         public XSSimpleType asSimpleType() { return this; }
         public XSComplexType asComplexType() { return null; }
@@ -313,10 +314,10 @@ public class SchemaSetImpl implements XSSchemaSet
     public final AnyType anyType = new AnyType();
     private class AnyType extends DeclarationImpl implements XSComplexType, Ref.Type {
         AnyType() {
-            super(
-                createSchema("http://www.w3.org/2001/XMLSchema",null),
-                null,null,
-                null,"http://www.w3.org/2001/XMLSchema","anyType",false);
+            super(null,null,null,null,"http://www.w3.org/2001/XMLSchema","anyType",false);
+        }
+        public SchemaImpl getOwnerSchema() {
+            return createSchema("http://www.w3.org/2001/XMLSchema",null);
         }
         public boolean isAbstract() { return false; }
         public XSWildcard getAttributeWildcard() { return anyWildcard; }

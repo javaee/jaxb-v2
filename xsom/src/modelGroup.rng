@@ -71,7 +71,7 @@
       if(compositor==null)
         throw new InternalError("unable to process "+compositorName);
       
-      result = new ModelGroupImpl( $runtime.currentSchema, annotation, locator, fa, compositor,
+      result = new ModelGroupImpl( $runtime.document, annotation, locator, fa, compositor,
             (ParticleImpl[])particles.toArray(new ParticleImpl[0]));
     </cc:java>
   </define>
@@ -102,7 +102,7 @@
           <ref name="modelGroupBody" cc:alias="term"
             cc:with-params="loc,compositorName"/>
           <cc:java>
-            result = new ParticleImpl( $runtime.currentSchema, null, term, loc, occurs.max, occurs.min );
+            result = new ParticleImpl( $runtime.document, null, term, loc, occurs.max, occurs.min );
           </cc:java>
         </element>
       </group>
@@ -116,7 +116,7 @@
           <ref name="annotation" cc:alias="annotation" />(null,AnnotationContext.PARTICLE);
         </optional>
         <cc:java>
-          result = new ParticleImpl( $runtime.currentSchema, annotation, new DelayedRef.ModelGroup(
+          result = new ParticleImpl( $runtime.document, annotation, new DelayedRef.ModelGroup(
               $runtime, loc, $runtime.currentSchema, groupName ),
             loc, occurs.max, occurs.min );
         </cc:java>
@@ -133,7 +133,7 @@
               <ref name="annotation" cc:alias="annotation" />(null,AnnotationContext.PARTICLE);
             </optional>
             <cc:java>
-              result = new ParticleImpl( $runtime.currentSchema, annotation, new DelayedRef.Element(
+              result = new ParticleImpl( $runtime.document, annotation, new DelayedRef.Element(
                   $runtime, loc, $runtime.currentSchema, elementTypeName ),
                   loc, occurs.max, occurs.min );
             </cc:java>
@@ -142,7 +142,7 @@
             <ref name="elementDeclBody"
               cc:alias="anonymousElementDecl" cc:with-params="loc,false" />
             <cc:java>
-              result = new ParticleImpl( $runtime.currentSchema, null,
+              result = new ParticleImpl( $runtime.document, null,
                 anonymousElementDecl,
                 loc, occurs.max, occurs.min );
             </cc:java>
@@ -159,7 +159,7 @@
         <ref name="occurs" cc:alias="occurs"/>
         <ref name="wildcardBody" cc:with-params="wloc" cc:alias="wcBody"/>
         <cc:java>
-          result = new ParticleImpl( $runtime.currentSchema, null, wcBody, wloc, occurs.max, occurs.min );
+          result = new ParticleImpl( $runtime.document, null, wcBody, wloc, occurs.max, occurs.min );
         </cc:java>
       </element>
     </choice>
@@ -206,7 +206,7 @@
       </element>
     </element>
     <cc:java>
-    	result = new ModelGroupDeclImpl( $runtime.currentSchema,
+    	result = new ModelGroupDeclImpl( $runtime.document,
     		annotation, loc, fa,
     		$runtime.currentSchema.getTargetNamespace(),
 				name,

@@ -21,21 +21,22 @@ package com.sun.xml.xsom.impl;
 
 import com.sun.xml.xsom.XSAttGroupDecl;
 import com.sun.xml.xsom.XSAttributeUse;
+import com.sun.xml.xsom.impl.parser.SchemaDocumentImpl;
 import org.xml.sax.Locator;
 
+import java.util.AbstractSet;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.Collection;
-import java.util.AbstractSet;
 
 public abstract class AttributesHolder extends DeclarationImpl {
     
-    protected AttributesHolder( SchemaImpl _parent, AnnotationImpl _annon,
+    protected AttributesHolder( SchemaDocumentImpl _parent, AnnotationImpl _annon,
         Locator loc, ForeignAttributesImpl _fa, String _name, boolean _anonymous ) {
         
         super(_parent,_annon,loc,_fa,_parent.getTargetNamespace(),_name,_anonymous);

@@ -3,6 +3,7 @@ package com.sun.xml.xsom.impl;
 import com.sun.xml.xsom.XSIdentityConstraint;
 import com.sun.xml.xsom.XSXPath;
 import com.sun.xml.xsom.XmlString;
+import com.sun.xml.xsom.impl.parser.SchemaDocumentImpl;
 import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSVisitor;
 import org.xml.sax.Locator;
@@ -14,7 +15,7 @@ public class XPathImpl extends ComponentImpl implements XSXPath {
     private XSIdentityConstraint parent;
     private final XmlString xpath;
 
-    public XPathImpl(SchemaImpl _owner, AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl fa, XmlString xpath) {
+    public XPathImpl(SchemaDocumentImpl _owner, AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl fa, XmlString xpath) {
         super(_owner, _annon, _loc, fa);
         this.xpath = xpath;
     }

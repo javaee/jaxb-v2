@@ -1,15 +1,48 @@
 package com.sun.xml.xsom.impl.util;
 
-import com.sun.xml.xsom.*;
+import com.sun.xml.xsom.XSAnnotation;
+import com.sun.xml.xsom.XSAttGroupDecl;
+import com.sun.xml.xsom.XSAttributeDecl;
+import com.sun.xml.xsom.XSAttributeUse;
+import com.sun.xml.xsom.XSComplexType;
+import com.sun.xml.xsom.XSContentType;
+import com.sun.xml.xsom.XSElementDecl;
+import com.sun.xml.xsom.XSFacet;
+import com.sun.xml.xsom.XSIdentityConstraint;
+import com.sun.xml.xsom.XSListSimpleType;
+import com.sun.xml.xsom.XSModelGroup;
+import com.sun.xml.xsom.XSModelGroupDecl;
+import com.sun.xml.xsom.XSNotation;
+import com.sun.xml.xsom.XSParticle;
+import com.sun.xml.xsom.XSRestrictionSimpleType;
+import com.sun.xml.xsom.XSSchema;
+import com.sun.xml.xsom.XSSchemaSet;
+import com.sun.xml.xsom.XSSimpleType;
+import com.sun.xml.xsom.XSType;
+import com.sun.xml.xsom.XSUnionSimpleType;
+import com.sun.xml.xsom.XSWildcard;
+import com.sun.xml.xsom.XSXPath;
 import com.sun.xml.xsom.impl.Const;
-import com.sun.xml.xsom.visitor.*;
+import com.sun.xml.xsom.visitor.XSSimpleTypeVisitor;
+import com.sun.xml.xsom.visitor.XSTermVisitor;
+import com.sun.xml.xsom.visitor.XSVisitor;
 import org.xml.sax.Locator;
 
-import javax.swing.tree.*;
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.Icon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeCellRenderer;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.text.MessageFormat;
 import java.util.Iterator;
-import java.awt.*;
 
 /**
  * Generates approximated tree model for XML from a schema component. This is

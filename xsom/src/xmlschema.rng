@@ -290,10 +290,10 @@
         if(mode==-1)        throw new InternalError();
         
         if(ns==null || ns.equals("##any"))
-            return new WildcardImpl.Any( $runtime.currentSchema, annotation,locator,fa,mode);
+            return new WildcardImpl.Any( $runtime.document, annotation,locator,fa,mode);
         
         if(ns.equals("##other"))
-            return new WildcardImpl.Other( $runtime.currentSchema,
+            return new WildcardImpl.Other( $runtime.document,
                 annotation,locator,fa,
                 $runtime.currentSchema.getTargetNamespace(),mode);
         
@@ -306,7 +306,7 @@
             s.add(ns);
         }
         
-        return new WildcardImpl.Finite( $runtime.currentSchema, annotation,locator,fa,s,mode);
+        return new WildcardImpl.Finite( $runtime.document, annotation,locator,fa,s,mode);
       }
     </cc:java-body>
     
@@ -339,8 +339,7 @@
     <cc:java-body>
       private Locator loc;
       private XSNotation makeResult() {
-        String tns = $runtime.currentSchema.getTargetNamespace();
-        return new NotationImpl( $runtime.currentSchema, ann,loc,fa,tns,name,pub,sys);
+        return new NotationImpl( $runtime.document,ann,loc,fa,name,pub,sys);
       }
     </cc:java-body>
     

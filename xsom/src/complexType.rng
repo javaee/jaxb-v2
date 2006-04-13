@@ -121,7 +121,7 @@
                 }
                 
                 contentSimpleType = new RestrictionSimpleTypeImpl(
-                  $runtime.currentSchema, null/*?*/, locator2, null,
+                  $runtime.document, null/*?*/, locator2, null,
                   null, true, Collections.EMPTY_SET, baseContentType );
                 contentType = contentSimpleType;
               </cc:java>
@@ -261,7 +261,7 @@
           blockValue = new Integer($runtime.blockDefault);
         
         result = new ComplexTypeImpl(
-            $runtime.currentSchema,
+            $runtime.document,
             annotation,
             locator,
             fa,
@@ -290,12 +290,12 @@
         private final Ref.Type baseType;
         private final XSContentType empty;
         private final XSContentType expContent;
-        private final SchemaImpl currentSchema;
+        private final SchemaDocumentImpl currentDocument;
         private InheritBaseContentTypeRef(
           Ref.Type _baseType,XSContentType _explicitContent,NGCCRuntimeEx $runtime) {
           
           this.baseType = _baseType;
-          this.currentSchema = $runtime.currentSchema;
+          this.currentDocument = $runtime.document;
           expContent = _explicitContent;
           this.empty = $runtime.parser.schemaSet.empty;
         }
@@ -305,8 +305,8 @@
               if(baseContentType==empty)
                   return expContent;
               else
-                  return new ParticleImpl( currentSchema, null, new ModelGroupImpl(
-                    currentSchema,
+                  return new ParticleImpl( currentDocument, null, new ModelGroupImpl(
+                    currentDocument,
                       null, null, null, XSModelGroup.SEQUENCE,
                       new ParticleImpl[]{
                           (ParticleImpl)baseContentType,

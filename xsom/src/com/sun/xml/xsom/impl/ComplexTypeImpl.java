@@ -28,9 +28,10 @@ import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSWildcard;
+import com.sun.xml.xsom.impl.parser.DelayedRef;
+import com.sun.xml.xsom.impl.parser.SchemaDocumentImpl;
 import com.sun.xml.xsom.impl.util.ConcatIterator;
 import com.sun.xml.xsom.impl.util.FilterIterator;
-import com.sun.xml.xsom.impl.parser.DelayedRef;
 import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSVisitor;
 import org.xml.sax.Locator;
@@ -39,7 +40,7 @@ import java.util.Iterator;
 
 public class ComplexTypeImpl extends AttributesHolder implements XSComplexType, Ref.ComplexType
 {
-    public ComplexTypeImpl( SchemaImpl _parent,
+    public ComplexTypeImpl( SchemaDocumentImpl _parent,
         AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl _fa,
         String _name, boolean _anonymous,
         
@@ -142,7 +143,7 @@ public class ComplexTypeImpl extends AttributesHolder implements XSComplexType, 
             else
                 // TODO: the spec says it's intersection,
                 // but I think it has to be union.
-                complete = complete.union(ownerSchema,w);
+                complete = complete.union(ownerDocument,w);
         }
         
         if( getDerivationMethod()==RESTRICTION )    return complete;
@@ -155,7 +156,7 @@ public class ComplexTypeImpl extends AttributesHolder implements XSComplexType, 
         if(complete==null)  return base;
         if(base==null)      return complete;
         
-        return complete.union(ownerSchema,base);
+        return complete.union(ownerDocument,base);
     }
 
     private final int finalValue;

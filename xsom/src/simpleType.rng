@@ -141,7 +141,7 @@
       <!-- create the result object -->
       <cc:java>
       	result = new RestrictionSimpleTypeImpl(
-					$runtime.currentSchema, annotation, locator, fa, name, name==null, finalSet, baseType );
+					$runtime.document, annotation, locator, fa, name, name==null, finalSet, baseType );
       </cc:java>
       <zeroOrMore>
         <ref name="facet" cc:alias="facet"/>
@@ -190,7 +190,7 @@
       </optional>
     </element>
     <cc:java>
-    	result = new FacetImpl( $runtime.currentSchema,
+    	result = new FacetImpl( $runtime.document,
     		annotation, locator, fa, $localName/*name of the facet*/,
     		$runtime.createXmlString(value), $runtime.parseBoolean(fixed) );
     </cc:java>
@@ -237,7 +237,7 @@
     </element>
     <cc:java>
     	result = new ListSimpleTypeImpl(
-    		$runtime.currentSchema, annotation, locator, fa,
+    		$runtime.document, annotation, locator, fa,
     		name, name==null, finalSet, itemType );
     </cc:java>
   </define>
@@ -295,7 +295,7 @@
     </element>
     <cc:java>
 			result = new UnionSimpleTypeImpl(
-				$runtime.currentSchema, annotation, locator, fa, name, name==null, finalSet,
+				$runtime.document, annotation, locator, fa, name, name==null, finalSet,
 				(Ref.SimpleType[])members.toArray(new Ref.SimpleType[members.size()]) );
     </cc:java>
   </define>

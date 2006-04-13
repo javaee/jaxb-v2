@@ -23,6 +23,7 @@ import com.sun.xml.xsom.XSAttGroupDecl;
 import com.sun.xml.xsom.XSAttributeUse;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.impl.parser.DelayedRef;
+import com.sun.xml.xsom.impl.parser.SchemaDocumentImpl;
 import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSVisitor;
 import org.xml.sax.Locator;
@@ -31,14 +32,14 @@ import java.util.Iterator;
 
 public class AttGroupDeclImpl extends AttributesHolder implements XSAttGroupDecl
 {
-    public AttGroupDeclImpl( SchemaImpl _parent, AnnotationImpl _annon,
+    public AttGroupDeclImpl( SchemaDocumentImpl _parent, AnnotationImpl _annon,
         Locator _loc, ForeignAttributesImpl _fa, String _name, WildcardImpl _wildcard ) {
         
         this(_parent,_annon,_loc,_fa,_name);
         setWildcard(_wildcard);
     }
         
-    public AttGroupDeclImpl( SchemaImpl _parent, AnnotationImpl _annon, 
+    public AttGroupDeclImpl( SchemaDocumentImpl _parent, AnnotationImpl _annon,
         Locator _loc, ForeignAttributesImpl _fa, String _name ) {
             
         super(_parent,_annon,_loc,_fa,_name,false);

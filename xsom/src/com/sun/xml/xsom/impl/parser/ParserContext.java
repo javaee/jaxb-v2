@@ -1,12 +1,10 @@
 package com.sun.xml.xsom.impl.parser;
 
-import com.sun.xml.xsom.XSSchema;
 import com.sun.xml.xsom.XSSchemaSet;
 import com.sun.xml.xsom.impl.ElementDecl;
 import com.sun.xml.xsom.impl.SchemaImpl;
 import com.sun.xml.xsom.impl.SchemaSetImpl;
 import com.sun.xml.xsom.parser.AnnotationParserFactory;
-import com.sun.xml.xsom.parser.SchemaDocument;
 import com.sun.xml.xsom.parser.XMLParser;
 import com.sun.xml.xsom.parser.XSOMParser;
 import org.xml.sax.EntityResolver;
@@ -16,12 +14,9 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
 /**
@@ -48,94 +43,12 @@ public class ParserContext {
 
     /**
      * Documents that are parsed already. Used to avoid cyclic inclusion/double
-     * inclusion of schemas. Set of {@link DocumentIdentity}s.
+     * inclusion of schemas. Set of {@link SchemaDocumentImpl}s.
      *
-     * The actual data structure is map from {@link DocumentIdentity} to itself,
-     * so that we can access the {@link DocumentIdentity} itself.
+     * The actual data structure is map from {@link SchemaDocumentImpl} to itself,
+     * so that we can access the {@link SchemaDocumentImpl} itself.
      */
-    public final Map<DocumentIdentity,DocumentIdentity> parsedDocuments = new HashMap<DocumentIdentity,DocumentIdentity>();
-
-    protected static final class DocumentIdentity implements SchemaDocument
-    {
-        private final XSSchema schema;
-
-        /**
-         * URI of the schema document to be parsed.
-         */
-        private final String schemaDocumentURI;
-
-        /**
-         * {@link DocumentIdentity}s that are referenced from this document.
-         */
-        final Set<DocumentIdentity> references = new HashSet<DocumentIdentity>();
-
-        /**
-         * {@link DocumentIdentity}s that are referencing this document.
-         */
-        final Set<DocumentIdentity> referers = new HashSet<DocumentIdentity>();
-
-        protected DocumentIdentity(XSSchema schema, String _schemaDocumentURI) {
-            this.schema = schema;
-            this.schemaDocumentURI = _schemaDocumentURI;
-        }
-
-        public String getSystemId() {
-            return schemaDocumentURI;
-        }
-
-        public String getTargetNamespace() {
-            return schema.getTargetNamespace();
-        }
-
-        public XSSchema getSchema() {
-            return schema;
-        }
-
-        public Set<SchemaDocument> getReferencedDocuments() {
-            return Collections.<SchemaDocument>unmodifiableSet(references);
-        }
-
-        public Set<SchemaDocument> getIncludedDocuments() {
-            return getImportedDocuments(this.getTargetNamespace());
-        }
-
-        public Set<SchemaDocument> getImportedDocuments(String targetNamespace) {
-            if(targetNamespace==null)
-                throw new IllegalArgumentException();
-            Set<SchemaDocument> r = new HashSet<SchemaDocument>();
-            for (DocumentIdentity doc : references) {
-                if(doc.getTargetNamespace().equals(targetNamespace))
-                    r.add(doc);
-            }
-            return Collections.unmodifiableSet(r);
-        }
-
-        public boolean includes(SchemaDocument doc) {
-            if(!references.contains(doc))
-                return false;
-            return doc.getSchema()==schema;
-        }
-
-        public boolean imports(SchemaDocument doc) {
-            if(!references.contains(doc))
-                return false;
-            return doc.getSchema()!=schema;
-        }
-
-        public Set<SchemaDocument> getReferers() {
-            return Collections.<SchemaDocument>unmodifiableSet(referers);
-        }
-
-        public boolean equals(Object o) {
-            DocumentIdentity rhs = (DocumentIdentity) o;
-            if( !schemaDocumentURI.equals(rhs.schemaDocumentURI) )
-                return false;
-            return this.schema==rhs.schema;
-        }
-        public int hashCode() {
-            return schemaDocumentURI.hashCode()^this.schema.hashCode();
-        }
-    }
+    public final Map<SchemaDocumentImpl, SchemaDocumentImpl> parsedDocuments = new HashMap<SchemaDocumentImpl, SchemaDocumentImpl>();
 
 
     public ParserContext( XSOMParser owner, XMLParser parser ) {

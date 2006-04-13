@@ -19,30 +19,30 @@
  */
 package com.sun.xml.xsom.impl;
 
-import java.util.Iterator;
-import java.util.Set;
-import java.util.Collections;
-import java.util.Collection;
-import java.util.HashSet;
-
-import org.xml.sax.Locator;
-
 import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XSModelGroup;
 import com.sun.xml.xsom.XSModelGroupDecl;
 import com.sun.xml.xsom.XSTerm;
 import com.sun.xml.xsom.XSWildcard;
+import com.sun.xml.xsom.impl.parser.SchemaDocumentImpl;
 import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSTermFunction;
+import com.sun.xml.xsom.visitor.XSTermFunctionWithParam;
 import com.sun.xml.xsom.visitor.XSTermVisitor;
 import com.sun.xml.xsom.visitor.XSVisitor;
 import com.sun.xml.xsom.visitor.XSWildcardFunction;
 import com.sun.xml.xsom.visitor.XSWildcardVisitor;
-import com.sun.xml.xsom.visitor.XSTermFunctionWithParam;
+import org.xml.sax.Locator;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public abstract class WildcardImpl extends ComponentImpl implements XSWildcard, Ref.Term
 {
-    protected WildcardImpl( SchemaImpl owner, AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl _fa, int _mode ) {
+    protected WildcardImpl( SchemaDocumentImpl owner, AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl _fa, int _mode ) {
         super(owner,_annon,_loc,_fa);
         this.mode = _mode;
     }
@@ -51,7 +51,7 @@ public abstract class WildcardImpl extends ComponentImpl implements XSWildcard, 
     public int getMode() { return mode; }
     
     // compute the union
-    public WildcardImpl union( SchemaImpl owner, WildcardImpl rhs ) {
+    public WildcardImpl union( SchemaDocumentImpl owner, WildcardImpl rhs ) {
         if(this instanceof Any || rhs instanceof Any)
             return new Any(owner,null,null,null,mode);
         
@@ -89,7 +89,7 @@ public abstract class WildcardImpl extends ComponentImpl implements XSWildcard, 
     
     
     public final static class Any extends WildcardImpl implements XSWildcard.Any {
-        public Any( SchemaImpl owner, AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl _fa, int _mode ) {
+        public Any( SchemaDocumentImpl owner, AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl _fa, int _mode ) {
             super(owner,_annon,_loc,_fa,_mode);
         }
         
@@ -105,7 +105,7 @@ public abstract class WildcardImpl extends ComponentImpl implements XSWildcard, 
     }
     
     public final static class Other extends WildcardImpl implements XSWildcard.Other {
-        public Other( SchemaImpl owner, AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl _fa,
+        public Other( SchemaDocumentImpl owner, AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl _fa,
                     String otherNamespace, int _mode ) {
             super(owner,_annon,_loc,_fa,_mode);
             this.otherNamespace = otherNamespace;
@@ -128,7 +128,7 @@ public abstract class WildcardImpl extends ComponentImpl implements XSWildcard, 
     }
     
     public final static class Finite extends WildcardImpl implements XSWildcard.Union {
-        public Finite( SchemaImpl owner, AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl _fa,
+        public Finite( SchemaDocumentImpl owner, AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl _fa,
                     Set<String> ns, int _mode ) {
             super(owner,_annon,_loc,_fa,_mode);
             names = ns;

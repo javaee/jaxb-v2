@@ -19,18 +19,17 @@
  */
 package com.sun.xml.xsom.impl;
 
-import org.relaxng.datatype.ValidationContext;
-import org.xml.sax.Locator;
-
 import com.sun.xml.xsom.XSAttributeDecl;
 import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XmlString;
+import com.sun.xml.xsom.impl.parser.SchemaDocumentImpl;
 import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSVisitor;
+import org.xml.sax.Locator;
 
 public class AttributeDeclImpl extends DeclarationImpl implements XSAttributeDecl, Ref.Attribute
 {
-    public AttributeDeclImpl( SchemaImpl owner,
+    public AttributeDeclImpl( SchemaDocumentImpl owner,
         String _targetNamespace, String _name,
         AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl _fa, boolean _anonymous,
         XmlString _defValue, XmlString _fixedValue,

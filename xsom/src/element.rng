@@ -47,7 +47,7 @@
         
         ElementDecl ed = new ElementDecl(
             $runtime,
-            $runtime.currentSchema,
+            $runtime.document,
             annotation,
             locator,
             fa,
@@ -162,7 +162,7 @@
       private DelayedRef.IdentityConstraint refer = null;
 
       private IdentityConstraintImpl makeResult() {
-        return new IdentityConstraintImpl($runtime.currentSchema,ann,$runtime.copyLocator(),fa,
+        return new IdentityConstraintImpl($runtime.document,ann,$runtime.copyLocator(),fa,
           category,name,selector,fields,refer);
       }
     </cc:java-body>
@@ -214,7 +214,7 @@
     cc:return-type="XPathImpl" cc:return-value="makeResult()">
     <cc:java-body>
       private XPathImpl makeResult() {
-        return new XPathImpl($runtime.currentSchema,ann,$runtime.copyLocator(),fa,
+        return new XPathImpl($runtime.document,ann,$runtime.copyLocator(),fa,
           $runtime.createXmlString(xpath));
       }
     </cc:java-body>

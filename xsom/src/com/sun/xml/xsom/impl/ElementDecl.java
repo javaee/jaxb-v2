@@ -20,30 +20,30 @@
 package com.sun.xml.xsom.impl;
 
 import com.sun.xml.xsom.XSElementDecl;
+import com.sun.xml.xsom.XSIdentityConstraint;
 import com.sun.xml.xsom.XSModelGroup;
 import com.sun.xml.xsom.XSModelGroupDecl;
 import com.sun.xml.xsom.XSTerm;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSWildcard;
-import com.sun.xml.xsom.XSIdentityConstraint;
 import com.sun.xml.xsom.XmlString;
 import com.sun.xml.xsom.impl.parser.PatcherManager;
+import com.sun.xml.xsom.impl.parser.SchemaDocumentImpl;
 import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSTermFunction;
+import com.sun.xml.xsom.visitor.XSTermFunctionWithParam;
 import com.sun.xml.xsom.visitor.XSTermVisitor;
 import com.sun.xml.xsom.visitor.XSVisitor;
-import com.sun.xml.xsom.visitor.XSTermFunctionWithParam;
 import org.xml.sax.Locator;
-import org.relaxng.datatype.ValidationContext;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.List;
+import java.util.Set;
 
 public class ElementDecl extends DeclarationImpl implements XSElementDecl, Ref.Term
 {
-    public ElementDecl( PatcherManager reader, SchemaImpl owner,
+    public ElementDecl( PatcherManager reader, SchemaDocumentImpl owner,
         AnnotationImpl _annon, Locator _loc, ForeignAttributesImpl fa,
         String _tns, String _name, boolean _anonymous,
         
