@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.58 2006-04-11 01:38:25 kohsuke Exp $
+       $Id: build.xml,v 1.59 2006-04-13 21:59:42 jitu Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -732,30 +732,48 @@ Class-Path: ${manifest.classpath}
 
       <!-- The zip distribution directory -->
       <property name="zip.release.dir"    value="${basedir}/zip-dist"/>
+
+      <property name="zip.release"    value="1"/>
  
       <!-- make build and output directories -->
       <mkdir dir="${zip.build.dir}"/>
       <mkdir dir="${zip.release.dir}"/>
-      
-      <property name="zip.top" value="${zip.build.dir}/jaxb${release.impl.version}" />
 
       <!-- copy files into the right directory structure -->
-      <parallel>
-        <copy tofile="${zip.top}/bin/xjc.bat"       file="${basedir}/tools/bin/xjc.zip.bat" />
-        <copy tofile="${zip.top}/bin/xjc.sh"        file="${basedir}/tools/bin/xjc.zip.sh" />
-        <copy tofile="${zip.top}/bin/schemagen.bat" file="${basedir}/tools/bin/schemagen.zip.bat" />
-        <copy tofile="${zip.top}/bin/schemagen.sh"  file="${basedir}/tools/bin/schemagen.zip.sh" />
-        <copy todir="${zip.top}/lib">
-          <fileset dir="${jaxb.dist}/lib">
-            <exclude name="jaxb-api-doc.zip"/>
-            <exclude name="jaxb-api-src.zip"/>
-            <!-- jsr173_1.0_api.jar and activation.jar are excluded by the wspack target -->
+        <copy todir="${zip.build.dir}" overwrite="yes">
+          <fileset dir="${basedir}/zip">
+            <include name="filelist.txt"/>
+            <include name="version"/>
           </fileset>
         </copy>
-      </parallel>
+        <copy tofile="${zip.build.dir}/jaxb2/bin/xjc.bat"       file="${basedir}/tools/bin/xjc.zip.bat" />
+        <copy tofile="${zip.build.dir}/jaxb2/bin/schemagen.bat" file="${basedir}/tools/bin/schemagen.zip.bat" />
+        <copy todir="${zip.build.dir}/jaxb2/lib">
+          <fileset dir="${jaxb.dist}/lib">
+            <include name="jaxb-api.jar"/>
+            <include name="jaxb-impl.jar"/>
+            <include name="jaxb-xjc.jar"/>
+            <include name="jaxb1-impl.jar"/>
+          </fileset>
+        </copy>
+
+      <!-- replace parameters in version file  -->
+      <replace file="${zip.build.dir}/version" value="${release.impl.version}">
+        <replacetoken>@jaxb.version@</replacetoken>
+      </replace>
+      <!-- replace date stamp... 1st specify correct format  -->
+      <tstamp>
+        <format property="pkg.datestamp" pattern="yyyyMMdd"/>
+      </tstamp>
+      <replace file="${zip.build.dir}/version" value="${pkg.datestamp}">
+        <replacetoken>@datestamp@</replacetoken>
+      </replace>
+      <replace file="${zip.build.dir}/version" value="${zip.release}">
+        <replacetoken>@zip.release@</replacetoken>
+      </replace>
 
       <!-- make zip file -->
-      <zip destfile="${zip.release.dir}/JAXB-${release.impl.version}.zip" basedir="${zip.build.dir}" />
+      <zip destfile="${zip.release.dir}/jaxb2.zip" basedir="${zip.build.dir}" />
     </target>
     
     
