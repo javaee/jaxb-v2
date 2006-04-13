@@ -65,6 +65,7 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
     
     /**
      * URI that identifies the schema document.
+     * Maybe null if the system ID is not available.
      */
     private String documentSystemId;
     
@@ -135,31 +136,33 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
      *      Otherwise it returns null, in which case import/include should be abandoned.
      */
     private InputSource resolveRelativeURL( String namespaceURI, String relativeUri ) throws SAXException {
-        String baseUri = getLocator().getSystemId();
-        if(baseUri==null)
-            // if the base URI is not available, the document system ID is
-            // better than nothing.
-            baseUri=documentSystemId;
+        try {
+            String baseUri = getLocator().getSystemId();
+            if(baseUri==null)
+                // if the base URI is not available, the document system ID is
+                // better than nothing.
+                baseUri=documentSystemId;
 
-        String systemId = null;
-        if(relativeUri!=null)
-            systemId = Uri.resolve(baseUri,relativeUri);
+            String systemId = null;
+            if(relativeUri!=null)
+                systemId = Uri.resolve(baseUri,relativeUri);
 
-        EntityResolver er = parser.getEntityResolver();
-        if(er!=null) {
-            try {
+            EntityResolver er = parser.getEntityResolver();
+            if(er!=null) {
                 InputSource is = er.resolveEntity(namespaceURI,systemId);
                 if(is!=null)
                     return is;
-            } catch (IOException e) {
-                throw new SAXException(e);
             }
-        }
 
-        if(systemId!=null)
-            return new InputSource(systemId);
-        else
+            if(systemId!=null)
+                return new InputSource(systemId);
+            else
+                return null;
+        } catch (IOException e) {
+            SAXParseException se = new SAXParseException(e.getMessage(),getLocator(),e);
+            parser.errorHandler.error(se);
             return null;
+        }
     }
     
     /** Includes the specified schema. */

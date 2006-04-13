@@ -33,8 +33,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.sun.xml.xsom.impl.util;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class Uri {
@@ -151,17 +151,20 @@ public class Uri {
     return true;
   }
 
-  public static String resolve(String baseUri, String uriReference) {
-    if (!isAbsolute(uriReference) && baseUri != null && isAbsolute(baseUri)) {
-      try {
-        return new URL(new URL(baseUri), uriReference).toString();
-      }
-      catch (MalformedURLException e) { }
-    }
-    return uriReference;
-  }
+    public static String resolve(String baseUri, String uriReference) throws IOException {
+        if (isAbsolute(uriReference))
+            return uriReference;
 
-  public static boolean hasFragmentId(String uri) {
+        if(baseUri==null)
+            throw new IOException("Unable to resolve relative URI "+uriReference+" without a base URI");
+
+        if(!isAbsolute(baseUri))
+            throw new IOException("Unable to resolve relative URI "+uriReference+" because base URI is not absolute: "+baseUri);
+
+        return new URL(new URL(baseUri), uriReference).toString();
+    }
+
+    public static boolean hasFragmentId(String uri) {
     return uri.indexOf('#') >= 0;
   }
 
