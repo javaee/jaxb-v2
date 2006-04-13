@@ -1,7 +1,7 @@
 import com.sun.xml.xsom.XSSchemaSet;
 import com.sun.xml.xsom.impl.util.SchemaWriter;
-import com.sun.xml.xsom.parser.XSOMParser;
 import com.sun.xml.xsom.parser.SchemaDocument;
+import com.sun.xml.xsom.parser.XSOMParser;
 import com.sun.xml.xsom.util.DomAnnotationParserFactory;
 import org.xml.sax.SAXException;
 
