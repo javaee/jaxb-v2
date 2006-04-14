@@ -34,5 +34,4 @@ public class AnnotationImpl implements XSAnnotation
         this.annotation = o;
         this.locator = _loc;
     }
-    xxx
 }
