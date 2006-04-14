@@ -7,8 +7,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.transform.Source;
 import javax.xml.transform.Result;
+import javax.xml.transform.Source;
 
 import com.sun.istack.NotNull;
 
@@ -24,8 +24,7 @@ import org.xml.sax.ContentHandler;
  * They are reentrant.
  *
  * <p>
- * Every marshalling/unmarshalling operation requires a {@link BridgeContext},
- * and a
+ * All the marshal operation generates fragments.
  *
  * <p>
  * <b>Subject to change without notice</b>.
