@@ -180,7 +180,7 @@ public class XJCMojo extends AbstractMojo
         }
 
         // Create the destination path if it does not exist.
-        if (!generateDirectory.exists())
+        if (generateDirectory != null && !generateDirectory.exists())
         {
             generateDirectory.mkdirs();
         }
@@ -276,10 +276,13 @@ public class XJCMojo extends AbstractMojo
         // Configure production artifacts to determine generation
         FileSet products = new FileSet();
         StringBuilder fullPath = new StringBuilder(256);
-        fullPath
-            .append(generateDirectory)
-            .append(File.separator)
+
+        fullPath.append(generateDirectory);
+        if (generatePackage != null)
+        {
+            fullPath.append(File.separator)
             .append(generatePackage.replace('.', File.separatorChar));
+        }
         products.setDir(new File(fullPath.toString()));
         products.addFilename(createFilenameSelector("*.java"));
         xjc2TaskAdapter.addConfiguredProduces(products);
