@@ -301,7 +301,7 @@ public final class ModelLoader {
             Element root = dom.getDocumentElement();
             // TODO: it somehow doesn't feel right to do a validation in the Driver class.
             // think about moving it to somewhere else.
-            if (!root.getNamespaceURI().equals(Const.JAXB_NSURI)
+            if (!fixNull(root.getNamespaceURI()).equals(Const.JAXB_NSURI)
                     || !root.getLocalName().equals("bindings"))
                 errorReceiver.error(new SAXParseException(Messages.format(Messages.ERR_NOT_A_BINDING_FILE,
                         root.getNamespaceURI(),
@@ -315,12 +315,17 @@ public final class ModelLoader {
         
         return forest;
     }
-    
+
+    private String fixNull(String s) {
+        if(s==null) return "";
+        else        return s;
+    }
+
     /**
      * Parses a set of XML Schema files into an annotated grammar.
      */
     public XSSchemaSet loadXMLSchema() throws SAXException {
-        
+
         if( opt.strictCheck && !SchemaConstraintChecker.check(opt.getGrammars(),errorReceiver,opt.entityResolver)) {
             // schema error. error should have been reported
             return null;
