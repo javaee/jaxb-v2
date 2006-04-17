@@ -133,7 +133,7 @@ public abstract class Loader {
             r.append("<{").append(n.getNamespaceURI()).append('}').append(n.getLocalPart()).append('>');
         }
         if(r.length()==0) {
-            return "(unknown)";
+            return "(none)";
         }
 
         return r.toString();
