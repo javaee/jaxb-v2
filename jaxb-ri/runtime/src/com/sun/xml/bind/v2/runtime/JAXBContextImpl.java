@@ -108,7 +108,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.64 $
+ * @version $Revision: 1.65 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -782,7 +782,13 @@ public final class JAXBContextImpl extends JAXBRIContext {
     }
 
     public String toString() {
-        return Which.which(getClass())+" Build-Id: "+getBuildId();
+        StringBuilder buf = new StringBuilder(Which.which(getClass()) + " Build-Id: " + getBuildId());
+        buf.append("\nClasses known to this context:\n");
+        for (Class key : beanInfoMap.keySet()) {
+            buf.append("  ").append(key.getName()).append('\n');
+        }
+
+        return buf.toString();
     }
 
     /**
