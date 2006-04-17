@@ -9,16 +9,16 @@
 
 
 <p>
-	<h2>Launching xjc</h2>
-	<p>The binding compiler can be launched using the appropriate 
-	   <code>xjc</code> shell script in the <code>bin</code> directory 
-	   for your platform.  We also provide an Ant task to run the binding
-	   complier - see the instructions for <a href="xjcTask.html">
-	   using xjc with Ant</a>.</p>
+  <h2>Launching xjc</h2>
+  <p>The binding compiler can be launched using the appropriate 
+     <code>xjc</code> shell script in the <code>bin</code> directory 
+     for your platform.  We also provide an Ant task to run the binding
+     complier - see the instructions for <a href="xjcTask.html">
+     using xjc with Ant</a>.</p>
 
-	<blockquote>
-	  <h4>For Solaris/Linux</h4>
-	    <blockquote>
+  <blockquote>
+    <h4>For Solaris/Linux</h4>
+      <blockquote>
           <ol>
             <!--li><tt>% export PATH=&lt;your JWSDP@@JWSDP_VERSION@@ installation directory>/jaxb/bin:$JWSDP_HOME/jwsdp-shared/bin:$PATH</tt></li-->
             <li><tt>% /path/to/jaxb/bin/xjc.sh -help</tt></li>
@@ -26,32 +26,32 @@
         </blockquote>
       </blockquote>
 
-	<blockquote>
-	  <h4>For WindowsNT/2000/XP</h4>
-	    <blockquote>
-	      <ol>
+  <blockquote>
+    <h4>For WindowsNT/2000/XP</h4>
+      <blockquote>
+        <ol>
             <!--li><tt>&gt; set PATH=&lt;your JWSDP@@JWSDP_VERSION@@ installation directory>\jaxb\bin;%JWSDP_HOME%\jwsdp-shared\bin;%PATH%</tt></li-->
-	        <li><tt>&gt; c:\path\to\jaxb\bin\xjc.bat -help</tt></li>
+          <li><tt>&gt; c:\path\to\jaxb\bin\xjc.bat -help</tt></li>
           </ol>
         </blockquote>
       </blockquote>
 
-	<!-- XJC_OPTS will not be advertized as it won't be available in XJC in mustang
-	<blockquote>
-	  <h4>Environment Variables</h4>
-	    <blockquote>
-	      <ul>
-	        <li>XJC_OPTS - command-line arguments that should be passed to the JVM. For 
-	            example, you can define system properties or set the maximum Java heap 
-	            size here.  If you are using the <a href="xjcTask.html">xjc ant task</a>,
-	            you would specify these options via the ANT_OPTS evironment variable.</li>
-	      </ul>
-	    </blockquote>
-	</blockquote-->
+  <!-- XJC_OPTS will not be advertized as it won't be available in XJC in mustang
+  <blockquote>
+    <h4>Environment Variables</h4>
+      <blockquote>
+        <ul>
+          <li>XJC_OPTS - command-line arguments that should be passed to the JVM. For 
+              example, you can define system properties or set the maximum Java heap 
+              size here.  If you are using the <a href="xjcTask.html">xjc ant task</a>,
+              you would specify these options via the ANT_OPTS evironment variable.</li>
+        </ul>
+      </blockquote>
+  </blockquote-->
 
-	<blockquote>
-	  <h4>Output</h4>
-	  <blockquote>
+  <blockquote>
+    <h4>Output</h4>
+    <blockquote>
         <pre>
 Usage: xjc [-options ...] &lt;schema file/URL/dir> ... [-b &lt;bindinfo>] ...
 Options:
@@ -67,6 +67,7 @@ Options:
                         support TR9401, XCatalog, and OASIS XML Catalog format.
   -readOnly          :  generated files will be in read-only mode
   -npa               :  suppress generation of package level annotations (**/package-info.java)
+  -no-header         :  suppress generation of a file header with timestamp
   -xmlschema         :  treat input as W3C XML Schema (default)
   -relaxng           :  treat input as RELAX NG (experimental,unsupported)
   -relaxng-compact   :  treat input as RELAX NG compact syntax (experimental,unsupported)
@@ -76,22 +77,22 @@ Options:
   -quiet             :  suppress compiler output
   -help              :  display this help message
   -version           :  display version information
-	    </pre>
-	  </blockquote>
-	</blockquote>
-	  
-	<!--blockquote>
-	  <h4>Non-standard Commandline Options</h4>
-	  <blockquote>
-	    <p>These options are non-standard and may change without notice.
+      </pre>
+    </blockquote>
+  </blockquote>
+    
+  <!--blockquote>
+    <h4>Non-standard Commandline Options</h4>
+    <blockquote>
+      <p>These options are non-standard and may change without notice.
         <pre>
   -Xlocator          :  enable source location support for generated code
   -Xsync-methods     :  generate accessor methods with the 'synchronized' keyword
   -Xinject-code      :  inject specified Java code fragments into the generated code
-	    </pre>
-	  </blockquote>
-	</blockquote-->
-	  
+      </pre>
+    </blockquote>
+  </blockquote-->
+    
     <blockquote>
       <h4>Execute the <code>jaxb-xjc.jar</code> JAR File</h4>
       <blockquote>
@@ -109,10 +110,10 @@ Options:
           This is equivalent of running "xjc.sh" or "xjc.bat", and it allows you to set the JVM parameters.
         </p>
       </blockquote>
-	</blockquote>
-	
-	<a name="switches"></a>
-	<h2>Summary of Command Line Options</h2>
+  </blockquote>
+  
+  <a name="switches"></a>
+  <h2>Summary of Command Line Options</h2>
   <dl class="cli-options">
     <dt><b>-nv</b></dt>
     <dd>By default, the XJC binding compiler performs strict validation of the source schema before 
@@ -135,8 +136,8 @@ Options:
         that contains customizations for multiple schemas or you can break the
         customizations into multiple bindings files:<p>
         <blockquote>
-        	<tt>xjc schema1.xsd schema2.xsd schema3.xsd -b bindings123.xjb<br>
-        	    xjc schema1.xsd schema2.xsd schema3.xsd -b bindings1.xjb -b bindings2.xjb -b bindings3.xjb</tt>
+          <tt>xjc schema1.xsd schema2.xsd schema3.xsd -b bindings123.xjb<br>
+              xjc schema1.xsd schema2.xsd schema3.xsd -b bindings1.xjb -b bindings2.xjb -b bindings3.xjb</tt>
         </blockquote>
         In addition, the ordering of the schema files and binding files on the
         command line does not matter.
@@ -150,67 +151,67 @@ Options:
     <dd>Specifying a target package via this command-line option overrides
         any binding customization for package name and the default package
         name algorithm defined in the specification.</dd>
-		<dt><b>-httpproxy &lt;proxy></b></dt>
-		<dd>Specify the HTTP/HTTPS proxy. The format is [user[:password]@]proxyHost[:proxyPort].  The old <tt>-host</tt>
-		    and <tt>-port</tt> are still supported by the RI for backwards compatibility, but they have been deprecated.</dd>
-		<dt><b>-classpath &lt;arg&gt;</b></dt>
-		<dd>Specify where to find client application class files 
-		    used by the <tt>&lt;jxb:javaType&gt;</tt> and <tt>&lt;xjc:superClass&gt;</tt>
-		    customizations.</dd>
-		<dt><b>-catalog &lt;file&gt;</b></dt>
-		<dd>Specify catalog files to resolve external entity references.  Supports TR9401, 
-		    XCatalog, and OASIS XML Catalog format.  Please read the <a href="catalog.html">
-		    XML Entity and URI Resolvers</a> document or the <tt>catalog-resolver</tt> sample application.</dd>
-	    <dt><b>-readOnly</b></dt>
-	    <dd>By default, the XJC binding compiler does not write-protect the Java source files it generates.
-	        Use this option to force the XJC binding compiler to mark the generated Java sources read-only.</dd>
-		<dt><b>-npa</b></dt>
-		<dd>Supress the generation of package level annotations into **/package-info.java.  Using this
-		    switch causes the generated code to internalize those annotations into the other generated
-		    classes.</dd>
-		<dt><b>-xmlschema</b></dt>
-		<dd>treat input schemas as W3C XML Schema (default).  If you do not specify this
-		    switch, your input schemas will be treated as W3C XML Schema.</dd>
-		<dt><b>-relaxng</b></dt>
-		<dd>Treat input schemas as RELAX NG (experimental, unsupported).  Support for
-		    RELAX NG schemas is provided as a <a href="vendor.html">JAXB Vendor Extension</a>.
-		    </dd>
-		<dt><b>-relaxng-compact</b></dt>
-		<dd>Treat input schemas as RELAX NG compact syntax(experimental, unsupported).  Support for
-		    RELAX NG schemas is provided as a <a href="vendor.html">JAXB Vendor Extension</a>.
-		    </dd>
-		<dt><b>-dtd</b></dt>
-		<dd>Treat input schemas as XML DTD (experimental, unsupported).  Support for 
-		    RELAX NG schemas is provided as a <a href="vendor.html">JAXB Vendor Extension</a>.</dd>
-		<dt><b>-wsdl</b></dt>
-		<dd>Treat input as WSDL and compile schemas inside it (experimental,unsupported).</a></dd>
-		<dt><b>-quiet</b></dt>
-		<dd>Suppress compiler output, such as progress information and warnings.</a>.
-		    </dd>
-		<dt><b>-verbose</b></dt>
-		<dd>Be extra verbose, such as printing informational messages or displaying stack traces upon some errors.</a>.
-		    </dd>
-		<dt><b>-help</b></dt>
-		<dd>Display a brief summary of the compiler switches.</dd>
-		<dt><b>-version</b></dt>
-		<dd>Display the compiler version information.</dd>
-	    <dt><b>&lt;schema file/URL/dir></b></dt>
-	    <dd>Specify one or more schema files to compile.  If you specify a directory, then xjc
-	        will scan it for all schema files and compile them.</dd>
+    <dt><b>-httpproxy &lt;proxy></b></dt>
+    <dd>Specify the HTTP/HTTPS proxy. The format is [user[:password]@]proxyHost[:proxyPort].  The old <tt>-host</tt>
+        and <tt>-port</tt> are still supported by the RI for backwards compatibility, but they have been deprecated.</dd>
+    <dt><b>-classpath &lt;arg&gt;</b></dt>
+    <dd>Specify where to find client application class files 
+        used by the <tt>&lt;jxb:javaType&gt;</tt> and <tt>&lt;xjc:superClass&gt;</tt>
+        customizations.</dd>
+    <dt><b>-catalog &lt;file&gt;</b></dt>
+    <dd>Specify catalog files to resolve external entity references.  Supports TR9401, 
+        XCatalog, and OASIS XML Catalog format.  Please read the <a href="catalog.html">
+        XML Entity and URI Resolvers</a> document or the <tt>catalog-resolver</tt> sample application.</dd>
+      <dt><b>-readOnly</b></dt>
+      <dd>By default, the XJC binding compiler does not write-protect the Java source files it generates.
+          Use this option to force the XJC binding compiler to mark the generated Java sources read-only.</dd>
+    <dt><b>-npa</b></dt>
+    <dd>Supress the generation of package level annotations into **/package-info.java.  Using this
+        switch causes the generated code to internalize those annotations into the other generated
+        classes.</dd>
+    <dt><b>-xmlschema</b></dt>
+    <dd>treat input schemas as W3C XML Schema (default).  If you do not specify this
+        switch, your input schemas will be treated as W3C XML Schema.</dd>
+    <dt><b>-relaxng</b></dt>
+    <dd>Treat input schemas as RELAX NG (experimental, unsupported).  Support for
+        RELAX NG schemas is provided as a <a href="vendor.html">JAXB Vendor Extension</a>.
+        </dd>
+    <dt><b>-relaxng-compact</b></dt>
+    <dd>Treat input schemas as RELAX NG compact syntax(experimental, unsupported).  Support for
+        RELAX NG schemas is provided as a <a href="vendor.html">JAXB Vendor Extension</a>.
+        </dd>
+    <dt><b>-dtd</b></dt>
+    <dd>Treat input schemas as XML DTD (experimental, unsupported).  Support for 
+        RELAX NG schemas is provided as a <a href="vendor.html">JAXB Vendor Extension</a>.</dd>
+    <dt><b>-wsdl</b></dt>
+    <dd>Treat input as WSDL and compile schemas inside it (experimental,unsupported).</a></dd>
+    <dt><b>-quiet</b></dt>
+    <dd>Suppress compiler output, such as progress information and warnings.</a>.
+        </dd>
+    <dt><b>-verbose</b></dt>
+    <dd>Be extra verbose, such as printing informational messages or displaying stack traces upon some errors.</a>.
+        </dd>
+    <dt><b>-help</b></dt>
+    <dd>Display a brief summary of the compiler switches.</dd>
+    <dt><b>-version</b></dt>
+    <dd>Display the compiler version information.</dd>
+      <dt><b>&lt;schema file/URL/dir></b></dt>
+      <dd>Specify one or more schema files to compile.  If you specify a directory, then xjc
+          will scan it for all schema files and compile them.</dd>
     </dl>
 
-	<!--h3>Summary of Non-Standard Command Line Options</h3>
-	<blockquote>
-	  <dl>
-	    <dt><b>-Xlocator</b></dt>
-	    <dd>This feature causes the generated code to expose SAX Locator information
-	        about the source XML in the Java bean instances after unmarshalling.</dd>
-	    <dt><b>-Xsync-methods</b></dt>
-	    <dd>This feature causes all of the generated method signatures to include the
-	        synchronized keyword.</dd>
-	    <dt><b>-Xinject-code</b></dt>
-	    <dd>This feature causes the schema compiler to inject user code into the generated
-	        Java beans.</dd>
+  <!--h3>Summary of Non-Standard Command Line Options</h3>
+  <blockquote>
+    <dl>
+      <dt><b>-Xlocator</b></dt>
+      <dd>This feature causes the generated code to expose SAX Locator information
+          about the source XML in the Java bean instances after unmarshalling.</dd>
+      <dt><b>-Xsync-methods</b></dt>
+      <dd>This feature causes all of the generated method signatures to include the
+          synchronized keyword.</dd>
+      <dt><b>-Xinject-code</b></dt>
+      <dd>This feature causes the schema compiler to inject user code into the generated
+          Java beans.</dd>
       </dl>
     </blockquote-->
 
@@ -272,10 +273,10 @@ Options:
       XJC produces a set of packages containing Java source files and also <tt>jaxb.properties</tt> files, depending on the binding options you used for compilation. When generated, <tt>jaxb.properties</tt> files must be kept with the compiled source code and made available on the runtime classpath of your client applications:
 
     
-	<hr/>
-	<div class="footer">
-	  $Revision: 1.6 $<br/>
-	  $Date: 2006-03-14 17:45:34 $
-	</div>
+  <hr/>
+  <div class="footer">
+    $Revision: 1.7 $<br/>
+    $Date: 2006-04-17 22:25:27 $
+  </div>
   </body>
 </html>
