@@ -19,20 +19,15 @@
  */
 package com.sun.tools.xjc;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Iterator;
 
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.writer.FileCodeWriter;
-import com.sun.codemodel.writer.PrologCodeWriter;
 import com.sun.codemodel.writer.ZipCodeWriter;
 import com.sun.istack.Nullable;
 import com.sun.tools.xjc.generator.bean.BeanGenerator;
@@ -342,9 +337,9 @@ public class Driver {
                             else
                                 os = new FileOutputStream(opt.targetDir);
 
-                            cw = createCodeWriter(new ZipCodeWriter(os));
+                            cw = opt.createCodeWriter(new ZipCodeWriter(os));
                         } else
-                            cw = createCodeWriter(opt.targetDir,opt.readOnly);
+                            cw = opt.createCodeWriter();
 
                         if( !opt.quiet ) {
                             cw = new ProgressCodeWriter(cw,listener);
@@ -483,33 +478,5 @@ public class Driver {
                 System.out.println(p.getUsage());
             }
         }
-    }
-    
-    
-    /**
-     * Creates a configured CodeWriter that produces files into the specified directory.
-     */
-    public static CodeWriter createCodeWriter(File targetDir, boolean readonly ) throws IOException {
-        return createCodeWriter(new FileCodeWriter( targetDir, readonly ));
-    }
-
-    /**
-     * Creates a configured CodeWriter that produces files into the specified directory.
-     */
-    public static CodeWriter createCodeWriter( CodeWriter core ) {
-
-        // generate format syntax: <date> 'at' <time>
-        String format =
-            Messages.format(Messages.DATE_FORMAT)
-                + " '"
-                + Messages.format(Messages.AT)
-                + "' "
-                + Messages.format(Messages.TIME_FORMAT);
-        SimpleDateFormat dateFormat = new SimpleDateFormat(format);
-    
-        return new PrologCodeWriter( core,
-                Messages.format(
-                    Messages.FILE_PROLOG_COMMENT,
-                    dateFormat.format(new Date())) );
     }
 }
