@@ -28,7 +28,9 @@ import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +38,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.sun.codemodel.CodeWriter;
+import com.sun.codemodel.writer.FileCodeWriter;
+import com.sun.codemodel.writer.PrologCodeWriter;
 import com.sun.org.apache.xml.internal.resolver.CatalogManager;
 import com.sun.org.apache.xml.internal.resolver.tools.CatalogResolver;
 import com.sun.tools.xjc.api.ClassNameAllocator;
@@ -708,7 +713,33 @@ public class Options
         return Language.XMLSCHEMA;
     }
 
-    
+    /**
+     * Creates a configured CodeWriter that produces files into the specified directory.
+     */
+    public CodeWriter createCodeWriter() throws IOException {
+        return createCodeWriter(new FileCodeWriter( targetDir, readOnly ));
+    }
+
+    /**
+     * Creates a configured CodeWriter that produces files into the specified directory.
+     */
+    public CodeWriter createCodeWriter( CodeWriter core ) {
+
+        // generate format syntax: <date> 'at' <time>
+        String format =
+            Messages.format(Messages.DATE_FORMAT)
+                + " '"
+                + Messages.format(Messages.AT)
+                + "' "
+                + Messages.format(Messages.TIME_FORMAT);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+
+        return new PrologCodeWriter( core,
+                Messages.format(
+                    Messages.FILE_PROLOG_COMMENT,
+                    dateFormat.format(new Date())) );
+    }
+
     
     
     

@@ -22,8 +22,8 @@ package com.sun.tools.xjc;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.StringWriter;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -341,18 +341,16 @@ public class XJC2Task extends Task {
                     
                     try {
                         // this method is available only on JDK1.4
-                        Constructor c = Thread.class.getConstructor(new Class[]{
+                        Constructor c = Thread.class.getConstructor(
                             ThreadGroup.class,
                             Runnable.class,
                             String.class,
-                            long.class
-                        });
-                        t = (Thread)c.newInstance(new Object[]{
-                            Thread.currentThread().getThreadGroup(),
-                            job,
-                            Thread.currentThread().getName()+":XJC",
-                            stackSize
-                        });
+                            long.class);
+                        t = (Thread)c.newInstance(
+                                Thread.currentThread().getThreadGroup(),
+                                job,
+                                Thread.currentThread().getName()+":XJC",
+                                stackSize);
                     } catch( Throwable err ) {
                         // if fail, fall back.
                         log( "Unable to set the stack size. Use JDK1.4 or above", Project.MSG_WARN );
@@ -454,8 +452,7 @@ public class XJC2Task extends Task {
 
             log( "Writing output to "+options.targetDir, Project.MSG_INFO );
             
-            model.codeModel.build( new AntProgressCodeWriter(
-                Driver.createCodeWriter( options.targetDir, options.readOnly )));
+            model.codeModel.build( new AntProgressCodeWriter(options.createCodeWriter()));
         } catch( IOException e ) {
             throw new BuildException("unable to write files: "+e.getMessage(),e);
         }
