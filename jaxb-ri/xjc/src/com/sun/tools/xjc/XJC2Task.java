@@ -252,6 +252,13 @@ public class XJC2Task extends Task {
     }
 
     /**
+     * Controls whether the file header comment is generated or not. 
+     */
+    public void setHeader( boolean flg ) {
+        this.options.noFileHeader = !flg;
+    }
+
+    /**
      * @see Options#runtime14
      */
     public void setXexplicitAnnotation( boolean flg) {

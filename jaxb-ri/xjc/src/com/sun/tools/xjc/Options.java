@@ -73,6 +73,9 @@ public class Options
 
     /** If the -readOnly option is specified. */
     public boolean readOnly;
+
+    /** No file header comment (to be more friendly with diff.) */
+    public boolean noFileHeader;
     
     /**
      * Check the source schemas with extra scrutiny.
@@ -454,6 +457,10 @@ public class Options
             packageLevelAnnotations = false;
             return 1;
         }
+        if( args[i].equals("-no-header")) {
+            noFileHeader = true;
+            return 1;
+        }
         if (args[i].equals("-verbose")) {
             verbose = true;
             return 1;
@@ -724,6 +731,8 @@ public class Options
      * Creates a configured CodeWriter that produces files into the specified directory.
      */
     public CodeWriter createCodeWriter( CodeWriter core ) {
+        if(noFileHeader)
+            return core;
 
         // generate format syntax: <date> 'at' <time>
         String format =
