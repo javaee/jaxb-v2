@@ -206,7 +206,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                     return Integer.toString(v);
                 }
             },
-            new StringImpl<Calendar>(Calendar.class, createXS("dateTime")) {
+            new StringImpl<Calendar>(Calendar.class, DatatypeConstants.DATETIME) {
                 public Calendar parse(CharSequence text) {
                     return DatatypeConverterImpl._parseDateTime(text.toString());
                 }
@@ -214,7 +214,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                     return DatatypeConverterImpl._printDateTime(v);
                 }
             },
-            new StringImpl<GregorianCalendar>(GregorianCalendar.class, createXS("dateTime")) {
+            new StringImpl<GregorianCalendar>(GregorianCalendar.class, DatatypeConstants.DATETIME) {
                 public GregorianCalendar parse(CharSequence text) {
                     return DatatypeConverterImpl._parseDateTime(text.toString());
                 }
@@ -222,7 +222,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                     return DatatypeConverterImpl._printDateTime(v);
                 }
             },
-            new StringImpl<Date>(Date.class, createXS("dateTime")) {
+            new StringImpl<Date>(Date.class, DatatypeConstants.DATETIME) {
                 public Date parse(CharSequence text) {
                     return DatatypeConverterImpl._parseDateTime(text.toString()).getTime();
                 }
@@ -442,7 +442,17 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                     return bd;
                 }
             },
-            new StringImpl<XMLGregorianCalendar>(XMLGregorianCalendar.class, createXS("anySimpleType")) {
+            new StringImpl<XMLGregorianCalendar>(XMLGregorianCalendar.class,
+                    createXS("anySimpleType"),
+                    DatatypeConstants.DATE,
+                    DatatypeConstants.DATETIME,
+                    DatatypeConstants.TIME,
+                    DatatypeConstants.GMONTH,
+                    DatatypeConstants.GDAY,
+                    DatatypeConstants.GYEAR,
+                    DatatypeConstants.GYEARMONTH,
+                    DatatypeConstants.GMONTHDAY
+                ) {
                 public String print(XMLGregorianCalendar cal) {
                     XMLSerializer xs = XMLSerializer.getInstance();
 
