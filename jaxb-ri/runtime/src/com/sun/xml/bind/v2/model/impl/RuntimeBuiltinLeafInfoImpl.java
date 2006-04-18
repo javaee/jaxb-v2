@@ -576,8 +576,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                 }
             },
             new StringImpl<Byte>(Byte.class,
-                createXS("byte"),
-                createXS("unsignedShort")
+                createXS("byte")
                 ) {
                 public Byte parse(CharSequence text) {
                     return DatatypeConverterImpl._parseByte(text);
@@ -589,7 +588,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
             },
             new StringImpl<Short>(Short.class,
                 createXS("short"),
-                createXS("unsignedInt")
+                createXS("unsignedByte")
                 ) {
                 public Short parse(CharSequence text) {
                     return DatatypeConverterImpl._parseShort(text);
