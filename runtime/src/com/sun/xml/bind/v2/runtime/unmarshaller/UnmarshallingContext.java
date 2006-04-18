@@ -23,15 +23,15 @@ import javax.xml.bind.helpers.ValidationEventLocatorImpl;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
+import com.sun.istack.SAXParseException2;
 import com.sun.xml.bind.IDResolver;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
-import com.sun.xml.bind.v2.runtime.AssociationMap;
 import com.sun.xml.bind.v2.ClassFactory;
+import com.sun.xml.bind.v2.runtime.AssociationMap;
 import com.sun.xml.bind.v2.runtime.Coordinator;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
-import com.sun.istack.SAXParseException2;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
@@ -956,7 +956,11 @@ public final class UnmarshallingContext extends Coordinator
             QName qn = new QName(ea.uri,ea.local);
             state.prev.target = new JAXBElement(qn,context.expectedType.jaxbType,null,null);
             state.receiver = this;
-            state.loader = context.expectedType.getLoader(null,true);
+            // this is bit wasteful, as in theory we should have each expectedType keep
+            // nillable version --- but that increases the combination from two to four,
+            // which adds the resident memory footprint. Since XsiNilLoader is small,
+            // I intentionally allocate a new instance freshly.
+            state.loader = new XsiNilLoader(context.expectedType.getLoader(null,true));
         }
 
         public void receive(State state, Object o) {
