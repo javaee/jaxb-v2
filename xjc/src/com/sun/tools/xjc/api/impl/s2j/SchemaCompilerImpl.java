@@ -156,6 +156,7 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
 
     public void setEntityResolver(EntityResolver entityResolver) {
         forest.setEntityResolver(entityResolver);
+        opts.entityResolver = entityResolver; 
     }
 
     public void setDefaultPackageName(String packageName) {
