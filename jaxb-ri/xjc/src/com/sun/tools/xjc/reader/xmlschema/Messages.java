@@ -117,6 +117,9 @@ public class Messages
         "ERR_ENUM_MEMBER_NAME_COLLISION";
     static final String ERR_ENUM_MEMBER_NAME_COLLISION_RELATED =
         "ERR_ENUM_MEMBER_NAME_COLLISION_RELATED";
+    static final String ERR_CANNOT_GENERATE_ENUM_NAME =
+        "ERR_CANNOT_GENERATE_ENUM_NAME";
+
 
     // they are shared from the model
     public static final String ERR_UNACKNOWLEDGED_CUSTOMIZATION =

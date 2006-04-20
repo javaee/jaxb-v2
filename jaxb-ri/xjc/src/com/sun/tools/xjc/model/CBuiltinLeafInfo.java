@@ -20,7 +20,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 
-import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JType;
@@ -203,12 +202,16 @@ public abstract class CBuiltinLeafInfo extends BuiltinLeafInfoImpl<NType,NClass>
     };
     public static final CBuiltinLeafInfo BYTE = new Builtin(Byte.class,"byte") {
         public JExpression createConstant(Outline outline, XmlString lexical) {
-            return JExpr.lit(DatatypeConverterImpl._parseByte(lexical.value));
+            return JExpr.cast(
+                    outline.getCodeModel().BYTE,
+                    JExpr.lit(DatatypeConverterImpl._parseByte(lexical.value)));
         }
     };
     public static final CBuiltinLeafInfo SHORT = new Builtin(Short.class,"short") {
         public JExpression createConstant(Outline outline, XmlString lexical) {
-            return JExpr.lit(DatatypeConverterImpl._parseShort(lexical.value));
+            return JExpr.cast(
+                    outline.getCodeModel().SHORT,
+                    JExpr.lit(DatatypeConverterImpl._parseShort(lexical.value)));
         }
     };
     public static final CBuiltinLeafInfo FLOAT = new Builtin(Float.class,"float") {

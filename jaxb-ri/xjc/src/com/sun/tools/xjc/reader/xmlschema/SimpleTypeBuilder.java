@@ -536,7 +536,8 @@ public final class SimpleTypeBuilder extends BindingComponent {
             return null;    // can't bind to an enum if the base is a class, since we don't have the value constrctor
 
         // if the member names collide, re-generate numbered constant names.
-        List<CEnumConstant> memberList = buildCEnumConstants(type, false, members);
+        XSFacet[] errorRef = new XSFacet[1];
+        List<CEnumConstant> memberList = buildCEnumConstants(type, false, members, errorRef);
         if(memberList==null || checkMemberNameCollision(memberList)!=null) {
             switch(mode) {
             case SKIP:
@@ -544,16 +545,22 @@ public final class SimpleTypeBuilder extends BindingComponent {
                 return null;
             case ERROR:
                 // error
-                CEnumConstant[] collision = checkMemberNameCollision(memberList);
-                getErrorReporter().error( collision[0].getLocator(),
-                    Messages.ERR_ENUM_MEMBER_NAME_COLLISION,
-                    collision[0].getName() );
-                getErrorReporter().error( collision[1].getLocator(),
-                    Messages.ERR_ENUM_MEMBER_NAME_COLLISION_RELATED );
-                break;
+                if(memberList==null) {
+                    getErrorReporter().error( errorRef[0].getLocator(),
+                        Messages.ERR_CANNOT_GENERATE_ENUM_NAME,
+                        errorRef[0].getValue() );
+                } else {
+                    CEnumConstant[] collision = checkMemberNameCollision(memberList);
+                    getErrorReporter().error( collision[0].getLocator(),
+                        Messages.ERR_ENUM_MEMBER_NAME_COLLISION,
+                        collision[0].getName() );
+                    getErrorReporter().error( collision[1].getLocator(),
+                        Messages.ERR_ENUM_MEMBER_NAME_COLLISION_RELATED );
+                }
+                return null;    // recover from error
             case GENERATE:
                 // generate
-                memberList = buildCEnumConstants(type,true,members);
+                memberList = buildCEnumConstants(type,true,members,null);
                 break;
             }
         }
@@ -584,7 +591,14 @@ public final class SimpleTypeBuilder extends BindingComponent {
         return conv.getTypeUse(type);
     }
 
-    private List<CEnumConstant> buildCEnumConstants(XSRestrictionSimpleType type, boolean needsToGenerateMemberName, Map<String, BIEnumMember> members) {
+    /**
+     *
+     * @param errorRef
+     *      if constant names couldn't be generated, return a reference to that enum facet.
+     * @return
+     *      null if unable to generate names for some of the constants.
+     */
+    private List<CEnumConstant> buildCEnumConstants(XSRestrictionSimpleType type, boolean needsToGenerateMemberName, Map<String, BIEnumMember> members, XSFacet[] errorRef) {
         List<CEnumConstant> memberList = new ArrayList<CEnumConstant>();
         int idx=1;
         for( XSFacet facet : type.getDeclaredFacets(XSFacet.FACET_ENUMERATION)) {
@@ -620,8 +634,10 @@ public final class SimpleTypeBuilder extends BindingComponent {
                 }
             }
 
-            if(!JJavaName.isJavaIdentifier(name))
+            if(!JJavaName.isJavaIdentifier(name)) {
+                if(errorRef!=null)  errorRef[0] = facet;
                 return null;    // unable to generate a name
+            }
 
             memberList.add(new CEnumConstant(name,mdoc,facet.getValue().value,facet.getLocator()));
         }
