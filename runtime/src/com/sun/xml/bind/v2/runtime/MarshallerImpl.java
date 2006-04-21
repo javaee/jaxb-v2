@@ -218,7 +218,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
 
 
     /**
-     * Used by {@link BridgeImpl} to write an arbitrary object.
+     * Used by {@link BridgeImpl} to write an arbitrary object as a fragment.
      */
     protected final <T> void write(Name rootTagName, JaxBeanInfo<T> bi, T obj, XmlOutput out,Runnable postInitAction) throws JAXBException {
         try {
