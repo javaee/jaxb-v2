@@ -205,9 +205,13 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
         if(prefix==null) {
             if(size==1)
                 prefix = "";    // if this is the first user namespace URI we see, use "".
-            else
+            else {
                 // otherwise make up an unique name 
                 prefix = new StringBuilder(5).append("ns").append(size).toString();
+                while(getNamespaceURI(prefix)!=null) {
+                    prefix += '_';  // under a rare circumstance there might be existing 'nsNNN', so rename them
+                }
+            }
         }
         nsUris[size] = uri;
         prefixes[size] = prefix;
