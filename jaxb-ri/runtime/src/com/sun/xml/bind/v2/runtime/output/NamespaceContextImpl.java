@@ -7,6 +7,8 @@ import java.util.Iterator;
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
 
+import com.sun.istack.NotNull;
+import com.sun.istack.Nullable;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.runtime.Name;
@@ -185,19 +187,12 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
     }
 
     /**
-     * Puts this new binding into the declared prefixes list
-     * without doing any duplicate check.
-     *
-     * <p>
-     * Most of the time {@link #declareNsUri(String, String, boolean)} shall be used.
+     * {@inheritDoc}.
      *
      * @param prefix
      *      if null, an unique prefix is allocated.
-     *
-     * @return
-     *      the index of this new binding.
      */
-    public int put(String uri, String prefix) {
+    public int put(@NotNull String uri, @Nullable String prefix) {
         if(size==nsUris.length) {
             // reallocate
             String[] u = new String[nsUris.length*2];
