@@ -22,8 +22,6 @@ package com.sun.xml.bind.v2.runtime;
 
 import javax.xml.namespace.NamespaceContext;
 
-import com.sun.istack.NotNull;
-
 /**
  * Maintains namespace&lt;->prefix bindings.
  * 
@@ -71,18 +69,4 @@ public interface NamespaceContext2 extends NamespaceContext
      *      the default namespace, null is returned.
      */
     String declareNamespace( String namespaceUri, String preferedPrefix, boolean requirePrefix );
-
-    /**
-     * Puts this new binding into the declared prefixes list
-     * without doing any duplicate check.
-     *
-     * This can be used to forcibly set namespace declarations.
-     *
-     * <p>
-     * Most of the time {@link #declareNamespace(String, String, boolean)} shall be used.
-     *
-     * @return
-     *      the index of this new binding.
-     */
-    int put(@NotNull String uri, @NotNull String prefix);
 }

@@ -40,7 +40,7 @@ import org.xml.sax.helpers.DefaultHandler;
 final class ContentHandlerAdaptor extends DefaultHandler {
 
     /** Stores newly declared prefix-URI mapping. */
-    private final FinalArrayList<String> prefixMap = new FinalArrayList<String>();
+    private final FinalArrayList prefixMap = new FinalArrayList();
 
     /** Events will be sent to this object. */
     private final XMLSerializer serializer;
@@ -80,12 +80,11 @@ final class ContentHandlerAdaptor extends DefaultHandler {
                     atts.getURI(i), prefix, true );
             }
             for( int i=0; i<prefixMap.size(); i+=2 ) {
-                // forcibly set this binding, instead of using declareNsUri.
-                // this guarantees that namespaces used in DOM will show up
-                // as-is in the marshalled output (instead of reassigned to something else,
-                // which may happen if you'd use declareNsUri.)
-                serializer.getNamespaceContext().put(
-                    prefixMap.get(i+1), prefixMap.get(i) );
+                String prefix = (String)prefixMap.get(i);
+                serializer.getNamespaceContext().declareNamespace(
+                    (String)prefixMap.get(i+1),
+                    prefix,
+                    prefix.length()!=0 );
             }
 
             serializer.endNamespaceDecls(null);
