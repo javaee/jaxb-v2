@@ -49,7 +49,7 @@ import org.xml.sax.helpers.NamespaceSupport;
  * classes like this.
  *
  * @author <ul><li>Kohsuke Kawaguchi, Sun Microsystems, Inc.</li></ul>
- * @version $Revision: 1.5 $ $Date: 2006-04-18 00:03:46 $
+ * @version $Revision: 1.6 $ $Date: 2006-04-24 15:27:52 $
  * @since JAXB1.0
  */
 public class DOMScanner implements LocatorEx,InfosetScanner/*<Node> --- but can't do this to protect 1.0 clients, or can I? */
@@ -153,7 +153,7 @@ public class DOMScanner implements LocatorEx,InfosetScanner/*<Node> --- but can'
      * Recursively visit ancestors and build up {@link NamespaceSupport} oject.
      */
     private void buildNamespaceSupport(NamespaceSupport nss, Node node) {
-        if(node.getNodeType()!=Node.ELEMENT_NODE)
+        if(node==null || node.getNodeType()!=Node.ELEMENT_NODE)
             return;
             
         buildNamespaceSupport( nss, node.getParentNode() );
