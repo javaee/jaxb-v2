@@ -80,6 +80,10 @@ public interface Mapping {
      * and as such the exact definition of what XJC thinks
      * "the wrapper style" isn't spec-ed.
      *
+     * <p>
+     * Ths returned list includes {@link Property} defined not just
+     * in this class but in all its base classes.
+     *
      * @return
      *      null if this isn't a wrapper-style element.
      *      Otherwise list of {@link Property}s. The order signifies
