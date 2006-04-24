@@ -809,7 +809,7 @@ public final class XMLSerializer extends Coordinator {
             }
             String[] pairs = nsContext.getPrefixMapper().getPreDeclaredNamespaceUris2();
             if( pairs!=null ) {
-                for( int i=0; i<pairs.length; i++ ) {
+                for( int i=0; i<pairs.length; i+=2 ) {
                     String prefix = pairs[i];
                     String nsUri = pairs[i+1];
                     if(prefix!=null && nsUri!=null)
