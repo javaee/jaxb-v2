@@ -63,6 +63,7 @@ import com.sun.xml.bind.v2.runtime.output.C14nXmlOutput;
 import com.sun.xml.bind.v2.runtime.output.Encoded;
 import com.sun.xml.bind.v2.runtime.output.ForkXmlOutput;
 import com.sun.xml.bind.v2.runtime.output.IndentingUTF8XmlOutput;
+import com.sun.xml.bind.v2.runtime.output.NamespaceContextImpl;
 import com.sun.xml.bind.v2.runtime.output.SAXOutput;
 import com.sun.xml.bind.v2.runtime.output.UTF8XmlOutput;
 import com.sun.xml.bind.v2.runtime.output.XMLEventWriterOutput;
@@ -270,7 +271,16 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
                     }
                 };
                 f.setContentHandler(validator);
-                out = new ForkXmlOutput( new SAXOutput(f), out );
+                out = new ForkXmlOutput( new SAXOutput(f) {
+                    @Override
+                    public void startDocument(XMLSerializer serializer, boolean fragment, int[] nsUriIndex2prefixIndex, NamespaceContextImpl nsContext) throws SAXException, IOException, XMLStreamException {
+                        super.startDocument(serializer, false, nsUriIndex2prefixIndex, nsContext);
+                    }
+                    @Override
+                    public void endDocument(boolean fragment) throws SAXException, IOException, XMLStreamException {
+                        super.endDocument(false);
+                    }
+                }, out );
             }
 
             try {
