@@ -1,4 +1,4 @@
-/* $Id: StAXEventConnector.java,v 1.4 2005-10-14 00:57:08 kohsuke Exp $
+/* $Id: StAXEventConnector.java,v 1.5 2006-04-24 15:38:15 kohsuke Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -227,8 +227,8 @@ final class StAXEventConnector extends StAXConnector {
         visitor.endElement(tagName);
 
         // end namespace bindings
-        for( Iterator i = event.getNamespaces(); i.hasNext();) {
-            String prefix = fixNull((String)i.next());
+        for( Iterator<Namespace> i = event.getNamespaces(); i.hasNext();) {
+            String prefix = fixNull(i.next().getPrefix());  // be defensive
             visitor.endPrefixMapping(prefix);
         }
 
