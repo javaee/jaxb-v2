@@ -15,6 +15,7 @@ import com.sun.javadoc.RootDoc;
 import com.sun.javadoc.Tag;
 import com.sun.tools.doclets.formats.html.ConfigurationImpl;
 import com.sun.tools.doclets.formats.html.HtmlDoclet;
+import com.sun.tools.doclets.formats.html.PackageFrameWriter;
 import com.sun.tools.doclets.formats.html.PackageIndexFrameWriter;
 import com.sun.tools.doclets.internal.toolkit.builders.AbstractBuilder;
 import com.sun.tools.doclets.internal.toolkit.util.ClassTree;
@@ -104,6 +105,8 @@ public class CustomHtmlDoclet extends HtmlDoclet {
         }
         PackageDoc prev = null, next;
         for(int i = 0; i < packages.length; i++) {
+            PackageFrameWriter.generate(configuration, packages[i]);
+
             next = (i + 1 < packages.length && packages[i+1].name().length() > 0) ?
                 packages[i+1] : null;
             //If the next package is unnamed package, skip 2 ahead if possible
