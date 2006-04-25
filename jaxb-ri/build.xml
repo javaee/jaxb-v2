@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.59 2006-04-13 21:59:42 jitu Exp $
+       $Id: build.xml,v 1.60 2006-04-25 22:40:17 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -847,8 +847,8 @@ Class-Path: ${manifest.classpath}
     
     
     <target name="integrate-istack-commons">
-        <property name="istack.commons.runtime" value="http://kohsuke.sfbay/hudson/job/istack-commons/lastSuccessfulBuild/artifact/istack-commons/istack-commons/runtime/build/" />
-        <property name="istack.commons.tools" value="http://kohsuke.sfbay/hudson/job/istack-commons/lastSuccessfulBuild/artifact/istack-commons/istack-commons/tools/build/" />
+        <property name="istack.commons.runtime" value="http://kohsuke.sfbay/hudson/job/istack-commons/lastSuccessfulBuild/artifact/runtime/build/" />
+        <property name="istack.commons.tools" value="http://kohsuke.sfbay/hudson/job/istack-commons/lastSuccessfulBuild/artifact/tools/build/" />
         
         <get src="${istack.commons.tools}/istack-commons-tools.jar"
              dest="tools/lib/rebundle/compiler/istack-commons-tools.jar" />
