@@ -108,7 +108,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.66 $
+ * @version $Revision: 1.67 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -749,24 +749,25 @@ public final class JAXBContextImpl extends JAXBRIContext {
         if(!(bi instanceof ClassBeanInfoImpl))
             throw new JAXBException(wrapperBean+" is not a bean");
 
-        ClassBeanInfoImpl cb = (ClassBeanInfoImpl) bi;
-        for (Property p : cb.properties) {
-            final Accessor acc = p.getElementPropertyAccessor(nsUri,localName);
-            if(acc!=null)
-                return new RawAccessor() {
-                    // Accessor.set/get are designed for unmarshaller/marshaller, and hence
-                    // they go through an adapter behind the scene.
-                    // this isn't desirable for JAX-WS, which essentially uses this method
-                    // just as a reflection library. So use the "unadapted" version to
-                    // achieve the desired semantics
-                    public Object get(Object bean) throws AccessorException {
-                        return acc.getUnadapted(bean);
-                    }
+        for( ClassBeanInfoImpl cb = (ClassBeanInfoImpl) bi; cb!=null; cb=cb.superClazz) {
+            for (Property p : cb.properties) {
+                final Accessor acc = p.getElementPropertyAccessor(nsUri,localName);
+                if(acc!=null)
+                    return new RawAccessor() {
+                        // Accessor.set/get are designed for unmarshaller/marshaller, and hence
+                        // they go through an adapter behind the scene.
+                        // this isn't desirable for JAX-WS, which essentially uses this method
+                        // just as a reflection library. So use the "unadapted" version to
+                        // achieve the desired semantics
+                        public Object get(Object bean) throws AccessorException {
+                            return acc.getUnadapted(bean);
+                        }
 
-                    public void set(Object bean, Object value) throws AccessorException {
-                        acc.setUnadapted(bean,value);
-                    }
-                };
+                        public void set(Object bean, Object value) throws AccessorException {
+                            acc.setUnadapted(bean,value);
+                        }
+                    };
+            }
         }
         throw new JAXBException(new QName(nsUri,localName)+" is not a valid property on "+wrapperBean);
     }
