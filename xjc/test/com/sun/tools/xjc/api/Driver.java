@@ -170,8 +170,6 @@ public class Driver {
             } else {
                 for(Property p : detail ) {
                     System.out.println("  "+p.name()+'\t'+p.type()+'\t'+p.elementName());
-                    System.out.println(p.getValue("bean","var","_"));
-                    System.out.println(p.setValue("bean","var","_"));
                 }
             }
 
