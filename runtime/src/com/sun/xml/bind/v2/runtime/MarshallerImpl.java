@@ -140,6 +140,10 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         }
     }
 
+    public JAXBContextImpl getContext() {
+        return context;
+    }
+
     public void marshal(Object obj, XMLStreamWriter writer) throws JAXBException {
         write(obj, XMLStreamWriterOutput.create(writer), new StAXPostInitAction(writer,serializer));
     }
