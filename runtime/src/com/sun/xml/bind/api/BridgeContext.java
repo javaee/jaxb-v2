@@ -24,6 +24,9 @@ import javax.xml.bind.attachment.AttachmentUnmarshaller;
  * @author Kohsuke Kawaguchi
  * @since 2.0 EA1
  * @see Bridge
+ * @deprecated
+ *      The caller no longer needs to use this, as {@link Bridge} has
+ *      methods that can work without {@link BridgeContext}.
  */
 public abstract class BridgeContext {
     protected BridgeContext() {}
