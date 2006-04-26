@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: EditDistance.java,v 1.2 2005-09-10 19:09:03 kohsuke Exp $
+ * @(#)$Id: EditDistance.java,v 1.1 2006-04-26 21:55:07 kohsuke Exp $
  */
 
 /*
@@ -21,7 +21,7 @@
  * own identifying information: Portions Copyright [yyyy]
  * [name of copyright owner]
  */
-package com.sun.tools.xjc.util;
+package com.sun.xml.bind.v2.util;
 
 /**
  * Computes the string edit distance.
@@ -106,9 +106,5 @@ public class EditDistance {
             }
         }
         return cost[a.length()];
-    }
-    
-    public static void main(String[] args) {
-    	System.out.println(editDistance(args[0],args[1]));
     }
 }

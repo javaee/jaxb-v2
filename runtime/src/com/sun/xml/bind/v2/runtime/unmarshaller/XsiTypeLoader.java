@@ -55,7 +55,11 @@ public class XsiTypeLoader extends Loader {
             } else {
                 beanInfo = context.getJAXBContext().getGlobalType(type);
                 if(beanInfo==null) {
-                    reportError(Messages.UNRECOGNIZED_TYPE_NAME.format(type),true);
+                    String nearest = context.getJAXBContext().getNearestTypeName(type);
+                    if(nearest!=null)
+                        reportError(Messages.UNRECOGNIZED_TYPE_NAME_MAYBE.format(type,nearest),true);
+                    else
+                        reportError(Messages.UNRECOGNIZED_TYPE_NAME.format(type),true);
                 }
                 // TODO: resurrect the following check
         //                    else

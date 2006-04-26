@@ -98,6 +98,7 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.TagName;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.schemagen.XmlSchemaGenerator;
+import com.sun.xml.bind.v2.util.EditDistance;
 import com.sun.xml.bind.v2.util.QNameMap;
 
 import org.w3c.dom.Document;
@@ -111,7 +112,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.69 $
+ * @version $Revision: 1.70 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -531,6 +532,30 @@ public final class JAXBContextImpl extends JAXBRIContext {
      */
     public JaxBeanInfo getGlobalType(QName name) {
         return typeMap.get(name);
+    }
+
+    /**
+     * Finds a type name that this context recognizes which is
+     * "closest" to the given type name.
+     *
+     * <p>
+     * This method is used for error recovery.
+     */
+    public String getNearestTypeName(QName name) {
+        String[] all = new String[typeMap.size()];
+        int i=0;
+        for (QName qn : typeMap.keySet()) {
+            if(qn.getLocalPart().equals(name.getLocalPart()))
+                return qn.toString();  // probably a match, as people often gets confused about namespace.
+            all[i++] = qn.toString();
+        }
+
+        String nearest = EditDistance.findNearest(name.toString(), all);
+
+        if(EditDistance.editDistance(nearest,name.toString())>10)
+            return null;    // too far apart.
+
+        return nearest;
     }
 
     /**
