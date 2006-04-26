@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.helpers.ValidationEventImpl;
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
@@ -41,7 +42,7 @@ final class LeafBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
     private final Name tagName;
 
     public LeafBeanInfoImpl(JAXBContextImpl grammar, RuntimeLeafInfo li) {
-        super(grammar,li,li.getClazz(),li.getTypeName(),li.isElement(),true,false);
+        super(grammar,li,li.getClazz(),li.getTypeNames(),li.isElement(),true,false);
 
         xducer = li.getTransducer();
         loader = new TextLoader(xducer);
@@ -51,6 +52,13 @@ final class LeafBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
             tagName = grammar.nameBuilder.createElementName(li.getElementName());
         else
             tagName = null;
+    }
+
+    public QName getTypeName(BeanT instance) {
+        QName tn = xducer.getTypeName(instance);
+        if(tn!=null)    return tn;
+        // rely on default
+        return super.getTypeName(instance);
     }
 
     public final String getElementNamespaceURI(BeanT _) {

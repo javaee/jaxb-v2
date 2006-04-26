@@ -2,6 +2,7 @@ package com.sun.xml.bind.v2.runtime;
 
 import java.io.IOException;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
@@ -48,5 +49,9 @@ public abstract class FilterTransducer<T> implements Transducer<T> {
 
     public void writeLeafElement(XMLSerializer w, Name tagName, T o, String fieldName) throws IOException, SAXException, XMLStreamException, AccessorException {
         core.writeLeafElement(w,tagName,o,fieldName);
+    }
+
+    public QName getTypeName(T instance) {
+        return null;
     }
 }

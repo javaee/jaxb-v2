@@ -543,6 +543,7 @@ public final class XMLSerializer extends Coordinator {
         } else {
             boolean asExpected = child.getClass()==expected.jaxbType;
             JaxBeanInfo actual = expected;
+            QName actualTypeName = null;
 
             Object oldTarget = currentTarget;
             currentTarget = child;
@@ -566,7 +567,8 @@ public final class XMLSerializer extends Coordinator {
                 if(actual==expected)
                     asExpected = true;
                 else {
-                    if(actual.typeName==null) {
+                    actualTypeName = actual.getTypeName(child);
+                    if(actualTypeName==null) {
                         reportError(new ValidationEventImpl(
                                 ValidationEvent.ERROR,
                                 Messages.SUBSTITUTED_BY_ANONYMOUS_TYPE.format(
@@ -577,7 +579,7 @@ public final class XMLSerializer extends Coordinator {
                         // recover by not printing @xsi:type
                     } else {
                         getNamespaceContext().declareNamespace(WellKnownNamespace.XML_SCHEMA_INSTANCE,"xsi",true);
-                        getNamespaceContext().declareNamespace(actual.typeName.getNamespaceURI(),null,false);
+                        getNamespaceContext().declareNamespace(actualTypeName.getNamespaceURI(),null,false);
                     }
                 }
             }
@@ -585,7 +587,7 @@ public final class XMLSerializer extends Coordinator {
             endNamespaceDecls(child);
             if(!asExpected) {
                 attribute(WellKnownNamespace.XML_SCHEMA_INSTANCE,"type",
-                    DatatypeConverter.printQName(actual.typeName,getNamespaceContext()));
+                    DatatypeConverter.printQName(actualTypeName,getNamespaceContext()));
             }
             actual.serializeAttributes(child,this);
             endAttributes();

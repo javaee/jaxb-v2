@@ -99,6 +99,10 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
     public void declareNamespace(T o, XMLSerializer w) throws AccessorException {
     }
 
+    public QName getTypeName(T instance) {
+        return null;
+    }
+
     /**
      * Those built-in types that print to {@link String}.
      */
@@ -549,6 +553,10 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                     for( int i=s.length(); i<nDigits; i++ )
                         out.append('0');
                     out.append(s);
+                }
+                @Override
+                public QName getTypeName(XMLGregorianCalendar cal) {
+                    return cal.getXMLSchemaType();
                 }
             }
         };

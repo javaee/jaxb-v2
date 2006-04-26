@@ -1,13 +1,14 @@
 package com.sun.xml.bind.v2.model.impl;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.io.IOException;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
@@ -16,9 +17,9 @@ import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.runtime.RuntimeEnumLeafInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeNonElement;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
+import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
-import com.sun.xml.bind.v2.runtime.Name;
 
 import org.xml.sax.SAXException;
 
@@ -80,6 +81,10 @@ final class RuntimeEnumLeafInfoImpl<T extends Enum<T>,B> extends EnumLeafInfoImp
         return new RuntimeEnumConstantImpl(this, name, literal, last);
     }
 
+    public QName[] getTypeNames() {
+        return new QName[]{getTypeName()};
+    }
+
     public boolean isDefault() {
         return false;
     }
@@ -118,5 +123,9 @@ final class RuntimeEnumLeafInfoImpl<T extends Enum<T>,B> extends EnumLeafInfoImp
 
     public void writeLeafElement(XMLSerializer w, Name tagName, T o, String fieldName) throws IOException, SAXException, XMLStreamException, AccessorException {
         baseXducer.writeLeafElement(w,tagName,printMap.get(o),fieldName);
+    }
+
+    public QName getTypeName(T instance) {
+        return null;
     }
 }

@@ -3,8 +3,11 @@ package com.sun.xml.bind.v2.runtime;
 import java.io.IOException;
 
 import javax.xml.bind.annotation.XmlValue;
+import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
+import com.sun.istack.NotNull;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
 import com.sun.xml.bind.v2.runtime.reflect.opt.OptimizedTransducedAccessorFactory;
@@ -90,4 +93,17 @@ public interface Transducer<ValueT> {
      * but with the best representation of the value, not necessarily String.
      */
     void writeLeafElement(XMLSerializer w, Name tagName, ValueT o, String fieldName) throws IOException, SAXException, XMLStreamException, AccessorException;
+
+    /**
+     * Transducers implicitly work against a single XML type,
+     * but sometimes (most notably {@link XMLGregorianCalendar},
+     * an instance may choose different XML types.
+     *
+     * @return
+     *      return non-null from this method allows transducers
+     *      to specify the type it wants to marshal to.
+     *      Most of the time this method returns null, in which case
+     *      the implicitly associated type will be used.
+     */
+    QName getTypeName(@NotNull ValueT instance);
 }

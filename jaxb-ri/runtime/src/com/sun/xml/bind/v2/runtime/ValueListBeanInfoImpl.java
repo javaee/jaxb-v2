@@ -9,11 +9,11 @@ import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.helpers.ValidationEventImpl;
 import javax.xml.stream.XMLStreamException;
 
+import com.sun.istack.FinalArrayList;
 import com.sun.xml.bind.WhiteSpaceProcessor;
 import com.sun.xml.bind.api.AccessorException;
-import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
-import com.sun.istack.FinalArrayList;
+import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 
 import org.xml.sax.SAXException;
 
@@ -28,7 +28,7 @@ final class ValueListBeanInfoImpl extends JaxBeanInfo {
     private final Transducer xducer;    // for items
 
     public ValueListBeanInfoImpl(JAXBContextImpl owner, Class arrayType) throws JAXBException {
-        super(owner, null, arrayType, null, false, true, false);
+        super(owner, null, arrayType, false, true, false);
         this.itemType = jaxbType.getComponentType();
         this.xducer = owner.getBeanInfo(arrayType.getComponentType(),true).getTransducer();
         assert xducer!=null;

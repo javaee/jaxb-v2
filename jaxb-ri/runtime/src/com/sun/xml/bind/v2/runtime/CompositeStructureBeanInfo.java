@@ -18,7 +18,7 @@ import org.xml.sax.SAXException;
  */
 public class CompositeStructureBeanInfo extends JaxBeanInfo<CompositeStructure> {
     public CompositeStructureBeanInfo(JAXBContextImpl context) {
-        super(context,null, CompositeStructure.class,null,false,true,false);
+        super(context,null, CompositeStructure.class,false,true,false);
     }
 
     public String getElementNamespaceURI(CompositeStructure o) {

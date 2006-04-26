@@ -111,7 +111,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.68 $
+ * @version $Revision: 1.69 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -220,36 +220,34 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
         // recognize leaf bean infos
         for( RuntimeBuiltinLeafInfo leaf : RuntimeBuiltinLeafInfoImpl.builtinBeanInfos ) {
-            Class leafType = leaf.getClazz();
-            LeafBeanInfoImpl bi = new LeafBeanInfoImpl(this,leaf);
-            beanInfoMap.put(leafType,bi);
-            for( QName t : leaf.getTypeNames() )
+            LeafBeanInfoImpl<?> bi = new LeafBeanInfoImpl(this,leaf);
+            beanInfoMap.put(leaf.getClazz(),bi);
+            for( QName t : bi.getTypeNames() )
                 typeMap.put(t,bi);
         }
 
         for (RuntimeEnumLeafInfo e : typeSet.enums().values()) {
-            JaxBeanInfo bi = getOrCreate(e);
-            if( bi.typeName!=null )
-                typeMap.put( bi.typeName, bi );
+            JaxBeanInfo<?> bi = getOrCreate(e);
+            for (QName qn : bi.getTypeNames())
+                typeMap.put( qn, bi );
             if(e.isElement())
                 rootMap.put( e.getElementName(), bi );
         }
 
         for (RuntimeArrayInfo a : typeSet.arrays().values()) {
-            JaxBeanInfo ai = getOrCreate(a);
-            assert ai.typeName!=null;
-            typeMap.put(ai.typeName,ai);
+            JaxBeanInfo<?> ai = getOrCreate(a);
+            for (QName qn : ai.getTypeNames())
+                typeMap.put( qn, ai );
         }
 
         for( RuntimeClassInfo ci : typeSet.beans().values() ) {
-            ClassBeanInfoImpl bi = getOrCreate(ci);
+            ClassBeanInfoImpl<?> bi = getOrCreate(ci);
 
             if(bi.isElement())
                 rootMap.put( ci.getElementName(), bi );
 
-            QName n = bi.typeName;
-            if(n!=null)
-                typeMap.put(n,bi);
+            for (QName qn : bi.getTypeNames())
+                typeMap.put( qn, bi );
         }
 
         // fill in element mappings

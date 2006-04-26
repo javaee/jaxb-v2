@@ -13,7 +13,11 @@ import javax.xml.namespace.QName;
  */
 public interface NonElement<T,C> extends TypeInfo<T,C> {
     /**
-     * Gets the XML type name of the class.
+     * Gets the primary XML type name of the class.
+     *
+     * <p>
+     * A Java type can be mapped to multiple XML types, but one of them is
+     * considered "primary" and used when we generate a schema.
      *
      * @return
      *      null if the object doesn't have an explicit type name (AKA anonymous.)
