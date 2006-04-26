@@ -6,8 +6,8 @@ import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 
-import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 
 /**
  * Looks at @xsi:type and forwards to the right {@link Loader}.
@@ -55,7 +55,7 @@ public class XsiTypeLoader extends Loader {
             } else {
                 beanInfo = context.getJAXBContext().getGlobalType(type);
                 if(beanInfo==null) {
-                    reportError(Messages.UNRECOGNIZED_TYPE_NAME.format(value),true);
+                    reportError(Messages.UNRECOGNIZED_TYPE_NAME.format(type),true);
                 }
                 // TODO: resurrect the following check
         //                    else
