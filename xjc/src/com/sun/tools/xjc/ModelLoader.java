@@ -397,8 +397,25 @@ public final class ModelLoader {
         return reader;
     }
 
-    public XSOMParser createXSOMParser(DOMForest forest) {
-        return createXSOMParser(forest.createParser());
+    public XSOMParser createXSOMParser(final DOMForest forest) {
+        XSOMParser p = createXSOMParser(forest.createParser());
+        p.setEntityResolver(new EntityResolver() {
+            public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+                // DOMForest only parses documents that are rearchable through systemIds,
+                // and it won't pick up references like <xs:import namespace="..." /> without
+                // @schemaLocation. So we still need to use an entity resolver here to resolve
+                // these references, yet we don't want to just run them blindly, since if we do that
+                // DOMForestParser always get the translated system ID when catalog is used
+                // (where DOMForest records trees with their original system IDs.)
+                if(systemId!=null && forest.get(systemId)!=null)
+                    return new InputSource(systemId);
+                if(opt.entityResolver!=null)
+                    return opt.entityResolver.resolveEntity(publicId,systemId);
+
+                return null;
+            }
+        });
+        return p;
     }
 
 
