@@ -6,6 +6,8 @@ import java.io.OutputStream;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -13,8 +15,8 @@ import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 
+import com.sun.istack.NotNull;
 import com.sun.xml.bind.api.Bridge;
-import com.sun.xml.bind.api.BridgeContext;
 import com.sun.xml.bind.api.TypeReference;
 import com.sun.xml.bind.marshaller.SAX2DOMEx;
 import com.sun.xml.bind.v2.runtime.output.SAXOutput;
@@ -40,19 +42,20 @@ final class BridgeImpl<T> extends InternalBridge<T> {
     private final JaxBeanInfo<T> bi;
     private final TypeReference typeRef;
 
-    public BridgeImpl(Name tagName, JaxBeanInfo<T> bi,TypeReference typeRef) {
+    public BridgeImpl(JAXBContextImpl context, Name tagName, JaxBeanInfo<T> bi,TypeReference typeRef) {
+        super(context);
         this.tagName = tagName;
         this.bi = bi;
         this.typeRef = typeRef;
     }
 
-    public void marshal(BridgeContext context, T t, XMLStreamWriter output) throws JAXBException {
-        MarshallerImpl m = ((BridgeContextImpl)context).marshaller;
+    public void marshal(Marshaller _m, T t, XMLStreamWriter output) throws JAXBException {
+        MarshallerImpl m = (MarshallerImpl)_m;
         m.write(tagName,bi,t,XMLStreamWriterOutput.create(output),new StAXPostInitAction(output,m.serializer));
     }
 
-    public void marshal(BridgeContext context, T t, OutputStream output, NamespaceContext nsContext) throws JAXBException {
-        MarshallerImpl m = ((BridgeContextImpl)context).marshaller;
+    public void marshal(Marshaller _m, T t, OutputStream output, NamespaceContext nsContext) throws JAXBException {
+        MarshallerImpl m = (MarshallerImpl)_m;
 
         Runnable pia = null;
         if(nsContext!=null)
@@ -61,38 +64,38 @@ final class BridgeImpl<T> extends InternalBridge<T> {
         m.write(tagName,bi,t,m.createWriter(output),pia);
     }
 
-    public void marshal(BridgeContext context, T t, Node output) throws JAXBException {
-        MarshallerImpl m = ((BridgeContextImpl)context).marshaller;
+    public void marshal(Marshaller _m, T t, Node output) throws JAXBException {
+        MarshallerImpl m = (MarshallerImpl)_m;
         m.write(tagName,bi,t,new SAXOutput(new SAX2DOMEx(output)),new DomPostInitAction(output,m.serializer));
     }
 
-    public void marshal(BridgeContext context, T t, ContentHandler contentHandler) throws JAXBException {
-        MarshallerImpl m = ((BridgeContextImpl)context).marshaller;
+    public void marshal(Marshaller _m, T t, ContentHandler contentHandler) throws JAXBException {
+        MarshallerImpl m = (MarshallerImpl)_m;
         m.write(tagName,bi,t,new SAXOutput(contentHandler),null);
     }
 
-    public void marshal(BridgeContext context, T t, Result result) throws JAXBException {
-        MarshallerImpl m = ((BridgeContextImpl)context).marshaller;
+    public void marshal(Marshaller _m, T t, Result result) throws JAXBException {
+        MarshallerImpl m = (MarshallerImpl)_m;
         m.write(tagName,bi,t, m.createXmlOutput(result),m.createPostInitAction(result));
     }
 
-    public T unmarshal(BridgeContext context, XMLStreamReader in) throws JAXBException {
-        UnmarshallerImpl u = ((BridgeContextImpl)context).unmarshaller;
+    public @NotNull T unmarshal(Unmarshaller _u, XMLStreamReader in) throws JAXBException {
+        UnmarshallerImpl u = (UnmarshallerImpl)_u;
         return ((JAXBElement<T>)u.unmarshal0(in,bi)).getValue();
     }
 
-    public T unmarshal(BridgeContext context, Source in) throws JAXBException {
-        UnmarshallerImpl u = ((BridgeContextImpl)context).unmarshaller;
+    public @NotNull T unmarshal(Unmarshaller _u, Source in) throws JAXBException {
+        UnmarshallerImpl u = (UnmarshallerImpl)_u;
         return ((JAXBElement<T>)u.unmarshal0(in,bi)).getValue();
     }
 
-    public T unmarshal(BridgeContext context, InputStream in) throws JAXBException {
-        UnmarshallerImpl u = ((BridgeContextImpl)context).unmarshaller;
+    public @NotNull T unmarshal(Unmarshaller _u, InputStream in) throws JAXBException {
+        UnmarshallerImpl u = (UnmarshallerImpl)_u;
         return ((JAXBElement<T>)u.unmarshal0(in,bi)).getValue();
     }
 
-    public T unmarshal(BridgeContext context, Node n) throws JAXBException {
-        UnmarshallerImpl u = ((BridgeContextImpl)context).unmarshaller;
+    public @NotNull T unmarshal(Unmarshaller _u, Node n) throws JAXBException {
+        UnmarshallerImpl u = (UnmarshallerImpl)_u;
         return ((JAXBElement<T>)u.unmarshal0(n,bi)).getValue();
     }
 

@@ -41,7 +41,9 @@ import javax.xml.bind.Binder;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBIntrospector;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.SchemaOutputResolver;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.Validator;
 import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.bind.annotation.XmlList;
@@ -60,6 +62,7 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 
 import com.sun.istack.NotNull;
+import com.sun.istack.Pool;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.Bridge;
 import com.sun.xml.bind.api.BridgeContext;
@@ -108,7 +111,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.67 $
+ * @version $Revision: 1.68 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -152,12 +155,20 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
     private final Map<Class/*scope*/,Map<QName,ElementBeanInfoImpl>> elements = new LinkedHashMap<Class, Map<QName, ElementBeanInfoImpl>>();
 
-//    /**
-//     * Special {@link JaxBeanInfo} for <tt>xs:anyType</tt>.
-//     * This cannot be found through {@link #beanInfos} because this is the only {@link JaxBeanInfo}
-//     * that works with an interface (and thus no TypeInfo entry, no Class representation.)
-//     */
-//    private final JaxBeanInfo anyTypeBeanInfo;
+    /**
+     * Pool of {@link Marshaller}s.
+     */
+    public final Pool<Marshaller> marshallerPool = new Pool.Impl<Marshaller>() {
+        protected @NotNull Marshaller create() {
+            return createMarshaller();
+        }
+    };
+
+    public final Pool<Unmarshaller> unmarshallerPool = new Pool.Impl<Unmarshaller>() {
+        protected @NotNull Unmarshaller create() {
+            return createUnmarshaller();
+        }
+    };
 
     /**
      * Used to assign indices to known names in this grammar.
@@ -298,9 +309,9 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
             InternalBridge bridge;
             if(xl==null)
-                bridge = new BridgeImpl(name,getBeanInfo(erasedType,true),tr);
+                bridge = new BridgeImpl(this, name,getBeanInfo(erasedType,true),tr);
             else
-                bridge = new BridgeImpl(name,new ValueListBeanInfoImpl(this,erasedType),tr);
+                bridge = new BridgeImpl(this, name,new ValueListBeanInfoImpl(this,erasedType),tr);
 
             if(a!=null)
                 bridge = new BridgeAdapter(bridge,a.adapterType);

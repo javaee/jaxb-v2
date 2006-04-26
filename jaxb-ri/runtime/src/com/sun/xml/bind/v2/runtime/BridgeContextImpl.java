@@ -13,10 +13,10 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
  *
  * @author Kohsuke Kawaguchi
  */
-final class BridgeContextImpl extends BridgeContext {
+public final class BridgeContextImpl extends BridgeContext {
 
-    protected final UnmarshallerImpl unmarshaller;
-    protected final MarshallerImpl marshaller;
+    public final UnmarshallerImpl unmarshaller;
+    public final MarshallerImpl marshaller;
 
     BridgeContextImpl(JAXBContextImpl context) {
         unmarshaller = context.createUnmarshaller();

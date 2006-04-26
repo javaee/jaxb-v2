@@ -1,28 +1,30 @@
 package com.sun.xml.bind.v2.runtime;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.MarshalException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.UnmarshalException;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.namespace.NamespaceContext;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.transform.Source;
 import javax.xml.transform.Result;
+import javax.xml.transform.Source;
 
+import com.sun.istack.NotNull;
 import com.sun.xml.bind.api.Bridge;
-import com.sun.xml.bind.api.BridgeContext;
 import com.sun.xml.bind.api.TypeReference;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
 
 import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
 
 /**
  * {@link Bridge} decorator for {@link XmlAdapter}.
@@ -34,37 +36,33 @@ final class BridgeAdapter<OnWire,InMemory> extends InternalBridge<InMemory> {
     private final Class<? extends XmlAdapter<OnWire,InMemory>> adapter;
 
     public BridgeAdapter(InternalBridge<OnWire> core, Class<? extends XmlAdapter<OnWire,InMemory>> adapter) {
+        super(core.getContext());
         this.core = core;
         this.adapter = adapter;
     }
 
-    private BridgeContextImpl getImpl(BridgeContext bc) {
-        return (BridgeContextImpl)bc;
+    public void marshal(Marshaller m, InMemory inMemory, XMLStreamWriter output) throws JAXBException {
+        core.marshal(m,adaptM(m,inMemory),output);
     }
 
-    public void marshal(BridgeContext context, InMemory inMemory, XMLStreamWriter output) throws JAXBException {
-        core.marshal(context,adaptM(context,inMemory),output);
+    public void marshal(Marshaller m, InMemory inMemory, OutputStream output, NamespaceContext nsc) throws JAXBException {
+        core.marshal(m,adaptM(m,inMemory),output,nsc);
     }
 
-    public void marshal(BridgeContext context, InMemory inMemory, OutputStream output, NamespaceContext nsc) throws JAXBException {
-        core.marshal(context,adaptM(context,inMemory),output,nsc);
+    public void marshal(Marshaller m, InMemory inMemory, Node output) throws JAXBException {
+        core.marshal(m,adaptM(m,inMemory),output);
     }
 
-    public void marshal(BridgeContext context, InMemory inMemory, Node output) throws JAXBException {
-        core.marshal(context,adaptM(context,inMemory),output);
-    }
-
-    public void marshal(BridgeContext context, InMemory inMemory, ContentHandler contentHandler) throws JAXBException {
+    public void marshal(Marshaller context, InMemory inMemory, ContentHandler contentHandler) throws JAXBException {
         core.marshal(context,adaptM(context,inMemory),contentHandler);
     }
 
-    public void marshal(BridgeContext context, InMemory inMemory, Result result) throws JAXBException {
+    public void marshal(Marshaller context, InMemory inMemory, Result result) throws JAXBException {
         core.marshal(context,adaptM(context,inMemory),result);
     }
 
-    private OnWire adaptM(BridgeContext context,InMemory v) throws JAXBException {
-        MarshallerImpl m = getImpl(context).marshaller;
-        XMLSerializer serializer = m.serializer;
+    private OnWire adaptM(Marshaller m,InMemory v) throws JAXBException {
+        XMLSerializer serializer = ((MarshallerImpl)m).serializer;
         serializer.setThreadAffinity();
         serializer.pushCoordinator();
         try {
@@ -86,28 +84,28 @@ final class BridgeAdapter<OnWire,InMemory> extends InternalBridge<InMemory> {
     }
 
 
-    public InMemory unmarshal(BridgeContext context, XMLStreamReader in) throws JAXBException {
-        return adaptU(context, core.unmarshal(context,in));
+    public @NotNull InMemory unmarshal(Unmarshaller u, XMLStreamReader in) throws JAXBException {
+        return adaptU(u, core.unmarshal(u,in));
     }
 
-    public InMemory unmarshal(BridgeContext context, Source in) throws JAXBException {
-        return adaptU(context, core.unmarshal(context,in));
+    public @NotNull InMemory unmarshal(Unmarshaller u, Source in) throws JAXBException {
+        return adaptU(u, core.unmarshal(u,in));
     }
 
-    public InMemory unmarshal(BridgeContext context, InputStream in) throws JAXBException {
-        return adaptU(context, core.unmarshal(context,in));
+    public @NotNull InMemory unmarshal(Unmarshaller u, InputStream in) throws JAXBException {
+        return adaptU(u, core.unmarshal(u,in));
     }
 
-    public InMemory unmarshal(BridgeContext context, Node n) throws JAXBException {
-        return adaptU(context, core.unmarshal(context,n));
+    public @NotNull InMemory unmarshal(Unmarshaller u, Node n) throws JAXBException {
+        return adaptU(u, core.unmarshal(u,n));
     }
 
     public TypeReference getTypeReference() {
         return core.getTypeReference();
     }
 
-    private InMemory adaptU(BridgeContext context, OnWire v) throws JAXBException {
-        UnmarshallerImpl u = getImpl(context).unmarshaller;
+    private @NotNull InMemory adaptU(Unmarshaller _u, OnWire v) throws JAXBException {
+        UnmarshallerImpl u = (UnmarshallerImpl) _u;
         XmlAdapter<OnWire,InMemory> a = u.coordinator.getAdapter(adapter);
         u.coordinator.setThreadAffinity();
         u.coordinator.pushCoordinator();
@@ -125,7 +123,7 @@ final class BridgeAdapter<OnWire,InMemory> extends InternalBridge<InMemory> {
         try {
             core.marshal(_adaptM( XMLSerializer.getInstance(), o ), out );
         } catch (MarshalException e) {
-            ; // recover from error by not marshalling this element.
+            // recover from error by not marshalling this element.
         }
     }
 }
