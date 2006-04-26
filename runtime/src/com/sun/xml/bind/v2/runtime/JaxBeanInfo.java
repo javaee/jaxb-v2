@@ -33,8 +33,8 @@ import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfo;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
-import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
+import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 
 import org.xml.sax.SAXException;
 
@@ -209,7 +209,7 @@ public abstract class JaxBeanInfo<BeanT> {
     
     /**
      * Returns the XML Schema type name if the bean is mapped to/from
-     * a complex type of XML Schema.
+     * a complex/simple type of XML Schema.
      * 
      * <p>
      * This is an ugly necessity to correctly handle
