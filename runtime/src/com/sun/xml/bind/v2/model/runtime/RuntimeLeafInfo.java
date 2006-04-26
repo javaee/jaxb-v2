@@ -2,6 +2,8 @@ package com.sun.xml.bind.v2.model.runtime;
 
 import java.lang.reflect.Type;
 
+import javax.xml.namespace.QName;
+
 import com.sun.xml.bind.v2.model.core.LeafInfo;
 import com.sun.xml.bind.v2.runtime.Transducer;
 
@@ -24,4 +26,17 @@ public interface RuntimeLeafInfo extends LeafInfo<Type,Class>, RuntimeNonElement
      * a class declaration. It can be primitive types.
      */
     Class getClazz();
+
+    /**
+     * Returns all the type names recognized by this type for unmarshalling.
+     *
+     * <p>
+     * While conceptually this method belongs to {@link RuntimeNonElement},
+     * if we do that we have to put a lot of dummy implementations everywhere,
+     * so it's placed here, where it's actually needed.
+     * 
+     * @return
+     *      Always non-null. Do not modify the returned array.
+     */
+    QName[] getTypeNames();
 }

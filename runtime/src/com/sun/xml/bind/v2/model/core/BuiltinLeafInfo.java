@@ -23,12 +23,4 @@ public interface BuiltinLeafInfo<T,C> extends LeafInfo<T,C> {
      *      never null.
      */
     public QName getTypeName();
-
-    /**
-     * Returns all the type names recognized by this bean info.
-     *
-     * @return
-     *      Always non-null. Do not modify the returned array.
-     */
-    public QName[] getTypeNames();
 }

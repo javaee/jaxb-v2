@@ -16,11 +16,11 @@ import com.sun.xml.bind.v2.runtime.property.PropertyFactory;
 import com.sun.xml.bind.v2.runtime.property.UnmarshallerChain;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Discarder;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Intercepter;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.TagName;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
-import com.sun.xml.bind.v2.runtime.unmarshaller.Discarder;
 import com.sun.xml.bind.v2.util.QNameMap;
 
 import org.xml.sax.SAXException;
@@ -42,7 +42,7 @@ public final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
     private final Class scope;
 
     ElementBeanInfoImpl(JAXBContextImpl grammar, RuntimeElementInfo rei) {
-        super(grammar,rei,(Class<JAXBElement>)rei.getType(),null,true,false,true);
+        super(grammar,rei,(Class<JAXBElement>)rei.getType(),true,false,true);
 
         this.property = PropertyFactory.create(grammar,rei.getProperty());
 
@@ -60,7 +60,7 @@ public final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
      * This is a hack.
      */
     protected ElementBeanInfoImpl(final JAXBContextImpl grammar) {
-        super(grammar,null,JAXBElement.class,null,true,false,true);
+        super(grammar,null,JAXBElement.class,true,false,true);
         tagName = null;
         expectedType = null;
         scope = null;

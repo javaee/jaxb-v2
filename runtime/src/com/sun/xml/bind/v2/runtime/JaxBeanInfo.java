@@ -24,13 +24,18 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
+import com.sun.istack.NotNull;
 import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfo;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
@@ -64,7 +69,28 @@ import org.xml.sax.SAXException;
  */
 public abstract class JaxBeanInfo<BeanT> {
 
+    /**
+     * For {@link JaxBeanInfo} that has multiple type names.
+     */
+    protected JaxBeanInfo(JAXBContextImpl grammar, RuntimeTypeInfo rti, Class<BeanT> jaxbType, QName[] typeNames, boolean isElement,boolean isImmutable, boolean hasLifecycleEvents) {
+        this(grammar,rti,jaxbType,(Object)typeNames,isElement,isImmutable,hasLifecycleEvents);
+    }
+
+    /**
+     * For {@link JaxBeanInfo} that has one type name.
+     */
     protected JaxBeanInfo(JAXBContextImpl grammar, RuntimeTypeInfo rti, Class<BeanT> jaxbType, QName typeName, boolean isElement,boolean isImmutable, boolean hasLifecycleEvents) {
+        this(grammar,rti,jaxbType,(Object)typeName,isElement,isImmutable,hasLifecycleEvents);
+    }
+
+    /**
+     * For {@link JaxBeanInfo} that has no type names.
+     */
+    protected JaxBeanInfo(JAXBContextImpl grammar, RuntimeTypeInfo rti, Class<BeanT> jaxbType, boolean isElement,boolean isImmutable, boolean hasLifecycleEvents) {
+        this(grammar,rti,jaxbType,(Object)null,isElement,isImmutable,hasLifecycleEvents);
+    }
+
+    private JaxBeanInfo(JAXBContextImpl grammar, RuntimeTypeInfo rti, Class<BeanT> jaxbType, Object typeName, boolean isElement,boolean isImmutable, boolean hasLifecycleEvents) {
         grammar.beanInfos.put(rti,this);
 
         this.jaxbType = jaxbType;
@@ -206,9 +232,16 @@ public abstract class JaxBeanInfo<BeanT> {
      *      if {@link #isElement} is false.
      */
     public abstract String getElementLocalName(BeanT o);
-    
+
     /**
-     * Returns the XML Schema type name if the bean is mapped to/from
+     * Type names associated with this {@link JaxBeanInfo}.
+     *
+     * @see #getTypeNames()
+     */
+    private final Object typeName; // either null, QName, or QName[]. save memory since most of them have just one.
+
+    /**
+     * Returns XML Schema type names if the bean is mapped from
      * a complex/simple type of XML Schema.
      * 
      * <p>
@@ -217,13 +250,33 @@ public abstract class JaxBeanInfo<BeanT> {
      *
      * <p>
      * A single Java class maybe mapped to more than one
-     * XML types. This method returns the "primary type" for that
-     * Java class, which we use when we marshal.
+     * XML types. All the types listed here are recognized
+     * when we are unmarshalling XML.
      *
      * <p>
-     * null if the class is not bound to a schema type.
+     * null if the class is not bound to a named schema type.
+     *
+     * <p>
      */
-    public final QName typeName;
+    public Collection<QName> getTypeNames() {
+        if(typeName==null)  return Collections.emptyList();
+        if(typeName instanceof QName)   return Collections.singletonList((QName)typeName);
+        return Arrays.asList((QName[])typeName);
+    }
+
+    /**
+     * Returns the XML type name to be used to marshal the specified instance.
+     *
+     * <P>
+     * Most of the times the type can be determined regardless of the actual
+     * instance, but there's a few exceptions (most notably {@link XMLGregorianCalendar}),
+     * so as a general rule we need an instance to determine it.
+     */
+    public QName getTypeName(@NotNull BeanT instance) {
+        if(typeName==null)  return null;
+        if(typeName instanceof QName)   return (QName)typeName;
+        return ((QName[])typeName)[0];
+    }
 
     /**
      * Creates a new instance of the bean.
