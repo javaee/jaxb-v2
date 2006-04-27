@@ -112,7 +112,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.70 $
+ * @version $Revision: 1.71 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -349,8 +349,13 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
         RuntimeTypeInfoSet r = AccessController.doPrivileged(new PrivilegedAction<RuntimeTypeInfoSet>() {
             public RuntimeTypeInfoSet run() {
-                for( Class c : classes )
+                for( Class c : classes ) {
+                    if(c==CompositeStructure.class)
+                        // CompositeStructure doesn't have TypeInfo, so skip it.
+                        // We'll add JaxBeanInfo for this later automatically
+                        continue;
                     builder.getTypeInfo(new Ref<Type,Class>(c));
+                }
 
                 return builder.link();
             }
