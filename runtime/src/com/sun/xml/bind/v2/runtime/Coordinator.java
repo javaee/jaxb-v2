@@ -2,18 +2,18 @@ package com.sun.xml.bind.v2.runtime;
 
 import java.util.HashMap;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.ValidationEventLocator;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.helpers.ValidationEventImpl;
 
 import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * Object that coordinates the marshalling/unmarshalling.
@@ -113,7 +113,7 @@ public abstract class Coordinator implements ErrorHandler, ValidationEventHandle
         old = null; // avoid memory leak
     }
 
-    public static final Coordinator _getInstance() {
+    public static Coordinator _getInstance() {
         return activeTable.get()[0];
     }
 
