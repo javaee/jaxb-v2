@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.61 2006-04-25 22:41:21 kohsuke Exp $
+       $Id: build.xml,v 1.62 2006-05-03 20:57:49 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -495,27 +495,39 @@ Class-Path: ${manifest.classpath}
             depends="bin-installer,src-installer"
             description="build both the binary and the source installer" />
 
-    <target name="deploy-maven"
-            depends="dist"
-            description="deploy to java.net Maven repository">
+    <target name="push-to-maven-prepare" depends="dist"
+      description="prepare a repository iamge for the push-to-maven target">
+      <taskdef resource="maven-repository-importer.properties">
+        <classpath>
+          <pathelement path="tools/lib/util/maven-repository-importer.jar" />
+        </classpath>
+      </taskdef>
+      <delete dir="build/maven-repo" /><!-- clean it -->
+      <!-- ${suffix} can be overridden to "" for posting releases -->
+      <fail unless="jar.suffix">jar.suffix property needs to be defined</fail>
+      <maven-repository-importer
+          destdir="build/maven-repo" version="${jar.suffix}">
+        <artifact
+          jar="dist/lib/jaxb-api.jar"
+          pom="tools/poms/jaxb-api.pom" />
+        <artifact
+          jar="dist/lib/jaxb-impl${jar.suffix}.jar"
+          pom="tools/poms/jaxb-impl.pom" />
+        <artifact
+          jar="dist/lib/jaxb-xjc${jar.suffix}.jar"
+          pom="tools/poms/jaxb-xjc.pom" />
+        <artifact
+          jar="dist/lib/jaxb1-impl${jar.suffix}.jar"
+          pom="tools/poms/jaxb1-impl.pom" />
+        <filterset>
+          <filter token="API_VERSION" value="${release.spec.version}"/>
+        </filterset>
+      </maven-repository-importer>
+    </target>
 
-        <delete dir="build/maven" />
-        <mkdir dir="build/maven" />
-
-        <copy todir="build/maven">
-            <fileset dir="dist/lib" includes="jaxb*.jar" excludes="jaxb-api.jar" />
-        </copy>
-        <copy tofile="build/maven/jaxb-api${jar.suffix}.jar" file="dist/lib/jaxb-api.jar" />
-        <checksum algorithm="md5">
-          <fileset dir="build/maven" includes="*.jar" />
-        </checksum>
-        <checksum algorithm="sha">
-          <fileset dir="build/maven" includes="*.jar" />
-        </checksum>
-
-        <cvs-import cvsroot=":pserver:${user.name}@kohsuke.sfbay:/cvs"
-          src="build/maven"
-          dest="jaxb/repo/jars" />
+    <target name="push-to-maven" depends="push-to-maven-prepare"
+      description="publish artifacts into the maven repository">
+      <cvs-import src="build/maven-repo" dest="jaxb/repo" cvsroot=":pserver:${user.name}@java-net-cvs:/cvs" />
     </target>
 
     <!-- clean all of the builds -->
@@ -827,7 +839,11 @@ Class-Path: ${manifest.classpath}
              dest="tools/lib/src/xsom-src.zip" />
     </target>
     
-    
+    <target name="integrate-maven-repository-importer">
+        <get src="http://kohsuke.sfbay/hudson/job/maven-repository-importer/lastSuccessfulBuild/artifact/build/maven-repository-importer.jar"
+             dest="tools/lib/util/maven-repository-importer.jar" />
+    </target>
+
     <target name="integrate-txw2">
         <get src="http://kohsuke.sfbay/hudson/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2.jar"
              dest="tools/lib/rebundle/compiler/txw2.jar" />
