@@ -33,10 +33,22 @@ public class LocatableAnnotation implements InvocationHandler, Locatable, Locati
         }
 
         // otherwise take the slow route
-        // TODO: consider eliminating this.
-        return (A)Proxy.newProxyInstance(LocatableAnnotation.class.getClassLoader(),
-                new Class[]{ type, Locatable.class },
-                new LocatableAnnotation(annotation,parentSourcePos));
+
+        ClassLoader cl = LocatableAnnotation.class.getClassLoader();
+
+        try {
+            Class loadableT = Class.forName(type.getName(), false, cl);
+            if(loadableT !=type)
+                return annotation;  // annotation type not loadable from this class loader
+
+            return (A)Proxy.newProxyInstance(cl,
+                    new Class[]{ type, Locatable.class },
+                    new LocatableAnnotation(annotation,parentSourcePos));
+        } catch (ClassNotFoundException e) {
+            // annotation not loadable
+            return annotation;
+        }
+
     }
 
     LocatableAnnotation(Annotation core, Locatable upstream) {
