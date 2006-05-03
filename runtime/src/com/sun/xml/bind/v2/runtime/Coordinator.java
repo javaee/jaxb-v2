@@ -57,7 +57,7 @@ public abstract class Coordinator implements ErrorHandler, ValidationEventHandle
      *      always non-null.
      */
     public final <T extends XmlAdapter> T getAdapter(Class<T> key) {
-        T v = (T)adapters.get(key);
+        T v = key.cast(adapters.get(key));
         if(v==null) {
             v = ClassFactory.create(key);
             putAdapter(key,v);
