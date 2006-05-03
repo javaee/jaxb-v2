@@ -81,11 +81,19 @@ public abstract class Coordinator implements ErrorHandler, ValidationEventHandle
     private Coordinator[] table;
 
     /**
+     * When we set {@link #table} to null, record who did it.
+     * This is for trouble-shooting a possible concurrency issue reported at:
+     * http://forums.java.net/jive/thread.jspa?threadID=15132
+     */
+    public Exception guyWhoSetTheTableToNull;
+
+    /**
      * Associates this {@link Coordinator} with the current thread.
      * Should be called at the very beginning of the episode.
      */
     protected final void setThreadAffinity() {
         table = activeTable.get();
+        assert table!=null;
     }
 
     /**
@@ -93,6 +101,7 @@ public abstract class Coordinator implements ErrorHandler, ValidationEventHandle
      * Sohuld be called at the end of the episode to avoid memory leak.
      */
     protected final void resetThreadAffinity() {
+        guyWhoSetTheTableToNull = new Exception(); // remember that we set it to null
         table = null;
     }
 
