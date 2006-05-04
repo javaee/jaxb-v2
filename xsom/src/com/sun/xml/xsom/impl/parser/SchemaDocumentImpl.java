@@ -1,6 +1,5 @@
 package com.sun.xml.xsom.impl.parser;
 
-import com.sun.xml.xsom.XSSchema;
 import com.sun.xml.xsom.impl.SchemaImpl;
 import com.sun.xml.xsom.parser.SchemaDocument;
 
@@ -18,7 +17,7 @@ public final class SchemaDocumentImpl implements SchemaDocument
     private final SchemaImpl schema;
 
     /**
-     * URI of the schema document to be parsed.
+     * URI of the schema document to be parsed. Can be null.
      */
     private final String schemaDocumentURI;
 
@@ -86,11 +85,16 @@ public final class SchemaDocumentImpl implements SchemaDocument
 
     public boolean equals(Object o) {
         SchemaDocumentImpl rhs = (SchemaDocumentImpl) o;
-        if( !schemaDocumentURI.equals(rhs.schemaDocumentURI) )
+
+        if( this.schemaDocumentURI==null || rhs.schemaDocumentURI==null)
+            return this==rhs;
+        if(!schemaDocumentURI.equals(rhs.schemaDocumentURI) )
             return false;
         return this.schema==rhs.schema;
     }
     public int hashCode() {
+        if(schemaDocumentURI==null)
+            return super.hashCode();
         return schemaDocumentURI.hashCode()^this.schema.hashCode();
     }
 }

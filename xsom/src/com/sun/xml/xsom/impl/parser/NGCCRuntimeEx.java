@@ -226,22 +226,22 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
      *      needs to be skipped.
      */
     public boolean hasAlreadyBeenRead() {
-        if( documentSystemId==null )
+        if( documentSystemId!=null ) {
+            if( documentSystemId.startsWith("file:///") )
+                // change file:///abc to file:/abc
+                // JDK File.toURL method produces the latter, but according to RFC
+                // I don't think that's a valid URL. Since two different ways of
+                // producing URLs could produce those two different forms,
+                // we need to canonicalize one to the other.
+                documentSystemId = "file:/"+documentSystemId.substring(8);
+        } else {
             // if the system Id is not provided, we can't test the identity,
             // so we have no choice but to read it.
-            return false;
-        
-        if( documentSystemId.startsWith("file:///") )
-            // change file:///abc to file:/abc
-            // JDK File.toURL method produces the latter, but according to RFC
-            // I don't think that's a valid URL. Since two different ways of
-            // producing URLs could produce those two different forms,
-            // we need to canonicalize one to the other.
-            documentSystemId = "file:/"+documentSystemId.substring(8);
+            // the newly created SchemaDocumentImpl will be unique one
+        }
 
         assert document ==null;
-        document = new SchemaDocumentImpl(
-            currentSchema, documentSystemId );
+        document = new SchemaDocumentImpl( currentSchema, documentSystemId );
 
         SchemaDocumentImpl existing = parser.parsedDocuments.get(document);
         if(existing==null) {
