@@ -5,9 +5,9 @@ import java.io.OutputStream;
 
 import javax.xml.stream.XMLStreamException;
 
+import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
-import com.sun.xml.bind.DatatypeConverterImpl;
 
 import org.xml.sax.SAXException;
 
@@ -44,10 +44,10 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
 
     /** Buffer of octets for writing. */
     // TODO: Obtain buffer size from property on the JAXB context
-    protected final byte[] _octetBuffer = new byte[1024];
+    protected final byte[] octetBuffer = new byte[1024];
     
     /** Index in buffer to write to. */
-    protected int _octetBufferIndex;
+    protected int octetBufferIndex;
 
     /**
      *
@@ -65,7 +65,7 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     public void startDocument(XMLSerializer serializer, boolean fragment, int[] nsUriIndex2prefixIndex, NamespaceContextImpl nsContext) throws IOException, SAXException, XMLStreamException {
         super.startDocument(serializer, fragment,nsUriIndex2prefixIndex,nsContext);
 
-        _octetBufferIndex = 0;
+        octetBufferIndex = 0;
         if(!fragment) {
             write(XML_DECL);
         }
@@ -261,10 +261,10 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
 
         while(dataLen>0) {
             // how many bytes (in data) can we write without overflowing the buffer?
-            int batchSize = Math.min(((_octetBuffer.length-_octetBufferIndex)/4)*3,dataLen);
+            int batchSize = Math.min(((octetBuffer.length-octetBufferIndex)/4)*3,dataLen);
 
             // write the batch
-            _octetBufferIndex = DatatypeConverterImpl._printBase64Binary(data,start,batchSize,_octetBuffer,_octetBufferIndex);
+            octetBufferIndex = DatatypeConverterImpl._printBase64Binary(data,start,batchSize,octetBuffer,octetBufferIndex);
 
             if(batchSize<dataLen)
                 flushBuffer();
@@ -289,12 +289,12 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
      * but it doesn't perform character escaping.
      */
     public final void write(int i) throws IOException {
-        if (_octetBufferIndex < _octetBuffer.length) {
-            _octetBuffer[_octetBufferIndex++] = (byte)i;
+        if (octetBufferIndex < octetBuffer.length) {
+            octetBuffer[octetBufferIndex++] = (byte)i;
         } else {
-            out.write(_octetBuffer);
-            _octetBufferIndex = 1;
-            _octetBuffer[0] = (byte)i;
+            out.write(octetBuffer);
+            octetBufferIndex = 1;
+            octetBuffer[0] = (byte)i;
         }
     }
 
@@ -303,19 +303,19 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     }
     
     protected final void write(byte[] b, int start, int length) throws IOException {
-        if ((_octetBufferIndex + length) < _octetBuffer.length) {
-            System.arraycopy(b, start, _octetBuffer, _octetBufferIndex, length);
-            _octetBufferIndex += length;
+        if ((octetBufferIndex + length) < octetBuffer.length) {
+            System.arraycopy(b, start, octetBuffer, octetBufferIndex, length);
+            octetBufferIndex += length;
         } else {
-            out.write(_octetBuffer, 0, _octetBufferIndex);
+            out.write(octetBuffer, 0, octetBufferIndex);
             out.write(b, start, length);
-            _octetBufferIndex = 0;
+            octetBufferIndex = 0;
         }
     }
 
     protected final void flushBuffer() throws IOException {
-        out.write(_octetBuffer, 0, _octetBufferIndex);
-        _octetBufferIndex = 0;        
+        out.write(octetBuffer, 0, octetBufferIndex);
+        octetBufferIndex = 0;
     }
     
     public void flush() throws IOException {
