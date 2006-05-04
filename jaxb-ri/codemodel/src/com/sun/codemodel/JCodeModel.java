@@ -78,7 +78,7 @@ public final class JCodeModel {
     private HashMap<String,JPackage> packages = new HashMap<String,JPackage>();
     
     /** All JReferencedClasses are pooled here. */
-    private final HashMap refClasses = new HashMap();
+    private final HashMap<Class,JReferencedClass> refClasses = new HashMap<Class,JReferencedClass>();
 
     
     /** Obtains a reference to the special "null" type. */
@@ -281,6 +281,19 @@ public final class JCodeModel {
             pkg.build(source,resource);
         source.close();
         resource.close();
+    }
+
+    /**
+     * Returns the number of files to be generated if
+     * {@link #build} is invoked now.
+     */
+    public int countArtifacts() {
+        int r = 0;
+        JPackage[] pkgs = packages.values().toArray(new JPackage[packages.size()]);
+        // avoid concurrent modification exception
+        for( JPackage pkg : pkgs )
+            r += pkg.countArtifacts();
+        return r;
     }
 
 	

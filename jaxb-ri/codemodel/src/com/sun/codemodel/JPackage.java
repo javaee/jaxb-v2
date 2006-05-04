@@ -463,6 +463,23 @@ public final class JPackage implements JDeclaration, JGenerable, JClassContainer
         }
     }
 
+    /*package*/ int countArtifacts() {
+        int r = 0;
+        for (JDefinedClass c : classes.values()) {
+            if (c.isHidden())
+                continue;   // don't generate this file
+            r++;
+        }
+
+        if(annotations!=null || jdoc!=null) {
+            r++;
+        }
+
+        r+= resources.size();
+
+        return r;
+    }
+
     private JFormatter createJavaSourceFileWriter(CodeWriter src, String className) throws IOException {
         Writer bw = new BufferedWriter(src.openSource(this,className+".java"));
         return new JFormatter(new PrintWriter(bw));
