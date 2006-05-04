@@ -255,8 +255,7 @@ class ClassInfoImpl<T,C,F,M>
                 ||(at==XmlAccessType.PUBLIC_MEMBER && nav().isPublicField(f))
                 || hasJAXBAnnotation(annotations))
                     addProperty(createFieldSeed(f),annotations);
-                else
-                    checkFieldXmlLocation(f);
+                checkFieldXmlLocation(f);
             }
         }
 
