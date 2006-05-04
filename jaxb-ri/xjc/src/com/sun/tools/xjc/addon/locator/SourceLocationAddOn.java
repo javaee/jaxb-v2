@@ -21,6 +21,8 @@ package com.sun.tools.xjc.addon.locator;
 
 import java.io.IOException;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JVar;
@@ -67,6 +69,7 @@ public class SourceLocationAddOn extends Plugin {
             if (ci.getSuperClass() == null) {
                 JVar $loc = impl.field(JMod.PROTECTED, Locator.class, fieldName);
                 $loc.annotate(XmlLocation.class);
+                $loc.annotate(XmlTransient.class);
 
                 impl._implements(Locatable.class);
 
