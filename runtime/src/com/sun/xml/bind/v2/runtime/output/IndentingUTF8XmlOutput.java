@@ -72,6 +72,7 @@ public final class IndentingUTF8XmlOutput extends UTF8XmlOutput {
     }
 
     private void indentStartTag() throws IOException {
+        closeStartTag();
         if(!seenText)
             printIndent();
         depth++;
@@ -92,7 +93,7 @@ public final class IndentingUTF8XmlOutput extends UTF8XmlOutput {
 
     private void indentEndTag() throws IOException {
         depth--;
-        if(!seenText)
+        if(!closeStartTagPending && !seenText)
             printIndent();
         seenText = false;
     }

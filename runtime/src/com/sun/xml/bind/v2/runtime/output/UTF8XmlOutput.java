@@ -50,6 +50,13 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     protected int octetBufferIndex;
 
     /**
+     * Set to true to indicate that we need to write '>'
+     * to close a start tag. Deferring the write of this char
+     * allows us to write "/>" for empty elements.
+     */
+    protected boolean closeStartTagPending = false;
+
+    /**
      *
      * @param localNames
      *      local names encoded in UTF-8.
@@ -76,7 +83,18 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
         super.endDocument(fragment);
     }
 
+    /**
+     * Writes '>' to close the start tag, if necessary.
+     */
+    protected final void closeStartTag() throws IOException {
+        if(closeStartTagPending) {
+            write('>');
+            closeStartTagPending = false;
+        }
+    }
+
     public void beginStartTag(int prefix, String localName) throws IOException {
+        closeStartTag();
         int base= pushNsDecls();
         write('<');
         writeName(prefix,localName);
@@ -84,6 +102,7 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     }
 
     public void beginStartTag(Name name) throws IOException {
+        closeStartTag();
         int base = pushNsDecls();
         write('<');
         writeName(name);
@@ -192,29 +211,41 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     }
 
     public void endStartTag() throws IOException {
-        write('>');
+        closeStartTagPending = true;
     }
 
     @Override
     public void endTag(Name name) throws IOException {
-        write(CLOSE_TAG);
-        writeName(name);
-        write('>');
+        if(closeStartTagPending) {
+            write(EMPTY_TAG);
+            closeStartTagPending = false;
+        } else {
+            write(CLOSE_TAG);
+            writeName(name);
+            write('>');
+        }
     }
 
     public void endTag(int prefix, String localName) throws IOException {
-        write(CLOSE_TAG);
-        writeName(prefix,localName);
-        write('>');
+        if(closeStartTagPending) {
+            write(EMPTY_TAG);
+            closeStartTagPending = false;
+        } else {
+            write(CLOSE_TAG);
+            writeName(prefix,localName);
+            write('>');
+        }
     }
 
     public void text(String value, boolean needSP) throws IOException {
+        closeStartTag();
         if(needSP)
             write(' ');
         doText(value,false);
     }
 
     public void text(Pcdata value, boolean needSP) throws IOException {
+        closeStartTag();
         if(needSP)
             write(' ');
         value.writeTo(this);
@@ -226,6 +257,7 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     }
 
     public final void text(int value) throws IOException {
+        closeStartTag();
         /*
          * TODO
          * Change to use the octet buffer directly
@@ -257,6 +289,8 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
      * which translates to a better performance.
      */
     public void text(byte[] data, int dataLen) throws IOException {
+        closeStartTag();
+
         int start = 0;
 
         while(dataLen>0) {
@@ -336,6 +370,7 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     private static final byte[] XMLNS_COLON = toBytes(" xmlns:");
     private static final byte[] EQUALS = toBytes("=\"");
     private static final byte[] CLOSE_TAG = toBytes("</");
+    private static final byte[] EMPTY_TAG = toBytes("/>");
     private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
     private static final byte[] XML_DECL = toBytes("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
 }
