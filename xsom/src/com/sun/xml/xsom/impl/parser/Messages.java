@@ -27,26 +27,8 @@ import java.util.ResourceBundle;
  */
 public class Messages
 {
-    public static String format( String property ) {
-        return format( property, null );
-    }
-    
-    public static String format( String property, Object arg1 ) {
-        return format( property, new Object[]{arg1} );
-    }
-    
-    public static String format( String property, Object arg1, Object arg2 ) {
-        return format( property, new Object[]{arg1,arg2} );
-    }
-    
-    public static String format( String property, Object arg1, Object arg2, Object arg3 ) {
-        return format( property, new Object[]{arg1,arg2,arg3} );
-    }
-    
-    // add more if necessary.
-    
     /** Loads a string resource and formats it with specified arguments. */
-    public static String format( String property, Object[] args ) {
+    public static String format( String property, Object... args ) {
         String text = ResourceBundle.getBundle(
             Messages.class.getName()).getString(property);
         return MessageFormat.format(text,args);
