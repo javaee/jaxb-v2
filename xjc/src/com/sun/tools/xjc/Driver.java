@@ -145,7 +145,7 @@ public class Driver {
         class Listener extends XJCListener {
             ConsoleErrorReporter cer = new ConsoleErrorReporter(out==null?new PrintStream(new NullStream()):out);
 
-            public void generatedFile(String fileName) {
+            public void generatedFile(String fileName, int count, int total) {
                 message(fileName);
             }
             public void message(String msg) {
@@ -342,7 +342,7 @@ public class Driver {
                             cw = opt.createCodeWriter();
 
                         if( !opt.quiet ) {
-                            cw = new ProgressCodeWriter(cw,listener);
+                            cw = new ProgressCodeWriter(cw,listener, model.codeModel.countArtifacts());
                         }
                         model.codeModel.build(cw);
                     } catch (IOException e) {
