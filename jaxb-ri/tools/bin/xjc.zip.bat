@@ -28,9 +28,8 @@ set PRG=%0
 set WEBSERVICES_LIB=%PRG%\..\..\..
 
 REM
-REM TODO: figure out where to find jsr173_1.0_api.jar and activation.jar
 REM
-set CLASSPATH=%WEBSERVICES_LIB%\jaxb\lib\jaxb-api.jar;%WEBSERVICES_LIB%\jaxb\lib\jaxb-xjc.jar;%WEBSERVICES_LIB%\jaxb\lib\jaxb-impl.jar;%WEBSERVICES_LIB%\jaxb\lib\jaxb1-impl.jar;
+set CLASSPATH=%WEBSERVICES_LIB%\jaxb2\lib\jaxb-api.jar;%WEBSERVICES_LIB%\jaxb2\lib\jaxb-xjc.jar;%WEBSERVICES_LIB%\jaxb2\lib\jaxb-impl.jar;%WEBSERVICES_LIB%\jaf\lib\activation.jar;%WEBSERVICES_LIB%\jaxp\lib\jsr173_api.jar;%WEBSERVICES_LIB%\jaxp\lib\resolver.jar
 
 
 :CHECKJAVAHOME
