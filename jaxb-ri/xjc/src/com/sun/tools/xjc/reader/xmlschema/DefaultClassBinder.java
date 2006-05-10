@@ -99,11 +99,17 @@ final class DefaultClassBinder implements ClassBinder
         BindInfo bi = builder.getBindInfo(type);
 
         if(type.isGlobal()) {
+            QName tagName = null;
+            String className = deriveName(type);
             if(getGlobalBinding().isSimpleMode()) {
                 // in the simple mode, we may optimize it away
                 XSElementDecl referer = getSoleElementReferer(type);
                 if(referer!=null && isCollapsable(referer)) {
-                    return null; // yep. optimized away
+                    // if a global element contains
+                    // a collpsable complex type, we bind this element to a named one
+                    // and collapses element and complex type.
+                    tagName = new QName(referer.getTargetNamespace(),referer.getName());
+                    className = deriveName(referer);
                 }
             }
 
@@ -111,18 +117,24 @@ final class DefaultClassBinder implements ClassBinder
 
             JPackage pkg = selector.getPackage(type.getTargetNamespace());
 
-            return new CClassInfo(model,pkg,deriveName(type),type.getLocator(),getTypeName(type),null,type,bi.toCustomizationList());
+            return new CClassInfo(model,pkg,className,type.getLocator(),getTypeName(type),tagName,type,bi.toCustomizationList());
         } else {
-            CElement parentType = selector.isBound(type.getScope());
+            XSElementDecl element = type.getScope();
+
+            if( element.isGlobal() && isCollapsable(element) ) {
+                // generate one class from element and complex type together.
+                // this needs to be done before selector.isBound to avoid infinite recursion.
+                return new CClassInfo( model, selector.getClassScope(),
+                    deriveName(element), element.getLocator(), null,
+                    new QName(element.getTargetNamespace(),element.getName()), element, bi.toCustomizationList() );
+            }
+
+
+            CElement parentType = selector.isBound(element);
 
             String className;
             CClassInfoParent scope;
 
-            // for local ones, we first attempt an optimization.
-            if( parentType!=null && isCollapsable(type.getScope()) )
-                // don't bind it to a complex type, and let the single class
-                // represent both element and this complex type
-                return null;
 
             if( parentType!=null
              && parentType instanceof CElementInfo
@@ -133,7 +145,7 @@ final class DefaultClassBinder implements ClassBinder
             } else {
                 // since the parent element isn't bound to a type, merge the customizations associated to it, too.
 //                custs = CCustomizations.merge( custs, builder.getBindInfo(type.getScope()).toCustomizationList());
-                className = builder.getNameConverter().toClassName(type.getScope().getName());
+                className = builder.getNameConverter().toClassName(element.getName());
 
                 BISchemaBinding sb = builder.getBindInfo(
                     type.getOwnerSchema() ).get(BISchemaBinding.class);
@@ -174,9 +186,9 @@ final class DefaultClassBinder implements ClassBinder
         if( getGlobalBinding().isSimpleMode() && decl.isGlobal()) {
             // in the simple mode, we do more aggressive optimization, and get rid of
             // a complex type class if it's only used once from a global element
-            Set<XSComponent> referer = builder.getReferer(decl.getType());
-            if(referer.size()==1 && decl.isGlobal()) {
-                assert referer.contains(decl);  // I must be the sole referer
+            XSElementDecl referer = getSoleElementReferer(decl.getType());
+            if(referer!=null) {
+                assert referer==decl;  // I must be the sole referer
                 return true;
             }
         }
@@ -188,18 +200,30 @@ final class DefaultClassBinder implements ClassBinder
     }
 
     /**
-     * If only one {@link XSElementDecl} is refering to {@link XSType},
+     * If only one global {@link XSElementDecl} is refering to {@link XSType},
      * return that element, otherwise null.
      */
     private @Nullable XSElementDecl getSoleElementReferer(@NotNull XSType t) {
         Set<XSComponent> referer = builder.getReferer(t);
-        if(referer.size()!=1)   return null;
 
-        XSComponent r = referer.iterator().next();
-        if(r instanceof XSElementDecl)
-            return (XSElementDecl)r;
-        else
-            return null;
+        XSElementDecl sole = null;
+        for (XSComponent r : referer) {
+            if(r instanceof XSElementDecl) {
+                XSElementDecl x = (XSElementDecl) r;
+                if(!x.isGlobal())
+                    // local element references can be ignored, as their names are either given
+                    // by the property, or by the JAXBElement (for things like mixed contents)
+                    continue;
+                if(sole==null)  sole=x;
+                else            return null;    // more than one
+            } else {
+                // if another type refers to this type, that means
+                // this type has a sub-type, so type substitution is possible now.
+                return null;
+            }
+        }
+
+        return sole;
     }
 
     public CElement elementDecl(XSElementDecl decl) {
@@ -210,13 +234,10 @@ final class DefaultClassBinder implements ClassBinder
             CCustomizations custs = builder.getBindInfo(decl).toCustomizationList();
 
             if(decl.isGlobal()) {
-                if( isCollapsable(decl)) {
-                    // if a global element contains
-                    // a collpsable complex type, we bind this element to a named one
-                    // and collapses element and complex type.
-                    r = new CClassInfo( model, selector.getClassScope(),
-                        deriveName(decl), decl.getLocator(),
-                        null, tagName, decl, custs );
+                if(isCollapsable(decl)) {
+                    // we want the returned type to be built as a complex type,
+                    // so the binding cannot be delayed.
+                    return selector.bindToType(decl.getType().asComplexType(),true);
                 } else {
                     String className = null;
                     if(getGlobalBinding().isGenerateElementClass())

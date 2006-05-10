@@ -81,6 +81,7 @@ public final class CElementPropertyInfo extends CPropertyInfo implements Element
     /**
      * XJC never uses the wrapper element. Always return null.
      */
+    @Deprecated
     public QName getXmlName() {
         return null;
     }

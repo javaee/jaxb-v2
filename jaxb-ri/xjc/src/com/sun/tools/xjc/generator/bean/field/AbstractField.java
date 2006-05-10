@@ -42,7 +42,6 @@ import com.sun.tools.xjc.generator.annotation.spec.XmlAnyElementWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlAttributeWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlElementRefWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlElementRefsWriter;
-import com.sun.tools.xjc.generator.annotation.spec.XmlElementWrapperWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlElementWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlElementsWriter;
 import com.sun.tools.xjc.generator.bean.ClassOutlineImpl;
@@ -57,13 +56,12 @@ import com.sun.tools.xjc.model.CTypeRef;
 import com.sun.tools.xjc.model.CValuePropertyInfo;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.outline.Aspect;
+import static com.sun.tools.xjc.outline.Aspect.IMPLEMENTATION;
 import com.sun.tools.xjc.outline.ClassOutline;
 import com.sun.tools.xjc.outline.FieldAccessor;
 import com.sun.tools.xjc.outline.FieldOutline;
 import com.sun.tools.xjc.reader.TypeUtil;
 import com.sun.xml.bind.v2.TODO;
-
-import static com.sun.tools.xjc.outline.Aspect.IMPLEMENTATION;
 
 /**
  * Useful base class for implementing {@link FieldOutline}.
@@ -188,17 +186,17 @@ abstract class AbstractField implements FieldOutline {
     private void annotateElement(JAnnotatable field) {
         CElementPropertyInfo ep = (CElementPropertyInfo) prop;
         List<CTypeRef> types = ep.getTypes();
-        QName eName = ep.getXmlName();
 
         if(ep.isValueList()) {
             field.annotate(XmlList.class);
         }
 
-        if( eName!=null ) { // wrapper
-            XmlElementWrapperWriter xcw = field.annotate2(XmlElementWrapperWriter.class);
-            xcw.name(eName.getLocalPart())
-               .namespace(eName.getNamespaceURI());
-        }
+        assert ep.getXmlName()==null;
+//        if( eName!=null ) { // wrapper
+//            XmlElementWrapperWriter xcw = field.annotate2(XmlElementWrapperWriter.class);
+//            xcw.name(eName.getLocalPart())
+//               .namespace(eName.getNamespaceURI());
+//        }
 
         if (types.size() == 1) {
             CTypeRef t = types.get(0);

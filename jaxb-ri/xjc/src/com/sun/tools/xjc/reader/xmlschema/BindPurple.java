@@ -1,5 +1,6 @@
 package com.sun.tools.xjc.reader.xmlschema;
 
+import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CDefaultValue;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.model.TypeUse;
@@ -77,8 +78,11 @@ public class BindPurple extends ColorBinder {
 
 
     public void complexType(XSComplexType ct) {
-        // don't make it has-a. Just make it is-a.
-        getCurrentBean().setBaseClass(selector.bindToType(ct,false));
+        CClassInfo ctBean = selector.bindToType(ct, false);
+        if(getCurrentBean()!=ctBean)
+            // in some case complex type and element binds to the same class
+            // don't make it has-a. Just make it is-a.
+            getCurrentBean().setBaseClass(ctBean);
     }
 
     public void wildcard(XSWildcard xsWildcard) {

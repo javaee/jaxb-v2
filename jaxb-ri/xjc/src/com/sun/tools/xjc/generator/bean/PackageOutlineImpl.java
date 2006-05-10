@@ -34,10 +34,12 @@ import com.sun.codemodel.JPackage;
 import com.sun.tools.xjc.generator.annotation.spec.XmlSchemaWriter;
 import com.sun.tools.xjc.model.CAttributePropertyInfo;
 import com.sun.tools.xjc.model.CClassInfo;
+import com.sun.tools.xjc.model.CElement;
 import com.sun.tools.xjc.model.CElementPropertyInfo;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.model.CPropertyVisitor;
 import com.sun.tools.xjc.model.CReferencePropertyInfo;
+import com.sun.tools.xjc.model.CTypeRef;
 import com.sun.tools.xjc.model.CValuePropertyInfo;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.outline.PackageOutline;
@@ -133,12 +135,16 @@ final class PackageOutlineImpl implements PackageOutline {
         // used to visit properties
         CPropertyVisitor<Void> propVisitor = new CPropertyVisitor<Void>() {
             public Void onElement(CElementPropertyInfo p) {
-                countURI(propUriCountMap, p.getXmlName());
+                for (CTypeRef tr : p.getTypes()) {
+                    countURI(propUriCountMap, tr.getTagName());
+                }
                 return null;
             }
 
             public Void onReference(CReferencePropertyInfo p) {
-                countURI(propUriCountMap, p.getXmlName());
+                for (CElement e : p.getElements()) {
+                    countURI(propUriCountMap, e.getElementName());
+                }
                 return null;
             }
 
@@ -194,7 +200,7 @@ final class PackageOutlineImpl implements PackageOutline {
         String uri = qname.getNamespaceURI();
 
         if (map.containsKey(uri)) {
-            map.put(uri, map.get(uri).intValue() + 1);
+            map.put(uri, map.get(uri) + 1);
         } else {
             map.put(uri, 1);
         }
@@ -232,7 +238,6 @@ final class PackageOutlineImpl implements PackageOutline {
      *
      * Compare the most frequently used property URI to the most frequently used
      * element/type URI.  If they match, then return QUALIFIED
-     * @return
      */
     private XmlNsForm getFormDefault() {
         if (getMostUsedURI(propUriCountMap).equals("")) return XmlNsForm.UNQUALIFIED;

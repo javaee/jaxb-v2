@@ -98,6 +98,7 @@ public final class CReferencePropertyInfo extends CPropertyInfo implements Refer
     /**
      * We'll never use a wrapper element in XJC. Always return null.
      */
+    @Deprecated
     public QName getXmlName() {
         return null;
     }

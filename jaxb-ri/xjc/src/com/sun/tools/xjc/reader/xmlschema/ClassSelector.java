@@ -98,6 +98,11 @@ public final class ClassSelector extends BindingComponent {
     private final Stack<Binding> bindQueue = new Stack<Binding>();
 
     /**
+     * {@link CClassInfo}s that are already {@link Binding#build() built}.
+     */
+    private final Set<CClassInfo> built = new HashSet<CClassInfo>();
+
+    /**
      * Object that determines components that are mapped
      * to classes.
      */
@@ -122,20 +127,20 @@ public final class ClassSelector extends BindingComponent {
     private final class Binding {
         private final XSComponent sc;
         private final CTypeInfo bean;
-        private boolean built;
 
         public Binding(XSComponent sc, CTypeInfo bean) {
             this.sc = sc;
             this.bean = bean;
-            if(!(bean instanceof CClassInfo))
-                built = true;   // only ClassInfos need to be built
         }
 
         void build() {
-            if( built )     return; // already built
-            built = true;
+            if(!(this.bean instanceof CClassInfo))
+                return; // no need to "build"
 
             CClassInfo bean = (CClassInfo)this.bean;
+
+            if(!built.add(bean))
+                return; // already built
 
             for( String reservedClassName : reservedClassNames ) {
                 if( bean.getName().equals(reservedClassName) ) {
@@ -153,18 +158,6 @@ public final class ClassSelector extends BindingComponent {
                 // is in fact "value".
                 bean.addConstructor("value");
             }
-
-            // if it's a top-level element decls we remember the binding.
-            if(sc instanceof XSElementDecl) {
-                XSElementDecl e = (XSElementDecl) sc;
-                bean.isRootElement = e.isGlobal();
-            }
-
-            // if it's a global type we remember the type name
-            // for the type substitution support
-
-
-
 
             if(bean.javadoc==null)
                 addSchemaFragmentJavadoc(bean,sc);
@@ -188,27 +181,6 @@ public final class ClassSelector extends BindingComponent {
             // even when no one is using it.
             BIProperty prop = builder.getBindInfo(sc).get(BIProperty.class);
             if(prop!=null)  prop.markAsAcknowledged();
-
-            // TODO: how to do this?
-            // when a class item is a choice content interface,
-            // all the properties receive the isSet method.
-//            if(bean.hasGetContentMethod) {
-//                bean.exp.visit(new BGMWalker() {
-//                    // with a content model like (A,A)|B, the same field
-//                    // can show up multiple times.
-//                    private Set visited = new HashSet();
-//                    public Void onField(FieldItem item) {
-//                        if( visited.add(item) )
-//                            item.realization = new IsSetFieldRenderer(
-//                                item.realization, false, true );
-//                        return null;
-//                    }
-//
-//                    public Void onSuper(SuperClassItem item) {
-//                        return null;
-//                    }
-//                });
-//            }
         }
     }
 
