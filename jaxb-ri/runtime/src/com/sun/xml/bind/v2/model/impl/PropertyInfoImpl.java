@@ -3,14 +3,14 @@ package com.sun.xml.bind.v2.model.impl;
 import java.util.Collection;
 
 import javax.activation.MimeType;
+import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlInlineBinaryData;
 import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlSchema;
-import javax.xml.bind.annotation.XmlInlineBinaryData;
-import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
 import javax.xml.namespace.QName;
@@ -284,7 +284,11 @@ abstract class PropertyInfoImpl<T,C,F,M>
             if(xs!=null) {
                 switch(xs.elementFormDefault()) {
                 case QUALIFIED:
-                    uri = parent.getTypeName().getNamespaceURI();
+                    QName typeName = parent.getTypeName();
+                    if(typeName!=null)
+                        uri = typeName.getNamespaceURI();
+                    else
+                        uri = xs.namespace();
                     if(uri.length()==0)
                         uri = parent.builder.defaultNsUri;
                     break;
