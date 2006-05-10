@@ -86,13 +86,6 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
     public final Model model;
 
     /**
-     * True if this element can be used as the root element.
-     *
-     * never be true if {@link #isElement()}==false.
-     */
-    public boolean isRootElement;
-
-    /**
      * @see #hasAttributeWildcard()
      */
     private boolean hasAttributeWildcard;
