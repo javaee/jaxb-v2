@@ -121,9 +121,17 @@ final class DefaultClassBinder implements ClassBinder
         } else {
             XSElementDecl element = type.getScope();
 
-            if( element.isGlobal() && isCollapsable(element) ) {
+            if( element.isGlobal() && isCollapsable(element)) {
+                if(builder.getBindInfo(element).get(BIClass.class)!=null)
+                    // the parent element was bound to a class. Don't bind this again to
+                    // cause unnecessary wrapping
+                    return null;
+
                 // generate one class from element and complex type together.
                 // this needs to be done before selector.isBound to avoid infinite recursion.
+
+                // but avoid doing so when the element is mapped to a class,
+                // which creates unnecessary classes
                 return new CClassInfo( model, selector.getClassScope(),
                     deriveName(element), element.getLocator(), null,
                     new QName(element.getTargetNamespace(),element.getName()), element, bi.toCustomizationList() );
