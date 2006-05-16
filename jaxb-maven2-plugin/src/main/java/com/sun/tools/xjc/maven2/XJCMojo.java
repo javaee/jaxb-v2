@@ -260,31 +260,35 @@ public class XJCMojo extends AbstractMojo
             dependencies.addFilename(createFilenameSelector(filename));
         }
 
+        // Schema directory dependencies (bindinga and schemas)
+        xjc2TaskAdapter.addConfiguredDepends(dependencies);
+
         // Pom dependency - typically when configuration settings change.
         if (project != null)
         {
+            FileSet pomDependencies = new FileSet();
+            pomDependencies.setDir(project.getFile().getParentFile());
+
             if (verbose)
             {
                 getLog().info("pom dependency: " + project.getFile().getPath());
             }
-            dependencies.addFilename(
-                createFilenameSelector(project.getFile().getPath()));
-        }
+            pomDependencies.addFilename(
+                createFilenameSelector(project.getFile().getName()));
 
-        xjc2TaskAdapter.addConfiguredDepends(dependencies);
+            xjc2TaskAdapter.addConfiguredDepends(pomDependencies);
+        }
 
         // Configure production artifacts to determine generation
         FileSet products = new FileSet();
-        StringBuilder fullPath = new StringBuilder(256);
-
-        fullPath.append(generateDirectory);
+        File outDir = generateDirectory;
         if (generatePackage != null)
         {
-            fullPath.append(File.separator)
-            .append(generatePackage.replace('.', File.separatorChar));
+            outDir = new File(outDir,
+                generatePackage.replace('.', File.separatorChar));
         }
-        products.setDir(new File(fullPath.toString()));
-        products.addFilename(createFilenameSelector("*.java"));
+        products.setDir(outDir);
+        products.setIncludes("**/*.java");
         xjc2TaskAdapter.addConfiguredProduces(products);
 
         // Run the XJC compiler for each schema
