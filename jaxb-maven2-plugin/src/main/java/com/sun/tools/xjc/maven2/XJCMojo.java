@@ -56,6 +56,7 @@ public class XJCMojo extends AbstractMojo
      * Default is *.xsd.
      * <p/>
      * todo In maven2 2 how to set default for String[]? expression="*.xsd"
+     * @parameter
      */
     protected String[] includeSchemas;
 
@@ -334,6 +335,19 @@ public class XJCMojo extends AbstractMojo
         }
 
         // Check "includeSchemas"
+        System.out.println("=====================\n" +
+                           "=====================\n");
+        if (includeSchemas == null)
+        {
+            System.out.println("nulllllll");
+        }
+        else
+        {
+            System.out.println("includeSchemas: " + includeSchemas.length +
+                               " : " + includeSchemas[0]);
+        }
+
+
         if (! isDefined(includeSchemas, 1))
         {
             if (verbose)
@@ -359,28 +373,33 @@ public class XJCMojo extends AbstractMojo
     }
 
     /**
-     * A generic setting validator.  Check for null and zero length of strings,
-     * arrays and collections.
+     * A generic setting validator.  Check for null and zero length of
+     * strings, arrays and collections.
      *
      * @param setting       the settings to validate
      * @param minimumLength minimum length required.
      * @return true if setting is not null and has length or more items.
      */
-    private static boolean isDefined(Object setting, int minimumLength)
+    private static boolean isDefined
+        (Object
+            setting, int minimumLength)
     {
         boolean defined = setting != null;
 
         if (setting instanceof Object[])
         {
-            defined = defined && ((Object[]) setting).length >= minimumLength;
+            defined =
+                defined && ((Object[]) setting).length >= minimumLength;
         }
         else if (setting instanceof Collection)
         {
-            defined = defined && ((Collection) setting).size() >= minimumLength;
+            defined =
+                defined && ((Collection) setting).size() >= minimumLength;
         }
         else
         {
-            defined = defined && setting.toString().length() >= minimumLength;
+            defined =
+                defined && setting.toString().length() >= minimumLength;
         }
 
         return defined;
@@ -394,9 +413,11 @@ public class XJCMojo extends AbstractMojo
      * @param excludePatterns
      * @return list of schemas found based on pattern criteria.
      */
-    private static String[] getFiles(File searchRootDirectory,
-                                     String[] includePatterns,
-                                     String[] excludePatterns)
+    private static String[] getFiles
+        (File
+            searchRootDirectory,
+         String[] includePatterns,
+         String[] excludePatterns)
     {
         DirectoryScanner directoryScanner = new DirectoryScanner();
         directoryScanner.setBasedir(searchRootDirectory);
@@ -417,18 +438,22 @@ public class XJCMojo extends AbstractMojo
         return files;
     }
 
-
     /**
      * Log the configuration settings.  Shown when exception thrown or when
      * verbose is true.
      */
-    private void logSettings()
+    private void logSettings
+        ()
     {
         getLog().info("schemaDirectory: " + schemaDirectory);
-        getLog().info("includeSchemas: " + recursiveToString(includeSchemas));
-        getLog().info("excludeSchemas: " + recursiveToString(excludeSchemas));
-        getLog().info("includeBindings: " + recursiveToString(includeBindings));
-        getLog().info("excludeBindings: " + recursiveToString(excludeBindings));
+        getLog()
+            .info("includeSchemas: " + recursiveToString(includeSchemas));
+        getLog()
+            .info("excludeSchemas: " + recursiveToString(excludeSchemas));
+        getLog()
+            .info("includeBindings: " + recursiveToString(includeBindings));
+        getLog()
+            .info("excludeBindings: " + recursiveToString(excludeBindings));
         getLog().info("generatePackage: " + generatePackage);
         getLog().info("generateDirectory: " + generateDirectory);
         getLog().info("readOnly: " + readOnly);
@@ -440,13 +465,15 @@ public class XJCMojo extends AbstractMojo
     }
 
     /**
-     * A generic approach to turning the values inside arrays and collections
-     * into toString values.
+     * A generic approach to turning the values inside arrays and
+     * collections into toString values.
      *
      * @param setting
      * @return complete toString values for most contained objects.
      */
-    private static String recursiveToString(Object setting)
+    private static String recursiveToString
+        (Object
+            setting)
     {
         StringBuilder result = new StringBuilder();
 
