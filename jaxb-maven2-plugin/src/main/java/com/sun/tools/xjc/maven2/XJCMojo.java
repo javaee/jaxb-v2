@@ -334,20 +334,6 @@ public class XJCMojo extends AbstractMojo
                 "The <schemaDirectory> setting must be defined.");
         }
 
-        // Check "includeSchemas"
-        System.out.println("=====================\n" +
-                           "=====================\n");
-        if (includeSchemas == null)
-        {
-            System.out.println("nulllllll");
-        }
-        else
-        {
-            System.out.println("includeSchemas: " + includeSchemas.length +
-                               " : " + includeSchemas[0]);
-        }
-
-
         if (! isDefined(includeSchemas, 1))
         {
             if (verbose)
