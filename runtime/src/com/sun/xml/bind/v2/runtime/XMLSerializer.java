@@ -649,9 +649,8 @@ public final class XMLSerializer extends Coordinator {
     }
 
     private void fireMarshalEvent(Object target, Method m) {
-        Object[] params = new Object[] { marshaller };
         try {
-            m.invoke(target, params);
+            m.invoke(target, marshaller);
         } catch (Exception e) {
             // this really only happens if there is a bug in the ri
             throw new IllegalStateException(e);
