@@ -23,6 +23,7 @@ import javax.xml.bind.helpers.ValidationEventLocatorImpl;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
+import com.sun.istack.NotNull;
 import com.sun.istack.SAXParseException2;
 import com.sun.xml.bind.IDResolver;
 import com.sun.xml.bind.api.AccessorException;
@@ -36,6 +37,7 @@ import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
+import org.xml.sax.helpers.LocatorImpl;
 
 /**
  * Center of the unmarshalling.
@@ -59,7 +61,7 @@ public final class UnmarshallingContext extends Coordinator
      */
     private State current;
 
-    private LocatorEx locator;
+    private @NotNull LocatorEx locator = DUMMY_INSTANCE;
 
     /** Root object that is being unmarshalled. */
     private Object result;
@@ -413,7 +415,7 @@ public final class UnmarshallingContext extends Coordinator
 
         isUnmarshalInProgress = false;
         currentElement = null;
-        locator = null;
+        locator = DUMMY_INSTANCE;
         environmentNamespaceContext = null;
 
         // at the successful completion, scope must be all closed
@@ -461,7 +463,7 @@ public final class UnmarshallingContext extends Coordinator
      * Creates a new instance of the specified class.
      * In the unmarshaller, we need to check the user-specified factory class.
      */
-    public Object createInstance( Class clazz ) throws SAXException {
+    public Object createInstance( Class<?> clazz ) throws SAXException {
         if(!factories.isEmpty()) {
             Factory factory = factories.get(clazz);
             if(factory!=null)
@@ -1058,5 +1060,16 @@ public final class UnmarshallingContext extends Coordinator
      */
     public static    UnmarshallingContext getInstance() {
         return (UnmarshallingContext)Coordinator._getInstance();
+    }
+
+    private static final LocatorEx DUMMY_INSTANCE;
+
+    static {
+        LocatorImpl loc = new LocatorImpl();
+        loc.setPublicId(null);
+        loc.setSystemId(null);
+        loc.setLineNumber(-1);
+        loc.setColumnNumber(-1);
+        DUMMY_INSTANCE = new LocatorExWrapper(loc);
     }
 }
