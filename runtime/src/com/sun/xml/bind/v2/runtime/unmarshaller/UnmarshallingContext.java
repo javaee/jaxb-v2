@@ -1058,8 +1058,8 @@ public final class UnmarshallingContext extends Coordinator
      * When called from within the realm of the unmarshaller, this method
      * returns the current {@link UnmarshallingContext} in charge.
      */
-    public static    UnmarshallingContext getInstance() {
-        return (UnmarshallingContext)Coordinator._getInstance();
+    public static UnmarshallingContext getInstance() {
+        return (UnmarshallingContext) Coordinator._getInstance();
     }
 
     private static final LocatorEx DUMMY_INSTANCE;
