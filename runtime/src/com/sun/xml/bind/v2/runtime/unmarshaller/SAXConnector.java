@@ -2,8 +2,6 @@ package com.sun.xml.bind.v2.runtime.unmarshaller;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.UnmarshallerHandler;
-import javax.xml.bind.ValidationEventLocator;
-import javax.xml.bind.helpers.ValidationEventLocatorImpl;
 
 import com.sun.xml.bind.WhiteSpaceProcessor;
 
@@ -64,23 +62,7 @@ public final class SAXConnector implements UnmarshallerHandler {
         if(loc!=null)
             return; // we already have an external locator. ignore.
 
-        this.loc = new LocatorEx() {
-            public ValidationEventLocator getLocation() {
-                return new ValidationEventLocatorImpl(locator);
-            }
-            public String getPublicId() {
-                return locator.getPublicId();
-            }
-            public String getSystemId() {
-                return locator.getSystemId();
-            }
-            public int getLineNumber() {
-                return locator.getLineNumber();
-            }
-            public int getColumnNumber() {
-                return locator.getColumnNumber();
-            }
-        };
+        this.loc = new LocatorExWrapper(locator);
     }
 
     public void startDocument() throws SAXException {
@@ -148,4 +130,5 @@ public final class SAXConnector implements UnmarshallerHandler {
             next.text(buffer);
         buffer.setLength(0);
     }
+
 }
