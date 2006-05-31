@@ -351,4 +351,9 @@ public interface Navigator<T,C,F,M> {
      * Returns true if 'clazz' is an interface.
      */
     boolean isInterface(C clazz);
+
+    /**
+     * Returns true if the field is transient.
+     */
+    boolean isTransient(F f);
 }

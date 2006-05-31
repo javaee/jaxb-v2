@@ -38,7 +38,7 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
                 return sup;
 
             Type r;
-            
+
             Type sc = c.getGenericSuperclass();
             if(sc!=null) {
                 r = visit(sc,sup);
@@ -472,8 +472,8 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
 
     public Class findClass(String className, Class referencePoint) {
         try {
-	    ClassLoader cl = referencePoint.getClassLoader();
-	    if(cl==null)  cl = ClassLoader.getSystemClassLoader();
+        ClassLoader cl = referencePoint.getClassLoader();
+        if(cl==null)  cl = ClassLoader.getSystemClassLoader();
             return cl.loadClass(className);
         } catch (ClassNotFoundException e) {
             return null;
@@ -515,6 +515,10 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
 
     public boolean isInterface(Class clazz) {
         return clazz.isInterface();
+    }
+
+    public boolean isTransient(Field f) {
+        return Modifier.isTransient(f.getModifiers());
     }
 
 

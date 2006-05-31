@@ -57,7 +57,8 @@ enum Messages {
     NO_FACTORY_METHOD, // 2 args
     FACTORY_CLASS_NEEDS_FACTORY_METHOD, // 1 arg
 
-    MISSING_JAXB_PROPERTIES // 1arg
+    MISSING_JAXB_PROPERTIES, // 1arg
+    TRANSIENT_FIELD_NOT_BINDABLE // 1 arg
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());

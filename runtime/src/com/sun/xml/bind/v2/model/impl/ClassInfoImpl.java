@@ -246,6 +246,13 @@ class ClassInfoImpl<T,C,F,M>
         // find properties from fields
         for( F f : nav().getDeclaredFields(clazz) ) {
             Annotation[] annotations = reader().getAllFieldAnnotations(f,this);
+            if( nav().isTransient(f) ) {
+                // it's an error for transient field to have any binding annotation
+                if(hasJAXBAnnotation(annotations))
+                    builder.reportError(new IllegalAnnotationException(
+                        Messages.TRANSIENT_FIELD_NOT_BINDABLE.format(nav().getFieldName(f)),
+                            getSomeJAXBAnnotation(annotations)));
+            } else
             if( nav().isStaticField(f) ) {
                 // static fields are bound only when there's explicit annotation.
                 if(hasJAXBAnnotation(annotations))
@@ -973,10 +980,14 @@ class ClassInfoImpl<T,C,F,M>
      * Returns true if the array contains a JAXB annotation.
      */
     private static boolean hasJAXBAnnotation(Annotation[] annotations) {
+        return getSomeJAXBAnnotation(annotations)!=null;
+    }
+
+    private static Annotation getSomeJAXBAnnotation(Annotation[] annotations) {
         for( Annotation a : annotations )
             if(isJAXBAnnotation(a))
-                return true;
-        return false;
+                return a;
+        return null;
     }
 
 
