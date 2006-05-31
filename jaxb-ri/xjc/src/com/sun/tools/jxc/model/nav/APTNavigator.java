@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sun.istack.tools.APTTypeVisitor;
 import com.sun.mirror.apt.AnnotationProcessorEnvironment;
 import com.sun.mirror.declaration.ClassDeclaration;
 import com.sun.mirror.declaration.ConstructorDeclaration;
@@ -15,12 +16,12 @@ import com.sun.mirror.declaration.Declaration;
 import com.sun.mirror.declaration.EnumConstantDeclaration;
 import com.sun.mirror.declaration.EnumDeclaration;
 import com.sun.mirror.declaration.FieldDeclaration;
+import com.sun.mirror.declaration.InterfaceDeclaration;
 import com.sun.mirror.declaration.MemberDeclaration;
 import com.sun.mirror.declaration.MethodDeclaration;
 import com.sun.mirror.declaration.Modifier;
 import com.sun.mirror.declaration.ParameterDeclaration;
 import com.sun.mirror.declaration.TypeDeclaration;
-import com.sun.mirror.declaration.InterfaceDeclaration;
 import com.sun.mirror.type.ArrayType;
 import com.sun.mirror.type.ClassType;
 import com.sun.mirror.type.DeclaredType;
@@ -29,15 +30,14 @@ import com.sun.mirror.type.PrimitiveType;
 import com.sun.mirror.type.ReferenceType;
 import com.sun.mirror.type.TypeMirror;
 import com.sun.mirror.type.TypeVariable;
-import com.sun.mirror.type.WildcardType;
 import com.sun.mirror.type.VoidType;
+import com.sun.mirror.type.WildcardType;
 import com.sun.mirror.util.Declarations;
 import com.sun.mirror.util.SourcePosition;
 import com.sun.mirror.util.TypeVisitor;
 import com.sun.mirror.util.Types;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.Location;
-import com.sun.istack.tools.APTTypeVisitor;
 
 /**
  * {@link Navigator} implementation for APT.
@@ -275,6 +275,10 @@ public class APTNavigator implements Navigator<TypeMirror,TypeDeclaration,FieldD
 
     public boolean isInterface(TypeDeclaration clazz) {
         return clazz instanceof InterfaceDeclaration;
+    }
+
+    public boolean isTransient(FieldDeclaration f) {
+        return f.getModifiers().contains(Modifier.TRANSIENT);
     }
 
     public boolean isArray(TypeMirror t) {
