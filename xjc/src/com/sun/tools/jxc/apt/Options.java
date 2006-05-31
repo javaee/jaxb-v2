@@ -1,21 +1,10 @@
 package com.sun.tools.jxc.apt;
 
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.Locale;
-import java.util.StringTokenizer;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
-import com.sun.mirror.apt.AnnotationProcessorFactory;
 import com.sun.tools.xjc.BadCommandLineException;
-import com.sun.xml.bind.util.Which;
 
 /**
  * This stores the invocation configuration for
@@ -25,7 +14,8 @@ import com.sun.xml.bind.util.Which;
  */
 public class Options  {
 
-    public String classpath  = null;
+    // honor CLASSPATH environment variable, but it will be overrided by -cp
+    public String classpath = System.getenv("CLASSPATH");
 
     public File targetDir = null;
 
