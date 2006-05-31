@@ -257,7 +257,10 @@ public final class JFormatter {
             if(importedClasses.contains(type)) {
                 p(type.name()); // FQCN imported or not necessary, so generate short name
             } else {
-                p(type.fullName()); // collision was detected, so generate FQCN
+                if(type.outer()!=null)
+                    t(type.outer()).p('.').p(type.name());
+                else
+                    p(type.fullName()); // collision was detected, so generate FQCN
             }
             break;
         case COLLECTING:
@@ -502,6 +505,8 @@ public final class JFormatter {
                             return true;    //collision
                     }
                 }
+                if(c.outer()!=null)
+                    return true; // avoid importing inner class to work around 6431987. Also see jaxb issue 166
             }
 
             return false;
