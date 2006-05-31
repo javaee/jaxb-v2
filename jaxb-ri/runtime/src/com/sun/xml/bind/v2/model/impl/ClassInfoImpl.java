@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlInlineBinaryData;
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlMimeType;
+import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
@@ -571,6 +572,7 @@ class ClassInfoImpl<T,C,F,M>
             XmlElementRef.class,    // 6
             XmlElementRefs.class,   // 7
             XmlAnyElement.class,    // 8
+            XmlMixed.class,         // 9
         };
 
         HashMap<Class,Integer> m = ANNOTATION_NUMBER_MAP;
@@ -623,6 +625,7 @@ class ClassInfoImpl<T,C,F,M>
         XmlElementRef r1 = null;
         XmlElementRefs r2 = null;
         XmlAnyElement xae = null;
+        XmlMixed mx = null;
 
         // encountered secondary annotations are accumulated into a bit mask
         int secondaryAnnotations = 0;
@@ -641,6 +644,7 @@ class ClassInfoImpl<T,C,F,M>
                 case 6:     checkConflict(r1 ,ann); r1  = (XmlElementRef) ann; break;
                 case 7:     checkConflict(r2 ,ann); r2  = (XmlElementRefs) ann; break;
                 case 8:     checkConflict(xae,ann); xae = (XmlAnyElement) ann; break;
+                case 9:     checkConflict(mx, ann); mx  = (XmlMixed) ann; break;
                 default:
                     // secondary annotations
                     secondaryAnnotations |= (1<<(index-20));
@@ -673,7 +677,7 @@ class ClassInfoImpl<T,C,F,M>
                 group = PropertyGroup.ELEMENT;
                 groupCount++;
             }
-            if(r1!=null || r2!=null || xae!=null) {
+            if(r1!=null || r2!=null || xae!=null || mx!=null) {
                 group = PropertyGroup.ELEMENT_REF;
                 groupCount++;
             }
