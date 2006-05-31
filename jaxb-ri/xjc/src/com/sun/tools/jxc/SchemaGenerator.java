@@ -1,15 +1,21 @@
 package com.sun.tools.jxc;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.bind.JAXBContext;
 
 import com.sun.mirror.apt.AnnotationProcessorFactory;
 import com.sun.tools.jxc.apt.Options;
 import com.sun.tools.xjc.BadCommandLineException;
 import com.sun.tools.xjc.api.util.APTClassLoader;
 import com.sun.tools.xjc.api.util.ToolsJarNotFoundException;
+import com.sun.xml.bind.util.Which;
 
 /**
  * CLI entry-point to the schema generator.
@@ -98,10 +104,18 @@ public class SchemaGenerator {
         if(hasClass(options.arguments))
             aptargs.add("-XclassesAsDecls");
 
-        if (options.classpath != null ) {
-            aptargs.add("-cp");
-            aptargs.add(options.classpath);
+        // make jaxb-api.jar visible to classpath
+        File jaxbApi = findJaxbApiJar();
+        if(jaxbApi!=null) {
+            if(options.classpath!=null) {
+                options.classpath = options.classpath+File.pathSeparatorChar+jaxbApi;
+            } else {
+                options.classpath = jaxbApi.getPath();
+            }
         }
+
+        aptargs.add("-cp");
+        aptargs.add(options.classpath);
 
         if(options.targetDir!=null) {
             aptargs.add("-d");
@@ -112,6 +126,40 @@ public class SchemaGenerator {
 
         String[] argsarray = aptargs.toArray(new String[aptargs.size()]);
         return (Integer)mainMethod.invoke(null,new Object[]{argsarray});
+    }
+
+    /**
+     * Computes the file system path of <tt>jaxb-api.jar</tt> so that
+     * APT will see them in the <tt>-cp</tt> option.
+     *
+     * <p>
+     * In Java, you can't do this reliably (for that matter there's no guarantee
+     * that such a jar file exists, such as in Glassfish), so we do the best we can.
+     *
+     * @return
+     *      null if failed to locate it.
+     */
+    private static File findJaxbApiJar() {
+        String url = Which.which(JAXBContext.class);
+        if(url==null)       return null;    // impossible, but hey, let's be defensive
+
+        if(!url.startsWith("jar:") || url.lastIndexOf('!')==-1)
+            // no jar file
+            return null;
+
+        String jarFileUrl = url.substring(4,url.lastIndexOf('!'));
+        if(!jarFileUrl.startsWith("file:"))
+            return null;    // not from file system
+
+        try {
+            File f = new File(new URL(jarFileUrl).getFile());
+            if(f.exists() && f.getName().endsWith(".jar"))
+                return f;
+            else
+                return null;
+        } catch (MalformedURLException e) {
+            return null;    // impossible
+        }
     }
 
     /**
