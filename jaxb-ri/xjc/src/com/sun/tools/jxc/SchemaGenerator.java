@@ -30,9 +30,6 @@ public class SchemaGenerator {
             if(cl==null)    cl = ClassLoader.getSystemClassLoader();
             ClassLoader classLoader = new APTClassLoader(cl,packagePrefixes);
             return run(args, classLoader);
-        } catch (UnsupportedClassVersionError e) {
-            System.err.println("schemagen requires JDK 5.0 or later. Please download it from http://java.sun.com/j2se/1.5/");
-            return -1;
         } catch( ToolsJarNotFoundException e) {
             System.err.println(e.getMessage());
             return -1;
@@ -137,9 +134,7 @@ public class SchemaGenerator {
         public static int main(String[] args) throws Exception {
             ClassLoader cl = Runner.class.getClassLoader();
             Class apt = cl.loadClass("com.sun.tools.apt.Main");
-            Method processMethod = apt.getMethod("process",
-                    new Class[]{AnnotationProcessorFactory.class, String[].class});
-
+            Method processMethod = apt.getMethod("process",AnnotationProcessorFactory.class, String[].class);
             return (Integer) processMethod.invoke(null, new com.sun.tools.jxc.apt.SchemaGenerator(), args);
         }
     }
