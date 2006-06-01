@@ -140,7 +140,11 @@ public abstract class JType implements JGenerable, Comparable {
     public final boolean isReference() {
     	return !isPrimitive();
     }
-    
+
+    /**
+     * If this is an array, returns the component type of the array.
+     * (T of T[])
+     */
     public JType elementType() {
         throw new IllegalArgumentException("Not an array type");
     }

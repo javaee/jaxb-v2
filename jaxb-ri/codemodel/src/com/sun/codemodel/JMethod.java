@@ -390,7 +390,7 @@ public class JMethod extends JGenerifiableImpl implements JDeclaration, JAnnotat
 		if (hasVarArgs()) {
 			if (!first)
 				f.p(',');
-			f.g(varParam.type());
+			f.g(varParam.type().elementType());
 			f.p("... ");
 			f.id(varParam.name());
 		}
