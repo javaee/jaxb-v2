@@ -16,8 +16,7 @@ run\:
      \[echo\] Running the sample application\.\.\.
      \[java\] \<\?xml version\=\"1\.0\" encoding\=\"UTF\-8\" standalone\=\"yes\"\?\>
      \[java\] \<foo1 xmlns\=\"http\:\/\/www\.example\.com\/foo\" xmlns\:b\=\"http\:\/\/www\.example\.com\/bar\" xmlns\:ns3\=\"urn\:abc\" xmlns\:ns4\=\"urn\:def\"\>
-     \[java\]     \<b\:bar1\>
-     \[java\]     \<\/b\:bar1\>
+     \[java\]     \<b\:bar1\/\>
      \[java\]     \<b\:bar2 xmlns\:xyz\=\"someNamespace\"\>xyz\:someQName\<\/b\:bar2\>
      \[java\] \<\/foo1\>
      \[java\] \<\?xml version\=\"1\.0\" encoding\=\"UTF\-8\" standalone\=\"yes\"\?\>
