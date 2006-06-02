@@ -29,7 +29,6 @@ final class MixedComplexTypeBuilder extends CTBuilder {
         CPropertyInfo p;
 
         if(contentType.asEmpty()!=null) {
-            // TODO: check with spec
             p = prop.createValueProperty("Content",false,ct,CBuiltinLeafInfo.STRING);
         } else {
             RawTypeSet ts = RawTypeSetBuilder.build(contentType.asParticle(),false);
