@@ -8,6 +8,7 @@ import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
 import static com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeBindingMode.FALLBACK_CONTENT;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSContentType;
+import com.sun.xml.xsom.XSType;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -15,7 +16,18 @@ import com.sun.xml.xsom.XSContentType;
 final class MixedComplexTypeBuilder extends CTBuilder {
 
     public boolean isApplicable(XSComplexType ct) {
-        return ct.getBaseType()==schemas.getAnyType() && ct.isMixed();
+        XSType bt = ct.getBaseType();
+        if(bt ==schemas.getAnyType() && ct.isMixed())
+            return true;    // fresh mixed complex type
+
+        // see issue 148. handle complex type extended from another and added mixed=true.
+        // the current implementation only works when the base type doesn't define
+        // any elements, and we should ideally warn it.
+        if(bt.isComplexType() && !bt.asComplexType().isMixed()
+        && ct.isMixed() && ct.getDerivationMethod()==XSType.EXTENSION)
+            return true;
+
+        return false;
     }
 
     public void build(XSComplexType ct) {
