@@ -448,6 +448,11 @@ public final class XMLSerializer extends Coordinator {
     public void childAsRoot(Object obj) throws JAXBException, IOException, SAXException, XMLStreamException {
         final JaxBeanInfo beanInfo = grammar.getBeanInfo(obj, true);
 
+        // since the same object will be reported to childAsRoot or
+        // childAsXsiType, don't make it a part of the collision check.
+        // but we do need to push it so that getXMIMEContentType will work.
+        cycleDetectionStack.pushNocheck(obj);
+
         final boolean lookForLifecycleMethods = beanInfo.lookForLifecycleMethods();
         if (lookForLifecycleMethods) {
             fireBeforeMarshalEvents(beanInfo, obj);
@@ -458,6 +463,8 @@ public final class XMLSerializer extends Coordinator {
         if (lookForLifecycleMethods) {
             fireAfterMarshalEvents(beanInfo, obj);
         }
+
+        cycleDetectionStack.pop();
     }
 
     private void pushObject(Object obj, String fieldName) throws SAXException {

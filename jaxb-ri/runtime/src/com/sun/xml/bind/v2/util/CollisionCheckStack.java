@@ -57,6 +57,18 @@ public final class CollisionCheckStack<E> extends AbstractList<E> {
         return r;
     }
 
+    /**
+     * Pushes a new object to the stack without making it participate
+     * with the collision check.
+     */
+    public void pushNocheck(E o) {
+        if(data.length==size)
+            expandCapacity();
+        data[size] = o;
+        next[size] = -1;
+        size++;
+    }
+
     @Override
     public E get(int index) {
         return (E)data[index];
@@ -78,9 +90,14 @@ public final class CollisionCheckStack<E> extends AbstractList<E> {
         size--;
         Object o = data[size];
         data[size] = null;  // keeping references too long == memory leak
-        int hash = hash(o);
-        assert initialHash[hash]==size+1;
-        initialHash[hash] = next[size];
+        int n = next[size];
+        if(n<0) {
+            // pushed by nocheck. no need to update hash
+        } else {
+            int hash = hash(o);
+            assert initialHash[hash]==size+1;
+            initialHash[hash] = n;
+        }
         return (E)o;
     }
 
