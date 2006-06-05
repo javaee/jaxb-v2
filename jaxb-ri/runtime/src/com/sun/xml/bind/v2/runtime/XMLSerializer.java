@@ -58,6 +58,7 @@ import com.sun.xml.bind.v2.runtime.output.Pcdata;
 import com.sun.xml.bind.v2.runtime.output.XmlOutput;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Base64Data;
 import com.sun.xml.bind.v2.runtime.unmarshaller.IntData;
+import com.sun.xml.bind.v2.util.CollisionCheckStack;
 
 import org.xml.sax.SAXException;
 
@@ -111,9 +112,6 @@ import org.xml.sax.SAXException;
 public final class XMLSerializer extends Coordinator {
     public final JAXBContextImpl grammar;
 
-    /** Object currently marshalling itself. */
-    public Object currentTarget;
-
     /** The XML printer. */
     private XmlOutput out;
 
@@ -146,6 +144,12 @@ public final class XMLSerializer extends Coordinator {
 
     /** Objects with ID. */
     private final Set<Object> objectsWithId = new HashSet<Object>();
+
+    /**
+     * Used to detect cycles in the object.
+     * Also used to learn what's being marshalled.
+     */
+    private final CollisionCheckStack<Object> cycleDetectionStack = new CollisionCheckStack<Object>();
 
     /** Optional attributes to go with root element. */
     private String schemaLocation;
@@ -442,23 +446,39 @@ public final class XMLSerializer extends Coordinator {
     // I suppose we don't want to use SAXException. -kk
 
     public void childAsRoot(Object obj) throws JAXBException, IOException, SAXException, XMLStreamException {
-        Object old = currentTarget;
-        currentTarget = obj;
-
         final JaxBeanInfo beanInfo = grammar.getBeanInfo(obj, true);
 
         final boolean lookForLifecycleMethods = beanInfo.lookForLifecycleMethods();
         if (lookForLifecycleMethods) {
-            fireBeforeMarshalEvents(beanInfo, currentTarget);
+            fireBeforeMarshalEvents(beanInfo, obj);
         }
 
         beanInfo.serializeRoot(obj,this);
 
         if (lookForLifecycleMethods) {
-            fireAfterMarshalEvents(beanInfo, currentTarget);
+            fireAfterMarshalEvents(beanInfo, obj);
         }
+    }
 
-        currentTarget = old;
+    private void pushObject(Object obj, String fieldName) throws SAXException {
+        if(cycleDetectionStack.push(obj)) {
+            // cycle detected
+            StringBuilder sb = new StringBuilder();
+            sb.append(obj);
+            int i=cycleDetectionStack.size()-1;
+            Object x;
+            do {
+                sb.append(" -> ");
+                x = cycleDetectionStack.get(--i);
+                sb.append(x);
+            } while(obj!=x);
+
+            reportError(new ValidationEventImpl(
+                ValidationEvent.ERROR,
+                Messages.CYCLE_IN_MARSHALLER.format(sb),
+                getCurrentLocation(fieldName),
+                null));
+        }
     }
 
     /**
@@ -491,12 +511,11 @@ public final class XMLSerializer extends Coordinator {
                 return;
             }
 
-            Object oldTarget = currentTarget;
-            currentTarget = child;
+            pushObject(child,fieldName);
 
             final boolean lookForLifecycleMethods = beanInfo.lookForLifecycleMethods();
             if (lookForLifecycleMethods) {
-                fireBeforeMarshalEvents(beanInfo, currentTarget);
+                fireBeforeMarshalEvents(beanInfo, child);
             }
 
             beanInfo.serializeURIs(child,this);
@@ -506,10 +525,10 @@ public final class XMLSerializer extends Coordinator {
             beanInfo.serializeBody(child,this);
 
             if (lookForLifecycleMethods) {
-                fireAfterMarshalEvents(beanInfo, currentTarget);
+                fireAfterMarshalEvents(beanInfo, child);
             }
 
-            currentTarget = oldTarget;
+            cycleDetectionStack.pop();
         }
     }
 
@@ -545,18 +564,17 @@ public final class XMLSerializer extends Coordinator {
             JaxBeanInfo actual = expected;
             QName actualTypeName = null;
 
-            Object oldTarget = currentTarget;
-            currentTarget = child;
+            pushObject(child,fieldName);
 
             if((asExpected) && (actual.lookForLifecycleMethods())) {
-                fireBeforeMarshalEvents(actual, currentTarget);
+                fireBeforeMarshalEvents(actual, child);
             }
 
             if(!asExpected) {
                 try {
                     actual = grammar.getBeanInfo(child,true);
                     if (actual.lookForLifecycleMethods()) {
-                        fireBeforeMarshalEvents(actual, currentTarget);
+                        fireBeforeMarshalEvents(actual, child);
                     }
                 } catch (JAXBException e) {
                     reportError(fieldName,e);
@@ -594,10 +612,10 @@ public final class XMLSerializer extends Coordinator {
             actual.serializeBody(child,this);
 
             if (actual.lookForLifecycleMethods()) {
-                fireAfterMarshalEvents(actual, currentTarget);
+                fireAfterMarshalEvents(actual, child);
             }
 
-            currentTarget = oldTarget;
+            cycleDetectionStack.pop();
         }
     }
 
@@ -741,13 +759,13 @@ public final class XMLSerializer extends Coordinator {
         this.fragment = fragment;
         this.inlineBinaryFlag = false;
         this.expectedMimeType = null;
+        cycleDetectionStack.reset();
 
         out.startDocument(this,fragment,knownUri2prefixIndexMap,nsContext);
     }
 
     public void endDocument() throws IOException, SAXException, XMLStreamException {
         out.endDocument(fragment);
-        currentTarget = null; // avoid memory leak
     }
 
     public void close() {
@@ -779,7 +797,7 @@ public final class XMLSerializer extends Coordinator {
      */
     public String getXMIMEContentType() {
         // xmime:contentType takes precedence
-        String v = grammar.getXMIMEContentType(currentTarget);
+        String v = grammar.getXMIMEContentType(cycleDetectionStack.peek());
         if(v!=null)     return v;
 
         // then look for the current in-scope @XmlMimeType
@@ -900,7 +918,7 @@ public final class XMLSerializer extends Coordinator {
     }
 
     public boolean handleError(Exception e) {
-        return handleError(e,currentTarget,null);
+        return handleError(e,cycleDetectionStack.peek(),null);
     }
 
     public boolean handleError(Exception e,Object source,String fieldName) {
@@ -940,7 +958,7 @@ public final class XMLSerializer extends Coordinator {
     }
 
     public ValidationEventLocator getCurrentLocation(String fieldName) {
-        return new ValidationEventLocatorExImpl(currentTarget,fieldName);
+        return new ValidationEventLocatorExImpl(cycleDetectionStack.peek(),fieldName);
     }
 
     protected ValidationEventLocator getLocation() {
