@@ -47,6 +47,7 @@ public final class ExpressionBuilder implements XSTermFunction<Expression> {
     public Expression wildcard(XSWildcard wc) {
         if(wildcard==null)
             wildcard = new GWildcardElement();
+        wildcard.particles.add(current);
         return wildcard;
     }
 
