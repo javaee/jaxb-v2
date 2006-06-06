@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.62 2006-05-03 20:57:49 kohsuke Exp $
+       $Id: build.xml,v 1.63 2006-06-06 16:51:34 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -865,7 +865,8 @@ Class-Path: ${manifest.classpath}
     <target name="integrate-istack-commons">
         <property name="istack.commons.runtime" value="http://kohsuke.sfbay/hudson/job/istack-commons/lastSuccessfulBuild/artifact/runtime/build" />
         <property name="istack.commons.tools" value="http://kohsuke.sfbay/hudson/job/istack-commons/lastSuccessfulBuild/artifact/tools/build" />
-        
+        <property name="istack.commons.test" value="http://kohsuke.sfbay/hudson/job/istack-commons/lastSuccessfulBuild/artifact/test/build" />
+
         <get src="${istack.commons.tools}/istack-commons-tools.jar"
              dest="tools/lib/rebundle/compiler/istack-commons-tools.jar" />
         <get src="${istack.commons.tools}/istack-commons-tools-src.zip"
@@ -875,5 +876,10 @@ Class-Path: ${manifest.classpath}
              dest="tools/lib/rebundle/runtime2/istack-commons-runtime.jar" />
         <get src="${istack.commons.runtime}/istack-commons-runtime-src.zip"
              dest="tools/lib/src/istack-commons-runtime-src.zip" />
+
+      <get src="${istack.commons.test}/istack-commons-test.jar"
+           dest="tools/lib/util/istack-commons-test.jar" />
+      <get src="${istack.commons.test}/istack-commons-test-src.zip"
+           dest="tools/lib/src/istack-commons-test-src.zip" />
     </target>
 </project>
