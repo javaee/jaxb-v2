@@ -33,7 +33,7 @@ public class JFieldVar extends JVar {
      */
     private JDocComment jdoc = null;
 
-    private final JCodeModel owner;
+    private final JDefinedClass owner;
 
 
     /**
@@ -48,10 +48,22 @@ public class JFieldVar extends JVar {
      * @param init
      *        Value to initialize this variable to
      */
-    JFieldVar(JCodeModel owner, JMods mods, JType type, String name, JExpression init) {
+    JFieldVar(JDefinedClass owner, JMods mods, JType type, String name, JExpression init) {
         super( mods, type, name, init );
         this.owner = owner;
     }
+
+    @Override
+    public void name(String name) {
+        // make sure that the new name is available
+        if(owner.fields.containsKey(name))
+            throw new IllegalArgumentException("name "+name+" is already in use");
+        String oldName = name();
+        super.name(name);
+        owner.fields.remove(oldName);
+        owner.fields.put(name,this);
+    }
+
     /**
      * Creates, if necessary, and returns the class javadoc for this
      * JDefinedClass
@@ -60,7 +72,7 @@ public class JFieldVar extends JVar {
      */
     public JDocComment javadoc() {
         if( jdoc == null ) 
-                jdoc = new JDocComment(owner);
+            jdoc = new JDocComment(owner.owner());
         return jdoc;
     }
 

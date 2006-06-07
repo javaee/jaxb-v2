@@ -99,6 +99,15 @@ public class JVar extends JExpressionImpl implements JDeclaration, JAssignmentTa
     }
 
     /**
+     * Changes the name of this variable.
+     */
+    public void name(String name) {
+        if(!JJavaName.isJavaIdentifier(name))
+            throw new IllegalArgumentException();
+        this.name = name;
+    }
+
+    /**
      * Return the type of this variable.
      * @return
      *      always non-null.

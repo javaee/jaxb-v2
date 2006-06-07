@@ -22,6 +22,8 @@ package com.sun.codemodel;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -29,8 +31,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.Collections;
-import java.util.Collection;
 
 /**
  * A generated Java class/interface/enum/....
@@ -62,7 +62,7 @@ public class JDefinedClass
     private final Set<JClass> interfaces = new TreeSet<JClass>();
 
     /** Fields keyed by their names. */
-    private final Map<String,JFieldVar> fields = new LinkedHashMap<String,JFieldVar>();
+    /*package*/ final Map<String,JFieldVar> fields = new LinkedHashMap<String,JFieldVar>();
 
     /** Static initializer, if this class has one */
     private JBlock init = null;
@@ -382,7 +382,7 @@ public class JDefinedClass
         JType type,
         String name,
         JExpression init) {
-        JFieldVar f = new JFieldVar(owner(),JMods.forField(mods), type, name, init);
+        JFieldVar f = new JFieldVar(this,JMods.forField(mods), type, name, init);
 
         if(fields.put(name, f)!=null)
             throw new IllegalArgumentException("trying to create the same field twice: "+name);
