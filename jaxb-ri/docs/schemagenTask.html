@@ -91,11 +91,19 @@ place them in the <tt>build/schemas</tt> directory.
   <exclude name="Main.java"/>
 </schemagen>
 </xmp></pre>
+
+	<p>Set schema file names.
+<pre class=ant-example><xmp>
+<schemagen srcdir="src" destdir="build/schemas">
+  <schema namespace="http://myschema.acme.org/common" file="myschema-common.xsd" />
+  <schema namespace="http://myschema.acme.org/onion" file="myschema-onion.xsd" />
+</schemagen>
+</xmp></pre>
 	
 	<hr/>
 	<div class="footer">
-	  $Revision: 1.5 $<br/>
-	  $Date: 2006-03-14 17:45:32 $
+	  $Revision: 1.6 $<br/>
+	  $Date: 2006-06-07 05:17:46 $
 	</div>
 </body>
 </html>
