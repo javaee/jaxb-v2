@@ -30,6 +30,15 @@
         </repository>
     </repositories>
 
+  <distributionManagement>
+    <repository>
+      <id>local-repository</id>
+      <url>file:./target/repository/</url>
+      <layout>legacy</layout>
+    </repository>
+  </distributionManagement>
+
+
     <licenses>
         <license>
             <name>Apache Software License, 2.0</name>
