@@ -22,6 +22,9 @@ package com.sun.tools.xjc.api;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import com.sun.istack.NotNull;
+import com.sun.tools.xjc.Options;
+
 import org.w3c.dom.Element;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.EntityResolver;
@@ -204,4 +207,21 @@ public interface SchemaCompiler {
      *      delivered to the registered error handler in such a case.
      */
     S2JJAXBModel bind();
+
+    /**
+     * Allows the calling code to tweak more schema compilation details.
+     *
+     * <p>
+     * The caller can use this method to obtain an {@link Options} instance,
+     * then tweak settings on it. The updated settings will be used when the
+     * {@link #bind()} method is invoked.
+     *
+     * @since 2.0.2
+     * @deprecated
+     *      This method is not really "deprecated" (in the sense of being removed
+     *      from future versions), but the JAXB team is not committed to evolve
+     *      {@link Options} class in the compatible fashion. So please don't
+     *      use this method unless you know what you're doing.
+     */
+    @NotNull Options getOptions();
 }
