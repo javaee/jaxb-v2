@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.validation.SchemaFactory;
 
 import com.sun.codemodel.JCodeModel;
+import com.sun.istack.NotNull;
 import com.sun.istack.SAXParseException2;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.ModelLoader;
@@ -90,7 +91,12 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
             opts.verbose = true;
         }
     }
-    
+
+    @NotNull
+    public Options getOptions() {
+        return opts;
+    }
+
     public ContentHandler getParserHandler( String systemId ) {
         return forest.getParserHandler(systemId,true);
     }
