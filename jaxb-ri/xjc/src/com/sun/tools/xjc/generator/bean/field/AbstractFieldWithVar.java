@@ -65,7 +65,7 @@ abstract class AbstractFieldWithVar extends AbstractField {
      * This encapsulation is necessary because sometimes we use
      * {@code isXXXX} as the method name.
      */
-    protected final String getGetterMethod() {
+    protected String getGetterMethod() {
         return (getFieldType().boxify().getPrimitiveType()==codeModel.BOOLEAN?"is":"get")+prop.getName(true);
     }
 
