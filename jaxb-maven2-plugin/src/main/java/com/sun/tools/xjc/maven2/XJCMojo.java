@@ -158,6 +158,13 @@ public class XJCMojo extends AbstractMojo
     protected boolean verbose;
 
     /**
+     * Adds arguments to the plugin.  Equivalent to <arg line="${xjc.args}"/>.
+     *
+     * @parameter expression="${xjc.args}"
+     */
+    protected String args;
+
+    /**
      * The Maven project reference.
      *
      * @parameter expression="${project}"
@@ -291,6 +298,11 @@ public class XJCMojo extends AbstractMojo
         products.setDir(outDir);
         products.setIncludes("**/*.java");
         xjc2TaskAdapter.addConfiguredProduces(products);
+
+        if (args != null)
+        {
+            xjc2TaskAdapter.createArg().setLine(args);
+        }
 
         // Run the XJC compiler for each schema
         for (String filename : schemaFilenames)
@@ -448,6 +460,7 @@ public class XJCMojo extends AbstractMojo
         getLog().info("removeOldOutput: " + removeOldOutput);
         getLog().info("strict: " + strict);
         getLog().info("verbose: " + verbose);
+
     }
 
     /**
