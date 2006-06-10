@@ -33,9 +33,14 @@ public class JFieldRef extends JExpressionImpl implements JAssignmentTarget {
     private JGenerable object;
 
     /**
-     * Name of the field to be accessed
+     * Name of the field to be accessed. Either this or {@link #var} is set.
      */
     private String name;
+
+    /**
+     * Variable to be accessed.
+     */
+    private JVar var;
 
     /**
      * Indicates if an explicit this should be generated
@@ -56,11 +61,19 @@ public class JFieldRef extends JExpressionImpl implements JAssignmentTarget {
         this(object, name, false);
     }
 
+    JFieldRef(JExpression object, JVar v) {
+        this(object, v, false);
+    }
+
     /**
      * Static field reference.
      */
     JFieldRef(JType type, String name) {
         this(type, name, false);
+    }
+
+    JFieldRef(JType type, JVar v) {
+        this(type, v, false);
     }
 
     JFieldRef(JGenerable object, String name, boolean explicitThis) {
@@ -71,7 +84,16 @@ public class JFieldRef extends JExpressionImpl implements JAssignmentTarget {
         this.name = name;
     }
 
+    JFieldRef(JGenerable object, JVar var, boolean explicitThis) {
+        this.explicitThis = explicitThis;
+        this.object = object;
+        this.var = var;
+    }
+
     public void generate(JFormatter f) {
+        String name = this.name;
+        if(name==null)  name=var.name();
+
         if (object != null) {
             f.g(object).p('.').p(name);
         } else {

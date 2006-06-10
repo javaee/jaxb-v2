@@ -68,7 +68,7 @@ public abstract class JExpr {
     }
 
     public static JFieldRef ref(JExpression lhs, JVar field) {
-        return new JFieldRef(lhs, field.name());
+        return new JFieldRef(lhs,field);
     }
 
     public static JFieldRef ref(JExpression lhs, String field) {
