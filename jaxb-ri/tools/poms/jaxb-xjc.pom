@@ -1,6 +1,0 @@
-<project>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.sun.xml.bind</groupId>
-  <artifactId>jaxb-xjc</artifactId>
-  <version>@VERSION@</version>
-</project>
