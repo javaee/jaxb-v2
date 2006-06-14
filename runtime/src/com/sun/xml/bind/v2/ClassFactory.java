@@ -2,19 +2,19 @@ package com.sun.xml.bind.v2;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.HashSet;
-import java.util.TreeSet;
-import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.lang.reflect.Modifier;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Stack;
+import java.util.TreeSet;
+import java.util.WeakHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.sun.xml.bind.Util;
 
@@ -128,8 +128,8 @@ public final class ClassFactory {
     /**
      *  Call a method in the factory class to get the object.
      */
-    public static Object create(final Method method) throws IllegalAccessException, InvocationTargetException, InstantiationException{
-        return AccessController.doPrivileged(new PrivilegedAction() {
+    public static Object create(final Method method) {
+        return AccessController.doPrivileged(new PrivilegedAction<Object>() {
             public Object run(){
                 Object cons = null;
                 Throwable errorMsg = null;
@@ -137,13 +137,13 @@ public final class ClassFactory {
                     cons = method.invoke(null, emptyObject);
                 } catch (InvocationTargetException ive) {
                     Throwable target = ive.getTargetException();
-                    
+
                     if(target instanceof RuntimeException)
                         throw (RuntimeException)target;
-                    
+
                     if(target instanceof Error)
                         throw (Error)target;
-                    
+
                     throw new IllegalStateException(target);
                 } catch (IllegalAccessException e) {
                     logger.log(Level.INFO,"failed to create a new instance of "+method.getReturnType().getName(),e);
@@ -181,9 +181,9 @@ public final class ClassFactory {
             // TODO: check if it has a default constructor
             return fieldType;
 
-        for( Class impl : knownImplClasses ) {
+        for( Class<?> impl : knownImplClasses ) {
             if(fieldType.isAssignableFrom(impl))
-                return impl;
+                return impl.asSubclass(fieldType);
         }
 
         // if we can't find an implementation class,
