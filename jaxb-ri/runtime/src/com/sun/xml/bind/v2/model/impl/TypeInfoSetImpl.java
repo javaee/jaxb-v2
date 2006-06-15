@@ -10,15 +10,14 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlNs;
+import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 
-import com.sun.xml.bind.v2.util.FlattenIterator;
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
 import com.sun.xml.bind.v2.model.core.BuiltinLeafInfo;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
@@ -30,6 +29,7 @@ import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.RuntimeUtil;
+import com.sun.xml.bind.v2.util.FlattenIterator;
 
 /**
  * Set of {@link TypeInfo}s.
@@ -170,9 +170,6 @@ class TypeInfoSetImpl<TypeT,ClassDeclT,FieldT,MethodT> implements
             return arrays.get(type);
         }
 
-        if(nav.ref(Object.class).equals(type))
-            return anyType;
-
         ClassDeclT d = nav.asDecl(type);
         if(d==null)     return null;
         return getClassInfo(d);
@@ -231,6 +228,9 @@ class TypeInfoSetImpl<TypeT,ClassDeclT,FieldT,MethodT> implements
 
         l = enums.get(type);
         if(l!=null)     return l;
+
+        if(nav.asDecl(Object.class).equals(type))
+            return anyType;
 
         return beans.get(type);
     }
