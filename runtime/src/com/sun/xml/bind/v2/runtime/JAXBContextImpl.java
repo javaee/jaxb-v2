@@ -112,7 +112,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.71 $
+ * @version $Revision: 1.72 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -763,7 +763,15 @@ public final class JAXBContextImpl extends JAXBRIContext {
         };
     }
 
+    @Override
+    public <T> Binder<T> createBinder(Class<T> domType) {
+        if(domType==Node.class)
+            return (Binder<T>)createBinder();
+        else
+            return super.createBinder(domType);
+    }
 
+    @Override
     public Binder<Node> createBinder() {
         return new BinderImpl<Node>(this,new DOMScanner());
     }
