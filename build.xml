@@ -110,6 +110,7 @@
   </target>
   
   <target name="clean">
+    <delete dir="j2se-integration"/>
     <delete dir="build"/>
   </target>
 
@@ -119,4 +120,34 @@
     <get src="http://kohsuke.sfbay/hudson/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom-src.zip"
          dest="lib/compiler/xsom-src.zip" />
    </target>
+
+  <target name="integrate-package-rename-task">
+    <get src="http://kohsuke.sfbay/hudson/job/package-rename-task/lastSuccessfulBuild/artifact/target/package-rename-task-1.0.jar"
+         dest="lib/package-rename-task.jar"/>
+  </target>
+
+  <target name="j2se-integration"
+          description="prepare renamed source code for J2SE integration">
+    <taskdef name="prename" classname="com.sun.wts.tools.ant.PackageRenameTask">
+      <classpath>
+        <pathelement path="lib/package-rename-task.jar" />
+      </classpath>
+    </taskdef>
+
+    <prename srcdir="src/runtime" destdir="j2se-integration/runtime">
+      <pattern from="com.sun.xml.txw2" to="com.sun.xml.internal.txw2" />
+    </prename>
+    <prename srcdir="src/compiler" destdir="j2se-integration/compiler">
+      <pattern from="com.sun.xml.txw2" to="com.sun.xml.internal.txw2" />
+      <pattern from="com.sun.tools.txw2" to="com.sun.tools.internal.txw2" />
+    </prename>
+
+    <!-- sanity test -->
+    <mkdir dir="build/renamed-classes"/>
+    <javac srcdir="j2se-integration/runtime:j2se-integration/compiler" destdir="build/renamed-classes">
+      <classpath>
+        <fileset dir="lib" includes="*/*.jar"/>
+      </classpath>
+    </javac>
+  </target>
 </project>
