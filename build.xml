@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.64 2006-06-16 16:27:55 kohsuke Exp $
+       $Id: build.xml,v 1.65 2006-06-16 16:29:27 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -550,6 +550,7 @@ Class-Path: ${manifest.classpath}
           <!-- clean dist, and srcbundle -->
           <delete dir="${jaxb.dist}" />
           <delete dir="${srcbundle.dist}" />
+          <delete dir="j2se-integration" />
 
           <!-- clean up docs and dists -->
           <!-- don't delete the top level docs directory -->
