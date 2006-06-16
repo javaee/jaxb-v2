@@ -64,6 +64,10 @@
         </replace-->
     </target>
 
+  <target name="j2se-integration" depends="compile">
+    <package-rename srcdir="${runtime-fi.src}"             destdir="j2se-integration/runtime-fi/src" />
+  </target>
+
     <!-- generate javadoc -->
     <target name="javadoc">
         <fail>Use the javadoc target of the runtime module</fail>

@@ -142,4 +142,26 @@
       <delete file="@{dest}/samples.xml"/>
     </sequential>
   </macrodef>
+
+  <!-- package rename task -->
+  <taskdef name="prename" classname="com.sun.wts.tools.ant.PackageRenameTask">
+    <classpath>
+      <pathelement path="tools/lib/util/package-rename-task.jar" />
+    </classpath>
+  </taskdef>
+
+  <macrodef name="package-rename">
+    <attribute name="srcdir" />
+    <attribute name="destdir" />
+    <sequential>
+      <prename srcdir="@{srcdir}" destdir="@{destdir}">
+        <pattern from="com.sun.codemodel" to="com.sun.codemodel.internal" />
+        <pattern from="com.sun.xml" to="com.sun.xml.internal" />
+        <pattern from="com.sun.xsom" to="com.sun.xsom.internal" />
+        <pattern from="com.sun.txw2" to="com.sun.xsom.internal" />
+        <pattern from="com.sun.istack" to="com.sun.istack.internal" />
+        <pattern from="org.jvnet.fastinfoset" to="com.sun.xml.internal.org.jvnet.fastinfoset" />
+      </prename>
+    </sequential>
+  </macrodef>
 </project>
