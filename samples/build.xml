@@ -117,8 +117,7 @@
     </target>
     
     <!-- remove all intermediate files -->
-    <target name="clean" depends="clean-samples" description="clean generated artifacts"/>
-    <target name="clean-samples">
+    <target name="clean" description="clean generated artifacts">
         <delete dir="${samples.build}" />
         <!-- clean generated artifacts from test runs under samples-src/* -->
         <delete includeemptydirs="true" >

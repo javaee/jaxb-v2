@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.66 2006-06-16 16:46:39 kohsuke Exp $
+       $Id: build.xml,v 1.67 2006-06-16 19:00:17 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -77,7 +77,7 @@
         <ant dir="runtime"             target="compile" />
         <ant dir="runtime-fi"          target="compile" />
         <ant dir="runtime-staxex"      target="compile" />
-        <ant dir="runtime-deprecated"  target="compile-runtime-deprecated" />
+        <ant dir="runtime-deprecated"  target="compile" />
         <ant dir="xjc"                 target="compile" />
         <ant dir="tools"               target="compile" />
     </target>
@@ -562,10 +562,10 @@ Class-Path: ${manifest.classpath}
           <ant dir="runtime"            target="clean" />
           <ant dir="runtime-fi"         target="clean" />
           <ant dir="runtime-staxex"     target="clean" />
-          <ant dir="runtime-deprecated" target="clean-runtime-deprecated" />
+          <ant dir="runtime-deprecated" target="clean" />
           <ant dir="xjc"                target="clean" />
-          <ant dir="pkg"                target="clean-pkg" />
-          <ant dir="samples"            target="clean-samples"/>
+          <ant dir="pkg"                target="clean" />
+          <ant dir="samples"            target="clean"/>
           <ant dir="tools"              target="clean"/>
           <ant dir="apgen"              target="clean" />
           <ant dir="reflection"         target="clean" />
