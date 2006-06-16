@@ -89,7 +89,11 @@
         </jar>
     </target>
 
-    <!-- build dist -->
+  <target name="j2se-integration" depends="compile">
+    <package-rename srcdir="${codemodel.src}" destdir="j2se-integration/codemodel/src" />
+  </target>
+
+  <!-- build dist -->
     <!-- not sure we need this anymore....
     <target name="dist" depends="compile">
         <mkdir dir="${work.dir}/dist/lib" />

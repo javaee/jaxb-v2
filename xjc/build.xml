@@ -20,7 +20,7 @@
  [name of copyright owner]
 -->
 
-<!-- $Id: build.xml,v 1.21 2006-01-30 04:27:42 kohsuke Exp $ -->
+<!-- $Id: build.xml,v 1.22 2006-06-16 16:27:53 kohsuke Exp $ -->
 <project name="xjc" basedir=".." default="compile">
 
   <description>
@@ -181,7 +181,11 @@
         </java>
     </target>
     
-    
+  <target name="j2se-integration" depends="compile">
+    <package-rename srcdir="${xjc.src}" destdir="j2se-integration/xjc/src" />
+    <package-rename srcdir="${xjc.gensrc}" destdir="j2se-integration/xjc/src" />
+  </target>
+
     <target name="compile-xjc-test" 
             depends="compile"
 	    description="compile xjc/test">

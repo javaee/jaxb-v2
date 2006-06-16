@@ -548,6 +548,7 @@
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/jaxen-1.1-beta-4.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/util/ant-junit.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/util/nekohtml.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/util/istack-commons-test.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -576,6 +577,7 @@
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/xalan-j_2_6_0-src.zip!/xalan-j_2_6_0/src" />
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/bsh-src.zip!/src" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/ant-src.zip!/apache-ant-1.6.2/src/main" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/istack-commons-test-src.zip!/" />
       </SOURCES>
     </library>
     <library name="runtime">

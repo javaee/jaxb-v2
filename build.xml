@@ -46,20 +46,13 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.63 2006-06-06 16:51:34 kohsuke Exp $
+       $Id: build.xml,v 1.64 2006-06-16 16:27:55 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
     <property file="${basedir}/build.properties" />
 
     <import file="build-taskdefs.xml" />
-
-    <!--
-      when building jars for Maven, we want to put suffix
-      (sometimes with version like '-2.0.beta1', with date '-20051208', or with '-SNAPSHOT')
-      this property lets you do that.
-    -->
-    <property name="jar.suffix" value="" />
 
     <target name="init">
         <!-- this property is used by "xjc -version" and is also set in each of the
@@ -89,6 +82,15 @@
         <ant dir="tools"               target="compile" />
     </target>
 
+  <target name="j2se-integration"
+          description="prepare renamed source code for J2SE integration">
+    <subant target="j2se-integration">
+      <fileset file="codemodel/build.xml" />
+      <fileset file="runtime/build.xml" />
+      <fileset file="runtime-fi/build.xml" />
+      <fileset file="xjc/build.xml" />
+    </subant>
+  </target>
 
 
     <target name="architecture-document"
@@ -211,12 +213,12 @@
                 <source dir="${runtime.classes}" includes="**/*.class" />
               </stripper-->
               <manifest mode="update" file="${runtime.root}/build/manifest.rt">
-                <attribute name="Class-Path" value="jaxb-api.jar activation.jar jsr173_1.0_api.jar jaxb1-impl${jar.suffix}.jar" /> <!-- added for JES4 script compatibility -->
+                <attribute name="Class-Path" value="jaxb-api.jar activation.jar jsr173_1.0_api.jar jaxb1-impl.jar" /> <!-- added for JES4 script compatibility -->
                 <section name="com.sun.xml.bind.v2.runtime">
                   <attribute name="Implementation-Version" value="${build.version}" />
                 </section>
               </manifest>
-              <jar jarfile="${jaxb.dist}/lib/jaxb-impl${jar.suffix}.jar"
+              <jar jarfile="${jaxb.dist}/lib/jaxb-impl.jar"
                    manifest="${runtime.root}/build/manifest.rt"
                    duplicate="fail">
                   <fileset dir="${runtime.classes}"/>
@@ -237,7 +239,7 @@
               <unzip dest="${jaxb.root}/build/jaxb-1-impl-rejar">
                 <fileset dir="${jaxb.libs.runtime}" includes="*.jar" />
               </unzip>
-              <jar jarfile="${jaxb.dist}/lib/jaxb1-impl${jar.suffix}.jar"
+              <jar jarfile="${jaxb.dist}/lib/jaxb1-impl.jar"
                    manifest="${runtime.root}/build/manifest.rt1">
                   <!-- can't use zipgroupfileset because of the duplicate version.properties -->
                   <fileset dir="${jaxb.root}/build/jaxb-1-impl-rejar"/>
@@ -257,7 +259,7 @@
                    and yes, it's OK to have new lines and spaces inbetween.
               -->
               <property name="manifest.classpath"
-                value="jaxb-api.jar jaxb-impl${jar.suffix}.jar jsr173_1.0_api.jar activation.jar" />
+                value="jaxb-api.jar jaxb-impl.jar jsr173_1.0_api.jar activation.jar" />
               <echo file="${xjc.root}/manifest.xjc" append="true"
 >Main-Class: com.sun.tools.xjc.XJCFacade
 Class-Path: ${manifest.classpath}
@@ -272,7 +274,7 @@ Class-Path: ${manifest.classpath}
               <unzip dest="${jaxb.root}/build/jaxb-xjc-rejar">
                 <fileset dir="${jaxb.libs.compiler}" includes="*.jar" />
               </unzip>
-              <jar jarfile="${jaxb.dist}/lib/jaxb-xjc${jar.suffix}.jar"
+              <jar jarfile="${jaxb.dist}/lib/jaxb-xjc.jar"
                    manifest="${xjc.root}/manifest.xjc"
                    duplicate="fail">
                   <!-- can't use zipgroupfileset because of the duplicate LICENSE.txt -->
@@ -504,6 +506,11 @@ Class-Path: ${manifest.classpath}
       </taskdef>
       <delete dir="build/maven-repo" /><!-- clean it -->
       <!-- ${suffix} can be overridden to "" for posting releases -->
+      <!--
+        when building jars for Maven, we want to put suffix
+        (sometimes with version like '-2.0.beta1', with date '-20051208', or with '-SNAPSHOT')
+        this property lets you do that.
+      -->
       <fail unless="jar.suffix">jar.suffix property needs to be defined</fail>
       <maven-repository-importer
           destdir="build/maven-repo" version="${jar.suffix}">
@@ -511,13 +518,13 @@ Class-Path: ${manifest.classpath}
           jar="dist/lib/jaxb-api.jar"
           pom="tools/poms/jaxb-api.pom" />
         <artifact
-          jar="dist/lib/jaxb-impl${jar.suffix}.jar"
+          jar="dist/lib/jaxb-impl.jar"
           pom="tools/poms/jaxb-impl.pom" />
         <artifact
-          jar="dist/lib/jaxb-xjc${jar.suffix}.jar"
+          jar="dist/lib/jaxb-xjc.jar"
           pom="tools/poms/jaxb-xjc.pom" />
         <artifact
-          jar="dist/lib/jaxb1-impl${jar.suffix}.jar"
+          jar="dist/lib/jaxb1-impl.jar"
           pom="tools/poms/jaxb1-impl.pom" />
         <filterset>
           <filter token="API_VERSION" value="${release.spec.version}"/>
@@ -528,6 +535,12 @@ Class-Path: ${manifest.classpath}
     <target name="push-to-maven" depends="push-to-maven-prepare"
       description="publish artifacts into the maven repository">
       <cvs-import src="build/maven-repo" dest="jaxb/repo" cvsroot=":pserver:${user.name}@java-net-cvs:/cvs" />
+    </target>
+
+    <target name="push-snapshot-to-maven" depends="dist"
+      description="publish snapshot jars into the maven repository">
+      <property name="jar.suffix" value="${release.impl.version}-SNAPSHOT" />
+      <antcall target="push-to-maven-prepare" />
     </target>
 
     <!-- clean all of the builds -->
@@ -788,7 +801,6 @@ Class-Path: ${manifest.classpath}
       <zip destfile="${zip.release.dir}/jaxb2.zip" basedir="${zip.build.dir}" />
     </target>
     
-    
     <target name="release-engineering"
             description="target for Sun RE builds"
             depends="src-zip,bin-installer" />
@@ -830,15 +842,15 @@ Class-Path: ${manifest.classpath}
         <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-doc.zip"
              dest="tools/lib/redist/jaxb-api-doc.zip" />
     </target>
-    
-    
+
+
     <target name="integrate-xsom">
         <get src="http://kohsuke.sfbay/hudson/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom.jar"
              dest="tools/lib/rebundle/compiler/xsom.jar" />
         <get src="http://kohsuke.sfbay/hudson/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom-src.zip"
              dest="tools/lib/src/xsom-src.zip" />
     </target>
-    
+
     <target name="integrate-maven-repository-importer">
         <get src="http://kohsuke.sfbay/hudson/job/maven-repository-importer/lastSuccessfulBuild/artifact/build/maven-repository-importer.jar"
              dest="tools/lib/util/maven-repository-importer.jar" />
@@ -852,16 +864,16 @@ Class-Path: ${manifest.classpath}
         <get src="http://kohsuke.sfbay/hudson/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2-src.zip"
              dest="tools/lib/src/txw2-src.zip" />
     </target>
-    
-    
+
+
     <target name="integrate-rngom">
         <get src="http://kohsuke.sfbay/hudson/job/rngom/lastSuccessfulBuild/artifact/rngom/rngom/build/rngom.jar"
              dest="tools/lib/rebundle/compiler/rngom.jar" />
         <get src="http://kohsuke.sfbay/hudson/job/rngom/lastSuccessfulBuild/artifact/rngom/rngom/build/rngom-src.zip"
              dest="tools/lib/src/rngom-src.zip" />
     </target>
-    
-    
+
+
     <target name="integrate-istack-commons">
         <property name="istack.commons.runtime" value="http://kohsuke.sfbay/hudson/job/istack-commons/lastSuccessfulBuild/artifact/runtime/build" />
         <property name="istack.commons.tools" value="http://kohsuke.sfbay/hudson/job/istack-commons/lastSuccessfulBuild/artifact/tools/build" />
@@ -871,7 +883,7 @@ Class-Path: ${manifest.classpath}
              dest="tools/lib/rebundle/compiler/istack-commons-tools.jar" />
         <get src="${istack.commons.tools}/istack-commons-tools-src.zip"
              dest="tools/lib/src/istack-commons-tools-src.zip" />
-        
+
         <get src="${istack.commons.runtime}/istack-commons-runtime.jar"
              dest="tools/lib/rebundle/runtime2/istack-commons-runtime.jar" />
         <get src="${istack.commons.runtime}/istack-commons-runtime-src.zip"
@@ -881,5 +893,10 @@ Class-Path: ${manifest.classpath}
            dest="tools/lib/util/istack-commons-test.jar" />
       <get src="${istack.commons.test}/istack-commons-test-src.zip"
            dest="tools/lib/src/istack-commons-test-src.zip" />
+    </target>
+
+    <target name="integrate-package-rename-task">
+        <get src="http://kohsuke.sfbay/hudson/job/package-rename-task/lastSuccessfulBuild/artifact/target/package-rename-task-1.0.jar"
+             dest="tools/lib/util/package-rename-task.jar"/>
     </target>
 </project>
