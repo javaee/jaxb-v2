@@ -306,8 +306,15 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
 
     // method for JAXB unmarshaller
     @XmlElement(name="javaType")
-    private void setGlobalConversions(GlobalConversion[] convs) {
-        for (GlobalConversion u : convs) {
+    private void setGlobalConversions(GlobalStandardConversion[] convs) {
+        for (GlobalStandardConversion u : convs) {
+            globalConversions.put(u.xmlType,u);
+        }
+    }
+
+    @XmlElement(name="javaType",namespace=Const.XJC_EXTENSION_URI)
+    private void setGlobalConversions2(GlobalVendorConversion[] convs) {
+        for (GlobalVendorConversion u : convs) {
             globalConversions.put(u.xmlType,u);
         }
     }
@@ -452,7 +459,18 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
         }
     }
 
-    static final class GlobalConversion extends BIConversion.User {
+    /**
+     * Global &lt;jaxb:javaType>.
+     */
+    static final class GlobalStandardConversion extends BIConversion.User {
+        @XmlAttribute
+        QName xmlType;
+    }
+
+    /**
+     * Global &lt;xjc:javaType>.
+     */
+    static final class GlobalVendorConversion extends BIConversion.UserAdapter {
         @XmlAttribute
         QName xmlType;
     }
