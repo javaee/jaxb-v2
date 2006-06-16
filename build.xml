@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.65 2006-06-16 16:29:27 kohsuke Exp $
+       $Id: build.xml,v 1.66 2006-06-16 16:46:39 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -71,7 +71,7 @@
     <target name="compile"
             depends="init"
             description="compile codemodel, runtime, and xjc sub-projects">
-        <ant dir="codemodel"           target="compile-codemodel" />
+        <ant dir="codemodel"           target="compile" />
         <ant dir="codemodel"           target="annotation-compiler" />
         <ant dir="apgen"               target="compile" />
         <ant dir="runtime"             target="compile" />
@@ -558,7 +558,7 @@ Class-Path: ${manifest.classpath}
           <!-- <delete dir="${jaxb.root}/dist" /> -->
 
           <!-- clean sub-projects -->
-          <ant dir="codemodel"          target="clean-codemodel" />
+          <ant dir="codemodel"          target="clean" />
           <ant dir="runtime"            target="clean" />
           <ant dir="runtime-fi"         target="clean" />
           <ant dir="runtime-staxex"     target="clean" />
