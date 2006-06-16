@@ -41,23 +41,15 @@
     <!-- this is very inefficient, but it builds everything we need -->
     <ant dir="${jaxb.root}" target="compile" />
 
-    <!-- build the package rename task -->
-    <ant dir="${jaxb.root}/tools/package-rename-task" target="jar" />
-    <taskdef name="package-rename" classname="com.sun.tools.package_rename_task.PackageRenameTask">
-      <classpath>
-        <pathelement path="${jaxb.root}/tools/package-rename-task/build/classes" />
-      </classpath>
-    </taskdef>
-
     <macrodef name="rename">
       <attribute name="srcdir" />
       <sequential>
-        <package-rename srcdir="@{srcdir}"
-          destdir="${reflection.root}/build/src" includes="**/*" excludes="com/sun/xml/bind/v2/package-info.java">
+        <prename srcdir="@{srcdir}"
+          destdir="${reflection.root}/build/src" excludes="com/sun/xml/bind/v2/package-info.java">
 
-          <mapping from="com.sun.xml.bind.v2" to="org.jvnet.jaxb.reflection" />
-          <mapping from="com.sun.xml.bind" to="org.jvnet.jaxb.reflection.impl" />
-        </package-rename>
+          <pattern from="com.sun.xml.bind.v2" to="org.jvnet.jaxb.reflection" />
+          <pattern from="com.sun.xml.bind" to="org.jvnet.jaxb.reflection.impl" />
+        </prename>
       </sequential>
     </macrodef>
 
