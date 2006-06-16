@@ -1,4 +1,4 @@
-/* $Id: StAXStreamConnector.java,v 1.7 2006-06-06 18:57:32 sandoz Exp $
+/* $Id: StAXStreamConnector.java,v 1.8 2006-06-16 11:35:44 sandoz Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -41,7 +41,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import com.sun.xml.bind.WhiteSpaceProcessor;
-import java.lang.reflect.Method;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -297,54 +296,24 @@ class StAXStreamConnector extends StAXConnector {
     }
 
 
-    /**
-     * The Fast Infoset class loader.
-     */
-    private static ClassLoader FI_CLASS_LOADER;
-    
-    /**
-     * Get the Fast Infoset class loader.
-     */
-    private static ClassLoader getFIClassLoader() {
-        if (FI_CLASS_LOADER == null) {
-            try {
-                // Obtain the class loader to use for loading Fast Infoset classes
-                Class clazz = Class.forName("com.sun.fastinfoset.runtime.FastInfosetRuntime");
-                Method m = clazz.getDeclaredMethod("getClassLoader", 
-                        new Class[] { ClassLoader.class });
-                FI_CLASS_LOADER = (ClassLoader)m.invoke(null, 
-                        new Object[] { UnmarshallerImpl.class.getClassLoader() });
-            } catch (Throwable e) {
-            }
-        }
-        
-        return FI_CLASS_LOADER;
-    }
-    
+
     /**
      * Reference to FI's StAXReader class, if FI can be loaded.
      */
-    private static final Class FI_STAX_READER_CLASS = 
-            initFIStAXReaderClass(getFIClassLoader());
-    private static final Constructor<? extends StAXConnector> FI_CONNECTOR_CTOR = 
-            initFastInfosetConnectorClass(getFIClassLoader());
-    
-    private static Class initFIStAXReaderClass(ClassLoader cl) {
+    private static final Class FI_STAX_READER_CLASS = initFIStAXReaderClass();
+    private static final Constructor<? extends StAXConnector> FI_CONNECTOR_CTOR = initFastInfosetConnectorClass();
+
+    private static Class initFIStAXReaderClass() {
         try {
-            return Class.forName(
-                    "com.sun.xml.fastinfoset.stax.StAXDocumentParser",
-                    true, cl);
+            return UnmarshallerImpl.class.getClassLoader().loadClass("com.sun.xml.fastinfoset.stax.StAXDocumentParser");
         } catch (Throwable e) {
             return null;
         }
     }
 
-    private static Constructor<? extends StAXConnector> initFastInfosetConnectorClass(
-            ClassLoader cl) {
+    private static Constructor<? extends StAXConnector> initFastInfosetConnectorClass() {
         try {
-            Class c = Class.forName(
-                    "com.sun.xml.bind.v2.runtime.unmarshaller.FastInfosetConnector",
-                    true, cl);
+            Class c = UnmarshallerImpl.class.getClassLoader().loadClass("com.sun.xml.bind.v2.runtime.unmarshaller.FastInfosetConnector");
             return c.getConstructor(FI_STAX_READER_CLASS,XmlVisitor.class);
         } catch (Throwable e) {
             return null;

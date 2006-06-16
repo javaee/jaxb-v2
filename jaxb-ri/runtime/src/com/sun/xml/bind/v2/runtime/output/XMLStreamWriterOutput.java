@@ -9,7 +9,6 @@ import javax.xml.stream.XMLStreamWriter;
 import com.sun.xml.bind.v2.runtime.MarshallerImpl;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
-import java.lang.reflect.Method;
 
 import org.xml.sax.SAXException;
 
@@ -121,54 +120,24 @@ public class XMLStreamWriterOutput extends XmlOutputAbstractImpl {
         }
     }
 
-    /**
-     * The Fast Infoset class loader.
-     */
-    private static ClassLoader FI_CLASS_LOADER;
-    
-    /**
-     * Get the Fast Infoset class loader.
-     */
-    private static ClassLoader getFIClassLoader() {
-        if (FI_CLASS_LOADER == null) {
-            try {
-                // Obtain the class loader to use for loading Fast Infoset classes
-                Class clazz = Class.forName("com.sun.fastinfoset.runtime.FastInfosetRuntime");
-                Method m = clazz.getDeclaredMethod("getClassLoader", 
-                        new Class[] { ClassLoader.class });
-                FI_CLASS_LOADER = (ClassLoader)m.invoke(null, 
-                        new Object[] { MarshallerImpl.class.getClassLoader() });
-            } catch (Throwable e) {
-            }
-        }
-        
-        return FI_CLASS_LOADER;
-    }
 
     /**
      * Reference to FI's XMLStreamWriter class, if FI can be loaded.
      */
-    private static final Class FI_STAX_WRITER_CLASS = 
-            initFIStAXWriterClass(getFIClassLoader());
-    private static final Constructor<? extends XmlOutput> FI_OUTPUT_CTOR = 
-            initFastInfosetOutputClass(getFIClassLoader());
+    private static final Class FI_STAX_WRITER_CLASS = initFIStAXWriterClass();
+    private static final Constructor<? extends XmlOutput> FI_OUTPUT_CTOR = initFastInfosetOutputClass();
 
-    private static Class initFIStAXWriterClass(ClassLoader cl) {
+    private static Class initFIStAXWriterClass() {
         try {
-            return Class.forName(
-                    "com.sun.xml.fastinfoset.stax.StAXDocumentSerializer",
-                    true, cl);
+            return MarshallerImpl.class.getClassLoader().loadClass("com.sun.xml.fastinfoset.stax.StAXDocumentSerializer");
         } catch (Throwable e) {
             return null;
         }
     }
 
-    private static Constructor<? extends XmlOutput> initFastInfosetOutputClass(
-            ClassLoader cl) {
+    private static Constructor<? extends XmlOutput> initFastInfosetOutputClass() {
         try {
-            Class c = Class.forName(
-                    "com.sun.xml.bind.v2.runtime.output.FastInfosetStreamWriterOutput",
-                    true, cl);
+            Class c = UnmarshallerImpl.class.getClassLoader().loadClass("com.sun.xml.bind.v2.runtime.output.FastInfosetStreamWriterOutput");
             return c.getConstructor(FI_STAX_WRITER_CLASS);
         } catch (Throwable e) {
             return null;
