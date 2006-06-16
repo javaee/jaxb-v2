@@ -400,8 +400,8 @@ public class XMLWriter extends XMLFilterImpl
                 String e="";
                 if(encoding!=null)
                     e = " encoding=\""+encoding+'\"';
-            
-                write("<?xml version=\"1.0\""+e+" standalone=\"yes\"?>\n");
+
+                writeXmlDecl("<?xml version=\"1.0\""+e +" standalone=\"yes\"?>");
             }
             
             if(header!=null)
@@ -411,6 +411,10 @@ public class XMLWriter extends XMLFilterImpl
         } catch( IOException e ) {
             throw new SAXException(e);
         }
+    }
+
+    protected void writeXmlDecl(String decl) throws IOException {
+        write(decl);
     }
 
 
@@ -428,7 +432,6 @@ public class XMLWriter extends XMLFilterImpl
         throws SAXException
     {
         try {
-            write('\n');
             super.endDocument();
             flush();
         } catch( IOException e ) {
@@ -535,9 +538,6 @@ public class XMLWriter extends XMLFilterImpl
             } else {
                 write("/>");
                 startTagIsClosed = true;
-            }
-            if (elementLevel == 1) {
-                write('\n');
             }
             super.endElement(uri, localName, qName);
 //            nsSupport.popContext();
@@ -870,7 +870,7 @@ public class XMLWriter extends XMLFilterImpl
      *
      * @param c The character to write.
      */
-    private void write (char c) throws IOException {
+    protected final void write (char c) throws IOException {
         output.write(c);
     }
     
@@ -878,7 +878,7 @@ public class XMLWriter extends XMLFilterImpl
     /**
      * Write a raw string.
      */
-    private void write (String s) throws IOException {
+    protected final void write(String s) throws IOException {
         output.write(s);
     }
 
