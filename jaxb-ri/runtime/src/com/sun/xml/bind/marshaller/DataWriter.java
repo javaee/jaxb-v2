@@ -167,7 +167,7 @@ public class DataWriter extends XMLWriter
     {
         depth = 0;
         state = SEEN_NOTHING;
-        stateStack = new Stack();
+        stateStack = new Stack<Object>();
         super.reset();
     }
 
