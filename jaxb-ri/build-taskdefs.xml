@@ -146,7 +146,7 @@
   <!-- package rename task -->
   <taskdef name="prename" classname="com.sun.wts.tools.ant.PackageRenameTask">
     <classpath>
-      <pathelement path="tools/lib/util/package-rename-task.jar" />
+      <pathelement path="${jaxb.root}/tools/lib/util/package-rename-task.jar" />
     </classpath>
   </taskdef>
 
