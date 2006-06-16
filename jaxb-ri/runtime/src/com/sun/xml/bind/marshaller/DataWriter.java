@@ -4,6 +4,7 @@
 
 package com.sun.xml.bind.marshaller;
 
+import java.io.IOException;
 import java.io.Writer;
 import java.util.Stack;
 
@@ -171,6 +172,11 @@ public class DataWriter extends XMLWriter
         super.reset();
     }
 
+    protected void writeXmlDecl(String decl) throws IOException {
+        super.writeXmlDecl(decl);
+        write('\n');
+    }
+
 
     /**
      * Write a start tag.
@@ -236,6 +242,14 @@ public class DataWriter extends XMLWriter
         state = stateStack.pop();
     }
 
+    public void endDocument() throws SAXException {
+        try {
+            write('\n');
+        } catch( IOException e ) {
+            throw new SAXException(e);
+        }
+        super.endDocument();
+    }
 
 //    /**
 //     * Write a empty element tag.
