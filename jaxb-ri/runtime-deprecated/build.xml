@@ -34,14 +34,6 @@
     <!-- import build properties -->
     <property file="${basedir}/build.properties" />
 
-    <!-- convenience targets when building alone -->
-    <target name="compile" 
-            depends="compile-runtime-deprecated"
-            description="compile all deprecated runtime src into jaxb-ri/runtime-deprecated/build/classes"/>
-    <target name="clean"   
-            depends="clean-runtime-deprecated"
-            description="clean jaxb-ri/runtime-deprecated/build"/>
-
    <!-- classpath -->
    <path id="javac.classpath">
         <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
@@ -51,7 +43,7 @@
    </path>
 
    <!-- compile Java source files -->
-    <target name="compile-runtime-deprecated">
+    <target name="compile">
         <mkdir dir="${runtime-deprecated.classes}" />
 
         <!-- always delete this prop file so that the latest build id can be set>
@@ -76,7 +68,7 @@
     </target>
 
     <!-- remove all intermediate files -->
-    <target name="clean-runtime-deprecated">
+    <target name="clean">
         <delete dir="${runtime-deprecated.root}/build" />
     </target>
 </project>

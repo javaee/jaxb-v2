@@ -130,7 +130,7 @@
     </exec>
   </target>
 
-  <target name="clean-pkg">
+  <target name="clean">
     <delete dir="${pkg.build.dir}"/>
     <delete dir="${pkg.release.dir}"/>
   </target>
