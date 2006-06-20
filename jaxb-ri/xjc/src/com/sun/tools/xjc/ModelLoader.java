@@ -546,7 +546,7 @@ public final class ModelLoader {
         SchemaBuilder sb = new CheckingSchemaBuilder(new DSchemaBuilderImpl(),errorReceiver);
 
         try {
-            DPattern out = p.parse(sb);
+            DPattern out = (DPattern)p.parse(sb);
             return RELAXNGCompiler.build(out,codeModel,opt);
         } catch (IllegalSchemaException e) {
             errorReceiver.error(e.getMessage(),e);
