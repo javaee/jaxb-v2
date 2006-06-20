@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 
@@ -222,6 +222,10 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void> {
      */
     public Outline generateCode(Options opt,ErrorReceiver receiver) {
         ErrorReceiverFilter ehf = new ErrorReceiverFilter(receiver);
+
+        // run extensions
+        for( Plugin ma : opt.activePlugins )
+            ma.postProcessModel(this,ehf);
 
         Outline o = BeanGenerator.generate(this, ehf);
 
