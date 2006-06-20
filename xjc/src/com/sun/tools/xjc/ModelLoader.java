@@ -85,7 +85,7 @@ public final class ModelLoader {
     private final JCodeModel codeModel;
     
     /**
-     * A convenience method to load schemas into a BGM.
+     * A convenience method to load schemas into a {@link Model}.
      */
     public static Model load( Options opt, JCodeModel codeModel, ErrorReceiver er ) {
         return new ModelLoader(opt,codeModel,er).load();
@@ -338,7 +338,6 @@ public final class ModelLoader {
                 return createXSOMSpeculative();
             } catch( SpeculationFailure _ ) {
                 // failed. go the slow way
-                ;
             }
         }
 
@@ -547,7 +546,7 @@ public final class ModelLoader {
         SchemaBuilder sb = new CheckingSchemaBuilder(new DSchemaBuilderImpl(),errorReceiver);
 
         try {
-            DPattern out = (DPattern)p.parse(sb);
+            DPattern out = p.parse(sb);
             return RELAXNGCompiler.build(out,codeModel,opt);
         } catch (IllegalSchemaException e) {
             errorReceiver.error(e.getMessage(),e);
