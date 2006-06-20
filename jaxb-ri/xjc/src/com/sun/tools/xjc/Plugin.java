@@ -23,9 +23,10 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import com.sun.tools.xjc.model.CPluginCustomization;
-import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.generator.bean.field.FieldRendererFactory;
+import com.sun.tools.xjc.model.CPluginCustomization;
+import com.sun.tools.xjc.model.Model;
+import com.sun.tools.xjc.outline.Outline;
 
 import org.xml.sax.ErrorHandler;
 
@@ -168,6 +169,37 @@ public abstract class Plugin {
     }
 
     /**
+     * Performs the post-processing of the {@link Model}.
+     *
+     * <p>
+     * This method is invoked after XJC has internally finished
+     * the model construction. This is a chance for a plugin to
+     * affect the way code generation is performed.
+     *
+     * <p>
+     * Compared to the {@link #run(Outline, Options, ErrorHandler)}
+     * method, this method allows a plugin to work at the higher level
+     * conceptually closer to the abstract JAXB model, as opposed to
+     * Java syntax level.
+     *
+     * <p>
+     * Note that this method is invoked only when a {@link Plugin}
+     * is activated.
+     *
+     * @param model
+     *      The object that represents the classes/properties to
+     *      be generated.
+     *
+     * @param errorHandler
+     *      Errors should be reported to this handler.
+     *
+     * @since JAXB 2.0.2
+     */
+    public void postProcessModel(Model model, ErrorHandler errorHandler) {
+        // noop
+    }
+
+    /**
      * Run the add-on.
      *
      * <p>
@@ -192,5 +224,4 @@ public abstract class Plugin {
      */
     public abstract boolean run(
         Outline outline, Options opt, ErrorHandler errorHandler );
-        
 }
