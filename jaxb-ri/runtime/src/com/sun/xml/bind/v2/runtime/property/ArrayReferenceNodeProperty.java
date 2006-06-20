@@ -69,7 +69,7 @@ class ArrayReferenceNodeProperty<BeanT,ListT,ItemT> extends ArrayERProperty<Bean
                     if(isMixed && item.getClass()==String.class) {
                         w.text((String)item,null);
                     } else {
-                        JaxBeanInfo bi = w.grammar.getBeanInfo(item,domHandler==null);
+                        JaxBeanInfo bi = w.grammar.getBeanInfo(item,true);
                         if(bi.jaxbType==Object.class && domHandler!=null)
                             // even if 'v' is a DOM node, it always derive from Object,
                             // so the getBeanInfo returns BeanInfo for Object
