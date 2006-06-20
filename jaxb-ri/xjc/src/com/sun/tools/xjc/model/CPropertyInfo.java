@@ -9,6 +9,7 @@ import javax.xml.namespace.QName;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JJavaName;
 import com.sun.codemodel.JType;
+import com.sun.tools.xjc.Plugin;
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
@@ -17,6 +18,7 @@ import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.RuntimeUtil;
 import com.sun.xml.xsom.XSComponent;
 
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
 
 /**
@@ -26,8 +28,8 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
 
     @XmlTransient
     private CClassInfo parent;
-    private final String privateName;
-    private final String publicName;
+    private String privateName;
+    private String publicName;
     private final boolean isCollection;
 
     @XmlTransient
@@ -65,7 +67,7 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
 
     private final CCustomizations customizations;
     /**
-     * @see #getSchemaType() 
+     * @see #getSchemaType()
      */
     public QName schemaType;
 
@@ -161,7 +163,20 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
      */
     public String getName(boolean isPublic) {
         return isPublic?publicName:privateName;
+    }
 
+    /**
+     * Overrides the name of the property.
+     *
+     * This method can be used from {@link Plugin#postProcessModel(Model, ErrorHandler)}.
+     * But the caller should do so with the understanding that this is inherently
+     * dangerous method.
+     */
+    public void setName(boolean isPublic, String newName) {
+        if(isPublic)
+            publicName = newName;
+        else
+            privateName = newName;
     }
 
     public String displayName() {
