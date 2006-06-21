@@ -58,14 +58,18 @@ public final class ExpressionBuilder implements XSTermFunction<Expression> {
     public Expression modelGroup(XSModelGroup group) {
         XSModelGroup.Compositor comp = group.getCompositor();
         if(comp==XSModelGroup.CHOICE) {
-            Expression e = null;
+            // empty choice is not epsilon, but empty set,
+            // so this initial value is incorrect. But this
+            // kinda works.
+            // properly handling empty set requires more work.
+            Expression e = Expression.EPSILON;
             for (XSParticle p : group.getChildren()) {
                 if(e==null)     e = particle(p);
                 else            e = new Choice(e,particle(p));
             }
             return e;
         } else {
-            Expression e = null;
+            Expression e = Expression.EPSILON;
             for (XSParticle p : group.getChildren()) {
                 if(e==null)     e = particle(p);
                 else            e = new Sequence(e,particle(p));
