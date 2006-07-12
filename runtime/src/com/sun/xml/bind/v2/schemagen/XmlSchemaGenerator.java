@@ -914,16 +914,13 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     e._default(t.getDefaultValue());
             }
 
-            if (ep.isCollection()) {
-                // TODO: not type-safe
+            if (ep.isCollection())
                 occurs.maxOccurs("unbounded");
+
+            if (!ep.isRequired())
+                // see Spec table 8-13
                 occurs.minOccurs(0);
-            } else {
-                if (!ep.isRequired()) {
-                    // see Spec table 8-13
-                    occurs.minOccurs(0);
-                } // else minOccurs defaults to 1
-            }
+            // else minOccurs defaults to 1
         }
 
         /**
