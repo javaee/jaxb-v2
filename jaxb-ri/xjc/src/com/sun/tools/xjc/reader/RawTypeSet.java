@@ -69,7 +69,7 @@ public final class RawTypeSet {
     }
 
     public boolean isRequired() {
-        return !mul.isOptional();
+        return mul.min>0;
     }
 
 
