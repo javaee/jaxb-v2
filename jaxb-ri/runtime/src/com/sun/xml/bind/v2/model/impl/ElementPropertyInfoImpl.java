@@ -9,13 +9,13 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.namespace.QName;
 
+import com.sun.istack.FinalArrayList;
 import com.sun.xml.bind.v2.model.core.ElementPropertyInfo;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
-import com.sun.istack.FinalArrayList;
 
 /**
  * Common {@link ElementPropertyInfo} implementation used for both
@@ -89,9 +89,9 @@ class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
             if(ann==null) {
                 // default
-                //TODO check with spec later
                 TypeT t = getIndividualType();
-                if(!nav().isPrimitive(t)) isRequired = false;
+                if(!nav().isPrimitive(t) || isCollection())
+                    isRequired = false;
                 // nillableness defaults to true if it's collection
                 types.add(createTypeRef(calcXmlName((XmlElement)null),t,isCollection(),null));
             } else {
@@ -100,7 +100,7 @@ class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
                     QName name = calcXmlName(item);
                     TypeT type = reader().getClassValue(item, "type");
                     if(type.equals(nav().ref(XmlElement.DEFAULT.class))) type = getIndividualType();
-                    if(!nav().isPrimitive(type) && !item.required())
+                    if((!nav().isPrimitive(type) || isCollection()) && !item.required())
                         isRequired = false;
                     types.add(createTypeRef(name, type, item.nillable(), getDefaultValue(item.defaultValue()) ));
                 }
