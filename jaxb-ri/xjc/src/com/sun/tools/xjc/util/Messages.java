@@ -40,7 +40,10 @@ class Messages
 
     static final String ERR_CLASSNAME_COLLISION_SOURCE =
         "CodeModelClassFactory.ClassNameCollision.Source";
-    
+
+    static final String ERR_INVALID_CLASSNAME =
+        "ERR_INVALID_CLASSNAME";
+
     static final String ERR_CASE_SENSITIVITY_COLLISION = // 2 args
         "CodeModelClassFactory.CaseSensitivityCollision";
 }

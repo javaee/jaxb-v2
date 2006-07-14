@@ -23,6 +23,7 @@ import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JJavaName;
 import com.sun.codemodel.JMod;
 import com.sun.tools.xjc.ErrorReceiver;
 
@@ -72,7 +73,15 @@ public final class CodeModelClassFactory {
     }
     public JDefinedClass createClass(
         JClassContainer parent, int mod, String name, Locator source, ClassType kind ) {
-        
+
+        if(!JJavaName.isJavaIdentifier(name)) {
+            // report the error
+            errorReceiver.error( new SAXParseException(
+                Messages.format( Messages.ERR_INVALID_CLASSNAME, name ), source ));
+            return createDummyClass(parent);
+        }
+
+
         try {
             if(parent.isClass() && kind==ClassType.CLASS)
                 mod |= JMod.STATIC;
@@ -101,15 +110,22 @@ public final class CodeModelClassFactory {
                     Messages.format( Messages.ERR_CASE_SENSITIVITY_COLLISION,
                         name, cls.name() ), null ) );
             }
-            
-            // recovery from this error by returning a dummy class.
-            // we won't generate the code, so the client will never see this class
-            // getting generated.
-            try {
-                return parent._class("$$$garbage$$$"+(ticketMaster++));
-            } catch( JClassAlreadyExistsException ee ) {
-                return ee.getExistingClass();
-            }
+
+            return createDummyClass(parent);
+        }
+    }
+
+    /**
+     * Create a dummy class to recover from an error.
+     *
+     * We won't generate the code, so the client will never see this class
+     * getting generated.
+     */
+    private JDefinedClass createDummyClass(JClassContainer parent) {
+        try {
+            return parent._class("$$$garbage$$$"+(ticketMaster++));
+        } catch( JClassAlreadyExistsException ee ) {
+            return ee.getExistingClass();
         }
     }
 }
