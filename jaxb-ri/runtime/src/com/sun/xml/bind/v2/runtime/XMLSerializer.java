@@ -822,7 +822,7 @@ public final class XMLSerializer extends Coordinator {
             // first declare all known URIs
             String[] knownUris = nameList.namespaceURIs;
             for( int i=0; i<knownUris.length; i++ )
-                knownUri2prefixIndexMap[i] = nsContext.declareNsUri(knownUris[i], null, false);
+                knownUri2prefixIndexMap[i] = nsContext.declareNsUri(knownUris[i], null, nameList.nsUriCannotBeDefaulted[i]);
 
             // then declare user-specified namespace URIs.
             // work defensively. we are calling an user-defined method.

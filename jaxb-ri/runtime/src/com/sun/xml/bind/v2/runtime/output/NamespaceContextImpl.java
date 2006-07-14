@@ -180,6 +180,11 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
                 }
             }
 
+            if(preferedPrefix==null && requirePrefix)
+                // we know we can't bind to "", but we don't have any possible name at hand.
+                // generate it here to avoid this namespace to be bound to "".
+                preferedPrefix = makeUniquePrefix();
+
             // haven't been declared. allocate a new one
             // if the preferred prefix is already in use, it should have been set to null by this time
             return put(uri, preferedPrefix);
@@ -190,7 +195,7 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
      * {@inheritDoc}.
      *
      * @param prefix
-     *      if null, an unique prefix is allocated.
+     *      if null, an unique prefix (including "") is allocated.
      */
     public int put(@NotNull String uri, @Nullable String prefix) {
         if(size==nsUris.length) {
@@ -207,16 +212,22 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
                 prefix = "";    // if this is the first user namespace URI we see, use "".
             else {
                 // otherwise make up an unique name 
-                prefix = new StringBuilder(5).append("ns").append(size).toString();
-                while(getNamespaceURI(prefix)!=null) {
-                    prefix += '_';  // under a rare circumstance there might be existing 'nsNNN', so rename them
-                }
+                prefix = makeUniquePrefix();
             }
         }
         nsUris[size] = uri;
         prefixes[size] = prefix;
 
         return size++;
+    }
+
+    private String makeUniquePrefix() {
+        String prefix;
+        prefix = new StringBuilder(5).append("ns").append(size).toString();
+        while(getNamespaceURI(prefix)!=null) {
+            prefix += '_';  // under a rare circumstance there might be existing 'nsNNN', so rename them
+        }
+        return prefix;
     }
 
 

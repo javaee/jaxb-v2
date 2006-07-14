@@ -14,6 +14,15 @@ public final class NameList {
     public final String[] namespaceURIs;
 
     /**
+     * For each entry in {@link #namespaceURIs}, whether the namespace URI
+     * can be declared as the default. If namespace URI is used in attributes,
+     * we always need a prefix, so we can't.
+     *
+     * True if this URI has to have a prefix.
+     */
+    public final boolean[] nsUriCannotBeDefaulted;
+
+    /**
      * Local names by their indices. No nulls in this array.
      * Read-only.
      */ 
@@ -29,8 +38,9 @@ public final class NameList {
      */
     public final int numberOfAttributeNames;
     
-    public NameList(String[] namespaceURIs, String[] localNames, int numberElementNames, int numberAttributeNames) {
+    public NameList(String[] namespaceURIs, boolean[] nsUriCannotBeDefaulted, String[] localNames, int numberElementNames, int numberAttributeNames) {
         this.namespaceURIs = namespaceURIs;
+        this.nsUriCannotBeDefaulted = nsUriCannotBeDefaulted;
         this.localNames = localNames;
         this.numberOfElementNames = numberElementNames;
         this.numberOfAttributeNames = numberAttributeNames;
