@@ -347,8 +347,8 @@ public final class ClassSelector extends BindingComponent {
         // or the association is modified.
         Binding b = new Binding(sc,bean);
         bindQueue.push(b);
-        Object o = bindMap.put(sc, b);
-        assert o==null;
+        Binding old = bindMap.put(sc, b);
+        assert old==null || old.bean==bean;
     }
 
 
