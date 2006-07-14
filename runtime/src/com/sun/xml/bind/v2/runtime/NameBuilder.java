@@ -1,20 +1,28 @@
 package com.sun.xml.bind.v2.runtime;
 
-import com.sun.xml.bind.v2.util.QNameMap;
-import com.sun.xml.bind.v2.util.QNameMap;
-
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
+
+import com.sun.xml.bind.v2.util.QNameMap;
 
 /**
  * Creates {@link Name}s and assign index numbers to them.
  *
+ * <p>
+ * During this process, this class also finds out which namespace URIs
+ * are statically known to be un-bindable as the default namespace.
+ * Those are the namespace URIs that are used by attribute names.
+ *
  * @author Kohsuke Kawaguchi
  */
+@SuppressWarnings({"StringEquality"})
 public final class NameBuilder {
     private Map<String,Integer> uriIndexMap = new HashMap<String, Integer>();
+    private Set<String> nonDefaultableNsUris = new HashSet<String>();
     private Map<String,Integer> localNameIndexMap = new HashMap<String, Integer>();
     private QNameMap<Integer> elementQNameIndexMap = new QNameMap<Integer>();
     private QNameMap<Integer> attributeQNameIndexMap = new QNameMap<Integer>();
@@ -43,8 +51,10 @@ public final class NameBuilder {
                     allocIndex(localNameIndexMap,localName),
                     localName,
                     true);
-        else
+        else {
+            nonDefaultableNsUris.add(nsUri);
             return createName(nsUri,localName, true, attributeQNameIndexMap);
+        }
     }
 
     private Name createName(String nsUri, String localName, boolean isAttribute, QNameMap<Integer> map) {        
@@ -82,16 +92,20 @@ public final class NameBuilder {
      * Wraps up everything and creates {@link NameList}.
      */
     public NameList conclude() {
+        boolean[] nsUriCannotBeDefaulted = new boolean[uriIndexMap.size()];
+        for (Map.Entry<String,Integer> e : uriIndexMap.entrySet()) {
+            nsUriCannotBeDefaulted[e.getValue()] = nonDefaultableNsUris.contains(e.getKey());
+        }
+
         NameList r = new NameList(
                 list(uriIndexMap),
+                nsUriCannotBeDefaulted,
                 list(localNameIndexMap), 
                 elementQNameIndexMap.size(),
                 attributeQNameIndexMap.size() );
         // delete them so that the create method can never be called again
         uriIndexMap = null;
         localNameIndexMap = null;
-        elementQNameIndexMap = null;
-        attributeQNameIndexMap = null;
         return r;
     }
 
