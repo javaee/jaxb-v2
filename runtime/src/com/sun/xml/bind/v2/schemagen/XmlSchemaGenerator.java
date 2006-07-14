@@ -165,6 +165,9 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             Namespace ns = getNamespace(nsUri);
             ns.classes.add(clazz);
             ns.addDependencyTo(clazz.getTypeName());
+
+            // schedule writing this global element
+            add(clazz.getElementName(),false,clazz);
         }
 
         QName tn = clazz.getTypeName();
@@ -234,6 +237,9 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             Namespace ns = getNamespace(nsUri);
             ns.enums.add(envm);
             ns.addDependencyTo(envm.getTypeName());
+
+            // schedule writing this global element
+            add(envm.getElementName(),false,envm);
         }
 
         final QName typeName = envm.getTypeName();
@@ -342,6 +348,11 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         private final Set<Namespace> depends = new LinkedHashSet<Namespace>();
 
         /**
+         * If this schema refers to components from this schema by itself.
+         */
+        private boolean selfReference;
+
+        /**
          * List of classes in this namespace.
          */
         private final Set<ClassInfo<T,C>> classes = new LinkedHashSet<ClassInfo<T,C>>();
@@ -405,8 +416,14 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
             String nsUri = qname.getNamespaceURI();
 
-            if(uri.equals(nsUri) || nsUri.equals(XML_SCHEMA))
+            if(nsUri.equals(XML_SCHEMA))
+                // no need to explicitly refer to XSD namespace
                 return;
+
+            if(nsUri.equals(uri)) {
+                selfReference = true;
+                return;
+            }
 
             // found a type in a foreign namespace, so make sure we generate an import for it
             depends.add(getNamespace(nsUri));
@@ -448,6 +465,12 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                 // namespace declarations
                 for (Namespace ns : depends) {
                     schema._namespace(ns.uri);
+                }
+
+                if(selfReference && uri.length()!=0) {
+                    // use common 'tns' prefix for the own namespace
+                    // if self-reference is needed
+                    schema._namespace(uri,"tns");
                 }
 
                 schema._pcdata(newline);
@@ -621,23 +644,23 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         }
 
         private void writeTopLevelClass(MaybeElement<T,C> c, TypeHost schema) {
-            if(!c.isElement())
-                return; // not an element
-
-            // MaybeElements can have a different namespace between element and type,
-            // so make sure that we want to write this here.
-            if(!uri.equals(c.getElementName().getNamespaceURI()))
-                return;
-
-            QName ename = c.asElement().getElementName();
-            assert ename.getNamespaceURI().equals(uri);
-            // [RESULT]
-            // <element name="foo" type="int"/>
-            // not allowed to tweek min/max occurs on global elements
-            TopLevelElement elem = ((Schema) schema).element();
-            elem.name(ename.getLocalPart());
-            writeTypeRef(elem, c, "type");
-            schema._pcdata(newline);
+//            if(!c.isElement())
+//                return; // not an element
+//
+//            // MaybeElements can have a different namespace between element and type,
+//            // so make sure that we want to write this here.
+//            if(!uri.equals(c.getElementName().getNamespaceURI()))
+//                return;
+//
+//            QName ename = c.asElement().getElementName();
+//            assert ename.getNamespaceURI().equals(uri);
+//            // [RESULT]
+//            // <element name="foo" type="int"/>
+//            // not allowed to tweek min/max occurs on global elements
+//            TopLevelElement elem = ((Schema) schema).element();
+//            elem.name(ename.getLocalPart());
+//            writeTypeRef(elem, c, "type");
+//            schema._pcdata(newline);
         }
 
         /**
