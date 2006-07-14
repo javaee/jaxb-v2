@@ -36,7 +36,6 @@ import com.sun.xml.bind.v2.model.core.ElementPropertyInfo;
 import com.sun.xml.bind.v2.model.core.EnumConstant;
 import com.sun.xml.bind.v2.model.core.EnumLeafInfo;
 import com.sun.xml.bind.v2.model.core.MapPropertyInfo;
-import com.sun.xml.bind.v2.model.core.MaybeElement;
 import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.NonElementRef;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
@@ -490,7 +489,6 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     schema._pcdata(newline);
                 }
                 for (ClassInfo<T, C> c : classes) {
-                    writeTopLevelClass(c,schema);
                     if (c.getTypeName()==null) {
                         // don't generate anything if it's an anonymous type
                         continue;
@@ -500,7 +498,6 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     schema._pcdata(newline);
                 }
                 for (EnumLeafInfo<T, C> e : enums) {
-                    writeTopLevelClass(e,schema);
                     if (e.getTypeName()==null) {
                         // don't generate anything if it's an anonymous type
                         continue;
@@ -641,26 +638,6 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                 base.enumeration().value(c.getLexicalValue());
             }
             st.commit();
-        }
-
-        private void writeTopLevelClass(MaybeElement<T,C> c, TypeHost schema) {
-//            if(!c.isElement())
-//                return; // not an element
-//
-//            // MaybeElements can have a different namespace between element and type,
-//            // so make sure that we want to write this here.
-//            if(!uri.equals(c.getElementName().getNamespaceURI()))
-//                return;
-//
-//            QName ename = c.asElement().getElementName();
-//            assert ename.getNamespaceURI().equals(uri);
-//            // [RESULT]
-//            // <element name="foo" type="int"/>
-//            // not allowed to tweek min/max occurs on global elements
-//            TopLevelElement elem = ((Schema) schema).element();
-//            elem.name(ename.getLocalPart());
-//            writeTypeRef(elem, c, "type");
-//            schema._pcdata(newline);
         }
 
         /**
