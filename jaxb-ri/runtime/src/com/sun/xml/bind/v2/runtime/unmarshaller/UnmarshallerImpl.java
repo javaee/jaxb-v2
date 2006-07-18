@@ -22,7 +22,6 @@ package com.sun.xml.bind.v2.runtime.unmarshaller;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -46,7 +45,6 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 
-import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.IDResolver;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
@@ -98,9 +96,6 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
     public UnmarshallerImpl( JAXBContextImpl context, AssociationMap assoc ) {
         this.context = context;
         this.coordinator = new UnmarshallingContext( this, assoc );
-
-        // initialize datatype converter with ours
-        DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
 
         try {
             setEventHandler(this);

@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.xml.bind.Binder;
+import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBIntrospector;
@@ -63,6 +64,7 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import com.sun.istack.NotNull;
 import com.sun.istack.Pool;
+import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.Bridge;
 import com.sun.xml.bind.api.BridgeContext;
@@ -112,7 +114,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.72 $
+ * @version $Revision: 1.73 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -205,6 +207,9 @@ public final class JAXBContextImpl extends JAXBRIContext {
      *      {@link #c14nSupport}.
      */
     public JAXBContextImpl(Class[] classes, Collection<TypeReference> typeRefs, String defaultNsUri, boolean c14nSupport) throws JAXBException {
+
+        // initialize datatype converter with ours
+        DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
 
         if(defaultNsUri==null)      defaultNsUri="";    // fool-proof
 
