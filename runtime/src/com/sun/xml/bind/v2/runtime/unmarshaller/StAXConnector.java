@@ -2,9 +2,9 @@ package com.sun.xml.bind.v2.runtime.unmarshaller;
 
 import javax.xml.bind.ValidationEventLocator;
 import javax.xml.bind.helpers.ValidationEventLocatorImpl;
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.namespace.NamespaceContext;
 
 import org.xml.sax.SAXException;
 
@@ -19,6 +19,7 @@ abstract class StAXConnector {
     protected final XmlVisitor visitor;
 
     protected final UnmarshallingContext context;
+    protected final XmlVisitor.TextPredictor predictor;
 
     private final class TagNameImpl extends TagName {
         public String getQname() {
@@ -31,6 +32,7 @@ abstract class StAXConnector {
     protected StAXConnector(XmlVisitor visitor) {
         this.visitor = visitor;
         context = visitor.getContext();
+        predictor = visitor.getPredictor();
     }
 
     /**

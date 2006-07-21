@@ -1,4 +1,4 @@
-/* $Id: StAXStreamConnector.java,v 1.8 2006-06-16 11:35:44 sandoz Exp $
+/* $Id: StAXStreamConnector.java,v 1.9 2006-07-21 21:12:20 kohsuke Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -83,7 +83,7 @@ class StAXStreamConnector extends StAXConnector {
     }
 
 
-    
+
     // StAX event source
     private final XMLStreamReader staxStreamReader;
 
@@ -117,11 +117,11 @@ class StAXStreamConnector extends StAXConnector {
                 while( !staxStreamReader.isStartElement() )
                     event = staxStreamReader.next();
             }
-            
-                  
+
+
             if( event!=XMLStreamConstants.START_ELEMENT)
                 throw new IllegalStateException("The current event is not START_ELEMENT\n but " + event);
-            
+
             handleStartDocument(staxStreamReader.getNamespaceContext());
 
             OUTER:
@@ -146,7 +146,7 @@ class StAXStreamConnector extends StAXConnector {
                         break;
                     // otherwise simply ignore
                 }
-                
+
                 event=staxStreamReader.next();
             }
 
@@ -277,7 +277,7 @@ class StAXStreamConnector extends StAXConnector {
     };
 
     protected void handleCharacters() throws XMLStreamException, SAXException {
-        if( context.expectText() )
+        if( predictor.expectText() )
             buffer.append(
                 staxStreamReader.getTextCharacters(),
                 staxStreamReader.getTextStart(),
@@ -285,7 +285,7 @@ class StAXStreamConnector extends StAXConnector {
     }
 
     private void processText( boolean ignorable ) throws SAXException {
-        if( context.expectText() && (!ignorable || !WhiteSpaceProcessor.isWhiteSpace(buffer))) {
+        if( predictor.expectText() && (!ignorable || !WhiteSpaceProcessor.isWhiteSpace(buffer))) {
             if(textReported) {
                 textReported = false;
             } else {

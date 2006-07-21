@@ -27,6 +27,7 @@ public final class SAXConnector implements UnmarshallerHandler {
 
     private final XmlVisitor next;
     private final UnmarshallingContext context;
+    private final XmlVisitor.TextPredictor predictor;
 
     private static final class TagNameImpl extends TagName {
         String qname;
@@ -47,6 +48,7 @@ public final class SAXConnector implements UnmarshallerHandler {
     public SAXConnector(XmlVisitor next, LocatorEx externalLocator ) {
         this.next = next;
         this.context = next.getContext();
+        this.predictor = next.getPredictor();
         this.loc = externalLocator;
     }
 
@@ -109,7 +111,7 @@ public final class SAXConnector implements UnmarshallerHandler {
 
 
     public final void characters( char[] buf, int start, int len ) {
-        if( context.expectText() )
+        if( predictor.expectText() )
             buffer.append(buf,start,len);
     }
 
@@ -126,7 +128,7 @@ public final class SAXConnector implements UnmarshallerHandler {
     }
 
     private void processText( boolean ignorable ) throws SAXException {
-        if( context.expectText() && (!ignorable || !WhiteSpaceProcessor.isWhiteSpace(buffer)))
+        if( predictor.expectText() && (!ignorable || !WhiteSpaceProcessor.isWhiteSpace(buffer)))
             next.text(buffer);
         buffer.setLength(0);
     }
