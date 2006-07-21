@@ -11,7 +11,7 @@ import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
+import com.sun.xml.bind.Util;
 
 /**
  * A {@link ClassLoader} used to "inject" optimized accessor classes
@@ -33,7 +33,7 @@ final class Injector {
     private static final Map<ClassLoader,Injector> injectors =
         Collections.synchronizedMap(new WeakHashMap<ClassLoader,Injector>());
 
-    private static final Logger logger = Logger.getLogger(TransducedAccessor.class.getName());
+    private static final Logger logger = Util.getClassLogger();
 
     /**
      * Injects a new class into the given class loader.

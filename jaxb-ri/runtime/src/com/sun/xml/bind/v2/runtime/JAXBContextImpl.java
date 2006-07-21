@@ -24,8 +24,6 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -114,7 +112,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.73 $
+ * @version $Revision: 1.74 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -352,20 +350,16 @@ public final class JAXBContextImpl extends JAXBRIContext {
         IllegalAnnotationsException.Builder errorHandler = new IllegalAnnotationsException.Builder();
         builder.setErrorHandler(errorHandler);
 
-        RuntimeTypeInfoSet r = AccessController.doPrivileged(new PrivilegedAction<RuntimeTypeInfoSet>() {
-            public RuntimeTypeInfoSet run() {
-                for( Class c : classes ) {
-                    if(c==CompositeStructure.class)
-                        // CompositeStructure doesn't have TypeInfo, so skip it.
-                        // We'll add JaxBeanInfo for this later automatically
-                        continue;
-                    builder.getTypeInfo(new Ref<Type,Class>(c));
-                }
+        for( Class c : classes ) {
+            if(c==CompositeStructure.class)
+                // CompositeStructure doesn't have TypeInfo, so skip it.
+                // We'll add JaxBeanInfo for this later automatically
+                continue;
+            builder.getTypeInfo(new Ref<Type,Class>(c));
+        }
 
-                return builder.link();
-            }
-        });
-                
+        RuntimeTypeInfoSet r = builder.link();
+
         errorHandler.check();
         assert r!=null : "if no error was reported, the link must be a success";
 
