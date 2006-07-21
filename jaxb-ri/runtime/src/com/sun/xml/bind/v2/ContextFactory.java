@@ -14,10 +14,10 @@ import java.util.StringTokenizer;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
+import com.sun.istack.FinalArrayList;
 import com.sun.xml.bind.api.JAXBRIContext;
 import com.sun.xml.bind.api.TypeReference;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
-import com.sun.istack.FinalArrayList;
 
 /**
  * This class is responsible for producing RI JAXBContext objects.  In
@@ -160,7 +160,7 @@ public class ContextFactory {
                 try {
                     classes.add(classLoader.loadClass(pkg + '.' + className));
                 } catch (ClassNotFoundException e) {
-                    throw new JAXBException(Messages.ERROR_LOADING_CLASS.format(className, resource));
+                    throw new JAXBException(Messages.ERROR_LOADING_CLASS.format(className, resource),e);
                 }
 
                 className = in.readLine();
