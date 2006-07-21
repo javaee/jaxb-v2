@@ -1,4 +1,4 @@
-/* $Id: StAXEventConnector.java,v 1.5 2006-04-24 15:38:15 kohsuke Exp $
+/* $Id: StAXEventConnector.java,v 1.6 2006-07-21 21:12:19 kohsuke Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -161,7 +161,7 @@ final class StAXEventConnector extends StAXConnector {
 
 
     private void handleCharacters(Characters event) throws SAXException, XMLStreamException {
-        if(!context.expectText())
+        if(!predictor.expectText())
             return;     // text isn't expected. simply skip
 
         seenText = true;
@@ -216,7 +216,7 @@ final class StAXEventConnector extends StAXConnector {
     }
 
     private void handleEndElement(EndElement event) throws SAXException {
-        if(!seenText && context.expectText()) {
+        if(!seenText && predictor.expectText()) {
             visitor.text("");
         }
 

@@ -49,7 +49,7 @@ import org.xml.sax.helpers.LocatorImpl;
  * @author Kohsuke Kawaguchi
  */
 public final class UnmarshallingContext extends Coordinator
-    implements NamespaceContext, ValidationEventHandler, ErrorHandler, XmlVisitor {
+    implements NamespaceContext, ValidationEventHandler, ErrorHandler, XmlVisitor, XmlVisitor.TextPredictor {
 
     /**
      * Root state.
@@ -425,21 +425,19 @@ public final class UnmarshallingContext extends Coordinator
     }
 
     /**
-     * Returns true if the visitor is expecting a text event as the next event.
-     *
-     * <p>
-     * This is primarily intended to be used for optimization to avoid buffering
-     * characters unnecessarily. If this method returns false and the connector
-     * sees whitespace it can safely skip it.
-     *
-     * <p>
-     * If this method returns true, all the whitespaces are considered significant
-     * and thus need to be reported as a {@link #text} event. Furthermore,
-     * if the element has no children (like &lt;foo/>), then it has to be reported
-     * an empty {@link #text} event.
+     * You should be always calling this through {@link TextPredictor}.
      */
+    @Deprecated
     public boolean expectText() {
         return current.loader.expectText;
+    }
+
+    /**
+     * You should be always getting {@link TextPredictor} from {@link XmlVisitor}.
+     */
+    @Deprecated
+    public TextPredictor getPredictor() {
+        return this;
     }
 
     public UnmarshallingContext getContext() {

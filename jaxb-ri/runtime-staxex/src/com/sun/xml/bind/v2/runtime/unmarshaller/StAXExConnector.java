@@ -27,7 +27,7 @@ final class StAXExConnector extends StAXStreamConnector {
 
     @Override
     protected void handleCharacters() throws XMLStreamException, SAXException {
-        if( context.expectText() ) {
+        if( predictor.expectText() ) {
             CharSequence pcdata = in.getPCDATA();
             if(pcdata instanceof org.jvnet.staxex.Base64Data) {
                 org.jvnet.staxex.Base64Data bd = (org.jvnet.staxex.Base64Data) pcdata;

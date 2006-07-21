@@ -19,9 +19,9 @@
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.validation.Schema;
 import javax.xml.validation.ValidatorHandler;
-import javax.xml.namespace.NamespaceContext;
 
 import com.sun.xml.bind.v2.util.FatalAdapter;
 
@@ -32,7 +32,7 @@ import org.xml.sax.SAXException;
  *
  * @author Kohsuke Kawaguchi
  */
-final class ValidatingUnmarshaller implements XmlVisitor {
+final class ValidatingUnmarshaller implements XmlVisitor, XmlVisitor.TextPredictor {
     
     private final XmlVisitor next;
     private final ValidatorHandler validator;
@@ -97,5 +97,18 @@ final class ValidatingUnmarshaller implements XmlVisitor {
 
     public UnmarshallingContext getContext() {
         return next.getContext();
+    }
+
+    public TextPredictor getPredictor() {
+        return this;
+    }
+
+    // should be always invoked through TextPredictor
+    @Deprecated
+    public boolean expectText() {
+        // validator needs to make sure that there's no text
+        // even when it's not expected. So always have them
+        // send text, ignoring optimization hints from the unmarshaller
+        return true;
     }
 }

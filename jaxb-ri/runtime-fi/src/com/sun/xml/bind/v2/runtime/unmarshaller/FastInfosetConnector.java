@@ -117,7 +117,7 @@ final class FastInfosetConnector extends StAXConnector {
     }
 
     private void handleCharacters() {
-        if (context.expectText()) {
+        if (predictor.expectText()) {
             // If the first chunk of CIIs and character data is present
             if (firstCIIChunk &&
                     fastInfosetStreamReader.getTextAlgorithmBytes() == null) {
@@ -166,7 +166,7 @@ final class FastInfosetConnector extends StAXConnector {
 
     private void processText(boolean ignorable) throws SAXException {
         firstCIIChunk = true;
-        if(context.expectText() && (!ignorable || !WhiteSpaceProcessor.isWhiteSpace(buffer))) {
+        if(predictor.expectText() && (!ignorable || !WhiteSpaceProcessor.isWhiteSpace(buffer))) {
             if (!hasBase64Data) {
                 visitor.text(buffer);
             } else {
