@@ -4,8 +4,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -52,40 +50,32 @@ public final class ClassFactory {
         Map<Class,Constructor> m = tls.get();
         Constructor<T> cons = m.get(clazz);
         if(cons==null) {
-            cons = AccessController.doPrivileged(new PrivilegedAction<Constructor<T>>() {
-                public Constructor<T> run() {
-                    Constructor<T> cons;
-                    
-                    try {
-                        cons = clazz.getDeclaredConstructor(emptyClass);
-                    } catch (NoSuchMethodException e) {
-                        logger.log(Level.INFO,"No default constructor found on "+clazz,e);
-                        NoSuchMethodError exp;
-                        if(clazz.getDeclaringClass()!=null && !Modifier.isStatic(clazz.getModifiers())) {
-                            exp = new NoSuchMethodError(Messages.NO_DEFAULT_CONSTRUCTOR_IN_INNER_CLASS.format(clazz.getName()));
-                        } else {
-                            exp = new NoSuchMethodError(e.getMessage());
-                        }
-                        exp.initCause(e);
-                        throw exp;
-                    }
-
-                    int classMod = clazz.getModifiers();
-
-                    if(!Modifier.isPublic(classMod) || !Modifier.isPublic(cons.getModifiers())) {
-                        // attempt to make it work even if the constructor is not accessible
-                        try {
-                            cons.setAccessible(true);
-                        } catch(SecurityException e) {
-                            // but if we don't have a permission to do so, work gracefully.
-                            logger.log(Level.FINE,"Unable to make the constructor of "+clazz+" accessible",e);
-                            throw e;
-                        }
-                    }
-
-                    return cons;
+            try {
+                cons = clazz.getDeclaredConstructor(emptyClass);
+            } catch (NoSuchMethodException e) {
+                logger.log(Level.INFO,"No default constructor found on "+clazz,e);
+                NoSuchMethodError exp;
+                if(clazz.getDeclaringClass()!=null && !Modifier.isStatic(clazz.getModifiers())) {
+                    exp = new NoSuchMethodError(Messages.NO_DEFAULT_CONSTRUCTOR_IN_INNER_CLASS.format(clazz.getName()));
+                } else {
+                    exp = new NoSuchMethodError(e.getMessage());
                 }
-            });
+                exp.initCause(e);
+                throw exp;
+            }
+
+            int classMod = clazz.getModifiers();
+
+            if(!Modifier.isPublic(classMod) || !Modifier.isPublic(cons.getModifiers())) {
+                // attempt to make it work even if the constructor is not accessible
+                try {
+                    cons.setAccessible(true);
+                } catch(SecurityException e) {
+                    // but if we don't have a permission to do so, work gracefully.
+                    logger.log(Level.FINE,"Unable to make the constructor of "+clazz+" accessible",e);
+                    throw e;
+                }
+            }
 
             m.put(clazz,cons);
         }
@@ -129,44 +119,40 @@ public final class ClassFactory {
      *  Call a method in the factory class to get the object.
      */
     public static Object create(final Method method) {
-        return AccessController.doPrivileged(new PrivilegedAction<Object>() {
-            public Object run(){
-                Object cons = null;
-                Throwable errorMsg = null;
-                try {
-                    cons = method.invoke(null, emptyObject);
-                } catch (InvocationTargetException ive) {
-                    Throwable target = ive.getTargetException();
+        Object cons = null;
+        Throwable errorMsg = null;
+        try {
+            cons = method.invoke(null, emptyObject);
+        } catch (InvocationTargetException ive) {
+            Throwable target = ive.getTargetException();
 
-                    if(target instanceof RuntimeException)
-                        throw (RuntimeException)target;
+            if(target instanceof RuntimeException)
+                throw (RuntimeException)target;
 
-                    if(target instanceof Error)
-                        throw (Error)target;
+            if(target instanceof Error)
+                throw (Error)target;
 
-                    throw new IllegalStateException(target);
-                } catch (IllegalAccessException e) {
-                    logger.log(Level.INFO,"failed to create a new instance of "+method.getReturnType().getName(),e);
-                    throw new IllegalAccessError(e.toString());
-                } catch (IllegalArgumentException iae){
-                    logger.log(Level.INFO,"failed to create a new instance of "+method.getReturnType().getName(),iae);
-                    errorMsg = iae;
-                } catch (NullPointerException npe){
-                    logger.log(Level.INFO,"failed to create a new instance of "+method.getReturnType().getName(),npe);
-                    errorMsg = npe;
-                } catch (ExceptionInInitializerError eie){
-                    logger.log(Level.INFO,"failed to create a new instance of "+method.getReturnType().getName(),eie);
-                    errorMsg = eie;
-                }
-                if (errorMsg != null){
-                    NoSuchMethodError exp;
-                    exp = new NoSuchMethodError(errorMsg.getMessage());
-                    exp.initCause(errorMsg);
-                    throw exp;
-                }
-                return cons;
-            }
-        });
+            throw new IllegalStateException(target);
+        } catch (IllegalAccessException e) {
+            logger.log(Level.INFO,"failed to create a new instance of "+method.getReturnType().getName(),e);
+            throw new IllegalAccessError(e.toString());
+        } catch (IllegalArgumentException iae){
+            logger.log(Level.INFO,"failed to create a new instance of "+method.getReturnType().getName(),iae);
+            errorMsg = iae;
+        } catch (NullPointerException npe){
+            logger.log(Level.INFO,"failed to create a new instance of "+method.getReturnType().getName(),npe);
+            errorMsg = npe;
+        } catch (ExceptionInInitializerError eie){
+            logger.log(Level.INFO,"failed to create a new instance of "+method.getReturnType().getName(),eie);
+            errorMsg = eie;
+        }
+        if (errorMsg != null){
+            NoSuchMethodError exp;
+            exp = new NoSuchMethodError(errorMsg.getMessage());
+            exp.initCause(errorMsg);
+            throw exp;
+        }
+        return cons;
     }
     
     /**

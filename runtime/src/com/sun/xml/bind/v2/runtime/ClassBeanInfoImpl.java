@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +16,8 @@ import javax.xml.bind.helpers.ValidationEventImpl;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
+import com.sun.istack.FinalArrayList;
+import com.sun.xml.bind.Util;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.model.core.ID;
@@ -31,8 +31,6 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.StructureLoader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.runtime.unmarshaller.XsiTypeLoader;
-import com.sun.xml.bind.Util;
-import com.sun.istack.FinalArrayList;
 
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -103,23 +101,18 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
         this.factoryMethod = ci.getFactoryMethod();
         // make the factory accessible
         if(factoryMethod!=null) {
-            AccessController.doPrivileged(new PrivilegedAction<Void>() {
-                public Void run() {
-                    int classMod = factoryMethod.getDeclaringClass().getModifiers();
+            int classMod = factoryMethod.getDeclaringClass().getModifiers();
 
-                    if(!Modifier.isPublic(classMod) || !Modifier.isPublic(factoryMethod.getModifiers())) {
-                        // attempt to make it work even if the constructor is not accessible
-                        try {
-                            factoryMethod.setAccessible(true);
-                        } catch(SecurityException e) {
-                            // but if we don't have a permission to do so, work gracefully.
-                            logger.log(Level.FINE,"Unable to make the method of "+factoryMethod+" accessible",e);
-                            throw e;
-                        }
-                    }
-                    return null;
+            if(!Modifier.isPublic(classMod) || !Modifier.isPublic(factoryMethod.getModifiers())) {
+                // attempt to make it work even if the constructor is not accessible
+                try {
+                    factoryMethod.setAccessible(true);
+                } catch(SecurityException e) {
+                    // but if we don't have a permission to do so, work gracefully.
+                    logger.log(Level.FINE,"Unable to make the method of "+factoryMethod+" accessible",e);
+                    throw e;
                 }
-            });
+            }
         }
 
         

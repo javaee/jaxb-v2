@@ -22,11 +22,11 @@ package com.sun.xml.bind.v2.runtime;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -36,6 +36,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.istack.NotNull;
+import com.sun.xml.bind.Util;
 import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfo;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
@@ -407,45 +408,46 @@ public abstract class JaxBeanInfo<BeanT> {
      * the JAXB bound type.
      */
     protected final void setLifecycleFlags() {
-        AccessController.doPrivileged(new PrivilegedAction<Void>() {
-            public Void run() {
-                Method m;
+        try {
+            Method m;
 
-                // beforeUnmarshal
-                try {
-                    m = jaxbType.getDeclaredMethod("beforeUnmarshal", unmarshalEventParams);
-                    cacheLifecycleMethod(m, FLAG_HAS_BEFORE_UNMARSHAL_METHOD);
-                } catch (NoSuchMethodException e) {
-                    // no-op, look for the next method
-                }
-
-                // afterUnmarshal
-                try {
-                    m = jaxbType.getDeclaredMethod("afterUnmarshal", unmarshalEventParams);
-                    cacheLifecycleMethod(m, FLAG_HAS_AFTER_UNMARSHAL_METHOD);
-                } catch (NoSuchMethodException e) {
-                    // no-op, look for the next method
-                }
-
-                // beforeMarshal
-                try {
-                    m = jaxbType.getDeclaredMethod("beforeMarshal", marshalEventParams);
-                    cacheLifecycleMethod(m, FLAG_HAS_BEFORE_MARSHAL_METHOD);
-                } catch (NoSuchMethodException e) {
-                    // no-op, look for the next method
-                }
-
-                // afterMarshal
-                try {
-                    m = jaxbType.getDeclaredMethod("afterMarshal", marshalEventParams);
-                    cacheLifecycleMethod(m, FLAG_HAS_AFTER_MARSHAL_METHOD);
-                } catch (NoSuchMethodException e) {
-                    // no-op
-                }
-
-                return null;
+            // beforeUnmarshal
+            try {
+                m = jaxbType.getDeclaredMethod("beforeUnmarshal", unmarshalEventParams);
+                cacheLifecycleMethod(m, FLAG_HAS_BEFORE_UNMARSHAL_METHOD);
+            } catch (NoSuchMethodException e) {
+                // no-op, look for the next method
             }
-        });
+
+            // afterUnmarshal
+            try {
+                m = jaxbType.getDeclaredMethod("afterUnmarshal", unmarshalEventParams);
+                cacheLifecycleMethod(m, FLAG_HAS_AFTER_UNMARSHAL_METHOD);
+            } catch (NoSuchMethodException e) {
+                // no-op, look for the next method
+            }
+
+            // beforeMarshal
+            try {
+                m = jaxbType.getDeclaredMethod("beforeMarshal", marshalEventParams);
+                cacheLifecycleMethod(m, FLAG_HAS_BEFORE_MARSHAL_METHOD);
+            } catch (NoSuchMethodException e) {
+                // no-op, look for the next method
+            }
+
+            // afterMarshal
+            try {
+                m = jaxbType.getDeclaredMethod("afterMarshal", marshalEventParams);
+                cacheLifecycleMethod(m, FLAG_HAS_AFTER_MARSHAL_METHOD);
+            } catch (NoSuchMethodException e) {
+                // no-op
+            }
+        } catch(SecurityException e) {
+            // this happens when we don't have enough permission.
+            logger.log( Level.WARNING, Messages.UNABLE_TO_DISCOVER_EVENTHANDLER.format(
+                jaxbType.getName(),
+                e ));
+        }
     }
 
     /**
@@ -517,4 +519,6 @@ public abstract class JaxBeanInfo<BeanT> {
             UnmarshallingContext.getInstance().handleError(e);
         }
     }
+
+    private static final Logger logger = Util.getClassLogger();
 }

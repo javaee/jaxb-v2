@@ -5,8 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -15,6 +13,7 @@ import java.util.logging.Logger;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
+import com.sun.xml.bind.Util;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.JAXBRIContext;
 import com.sun.xml.bind.v2.model.core.Adapter;
@@ -149,20 +148,17 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
     /**
      * {@link Accessor} that uses Java reflection to access a field.
      */
-    public static class FieldReflection<BeanT,ValueT> extends Accessor<BeanT,ValueT> implements PrivilegedAction<Void> {
+    public static class FieldReflection<BeanT,ValueT> extends Accessor<BeanT,ValueT> {
         public final Field f;
 
-        private static final Logger logger = Logger.getLogger(FieldReflection.class.getName());
+        private static final Logger logger = Util.getClassLogger();
 
         // TODO: revisit. this is a security hole because this method can be used by anyone
         // to enable access to a field.
         public FieldReflection(Field f) {
             super((Class<ValueT>)f.getType());
             this.f = f;
-            AccessController.doPrivileged(this);
-        }
 
-        public Void run() {
             int mod = f.getModifiers();
             if(!Modifier.isPublic(mod) || Modifier.isFinal(mod) || !Modifier.isPublic(f.getDeclaringClass().getModifiers())) {
                 try {
@@ -177,7 +173,6 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
                     accessWarned = true;
                 }
             }
-            return null;
         }
 
         public ValueT get(BeanT bean) {
@@ -234,7 +229,7 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
         public final Method getter;
         public final Method setter;
 
-        private static final Logger logger = Logger.getLogger(FieldReflection.class.getName());
+        private static final Logger logger = Util.getClassLogger();
 
         public GetterSetterReflection(Method getter, Method setter) {
             super(
