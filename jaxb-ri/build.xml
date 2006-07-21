@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.67 2006-06-16 19:00:17 kohsuke Exp $
+       $Id: build.xml,v 1.68 2006-07-21 22:03:26 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -367,6 +367,7 @@ Class-Path: ${manifest.classpath}
           <unjar src="${jaxb.libs}/src/xsom-src.zip" dest="tmp"/>
           <zip zipfile="${jaxb.dist}/lib/jaxb-xjc.src.zip">
             <fileset dir="${xjc.src}"/>
+            <fileset dir="${xjc.root}/facade"/>
             <fileset dir="${codemodel.src}"/>
             <zipfileset src="${jaxb.libs}/src/resolver-src.zip" />
             <fileset dir="tmp/src"/>
