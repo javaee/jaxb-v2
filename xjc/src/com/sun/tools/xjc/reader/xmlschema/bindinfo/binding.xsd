@@ -34,6 +34,15 @@
           </xs:restriction>
         </xs:simpleType>
       </xs:attribute>
+      <xs:attribute name="optionalProperty">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:enumeration value="wrapper"/>
+            <xs:enumeration value="primitive"/>
+            <xs:enumeration value="isSet"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
       <xs:attribute name="enableJavaNamingConventions" type="xs:boolean"/>
       <xs:attribute name="fixedAttributeAsConstantProperty" type="xs:boolean"/>
       <xs:attribute name="generateIsSetMethod" type="xs:boolean"/>
