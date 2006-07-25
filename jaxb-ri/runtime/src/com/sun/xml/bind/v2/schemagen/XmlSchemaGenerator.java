@@ -1037,10 +1037,39 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
             // fill in content model
             TODO.checkSpec("should we loop in the case of a non-collection ep?");
-            for (Element<T, C> e : rp.getElements()) {
+            for (Element<T,C> e : rp.getElements()) {
                 LocalElement eref = compositor.element();
                 if (occurs == null) occurs = eref;
-                eref.ref(e.getElementName());
+
+                QName en = e.getElementName();
+                if(e.getScope()!=null) {
+                    // scoped. needs to be inlined
+                    boolean qualified = en.getNamespaceURI().equals(uri);
+                    boolean unqualified = en.getNamespaceURI().equals("");
+                    if(qualified || unqualified) {
+                        // can be inlined indeed
+
+                        // write form="..." if necessary
+                        if(unqualified) {
+                            if(elementFormDefault.isEffectivelyQualified)
+                                eref.form("unqualified");
+                        } else {
+                            if(!elementFormDefault.isEffectivelyQualified)
+                                eref.form("qualified");
+                        }
+
+                        eref.name(en.getLocalPart());
+
+                        // write out type reference
+                        if(e instanceof ClassInfo) {
+                            writeTypeRef(eref,(ClassInfo<T,C>)e,"type");
+                        } else {
+                            writeTypeRef(eref,((ElementInfo<T,C>)e).getContentType(),"type");
+                        }
+                        continue;
+                    }
+                }
+                eref.ref(en);
             }
 
             WildcardMode wc = rp.getWildcard();

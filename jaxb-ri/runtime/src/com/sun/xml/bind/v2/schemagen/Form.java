@@ -3,9 +3,9 @@ package com.sun.xml.bind.v2.schemagen;
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.namespace.QName;
 
+import com.sun.xml.bind.v2.schemagen.xmlschema.LocalAttribute;
 import com.sun.xml.bind.v2.schemagen.xmlschema.LocalElement;
 import com.sun.xml.bind.v2.schemagen.xmlschema.Schema;
-import com.sun.xml.bind.v2.schemagen.xmlschema.LocalAttribute;
 import com.sun.xml.txw2.TypedXmlWriter;
 
 /**
@@ -14,19 +14,19 @@ import com.sun.xml.txw2.TypedXmlWriter;
  * @author Kohsuke Kawaguchi
  */
 enum Form {
-    QUALIFIED(XmlNsForm.QUALIFIED) {
+    QUALIFIED(XmlNsForm.QUALIFIED,true) {
         void declare(String attName,Schema schema) {
             schema._attribute(attName,"qualified");
         }
     },
-    UNQUALIFIED(XmlNsForm.UNQUALIFIED) {
+    UNQUALIFIED(XmlNsForm.UNQUALIFIED,false) {
         void declare(String attName,Schema schema) {
             // pointless, but required by the spec.
             // people need to understand that @attributeFormDefault is a syntax sugar
             schema._attribute(attName,"unqualified");
         }
     },
-    UNSET(XmlNsForm.UNSET) {
+    UNSET(XmlNsForm.UNSET,false) {
         void declare(String attName,Schema schema) {
         }
     };
@@ -36,8 +36,14 @@ enum Form {
      */
     private final XmlNsForm xnf;
 
-    Form(XmlNsForm xnf) {
+    /**
+     * What's the effective value? UNSET means unqualified per XSD spec.)
+     */
+    public final boolean isEffectivelyQualified;
+
+    Form(XmlNsForm xnf, boolean effectivelyQualified) {
         this.xnf = xnf;
+        this.isEffectivelyQualified = effectivelyQualified;
     }
 
     /**
