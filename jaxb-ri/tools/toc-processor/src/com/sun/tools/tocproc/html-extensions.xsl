@@ -2,7 +2,7 @@
 <!--
  Other minor extension elements used in HTML.
 
- $Id: html-extensions.xsl,v 1.1 2006-03-14 02:45:17 kohsuke Exp $
+ $Id: html-extensions.xsl,v 1.2 2006-07-25 21:57:08 kohsuke Exp $
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
   <xsl:template match="HEAD[not(TITLE)]">
@@ -30,5 +30,9 @@
       <b>Reference Implementation (RI) Version:</b> @@IMPL_VERSION@@ @@IMPL_VERSION_SUFFIX@@<br />
     </center>
     <xsl:call-template name="JAXB-TOC" />
+  </xsl:template>
+
+  <xsl:template match="BUG">
+    <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id={@id}"><xsl:apply-templates /></a>
   </xsl:template>
 </xsl:stylesheet>
