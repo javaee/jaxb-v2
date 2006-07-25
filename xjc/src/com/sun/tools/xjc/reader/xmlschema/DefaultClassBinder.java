@@ -183,6 +183,9 @@ final class DefaultClassBinder implements ClassBinder
     private boolean isCollapsable(XSElementDecl decl) {
         XSType type = decl.getType();
 
+        if(!type.isComplexType())
+            return false;   // not a complex type
+
         if(decl.getSubstitutables().size()>1 || decl.getSubstAffiliation()!=null)
             // because element substitution calls for a proper JAXBElement hierarchy
             return false;
