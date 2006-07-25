@@ -257,7 +257,10 @@ public class APTNavigator implements Navigator<TypeMirror,TypeDeclaration,FieldD
     }
 
     public boolean isOverriding(MethodDeclaration method) {
-        ClassDeclaration sc = ((ClassDeclaration) method.getDeclaringType());
+        TypeDeclaration declaringType = method.getDeclaringType();
+        if(!(declaringType instanceof ClassDeclaration))
+            return false;   // act defensively. this might be because we are recovering from errors
+        ClassDeclaration sc = (ClassDeclaration) declaringType;
 
         Declarations declUtil = env.getDeclarationUtils();
 
