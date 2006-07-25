@@ -16,6 +16,10 @@ public final class ElementSets {
     public static ElementSet union(ElementSet lhs, ElementSet rhs) {
         if(lhs.contains(rhs))
             return lhs;
+        if(lhs==ElementSet.EMPTY_SET)
+            return rhs;
+        if(rhs==ElementSet.EMPTY_SET)
+            return lhs;
         return new MultiValueSet(lhs,rhs);
     }
 
