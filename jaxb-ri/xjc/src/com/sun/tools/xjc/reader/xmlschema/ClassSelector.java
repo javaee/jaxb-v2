@@ -30,6 +30,7 @@ import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JJavaName;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.util.JavadocEscapeWriter;
+import com.sun.istack.NotNull;
 import com.sun.tools.xjc.model.CBuiltinLeafInfo;
 import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CClassInfoParent;
@@ -278,7 +279,7 @@ public final class ClassSelector extends BindingComponent {
      *      cyclic binding problem.
      */
     // TODO: consider getting rid of "cannotBeDelayed"
-    CTypeInfo _bindToClass( XSComponent sc, boolean cannotBeDelayed ) {
+    CTypeInfo _bindToClass( @NotNull XSComponent sc, boolean cannotBeDelayed ) {
         // check if this class is already built.
         if(!bindMap.containsKey(sc)) {
             // craete a bind task
