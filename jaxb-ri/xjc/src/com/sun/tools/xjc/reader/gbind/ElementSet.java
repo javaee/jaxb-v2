@@ -29,7 +29,10 @@ interface ElementSet extends Iterable<Element> {
     };
 
     /**
-     * Doesn't have to be strict. Used just for optimization.
+     * Doesn't have to be strict (it's OK for this method to return false
+     * when it's actually true) since this is used just for optimization.
+     *
+     * (Erring on the other side is NG)
      */
     boolean contains(ElementSet rhs);
 }
