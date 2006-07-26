@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.69 2006-07-26 00:08:33 kohsuke Exp $
+       $Id: build.xml,v 1.70 2006-07-26 00:20:08 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -867,7 +867,6 @@ Class-Path: ${manifest.classpath}
              dest="tools/lib/src/txw2-src.zip" />
     </target>
 
-
     <target name="integrate-rngom">
         <get src="http://kohsuke.sfbay/hudson/job/rngom/lastSuccessfulBuild/artifact/rngom/rngom/build/rngom.jar"
              dest="tools/lib/rebundle/compiler/rngom.jar" />
@@ -875,14 +874,12 @@ Class-Path: ${manifest.classpath}
              dest="tools/lib/src/rngom-src.zip" />
     </target>
 
-
     <target name="integrate-zehpyr">
         <get src="http://kohsuke.sfbay/hudson/job/zephyr/lastSuccessfulBuild/artifact/dist/sjsxp-1_0/sjsxp.jar"
              dest="tools/lib/util/sjsxp.jar" />
         <get src="http://kohsuke.sfbay/hudson/job/zephyr/lastSuccessfulBuild/artifact/dist/sjsxp-src-1_0.zip"
              dest="tools/lib/src/sjsxp-src.zip" />
     </target>
-
 
     <target name="integrate-istack-commons">
         <property name="istack.commons.runtime" value="http://kohsuke.sfbay/hudson/job/istack-commons/lastSuccessfulBuild/artifact/runtime/build" />
