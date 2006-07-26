@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.attachment.AttachmentMarshaller;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -51,8 +52,13 @@ public abstract class Bridge<T> {
      * @since 2.0 EA1
      */
     public final void marshal(T object,XMLStreamWriter output) throws JAXBException {
+        marshal(object,output,null);
+    }
+    public final void marshal(T object,XMLStreamWriter output, AttachmentMarshaller am) throws JAXBException {
         Marshaller m = context.marshallerPool.take();
+        m.setAttachmentMarshaller(am);
         marshal(m,object,output);
+        m.setAttachmentMarshaller(null);
         context.marshallerPool.recycle(m);
     }
 
@@ -77,8 +83,16 @@ public abstract class Bridge<T> {
      * @since 2.0 EA1
      */
     public void marshal(T object,OutputStream output, NamespaceContext nsContext) throws JAXBException {
+        marshal(object,output,nsContext,null);
+    }
+    /**
+     * @since 2.0.2
+     */
+    public void marshal(T object,OutputStream output, NamespaceContext nsContext, AttachmentMarshaller am) throws JAXBException {
         Marshaller m = context.marshallerPool.take();
+        m.setAttachmentMarshaller(am);
         marshal(m,object,output,nsContext);
+        m.setAttachmentMarshaller(null);
         context.marshallerPool.recycle(m);
     }
 
@@ -106,8 +120,16 @@ public abstract class Bridge<T> {
      * @since 2.0 EA4
      */
     public final void marshal(T object, ContentHandler contentHandler) throws JAXBException {
+        marshal(object,contentHandler,null);
+    }
+    /**
+     * @since 2.0.2
+     */
+    public final void marshal(T object, ContentHandler contentHandler, AttachmentMarshaller am) throws JAXBException {
         Marshaller m = context.marshallerPool.take();
+        m.setAttachmentMarshaller(am);
         marshal(m,object,contentHandler);
+        m.setAttachmentMarshaller(null);
         context.marshallerPool.recycle(m);
     }
     public final void marshal(@NotNull BridgeContext context,T object, ContentHandler contentHandler) throws JAXBException {
