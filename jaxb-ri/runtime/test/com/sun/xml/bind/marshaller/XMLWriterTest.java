@@ -81,9 +81,10 @@ public class XMLWriterTest extends TestCase {
         String body = sw.toString();
         
         checkWellformedness(body);
-        
-        body = body.substring(body.indexOf('\n')+1);
-        assertEquals( "<root><child/><kid/></root>\n\n", body);
+
+        // cut XML header
+        body = body.substring(body.indexOf("?>")+2);
+        assertEquals( "<root><child/><kid/></root>", body);
         
     }
 
