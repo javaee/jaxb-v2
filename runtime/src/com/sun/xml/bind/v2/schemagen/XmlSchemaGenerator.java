@@ -728,12 +728,14 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             ExplicitGroup compositor = null;
 
             // only necessary if this type has a base class we need to extend from
-            ComplexExtension ce = null;
+            AttrDecls contentModel = ct;
 
             // if there is a base class, we need to generate an extension in the schema
             final ClassInfo<T,C> bc = c.getBaseClass();
             if (bc != null) {
-                ce = ct.complexContent().extension();
+                ComplexExtension ce = ct.complexContent().extension();
+                contentModel = ce;
+
                 ce.base(bc.getTypeName());
                 // TODO: what if the base type is anonymous?
                 // ordered props go in a sequence, unordered go in an all
@@ -764,11 +766,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     if(p instanceof ReferencePropertyInfo && ((ReferencePropertyInfo)p).isMixed()) {
                         ct.mixed(true);
                     }
-                    if( ce != null ) {
-                        writeProperty(p, ce, compositor);
-                    } else {
-                        writeProperty(p, ct, compositor);
-                    }
+                    writeProperty(p, contentModel, compositor);
                 }
 
                 compositor.commit();
@@ -777,7 +775,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             // look for wildcard attributes
             if( c.hasAttributeWildcard()) {
                 // TODO: not type safe
-                ct.anyAttribute().namespace("##other").processContents("skip");
+                contentModel.anyAttribute().namespace("##other").processContents("skip");
             }
 
             // finally commit the ct
