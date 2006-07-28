@@ -37,6 +37,11 @@ final class ValidatingUnmarshaller implements XmlVisitor, XmlVisitor.TextPredict
     private final XmlVisitor next;
     private final ValidatorHandler validator;
 
+    /**
+     * {@link TextPredictor} of the next {@link XmlVisitor}.
+     */
+    private final TextPredictor predictor;
+
     private char[] buf = new char[256];
 
     /**
@@ -45,6 +50,7 @@ final class ValidatingUnmarshaller implements XmlVisitor, XmlVisitor.TextPredict
     public ValidatingUnmarshaller( Schema schema, XmlVisitor next ) {
         this.validator = schema.newValidatorHandler();
         this.next = next;
+        this.predictor = next.getPredictor();
         // if the user bothers to use a validator, make validation errors fatal
         // so that it will abort unmarshalling.
         validator.setErrorHandler(new FatalAdapter(getContext()));
@@ -92,7 +98,8 @@ final class ValidatingUnmarshaller implements XmlVisitor, XmlVisitor.TextPredict
             buf[i] = pcdata.charAt(i);  // isn't this kinda slow?
 
         validator.characters(buf,0,len);
-        next.text(pcdata);
+        if(predictor.expectText())
+            next.text(pcdata);
     }
 
     public UnmarshallingContext getContext() {
