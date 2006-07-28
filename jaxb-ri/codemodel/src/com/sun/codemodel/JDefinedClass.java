@@ -128,8 +128,12 @@ public class JDefinedClass
      */
 //    private List enumValues = new ArrayList();
     
-    /** Set of enum constants that are keyed by names */
-    private final Map<String,JEnumConstant> enumConstantsByName = new TreeMap<String,JEnumConstant>();
+    /**
+     * Set of enum constants that are keyed by names.
+     * In Java, enum constant order is actually significant,
+     * because of order ID they get. So let's preserve the order.
+     */
+    private final Map<String,JEnumConstant> enumConstantsByName = new LinkedHashMap<String,JEnumConstant>();
 
     /**
      * Annotations on this variable. Lazily created.
