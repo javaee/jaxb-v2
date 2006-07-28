@@ -87,7 +87,7 @@ final class AnnotationParser implements AnnotationProcessor  {
                     } catch (IOException e) {
                         errorListener.error(e.getMessage(),e);
                     } catch (SAXException e) {
-                        ; // the error should have already been reported
+                        // the error should have already been reported
                     }
                 }
             }
