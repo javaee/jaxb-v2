@@ -30,7 +30,7 @@ import org.xml.sax.XMLReader;
 import simple.*;
 
 /*
- * @(#)$Id: Main.java,v 1.2 2005-09-10 19:08:00 kohsuke Exp $
+ * @(#)$Id: Main.java,v 1.3 2006-07-28 21:00:35 kohsuke Exp $
  *
  * Copyright 2003 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -53,6 +53,7 @@ public class Main {
         // set up a normal marshaller
         Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty( "jaxb.encoding", "US-ASCII" );
+        marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
         
         // check out the console output
         marshaller.marshal( e, System.out );
@@ -61,6 +62,7 @@ public class Main {
         // set up a marshaller with a custom character encoding handler
         marshaller = context.createMarshaller();
         marshaller.setProperty( "jaxb.encoding", "US-ASCII" );
+        marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
         marshaller.setProperty(
           "com.sun.xml.bind.characterEscapeHandler",
           new CustomCharacterEscapeHandler() );

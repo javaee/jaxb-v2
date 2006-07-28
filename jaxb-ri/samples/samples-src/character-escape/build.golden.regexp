@@ -11,9 +11,11 @@ compile\:
 
 run\:
      \[echo\] Running the sample application\.\.\.
-     \[java\] \<\?xml version\=\"1\.0\" encoding\=\"US\-ASCII\" standalone\=\"yes\"\?\>\<e\>G\&#246;del \&amp; his friends\<\/e\>
+     \[java\] \<\?xml version\=\"1\.0\" encoding\=\"US\-ASCII\" standalone\=\"yes\"\?\>
+     \[java\] \<e\>G\&#246;del \&amp; his friends\<\/e\>
 
-     \[java\] \<\?xml version\=\"1\.0\" encoding\=\"US\-ASCII\" standalone\=\"yes\"\?\>\<e\>G\&#xf6;del \&amp; his friends\<\/e\>
+     \[java\] \<\?xml version\=\"1\.0\" encoding\=\"US\-ASCII\" standalone\=\"yes\"\?\>
+     \[java\] \<e\>G\&#xf6;del \&amp; his friends\<\/e\>
 
 
 BUILD SUCCESSFUL
