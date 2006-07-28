@@ -23,6 +23,7 @@ import com.sun.mirror.apt.AnnotationProcessorEnvironment;
 import com.sun.mirror.apt.AnnotationProcessorFactory;
 import com.sun.mirror.apt.Filer;
 import com.sun.mirror.declaration.AnnotationTypeDeclaration;
+import com.sun.mirror.declaration.ClassDeclaration;
 import com.sun.mirror.declaration.TypeDeclaration;
 import com.sun.tools.xjc.api.J2SJAXBModel;
 import com.sun.tools.xjc.api.Reference;
@@ -62,8 +63,12 @@ public class SchemaGenerator implements AnnotationProcessorFactory {
 
             public void process() {
                 List<Reference> decls = new ArrayList<Reference>();
-                for(TypeDeclaration d : env.getTypeDeclarations())
-                    decls.add(new Reference(d,env));
+                for(TypeDeclaration d : env.getTypeDeclarations()) {
+                    // simply ignore all the interface definitions,
+                    // so that users won't have to manually exclude interfaces, which is silly.
+                    if(d instanceof ClassDeclaration)
+                        decls.add(new Reference(d,env));
+                }
 
                 J2SJAXBModel model = XJC.createJavaCompiler().bind(decls,Collections.<QName,Reference>emptyMap(),null,env);
                 if(model==null)
