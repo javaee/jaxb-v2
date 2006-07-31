@@ -214,7 +214,7 @@ public abstract class BIConversion extends AbstractDeclarationImpl {
             JMethod marshal = adapter.method(JMod.PUBLIC, String.class, "marshal");
             $value = marshal.param(bim,"value");
 
-            if(this.printMethod==null) {
+            if(printMethod.startsWith("javax.xml.bind.DatatypeConverter.")) {
                 // UGLY: if this conversion is the system-driven conversion,
                 // check for null
                 marshal.body()._if($value.eq(JExpr._null()))._then()._return(JExpr._null());
