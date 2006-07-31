@@ -108,11 +108,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * This class provides the implementation of JAXBContext.  It
- * also creates the GrammarInfoFacade that unifies all of the grammar
- * info from packages on the contextPath.
+ * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.74 $
+ * @version $Revision: 1.75 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
