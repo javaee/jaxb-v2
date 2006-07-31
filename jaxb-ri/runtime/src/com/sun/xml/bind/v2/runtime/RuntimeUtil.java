@@ -28,6 +28,7 @@ public class RuntimeUtil {
         }
 
         public String marshal(Object o) {
+            if(o==null)     return null;
             return o.toString();
         }
     }
