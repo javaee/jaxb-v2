@@ -2,12 +2,12 @@ package com.sun.xml.bind.v2.runtime;
 
 
 import javax.activation.DataHandler;
+import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.bind.attachment.AttachmentMarshaller;
 import javax.xml.bind.attachment.AttachmentUnmarshaller;
 
-import javax.xml.bind.annotation.XmlAttachmentRef;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 
 
@@ -38,6 +38,7 @@ public final class SwaRefAdapter extends XmlAdapter<String,DataHandler> {
     }
 
     public String marshal(DataHandler data) {
+        if(data==null)      return null;
         AttachmentMarshaller am = XMLSerializer.getInstance().attachmentMarshaller;
         // TODO: error check
         return am.addSwaRefAttachment(data);
