@@ -214,6 +214,12 @@ public abstract class BIConversion extends AbstractDeclarationImpl {
             JMethod marshal = adapter.method(JMod.PUBLIC, String.class, "marshal");
             $value = marshal.param(bim,"value");
 
+            if(this.printMethod==null) {
+                // UGLY: if this conversion is the system-driven conversion,
+                // check for null
+                marshal.body()._if($value.eq(JExpr._null()))._then()._return(JExpr._null());
+            }
+
             int idx = printMethod.lastIndexOf('.');
             if(idx<0) {
                 // printMethod specifies a method in the target type
