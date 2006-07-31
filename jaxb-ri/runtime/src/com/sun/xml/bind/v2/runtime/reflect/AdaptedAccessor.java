@@ -3,9 +3,9 @@ package com.sun.xml.bind.v2.runtime.reflect;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import com.sun.xml.bind.api.AccessorException;
-import com.sun.xml.bind.v2.runtime.Coordinator;
 import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.model.core.Adapter;
+import com.sun.xml.bind.v2.runtime.Coordinator;
 
 /**
  * {@link Accessor} that adapts the value by using {@link Adapter}.
@@ -25,7 +25,6 @@ final class AdaptedAccessor<BeanT,InMemValueT,OnWireValueT> extends Accessor<Bea
 
     public OnWireValueT get(BeanT bean) throws AccessorException {
         InMemValueT v = core.get(bean);
-        if(v==null) return null;
 
         XmlAdapter<OnWireValueT,InMemValueT> a = getAdapter();
         try {
@@ -36,15 +35,11 @@ final class AdaptedAccessor<BeanT,InMemValueT,OnWireValueT> extends Accessor<Bea
     }
 
     public void set(BeanT bean, OnWireValueT o) throws AccessorException {
-        if(o==null)
-            core.set(bean,null);
-        else {
-            XmlAdapter<OnWireValueT, InMemValueT> a = getAdapter();
-            try {
-                core.set(bean,a.unmarshal(o));
-            } catch (Exception e) {
-                throw new AccessorException(e);
-            }
+        XmlAdapter<OnWireValueT, InMemValueT> a = getAdapter();
+        try {
+            core.set(bean,a.unmarshal(o));
+        } catch (Exception e) {
+            throw new AccessorException(e);
         }
     }
 
