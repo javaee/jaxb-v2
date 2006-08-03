@@ -617,9 +617,9 @@ public class Options
     }
 
     private void parseProxy(String text) throws BadCommandLineException {
-        // syntax is [user[:password]@]proxyHost[:proxyPort]
+        // syntax is [user[:password]@]proxyHost:proxyPort
         String token = "([^@:]+)";
-        Pattern p = Pattern.compile("(?:"+token+"(?:\\:"+token+")?\\@)?"+token+"(?:\\:"+token+")?");
+        Pattern p = Pattern.compile("(?:"+token+"(?:\\:"+token+")?\\@)?"+token+"(?:\\:"+token+")");
 
         Matcher matcher = p.matcher(text);
         if(!matcher.matches())
