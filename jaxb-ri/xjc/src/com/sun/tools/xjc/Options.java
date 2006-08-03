@@ -22,6 +22,7 @@ package com.sun.tools.xjc;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Array;
@@ -505,29 +506,36 @@ public class Options
             compatibilityMode = EXTENSION;
             return 1;
         }
+        if (args[i].equals("-httpproxyfile")) {
+            if (i == args.length - 1 || args[i + 1].startsWith("-")) {
+                throw new BadCommandLineException(
+                    Messages.format(Messages.MISSING_PROXYFILE));
+            }
+
+            File file = new File(args[++i]);
+            if(!file.exists()) {
+                throw new BadCommandLineException(
+                    Messages.format(Messages.NO_SUCH_FILE,file));
+            }
+
+            try {
+                BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file),"UTF-8"));
+                parseProxy(in.readLine());
+                in.close();
+            } catch (IOException e) {
+                throw new BadCommandLineException(
+                    Messages.format(Messages.FAILED_TO_PARSE,file,e.getMessage()),e);
+            }
+
+            return 2;
+        }
         if (args[i].equals("-httpproxy")) {
             if (i == args.length - 1 || args[i + 1].startsWith("-")) {
                 throw new BadCommandLineException(
                     Messages.format(Messages.MISSING_PROXY));
             }
-            // syntax is [user[:password]@]proxyHost[:proxyPort]
-            String token = "([^@:]+)";
-            Pattern p = Pattern.compile("(?:"+token+"(?:\\:"+token+")?\\@)?"+token+"(?:\\:"+token+")?");
 
-            String text = args[++i];
-            Matcher matcher = p.matcher(text);
-            if(!matcher.matches())
-                throw new BadCommandLineException(Messages.format(Messages.ILLEGAL_PROXY,text));
-
-            proxyUser = matcher.group(1);
-            proxyPassword = matcher.group(2);
-            proxyHost = matcher.group(3);
-            proxyPort = matcher.group(4);
-            try {
-                Integer.valueOf(proxyPort);
-            } catch (NumberFormatException e) {
-                throw new BadCommandLineException(Messages.format(Messages.ILLEGAL_PROXY,text));
-            }
+            parseProxy(args[++i]);
             return 2;
         }
         if (args[i].equals("-host")) {
@@ -561,7 +569,7 @@ public class Options
                 addCatalog(catalogFile);
             } catch (IOException e) {
                 throw new BadCommandLineException(
-                    Messages.format(Messages.FAILED_TO_PARSE_CATALOG,catalogFile,e.getMessage()),e);
+                    Messages.format(Messages.FAILED_TO_PARSE,catalogFile,e.getMessage()),e);
             }
             return 2;
         }
@@ -606,6 +614,26 @@ public class Options
         }
         
         return 0;   // unrecognized
+    }
+
+    private void parseProxy(String text) throws BadCommandLineException {
+        // syntax is [user[:password]@]proxyHost[:proxyPort]
+        String token = "([^@:]+)";
+        Pattern p = Pattern.compile("(?:"+token+"(?:\\:"+token+")?\\@)?"+token+"(?:\\:"+token+")?");
+
+        Matcher matcher = p.matcher(text);
+        if(!matcher.matches())
+            throw new BadCommandLineException(Messages.format(Messages.ILLEGAL_PROXY,text));
+
+        proxyUser = matcher.group(1);
+        proxyPassword = matcher.group(2);
+        proxyHost = matcher.group(3);
+        proxyPort = matcher.group(4);
+        try {
+            Integer.valueOf(proxyPort);
+        } catch (NumberFormatException e) {
+            throw new BadCommandLineException(Messages.format(Messages.ILLEGAL_PROXY,text));
+        }
     }
 
     /**
