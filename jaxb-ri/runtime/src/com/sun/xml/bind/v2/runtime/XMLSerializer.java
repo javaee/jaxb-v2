@@ -638,7 +638,7 @@ public final class XMLSerializer extends Coordinator {
     private void fireAfterMarshalEvents(final JaxBeanInfo beanInfo, Object currentTarget) {
         // first invoke bean embedded listener
         if (beanInfo.hasAfterMarshalMethod()) {
-            Method m = beanInfo.getLifecycleMethods().getAfterMarshal();
+            Method m = beanInfo.getLifecycleMethods().afterMarshal;
             fireMarshalEvent(currentTarget, m);
         }
 
@@ -662,7 +662,7 @@ public final class XMLSerializer extends Coordinator {
     private void fireBeforeMarshalEvents(final JaxBeanInfo beanInfo, Object currentTarget) {
         // first invoke bean embedded listener
         if (beanInfo.hasBeforeMarshalMethod()) {
-            Method m = beanInfo.getLifecycleMethods().getBeforeMarshal();
+            Method m = beanInfo.getLifecycleMethods().beforeMarshal;
             fireMarshalEvent(currentTarget, m);
         }
 

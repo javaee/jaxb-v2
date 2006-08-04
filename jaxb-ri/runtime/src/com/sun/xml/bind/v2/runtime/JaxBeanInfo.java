@@ -471,16 +471,16 @@ public abstract class JaxBeanInfo<BeanT> {
 
         switch (lifecycleFlag) {
         case FLAG_HAS_BEFORE_UNMARSHAL_METHOD:
-            lcm.setBeforeUnmarshal(m);
+            lcm.beforeUnmarshal = m;
             break;
         case FLAG_HAS_AFTER_UNMARSHAL_METHOD:
-            lcm.setAfterUnmarshal(m);
+            lcm.afterUnmarshal = m;
             break;
         case FLAG_HAS_BEFORE_MARSHAL_METHOD:
-            lcm.setBeforeMarshal(m);
+            lcm.beforeMarshal = m;
             break;
         case FLAG_HAS_AFTER_MARSHAL_METHOD:
-            lcm.setAfterMarshal(m);
+            lcm.afterMarshal = m;
             break;
         }
     }
@@ -498,7 +498,7 @@ public abstract class JaxBeanInfo<BeanT> {
      * Invokes the beforeUnmarshal method if applicable.
      */
     public final void invokeBeforeUnmarshalMethod(UnmarshallerImpl unm, Object child, Object parent) throws SAXException {
-        Method m = getLifecycleMethods().getBeforeUnmarshal();
+        Method m = getLifecycleMethods().beforeUnmarshal;
         invokeUnmarshallCallback(m, child, unm, parent);
     }
 
@@ -506,7 +506,7 @@ public abstract class JaxBeanInfo<BeanT> {
      * Invokes the afterUnmarshal method if applicable.
      */
     public final void invokeAfterUnmarshalMethod(UnmarshallerImpl unm, Object child, Object parent) throws SAXException {
-        Method m = getLifecycleMethods().getAfterUnmarshal();
+        Method m = getLifecycleMethods().afterUnmarshal;
         invokeUnmarshallCallback(m, child, unm, parent);
     }
 
