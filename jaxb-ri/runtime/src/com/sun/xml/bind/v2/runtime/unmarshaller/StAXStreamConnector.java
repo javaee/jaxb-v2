@@ -1,4 +1,4 @@
-/* $Id: StAXStreamConnector.java,v 1.9 2006-07-21 21:12:20 kohsuke Exp $
+/* $Id: StAXStreamConnector.java,v 1.9.2.1 2006-08-04 16:38:48 sandoz Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -48,6 +48,11 @@ import org.xml.sax.SAXException;
 /**
  * Reads XML from StAX {@link XMLStreamReader} and
  * feeds events to {@link XmlVisitor}.
+ * <p>
+ * TODO:
+ * Finding the optimized FI implementations is a bit hacky and not very
+ * extensible. Can we use the service provider mechnism in general for 
+ * concrete implementations of StAXConnector.
  *
  * @author Ryan.Shoemaker@Sun.COM
  * @author Kohsuke Kawaguchi
@@ -313,7 +318,24 @@ class StAXStreamConnector extends StAXConnector {
 
     private static Constructor<? extends StAXConnector> initFastInfosetConnectorClass() {
         try {
-            Class c = UnmarshallerImpl.class.getClassLoader().loadClass("com.sun.xml.bind.v2.runtime.unmarshaller.FastInfosetConnector");
+                        
+            // This is not pretty!
+            // Need to work out a better way
+            boolean useEnhanced = false;
+            try {
+                FI_STAX_READER_CLASS.getDeclaredMethod("peekNext");
+                useEnhanced = true;
+            } catch (Throwable e) {
+            }
+            
+            Class c = null;
+            if (useEnhanced)
+                c = UnmarshallerImpl.class.getClassLoader().loadClass(
+                        "com.sun.xml.bind.v2.runtime.unmarshaller.EnhancedFastInfosetConnector");
+            else
+                c = UnmarshallerImpl.class.getClassLoader().loadClass(
+                        "com.sun.xml.bind.v2.runtime.unmarshaller.FastInfosetConnector");
+                
             return c.getConstructor(FI_STAX_READER_CLASS,XmlVisitor.class);
         } catch (Throwable e) {
             return null;

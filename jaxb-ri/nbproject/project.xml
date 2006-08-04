@@ -4,7 +4,7 @@
     <configuration>
         <general-data xmlns="http://www.netbeans.org/ns/freeform-project/1">
             <!--Do not use Project Properties customizer when editing this file manually.-->
-            <name>jaxb</name>
+            <name>jaxb.2.1.x</name>
             <folders>
                 <source-folder>
                     <label>apgen\src</label>
@@ -55,6 +55,11 @@
                     <label>runtime-api\src</label>
                     <type>java</type>
                     <location>runtime-api/src</location>
+                </source-folder>
+                <source-folder>
+                    <label>runtime-fi/src</label>
+                    <type>java</type>
+                    <location>runtime-fi/src</location>
                 </source-folder>
             </folders>
             <ide-actions>
@@ -114,6 +119,10 @@
                         <label>runtime-api\src</label>
                         <location>runtime-api/src</location>
                     </source-folder>
+                    <source-folder style="packages">
+                        <label>runtime-fi/src</label>
+                        <location>runtime-fi/src</location>
+                    </source-folder>
                     <source-file>
                         <location>build.xml</location>
                     </source-file>
@@ -138,7 +147,8 @@
                 <package-root>xjc/facade</package-root>
                 <package-root>istack-ap/src</package-root>
                 <package-root>runtime-api/src</package-root>
-                <classpath mode="compile">tools/lib/rebundle/compiler/relaxng.javadt.jar;tools/lib/rebundle/compiler/resolver.jar;tools/lib/rebundle/compiler/rngom.jar;tools/lib/rebundle/compiler/txw2.jar;tools/lib/rebundle/compiler/xsom.jar;tools/lib/rebundle/runtime/isorelax.jar;tools/lib/rebundle/runtime/msv.jar;tools/lib/redist/activation.jar;tools/lib/redist/jaxb-api.jar;tools/lib/redist/jsr173_1.0_api.jar;tools/lib/redist/relaxngDatatype.jar;tools/lib/redist/xsdlib.jar;tools/lib/util/ant-contrib-0.6.jar;tools/lib/util/ant-fsget.jar;tools/lib/util/ant-launcher.jar;tools/lib/util/ant-trax.jar;tools/lib/util/ant.jar;tools/lib/util/args4j-1.0-RC.jar;tools/lib/util/jam.jar;tools/lib/util/jing.jar;tools/lib/util/nekohtml.jar;tools/lib/util/relaxngcc.jar;tools/lib/util/sfx4j-1.0.jar;tools/lib/util/sjsxp.jar;tools/lib/util/txwc2.jar;tools/lib/util/xercesImpl.jar</classpath>
+                <package-root>runtime-fi/src</package-root>
+                <classpath mode="compile">tools/lib/rebundle/compiler/relaxng.javadt.jar:tools/lib/rebundle/compiler/resolver.jar:tools/lib/rebundle/compiler/rngom.jar:tools/lib/rebundle/compiler/txw2.jar:tools/lib/rebundle/compiler/xsom.jar:tools/lib/rebundle/runtime/isorelax.jar:tools/lib/rebundle/runtime/msv.jar:tools/lib/redist/activation.jar:tools/lib/redist/jaxb-api.jar:tools/lib/redist/jsr173_1.0_api.jar:tools/lib/redist/relaxngDatatype.jar:tools/lib/redist/xsdlib.jar:tools/lib/util/ant-contrib-0.6.jar:tools/lib/util/ant-fsget.jar:tools/lib/util/ant-launcher.jar:tools/lib/util/ant-trax.jar:tools/lib/util/ant.jar:tools/lib/util/args4j-1.0-RC.jar:tools/lib/util/jam.jar:tools/lib/util/jing.jar:tools/lib/util/nekohtml.jar:tools/lib/util/relaxngcc.jar:tools/lib/util/sfx4j-1.0.jar:tools/lib/util/sjsxp.jar:tools/lib/util/txwc2.jar:tools/lib/util/xercesImpl.jar:tools/lib/util/FastInfoset.jar</classpath>
                 <source-level>1.5</source-level>
             </compilation-unit>
         </java-data>
