@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import com.sun.istack.Nullable;
 import com.sun.xml.bind.v2.model.core.ErrorHandler;
 
 /**
@@ -93,18 +94,21 @@ public interface AnnotationReader<T,C,F,M> {
      *
      * @return null
      *      if the annotation was not found.
-     */ 
+     */
+    @Nullable
     <A extends Annotation> A getMethodParameterAnnotation(
             Class<A> annotation, M method, int paramIndex, Locatable srcPos );
 
     /**
      * Reads an annotation on a class.
      */
+    @Nullable
     <A extends Annotation> A getClassAnnotation(Class<A> annotation, C clazz, Locatable srcpos) ;
 
     /**
      * Reads an annotation on the package that the given class belongs to.
      */
+    @Nullable
     <A extends Annotation> A getPackageAnnotation(Class<A> annotation, C clazz, Locatable srcpos);
 
     /**
@@ -119,4 +123,10 @@ public interface AnnotationReader<T,C,F,M> {
      *      The name of the annotation parameter to be read.
      */
     T getClassValue( Annotation a, String name );
+
+    /**
+     * Similar to {@link #getClassValue(Annotation, String)} method but
+     * obtains an array parameter.
+     */
+    T[] getClassArrayValue( Annotation a, String name );
 }
