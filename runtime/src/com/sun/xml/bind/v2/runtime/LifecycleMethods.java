@@ -14,9 +14,9 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
  * @see Loader#fireAfterUnmarshal(JaxBeanInfo, Object, UnmarshallingContext.State) 
  * @see XMLSerializer#fireMarshalEvent(Object, Method)
  */
-public final class LifecycleMethods {
-    public Method beforeUnmarshal;
-    public Method afterUnmarshal;
-    public Method beforeMarshal;
-    public Method afterMarshal;
+final class LifecycleMethods {
+    Method beforeUnmarshal;
+    Method afterUnmarshal;
+    Method beforeMarshal;
+    Method afterMarshal;
 }
