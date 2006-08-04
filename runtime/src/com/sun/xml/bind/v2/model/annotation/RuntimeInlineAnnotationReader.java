@@ -102,6 +102,20 @@ public final class RuntimeInlineAnnotationReader extends AbstractInlineAnnotatio
         }
     }
 
+    public Class[] getClassArrayValue(Annotation a, String name) {
+        try {
+            return (Class[])a.annotationType().getMethod(name).invoke(a);
+        } catch (IllegalAccessException e) {
+            // impossible
+            throw new IllegalAccessError(e.getMessage());
+        } catch (InvocationTargetException e) {
+            // impossible
+            throw new InternalError(e.getMessage());
+        } catch (NoSuchMethodException e) {
+            throw new NoSuchMethodError(e.getMessage());
+        }
+    }
+
     protected String fullName(Method m) {
         return m.getDeclaringClass().getName()+'#'+m.getName();
     }

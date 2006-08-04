@@ -8,7 +8,7 @@ import com.sun.xml.bind.v2.runtime.Location;
  * <p>
  * {@link Locatable} forms a tree structure, where each {@link Locatable}
  * points back to the upstream {@link Locatable}.
- * For example, image {@link Locatable} X that points to a particular annotation,
+ * For example, imagine {@link Locatable} X that points to a particular annotation,
  * whose upstream is {@link Locatable} Y, which points to a particular method
  * (on which the annotation is put), whose upstream is {@link Locatable} Z,
  * which points to a particular class (in which the method is defined),

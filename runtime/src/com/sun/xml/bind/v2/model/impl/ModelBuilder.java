@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRegistry;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
@@ -145,6 +146,15 @@ public class ModelBuilder<T,C,F,M> {
         }
 
         addTypeName(r);
+
+        // more reference closure expansion. @XmlSeeAlso
+        XmlSeeAlso sa = reader.getClassAnnotation(XmlSeeAlso.class, clazz, upstream);
+        if(sa!=null) {
+            for( T t : reader.getClassArrayValue(sa,"value") ) {
+                getTypeInfo(t,(Locatable)sa);
+            }
+        }
+
 
         return r;
     }
