@@ -51,7 +51,7 @@ final class BridgeImpl<T> extends InternalBridge<T> {
 
     public void marshal(Marshaller _m, T t, XMLStreamWriter output) throws JAXBException {
         MarshallerImpl m = (MarshallerImpl)_m;
-        m.write(tagName,bi,t,XMLStreamWriterOutput.create(output),new StAXPostInitAction(output,m.serializer));
+        m.write(tagName,bi,t,XMLStreamWriterOutput.create(output,context),new StAXPostInitAction(output,m.serializer));        
     }
 
     public void marshal(Marshaller _m, T t, OutputStream output, NamespaceContext nsContext) throws JAXBException {
