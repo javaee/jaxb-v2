@@ -3,6 +3,7 @@ package com.sun.tools.xjc.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -37,6 +38,19 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
 
     @XmlIDREF
     private CClassInfo baseClass;
+
+    /**
+     * List of all subclasses, together with {@link #nextSibling}.
+     *
+     * If this class has no sub-class, this field is null. Otherwise,
+     * this field points to a sub-class of this class. From there you can enumerate
+     * all the sub-classes by using {@link #nextSibling}.
+     */
+    private CClassInfo firstSubclass;
+    /**
+     * @see #firstSubclass
+     */
+    private CClassInfo nextSibling = null;
 
     /**
      * @see #getTypeName()
@@ -138,7 +152,7 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
     }
 
     public boolean hasSubClasses() {
-        throw new UnsupportedOperationException();
+        return firstSubclass!=null;
     }
 
     /**
@@ -308,10 +322,37 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
         assert baseClass==null;
         assert base!=null;
         baseClass = base;
+
+        assert nextSibling==null;
+        CClassInfo existing = base.firstSubclass;
+        this.nextSibling = existing;
+        base.firstSubclass = this;
     }
 
     public CClassInfo getBaseClass() {
         return baseClass;
+    }
+
+    /**
+     * Enumerates all the sub-classes of this class.
+     */
+    public Iterator<CClassInfo> listSubclasses() {
+        return new Iterator<CClassInfo>() {
+            CClassInfo cur = firstSubclass;
+            public boolean hasNext() {
+                return cur!=null;
+            }
+
+            public CClassInfo next() {
+                CClassInfo r = cur;
+                cur = cur.nextSibling;
+                return r;
+            }
+
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
     }
 
     public CClassInfo getSubstitutionHead() {

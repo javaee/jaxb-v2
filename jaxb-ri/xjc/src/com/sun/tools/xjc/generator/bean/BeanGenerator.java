@@ -25,6 +25,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -66,6 +67,7 @@ import com.sun.tools.xjc.generator.annotation.spec.XmlEnumWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlJavaTypeAdapterWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlMimeTypeWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlRootElementWriter;
+import com.sun.tools.xjc.generator.annotation.spec.XmlSeeAlsoWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlTypeWriter;
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
 import com.sun.tools.xjc.model.CAdapter;
@@ -470,6 +472,16 @@ public final class BeanGenerator implements Outline
                 xtw.namespace(typeNameURI);
         }
 
+        {// @XmlSeeAlso
+            Iterator<CClassInfo> subclasses = cc.target.listSubclasses();
+            if(subclasses.hasNext()) {
+                XmlSeeAlsoWriter saw = cc.implClass.annotate2(XmlSeeAlsoWriter.class);
+                while (subclasses.hasNext()) {
+                    CClassInfo s = subclasses.next();
+                    saw.value(getClazz(s).implRef);
+                }
+            }
+        }
 
         if(target.isElement()) {
             String namespaceURI = target.getElementName().getNamespaceURI();
