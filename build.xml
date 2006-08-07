@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.1 2006-08-04 16:38:49 sandoz Exp $
+       $Id: build.xml,v 1.71.2.2 2006-08-07 14:04:23 sandoz Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -824,7 +824,7 @@ Class-Path: ${manifest.classpath}
     <target name="integrate-fi">
       <get src="http://kohsuke.sfbay/hudson/job/fi/lastSuccessfulBuild/artifact/fi/FastInfoset/dist/FastInfoset.jar"
            dest="tools/lib/util/FastInfoset.jar" />
-      <get src="http://kohsuke.sfbay/hudson/job/fi/lastSuccessfulBuild/artifact/fi/package/FastInfoset.src.zip"
+      <get src="http://kohsuke.sfbay/hudson/job/fi/lastSuccessfulBuild/artifact/fi/FastInfoset/dist/FastInfoset.src.zip"
            dest="tools/lib/src/FastInfoset.src.zip" />
     </target>
 
