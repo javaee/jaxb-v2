@@ -5,7 +5,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.WhiteSpaceProcessor;
-import com.sun.xml.fastinfoset.stax.StAXDocumentParser;
+import com.sun.xml.fastinfoset.stax.enhanced.EnhancedStAXDocumentParser;
 import org.xml.sax.SAXException;
 
 /**
@@ -19,7 +19,7 @@ import org.xml.sax.SAXException;
 final class EnhancedFastInfosetConnector extends StAXConnector {
 
     // event source
-    private final StAXDocumentParser fastInfosetStreamReader;
+    private final EnhancedStAXDocumentParser fastInfosetStreamReader;
 
     // Flag set to true if text has been reported
     private boolean textReported;
@@ -30,7 +30,7 @@ final class EnhancedFastInfosetConnector extends StAXConnector {
     // Buffer for characters
     private final StringBuilder buffer = new StringBuilder();
 
-    public EnhancedFastInfosetConnector(StAXDocumentParser fastInfosetStreamReader,
+    public EnhancedFastInfosetConnector(EnhancedStAXDocumentParser fastInfosetStreamReader,
             XmlVisitor visitor) {
         super(visitor);
         fastInfosetStreamReader.setStringInterning(true);
