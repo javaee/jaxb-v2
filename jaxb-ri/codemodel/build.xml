@@ -68,7 +68,7 @@
             debug="true" optimize="true">
             <classpath>
                 <pathelement path="${codemodel.classes}"/>
-                <fileset dir="${jaxb.libs.redist}" includes="ant.jar"/>
+                <fileset file="${jaxb.libs.util}/ant.jar"/>
             </classpath>
         </javac>
         <jar destfile="${codemodel.build}/codemodel-annotation-compiler.jar">
