@@ -204,7 +204,7 @@
   </xs:attributeGroup>
   <xs:element name="typesafeEnumClass" substitutionGroup="jaxb:declaration">
     <xs:complexType>
-      <xs:sequence minOccurs="0">
+      <xs:sequence>
         <xs:element minOccurs="0" ref="jaxb:javadoc"/>
         <xs:element minOccurs="0" maxOccurs="unbounded" name="typesafeEnumMember">
           <xs:complexType>
