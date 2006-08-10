@@ -58,7 +58,8 @@ enum Messages {
     FACTORY_CLASS_NEEDS_FACTORY_METHOD, // 1 arg
 
     MISSING_JAXB_PROPERTIES, // 1arg
-    TRANSIENT_FIELD_NOT_BINDABLE // 1 arg
+    TRANSIENT_FIELD_NOT_BINDABLE, // 1 arg
+    THERE_MUST_BE_VALUE_IN_XMLVALUE // 1 arg
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());

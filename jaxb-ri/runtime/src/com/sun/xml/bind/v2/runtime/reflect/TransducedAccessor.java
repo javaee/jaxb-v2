@@ -7,6 +7,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlValue;
 import javax.xml.stream.XMLStreamException;
 
+import com.sun.istack.NotNull;
+import com.sun.istack.Nullable;
 import com.sun.istack.SAXException2;
 import com.sun.xml.bind.WhiteSpaceProcessor;
 import com.sun.xml.bind.api.AccessorException;
@@ -67,7 +69,7 @@ public abstract class TransducedAccessor<BeanT> {
      * @return
      *      if the accessor didn't yield a value, return null.
      */
-    public abstract CharSequence print(BeanT o) throws AccessorException, SAXException;
+    public abstract @Nullable CharSequence print(@NotNull BeanT o) throws AccessorException, SAXException;
 
     /**
      * Parses the text value into the responsible field of the given bean.
