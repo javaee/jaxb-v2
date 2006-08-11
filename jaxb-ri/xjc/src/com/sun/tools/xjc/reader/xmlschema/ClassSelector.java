@@ -57,12 +57,12 @@ import com.sun.xml.xsom.util.ComponentNameFunction;
 import org.xml.sax.Locator;
 
 /**
- * Manages association between XSComponents and generated
- * content interfaces.
+ * Manages association between {@link XSComponent}s and generated
+ * {@link CTypeInfo}s.
  *
  * <p>
- * All the content interfaces are created, registered, and
- * maintained in this class.
+ * This class determines which component is mapped to (or is not mapped to)
+ * what types.
  *
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
@@ -236,9 +236,6 @@ public final class ClassSelector extends BindingComponent {
      * If it is not being mapped to a type item, return null.
      */
     public CTypeInfo bindToType( XSComponent sc ) {
-//        TypeToken t = domBinder.bind(sc);
-//        if(t!=null)     return t;
-//        else            return _bindToClass(sc,false);
         return _bindToClass(sc,false);
     }
 
@@ -272,6 +269,8 @@ public final class ClassSelector extends BindingComponent {
     }
 
     /**
+     * The real meat of the "bindToType" code.
+     *
      * @param cannotBeDelayed
      *      if the binding of the body of the class cannot be defered
      *      and needs to be done immediately. If the flag is false,
