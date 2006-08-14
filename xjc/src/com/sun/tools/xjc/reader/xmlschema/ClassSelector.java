@@ -249,10 +249,6 @@ public final class ClassSelector extends BindingComponent {
         return (CElement)_bindToClass(e,false);
     }
 
-    public CClassInfo bindToType( XSComplexType t ) {
-        return bindToType(t,false);
-    }
-
     public CClassInfo bindToType( XSComplexType t, boolean cannotBeDelayed ) {
         // this assumption that a complex type always binds to a ClassInfo
         // does not hold for xs:anyType --- our current approach of handling

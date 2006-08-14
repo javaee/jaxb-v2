@@ -162,4 +162,9 @@ public final class CReferencePropertyInfo extends CPropertyInfo implements Refer
         // in XJC, we never recognize a nillable collection pattern, so this is always false.
         return false;
     }
+
+    public boolean isCollectionRequired() {
+        // in XJC, we never recognize a nillable collection pattern, so this is always false.
+        return false;
+    }
 }

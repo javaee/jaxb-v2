@@ -868,7 +868,8 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     ComplexType p = e.name(ename.getLocalPart()).complexType();
                     if(ep.isCollectionNillable()) {
                         e.nillable(true);
-                    } else {
+                    }
+                    if(!ep.isCollectionRequired()) {
                         e.minOccurs(0);
                     }
                     if (ep.getTypes().size() == 1) {
@@ -1019,6 +1020,9 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     elementFormDefault.writeForm(e,ename);
                     if(rp.isCollectionNillable())
                         e.nillable(true);
+                    if(!rp.isCollectionRequired())
+                        e.minOccurs(0);
+
                     if (rp.getElements().size() == 1) {
                         compositor = p.sequence();
                     } else {

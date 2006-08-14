@@ -86,6 +86,11 @@ public final class CElementPropertyInfo extends CPropertyInfo implements Element
         return null;
     }
 
+    public boolean isCollectionRequired() {
+        // in XJC, we never recognize a nillable collection pattern, so this is always false.
+        return false;
+    }
+
     public boolean isCollectionNillable() {
         // in XJC, we never recognize a nillable collection pattern, so this is always false.
         return false;
