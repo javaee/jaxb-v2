@@ -236,7 +236,7 @@ class Internalizer {
                 // process child <jaxb:bindings> recursively
                 move(item, targetNodes);
             } else
-            if ("globalBindings".equals(bindings.getLocalName())) {
+            if ("globalBindings".equals(localName)) {
                 // <jaxb:globalBindings> always go to the root of document.
                 moveUnder(item,forest.getOneDocument().getDocumentElement());
             } else {
