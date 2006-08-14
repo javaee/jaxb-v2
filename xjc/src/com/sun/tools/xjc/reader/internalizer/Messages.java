@@ -48,8 +48,6 @@ class Messages
         "Internalizer.XPathEvaluatesToNonSchemaElement";
     static final String CONTEXT_NODE_IS_NOT_ELEMENT = // arg:0
         "Internalizer.ContextNodeIsNotElement";
-    static final String NO_CONTEXT_NODE_SPECIFIED = // arg:0
-            "Internalizer.NoContextNodeSpecified";
     static final String ERR_INCORRECT_VERSION = // arg:0
         "Internalizer.IncorrectVersion";
     static final String ERR_VERSION_NOT_FOUND = // arg:0
