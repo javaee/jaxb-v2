@@ -197,6 +197,13 @@ public final class DOMForest {
     }
 
     /**
+     * Picks one document at random and returns it.
+     */
+    public Document getOneDocument() {
+        return core.values().iterator().next();
+    }
+
+    /**
      * Checks the correctness of the XML Schema documents and return true
      * if it's OK.
      *

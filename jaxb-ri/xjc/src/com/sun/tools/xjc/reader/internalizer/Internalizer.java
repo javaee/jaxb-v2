@@ -147,10 +147,10 @@ class Internalizer {
                     new URL( forest.getSystemId(bindings.getOwnerDocument()) ),
                     schemaLocation ).toExternalForm();
             } catch( MalformedURLException e ) {
-                ;   // continue with the original schemaLocation value
+                // continue with the original schemaLocation value
             }
             
-            target = forest.get(schemaLocation);
+            target = forest.get(schemaLocation).getDocumentElement();
             if(target==null) {
                 reportError( bindings,
                     Messages.format(Messages.ERR_INCORRECT_SCHEMA_REFERENCE,
@@ -209,6 +209,13 @@ class Internalizer {
             
             target = rnode;
         }
+
+        if ("globalBindings".equals(bindings.getLocalName())) {
+            // <jaxb:globalBindings> always go to the root of document.
+            target = forest.getOneDocument().getDocumentElement();
+        }
+
+
         
         // update the result map
         result.put( bindings, target );
@@ -228,22 +235,17 @@ class Internalizer {
             // this must be the result of an error on the external binding.
             // recover from the error by ignoring this node
             return;
-        
-        Element[] children = DOMUtils.getChildElements(bindings);
-        for (Element item : children) {
-            if ("bindings".equals(item.getLocalName()))
-            // process child <jaxb:bindings> recursively
+
+        for (Element item : DOMUtils.getChildElements(bindings)) {
+            String localName = item.getLocalName();
+
+            if ("bindings".equals(localName)) {
+                // process child <jaxb:bindings> recursively
                 move(item, targetNodes);
-            else {
+            } else {
                 if (!(target instanceof Element)) {
-                    if(target instanceof Document) {
-                        // we set the context node to the document when @schemaLocation is used.
-                        reportError(item,
-                                Messages.format(Messages.NO_CONTEXT_NODE_SPECIFIED));
-                    } else {
-                        reportError(item,
-                                Messages.format(Messages.CONTEXT_NODE_IS_NOT_ELEMENT));
-                    }
+                    reportError(item,
+                            Messages.format(Messages.CONTEXT_NODE_IS_NOT_ELEMENT));
                     return; // abort
                 }
 
@@ -252,6 +254,7 @@ class Internalizer {
                             Messages.format(Messages.ORPHANED_CUSTOMIZATION, item.getNodeName()));
                     return; // abort
                 }
+
                 // move this node under the target
                 moveUnder(item,(Element)target);
             }
