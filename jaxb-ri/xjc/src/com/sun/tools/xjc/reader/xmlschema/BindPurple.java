@@ -78,7 +78,7 @@ public class BindPurple extends ColorBinder {
 
 
     public void complexType(XSComplexType ct) {
-        CClassInfo ctBean = selector.bindToType(ct, false);
+        CClassInfo ctBean = selector.bindToType(ct,false);
         if(getCurrentBean()!=ctBean)
             // in some case complex type and element binds to the same class
             // don't make it has-a. Just make it is-a.

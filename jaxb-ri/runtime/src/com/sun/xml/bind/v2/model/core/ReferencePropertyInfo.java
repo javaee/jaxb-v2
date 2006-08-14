@@ -61,6 +61,14 @@ public interface ReferencePropertyInfo<T,C> extends PropertyInfo<T,C> {
     boolean isCollectionNillable();
 
     /**
+     * Checks if the wrapper element is required.
+     *
+     * @return
+     *      Always false if {@link #getXmlName()}==null.
+     */
+    boolean isCollectionRequired();
+
+    /**
      * Returns true if this property can hold {@link String}s to represent
      * mixed content model.
      */

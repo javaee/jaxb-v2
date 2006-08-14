@@ -19,6 +19,7 @@ abstract class ERPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         XmlElementWrapper e = seed.readAnnotation(XmlElementWrapper.class);
 
         boolean nil = false;
+        boolean required = false;
         if(!isCollection()) {
             xmlName = null;
             if(e!=null)
@@ -31,11 +32,13 @@ abstract class ERPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
             if(e!=null) {
                 xmlName = calcXmlName(e);
                 nil = e.nillable();
+                required = e.required();
             } else
                 xmlName = null;
         }
 
         wrapperNillable = nil;
+        wrapperRequired = required;
     }
 
     private final QName xmlName;
@@ -46,6 +49,11 @@ abstract class ERPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
     private final boolean wrapperNillable;
 
     /**
+     * True if the wrapper tag is required.
+     */
+    private final boolean wrapperRequired;
+
+    /**
      * Gets the wrapper element name.
      */
     public final QName getXmlName() {
@@ -54,5 +62,9 @@ abstract class ERPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
     public final boolean isCollectionNillable() {
         return wrapperNillable;
+    }
+
+    public final boolean isCollectionRequired() {
+        return wrapperRequired;
     }
 }

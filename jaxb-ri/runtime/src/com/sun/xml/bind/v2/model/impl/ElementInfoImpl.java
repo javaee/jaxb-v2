@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
+import com.sun.istack.FinalArrayList;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.AnnotationSource;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
@@ -32,7 +33,6 @@ import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
-import com.sun.istack.FinalArrayList;
 
 /**
  * {@link ElementInfo} implementation.
@@ -113,6 +113,10 @@ class ElementInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M> implements ElementI
 
         public QName getXmlName() {
             return tagName;
+        }
+
+        public boolean isCollectionRequired() {
+            return false;
         }
 
         public boolean isCollectionNillable() {

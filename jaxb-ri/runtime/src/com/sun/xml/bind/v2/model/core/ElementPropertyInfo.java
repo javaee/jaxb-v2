@@ -58,6 +58,14 @@ public interface ElementPropertyInfo<T,C> extends PropertyInfo<T,C> {
     QName getXmlName();
 
     /**
+     * Checks if the wrapper element is required.
+     *
+     * @return
+     *      Always false if {@link #getXmlName()}==null.
+     */
+    boolean isCollectionRequired();
+
+    /**
      * Returns true if this property is nillable
      * (meaning the absence of the value is treated as nil='true')
      *
