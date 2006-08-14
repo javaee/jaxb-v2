@@ -210,13 +210,6 @@ class Internalizer {
             target = rnode;
         }
 
-        if ("globalBindings".equals(bindings.getLocalName())) {
-            // <jaxb:globalBindings> always go to the root of document.
-            target = forest.getOneDocument().getDocumentElement();
-        }
-
-
-        
         // update the result map
         result.put( bindings, target );
         
@@ -242,6 +235,10 @@ class Internalizer {
             if ("bindings".equals(localName)) {
                 // process child <jaxb:bindings> recursively
                 move(item, targetNodes);
+            } else
+            if ("globalBindings".equals(bindings.getLocalName())) {
+                // <jaxb:globalBindings> always go to the root of document.
+                moveUnder(item,forest.getOneDocument().getDocumentElement());
             } else {
                 if (!(target instanceof Element)) {
                     reportError(item,
