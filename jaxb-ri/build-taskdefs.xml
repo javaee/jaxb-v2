@@ -99,26 +99,13 @@
     <element name="source" />
     <attribute name="dest" />
     <sequential>
-      <copy todir="@{dest}" overwrite="true">
-          <source />
-      </copy>
-      
-      <!-- generate a list of sample applications in the distribution -->
-      <taskdef name="dirListGen" classname="com.sun.tools.tocproc.DirectoryListGenerator">
-        <classpath>
-          <fileset dir="${jaxb.libs.util}" includes="**/*.jar"/>
-        </classpath>
-      </taskdef>
-      <dirListGen dir="${jaxb.root}/samples/work" dest="build/samples.xml" />
-      
-      
       <taskdef name="htmlmacro" classname="com.sun.wts.tools.htmlmacro.HtmlMacroTask">
         <classpath>
           <pathelement path="tools/htmlmacro/htmlmacro.jar" />
         </classpath>
       </taskdef>
       <htmlmacro destdir="@{dest}">
-        <documents dir="docs" includes="*.html" excludes="catalog.html" />
+        <documents dir="${jaxb.docs}" includes="*.html" excludes="catalog.html" />
         <tags dir="tools/htmlmacro/tags" includes="**/*.tag" />
         <property file="build.properties"/>
         <property key="IMPL_VERSION"        value="${release.impl.version}" />
@@ -127,22 +114,6 @@
         <property key="JWSDP_ROOTDIR"       value="${jwsdp.root.directory}"/>
       </htmlmacro>
       <copy file="docs/catalog.html" todir="@{dest}"/>
-      
-      <!--replace dir="@{dest}">
-          <include name="**/*.html"/>
-          <replacefilter token="@@@@SPEC_VERSION@@@@"
-                         value="${release.spec.version}" />
-          <replacefilter token="@@@@IMPL_VERSION@@@@"
-                         value="${release.impl.version}"/>
-          <replacefilter token="@@@@IMPL_VERSION_SUFFIX@@@@"
-                         value="${release.impl.version.suffix}"/>
-          <replacefilter token="@@@@JWSDP_VERSION@@@@"
-                         value="${jwsdp.impl.version}"/>
-          <replacefilter token="@@@@JWSDP_ROOTDIR@@@@"
-                         value="${jwsdp.root.directory}"/>
-      </replace>
-      <delete file="@{dest}/toc.xml"/>
-      <delete file="@{dest}/samples.xml"/-->
     </sequential>
   </macrodef>
 
