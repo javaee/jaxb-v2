@@ -171,6 +171,9 @@ public final class ModelLoader {
                     e.printStackTrace();
             }
             return null;
+        } catch (AbortException e) {
+            // error should have been reported already, since this is requested by the error receiver
+            return null;
         }
     }
 
@@ -291,11 +294,14 @@ public final class ModelLoader {
         forest.setEntityResolver(opt.entityResolver);
         
         // parse source grammars
-        for (InputSource value : opt.getGrammars())
+        for (InputSource value : opt.getGrammars()) {
+            errorReceiver.pollAbort();
             forest.parse(value, true);
+        }
         
         // parse external binding files
         for (InputSource value : opt.getBindFiles()) {
+            errorReceiver.pollAbort();
             Document dom = forest.parse(value, true);
             if(dom==null)       continue;   // error must have been reported
             Element root = dom.getDocumentElement();
@@ -479,6 +485,7 @@ public final class ModelLoader {
 
         // re-parse the transformed schemas
         for (String systemId : forest.getRootDocuments()) {
+            errorReceiver.pollAbort();
             Document dom = forest.get(systemId);
             if (!dom.getDocumentElement().getNamespaceURI().equals(Const.JAXB_NSURI))
                 reader.parse(systemId);

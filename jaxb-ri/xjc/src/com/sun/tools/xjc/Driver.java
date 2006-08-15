@@ -29,6 +29,7 @@ import java.util.Iterator;
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.writer.ZipCodeWriter;
+import com.sun.istack.NotNull;
 import com.sun.istack.Nullable;
 import com.sun.tools.xjc.generator.bean.BeanGenerator;
 import com.sun.tools.xjc.model.Model;
@@ -193,7 +194,7 @@ public class Driver {
      *      All non-zero values indicate an error. The error message
      *      will be sent to the specified PrintStream.
      */
-    public static int run(String[] args, XJCListener listener) throws BadCommandLineException {
+    public static int run(String[] args, @NotNull final XJCListener listener) throws BadCommandLineException {
 
         // recognize those special options before we start parsing options.
         for (String arg : args) {
@@ -242,6 +243,11 @@ public class Driver {
                 public void warning(SAXParseException exception) {
                     if(!opt.quiet)
                         super.warning(exception);
+                }
+                @Override
+                public void pollAbort() throws AbortException {
+                    if(listener.isCanceled())
+                        throw new AbortException();
                 }
             };
 
