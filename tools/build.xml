@@ -31,7 +31,6 @@
         <ant dir="${jaxb.root}/tools/pretty-printer" />
         <ant dir="${jaxb.root}/tools/jing-rnc-driver" />
         <ant dir="${jaxb.root}/tools/xmllint" />
-        <ant dir="${jaxb.root}/tools/toc-processor" />
         <!--ant dir="${jaxb.root}/tools/servlet"              target="war" /-->
     </target>
     
@@ -40,6 +39,5 @@
         <ant dir="${jaxb.root}/tools/pretty-printer"       target="clean"/>
         <ant dir="${jaxb.root}/tools/jing-rnc-driver"      target="clean"/>
         <ant dir="${jaxb.root}/tools/xmllint"              target="clean"/>
-        <ant dir="${jaxb.root}/tools/toc-processor"        target="clean"/>
     </target>
 </project>
