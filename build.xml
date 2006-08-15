@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.4 2006-08-08 18:19:25 sandoz Exp $
+       $Id: build.xml,v 1.71.2.5 2006-08-15 18:16:45 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -906,4 +906,17 @@ Class-Path: ${manifest.classpath}
         <get src="http://kohsuke.sfbay/hudson/job/package-rename-task/lastSuccessfulBuild/artifact/target/package-rename-task-1.0.jar"
              dest="tools/lib/util/package-rename-task.jar"/>
     </target>
+
+    <target name="integrate-htmlmacro">
+        <get src="http://kohsuke.sfbay/hudson/job/htmlmacro/lastSuccessfulBuild/artifact/htmlmacro/build/htmlmacro.zip"
+             dest="build/htmlmacro.zip"/>
+        <unzip src="build/htmlmacro.zip" dest="tools/htmlmacro">
+          <patternset>
+            <include name="htmlmacro.*" />
+            <include name="tags/**/*" />
+          </patternset>
+        </unzip>
+    </target>
+    
+    
 </project>

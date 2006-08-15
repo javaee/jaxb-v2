@@ -109,24 +109,27 @@
           <fileset dir="${jaxb.libs.util}" includes="**/*.jar"/>
         </classpath>
       </taskdef>
-      <dirListGen dir="${jaxb.root}/samples/work" dest="@{dest}/samples.xml" />
+      <dirListGen dir="${jaxb.root}/samples/work" dest="build/samples.xml" />
       
-      <java classname="com.sun.tools.tocproc.TocProcessor" fork="true" failonerror="true">
-          <classpath>
-              <!-- make sure JAXP xalan comes before Apache xalan -->
-              <fileset dir="${jaxb.libs.redist}" includes="**/*.jar"/>
-              <fileset dir="${jaxb.libs.util}" includes="**/*.jar"/>
-              <fileset dir="${jaxb.libs.runtime}" includes="**/*.jar"/>
-              <fileset dir="${jaxb.libs.compiler}" includes="**/*.jar"/>
-          </classpath>
-          <arg path="build.properties"/>
-          <arg value="@{dest}"/>
-          <!-- if you need to attach debugger ... -->
-          <!--jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000"/-->
-      </java>
-      <replace dir="@{dest}">
+      
+      <taskdef name="htmlmacro" classname="com.sun.wts.tools.htmlmacro.HtmlMacroTask">
+        <classpath>
+          <pathelement path="tools/htmlmacro/htmlmacro.jar" />
+        </classpath>
+      </taskdef>
+      <htmlmacro destdir="@{dest}">
+        <documents dir="docs" includes="*.html" excludes="catalog.html" />
+        <tags dir="tools/htmlmacro/tags" includes="**/*.tag" />
+        <property file="build.properties"/>
+        <property key="IMPL_VERSION"        value="${release.impl.version}" />
+        <property key="IMPL_VERSION_SUFFIX" value="${release.impl.version.suffix}" />
+        <property key="JWSDP_VERSION"       value="${jwsdp.impl.version}"/>
+        <property key="JWSDP_ROOTDIR"       value="${jwsdp.root.directory}"/>
+      </htmlmacro>
+      <copy file="docs/catalog.html" todir="@{dest}"/>
+      
+      <!--replace dir="@{dest}">
           <include name="**/*.html"/>
-          <!-- we need to write @@@@ to mean @@ because this is in macrodef -->
           <replacefilter token="@@@@SPEC_VERSION@@@@"
                          value="${release.spec.version}" />
           <replacefilter token="@@@@IMPL_VERSION@@@@"
@@ -139,7 +142,7 @@
                          value="${jwsdp.root.directory}"/>
       </replace>
       <delete file="@{dest}/toc.xml"/>
-      <delete file="@{dest}/samples.xml"/>
+      <delete file="@{dest}/samples.xml"/-->
     </sequential>
   </macrodef>
 
