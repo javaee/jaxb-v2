@@ -42,6 +42,8 @@ final class ProgressCodeWriter extends FilterCodeWriter {
         if(name.length()!=0)    name +=     File.separatorChar;
         name += fileName;
 
+        if(progress.isCanceled())
+            throw new AbortException();
         progress.generatedFile(name,current++,totalFileCount);
     }
 }

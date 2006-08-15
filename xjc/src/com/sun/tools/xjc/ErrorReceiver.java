@@ -23,8 +23,8 @@
  */
 package com.sun.tools.xjc;
 
-import com.sun.tools.xjc.api.ErrorListener;
 import com.sun.istack.SAXParseException2;
+import com.sun.tools.xjc.api.ErrorListener;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
@@ -94,7 +94,14 @@ public abstract class ErrorReceiver  implements ErrorHandler, ErrorListener {
     public abstract void error(SAXParseException exception) throws AbortException;
     public abstract void fatalError(SAXParseException exception) throws AbortException;
     public abstract void warning(SAXParseException exception) throws AbortException;
-    
+
+    /**
+     * This method will be invoked periodically to allow {@link AbortException}
+     * to be thrown, especially when this is driven by some kind of GUI.
+     */
+    public void pollAbort() throws AbortException {
+    }
+
     /**
      * Reports verbose messages to users.
      * 
