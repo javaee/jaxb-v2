@@ -21,7 +21,10 @@
 -->
 
 
-<toc>
+<toc name="JAXB RI">
+  <banner>
+    Java<sup><font size="-2">TM</font></sup> Architecture for XML Binding
+  </banner>
   <chapter name="JAXB 2.0">
     <document name="Overview" 
               url="index.html"/>

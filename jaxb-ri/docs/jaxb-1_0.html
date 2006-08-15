@@ -1,6 +1,5 @@
 <html>
-  <head>
-    <caption>1.0.x Release Notes</caption>
+  <head caption="1.0.x Release Notes">
     <link rel="stylesheet" type="text/css" href="style/default.css"/>
   </head>
 
@@ -88,7 +87,7 @@
             on internal Xerces APIs.  In previous releases of JAXB, this error condition
             would manifest itself as an <tt>IllegalAccessError</tt>.</p>
 
-            <p>To fix this, make sure @@JWSDP_ROOTDIR@@/jaxp/lib/endorsed/xercesImpl.jar
+            <p>To fix this, make sure ${JWSDP_ROOTDIR}/jaxp/lib/endorsed/xercesImpl.jar
             precedes any other version of Xerces in your CLASSPATH. Otherwise, xjc can't
             validate your schema and you shouldn't rely on the generated code.</p></li>
         <li>The fact that <tt>javax.xml.bind.util.JAXBSource</tt> derives
@@ -112,8 +111,8 @@
 
 	<hr/>
 	<div class="footer">
-	  $Revision: 1.3 $<br/>
-	  $Date: 2006-03-14 17:45:31 $
+	  $Revision: 1.3.4.1 $<br/>
+	  $Date: 2006-08-15 18:16:26 $
 	</div>
   </body>
 </html>
