@@ -10,7 +10,7 @@
       <sourceFolder url="file://$MODULE_DIR$/build/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/examples/dumper" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
-      <excludeFolder url="file://$MODULE_DIR$/build" />
+      <excludeFolder url="file://$MODULE_DIR$/build/renamed-classes" />
       <excludeFolder url="file://$MODULE_DIR$/j2se-integration" />
     </content>
     <orderEntry type="inheritedJdk" />

@@ -31,6 +31,7 @@ import com.sun.xml.xsom.XSNotation;
 import com.sun.xml.xsom.XSSchema;
 import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSType;
+import com.sun.xml.xsom.impl.parser.NGCCRuntimeEx;
 import com.sun.xml.xsom.parser.SchemaDocument;
 import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSVisitor;
@@ -190,6 +191,8 @@ public class SchemaImpl implements XSSchema
     private final Map<String,XSSimpleType> simpleTypes = new HashMap<String,XSSimpleType>();
     private final Map<String,XSSimpleType> simpleTypesView = Collections.unmodifiableMap(simpleTypes);
     public void addSimpleType(XSSimpleType newDecl) {
+        if(NGCCRuntimeEx.ignorableDuplicateComponent(newDecl))
+            return;
         simpleTypes.put(newDecl.getName(), newDecl);
         allTypes.put(newDecl.getName(), newDecl);
     }
@@ -206,6 +209,8 @@ public class SchemaImpl implements XSSchema
     private final Map<String,XSComplexType> complexTypes = new HashMap<String,XSComplexType>();
     private final Map<String,XSComplexType> complexTypesView = Collections.unmodifiableMap(complexTypes);
     public void addComplexType(XSComplexType newDecl) {
+        if(NGCCRuntimeEx.ignorableDuplicateComponent(newDecl))
+            return;
         complexTypes.put(newDecl.getName(), newDecl);
         allTypes.put(newDecl.getName(), newDecl);
     }

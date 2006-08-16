@@ -2,9 +2,11 @@ package com.sun.xml.xsom.impl.parser;
 
 import com.sun.xml.xsom.XSDeclaration;
 import com.sun.xml.xsom.XmlString;
+import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.impl.ForeignAttributesImpl;
 import com.sun.xml.xsom.impl.SchemaImpl;
 import com.sun.xml.xsom.impl.UName;
+import com.sun.xml.xsom.impl.Const;
 import com.sun.xml.xsom.impl.parser.state.NGCCRuntime;
 import com.sun.xml.xsom.impl.parser.state.Schema;
 import com.sun.xml.xsom.impl.util.Uri;
@@ -102,9 +104,21 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
     }
     
     public void checkDoubleDefError( XSDeclaration c ) throws SAXException {
-        if(c==null) return;
+        if(c==null || ignorableDuplicateComponent(c)) return;
+
         reportError( Messages.format(Messages.ERR_DOUBLE_DEFINITION,c.getName()) );
         reportError( Messages.format(Messages.ERR_DOUBLE_DEFINITION_ORIGINAL), c.getLocator() );
+    }
+
+    public static boolean ignorableDuplicateComponent(XSDeclaration c) {
+        if(c.getTargetNamespace().equals(Const.schemaNamespace)) {
+            if(c instanceof XSSimpleType)
+                // hide artificial "double definitions" on simple types
+                return true;
+            if(c.isGlobal() && c.getName().equals("anyType"))
+                return true; // ditto for anyType
+        }
+        return false;
     }
     
     
