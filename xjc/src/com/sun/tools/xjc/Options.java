@@ -108,6 +108,14 @@ public class Options
      */
     public int compatibilityMode = STRICT;
 
+    public enum Target { V2_0, V2_1 }
+
+    /**
+     * Generates output for the specified version of the runtime.
+     */
+    public Target target = Target.V2_1;
+
+
     /** Target direcoty when producing files. */
     public File targetDir = new File(".");
     
@@ -406,10 +414,7 @@ public class Options
      */
     protected int parseArgument( String[] args, int i ) throws BadCommandLineException {
         if (args[i].equals("-classpath") || args[i].equals("-cp")) {
-            if (i == args.length - 1)
-                throw new BadCommandLineException(
-                    Messages.format(Messages.MISSING_CLASSPATH));
-            File file = new File(args[++i]);
+            File file = new File(requireArgument(args[i],args,++i));
             try {
                 classpaths.add(file.toURL());
             } catch (MalformedURLException e) {
@@ -419,10 +424,7 @@ public class Options
             return 2;
         }
         if (args[i].equals("-d")) {
-            if (i == args.length - 1)
-                throw new BadCommandLineException(
-                    Messages.format(Messages.MISSING_DIR));
-            targetDir = new File(args[++i]);
+            targetDir = new File(requireArgument("-d",args,++i));
             if( !targetDir.exists() )
                 throw new BadCommandLineException(
                     Messages.format(Messages.NON_EXISTENT_DIR,targetDir));
@@ -433,10 +435,7 @@ public class Options
             return 1;
         }
         if (args[i].equals("-p")) {
-            if (i == args.length - 1)
-                throw new BadCommandLineException(
-                    Messages.format(Messages.MISSING_PACKAGENAME));
-            defaultPackage = args[++i];
+            defaultPackage = requireArgument("-p",args,++i);
             if(defaultPackage.length()==0) { // user specified default package
                 // there won't be any package to annotate, so disable them
                 // automatically as a usability feature
@@ -474,11 +473,7 @@ public class Options
             return 1;
         }
         if (args[i].equals("-b")) {
-            if (i==args.length-1 || args[i + 1].startsWith("-"))
-                throw new BadCommandLineException(
-                    Messages.format(Messages.MISSING_FILENAME));
-
-            addFile(args[i + 1],bindFiles,".xjb");
+            addFile(requireArgument("-b",args,++i),bindFiles,".xjb");
             return 2;
         }
         if (args[i].equals("-dtd")) {
@@ -505,16 +500,23 @@ public class Options
             compatibilityMode = EXTENSION;
             return 1;
         }
+        if (args[i].equals("-target")) {
+            String token = requireArgument("-target",args,++i);
+            if(token.equals("2.0"))
+                target = Target.V2_0;
+            else
+            if(token.equals("2.1"))
+                target = Target.V2_1;
+            else
+                throw new BadCommandLineException(Messages.format(Messages.ILLEGAL_TARGET_VERSION,token));
+        }
         if (args[i].equals("-httpproxy")) {
-            if (i == args.length - 1 || args[i + 1].startsWith("-")) {
-                throw new BadCommandLineException(
-                    Messages.format(Messages.MISSING_PROXY));
-            }
+            String text = requireArgument("-httpproxy",args,++i);
+
             // syntax is [user[:password]@]proxyHost[:proxyPort]
             String token = "([^@:]+)";
             Pattern p = Pattern.compile("(?:"+token+"(?:\\:"+token+")?\\@)?"+token+"(?:\\:"+token+")?");
 
-            String text = args[++i];
             Matcher matcher = p.matcher(text);
             if(!matcher.matches())
                 throw new BadCommandLineException(Messages.format(Messages.ILLEGAL_PROXY,text));
@@ -531,32 +533,19 @@ public class Options
             return 2;
         }
         if (args[i].equals("-host")) {
-            // legacy option. we use -httpproxy for more control
-            if (i == args.length - 1 || args[i + 1].startsWith("-")) {
-                throw new BadCommandLineException(
-                    Messages.format(Messages.MISSING_PROXYHOST));
-            }
-            proxyHost = args[++i];
+            proxyHost = requireArgument("-host",args,++i);
             return 2;
         }
         if (args[i].equals("-port")) {
-            // legacy option. we use -httpproxy for more control
-            if (i == args.length - 1 || args[i + 1].startsWith("-")) {
-                throw new BadCommandLineException(
-                    Messages.format(Messages.MISSING_PROXYPORT));
-            }
-            proxyPort = args[++i];
+            proxyPort = requireArgument("-port",args,++i);
             return 2;
         }
         if( args[i].equals("-catalog") ) {
             // use Sun's "XML Entity and URI Resolvers" by Norman Walsh
             // to resolve external entities.
             // http://www.sun.com/xml/developers/resolver/
-            if (i == args.length - 1)
-                throw new BadCommandLineException(
-                    Messages.format(Messages.MISSING_CATALOG));
 
-            File catalogFile = new File(args[++i]);
+            File catalogFile = new File(requireArgument("-catalog",args,++i));
             try {
                 addCatalog(catalogFile);
             } catch (IOException e) {
@@ -566,10 +555,7 @@ public class Options
             return 2;
         }
         if (args[i].equals("-source")) {
-            if (i == args.length - 1)
-                throw new BadCommandLineException(
-                    Messages.format(Messages.MISSING_VERSION));
-            String version = args[++i];
+            String version = requireArgument("-source",args,++i);
             //For source 1.0 the 1.0 Driver is loaded
             //Hence anything other than 2.0 is defaulted to
             //2.0
@@ -606,6 +592,17 @@ public class Options
         }
         
         return 0;   // unrecognized
+    }
+
+    /**
+     * Obtains an operand and reports an error if it's not there.
+     */
+    private String requireArgument(String optionName, String[] args, int i) throws BadCommandLineException {
+        if (i == args.length || args[i].startsWith("-")) {
+            throw new BadCommandLineException(
+                Messages.format(Messages.MISSING_OPERAND,optionName));
+        }
+        return args[i];
     }
 
     /**
