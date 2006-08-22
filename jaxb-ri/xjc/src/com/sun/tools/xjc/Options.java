@@ -108,7 +108,16 @@ public class Options
      */
     public int compatibilityMode = STRICT;
 
-    public enum Target { V2_0, V2_1 }
+    public enum Target {
+        V2_0, V2_1;
+
+        /**
+         * Returns true if this version is equal or later than the given one.
+         */
+        public boolean isLaterThan(Target t) {
+            return this.ordinal()>=t.ordinal();
+        }
+    }
 
     /**
      * Generates output for the specified version of the runtime.
