@@ -273,6 +273,11 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
     @XmlElement(namespace=Const.XJC_EXTENSION_URI)
     Boolean generateElementProperty = null;
 
+    @XmlAttribute     // for JAXB unmarshaller
+    private void setGenerateElementProperty(boolean value) {
+        generateElementProperty = value;
+    }
+
     @XmlAttribute
     boolean choiceContentProperty = false;
 
