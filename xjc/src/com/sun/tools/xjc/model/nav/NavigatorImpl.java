@@ -283,7 +283,7 @@ public final class NavigatorImpl implements Navigator<NType,NClass,Void,Void> {
         throw new UnsupportedOperationException();
     }
 
-    public boolean isOverriding(Void method) {
+    public boolean isOverriding(Void method,NClass clazz) {
         throw new UnsupportedOperationException();
     }
 
