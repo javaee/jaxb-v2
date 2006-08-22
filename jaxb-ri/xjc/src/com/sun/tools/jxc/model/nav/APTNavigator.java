@@ -256,24 +256,21 @@ public class APTNavigator implements Navigator<TypeMirror,TypeDeclaration,FieldD
         return method.getModifiers().contains(Modifier.VOLATILE);
     }
 
-    public boolean isOverriding(MethodDeclaration method) {
-        TypeDeclaration declaringType = method.getDeclaringType();
-        if(!(declaringType instanceof ClassDeclaration))
-            return false;   // act defensively. this might be because we are recovering from errors
-        ClassDeclaration sc = (ClassDeclaration) declaringType;
+    public boolean isOverriding(MethodDeclaration method, TypeDeclaration base) {
+        ClassDeclaration sc = (ClassDeclaration) base;
 
         Declarations declUtil = env.getDeclarationUtils();
 
-        while(sc.getSuperclass()!=null) {
-            sc = sc.getSuperclass().getDeclaration();
-
+        while(true) {
             for (MethodDeclaration m : sc.getMethods()) {
                 if(declUtil.overrides(method,m))
                     return true;
             }
-        }
 
-        return false;
+            if(sc.getSuperclass()==null)
+                return false;
+            sc = sc.getSuperclass().getDeclaration();
+        }
     }
 
     public boolean isInterface(TypeDeclaration clazz) {

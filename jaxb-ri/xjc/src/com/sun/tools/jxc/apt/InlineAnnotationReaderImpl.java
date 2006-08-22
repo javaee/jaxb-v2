@@ -44,6 +44,10 @@ public final class InlineAnnotationReaderImpl extends AbstractInlineAnnotationRe
         return f.getAnnotation(annotationType)!=null;
     }
 
+    public boolean hasClassAnnotation(TypeDeclaration clazz, Class<? extends Annotation> annotationType) {
+        return clazz.getAnnotation(annotationType)!=null;
+    }
+
     public Annotation[] getAllFieldAnnotations(FieldDeclaration field, Locatable srcPos) {
         return getAllAnnotations(field,srcPos);
     }
