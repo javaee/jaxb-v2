@@ -484,7 +484,7 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
         return method.isBridge();
     }
 
-    public boolean isOverriding(Method method) {
+    public boolean isOverriding(Method method, Class base) {
         // this isn't actually correct,
         // as the JLS considers
         // class Derived extends Base<Integer> {
@@ -495,19 +495,18 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
         // }
         // to be overrided. Handling this correctly needs a careful implementation
 
-        Class<?> s = method.getDeclaringClass().getSuperclass();
         String name = method.getName();
         Class[] params = method.getParameterTypes();
 
-        while(s!=null) {
+        while(base!=null) {
             try {
-                if(s.getDeclaredMethod(name,params)!=null)
+                if(base.getDeclaredMethod(name,params)!=null)
                     return true;
             } catch (NoSuchMethodException e) {
-                ; // recursively go into the base class
+                // recursively go into the base class
             }
 
-            s = s.getSuperclass();
+            base = base.getSuperclass();
         }
 
         return false;

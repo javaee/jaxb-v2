@@ -4,6 +4,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 import com.sun.istack.Nullable;
 import com.sun.xml.bind.v2.model.core.ErrorHandler;
 
@@ -57,6 +59,11 @@ public interface AnnotationReader<T,C,F,M> {
      * Checks if the given field has an annotation.
      */
     boolean hasFieldAnnotation(Class<? extends Annotation> annotationType, F field);
+
+    /**
+     * Checks if a class has the annotation.
+     */
+    boolean hasClassAnnotation(C clazz, Class<? extends Annotation> annotationType);
 
     /**
      * Gets all the annotations on a field.

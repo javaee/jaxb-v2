@@ -5,10 +5,12 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
+import com.sun.xml.bind.v2.model.annotation.ClassLocatable;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
 import com.sun.xml.bind.v2.model.core.ErrorHandler;
 import com.sun.xml.bind.v2.model.core.LeafInfo;
@@ -69,7 +71,8 @@ public class ModelBuilder<T,C,F,M> {
     /**
      * Packages whose registries are already added.
      */
-    /*package*/ final Map<String,RegistryInfoImpl> registries = new HashMap<String,RegistryInfoImpl>();
+    /*package*/ final Map<String,RegistryInfoImpl<T,C,F,M>> registries
+            = new HashMap<String,RegistryInfoImpl<T,C,F,M>>();
 
     /**
      * @see #setErrorHandler
@@ -99,7 +102,7 @@ public class ModelBuilder<T,C,F,M> {
     }
 
     protected TypeInfoSetImpl<T,C,F,M> createTypeInfoSet() {
-        return new TypeInfoSetImpl(nav,reader,BuiltinLeafInfoImpl.createLeaves(nav));
+        return new TypeInfoSetImpl<T,C,F,M>(nav,reader,BuiltinLeafInfoImpl.createLeaves(nav));
     }
 
     /**
@@ -120,32 +123,38 @@ public class ModelBuilder<T,C,F,M> {
             EnumLeafInfoImpl<T,C,F,M> li = createEnumLeafInfo(clazz,upstream);
             typeInfoSet.add(li);
             r = li;
+            addTypeName(r);
         } else {
-            ClassInfoImpl<T,C,F,M> ci = createClassInfo(clazz,upstream);
-            typeInfoSet.add(ci);
+            if(reader.hasClassAnnotation(clazz,XmlTransient.class)) {
+                r = getClassInfo( nav.getSuperClass(clazz),
+                        new ClassLocatable<C>(upstream,clazz,nav) );
+            } else {
+                ClassInfoImpl<T,C,F,M> ci = createClassInfo(clazz,upstream);
+                typeInfoSet.add(ci);
 
-            // compute the closure by eagerly expanding references
-            for( PropertyInfo<T,C> p : ci.getProperties() ) {
-                if(p.kind()== PropertyKind.REFERENCE) {
-                    // make sure that we have a registry for this package
-                    String pkg = nav.getPackageName(ci.getClazz());
-                    if(!registries.containsKey(pkg)) {
-                        // insert the package's object factory
-                        C c = nav.findClass(pkg + ".ObjectFactory",ci.getClazz());
-                        if(c!=null)
-                            addRegistry(c,(Locatable)p);
+                // compute the closure by eagerly expanding references
+                for( PropertyInfo<T,C> p : ci.getProperties() ) {
+                    if(p.kind()== PropertyKind.REFERENCE) {
+                        // make sure that we have a registry for this package
+                        String pkg = nav.getPackageName(ci.getClazz());
+                        if(!registries.containsKey(pkg)) {
+                            // insert the package's object factory
+                            C c = nav.findClass(pkg + ".ObjectFactory",ci.getClazz());
+                            if(c!=null)
+                                addRegistry(c,(Locatable)p);
+                        }
                     }
+
+                    for( TypeInfo<T,C> t : p.ref() )
+                        ; // just compute a reference should be suffice
                 }
+                ci.getBaseClass(); // same as above.
 
-                for( TypeInfo<T,C> t : p.ref() )
-                    ; // just compute a reference should be suffice
+                r = ci;
+                addTypeName(r);
             }
-            ci.getBaseClass();
-
-            r = ci;
         }
 
-        addTypeName(r);
 
         // more reference closure expansion. @XmlSeeAlso
         XmlSeeAlso sa = reader.getClassAnnotation(XmlSeeAlso.class, clazz, upstream);
@@ -219,8 +228,7 @@ public class ModelBuilder<T,C,F,M> {
         return new EnumLeafInfoImpl<T,C,F,M>(this,upstream,clazz,nav.use(clazz));
     }
 
-    protected ClassInfoImpl<T,C,F,M> createClassInfo(
-            C clazz, Locatable upstream ) {
+    protected ClassInfoImpl<T,C,F,M> createClassInfo(C clazz, Locatable upstream ) {
         return new ClassInfoImpl<T,C,F,M>(this,upstream,clazz);
     }
 
@@ -239,8 +247,7 @@ public class ModelBuilder<T,C,F,M> {
      * in it.
      */
     public RegistryInfo<T,C> addRegistry(C registryClass, Locatable upstream ) {
-        RegistryInfoImpl<T,C,F,M> r = new RegistryInfoImpl<T,C,F,M>(this,upstream,registryClass);
-        return r;
+        return new RegistryInfoImpl<T,C,F,M>(this,upstream,registryClass);
     }
 
     /**
