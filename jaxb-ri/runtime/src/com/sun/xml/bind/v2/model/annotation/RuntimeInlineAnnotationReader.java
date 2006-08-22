@@ -25,6 +25,10 @@ public final class RuntimeInlineAnnotationReader extends AbstractInlineAnnotatio
         return field.isAnnotationPresent(annotationType);
     }
 
+    public boolean hasClassAnnotation(Class clazz, Class<? extends Annotation> annotationType) {
+        return clazz.isAnnotationPresent(annotationType);
+    }
+
     public Annotation[] getAllFieldAnnotations(Field field, Locatable srcPos) {
         Annotation[] r = field.getAnnotations();
         for( int i=0; i<r.length; i++ ) {
