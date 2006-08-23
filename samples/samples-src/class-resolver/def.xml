@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<container>
+  <value id="foo">
+    <Foo xmlns="java:org.acme">
+      <a>5</a>
+      <b>text</b>
+      <c>bar</c><!-- inject bar bean here -->
+    </Foo>
+  </value>
+  <value id="bar">
+    <Bar xmlns="java:org.acme">
+      <x>3</x>
+      <y>5</y>
+    </Bar>
+  </value>
+</container>
