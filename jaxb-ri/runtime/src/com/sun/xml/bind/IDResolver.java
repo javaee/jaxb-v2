@@ -1,12 +1,10 @@
 package com.sun.xml.bind;
 
-import java.util.concurrent.Future;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
 
-import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEventHandler;
+import javax.xml.bind.annotation.XmlIDREF;
 
 import org.xml.sax.SAXException;
 

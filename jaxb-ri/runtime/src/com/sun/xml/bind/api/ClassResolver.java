@@ -11,6 +11,9 @@ import com.sun.istack.Nullable;
 /**
  * Dynamically locates classes to represent elements discovered during the unmarshalling.
  *
+ * <p>
+ * <b>THIS INTERFACE IS SUBJECT TO CHANGE WITHOUT NOTICE.</b>
+ *
  * <h2>Background</h2>
  * <p>
  * {@link JAXBContext#newInstance(Class...)} requires that application informs JAXB
