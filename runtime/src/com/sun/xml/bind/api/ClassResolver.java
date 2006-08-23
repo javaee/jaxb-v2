@@ -1,6 +1,5 @@
 package com.sun.xml.bind.api;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEventHandler;
@@ -33,7 +32,9 @@ import com.sun.istack.Nullable;
  * <p>
  * When an {@link Unmarshaller} encounters (i) an unknown root element or (ii) unknown
  * elements where unmarshaller is trying to unmarshal into {@link XmlAnyElement} with
- * <tt>lax=true</tt>, then TODO
+ * <tt>lax=true</tt>, unmarshaller calls {@link #resolveElementName(String, String)}
+ * method to see if the application may be able to supply a class that corresponds
+ * to that class.
  *
  * <p>
  * When a {@link Class} is returned, a new {@link JAXBContext} is created with
