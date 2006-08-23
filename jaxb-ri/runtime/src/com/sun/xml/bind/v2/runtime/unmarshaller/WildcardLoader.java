@@ -19,7 +19,7 @@
  */
 
 /*
- * @(#)$Id: WildcardLoader.java,v 1.3 2005-09-10 19:07:43 kohsuke Exp $
+ * @(#)$Id: WildcardLoader.java,v 1.3.6.1 2006-08-23 17:24:39 kohsuke Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
@@ -51,11 +51,11 @@ public final class WildcardLoader extends ProxyLoader {
         this.mode = mode;
     }
 
-    protected Loader selectLoader(UnmarshallingContext.State state, TagName ea) {
+    protected Loader selectLoader(UnmarshallingContext.State state, TagName ea) throws SAXException {
         UnmarshallingContext context = state.getContext();
 
         if(mode.allowTypedObject) {
-            Loader l = context.getJAXBContext().selectRootLoader(state,ea);
+            Loader l = context.selectRootLoader(state,ea);
             if(l!=null)
                 return l;
         }

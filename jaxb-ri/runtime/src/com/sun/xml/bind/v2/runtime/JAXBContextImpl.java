@@ -110,7 +110,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75 $
+ * @version $Revision: 1.75.2.1 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -515,10 +515,9 @@ public final class JAXBContextImpl extends JAXBRIContext {
      * @return
      *      null if the given name pair is not recognized.
      */
-    public final Loader selectRootLoader( UnmarshallingContext.State state, TagName ea ) {
-        JaxBeanInfo beanInfo = rootMap.get(ea.uri,ea.local);
+    public final Loader selectRootLoader( UnmarshallingContext.State state, TagName tag ) {
+        JaxBeanInfo beanInfo = rootMap.get(tag.uri,tag.local);
         if(beanInfo==null)
-            // TODO: this is probably the right place to handle @xsi:type
             return null;
 
         return beanInfo.getLoader(this,true);
@@ -869,6 +868,17 @@ public final class JAXBContextImpl extends JAXBRIContext {
         return null;
     }
 
+    /**
+     * Creates a {@link JAXBContextImpl} that includes the specified additional classes.
+     */
+    public JAXBContextImpl createAugmented(Class<?> clazz) throws JAXBException {
+        Class[] newList = new Class[classes.length+1];
+        System.arraycopy(classes,0,newList,0,classes.length);
+        newList[classes.length] = clazz;
+
+        return new JAXBContextImpl(newList,bridges.keySet(),defaultNsUri,c14nSupport);
+    }
+
     private static final Comparator<QName> QNAME_COMPARATOR = new Comparator<QName>() {
         public int compare(QName lhs, QName rhs) {
             int r = lhs.getLocalPart().compareTo(rhs.getLocalPart());
@@ -876,5 +886,5 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
             return lhs.getNamespaceURI().compareTo(rhs.getNamespaceURI());
         }
-    }; ;
+    };
 }

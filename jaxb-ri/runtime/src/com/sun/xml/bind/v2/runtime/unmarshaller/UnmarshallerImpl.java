@@ -46,6 +46,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 
 import com.sun.xml.bind.IDResolver;
+import com.sun.xml.bind.api.ClassResolver;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
 import com.sun.xml.bind.unmarshaller.Messages;
@@ -410,6 +411,10 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
         }
         if(name.equals(IDResolver.class.getName())) {
             idResolver = (IDResolver)value;
+            return;
+        }
+        if(name.equals(ClassResolver.class.getName())) {
+            coordinator.classResolver = (ClassResolver)value;
             return;
         }
         super.setProperty(name, value);
