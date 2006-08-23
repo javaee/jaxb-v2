@@ -14,17 +14,18 @@
     by the JAXB specification. These properties allow you to better control the 
     marshalling process, but they only work with the JAXB RI; they may not work  
     with other JAXB providers.</p>
-  
-	<h3>Index of Marshaller Properties</h3>
-	<ul>
-	  <li><a href="#prefixmapper">Namespace Prefix Mapping</a></li>
-	  <li><a href="#indent">Indentation</a></li>
-	  <li><a href="#charescape">Character Escaping Control</a></li>
-	  <li><a href="#xmldecl">XML Declaration Control</a></li>
-	  <!--li><a href=""></a> - </li-->
-	</ul>
+    
+    <h3>Index of Marshaller Properties</h3>
+    <ul>
+      <li><a href="#prefixmapper">Namespace Prefix Mapping</a></li>
+      <li><a href="#indent">Indentation</a></li>
+      <li><a href="#charescape">Character Escaping Control</a></li>
+      <li><a href="#xmldecl">XML Declaration Control</a></li>
+      <li><a href="#classresolver">Class Resolver</a></li>
+      <!--li><a href=""></a></li-->
+    </ul>
 
-	<a name="prefixmapper"></a>
+    <a name="prefixmapper"></a>
     <h3>Namespace Prefix Mapping</h3>
     <table class=property summary="">
   	  <tr><td>
@@ -358,7 +359,7 @@ public abstract class NamespacePrefixMapper {
 
         <p> JAXB 1.0 generated code and clients will continue to work exactly the same on the JAXB 2.0 runtime as
             they did on the JAXB 1.0 runtime.
-		<p> Enabling fragment marshalling could be useful if you are inserting the output of the XML into another XML.
+        <p> Enabling fragment marshalling could be useful if you are inserting the output of the XML into another XML.
 
 
 
@@ -384,16 +385,40 @@ public abstract class NamespacePrefixMapper {
     </table>
     
     <p>
-    	This property allows you to specify an XML preamble (&lt;?xml ...> declaration) and any additional PIs, comments, DOCTYPE declaration that follows it. This property takes effect only when you are marshalling to <tt>OutputStream</tt>, <tt>Writer</tt>, or <tt>StreamResult</tt>.
+      This property allows you to specify an XML preamble (&lt;?xml ...> declaration) and any additional PIs, comments, DOCTYPE declaration that follows it. This property takes effect only when you are marshalling to <tt>OutputStream</tt>, <tt>Writer</tt>, or <tt>StreamResult</tt>.
     
     
     
     <!-- TODO: talk about c14n when it's considered stable -->
     
+    <a name="classresolver"></a>
+    <h3>Class Resolver</h3>
+    
+    <table class=property summary="">
+      <tr><td>
+        <b>Property name:</b>
+      </td><td>
+        <tt>com.sun.xml.bind.api.ClassResolver</tt>
+      </td></tr>
+      <tr><td>
+        <b>Type:</b>
+      </td><td>
+        <tt>com.sun.xml.bind.api.ClassResolver</tt>
+      </td></tr>
+      <tr><td>
+        <b>Default value:</b>
+      </td><td>
+        null
+      </td></tr>
+    </table>
+    
+    <p>
+      This property allows applications to lazily inform JAXB about classes that it needs to know. This is convenient when you don't want to (or you simply can't) list classes up front and pass it to <tt>JAXBContext.newInstance</tt>. Refer to <a href="https://jaxb-architecture-document.dev.java.net/nonav/doc/index.html?com/sun/xml/bind/api/ClassResolver.html">this document</a> about more details. Also take a look at the class-resolver sample.
+    
     <hr/>
     <div class=footer>
-      $Revision: 1.4.4.1 $<br/>
-      $Date: 2006-08-15 18:16:27 $
+      $Revision: 1.4.4.2 $<br/>
+      $Date: 2006-08-23 17:44:00 $
     </div>
   </body>
 </html>
