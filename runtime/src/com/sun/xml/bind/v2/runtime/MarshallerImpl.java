@@ -189,7 +189,16 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
                         fileURL = fileURL.substring(8);
                     else
                         fileURL = fileURL.substring(7);
-                } // otherwise assume that it's a file name
+                }
+                if (fileURL.startsWith("file:/")) {
+                    // some people use broken URLs like "file:/c:/abc/def/ghi.txt"
+                    // so let's make it work with that
+                    if (fileURL.substring(6).indexOf(":") > 0)
+                        fileURL = fileURL.substring(6);
+                    else
+                        fileURL = fileURL.substring(5);
+                }
+                // otherwise assume that it's a file name
 
                 try {
                     FileOutputStream fos = new FileOutputStream(fileURL);
