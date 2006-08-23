@@ -92,7 +92,7 @@ public class SchemaGenerator implements AnnotationProcessorFactory {
 
                                 StreamResult ss = new StreamResult(out);
                                 env.getMessager().printNotice("Writing "+file);
-                                ss.setSystemId(file.getPath());
+                                ss.setSystemId(file.toURL().toExternalForm());
                                 return ss;
                             }
                         }, errorListener);
