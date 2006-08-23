@@ -21,6 +21,7 @@
       <li><a href="#indent">Indentation</a></li>
       <li><a href="#charescape">Character Escaping Control</a></li>
       <li><a href="#xmldecl">XML Declaration Control</a></li>
+      <li><a href="#idresolver">ID Resolver</a></li>
       <li><a href="#classresolver">Class Resolver</a></li>
       <!--li><a href=""></a></li-->
     </ul>
@@ -388,8 +389,31 @@ public abstract class NamespacePrefixMapper {
       This property allows you to specify an XML preamble (&lt;?xml ...> declaration) and any additional PIs, comments, DOCTYPE declaration that follows it. This property takes effect only when you are marshalling to <tt>OutputStream</tt>, <tt>Writer</tt>, or <tt>StreamResult</tt>.
     
     
+    <a name="idresolver"></a>
+    <h3>ID Resolver</h3>
     
-    <!-- TODO: talk about c14n when it's considered stable -->
+    <table class=property summary="">
+      <tr><td>
+        <b>Property name:</b>
+      </td><td>
+        <tt>com.sun.xml.bind.IDResolver</tt>
+      </td></tr>
+      <tr><td>
+        <b>Type:</b>
+      </td><td>
+        <tt>com.sun.xml.bind.IDResolver</tt>
+      </td></tr>
+      <tr><td>
+        <b>Default value:</b>
+      </td><td>
+        null
+      </td></tr>
+    </table>
+    
+    <p>
+      This mechanism can be used to replace the default plain ID/IDREF resolution mechanism by a custom one provided by the application code. Null value means the default behavior, where IDREF is simply matched to ID that has the same value. See <a href="https://jaxb-architecture-document.dev.java.net/nonav/doc/index.html?com/sun/xml/bind/IDResolver.html">the javadoc of <tt>IDResolver</tt></a> as well as <a href="http://weblogs.java.net/blog/kohsuke/archive/2005/08/pluggable_ididr.html">this blog entry</a>.
+      Also take a look at the class-resolver sample that illustrates how to use it.
+    
     
     <a name="classresolver"></a>
     <h3>Class Resolver</h3>
@@ -415,10 +439,13 @@ public abstract class NamespacePrefixMapper {
     <p>
       This property allows applications to lazily inform JAXB about classes that it needs to know. This is convenient when you don't want to (or you simply can't) list classes up front and pass it to <tt>JAXBContext.newInstance</tt>. Refer to <a href="https://jaxb-architecture-document.dev.java.net/nonav/doc/index.html?com/sun/xml/bind/api/ClassResolver.html">this document</a> about more details. Also take a look at the class-resolver sample.
     
+    
+    <!-- TODO: talk about c14n when it's considered stable -->
+    
     <hr/>
     <div class=footer>
-      $Revision: 1.4.4.2 $<br/>
-      $Date: 2006-08-23 17:44:00 $
+      $Revision: 1.4.4.3 $<br/>
+      $Date: 2006-08-23 21:39:52 $
     </div>
   </body>
 </html>
