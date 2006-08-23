@@ -13,6 +13,7 @@ import java.util.concurrent.Callable;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEvent;
@@ -24,9 +25,11 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import com.sun.istack.NotNull;
+import com.sun.istack.Nullable;
 import com.sun.istack.SAXParseException2;
 import com.sun.xml.bind.IDResolver;
 import com.sun.xml.bind.api.AccessorException;
+import com.sun.xml.bind.api.ClassResolver;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
 import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.runtime.AssociationMap;
@@ -129,6 +132,10 @@ public final class UnmarshallingContext extends Coordinator
      */
     private NamespaceContext environmentNamespaceContext;
 
+    /**
+     * Used to discover additional classes when we hit unknown elements/types.
+     */
+    public @Nullable ClassResolver classResolver;
 
     /**
      * State information for each element.
@@ -265,6 +272,35 @@ public final class UnmarshallingContext extends Coordinator
 
     public State getCurrentState() {
         return current;
+    }
+
+    /**
+     * On top of {@link JAXBContextImpl#selectRootLoader(State, TagName)},
+     * this method also consults {@link ClassResolver}.
+     *
+     * @throws SAXException
+     *      if {@link ValidationEventHandler} reported a failure.
+     */
+    public Loader selectRootLoader(State state, TagName tag) throws SAXException {
+        try {
+            Loader l = getJAXBContext().selectRootLoader(state, tag);
+            if(l!=null)     return l;
+
+            if(classResolver!=null) {
+                Class<?> clazz = classResolver.resolveElementName(tag.uri, tag.local);
+                if(clazz!=null) {
+                    JAXBContextImpl enhanced = getJAXBContext().createAugmented(clazz);
+                    JaxBeanInfo<?> bi = enhanced.getBeanInfo(clazz);
+                    return bi.getLoader(enhanced,true);
+                }
+            }
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            handleError(e);
+        }
+
+        return null;
     }
 
     /**
@@ -903,9 +939,7 @@ public final class UnmarshallingContext extends Coordinator
          * unmarshalling.
          */
         public void childElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
-            JAXBContextImpl jaxbContext = state.getContext().getJAXBContext();
-
-            Loader loader = jaxbContext.selectRootLoader(state,ea);
+            Loader loader = state.getContext().selectRootLoader(state,ea);
             if(loader!=null) {
                 state.loader = loader;
                 state.receiver = this;
