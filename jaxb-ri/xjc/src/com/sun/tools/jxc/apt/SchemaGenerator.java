@@ -88,6 +88,7 @@ public class SchemaGenerator implements AnnotationProcessorFactory {
                                     // use the default
                                     file = new File(suggestedFileName);
                                     out = env.getFiler().createBinaryFile(Filer.Location.CLASS_TREE,"",file);
+                                    file = file.getAbsoluteFile();
                                 }
 
                                 StreamResult ss = new StreamResult(out);
