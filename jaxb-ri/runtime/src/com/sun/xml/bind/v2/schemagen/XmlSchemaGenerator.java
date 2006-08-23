@@ -3,6 +3,7 @@ package com.sun.xml.bind.v2.schemagen;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Comparator;
@@ -1260,7 +1261,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             if( uriPath.equals(basePath))
                 return ".";
 
-            String relPath = calculateRelativePath(uriPath, basePath);
+            String relPath = calculateRelativePath(uriPath, basePath, theUri.getScheme().equals("file"));
 
             if (relPath == null)
                 return uri; // recursion found no commonality in the two uris at all
@@ -1277,15 +1278,23 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         }
     }
 
-    private static String calculateRelativePath(String uri, String base) {
+    private static String calculateRelativePath(String uri, String base, boolean fileUrl) {
+        // if this is a file URL (very likely), and if this is on a case-insensitive file system,
+        // then treat it accordingly.
+        boolean onWindows = File.pathSeparatorChar==';';
+
         if (base == null) {
             return null;
         }
-        if (uri.startsWith(base)) {
+        if ((fileUrl && onWindows && startsWithIgnoreCase(uri,base)) || uri.startsWith(base)) {
             return uri.substring(base.length());
         } else {
-            return "../" + calculateRelativePath(uri, getParentUriPath(base));
+            return "../" + calculateRelativePath(uri, getParentUriPath(base), fileUrl);
         }
+    }
+
+    private static boolean startsWithIgnoreCase(String s, String t) {
+        return s.toUpperCase().startsWith(t.toUpperCase());
     }
 
     /**
