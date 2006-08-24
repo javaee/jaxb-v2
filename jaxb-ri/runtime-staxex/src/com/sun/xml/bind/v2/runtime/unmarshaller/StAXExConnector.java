@@ -18,7 +18,6 @@ final class StAXExConnector extends StAXStreamConnector {
 
     // StAX event source
     private final XMLStreamReaderEx in;
-    private Base64Data binary = new Base64Data();
 
     public StAXExConnector(XMLStreamReaderEx in, XmlVisitor visitor) {
         super(in,visitor);
@@ -31,6 +30,7 @@ final class StAXExConnector extends StAXStreamConnector {
             CharSequence pcdata = in.getPCDATA();
             if(pcdata instanceof org.jvnet.staxex.Base64Data) {
                 org.jvnet.staxex.Base64Data bd = (org.jvnet.staxex.Base64Data) pcdata;
+                Base64Data binary = new Base64Data();
                 binary.set( bd.get(), bd.getDataLen(), bd.getMimeType() );
                 // we make an assumption here that the binary data shows up on its own
                 // not adjacent to other text. So it's OK to fire it off right now.
