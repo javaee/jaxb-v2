@@ -28,8 +28,6 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JPackage;
-import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JClass;
 import com.sun.tools.xjc.Plugin;
 import com.sun.tools.xjc.api.ErrorListener;
@@ -79,7 +77,7 @@ final class JAXBModelImpl implements S2JJAXBModel {
         return outline.getCodeModel();
     }
 
-    public List<JClass> getPackages() {
+    public List<JClass> getAllObjectFactories() {
         List<JClass> r = new ArrayList<JClass>();
         for (PackageOutline pkg : outline.getAllPackageContexts()) {
             r.add(pkg.objectFactory());
