@@ -34,7 +34,7 @@ public interface S2JJAXBModel extends JAXBModel {
      * <p>
      * This should be used for generating {@link XmlSeeAlso} on the SEI.
      */
-    List<JClass> getPackages();
+    List<JClass> getAllObjectFactories();
 
 
     /**
