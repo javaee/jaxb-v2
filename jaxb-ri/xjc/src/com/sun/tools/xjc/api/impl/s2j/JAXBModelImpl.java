@@ -28,6 +28,9 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JPackage;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JClass;
 import com.sun.tools.xjc.Plugin;
 import com.sun.tools.xjc.api.ErrorListener;
 import com.sun.tools.xjc.api.JAXBModel;
@@ -76,6 +79,13 @@ final class JAXBModelImpl implements S2JJAXBModel {
         return outline.getCodeModel();
     }
 
+    public List<JClass> getPackages() {
+        List<JClass> r = new ArrayList<JClass>();
+        for (PackageOutline pkg : outline.getAllPackageContexts()) {
+            r.add(pkg.objectFactory());
+        }
+        return r;
+    }
 
     public final Mapping get(QName elementName) {
         return byXmlName.get(elementName);
