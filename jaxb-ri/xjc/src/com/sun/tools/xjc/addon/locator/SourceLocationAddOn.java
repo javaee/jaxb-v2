@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JVar;
+import com.sun.codemodel.JMethod;
 import com.sun.tools.xjc.BadCommandLineException;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.Plugin;
@@ -74,6 +75,10 @@ public class SourceLocationAddOn extends Plugin {
                 impl._implements(Locatable.class);
 
                 impl.method(JMod.PUBLIC, Locator.class, "sourceLocation").body()._return($loc);
+                
+                JMethod setter = impl.method(JMod.PUBLIC, Void.TYPE, "setSourceLocation");
+                JVar $newLoc = setter.param(Locator.class, "newLocator");
+                setter.body().assign($loc, $newLoc);
             }
         }
         
