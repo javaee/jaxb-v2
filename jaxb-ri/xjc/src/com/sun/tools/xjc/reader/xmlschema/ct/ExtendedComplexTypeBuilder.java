@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.sun.tools.xjc.model.CClassInfo;
+import com.sun.tools.xjc.model.CClass;
 import com.sun.tools.xjc.reader.xmlschema.WildcardNameClassBuilder;
 import com.sun.xml.xsom.XSAttributeUse;
 import com.sun.xml.xsom.XSComplexType;
@@ -67,7 +68,7 @@ final class ExtendedComplexTypeBuilder extends CTBuilder {
         XSComplexType baseType = ct.getBaseType().asComplexType();
 
         // build the base class
-        CClassInfo baseClass = selector.bindToType(baseType,true);
+        CClass baseClass = selector.bindToType(baseType,true);
         assert baseClass!=null;   // global complex type must map to a class
 
         selector.getCurrentBean().setBaseClass(baseClass);

@@ -25,7 +25,7 @@ package com.sun.tools.xjc.reader.xmlschema.ct;
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-enum ComplexTypeBindingMode {
+public enum ComplexTypeBindingMode {
 
     /**
      * Neither FALLBACK nor NOMOREEXTENSION.

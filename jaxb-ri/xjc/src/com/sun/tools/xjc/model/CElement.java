@@ -5,11 +5,11 @@ import com.sun.tools.xjc.model.nav.NType;
 import com.sun.xml.bind.v2.model.core.Element;
 
 /**
- * Either {@link CElementInfo} or {@link CClassInfo}.
+ * Either {@link CElementInfo}, {@link CClassInfo}, or {@link CClassRef}.
  *
  * @author Kohsuke Kawaguchi
  */
-public interface CElement extends CTypeInfo, Element<NType,NClass>, CClassInfoParent {
+public interface CElement extends CTypeInfo, Element<NType,NClass> {
     /**
      * Marks this element as an abstract element.
      */

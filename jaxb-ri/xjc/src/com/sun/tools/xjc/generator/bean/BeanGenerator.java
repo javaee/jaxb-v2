@@ -20,6 +20,8 @@
 
 package com.sun.tools.xjc.generator.bean;
 
+import static com.sun.tools.xjc.outline.Aspect.EXPOSED;
+
 import java.io.Serializable;
 import java.net.URL;
 import java.util.Collection;
@@ -81,6 +83,7 @@ import com.sun.tools.xjc.model.CEnumLeafInfo;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.model.CTypeRef;
 import com.sun.tools.xjc.model.Model;
+import com.sun.tools.xjc.model.CClassRef;
 import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.ClassOutline;
 import com.sun.tools.xjc.outline.EnumConstantOutline;
@@ -169,7 +172,7 @@ public final class BeanGenerator implements Outline
         for( CEnumLeafInfo p : model.enums().values() )
             enums.put( p, generateEnum(p) );
 
-        JPackage[] packages = getUsedPackages(Aspect.EXPOSED);
+        JPackage[] packages = getUsedPackages(EXPOSED);
 
         // generates per-package code and remember the results as contexts.
         for( JPackage pkg : packages )
@@ -196,11 +199,16 @@ public final class BeanGenerator implements Outline
                 // use the specified super class
                 model.strategy._extends(cc,getClazz(superClass));
             } else {
-                // use the default one, if any
-                if( model.rootClass!=null && cc.implClass._extends().equals(OBJECT) )
-                    cc.implClass._extends(model.rootClass);
-                if( model.rootInterface!=null)
-                    cc.ref._implements(model.rootInterface);
+                CClassRef refSuperClass = cc.target.getRefBaseClass();
+                if(refSuperClass!=null) {
+                    cc.implClass._extends(refSuperClass.toType(this,EXPOSED));
+                } else {
+                    // use the default one, if any
+                    if( model.rootClass!=null && cc.implClass._extends().equals(OBJECT) )
+                        cc.implClass._extends(model.rootClass);
+                    if( model.rootInterface!=null)
+                        cc.ref._implements(model.rootInterface);
+                }
             }
         }
 
@@ -300,7 +308,7 @@ public final class BeanGenerator implements Outline
         }
 
         public JClassContainer onPackage(JPackage pkg) {
-            return model.strategy.getPackage(pkg,Aspect.EXPOSED);
+            return model.strategy.getPackage(pkg, EXPOSED);
         }
     };
 
@@ -560,12 +568,12 @@ public final class BeanGenerator implements Outline
         JDefinedClass type;
 
         // since constant values are never null, no point in using the boxed types.
-        JType baseExposedType = e.base.toType(this,Aspect.EXPOSED).unboxify();
+        JType baseExposedType = e.base.toType(this, EXPOSED).unboxify();
         JType baseImplType = e.base.toType(this,Aspect.IMPLEMENTATION).unboxify();
 
 
         type = getClassFactory().createClass(
-            getContainer(e.parent,Aspect.EXPOSED),e.shortName,e.getLocator(), ClassType.ENUM);
+            getContainer(e.parent, EXPOSED),e.shortName,e.getLocator(), ClassType.ENUM);
         type.javadoc().append(e.javadoc);
 
         XmlEnumWriter xew = type.annotate2(XmlEnumWriter.class);
@@ -710,7 +718,7 @@ public final class BeanGenerator implements Outline
                 // [RESULT]
                 // @XmlJavaTypeAdapter( Foo.class )
                 XmlJavaTypeAdapterWriter xjtw = field.annotate2(XmlJavaTypeAdapterWriter.class);
-                xjtw.value(adapter.adapterType.toType(this,Aspect.EXPOSED));
+                xjtw.value(adapter.adapterType.toType(this, EXPOSED));
             }
         }
 

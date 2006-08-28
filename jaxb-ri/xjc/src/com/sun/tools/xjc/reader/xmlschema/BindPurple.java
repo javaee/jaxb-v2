@@ -4,6 +4,7 @@ import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CDefaultValue;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.model.TypeUse;
+import com.sun.tools.xjc.model.CClass;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
 import com.sun.xml.xsom.XSAttGroupDecl;
@@ -78,7 +79,7 @@ public class BindPurple extends ColorBinder {
 
 
     public void complexType(XSComplexType ct) {
-        CClassInfo ctBean = selector.bindToType(ct,false);
+        CClass ctBean = selector.bindToType(ct,false);
         if(getCurrentBean()!=ctBean)
             // in some case complex type and element binds to the same class
             // don't make it has-a. Just make it is-a.

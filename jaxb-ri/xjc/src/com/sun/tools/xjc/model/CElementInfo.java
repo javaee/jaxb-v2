@@ -8,11 +8,12 @@ import java.util.Set;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
+import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.NOT_REPEATED;
+import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.REPEATED_VALUE;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.tools.xjc.model.nav.NavigatorImpl;
@@ -24,9 +25,6 @@ import com.sun.xml.xsom.XmlString;
 
 import org.xml.sax.Locator;
 
-import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.REPEATED_VALUE;
-import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.NOT_REPEATED;
-
 /**
  * {@link ElementInfo} implementation for the compile-time model.
  *
@@ -36,8 +34,8 @@ import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.NOT_RE
  *
  * @author Kohsuke Kawaguchi
  */
-public final class CElementInfo extends AbstractCTypeInfoImpl
-    implements ElementInfo<NType,NClass>, CElement, CTypeInfo, NType, CClassInfoParent {
+public final class CElementInfo extends AbstractCElement
+    implements ElementInfo<NType,NClass>, NType, CClassInfoParent {
 
     private final QName tagName;
 
@@ -62,14 +60,6 @@ public final class CElementInfo extends AbstractCTypeInfoImpl
      */
     public final CClassInfoParent parent;
 
-    /**
-     * The location in the source file where this class was declared.
-     */
-    @XmlTransient
-    private final Locator location;
-
-    private boolean isAbstract;
-
     private CElementInfo substitutionHead;
 
     /**
@@ -92,11 +82,10 @@ public final class CElementInfo extends AbstractCTypeInfoImpl
      * must not be invoked.
      */
     public CElementInfo(Model model,QName tagName, CClassInfoParent parent, TypeUse contentType, XmlString defaultValue, XSComponent source, CCustomizations customizations, Locator location ) {
-        super(model,source,customizations);
+        super(model,source,location,customizations);
         this.tagName = tagName;
         this.model = model;
         this.parent = parent;
-        this.location = location;
         if(contentType!=null)
             initContentType(contentType, source, defaultValue);
 
@@ -127,7 +116,7 @@ public final class CElementInfo extends AbstractCTypeInfoImpl
                 contentType.isCollection()?REPEATED_VALUE:NOT_REPEATED,
                 contentType.idUse(),
                 contentType.getExpectedMimeType(),
-                source,null,location,true);
+                source,null,getLocator(),true);
         this.property.setAdapter(contentType.getAdapterUse());
         property.getTypes().add(new CTypeRef((CNonElement)contentType.getInfo(),tagName,true,defaultValue));
         this.type = NavigatorImpl.createParameterizedType(
@@ -205,14 +194,6 @@ public final class CElementInfo extends AbstractCTypeInfoImpl
         return b.toString();
     }
 
-    public void setAbstract() {
-        isAbstract = true;
-    }
-
-    public boolean isAbstract() {
-        return isAbstract;
-    }
-
     public CElementInfo getSubstitutionHead() {
         return substitutionHead;
     }
@@ -267,9 +248,5 @@ public final class CElementInfo extends AbstractCTypeInfoImpl
      */
     public boolean hasClass() {
         return className!=null;
-    }
-
-    public Locator getLocator() {
-        return location;
     }
 }
