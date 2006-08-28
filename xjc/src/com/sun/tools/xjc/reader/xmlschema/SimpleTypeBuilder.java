@@ -322,7 +322,7 @@ public final class SimpleTypeBuilder extends BindingComponent {
             return conv.getTypeUse(type);
         }
 
-        // look for enum customization, which is noather user specified conversion
+        // look for enum customization, which is another user specified conversion
         BIEnum en = info.get(BIEnum.class);
         if( en!=null ) {
             en.markAsAcknowledged();
