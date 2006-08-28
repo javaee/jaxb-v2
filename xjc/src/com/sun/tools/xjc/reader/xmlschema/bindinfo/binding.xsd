@@ -163,6 +163,7 @@
       </xs:sequence>
       <xs:attribute name="name" type="xs:string"/>
       <xs:attribute name="implClass"/>
+      <xs:attribute name="ref"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="property" substitutionGroup="jaxb:declaration">
