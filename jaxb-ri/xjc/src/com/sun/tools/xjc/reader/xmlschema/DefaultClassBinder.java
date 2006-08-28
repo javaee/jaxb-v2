@@ -398,6 +398,13 @@ final class DefaultClassBinder implements ClassBinder
             } else {
                 if(component instanceof XSComplexType) {
                     // UGLY UGLY UGLY
+                    // since we are not going to bind this complex type, we need to figure out
+                    // its binding mode without actually binding it (and also expose this otherwise
+                    // hidden mechanism into this part of the code.)
+                    //
+                    // this code is potentially dangerous as the base class might have been bound
+                    // in different ways. To be correct, we need to figure out how the content type
+                    // would have been bound, from the schema.
                     Ring.get(ComplexTypeFieldBuilder.class).recordBindingMode(
                         (XSComplexType)component, ComplexTypeBindingMode.NORMAL
                     );
