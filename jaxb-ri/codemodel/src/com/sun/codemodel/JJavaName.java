@@ -47,9 +47,18 @@ public class JJavaName {
     }
 
     /**
+     * Checks if the given string is a valid fully qualified name.
+     */
+    public static boolean isFullyQualifiedClassName(String s) {
+        return isJavaPackageName(s);
+    }
+
+    /**
      * Checks if the given string is a valid Java package name.
      */
     public static boolean isJavaPackageName(String s) {
+        if(s.length()==0)   return false;
+
         while(s.length()!=0) {
             int idx = s.indexOf('.');
             if(idx==-1) idx=s.length();
