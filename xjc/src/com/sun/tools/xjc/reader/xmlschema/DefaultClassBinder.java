@@ -29,6 +29,7 @@ import com.sun.istack.Nullable;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CClassInfoParent;
+import com.sun.tools.xjc.model.CClassRef;
 import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.model.CElement;
 import com.sun.tools.xjc.model.CElementInfo;
@@ -38,7 +39,8 @@ import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIClass;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIGlobalBinding;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BISchemaBinding;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BindInfo;
-import com.sun.xml.bind.v2.TODO;
+import com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeFieldBuilder;
+import com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeBindingMode;
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSAttGroupDecl;
 import com.sun.xml.xsom.XSAttributeDecl;
@@ -148,7 +150,7 @@ final class DefaultClassBinder implements ClassBinder
              && parentType instanceof CElementInfo
              && ((CElementInfo)parentType).hasClass() ) {
                 // special case where we put a nested 'Type' element
-                scope = parentType;
+                scope = (CElementInfo)parentType;
                 className = "Type";
             } else {
                 // since the parent element isn't bound to a type, merge the customizations associated to it, too.
@@ -278,8 +280,6 @@ final class DefaultClassBinder implements ClassBinder
                 ((CElementInfo)r).setSubstitutionHead((CElementInfo)topci);
         }
 
-        TODO.checkSpec();
-
         return r;
     }
 
@@ -388,7 +388,23 @@ final class DefaultClassBinder implements ClassBinder
 
         decl.markAsAcknowledged();
 
-        // determine the package to put this class in.
+        // first consider binding to the class reference.
+        String ref = decl.getExistingClassRef();
+        if(ref!=null) {
+            if(!JJavaName.isFullyQualifiedClassName(ref)) {
+                Ring.get(ErrorReceiver.class).error( decl.getLocation(),
+                    Messages.format(Messages.ERR_INCORRECT_CLASS_NAME,ref) );
+                // recover by ignoring @ref
+            } else {
+                if(component instanceof XSComplexType) {
+                    // UGLY UGLY UGLY
+                    Ring.get(ComplexTypeFieldBuilder.class).recordBindingMode(
+                        (XSComplexType)component, ComplexTypeBindingMode.NORMAL
+                    );
+                }
+                return new CClassRef(model, component, decl, bindInfo.toCustomizationList() );
+            }
+        }
 
         String clsName = decl.getClassName();
         if(clsName==null) {

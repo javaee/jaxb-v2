@@ -38,6 +38,7 @@ import com.sun.tools.xjc.model.CElement;
 import com.sun.tools.xjc.model.CElementInfo;
 import com.sun.tools.xjc.model.CTypeInfo;
 import com.sun.tools.xjc.model.TypeUse;
+import com.sun.tools.xjc.model.CClass;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BISchemaBinding;
@@ -249,12 +250,12 @@ public final class ClassSelector extends BindingComponent {
         return (CElement)_bindToClass(e,false);
     }
 
-    public CClassInfo bindToType( XSComplexType t, boolean cannotBeDelayed ) {
+    public CClass bindToType( XSComplexType t, boolean cannotBeDelayed ) {
         // this assumption that a complex type always binds to a ClassInfo
         // does not hold for xs:anyType --- our current approach of handling
         // this idiosynchracy is to make sure that xs:anyType doesn't use
         // this codepath.
-        return (CClassInfo)_bindToClass(t,cannotBeDelayed);
+        return (CClass)_bindToClass(t,cannotBeDelayed);
     }
 
     public TypeUse bindToType( XSType t ) {

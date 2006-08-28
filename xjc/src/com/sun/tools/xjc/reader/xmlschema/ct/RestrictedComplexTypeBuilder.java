@@ -20,6 +20,7 @@
 package com.sun.tools.xjc.reader.xmlschema.ct;
 
 import com.sun.tools.xjc.model.CClassInfo;
+import com.sun.tools.xjc.model.CClass;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSType;
 
@@ -43,7 +44,7 @@ final class RestrictedComplexTypeBuilder extends CTBuilder {
         XSComplexType baseType = ct.getBaseType().asComplexType();
 
         // build the base class
-        CClassInfo baseClass = selector.bindToType(baseType,true);
+        CClass baseClass = selector.bindToType(baseType,true);
         assert baseClass!=null;   // global complex type must map to a class
 
         selector.getCurrentBean().setBaseClass(baseClass);

@@ -2,14 +2,13 @@ package com.sun.tools.xjc.model;
 
 import javax.activation.MimeType;
 
-import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JExpression;
+import com.sun.tools.xjc.outline.Outline;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XmlString;
-import com.sun.tools.xjc.outline.Outline;
 
 /**
  * Partial implementation of {@link CTypeInfo}.

@@ -273,8 +273,8 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
     @XmlElement(namespace=Const.XJC_EXTENSION_URI)
     Boolean generateElementProperty = null;
 
-    @XmlAttribute     // for JAXB unmarshaller
-    private void setGenerateElementProperty(boolean value) {
+    @XmlAttribute(name="generateElementProperty")     // for JAXB unmarshaller
+    private void setGenerateElementPropertyStd(boolean value) {
         generateElementProperty = value;
     }
 

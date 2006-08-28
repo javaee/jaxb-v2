@@ -81,7 +81,7 @@ public final class ComplexTypeFieldBuilder extends BindingComponent {
      * For this reason, we have to record how each complex type is being
      * bound.
      */
-    protected void recordBindingMode( XSComplexType type, ComplexTypeBindingMode flag ) {
+    public void recordBindingMode( XSComplexType type, ComplexTypeBindingMode flag ) {
         // it is an error to override the flag.
         Object o = complexTypeBindingModes.put(type,flag);
         assert o==null;
