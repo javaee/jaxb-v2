@@ -54,4 +54,18 @@ final class JDirectClass extends JClass {
     protected JClass substituteParams(JTypeVar[] variables, List<JClass> bindings) {
         return this;
     }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final JDirectClass that = (JDirectClass) o;
+
+        return fullName.equals(that.fullName);
+
+    }
+
+    public int hashCode() {
+        return fullName.hashCode();
+    }
 }
