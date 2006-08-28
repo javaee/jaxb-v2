@@ -2,7 +2,6 @@ package com.sun.tools.xjc.model;
 
 import javax.activation.MimeType;
 
-import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JExpression;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.tools.xjc.outline.Outline;
