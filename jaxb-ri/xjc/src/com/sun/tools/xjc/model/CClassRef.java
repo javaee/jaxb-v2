@@ -8,6 +8,7 @@ import com.sun.tools.xjc.model.nav.NType;
 import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIClass;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIEnum;
 import com.sun.xml.xsom.XSComponent;
 
 /**
@@ -27,6 +28,17 @@ public final class CClassRef extends AbstractCElement implements NClass, CClass 
     public CClassRef(Model model, XSComponent source, BIClass decl, CCustomizations customizations) {
         super(model, source, decl.getLocation(), customizations);
         fullyQualifiedClassName = decl.getExistingClassRef();
+        assert fullyQualifiedClassName!=null;
+    }
+
+    /**
+     *
+     * @param decl
+     *      The {@link BIClass} declaration that has {@link BIEnum#ref}
+     */
+    public CClassRef(Model model, XSComponent source, BIEnum decl, CCustomizations customizations) {
+        super(model, source, decl.getLocation(), customizations);
+        fullyQualifiedClassName = decl.ref;
         assert fullyQualifiedClassName!=null;
     }
 
@@ -85,5 +97,5 @@ public final class CClassRef extends AbstractCElement implements NClass, CClass 
         return false;
     }
 
-    
+
 }

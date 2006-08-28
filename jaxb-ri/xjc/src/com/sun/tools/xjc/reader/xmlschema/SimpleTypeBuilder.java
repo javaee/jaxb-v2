@@ -45,6 +45,7 @@ import com.sun.tools.xjc.model.CNonElement;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.model.TypeUseFactory;
+import com.sun.tools.xjc.model.CClassRef;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIConversion;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIEnum;
@@ -53,6 +54,7 @@ import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BindInfo;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.EnumMemberMode;
 import com.sun.tools.xjc.util.MimeTypeRange;
+import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import static com.sun.xml.bind.v2.WellKnownNamespace.XML_MIME_URI;
@@ -340,6 +342,19 @@ public final class SimpleTypeBuilder extends BindingComponent {
                     // recover by ignoring this customization
                     return null;
                 }
+
+                // reference?
+                if(en.ref!=null) {
+                    if(!JJavaName.isFullyQualifiedClassName(en.ref)) {
+                        Ring.get(ErrorReceiver.class).error( en.getLocation(),
+                            Messages.format(Messages.ERR_INCORRECT_CLASS_NAME, en.ref) );
+                        // recover by ignoring @ref
+                        return null;
+                    }
+
+                    return new CClassRef(model, type, en, info.toCustomizationList() );
+                }
+
                 // list and union cannot be mapped to a type-safe enum,
                 // so in this stage we can safely cast it to XSRestrictionSimpleType
                 return bindToTypeSafeEnum( (XSRestrictionSimpleType)type,

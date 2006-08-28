@@ -56,7 +56,13 @@ public final class BIEnum extends AbstractDeclarationImpl {
 
     /** Gets the specified class name, or null if not specified. */
     @XmlAttribute(name="name")
-    public final String className = null;
+    public String className = null;
+
+    /**
+     * @see BIClass#getExistingClassRef()
+     */
+    @XmlAttribute(name="ref")
+    public String ref;
 
     /**
      * Gets the javadoc comment specified in the customization.

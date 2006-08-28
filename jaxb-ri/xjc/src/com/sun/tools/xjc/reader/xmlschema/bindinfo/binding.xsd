@@ -224,6 +224,7 @@
         </xs:simpleType>
       </xs:attribute>
       <xs:attribute name="name"/>
+      <xs:attribute name="ref"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="typesafeEnumMember" substitutionGroup="jaxb:declaration">
