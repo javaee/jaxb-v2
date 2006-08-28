@@ -1,6 +1,5 @@
 package com.sun.tools.xjc.reader.xmlschema;
 
-import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CElement;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSElementDecl;
@@ -15,8 +14,8 @@ class Abstractifier extends ClassBinderFilter {
         super(core);
     }
 
-    public CClassInfo complexType(XSComplexType xs) {
-        CClassInfo ci = (CClassInfo)super.complexType(xs);
+    public CElement complexType(XSComplexType xs) {
+        CElement ci = super.complexType(xs);
         if(ci!=null && xs.isAbstract())
             ci.setAbstract();
         return ci;
