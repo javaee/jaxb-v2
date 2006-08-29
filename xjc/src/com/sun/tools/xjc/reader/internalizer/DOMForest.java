@@ -200,7 +200,12 @@ public final class DOMForest {
      * Picks one document at random and returns it.
      */
     public Document getOneDocument() {
-        return core.values().iterator().next();
+        for (Document dom : core.values()) {
+            if (!dom.getDocumentElement().getNamespaceURI().equals(Const.JAXB_NSURI))
+                return dom;
+        }
+        // we should have caught this error very early on
+        throw new AssertionError();
     }
 
     /**
