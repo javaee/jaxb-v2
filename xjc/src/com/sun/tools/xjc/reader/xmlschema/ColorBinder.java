@@ -2,8 +2,6 @@ package com.sun.tools.xjc.reader.xmlschema;
 
 import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CPropertyInfo;
-import com.sun.tools.xjc.model.CTypeInfo;
-import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
 import com.sun.xml.xsom.XSAnnotation;
@@ -29,13 +27,6 @@ abstract class ColorBinder extends BindingComponent implements XSVisitor {
     protected final XSComponent getCurrentRoot() {
         return selector.getCurrentRoot();
     }
-
-    protected CTypeInfo boundToType(XSComponent sc) {
-        if(sc==selector.getCurrentRoot())    return null;
-        return selector.bindToType(sc);
-    }
-
-
 
 
     protected final void createSimpleTypeProperty(XSSimpleType type,String propName) {

@@ -140,7 +140,7 @@ final class DefaultClassBinder implements ClassBinder
             }
 
 
-            CElement parentType = selector.isBound(element);
+            CElement parentType = selector.isBound(element,type);
 
             String className;
             CClassInfoParent scope;
@@ -250,7 +250,7 @@ final class DefaultClassBinder implements ClassBinder
                 if(isCollapsable(decl)) {
                     // we want the returned type to be built as a complex type,
                     // so the binding cannot be delayed.
-                    return selector.bindToType(decl.getType().asComplexType(),true);
+                    return selector.bindToType(decl.getType().asComplexType(),decl,true);
                 } else {
                     String className = null;
                     if(getGlobalBinding().isGenerateElementClass())
@@ -262,7 +262,7 @@ final class DefaultClassBinder implements ClassBinder
                     selector.boundElements.put(decl,cei);
 
                     stb.refererStack.push(decl);    // referer is element
-                    cei.initContentType( selector.bindToType(decl.getType()), decl, decl.getDefaultValue() );
+                    cei.initContentType( selector.bindToType(decl.getType(),decl), decl, decl.getDefaultValue() );
                     stb.refererStack.pop();
                     r = cei;
                 }
@@ -272,7 +272,7 @@ final class DefaultClassBinder implements ClassBinder
         // have the substitution member derive from the substitution head
         XSElementDecl top = decl.getSubstAffiliation();
         if(top!=null) {
-            CElement topci = selector.bindToType(top);
+            CElement topci = selector.bindToType(top,decl);
 
             if(r instanceof CClassInfo && topci instanceof CClassInfo)
                 ((CClassInfo)r).setBaseClass((CClassInfo)topci);
@@ -459,7 +459,7 @@ final class DefaultClassBinder implements ClassBinder
 
             stb.refererStack.push(component);    // referer is element
             cei.initContentType(
-                selector.bindToType(e.getType()),
+                selector.bindToType(e.getType(),e),
                 e,e.getDefaultValue());
             stb.refererStack.pop();
             return cei;

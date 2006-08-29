@@ -50,7 +50,7 @@ public final class BindRed extends ColorBinder {
     public void elementDecl(XSElementDecl e) {
         SimpleTypeBuilder stb = Ring.get(SimpleTypeBuilder.class);
         stb.refererStack.push(e);    // referer is element
-        builder.ying(e.getType());
+        builder.ying(e.getType(),e);
         stb.refererStack.pop();
     }
 
