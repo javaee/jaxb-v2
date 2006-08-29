@@ -60,8 +60,8 @@ public class ParserContext {
 
             SchemaImpl xs = (SchemaImpl)
                 schemaSet.getSchema("http://www.w3.org/2001/XMLSchema");
-            xs.addSimpleType(schemaSet.anySimpleType);
-            xs.addComplexType(schemaSet.anyType);
+            xs.addSimpleType(schemaSet.anySimpleType,true);
+            xs.addComplexType(schemaSet.anyType,true);
         } catch( SAXException e ) {
             // this must be a bug of XSOM
             if(e.getException()!=null)

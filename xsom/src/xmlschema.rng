@@ -137,14 +137,14 @@
             <ref name="simpleType" cc:alias="st"/>
             
             $runtime.checkDoubleDefError( $runtime.currentSchema.getType(st.getName()) );
-            $runtime.currentSchema.addSimpleType(st);
+            $runtime.currentSchema.addSimpleType(st,false);
           </group>
           
           <group>
             <ref name="complexType" cc:alias="ct"/>
             
             $runtime.checkDoubleDefError( $runtime.currentSchema.getType(ct.getName()) );
-            $runtime.currentSchema.addComplexType(ct);
+            $runtime.currentSchema.addComplexType(ct,false);
           </group>
           
           <element name="attribute">
@@ -169,7 +169,7 @@
             group = <ref name="group" />
             
             $runtime.checkDoubleDefError( $runtime.currentSchema.getModelGroupDecl(group.getName()) );
-            $runtime.currentSchema.addModelGroupDecl(group);
+            $runtime.currentSchema.addModelGroupDecl(group,false);
           </group>
           
           <group>
@@ -181,7 +181,7 @@
             <ref name="attributeGroupDecl" cc:alias="ag" />
             
             $runtime.checkDoubleDefError( $runtime.currentSchema.getAttGroupDecl(ag.getName()) );
-            $runtime.currentSchema.addAttGroupDecl(ag);
+            $runtime.currentSchema.addAttGroupDecl(ag,false);
           </group>
         </choice>
       </zeroOrMore>

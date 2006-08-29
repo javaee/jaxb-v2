@@ -124,8 +124,9 @@ public class SchemaImpl implements XSSchema
 
     private final Map<String,XSAttGroupDecl> attGroups = new HashMap<String,XSAttGroupDecl>();
     private final Map<String,XSAttGroupDecl> attGroupsView = Collections.unmodifiableMap(attGroups);
-    public void addAttGroupDecl(XSAttGroupDecl newDecl) {
-        attGroups.put(newDecl.getName(), newDecl);
+    public void addAttGroupDecl(XSAttGroupDecl newDecl, boolean overwrite) {
+        if(overwrite || !attGroups.containsKey(newDecl.getName()))
+            attGroups.put(newDecl.getName(), newDecl);
     }
     public Map<String,XSAttGroupDecl> getAttGroupDecls() {
         return attGroupsView;
@@ -155,8 +156,9 @@ public class SchemaImpl implements XSSchema
 
     private final Map<String,XSModelGroupDecl> modelGroups = new HashMap<String,XSModelGroupDecl>();
     private final Map<String,XSModelGroupDecl> modelGroupsView = Collections.unmodifiableMap(modelGroups);
-    public void addModelGroupDecl(XSModelGroupDecl newDecl) {
-        modelGroups.put(newDecl.getName(), newDecl);
+    public void addModelGroupDecl(XSModelGroupDecl newDecl, boolean overwrite) {
+        if(overwrite || !modelGroups.containsKey(newDecl.getName()))
+            modelGroups.put(newDecl.getName(), newDecl);
     }
     public Map<String,XSModelGroupDecl> getModelGroupDecls() {
         return modelGroupsView;
@@ -189,10 +191,11 @@ public class SchemaImpl implements XSSchema
 
     private final Map<String,XSSimpleType> simpleTypes = new HashMap<String,XSSimpleType>();
     private final Map<String,XSSimpleType> simpleTypesView = Collections.unmodifiableMap(simpleTypes);
-    public void addSimpleType(XSSimpleType newDecl) {
-        if(!simpleTypes.containsKey(newDecl.getName()))
+    public void addSimpleType(XSSimpleType newDecl, boolean overwrite) {
+        if(overwrite || !simpleTypes.containsKey(newDecl.getName())) {
             simpleTypes.put(newDecl.getName(), newDecl);
-        allTypes.put(newDecl.getName(), newDecl);
+            allTypes.put(newDecl.getName(), newDecl);
+        }
     }
     public Map<String,XSSimpleType> getSimpleTypes() {
         return simpleTypesView;
@@ -206,10 +209,11 @@ public class SchemaImpl implements XSSchema
 
     private final Map<String,XSComplexType> complexTypes = new HashMap<String,XSComplexType>();
     private final Map<String,XSComplexType> complexTypesView = Collections.unmodifiableMap(complexTypes);
-    public void addComplexType(XSComplexType newDecl) {
-        if(!complexTypes.containsKey(newDecl.getName()))
+    public void addComplexType(XSComplexType newDecl, boolean overwrite) {
+        if(overwrite || !complexTypes.containsKey(newDecl.getName())) {
             complexTypes.put(newDecl.getName(), newDecl);
-        allTypes.put(newDecl.getName(), newDecl);
+            allTypes.put(newDecl.getName(), newDecl);
+        }
     }
     public Map<String,XSComplexType> getComplexTypes() {
         return complexTypesView;

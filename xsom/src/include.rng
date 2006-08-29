@@ -88,7 +88,7 @@
               $runtime.reportError( Messages.format(Messages.ERR_UNDEFINED_SIMPLETYPE,newSt.getName()) );
             } else {
               newSt.redefine((SimpleTypeImpl)oldSt);
-              $runtime.currentSchema.addSimpleType(newSt);
+              $runtime.currentSchema.addSimpleType(newSt,true);
             }
          	</group>
          	<group>
@@ -98,7 +98,7 @@
               $runtime.reportError( Messages.format(Messages.ERR_UNDEFINED_COMPLEXTYPE,newCt.getName()) );
             } else {
               newCt.redefine((ComplexTypeImpl)oldCt);
-              $runtime.currentSchema.addComplexType(newCt);
+              $runtime.currentSchema.addComplexType(newCt,true);
             }
          	</group>
          	<group>
@@ -108,7 +108,7 @@
               $runtime.reportError( Messages.format(Messages.ERR_UNDEFINED_MODELGROUP,newGrp.getName()) );
             } else {
               newGrp.redefine((ModelGroupDeclImpl)oldGrp);
-              $runtime.currentSchema.addModelGroupDecl(newGrp);
+              $runtime.currentSchema.addModelGroupDecl(newGrp,true);
             }
          	</group>
           <group>
@@ -118,7 +118,7 @@
               $runtime.reportError( Messages.format(Messages.ERR_UNDEFINED_ATTRIBUTEGROUP,newAg.getName()) );
             } else {
               newAg.redefine((AttGroupDeclImpl)oldAg);
-              $runtime.currentSchema.addAttGroupDecl(newAg);
+              $runtime.currentSchema.addAttGroupDecl(newAg,true);
             }
           </group>
         </choice>
