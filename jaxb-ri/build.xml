@@ -46,11 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-<<<<<<< build.xml
-       $Id: build.xml,v 1.71.2.6 2006-08-29 19:42:36 kohsuke Exp $
-=======
-       $Id: build.xml,v 1.71.2.6 2006-08-29 19:42:36 kohsuke Exp $
->>>>>>> 1.72
+       $Id: build.xml,v 1.71.2.7 2006-08-29 20:23:57 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
