@@ -64,7 +64,7 @@ public interface Transducer<ValueT> {
      * @return
      *      always non-null valid lexical representation.
      */
-    CharSequence print(ValueT o) throws AccessorException;
+    @NotNull CharSequence print(@NotNull ValueT o) throws AccessorException;
 
     /**
      * Converts the lexical representation to a value object.
@@ -92,7 +92,7 @@ public interface Transducer<ValueT> {
      * to one of the {@link XMLSerializer#leafElement(Name, String, String)} method.
      * but with the best representation of the value, not necessarily String.
      */
-    void writeLeafElement(XMLSerializer w, Name tagName, ValueT o, String fieldName) throws IOException, SAXException, XMLStreamException, AccessorException;
+    void writeLeafElement(XMLSerializer w, Name tagName, @NotNull ValueT o, String fieldName) throws IOException, SAXException, XMLStreamException, AccessorException;
 
     /**
      * Transducers implicitly work against a single XML type,

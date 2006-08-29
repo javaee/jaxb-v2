@@ -72,6 +72,18 @@ class Messages
     static final String MISSING_COMPATIBILITY_OPERAND = // 0 args
         "Driver.MissingCompatibilityOperand";
     
+<<<<<<< Messages.java
+=======
+    static final String MISSING_PROXY = // 0 args
+        "Driver.MISSING_PROXY";
+
+    static final String MISSING_PROXYFILE = // 0 args
+        "Driver.MISSING_PROXYFILE";
+
+    static final String NO_SUCH_FILE = // 1 arg
+        "Driver.NO_SUCH_FILE";
+
+>>>>>>> 1.10
     static final String ILLEGAL_PROXY = // 1 arg
         "Driver.ILLEGAL_PROXY";
 
@@ -155,8 +167,8 @@ class Messages
 
     static final String NOT_A_VALID_FILENAME = // 2 args
         "Driver.NotAValidFileName";
-    static final String FAILED_TO_PARSE_CATALOG = // 2 args
-        "Driver.FailedToParseCatalog";
+    static final String FAILED_TO_PARSE = // 2 args
+        "Driver.FailedToParse";
     static final String NOT_A_FILE_NOR_URL = // 1 arg
         "Driver.NotAFileNorURL";
 

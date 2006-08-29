@@ -30,12 +30,26 @@
       <xs:attribute name="name" use="required"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="javaType">
-    <xs:complexType>
-      <xs:attribute name="name" use="required"/>
-      <xs:attribute name="adapter" use="required"/>
-    </xs:complexType>
-  </xs:element>
+
+  <xs:complexType name="javaTypeContent">
+    <xs:attribute name="name" use="required"/>
+    <xs:attribute name="adapter" use="required"/>
+  </xs:complexType>
+  <xs:element name="javaType" type="xjc:javaTypeContent"/>
+  <xs:group name="globalJavaType">
+    <xs:sequence>
+      <xs:element name="javaType">
+        <xs:complexType>
+          <xs:complexContent>
+            <xs:extension base="xjc:javaTypeContent">
+              <xs:attribute name="xmlType" use="required" type="xs:QName"/>
+            </xs:extension>
+          </xs:complexContent>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:group>
+
   <xs:element name="generateElementProperty" type="xs:boolean" />
   <xs:element name="dom">
     <xs:complexType>

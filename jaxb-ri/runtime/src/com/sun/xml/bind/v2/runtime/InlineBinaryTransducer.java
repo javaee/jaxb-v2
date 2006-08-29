@@ -2,9 +2,9 @@ package com.sun.xml.bind.v2.runtime;
 
 import java.io.IOException;
 
-import javax.activation.MimeType;
 import javax.xml.stream.XMLStreamException;
 
+import com.sun.istack.NotNull;
 import com.sun.xml.bind.api.AccessorException;
 
 import org.xml.sax.SAXException;
@@ -20,7 +20,7 @@ public class InlineBinaryTransducer<V> extends FilterTransducer<V> {
     }
 
     @Override
-    public CharSequence print(V o) throws AccessorException {
+    public @NotNull CharSequence print(@NotNull V o) throws AccessorException {
         XMLSerializer w = XMLSerializer.getInstance();
         boolean old = w.setInlineBinaryFlag(true);
         try {

@@ -20,6 +20,7 @@
         <xs:element ref="xjc:typeSubstitution"/>
         <xs:element ref="xjc:smartWildcardDefaultBinding"/>
         <xs:element ref="xjc:simple"/>
+        <xs:group   ref="xjc:globalJavaType" />
         <xs:element ref="xjc:generateElementProperty"/>
         <xs:element ref="xjc:noMarshaller"/>
         <xs:element ref="xjc:noUnmarshaller"/>
@@ -205,7 +206,7 @@
   </xs:attributeGroup>
   <xs:element name="typesafeEnumClass" substitutionGroup="jaxb:declaration">
     <xs:complexType>
-      <xs:sequence minOccurs="0">
+      <xs:sequence>
         <xs:element minOccurs="0" ref="jaxb:javadoc"/>
         <xs:element minOccurs="0" maxOccurs="unbounded" name="typesafeEnumMember">
           <xs:complexType>

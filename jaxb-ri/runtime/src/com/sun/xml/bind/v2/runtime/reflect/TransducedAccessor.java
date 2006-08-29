@@ -7,6 +7,9 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlValue;
 import javax.xml.stream.XMLStreamException;
 
+import com.sun.istack.NotNull;
+import com.sun.istack.Nullable;
+import com.sun.istack.SAXException2;
 import com.sun.xml.bind.WhiteSpaceProcessor;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.model.core.ID;
@@ -20,7 +23,6 @@ import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.opt.OptimizedTransducedAccessorFactory;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Patcher;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
-import com.sun.istack.SAXException2;
 
 import org.xml.sax.SAXException;
 
@@ -67,7 +69,7 @@ public abstract class TransducedAccessor<BeanT> {
      * @return
      *      if the accessor didn't yield a value, return null.
      */
-    public abstract CharSequence print(BeanT o) throws AccessorException, SAXException;
+    public abstract @Nullable CharSequence print(@NotNull BeanT o) throws AccessorException, SAXException;
 
     /**
      * Parses the text value into the responsible field of the given bean.
@@ -137,6 +139,10 @@ public abstract class TransducedAccessor<BeanT> {
      * Convenience method to write the value as a text inside an element
      * without any attributes.
      * Can be overridden for improved performance.
+     *
+     * <p>
+     * The callee assumes that there's an associated value in the field.
+     * No @xsi:type handling is expected.
      */
     public abstract void writeLeafElement(XMLSerializer w, Name tagName, BeanT o, String fieldName) throws SAXException, AccessorException, IOException, XMLStreamException;
 
