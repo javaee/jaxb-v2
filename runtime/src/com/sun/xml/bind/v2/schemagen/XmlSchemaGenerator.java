@@ -1261,7 +1261,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             if( uriPath.equals(basePath))
                 return ".";
 
-            String relPath = calculateRelativePath(uriPath, basePath, theUri.getScheme().equals("file"));
+            String relPath = calculateRelativePath(uriPath, basePath, fixNull(theUri.getScheme()).equals("file"));
 
             if (relPath == null)
                 return uri; // recursion found no commonality in the two uris at all
@@ -1276,6 +1276,11 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         } catch (URISyntaxException e) {
             throw new InternalError("Error escaping one of these uris:\n\t"+uri+"\n\t"+baseUri);
         }
+    }
+
+    private static final String fixNull(String s) {
+        if(s==null)     return "";
+        else            return s;
     }
 
     private static String calculateRelativePath(String uri, String base, boolean fileUrl) {
