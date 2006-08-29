@@ -46,7 +46,9 @@ public interface BIDeclaration {
      *
      * <p>
      * This method can be only called from {@link BindInfo},
-     * and only once.
+     * and only once. This is a good opportunity to do some
+     * follow-up initialization after JAXB unmarshalling
+     * populated {@link BIDeclaration}.
      */
     void setParent( BindInfo parent );
     

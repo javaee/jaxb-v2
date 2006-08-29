@@ -90,6 +90,11 @@ public final class BIEnum extends AbstractDeclarationImpl {
         super.setParent(p);
         for( BIEnumMember mem : members.values() )
             mem.setParent(p);
+
+        // if this specifies a reference to external class,
+        // then it's OK even if noone actually refers this class.
+        if(ref!=null)
+            markAsAcknowledged();
     }
     
     /** Name of this declaration. */

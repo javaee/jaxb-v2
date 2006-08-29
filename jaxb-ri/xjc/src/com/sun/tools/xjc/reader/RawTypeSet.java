@@ -27,7 +27,6 @@ import com.sun.xml.bind.v2.model.core.Element;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XSElementDecl;
-import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XmlString;
 
 import org.xml.sax.Locator;
@@ -241,12 +240,6 @@ public final class RawTypeSet {
             this.locator = loc;
         }
 
-        public XmlTypeRef(QName elementName, XSType target, boolean nillable, XmlString defaultValue) {
-            this(elementName,Ring.get(ClassSelector.class).bindToType(target), nillable, defaultValue, target,
-                    Ring.get(BGMBuilder.class).getBindInfo(target).toCustomizationList(),
-                    target.getLocator());
-        }
-
         public XmlTypeRef(XSElementDecl decl) {
             this(new QName(decl.getTargetNamespace(),decl.getName()),bindToType(decl),
                     decl.isNillable(), decl.getDefaultValue(), decl,
@@ -316,7 +309,7 @@ public final class RawTypeSet {
     private static TypeUse bindToType(XSElementDecl decl) {
         SimpleTypeBuilder stb = Ring.get(SimpleTypeBuilder.class);
         stb.refererStack.push(decl);
-        TypeUse r = Ring.get(ClassSelector.class).bindToType(decl.getType());
+        TypeUse r = Ring.get(ClassSelector.class).bindToType(decl.getType(),decl);
         stb.refererStack.pop();
         return r;
     }

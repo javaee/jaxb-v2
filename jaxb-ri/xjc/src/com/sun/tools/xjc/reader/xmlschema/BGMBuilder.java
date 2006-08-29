@@ -14,6 +14,7 @@ import javax.xml.transform.TransformerFactory;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.fmt.JTextFile;
 import com.sun.istack.NotNull;
+import com.sun.istack.Nullable;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.generator.bean.field.FieldRendererFactory;
@@ -251,22 +252,29 @@ public class BGMBuilder extends BindingComponent {
         SimpleTypeBuilder stb = Ring.get(SimpleTypeBuilder.class);
 
         for( XSSchema s : Ring.get(XSSchemaSet.class).getSchemas() ) {
+            BISchemaBinding sb = getBindInfo(s).get(BISchemaBinding.class);
+
+            if(sb!=null && !sb.map) {
+                sb.markAsAcknowledged();
+                continue;       // no mapping for this package
+            }
+
             getClassSelector().pushClassScope( new CClassInfoParent.Package(
                 getClassSelector().getPackage(s.getTargetNamespace())) );
 
             if(!s.getTargetNamespace().equals(WellKnownNamespace.XML_SCHEMA)) {
                 checkMultipleSchemaBindings(s);
                 processPackageJavadoc(s);
-                populate(s.getAttGroupDecls());
-                populate(s.getAttributeDecls());
-                populate(s.getElementDecls());
-                populate(s.getModelGroupDecls());
+                populate(s.getAttGroupDecls(),s);
+                populate(s.getAttributeDecls(),s);
+                populate(s.getElementDecls(),s);
+                populate(s.getModelGroupDecls(),s);
             }
 
             // fill in typeUses
             for (XSType t : s.getTypes().values()) {
                 stb.refererStack.push(t);
-                model.typeUses().put( new QName(t.getTargetNamespace(),t.getName()), cs.bindToType(t) );
+                model.typeUses().put( new QName(t.getTargetNamespace(),t.getName()), cs.bindToType(t,s) );
                 stb.refererStack.pop();
             }
 
@@ -298,10 +306,10 @@ public class BGMBuilder extends BindingComponent {
      * Calls {@link ClassSelector} for each item in the iterator
      * to populate class items if there is any.
      */
-    private void populate( Map<String,? extends XSComponent> col ) {
+    private void populate( Map<String,? extends XSComponent> col, XSSchema schema ) {
         ClassSelector cs = getClassSelector();
         for( XSComponent sc : col.values() )
-            cs.bindToType(sc);
+            cs.bindToType(sc,schema);
     }
 
     /**
@@ -446,8 +454,8 @@ public class BGMBuilder extends BindingComponent {
      * If the component is mapped to a type, this method needs to return true.
      * See the chart at the class javadoc.
      */
-    public void ying( XSComponent sc ) {
-        if(sc.apply(toPurple)==true || getClassSelector().bindToType(sc)!=null)
+    public void ying( XSComponent sc, @Nullable XSComponent referer ) {
+        if(sc.apply(toPurple)==true || getClassSelector().bindToType(sc,referer)!=null)
             sc.visit(purple);
         else
             sc.visit(green);

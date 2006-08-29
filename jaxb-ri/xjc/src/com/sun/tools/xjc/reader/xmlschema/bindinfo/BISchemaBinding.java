@@ -73,6 +73,14 @@ public final class BISchemaBinding extends AbstractDeclarationImpl {
     private PackageInfo packageInfo = new PackageInfo();
 
     /**
+     * If false, it means not to generate any classes from this namespace.
+     * No ObjectFactory, no classes (the only way to bind them is by using
+     * &lt;jaxb:class ref="..."/>)
+     */
+    @XmlAttribute(name="map")
+    public boolean map = true;
+
+    /**
      * Default naming rule, that doesn't change the name.
      */
     private static final NamingRule defaultNamingRule = new NamingRule("","");

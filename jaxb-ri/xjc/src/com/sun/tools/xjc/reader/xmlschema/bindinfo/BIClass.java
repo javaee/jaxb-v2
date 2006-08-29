@@ -105,6 +105,14 @@ public final class BIClass extends AbstractDeclarationImpl {
 
     public QName getName() { return NAME; }
 
+    public void setParent(BindInfo p) {
+        super.setParent(p);
+        // if this specifies a reference to external class,
+        // then it's OK even if noone actually refers this class.
+        if(ref!=null)
+            markAsAcknowledged();
+    }
+
     /** Name of this declaration. */
     public static final QName NAME = new QName( Const.JAXB_NSURI, "class" );
 }

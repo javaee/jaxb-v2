@@ -102,7 +102,7 @@ public class RawTypeSetBuilder implements XSTermVisitor {
 
         QName n = new QName(decl.getTargetNamespace(),decl.getName());
         if(elementNames.add(n)) {
-            CElement elementBean = Ring.get(ClassSelector.class).bindToType(decl);
+            CElement elementBean = Ring.get(ClassSelector.class).bindToType(decl,null);
             if(elementBean==null)
                 refs.add(new RawTypeSet.XmlTypeRef(decl));
             else {

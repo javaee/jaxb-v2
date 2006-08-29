@@ -395,7 +395,7 @@ public final class SimpleTypeBuilder extends BindingComponent {
             }
         }
 
-        return getClassSelector()._bindToClass(type,false);
+        return getClassSelector()._bindToClass(type,null,false);
     }
 
     /**

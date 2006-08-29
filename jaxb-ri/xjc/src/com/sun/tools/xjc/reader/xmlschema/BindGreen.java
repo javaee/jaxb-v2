@@ -32,14 +32,14 @@ public final class BindGreen extends ColorBinder {
         // inline
         Iterator itr = cont.iterateDeclaredAttributeUses();
         while(itr.hasNext())
-            builder.ying((XSAttributeUse)itr.next());
+            builder.ying((XSAttributeUse)itr.next(),cont);
         itr = cont.iterateAttGroups();
         while(itr.hasNext())
-            builder.ying((XSAttGroupDecl)itr.next());
+            builder.ying((XSAttGroupDecl)itr.next(),cont);
 
         XSWildcard w = cont.getAttributeWildcard();
         if(w!=null)
-            builder.ying(w);
+            builder.ying(w,cont);
     }
 
     public void complexType(XSComplexType ct) {

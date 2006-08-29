@@ -44,7 +44,7 @@ final class RestrictedComplexTypeBuilder extends CTBuilder {
         XSComplexType baseType = ct.getBaseType().asComplexType();
 
         // build the base class
-        CClass baseClass = selector.bindToType(baseType,true);
+        CClass baseClass = selector.bindToType(baseType,ct,true);
         assert baseClass!=null;   // global complex type must map to a class
 
         selector.getCurrentBean().setBaseClass(baseClass);

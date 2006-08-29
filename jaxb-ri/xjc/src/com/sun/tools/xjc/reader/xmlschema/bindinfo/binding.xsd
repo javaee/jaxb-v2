@@ -102,6 +102,7 @@
         <xs:element minOccurs="0" ref="jaxb:package"/>
         <xs:element minOccurs="0" ref="jaxb:nameXmlTransform"/>
       </xs:sequence>
+      <xs:attribute name="map" type="xs:boolean" />
     </xs:complexType>
   </xs:element>
   <xs:element name="package">
