@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
+import com.sun.istack.NotNull;
 import com.sun.xml.bind.api.AccessorException;
 
 import org.xml.sax.SAXException;
@@ -35,7 +36,7 @@ public abstract class FilterTransducer<T> implements Transducer<T> {
         core.declareNamespace(o, w);
     }
 
-    public CharSequence print(T o) throws AccessorException {
+    public @NotNull CharSequence print(@NotNull T o) throws AccessorException {
         return core.print(o);
     }
 

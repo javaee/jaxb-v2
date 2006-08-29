@@ -46,7 +46,11 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.5 2006-08-15 18:16:45 kohsuke Exp $
+<<<<<<< build.xml
+       $Id: build.xml,v 1.71.2.6 2006-08-29 19:42:36 kohsuke Exp $
+=======
+       $Id: build.xml,v 1.71.2.6 2006-08-29 19:42:36 kohsuke Exp $
+>>>>>>> 1.72
     </description>
 
     <!-- initialize build properties -->
@@ -498,7 +502,7 @@ Class-Path: ${manifest.classpath}
             depends="bin-installer,src-installer"
             description="build both the binary and the source installer" />
 
-    <target name="push-to-maven-prepare" depends="dist"
+    <target name="push-to-maven-prepare"
       description="prepare a repository iamge for the push-to-maven target">
       <taskdef resource="maven-repository-importer.properties">
         <classpath>
@@ -535,7 +539,7 @@ Class-Path: ${manifest.classpath}
 
     <target name="push-to-maven" depends="push-to-maven-prepare"
       description="publish artifacts into the maven repository">
-      <cvs-import src="build/maven-repo" dest="jaxb/repo" cvsroot=":pserver:${user.name}@java-net-cvs:/cvs" />
+      <cvs-import src="build/maven-repo" dest="jaxb/repo" cvsroot=":pserver:${user.name}@cvs.dev.java.net:/cvs" />
     </target>
 
     <target name="push-snapshot-to-maven" depends="dist"

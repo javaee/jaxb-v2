@@ -12,6 +12,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
+import com.sun.istack.NotNull;
 import com.sun.xml.bind.annotation.XmlLocation;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.ClassFactory;
@@ -129,6 +130,8 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
      */
     private Transducer calcTransducer() {
         RuntimeValuePropertyInfo valuep=null;
+        if(hasAttributeWildcard())
+            return null;        // has attribute wildcard. Can't be handled as a leaf
         for (RuntimeClassInfoImpl ci = this; ci != null; ci = ci.getBaseClass()) {
             for( RuntimePropertyInfo pi : ci.getProperties() )
                 if(pi.kind()==PropertyKind.VALUE) {
@@ -267,9 +270,12 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
             }
         }
 
-        public CharSequence print(BeanT bean) throws AccessorException {
+        public @NotNull CharSequence print(BeanT o) throws AccessorException {
             try {
-                return xacc.print(bean);
+                CharSequence value = xacc.print(o);
+                if(value==null)
+                    throw new AccessorException(Messages.THERE_MUST_BE_VALUE_IN_XMLVALUE.format(o));
+                return value;
             } catch (SAXException e) {
                 throw new AccessorException(e);
             }
@@ -290,10 +296,14 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
         }
 
         public void writeText(XMLSerializer w, BeanT o, String fieldName) throws IOException, SAXException, XMLStreamException, AccessorException {
+            if(!xacc.hasValue(o))
+                throw new AccessorException(Messages.THERE_MUST_BE_VALUE_IN_XMLVALUE.format(o));
             xacc.writeText(w,o,fieldName);
         }
 
         public void writeLeafElement(XMLSerializer w, Name tagName, BeanT o, String fieldName) throws IOException, SAXException, XMLStreamException, AccessorException {
+            if(!xacc.hasValue(o))
+                throw new AccessorException(Messages.THERE_MUST_BE_VALUE_IN_XMLVALUE.format(o));
             xacc.writeLeafElement(w,tagName,o,fieldName);
         }
 
