@@ -72,8 +72,6 @@ class Messages
     static final String MISSING_COMPATIBILITY_OPERAND = // 0 args
         "Driver.MissingCompatibilityOperand";
     
-<<<<<<< Messages.java
-=======
     static final String MISSING_PROXY = // 0 args
         "Driver.MISSING_PROXY";
 
@@ -83,7 +81,6 @@ class Messages
     static final String NO_SUCH_FILE = // 1 arg
         "Driver.NO_SUCH_FILE";
 
->>>>>>> 1.10
     static final String ILLEGAL_PROXY = // 1 arg
         "Driver.ILLEGAL_PROXY";
 
