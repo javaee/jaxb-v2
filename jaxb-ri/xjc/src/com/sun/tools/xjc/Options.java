@@ -510,7 +510,6 @@ public class Options
             compatibilityMode = EXTENSION;
             return 1;
         }
-<<<<<<< Options.java
         if (args[i].equals("-target")) {
             String token = requireArgument("-target",args,++i);
             if(token.equals("2.0"))
@@ -521,7 +520,6 @@ public class Options
             else
                 throw new BadCommandLineException(Messages.format(Messages.ILLEGAL_TARGET_VERSION,token));
         }
-=======
         if (args[i].equals("-httpproxyfile")) {
             if (i == args.length - 1 || args[i + 1].startsWith("-")) {
                 throw new BadCommandLineException(
@@ -545,36 +543,13 @@ public class Options
 
             return 2;
         }
->>>>>>> 1.27
         if (args[i].equals("-httpproxy")) {
-<<<<<<< Options.java
-            String text = requireArgument("-httpproxy",args,++i);
-
-            // syntax is [user[:password]@]proxyHost[:proxyPort]
-            String token = "([^@:]+)";
-            Pattern p = Pattern.compile("(?:"+token+"(?:\\:"+token+")?\\@)?"+token+"(?:\\:"+token+")?");
-
-            Matcher matcher = p.matcher(text);
-            if(!matcher.matches())
-                throw new BadCommandLineException(Messages.format(Messages.ILLEGAL_PROXY,text));
-
-            proxyUser = matcher.group(1);
-            proxyPassword = matcher.group(2);
-            proxyHost = matcher.group(3);
-            proxyPort = matcher.group(4);
-            try {
-                Integer.valueOf(proxyPort);
-            } catch (NumberFormatException e) {
-                throw new BadCommandLineException(Messages.format(Messages.ILLEGAL_PROXY,text));
-            }
-=======
             if (i == args.length - 1 || args[i + 1].startsWith("-")) {
                 throw new BadCommandLineException(
                     Messages.format(Messages.MISSING_PROXY));
             }
 
             parseProxy(args[++i]);
->>>>>>> 1.27
             return 2;
         }
         if (args[i].equals("-host")) {
