@@ -3,13 +3,11 @@ import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XSSchemaSet;
 import com.sun.xml.xsom.parser.XSOMParser;
 import com.sun.xml.xsom.util.ComponentNameFunction;
+import org.xml.sax.Locator;
 
 import javax.xml.namespace.NamespaceContext;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
-
-import org.xml.sax.Locator;
 
 /**
  * Tests SCD.
@@ -24,13 +22,16 @@ public class SCDTest {
 
         XSSchemaSet r = p.getResult();
         SCD scd = SCD.create(args[0], new DummyNSContext());
-        List<XSComponent> result = scd.select(r);
-        for( XSComponent c : result ) {
+        Iterator<XSComponent> result = scd.select(r);
+        int count=0;
+        while(result.hasNext()) {
+            XSComponent c = result.next();
+            count++;
             System.out.println(c.apply(new ComponentNameFunction()));
             print(c.getLocator());
             System.out.println();
         }
-        System.out.printf("%1d match(s)\n",result.size());
+        System.out.printf("%1d match(s)\n",count);
     }
 
     private static void print(Locator locator) {

@@ -1,14 +1,13 @@
 package com.sun.xml.xsom;
 
+import com.sun.xml.xsom.impl.scd.Iterators;
 import com.sun.xml.xsom.impl.scd.ParseException;
 import com.sun.xml.xsom.impl.scd.SCDImpl;
 import com.sun.xml.xsom.impl.scd.SCDParser;
 
 import javax.xml.namespace.NamespaceContext;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Iterator;
 
 /**
  * Schema Component Designator (SCD).
@@ -51,12 +50,12 @@ public abstract class SCD {
      * @return
      *      could be empty but never be null.
      */
-    public final List<XSComponent> select(XSComponent contextNode) {
-        return select(Collections.singletonList(contextNode));
+    public final Iterator<XSComponent> select(XSComponent contextNode) {
+        return select(Iterators.singleton(contextNode));
     }
 
-    public final List<XSComponent> select(XSSchemaSet contextNode) {
-        return select(new ArrayList<XSComponent>(contextNode.getSchemas()));
+    public final Iterator<XSComponent> select(XSSchemaSet contextNode) {
+        return select(contextNode.getSchemas().iterator());
     }
 
     /**
@@ -68,9 +67,9 @@ public abstract class SCD {
      *      the first one will be returned.
      */
     public final XSComponent selectSingleNode(XSComponent contextNode) {
-        List<XSComponent> r = select(contextNode);
-        if(r.isEmpty())     return null;
-        return r.get(0);
+        Iterator<XSComponent> r = select(contextNode);
+        if(r.hasNext())     return r.next();
+        return null;
     }
 
     /**
@@ -80,5 +79,5 @@ public abstract class SCD {
      * @return
      *      could be empty but never be null.
      */
-    public abstract List<XSComponent> select(List<XSComponent> contextNode);
+    public abstract Iterator<XSComponent> select(Iterator<? extends XSComponent> contextNode);
 }

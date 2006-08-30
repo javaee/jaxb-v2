@@ -4,6 +4,7 @@ import com.sun.xml.xsom.SCD;
 import com.sun.xml.xsom.XSComponent;
 
 import java.util.List;
+import java.util.Iterator;
 
 /**
  * Schema component designator.
@@ -20,9 +21,9 @@ public final class SCDImpl extends SCD {
         this.steps = steps;
     }
 
-    public List<XSComponent> select(List<XSComponent> contextNode) {
+    public Iterator<XSComponent> select(Iterator<? extends XSComponent> contextNode) {
         Context context = new Context();
-        context.nodeSet = contextNode;
+        context.nodeSet = (Iterator)contextNode;
 
         for (Step step : steps)
             context.nodeSet = step.evaluate(context);

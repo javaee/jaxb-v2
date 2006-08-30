@@ -5,6 +5,7 @@ import com.sun.xml.xsom.XSAttGroupDecl;
 import com.sun.xml.xsom.XSAttributeDecl;
 import com.sun.xml.xsom.XSAttributeUse;
 import com.sun.xml.xsom.XSComplexType;
+import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XSContentType;
 import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XSFacet;
@@ -17,103 +18,100 @@ import com.sun.xml.xsom.XSSchema;
 import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.XSXPath;
-import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.visitor.XSFunction;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Iterator;
 
 /**
  * @author Kohsuke Kawaguchi
  */
-abstract class AbstractAxisImpl<T extends XSComponent> implements Axis<T>, XSFunction<List<T>> {
-
+abstract class AbstractAxisImpl<T extends XSComponent> implements Axis<T>, XSFunction<Iterator<T>> {
     /**
      * Creates a singleton list.
      */
-    protected final List<T> singleton(T t) {
-        if(t==null)     return empty();
-        else            return Collections.singletonList(t);
+    protected final Iterator<T> singleton(T t) {
+        return new Iterators.Singleton<T>(t);
     }
 
-    public List<T> iterator(XSComponent contextNode) {
+    public Iterator<T> iterator(XSComponent contextNode) {
         return contextNode.apply(this);
     }
 
-    public List<T> annotation(XSAnnotation ann) {
+    public Iterator<T> annotation(XSAnnotation ann) {
         return empty();
     }
 
-    public List<T> attGroupDecl(XSAttGroupDecl decl) {
+    public Iterator<T> attGroupDecl(XSAttGroupDecl decl) {
         return empty();
     }
 
-    public List<T> attributeDecl(XSAttributeDecl decl) {
+    public Iterator<T> attributeDecl(XSAttributeDecl decl) {
         return empty();
     }
 
-    public List<T> attributeUse(XSAttributeUse use) {
+    public Iterator<T> attributeUse(XSAttributeUse use) {
         return empty();
     }
 
-    public List<T> complexType(XSComplexType type) {
+    public Iterator<T> complexType(XSComplexType type) {
         return empty();
     }
 
-    public List<T> schema(XSSchema schema) {
+    public Iterator<T> schema(XSSchema schema) {
         return empty();
     }
 
-    public List<T> facet(XSFacet facet) {
+    public Iterator<T> facet(XSFacet facet) {
         return empty();
     }
 
-    public List<T> notation(XSNotation notation) {
+    public Iterator<T> notation(XSNotation notation) {
         return empty();
     }
 
-    public List<T> identityConstraint(XSIdentityConstraint decl) {
+    public Iterator<T> identityConstraint(XSIdentityConstraint decl) {
         return empty();
     }
 
-    public List<T> xpath(XSXPath xpath) {
+    public Iterator<T> xpath(XSXPath xpath) {
         return empty();
     }
 
-    public List<T> simpleType(XSSimpleType simpleType) {
+    public Iterator<T> simpleType(XSSimpleType simpleType) {
         return empty();
     }
 
-    public List<T> particle(XSParticle particle) {
+    public Iterator<T> particle(XSParticle particle) {
         return empty();
     }
 
-    public List<T> empty(XSContentType empty) {
+    public Iterator<T> empty(XSContentType empty) {
         return empty();
     }
 
-    public List<T> wildcard(XSWildcard wc) {
+    public Iterator<T> wildcard(XSWildcard wc) {
         return empty();
     }
 
-    public List<T> modelGroupDecl(XSModelGroupDecl decl) {
+    public Iterator<T> modelGroupDecl(XSModelGroupDecl decl) {
         return empty();
     }
 
-    public List<T> modelGroup(XSModelGroup group) {
+    public Iterator<T> modelGroup(XSModelGroup group) {
         return empty();
     }
 
-    public List<T> elementDecl(XSElementDecl decl) {
+    public Iterator<T> elementDecl(XSElementDecl decl) {
         return empty();
     }
 
     /**
      * Returns an empty list.
      */
-    protected final List<T> empty() {
+    protected final Iterator<T> empty() {
         // we need to run on JDK 1.4
-        return Collections.EMPTY_LIST;
+        return Collections.EMPTY_LIST.iterator();
     }
 
 }

@@ -2,13 +2,11 @@ package com.sun.xml.xsom.impl.scd;
 
 import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XSDeclaration;
-import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSFacet;
+import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.impl.UName;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Iterator;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -34,24 +32,32 @@ abstract class Step<T extends XSComponent> {
      * Evaluate this step against the current node set
      * and returns matched nodes.
      */
-    public final List<T> evaluate(Context context) {
-        List<T> result = new ArrayList<T>();
-
-        for( XSComponent contextNode : context.nodeSet ) {
-            for( T node : axis.iterator(contextNode) ) {
-                if(match(node) && !result.contains(node))
-                    result.add(node);
+    public final Iterator<T> evaluate(Context context) {
+        // list up the whole thing
+        Iterator<T> r = new Iterators.Map<T,XSComponent>(context.nodeSet) {
+            protected Iterator<T> apply(XSComponent contextNode) {
+                return new Iterators.Filter<T>(axis.iterator(contextNode)) {
+                    protected boolean matches(T value) {
+                        return match(value);
+                    }
+                };
             }
-        }
+        };
+
+        // avoid duplicates
+        r = new Iterators.Unique<T>(r);
 
         if(predicate>=0) {
-            if(predicate>=result.size())
-                result = Collections.EMPTY_LIST;
-            else
-                result = Collections.singletonList(result.get(predicate));
+            T item=null;
+            for( int i=predicate; i>=0; i-- ) {
+                if(!r.hasNext())
+                    return Iterators.empty();
+                item = r.next();
+            }
+            return new Iterators.Singleton<T>(item);
         }
 
-        return result;
+        return r;
     }
 
     /**

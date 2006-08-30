@@ -3,6 +3,7 @@ package com.sun.xml.xsom.impl.scd;
 import com.sun.xml.xsom.XSComponent;
 
 import java.util.List;
+import java.util.Iterator;
 
 /**
  *
@@ -14,5 +15,5 @@ class Context {
     /**
      * Context node set.
      */
-    List<XSComponent> nodeSet;
+    Iterator<XSComponent> nodeSet;
 }
