@@ -58,7 +58,9 @@ final class ExpressionParticleBinder extends ParticleBinder {
                 continue;
             }
             if(e instanceof GWildcardElement) {
-                rtsb.getRefs().add(new RawTypeSetBuilder.WildcardRef(WildcardMode.SKIP));
+                GWildcardElement w = (GWildcardElement)e;
+                rtsb.getRefs().add(new RawTypeSetBuilder.WildcardRef(
+                    w.isStrict() ? WildcardMode.STRICT : WildcardMode.SKIP));
                 continue;
             }
             assert false : e;   // no other kind should be here
