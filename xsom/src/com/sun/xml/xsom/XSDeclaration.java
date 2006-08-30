@@ -35,6 +35,8 @@ public interface XSDeclaration extends XSComponent
 
     /**
      * Gets the (local) name of the declaration.
+     *
+     * @return null if this component is anonymous.
      */
     String getName();
 

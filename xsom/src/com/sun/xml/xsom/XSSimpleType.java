@@ -54,6 +54,37 @@ public interface XSSimpleType extends XSType, XSContentType
     XSVariety getVariety();
 
     /**
+     * Gets the ancestor primitive {@link XSSimpleType} if
+     * this type is {@link XSVariety#ATOMIC atomic}.
+     *
+     * @return
+     *      null otherwise.
+     */
+    XSSimpleType getPrimitiveType();
+
+    /**
+     * Returns true if this is a primitive built-in simple type
+     * (that directly derives from xs:anySimpleType, by definition.)
+     */
+    boolean isPrimitive();
+
+    /**
+     * Gets the nearest ancestor {@link XSListSimpleType} (including itself)
+     * if the variety of this type is {@link XSVariety#LIST list}.
+     *
+     * @return otherwise return null
+     */
+    XSListSimpleType getBaseListType();
+
+    /**
+     * Gets the nearest ancestor {@link XSUnionSimpleType} (including itself)
+     * if the variety of this type is {@link XSVariety#UNION union}.
+     *
+     * @return otherwise return null
+     */
+    XSUnionSimpleType getBaseUnionType();
+
+    /**
      * Returns true if this type definition is marked as 'final'
      * with respect to the given {@link XSVariety}.
      *

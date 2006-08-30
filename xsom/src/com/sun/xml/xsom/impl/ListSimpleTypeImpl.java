@@ -58,6 +58,10 @@ public class ListSimpleTypeImpl extends SimpleTypeImpl implements XSListSimpleTy
 
     public XSVariety getVariety() { return XSVariety.LIST; }
 
+    public XSSimpleType getPrimitiveType() { return null; }
+
+    public XSListSimpleType getBaseListType() {return this;}
+
     public boolean isList() { return true; }
     public XSListSimpleType asList() { return this; }
 }

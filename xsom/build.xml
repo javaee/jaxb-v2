@@ -38,8 +38,25 @@
 			<arg path="src/xmlschema.rng"/>
 		</java>
 	</target>
-	
-	<!-- compile Java source files -->
+
+  <target name="javacc">
+  <!--
+    <mkdir dir="build/antlr" />
+    <antlr target="scd.g" outputdirectory="build/antlr">
+      <classpath>
+        <fileset file="lib/antlr-2.7.6.jar" />
+      </classpath>
+    </antlr>
+  -->
+    <mkdir dir="build/src/com/sun/xml/xsom/impl/scd" />
+    <javacc
+        target="SCD.jj"
+        outputdirectory="build/src/com/sun/xml/xsom/impl/scd"
+        javacchome="./lib"
+    />
+  </target>
+
+  <!-- compile Java source files -->
 	<target name="compile" depends="ngcc"
 		description="compiles all the source code into build/classes">
 		<mkdir dir="build/classes"/>

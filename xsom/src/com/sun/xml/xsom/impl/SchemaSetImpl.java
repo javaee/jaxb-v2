@@ -290,6 +290,10 @@ public class SchemaSetImpl implements XSSchemaSet
         public <T> T apply( XSContentTypeFunction<T> f ) { return f.simpleType(this); }
         public <T> T apply( XSFunction<T> f ) { return f.simpleType(this); }
         public XSVariety getVariety() { return XSVariety.ATOMIC; }
+        public XSSimpleType getPrimitiveType() {return this;}
+        public boolean isPrimitive() {return true;}
+        public XSListSimpleType getBaseListType() {return null;}
+        public XSUnionSimpleType getBaseUnionType() {return null;}
         public XSFacet getFacet(String name) { return null; }
         public XSFacet getDeclaredFacet(String name) { return null; }
         public List<XSFacet> getDeclaredFacets(String name) { return Collections.EMPTY_LIST; }

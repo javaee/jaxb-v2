@@ -72,10 +72,16 @@ public class UnionSimpleTypeImpl extends SimpleTypeImpl implements XSUnionSimple
         return function.unionSimpleType(this);
     }
 
+    public XSUnionSimpleType getBaseUnionType() {
+        return this;
+    }
+
     // union type by itself doesn't have any facet. */
     public XSFacet getFacet( String name ) { return null; }
 
     public XSVariety getVariety() { return XSVariety.LIST; }
+
+    public XSSimpleType getPrimitiveType() { return null; }
 
     public boolean isUnion() { return true; }
     public XSUnionSimpleType asUnion() { return this; }

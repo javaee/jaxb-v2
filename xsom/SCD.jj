@@ -1,0 +1,121 @@
+/**
+ * Grammar for schema component designator
+ */
+options {
+  STATIC=false;
+  ERROR_REPORTING=true;
+  // DEBUG_TOKEN_MANAGER=true;
+}
+
+PARSER_BEGIN(SCDParser)
+package com.sun.xml.xsom.impl.scd;
+
+import java.util.*;
+import com.sun.xml.xsom.impl.UName;
+
+public class SCDParser {
+  private String trim(String s) {
+    return s.substring(1,s.length()-1);
+  }
+}
+
+PARSER_END(SCDParser)
+
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+| "\f"
+}
+
+TOKEN :
+{
+  // TODO: fix NCName
+  < NCNAME: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* > |
+  < NUMBER: "[" (["0"-"9"])+ "]"> |
+  < FACETNAME: "ordered" | "bounded" | "numeric" | "cardinality" | "whiteSpace" | "minInclusive" | "maxInclusive" | "minExclusive" | "maxExclusive" | "totalDigits" | "fractionDigits" | "length" | "minLength" | "maxLength" | "pattern" | "enumeration" >
+} // "[^:]+"
+
+UName QName() : { Token p,l=null; }
+{
+  p=<NCNAME> ( ":" l=<NCNAME> ) ?
+  {
+    if(l==null)
+      return new UName("",p.image);
+    else
+      return new UName(p.image,l.image);
+  }
+}
+
+
+
+List RelativeSchemaComponentPath() :
+{
+  List steps = new ArrayList();
+  Step s;
+}
+{
+  s=Step() {steps.add(s);}  ( ( "/" | "//" ) s=Step() {steps.add(s);} )*
+  { return steps; }
+}
+
+Step Step() :
+{
+  Step s; Token n;
+}
+{(
+  ("attribute::"|"@")   s=NameOrWildcard(Axis.ATTRIBUTE)
+| ("element::")?        s=NameOrWildcard(Axis.ELEMENT) (Predicate(s))?
+| "substitutionGroup::" s=NameOrWildcard(Axis.SUBSTITUTION_GROUP)
+| ("type::"|"~")        s=NameOrWildcardOrAnonymous(Axis.TYPE_DEFINITION)
+| "baseType::"          s=NameOrWildcard(Axis.BASETYPE)
+| "primitiveType::"     s=NameOrWildcard(Axis.PRIMITIVE_TYPE)
+| "itemType::"          s=NameOrWildcardOrAnonymous(Axis.ITEM_TYPE)
+| "memberType::"        s=NameOrWildcardOrAnonymous(Axis.MEMBER_TYPE) (Predicate(s))?
+| "scope::"             s=NameOrWildcardOrAnonymous(Axis.SCOPE)
+| "attributeGroup::"    s=NameOrWildcard(Axis.ATTRIBUTE_GROUP)
+| "group::"             s=NameOrWildcard(Axis.MODEL_GROUP_DECL)
+| "identityContraint::" s=NameOrWildcard(Axis.IDENTITY_CONSTRAINT)
+| "key::"               s=NameOrWildcard(Axis.REFERENCED_KEY)
+| "notation::"          s=NameOrWildcard(Axis.NOTATION)
+// TODO: support "annotation::*"
+| s=ModelGroupStep()
+| "any::*"              s=NameOrWildcard(Axis.WILDCARD) (Predicate(s))?
+| "anyAttribute::*"     s=NameOrWildcard(Axis.WILDCARD)
+| "facet::*"            {s=new Step.Any(Axis.FACET);}
+| "facet::" n=<FACETNAME> {s=new Step.Facet(Axis.FACET,n.image);}
+) {return s;}}
+
+Step NameOrWildcard(Axis a) : {UName un;}
+{
+  un=QName() { return new Step.Named(a,un); }
+| "*"        { return new Step.Any(a); }
+}
+
+Step NameOrWildcardOrAnonymous(Axis a) : {UName un;}
+{
+  un=QName() { return new Step.Named(a,un); }
+| "*"        { return new Step.Any(a); }
+| "0"	       { return new Step.AnonymousType(a); }
+}
+
+
+Step ModelGroupStep() :
+{
+  Step s; Token c;
+}
+{
+  (c="model::sequence"|c="model::choice"|c="model::all"|c="model::*") (Predicate(null))?
+  { return null; }
+}
+
+int Predicate(Step s) :
+{
+  Token t;
+}
+{
+  t=<NUMBER> { return s.predicate=Integer.parseInt(trim(t.image)); }
+}

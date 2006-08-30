@@ -88,6 +88,15 @@ public abstract class SimpleTypeImpl extends DeclarationImpl
 
     public XSType getBaseType() { return baseType.getType(); }
     public XSSimpleType getSimpleBaseType() { return baseType.getType(); }
+    public boolean isPrimitive() { return false; }
+
+    public XSListSimpleType getBaseListType() {
+        return getSimpleBaseType().getBaseListType();
+    }
+
+    public XSUnionSimpleType getBaseUnionType() {
+        return getSimpleBaseType().getBaseUnionType();
+    }
 
     private final Set<XSVariety> finalSet;
 
