@@ -241,11 +241,10 @@ public class XJCMojo extends AbstractMojo
             project.addCompileSourceRoot(generateDirectory.getPath());
         }
 
-        // Configure dependency artifacts to determine generation
+        // Binding dependencies
         FileSet dependencies = new FileSet();
         dependencies.setDir(schemaDirectory);
 
-        // Bindings dependencies
         if (isDefined(bindingsFilenames, 1))
         {
             for (String filename : bindingsFilenames)
@@ -258,17 +257,6 @@ public class XJCMojo extends AbstractMojo
             }
         }
 
-        // Schemas dependencies
-        for (String filename : schemaFilenames)
-        {
-            if (verbose)
-            {
-                getLog().info("Schema dependency: " + filename);
-            }
-            dependencies.addFilename(createFilenameSelector(filename));
-        }
-
-        // Schema directory dependencies (bindinga and schemas)
         xjc2TaskAdapter.addConfiguredDepends(dependencies);
 
         // Pom dependency - typically when configuration settings change.
@@ -304,17 +292,22 @@ public class XJCMojo extends AbstractMojo
             xjc2TaskAdapter.createArg().setLine(args);
         }
 
-        // Run the XJC compiler for each schema
+        // Schemas
         for (String filename : schemaFilenames)
         {
-            xjc2TaskAdapter.setSchema(filename);
-
             if (verbose)
             {
-                getLog().info("XJC compile using schema: " + filename);
+                getLog().info("Schema dependency: " + filename);
             }
-            xjc2TaskAdapter.execute();
+            xjc2TaskAdapter.setSchema(filename);
         }
+
+        // Run the XJC compiler
+        if (verbose)
+        {
+            getLog().info("XJC compile");
+        }
+        xjc2TaskAdapter.execute();
     }
 
     /**

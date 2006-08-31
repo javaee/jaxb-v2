@@ -1,11 +1,11 @@
 package com.sun.tools.xjc.maven2;
 
-import junit.framework.TestCase;
-import org.apache.maven.plugin.MojoExecutionException;
-
 import java.io.File;
 import java.io.FileFilter;
-import java.util.Arrays;
+
+import junit.framework.TestCase;
+
+import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  * Created by IntelliJ IDEA. User: Owner Date: Feb 8, 2006 Time: 12:10:35 AM To
@@ -32,6 +32,7 @@ public class JAXBGenerateTest extends TestCase
 
         generator.schemaDirectory = new File(userDir + "/src/test/resources/");
         generator.includeSchemas = new String[]{"*.xsd"};
+        generator.includeBindings = new String[]{"*.xjb"};
         generator.generateDirectory = new File(userDir + "/target/test/generated");
         generator.verbose = true;
         generator.generatePackage = "unittest";
@@ -44,9 +45,9 @@ public class JAXBGenerateTest extends TestCase
         File[] files = generator.generateDirectory.listFiles();
         assertEquals(files.length, 1);
 
-        // Ensure four po java files are created.
+        // Ensure six po java files are created.
         files = files[0].listFiles();
-        assertEquals(files.length, 4);
+        assertEquals(6, files.length);
     }
 
     /**
