@@ -41,6 +41,7 @@ final class NamespaceContextImpl implements NamespaceContext {
     public String getNamespaceURI(String prefix) {
         Node parent = e;
         String namespace = null;
+        final String prefixColon = prefix + ':';
 
         if (prefix.equals("xml")) {
             namespace = WellKnownNamespace.XML_NAMESPACE_URI;
@@ -51,7 +52,7 @@ final class NamespaceContextImpl implements NamespaceContext {
                     && (((type = parent.getNodeType()) == Node.ELEMENT_NODE)
                     || (type == Node.ENTITY_REFERENCE_NODE))) {
                 if (type == Node.ELEMENT_NODE) {
-                    if (parent.getNodeName().indexOf(prefix + ':') == 0)
+                    if (parent.getNodeName().startsWith(prefixColon))
                         return parent.getNamespaceURI();
                     NamedNodeMap nnm = parent.getAttributes();
 
@@ -77,6 +78,8 @@ final class NamespaceContextImpl implements NamespaceContext {
             }
         }
 
+        if(prefix.equals(""))
+            return "";  // default namespace
         return namespace;
     }
 
