@@ -177,7 +177,7 @@
 	
 	
 	
-	<target name="src-zip" depends="ngcc">
+	<target name="src-zip" depends="compile">
 		<tstamp />
 		<mkdir dir="build" />
 		<zip zipfile="build/xsom-src.zip" compress="true">
@@ -289,4 +289,6 @@
       </classpath>
     </junit>
   </target>
+  
+  <target name="hudson" description="hudson continuous build" depends="jar,src-zip,javadoc"/>
 </project>
