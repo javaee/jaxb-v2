@@ -20,10 +20,16 @@ import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.XSXPath;
 import com.sun.xml.xsom.visitor.XSFunction;
 
-import java.util.Collections;
 import java.util.Iterator;
 
 /**
+ * Partial default implementation of {@link Axis}.
+ *
+ * <p>
+ * {@link XSParticle}s are skipped in SCD, so this class compensates that.
+ * For example, when we are considering a path from {@link XSComplexType},
+ * we need to also consider a path from its content type particle (if any.)
+ *
  * @author Kohsuke Kawaguchi
  */
 abstract class AbstractAxisImpl<T extends XSComponent> implements Axis<T>, XSFunction<Iterator<T>> {
@@ -55,7 +61,12 @@ abstract class AbstractAxisImpl<T extends XSComponent> implements Axis<T>, XSFun
     }
 
     public Iterator<T> complexType(XSComplexType type) {
-        return empty();
+        // compensate particle
+        XSParticle p = type.getContentType().asParticle();
+        if(p!=null)
+            return particle(p);
+        else
+            return empty();
     }
 
     public Iterator<T> schema(XSSchema schema) {
@@ -99,7 +110,12 @@ abstract class AbstractAxisImpl<T extends XSComponent> implements Axis<T>, XSFun
     }
 
     public Iterator<T> modelGroup(XSModelGroup group) {
-        return empty();
+        // compensate for particles that are ignored in SCD
+        return new Iterators.Map<T,XSParticle>(group.iterator()) {
+            protected Iterator<? extends T> apply(XSParticle p) {
+                return particle(p);
+            }
+        };
     }
 
     public Iterator<T> elementDecl(XSElementDecl decl) {

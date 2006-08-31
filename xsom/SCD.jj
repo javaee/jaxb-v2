@@ -87,7 +87,7 @@ Step Step() :
 | "model::all"          {s=new Step.Any(Axis.MODELGROUP_ALL);} (Predicate(s))?
 | "model::*"            {s=new Step.Any(Axis.MODELGROUP_ANY);} (Predicate(s))?
 | "any::*"              s=NameOrWildcard(Axis.WILDCARD) (Predicate(s))?
-| "anyAttribute::*"     s=NameOrWildcard(Axis.WILDCARD)
+| "anyAttribute::*"     s=NameOrWildcard(Axis.ATTRIBUTE_WILDCARD)
 | "facet::*"            {s=new Step.Any(Axis.FACET);}
 | "facet::" n=<FACETNAME> {s=new Step.Facet(Axis.FACET,n.image);}
 ) {return s;}}

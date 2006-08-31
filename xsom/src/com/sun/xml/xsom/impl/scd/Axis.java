@@ -70,12 +70,6 @@ public interface Axis<T extends XSComponent> {
             return singleton(particle.getTerm().asElementDecl());
         }
 
-        public Iterator<XSElementDecl> complexType(XSComplexType type) {
-            XSParticle p = type.getContentType().asParticle();
-            if(p!=null)     return particle(p);
-            else            return empty();
-        }
-
         public Iterator<XSElementDecl> schema(XSSchema schema) {
             return schema.iterateElementDecls();
         }
@@ -184,16 +178,18 @@ public interface Axis<T extends XSComponent> {
     };
 
     public static final Axis<XSWildcard> WILDCARD = new AbstractAxisImpl<XSWildcard>() {
+        public Iterator<XSWildcard> particle(XSParticle particle) {
+            return singleton(particle.getTerm().asWildcard());
+        }
+    };
+
+    public static final Axis<XSWildcard> ATTRIBUTE_WILDCARD = new AbstractAxisImpl<XSWildcard>() {
         public Iterator<XSWildcard> complexType(XSComplexType type) {
             return singleton(type.getAttributeWildcard());
         }
 
         public Iterator<XSWildcard> attGroupDecl(XSAttGroupDecl decl) {
             return singleton(decl.getAttributeWildcard());
-        }
-
-        public Iterator<XSWildcard> particle(XSParticle particle) {
-            return singleton(particle.getTerm().asWildcard());
         }
     };
 
