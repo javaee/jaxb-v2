@@ -354,7 +354,8 @@ public final class UnmarshallingContext extends Coordinator
     }
 
     public void startDocument(LocatorEx locator, NamespaceContext nsContext) throws SAXException {
-        this.locator = locator;
+        if(locator!=null)
+            this.locator = locator;
         this.environmentNamespaceContext = nsContext;
         // reset the object
         result = null;
