@@ -16,7 +16,13 @@ public final class SCDImpl extends SCD {
      */
     private final Step[] steps;
 
-    public SCDImpl(Step[] steps) {
+    /**
+     * The original textual SCD representation.
+     */
+    private final String text;
+
+    public SCDImpl(String text, Step[] steps) {
+        this.text = text;
         this.steps = steps;
     }
 
@@ -45,5 +51,9 @@ public final class SCDImpl extends SCD {
         }
 
         return nodeSet;
+    }
+
+    public String toString() {
+        return text;
     }
 }

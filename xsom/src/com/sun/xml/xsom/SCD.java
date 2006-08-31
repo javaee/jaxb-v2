@@ -49,7 +49,7 @@ public abstract class SCD {
         try {
             SCDParser p = new SCDParser(path,nsContext);
             List<?> list = p.RelativeSchemaComponentPath();
-            return new SCDImpl(list.toArray(new Step[list.size()]));
+            return new SCDImpl(path,list.toArray(new Step[list.size()]));
         } catch (TokenMgrError e) {
             throw setCause(new java.text.ParseException(e.getMessage(), -1 ),e);
         } catch (ParseException e) {
@@ -143,4 +143,9 @@ public abstract class SCD {
     public final Collection<XSComponent> select(Collection<? extends XSComponent> contextNodes) {
         return new DeferedCollection<XSComponent>(select(contextNodes.iterator()));
     }
+
+    /**
+     * Returns the textual SCD representation as given to {@link SCD#create(String, NamespaceContext)}.
+     */
+    public abstract String toString();
 }
