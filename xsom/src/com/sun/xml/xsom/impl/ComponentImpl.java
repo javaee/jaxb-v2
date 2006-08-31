@@ -69,7 +69,7 @@ public abstract class ComponentImpl implements XSComponent
 
     public XSAnnotation getAnnotation(boolean createIfNotExist) {
         if(createIfNotExist && annotation==null) {
-            annotation = new AnnotationImpl(null,NULL_LOCATION);
+            annotation = new AnnotationImpl();
         }
         return annotation;
     }
@@ -134,6 +134,4 @@ public abstract class ComponentImpl implements XSComponent
     public String toString() {
         return apply(new ComponentNameFunction());
     }
-
-    private static final LocatorImpl NULL_LOCATION = new LocatorImpl();
 }

@@ -86,6 +86,12 @@ public class SchemaImpl implements XSSchema
         return annotation;
     }
 
+    public XSAnnotation getAnnotation(boolean createIfNotExist) {
+        if(createIfNotExist && annotation==null)
+            annotation = new AnnotationImpl();
+        return annotation;
+    }
+
     // it's difficult to determine the source location for the schema
     // component as one schema can be defined across multiple files.
     // so this locator might not correctly reflect all the locations
