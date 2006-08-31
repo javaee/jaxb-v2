@@ -257,4 +257,36 @@
       </classpath>
     </javac>
   </target>
+
+  <target name="test" depends="compile">
+    <mkdir dir="build/test-classes"/>
+    <javac
+      srcdir="test"
+      destdir="build/test-classes"
+      debug="on"
+      optimize="on"
+      classpath="lib">
+
+      <classpath>
+        <fileset dir="lib" includes="*.jar"/>
+        <fileset file="build/classes"/>
+      </classpath>
+    </javac>
+
+    <mkdir dir="build/test-reports"/>
+    <junit printsummary="yes" haltonerror="yes" haltonfailure="yes">
+      <formatter type="xml"/>
+      <batchtest todir="build/test-reports">
+        <fileset dir="test">
+          <include name="**/*Test.java"/>
+          <exclude name="**/Abstract*.java"/>
+        </fileset>
+      </batchtest>
+      <classpath>
+        <fileset dir="lib" includes="*.jar"/>
+        <fileset file="build/classes"/>
+        <fileset file="build/test-classes"/>
+      </classpath>
+    </junit>
+  </target>
 </project>
