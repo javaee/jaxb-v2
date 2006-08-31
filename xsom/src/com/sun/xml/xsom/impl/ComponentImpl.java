@@ -19,19 +19,21 @@
  */
 package com.sun.xml.xsom.impl;
 
+import com.sun.xml.xsom.SCD;
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSComponent;
-import com.sun.xml.xsom.SCD;
+import com.sun.xml.xsom.XSSchemaSet;
+import com.sun.xml.xsom.util.ComponentNameFunction;
 import com.sun.xml.xsom.impl.parser.SchemaDocumentImpl;
 import com.sun.xml.xsom.parser.SchemaDocument;
 import org.xml.sax.Locator;
 
 import javax.xml.namespace.NamespaceContext;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Collection;
-import java.text.ParseException;
 
 public abstract class ComponentImpl implements XSComponent
 {
@@ -48,6 +50,13 @@ public abstract class ComponentImpl implements XSComponent
             return null;
         else
             return ownerDocument.getSchema();
+    }
+
+    public XSSchemaSet getRoot() {
+        if(ownerDocument==null)
+            return null;
+        else
+            return getOwnerSchema().getRoot();
     }
 
     public SchemaDocument getSourceDocument() {
@@ -68,7 +77,7 @@ public abstract class ComponentImpl implements XSComponent
      */
     private Object foreignAttributes;
 
-    public List getForeignAttributes() {
+    public List<ForeignAttributesImpl> getForeignAttributes() {
         Object t = foreignAttributes;
 
         if(t==null)
@@ -82,15 +91,15 @@ public abstract class ComponentImpl implements XSComponent
     }
 
     public String getForeignAttribute(String nsUri, String localName) {
-        for( ForeignAttributesImpl fa : (List<ForeignAttributesImpl>)getForeignAttributes() ) {
+        for( ForeignAttributesImpl fa : getForeignAttributes() ) {
             String v = fa.getValue(nsUri,localName);
             if(v!=null) return v;
         }
         return null;
     }
 
-    private List convertToList(ForeignAttributesImpl fa) {
-        List lst = new ArrayList();
+    private List<ForeignAttributesImpl> convertToList(ForeignAttributesImpl fa) {
+        List<ForeignAttributesImpl> lst = new ArrayList<ForeignAttributesImpl>();
         while(fa!=null) {
             lst.add(fa);
             fa = fa.next;
@@ -102,7 +111,7 @@ public abstract class ComponentImpl implements XSComponent
         try {
             return SCD.create(scd,nsContext).select(this);
         } catch (ParseException e) {
-            return Collections.EMPTY_LIST;
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -110,7 +119,11 @@ public abstract class ComponentImpl implements XSComponent
         try {
             return SCD.create(scd,nsContext).selectSingle(this);
         } catch (ParseException e) {
-            return null;
+            throw new IllegalArgumentException(e);
         }
+    }
+
+    public String toString() {
+        return apply(new ComponentNameFunction());
     }
 }

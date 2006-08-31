@@ -225,7 +225,7 @@ public class SchemaSetImpl implements XSSchemaSet
         try {
             return SCD.create(scd,nsContext).select(this);
         } catch (ParseException e) {
-            return Collections.EMPTY_LIST;
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -233,7 +233,7 @@ public class SchemaSetImpl implements XSSchemaSet
         try {
             return SCD.create(scd,nsContext).selectSingle(this);
         } catch (ParseException e) {
-            return null;
+            throw new IllegalArgumentException(e);
         }
     }
 

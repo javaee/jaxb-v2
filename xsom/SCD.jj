@@ -78,6 +78,9 @@ List RelativeSchemaComponentPath() :
   Step s;
 }
 {
+  (// make it absolute
+    "/" {steps.add(new Step.Any(Axis.ROOT));}
+  )?
   s=Step() {steps.add(s);}
   (
     (
@@ -113,8 +116,8 @@ Step Step() :
 | "model::choice"         {s=new Step.Any(Axis.MODELGROUP_CHOICE);} (Predicate(s))?
 | "model::all"            {s=new Step.Any(Axis.MODELGROUP_ALL);} (Predicate(s))?
 | "model::*"              {s=new Step.Any(Axis.MODELGROUP_ANY);} (Predicate(s))?
-| "any::*"                s=NameOrWildcard(Axis.WILDCARD) (Predicate(s))?
-| "anyAttribute::*"       s=NameOrWildcard(Axis.ATTRIBUTE_WILDCARD)
+| "any::*"                {s=new Step.Any(Axis.WILDCARD);} (Predicate(s))?
+| "anyAttribute::*"       {s=new Step.Any(Axis.ATTRIBUTE_WILDCARD);}
 | "facet::*"              {s=new Step.Any(Axis.FACET);}
 | "facet::" n=<FACETNAME> {s=new Step.Facet(Axis.FACET,n.image);}
 | "component::*"          {s=new Step.Any(Axis.DESCENDANTS);} // this is not in BNF but in prose

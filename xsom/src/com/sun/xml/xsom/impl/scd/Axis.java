@@ -43,6 +43,24 @@ public interface Axis<T extends XSComponent> {
     Iterator<T> iterator(Iterator<? extends XSComponent> contextNodes);
 
     /**
+     * Pseudo-axis that selects all the {@link XSSchema}s in the current set.
+     * Used to implement the absolute path expression
+     */
+    public static final Axis<XSSchema> ROOT = new Axis<XSSchema>() {
+        public Iterator<XSSchema> iterator(XSComponent contextNode) {
+            return contextNode.getRoot().iterateSchema();
+        }
+
+        public Iterator<XSSchema> iterator(Iterator<? extends XSComponent> contextNodes) {
+            if(!contextNodes.hasNext())
+                return Iterators.empty();
+            else
+                // this assumes that all current nodes belong to the same owner.
+                return iterator(contextNodes.next());
+        }
+    };
+
+    /**
      * Pseudo-axis that visits all skipped intermediate steps.
      * Those are:
      * <ol>
@@ -253,12 +271,16 @@ public interface Axis<T extends XSComponent> {
 
 
     public static final Axis<XSType> TYPE_DEFINITION = new AbstractAxisImpl<XSType>() {
-        public Iterator<XSType> simpleType(XSSimpleType type) {
-            return singleton(type);
+        public Iterator<XSType> schema(XSSchema schema) {
+            return schema.iterateTypes();
         }
 
-        public Iterator<XSType> complexType(XSComplexType type) {
-            return singleton(type);
+        public Iterator<XSType> attributeDecl(XSAttributeDecl decl) {
+            return singleton(decl.getType());
+        }
+
+        public Iterator<XSType> elementDecl(XSElementDecl decl) {
+            return singleton(decl.getType());
         }
     };
 
@@ -389,6 +411,8 @@ public interface Axis<T extends XSComponent> {
         }
 
         private Iterator<XSModelGroup> filter(XSModelGroup mg) {
+            if(mg==null)
+                return empty();
             if(mg.getCompositor() == compositor || compositor == null)
                 return singleton(mg);
             else

@@ -123,4 +123,11 @@ public interface XSSchema extends XSComponent
      *      there's something wrong with your code.
      */
     SchemaDocument getSourceDocument();
+
+    /**
+     * Gets the root schema set that includes this schema.
+     *
+     * @return never null.
+     */
+    XSSchemaSet getRoot();
 }

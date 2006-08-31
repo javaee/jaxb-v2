@@ -85,6 +85,15 @@ public interface XSComponent
     XSSchema getOwnerSchema();
 
     /**
+     * Gets the root schema set that includes this component.
+     *
+     * <p>
+     * In case of <code>XSEmpty</code> component, this method
+     * returns null since there is no owner component.
+     */
+    XSSchemaSet getRoot();
+
+    /**
      * Gets the {@link SchemaDocument} that indicates which document this component
      * was defined in.
      *
@@ -101,9 +110,8 @@ public interface XSComponent
      * Evaluates a schema component designator against this schema component
      * and returns the resulting schema components.
      *
-     * <p>
-     * This method returns empty collection if SCD is syntactically incorrect.
-     * To detect errors, use {@link SCD#create(String, NamespaceContext)}.
+     * @throws IllegalArgumentException
+     *      if SCD is syntactically incorrect.
      *
      * @param scd
      *      Schema component designator. See {@link SCD} for more details.
@@ -118,9 +126,8 @@ public interface XSComponent
      * Evaluates a schema component designator against this schema component
      * and returns the first resulting schema component.
      *
-     * <p>
-     * This method returns null if SCD is syntactically incorrect.
-     * To detect errors, use {@link SCD#create(String, NamespaceContext)}.
+     * @throws IllegalArgumentException
+     *      if SCD is syntactically incorrect.
      *
      * @param scd
      *      Schema component designator. See {@link SCD} for more details.

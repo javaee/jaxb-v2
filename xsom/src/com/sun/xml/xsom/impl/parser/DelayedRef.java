@@ -45,8 +45,8 @@ import org.xml.sax.SAXException;
 public abstract class DelayedRef implements Patch {
     DelayedRef( PatcherManager _manager, Locator _source,
         SchemaImpl _schema, UName _name ) {
-        
-        this.schema = _schema.getParent();
+
+        this.schema = _schema.getRoot();
         this.manager = _manager;
         this.name = _name;
         this.source = _source;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * {@link Collection} that returns the view of objects which are actually fetched
@@ -69,6 +70,8 @@ public class DeferedCollection<T> implements Collection<T> {
             public T next() {
                 if(idx==archive.size())
                     fetch();
+                if(idx==archive.size())
+                    throw new NoSuchElementException();
                 return archive.get(idx++);
             }
 

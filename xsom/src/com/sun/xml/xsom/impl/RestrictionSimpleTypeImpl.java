@@ -33,7 +33,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
 
 public class RestrictionSimpleTypeImpl extends SimpleTypeImpl implements XSRestrictionSimpleType {
 
@@ -92,7 +91,7 @@ public class RestrictionSimpleTypeImpl extends SimpleTypeImpl implements XSRestr
     }
 
     public boolean isPrimitive() {
-        return getSimpleBaseType()==getOwnerSchema().getParent().anySimpleType;
+        return getSimpleBaseType()==getOwnerSchema().getRoot().anySimpleType;
     }
 
     public void visit( XSSimpleTypeVisitor visitor ) {

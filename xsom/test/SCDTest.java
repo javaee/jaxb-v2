@@ -1,53 +1,31 @@
-import com.sun.xml.xsom.SCD;
-import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XSSchemaSet;
-import com.sun.xml.xsom.parser.XSOMParser;
-import com.sun.xml.xsom.util.ComponentNameFunction;
-import org.xml.sax.Locator;
+import com.sun.xml.xsom.XSComponent;
 
-import javax.xml.namespace.NamespaceContext;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.Collection;
 
 /**
- * Tests SCD.
  * @author Kohsuke Kawaguchi
  */
-public class SCDTest {
-    public static void main(String[] args) throws Exception {
-        XSOMParser p = new XSOMParser();
+public class SCDTest extends AbstractXSOMTest {
+    /**
+     * Taken from spec examples in section 4.2.16
+     */
+    public void testSpec() throws Exception {
+        XSSchemaSet s = load("scdtest.xsd");
 
-        for( int i=1; i<args.length; i++ )
-            p.parse(args[i]);
+        MapNamespaceContext nsc = new MapNamespaceContext("", "", "my", "tns");
 
-        XSSchemaSet r = p.getResult();
-        SCD scd = SCD.create(args[0], new DummyNSContext());
-        Collection<XSComponent> result = scd.select(r);
-        for( XSComponent c : result) {
-            System.out.println(c.apply(new ComponentNameFunction()));
-            print(c.getLocator());
-            System.out.println();
-        }
-        System.out.printf("%1d match(s)\n",result.size());
+        assertOne("articleType complex type",s.select("type::my:articleType",nsc));
+        assertOne("articleType complex type",s.select("/type::my:articleType",nsc));
+        assertOne("section element declaration", s.select("/type::my:articleType/model::sequence/element::my:section",nsc));
+        assertOne("appendix element declaration",s.select("/type::my:articleType/model::sequence/element::my:appendix",nsc));
+        assertOne("anonymous complex type",s.select("/element::my:chapter/type::0",nsc));
+        assertOne("wildcard",s.select("/element::my:chapter/type::0/model::sequence/any::*",nsc));
+        assertOne("name attribute declaration",s.select("/element::my:chapter/type::0/attribute::name",nsc));
     }
 
-    private static void print(Locator locator) {
-        System.out.printf("line %1d of %2s\n", locator.getLineNumber(), locator.getSystemId());
-
-    }
-
-    private static class DummyNSContext implements NamespaceContext {
-        public String getNamespaceURI(String prefix) {
-            return prefix;
-        }
-
-        public String getPrefix(String namespaceURI) {
-            return namespaceURI;
-        }
-
-        public Iterator getPrefixes(String namespaceURI) {
-            return Collections.singletonList(namespaceURI).iterator();
-        }
+    private void assertOne(String name, Collection<XSComponent> r) {
+        assertEquals(1,r.size());
+        assertEquals(name,r.iterator().next().toString());
     }
 }

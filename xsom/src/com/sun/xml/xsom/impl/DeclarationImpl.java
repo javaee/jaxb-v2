@@ -48,9 +48,4 @@ abstract class DeclarationImpl extends ComponentImpl implements XSDeclaration
     
     public final boolean isGlobal() { return !isAnonymous(); }
     public final boolean isLocal() { return isAnonymous(); }
-    
-    
-    public String toString() {
-        return NameGetter.get(this)+" "+getName();
-    }
 }

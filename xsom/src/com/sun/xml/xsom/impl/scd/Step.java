@@ -32,18 +32,25 @@ public abstract class Step<T extends XSComponent> {
     }
 
     /**
+     * Perform filtering (which is different depending on the kind of step.)
+     */
+    protected abstract Iterator<? extends T> filter( Iterator<? extends T> base );
+/*
+                return new Iterators.Filter<T>() {
+                    protected boolean matches(T value) {
+                        return match(value);
+                    }
+                };
+*/
+    /**
      * Evaluate this step against the current node set
      * and returns matched nodes.
      */
     public final Iterator<T> evaluate(Context context) {
         // list up the whole thing
         Iterator<T> r = new Iterators.Map<T,XSComponent>(context.nodeSet) {
-            protected Iterator<T> apply(XSComponent contextNode) {
-                return new Iterators.Filter<T>(axis.iterator(contextNode)) {
-                    protected boolean matches(T value) {
-                        return match(value);
-                    }
-                };
+            protected Iterator<? extends T> apply(XSComponent contextNode) {
+                return filter(axis.iterator(contextNode));
             }
         };
 
@@ -64,12 +71,6 @@ public abstract class Step<T extends XSComponent> {
     }
 
     /**
-     * Returns true if the node matches this step.
-     */
-    protected abstract boolean match(T node);
-
-
-    /**
      * Matches any name.
      */
     static final class Any extends Step<XSComponent> {
@@ -77,15 +78,32 @@ public abstract class Step<T extends XSComponent> {
             super(axis);
         }
 
-        protected boolean match(XSComponent node) {
-            return true;
+        // no filtering.
+        protected Iterator<? extends XSComponent> filter(Iterator<? extends XSComponent> base) {
+            return base;
         }
+    }
+
+    private static abstract class Filtered<T extends XSComponent> extends Step<T> {
+        protected Filtered(Axis<? extends T> axis) {
+            super(axis);
+        }
+
+        protected Iterator<T> filter(Iterator<? extends T> base) {
+            return new Iterators.Filter<T>(base) {
+                protected boolean matches(T d) {
+                    return match(d);
+                }
+            };
+        }
+
+        protected abstract boolean match(T d);
     }
 
     /**
      * Matches a particular name.
      */
-    static final class Named extends Step<XSDeclaration> {
+    static final class Named extends Filtered<XSDeclaration> {
         private final String nsUri;
         private final String localName;
 
@@ -107,7 +125,7 @@ public abstract class Step<T extends XSComponent> {
     /**
      * Matches anonymous types.
      */
-    static final class AnonymousType extends Step<XSType> {
+    static final class AnonymousType extends Filtered<XSType> {
         public AnonymousType(Axis<? extends XSType> axis) {
             super(axis);
         }
@@ -120,7 +138,7 @@ public abstract class Step<T extends XSComponent> {
     /**
      * Matches a particular kind of facets.
      */
-    static final class Facet extends Step<XSFacet> {
+    static final class Facet extends Filtered<XSFacet> {
         private final String name;
         public Facet(Axis<? extends XSFacet> axis, String facetName) {
             super(axis);
