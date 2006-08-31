@@ -25,8 +25,10 @@ public final class SCDImpl extends SCD {
 
         int len = steps.length;
         for( int i=0; i<len; i++ ) {
-            if(i!=0 && i!=len-1) {
+            if(i!=0 && i!=len-1 && !steps[i-1].axis.isModelGroup() && steps[i].axis.isModelGroup()) {
                 // expand the current nodeset by adding abbreviatable complex type and model groups.
+                // note that such expansion is not allowed to occure in in between model group axes.
+
                 // TODO: this step is not needed if the next step is known not to react to
                 // complex type nor model groups, such as, say Axis.FACET
                 nodeSet = new Iterators.Unique<XSComponent>(

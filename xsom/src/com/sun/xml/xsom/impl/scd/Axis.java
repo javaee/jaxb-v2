@@ -42,6 +42,12 @@ public interface Axis<T extends XSComponent> {
     Iterator<T> iterator(Iterator<? extends XSComponent> contextNodes);
 
     /**
+     * Returns true if this is one of the model group axis.
+     */
+    boolean isModelGroup();
+
+
+    /**
      * Pseudo-axis that selects all the {@link XSSchema}s in the current set.
      * Used to implement the absolute path expression
      */
@@ -56,6 +62,10 @@ public interface Axis<T extends XSComponent> {
             else
                 // this assumes that all current nodes belong to the same owner.
                 return iterator(contextNodes.next());
+        }
+
+        public boolean isModelGroup() {
+            return false;
         }
 
         public String toString() {
@@ -129,6 +139,10 @@ public interface Axis<T extends XSComponent> {
         }
         public Iterator<XSComponent> iterator(Iterator<? extends XSComponent> contextNodes) {
             return new Visitor().iterator(contextNodes);
+        }
+
+        public boolean isModelGroup() {
+            return false;
         }
 
         /**
@@ -484,6 +498,11 @@ public interface Axis<T extends XSComponent> {
 
         ModelGroupAxis(Compositor compositor) {
             this.compositor = compositor;
+        }
+
+        @Override
+        public boolean isModelGroup() {
+            return true;
         }
 
         public Iterator<XSModelGroup> particle(XSParticle particle) {

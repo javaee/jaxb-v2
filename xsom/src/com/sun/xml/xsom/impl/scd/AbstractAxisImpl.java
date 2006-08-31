@@ -70,6 +70,10 @@ abstract class AbstractAxisImpl<T extends XSComponent> implements Axis<T>, XSFun
         };
     }
 
+    public boolean isModelGroup() {
+        return false;
+    }
+
     public Iterator<T> annotation(XSAnnotation ann) {
         return empty();
     }
