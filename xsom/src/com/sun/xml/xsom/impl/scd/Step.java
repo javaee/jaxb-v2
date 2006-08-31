@@ -46,9 +46,9 @@ public abstract class Step<T extends XSComponent> {
      * Evaluate this step against the current node set
      * and returns matched nodes.
      */
-    public final Iterator<T> evaluate(Context context) {
+    public final Iterator<T> evaluate(Iterator<XSComponent> nodeSet) {
         // list up the whole thing
-        Iterator<T> r = new Iterators.Map<T,XSComponent>(context.nodeSet) {
+        Iterator<T> r = new Iterators.Map<T,XSComponent>(nodeSet) {
             protected Iterator<? extends T> apply(XSComponent contextNode) {
                 return filter(axis.iterator(contextNode));
             }

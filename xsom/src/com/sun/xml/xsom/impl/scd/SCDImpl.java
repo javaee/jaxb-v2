@@ -21,8 +21,7 @@ public final class SCDImpl extends SCD {
     }
 
     public Iterator<XSComponent> select(Iterator<? extends XSComponent> contextNode) {
-        Context context = new Context();
-        context.nodeSet = (Iterator)contextNode;
+        Iterator<XSComponent> nodeSet = (Iterator)contextNode;
 
         int len = steps.length;
         for( int i=0; i<len; i++ ) {
@@ -30,8 +29,8 @@ public final class SCDImpl extends SCD {
                 // expand the current nodeset by adding abbreviatable complex type and model groups.
                 // TODO: this step is not needed if the next step is known not to react to
                 // complex type nor model groups, such as, say Axis.FACET
-                context.nodeSet = new Iterators.Unique<XSComponent>(
-                    new Iterators.Map<XSComponent,XSComponent>(context.nodeSet) {
+                nodeSet = new Iterators.Unique<XSComponent>(
+                    new Iterators.Map<XSComponent,XSComponent>(nodeSet) {
                         protected Iterator<XSComponent> apply(XSComponent u) {
                             return new Iterators.Union<XSComponent>(
                                 Iterators.singleton(u),
@@ -40,9 +39,9 @@ public final class SCDImpl extends SCD {
                     }
                 );
             }
-            context.nodeSet = steps[i].evaluate(context);
+            nodeSet = steps[i].evaluate(nodeSet);
         }
 
-        return context.nodeSet;
+        return nodeSet;
     }
 }
