@@ -49,7 +49,7 @@ import org.xml.sax.helpers.NamespaceSupport;
  * classes like this.
  *
  * @author <ul><li>Kohsuke Kawaguchi, Sun Microsystems, Inc.</li></ul>
- * @version $Revision: 1.6 $ $Date: 2006-04-24 15:27:52 $
+ * @version $Revision: 1.6.4.1 $ $Date: 2006-08-31 23:19:22 $
  * @since JAXB1.0
  */
 public class DOMScanner implements LocatorEx,InfosetScanner/*<Node> --- but can't do this to protect 1.0 clients, or can I? */
@@ -92,10 +92,10 @@ public class DOMScanner implements LocatorEx,InfosetScanner/*<Node> --- but can'
     
     public void scan( Element e) throws SAXException {
         setCurrentLocation( e );
-        receiver.startDocument();
-        
+
         receiver.setDocumentLocator(locator);
-        
+        receiver.startDocument();
+
         NamespaceSupport nss = new NamespaceSupport();
         buildNamespaceSupport( nss, e.getParentNode() );
         
