@@ -15,6 +15,7 @@ import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIDeclaration;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BindInfo;
 import com.sun.tools.xjc.util.ForkContentHandler;
+import com.sun.tools.xjc.util.DOMUtils;
 import com.sun.xml.xsom.SCD;
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSComponent;
@@ -120,23 +121,30 @@ public final class SCDBasedBindingSet {
 
                     // apply bindings to the target
                     for (Element binding : bindings) {
-                        try {
-                            new DOMForestScanner(forest).scan(binding,loader);
-                            BIDeclaration decl = (BIDeclaration)unmarshaller.getResult();
+                        for (Element item : DOMUtils.getChildElements(binding)) {
+                            String localName = item.getLocalName();
 
-                            // add this binding to the target
-                            XSAnnotation ann = target.getAnnotation(true);
-                            BindInfo bi = (BindInfo)ann.getAnnotation();
-                            if(bi==null) {
-                                bi = new BindInfo();
-                                ann.setAnnotation(bi);
+                            if ("bindings".equals(localName))
+                                continue;   // this should be already in Target.bindings of some Target.
+
+                            try {
+                                new DOMForestScanner(forest).scan(item,loader);
+                                BIDeclaration decl = (BIDeclaration)unmarshaller.getResult();
+
+                                // add this binding to the target
+                                XSAnnotation ann = target.getAnnotation(true);
+                                BindInfo bi = (BindInfo)ann.getAnnotation();
+                                if(bi==null) {
+                                    bi = new BindInfo();
+                                    ann.setAnnotation(bi);
+                                }
+                                bi.addDecl(decl);
+                            } catch (SAXException e) {
+                                // the error should have already been reported.
+                            } catch (JAXBException e) {
+                                // if validation didn't fail, then unmarshalling can't go wrong
+                                throw new AssertionError(e);
                             }
-                            bi.addDecl(decl);
-                        } catch (SAXException e) {
-                            // the error should have already been reported.
-                        } catch (JAXBException e) {
-                            // if validation didn't fail, then unmarshalling can't go wrong
-                            throw new AssertionError(e);
                         }
                     }
                 }
