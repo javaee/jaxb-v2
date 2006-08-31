@@ -423,9 +423,13 @@ public final class DOMForest {
      * 
      * This method should be called only once, only after all the
      * schemas are parsed.
+     *
+     * @return
+     *      the returned bindings need to be applied after schema
+     *      components are built.
      */
-    public void transform() {
-        Internalizer.transform(this);
+    public SCDBasedBindingSet transform(boolean enableSCD) {
+        return Internalizer.transform(this,enableSCD);
     }
 
     /**

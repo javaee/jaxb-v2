@@ -31,6 +31,7 @@ import com.sun.tools.xjc.reader.internalizer.DOMForest;
 import com.sun.tools.xjc.reader.internalizer.DOMForestScanner;
 import com.sun.tools.xjc.reader.internalizer.InternalizationLogic;
 import com.sun.tools.xjc.reader.internalizer.VersionChecker;
+import com.sun.tools.xjc.reader.internalizer.SCDBasedBindingSet;
 import com.sun.tools.xjc.reader.relaxng.RELAXNGCompiler;
 import com.sun.tools.xjc.reader.relaxng.RELAXNGInternalizationLogic;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
@@ -83,6 +84,11 @@ public final class ModelLoader {
     private final Options opt;
     private final ErrorReceiverFilter errorReceiver;
     private final JCodeModel codeModel;
+    /**
+     * {@link DOMForest#transform(boolean)} creates this on the side.
+     */
+    private SCDBasedBindingSet scdBasedBindingSet;
+
     
     /**
      * A convenience method to load schemas into a {@link Model}.
@@ -317,8 +323,8 @@ public final class ModelLoader {
                         -1, -1));
         }
 
-        forest.transform();
-        
+        scdBasedBindingSet = forest.transform(opt.isExtensionMode());
+
         return forest;
     }
 
@@ -350,7 +356,7 @@ public final class ModelLoader {
         // the default slower way is to parse everything into DOM first.
         // so that we can take external annotations into account.
         DOMForest forest = buildDOMForest( new XMLSchemaInternalizationLogic() );
-        return createXSOM(forest);
+        return createXSOM(forest, scdBasedBindingSet);
     }
     
     /**
@@ -479,7 +485,7 @@ public final class ModelLoader {
     /**
      * Parses a {@link DOMForest} into a {@link XSSchemaSet}.
      */
-    public XSSchemaSet createXSOM(DOMForest forest) throws SAXException {
+    public XSSchemaSet createXSOM(DOMForest forest, SCDBasedBindingSet scdBasedBindingSet) throws SAXException {
         // set up other parameters to XSOMParser
         XSOMParser reader = createXSOMParser(forest);
 
@@ -490,8 +496,12 @@ public final class ModelLoader {
             if (!dom.getDocumentElement().getNamespaceURI().equals(Const.JAXB_NSURI))
                 reader.parse(systemId);
         }
-        
-        return reader.getResult();
+
+        XSSchemaSet result = reader.getResult();
+
+        scdBasedBindingSet.apply(result,errorReceiver);
+
+        return result;
     }
     
     /**

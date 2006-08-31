@@ -26,12 +26,15 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Collections;
 
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
@@ -43,9 +46,12 @@ import com.sun.tools.xjc.model.CPluginCustomization;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
+import com.sun.tools.xjc.SchemaCache;
 import com.sun.xml.bind.annotation.XmlLocation;
 import com.sun.xml.bind.marshaller.MinimumEscapeHandler;
 import com.sun.xml.bind.v2.WellKnownNamespace;
+import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
+import com.sun.xml.bind.api.TypeReference;
 import com.sun.xml.xsom.XSComponent;
 
 import org.w3c.dom.Element;
@@ -298,5 +304,39 @@ public final class BindInfo implements Iterable<BIDeclaration> {
     /** An instance with the empty contents. */
     public final static BindInfo empty = new BindInfo();
 
+    /**
+     * Lazily prepared {@link JAXBContext}.
+     */
+    private static JAXBContextImpl customizationContext;
+
+    public static JAXBContextImpl getJAXBContext() {
+        synchronized(AnnotationParserFactoryImpl.class) {
+            try {
+                if(customizationContext==null)
+                    customizationContext = new JAXBContextImpl(
+                        new Class[] {
+                            BindInfo.class, // for xs:annotation
+                            BIClass.class,
+                            BIConversion.User.class,
+                            BIConversion.UserAdapter.class,
+                            BIDom.class,
+                            BIXDom.class,
+                            BIEnum.class,
+                            BIEnumMember.class,
+                            BIGlobalBinding.class,
+                            BIProperty.class,
+                            BISchemaBinding.class
+                        }, Collections.<TypeReference>emptyList(), null, false);
+                return customizationContext;
+            } catch (JAXBException e) {
+                throw new AssertionError(e);
+            }
+        }
+    }
+
+    /**
+     * Lazily parsed schema for the binding file.
+     */
+    public static final SchemaCache bindingFileSchema = new SchemaCache(BindInfo.class.getResource("binding.xsd"));
 }
 

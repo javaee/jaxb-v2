@@ -74,7 +74,7 @@ public class BGMBuilder extends BindingComponent {
             Ring.add(CodeModelClassFactory.class,new CodeModelClassFactory(ef));
 
             BGMBuilder builder = new BGMBuilder(opts.defaultPackage,opts.defaultPackage2,
-                opts.compatibilityMode==Options.EXTENSION,opts.getFieldRendererFactory());
+                opts.isExtensionMode(),opts.getFieldRendererFactory());
             builder._build();
 
             if(ef.hadError())   return null;

@@ -46,6 +46,18 @@ class Messages
         "Internalizer.XPathEvaluatesToNonElement";
     static final String XPATH_EVAL_TO_NON_SCHEMA_ELEMENT = // arg:2
         "Internalizer.XPathEvaluatesToNonSchemaElement";
+    static final String SCD_NOT_ENABLED = // arg:0
+        "SCD_NOT_ENABLED";
+    static final String ERR_SCD_EVAL = // arg: 1
+        "ERR_SCD_EVAL";
+    static final String ERR_SCD_EVALUATED_EMPTY = // arg:1
+        "ERR_SCD_EVALUATED_EMPTY";
+    static final String ERR_SCD_MATCHED_MULTIPLE_NODES = // arg:2
+        "ERR_SCD_MATCHED_MULTIPLE_NODES";
+    static final String ERR_SCD_MATCHED_MULTIPLE_NODES_FIRST = // arg:1
+        "ERR_SCD_MATCHED_MULTIPLE_NODES_FIRST";
+    static final String ERR_SCD_MATCHED_MULTIPLE_NODES_SECOND = // arg:1
+        "ERR_SCD_MATCHED_MULTIPLE_NODES_SECOND";
     static final String CONTEXT_NODE_IS_NOT_ELEMENT = // arg:0
         "Internalizer.ContextNodeIsNotElement";
     static final String ERR_INCORRECT_VERSION = // arg:0

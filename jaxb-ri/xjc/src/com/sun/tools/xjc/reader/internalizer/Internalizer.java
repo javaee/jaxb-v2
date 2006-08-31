@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.text.ParseException;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -32,10 +33,13 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import com.sun.istack.SAXParseException2;
+import com.sun.istack.NotNull;
+import com.sun.istack.Nullable;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.util.DOMUtils;
 import com.sun.xml.bind.v2.util.EditDistance;
+import com.sun.xml.xsom.SCD;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -49,8 +53,9 @@ import org.xml.sax.SAXParseException;
 
 /**
  * Internalizes external binding declarations.
+ *
  * <p>
- * The static "transform" method is the entry point.
+ * The {@link #transform(DOMForest,boolean)} method is the entry point.
  * 
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
@@ -63,15 +68,23 @@ class Internalizer {
 
     /**
      * Internalize all &lt;jaxb:bindings> customizations in the given forest.
+     *
+     * @return
+     *      if the SCD support is enabled, the return bindings need to be applied
+     *      after schema components are parsed.
+     *      If disabled, the returned binding set will be empty.
+     *      SCDs are only for XML Schema, and doesn't make any sense for other
+     *      schema languages.
      */
-    static void transform( DOMForest forest ) {
-        new Internalizer( forest ).transform();
+    static SCDBasedBindingSet transform( DOMForest forest, boolean enableSCD ) {
+        return new Internalizer( forest, enableSCD ).transform();
     }
 
     
-    private Internalizer( DOMForest forest ) {
+    private Internalizer( DOMForest forest, boolean enableSCD ) {
         this.errorHandler = forest.getErrorHandler();
         this.forest = forest;
+        this.enableSCD = enableSCD;
     }
     
     /**
@@ -83,19 +96,26 @@ class Internalizer {
      * All errors found during the transformation is sent to this object.
      */
     private ErrorReceiver errorHandler;
+
+    /**
+     * If true, the SCD-based target selection is supported.
+     */
+    private boolean enableSCD;
     
     
-    
-    private void transform() {
-        
+    private SCDBasedBindingSet transform() {
+
+        // either target nodes are conventional DOM nodes (as per spec),
         Map<Element,Node> targetNodes = new HashMap<Element,Node>();
+        // ... or it will be schema components by means of SCD (RI extension)
+        SCDBasedBindingSet scd = new SCDBasedBindingSet(forest);
         
         //
         // identify target nodes for all <jaxb:bindings>
         //
         for (Element jaxbBindings : forest.outerMostBindings) {
             // initially, the inherited context is itself
-            buildTargetNodeMap(jaxbBindings, jaxbBindings, targetNodes);
+            buildTargetNodeMap(jaxbBindings, jaxbBindings, null, targetNodes, scd);
         }
         
         //
@@ -104,6 +124,8 @@ class Internalizer {
         for (Element jaxbBindings : forest.outerMostBindings) {
             move(jaxbBindings, targetNodes);
         }
+
+        return scd;
     }
     
     /**
@@ -119,7 +141,9 @@ class Internalizer {
                 continue;
             if( a.getLocalName().equals("schemaLocation"))
                 continue;
-            
+            if( a.getLocalName().equals("scd") )
+                continue;
+
             // TODO: flag error for this undefined attribute
         }
     }
@@ -127,9 +151,19 @@ class Internalizer {
     /**
      * Determines the target node of the "bindings" element
      * by using the inherited target node, then put
-     * the result into the "result" map.
+     * the result into the "result" map and the "scd" map.
+     *
+     * @param inheritedTarget
+     *      The current target node. This always exists, even if
+     *      the user starts specifying targets via SCD (in that case
+     *      this inherited target is just not going to be used.)
+     * @param inheritedSCD
+     *      If the ancestor &lt;bindings> node specifies @scd to
+     *      specify the target via SCD, then this parameter represents that context.
      */
-    private void buildTargetNodeMap( Element bindings, Node inheritedTarget, Map<Element,Node> result ) {
+    private void buildTargetNodeMap( Element bindings, @NotNull Node inheritedTarget,
+                                     @Nullable SCDBasedBindingSet.Target inheritedSCD,
+                                     Map<Element,Node> result, SCDBasedBindingSet scdResult ) {
         // start by the inherited target
         Node target = inheritedTarget;
         
@@ -172,51 +206,69 @@ class Internalizer {
                 nlst = (NodeList)xpath.evaluate(nodeXPath,target,XPathConstants.NODESET);
             } catch (XPathExpressionException e) {
                 reportError( bindings,
-                    Messages.format(Messages.ERR_XPATH_EVAL,e.getMessage()),
-                    e );
+                    Messages.format(Messages.ERR_XPATH_EVAL,e.getMessage()), e );
                 return; // abort processing this <jaxb:bindings>
             }
             
             if( nlst.getLength()==0 ) {
                 reportError( bindings,
-                    Messages.format(Messages.NO_XPATH_EVAL_TO_NO_TARGET,
-                        nodeXPath) );
+                    Messages.format(Messages.NO_XPATH_EVAL_TO_NO_TARGET, nodeXPath) );
                 return; // abort
             }
             
             if( nlst.getLength()!=1 ) {
                 reportError( bindings,
-                    Messages.format(Messages.NO_XPATH_EVAL_TOO_MANY_TARGETS,
-                        nodeXPath,nlst.getLength()) );
+                    Messages.format(Messages.NO_XPATH_EVAL_TOO_MANY_TARGETS, nodeXPath,nlst.getLength()) );
                 return; // abort
             }
             
             Node rnode = nlst.item(0);
             if(!(rnode instanceof Element )) {
                 reportError( bindings,
-                    Messages.format(Messages.NO_XPATH_EVAL_TO_NON_ELEMENT,
-                        nodeXPath) );
+                    Messages.format(Messages.NO_XPATH_EVAL_TO_NON_ELEMENT, nodeXPath) );
                 return; // abort
             }
             
             if( !forest.logic.checkIfValidTargetNode(forest,bindings,(Element)rnode) ) {
                 reportError( bindings,
                     Messages.format(Messages.XPATH_EVAL_TO_NON_SCHEMA_ELEMENT,
-                        nodeXPath,
-                        rnode.getNodeName() ) );
+                        nodeXPath, rnode.getNodeName() ) );
                 return; // abort
             }
             
             target = rnode;
         }
 
+        // look for @scd
+        if( bindings.getAttributeNode("scd")!=null ) {
+            String scdPath = bindings.getAttribute("scd");
+            if(!enableSCD) {
+                // SCD selector was found, but it's not activated. report an error
+                // but recover by handling it anyway. this also avoids repeated error messages.
+                reportError(bindings,
+                    Messages.format(Messages.SCD_NOT_ENABLED));
+                enableSCD = true;
+            }
+
+            try {
+                inheritedSCD = scdResult.createNewTarget( inheritedSCD, bindings,
+                        SCD.create(scdPath, new NamespaceContextImpl(bindings)) );
+            } catch (ParseException e) {
+                reportError( bindings, Messages.format(Messages.ERR_SCD_EVAL,e.getMessage()),e );
+                return; // abort processing this bindings
+            }
+        }
+
         // update the result map
-        result.put( bindings, target );
+        if(inheritedSCD!=null)
+            inheritedSCD.addBinidng(bindings);
+        else
+            result.put( bindings, target );
         
         // look for child <jaxb:bindings> and process them recursively
         Element[] children = DOMUtils.getChildElements( bindings, Const.JAXB_NSURI, "bindings" );
         for (Element value : children)
-            buildTargetNodeMap(value, target, result);
+            buildTargetNodeMap(value, target, inheritedSCD, result, scdResult);
     }
     
     /**

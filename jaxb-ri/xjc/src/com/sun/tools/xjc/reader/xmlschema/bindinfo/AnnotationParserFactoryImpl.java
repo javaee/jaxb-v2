@@ -19,9 +19,6 @@
  */
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
-import java.util.Collections;
-
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.UnmarshallerHandler;
@@ -31,8 +28,6 @@ import javax.xml.validation.ValidatorHandler;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.SchemaCache;
 import com.sun.tools.xjc.reader.Const;
-import com.sun.xml.bind.api.TypeReference;
-import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.xsom.parser.AnnotationContext;
 import com.sun.xml.xsom.parser.AnnotationParser;
 import com.sun.xml.xsom.parser.AnnotationParserFactory;
@@ -63,44 +58,9 @@ public class AnnotationParserFactoryImpl implements AnnotationParserFactory {
      */
     private ValidatorHandler validator;
 
-    /**
-     * Lazily parsed schema for the binding file.
-     */
-    private static final SchemaCache bindingFileSchema = new SchemaCache(AnnotationParserFactoryImpl.class.getResource("binding.xsd"));
-
-    /**
-     * Lazily prepared {@link JAXBContext}.
-     */
-    private static JAXBContextImpl customizationContext;
-
-    private static JAXBContextImpl getJAXBContext() {
-        synchronized(AnnotationParserFactoryImpl.class) {
-            try {
-                if(customizationContext==null)
-                    customizationContext = new JAXBContextImpl(
-                        new Class[] {
-                            BindInfo.class, // for xs:annotation
-                            BIClass.class,
-                            BIConversion.User.class,
-                            BIConversion.UserAdapter.class,
-                            BIDom.class,
-                            BIXDom.class,
-                            BIEnum.class,
-                            BIEnumMember.class,
-                            BIGlobalBinding.class,
-                            BIProperty.class,
-                            BISchemaBinding.class
-                        }, Collections.<TypeReference>emptyList(), null, false);
-                return customizationContext;
-            } catch (JAXBException e) {
-                throw new AssertionError(e);
-            }
-        }
-    }
-
     public AnnotationParser create() {
         return new AnnotationParser() {
-            private Unmarshaller u = getJAXBContext().createUnmarshaller();
+            private Unmarshaller u = BindInfo.getJAXBContext().createUnmarshaller();
 
             private UnmarshallerHandler handler;
 
@@ -133,7 +93,7 @@ public class AnnotationParserFactoryImpl implements AnnotationParserFactory {
                         && getSideHandler()==null) {
                             // set up validator
                             if(validator==null)
-                                validator = bindingFileSchema.newValidator();
+                                validator = BindInfo.bindingFileSchema.newValidator();
                             validator.setErrorHandler(errorHandler);
                             startForking(uri,localName,qName,atts,new ValidatorProtecter(validator));
                         }

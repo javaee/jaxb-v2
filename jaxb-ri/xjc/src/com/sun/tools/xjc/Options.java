@@ -109,6 +109,10 @@ public class Options
      */
     public int compatibilityMode = STRICT;
 
+    public boolean isExtensionMode() {
+        return compatibilityMode==EXTENSION;
+    }
+
     public enum Target {
         V2_0, V2_1;
 
