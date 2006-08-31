@@ -74,29 +74,30 @@ Step Step() :
   Step s; Token n;
 }
 {(
-  ("attribute::"|"@")   s=NameOrWildcard(Axis.ATTRIBUTE)
-| ("element::")?        s=NameOrWildcard(Axis.ELEMENT) (Predicate(s))?
-| "substitutionGroup::" s=NameOrWildcard(Axis.SUBSTITUTION_GROUP)
-| ("type::"|"~")        s=NameOrWildcardOrAnonymous(Axis.TYPE_DEFINITION)
-| "baseType::"          s=NameOrWildcard(Axis.BASETYPE)
-| "primitiveType::"     s=NameOrWildcard(Axis.PRIMITIVE_TYPE)
-| "itemType::"          s=NameOrWildcardOrAnonymous(Axis.ITEM_TYPE)
-| "memberType::"        s=NameOrWildcardOrAnonymous(Axis.MEMBER_TYPE) (Predicate(s))?
-| "scope::"             s=NameOrWildcardOrAnonymous(Axis.SCOPE)
-| "attributeGroup::"    s=NameOrWildcard(Axis.ATTRIBUTE_GROUP)
-| "group::"             s=NameOrWildcard(Axis.MODEL_GROUP_DECL)
-| "identityContraint::" s=NameOrWildcard(Axis.IDENTITY_CONSTRAINT)
-| "key::"               s=NameOrWildcard(Axis.REFERENCED_KEY)
-| "notation::"          s=NameOrWildcard(Axis.NOTATION)
+  ("attribute::"|"@")     s=NameOrWildcard(Axis.ATTRIBUTE)
+| ("element::")?          s=NameOrWildcard(Axis.ELEMENT) (Predicate(s))?
+| "substitutionGroup::"   s=NameOrWildcard(Axis.SUBSTITUTION_GROUP)
+| ("type::"|"~")          s=NameOrWildcardOrAnonymous(Axis.TYPE_DEFINITION)
+| "baseType::"            s=NameOrWildcard(Axis.BASETYPE)
+| "primitiveType::"       s=NameOrWildcard(Axis.PRIMITIVE_TYPE)
+| "itemType::"            s=NameOrWildcardOrAnonymous(Axis.ITEM_TYPE)
+| "memberType::"          s=NameOrWildcardOrAnonymous(Axis.MEMBER_TYPE) (Predicate(s))?
+| "scope::"               s=NameOrWildcardOrAnonymous(Axis.SCOPE)
+| "attributeGroup::"      s=NameOrWildcard(Axis.ATTRIBUTE_GROUP)
+| "group::"               s=NameOrWildcard(Axis.MODEL_GROUP_DECL)
+| "identityContraint::"   s=NameOrWildcard(Axis.IDENTITY_CONSTRAINT)
+| "key::"                 s=NameOrWildcard(Axis.REFERENCED_KEY)
+| "notation::"            s=NameOrWildcard(Axis.NOTATION)
 // TODO: support "annotation::*"
-| "model::sequence"     {s=new Step.Any(Axis.MODELGROUP_SEQUENCE);} (Predicate(s))?
-| "model::choice"       {s=new Step.Any(Axis.MODELGROUP_CHOICE);} (Predicate(s))?
-| "model::all"          {s=new Step.Any(Axis.MODELGROUP_ALL);} (Predicate(s))?
-| "model::*"            {s=new Step.Any(Axis.MODELGROUP_ANY);} (Predicate(s))?
-| "any::*"              s=NameOrWildcard(Axis.WILDCARD) (Predicate(s))?
-| "anyAttribute::*"     s=NameOrWildcard(Axis.ATTRIBUTE_WILDCARD)
-| "facet::*"            {s=new Step.Any(Axis.FACET);}
+| "model::sequence"       {s=new Step.Any(Axis.MODELGROUP_SEQUENCE);} (Predicate(s))?
+| "model::choice"         {s=new Step.Any(Axis.MODELGROUP_CHOICE);} (Predicate(s))?
+| "model::all"            {s=new Step.Any(Axis.MODELGROUP_ALL);} (Predicate(s))?
+| "model::*"              {s=new Step.Any(Axis.MODELGROUP_ANY);} (Predicate(s))?
+| "any::*"                s=NameOrWildcard(Axis.WILDCARD) (Predicate(s))?
+| "anyAttribute::*"       s=NameOrWildcard(Axis.ATTRIBUTE_WILDCARD)
+| "facet::*"              {s=new Step.Any(Axis.FACET);}
 | "facet::" n=<FACETNAME> {s=new Step.Facet(Axis.FACET,n.image);}
+| "component::*"          {s=new Step.Any(Axis.DESCENDANTS);} // this is not in BNF but in prose
 ) {return s;}}
 
 Step NameOrWildcard(Axis a) : {UName un;}
