@@ -21,6 +21,7 @@ package com.sun.xml.xsom.impl;
 
 import com.sun.xml.xsom.XSAnnotation;
 import org.xml.sax.Locator;
+import org.xml.sax.helpers.LocatorImpl;
 
 public class AnnotationImpl implements XSAnnotation
 {
@@ -35,9 +36,16 @@ public class AnnotationImpl implements XSAnnotation
 
     private final Locator locator;
     public Locator getLocator() { return locator; }
-    
+
     public AnnotationImpl( Object o, Locator _loc ) {
         this.annotation = o;
         this.locator = _loc;
     }
+
+    public AnnotationImpl() {
+        locator = NULL_LOCATION;
+    }
+
+
+    private static final LocatorImpl NULL_LOCATION = new LocatorImpl();
 }

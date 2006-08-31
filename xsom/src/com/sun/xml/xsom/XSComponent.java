@@ -40,6 +40,20 @@ public interface XSComponent
     XSAnnotation getAnnotation();
 
     /**
+     * Works like {@link #getAnnotation()}, but allow a new empty {@link XSAnnotation} to be created
+     * if not exist.
+     *
+     * @param createIfNotExist
+     *      true to create a new {@link XSAnnotation} if it doesn't exist already.
+     *      false to make this method behavel like {@link #getAnnotation()}.
+     *
+     * @return
+     *      null if <tt>createIfNotExist==false</tt> and annotation didn't exist.
+     *      Otherwise non-null.
+     */
+    XSAnnotation getAnnotation(boolean createIfNotExist);
+
+    /**
      * Gets the foreign attributes on this schema component.
      *
      * <p>

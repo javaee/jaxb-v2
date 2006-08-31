@@ -27,6 +27,7 @@ import com.sun.xml.xsom.util.ComponentNameFunction;
 import com.sun.xml.xsom.impl.parser.SchemaDocumentImpl;
 import com.sun.xml.xsom.parser.SchemaDocument;
 import org.xml.sax.Locator;
+import org.xml.sax.helpers.LocatorImpl;
 
 import javax.xml.namespace.NamespaceContext;
 import java.text.ParseException;
@@ -63,8 +64,15 @@ public abstract class ComponentImpl implements XSComponent
         return ownerDocument;
     }
 
-    private final AnnotationImpl annotation;
+    private AnnotationImpl annotation;
     public final XSAnnotation getAnnotation() { return annotation; }
+
+    public XSAnnotation getAnnotation(boolean createIfNotExist) {
+        if(createIfNotExist && annotation==null) {
+            annotation = new AnnotationImpl(null,NULL_LOCATION);
+        }
+        return annotation;
+    }
 
     private final Locator locator;
     public final Locator getLocator() { return locator; }
@@ -126,4 +134,6 @@ public abstract class ComponentImpl implements XSComponent
     public String toString() {
         return apply(new ComponentNameFunction());
     }
+
+    private static final LocatorImpl NULL_LOCATION = new LocatorImpl();
 }
