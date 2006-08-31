@@ -29,8 +29,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- *
- * TODO: One non-obvious axis we need is an axis that iterates all the descendants for '//'
+ * Axis of traversal.
  *
  * @param <T>
  *      The kind of components that this axis may return.
@@ -57,6 +56,10 @@ public interface Axis<T extends XSComponent> {
             else
                 // this assumes that all current nodes belong to the same owner.
                 return iterator(contextNodes.next());
+        }
+
+        public String toString() {
+            return "root::";
         }
     };
 
@@ -107,6 +110,10 @@ public interface Axis<T extends XSComponent> {
                 if(child!=null)
                     visit(child,r);
             }
+        }
+
+        public String toString() {
+            return "(intermediateSkip)";
         }
     };
 
@@ -216,11 +223,19 @@ public interface Axis<T extends XSComponent> {
                 return union(singleton(one),rest);
             }
         }
+
+        public String toString() {
+            return "/";
+        }
     };
 
     public static final Axis<XSElementDecl> SUBSTITUTION_GROUP = new AbstractAxisImpl<XSElementDecl>() {
         public Iterator<XSElementDecl> elementDecl(XSElementDecl decl) {
             return singleton(decl.getSubstAffiliation());
+        }
+
+        public String toString() {
+            return "substitutionGroup::";
         }
     };
 
@@ -245,6 +260,10 @@ public interface Axis<T extends XSComponent> {
         public Iterator<XSAttributeDecl> schema(XSSchema schema) {
             return schema.iterateAttributeDecls();
         }
+
+        public String toString() {
+            return "@";
+        }
     };
 
     public static final Axis<XSElementDecl> ELEMENT = new AbstractAxisImpl<XSElementDecl>() {
@@ -267,6 +286,15 @@ public interface Axis<T extends XSComponent> {
         //        }
         //    };
         //}
+
+        @Override
+        public String getName() {
+            return "";
+        }
+
+        public String toString() {
+            return "element::";
+        }
     };
 
 
@@ -282,6 +310,10 @@ public interface Axis<T extends XSComponent> {
         public Iterator<XSType> elementDecl(XSElementDecl decl) {
             return singleton(decl.getType());
         }
+
+        public String toString() {
+            return "~";
+        }
     };
 
     public static final Axis<XSType> BASETYPE = new AbstractAxisImpl<XSType>() {
@@ -292,11 +324,19 @@ public interface Axis<T extends XSComponent> {
         public Iterator<XSType> complexType(XSComplexType type) {
             return singleton(type.getBaseType());
         }
+
+        public String toString() {
+            return "baseType::";
+        }
     };
 
     public static final Axis<XSSimpleType> PRIMITIVE_TYPE = new AbstractAxisImpl<XSSimpleType>() {
         public Iterator<XSSimpleType> simpleType(XSSimpleType type) {
             return singleton(type.getPrimitiveType());
+        }
+
+        public String toString() {
+            return "primitiveType::";
         }
     };
 
@@ -306,6 +346,10 @@ public interface Axis<T extends XSComponent> {
             if(baseList==null)      return empty();
             return singleton(baseList.getItemType());
         }
+
+        public String toString() {
+            return "itemType::";
+        }
     };
 
     public static final Axis<XSSimpleType> MEMBER_TYPE = new AbstractAxisImpl<XSSimpleType>() {
@@ -313,6 +357,10 @@ public interface Axis<T extends XSComponent> {
             XSUnionSimpleType baseUnion = type.getBaseUnionType();
             if(baseUnion ==null)      return empty();
             return baseUnion.iterator();
+        }
+
+        public String toString() {
+            return "memberType::";
         }
     };
 
@@ -322,11 +370,19 @@ public interface Axis<T extends XSComponent> {
         }
         // TODO: attribute declaration has a scope, too.
         // TODO: element declaration has a scope
+
+        public String toString() {
+            return "scope::";
+        }
     };
 
     public static final Axis<XSAttGroupDecl> ATTRIBUTE_GROUP = new AbstractAxisImpl<XSAttGroupDecl>() {
         public Iterator<XSAttGroupDecl> schema(XSSchema schema) {
             return schema.iterateAttGroupDecls();
+        }
+
+        public String toString() {
+            return "attributeGroup::";
         }
     };
 
@@ -337,6 +393,10 @@ public interface Axis<T extends XSComponent> {
 
         public Iterator<XSModelGroupDecl> particle(XSParticle particle) {
             return singleton(particle.getTerm().asModelGroupDecl());
+        }
+
+        public String toString() {
+            return "group::";
         }
     };
 
@@ -349,11 +409,19 @@ public interface Axis<T extends XSComponent> {
             // TODO: iterate all elements in this schema (local or global!) and its identity constraints
             return super.schema(schema);
         }
+
+        public String toString() {
+            return "identityConstraint::";
+        }
     };
 
     public static final Axis<XSIdentityConstraint> REFERENCED_KEY = new AbstractAxisImpl<XSIdentityConstraint>() {
         public Iterator<XSIdentityConstraint> identityConstraint(XSIdentityConstraint decl) {
             return singleton(decl.getReferencedKey());
+        }
+
+        public String toString() {
+            return "key::";
         }
     };
 
@@ -361,11 +429,19 @@ public interface Axis<T extends XSComponent> {
         public Iterator<XSNotation> schema(XSSchema schema) {
             return schema.iterateNotations();
         }
+
+        public String toString() {
+            return "notation::";
+        }
     };
 
     public static final Axis<XSWildcard> WILDCARD = new AbstractAxisImpl<XSWildcard>() {
         public Iterator<XSWildcard> particle(XSParticle particle) {
             return singleton(particle.getTerm().asWildcard());
+        }
+
+        public String toString() {
+            return "any::";
         }
     };
 
@@ -377,6 +453,10 @@ public interface Axis<T extends XSComponent> {
         public Iterator<XSWildcard> attGroupDecl(XSAttGroupDecl decl) {
             return singleton(decl.getAttributeWildcard());
         }
+
+        public String toString() {
+            return "anyAttribute::";
+        }
     };
 
     public static final Axis<XSFacet> FACET = new AbstractAxisImpl<XSFacet>() {
@@ -387,6 +467,10 @@ public interface Axis<T extends XSComponent> {
                 return r.iterateDeclaredFacets();
             else
                 return empty();
+        }
+
+        public String toString() {
+            return "facet::";
         }
     };
 
@@ -417,6 +501,13 @@ public interface Axis<T extends XSComponent> {
                 return singleton(mg);
             else
                 return empty();
+        }
+
+        public String toString() {
+            if(compositor==null)
+                return "model::*";
+            else
+                return "model::"+compositor;
         }
     }
 }

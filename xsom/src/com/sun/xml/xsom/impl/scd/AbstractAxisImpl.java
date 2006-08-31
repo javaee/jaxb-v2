@@ -53,6 +53,13 @@ abstract class AbstractAxisImpl<T extends XSComponent> implements Axis<T>, XSFun
     }
 
     /**
+     * Gets the prefix of the axis, like "foo::".
+     */
+    public String getName() {
+        return toString();
+    }
+
+    /**
      * Default implementation that simply delegate sto {@link #iterator(XSComponent)}
      */
     public Iterator<T> iterator(Iterator<? extends XSComponent> contextNodes) {
