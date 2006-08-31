@@ -41,6 +41,7 @@ import com.sun.tools.xjc.api.SchemaCompiler;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.reader.internalizer.DOMForest;
+import com.sun.tools.xjc.reader.internalizer.SCDBasedBindingSet;
 import com.sun.tools.xjc.reader.xmlschema.parser.XMLSchemaInternalizationLogic;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.xsom.XSSchemaSet;
@@ -184,7 +185,7 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
 //            return null;
         
         // internalization
-        forest.transform();
+        SCDBasedBindingSet scdBasedBindingSet = forest.transform(opts.isExtensionMode());
 
         if(!NO_CORRECTNESS_CHECK) {
             // correctness check
@@ -200,7 +201,7 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
         ModelLoader gl = new ModelLoader(opts,codeModel,this);
 
         try {
-            XSSchemaSet result = gl.createXSOM(forest);
+            XSSchemaSet result = gl.createXSOM(forest, scdBasedBindingSet);
             if(result==null)
                 return null;
 
