@@ -19,7 +19,7 @@ public abstract class Step<T extends XSComponent> {
 
     /**
      * 'Predicate' in SCD designates the index of the item. -1 if there's no predicate.
-     * TODO: check if it's 0-origin or 1-origin.
+     * Predicate starts from 1.
      *
      * <p>
      * Because of the parsing order this parameter cannot be marked
@@ -59,7 +59,7 @@ public abstract class Step<T extends XSComponent> {
 
         if(predicate>=0) {
             T item=null;
-            for( int i=predicate; i>=0; i-- ) {
+            for( int i=predicate; i>0; i-- ) {
                 if(!r.hasNext())
                     return Iterators.empty();
                 item = r.next();
