@@ -21,13 +21,17 @@ package com.sun.xml.xsom.impl;
 
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSComponent;
+import com.sun.xml.xsom.SCD;
 import com.sun.xml.xsom.impl.parser.SchemaDocumentImpl;
 import com.sun.xml.xsom.parser.SchemaDocument;
 import org.xml.sax.Locator;
 
+import javax.xml.namespace.NamespaceContext;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Collection;
+import java.text.ParseException;
 
 public abstract class ComponentImpl implements XSComponent
 {
@@ -52,7 +56,7 @@ public abstract class ComponentImpl implements XSComponent
 
     private final AnnotationImpl annotation;
     public final XSAnnotation getAnnotation() { return annotation; }
-    
+
     private final Locator locator;
     public final Locator getLocator() { return locator; }
 
@@ -92,5 +96,21 @@ public abstract class ComponentImpl implements XSComponent
             fa = fa.next;
         }
         return Collections.unmodifiableList(lst);
+    }
+
+    public Collection<XSComponent> select(String scd, NamespaceContext nsContext) {
+        try {
+            return SCD.create(scd,nsContext).select(this);
+        } catch (ParseException e) {
+            return Collections.EMPTY_LIST;
+        }
+    }
+
+    public XSComponent selectSingle(String scd, NamespaceContext nsContext) {
+        try {
+            return SCD.create(scd,nsContext).selectSingle(this);
+        } catch (ParseException e) {
+            return null;
+        }
     }
 }

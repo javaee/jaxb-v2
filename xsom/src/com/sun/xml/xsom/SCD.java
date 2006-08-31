@@ -31,6 +31,14 @@ public abstract class SCD {
     /**
      * Parses the string representation of SCD.
      *
+     * <p>
+     * This method involves parsing the path expression and preparing the in-memory
+     * structure, so this is useful when you plan to use the same SCD against
+     * different context node multiple times.
+     *
+     * <p>
+     * If you want to evaluate SCD just once, use {@link XSComponent#select} methods.
+     *
      * @param path
      *      the string representation of SCD, such as "/foo/bar".
      * @param nsContext
@@ -88,7 +96,7 @@ public abstract class SCD {
      *      null if the SCD didn't match anything. If the SCD matched more than one node,
      *      the first one will be returned.
      */
-    public final XSComponent selectSingleNode(XSComponent contextNode) {
+    public final XSComponent selectSingle(XSComponent contextNode) {
         Iterator<XSComponent> r = select(Iterators.singleton(contextNode));
         if(r.hasNext())     return r.next();
         return null;
@@ -102,7 +110,7 @@ public abstract class SCD {
      *      null if the SCD didn't match anything. If the SCD matched more than one node,
      *      the first one will be returned.
      */
-    public final XSComponent selectSingleNode(XSSchemaSet contextNode) {
+    public final XSComponent selectSingle(XSSchemaSet contextNode) {
         Iterator<XSComponent> r = select(contextNode.iterateSchema());
         if(r.hasNext())     return r.next();
         return null;

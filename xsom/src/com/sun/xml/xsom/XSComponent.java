@@ -24,7 +24,9 @@ import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSVisitor;
 import org.xml.sax.Locator;
 
+import javax.xml.namespace.NamespaceContext;
 import java.util.List;
+import java.util.Collection;
 
 /**
  * Base interface for all the schema components.
@@ -94,7 +96,42 @@ public interface XSComponent
      *      components this method returns non-null, even if they are local.
      */
     SchemaDocument getSourceDocument();
-    
+
+    /**
+     * Evaluates a schema component designator against this schema component
+     * and returns the resulting schema components.
+     *
+     * <p>
+     * This method returns empty collection if SCD is syntactically incorrect.
+     * To detect errors, use {@link SCD#create(String, NamespaceContext)}.
+     *
+     * @param scd
+     *      Schema component designator. See {@link SCD} for more details.
+     * @param nsContext
+     *      The namespace context in which SCD is evaluated. Cannot be null.
+     * @return
+     *      Can be empty but never null.
+     */
+    Collection<XSComponent> select(String scd, NamespaceContext nsContext);
+
+    /**
+     * Evaluates a schema component designator against this schema component
+     * and returns the first resulting schema component.
+     *
+     * <p>
+     * This method returns null if SCD is syntactically incorrect.
+     * To detect errors, use {@link SCD#create(String, NamespaceContext)}.
+     *
+     * @param scd
+     *      Schema component designator. See {@link SCD} for more details.
+     * @param nsContext
+     *      The namespace context in which SCD is evaluated. Cannot be null.
+     * @return
+     *      null if the SCD didn't match anything. If the SCD matched more than one node,
+     *      the first one will be returned.
+     */
+    XSComponent selectSingle(String scd, NamespaceContext nsContext);
+
     /**
      * Accepts a visitor.
      */

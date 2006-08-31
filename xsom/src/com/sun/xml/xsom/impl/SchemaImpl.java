@@ -31,17 +31,22 @@ import com.sun.xml.xsom.XSNotation;
 import com.sun.xml.xsom.XSSchema;
 import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSType;
+import com.sun.xml.xsom.XSComponent;
+import com.sun.xml.xsom.SCD;
 import com.sun.xml.xsom.parser.SchemaDocument;
 import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSVisitor;
 import org.xml.sax.Locator;
 
+import javax.xml.namespace.NamespaceContext;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Collection;
+import java.text.ParseException;
 
 public class SchemaImpl implements XSSchema
 {
@@ -79,19 +84,19 @@ public class SchemaImpl implements XSSchema
     public XSAnnotation getAnnotation() {
         return annotation;
     }
-    
+
     // it's difficult to determine the source location for the schema
     // component as one schema can be defined across multiple files.
     // so this locator might not correctly reflect all the locations
     // where the schema is defined.
     // but partial information would be better than nothing.
-    
+
     private final Locator locator;
     public Locator getLocator() {
         return locator;
     }
-    
-    
+
+
     private final Map<String,XSAttributeDecl> atts = new HashMap<String,XSAttributeDecl>();
     private final Map<String,XSAttributeDecl> attsView = Collections.unmodifiableMap(atts);
     public void addAttributeDecl(XSAttributeDecl newDecl) {
@@ -137,8 +142,8 @@ public class SchemaImpl implements XSSchema
     public Iterator<XSAttGroupDecl> iterateAttGroupDecls() {
         return attGroups.values().iterator();
     }
-    
-    
+
+
     private final Map<String,XSNotation> notations = new HashMap<String,XSNotation>();
     private final Map<String,XSNotation> notationsView = Collections.unmodifiableMap(notations);
     public void addNotation( XSNotation newDecl ) {
@@ -271,5 +276,21 @@ public class SchemaImpl implements XSSchema
             if(v!=null) return v;
         }
         return null;
+    }
+
+    public Collection<XSComponent> select(String scd, NamespaceContext nsContext) {
+        try {
+            return SCD.create(scd,nsContext).select(this);
+        } catch (ParseException e) {
+            return Collections.EMPTY_LIST;
+        }
+    }
+
+    public XSComponent selectSingle(String scd, NamespaceContext nsContext) {
+        try {
+            return SCD.create(scd,nsContext).selectSingle(this);
+        } catch (ParseException e) {
+            return null;
+        }
     }
 }

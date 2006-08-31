@@ -19,10 +19,12 @@
  */
 package com.sun.xml.xsom.impl;
 
+import com.sun.xml.xsom.SCD;
 import com.sun.xml.xsom.XSAttGroupDecl;
 import com.sun.xml.xsom.XSAttributeDecl;
 import com.sun.xml.xsom.XSAttributeUse;
 import com.sun.xml.xsom.XSComplexType;
+import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XSContentType;
 import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XSFacet;
@@ -30,6 +32,7 @@ import com.sun.xml.xsom.XSIdentityConstraint;
 import com.sun.xml.xsom.XSListSimpleType;
 import com.sun.xml.xsom.XSModelGroup;
 import com.sun.xml.xsom.XSModelGroupDecl;
+import com.sun.xml.xsom.XSNotation;
 import com.sun.xml.xsom.XSParticle;
 import com.sun.xml.xsom.XSRestrictionSimpleType;
 import com.sun.xml.xsom.XSSchema;
@@ -39,7 +42,6 @@ import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSUnionSimpleType;
 import com.sun.xml.xsom.XSVariety;
 import com.sun.xml.xsom.XSWildcard;
-import com.sun.xml.xsom.XSNotation;
 import com.sun.xml.xsom.impl.scd.Iterators;
 import com.sun.xml.xsom.visitor.XSContentTypeFunction;
 import com.sun.xml.xsom.visitor.XSContentTypeVisitor;
@@ -49,13 +51,14 @@ import com.sun.xml.xsom.visitor.XSSimpleTypeVisitor;
 import com.sun.xml.xsom.visitor.XSVisitor;
 import org.xml.sax.Locator;
 
+import javax.xml.namespace.NamespaceContext;
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Vector;
 
 public class SchemaSetImpl implements XSSchemaSet
@@ -105,42 +108,42 @@ public class SchemaSetImpl implements XSSchemaSet
     public XSSimpleType getSimpleType( String ns, String localName ) {
         XSSchema schema = getSchema(ns);
         if(schema==null)    return null;
-        
+
         return schema.getSimpleType(localName);
     }
-    
+
     public XSElementDecl getElementDecl( String ns, String localName ) {
         XSSchema schema = getSchema(ns);
         if(schema==null)    return null;
-        
+
         return schema.getElementDecl(localName);
     }
-    
+
     public XSAttributeDecl getAttributeDecl( String ns, String localName ) {
         XSSchema schema = getSchema(ns);
         if(schema==null)    return null;
-        
+
         return schema.getAttributeDecl(localName);
     }
-    
+
     public XSModelGroupDecl getModelGroupDecl( String ns, String localName ) {
         XSSchema schema = getSchema(ns);
         if(schema==null)    return null;
-        
+
         return schema.getModelGroupDecl(localName);
     }
-    
+
     public XSAttGroupDecl getAttGroupDecl( String ns, String localName ) {
         XSSchema schema = getSchema(ns);
         if(schema==null)    return null;
-        
+
         return schema.getAttGroupDecl(localName);
     }
-    
+
     public XSComplexType getComplexType( String ns, String localName ) {
         XSSchema schema = getSchema(ns);
         if(schema==null)    return null;
-        
+
         return schema.getComplexType(localName);
     }
 
@@ -218,15 +221,31 @@ public class SchemaSetImpl implements XSSchemaSet
         };
     }
 
+    public Collection<XSComponent> select(String scd, NamespaceContext nsContext) {
+        try {
+            return SCD.create(scd,nsContext).select(this);
+        } catch (ParseException e) {
+            return Collections.EMPTY_LIST;
+        }
+    }
+
+    public XSComponent selectSingle(String scd, NamespaceContext nsContext) {
+        try {
+            return SCD.create(scd,nsContext).selectSingle(this);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
 
     public final EmptyImpl empty = new EmptyImpl();
     public XSContentType getEmpty() { return empty; }
-    
+
     public XSSimpleType getAnySimpleType() { return anySimpleType; }
     public final AnySimpleType anySimpleType = new AnySimpleType();
     private class AnySimpleType extends DeclarationImpl
         implements XSRestrictionSimpleType, Ref.SimpleType {
-        
+
         AnySimpleType() {
             super(null,null,null,null,"http://www.w3.org/2001/XMLSchema","anySimpleType",false);
         }
@@ -247,7 +266,7 @@ public class SchemaSetImpl implements XSSchemaSet
         public XSType getBaseType() { return anyType; }
         public XSSimpleType getSimpleBaseType() { return null; }
         public int getDerivationMethod() { return RESTRICTION; }
-        public Iterator iterateDeclaredFacets() { return emptyIterator; }
+        public Iterator<XSFacet> iterateDeclaredFacets() { return Iterators.empty(); }
         public Collection<? extends XSFacet> getDeclaredFacets() { return Collections.EMPTY_LIST; }
         public void visit( XSSimpleTypeVisitor visitor ) {visitor.restrictionSimpleType(this); }
         public void visit( XSContentTypeVisitor visitor ) {visitor.simpleType(this); }
@@ -278,7 +297,7 @@ public class SchemaSetImpl implements XSSchemaSet
         public XSType[] listSubstitutables() {
             return Util.listSubstitutables(this);
         }
-    };
+    }
 
     public XSComplexType getAnyType() { return anyType; }
     public final AnyType anyType = new AnyType();
@@ -292,10 +311,10 @@ public class SchemaSetImpl implements XSSchemaSet
         public boolean isAbstract() { return false; }
         public XSWildcard getAttributeWildcard() { return anyWildcard; }
         public XSAttributeUse getAttributeUse( String nsURI, String localName ) { return null; }
-        public Iterator iterateAttributeUses() { return emptyIterator; }
+        public Iterator<XSAttributeUse> iterateAttributeUses() { return Iterators.empty(); }
         public XSAttributeUse getDeclaredAttributeUse( String nsURI, String localName ) { return null; }
-        public Iterator iterateDeclaredAttributeUses() { return emptyIterator; }
-        public Iterator iterateAttGroups() { return emptyIterator; }
+        public Iterator<XSAttributeUse> iterateDeclaredAttributeUses() { return Iterators.empty(); }
+        public Iterator<XSAttGroupDecl> iterateAttGroups() { return Iterators.empty(); }
         public Collection<XSAttributeUse> getAttributeUses() { return Collections.EMPTY_LIST; }
         public Collection<? extends XSAttributeUse> getDeclaredAttributeUses() { return Collections.EMPTY_LIST; }
         public Collection<? extends XSAttGroupDecl> getAttGroups() { return Collections.EMPTY_LIST; }
@@ -316,11 +335,11 @@ public class SchemaSetImpl implements XSSchemaSet
         public boolean isComplexType()      { return true; }
         public XSContentType asEmpty() { return null; }
         public int getDerivationMethod() { return XSType.RESTRICTION; }
-        
+
         public XSElementDecl getScope() { return null; }
         public void visit( XSVisitor visitor ) { visitor.complexType(this); }
         public <T> T apply( XSFunction<T> f ) { return f.complexType(this); }
-        
+
         public XSType getType() { return this; } // Ref.Type implementation
 
         public XSComplexType getRedefinedBy() { return null; }
@@ -329,7 +348,7 @@ public class SchemaSetImpl implements XSSchemaSet
         public XSType[] listSubstitutables() {
             return Util.listSubstitutables(this);
         }
-        
+
         private final WildcardImpl anyWildcard = new WildcardImpl.Any(null,null,null,null,XSWildcard.SKIP);
         private final XSContentType contentType = new ParticleImpl( null, null,
                 new ModelGroupImpl(null, null, null, null,XSModelGroup.SEQUENCE, new ParticleImpl[]{
@@ -338,12 +357,5 @@ public class SchemaSetImpl implements XSSchemaSet
                         XSParticle.UNBOUNDED, 0 )
                 })
                 ,null,1,1);
-    };
-    
-    private static final Iterator emptyIterator = new Iterator() {
-        public boolean hasNext() { return false; }
-        public Object next() { throw new NoSuchElementException(); }
-        public void remove() { throw new UnsupportedOperationException(); }
-    };
-    
+    }
 }
