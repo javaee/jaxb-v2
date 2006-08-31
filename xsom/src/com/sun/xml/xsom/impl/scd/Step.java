@@ -4,14 +4,17 @@ import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XSDeclaration;
 import com.sun.xml.xsom.XSFacet;
 import com.sun.xml.xsom.XSType;
+import com.sun.xml.xsom.SCD;
 import com.sun.xml.xsom.impl.UName;
 
 import java.util.Iterator;
 
 /**
+ * Building block of {@link SCD}.
+ *
  * @author Kohsuke Kawaguchi
  */
-abstract class Step<T extends XSComponent> {
+public abstract class Step<T extends XSComponent> {
     public final Axis<? extends T> axis;
 
     /**

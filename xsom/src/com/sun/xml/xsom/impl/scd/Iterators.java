@@ -144,4 +144,25 @@ public class Iterators {
             return values.add(value);
         }
     }
+
+    /**
+     * Union of two iterators.
+     */
+    static final class Union<T> extends ReadOnly<T> {
+        private final Iterator<? extends T> first,second;
+
+        public Union(Iterator<? extends T> first, Iterator<? extends T> second) {
+            this.first = first;
+            this.second = second;
+        }
+
+        public boolean hasNext() {
+            return first.hasNext() || second.hasNext();
+        }
+
+        public T next() {
+            if(first.hasNext())     return first.next();
+            else                    return second.next();
+        }
+    }
 }

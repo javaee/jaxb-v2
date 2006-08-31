@@ -4,10 +4,12 @@ import com.sun.xml.xsom.impl.scd.Iterators;
 import com.sun.xml.xsom.impl.scd.ParseException;
 import com.sun.xml.xsom.impl.scd.SCDImpl;
 import com.sun.xml.xsom.impl.scd.SCDParser;
+import com.sun.xml.xsom.impl.scd.Step;
 
 import javax.xml.namespace.NamespaceContext;
 import java.io.StringReader;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Schema Component Designator (SCD).
@@ -35,7 +37,8 @@ public abstract class SCD {
     public static SCD create(String path, NamespaceContext nsContext) throws java.text.ParseException {
         try {
             SCDParser p = new SCDParser(new StringReader(path));
-            return new SCDImpl(p.RelativeSchemaComponentPath());
+            List<?> list = p.RelativeSchemaComponentPath();
+            return new SCDImpl(list.toArray(new Step[list.size()]));
         } catch (ParseException e) {
             // TODO: copy more info
             // throw new java.text.ParseException(e.getMessage(), e.currentToken.beginColumn );

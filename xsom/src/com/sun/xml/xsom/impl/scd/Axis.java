@@ -23,6 +23,8 @@ import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.XSModelGroup.Compositor;
 
 import java.util.Iterator;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  *
@@ -35,6 +37,56 @@ import java.util.Iterator;
  */
 public interface Axis<T extends XSComponent> {
     Iterator<T> iterator(XSComponent contextNode);
+
+    /**
+     * Pseudo-axis that visits all skipped intermediate steps.
+     * Those are:
+     * <ol>
+     *  <li>complex type reachable from element
+     *  <li>model groups
+     *  <li>combination of above.
+     * </ol>
+     */
+    public static final Axis<XSComponent> INTERMEDIATE_SKIP = new AbstractAxisImpl<XSComponent>() {
+        public Iterator<XSComponent> elementDecl(XSElementDecl decl) {
+            XSComplexType ct = decl.getType().asComplexType();
+            if(ct==null)
+                return empty();
+            else {
+                // also pick up model groups inside this complex type
+                return new Iterators.Union<XSComponent>(singleton(ct),complexType(ct));
+            }
+        }
+
+        public Iterator<XSComponent> modelGroupDecl(XSModelGroupDecl decl) {
+            return descendants(decl.getModelGroup());
+        }
+
+        public Iterator<XSComponent> particle(XSParticle particle) {
+            return descendants(particle.getTerm().asModelGroup());
+        }
+
+        /**
+         * Iterate all descendant model groups of the given model group, including itself.
+         */
+        private Iterator<XSComponent> descendants(XSModelGroup mg) {
+            // TODO: write a tree iterator
+            // for now, we do it eagerly because I'm lazy
+            List<XSComponent> r = new ArrayList<XSComponent>();
+            visit(mg,r);
+            return r.iterator();
+        }
+
+        private void visit(XSModelGroup mg, List<XSComponent> r) {
+            // since model groups never form a cycle, no cycle check is needed
+            r.add(mg);
+            for (XSParticle p : mg) {
+                XSModelGroup child = p.getTerm().asModelGroup();
+                if(child!=null)
+                    visit(child,r);
+            }
+        }
+    };
 
     public static final Axis<XSElementDecl> SUBSTITUTION_GROUP = new AbstractAxisImpl<XSElementDecl>() {
         public Iterator<XSElementDecl> elementDecl(XSElementDecl decl) {
@@ -230,7 +282,5 @@ public interface Axis<T extends XSComponent> {
             else
                 return empty();
         }
-
-
     }
 }
