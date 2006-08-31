@@ -5,9 +5,12 @@ import com.sun.xml.xsom.impl.scd.ParseException;
 import com.sun.xml.xsom.impl.scd.SCDImpl;
 import com.sun.xml.xsom.impl.scd.SCDParser;
 import com.sun.xml.xsom.impl.scd.Step;
+import com.sun.xml.xsom.impl.scd.TokenMgrError;
+import com.sun.xml.xsom.util.DeferedCollection;
 
 import javax.xml.namespace.NamespaceContext;
 import java.io.StringReader;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,12 +22,13 @@ import java.util.List;
  * from a schema component(s).
  *
  * <p>
- * See <a href="http://www.w3.org/TR/xmlschema-ref/">XML Schema: Component Designators</a>.
+ * See <a href="http://www.w3.org/TR/2005/WD-xmlschema-ref-20050329/">XML Schema: Component Designators</a>.
  * This implementation is based on 03/29/2005 working draft.
  *
  * @author Kohsuke Kawaguchi
  */
 public abstract class SCD {
+
     /**
      * Parses the string representation of SCD.
      *
@@ -36,14 +40,19 @@ public abstract class SCD {
      */
     public static SCD create(String path, NamespaceContext nsContext) throws java.text.ParseException {
         try {
-            SCDParser p = new SCDParser(new StringReader(path));
+            SCDParser p = new SCDParser(path,nsContext);
             List<?> list = p.RelativeSchemaComponentPath();
             return new SCDImpl(list.toArray(new Step[list.size()]));
+        } catch (TokenMgrError e) {
+            throw setCause(new java.text.ParseException(e.getMessage(), -1 ),e);
         } catch (ParseException e) {
-            // TODO: copy more info
-            // throw new java.text.ParseException(e.getMessage(), e.currentToken.beginColumn );
-            throw new RuntimeException(e);
+            throw setCause(new java.text.ParseException(e.getMessage(), e.currentToken.beginColumn ),e);
         }
+    }
+
+    private static java.text.ParseException setCause(java.text.ParseException e, Throwable x) {
+        e.initCause(x);
+        return e;
     }
 
     /**
@@ -53,12 +62,23 @@ public abstract class SCD {
      * @return
      *      could be empty but never be null.
      */
-    public final Iterator<XSComponent> select(XSComponent contextNode) {
-        return select(Iterators.singleton(contextNode));
+    public final Collection<XSComponent> select(XSComponent contextNode) {
+        return new DeferedCollection<XSComponent>(select(Iterators.singleton(contextNode)));
     }
 
-    public final Iterator<XSComponent> select(XSSchemaSet contextNode) {
-        return select(contextNode.getSchemas().iterator());
+    /**
+     * Evaluates the SCD against the whole schema and
+     * returns the matched nodes.
+     *
+     * <p>
+     * This method is here because {@link XSSchemaSet}
+     * doesn't implement {@link XSComponent}.
+     *
+     * @return
+     *      could be empty but never be null.
+     */
+    public final Collection<XSComponent> select(XSSchemaSet contextNode) {
+        return select(contextNode.getSchemas());
     }
 
     /**
@@ -70,7 +90,21 @@ public abstract class SCD {
      *      the first one will be returned.
      */
     public final XSComponent selectSingleNode(XSComponent contextNode) {
-        Iterator<XSComponent> r = select(contextNode);
+        Iterator<XSComponent> r = select(Iterators.singleton(contextNode));
+        if(r.hasNext())     return r.next();
+        return null;
+    }
+
+    /**
+     * Evaluates the SCD against the whole schema set and
+     * returns the matched node.
+     *
+     * @return
+     *      null if the SCD didn't match anything. If the SCD matched more than one node,
+     *      the first one will be returned.
+     */
+    public final XSComponent selectSingleNode(XSSchemaSet contextNode) {
+        Iterator<XSComponent> r = select(contextNode.iterateSchema());
         if(r.hasNext())     return r.next();
         return null;
     }
@@ -79,8 +113,27 @@ public abstract class SCD {
      * Evaluates the SCD against the given set of context nodes and
      * returns the matched nodes.
      *
+     * @param contextNodes
+     *      {@link XSComponent}s that represent the context node against
+     *      which {@link SCD} is evaluated.
+     *
      * @return
      *      could be empty but never be null.
      */
-    public abstract Iterator<XSComponent> select(Iterator<? extends XSComponent> contextNode);
+    public abstract Iterator<XSComponent> select(Iterator<? extends XSComponent> contextNodes);
+
+    /**
+     * Evaluates the SCD against the given set of context nodes and
+     * returns the matched nodes.
+     *
+     * @param contextNodes
+     *      {@link XSComponent}s that represent the context node against
+     *      which {@link SCD} is evaluated.
+     *
+     * @return
+     *      could be empty but never be null.
+     */
+    public final Collection<XSComponent> select(Collection<? extends XSComponent> contextNodes) {
+        return new DeferedCollection<XSComponent>(select(contextNodes.iterator()));
+    }
 }

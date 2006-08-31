@@ -11,11 +11,31 @@ PARSER_BEGIN(SCDParser)
 package com.sun.xml.xsom.impl.scd;
 
 import java.util.*;
+import java.io.*;
 import com.sun.xml.xsom.impl.UName;
+import javax.xml.namespace.*;
 
 public class SCDParser {
+  private NamespaceContext nsc;
+  public SCDParser(String text,NamespaceContext nsc) {
+    this(new StringReader(text));
+    this.nsc = nsc;
+  }
   private String trim(String s) {
     return s.substring(1,s.length()-1);
+  }
+  private String resolvePrefix(String prefix) throws ParseException {
+    try {
+      String r=nsc.getNamespaceURI(prefix);
+      // grrr!!
+      if(prefix.equals(""))
+        return r;
+      if(!r.equals(""))
+        return r;
+    } catch( IllegalArgumentException e ) {
+      ; // report an error
+    }
+    throw new ParseException("Unbound prefix: "+prefix);
   }
 }
 
@@ -44,9 +64,9 @@ UName QName() : { Token p,l=null; }
   p=<NCNAME> ( ":" l=<NCNAME> ) ?
   {
     if(l==null)
-      return new UName("",p.image);
+      return new UName(resolvePrefix(""),p.image);
     else
-      return new UName(p.image,l.image);
+      return new UName(resolvePrefix(p.image),l.image);
   }
 }
 

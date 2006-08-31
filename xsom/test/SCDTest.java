@@ -8,6 +8,7 @@ import org.xml.sax.Locator;
 import javax.xml.namespace.NamespaceContext;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Collection;
 
 /**
  * Tests SCD.
@@ -22,16 +23,13 @@ public class SCDTest {
 
         XSSchemaSet r = p.getResult();
         SCD scd = SCD.create(args[0], new DummyNSContext());
-        Iterator<XSComponent> result = scd.select(r);
-        int count=0;
-        while(result.hasNext()) {
-            XSComponent c = result.next();
-            count++;
+        Collection<XSComponent> result = scd.select(r);
+        for( XSComponent c : result) {
             System.out.println(c.apply(new ComponentNameFunction()));
             print(c.getLocator());
             System.out.println();
         }
-        System.out.printf("%1d match(s)\n",count);
+        System.out.printf("%1d match(s)\n",result.size());
     }
 
     private static void print(Locator locator) {
