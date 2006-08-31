@@ -11,6 +11,7 @@ import com.sun.xml.xsom.XSFacet;
 import com.sun.xml.xsom.XSIdentityConstraint;
 import com.sun.xml.xsom.XSListSimpleType;
 import com.sun.xml.xsom.XSModelGroup;
+import com.sun.xml.xsom.XSModelGroup.Compositor;
 import com.sun.xml.xsom.XSModelGroupDecl;
 import com.sun.xml.xsom.XSNotation;
 import com.sun.xml.xsom.XSParticle;
@@ -20,11 +21,12 @@ import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSUnionSimpleType;
 import com.sun.xml.xsom.XSWildcard;
-import com.sun.xml.xsom.XSModelGroup.Compositor;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Set;
 
 /**
  *
@@ -37,6 +39,8 @@ import java.util.ArrayList;
  */
 public interface Axis<T extends XSComponent> {
     Iterator<T> iterator(XSComponent contextNode);
+
+    Iterator<T> iterator(Iterator<? extends XSComponent> contextNodes);
 
     /**
      * Pseudo-axis that visits all skipped intermediate steps.
@@ -84,6 +88,114 @@ public interface Axis<T extends XSComponent> {
                 XSModelGroup child = p.getTerm().asModelGroup();
                 if(child!=null)
                     visit(child,r);
+            }
+        }
+    };
+
+    /**
+     * All descendants reachable via default axes. Used to implement the "//" semantics.
+     *
+     * So far the default axes together are guaranteed not to cause any cycle, so
+     * no cycle check is needed (if it's needed, the life would be much harder!)
+     */
+    public static final Axis<XSComponent> DESCENDANTS = new Axis<XSComponent>() {
+        public Iterator<XSComponent> iterator(XSComponent contextNode) {
+            return new Visitor().iterator(contextNode);
+        }
+        public Iterator<XSComponent> iterator(Iterator<? extends XSComponent> contextNodes) {
+            return new Visitor().iterator(contextNodes);
+        }
+
+        /**
+         * Stateful visitor that remembers what's already traversed, to reduce the search space.
+         */
+        final class Visitor extends AbstractAxisImpl<XSComponent> {
+            private final Set<XSComponent> visited = new HashSet<XSComponent>();
+
+            /**
+             * Recursively apply the {@link Axis#DESCENDANTS} axis.
+             */
+            final class Recursion extends Iterators.Map<XSComponent,XSComponent> {
+                public Recursion(Iterator<? extends XSComponent> core) {
+                    super(core);
+                }
+
+                protected Iterator<XSComponent> apply(XSComponent u) {
+                    return DESCENDANTS.iterator(u);
+                }
+            }
+            public Iterator<XSComponent> schema(XSSchema schema) {
+                if(visited.add(schema))
+                    return ret( schema, new Recursion(schema.iterateElementDecls()));
+                else
+                    return empty();
+            }
+
+            public Iterator<XSComponent> elementDecl(XSElementDecl decl) {
+                if(visited.add(decl))
+                    return ret(decl, iterator(decl.getType()) );
+                else
+                    return empty();
+            }
+
+            public Iterator<XSComponent> simpleType(XSSimpleType type) {
+                if(visited.add(type))
+                    return ret(type, FACET.iterator(type));
+                else
+                    return empty();
+            }
+
+            public Iterator<XSComponent> complexType(XSComplexType type) {
+                if(visited.add(type))
+                    return ret(type, iterator(type.getContentType()));
+                else
+                    return empty();
+            }
+
+            public Iterator<XSComponent> particle(XSParticle particle) {
+                if(visited.add(particle))
+                    return ret(particle, iterator(particle.getTerm()));
+                else
+                    return empty();
+            }
+
+            public Iterator<XSComponent> modelGroupDecl(XSModelGroupDecl decl) {
+                if(visited.add(decl))
+                    return ret(decl, iterator(decl.getModelGroup()));
+                else
+                    return empty();
+            }
+
+            public Iterator<XSComponent> modelGroup(XSModelGroup group) {
+                if(visited.add(group))
+                    return ret(group, new Recursion(group.iterator()));
+                else
+                    return empty();
+            }
+
+            public Iterator<XSComponent> attGroupDecl(XSAttGroupDecl decl) {
+                if(visited.add(decl))
+                    return ret(decl, new Recursion(decl.iterateAttributeUses()));
+                else
+                    return empty();
+            }
+
+            public Iterator<XSComponent> attributeUse(XSAttributeUse use) {
+                if(visited.add(use))
+                    return ret(use, iterator(use.getDecl()));
+                else
+                    return empty();
+            }
+
+            public Iterator<XSComponent> attributeDecl(XSAttributeDecl decl) {
+                if(visited.add(decl))
+                    return ret(decl, iterator(decl.getType()));
+                else
+                    return empty();
+            }
+
+            private Iterator<XSComponent> ret( XSComponent one, Iterator<? extends XSComponent> rest ) {
+                return union(singleton(one),rest);
             }
         }
     };

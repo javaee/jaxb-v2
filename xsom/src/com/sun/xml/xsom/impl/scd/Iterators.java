@@ -53,7 +53,7 @@ public class Iterators {
     /**
      * {@link Iterator} that wraps another {@link Iterator} and changes its type.
      */
-    static abstract class Adapter<T,U> extends ReadOnly<T> {
+    public static abstract class Adapter<T,U> extends ReadOnly<T> {
         private final Iterator<? extends U> core;
 
         public Adapter(Iterator<? extends U> core) {
@@ -75,7 +75,7 @@ public class Iterators {
      * For each U, apply U->Iterator&lt;T> function and then iterate all
      * the resulting T.
      */
-    static abstract class Map<T,U> extends ReadOnly<T> {
+    public static abstract class Map<T,U> extends ReadOnly<T> {
         private final Iterator<? extends U> core;
 
         private Iterator<? extends T> current;
@@ -100,7 +100,10 @@ public class Iterators {
         protected abstract Iterator<? extends T> apply(U u);
     }
 
-    static abstract class Filter<T> extends ReadOnly<T> {
+    /**
+     * Filter out objects from another iterator.
+     */
+    public static abstract class Filter<T> extends ReadOnly<T> {
         private final Iterator<? extends T> core;
         private T next;
 
@@ -148,7 +151,7 @@ public class Iterators {
     /**
      * Union of two iterators.
      */
-    static final class Union<T> extends ReadOnly<T> {
+    public static final class Union<T> extends ReadOnly<T> {
         private final Iterator<? extends T> first,second;
 
         public Union(Iterator<? extends T> first, Iterator<? extends T> second) {
@@ -163,6 +166,25 @@ public class Iterators {
         public T next() {
             if(first.hasNext())     return first.next();
             else                    return second.next();
+        }
+    }
+
+    /**
+     * Array iterator.
+     */
+    public static final class Array<T> extends ReadOnly<T> {
+        private final T[] items;
+        private int index=0;
+        public Array(T[] items) {
+            this.items = items;
+        }
+
+        public boolean hasNext() {
+            return index<items.length;
+        }
+
+        public T next() {
+            return items[index++];
         }
     }
 }

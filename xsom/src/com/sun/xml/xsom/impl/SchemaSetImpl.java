@@ -39,6 +39,8 @@ import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSUnionSimpleType;
 import com.sun.xml.xsom.XSVariety;
 import com.sun.xml.xsom.XSWildcard;
+import com.sun.xml.xsom.XSNotation;
+import com.sun.xml.xsom.impl.scd.Iterators;
 import com.sun.xml.xsom.visitor.XSContentTypeFunction;
 import com.sun.xml.xsom.visitor.XSContentTypeVisitor;
 import com.sun.xml.xsom.visitor.XSFunction;
@@ -149,105 +151,69 @@ public class SchemaSetImpl implements XSSchemaSet
         return schema.getIdentityConstraint(localName);
     }
 
-    private abstract class MultiSchemaIterator<T> implements Iterator<T> {
-        private Iterator<XSSchema> sitr = iterateSchema();
-        private Iterator<T> citr = null;
-        /** The object to be returned from the next method. */
-        private T next;
-        
-        public void remove() { throw new UnsupportedOperationException(); }
-        public boolean hasNext() {
-            getNext();
-            return next!=null;
-        }
-        public T next() {
-            getNext();
-            T r = next;
-            next = null;
-            return r;
-        }
-        private void getNext() {
-            if(next!=null)  return;
-            
-            if(citr!=null && citr.hasNext()) {
-                next = citr.next();
-                return;
-            }
-            // citr is empty
-            if(sitr.hasNext()) {
-                citr = nextIterator(sitr.next());
-                getNext();
-            }
-            // else
-            //      no more object
-        }
-        
-        protected abstract Iterator<T> nextIterator( XSSchema s );
-    }
-    
-    public Iterator iterateElementDecls() {
-        return new MultiSchemaIterator() {
-            protected Iterator nextIterator( XSSchema xs ) {
-                return xs.iterateElementDecls();
+    public Iterator<XSElementDecl> iterateElementDecls() {
+        return new Iterators.Map<XSElementDecl,XSSchema>(iterateSchema()) {
+            protected Iterator<XSElementDecl> apply(XSSchema u) {
+                return u.iterateElementDecls();
             }
         };
     }
 
-    public Iterator iterateTypes() {
-        return new MultiSchemaIterator() {
-            protected Iterator nextIterator( XSSchema xs ) {
-                return xs.iterateTypes();
+    public Iterator<XSType> iterateTypes() {
+        return new Iterators.Map<XSType,XSSchema>(iterateSchema()) {
+            protected Iterator<XSType> apply(XSSchema u) {
+                return u.iterateTypes();
             }
         };
     }
 
-    public Iterator iterateAttributeDecls() {
-        return new MultiSchemaIterator() {
-            protected Iterator nextIterator( XSSchema xs ) {
-                return xs.iterateAttributeDecls();
+    public Iterator<XSAttributeDecl> iterateAttributeDecls() {
+        return new Iterators.Map<XSAttributeDecl,XSSchema>(iterateSchema()) {
+            protected Iterator<XSAttributeDecl> apply(XSSchema u) {
+                return u.iterateAttributeDecls();
             }
         };
     }
-    public Iterator iterateAttGroupDecls() {
-        return new MultiSchemaIterator() {
-            protected Iterator nextIterator( XSSchema xs ) {
-                return xs.iterateAttGroupDecls();
+    public Iterator<XSAttGroupDecl> iterateAttGroupDecls() {
+        return new Iterators.Map<XSAttGroupDecl,XSSchema>(iterateSchema()) {
+            protected Iterator<XSAttGroupDecl> apply(XSSchema u) {
+                return u.iterateAttGroupDecls();
             }
         };
     }
-    public Iterator iterateModelGroupDecls() {
-        return new MultiSchemaIterator() {
-            protected Iterator nextIterator( XSSchema xs ) {
-                return xs.iterateModelGroupDecls();
+    public Iterator<XSModelGroupDecl> iterateModelGroupDecls() {
+        return new Iterators.Map<XSModelGroupDecl,XSSchema>(iterateSchema()) {
+            protected Iterator<XSModelGroupDecl> apply(XSSchema u) {
+                return u.iterateModelGroupDecls();
             }
         };
     }
-    public Iterator iterateSimpleTypes() {
-        return new MultiSchemaIterator() {
-            protected Iterator nextIterator( XSSchema xs ) {
-                return xs.iterateSimpleTypes();
+    public Iterator<XSSimpleType> iterateSimpleTypes() {
+        return new Iterators.Map<XSSimpleType,XSSchema>(iterateSchema()) {
+            protected Iterator<XSSimpleType> apply(XSSchema u) {
+                return u.iterateSimpleTypes();
             }
         };
     }
-    public Iterator iterateComplexTypes() {
-        return new MultiSchemaIterator() {
-            protected Iterator nextIterator( XSSchema xs ) {
-                return xs.iterateComplexTypes();
+    public Iterator<XSComplexType> iterateComplexTypes() {
+        return new Iterators.Map<XSComplexType,XSSchema>(iterateSchema()) {
+            protected Iterator<XSComplexType> apply(XSSchema u) {
+                return u.iterateComplexTypes();
             }
         };
     }
-    public Iterator iterateNotations() {
-        return new MultiSchemaIterator() {
-            protected Iterator nextIterator( XSSchema xs ) {
-                return xs.iterateNotations();
+    public Iterator<XSNotation> iterateNotations() {
+        return new Iterators.Map<XSNotation,XSSchema>(iterateSchema()) {
+            protected Iterator<XSNotation> apply(XSSchema u) {
+                return u.iterateNotations();
             }
         };
     }
 
     public Iterator<XSIdentityConstraint> iterateIdentityConstraints() {
-        return new MultiSchemaIterator() {
-            protected Iterator nextIterator( XSSchema xs ) {
-                return xs.getIdentityConstraints().values().iterator();
+        return new Iterators.Map<XSIdentityConstraint,XSSchema>(iterateSchema()) {
+            protected Iterator<XSIdentityConstraint> apply(XSSchema u) {
+                return u.getIdentityConstraints().values().iterator();
             }
         };
     }

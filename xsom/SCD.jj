@@ -58,7 +58,14 @@ List RelativeSchemaComponentPath() :
   Step s;
 }
 {
-  s=Step() {steps.add(s);}  ( ( "/" | "//" ) s=Step() {steps.add(s);} )*
+  s=Step() {steps.add(s);}
+  (
+    (
+      "/"
+    | "//" {steps.add(new Step.Any(Axis.DESCENDANTS));}
+    )
+    s=Step() {steps.add(s);}
+  )*
   { return steps; }
 }
 

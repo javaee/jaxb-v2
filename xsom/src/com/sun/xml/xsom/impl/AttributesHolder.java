@@ -22,6 +22,8 @@ package com.sun.xml.xsom.impl;
 import com.sun.xml.xsom.XSAttGroupDecl;
 import com.sun.xml.xsom.XSAttributeUse;
 import com.sun.xml.xsom.impl.parser.SchemaDocumentImpl;
+import com.sun.xml.xsom.impl.scd.Iterators;
+import com.sun.xml.xsom.impl.Ref.AttGroup;
 import org.xml.sax.Locator;
 
 import java.util.AbstractSet;
@@ -94,13 +96,10 @@ public abstract class AttributesHolder extends DeclarationImpl {
     // Iterates all AttGroups which are directly referenced from this component
     // this does not iterate att groups referenced from the base type
     public Iterator<XSAttGroupDecl> iterateAttGroups() {
-        return new Iterator<XSAttGroupDecl>() {
-            private final Iterator<Ref.AttGroup> itr = attGroups.iterator();
-            public boolean hasNext() { return itr.hasNext(); }
-            public XSAttGroupDecl next() {
-                return itr.next().get();
+        return new Iterators.Adapter<XSAttGroupDecl,Ref.AttGroup>(attGroups.iterator()) {
+            protected XSAttGroupDecl filter(AttGroup u) {
+                return u.get();
             }
-            public void remove() { itr.remove(); }
         };
     }
 

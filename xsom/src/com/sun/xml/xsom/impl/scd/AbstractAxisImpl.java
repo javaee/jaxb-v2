@@ -40,8 +40,27 @@ abstract class AbstractAxisImpl<T extends XSComponent> implements Axis<T>, XSFun
         return Iterators.singleton(t);
     }
 
+    protected final Iterator<T> union(T... items) {
+        return new Iterators.Array<T>(items);
+    }
+
+    protected final Iterator<T> union(Iterator<? extends T> first, Iterator<? extends T> second) {
+        return new Iterators.Union<T>(first,second);
+    }
+
     public Iterator<T> iterator(XSComponent contextNode) {
         return contextNode.apply(this);
+    }
+
+    /**
+     * Default implementation that simply delegate sto {@link #iterator(XSComponent)}
+     */
+    public Iterator<T> iterator(Iterator<? extends XSComponent> contextNodes) {
+        return new Iterators.Map<T,XSComponent>(contextNodes) {
+            protected Iterator<? extends T> apply(XSComponent u) {
+                return iterator(u);
+            }
+        };
     }
 
     public Iterator<T> annotation(XSAnnotation ann) {

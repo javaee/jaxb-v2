@@ -30,8 +30,7 @@ import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.impl.parser.DelayedRef;
 import com.sun.xml.xsom.impl.parser.SchemaDocumentImpl;
-import com.sun.xml.xsom.impl.util.ConcatIterator;
-import com.sun.xml.xsom.impl.util.FilterIterator;
+import com.sun.xml.xsom.impl.scd.Iterators;
 import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSVisitor;
 import org.xml.sax.Locator;
@@ -209,16 +208,16 @@ public class ComplexTypeImpl extends AttributesHolder implements XSComplexType, 
         return o;
     }
 
-    public Iterator iterateAttributeUses() {
+    public Iterator<XSAttributeUse> iterateAttributeUses() {
         
         XSComplexType baseType = getBaseType().asComplexType();
         
         if( baseType==null )    return super.iterateAttributeUses();
         
-        return new ConcatIterator(
-            new FilterIterator(baseType.iterateAttributeUses()) {
-                protected boolean allows( Object o ) {
-                    XSAttributeDecl u = ((XSAttributeUse)o).getDecl();
+        return new Iterators.Union<XSAttributeUse>(
+            new Iterators.Filter<XSAttributeUse>(baseType.iterateAttributeUses()) {
+                protected boolean matches(XSAttributeUse value) {
+                    XSAttributeDecl u = value.getDecl();
                     UName n = new UName(u.getTargetNamespace(),u.getName());
                     return !prohibitedAtts.contains(n);
                 }
