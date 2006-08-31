@@ -9,7 +9,6 @@ import com.sun.xml.xsom.impl.scd.TokenMgrError;
 import com.sun.xml.xsom.util.DeferedCollection;
 
 import javax.xml.namespace.NamespaceContext;
-import java.io.StringReader;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
