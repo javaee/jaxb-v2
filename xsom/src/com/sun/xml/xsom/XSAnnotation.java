@@ -41,6 +41,16 @@ public interface XSAnnotation
     Object getAnnotation();
 
     /**
+     * Sets the value to be returned by {@link #getAnnotation()}.
+     *
+     * @param o
+     *      can be null.
+     * @return
+     *      old value that was replaced by the <tt>o</tt>.
+     */
+    Object setAnnotation(Object o);
+
+    /**
      * Returns a location information of the annotation.
      */
     Locator getLocator();

@@ -24,9 +24,15 @@ import org.xml.sax.Locator;
 
 public class AnnotationImpl implements XSAnnotation
 {
-    private final Object annotation;
+    private Object annotation;
     public Object getAnnotation() { return annotation; }
-    
+
+    public Object setAnnotation(Object o) {
+        Object r = this.annotation;
+        this.annotation = o;
+        return r;
+    }
+
     private final Locator locator;
     public Locator getLocator() { return locator; }
     
