@@ -18,6 +18,7 @@ public class Iterators {
         }
     }
 
+    // we need to run on JDK 1.4
     private static final Iterator EMPTY = Collections.EMPTY_LIST.iterator();
 
     public static <T> Iterator<T> empty() {

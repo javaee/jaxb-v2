@@ -82,7 +82,10 @@ Step Step() :
 | "key::"               s=NameOrWildcard(Axis.REFERENCED_KEY)
 | "notation::"          s=NameOrWildcard(Axis.NOTATION)
 // TODO: support "annotation::*"
-| s=ModelGroupStep()
+| "model::sequence"     {s=new Step.Any(Axis.MODELGROUP_SEQUENCE);} (Predicate(s))?
+| "model::choice"       {s=new Step.Any(Axis.MODELGROUP_CHOICE);} (Predicate(s))?
+| "model::all"          {s=new Step.Any(Axis.MODELGROUP_ALL);} (Predicate(s))?
+| "model::*"            {s=new Step.Any(Axis.MODELGROUP_ANY);} (Predicate(s))?
 | "any::*"              s=NameOrWildcard(Axis.WILDCARD) (Predicate(s))?
 | "anyAttribute::*"     s=NameOrWildcard(Axis.WILDCARD)
 | "facet::*"            {s=new Step.Any(Axis.FACET);}
@@ -100,16 +103,6 @@ Step NameOrWildcardOrAnonymous(Axis a) : {UName un;}
   un=QName() { return new Step.Named(a,un); }
 | "*"        { return new Step.Any(a); }
 | "0"	       { return new Step.AnonymousType(a); }
-}
-
-
-Step ModelGroupStep() :
-{
-  Step s; Token c;
-}
-{
-  (c="model::sequence"|c="model::choice"|c="model::all"|c="model::*") (Predicate(null))?
-  { return null; }
 }
 
 int Predicate(Step s) :

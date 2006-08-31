@@ -31,7 +31,7 @@ abstract class AbstractAxisImpl<T extends XSComponent> implements Axis<T>, XSFun
      * Creates a singleton list.
      */
     protected final Iterator<T> singleton(T t) {
-        return new Iterators.Singleton<T>(t);
+        return Iterators.singleton(t);
     }
 
     public Iterator<T> iterator(XSComponent contextNode) {
@@ -110,8 +110,7 @@ abstract class AbstractAxisImpl<T extends XSComponent> implements Axis<T>, XSFun
      * Returns an empty list.
      */
     protected final Iterator<T> empty() {
-        // we need to run on JDK 1.4
-        return Collections.EMPTY_LIST.iterator();
+        return Iterators.empty();
     }
 
 }

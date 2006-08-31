@@ -7,18 +7,22 @@ import com.sun.xml.xsom.XSAttributeUse;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XSElementDecl;
+import com.sun.xml.xsom.XSFacet;
+import com.sun.xml.xsom.XSIdentityConstraint;
 import com.sun.xml.xsom.XSListSimpleType;
 import com.sun.xml.xsom.XSModelGroup;
 import com.sun.xml.xsom.XSModelGroupDecl;
+import com.sun.xml.xsom.XSNotation;
 import com.sun.xml.xsom.XSParticle;
+import com.sun.xml.xsom.XSRestrictionSimpleType;
 import com.sun.xml.xsom.XSSchema;
 import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSUnionSimpleType;
+import com.sun.xml.xsom.XSWildcard;
+import com.sun.xml.xsom.XSModelGroup.Compositor;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  *
@@ -63,7 +67,7 @@ public interface Axis<T extends XSComponent> {
 
     public static final Axis<XSElementDecl> ELEMENT = new AbstractAxisImpl<XSElementDecl>() {
         public Iterator<XSElementDecl> particle(XSParticle particle) {
-            return particle.getTerm().apply(this);
+            return singleton(particle.getTerm().asElementDecl());
         }
 
         public Iterator<XSElementDecl> complexType(XSComplexType type) {
@@ -80,17 +84,13 @@ public interface Axis<T extends XSComponent> {
             return modelGroup(decl.getModelGroup());
         }
 
-        public Iterator<XSElementDecl> modelGroup(XSModelGroup group) {
-            return new Iterators.Map<XSElementDecl,XSParticle>(group.iterator()) {
-                protected Iterator<XSElementDecl> apply(XSParticle p) {
-                    return particle(p);
-                }
-            };
-        }
-
-        public Iterator<XSElementDecl> elementDecl(XSElementDecl decl) {
-            return singleton(decl);
-        }
+        //public Iterator<XSElementDecl> modelGroup(XSModelGroup group) {
+        //    return new Iterators.Map<XSElementDecl,XSParticle>(group.iterator()) {
+        //        protected Iterator<XSElementDecl> apply(XSParticle p) {
+        //            return particle(p);
+        //        }
+        //    };
+        //}
     };
 
 
@@ -136,18 +136,105 @@ public interface Axis<T extends XSComponent> {
         }
     };
 
-    public static final Axis<XSElementDecl> SCOPE = new AbstractAxisImpl<XSElementDecl>() {
-        public Iterator<XSElementDecl> complexType(XSComplexType type) {
+    public static final Axis<XSComponent> SCOPE = new AbstractAxisImpl<XSComponent>() {
+        public Iterator<XSComponent> complexType(XSComplexType type) {
             return singleton(type.getScope());
+        }
+        // TODO: attribute declaration has a scope, too.
+        // TODO: element declaration has a scope
+    };
+
+    public static final Axis<XSAttGroupDecl> ATTRIBUTE_GROUP = new AbstractAxisImpl<XSAttGroupDecl>() {
+        public Iterator<XSAttGroupDecl> schema(XSSchema schema) {
+            return schema.iterateAttGroupDecls();
         }
     };
 
-    // TODO
-    public static final Axis ATTRIBUTE_GROUP = null;
-    public static final Axis MODEL_GROUP_DECL = null;
-    public static final Axis IDENTITY_CONSTRAINT = null;
-    public static final Axis REFERENCED_KEY = null;
-    public static final Axis NOTATION = null;
-    public static final Axis WILDCARD = null;
-    public static final Axis FACET = null;
+    public static final Axis<XSModelGroupDecl> MODEL_GROUP_DECL = new AbstractAxisImpl<XSModelGroupDecl>() {
+        public Iterator<XSModelGroupDecl> schema(XSSchema schema) {
+            return schema.iterateModelGroupDecls();
+        }
+
+        public Iterator<XSModelGroupDecl> particle(XSParticle particle) {
+            return singleton(particle.getTerm().asModelGroupDecl());
+        }
+    };
+
+    public static final Axis<XSIdentityConstraint> IDENTITY_CONSTRAINT = new AbstractAxisImpl<XSIdentityConstraint>() {
+        public Iterator<XSIdentityConstraint> elementDecl(XSElementDecl decl) {
+            return decl.getIdentityConstraints().iterator();
+        }
+
+        public Iterator<XSIdentityConstraint> schema(XSSchema schema) {
+            // TODO: iterate all elements in this schema (local or global!) and its identity constraints
+            return super.schema(schema);
+        }
+    };
+
+    public static final Axis<XSIdentityConstraint> REFERENCED_KEY = new AbstractAxisImpl<XSIdentityConstraint>() {
+        public Iterator<XSIdentityConstraint> identityConstraint(XSIdentityConstraint decl) {
+            return singleton(decl.getReferencedKey());
+        }
+    };
+
+    public static final Axis<XSNotation> NOTATION = new AbstractAxisImpl<XSNotation>() {
+        public Iterator<XSNotation> schema(XSSchema schema) {
+            return schema.iterateNotations();
+        }
+    };
+
+    public static final Axis<XSWildcard> WILDCARD = new AbstractAxisImpl<XSWildcard>() {
+        public Iterator<XSWildcard> complexType(XSComplexType type) {
+            return singleton(type.getAttributeWildcard());
+        }
+
+        public Iterator<XSWildcard> attGroupDecl(XSAttGroupDecl decl) {
+            return singleton(decl.getAttributeWildcard());
+        }
+
+        public Iterator<XSWildcard> particle(XSParticle particle) {
+            return singleton(particle.getTerm().asWildcard());
+        }
+    };
+
+    public static final Axis<XSFacet> FACET = new AbstractAxisImpl<XSFacet>() {
+        public Iterator<XSFacet> simpleType(XSSimpleType type) {
+            // TODO: it's not clear if "facets" mean all inherited facets or just declared facets
+            XSRestrictionSimpleType r = type.asRestriction();
+            if(r!=null)
+                return r.iterateDeclaredFacets();
+            else
+                return empty();
+        }
+    };
+
+    public static final Axis<XSModelGroup> MODELGROUP_ALL = new ModelGroupAxis(Compositor.ALL);
+    public static final Axis<XSModelGroup> MODELGROUP_CHOICE = new ModelGroupAxis(Compositor.CHOICE);
+    public static final Axis<XSModelGroup> MODELGROUP_SEQUENCE = new ModelGroupAxis(Compositor.SEQUENCE);
+    public static final Axis<XSModelGroup> MODELGROUP_ANY = new ModelGroupAxis(null);
+
+    static final class ModelGroupAxis extends AbstractAxisImpl<XSModelGroup> {
+        private final XSModelGroup.Compositor compositor;
+
+        ModelGroupAxis(Compositor compositor) {
+            this.compositor = compositor;
+        }
+
+        public Iterator<XSModelGroup> particle(XSParticle particle) {
+            return filter(particle.getTerm().asModelGroup());
+        }
+
+        public Iterator<XSModelGroup> modelGroupDecl(XSModelGroupDecl decl) {
+            return filter(decl.getModelGroup());
+        }
+
+        private Iterator<XSModelGroup> filter(XSModelGroup mg) {
+            if(mg.getCompositor() == compositor || compositor == null)
+                return singleton(mg);
+            else
+                return empty();
+        }
+
+
+    }
 }
