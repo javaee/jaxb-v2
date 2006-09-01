@@ -70,6 +70,10 @@ UName QName() : { Token p,l=null; }
   }
 }
 
+String Prefix() : { Token p;}
+{
+  p=<NCNAME> {return resolvePrefix(p.image);}
+}
 
 
 List RelativeSchemaComponentPath() :
@@ -95,7 +99,7 @@ List RelativeSchemaComponentPath() :
 
 Step Step() :
 {
-  Step s; Token n;
+  Step s; String p; Token n;
 }
 {(
   ("attribute::"|"@")     s=NameOrWildcard(Axis.ATTRIBUTE)
@@ -122,6 +126,8 @@ Step Step() :
 | "facet::*"              {s=new Step.Any(Axis.FACET);}
 | "facet::" n=<FACETNAME> {s=new Step.Facet(Axis.FACET,n.image);}
 | "component::*"          {s=new Step.Any(Axis.DESCENDANTS);} // this is not in BNF but in prose
+| "x-schema::" p=Prefix() {s=new Step.Schema(Axis.X_SCHEMA,p);} // this is non-standard
+| "x-schema::*"           {s=new Step.Any(Axis.X_SCHEMA);} // this is non-standard
 ) {return s;}}
 
 Step NameOrWildcard(Axis a) : {UName un;}

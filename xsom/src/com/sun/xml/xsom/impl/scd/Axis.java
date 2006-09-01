@@ -243,6 +243,28 @@ public interface Axis<T extends XSComponent> {
         }
     };
 
+    public static final Axis<XSSchema> X_SCHEMA = new Axis<XSSchema>() {
+        public Iterator<XSSchema> iterator(XSComponent contextNode) {
+            return Iterators.singleton(contextNode.getOwnerSchema());
+        }
+
+        public Iterator<XSSchema> iterator(Iterator<? extends XSComponent> contextNodes) {
+            return new Iterators.Adapter<XSSchema,XSComponent>(contextNodes) {
+                protected XSSchema filter(XSComponent u) {
+                    return u.getOwnerSchema();
+                }
+            };
+        }
+
+        public boolean isModelGroup() {
+            return false;
+        }
+
+        public String toString() {
+            return "x-schema::";
+        }
+    };
+
     public static final Axis<XSElementDecl> SUBSTITUTION_GROUP = new AbstractAxisImpl<XSElementDecl>() {
         public Iterator<XSElementDecl> elementDecl(XSElementDecl decl) {
             return singleton(decl.getSubstAffiliation());

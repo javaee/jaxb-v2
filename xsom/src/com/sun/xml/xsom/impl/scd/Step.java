@@ -5,6 +5,7 @@ import com.sun.xml.xsom.XSDeclaration;
 import com.sun.xml.xsom.XSFacet;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.SCD;
+import com.sun.xml.xsom.XSSchema;
 import com.sun.xml.xsom.impl.UName;
 
 import java.util.Iterator;
@@ -35,13 +36,7 @@ public abstract class Step<T extends XSComponent> {
      * Perform filtering (which is different depending on the kind of step.)
      */
     protected abstract Iterator<? extends T> filter( Iterator<? extends T> base );
-/*
-                return new Iterators.Filter<T>() {
-                    protected boolean matches(T value) {
-                        return match(value);
-                    }
-                };
-*/
+
     /**
      * Evaluate this step against the current node set
      * and returns matched nodes.
@@ -140,13 +135,28 @@ public abstract class Step<T extends XSComponent> {
      */
     static final class Facet extends Filtered<XSFacet> {
         private final String name;
-        public Facet(Axis<? extends XSFacet> axis, String facetName) {
+        public Facet(Axis<XSFacet> axis, String facetName) {
             super(axis);
             this.name = facetName;
         }
 
         protected boolean match(XSFacet f) {
             return f.getName().equals(name);
+        }
+    }
+
+    /**
+     * Matches a schema in a particular namespace.
+     */
+    static final class Schema extends Filtered<XSSchema> {
+        private final String uri;
+        public Schema(Axis<XSSchema> axis, String uri) {
+            super(axis);
+            this.uri = uri;
+        }
+
+        protected boolean match(XSSchema d) {
+            return d.getTargetNamespace().equals(uri);
         }
     }
 }
