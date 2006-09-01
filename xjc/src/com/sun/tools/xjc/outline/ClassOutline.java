@@ -9,6 +9,7 @@ import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CPropertyInfo;
+import com.sun.istack.NotNull;
 
 /**
  * Outline object that provides per-{@link CClassInfo} information
@@ -23,19 +24,19 @@ public abstract class ClassOutline {
     /**
      * A {@link Outline} that encloses all the class outlines.
      */
-    public abstract Outline parent();
+    public abstract @NotNull Outline parent();
 
     /**
      * {@link PackageOutline} that contains this class.
      */
-    public PackageOutline _package() {
+    public @NotNull PackageOutline _package() {
         return parent().getPackageContext(ref._package());
     }
 
     /**
      * This {@link ClassOutline} holds information about this {@link CClassInfo}.
      */
-    public final CClassInfo target;
+    public final @NotNull CClassInfo target;
 
     /**
      * The exposed aspect of the a bean.
@@ -45,13 +46,13 @@ public abstract class ClassOutline {
      * Usually this is the public content interface, but
      * it could be the same as the implClass.
      */
-    public final JDefinedClass ref;
+    public final @NotNull JDefinedClass ref;
 
     /**
      * The implementation aspect of a bean.
      * The actual place where fields/methods should be generated into.
      */
-    public final JDefinedClass implClass;
+    public final @NotNull JDefinedClass implClass;
 
     /**
      * The implementation class that shall be used for reference.
@@ -62,7 +63,7 @@ public abstract class ClassOutline {
      * <p>
      * This is the type that needs to be used for generating fields.
      */
-    public final JClass implRef;
+    public final @NotNull JClass implRef;
 
 
 
@@ -73,7 +74,7 @@ public abstract class ClassOutline {
         this.implRef = implRef;
         this.implClass = _implClass;
     }
-    
+
     /**
      * Gets all the {@link FieldOutline}s newly declared
      * in this class.
@@ -85,7 +86,7 @@ public abstract class ClassOutline {
             fr[i] = parent().getField(props.get(i));
         return fr;
     }
-    
+
     /**
      * Returns the super class of this class, if it has the
      * super class and it is also a JAXB-bound class.
