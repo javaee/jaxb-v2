@@ -173,5 +173,7 @@ class Messages
         "FIELD_RENDERER_CONFLICT";
 
     static final String NAME_CONVERTER_CONFLICT = // 2 args
-            "NAME_CONVERTER_CONFLICT";
+        "NAME_CONVERTER_CONFLICT";
+    static final String FAILED_TO_LOAD = // 2 args
+        "FAILED_TO_LOAD";
 }
