@@ -79,7 +79,8 @@ List RelativeSchemaComponentPath() :
 }
 {
   (// make it absolute
-    "/" {steps.add(new Step.Any(Axis.ROOT));}
+    "/"  {steps.add(new Step.Any(Axis.ROOT));}
+  | "//" {steps.add(new Step.Any(Axis.DESCENDANTS));}
   )?
   s=Step() {steps.add(s);}
   (
