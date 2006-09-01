@@ -36,6 +36,7 @@ import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.util.FlattenIterator;
 
 import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.LocatorImpl;
 
 /**
@@ -229,9 +230,13 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void> {
 
         Outline o = BeanGenerator.generate(this, ehf);
 
-        // run extensions
-        for( Plugin ma : opt.activePlugins )
-            ma.run(o,opt,ehf);
+        try {// run extensions
+            for( Plugin ma : opt.activePlugins )
+                ma.run(o,opt,ehf);
+        } catch (SAXException e) {
+            // fatal error. error should have been reported
+            return null;
+        }
 
         // check for unused plug-in customizations.
         // these can be only checked after the plug-ins run, so it's here.

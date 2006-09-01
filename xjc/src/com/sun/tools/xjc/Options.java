@@ -784,6 +784,13 @@ public class Options
         if(noFileHeader)
             return core;
 
+        return new PrologCodeWriter( core,getPrologComment() );
+    }
+
+    /**
+     * Gets the string suitable as the prolog comment.
+     */
+    public String getPrologComment() {
         // generate format syntax: <date> 'at' <time>
         String format =
             Messages.format(Messages.DATE_FORMAT)
@@ -793,15 +800,12 @@ public class Options
                 + Messages.format(Messages.TIME_FORMAT);
         SimpleDateFormat dateFormat = new SimpleDateFormat(format);
 
-        return new PrologCodeWriter( core,
-                Messages.format(
-                    Messages.FILE_PROLOG_COMMENT,
-                    dateFormat.format(new Date())) );
+        return Messages.format(
+            Messages.FILE_PROLOG_COMMENT,
+            dateFormat.format(new Date()));
     }
 
-    
-    
-    
+
     /**
      * Looks for all "META-INF/services/[className]" files and
      * create one instance for each class name found inside this file.
@@ -809,7 +813,7 @@ public class Options
     private static <T> T[] findServices( Class<T> clazz, ClassLoader classLoader ) {
         // if true, print debug output
         final boolean debug = com.sun.tools.xjc.util.Util.getSystemProperty(Options.class,"findServices")!=null;
-        
+
         String serviceId = "META-INF/services/" + clazz.getName();
 
         // used to avoid creating the same instance twice
@@ -818,21 +822,21 @@ public class Options
         if(debug) {
             System.out.println("Looking for "+serviceId+" for add-ons");
         }
-        
+
         // try to find services in CLASSPATH
         try {
             Enumeration<URL> e = classLoader.getResources(serviceId);
             if(e==null) return (T[])Array.newInstance(clazz,0);
-    
+
             ArrayList<T> a = new ArrayList<T>();
             while(e.hasMoreElements()) {
                 URL url = e.nextElement();
                 BufferedReader reader=null;
-                
+
                 if(debug) {
                     System.out.println("Checking "+url+" for an add-on");
                 }
-                
+
                 try {
                     reader = new BufferedReader(new InputStreamReader(url.openStream()));
                     String impl;
@@ -868,7 +872,7 @@ public class Options
                     }
                 }
             }
-            
+
             return a.toArray((T[])Array.newInstance(clazz,a.size()));
         } catch( Throwable e ) {
             // ignore any error
