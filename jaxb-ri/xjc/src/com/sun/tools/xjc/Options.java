@@ -600,14 +600,23 @@ public class Options
 
         // see if this is one of the extensions
         for( Plugin plugin : getAllPlugins() ) {
-            if( ('-'+plugin.getOptionName()).equals(args[i]) ) {
-                activePlugins.add(plugin);
-                plugin.onActivated(this);
-                pluginURIs.addAll(plugin.getCustomizationURIs());
-                return 1;
-            }
-
             try {
+                if( ('-'+plugin.getOptionName()).equals(args[i]) ) {
+                    activePlugins.add(plugin);
+                    plugin.onActivated(this);
+                    pluginURIs.addAll(plugin.getCustomizationURIs());
+
+                    // give the plugin a chance to parse arguments to this option.
+                    // this is new in 2.1, and due to the backward compatibility reason,
+                    // if plugin didn't understand it, we still return 1 to indicate
+                    // that this option is consumed.
+                    int r = plugin.parseArgument(this,args,i);
+                    if(r!=0)
+                        return r;
+                    else
+                        return 1;
+                }
+
                 int r = plugin.parseArgument(this,args,i);
                 if(r!=0)    return r;
             } catch (IOException e) {
@@ -641,7 +650,7 @@ public class Options
     /**
      * Obtains an operand and reports an error if it's not there.
      */
-    private String requireArgument(String optionName, String[] args, int i) throws BadCommandLineException {
+    public String requireArgument(String optionName, String[] args, int i) throws BadCommandLineException {
         if (i == args.length || args[i].startsWith("-")) {
             throw new BadCommandLineException(
                 Messages.format(Messages.MISSING_OPERAND,optionName));
