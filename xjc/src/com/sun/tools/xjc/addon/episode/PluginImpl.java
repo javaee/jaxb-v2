@@ -113,6 +113,9 @@ public class PluginImpl extends Plugin {
                 if(!tns.equals(""))
                     group._namespace(tns,"tns");
 
+                group.scd("x-schema::"+(tns.equals("")?"":"tns"));
+                group.schemaBindings().map(false);
+
                 for (ClassOutline co : e.getValue()) {
                     Bindings child = group.bindings();
                     child.scd(co.target.getSchemaComponent().apply(SCD));

@@ -21,6 +21,9 @@ interface Bindings extends TypedXmlWriter {
     @XmlElement("class")
     Klass klass();
 
+    @XmlElement
+    SchemaBindings schemaBindings();
+
     @XmlAttribute
     void scd(String scd);
 
