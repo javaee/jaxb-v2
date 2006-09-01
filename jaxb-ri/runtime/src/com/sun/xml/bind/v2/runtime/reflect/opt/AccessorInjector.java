@@ -28,7 +28,7 @@ class AccessorInjector {
      * @return null
      *      if it fails for some reason.
      */
-    public static final Class<?> prepare(
+    public static Class<?> prepare(
         Class beanClass, String templateClassName, String newClassName, String... replacements ) {
 
         if(noOptimize)
@@ -71,7 +71,7 @@ class AccessorInjector {
      *      The search strings found in the constant pool will be replaced by the corresponding
      *      replacement string.
      */
-    private static final byte[] tailor( String templateClassName, String newClassName, String... replacements ) {
+    private static byte[] tailor( String templateClassName, String newClassName, String... replacements ) {
         InputStream resource;
         if(CLASS_LOADER!=null)
             resource = CLASS_LOADER.getResourceAsStream(templateClassName+".class");
