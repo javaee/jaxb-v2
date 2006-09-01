@@ -70,9 +70,9 @@ UName QName() : { Token p,l=null; }
   }
 }
 
-String Prefix() : { Token p;}
+String Prefix() : { Token p="";}
 {
-  p=<NCNAME> {return resolvePrefix(p.image);}
+  (p=<NCNAME>)? {return resolvePrefix(p.image);}
 }
 
 
