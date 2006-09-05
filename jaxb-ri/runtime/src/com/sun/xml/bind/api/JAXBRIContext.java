@@ -31,6 +31,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.namespace.QName;
+import javax.xml.transform.Result;
 
 import com.sun.istack.NotNull;
 import com.sun.istack.Nullable;
@@ -226,6 +227,21 @@ public abstract class JAXBRIContext extends JAXBContext {
      *      the access to the manifest informatino.
      */
     public abstract @NotNull String getBuildId();
+
+    /**
+     * Generates the episode file that represents the binding known to this {@link JAXBContext},
+     * so that XJC can later do separate compilation.
+     *
+     * <p>
+     * Episode file is really just a JAXB customization file, except that currently
+     * we use the RI-specific SCD to refer to schema components.
+     *
+     * @param output
+     *      This receives the generated episode file.
+     *
+     * @since 2.1
+     */
+    public abstract void generateEpisode(Result output);
 
     /**
      * Computes a Java identifier from a local name.

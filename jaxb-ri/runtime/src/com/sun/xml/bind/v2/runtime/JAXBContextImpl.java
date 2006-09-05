@@ -100,6 +100,7 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.schemagen.XmlSchemaGenerator;
 import com.sun.xml.bind.v2.util.EditDistance;
 import com.sun.xml.bind.v2.util.QNameMap;
+import com.sun.xml.txw2.output.ResultFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -110,7 +111,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75.2.1 $
+ * @version $Revision: 1.75.2.2 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -692,11 +693,21 @@ public final class JAXBContextImpl extends JAXBRIContext {
         return tis.getTypeInfo(ref);
     }
 
-    public void generateSchema(SchemaOutputResolver outputResolver) throws IOException {
-        if(outputResolver==null) {
-            throw new IOException(Messages.NULL_OUTPUT_RESOLVER.format());
-        }
+    @Override
+    public void generateEpisode(Result output) {
+        if(output==null)
+            throw new IllegalArgumentException();
+        createSchemaGenerator().writeEpisodeFile(ResultFactory.createSerializer(output));
+    }
 
+    @Override
+    public void generateSchema(SchemaOutputResolver outputResolver) throws IOException {
+        if(outputResolver==null)
+            throw new IOException(Messages.NULL_OUTPUT_RESOLVER.format());
+        createSchemaGenerator().write(outputResolver);
+    }
+
+    private XmlSchemaGenerator<Type,Class,Field,Method> createSchemaGenerator() {
         RuntimeTypeInfoSet tis;
         try {
             tis = getTypeInfoSet();
@@ -705,8 +716,8 @@ public final class JAXBContextImpl extends JAXBRIContext {
             throw new AssertionError(e);
         }
 
-        XmlSchemaGenerator<Type,Class, Field, Method> xsdgen =
-                new XmlSchemaGenerator<Type,Class, Field, Method>(tis.getNavigator(),tis);
+        XmlSchemaGenerator<Type,Class,Field,Method> xsdgen =
+                new XmlSchemaGenerator<Type,Class,Field,Method>(tis.getNavigator(),tis);
 
         // JAX-RPC uses Bridge objects that collide with
         // @XmlRootElement.
@@ -731,8 +742,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
                 xsdgen.add(tr.tagName, !Navigator.REFLECTION.isPrimitive(tr.type),typeInfo);
             }
         }
-
-        xsdgen.write(outputResolver);
+        return xsdgen;
     }
 
     public QName getTypeName(TypeReference tr) {
