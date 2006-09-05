@@ -105,6 +105,7 @@ public class SchemaGenerator implements AnnotationProcessorFactory {
                         }, errorListener);
 
                     if(episodeFile!=null) {
+                        env.getMessager().printNotice("Writing "+episodeFile);
                         model.generateEpisodeFile(new StreamResult(episodeFile));
                     }
                 } catch (IOException e) {
