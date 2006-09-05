@@ -1,4 +1,4 @@
-package com.sun.tools.xjc.addon.episode;
+package com.sun.xml.bind.v2.schemagen.episode;
 
 import com.sun.xml.txw2.TypedXmlWriter;
 import com.sun.xml.txw2.annotation.XmlElement;
@@ -8,7 +8,7 @@ import com.sun.xml.txw2.annotation.XmlAttribute;
  * @author Kohsuke Kawaguchi
  */
 @XmlElement("bindings")
-interface Bindings extends TypedXmlWriter {
+public interface Bindings extends TypedXmlWriter {
     /**
      * Nested bindings.
      */
