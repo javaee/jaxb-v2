@@ -1,5 +1,6 @@
 <html>
   <head caption="Schema Generator">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" type="text/css" href="style/default.css"/>
   </head>
 
@@ -52,6 +53,8 @@ Options:
     -d &lt;path>         :  Specify where to place processor and javac generated class files 
     -cp &lt;path>        :  Specify where to find user specified files  
     -classpath &lt;path> :  Specify where to find user specified files  
+    -episode &lt;file>   :  generate episode file for separate compilation
+    -version          :  display version information
     -help             :  Display this usage message
         </pre>
 
@@ -67,14 +70,21 @@ Options:
       </blockquote>
     </blockquote-->
 
-    <!--a name="switches"></a>
+    <a name="switches"></a>
     <h3>Summary of Command Line Options</h3>
     <blockquote>
       <dl>
+        <!--
         <dt><b></b></dt>
         <dd></dd>
+        -->
+        <a name="-episode"></a>
+        <dt><b>-episode</b></dt>
+        <dd>
+          Generates the "episode file", which is really just a JAXB customization file (but with vendor extensions specific to the JAXB RI, as of 2.1.) When people develop additional schemas that depend on what this <tt>schemagen</tt> invocation produces, they can use this episode file to have their generated code refer to your classes.
+        </dd>
       </dl>
-    </blockquote-->
+    </blockquote>
 
     <!--h3>Summary of Non-Standard Command Line Options</h3>
     <blockquote>
@@ -92,8 +102,8 @@ Options:
 
     <hr/>
     <div class="footer">
-      $Revision: 1.4.4.1 $<br/>
-      $Date: 2006-08-15 18:16:26 $
+      $Revision: 1.4.4.2 $<br/>
+      $Date: 2006-09-05 21:29:24 $
     </div>
   </body>
 </html>
