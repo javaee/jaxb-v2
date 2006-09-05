@@ -119,6 +119,20 @@ public interface TypeInfoSet<T,C,F,M> {
     Map<String,String> getXmlNs(String namespaceUri);
 
     /**
+     * Gets {@link XmlSchema#location()} found in this context.
+     *
+     * <p>
+     * This operation is expected to be only used in schema generator, so it can be slow.
+     *
+     * @return
+     *      A map from namespace URI to the value of the location.
+     *      If the entry is missing, that means a schema should be generated for that namespace.
+     *      If the value is "", that means the schema location is implied
+     *      (&lt;xs:schema namespace="..."/> w/o schemaLocation.) 
+     */
+    Map<String,String> getSchemaLocations();
+
+    /**
      * Gets the reasonable {@link XmlNsForm} for the given namespace URI.
      *
      * <p>

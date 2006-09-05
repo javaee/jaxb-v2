@@ -364,6 +364,10 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void> {
         return Collections.emptyMap();
     }
 
+    public Map<String, String> getSchemaLocations() {
+        return Collections.emptyMap();
+    }
+
     public XmlNsForm getElementFormDefault(String nsUri) {
         throw new UnsupportedOperationException();
     }
