@@ -69,10 +69,12 @@ import com.sun.xml.bind.v2.schemagen.xmlschema.SimpleTypeHost;
 import com.sun.xml.bind.v2.schemagen.xmlschema.TopLevelAttribute;
 import com.sun.xml.bind.v2.schemagen.xmlschema.TopLevelElement;
 import com.sun.xml.bind.v2.schemagen.xmlschema.TypeHost;
+import com.sun.xml.bind.v2.schemagen.episode.Bindings;
 import com.sun.xml.txw2.TXW;
 import com.sun.xml.txw2.TxwException;
 import com.sun.xml.txw2.TypedXmlWriter;
 import com.sun.xml.txw2.output.ResultFactory;
+import com.sun.xml.txw2.output.XmlSerializer;
 
 /**
  * Generates a set of W3C XML Schema documents from a set of Java classes.
@@ -290,6 +292,61 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         // search for foreign namespace references
         if(type!=null)
             n.addDependencyTo(type.getTypeName());
+    }
+
+    /**
+     * Writes out the episode file.
+     */
+    public void writeEpisodeFile(XmlSerializer out) {
+        Bindings root = TXW.create(Bindings.class, out);
+
+        if(namespaces.containsKey("")) // otherwise jaxb binding NS should be the default namespace
+            root._namespace(WellKnownNamespace.JAXB,"jaxb");
+        root.version("2.1");
+        // TODO: don't we want to bake in versions?
+
+        // generate listing per schema
+        for (Map.Entry<String,Namespace> e : namespaces.entrySet()) {
+            Bindings group = root.bindings();
+
+            String prefix;
+            String tns = e.getKey();
+            if(!tns.equals("")) {
+                group._namespace(tns,"tns");
+                prefix = "tns:";
+            } else {
+                prefix = "";
+            }
+
+            group.scd("x-schema::"+(tns.equals("")?"":"tns"));
+            group.schemaBindings().map(false);
+
+            for (ClassInfo<T,C> ci : e.getValue().classes) {
+                if(ci.getTypeName()==null)  continue;   // local type
+
+                Bindings child = group.bindings();
+                child.scd('~'+prefix+ci.getTypeName().getLocalPart());
+                child.klass().ref(ci.getName());
+
+                if(ci.isElement()) {
+                    child = group.bindings();
+                    child.scd(prefix+ci.getElementName().getLocalPart());
+                    child.klass().ref(ci.getName());
+                }
+            }
+
+            for (EnumLeafInfo<T,C> en : e.getValue().enums) {
+                if(en.getTypeName()==null)  continue;   // local type
+
+                Bindings child = group.bindings();
+                child.scd('~'+prefix+en.getTypeName().getLocalPart());
+                child.klass().ref(navigator.getClassName(en.getClazz()));
+            }
+
+            group.commit(true);
+        }
+
+        root.commit();
     }
 
     /**

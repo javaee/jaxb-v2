@@ -37,6 +37,7 @@ import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.XSXPath;
 import com.sun.xml.xsom.visitor.XSFunction;
+import com.sun.xml.bind.v2.schemagen.episode.Bindings;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;

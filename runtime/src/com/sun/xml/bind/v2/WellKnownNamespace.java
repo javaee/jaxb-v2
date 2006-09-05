@@ -48,7 +48,8 @@ public abstract class WellKnownNamespace {
         "http://ws-i.org/profiles/basic/1.1/xsd";
     
     public static final String XML_MIME_URI = "http://www.w3.org/2005/05/xmlmime";
-            
+
+    public static final String JAXB = "http://java.sun.com/xml/ns/jaxb";
 
 //    public static final QName XSI_NIL = new QName(XML_SCHEMA_INSTANCE,"nil");
 }
