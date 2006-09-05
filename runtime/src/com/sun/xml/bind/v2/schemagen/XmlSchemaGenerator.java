@@ -324,12 +324,14 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             for (ClassInfo<T,C> ci : e.getValue().classes) {
                 if(ci.getTypeName()==null)  continue;   // local type
 
-                Bindings child = group.bindings();
-                child.scd('~'+prefix+ci.getTypeName().getLocalPart());
-                child.klass().ref(ci.getName());
+                if(ci.getTypeName().getNamespaceURI().equals(tns)) {
+                    Bindings child = group.bindings();
+                    child.scd('~'+prefix+ci.getTypeName().getLocalPart());
+                    child.klass().ref(ci.getName());
+                }
 
-                if(ci.isElement()) {
-                    child = group.bindings();
+                if(ci.isElement() && ci.getElementName().getNamespaceURI().equals(tns)) {
+                    Bindings child = group.bindings();
                     child.scd(prefix+ci.getElementName().getLocalPart());
                     child.klass().ref(ci.getName());
                 }
