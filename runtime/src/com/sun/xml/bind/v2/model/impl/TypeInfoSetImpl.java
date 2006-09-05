@@ -303,6 +303,22 @@ class TypeInfoSetImpl<T,C,F,M> implements TypeInfoSet<T,C,F,M> {
         else            return Collections.emptyMap();
     }
 
+    public Map<String,String> getSchemaLocations() {
+        Map<String, String> r = new HashMap<String,String>();
+        for (ClassInfoImpl<T, C, F, M> ci : beans().values()) {
+            XmlSchema xs = reader.getPackageAnnotation( XmlSchema.class, ci.getClazz(), null );
+            if(xs==null)
+                continue;
+
+            String loc = xs.location();
+            if(loc.equals(XmlSchema.NO_LOCATION))
+                continue;   // unspecified
+
+            r.put(xs.namespace(),loc);
+        }
+        return r;
+    }
+
     public final XmlNsForm getElementFormDefault(String nsUri) {
         for (ClassInfoImpl<T, C, F, M> ci : beans().values()) {
             XmlSchema xs = reader.getPackageAnnotation( XmlSchema.class, ci.getClazz(), null );

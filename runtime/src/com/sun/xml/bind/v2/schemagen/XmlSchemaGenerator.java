@@ -22,6 +22,7 @@ import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 
 import com.sun.istack.Nullable;
+import com.sun.istack.NotNull;
 import com.sun.xml.bind.Util;
 import com.sun.xml.bind.api.CompositeStructure;
 import com.sun.xml.bind.v2.TODO;
@@ -301,7 +302,10 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         // make it fool-proof
         resolver = new FoolProofResolver(resolver);
 
+        Map<String, String> schemaLocations = types.getSchemaLocations();
+
         Map<Namespace,Result> out = new HashMap<Namespace,Result>();
+        Map<Namespace,String> systemIds = new HashMap<Namespace,String>();
 
         // we create a Namespace object for the XML Schema namespace
         // as a side-effect, but we don't want to generate it.
@@ -310,25 +314,29 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         // first create the outputs for all so that we can resolve references among
         // schema files when we write
         for( Namespace n : namespaces.values() ) {
-            final Result output = resolver.createOutput(n.uri,"schema"+(out.size()+1)+".xsd");
-            if(output!=null) {  // null result means no schema for that namespace
-                out.put(n,output);
+            String schemaLocation = schemaLocations.get(n.uri);
+            if(schemaLocation!=null) {
+                systemIds.put(n,schemaLocation);
+            } else {
+                Result output = resolver.createOutput(n.uri,"schema"+(out.size()+1)+".xsd");
+                if(output!=null) {  // null result means no schema for that namespace
+                    out.put(n,output);
+                    systemIds.put(n,output.getSystemId());
+                }
             }
         }
 
         // then write'em all
-        for( Namespace n : namespaces.values() ) {
-            Result result = out.get(n);
-            if(result!=null) {
-                n.writeTo( result, out );
-                if(result instanceof StreamResult) {
-                    OutputStream outputStream = ((StreamResult)result).getOutputStream();
-                    if(outputStream != null) {
-                        outputStream.close(); // fix for bugid: 6291301
-                    } else {
-                        final Writer writer = ((StreamResult)result).getWriter();
-                        if(writer != null) writer.close();
-                    }
+        for( Map.Entry<Namespace,Result> e : out.entrySet() ) {
+            Result result = e.getValue();
+            e.getKey().writeTo( result, systemIds );
+            if(result instanceof StreamResult) {
+                OutputStream outputStream = ((StreamResult)result).getOutputStream();
+                if(outputStream != null) {
+                    outputStream.close(); // fix for bugid: 6291301
+                } else {
+                    final Writer writer = ((StreamResult)result).getWriter();
+                    if(writer != null) writer.close();
                 }
             }
         }
@@ -340,7 +348,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
      * Schema components are organized per namespace.
      */
     private class Namespace {
-        final String uri;
+        final @NotNull String uri;
 
         /**
          * Other {@link Namespace}s that this namespace depends on.
@@ -431,8 +439,11 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
         /**
          * Writes the schema document to the specified result.
+         *
+         * @param systemIds
+         *      System IDs of the other schema documents. "" indicates 'implied'.
          */
-        private void writeTo(Result result, Map<Namespace,Result> out) throws IOException {
+        private void writeTo(Result result, Map<Namespace,String> systemIds) throws IOException {
             try {
                 Schema schema = TXW.create(Schema.class,ResultFactory.createSerializer(result));
 
@@ -480,7 +491,11 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     Import imp = schema._import();
                     if(n.uri.length()!=0)
                         imp.namespace(n.uri);
-                    imp.schemaLocation(relativize(out.get(n).getSystemId(),result.getSystemId()));
+                    String refSystemId = systemIds.get(n);
+                    if(!refSystemId.equals("")) {
+                        // "" means implied.
+                        imp.schemaLocation(relativize(refSystemId,result.getSystemId()));
+                    }
                     schema._pcdata(newline);
                 }
 
