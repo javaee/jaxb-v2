@@ -19,6 +19,8 @@ public class Options  {
 
     public File targetDir = null;
 
+    public File episodeFile = null;
+
     public final List<String> arguments = new ArrayList<String>();
 
     public void parseArguments(String[] args) throws BadCommandLineException {
@@ -39,7 +41,7 @@ public class Options  {
         if (args[i].equals("-d")) {
             if (i == args.length - 1)
                 throw new BadCommandLineException(
-                        (Messages.NO_FILE_SPECIFIED.format()));
+                        (Messages.OPERAND_MISSING.format(args[i])));
             targetDir = new File(args[++i]);
             if( !targetDir.exists() )
                 throw new BadCommandLineException(
@@ -47,10 +49,18 @@ public class Options  {
             return 1;
         }
 
+        if (args[i].equals("-episode")) {
+            if (i == args.length - 1)
+                throw new BadCommandLineException(
+                        (Messages.OPERAND_MISSING.format(args[i])));
+            episodeFile = new File(args[++i]);
+            return 1;
+        }
+
         if (args[i].equals("-cp") || args[i].equals("-classpath")) {
             if (i == args.length - 1)
                 throw new BadCommandLineException(
-                        (Messages.NO_CLASSPATH_SPECIFIED.format()));
+                        (Messages.OPERAND_MISSING.format(args[i])));
             classpath = args[++i];
             
             return 1;
