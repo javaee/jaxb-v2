@@ -1352,7 +1352,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         }
     }
 
-    private static final String fixNull(String s) {
+    private static String fixNull(String s) {
         if(s==null)     return "";
         else            return s;
     }
