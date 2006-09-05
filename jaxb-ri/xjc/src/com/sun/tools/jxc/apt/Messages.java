@@ -11,9 +11,8 @@ import java.util.ResourceBundle;
 enum Messages {
     // Accessor
     NON_EXISTENT_FILE, // 1 arg
-    NO_FILE_SPECIFIED, // 0 args
-    NO_CLASSPATH_SPECIFIED, // 0 args
     UNRECOGNIZED_PARAMETER, //1 arg
+    OPERAND_MISSING, // 1 arg
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getPackage().getName() +".MessageBundle");

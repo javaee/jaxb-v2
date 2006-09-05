@@ -21,6 +21,8 @@ import org.apache.tools.ant.types.Commandline;
 public final class SchemaGenTask extends AptBasedTask {
     private final List/*<Schema>*/ schemas = new ArrayList();
 
+    private File episode;
+
     protected void setupCommandlineSwitches(Commandline cmd) {
         cmd.createArgument().setValue("-nocompile");
     }
@@ -39,6 +41,14 @@ public final class SchemaGenTask extends AptBasedTask {
         return s;
     }
 
+    /**
+     * Sets the episode file to be generated.
+     * Null to not to generate one, which is the default behavior.
+     */
+    public void setEpisode(File f) {
+        this.episode = f;
+    }
+
     protected AnnotationProcessorFactory createFactory() {
         Map m = new HashMap();
         for (int i = 0; i < schemas.size(); i++) {
@@ -49,7 +59,11 @@ public final class SchemaGenTask extends AptBasedTask {
             m.put(schema.namespace,schema.file);
 
         }
-        return new SchemaGenerator(m);
+
+        SchemaGenerator r = new SchemaGenerator(m);
+        if(episode!=null)
+            r.setEpisodeFile(episode);
+        return r;
     }
 
 

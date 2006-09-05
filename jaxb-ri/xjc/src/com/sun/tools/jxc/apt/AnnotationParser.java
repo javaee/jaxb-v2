@@ -63,7 +63,7 @@ final class AnnotationParser implements AnnotationProcessor  {
                 // -Aconfig=foo.config:bar.config where : is the pathSeparatorChar
                 StringTokenizer st = new StringTokenizer(value,File.pathSeparator);
                 if(!st.hasMoreTokens()) {
-                    errorListener.error(null,Messages.NO_FILE_SPECIFIED.format());
+                    errorListener.error(null,Messages.OPERAND_MISSING.format(Const.CONFIG_FILE_OPTION));
                     continue;
                 }
 

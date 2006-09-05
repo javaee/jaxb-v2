@@ -42,11 +42,17 @@ public class SchemaGenerator implements AnnotationProcessorFactory {
      */
     private final Map<String,File> schemaLocations = new HashMap<String, File>();
 
+    private File episodeFile;
+
     public SchemaGenerator() {
     }
 
     public SchemaGenerator( Map<String,File> m ) {
         schemaLocations.putAll(m);
+    }
+
+    public void setEpisodeFile(File episodeFile) {
+        this.episodeFile = episodeFile;
     }
 
     public Collection<String> supportedOptions() {
@@ -97,6 +103,10 @@ public class SchemaGenerator implements AnnotationProcessorFactory {
                                 return ss;
                             }
                         }, errorListener);
+
+                    if(episodeFile!=null) {
+                        model.generateEpisodeFile(episodeFile);
+                    }
                 } catch (IOException e) {
                     errorListener.error(e.getMessage(),e);
                 }
