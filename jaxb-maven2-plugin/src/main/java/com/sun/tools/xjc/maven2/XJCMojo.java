@@ -223,6 +223,7 @@ public class XJCMojo extends AbstractMojo
         if (generateDirectory != null)
         {
             xjc2TaskAdapter.setDestdir(generateDirectory);
+            project.addCompileSourceRoot(generateDirectory.getAbsolutePath());
         }
 
         xjc2TaskAdapter.setReadonly(readOnly);
