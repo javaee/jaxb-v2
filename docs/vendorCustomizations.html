@@ -26,6 +26,7 @@
 		
 	<h3>Index of Customizations</h3>
 	<ul>
+		<li><a href="#scd">Identifying customization targets by Schema Component Designator</a></li>
 		<li><a href="#superclass">&lt;xjc:superClass></a> - Extending a Common Super Class</li>
 		<li><a href="#superinterface">&lt;xjc:superInterface></a> - Extending a Common Super Interface</li>
 		<li><a href="#javaType">&lt;xjc:javaType></a> - Enhanced &lt;jaxb:javaType> customization</li>
@@ -35,6 +36,29 @@
 		-->
 	</ul>
 	
+	
+	<a name="scd"></a>
+	<h3>SCD Support</h3>
+	<p>The JAXB RI supports the use of <a href="http://www.w3.org/TR/2005/WD-xmlschema-ref-20050329/">schema component designator</a> as a means of specifying the customization target (of all standard JAXB customizations as well as vendor extensions explained below.) To use this feature, use the <tt>scd</tt> attribute on &lt;bindings> element instead of the <tt>schemaLocation</tt> and <tt>node</tt> attributes.
+	
+<pre class=code>
+&lt;bindings xmlns:tns="http://example.com/myns" xmlns="http://java.sun.com/xml/ns/jaxb" version="2.1">
+  &lt;bindings <font color=red
+         >scd="tns:foo"</font>&gt;
+    &lt;!--this customization applies to the global element declaration 'foo'
+              in the http://example.com/myns namespace -->
+    &lt;class name="FooElement"/>
+  &lt;/bindings>
+  &lt;bindings <font color=red
+         >scd="~tns:bar"</font>&gt;
+    &lt;!--this customization applies to the global type declaration 'bar'
+              in the http://example.com/myns namespace -->
+    &lt;class name="BarType"/>
+  &lt;/bindings>
+&lt;/bindings>
+</xmp></pre>
+	<p>
+		Compared to the standard XPath based approach, SCD allows more robust and concise way of identifying a target of a customization. For more about SCD, refer to the scd example. Note that SCD is a W3C working draft, and may change in the future.
 	
 	<a name="superclass"></a>
 	<h3>Extending a Common Super Class</h3>
@@ -56,7 +80,7 @@
     &lt;xs:annotation>
        &lt;xs:appinfo>
           &lt;jaxb:globalBindings>
-           <font color="red"
+              <font color="red"
              >&lt;xjc:superClass name="org.acme.RocketBooster"/></font>
           &lt;/jaxb:globalBindings>
        &lt;/xs:appinfo>
@@ -311,8 +335,8 @@ public class Person {
 
     <hr>
     <div class="footer">
-      $Revision: 1.6.4.1 $<br>
-      $Date: 2006-08-15 18:16:27 $
+      $Revision: 1.6.4.2 $<br>
+      $Date: 2006-09-06 18:45:44 $
     </div>
   </body>
  </html>
