@@ -661,11 +661,16 @@ public final class BeanGenerator implements Outline
 
                 JInvocation ex = JExpr._new(codeModel.ref(IllegalArgumentException.class));
 
+                JExpression strForm;
                 if(baseExposedType.isPrimitive()) {
-                    m.body()._throw(ex.arg(codeModel.ref(String.class).staticInvoke("valueOf").arg($v)));
+                    strForm = codeModel.ref(String.class).staticInvoke("valueOf").arg($v);
+                } else
+                if(baseExposedType==codeModel.ref(String.class)){
+                    strForm = $v;
                 } else {
-                    m.body()._throw(ex.arg($v.invoke("toString")));
+                    strForm = $v.invoke("toString");
                 }
+                m.body()._throw(ex.arg(strForm));
             }
         } else {
             // [RESULT]
