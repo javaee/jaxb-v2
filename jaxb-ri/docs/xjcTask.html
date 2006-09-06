@@ -1,6 +1,7 @@
 <html>
   <head caption="Using XJC with Ant">
     <link rel="stylesheet" type="text/css" href="style/default.css">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   </head>
 
   <body>
@@ -122,11 +123,15 @@
           <td>No</td>
         </tr>
         <tr>
-          <td>source&nbsp;&nbsp;</a><img src="new.gif"/></td>
-          <td>Specify which version of the schema compiler to use.  Must be either "1.0" or "2.0".  The
-              generated source code will follow the binding rules specified by either JAXB 1.0 Specification
-              or JAXB 2.0 Specification.
-          <td>No, defaults to "2.0"</td>
+          <td>source</td>
+          <td>Specify which version of the schema compiler to use.  Must be either "1.0", "2.0", or "2.1".
+              The compiler will parse XML Schema and bind them according to the rules specified by the given version of the specification. Note that 2.1 is backward compatible with 2.0, so these two flags won't make any difference.
+          <td>No, defaults to "2.1"</td>
+        </tr>
+        <tr>
+          <td>target<img src="new.gif"/></td>
+          <td>Specifies the runtime environment in which the generated code is supposed to run. This value must be smaller than the <tt>source</tt> attribute, if specified (IOW, you can't do <tt>source="1.0" target="2.0"</tt>) This allows more up-to-date versions of XJC to be used for developing applications that run on earlier JAXB versions.</td>
+          <td>No, defaults to "2.1"</td>
       </tbody>
     </table>
 
@@ -330,8 +335,8 @@ there is no native support for
 
 	<hr/>
 	<div class="footer">
-	  $Revision: 1.7.4.1 $<br/>
-	  $Date: 2006-08-15 18:16:27 $
+	  $Revision: 1.7.4.2 $<br/>
+	  $Date: 2006-09-06 21:02:51 $
 	</div>
   </body>
 </html>
