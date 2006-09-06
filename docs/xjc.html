@@ -19,7 +19,6 @@
     <h4>For Solaris/Linux</h4>
       <blockquote>
           <ol>
-            <!--li><tt>% export PATH=&lt;your JWSDP${JWSDP_VERSION} installation directory>/jaxb/bin:$JWSDP_HOME/jwsdp-shared/bin:$PATH</tt></li-->
             <li><tt>% /path/to/jaxb/bin/xjc.sh -help</tt></li>
           </ol>
         </blockquote>
@@ -29,7 +28,6 @@
     <h4>For WindowsNT/2000/XP</h4>
       <blockquote>
         <ol>
-            <!--li><tt>&gt; set PATH=&lt;your JWSDP${JWSDP_VERSION} installation directory>\jaxb\bin;%JWSDP_HOME%\jwsdp-shared\bin;%PATH%</tt></li-->
           <li><tt>&gt; c:\path\to\jaxb\bin\xjc.bat -help</tt></li>
           </ol>
         </blockquote>
@@ -51,46 +49,11 @@
   <blockquote>
     <h4>Output</h4>
     <blockquote>
-        <pre>
-Usage: xjc [-options ...] &lt;schema file/URL/dir> ... [-b &lt;bindinfo>] ...
-Options:
-  -nv                :  do not perform strict validation of the input schema(s)
-  -extension         :  allow vendor extensions - do not strictly follow the
-                        Compatibility Rules and App E.2 from the JAXB Spec
-  -b &lt;file>          :  specify external bindings files (each &lt;file> must have its own -b)
-  -d &lt;dir>           :  generated files will go into this directory
-  -p &lt;pkg>           :  specifies the target package
-  -httpproxy &lt;proxy> :  set HTTP/HTTPS proxy. Format is [user[:password]@]proxyHost[:proxyPort]
-  -classpath &lt;arg>   :  specify where to find user class files
-  -catalog &lt;file>    :  specify catalog files to resolve external entity references
-                        support TR9401, XCatalog, and OASIS XML Catalog format.
-  -readOnly          :  generated files will be in read-only mode
-  -npa               :  suppress generation of package level annotations (**/package-info.java)
-  -no-header         :  suppress generation of a file header with timestamp
-  -xmlschema         :  treat input as W3C XML Schema (default)
-  -relaxng           :  treat input as RELAX NG (experimental,unsupported)
-  -relaxng-compact   :  treat input as RELAX NG compact syntax (experimental,unsupported)
-  -dtd               :  treat input as XML DTD (experimental,unsupported)
-  -wsdl              :  treat input as WSDL and compile schemas inside it (experimental,unsupported)
-  -verbose           :  be extra verbose
-  -quiet             :  suppress compiler output
-  -help              :  display this help message
-  -version           :  display version information
-      </pre>
+      <!-- load help message from property file -->
+      <util:properties uri="../xjc/src/com/sun/tools/xjc/MessageBundle.properties" xmlns:util="jelly:util"/>
+      <pre>${Driver.Public.Usage}</pre>
     </blockquote>
   </blockquote>
-    
-  <!--blockquote>
-    <h4>Non-standard Commandline Options</h4>
-    <blockquote>
-      <p>These options are non-standard and may change without notice.
-        <pre>
-  -Xlocator          :  enable source location support for generated code
-  -Xsync-methods     :  generate accessor methods with the 'synchronized' keyword
-  -Xinject-code      :  inject specified Java code fragments into the generated code
-      </pre>
-    </blockquote>
-  </blockquote-->
     
     <blockquote>
       <h4>Execute the <code>jaxb-xjc.jar</code> JAR File</h4>
@@ -153,6 +116,8 @@ Options:
     <dt><b>-httpproxy &lt;proxy></b></dt>
     <dd>Specify the HTTP/HTTPS proxy. The format is [user[:password]@]proxyHost[:proxyPort].  The old <tt>-host</tt>
         and <tt>-port</tt> are still supported by the RI for backwards compatibility, but they have been deprecated.</dd>
+    <dt><b>-httpproxyfile &lt;f></b></dt>
+    <dd>Same as the <tt>-httpproxy &lt;proxy></tt> option, but it takes the &lt;proxy> parameter in a file, so that you can protect the password (passing a password in the argument list is not safe.)</dd>
     <dt><b>-classpath &lt;arg&gt;</b></dt>
     <dd>Specify where to find client application class files 
         used by the <tt>&lt;jxb:javaType&gt;</tt> and <tt>&lt;xjc:superClass&gt;</tt>
@@ -171,6 +136,8 @@ Options:
     <dt><b>-no-header</b></dt>
     <dd>Supress the generation of a file header comment that includes some note and timestamp. Using
         this makes the generated code more <tt>diff</tt>-friendly.</dd>
+    <dt><b>-target 2.0</b></dt>
+    <dd>Avoid generating code that relies on any JAXB 2.1 features. This will allow the generated code to run with JAXB 2.0 runtime (such as JavaSE 6.)</dd>
     <dt><b>-xmlschema</b></dt>
     <dd>treat input schemas as W3C XML Schema (default).  If you do not specify this
         switch, your input schemas will be treated as W3C XML Schema.</dd>
@@ -197,20 +164,24 @@ Options:
     <dd>Display a brief summary of the compiler switches.</dd>
     <dt><b>-version</b></dt>
     <dd>Display the compiler version information.</dd>
-      <dt><b>&lt;schema file/URL/dir></b></dt>
-      <dd>Specify one or more schema files to compile.  If you specify a directory, then xjc
-          will scan it for all schema files and compile them.</dd>
+    <dt><b>&lt;schema file/URL/dir></b></dt>
+    <dd>Specify one or more schema files to compile.  If you specify a directory, then xjc
+        will scan it for all schema files and compile them.</dd>
+    <dt><b>-Xlocator</b></dt>
+    <dd>This feature causes the generated code to expose SAX Locator information
+        about the source XML in the Java bean instances after unmarshalling.</dd>
+    <dt><b>-Xsync-methods</b></dt>
+    <dd>This feature causes all of the generated method signatures to include the
+        synchronized keyword.</dd>
+    <dt><b>-mark-generated</b></dt>
+    <dd>This feature causes all of the generated code to have <a href="http://java.sun.com/javaee/5/docs/api/index.html?javax/annotation/Generated.html"><tt>@Generated</tt></a> annotation.</dd>
+    <dt><b>-episode &lt;FILE></b></dt>
+    <dd>Generate an episode file from this compilation, so that other schemas that rely on this schema can be compiled later and rely on classes that are generated from this compilation. The generated episode file is really just a JAXB customization file (but with vendor extensions.)</dd>
     </dl>
 
   <!--h3>Summary of Non-Standard Command Line Options</h3>
   <blockquote>
     <dl>
-      <dt><b>-Xlocator</b></dt>
-      <dd>This feature causes the generated code to expose SAX Locator information
-          about the source XML in the Java bean instances after unmarshalling.</dd>
-      <dt><b>-Xsync-methods</b></dt>
-      <dd>This feature causes all of the generated method signatures to include the
-          synchronized keyword.</dd>
       <dt><b>-Xinject-code</b></dt>
       <dd>This feature causes the schema compiler to inject user code into the generated
           Java beans.</dd>
@@ -231,9 +202,6 @@ Options:
       <dd>The -source compatibility switch was introduced in the first JAXB 2.0 Early Access
           release.  We have decided to remove this switch from future releases of JAXB 2.0.
           If you need to generate 1.0.x code, please use an installation of the 1.0.x codebase.</dd>
-       <dt><b>-Xlocator & -Xsync-methods</b></dt>
-       <dd>These switches have been disabled for now.  We plan on releasing this functionality
-           as a separate download in the future.</dd>
     </dl>
 
     <a name="restrictions"></a>
@@ -250,7 +218,7 @@ Options:
        
             <ol>
               <li>The "<tt>-p</tt>" command line option takes the highest precedence.</li>
-              <li>&lt;<tt>jaxb:package</tt>&gt; customization</li>
+              <li><tt>&lt;jaxb:package></tt> customization</li>
               <li>If <tt>targetNamespace</tt> is declared, apply <tt>targetNamespace</tt> 
                   -&gt; Java package name algorithm defined in the specification.</li>
               <li>If no <tt>targetNamespace</tt> is declared, use a hardcoded package named 
@@ -277,8 +245,8 @@ Options:
     
   <hr/>
   <div class="footer">
-    $Revision: 1.8.4.1 $<br/>
-    $Date: 2006-08-15 18:16:27 $
+    $Revision: 1.8.4.2 $<br/>
+    $Date: 2006-09-06 20:52:05 $
   </div>
   </body>
 </html>
