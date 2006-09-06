@@ -18,5 +18,13 @@
     <navigation-bar toc="${toc}" />
 
     <d:invokeBody />
+
+    <hr />
+    <div class="footer">
+      <!-- to make sure that this always have enough height -->
+      <div style="float:right; height: 24px"></div>
+      <x:copyOf select="$toc/toc/footer" />
+      <div style="clear:both"></div>
+    </div>
   </BODY>
 </j:jelly>
