@@ -306,7 +306,7 @@ public final class JCodeModel {
      * @see #_ref(Class) for the version that handles more cases.
      */
     public JClass ref(Class clazz) {
-        JReferencedClass jrc = (JReferencedClass)refClasses.get(clazz);
+        JReferencedClass jrc = refClasses.get(clazz);
         if (jrc == null) {
             if (clazz.isPrimitive())
                 throw new IllegalArgumentException(clazz+" is a primitive");
@@ -387,7 +387,7 @@ public final class JCodeModel {
         try {
             return JType.parse(this,name);
         } catch (IllegalArgumentException e) {
-            ;
+            // it's not a primitive type
         }
 
         // existing class
