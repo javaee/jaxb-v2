@@ -33,10 +33,10 @@ public class XJCFacade {
             // so that the XJC2 classes in the parent class loader
             //  won't interfere with loading XJC1 classes in a child class loader
 
-            if (v.equals("2.0")) {
-                cl = new ParallelWorldClassLoader(XJCFacade.class.getClassLoader(),v);
-            } else {
+            if (v.equals("1.0")) {
                 cl = new ParallelWorldClassLoader(MaskingClassLoader.class.getClassLoader(),v);
+            } else {
+                cl = new ParallelWorldClassLoader(XJCFacade.class.getClassLoader(),v);
             }
 
 
