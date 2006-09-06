@@ -109,7 +109,7 @@
         <classpath>
           <fileset dir="tools/htmlmacro" includes="commons-jelly-*.jar"/>
         </classpath>
-        <tags dir="tools/htmlmacro/tags" includes="**/*.tag" />
+        <tags dir="tools/htmlmacro/tags" includes="**/*.tag" excludes="jax/body.tag" />
         <property file="build.properties"/>
         <property key="IMPL_VERSION"        value="${release.impl.version}" />
         <property key="IMPL_VERSION_SUFFIX" value="${release.impl.version.suffix}" />
