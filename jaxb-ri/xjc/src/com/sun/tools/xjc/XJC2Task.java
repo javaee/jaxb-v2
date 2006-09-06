@@ -277,12 +277,12 @@ public class XJC2Task extends Task {
     }
     
     /**
-     * Sets the directory to produce generated source files.
-     *
-     * @deprecated  Use {@link #setDestdir(File)}
+     * Sets the target version of the compilation
      */
-    public void setTarget( File dir ) {
-        this.options.targetDir = dir;
+    public void setTarget( String version ) {
+        options.target = Options.Target.parse(version);
+        if(options.target==null)
+            throw new BuildException(version+" is not a valid version number");
     }
 
     /**
