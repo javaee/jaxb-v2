@@ -106,6 +106,9 @@
       </taskdef>
       <htmlmacro destdir="@{dest}">
         <documents dir="${jaxb.docs}" includes="*.html" excludes="catalog.html" />
+        <classpath>
+          <fileset dir="tools/htmlmacro" includes="commons-jelly-*.jar"/>
+        </classpath>
         <tags dir="tools/htmlmacro/tags" includes="**/*.tag" />
         <property file="build.properties"/>
         <property key="IMPL_VERSION"        value="${release.impl.version}" />
