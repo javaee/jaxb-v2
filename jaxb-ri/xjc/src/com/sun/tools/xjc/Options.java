@@ -583,7 +583,7 @@ public class Options
             //For source 1.0 the 1.0 Driver is loaded
             //Hence anything other than 2.0 is defaulted to
             //2.0
-            if( !version.equals("2.0") )
+            if( !version.equals("2.0") && !version.equals("2.1") )
                 throw new BadCommandLineException(
                     Messages.format(Messages.DEFAULT_VERSION));
             return 2;
