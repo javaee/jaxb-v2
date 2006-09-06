@@ -122,6 +122,20 @@ public class Options
         public boolean isLaterThan(Target t) {
             return this.ordinal()>=t.ordinal();
         }
+
+        /**
+         * Parses "2.0" and "2.1" into the {@link Target} object.
+         *
+         * @return null for parsing failure.
+         */
+        public static Target parse(String token) {
+            if(token.equals("2.0"))
+                return Target.V2_0;
+            else
+            if(token.equals("2.1"))
+                return Target.V2_1;
+            return null;
+        }
     }
 
     /**
@@ -516,12 +530,8 @@ public class Options
         }
         if (args[i].equals("-target")) {
             String token = requireArgument("-target",args,++i);
-            if(token.equals("2.0"))
-                target = Target.V2_0;
-            else
-            if(token.equals("2.1"))
-                target = Target.V2_1;
-            else
+            target = Target.parse(token);
+            if(target==null)
                 throw new BadCommandLineException(Messages.format(Messages.ILLEGAL_TARGET_VERSION,token));
         }
         if (args[i].equals("-httpproxyfile")) {
