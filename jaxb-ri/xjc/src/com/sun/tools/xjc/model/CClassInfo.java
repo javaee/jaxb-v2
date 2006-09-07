@@ -234,6 +234,14 @@ public final class CClassInfo extends AbstractCElement implements ClassInfo<NTyp
         return elementName!=null;
     }
 
+    /**
+     * Guaranteed to return this.
+     */
+    @Deprecated
+    public CNonElement getInfo() {
+        return this;
+    }
+    
     public Element<NType,NClass> asElement() {
         if(isElement())
             return this;

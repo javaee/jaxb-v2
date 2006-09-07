@@ -226,15 +226,18 @@ public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, 
         return null;
     }
 
+    @Deprecated
     public boolean isCollection() {
         return false;
     }
 
+    @Deprecated
     public CAdapter getAdapterUse() {
         return null;
     }
 
-    public CTypeInfo getInfo() {
+    @Deprecated
+    public CNonElement getInfo() {
         return this;
     }
 

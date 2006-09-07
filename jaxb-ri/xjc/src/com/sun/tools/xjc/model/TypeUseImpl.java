@@ -18,14 +18,14 @@ import com.sun.xml.xsom.XmlString;
  * @author Kohsuke Kawaguchi
  */
 final class TypeUseImpl implements TypeUse {
-    private final CTypeInfo coreType;
+    private final CNonElement coreType;
     private final boolean collection;
     private final CAdapter adapter;
     private final ID id;
     private final MimeType expectedMimeType;
 
 
-    public TypeUseImpl(CTypeInfo itemType, boolean collection, ID id, MimeType expectedMimeType, CAdapter adapter) {
+    public TypeUseImpl(CNonElement itemType, boolean collection, ID id, MimeType expectedMimeType, CAdapter adapter) {
         this.coreType = itemType;
         this.collection = collection;
         this.id = id;
@@ -37,7 +37,7 @@ final class TypeUseImpl implements TypeUse {
         return collection;
     }
 
-    public CTypeInfo getInfo() {
+    public CNonElement getInfo() {
         return coreType;
     }
 

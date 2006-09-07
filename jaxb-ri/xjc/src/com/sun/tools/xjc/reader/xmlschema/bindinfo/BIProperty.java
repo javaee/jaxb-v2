@@ -274,7 +274,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
     }
 
     public CValuePropertyInfo createValueProperty(String defaultName,boolean forConstant,
-        XSComponent source,TypeUse tu) {
+        XSComponent source,TypeUse tu, QName typeName) {
 
         markAsAcknowledged();
         constantPropertyErrorCheck();
@@ -286,7 +286,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
                 name = JJavaName.getPluralForm(name);
         }
 
-        return wrapUp(new CValuePropertyInfo(name, source,getCustomizations(source),source.getLocator(), tu ),source);
+        return wrapUp(new CValuePropertyInfo(name, source,getCustomizations(source),source.getLocator(), tu, typeName ),source);
     }
 
     public CAttributePropertyInfo createAttributeProperty( XSAttributeUse use, TypeUse tu ) {
@@ -306,12 +306,12 @@ public final class BIProperty extends AbstractDeclarationImpl {
                 name = JJavaName.getPluralForm(name);
         }
 
-        QName n = new QName(use.getDecl().getTargetNamespace(),use.getDecl().getName());
-
         markAsAcknowledged();
         constantPropertyErrorCheck();
 
-        return wrapUp(new CAttributePropertyInfo(name,use,getCustomizations(use),use.getLocator(), n, tu, use.isRequired() ),use);
+        return wrapUp(new CAttributePropertyInfo(name,use,getCustomizations(use),use.getLocator(),
+                BGMBuilder.getName(use.getDecl()), tu,
+                BGMBuilder.getName(use.getDecl().getType()), use.isRequired() ),use);
     }
 
     /**

@@ -118,7 +118,7 @@ public final class CElementInfo extends AbstractCElement
                 contentType.getExpectedMimeType(),
                 source,null,getLocator(),true);
         this.property.setAdapter(contentType.getAdapterUse());
-        property.getTypes().add(new CTypeRef((CNonElement)contentType.getInfo(),tagName,true,defaultValue));
+        property.getTypes().add(new CTypeRef(contentType.getInfo(),tagName,true,defaultValue));
         this.type = NavigatorImpl.createParameterizedType(
             NavigatorImpl.theInstance.ref(JAXBElement.class),
             getContentInMemoryType() );

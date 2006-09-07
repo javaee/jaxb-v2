@@ -7,6 +7,7 @@ import com.sun.tools.xjc.model.nav.NType;
 import com.sun.xml.bind.v2.model.core.AttributePropertyInfo;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.xsom.XSComponent;
+import com.sun.istack.Nullable;
 
 import org.xml.sax.Locator;
 
@@ -20,9 +21,16 @@ public final class CAttributePropertyInfo extends CSingleTypePropertyInfo implem
     private final QName attName;
     private final boolean isRequired;
 
+    /**
+     * @param type
+     *      Represents the bound type of this attribute.
+     * @param typeName
+     *      XML Schema type name of this attribute. Optional for other schema languages.
+     */
     public CAttributePropertyInfo(String name, XSComponent source, CCustomizations customizations,
-                                  Locator locator, QName attName, TypeUse type, boolean required ) {
-        super(name, type, source, customizations, locator);
+                                  Locator locator, QName attName, TypeUse type, @Nullable QName typeName,
+                                  boolean required ) {
+        super(name, type, typeName, source, customizations, locator);
         isRequired = required;
         this.attName = attName;
     }

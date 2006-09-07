@@ -100,7 +100,7 @@ public class RawTypeSetBuilder implements XSTermVisitor {
 
     public void elementDecl(XSElementDecl decl) {
 
-        QName n = new QName(decl.getTargetNamespace(),decl.getName());
+        QName n = BGMBuilder.getName(decl);
         if(elementNames.add(n)) {
             CElement elementBean = Ring.get(ClassSelector.class).bindToType(decl,null);
             if(elementBean==null)

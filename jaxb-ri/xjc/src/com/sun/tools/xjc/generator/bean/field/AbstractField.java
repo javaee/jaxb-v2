@@ -44,6 +44,7 @@ import com.sun.tools.xjc.generator.annotation.spec.XmlElementRefWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlElementRefsWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlElementWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlElementsWriter;
+import com.sun.tools.xjc.generator.annotation.spec.XmlSchemaTypeWriter;
 import com.sun.tools.xjc.generator.bean.ClassOutlineImpl;
 import com.sun.tools.xjc.model.CAttributePropertyInfo;
 import com.sun.tools.xjc.model.CElement;
@@ -136,6 +137,12 @@ abstract class AbstractField implements FieldOutline {
         }
 
         outline.parent().generateAdapterIfNecessary(prop,field);
+
+        QName st = prop.getSchemaType();
+        if(st!=null)
+            field.annotate2(XmlSchemaTypeWriter.class)
+                .name(st.getLocalPart())
+                .namespace(st.getNamespaceURI());
     }
 
     private void annotateReference(JAnnotatable field) {

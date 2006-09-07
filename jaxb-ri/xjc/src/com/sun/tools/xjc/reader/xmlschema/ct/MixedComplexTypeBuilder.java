@@ -41,7 +41,7 @@ final class MixedComplexTypeBuilder extends CTBuilder {
         CPropertyInfo p;
 
         if(contentType.asEmpty()!=null) {
-            p = prop.createValueProperty("Content",false,ct,CBuiltinLeafInfo.STRING);
+            p = prop.createValueProperty("Content",false,ct,CBuiltinLeafInfo.STRING,null);
         } else {
             RawTypeSet ts = RawTypeSetBuilder.build(contentType.asParticle(),false);
             p = prop.createReferenceProperty("Content",false,ct,ts, true);

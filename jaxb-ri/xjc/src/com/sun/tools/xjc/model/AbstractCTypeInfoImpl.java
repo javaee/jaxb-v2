@@ -43,10 +43,6 @@ abstract class AbstractCTypeInfoImpl implements CTypeInfo {
         return null;
     }
 
-    public final CTypeInfo getInfo() {
-        return this;
-    }
-
     public final ID idUse() {
         return ID.NONE;
     }

@@ -88,8 +88,17 @@ public abstract class CBuiltinLeafInfo extends BuiltinLeafInfoImpl<NType,NClass>
      * Since {@link CBuiltinLeafInfo} represents a default binding,
      * it is never a collection.
      */
+    @Deprecated
     public final boolean isCollection() {
         return false;
+    }
+
+    /**
+     * Guaranteed to return this.
+     */
+    @Deprecated
+    public CNonElement getInfo() {
+        return this;
     }
 
     public ID idUse() {
@@ -103,15 +112,9 @@ public abstract class CBuiltinLeafInfo extends BuiltinLeafInfoImpl<NType,NClass>
         return null;
     }
 
-    /**
-     * By definition, a default handling doesn't need any adapter.
-     */
+    @Deprecated
     public final CAdapter getAdapterUse() {
         return null;
-    }
-
-    public final CBuiltinLeafInfo getInfo() {
-        return this;
     }
 
     public Locator getLocator() {

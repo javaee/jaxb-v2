@@ -80,7 +80,7 @@ public final class ExpressionBuilder implements XSTermFunction<Expression> {
     }
 
     public Element elementDecl(XSElementDecl decl) {
-        QName n = new QName(decl.getTargetNamespace(),decl.getName());
+        QName n = BGMBuilder.getName(decl);
 
         GElementImpl e = decls.get(n);
         if(e==null)

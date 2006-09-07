@@ -32,20 +32,20 @@ import java.util.Set;
 import java.util.Stack;
 
 import javax.activation.MimeTypeParseException;
-import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JJavaName;
 import com.sun.codemodel.util.JavadocEscapeWriter;
+import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.model.CBuiltinLeafInfo;
 import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CClassInfoParent;
+import com.sun.tools.xjc.model.CClassRef;
 import com.sun.tools.xjc.model.CEnumConstant;
 import com.sun.tools.xjc.model.CEnumLeafInfo;
 import com.sun.tools.xjc.model.CNonElement;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.model.TypeUseFactory;
-import com.sun.tools.xjc.model.CClassRef;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIConversion;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIEnum;
@@ -54,7 +54,6 @@ import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BindInfo;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.EnumMemberMode;
 import com.sun.tools.xjc.util.MimeTypeRange;
-import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import static com.sun.xml.bind.v2.WellKnownNamespace.XML_MIME_URI;
@@ -395,7 +394,7 @@ public final class SimpleTypeBuilder extends BindingComponent {
             }
         }
 
-        return getClassSelector()._bindToClass(type,null,false);
+        return (CNonElement)getClassSelector()._bindToClass(type,null,false);
     }
 
     /**
@@ -545,7 +544,7 @@ public final class SimpleTypeBuilder extends BindingComponent {
         if(use.isCollection())
             return null;    // can't bind a list to enum constant
 
-        CNonElement baseDt = (CNonElement)use.getInfo();   // for now just ignore that case
+        CNonElement baseDt = use.getInfo();   // for now just ignore that case
 
         if(baseDt instanceof CClassInfo)
             return null;    // can't bind to an enum if the base is a class, since we don't have the value constrctor
@@ -580,18 +579,13 @@ public final class SimpleTypeBuilder extends BindingComponent {
             }
         }
 
-        QName typeName = null;
-        if(type.isGlobal())
-            typeName = new QName(type.getTargetNamespace(),type.getName());
-
-
         // use the name of the simple type as the name of the class.
         CClassInfoParent scope;
         if(type.isGlobal())
             scope = new CClassInfoParent.Package(getClassSelector().getPackage(type.getTargetNamespace()));
         else
             scope = getClassSelector().getClassScope();
-        CEnumLeafInfo xducer = new CEnumLeafInfo( model, typeName, scope,
+        CEnumLeafInfo xducer = new CEnumLeafInfo( model, BGMBuilder.getName(type), scope,
             className, baseDt, memberList, type,
             builder.getBindInfo(type).toCustomizationList(), loc );
         xducer.javadoc = javadoc;
