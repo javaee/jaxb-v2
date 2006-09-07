@@ -39,6 +39,7 @@ import com.sun.tools.xjc.model.CElementInfo;
 import com.sun.tools.xjc.model.CTypeInfo;
 import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.model.CClass;
+import com.sun.tools.xjc.model.CNonElement;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BISchemaBinding;
@@ -262,7 +263,7 @@ public final class ClassSelector extends BindingComponent {
         if(t instanceof XSSimpleType) {
             return Ring.get(SimpleTypeBuilder.class).build((XSSimpleType)t);
         } else
-            return _bindToClass(t,referer,false);
+            return (CNonElement)_bindToClass(t,referer,false);
     }
 
     /**

@@ -22,6 +22,7 @@ package com.sun.tools.xjc.reader.xmlschema.ct;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
+import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSType;
@@ -54,7 +55,7 @@ final class STDerivedComplexTypeBuilder extends CTBuilder {
         simpleTypeBuilder.refererStack.pop();
 
         BIProperty prop = BIProperty.getCustomization(ct);
-        CPropertyInfo p = prop.createValueProperty("Value",false,baseType,use);
+        CPropertyInfo p = prop.createValueProperty("Value",false,baseType,use, BGMBuilder.getName(baseType));
         selector.getCurrentBean().addProperty(p);
 
         // adds attributes and we are through.

@@ -15,13 +15,9 @@ import com.sun.xml.xsom.XmlString;
  * {@link TypeInfo} at the compile-time.
  * Either {@link CClassInfo}, {@link CBuiltinLeafInfo}, or {@link CElementInfo}.
  *
- * <p>
- * This interface implements {@link TypeUse} so that a {@link CTypeInfo}
- * instance can be used as a {@link TypeUse} instance.
- * 
  * @author Kohsuke Kawaguchi
  */
-public interface CTypeInfo extends TypeInfo<NType,NClass>, TypeUse, CCustomizable {
+public interface CTypeInfo extends TypeInfo<NType,NClass>, CCustomizable {
 
     /**
      * Returns the {@link JClass} that represents the class being bound,

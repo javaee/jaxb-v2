@@ -10,7 +10,7 @@ import javax.xml.namespace.QName;
 import com.sun.tools.xjc.model.CBuiltinLeafInfo;
 import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CElementPropertyInfo;
-import com.sun.tools.xjc.model.CNonElement;
+import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.*;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.model.CReferencePropertyInfo;
 import com.sun.tools.xjc.model.CTypeRef;
@@ -23,10 +23,6 @@ import com.sun.xml.bind.v2.model.core.WildcardMode;
 import com.sun.xml.dtdparser.DTDEventListener;
 
 import org.xml.sax.Locator;
-
-import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.NOT_REPEATED;
-import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.REPEATED_VALUE;
-import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.REPEATED_ELEMENT;
 
 /**
  * DTD Element.
@@ -213,7 +209,7 @@ final class Element extends Term implements Comparable<Element> {
 
             if(ci!=null) {
                 // if this element is mapped to a class, just put one property
-                CValuePropertyInfo p = new CValuePropertyInfo("value", null,null/*TODO*/,locator,getConversion());
+                CValuePropertyInfo p = new CValuePropertyInfo("value", null,null/*TODO*/,locator,getConversion(),null);
                 ci.addProperty(p);
             }
             return;
@@ -281,7 +277,7 @@ final class Element extends Term implements Comparable<Element> {
                 p = new CElementPropertyInfo(propName,
                     refType.isCollection()?REPEATED_VALUE:NOT_REPEATED, ID.NONE, null, null,null/*TODO*/, locator, !b.isOptional );
 
-                p.getTypes().add(new CTypeRef((CNonElement)refType.getInfo(),new QName("",name),false,null));
+                p.getTypes().add(new CTypeRef(refType.getInfo(),new QName("",name),false,null));
             }
             ci.addProperty(p);
         }

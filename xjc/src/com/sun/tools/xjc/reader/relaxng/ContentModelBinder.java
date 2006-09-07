@@ -91,7 +91,7 @@ final class ContentModelBinder extends DPatternWalker {
 
         CAttributePropertyInfo ap = new CAttributePropertyInfo(
            calcName(p), null,null/*TODO*/, p.getLocation(), name,
-                p.getChild().accept(compiler.typeUseBinder),
+                p.getChild().accept(compiler.typeUseBinder), null,
                 !insideOptional);
         clazz.addProperty(ap);
 

@@ -24,6 +24,7 @@ import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
 import static com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeBindingMode.FALLBACK_CONTENT;
 import static com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeBindingMode.NORMAL;
+import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSContentType;
 import com.sun.xml.xsom.XSModelGroup;
@@ -57,7 +58,7 @@ final class FreshComplexTypeBuilder extends CTBuilder {
                 simpleTypeBuilder.refererStack.pop();
 
                 BIProperty prop = BIProperty.getCustomization(ct);
-                CPropertyInfo p = prop.createValueProperty("Value",false,ct,use);
+                CPropertyInfo p = prop.createValueProperty("Value",false,ct,use, BGMBuilder.getName(st));
                 selector.getCurrentBean().addProperty(p);
             }
 

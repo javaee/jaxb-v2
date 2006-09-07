@@ -18,6 +18,8 @@
  * [name of copyright owner]
  */
 package com.sun.tools.xjc.reader.xmlschema;
+import static com.sun.tools.xjc.reader.xmlschema.BGMBuilder.getName;
+
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -110,7 +112,7 @@ final class DefaultClassBinder implements ClassBinder
                     // if a global element contains
                     // a collpsable complex type, we bind this element to a named one
                     // and collapses element and complex type.
-                    tagName = new QName(referer.getTargetNamespace(),referer.getName());
+                    tagName = getName(referer);
                     className = deriveName(referer);
                 }
             }
@@ -136,7 +138,7 @@ final class DefaultClassBinder implements ClassBinder
                 // which creates unnecessary classes
                 return new CClassInfo( model, selector.getClassScope(),
                     deriveName(element), element.getLocator(), null,
-                    new QName(element.getTargetNamespace(),element.getName()), element, bi.toCustomizationList() );
+                    getName(element), element, bi.toCustomizationList() );
             }
 
 
@@ -167,15 +169,11 @@ final class DefaultClassBinder implements ClassBinder
         }
     }
 
-    private QName getTypeName(XSType type) {
-        return new QName(type.getTargetNamespace(),type.getName());
-    }
-
     private QName getTypeName(XSComplexType type) {
         if(type.getRedefinedBy()!=null)
             return null;
         else
-            return getTypeName((XSType)type);
+            return getName(type);
     }
 
     /**
@@ -243,7 +241,7 @@ final class DefaultClassBinder implements ClassBinder
         CElement r = allow(decl,decl.getName());
 
         if(r==null) {
-            QName tagName = new QName(decl.getTargetNamespace(),decl.getName());
+            QName tagName = getName(decl);
             CCustomizations custs = builder.getBindInfo(decl).toCustomizationList();
 
             if(decl.isGlobal()) {
@@ -303,7 +301,7 @@ final class DefaultClassBinder implements ClassBinder
 
         if(getGlobalBinding().isSimpleTypeSubstitution() && type.isGlobal()) {
             return new CClassInfo(model,selector.getClassScope(),
-                    deriveName(type), type.getLocator(), getTypeName(type), null, type, null );
+                    deriveName(type), type.getLocator(), getName(type), null, type, null );
         }
 
         return never();
@@ -440,13 +438,12 @@ final class DefaultClassBinder implements ClassBinder
 
         if(component instanceof XSType) {
             XSType t = (XSType) component;
-            if(t.isGlobal())
-                typeName = new QName(t.getTargetNamespace(),t.getName());
+            typeName = getName(t);
         }
 
         if (component instanceof XSElementDecl) {
             XSElementDecl e = (XSElementDecl) component;
-            elementName = new QName(e.getTargetNamespace(),e.getName());
+            elementName = getName(e);
         }
 
         if (component instanceof XSElementDecl && !isCollapsable((XSElementDecl)component)) {

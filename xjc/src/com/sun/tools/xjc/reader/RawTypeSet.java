@@ -250,7 +250,7 @@ public final class RawTypeSet {
         protected CTypeRef toTypeRef(CElementPropertyInfo ep) {
             if(ep!=null && target.getAdapterUse()!=null)
                 ep.setAdapter(target.getAdapterUse());
-            return new CTypeRef((CNonElement)target.getInfo(),elementName,nillable,defaultValue);
+            return new CTypeRef(target.getInfo(),elementName,nillable,defaultValue);
         }
 
         /**

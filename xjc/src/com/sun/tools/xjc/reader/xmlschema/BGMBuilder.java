@@ -43,6 +43,7 @@ import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSTerm;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSWildcard;
+import com.sun.xml.xsom.XSDeclaration;
 import com.sun.xml.xsom.util.XSFinder;
 
 import org.xml.sax.Locator;
@@ -274,7 +275,7 @@ public class BGMBuilder extends BindingComponent {
             // fill in typeUses
             for (XSType t : s.getTypes().values()) {
                 stb.refererStack.push(t);
-                model.typeUses().put( new QName(t.getTargetNamespace(),t.getName()), cs.bindToType(t,s) );
+                model.typeUses().put( getName(t), cs.bindToType(t,s) );
                 stb.refererStack.pop();
             }
 
@@ -485,5 +486,16 @@ public class BGMBuilder extends BindingComponent {
             refFinder.schemaSet(Ring.get(XSSchemaSet.class));
         }
         return refFinder.getReferer(c);
+    }
+
+    /**
+     * Returns the QName of the declaration.
+     * @return null
+     *      if the declaration is anonymous.
+     */
+    public static QName getName(XSDeclaration decl) {
+        String local = decl.getName();
+        if(local==null) return null;
+        return new QName(decl.getTargetNamespace(),local);
     }
 }

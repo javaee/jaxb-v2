@@ -325,7 +325,7 @@ public class TDTDReader extends DTDHandlerBase
             use = builtinConversions.get(attributeType);
 
         CPropertyInfo r = new CAttributePropertyInfo(
-            propName, null,null/*TODO*/, copyLocator(), qname, use, required );
+            propName, null,null/*TODO*/, copyLocator(), qname, use, null, required );
 
         if(defaultValue!=null)
             r.defaultValue = CDefaultValue.create( use, new XmlString(defaultValue) );

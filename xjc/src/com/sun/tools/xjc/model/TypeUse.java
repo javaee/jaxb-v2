@@ -33,7 +33,7 @@ public interface TypeUse {
     /**
      * Individual item type.
      */
-    CTypeInfo getInfo();
+    CNonElement getInfo();
 
     /**
      * Whether the referenced type (individual item type in case of collection)
