@@ -12,6 +12,7 @@ import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
+import com.sun.istack.Nullable;
 import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.NOT_REPEATED;
 import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.REPEATED_VALUE;
 import com.sun.tools.xjc.model.nav.NClass;
@@ -20,7 +21,7 @@ import com.sun.tools.xjc.model.nav.NavigatorImpl;
 import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.xml.bind.v2.model.core.ElementInfo;
-import com.sun.xml.xsom.XSComponent;
+import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XmlString;
 
 import org.xml.sax.Locator;
@@ -78,10 +79,10 @@ public final class CElementInfo extends AbstractCElement
      * Creates an element in the given parent.
      *
      * <p>
-     * When using this construction, {@link #initContentType(TypeUse, XSComponent, XmlString)}
+     * When using this construction, {@link #initContentType(TypeUse, XSElementDecl, XmlString)}
      * must not be invoked.
      */
-    public CElementInfo(Model model,QName tagName, CClassInfoParent parent, TypeUse contentType, XmlString defaultValue, XSComponent source, CCustomizations customizations, Locator location ) {
+    public CElementInfo(Model model,QName tagName, CClassInfoParent parent, TypeUse contentType, XmlString defaultValue, XSElementDecl source, CCustomizations customizations, Locator location ) {
         super(model,source,location,customizations);
         this.tagName = tagName;
         this.model = model;
@@ -97,7 +98,7 @@ public final class CElementInfo extends AbstractCElement
      *
      * <p>
      * When using this construction, the caller must use
-     * {@link #initContentType(TypeUse, XSComponent, XmlString)} to fill in the content type
+     * {@link #initContentType(TypeUse, XSElementDecl, XmlString)} to fill in the content type
      * later.
      *
      * This is to avoid a circular model construction dependency between buidling a type
@@ -109,7 +110,7 @@ public final class CElementInfo extends AbstractCElement
         this.className = className;
     }
 
-    public void initContentType(TypeUse contentType, XSComponent source, XmlString defaultValue) {
+    public void initContentType(TypeUse contentType, @Nullable XSElementDecl source, XmlString defaultValue) {
         assert this.property==null; // must not be called twice
 
         this.property = new CElementPropertyInfo("Value",
@@ -118,7 +119,7 @@ public final class CElementInfo extends AbstractCElement
                 contentType.getExpectedMimeType(),
                 source,null,getLocator(),true);
         this.property.setAdapter(contentType.getAdapterUse());
-        property.getTypes().add(new CTypeRef(contentType.getInfo(),tagName,true,defaultValue));
+        property.getTypes().add(new CTypeRef(contentType.getInfo(),tagName,CTypeRef.getSimpleTypeName(source), true,defaultValue));
         this.type = NavigatorImpl.createParameterizedType(
             NavigatorImpl.theInstance.ref(JAXBElement.class),
             getContentInMemoryType() );

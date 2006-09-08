@@ -5,10 +5,13 @@ import javax.xml.namespace.QName;
 
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
+import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.runtime.RuntimeUtil;
 import com.sun.xml.xsom.XmlString;
+import com.sun.xml.xsom.XSElementDecl;
+import com.sun.istack.Nullable;
 
 /**
  * {@link TypeRef} for XJC.
@@ -28,15 +31,34 @@ public final class CTypeRef implements TypeRef<NType,NClass> {
 
     private final QName elementName;
 
+    /**
+     * XML Schema type name of {@link #type}, if available.
+     */
+    /*package*/ final @Nullable QName typeName;
+
     private final boolean nillable;
     public final XmlString defaultValue;
 
-    public CTypeRef(CNonElement type, QName elementName, boolean nillable, XmlString defaultValue) {
+    public CTypeRef(CNonElement type, XSElementDecl decl) {
+        this(type, BGMBuilder.getName(decl),getSimpleTypeName(decl), decl.isNillable(), decl.getDefaultValue() );
+
+    }
+
+    public static QName getSimpleTypeName(XSElementDecl decl) {
+        if(decl==null)  return null;
+        QName typeName = null;
+        if(decl.getType().isSimpleType())
+            typeName = BGMBuilder.getName(decl.getType());
+        return typeName;
+    }
+
+    public CTypeRef(CNonElement type, QName elementName, QName typeName, boolean nillable, XmlString defaultValue) {
         assert type!=null;
         assert elementName!=null;
 
         this.type = type;
         this.elementName = elementName;
+        this.typeName = typeName;
         this.nillable = nillable;
         this.defaultValue = defaultValue;
     }

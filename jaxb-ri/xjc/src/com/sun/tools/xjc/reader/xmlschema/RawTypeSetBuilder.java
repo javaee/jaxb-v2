@@ -162,7 +162,6 @@ public class RawTypeSetBuilder implements XSTermVisitor {
         }
     }
 
-
     /**
      * Reference to a class that maps from an element.
      */
@@ -176,7 +175,7 @@ public class RawTypeSetBuilder implements XSTermVisitor {
         }
 
         protected CTypeRef toTypeRef(CElementPropertyInfo ep) {
-            return new CTypeRef(target,target.getElementName(),decl.isNillable(),decl.getDefaultValue());
+            return new CTypeRef(target,decl);
         }
 
         protected void toElementRef(CReferencePropertyInfo prop) {
@@ -217,8 +216,7 @@ public class RawTypeSetBuilder implements XSTermVisitor {
             CAdapter a = target.getProperty().getAdapter();
             if(a!=null && ep!=null) ep.setAdapter(a);
 
-            return new CTypeRef(target.getContentType(),target.getElementName(),
-                decl.isNillable(),decl.getDefaultValue());
+            return new CTypeRef(target.getContentType(),decl);
         }
 
         protected void toElementRef(CReferencePropertyInfo prop) {

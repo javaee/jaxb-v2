@@ -259,7 +259,7 @@ final class Element extends Term implements Comparable<Element> {
                 for( Element e : b.elements ) {
                     CClassInfo child = owner.getOrCreateElement(e.name).getClassInfo();
                     assert child!=null; // we are requiring them to be classes.
-                    p.getTypes().add(new CTypeRef(child,new QName("",e.name),false,null));
+                    p.getTypes().add(new CTypeRef(child,new QName("",e.name),null,false,null));
                 }
             } else {
                 // single property
@@ -277,7 +277,7 @@ final class Element extends Term implements Comparable<Element> {
                 p = new CElementPropertyInfo(propName,
                     refType.isCollection()?REPEATED_VALUE:NOT_REPEATED, ID.NONE, null, null,null/*TODO*/, locator, !b.isOptional );
 
-                p.getTypes().add(new CTypeRef(refType.getInfo(),new QName("",name),false,null));
+                p.getTypes().add(new CTypeRef(refType.getInfo(),new QName("",name),null,false,null));
             }
             ci.addProperty(p);
         }

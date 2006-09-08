@@ -106,7 +106,7 @@ public final class RawTypeSetBuilder extends DPatternWalker {
         }
 
         protected CTypeRef toTypeRef(CElementPropertyInfo ep) {
-            return new CTypeRef(ci,ci.getElementName(),false,null);
+            return new CTypeRef(ci,ci.getElementName(),ci.getTypeName(),false,null);
         }
     }
 }
