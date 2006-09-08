@@ -14,9 +14,13 @@ import com.sun.tools.xjc.model.CElementPropertyInfo;
 import com.sun.tools.xjc.model.CReferencePropertyInfo;
 import com.sun.tools.xjc.model.CTypeRef;
 import com.sun.tools.xjc.model.Multiplicity;
+import com.sun.tools.xjc.model.TypeUse;
+import com.sun.tools.xjc.model.Model;
+import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.reader.RawTypeSet;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIDom;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIGlobalBinding;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
 import com.sun.xml.xsom.XSElementDecl;
@@ -104,7 +108,7 @@ public class RawTypeSetBuilder implements XSTermVisitor {
         if(elementNames.add(n)) {
             CElement elementBean = Ring.get(ClassSelector.class).bindToType(decl,null);
             if(elementBean==null)
-                refs.add(new RawTypeSet.XmlTypeRef(decl));
+                refs.add(new XmlTypeRef(decl));
             else {
                 if(elementBean instanceof CClassInfo)
                     refs.add(new CClassInfoRef(decl,(CClassInfo)elementBean));
@@ -251,6 +255,85 @@ public class RawTypeSetBuilder implements XSTermVisitor {
 
         protected MimeType getExpectedMimeType() {
             return target.getProperty().getExpectedMimeType();
+        }
+    }
+
+    /**
+     * References to a type. Could be global or local.
+     */
+    public static final class XmlTypeRef extends RawTypeSet.Ref {
+        private final XSElementDecl decl;
+        private final TypeUse target;
+
+        public XmlTypeRef(XSElementDecl decl) {
+            this.decl = decl;
+            SimpleTypeBuilder stb = Ring.get(SimpleTypeBuilder.class);
+            stb.refererStack.push(decl);
+            TypeUse r = Ring.get(ClassSelector.class).bindToType(decl.getType(),decl);
+            stb.refererStack.pop();
+            target = r;
+        }
+
+        protected CTypeRef toTypeRef(CElementPropertyInfo ep) {
+            if(ep!=null && target.getAdapterUse()!=null)
+                ep.setAdapter(target.getAdapterUse());
+            return new CTypeRef(target.getInfo(),decl);
+        }
+
+        /**
+         * The whole type set can be later bound to a reference property,
+         * in which case we need to generate additional code to wrap this
+         * type reference into an element class.
+         *
+         * This method generates such an element class and returns it.
+         */
+        protected void toElementRef(CReferencePropertyInfo prop) {
+            CClassInfo scope = Ring.get(ClassSelector.class).getCurrentBean();
+            Model model = Ring.get(Model.class);
+
+            CCustomizations custs = Ring.get(BGMBuilder.class).getBindInfo(decl).toCustomizationList();
+
+            if(target instanceof CClassInfo && Ring.get(BIGlobalBinding.class).isSimpleMode()) {
+                CClassInfo bean = new CClassInfo(model,scope,
+                                model.getNameConverter().toClassName(decl.getName()),
+                                decl.getLocator(), null, BGMBuilder.getName(decl), decl,
+                                custs);
+                bean.setBaseClass((CClassInfo)target);
+                prop.getElements().add(bean);
+            } else {
+                CElementInfo e = new CElementInfo(model,BGMBuilder.getName(decl),scope,target,
+                        decl.getDefaultValue(), decl, custs, decl.getLocator());
+                prop.getElements().add(e);
+            }
+        }
+
+        protected RawTypeSet.Mode canBeType(RawTypeSet parent) {
+            // if we have an adapter or IDness, which requires special
+            // annotation, and there's more than one element,
+            // we have no place to put the special annotation, so we need JAXBElement.
+            if(parent.refs.size()>1 || !parent.mul.isAtMostOnce()) {
+                if(target.getAdapterUse()!=null || target.idUse()!=ID.NONE)
+                    return RawTypeSet.Mode.MUST_BE_REFERENCE;
+            }
+
+            // nillable and optional at the same time. needs an element wrapper to distinguish those
+            // two states. But this is not a hard requirement.
+            if(decl.isNillable() && parent.mul.isOptional())
+                return RawTypeSet.Mode.CAN_BE_TYPEREF;
+
+            return RawTypeSet.Mode.SHOULD_BE_TYPEREF;
+        }
+
+        protected boolean isListOfValues() {
+            return target.isCollection();
+        }
+
+        protected ID id() {
+            return target.idUse();
+        }
+
+        protected MimeType getExpectedMimeType() {
+            return target.getExpectedMimeType();
         }
     }
 }
