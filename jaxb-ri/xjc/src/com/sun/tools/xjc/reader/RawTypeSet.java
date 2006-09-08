@@ -12,7 +12,6 @@ import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.model.CElementInfo;
 import com.sun.tools.xjc.model.CElementPropertyInfo;
 import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.*;
-import com.sun.tools.xjc.model.CNonElement;
 import com.sun.tools.xjc.model.CReferencePropertyInfo;
 import com.sun.tools.xjc.model.CTypeRef;
 import com.sun.tools.xjc.model.Model;
