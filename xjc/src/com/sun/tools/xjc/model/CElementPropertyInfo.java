@@ -78,6 +78,19 @@ public final class CElementPropertyInfo extends CPropertyInfo implements Element
         return ref;
     }
 
+    public QName getSchemaType() {
+        if(types.size()!=1)
+            // if more than one kind is here, can't produce @XmlSchemaType.
+            // TODO: is it allowed to have one generated if types
+            return null;
+
+        CTypeRef t = types.get(0);
+        if(needsExplicitTypeName(t.getTarget(),t.typeName))
+            return t.typeName;
+        else
+            return null;
+    }
+
     /**
      * XJC never uses the wrapper element. Always return null.
      */

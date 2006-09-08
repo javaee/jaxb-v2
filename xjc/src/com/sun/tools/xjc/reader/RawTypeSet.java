@@ -24,11 +24,7 @@ import com.sun.tools.xjc.reader.xmlschema.SimpleTypeBuilder;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIGlobalBinding;
 import com.sun.xml.bind.v2.model.core.Element;
 import com.sun.xml.bind.v2.model.core.ID;
-import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XSElementDecl;
-import com.sun.xml.xsom.XmlString;
-
-import org.xml.sax.Locator;
 
 /**
  * Set of {@link Ref}.
@@ -218,38 +214,18 @@ public final class RawTypeSet {
      * References to a type. Could be global or local.
      */
     public static final class XmlTypeRef extends Ref {
-        public final QName elementName;
-        public final TypeUse target;
-        public final Locator locator;
-        public final XSComponent source;
-        public final CCustomizations custs;
-        public final boolean nillable;
-        public final XmlString defaultValue;
-
-        public XmlTypeRef(QName elementName, TypeUse target, boolean nillable, XmlString defaultValue, XSComponent source, CCustomizations custs, Locator loc) {
-            assert elementName!=null;
-            assert target!=null;
-
-            this.elementName = elementName;
-            this.target = target;
-            this.source = source;
-            this.custs = custs;
-            this.nillable = nillable;
-            this.defaultValue = defaultValue;
-            this.locator = loc;
-        }
+        private final XSElementDecl decl;
+        private final TypeUse target;
 
         public XmlTypeRef(XSElementDecl decl) {
-            this(new QName(decl.getTargetNamespace(),decl.getName()),bindToType(decl),
-                    decl.isNillable(), decl.getDefaultValue(), decl,
-                    Ring.get(BGMBuilder.class).getBindInfo(decl).toCustomizationList(),
-                    decl.getLocator());
+            this.decl = decl;
+            target = bindToType(decl);
         }
 
         protected CTypeRef toTypeRef(CElementPropertyInfo ep) {
             if(ep!=null && target.getAdapterUse()!=null)
                 ep.setAdapter(target.getAdapterUse());
-            return new CTypeRef(target.getInfo(),elementName,nillable,defaultValue);
+            return new CTypeRef(target.getInfo(),decl);
         }
 
         /**
@@ -263,14 +239,18 @@ public final class RawTypeSet {
             CClassInfo scope = Ring.get(ClassSelector.class).getCurrentBean();
             Model model = Ring.get(Model.class);
 
+            CCustomizations custs = Ring.get(BGMBuilder.class).getBindInfo(decl).toCustomizationList();
+
             if(target instanceof CClassInfo && Ring.get(BIGlobalBinding.class).isSimpleMode()) {
                 CClassInfo bean = new CClassInfo(model,scope,
-                                model.getNameConverter().toClassName(elementName.getLocalPart()),
-                                locator,null,elementName,source,custs);
+                                model.getNameConverter().toClassName(decl.getName()),
+                                decl.getLocator(), null, BGMBuilder.getName(decl), decl,
+                                custs);
                 bean.setBaseClass((CClassInfo)target);
                 prop.getElements().add(bean);
             } else {
-                CElementInfo e = new CElementInfo(model,elementName,scope,target,defaultValue,source,custs,locator);
+                CElementInfo e = new CElementInfo(model,BGMBuilder.getName(decl),scope,target,
+                        decl.getDefaultValue(), decl, custs, decl.getLocator());
                 prop.getElements().add(e);
             }
         }
@@ -286,7 +266,7 @@ public final class RawTypeSet {
 
             // nillable and optional at the same time. needs an element wrapper to distinguish those
             // two states. But this is not a hard requirement.
-            if(nillable && parent.mul.isOptional())
+            if(decl.isNillable() && parent.mul.isOptional())
                 return Mode.CAN_BE_TYPEREF;
 
             return Mode.SHOULD_BE_TYPEREF;

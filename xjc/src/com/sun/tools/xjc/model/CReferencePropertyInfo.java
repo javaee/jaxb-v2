@@ -167,4 +167,9 @@ public final class CReferencePropertyInfo extends CPropertyInfo implements Refer
         // in XJC, we never recognize a nillable collection pattern, so this is always false.
         return false;
     }
+
+    // reference property cannot have a type.
+    public QName getSchemaType() {
+        return null;
+    }
 }

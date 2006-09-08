@@ -20,6 +20,8 @@ import org.xml.sax.Locator;
 abstract class CSingleTypePropertyInfo extends CPropertyInfo {
     protected final TypeUse type;
 
+    private final QName schemaType;
+
     /**
      *
      * @param typeName
@@ -33,32 +35,12 @@ abstract class CSingleTypePropertyInfo extends CPropertyInfo {
 
         if(needsExplicitTypeName(type,typeName))
             schemaType = typeName;
+        else
+            schemaType = null;
     }
 
-    private static boolean needsExplicitTypeName(TypeUse type, QName typeName) {
-        if(typeName==null)
-            // this is anonymous type. can't have @XmlSchemaType
-            return false;
-
-        if(!typeName.getNamespaceURI().equals(WellKnownNamespace.XML_SCHEMA))
-            // if we put application-defined type name, it will be undefined
-            // by the time we generate a schema.
-            return false;
-
-        if(type.isCollection())
-            // there's no built-in binding for a list simple type,
-            // so any collection type always need @XmlSchemaType
-            return true;
-
-        QName itemType = type.getInfo().getTypeName();
-        if(itemType==null)
-            // this is somewhat strange case, as it means the bound type is anonymous
-            // but it's eventually derived by a named type and used.
-            // but we can certainly use typeName as @XmlSchemaType value here
-            return true;
-
-        // if it's the default type name for this item, then no need
-        return !itemType.equals(typeName);
+    public QName getSchemaType() {
+        return schemaType;
     }
 
     public final ID id() {
