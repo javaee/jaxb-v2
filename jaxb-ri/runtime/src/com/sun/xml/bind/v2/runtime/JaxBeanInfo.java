@@ -409,45 +409,38 @@ public abstract class JaxBeanInfo<BeanT> {
      */
     protected final void setLifecycleFlags() {
         try {
-            Method m;
-
-            // beforeUnmarshal
-            try {
-                m = jaxbType.getDeclaredMethod("beforeUnmarshal", unmarshalEventParams);
-                cacheLifecycleMethod(m, FLAG_HAS_BEFORE_UNMARSHAL_METHOD);
-            } catch (NoSuchMethodException e) {
-                // no-op, look for the next method
-            }
-
-            // afterUnmarshal
-            try {
-                m = jaxbType.getDeclaredMethod("afterUnmarshal", unmarshalEventParams);
-                cacheLifecycleMethod(m, FLAG_HAS_AFTER_UNMARSHAL_METHOD);
-            } catch (NoSuchMethodException e) {
-                // no-op, look for the next method
-            }
-
-            // beforeMarshal
-            try {
-                m = jaxbType.getDeclaredMethod("beforeMarshal", marshalEventParams);
-                cacheLifecycleMethod(m, FLAG_HAS_BEFORE_MARSHAL_METHOD);
-            } catch (NoSuchMethodException e) {
-                // no-op, look for the next method
-            }
-
-            // afterMarshal
-            try {
-                m = jaxbType.getDeclaredMethod("afterMarshal", marshalEventParams);
-                cacheLifecycleMethod(m, FLAG_HAS_AFTER_MARSHAL_METHOD);
-            } catch (NoSuchMethodException e) {
-                // no-op
+            for( Method m : jaxbType.getDeclaredMethods() ) {
+                String name = m.getName();
+                if(name.equals("beforeUnmarshal")) {
+                    if(match(m,unmarshalEventParams)) {
+                        cacheLifecycleMethod(m, FLAG_HAS_BEFORE_UNMARSHAL_METHOD);
+                    }
+                } else
+                if(name.equals("afterUnmarshal")) {
+                    if(match(m,unmarshalEventParams)) {
+                        cacheLifecycleMethod(m, FLAG_HAS_AFTER_UNMARSHAL_METHOD);
+                    }
+                } else
+                if(name.equals("beforeMarshal")) {
+                    if(match(m,marshalEventParams)) {
+                        cacheLifecycleMethod(m, FLAG_HAS_BEFORE_MARSHAL_METHOD);
+                    }
+                } else
+                if(name.equals("afterMarshal")) {
+                    if(match(m,marshalEventParams)) {
+                        cacheLifecycleMethod(m, FLAG_HAS_AFTER_MARSHAL_METHOD);
+                    }
+                }
             }
         } catch(SecurityException e) {
             // this happens when we don't have enough permission.
             logger.log( Level.WARNING, Messages.UNABLE_TO_DISCOVER_EVENTHANDLER.format(
-                jaxbType.getName(),
-                e ));
+                jaxbType.getName(), e ));
         }
+    }
+
+    private boolean match(Method m, Class[] params) {
+        return Arrays.equals(m.getParameterTypes(),params);
     }
 
     /**
