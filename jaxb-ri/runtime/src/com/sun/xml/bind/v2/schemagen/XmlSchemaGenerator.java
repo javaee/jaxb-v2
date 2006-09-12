@@ -1098,7 +1098,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                         Any any = parent.any();
                         final String pcmode = getProcessContentsModeName(wc);
                         if( pcmode != null ) any.processContents(pcmode);
-                        TODO.schemaGenerator("generate @namespace ???");
+                        any.namespace("##other");
                     }
                 });
             }
