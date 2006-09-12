@@ -60,7 +60,6 @@ import com.sun.xml.bind.v2.schemagen.xmlschema.Import;
 import com.sun.xml.bind.v2.schemagen.xmlschema.List;
 import com.sun.xml.bind.v2.schemagen.xmlschema.LocalAttribute;
 import com.sun.xml.bind.v2.schemagen.xmlschema.LocalElement;
-import com.sun.xml.bind.v2.schemagen.xmlschema.Occurs;
 import com.sun.xml.bind.v2.schemagen.xmlschema.Schema;
 import com.sun.xml.bind.v2.schemagen.xmlschema.SimpleExtension;
 import com.sun.xml.bind.v2.schemagen.xmlschema.SimpleRestrictionModel;
@@ -69,6 +68,8 @@ import com.sun.xml.bind.v2.schemagen.xmlschema.SimpleTypeHost;
 import com.sun.xml.bind.v2.schemagen.xmlschema.TopLevelAttribute;
 import com.sun.xml.bind.v2.schemagen.xmlschema.TopLevelElement;
 import com.sun.xml.bind.v2.schemagen.xmlschema.TypeHost;
+import com.sun.xml.bind.v2.schemagen.xmlschema.ContentModelContainer;
+import com.sun.xml.bind.v2.schemagen.xmlschema.TypeDefParticle;
 import com.sun.xml.bind.v2.schemagen.episode.Bindings;
 import com.sun.xml.txw2.TXW;
 import com.sun.xml.txw2.TxwException;
@@ -796,65 +797,44 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             if(c.isAbstract())
                 ct._abstract(true);
 
-            // hold the ct open in case we need to generate @mixed below...
-            ct.block();
-
-            // either <sequence> or <all>
-            ExplicitGroup compositor = null;
-
-            // only necessary if this type has a base class we need to extend from
+            // these are where we write content model and attributes
             AttrDecls contentModel = ct;
+            TypeDefParticle contentModelOwner = ct;
 
             // if there is a base class, we need to generate an extension in the schema
             final ClassInfo<T,C> bc = c.getBaseClass();
             if (bc != null) {
                 ComplexExtension ce = ct.complexContent().extension();
                 contentModel = ce;
+                contentModelOwner = ce;
 
                 ce.base(bc.getTypeName());
                 // TODO: what if the base type is anonymous?
-                // ordered props go in a sequence, unordered go in an all
-                if( c.isOrdered() ) {
-                    compositor = ce.sequence();
-                } else {
-                    compositor = ce.all();
-                }
             }
 
-            // iterate over the properties
-            if (c.hasProperties()) {
-                if( compositor == null ) { // if there is no extension base, create a top level seq
-                    // ordered props go in a sequence, unordered go in an all
-                    if( c.isOrdered() ) {
-                        compositor = ct.sequence();
-                    } else {
-                        compositor = ct.all();
-                    }
+            // build the tree that represents the explicit content model from iterate over the properties
+            ContentModelWriter.ModelGroup top = new ContentModelWriter.ModelGroup(
+                c.isOrdered() ? GroupKind.SEQUENCE : GroupKind.ALL, false,false);
+            for (PropertyInfo<T,C> p : c.getProperties()) {
+                // handling for <complexType @mixed='true' ...>
+                if(p instanceof ReferencePropertyInfo && ((ReferencePropertyInfo)p).isMixed()) {
+                    ct.mixed(true);
                 }
-
-                // block writing the compositor because we might need to
-                // write some out of order attributes to handle min/maxOccurs
-                compositor.block();
-
-                for (PropertyInfo<T,C> p : c.getProperties()) {
-                    // handling for <complexType @mixed='true' ...>
-                    if(p instanceof ReferencePropertyInfo && ((ReferencePropertyInfo)p).isMixed()) {
-                        ct.mixed(true);
-                    }
-                    writeProperty(p, contentModel, compositor);
-                }
-
-                compositor.commit();
+                buildPropertyContentModel(p, top);
             }
 
-            // look for wildcard attributes
+            // write the content model
+            top.write(contentModelOwner);
+
+            // then attributes
+            for (PropertyInfo<T,C> p : c.getProperties()) {
+                if (p instanceof AttributePropertyInfo) {
+                    handleAttributeProp((AttributePropertyInfo<T,C>)p, contentModel);
+                }
+            }
             if( c.hasAttributeWildcard()) {
-                // TODO: not type safe
                 contentModel.anyAttribute().namespace("##other").processContents("skip");
             }
-
-            // finally commit the ct
-            ct.commit();
         }
 
         /**
@@ -874,15 +854,15 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         }
 
         /**
-         * write the schema definition(s) for the specified property
+         * Builds content model writer for the specified property.
          */
-        private void writeProperty(PropertyInfo<T,C> p, AttrDecls attr, ExplicitGroup compositor) {
+        private void buildPropertyContentModel(PropertyInfo<T,C> p, ContentModelWriter.ModelGroup compositor) {
             switch(p.kind()) {
             case ELEMENT:
                 handleElementProp((ElementPropertyInfo<T,C>)p, compositor);
                 break;
             case ATTRIBUTE:
-                handleAttributeProp((AttributePropertyInfo<T,C>)p, attr);
+                // attribuets are handled later
                 break;
             case REFERENCE:
                 handleReferenceProp((ReferencePropertyInfo<T,C>)p, compositor);
@@ -909,92 +889,82 @@ public final class XmlSchemaGenerator<T,C,F,M> {
          * not be wrapped.
          *
          * @param ep the element property
-         * @param compositor the schema compositor (sequence or all)
+         * @param compositor the schema compositor in which the property will be written.
          */
-        private void handleElementProp(ElementPropertyInfo<T,C> ep, ExplicitGroup compositor) {
-            QName ename = ep.getXmlName();
-            Occurs occurs = null;
-
+        private void handleElementProp(final ElementPropertyInfo<T,C> ep, ContentModelWriter.ModelGroup compositor) {
             if (ep.isValueList()) {
-                TypeRef<T,C> t = ep.getTypes().get(0);
-                LocalElement e = compositor.element();
-
-                QName tn = t.getTagName();
-                e.name(tn.getLocalPart());
-                List lst = e.simpleType().list();
-                writeTypeRef(lst,t, "itemType");
-                elementFormDefault.writeForm(e,tn);
+                compositor.add(new ContentModelWriter() {
+                    protected void write(ContentModelContainer parent) {
+                        TypeRef<T,C> t = ep.getTypes().get(0);
+                        LocalElement e = parent.element();
+                        QName tn = t.getTagName();
+                        e.name(tn.getLocalPart());
+                        List lst = e.simpleType().list();
+                        writeTypeRef(lst,t, "itemType");
+                        elementFormDefault.writeForm(e,tn);
+                    }
+                } );
                 return;
             }
 
-            if (ep.isCollection()) {
-                if (ename != null) { // wrapped collection
-                    LocalElement e = compositor.element();
-                    if(ename.getNamespaceURI().length()>0) {
-                        if (!ename.getNamespaceURI().equals(this.uri)) {
-                            // TODO: we need to generate the corresponding element declaration for this
-                            // table 8-25: Property/field element wrapper with ref attribute
-                            e.ref(new QName(ename.getNamespaceURI(), ename.getLocalPart()));
-                            return;
+            // create the content model
+            final ContentModelWriter.ModelGroup choice = new ContentModelWriter.ModelGroup(
+                    GroupKind.CHOICE, !ep.isRequired(), ep.isCollection()); // see Spec table 8-13
+
+            for (final TypeRef<T,C> t : ep.getTypes()) {
+                choice.add(new ContentModelWriter() {
+                    protected void write(ContentModelContainer parent) {
+                        LocalElement e = parent.element();
+
+                        QName tn = t.getTagName();
+
+                        if(canBeDirectElementRef(t,tn) || (!tn.getNamespaceURI().equals(uri) && tn.getNamespaceURI().length()>0)) {
+                            e.ref(tn);
+                        } else {
+                            e.name(tn.getLocalPart());
+                            writeTypeRef(e,t, "type");
+                            elementFormDefault.writeForm(e,tn);
                         }
-                    }
-                    elementFormDefault.writeForm(e,ename);
 
-                    ComplexType p = e.name(ename.getLocalPart()).complexType();
-                    if(ep.isCollectionNillable()) {
-                        e.nillable(true);
+                        if (t.isNillable()) {
+                            e.nillable(true);
+                        }
+                        if(t.getDefaultValue()!=null)
+                            e._default(t.getDefaultValue());
                     }
-                    if(!ep.isCollectionRequired()) {
-                        e.minOccurs(0);
-                    }
-                    if (ep.getTypes().size() == 1) {
-                        compositor = p.sequence();
-                    } else {
-                        compositor = p.choice();
-                        occurs = compositor;
-                    }
-                } else { // unwrapped collection
-                    if (ep.getTypes().size() > 1) {
-                        compositor = compositor.choice();
-                        occurs = compositor;
-                    }
-                }
-            } else {
-                if (ep.getTypes().size() > 1) {
-                    compositor = compositor.choice();
-                    occurs = compositor;
-                }
+                });
             }
 
 
-            // fill in the content model
-            for (TypeRef<T,C> t : ep.getTypes()) {
-                LocalElement e = compositor.element();
-                if (occurs == null) occurs = e;
-                QName tn = t.getTagName();
+            final QName ename = ep.getXmlName();
+            if (ename != null) { // wrapped collection
+                compositor.add(new ContentModelWriter() {
+                    protected void write(ContentModelContainer parent) {
+                        LocalElement e = parent.element();
+                        if(ename.getNamespaceURI().length()>0) {
+                            if (!ename.getNamespaceURI().equals(uri)) {
+                                // TODO: we need to generate the corresponding element declaration for this
+                                // table 8-25: Property/field element wrapper with ref attribute
+                                e.ref(new QName(ename.getNamespaceURI(), ename.getLocalPart()));
+                                return;
+                            }
+                        }
+                        elementFormDefault.writeForm(e,ename);
 
-                if(canBeDirectElementRef(t,tn) || (!tn.getNamespaceURI().equals(uri) && tn.getNamespaceURI().length()>0)) {
-                    e.ref(tn);
-                } else {
-                    e.name(tn.getLocalPart());
-                    writeTypeRef(e,t, "type");
-                    elementFormDefault.writeForm(e,tn);
-                }
+                        if(ep.isCollectionNillable()) {
+                            e.nillable(true);
+                        }
+                        if(!ep.isCollectionRequired()) {
+                            e.minOccurs(0);
+                        }
 
-                if (t.isNillable()) {
-                    e.nillable(true);
-                }
-                if(t.getDefaultValue()!=null)
-                    e._default(t.getDefaultValue());
+                        ComplexType p = e.name(ename.getLocalPart()).complexType();
+                        choice.write(p);
+                    }
+                });
+            } else {// non-wrapped
+                compositor.add(choice);
             }
-
-            if (ep.isCollection())
-                occurs.maxOccurs("unbounded");
-
-            if (!ep.isRequired())
-                // see Spec table 8-13
-                occurs.minOccurs(0);
-            // else minOccurs defaults to 1
         }
 
         /**
@@ -1080,87 +1050,79 @@ public final class XmlSchemaGenerator<T,C,F,M> {
          *
          * The reference property may or may not refer to a collection and it may or may
          * not be wrapped.
-         *
-         * @param rp
-         * @param compositor
          */
-        private void handleReferenceProp(ReferencePropertyInfo<T,C> rp, ExplicitGroup compositor) {
-            QName ename = rp.getXmlName();
-            Occurs occurs = null;
-
-            if (rp.isCollection()) {
-                if (ename != null) { // wrapped collection
-                    LocalElement e = compositor.element();
-                    ComplexType p = e.name(ename.getLocalPart()).complexType();
-                    elementFormDefault.writeForm(e,ename);
-                    if(rp.isCollectionNillable())
-                        e.nillable(true);
-                    if(!rp.isCollectionRequired())
-                        e.minOccurs(0);
-
-                    if (rp.getElements().size() == 1) {
-                        compositor = p.sequence();
-                    } else {
-                        compositor = p.choice();
-                        occurs = compositor;
-                    }
-                } else { // unwrapped collection
-                    if (rp.getElements().size() > 1) {
-                        compositor = compositor.choice();
-                        occurs = compositor;
-                    }
-                }
-            }
-
+        private void handleReferenceProp(final ReferencePropertyInfo<T,C> rp, ContentModelWriter.ModelGroup compositor) {
             // fill in content model
-            TODO.checkSpec("should we loop in the case of a non-collection ep?");
-            for (Element<T,C> e : rp.getElements()) {
-                LocalElement eref = compositor.element();
-                if (occurs == null) occurs = eref;
+            final ContentModelWriter.ModelGroup choice = new ContentModelWriter.ModelGroup(GroupKind.CHOICE, false, rp.isCollection() );
+            for (final Element<T,C> e : rp.getElements()) {
+                choice.add(new ContentModelWriter() {
+                    protected void write(ContentModelContainer parent) {
+                        LocalElement eref = parent.element();
 
-                QName en = e.getElementName();
-                if(e.getScope()!=null) {
-                    // scoped. needs to be inlined
-                    boolean qualified = en.getNamespaceURI().equals(uri);
-                    boolean unqualified = en.getNamespaceURI().equals("");
-                    if(qualified || unqualified) {
-                        // can be inlined indeed
+                        QName en = e.getElementName();
+                        if(e.getScope()!=null) {
+                            // scoped. needs to be inlined
+                            boolean qualified = en.getNamespaceURI().equals(uri);
+                            boolean unqualified = en.getNamespaceURI().equals("");
+                            if(qualified || unqualified) {
+                                // can be inlined indeed
 
-                        // write form="..." if necessary
-                        if(unqualified) {
-                            if(elementFormDefault.isEffectivelyQualified)
-                                eref.form("unqualified");
-                        } else {
-                            if(!elementFormDefault.isEffectivelyQualified)
-                                eref.form("qualified");
+                                // write form="..." if necessary
+                                if(unqualified) {
+                                    if(elementFormDefault.isEffectivelyQualified)
+                                        eref.form("unqualified");
+                                } else {
+                                    if(!elementFormDefault.isEffectivelyQualified)
+                                        eref.form("qualified");
+                                }
+
+                                eref.name(en.getLocalPart());
+
+                                // write out type reference
+                                if(e instanceof ClassInfo) {
+                                    writeTypeRef(eref,(ClassInfo<T,C>)e,"type");
+                                } else {
+                                    writeTypeRef(eref,((ElementInfo<T,C>)e).getContentType(),"type");
+                                }
+                            }
                         }
-
-                        eref.name(en.getLocalPart());
-
-                        // write out type reference
-                        if(e instanceof ClassInfo) {
-                            writeTypeRef(eref,(ClassInfo<T,C>)e,"type");
-                        } else {
-                            writeTypeRef(eref,((ElementInfo<T,C>)e).getContentType(),"type");
-                        }
-                        continue;
+                        eref.ref(en);
                     }
-                }
-                eref.ref(en);
+                });
             }
 
-            WildcardMode wc = rp.getWildcard();
+            final WildcardMode wc = rp.getWildcard();
             if( wc != null ) {
-                Any any = compositor.any();
-                final String pcmode = getProcessContentsModeName(wc);
-                if( pcmode != null ) any.processContents(pcmode);
-                TODO.schemaGenerator("generate @namespace ???");
-                if( occurs == null ) occurs = any;
+                choice.add(new ContentModelWriter() {
+                    protected void write(ContentModelContainer parent) {
+                        Any any = parent.any();
+                        final String pcmode = getProcessContentsModeName(wc);
+                        if( pcmode != null ) any.processContents(pcmode);
+                        TODO.schemaGenerator("generate @namespace ???");
+                    }
+                });
             }
 
-            if(rp.isCollection())
-                occurs.maxOccurs("unbounded");
 
+            final QName ename = rp.getXmlName();
+
+            if (ename != null) { // wrapped
+                compositor.add(new ContentModelWriter() {
+                    protected void write(ContentModelContainer parent) {
+                        LocalElement e = parent.element();
+                        elementFormDefault.writeForm(e,ename);
+                        if(rp.isCollectionNillable())
+                            e.nillable(true);
+                        if(!rp.isCollectionRequired())
+                            e.minOccurs(0);
+
+                        ComplexType p = e.name(ename.getLocalPart()).complexType();
+                        choice.write(p);
+                    }
+                });
+            } else { // unwrapped
+                compositor.add(choice);
+            }
         }
 
         /**
@@ -1170,23 +1132,27 @@ public final class XmlSchemaGenerator<T,C,F,M> {
          * @param mp the map property
          * @param compositor the schema compositor (sequence or all)
          */
-        private void handleMapProp(MapPropertyInfo<T,C> mp, ExplicitGroup compositor) {
-            QName ename = mp.getXmlName();
+        private void handleMapProp(final MapPropertyInfo<T,C> mp, ContentModelWriter.ModelGroup compositor) {
+            compositor.add(new ContentModelWriter() {
+                protected void write(ContentModelContainer parent) {
+                    QName ename = mp.getXmlName();
 
-            LocalElement e = compositor.element();
-            elementFormDefault.writeForm(e,ename);
-            if(mp.isCollectionNillable())
-                e.nillable(true);
-            ComplexType p = e.name(ename.getLocalPart()).complexType();
+                    LocalElement e = parent.element();
+                    elementFormDefault.writeForm(e,ename);
+                    if(mp.isCollectionNillable())
+                        e.nillable(true);
+                    ComplexType p = e.name(ename.getLocalPart()).complexType();
 
-            // TODO: entry, key, and value are always unqualified. that needs to be fixed, too.
-            // TODO: we need to generate the corresponding element declaration, if they are qualified
-            e = p.sequence().element();
-            e.name("entry").minOccurs(0).maxOccurs("unbounded");
+                    // TODO: entry, key, and value are always unqualified. that needs to be fixed, too.
+                    // TODO: we need to generate the corresponding element declaration, if they are qualified
+                    e = p.sequence().element();
+                    e.name("entry").minOccurs(0).maxOccurs("unbounded");
 
-            ExplicitGroup seq = e.complexType().sequence();
-            writeKeyOrValue(seq, "key", mp.getKeyType());
-            writeKeyOrValue(seq, "value", mp.getValueType());
+                    ExplicitGroup seq = e.complexType().sequence();
+                    writeKeyOrValue(seq, "key", mp.getKeyType());
+                    writeKeyOrValue(seq, "value", mp.getValueType());
+                }
+            });
         }
 
         private void writeKeyOrValue(ExplicitGroup seq, String tagName, NonElement<T, C> typeRef) {
