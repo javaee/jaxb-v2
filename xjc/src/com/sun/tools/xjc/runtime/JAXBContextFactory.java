@@ -68,7 +68,7 @@ public class JAXBContextFactory {
 
                 // if we find one, tell the real JAXB provider to
                 // load foo.bar.impl.ObjectFactory
-                name = name.substring(name.length()-DOT_OBJECT_FACTORY.length())+IMPL_DOT_OBJECT_FACTORY;
+                name = name.substring(0,name.length()-DOT_OBJECT_FACTORY.length())+IMPL_DOT_OBJECT_FACTORY;
 
                 try {
                     c = c.getClassLoader().loadClass(name);
