@@ -47,6 +47,10 @@ public class LocatableAnnotation implements InvocationHandler, Locatable, Locati
         } catch (ClassNotFoundException e) {
             // annotation not loadable
             return annotation;
+        } catch (IllegalArgumentException e) {
+            // Proxy.newProxyInstance throws this if it cannot resolve this annotation
+            // in this classloader
+            return annotation;
         }
 
     }
