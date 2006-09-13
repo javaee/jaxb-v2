@@ -150,6 +150,9 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
                 if(nav().isInterface(clazz))
                     msg = Messages.CANT_HANDLE_INTERFACE;
                 else
+                if(nav().isInnerClass(clazz))
+                    msg = Messages.CANT_HANDLE_INNER_CLASS;
+                else
                     msg = Messages.NO_DEFAULT_CONSTRUCTOR;
 
                 builder.reportError(new IllegalAnnotationException(

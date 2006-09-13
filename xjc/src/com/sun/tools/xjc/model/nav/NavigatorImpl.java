@@ -294,4 +294,8 @@ public final class NavigatorImpl implements Navigator<NType,NClass,Void,Void> {
     public boolean isTransient(Void f) {
         throw new UnsupportedOperationException();
     }
+
+    public boolean isInnerClass(NClass clazz) {
+        throw new UnsupportedOperationException();
+    }
 }

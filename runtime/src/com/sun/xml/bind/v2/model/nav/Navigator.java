@@ -356,4 +356,12 @@ public interface Navigator<T,C,F,M> {
      * Returns true if the field is transient.
      */
     boolean isTransient(F f);
+
+    /**
+     * Returns true if the given class is an inner class.
+     *
+     * This is only used to improve the error diagnostics, so
+     * it's OK to fail to detect some inner classes as such.
+     */
+    boolean isInnerClass(C clazz);
 }
