@@ -281,6 +281,10 @@ public class APTNavigator implements Navigator<TypeMirror,TypeDeclaration,FieldD
         return f.getModifiers().contains(Modifier.TRANSIENT);
     }
 
+    public boolean isInnerClass(TypeDeclaration clazz) {
+        return clazz.getDeclaringType()!=null;
+    }
+
     public boolean isArray(TypeMirror t) {
         return t instanceof ArrayType;
     }

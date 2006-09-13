@@ -520,6 +520,10 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
         return Modifier.isTransient(f.getModifiers());
     }
 
+    public boolean isInnerClass(Class clazz) {
+        return clazz.getEnclosingClass()!=null;
+    }
+
 
     /**
      * JDK 5.0 has a bug of createing {@link GenericArrayType} where it shouldn't.
