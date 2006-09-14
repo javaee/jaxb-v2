@@ -952,6 +952,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                                 return;
                             }
                         }
+                        e.name(ename.getLocalPart());
                         elementFormDefault.writeForm(e,ename);
 
                         if(ep.isCollectionNillable()) {
@@ -959,7 +960,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                         }
                         writeOccurs(e,true,repeated);
 
-                        ComplexType p = e.name(ename.getLocalPart()).complexType();
+                        ComplexType p = e.complexType();
                         choice.write(p);
                     }
                 };
@@ -1117,13 +1118,13 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             if (ename != null) { // wrapped
                 return new Tree.Term() {
                     protected void write(ContentModelContainer parent, boolean isOptional, boolean repeated) {
-                        LocalElement e = parent.element();
+                        LocalElement e = parent.element().name(ename.getLocalPart());
                         elementFormDefault.writeForm(e,ename);
                         if(rp.isCollectionNillable())
                             e.nillable(true);
                         writeOccurs(e,true,repeated);
 
-                        ComplexType p = e.name(ename.getLocalPart()).complexType();
+                        ComplexType p = e.complexType();
                         choice.write(p);
                     }
                 };
