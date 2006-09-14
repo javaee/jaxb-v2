@@ -12,6 +12,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -677,6 +678,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
          */
         private void writeTypeRef(TypeHost th, NonElement<T,C> type, String refAttName) {
             if(type.getTypeName()==null) {
+                th.block(); // so that the caller may write other attribuets
                 if(type instanceof ClassInfo) {
                     writeClass( (ClassInfo<T,C>)type, th );
                 } else {
@@ -813,15 +815,18 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             }
 
             // build the tree that represents the explicit content model from iterate over the properties
-            ContentModelWriter.ModelGroup top = new ContentModelWriter.ModelGroup(
-                c.isOrdered() ? GroupKind.SEQUENCE : GroupKind.ALL, false,false);
+            ArrayList<Tree> children = new ArrayList<Tree>();
             for (PropertyInfo<T,C> p : c.getProperties()) {
                 // handling for <complexType @mixed='true' ...>
                 if(p instanceof ReferencePropertyInfo && ((ReferencePropertyInfo)p).isMixed()) {
                     ct.mixed(true);
                 }
-                buildPropertyContentModel(p, top);
+                Tree t = buildPropertyContentModel(p);
+                if(t!=null)
+                    children.add(t);
             }
+
+            Tree top = Tree.makeGroup( c.isOrdered() ? GroupKind.SEQUENCE : GroupKind.ALL, children);
 
             // write the content model
             top.write(contentModelOwner);
@@ -856,25 +861,21 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         /**
          * Builds content model writer for the specified property.
          */
-        private void buildPropertyContentModel(PropertyInfo<T,C> p, ContentModelWriter.ModelGroup compositor) {
+        private Tree buildPropertyContentModel(PropertyInfo<T,C> p) {
             switch(p.kind()) {
             case ELEMENT:
-                handleElementProp((ElementPropertyInfo<T,C>)p, compositor);
-                break;
+                return handleElementProp((ElementPropertyInfo<T,C>)p);
             case ATTRIBUTE:
                 // attribuets are handled later
-                break;
+                return null;
             case REFERENCE:
-                handleReferenceProp((ReferencePropertyInfo<T,C>)p, compositor);
-                break;
+                return handleReferenceProp((ReferencePropertyInfo<T,C>)p);
             case MAP:
-                handleMapProp((MapPropertyInfo<T,C>)p, compositor);
-                break;
+                return handleMapProp((MapPropertyInfo<T,C>)p);
             case VALUE:
                 // value props handled above in writeClass()
                 assert false;
                 throw new IllegalStateException();
-                // break();
             default:
                 assert false;
                 throw new IllegalStateException();
@@ -889,12 +890,11 @@ public final class XmlSchemaGenerator<T,C,F,M> {
          * not be wrapped.
          *
          * @param ep the element property
-         * @param compositor the schema compositor in which the property will be written.
          */
-        private void handleElementProp(final ElementPropertyInfo<T,C> ep, ContentModelWriter.ModelGroup compositor) {
+        private Tree handleElementProp(final ElementPropertyInfo<T,C> ep) {
             if (ep.isValueList()) {
-                compositor.add(new ContentModelWriter() {
-                    protected void write(ContentModelContainer parent) {
+                return new Tree.Term() {
+                    protected void write(ContentModelContainer parent, boolean isOptional, boolean repeated) {
                         TypeRef<T,C> t = ep.getTypes().get(0);
                         LocalElement e = parent.element();
                         QName tn = t.getTagName();
@@ -902,18 +902,15 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                         List lst = e.simpleType().list();
                         writeTypeRef(lst,t, "itemType");
                         elementFormDefault.writeForm(e,tn);
+                        writeOccurs(e,isOptional,repeated);
                     }
-                } );
-                return;
+                };
             }
 
-            // create the content model
-            final ContentModelWriter.ModelGroup choice = new ContentModelWriter.ModelGroup(
-                    GroupKind.CHOICE, !ep.isRequired(), ep.isCollection()); // see Spec table 8-13
-
+            ArrayList<Tree> children = new ArrayList<Tree>();
             for (final TypeRef<T,C> t : ep.getTypes()) {
-                choice.add(new ContentModelWriter() {
-                    protected void write(ContentModelContainer parent) {
+                children.add(new Tree.Term() {
+                    protected void write(ContentModelContainer parent, boolean isOptional, boolean repeated) {
                         LocalElement e = parent.element();
 
                         QName tn = t.getTagName();
@@ -931,15 +928,20 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                         }
                         if(t.getDefaultValue()!=null)
                             e._default(t.getDefaultValue());
+                        writeOccurs(e,isOptional,repeated);
                     }
                 });
             }
 
+            final Tree choice = Tree.makeGroup(GroupKind.CHOICE, children)
+                    .makeOptional(!ep.isRequired())
+                    .makeRepeated(ep.isCollection()); // see Spec table 8-13
+
 
             final QName ename = ep.getXmlName();
             if (ename != null) { // wrapped collection
-                compositor.add(new ContentModelWriter() {
-                    protected void write(ContentModelContainer parent) {
+                return new Tree.Term() {
+                    protected void write(ContentModelContainer parent, boolean isOptional, boolean repeated) {
                         LocalElement e = parent.element();
                         if(ename.getNamespaceURI().length()>0) {
                             if (!ename.getNamespaceURI().equals(uri)) {
@@ -954,16 +956,14 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                         if(ep.isCollectionNillable()) {
                             e.nillable(true);
                         }
-                        if(!ep.isCollectionRequired()) {
-                            e.minOccurs(0);
-                        }
+                        writeOccurs(e,true,repeated);
 
                         ComplexType p = e.name(ename.getLocalPart()).complexType();
                         choice.write(p);
                     }
-                });
+                };
             } else {// non-wrapped
-                compositor.add(choice);
+                return choice;
             }
         }
 
@@ -1051,12 +1051,13 @@ public final class XmlSchemaGenerator<T,C,F,M> {
          * The reference property may or may not refer to a collection and it may or may
          * not be wrapped.
          */
-        private void handleReferenceProp(final ReferencePropertyInfo<T,C> rp, ContentModelWriter.ModelGroup compositor) {
+        private Tree handleReferenceProp(final ReferencePropertyInfo<T, C> rp) {
             // fill in content model
-            final ContentModelWriter.ModelGroup choice = new ContentModelWriter.ModelGroup(GroupKind.CHOICE, false, rp.isCollection() );
+            ArrayList<Tree> children = new ArrayList<Tree>();
+
             for (final Element<T,C> e : rp.getElements()) {
-                choice.add(new ContentModelWriter() {
-                    protected void write(ContentModelContainer parent) {
+                children.add(new Tree.Term() {
+                    protected void write(ContentModelContainer parent, boolean isOptional, boolean repeated) {
                         LocalElement eref = parent.element();
 
                         QName en = e.getElementName();
@@ -1087,41 +1088,46 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                             }
                         }
                         eref.ref(en);
+                        writeOccurs(eref,isOptional,repeated);
                     }
                 });
             }
 
             final WildcardMode wc = rp.getWildcard();
             if( wc != null ) {
-                choice.add(new ContentModelWriter() {
-                    protected void write(ContentModelContainer parent) {
+                children.add(new Tree.Term() {
+                    protected void write(ContentModelContainer parent, boolean isOptional, boolean repeated) {
                         Any any = parent.any();
                         final String pcmode = getProcessContentsModeName(wc);
                         if( pcmode != null ) any.processContents(pcmode);
                         any.namespace("##other");
+                        writeOccurs(any,isOptional,repeated);
                     }
                 });
             }
 
 
+            final Tree choice = Tree.makeGroup(GroupKind.CHOICE, children).makeRepeated(rp.isCollection());
+            // it's a curious omission that XmlElementRef doesn't have required()
+
+
             final QName ename = rp.getXmlName();
 
             if (ename != null) { // wrapped
-                compositor.add(new ContentModelWriter() {
-                    protected void write(ContentModelContainer parent) {
+                return new Tree.Term() {
+                    protected void write(ContentModelContainer parent, boolean isOptional, boolean repeated) {
                         LocalElement e = parent.element();
                         elementFormDefault.writeForm(e,ename);
                         if(rp.isCollectionNillable())
                             e.nillable(true);
-                        if(!rp.isCollectionRequired())
-                            e.minOccurs(0);
+                        writeOccurs(e,true,repeated);
 
                         ComplexType p = e.name(ename.getLocalPart()).complexType();
                         choice.write(p);
                     }
-                });
+                };
             } else { // unwrapped
-                compositor.add(choice);
+                return choice;
             }
         }
 
@@ -1130,18 +1136,20 @@ public final class XmlSchemaGenerator<T,C,F,M> {
          * specified schema compositor.
          *
          * @param mp the map property
-         * @param compositor the schema compositor (sequence or all)
          */
-        private void handleMapProp(final MapPropertyInfo<T,C> mp, ContentModelWriter.ModelGroup compositor) {
-            compositor.add(new ContentModelWriter() {
-                protected void write(ContentModelContainer parent) {
+        private Tree handleMapProp(final MapPropertyInfo<T,C> mp) {
+            return new Tree.Term() {
+                protected void write(ContentModelContainer parent, boolean isOptional, boolean repeated) {
                     QName ename = mp.getXmlName();
 
                     LocalElement e = parent.element();
                     elementFormDefault.writeForm(e,ename);
                     if(mp.isCollectionNillable())
                         e.nillable(true);
-                    ComplexType p = e.name(ename.getLocalPart()).complexType();
+
+                    e = e.name(ename.getLocalPart());
+                    writeOccurs(e,isOptional,repeated);
+                    ComplexType p = e.complexType();
 
                     // TODO: entry, key, and value are always unqualified. that needs to be fixed, too.
                     // TODO: we need to generate the corresponding element declaration, if they are qualified
@@ -1152,7 +1160,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     writeKeyOrValue(seq, "key", mp.getKeyType());
                     writeKeyOrValue(seq, "value", mp.getValueType());
                 }
-            });
+            };
         }
 
         private void writeKeyOrValue(ExplicitGroup seq, String tagName, NonElement<T, C> typeRef) {
