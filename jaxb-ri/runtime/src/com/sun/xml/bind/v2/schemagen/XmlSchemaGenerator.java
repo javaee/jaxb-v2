@@ -840,6 +840,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             if( c.hasAttributeWildcard()) {
                 contentModel.anyAttribute().namespace("##other").processContents("skip");
             }
+            ct.commit();
         }
 
         /**
