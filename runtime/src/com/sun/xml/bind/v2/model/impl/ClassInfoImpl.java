@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlAccessOrder;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -928,6 +929,7 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
 
 
         Collection<? extends M> methods = nav().getDeclaredMethods(c);
+        Map<String,List<M>> allSetters = new LinkedHashMap<String,List<M>>();
         for( M method : methods ) {
             boolean used = false;   // if this method is added to getters or setters
 
@@ -946,25 +948,44 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
 
             // is this a get method?
             String propName = getPropertyNameFromGetMethod(name);
-            if(propName!=null) {
-                if(arity==0) {
-                    getters.put(propName,method);
-                    used = true;
-                }
+            if(propName!=null && arity==0) {
+                getters.put(propName,method);
+                used = true;
             }
 
             // is this a set method?
             propName = getPropertyNameFromSetMethod(name);
-            if(propName!=null) {
-                if(arity==1) {
-                    // TODO: we should check collisions like setFoo(int) and setFoo(String)
-                    setters.put(propName,method);
-                    used = true;
+            if(propName!=null && arity==1) {
+                List<M> propSetters = allSetters.get(propName);
+                if(null == propSetters){
+                    propSetters = new ArrayList<M>();
+                    allSetters.put(propName, propSetters);
                 }
+                propSetters.add(method);
+                used = true; // used check performed later
             }
 
             if(!used)
                 ensureNoAnnotation(method);
+        }
+
+        // Match getter with setters by comparing getter return type to setter param
+        for (Map.Entry<String,M> entry : getters.entrySet()) {
+            String propName = entry.getKey();
+            M getter = entry.getValue();
+            List<M> propSetters = allSetters.get(propName);
+            if (null == propSetters) {
+                //no matching setter
+                continue;
+            }
+            T getterType = nav().getReturnType(getter);
+            for (M setter : propSetters) {
+                T setterType = nav().getMethodParameters(setter)[0];
+                if (setterType.equals(getterType)) {
+                    setters.put(propName, setter);
+                    break;
+                }
+            }
         }
     }
 
@@ -1187,7 +1208,6 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
         }
         return factoryMethod != null;
     }
-
 
     public Method getFactoryMethod(){
         return (Method) factoryMethod;
