@@ -973,7 +973,7 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
         for (Map.Entry<String,M> entry : getters.entrySet()) {
             String propName = entry.getKey();
             M getter = entry.getValue();
-            List<M> propSetters = allSetters.get(propName);
+            List<M> propSetters = allSetters.remove(propName);
             if (null == propSetters) {
                 //no matching setter
                 continue;
@@ -986,6 +986,11 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
                     break;
                 }
             }
+        }
+
+        // also allow set-only properties
+        for (Map.Entry<String,List<M>> e : allSetters.entrySet()) {
+            setters.put(e.getKey(),e.getValue().get(0));
         }
     }
 
