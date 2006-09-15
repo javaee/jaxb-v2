@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.7 2006-08-29 20:23:57 kohsuke Exp $
+       $Id: build.xml,v 1.71.2.8 2006-09-15 00:11:31 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -860,7 +860,7 @@ Class-Path: ${manifest.classpath}
 
     <target name="integrate-txw2">
         <get src="http://kohsuke.sfbay/hudson/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2.jar"
-             dest="tools/lib/rebundle/compiler/txw2.jar" />
+             dest="tools/lib/rebundle/runtime2/txw2.jar" />
         <get src="http://kohsuke.sfbay/hudson/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txwc2.jar"
              dest="tools/lib/util/txwc2.jar" />
         <get src="http://kohsuke.sfbay/hudson/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2-src.zip"
