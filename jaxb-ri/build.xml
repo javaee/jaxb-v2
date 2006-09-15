@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.8 2006-09-15 00:11:31 kohsuke Exp $
+       $Id: build.xml,v 1.71.2.9 2006-09-15 00:32:50 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -654,80 +654,6 @@ Class-Path: ${manifest.classpath}
                 <exclude name="lib/activation.jar"/>
             </fileset>
         </copy>
-
-    </target>
-
-    <target name="srcbundle"
-            description="Create a src bundle for licensees">
-
-        <!-- mkdir and copy entire tree minus private stuff -->
-        <mkdir dir="${srcbundle.dist}"/>
-        <copy todir="${srcbundle.dist}" includeemptydirs="true">
-            <fileset dir="${jaxb.root}" >
-                <exclude name="**/.cvsignore"/>
-                <exclude name="**/.classpath"/>
-                <exclude name="**/.project"/>
-                <exclude name="**/CHANGELOG.txt"/>
-                <exclude name="relaxng/"/>
-                <exclude name="**/wspack/"/>
-                <exclude name="**/srcbundle/"/>
-                <exclude name="**/CVS/"/>
-                <exclude name="**/test/"/>
-                <exclude name="**/xjc/HOWTO*"/>
-                <exclude name="**/tools/bin/*nxjc*"/>
-                <exclude name="**/tools/etc/"/>
-                <exclude name="**/tools/serialbox/"/>
-                <exclude name="**/tools/servlet/"/>
-                <exclude name="**/tools/locator-support/"/>
-                <exclude name="**/tools/ls/"/>
-                <exclude name="**/tools/synchronized-methods/"/>
-                <exclude name="**/tools/webapp-commons/"/>
-                <exclude name="**/tools/prelim-build/"/>
-                <exclude name="**/tools/lib/util/commons-logging.jar"/>
-                <exclude name="**/tools/lib/util/jaxm*"/>
-                <exclude name="**/tools/lib/util/jdom.jar"/>
-                <exclude name="**/tools/lib/util/js.jar"/>
-                <exclude name="**/tools/lib/util/junit.jar"/>
-                <exclude name="**/tools/lib/util/mailapi.jar"/>
-                <exclude name="**/tools/lib/util/saaj*"/>
-                <exclude name="**/tools/lib/util/servlet.jar"/>
-                <exclude name="**/tools/lib/util/vmtools-0.4.jar"/>
-                <exclude name="**/tools/lib/util/activation.jar"/>
-                <exclude name="**/tools/lib/util/bsh-core.jar"/>
-                <exclude name="**/tools/lib/util/smtp.jar"/>
-                <exclude name="**/tools/lib/util/antlr.jar"/>
-                <exclude name="**/tools/lib/util/bsh.jar"/>
-                <exclude name="**/tools/lib/util/gsc.jar"/>
-                <exclude name="**/tools/lib/util/jing.jar"/>
-                <exclude name="**/tools/lib/src/ant-src.zip"/>
-                <exclude name="**/tools/lib/src/antlr.src.zip"/>
-                <exclude name="**/tools/lib/src/bsh-src.zip"/>
-                <exclude name="**/tools/lib/src/dom4j-src.zip"/>
-                <exclude name="**/tools/lib/src/gsc.src.zip"/>
-                <exclude name="**/tools/lib/src/junit-src.zip"/>
-                <exclude name="**/tools/lib/src/servlet-src.zip"/>
-                <exclude name="**/tools/lib/src/Xerces-J-src.2.2.1.zip"/>
-                <exclude name="**/tools/lib/src/xalan-j_2_4_0-src.zip"/>
-                <exclude name="**/tools/lib/src/xmlpull_1_1_4_src.zip"/>
-                <exclude name="**/pkg/"/>
-                <exclude name="**/samples/*-workaround-*/"/>
-                <exclude name="**/samples/pull-parser/lib/*.jar"/>
-                <!-- these are the only two jars that we require people to get from
-                     the web.  Comment these lines out for testing purposes  -->
-                <exclude name="**/tools/lib/util/dom4j.jar"/>
-            </fileset>
-        </copy>
-
-        <!-- clobber the real build files with the src build files -->
-        <move file="${srcbundle.dist}/src-build.xml"
-              tofile="${srcbundle.dist}/build.xml"
-              overwrite="true"/>
-        <move file="${srcbundle.dist}/src-build.properties"
-              tofile="${srcbundle.dist}/build.properties"
-              overwrite="true"/>
-        <move file="${srcbundle.dist}/src-build.readme"
-              tofile="${srcbundle.dist}/HOWTO-buildingJAXB.txt"
-              overwrite="true"/>
 
     </target>
 
