@@ -88,7 +88,7 @@
             on internal Xerces APIs.  In previous releases of JAXB, this error condition
             would manifest itself as an <tt>IllegalAccessError</tt>.</p>
 
-            <p>To fix this, make sure ${JWSDP_ROOTDIR}/jaxp/lib/endorsed/xercesImpl.jar
+            <p>To fix this, make sure the latest version of <tt>xercesImpl.jar</tt>
             precedes any other version of Xerces in your CLASSPATH. Otherwise, xjc can't
             validate your schema and you shouldn't rely on the generated code.</p></li>
         <li>The fact that <tt>javax.xml.bind.util.JAXBSource</tt> derives
@@ -112,8 +112,8 @@
 
 	<hr/>
 	<div class="footer">
-	  $Revision: 1.3.4.2 $<br/>
-	  $Date: 2006-09-06 21:11:06 $
+	  $Revision: 1.3.4.3 $<br/>
+	  $Date: 2006-09-15 00:04:10 $
 	</div>
   </body>
 </html>
