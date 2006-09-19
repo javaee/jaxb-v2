@@ -112,7 +112,7 @@ public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, 
                          Locator _sourceLocator) {
         this.model = model;
         this.parent = container;
-        this.shortName = shortName;
+        this.shortName = model.allocator.assignClassName(parent,shortName);
         this.base = base;
         this.members = _members;
         this.source = source;
