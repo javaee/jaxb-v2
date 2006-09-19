@@ -54,6 +54,7 @@ public final class SCDBasedBindingSet {
          *
          * This field and {@link #nextSibling} form a single-linked list that
          * represent the children that shall be evaluated within this target.
+         * Think of it as {@code List<Target>}.
          */
         private Target firstChild;
         private final Target nextSibling;
@@ -102,6 +103,11 @@ public final class SCDBasedBindingSet {
                 Collection<XSComponent> childNodes = self.scd.select(contextNode);
                 if(childNodes.isEmpty()) {
                     // no node matched
+                    if(self.src.getAttributeNode("if-exists")!=null) {
+                        // if this attribute exists, it's not an error if SCD didn't match. 
+                        continue;
+                    }
+
                     reportError( src, Messages.format(Messages.ERR_SCD_EVALUATED_EMPTY,scd) );
                     continue;
                 }
