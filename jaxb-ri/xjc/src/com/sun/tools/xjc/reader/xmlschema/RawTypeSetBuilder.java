@@ -7,16 +7,17 @@ import javax.activation.MimeType;
 import javax.xml.namespace.QName;
 
 import com.sun.tools.xjc.model.CAdapter;
+import com.sun.tools.xjc.model.CClass;
 import com.sun.tools.xjc.model.CClassInfo;
+import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.model.CElement;
 import com.sun.tools.xjc.model.CElementInfo;
 import com.sun.tools.xjc.model.CElementPropertyInfo;
 import com.sun.tools.xjc.model.CReferencePropertyInfo;
 import com.sun.tools.xjc.model.CTypeRef;
+import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.model.Multiplicity;
 import com.sun.tools.xjc.model.TypeUse;
-import com.sun.tools.xjc.model.Model;
-import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.reader.RawTypeSet;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIDom;
@@ -110,8 +111,9 @@ public class RawTypeSetBuilder implements XSTermVisitor {
             if(elementBean==null)
                 refs.add(new XmlTypeRef(decl));
             else {
-                if(elementBean instanceof CClassInfo)
-                    refs.add(new CClassInfoRef(decl,(CClassInfo)elementBean));
+                // yikes!
+                if(elementBean instanceof CClass)
+                    refs.add(new CClassRef(decl,(CClass)elementBean));
                 else
                     refs.add(new CElementInfoRef(decl,(CElementInfo)elementBean));
             }
@@ -169,11 +171,11 @@ public class RawTypeSetBuilder implements XSTermVisitor {
     /**
      * Reference to a class that maps from an element.
      */
-    public static final class CClassInfoRef extends RawTypeSet.Ref {
-        public final CClassInfo target;
+    public static final class CClassRef extends RawTypeSet.Ref {
+        public final CClass target;
         public final XSElementDecl decl;
 
-        CClassInfoRef(XSElementDecl decl, CClassInfo target) {
+        CClassRef(XSElementDecl decl, CClass target) {
             this.decl = decl;
             this.target = target;
         }
