@@ -103,7 +103,7 @@
 	<a name="superinterface"></a>
 	<h3>Extending a Common Super Interface</h3>
 	<p>The <tt>&lt;xjc:superInterface&gt;</tt> customization allows you to specify the
-	fully qualified name of the Java interface that is to be used as the root interface of all the generated interfaces. This customization has no effect unless you are specifically generating interfaces with the <tt>&lt;globalBindings generateValueClass="false"</tt> switch.
+	fully qualified name of the Java interface that is to be used as the root interface of all the generated interfaces.
 	
 	The  
 	<tt>&lt;xjc:superInterface&gt;</tt> customization can only occur within your
@@ -120,7 +120,7 @@
 
     &lt;xs:annotation>
        &lt;xs:appinfo>
-          &lt;jaxb:globalBindings generateValueClass="false">
+          &lt;jaxb:globalBindings>
            <font color="red"
              >&lt;xjc:superInterface name="org.acme.RocketBooster"/></font>
           &lt;/jaxb:globalBindings>
@@ -336,8 +336,8 @@ public class Person {
 
     <hr>
     <div class="footer">
-      $Revision: 1.6.4.3 $<br>
-      $Date: 2006-09-06 21:11:07 $
+      $Revision: 1.6.4.4 $<br>
+      $Date: 2006-09-25 22:44:02 $
     </div>
   </body>
  </html>
