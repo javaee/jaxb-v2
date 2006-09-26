@@ -14,7 +14,7 @@ WEBSERVICES_LIB=`cd $bin_dir/../share/lib; pwd`
 #
 # Set CLASSPATH
 #
-CLASSPATH=${WEBSERVICES_LIB}/jaxb-api.jar:${WEBSERVICES_LIB}/jaxb-impl.jar:${WEBSERVICES_LIB}/jaxb1-impl.jar:${WEBSERVICES_LIB}/jaxb-xjc.jar
+CLASSPATH=${WEBSERVICES_LIB}/jaxb-api.jar:${WEBSERVICES_LIB}/jaxb-impl.jar:${WEBSERVICES_LIB}/jaxb1-impl.jar:${WEBSERVICES_LIB}/jaxb-xjc.jar:${WEBSERVICES_LIB}/../../../../usr/share/lib/resolver.jar
 
 if [ -n "$JAVA_HOME" ]
 then
