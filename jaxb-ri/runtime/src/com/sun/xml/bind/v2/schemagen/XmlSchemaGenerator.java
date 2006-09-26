@@ -213,8 +213,10 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
         // recurse on baseTypes to make sure that we can refer to them in the schema
         ClassInfo<T,C> bc = clazz.getBaseClass();
-        if (bc != null)
+        if (bc != null) {
             add(bc);
+            n.addDependencyTo(bc.getTypeName());
+        }
     }
 
     /**
