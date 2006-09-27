@@ -183,6 +183,8 @@ public class TDTDReader extends DTDHandlerBase
 
         // check XJC extensions and realize them
         model.serialVersionUID = bindInfo.getSerialVersionUID();
+        if(model.serialVersionUID!=null)
+            model.serializable=true;
         model.rootClass = bindInfo.getSuperClass();
         model.rootInterface = bindInfo.getSuperInterface();
 
