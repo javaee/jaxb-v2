@@ -187,8 +187,14 @@ public class BindInfo
         return c;
     }
 
-    /** Gets the specified package name (options/@package). */
+    /**
+     * Gets the specified package name (options/@package).
+     */
     public JPackage getTargetPackage() {
+        if(model.options.defaultPackage!=null)
+            // "-p" takes precedence over everything else
+            return codeModel._package(model.options.defaultPackage);
+
         String p;
         if( defaultPackage!=null )
             p = defaultPackage;

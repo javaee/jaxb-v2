@@ -102,7 +102,7 @@ public class TDTDReader extends DTDHandlerBase
                 Ring.add(ErrorReceiver.class,ef);
 
                 TDTDReader reader = new TDTDReader( ef, opts.entityResolver,
-                    opts, bindingInfo);
+                        bindingInfo);
 
                 DTDParser parser = new DTDParser();
                 parser.setDtdHandler(reader);
@@ -133,18 +133,15 @@ public class TDTDReader extends DTDHandlerBase
             return null;
         }
     }
-    protected TDTDReader(ErrorReceiver errorReceiver, EntityResolver entityResolver, Options opts, InputSource _bindInfo)
+    protected TDTDReader(ErrorReceiver errorReceiver, EntityResolver entityResolver, InputSource _bindInfo)
         throws AbortException {
         this.entityResolver = entityResolver;
         this.errorReceiver = new ErrorReceiverFilter(errorReceiver);
-        this.opts = opts;
         bindInfo = new BindInfo(model,_bindInfo, this.errorReceiver);
         classFactory = new CodeModelClassFactory(errorReceiver);
     }
 
     private final EntityResolver entityResolver;
-
-    private final Options opts;
 
     /**
      * binding information.
@@ -154,8 +151,6 @@ public class TDTDReader extends DTDHandlerBase
      * (In that case, a dummy object will be provided.)
      */
     final BindInfo bindInfo;
-
-    private final JCodeModel codeModel = Ring.get(JCodeModel.class);
 
     final Model model = Ring.get(Model.class);
 
@@ -211,7 +206,7 @@ public class TDTDReader extends DTDHandlerBase
 
         for( BIInterface decl : bindInfo.interfaces() ) {
             final JDefinedClass intf = classFactory.createInterface(
-                                getTargetPackage(), decl.name(), copyLocator() );
+                                bindInfo.getTargetPackage(), decl.name(), copyLocator() );
             decls.put(decl,intf);
             fromName.put(decl.name(),new InterfaceAcceptor() {
                 public void implement(JClass c) {
@@ -258,11 +253,7 @@ public class TDTDReader extends DTDHandlerBase
 
 
     JPackage getTargetPackage() {
-        // "-p" takes precedence over everything else
-        if(opts.defaultPackage!=null)
-            return codeModel._package(opts.defaultPackage);
-        else
-            return bindInfo.getTargetPackage(); 
+        return bindInfo.getTargetPackage();
     }
     
     
