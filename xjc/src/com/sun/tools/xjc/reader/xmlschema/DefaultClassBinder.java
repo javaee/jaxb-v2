@@ -422,7 +422,7 @@ final class DefaultClassBinder implements ClassBinder
                 // recover by generating a pseudo-random name
                 defaultBaseName = "undefined"+component.hashCode();
             }
-            clsName = deriveName( defaultBaseName, component );
+            clsName = builder.deriveName( defaultBaseName, component );
         } else {
             if( !JJavaName.isJavaIdentifier(clsName) ) {
                 // not a valid Java class name
@@ -490,7 +490,7 @@ final class DefaultClassBinder implements ClassBinder
      * Use the name of the schema component as the default name.
      */
     private String deriveName( XSDeclaration comp ) {
-        return deriveName( comp.getName(), comp );
+        return builder.deriveName( comp.getName(), comp );
     }
 
     /**
@@ -499,38 +499,11 @@ final class DefaultClassBinder implements ClassBinder
      * deriving a default name.
      */
     private String deriveName( XSComplexType comp ) {
-        String seed = deriveName( comp.getName(), comp );
+        String seed = builder.deriveName( comp.getName(), comp );
         int cnt = comp.getRedefinedCount();
         for( ; cnt>0; cnt-- )
             seed = "Original"+seed;
         return seed;
     }
 
-    /**
-     * Derives a name from a schema component.
-     *
-     * This method handles prefix/suffix modification and
-     * XML-to-Java name conversion.
-     *
-     * @param name
-     *      The base name. This should be things like element names
-     *      or type names.
-     * @param comp
-     *      The component from which the base name was taken.
-     *      Used to determine how names are modified.
-     */
-    private String deriveName( String name, XSComponent comp ) {
-        XSSchema owner = comp.getOwnerSchema();
-
-        name = builder.getNameConverter().toClassName(name);
-
-        if( owner!=null ) {
-            BISchemaBinding sb = builder.getBindInfo(
-                owner).get(BISchemaBinding.class);
-
-            if(sb!=null)    name = sb.mangleClassName(name,comp);
-        }
-
-        return name;
-    }
 }

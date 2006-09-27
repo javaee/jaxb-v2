@@ -498,4 +498,31 @@ public class BGMBuilder extends BindingComponent {
         if(local==null) return null;
         return new QName(decl.getTargetNamespace(),local);
     }
+
+    /**
+     * Derives a name from a schema component.
+     *
+     * This method handles prefix/suffix modification and
+     * XML-to-Java name conversion.
+     *
+     * @param name
+     *      The base name. This should be things like element names
+     *      or type names.
+     * @param comp
+     *      The component from which the base name was taken.
+     *      Used to determine how names are modified.
+     */
+    public String deriveName( String name, XSComponent comp ) {
+        XSSchema owner = comp.getOwnerSchema();
+
+        name = getNameConverter().toClassName(name);
+
+        if( owner!=null ) {
+            BISchemaBinding sb = getBindInfo(owner).get(BISchemaBinding.class);
+
+            if(sb!=null)    name = sb.mangleClassName(name,comp);
+        }
+
+        return name;
+    }
 }
