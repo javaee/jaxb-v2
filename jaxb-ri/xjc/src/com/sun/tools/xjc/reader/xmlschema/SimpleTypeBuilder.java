@@ -520,8 +520,9 @@ public final class SimpleTypeBuilder extends BindingComponent {
             }
             className = type.getName();
         }
+
         // we apply name conversion in any case
-        className = builder.getNameConverter().toClassName(className);
+        className = builder.deriveName(className,type);
 
         {// compute Javadoc
             StringWriter out = new StringWriter();
