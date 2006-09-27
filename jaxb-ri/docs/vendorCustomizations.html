@@ -32,6 +32,7 @@
 		<li><a href="#superinterface">&lt;xjc:superInterface></a> - Extending a Common Super Interface</li>
 		<li><a href="#javaType">&lt;xjc:javaType></a> - Enhanced &lt;jaxb:javaType> customization</li>
 		<li><a href="#simple">&lt;xjc:simple></a> - Experimental simpler&amp;better binding mode</li>
+		<li><a href="#treatRestrictionLikeNewType">&lt;xjc:treatRestrictionLikeNewType></a> - Alternative derivation-by-restriction binding mode</li>
 		<!--
 		<li><a href="">&lt;></a></li>
 		-->
@@ -263,81 +264,63 @@ public class Person {
 	<p>
 		Once again, readers are warned that this is an <b>experimental binding mode</b>, and therefore the binding is subject to change in future versions of the JAXB RI without notice. Please send feedbacks on this binding to <tt>users@jaxb.dev.java.net</tt>
 
-<!-- NOT AVAILABLE FOR 2.0 EA
-	<a name="dom"></a>
-	<h3>Mapping to DOM</h3>
-	
+
+
+	<a name="treatRestrictionLikeNewType"></a>
+	<h3>Alternative Derivation-by-restriction Binding Mode</h3>
 	<p>
-		This customization is not yet implemented in this early access.
-	
-<strike>
-	<p>The <tt>&lt;xjc:dom></tt> customization allows you to map a certain part of
-	the schema into a DOM tree. This customization can be attached to the following
-	schema components:</p>
-	
-	<ul>
-		<li>Wildcards (<tt>&lt;xs:any></tt>)
-		<li>Model groups (<tt>&lt;xs:choice>,&lt;xs:all>,&lt;xs:sequence></tt>)
-		<li>Model group declarations (<tt>&lt;xs:group></tt>)
-		<li>Particles
-		<li>Element declarations (<tt>&lt;xs:element</tt>)
-	</ul>
-	
-	<p>For example, in the following example, a wildcard is mapped
-	to a DOM node. Each element that matches to the wildcard will be
-	turned into a DOM tree.</p>
-	
-	<blockquote>
-		<pre>
-&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
-           <font color="red"
-          >xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
-           jaxb:extensionBindingPrefixes="xjc"</font>
-           jaxb:version="1.0">
+		Normally, the JAXB specification requires that a derivation-by-restriction be mapped to an inheritance betwee n two Java classes. This is necessary to preserve the type hierarchy, but one of the downsides is that the derived class does not really provide easy-to-use properties that reflect the restricted content model.
+	<p>
+		This experimental &lt;xjc:treatRestrictionLikeNewType> changes this behavior by not preserving the type inheritance to Java. Instead, it generates two unrelated Java classes, both with proper properties. For example, given the following schema:
+<pre class=code><xmp
+><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" jaxb:extensionBindingPrefixes="xjc"
+  xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.0"
+  elementFormDefault="qualified">
+  
+  <xs:annotation><xs:appinfo>
+    <jaxb:globalBindings>
+      <xjc:treatRestrictionLikeNewType />
+    </jaxb:globalBindings>
+  </xs:appinfo></xs:annotation>
+  
+  <xs:complexType name="DerivedType">
+    <xs:complexContent>
+      <xs:restriction base="ResponseOptionType">
+        <xs:sequence>
+          <xs:element name="foo" type="xs:string"/>
+        </xs:sequence>
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="ResponseOptionType">
+    <xs:sequence>
+      <xs:element name="foo" type="xs:string" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
 
-    &lt;xs:element>
-       &lt;xs:complexType>
-          &lt;xs:sequence>
-             &lt;xs:any maxOccurs="unbounded" processContents="skip">
-                &lt;xs:annotation>&lt;xs:appinfo>
-                <font color="red">  &lt;xjc:dom /></font>
-                &lt;/xs:appinfo>&lt;/xs:annotation>
-             &lt;/xs:any>
-          &lt;/xs:sequence>
-       &lt;/xs:complexType>
-    &lt;/xs:element>
-.
-.
-.
-&lt;/xs:schema>
-		</pre>
-	</blockquote>
-	
-	<p>This extension can be used to access wildcard content or can be used to 
-	   process a part of a document by using other technologies that require 
-	   "raw" XML.  By default, JAXB generates a getObject() method for accessing
-	   wildcard content, but it only supports "lax" handling which means that
-	   unknown content is discarded.  Since this probably isn't the expected 
-	   behavior, you should use the <tt>&lt;xjc:dom /></tt> customization which
-	   will preserve all of the wildcard content.
-	   </p>
-	
-	<p>You can use the optional <tt>type</tt> attribute to specify the type 
-	   of DOM. By default, it is W3C DOM, but you can write 
-	   <tt>&lt;xjc:dom type="dom4j" /></tt> to map it to 
-	   <a href="http://www.dom4j.org/">dom4j</a>.</p>
-	   
-	<p>Unfortunately, due to the lack of JDOM's functionality to write a 
-	   single element to SAX events, at this moment JDOM is not supported.</p>
-</strike>
--->
+</xs:schema></xmp></pre>
+	<p>
+		The generated <tt>Derived</tt> class will look like this (comment and annotations removed for brevity):
+<pre class=code><xmp
+>public class DerivedType {
+    protected String foo;
 
+    public String getFoo() { return foo; }
+    public void setFoo(String value) { this.foo = value; }
+}</xmp></pre>
+	<p>
+		In contrast, without this customization the <tt>Derived</tt> class would look like the following:
+<pre class=code><xmp
+>public class DerivedType extends ResponseOptionType {
+  // it simply inherits List<String> ResponseOptionType.getFoo()
+}</xmp></pre>
 
     <hr>
     <div class="footer">
-      $Revision: 1.6.4.4 $<br>
-      $Date: 2006-09-25 22:44:02 $
+      $Revision: 1.6.4.5 $<br>
+      $Date: 2006-09-27 20:55:32 $
     </div>
   </body>
  </html>
