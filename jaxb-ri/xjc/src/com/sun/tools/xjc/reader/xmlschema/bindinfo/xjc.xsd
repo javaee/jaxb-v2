@@ -8,6 +8,9 @@
   <xs:element name="simple">
     <xs:complexType/>
   </xs:element>
+  <xs:element name="treatRestrictionLikeNewType">
+    <xs:complexType/>
+  </xs:element>
   <xs:element name="noMarshaller">
     <xs:complexType/>
   </xs:element>

@@ -19,7 +19,6 @@
  */
 package com.sun.tools.xjc.reader.xmlschema.ct;
 
-import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CClass;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSType;
@@ -41,6 +40,13 @@ final class RestrictedComplexTypeBuilder extends CTBuilder {
     }
 
     public void build(XSComplexType ct) {
+        if(bgmBuilder.getGlobalBinding().isRestrictionFreshType()) {
+            // handle derivation-by-restriction like a whole new type
+            new FreshComplexTypeBuilder().build(ct);
+            return;
+        }
+
+
         XSComplexType baseType = ct.getBaseType().asComplexType();
 
         // build the base class

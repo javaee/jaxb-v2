@@ -127,6 +127,10 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
         return simpleMode!=null;
     }
 
+    public boolean isRestrictionFreshType() {
+        return treatRestrictionLikeNewType !=null;
+    }
+
     public EnumMemberMode getEnumMemberMode() {
         return generateEnumMemberName;
     }
@@ -263,6 +267,12 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
      */
     @XmlElement(name="simple",namespace=Const.XJC_EXTENSION_URI)
     String simpleMode = null;
+
+    /**
+     * Handles complex type restriction as if it were a new type.
+     */
+    @XmlElement(name="treatRestrictionLikeNewType",namespace=Const.XJC_EXTENSION_URI)
+    String treatRestrictionLikeNewType = null;
 
     /**
      * True to generate a class for elements by default.
