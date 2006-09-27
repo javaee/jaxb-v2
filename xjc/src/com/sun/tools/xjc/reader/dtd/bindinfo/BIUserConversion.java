@@ -147,7 +147,7 @@ public class BIUserConversion implements BIConversion
         if(parse==null)  parse="new";
 
         String print = DOMUtil.getAttribute(e,"print");
-        if(print==null)  parse="toString";
+        if(print==null)  print="toString";
 
         JDefinedClass adapter = generateAdapter(owner.codeModel, parse, print, t.boxify());
 
@@ -162,7 +162,7 @@ public class BIUserConversion implements BIConversion
         int id = 1;
         while(adapter==null) {
             try {
-                JPackage pkg = Ring.get(ClassSelector.class).getClassScope().getOwnerPackage();
+                JPackage pkg = owner.getTargetPackage();
                 adapter = pkg._class("Adapter"+id);
             } catch (JClassAlreadyExistsException e) {
                 // try another name in search for an unique name.
