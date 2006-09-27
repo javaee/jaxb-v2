@@ -46,4 +46,7 @@ class Messages
 
     static final String ERR_CASE_SENSITIVITY_COLLISION = // 2 args
         "CodeModelClassFactory.CaseSensitivityCollision";
+
+    static final String ERR_CHAMELEON_SCHEMA_GONE_WILD = // no argts
+        "ERR_CHAMELEON_SCHEMA_GONE_WILD";
 }

@@ -111,6 +111,12 @@ public final class CodeModelClassFactory {
                         name, cls.name() ), null ) );
             }
 
+            if(Util.equals((Locator)cls.metadata,source)) {
+                errorReceiver.error( new SAXParseException(
+                    Messages.format( Messages.ERR_CHAMELEON_SCHEMA_GONE_WILD ),
+                    source ));
+            }
+
             return createDummyClass(parent);
         }
     }
