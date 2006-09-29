@@ -35,24 +35,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.LinkedHashMap;
 
 public abstract class AttributesHolder extends DeclarationImpl {
-    
+
     protected AttributesHolder( SchemaDocumentImpl _parent, AnnotationImpl _annon,
-        Locator loc, ForeignAttributesImpl _fa, String _name, boolean _anonymous ) {
-        
+                                Locator loc, ForeignAttributesImpl _fa, String _name, boolean _anonymous ) {
+
         super(_parent,_annon,loc,_fa,_parent.getTargetNamespace(),_name,_anonymous);
     }
-    
+
     /** set the local wildcard. */
     public abstract void setWildcard(WildcardImpl wc);
-    
+
     /**
      * Local attribute use.
-     * It has to be {@link TreeMap} or otherwise we cannot guarantee
-     * the order of iteration.
+     * Use linked hash map to guarantee the iteration order, and make it close to
+     * what was in the schema document.
      */
-    protected final Map<UName,AttributeUseImpl> attributes = new TreeMap<UName,AttributeUseImpl>(UName.comparator);
+    protected final Map<UName,AttributeUseImpl> attributes = new LinkedHashMap<UName,AttributeUseImpl>();
     public void addAttributeUse( UName name, AttributeUseImpl a ) {
         attributes.put( name, a );
     }
@@ -78,7 +79,7 @@ public abstract class AttributesHolder extends DeclarationImpl {
     public XSAttributeUse getDeclaredAttributeUse( String nsURI, String localName ) {
         return attributes.get(new UName(nsURI,localName));
     }
-    
+
     public Iterator<AttributeUseImpl> iterateDeclaredAttributeUses() {
         return attributes.values().iterator();
     }
@@ -90,9 +91,9 @@ public abstract class AttributesHolder extends DeclarationImpl {
 
     /** {@link Ref.AttGroup}s that are directly refered from this. */
     protected final Set<Ref.AttGroup> attGroups = new HashSet<Ref.AttGroup>();
-    
+
     public void addAttGroup( Ref.AttGroup a ) { attGroups.add(a); }
-    
+
     // Iterates all AttGroups which are directly referenced from this component
     // this does not iterate att groups referenced from the base type
     public Iterator<XSAttGroupDecl> iterateAttGroups() {
