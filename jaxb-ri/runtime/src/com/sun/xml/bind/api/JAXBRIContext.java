@@ -36,6 +36,7 @@ import javax.xml.transform.Result;
 import com.sun.istack.NotNull;
 import com.sun.istack.Nullable;
 import com.sun.xml.bind.api.impl.NameConverter;
+import com.sun.xml.bind.v2.model.annotation.RuntimeAnnotationReader;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 
 /**
@@ -73,8 +74,8 @@ public abstract class JAXBRIContext extends JAXBContext {
     public static JAXBRIContext newInstance(@NotNull Class[] classes, @Nullable Collection<TypeReference> typeRefs, @Nullable String defaultNamespaceRemap, boolean c14nSupport ) throws JAXBException {
         try {
             Class c = Class.forName("com.sun.xml.bind.v2.ContextFactory");
-            Method method = c.getMethod("createContext",Class[].class,Collection.class,String.class,boolean.class);
-            Object o = method.invoke(null,classes,typeRefs,defaultNamespaceRemap,c14nSupport);
+            Method method = c.getMethod("createContext",Class[].class,Collection.class,String.class,boolean.class, RuntimeAnnotationReader.class);
+            Object o = method.invoke(null,classes,typeRefs,defaultNamespaceRemap,c14nSupport,null);
             return (JAXBRIContext)o;
         } catch (ClassNotFoundException e) {
             throw new JAXBException(e);
@@ -346,6 +347,14 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @since 2.0 EA2
      */
     public static final String CANONICALIZATION_SUPPORT = "com.sun.xml.bind.c14n";
+
+    /**
+     * The property that you can specify to {@link JAXBContext#newInstance}
+     * to use alternative {@link RuntimeAnnotationReader} implementation.
+     *
+     * @since 2.1 EA2
+     */
+    public static final String ANNOTATION_READER = RuntimeAnnotationReader.class.getName();
 
     /**
      * Marshaller/Unmarshaller property to enable XOP processing.

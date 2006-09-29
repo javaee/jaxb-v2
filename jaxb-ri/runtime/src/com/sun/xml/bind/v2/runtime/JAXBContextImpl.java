@@ -62,6 +62,7 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import com.sun.istack.NotNull;
 import com.sun.istack.Pool;
+import com.sun.istack.Nullable;
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.Bridge;
@@ -74,6 +75,8 @@ import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.bind.util.Which;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
+import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
+import com.sun.xml.bind.v2.model.annotation.RuntimeAnnotationReader;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.Ref;
@@ -111,7 +114,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75.2.2 $
+ * @version $Revision: 1.75.2.3 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -196,6 +199,8 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
     private WeakReference<RuntimeTypeInfoSet> typeInfoSetCache;
 
+    private @NotNull RuntimeAnnotationReader annotaitonReader;
+
     /**
      *
      * @param typeRefs
@@ -203,13 +208,17 @@ public final class JAXBContextImpl extends JAXBRIContext {
      * @param c14nSupport
      *      {@link #c14nSupport}.
      */
-    public JAXBContextImpl(Class[] classes, Collection<TypeReference> typeRefs, String defaultNsUri, boolean c14nSupport) throws JAXBException {
+    public JAXBContextImpl(Class[] classes, Collection<TypeReference> typeRefs, String defaultNsUri, boolean c14nSupport, @Nullable RuntimeAnnotationReader ar) throws JAXBException {
 
         // initialize datatype converter with ours
         DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
 
         if(defaultNsUri==null)      defaultNsUri="";    // fool-proof
 
+        if(ar==null)
+            ar = new RuntimeInlineAnnotationReader();
+
+        this.annotaitonReader = ar;
         this.defaultNsUri = defaultNsUri;
         this.c14nSupport = c14nSupport;
         this.classes = new Class[classes.length];
@@ -325,7 +334,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
         for (JaxBeanInfo bi : beanInfos.values())
             bi.wrapUp();
-        
+
         // no use for them now
         nameBuilder = null;
         beanInfos = null;
@@ -343,9 +352,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
                 return r;
         }
 
-        final RuntimeModelBuilder builder = new RuntimeModelBuilder(
-                new RuntimeInlineAnnotationReader(),
-                defaultNsUri);
+        final RuntimeModelBuilder builder = new RuntimeModelBuilder(annotaitonReader,defaultNsUri);
         IllegalAnnotationsException.Builder errorHandler = new IllegalAnnotationsException.Builder();
         builder.setErrorHandler(errorHandler);
 
@@ -687,8 +694,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
         XmlJavaTypeAdapter xjta = tr.get(XmlJavaTypeAdapter.class);
         XmlList xl = tr.get(XmlList.class);
 
-        Ref<Type,Class> ref = new Ref<Type,Class>(
-            new RuntimeInlineAnnotationReader(), tis.getNavigator(), tr.type, xjta, xl );
+        Ref<Type,Class> ref = new Ref<Type,Class>(annotaitonReader, tis.getNavigator(), tr.type, xjta, xl );
 
         return tis.getTypeInfo(ref);
     }
@@ -886,7 +892,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
         System.arraycopy(classes,0,newList,0,classes.length);
         newList[classes.length] = clazz;
 
-        return new JAXBContextImpl(newList,bridges.keySet(),defaultNsUri,c14nSupport);
+        return new JAXBContextImpl(newList,bridges.keySet(),defaultNsUri,c14nSupport,annotaitonReader);
     }
 
     private static final Comparator<QName> QNAME_COMPARATOR = new Comparator<QName>() {
