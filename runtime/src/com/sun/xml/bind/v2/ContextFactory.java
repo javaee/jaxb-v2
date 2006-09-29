@@ -17,6 +17,7 @@ import javax.xml.bind.JAXBException;
 import com.sun.istack.FinalArrayList;
 import com.sun.xml.bind.api.JAXBRIContext;
 import com.sun.xml.bind.api.TypeReference;
+import com.sun.xml.bind.v2.model.annotation.RuntimeAnnotationReader;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 
 /**
@@ -47,12 +48,13 @@ public class ContextFactory {
         if(c14nSupport==null)
             c14nSupport = false;
 
+        RuntimeAnnotationReader ar = getPropertyValue(properties,JAXBRIContext.ANNOTATION_READER,RuntimeAnnotationReader.class);
 
         if(!properties.isEmpty()) {
             throw new JAXBException(Messages.UNSUPPORTED_PROPERTY.format(properties.keySet().iterator().next()));
         }
 
-        return createContext(classes,Collections.<TypeReference>emptyList(),defaultNsUri,c14nSupport);
+        return createContext(classes,Collections.<TypeReference>emptyList(),defaultNsUri,c14nSupport,ar);
     }
 
     /**
@@ -72,8 +74,8 @@ public class ContextFactory {
     /**
      * Used from the JAXB RI runtime API, invoked via reflection.
      */
-    public static JAXBContext createContext( Class[] classes, Collection<TypeReference> typeRefs, String defaultNsUri, boolean c14nSupport ) throws JAXBException {
-        return new JAXBContextImpl(classes,typeRefs,defaultNsUri,c14nSupport);
+    public static JAXBContext createContext( Class[] classes, Collection<TypeReference> typeRefs, String defaultNsUri, boolean c14nSupport, RuntimeAnnotationReader ar ) throws JAXBException {
+        return new JAXBContextImpl(classes,typeRefs,defaultNsUri,c14nSupport,ar);
     }
 
     /**
