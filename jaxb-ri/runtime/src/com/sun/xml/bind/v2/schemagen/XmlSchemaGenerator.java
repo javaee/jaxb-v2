@@ -900,12 +900,13 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     protected void write(ContentModelContainer parent, boolean isOptional, boolean repeated) {
                         TypeRef<T,C> t = ep.getTypes().get(0);
                         LocalElement e = parent.element();
+                        e.block(); // we will write occurs later
                         QName tn = t.getTagName();
                         e.name(tn.getLocalPart());
                         List lst = e.simpleType().list();
                         writeTypeRef(lst,t, "itemType");
                         elementFormDefault.writeForm(e,tn);
-                        writeOccurs(e,isOptional,repeated);
+                        writeOccurs(e,isOptional||!ep.isRequired(),repeated);
                     }
                 };
             }
