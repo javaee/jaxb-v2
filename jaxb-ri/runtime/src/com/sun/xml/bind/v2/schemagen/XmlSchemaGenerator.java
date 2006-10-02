@@ -71,6 +71,7 @@ import com.sun.xml.bind.v2.schemagen.xmlschema.TopLevelElement;
 import com.sun.xml.bind.v2.schemagen.xmlschema.TypeHost;
 import com.sun.xml.bind.v2.schemagen.xmlschema.ContentModelContainer;
 import com.sun.xml.bind.v2.schemagen.xmlschema.TypeDefParticle;
+import com.sun.xml.bind.v2.schemagen.xmlschema.AttributeType;
 import com.sun.xml.bind.v2.schemagen.episode.Bindings;
 import com.sun.xml.txw2.TXW;
 import com.sun.xml.txw2.TxwException;
@@ -441,7 +442,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         /**
          * Global attribute declarations keyed by their local names.
          */
-        private final MultiMap<String,NonElement<T,C>> attributeDecls = new MultiMap<String,NonElement<T,C>>(stringType);
+        private final MultiMap<String,AttributePropertyInfo<T,C>> attributeDecls = new MultiMap<String,AttributePropertyInfo<T,C>>(null);
 
         /**
          * Global element declarations to be written, keyed by their local names.
@@ -589,10 +590,13 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     writeArray(a,schema);
                     schema._pcdata(newline);
                 }
-                for (Map.Entry<String,NonElement<T,C>> e : attributeDecls.entrySet()) {
+                for (Map.Entry<String,AttributePropertyInfo<T,C>> e : attributeDecls.entrySet()) {
                     TopLevelAttribute a = schema.attribute();
                     a.name(e.getKey());
-                    writeTypeRef(a,e.getValue(),"type");
+                    if(e.getValue()==null)
+                        writeTypeRef(a,stringType,"type");
+                    else
+                        writeAttributeTypeRef(e.getValue(),a);
                     schema._pcdata(newline);
                 }
 
@@ -1025,18 +1029,10 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             LocalAttribute localAttribute = attr.attribute();
 
             final String attrURI = ap.getXmlName().getNamespaceURI();
-            if (attrURI.equals("") || attrURI.equals(uri)) {
+            if (attrURI.equals("") /*|| attrURI.equals(uri) --- those are generated as global attributes anyway, so use them.*/) {
                 localAttribute.name(ap.getXmlName().getLocalPart());
 
-                TypeHost th; String refAtt;
-                if( ap.isCollection() ) {
-                    th = localAttribute.simpleType().list();
-                    refAtt = "itemType";
-                } else {
-                    th = localAttribute;
-                    refAtt = "type";
-                }
-                writeTypeRef(th, ap, refAtt);
+                writeAttributeTypeRef(ap, localAttribute);
 
                 attributeFormDefault.writeForm(localAttribute,ap.getXmlName());
             } else { // generate an attr ref
@@ -1047,6 +1043,13 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                 // TODO: not type safe
                 localAttribute.use("required");
             }
+        }
+
+        private void writeAttributeTypeRef(AttributePropertyInfo<T,C> ap, AttributeType a) {
+            if( ap.isCollection() )
+                writeTypeRef(a.simpleType().list(), ap, "itemType");
+            else
+                writeTypeRef(a, ap, "type");
         }
 
         /**
@@ -1175,7 +1178,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         }
 
         public void addGlobalAttribute(AttributePropertyInfo<T,C> ap) {
-            attributeDecls.put( ap.getXmlName().getLocalPart(), ap.getTarget() );
+            attributeDecls.put( ap.getXmlName().getLocalPart(), ap );
             addDependencyTo(ap.getTarget().getTypeName());
         }
 
