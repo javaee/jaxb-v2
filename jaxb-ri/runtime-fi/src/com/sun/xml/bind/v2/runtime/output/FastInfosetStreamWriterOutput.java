@@ -53,28 +53,41 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
         final int[] elementIndexes;
         final int[] attributeIndexes;
         final int[] localNameIndexes;
+
+        /*
+         * The offset of the index
+         */
+        int indexOffset;
         
-        int offset;
+        /*
+         * The the maximum known value of an index
+         */
+        int maxIndex;
         
         TablesPerJAXBContext(JAXBContextImpl context) {
             elementIndexes = new int[context.getNumberOfElementNames()];
             attributeIndexes = new int[context.getNumberOfAttributeNames()];
             localNameIndexes = new int[context.getNumberOfLocalNames()];
             
-            offset = 1;
+            indexOffset = 1;
+            maxIndex = elementIndexes.length + attributeIndexes.length;
         }
 
         /**
          * Clear the tables.
          */
         public void clearTables() {
-            offset += elementIndexes.length + attributeIndexes.length;
+            // Increment offset to new position
+            indexOffset += maxIndex;
+            // Reset the maximum know value of an index
+            maxIndex = elementIndexes.length + attributeIndexes.length;
+            // Check if there is enough free space
             // If overflow
-            if (offset < 0) {
+            if ((indexOffset + maxIndex) < 0) {
                 clear(elementIndexes);
                 clear(attributeIndexes);
                 clear(localNameIndexes);
-                offset = 1;
+                indexOffset = 1;
             }
         }
         
@@ -85,25 +98,27 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
         }
         
         /**
-         * Reset the tables.
+         * Increment the maximum know index value
          * <p>
          * The indexes are preserved.
          */
-        public void resetTables() {
-            offset += elementIndexes.length + attributeIndexes.length;
+        public void incrementMaxIndexValue() {
+            // Increment the maximum value of an index
+            maxIndex++;
+            // Check if there is enough free space
             // If overflow
-            if (offset < 0) {
+            if ((indexOffset + maxIndex) < 0) {
                 reset(elementIndexes);
                 reset(attributeIndexes);
                 reset(localNameIndexes);
-                offset = 1;
+                indexOffset = 1;
             }
         }
-        
+                
         private void reset(int[] array) {
             for (int i = 0; i < array.length; i++) {
-                if (array[i] > offset) {
-                    array[i] = array[i] - offset + 1;
+                if (array[i] > indexOffset) {
+                    array[i] = array[i] - indexOffset + 1;
                 } else {
                     array[i] = 0;
                 }
@@ -174,11 +189,11 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
         fiout.writeLowLevelTerminationAndMark();
         
         if (nsContext.getCurrent().count() == 0) {
-            final int qNameIndex = tables.elementIndexes[name.qNameIndex] - tables.offset;
+            final int qNameIndex = tables.elementIndexes[name.qNameIndex] - tables.indexOffset;
             if (qNameIndex >= 0) {
                 fiout.writeLowLevelStartElementIndexed(EncodingConstants.ELEMENT, qNameIndex);
             } else {
-                tables.elementIndexes[name.qNameIndex] = fiout.getNextElementIndex() + tables.offset;
+                tables.elementIndexes[name.qNameIndex] = fiout.getNextElementIndex() + tables.indexOffset;
                 
                 final int prefix = nsUriIndex2prefixIndex[name.nsUriIndex];
                 writeLiteral(EncodingConstants.ELEMENT | EncodingConstants.ELEMENT_LITERAL_QNAME_FLAG,
@@ -203,11 +218,11 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
         }
         fiout.writeLowLevelEndNamespaces();
         
-        final int qNameIndex = tables.elementIndexes[name.qNameIndex] - tables.offset;
+        final int qNameIndex = tables.elementIndexes[name.qNameIndex] - tables.indexOffset;
         if (qNameIndex >= 0) {
             fiout.writeLowLevelStartElementIndexed(0, qNameIndex);
         } else {
-            tables.elementIndexes[name.qNameIndex] = fiout.getNextElementIndex() + tables.offset;
+            tables.elementIndexes[name.qNameIndex] = fiout.getNextElementIndex() + tables.indexOffset;
             
             final int prefix = nsUriIndex2prefixIndex[name.nsUriIndex];
             writeLiteral(EncodingConstants.ELEMENT_LITERAL_QNAME_FLAG,
@@ -220,11 +235,11 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
     public void attribute(Name name, String value) throws IOException {
         fiout.writeLowLevelStartAttributes();
         
-        final int qNameIndex = tables.attributeIndexes[name.qNameIndex] - tables.offset;
+        final int qNameIndex = tables.attributeIndexes[name.qNameIndex] - tables.indexOffset;
         if (qNameIndex >= 0) {
             fiout.writeLowLevelAttributeIndexed(qNameIndex);
         } else {
-            tables.attributeIndexes[name.qNameIndex] = fiout.getNextAttributeIndex() + tables.offset;
+            tables.attributeIndexes[name.qNameIndex] = fiout.getNextAttributeIndex() + tables.indexOffset;
             
             final int namespaceURIId = name.nsUriIndex;
             if (namespaceURIId == -1) {
@@ -245,10 +260,10 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
     }
     
     private void writeLiteral(int type, Name name, String prefix, String namespaceURI) throws IOException {
-        final int localNameIndex = tables.localNameIndexes[name.localNameIndex] - tables.offset;
+        final int localNameIndex = tables.localNameIndexes[name.localNameIndex] - tables.indexOffset;
         
         if (localNameIndex < 0) {
-            tables.localNameIndexes[name.localNameIndex] = fiout.getNextLocalNameIndex() + tables.offset;
+            tables.localNameIndexes[name.localNameIndex] = fiout.getNextLocalNameIndex() + tables.indexOffset;
             
             fiout.writeLowLevelStartNameLiteral(
                     type,
@@ -327,23 +342,30 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
             type= 0;
         }
         
-        fiout.writeLowLevelStartElement(
+        final boolean isIndexed = fiout.writeLowLevelStartElement(
                 type,
                 nsContext.getPrefix(prefix),
                 localName,
                 nsContext.getNamespaceURI(prefix));
+
+        if (!isIndexed)
+            tables.incrementMaxIndexValue();
     }
     
     public void attribute(int prefix, String localName, String value) throws IOException {
         fiout.writeLowLevelStartAttributes();
-        
+
+        boolean isIndexed; 
         if (prefix == -1)
-            fiout.writeLowLevelAttribute("", "", localName);
+            isIndexed = fiout.writeLowLevelAttribute("", "", localName);
         else
-            fiout.writeLowLevelAttribute(
+            isIndexed = fiout.writeLowLevelAttribute(
                     nsContext.getPrefix(prefix),
                     nsContext.getNamespaceURI(prefix),
                     localName);
+        
+        if (!isIndexed)
+            tables.incrementMaxIndexValue();
         
         fiout.writeLowLevelAttributeValue(value);
     }
