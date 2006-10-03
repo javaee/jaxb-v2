@@ -22,6 +22,7 @@ package com.sun.xml.bind.v2.runtime;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -467,30 +468,57 @@ public final class XMLSerializer extends Coordinator {
         cycleDetectionStack.pop();
     }
 
-    private void pushObject(Object obj, String fieldName) throws SAXException {
-        if(cycleDetectionStack.push(obj)) {
-            // cycle detected
-            StringBuilder sb = new StringBuilder();
-            sb.append(obj);
-            int i=cycleDetectionStack.size()-1;
-            Object x;
-            do {
-                sb.append(" -> ");
-                x = cycleDetectionStack.get(--i);
-                sb.append(x);
-            } while(obj!=x);
+    private Object pushObject(Object obj, String fieldName) throws SAXException {
+        if(!cycleDetectionStack.push(obj))
+            return obj;
 
+        // cycle detected
+        try {
+            // allow the object to nominate its replacement
+            Method m = obj.getClass().getMethod("onCycleDetected");
+            return m.invoke(obj);
+        } catch (NoSuchMethodException e) {
+            // fall back to our current error mode
+        } catch (IllegalAccessException e) {
+            // fall back to our current error mode
+        } catch (InvocationTargetException e) {
+            // pass through bugs
+            Throwable x = e.getCause();
+            if (x instanceof RuntimeException)
+                throw (RuntimeException) x;
+            if (x instanceof Error)
+                throw (Error) x;
+
+            // report this failure in the user code, then continue
             reportError(new ValidationEventImpl(
                 ValidationEvent.ERROR,
-                Messages.CYCLE_IN_MARSHALLER.format(sb),
+                e.getMessage(),
                 getCurrentLocation(fieldName),
-                null));
+                e));
         }
+
+        // cycle detected and no one is catching the error.
+        StringBuilder sb = new StringBuilder();
+        sb.append(obj);
+        int i=cycleDetectionStack.size()-1;
+        Object x;
+        do {
+            sb.append(" -> ");
+            x = cycleDetectionStack.get(--i);
+            sb.append(x);
+        } while(obj!=x);
+
+        reportError(new ValidationEventImpl(
+            ValidationEvent.ERROR,
+            Messages.CYCLE_IN_MARSHALLER.format(sb),
+            getCurrentLocation(fieldName),
+            null));
+        return null;
     }
 
     /**
      * The equivalent of:
-     * 
+     *
      * <pre>
      * childAsURIs(child, fieldName);
      * endNamespaceDecls();
@@ -498,7 +526,7 @@ public final class XMLSerializer extends Coordinator {
      * endAttributes();
      * childAsBody(child, fieldName);
      * </pre>
-     * 
+     *
      * This produces the given child object as the sole content of
      * an element.
      * Used to reduce the code size in the generated marshaller.
@@ -518,7 +546,7 @@ public final class XMLSerializer extends Coordinator {
                 return;
             }
 
-            pushObject(child,fieldName);
+            child = pushObject(child,fieldName);
 
             final boolean lookForLifecycleMethods = beanInfo.lookForLifecycleMethods();
             if (lookForLifecycleMethods) {
@@ -542,17 +570,17 @@ public final class XMLSerializer extends Coordinator {
 
     // the version of childAsXXX where it produces @xsi:type if the expected type name
     // and the actual type name differs.
-    
+
     /**
      * This method is called when a type child object is found.
-     * 
+     *
      * <p>
      * This method produces events of the following form:
      * <pre>
      * NSDECL* "endNamespaceDecls" ATTRIBUTE* "endAttributes" BODY
      * </pre>
      * optionally including @xsi:type if necessary.
-     * 
+     *
      * @param child
      *      Object to be marshalled. The {@link JaxBeanInfo} for
      *      this object must return a type name.
@@ -561,7 +589,7 @@ public final class XMLSerializer extends Coordinator {
      * @param fieldName
      *      property name of the parent objeect from which 'o' comes.
      *      Used as a part of the error message in case anything goes wrong
-     *      with 'o'. 
+     *      with 'o'.
      */
     public final void childAsXsiType( Object child, String fieldName, JaxBeanInfo expected ) throws SAXException, IOException, XMLStreamException {
         if(child==null) {
@@ -571,7 +599,7 @@ public final class XMLSerializer extends Coordinator {
             JaxBeanInfo actual = expected;
             QName actualTypeName = null;
 
-            pushObject(child,fieldName);
+            child = pushObject(child,fieldName);
 
             if((asExpected) && (actual.lookForLifecycleMethods())) {
                 fireBeforeMarshalEvents(actual, child);
