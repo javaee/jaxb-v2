@@ -114,7 +114,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75.2.4 $
+ * @version $Revision: 1.75.2.5 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -217,8 +217,6 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
         if(ar==null)
             ar = new RuntimeInlineAnnotationReader();
-
-        checkApiVersion();
 
         this.annotaitonReader = ar;
         this.defaultNsUri = defaultNsUri;
@@ -340,31 +338,6 @@ public final class JAXBContextImpl extends JAXBRIContext {
         // no use for them now
         nameBuilder = null;
         beanInfos = null;
-    }
-
-    /**
-     * Makes sure that we are running with 2.1 JAXB API,
-     * and report an error if not.
-     */
-    private void checkApiVersion() throws JAXBException {
-        try {
-            XmlSchema s = null;
-            s.location();
-        } catch (NullPointerException e) {
-            return; // as expected
-        } catch (NoSuchMethodError e) {
-            // this is not a 2.1 API. Where is it being loaded from?
-            Messages res;
-            if(XmlSchema.class.getClassLoader()==null)
-                res = Messages.INCOMPATIBLE_API_VERSION_MUSTANG;
-            else
-                res = Messages.INCOMPATIBLE_API_VERSION;
-
-            throw new JAXBException( res.format(
-                Which.which(XmlSchema.class),
-                Which.which(getClass())
-            ));
-        }
     }
 
     /**
