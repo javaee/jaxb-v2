@@ -22,7 +22,6 @@ package com.sun.xml.bind.v2.runtime;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -60,6 +59,7 @@ import com.sun.xml.bind.v2.runtime.output.XmlOutput;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Base64Data;
 import com.sun.xml.bind.v2.runtime.unmarshaller.IntData;
 import com.sun.xml.bind.v2.util.CollisionCheckStack;
+import com.sun.xml.bind.CycleRecoverable;
 
 import org.xml.sax.SAXException;
 
@@ -468,33 +468,33 @@ public final class XMLSerializer extends Coordinator {
         cycleDetectionStack.pop();
     }
 
+    /**
+     * Pushes the object to {@link #cycleDetectionStack} and also
+     * detect any cycles.
+     *
+     * When a cycle is found, this method tries to recover from it.
+     *
+     * @return
+     *      the object that should be marshalled instead of the given <tt>obj</tt>,
+     *      or null if the error is found and we need to avoid marshalling this object
+     *      to prevent infinite recursion. When this method returns null, the error
+     *      has already been reported.
+     */
     private Object pushObject(Object obj, String fieldName) throws SAXException {
         if(!cycleDetectionStack.push(obj))
             return obj;
 
-        // cycle detected
-        try {
-            // allow the object to nominate its replacement
-            Method m = obj.getClass().getMethod("onCycleDetected");
-            return m.invoke(obj);
-        } catch (NoSuchMethodException e) {
-            // fall back to our current error mode
-        } catch (IllegalAccessException e) {
-            // fall back to our current error mode
-        } catch (InvocationTargetException e) {
-            // pass through bugs
-            Throwable x = e.getCause();
-            if (x instanceof RuntimeException)
-                throw (RuntimeException) x;
-            if (x instanceof Error)
-                throw (Error) x;
-
-            // report this failure in the user code, then continue
-            reportError(new ValidationEventImpl(
-                ValidationEvent.ERROR,
-                e.getMessage(),
-                getCurrentLocation(fieldName),
-                e));
+        // allow the object to nominate its replacement
+        if(obj instanceof CycleRecoverable) {
+            obj = ((CycleRecoverable)obj).onCycleDetected(new CycleRecoverable.Context(){});
+            if(obj!=null) {
+                // object nominated its replacement.
+                // we still need to make sure that the nominated.
+                // this may cause inifinite recursion on its own.
+                cycleDetectionStack.pop();
+                return pushObject(obj,fieldName);
+            } else
+                return null;
         }
 
         // cycle detected and no one is catching the error.
@@ -535,6 +535,14 @@ public final class XMLSerializer extends Coordinator {
         if(child==null) {
             handleMissingObjectError(fieldName);
         } else {
+            child = pushObject(child,fieldName);
+            if(child==null) {
+                // error recovery
+                endNamespaceDecls(null);
+                endAttributes();
+                cycleDetectionStack.pop();
+            }
+
             JaxBeanInfo beanInfo;
             try {
                 beanInfo = grammar.getBeanInfo(child,true);
@@ -543,10 +551,9 @@ public final class XMLSerializer extends Coordinator {
                 // recover by ignore
                 endNamespaceDecls(null);
                 endAttributes();
+                cycleDetectionStack.pop();
                 return;
             }
-
-            child = pushObject(child,fieldName);
 
             final boolean lookForLifecycleMethods = beanInfo.lookForLifecycleMethods();
             if (lookForLifecycleMethods) {
@@ -595,11 +602,16 @@ public final class XMLSerializer extends Coordinator {
         if(child==null) {
             handleMissingObjectError(fieldName);
         } else {
+            child = pushObject(child,fieldName);
+            if(child==null) { // error recovery
+                endNamespaceDecls(null);
+                endAttributes();
+                return;
+            }
+
             boolean asExpected = child.getClass()==expected.jaxbType;
             JaxBeanInfo actual = expected;
             QName actualTypeName = null;
-
-            child = pushObject(child,fieldName);
 
             if((asExpected) && (actual.lookForLifecycleMethods())) {
                 fireBeforeMarshalEvents(actual, child);
