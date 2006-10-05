@@ -4,13 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRegistry;
+import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.namespace.QName;
 
+import com.sun.xml.bind.util.Which;
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
-import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.annotation.ClassLocatable;
+import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
 import com.sun.xml.bind.v2.model.core.ErrorHandler;
 import com.sun.xml.bind.v2.model.core.LeafInfo;
@@ -99,6 +101,31 @@ public class ModelBuilder<T,C,F,M> {
         this.defaultNsUri = defaultNamespaceRemap;
         reader.setErrorHandler(proxyErrorHandler);
         typeInfoSet = createTypeInfoSet();
+    }
+
+    /**
+     * Makes sure that we are running with 2.1 JAXB API,
+     * and report an error if not.
+     */
+    static {
+        try {
+            XmlSchema s = null;
+            s.location();
+        } catch (NullPointerException e) {
+            // as epxected
+        } catch (NoSuchMethodError e) {
+            // this is not a 2.1 API. Where is it being loaded from?
+            Messages res;
+            if(XmlSchema.class.getClassLoader()==null)
+                res = Messages.INCOMPATIBLE_API_VERSION_MUSTANG;
+            else
+                res = Messages.INCOMPATIBLE_API_VERSION;
+
+            throw new LinkageError( res.format(
+                Which.which(XmlSchema.class),
+                Which.which(ModelBuilder.class)
+            ));
+        }
     }
 
     protected TypeInfoSetImpl<T,C,F,M> createTypeInfoSet() {
