@@ -1,5 +1,7 @@
 package com.sun.xml.bind;
 
+import javax.xml.bind.Marshaller;
+
 /**
  * Optional interface that can be implemented by JAXB-bound objects
  * to handle cycles in the object graph.
@@ -22,6 +24,11 @@ public interface CycleRecoverable {
      * Called when a cycle is detected by the JAXB RI marshaller
      * to nominate a new object to be marshalled instead.
      *
+     * @param context
+     *      This object is provided by the JAXB RI to inform
+     *      the object about the marshalling process that's going on.
+     *
+     *
      * @return
      *      the object to be marshalled instead of <tt>this</tt> object.
      *      Or return null to indicate that the JAXB RI should behave
@@ -30,5 +37,21 @@ public interface CycleRecoverable {
      */
     Object onCycleDetected(Context context);
 
-    public interface Context {}
+    /**
+     * This interface is implemented by the JAXB RI to provide
+     * information about the on-going marshalling process.
+     *
+     * <p>
+     * We may add more methods in the future, so please do not
+     * implement this interface in your application.
+     */
+    public interface Context {
+        /**
+         * Returns the marshaller object that's doing the marshalling.
+         *
+         * @return
+         *      always non-null.
+         */
+        Marshaller getMarshaller();
+    }
 }
