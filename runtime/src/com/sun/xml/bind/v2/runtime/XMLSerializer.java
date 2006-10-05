@@ -486,7 +486,11 @@ public final class XMLSerializer extends Coordinator {
 
         // allow the object to nominate its replacement
         if(obj instanceof CycleRecoverable) {
-            obj = ((CycleRecoverable)obj).onCycleDetected(new CycleRecoverable.Context(){});
+            obj = ((CycleRecoverable)obj).onCycleDetected(new CycleRecoverable.Context(){
+                public Marshaller getMarshaller() {
+                    return marshaller;
+                }
+            });
             if(obj!=null) {
                 // object nominated its replacement.
                 // we still need to make sure that the nominated.
