@@ -46,6 +46,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.Validator;
 import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.bind.annotation.XmlList;
+import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -61,8 +62,8 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 
 import com.sun.istack.NotNull;
-import com.sun.istack.Pool;
 import com.sun.istack.Nullable;
+import com.sun.istack.Pool;
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.Bridge;
@@ -74,9 +75,8 @@ import com.sun.xml.bind.api.TypeReference;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.bind.util.Which;
 import com.sun.xml.bind.v2.WellKnownNamespace;
-import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
-import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
 import com.sun.xml.bind.v2.model.annotation.RuntimeAnnotationReader;
+import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.Ref;
@@ -114,7 +114,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75.2.3 $
+ * @version $Revision: 1.75.2.4 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -217,6 +217,8 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
         if(ar==null)
             ar = new RuntimeInlineAnnotationReader();
+
+        checkApiVersion();
 
         this.annotaitonReader = ar;
         this.defaultNsUri = defaultNsUri;
@@ -338,6 +340,31 @@ public final class JAXBContextImpl extends JAXBRIContext {
         // no use for them now
         nameBuilder = null;
         beanInfos = null;
+    }
+
+    /**
+     * Makes sure that we are running with 2.1 JAXB API,
+     * and report an error if not.
+     */
+    private void checkApiVersion() throws JAXBException {
+        try {
+            XmlSchema s = null;
+            s.location();
+        } catch (NullPointerException e) {
+            return; // as expected
+        } catch (NoSuchMethodError e) {
+            // this is not a 2.1 API. Where is it being loaded from?
+            Messages res;
+            if(XmlSchema.class.getClassLoader()==null)
+                res = Messages.INCOMPATIBLE_API_VERSION_MUSTANG;
+            else
+                res = Messages.INCOMPATIBLE_API_VERSION;
+
+            throw new JAXBException( res.format(
+                Which.which(XmlSchema.class),
+                Which.which(getClass())
+            ));
+        }
     }
 
     /**
