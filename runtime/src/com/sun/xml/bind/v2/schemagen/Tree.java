@@ -76,7 +76,7 @@ abstract class Tree {
 
     /**
      * Returns true if the top node of this tree can
-     * appear as a valid content model in XML Schema.
+     * appear as a valid top-level content model in XML Schema.
      *
      * <p>
      * Model groups and occurrences that have model group in it can.
@@ -136,11 +136,6 @@ abstract class Tree {
         }
 
         @Override
-        boolean canBeTopLevel() {
-            return body.canBeTopLevel();
-        }
-
-        @Override
         Tree makeOptional(boolean really) {
             return this;
         }
@@ -164,11 +159,6 @@ abstract class Tree {
         @Override
         boolean isNullable() {
             return body.isNullable();
-        }
-
-        @Override
-        boolean canBeTopLevel() {
-            return body.canBeTopLevel();
         }
 
         @Override
