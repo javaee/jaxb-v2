@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<sample since="1.0">
+<sample since="2.1">
     <title>ClassResolver</title>
     <description><![CDATA[
       This little DI-container-by-JAXB example demonstrates how one can avoid
