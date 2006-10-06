@@ -28,7 +28,10 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
     ReflectionNavigator() {}
 
     public Class getSuperClass(Class clazz) {
-        return clazz.getSuperclass();
+        if(clazz==Object.class) return null;
+        Class sc = clazz.getSuperclass();
+        if(sc==null)    sc=Object.class;        // error recovery
+        return sc;
     }
 
     private static final TypeVisitor<Type,Class> baseClassFinder = new TypeVisitor<Type,Class>() {
