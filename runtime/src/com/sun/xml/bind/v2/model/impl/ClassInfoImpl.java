@@ -144,13 +144,15 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
             propOrder = DEFAULT_ORDER;
         }
 
+        if(nav().isInterface(clazz)) {
+            builder.reportError(new IllegalAnnotationException(
+                Messages.CANT_HANDLE_INTERFACE.format(nav().getClassName(clazz)), this ));
+        }
+
         // the class must have the default constructor
         if (!hasFactoryConstructor(t)){
             if(!nav().hasDefaultConstructor(clazz)){
                 Messages msg;
-                if(nav().isInterface(clazz))
-                    msg = Messages.CANT_HANDLE_INTERFACE;
-                else
                 if(nav().isInnerClass(clazz))
                     msg = Messages.CANT_HANDLE_INNER_CLASS;
                 else
