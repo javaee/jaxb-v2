@@ -104,6 +104,8 @@ public class PluginImpl extends Plugin {
             Bindings bindings = TXW.create(Bindings.class, new StreamSerializer(os, "UTF-8"));
             if(hasComponentInNoNamespace) // otherwise jaxb binding NS should be the default namespace
                 bindings._namespace(Const.JAXB_NSURI,"jaxb");
+            else
+                bindings._namespace(Const.JAXB_NSURI,"");
             bindings.version("2.1");
             bindings._comment("\n\n"+opt.getPrologComment()+"\n  ");
 
