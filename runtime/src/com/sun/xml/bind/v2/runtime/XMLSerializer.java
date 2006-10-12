@@ -947,6 +947,13 @@ public final class XMLSerializer extends Coordinator {
         return schemaType;
     }
 
+    public void setObjectIdentityCycleDetection(boolean val) {
+        cycleDetectionStack.setUseIdentity(val);
+    }
+    public boolean getObjectIdentityCycleDetection() {
+        return cycleDetectionStack.getUseIdentity();
+    }
+
     void reconcileID() throws SAXException {
         // find objects that were not a part of the object graph
         idReferencedObjects.removeAll(objectsWithId);

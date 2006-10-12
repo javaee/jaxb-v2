@@ -457,6 +457,9 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
             return header;
         if( C14N.equals(name) )
             return c14nSupport;
+        if ( OBJECT_IDENTITY_CYCLE_DETECTION.equals(name)) 
+        	return serializer.getObjectIdentityCycleDetection();
+;
 
         return super.getProperty(name);
     }
@@ -502,6 +505,11 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         if( C14N.equals(name) ) {
             checkBoolean(name,value);
             c14nSupport = (Boolean)value;
+            return;
+        }
+        if (OBJECT_IDENTITY_CYCLE_DETECTION.equals(name)) {
+        	checkBoolean(name,value);
+            serializer.setObjectIdentityCycleDetection((Boolean)value);
             return;
         }
 
@@ -591,4 +599,5 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     protected static final String XMLDECLARATION = "com.sun.xml.bind.xmlDeclaration";
     protected static final String XML_HEADERS = "com.sun.xml.bind.xmlHeaders";
     protected static final String C14N = JAXBRIContext.CANONICALIZATION_SUPPORT;
+    protected static final String OBJECT_IDENTITY_CYCLE_DETECTION = "com.sun.xml.bind.objectIdentitityCycleDetection";
 }

@@ -28,14 +28,32 @@ public final class CollisionCheckStack<E> extends AbstractList<E> {
     private int[] next;
     private int size = 0;
 
+    /**
+     * True if the check shall be done by using the object identity.
+     * False if the check shall be done with the equals method.
+     */
+    private boolean useIdentity = true;
+
     // for our purpose, there isn't much point in resizing this as we don't expect
     // the stack to grow that much.
     private final int[] initialHash;
-
+    
     public CollisionCheckStack() {
-        initialHash = new int[17];
+    	initialHash = new int[17];
         data = new Object[16];
         next = new int[16];
+    }
+
+    /**
+     * Set to false to use {@link Object#equals(Object)} to detect cycles.
+     * This method can be only used when the stack is empty.
+     */
+    public void setUseIdentity(boolean useIdentity) {
+        this.useIdentity = useIdentity;
+    }
+
+    public boolean getUseIdentity() {
+        return useIdentity;
     }
 
     /**
@@ -56,7 +74,7 @@ public final class CollisionCheckStack<E> extends AbstractList<E> {
         size++;
         return r;
     }
-
+    
     /**
      * Pushes a new object to the stack without making it participate
      * with the collision check.
@@ -80,7 +98,10 @@ public final class CollisionCheckStack<E> extends AbstractList<E> {
     }
 
     private int hash(Object o) {
-        return System.identityHashCode(o) % initialHash.length;
+    	if (useIdentity)
+            return System.identityHashCode(o) % initialHash.length;
+    	else
+            return Math.abs(o.hashCode() % initialHash.length);
     }
 
     /**
@@ -100,7 +121,7 @@ public final class CollisionCheckStack<E> extends AbstractList<E> {
         }
         return (E)o;
     }
-
+    
     /**
      * Returns the top of the stack.
      */
@@ -113,7 +134,11 @@ public final class CollisionCheckStack<E> extends AbstractList<E> {
         while(p!=0) {
             p--;
             Object existing = data[p];
-            if(existing==o)     return true;
+            if (useIdentity) {
+                if(existing==o)     return true;
+            } else {
+                if (o.equals(existing)) return true;
+            }
             p = next[p];
         }
         return false;
