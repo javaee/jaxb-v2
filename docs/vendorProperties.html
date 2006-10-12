@@ -23,6 +23,7 @@
       <li><a href="#xmldecl">XML Declaration Control</a></li>
       <li><a href="#idresolver">ID Resolver</a></li>
       <li><a href="#classresolver">Class Resolver</a></li>
+      <li><a href="#identityCycleCheck">Cycle Detection</a></li>
       <!--li><a href=""></a></li-->
     </ul>
 
@@ -440,12 +441,36 @@ public abstract class NamespacePrefixMapper {
       This property allows applications to lazily inform JAXB about classes that it needs to know. This is convenient when you don't want to (or you simply can't) list classes up front and pass it to <tt>JAXBContext.newInstance</tt>. Refer to <a href="https://jaxb-architecture-document.dev.java.net/nonav/doc/index.html?com/sun/xml/bind/api/ClassResolver.html">this document</a> about more details. Also take a look at the class-resolver sample.
     
     
+    <a name="identityCycleCheck"></a>
+    <h3>Cycle Detection</h3>
+    
+    <table class=property summary="">
+      <tr><td>
+        <b>Property name:</b>
+      </td><td>
+        <tt>com.sun.xml.bind.objectIdentitityCycleDetection</tt>
+      </td></tr>
+      <tr><td>
+        <b>Type:</b>
+      </td><td>
+        <tt>boolean</tt>
+      </td></tr>
+      <tr><td>
+        <b>Default value:</b>
+      </td><td>
+        true
+      </td></tr>
+    </table>
+    
+    <p>
+      This property controls how the JAXB RI checks for cycles during the marshalling. The <tt>true</tt> value causes the <tt>==</tt> operator to be used for comparison, and the <tt>false</tt> value causes the <tt>Object.equals()</tt> method to be used for comparison. The latter is potentially dangerous, as it may report false positives, but <a href="http://forums.java.net/jive/thread.jspa?threadID=13670">some user reported that this mode is needed when one uses JAXB together with O/R mapping tool like Hibernate.</a>
+    
     <!-- TODO: talk about c14n when it's considered stable -->
     
     <hr/>
     <div class=footer>
-      $Revision: 1.4.4.3 $<br/>
-      $Date: 2006-08-23 21:39:52 $
+      $Revision: 1.4.4.4 $<br/>
+      $Date: 2006-10-12 23:46:23 $
     </div>
   </body>
 </html>
