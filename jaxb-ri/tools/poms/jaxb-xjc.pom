@@ -3,4 +3,11 @@
   <groupId>com.sun.xml.bind</groupId>
   <artifactId>jaxb-xjc</artifactId>
   <version>@VERSION@</version>
+  <dependencies>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <version>@VERSION@</version>
+    </dependency>
+  </dependencies>
 </project>
