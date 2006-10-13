@@ -2,6 +2,7 @@ package com.sun.xml.bind.v2.model.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlAccessOrder;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -48,10 +48,10 @@ import com.sun.xml.bind.v2.model.annotation.MethodLocatable;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
 import com.sun.xml.bind.v2.model.core.Element;
 import com.sun.xml.bind.v2.model.core.ID;
+import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
-import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
 
@@ -317,8 +317,8 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
     private void findFieldProperties(C c, XmlAccessType at) {
         // always find properties from the super class first
         C sc = nav().getSuperClass(c);
-        if(reader().hasClassAnnotation(sc,XmlTransient.class))
-            findFieldProperties(sc,at);
+        if(sc!=null && reader().hasClassAnnotation(sc,XmlTransient.class))
+            findFieldProperties(sc,at); // sc==null check is needed for error recovery
 
         for( F f : nav().getDeclaredFields(c) ) {
             Annotation[] annotations = reader().getAllFieldAnnotations(f,this);
@@ -846,7 +846,7 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
 
             // take super classes into account if they have @XmlTransient
             c = nav().getSuperClass(c);
-        } while(reader().hasClassAnnotation(c,XmlTransient.class));
+        } while(c!=null && reader().hasClassAnnotation(c,XmlTransient.class)); // c==null when we are recovering from errors
 
 
         // compute the intersection
@@ -926,8 +926,8 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
         //   1) order is right
         //   2) overriden properties are handled accordingly
         C sc = nav().getSuperClass(c);
-        if(reader().hasClassAnnotation(sc,XmlTransient.class))
-            collectGetterSetters(sc,getters,setters);
+        if(sc!=null && reader().hasClassAnnotation(sc,XmlTransient.class))
+            collectGetterSetters(sc,getters,setters); // sc==null check needed for error recovery
 
 
         Collection<? extends M> methods = nav().getDeclaredMethods(c);
