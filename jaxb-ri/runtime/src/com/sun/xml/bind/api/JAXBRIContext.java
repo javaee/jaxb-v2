@@ -264,12 +264,10 @@ public abstract class JAXBRIContext extends JAXBContext {
      * Accordingly, this method may return an identifier that collides with reserved words.
      *
      * <p>
-     * Use {@link JJavaName#isJavaIdentifier(String)} to check for such collision.
+     * Use <tt>JJavaName.isJavaIdentifier(String)</tt> to check for such collision.
      *
      * @return
      *      Typically, this method returns "nameLikeThis".
-     *
-     * @see JJavaName#isJavaIdentifier(String)
      */
     public static @NotNull String mangleNameToVariableName(@NotNull String localName) {
         return NameConverter.standard.toVariableName(localName);
