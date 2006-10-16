@@ -114,7 +114,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75.2.5 $
+ * @version $Revision: 1.75.2.6 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -200,6 +200,8 @@ public final class JAXBContextImpl extends JAXBRIContext {
     private WeakReference<RuntimeTypeInfoSet> typeInfoSetCache;
 
     private @NotNull RuntimeAnnotationReader annotaitonReader;
+
+    private /*almost final*/ boolean hasSwaRef;
 
     /**
      *
@@ -341,6 +343,13 @@ public final class JAXBContextImpl extends JAXBRIContext {
     }
 
     /**
+     * True if this JAXBContext has {@link XmlAttachmentRef}.
+     */
+    public boolean hasSwaRef() {
+        return hasSwaRef;
+    }
+
+    /**
      * Creates a {@link RuntimeTypeInfoSet}.
      */
     private RuntimeTypeInfoSet getTypeInfoSet() throws IllegalAnnotationsException {
@@ -364,6 +373,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
             builder.getTypeInfo(new Ref<Type,Class>(c));
         }
 
+        this.hasSwaRef = builder.hasSwaRef;
         RuntimeTypeInfoSet r = builder.link();
 
         errorHandler.check();

@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.util.Which;
@@ -81,6 +82,12 @@ public class ModelBuilder<T,C,F,M> {
      */
     private ErrorHandler errorHandler;
     private boolean hadError;
+
+    /**
+     * Set to true if the model includes {@link XmlAttachmentRef}. JAX-WS
+     * needs to know this information.
+     */
+    public boolean hasSwaRef;
 
     private final ErrorHandler proxyErrorHandler = new ErrorHandler() {
         public void error(IllegalAnnotationException e) {
