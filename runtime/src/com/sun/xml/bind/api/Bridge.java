@@ -40,11 +40,11 @@ import org.xml.sax.ContentHandler;
  * @author Kohsuke Kawaguchi
  */
 public abstract class Bridge<T> {
-    protected Bridge(JAXBContextImpl context) {
+    protected Bridge(JAXBRIContext context) {
         this.context = context;
     }
 
-    protected final JAXBContextImpl context;
+    protected final JAXBRIContext context;
 
     /**
      * Gets the {@link JAXBRIContext} to which this object belongs.

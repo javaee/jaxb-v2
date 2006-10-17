@@ -17,10 +17,6 @@ abstract class InternalBridge<T> extends Bridge<T> {
         super(context);
     }
 
-    public JAXBContextImpl getContext() {
-        return context;
-    }
-
     /**
      * Called from {@link CompositeStructureBeanInfo} to marshal this bridge as a sub-tree.
      */
