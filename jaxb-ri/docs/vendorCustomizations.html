@@ -169,6 +169,28 @@
 	<p>
 		In the above example, <tt>LayerRate_T</tt> simple type is adapted by <tt>org.acme.foo.LayerRateAdapter</tt>, which extends from <tt>XmlAdapter</tt>.
 	
+<pre class=code>
+&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           <font color="red"
+          >xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+           jaxb:extensionBindingPrefixes="xjc"</font>
+           jaxb:version="2.0">
+  &lt;xsd:annotation>&lt;xsd:appinfo>
+    &lt;jaxb:globalBindings>
+      <font color=red>&lt;xjc:javaType name="org.acme.foo.MyDateType" xmlType="xsd:dateTime"
+        adapter="org.acme.foo.MyAdapterImpl" /></font>
+    &lt;/jaxb:globalBindings>
+  &lt;/xsd:appinfo>&lt;/xsd:annotation>
+  
+  .
+  .
+  .
+&lt;/xsd:schema>
+</pre>
+
+<p>
+		In the above example, all the use of <tt>xsd:dateTime</tt> type is adapter by <tt>org.acme.foo.MyAdapterImpl</tt> to <tt>org.acme.foo.MyDateType</tt>
 	
 	
 	
@@ -319,8 +341,8 @@ public class Person {
 
     <hr>
     <div class="footer">
-      $Revision: 1.6.4.5 $<br>
-      $Date: 2006-09-27 20:55:32 $
+      $Revision: 1.6.4.6 $<br>
+      $Date: 2006-10-17 23:51:23 $
     </div>
   </body>
  </html>
