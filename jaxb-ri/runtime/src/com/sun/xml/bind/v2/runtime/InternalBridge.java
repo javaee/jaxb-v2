@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.Bridge;
+import com.sun.xml.bind.api.JAXBRIContext;
 
 import org.xml.sax.SAXException;
 
@@ -13,7 +14,7 @@ import org.xml.sax.SAXException;
  * @author Kohsuke Kawaguchi
  */
 abstract class InternalBridge<T> extends Bridge<T> {
-    protected InternalBridge(JAXBContextImpl context) {
+    protected InternalBridge(JAXBRIContext context) {
         super(context);
     }
 
