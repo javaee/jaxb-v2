@@ -54,41 +54,80 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
         final int[] attributeIndexes;
         final int[] localNameIndexes;
 
-        /*
+        /**
          * The offset of the index
          */
         int indexOffset;
         
-        /*
+        /**
          * The the maximum known value of an index
          */
         int maxIndex;
         
-        TablesPerJAXBContext(JAXBContextImpl context) {
+        /**
+         * True if the tables require clearing
+         */
+        boolean requiresClear;
+        
+        /**
+         * Create a new set of tables for a JAXB context.
+         * <p>
+         * @param content the JAXB context.
+         * @param initialIndexOffset the initial index offset to calculate
+         *                           the maximum possible index
+         *
+         */
+        TablesPerJAXBContext(JAXBContextImpl context, int initialIndexOffset) {
             elementIndexes = new int[context.getNumberOfElementNames()];
             attributeIndexes = new int[context.getNumberOfAttributeNames()];
             localNameIndexes = new int[context.getNumberOfLocalNames()];
             
             indexOffset = 1;
-            maxIndex = elementIndexes.length + attributeIndexes.length;
+            maxIndex = initialIndexOffset + elementIndexes.length + attributeIndexes.length;
         }
 
         /**
-         * Clear the tables.
+         * Require that tables are cleared.
          */
-        public void clearTables() {
-            // Increment offset to new position
-            indexOffset += maxIndex;
-            // Reset the maximum know value of an index
-            maxIndex = elementIndexes.length + attributeIndexes.length;
-            // Check if there is enough free space
-            // If overflow
-            if ((indexOffset + maxIndex) < 0) {
-                clear(elementIndexes);
-                clear(attributeIndexes);
-                clear(localNameIndexes);
-                indexOffset = 1;
+        public void requireClearTables() {
+            requiresClear = true;
+        }
+        
+        /**
+         * Clear or reset the tables.
+         * <p>
+         * @param initialIndexOffset the initial index offset to calculate
+         *                           the maximum possible index
+         */
+        public void clearOrResetTables(int intialIndexOffset) {
+            if (requiresClear) {
+                requiresClear = false;
+
+                // Increment offset to new position
+                indexOffset += maxIndex;
+                // Reset the maximum known value of an index
+                maxIndex = intialIndexOffset + elementIndexes.length + attributeIndexes.length;
+                // Check if there is enough free space
+                // If overflow
+                if ((indexOffset + maxIndex) < 0) {
+                    clearAll();
+                }
+            } else {
+                // Reset the maximum known value of an index
+                maxIndex = intialIndexOffset + elementIndexes.length + attributeIndexes.length;
+                // Check if there is enough free space
+                // If overflow
+                if ((indexOffset + maxIndex) < 0) {
+                    resetAll();
+                }
             }
+        }
+        
+        private void clearAll() {
+            clear(elementIndexes);
+            clear(attributeIndexes);
+            clear(localNameIndexes);
+            indexOffset = 1;
         }
         
         private void clear(int[] array) {
@@ -108,13 +147,17 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
             // Check if there is enough free space
             // If overflow
             if ((indexOffset + maxIndex) < 0) {
-                reset(elementIndexes);
-                reset(attributeIndexes);
-                reset(localNameIndexes);
-                indexOffset = 1;
+                resetAll();
             }
         }
                 
+        private void resetAll() {
+            clear(elementIndexes);
+            clear(attributeIndexes);
+            clear(localNameIndexes);
+            indexOffset = 1;
+        }
+        
         private void reset(int[] array) {
             for (int i = 0; i < array.length; i++) {
                 if (array[i] > indexOffset) {
@@ -143,7 +186,7 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
          */
         public void clear() {
             for(TablesPerJAXBContext c : collectionOfContexts)
-                c.clearTables();
+                c.requireClearTables();
         }
     }
     
@@ -166,8 +209,13 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
         final TablesPerJAXBContext tablesPerContext = appData.contexts.get(context);
         if (tablesPerContext != null) {
             tables = tablesPerContext;
+            /**
+             * Obtain the current local name index. Thus will be used to
+             * calculate the maximum index value when serializing for this context
+             */
+            tables.clearOrResetTables(out.getLocalNameIndex());
         } else {
-            tables = new TablesPerJAXBContext(context);
+            tables = new TablesPerJAXBContext(context, out.getLocalNameIndex());
             appData.contexts.put(context, tables);
         }
     }
