@@ -110,7 +110,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75 $
+ * @version $Revision: 1.76 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -473,8 +473,11 @@ public final class JAXBContextImpl extends JAXBRIContext {
     public final JaxBeanInfo getBeanInfo(Object o,boolean fatal) throws JAXBException {
         JaxBeanInfo bi = getBeanInfo(o);
         if(bi!=null)    return bi;
-        if(fatal)
+        if(fatal) {
+            if(o instanceof Document)
+                throw new JAXBException(Messages.ELEMENT_NEEDED_BUT_FOUND_DOCUMENT.format(o));
             throw new JAXBException(o.getClass().getName()+" nor any of its super class is known to this context");
+        }
         return null;
     }
 
