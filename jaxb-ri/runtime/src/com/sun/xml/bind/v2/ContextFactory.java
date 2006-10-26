@@ -19,6 +19,7 @@ import com.sun.xml.bind.api.JAXBRIContext;
 import com.sun.xml.bind.api.TypeReference;
 import com.sun.xml.bind.v2.model.annotation.RuntimeAnnotationReader;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
+import com.sun.xml.bind.v2.util.TypeCast;
 
 /**
  * This class is responsible for producing RI JAXBContext objects.  In
@@ -50,11 +51,19 @@ public class ContextFactory {
 
         RuntimeAnnotationReader ar = getPropertyValue(properties,JAXBRIContext.ANNOTATION_READER,RuntimeAnnotationReader.class);
 
+        Map<Class,Class> subclassReplacements;
+        try {
+            subclassReplacements = TypeCast.checkedCast(
+                getPropertyValue(properties, JAXBRIContext.SUBCLASS_REPLACEMENTS, Map.class), Class.class, Class.class);
+        } catch (ClassCastException e) {
+            throw new JAXBException(Messages.INVALID_TYPE_IN_MAP.format(),e);
+        }
+
         if(!properties.isEmpty()) {
             throw new JAXBException(Messages.UNSUPPORTED_PROPERTY.format(properties.keySet().iterator().next()));
         }
 
-        return createContext(classes,Collections.<TypeReference>emptyList(),defaultNsUri,c14nSupport,ar);
+        return createContext(classes,Collections.<TypeReference>emptyList(),subclassReplacements,defaultNsUri,c14nSupport,ar);
     }
 
     /**
@@ -71,11 +80,8 @@ public class ContextFactory {
             return type.cast(o);
     }
 
-    /**
-     * Used from the JAXB RI runtime API, invoked via reflection.
-     */
-    public static JAXBContext createContext( Class[] classes, Collection<TypeReference> typeRefs, String defaultNsUri, boolean c14nSupport, RuntimeAnnotationReader ar ) throws JAXBException {
-        return new JAXBContextImpl(classes,typeRefs,defaultNsUri,c14nSupport,ar);
+    public static JAXBRIContext createContext( Class[] classes, Collection<TypeReference> typeRefs, Map<Class,Class> subclassReplacements, String defaultNsUri, boolean c14nSupport, RuntimeAnnotationReader ar ) throws JAXBException {
+        return new JAXBContextImpl(classes,typeRefs,subclassReplacements,defaultNsUri,c14nSupport,ar);
     }
 
     /**

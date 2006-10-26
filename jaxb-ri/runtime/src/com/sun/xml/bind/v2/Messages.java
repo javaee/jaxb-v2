@@ -33,6 +33,7 @@ enum Messages {
     UNSUPPORTED_PROPERTY,   // 1 arg
     BROKEN_CONTEXTPATH,     // 1 arg
     NO_DEFAULT_CONSTRUCTOR_IN_INNER_CLASS, // 1 arg
+    INVALID_TYPE_IN_MAP, // 0args
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());

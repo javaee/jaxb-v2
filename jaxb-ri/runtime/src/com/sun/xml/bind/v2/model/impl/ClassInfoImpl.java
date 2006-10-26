@@ -172,7 +172,7 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
             if(s==null || s==nav().asDecl(Object.class))
                 baseClass = null;
             else {
-                NonElement<T, C> b = builder.getClassInfo(s, this);
+                NonElement<T,C> b = builder.getClassInfo(s, this);
                 if(b instanceof ClassInfoImpl) {
                     baseClass = (ClassInfoImpl<T,C,F,M>) b;
                     baseClass.hasSubClasses = true;

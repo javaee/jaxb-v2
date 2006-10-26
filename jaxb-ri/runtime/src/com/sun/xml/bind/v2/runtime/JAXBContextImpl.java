@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.Collections;
 
 import javax.xml.bind.Binder;
 import javax.xml.bind.DatatypeConverter;
@@ -46,7 +47,6 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.Validator;
 import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.bind.annotation.XmlList;
-import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -114,7 +114,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75.2.6 $
+ * @version $Revision: 1.75.2.7 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -202,6 +202,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
     private @NotNull RuntimeAnnotationReader annotaitonReader;
 
     private /*almost final*/ boolean hasSwaRef;
+    private final @NotNull Map<Class,Class> subclassReplacements;
 
     /**
      *
@@ -210,8 +211,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
      * @param c14nSupport
      *      {@link #c14nSupport}.
      */
-    public JAXBContextImpl(Class[] classes, Collection<TypeReference> typeRefs, String defaultNsUri, boolean c14nSupport, @Nullable RuntimeAnnotationReader ar) throws JAXBException {
-
+    public JAXBContextImpl(Class[] classes, Collection<TypeReference> typeRefs, Map<Class,Class> subclassReplacements, String defaultNsUri, boolean c14nSupport, @Nullable RuntimeAnnotationReader ar) throws JAXBException {
         // initialize datatype converter with ours
         DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
 
@@ -220,7 +220,10 @@ public final class JAXBContextImpl extends JAXBRIContext {
         if(ar==null)
             ar = new RuntimeInlineAnnotationReader();
 
+        if(subclassReplacements==null)  subclassReplacements= Collections.emptyMap();
+
         this.annotaitonReader = ar;
+        this.subclassReplacements = subclassReplacements;
         this.defaultNsUri = defaultNsUri;
         this.c14nSupport = c14nSupport;
         this.classes = new Class[classes.length];
@@ -361,7 +364,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
                 return r;
         }
 
-        final RuntimeModelBuilder builder = new RuntimeModelBuilder(annotaitonReader,defaultNsUri);
+        final RuntimeModelBuilder builder = new RuntimeModelBuilder(annotaitonReader,subclassReplacements,defaultNsUri);
         IllegalAnnotationsException.Builder errorHandler = new IllegalAnnotationsException.Builder();
         builder.setErrorHandler(errorHandler);
 
@@ -902,7 +905,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
         System.arraycopy(classes,0,newList,0,classes.length);
         newList[classes.length] = clazz;
 
-        return new JAXBContextImpl(newList,bridges.keySet(),defaultNsUri,c14nSupport,annotaitonReader);
+        return new JAXBContextImpl(newList,bridges.keySet(),subclassReplacements,defaultNsUri,c14nSupport,annotaitonReader);
     }
 
     private static final Comparator<QName> QNAME_COMPARATOR = new Comparator<QName>() {

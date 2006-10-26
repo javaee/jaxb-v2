@@ -13,7 +13,6 @@ import java.util.concurrent.Callable;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEvent;
