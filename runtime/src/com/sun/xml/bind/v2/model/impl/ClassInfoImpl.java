@@ -317,8 +317,8 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
     private void findFieldProperties(C c, XmlAccessType at) {
         // always find properties from the super class first
         C sc = nav().getSuperClass(c);
-        if(sc!=null && reader().hasClassAnnotation(sc,XmlTransient.class))
-            findFieldProperties(sc,at); // sc==null check is needed for error recovery
+        if(shouldRecurseSuperClass(sc))
+            findFieldProperties(sc,at);
 
         for( F f : nav().getDeclaredFields(c) ) {
             Annotation[] annotations = reader().getAllFieldAnnotations(f,this);
@@ -846,7 +846,7 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
 
             // take super classes into account if they have @XmlTransient
             c = nav().getSuperClass(c);
-        } while(c!=null && reader().hasClassAnnotation(c,XmlTransient.class)); // c==null when we are recovering from errors
+        } while(shouldRecurseSuperClass(c));
 
 
         // compute the intersection
@@ -926,8 +926,8 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
         //   1) order is right
         //   2) overriden properties are handled accordingly
         C sc = nav().getSuperClass(c);
-        if(sc!=null && reader().hasClassAnnotation(sc,XmlTransient.class))
-            collectGetterSetters(sc,getters,setters); // sc==null check needed for error recovery
+        if(shouldRecurseSuperClass(sc))
+            collectGetterSetters(sc,getters,setters);
 
 
         Collection<? extends M> methods = nav().getDeclaredMethods(c);
@@ -994,6 +994,14 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
         for (Map.Entry<String,List<M>> e : allSetters.entrySet()) {
             setters.put(e.getKey(),e.getValue().get(0));
         }
+    }
+
+    /**
+     * Checks if the properties in this given super class should be aggregated into this class.
+     */
+    private boolean shouldRecurseSuperClass(C sc) {
+        return sc!=null
+            && (builder.isReplaced(sc) || reader().hasClassAnnotation(sc, XmlTransient.class));
     }
 
     /**

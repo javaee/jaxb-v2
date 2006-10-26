@@ -369,4 +369,8 @@ public class ModelBuilder<T,C,F,M> {
         if(errorHandler!=null)
             errorHandler.error(e);
     }
+
+    public boolean isReplaced(C sc) {
+        return subclassReplacements.containsKey(sc);
+    }
 }
