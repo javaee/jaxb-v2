@@ -24,6 +24,7 @@
       <li><a href="#idresolver">ID Resolver</a></li>
       <li><a href="#classresolver">Class Resolver</a></li>
       <li><a href="#identityCycleCheck">Cycle Detection</a></li>
+      <li><a href="#subclassReplacements">Subclass Replacements</a></li>
       <!--li><a href=""></a></li-->
     </ul>
 
@@ -465,12 +466,39 @@ public abstract class NamespacePrefixMapper {
     <p>
       This property controls how the JAXB RI checks for cycles during the marshalling. The <tt>true</tt> value causes the <tt>==</tt> operator to be used for comparison, and the <tt>false</tt> value causes the <tt>Object.equals()</tt> method to be used for comparison. The latter is potentially dangerous, as it may report false positives, but <a href="http://forums.java.net/jive/thread.jspa?threadID=13670">some user reported that this mode is needed when one uses JAXB together with O/R mapping tool like Hibernate.</a>
     
+    <a name="subclassReplacements"></a>
+    <h3>Subclass Replacements</h3>
+    
+    <table class=property summary="">
+      <tr><td>
+        <b>Property name:</b>
+      </td><td>
+        <tt>com.sun.xml.bind.subclassReplacements</tt>
+      </td></tr>
+      <tr><td>
+        <b>Type:</b>
+      </td><td>
+        <tt>Map&lt;Class,Class></tt>
+      </td></tr>
+      <tr><td>
+        <b>Default value:</b>
+      </td><td>
+        null
+      </td></tr>
+    </table>
+    
+    <p>
+      For every key/value pair (K,V) in the map, the JAXB RI will interpret every reference to K as if it were a reference to V. This can be used as a technique to handle multiple different bindings for a same set of classes. For example, you can write your program to use base abstract <tt>EndpointReference</tt> type, then at runtime create two <tt>JAXBContext</tt>s by substituting <tt>EndpointReference</tt> to <tt>W3CEndpointReference</tt> and <tt>MemberSubmissionEndpointReference</tt>, for example.
+    <p>
+      See <tt>subclass-replace</tt> example for more details.
+    
+    
     <!-- TODO: talk about c14n when it's considered stable -->
     
     <hr/>
     <div class=footer>
-      $Revision: 1.4.4.4 $<br/>
-      $Date: 2006-10-12 23:46:23 $
+      $Revision: 1.4.4.5 $<br/>
+      $Date: 2006-10-26 19:22:54 $
     </div>
   </body>
 </html>
