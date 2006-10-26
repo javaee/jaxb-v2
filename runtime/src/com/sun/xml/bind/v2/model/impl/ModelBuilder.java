@@ -77,6 +77,8 @@ public class ModelBuilder<T,C,F,M> {
     /*package*/ final Map<String,RegistryInfoImpl<T,C,F,M>> registries
             = new HashMap<String,RegistryInfoImpl<T,C,F,M>>();
 
+    private final Map<C,C> subclassReplacements;
+
     /**
      * @see #setErrorHandler
      */
@@ -99,10 +101,12 @@ public class ModelBuilder<T,C,F,M> {
     public ModelBuilder(
         AnnotationReader<T,C,F,M> reader,
         Navigator<T,C,F,M> navigator,
+        Map<C,C> subclassReplacements,
         String defaultNamespaceRemap ) {
 
         this.reader = reader;
         this.nav = navigator;
+        this.subclassReplacements = subclassReplacements;
         if(defaultNamespaceRemap==null)
             defaultNamespaceRemap = "";
         this.defaultNsUri = defaultNamespaceRemap;
@@ -148,6 +152,15 @@ public class ModelBuilder<T,C,F,M> {
      * {@link String} or {@link Enum}-derived ones)
      */
     public NonElement<T,C> getClassInfo( C clazz, Locatable upstream ) {
+        return getClassInfo(clazz,false,upstream);
+    }
+
+    /**
+     * For limited cases where the caller needs to search for a super class.
+     * This is necessary because we don't want {@link #subclassReplacements}
+     * to kick in for the super class search, which will cause infinite recursion.
+     */
+    public NonElement<T,C> getClassInfo( C clazz, boolean searchForSuperClass, Locatable upstream ) {
         assert clazz!=null;
         NonElement<T,C> r = typeInfoSet.getClassInfo(clazz);
         if(r!=null)
@@ -159,8 +172,14 @@ public class ModelBuilder<T,C,F,M> {
             r = li;
             addTypeName(r);
         } else {
-            if(reader.hasClassAnnotation(clazz,XmlTransient.class)) {
-                r = getClassInfo( nav.getSuperClass(clazz),
+            boolean isReplaced = subclassReplacements.containsKey(clazz);
+            if(isReplaced && !searchForSuperClass) {
+                // handle it as if the replacement was specified
+                r = getClassInfo(subclassReplacements.get(clazz),upstream);
+            } else
+            if(reader.hasClassAnnotation(clazz,XmlTransient.class) || isReplaced) {
+                // handle it as if the base class was specified
+                r = getClassInfo( nav.getSuperClass(clazz), searchForSuperClass,
                         new ClassLocatable<C>(upstream,clazz,nav) );
             } else {
                 ClassInfoImpl<T,C,F,M> ci = createClassInfo(clazz,upstream);

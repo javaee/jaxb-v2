@@ -3,6 +3,7 @@ package com.sun.xml.bind.v2.model.impl;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Map;
 
 import javax.activation.MimeType;
 
@@ -39,13 +40,18 @@ import org.xml.sax.SAXException;
  */
 public class RuntimeModelBuilder extends ModelBuilder<Type,Class,Field,Method> {
 
-    public RuntimeModelBuilder(RuntimeAnnotationReader annotationReader, String defaultNamespaceRemap) {
-        super(annotationReader, Navigator.REFLECTION, defaultNamespaceRemap);
+    public RuntimeModelBuilder(RuntimeAnnotationReader annotationReader, Map<Class,Class> subclassReplacements, String defaultNamespaceRemap) {
+        super(annotationReader, Navigator.REFLECTION, subclassReplacements, defaultNamespaceRemap);
     }
 
     @Override
     public RuntimeNonElement getClassInfo( Class clazz, Locatable upstream ) {
         return (RuntimeNonElement)super.getClassInfo(clazz,upstream);
+    }
+
+    @Override
+    public RuntimeNonElement getClassInfo( Class clazz, boolean searchForSuperClass, Locatable upstream ) {
+        return (RuntimeNonElement)super.getClassInfo(clazz,searchForSuperClass,upstream);
     }
 
     @Override

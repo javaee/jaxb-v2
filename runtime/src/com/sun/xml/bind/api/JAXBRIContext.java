@@ -20,11 +20,11 @@
 package com.sun.xml.bind.api;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -37,6 +37,7 @@ import javax.xml.transform.Result;
 import com.sun.istack.NotNull;
 import com.sun.istack.Nullable;
 import com.sun.xml.bind.api.impl.NameConverter;
+import com.sun.xml.bind.v2.ContextFactory;
 import com.sun.xml.bind.v2.model.annotation.RuntimeAnnotationReader;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 
@@ -51,6 +52,7 @@ import com.sun.xml.bind.v2.model.nav.Navigator;
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 public abstract class JAXBRIContext extends JAXBContext {
+
     protected JAXBRIContext() {}
 
     /**
@@ -66,34 +68,30 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @param typeRefs
      *      See {@link #TYPE_REFERENCES} for the meaning of this parameter.
      *      Can be null.
+     * @param subclassReplacements
+     *      See {@link #SUBCLASS_REPLACEMENTS} for the meaning of this parameter.
+     *      Can be null.
      * @param defaultNamespaceRemap
      *      See {@link #DEFAULT_NAMESPACE_REMAP} for the meaning of this parameter.
      *      Can be null (and should be null for ordinary use of JAXB.)
      * @param c14nSupport
      *      See {@link #CANONICALIZATION_SUPPORT} for the meaning of this parameter.
+     * @param ar
+     *      See {@link #ANNOTATION_READER} for the meaning of this parameter.
+     *      Can be null.
+     *
+     * @since JAXB 2.1 EA2
+     */
+    public static JAXBRIContext newInstance(@NotNull Class[] classes, @Nullable Collection<TypeReference> typeRefs, @Nullable Map<Class,Class> subclassReplacements, @Nullable String defaultNamespaceRemap, boolean c14nSupport, @Nullable RuntimeAnnotationReader ar) throws JAXBException {
+        return ContextFactory.createContext(classes, typeRefs, subclassReplacements, defaultNamespaceRemap, c14nSupport, ar);
+    }
+
+    /**
+     * @deprecated
+     *      Compatibility with older versions.
      */
     public static JAXBRIContext newInstance(@NotNull Class[] classes, @Nullable Collection<TypeReference> typeRefs, @Nullable String defaultNamespaceRemap, boolean c14nSupport ) throws JAXBException {
-        try {
-            Class c = Class.forName("com.sun.xml.bind.v2.ContextFactory");
-            Method method = c.getMethod("createContext",Class[].class,Collection.class,String.class,boolean.class, RuntimeAnnotationReader.class);
-            Object o = method.invoke(null,classes,typeRefs,defaultNamespaceRemap,c14nSupport,null);
-            return (JAXBRIContext)o;
-        } catch (ClassNotFoundException e) {
-            throw new JAXBException(e);
-        } catch (NoSuchMethodException e) {
-            throw new JAXBException(e);
-        } catch (IllegalAccessException e) {
-            throw new JAXBException(e);
-        } catch (InvocationTargetException e) {
-            Throwable te = e.getTargetException();
-            if(te instanceof JAXBException)
-                throw (JAXBException)te;
-            if(te instanceof RuntimeException)
-                throw (RuntimeException)te;
-            if(te instanceof Error)
-                throw (Error)te;
-            throw new JAXBException(e);
-        }
+        return newInstance(classes,typeRefs, Collections.<Class,Class>emptyMap(), defaultNamespaceRemap,c14nSupport,null);
     }
 
     /**
@@ -369,4 +367,15 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @since 2.0 EA2
      */
     public static final String ENABLE_XOP = "com.sun.xml.bind.XOP";
+
+    /**
+     * The property that you can specify to {@link JAXBContext#newInstance}
+     * to specify specific classes that replace the reference to generic classes.
+     *
+     * <p>
+     * See the release notes for more details about this feature. 
+     *
+     * @since 2.1 EA2
+     */
+    public static final String SUBCLASS_REPLACEMENTS = "com.sun.xml.bind.subclassReplacements";
 }
