@@ -40,6 +40,7 @@ public class JavaCompilerImpl implements JavaCompiler {
             new ModelBuilder<TypeMirror,TypeDeclaration,FieldDeclaration,MethodDeclaration>(
                 InlineAnnotationReaderImpl.theInstance,
                 new APTNavigator(env),
+                Collections.<TypeDeclaration,TypeDeclaration>emptyMap(),
                 defaultNamespaceRemap
             );
 
