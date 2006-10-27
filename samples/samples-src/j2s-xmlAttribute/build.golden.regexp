@@ -10,11 +10,11 @@ compile\:
 run\:
      \[echo\] Running the sample application\.\.\.
      \[java\] \<\?xml version\=\"1\.0\" encoding\=\"UTF\-8\" standalone\=\"yes\"\?\>
-     \[java\] \<purchaseOrder\>
-     \[java\]     \<shipTo state\=\"PA\" country\=\"USA\" zip\=\"95819\"\>
-     \[java\]         \<city\>Old Town\<\/city\>
-     \[java\]         \<name\>Robert Smith\<\/name\>
-     \[java\]         \<street\>8 Oak Avenue\<\/street\>
+     \[java\] \<purchaseOrder cCardVendor=\"AMERICANEXPRESS\"\>
+     \[java\]     \<shipTo state\=\"CA\" country\=\"USA\" zip\=\"90952\"\>
+     \[java\]         \<city\>Mill Valley\<\/city\>
+     \[java\]         \<name\>Alice Smith\<\/name\>
+     \[java\]         \<street\>123 Maple Street\<\/street\>
      \[java\]     \<\/shipTo\>
      \[java\]     \<billTo state\=\"PA\" country\=\"USA\" zip\=\"95819\"\>
      \[java\]         \<city\>Old Town\<\/city\>

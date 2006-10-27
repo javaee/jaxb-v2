@@ -26,7 +26,9 @@ enum Messages {
     UNSUPPORTED_ENCODING, // 1 arg
     SUBSTITUTED_BY_ANONYMOUS_TYPE, // 3 arg
     CYCLE_IN_MARSHALLER, // 1 arg
-    UNABLE_TO_DISCOVER_EVENTHANDLER // 1 arg
+    UNABLE_TO_DISCOVER_EVENTHANDLER, // 1 arg
+    ELEMENT_NEEDED_BUT_FOUND_DOCUMENT, // 1 arg
+    UNKNOWN_CLASS, // 1 arg
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());

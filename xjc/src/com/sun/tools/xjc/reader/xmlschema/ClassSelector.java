@@ -437,6 +437,7 @@ public final class ClassSelector extends BindingComponent {
 
         BISchemaBinding sb =
             builder.getBindInfo(s).get(BISchemaBinding.class);
+        if(sb!=null)    sb.markAsAcknowledged();
 
         String name = null;
 
