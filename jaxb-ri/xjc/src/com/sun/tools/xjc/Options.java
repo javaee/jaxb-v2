@@ -25,6 +25,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -759,6 +761,10 @@ public class Options
         
         if( schemaLanguage==null )
             schemaLanguage = guessSchemaLanguage();
+
+        if(pluginLoadFailure!=null)
+            throw new BadCommandLineException(
+                Messages.format(Messages.PLUGIN_LOAD_FAILURE,pluginLoadFailure));
     }
 
     /**
@@ -836,6 +842,10 @@ public class Options
             dateFormat.format(new Date()));
     }
 
+    /**
+     * If a plugin failed to load, report.
+     */
+    private static String pluginLoadFailure;
 
     /**
      * Looks for all "META-INF/services/[className]" files and
@@ -877,9 +887,9 @@ public class Options
                         if(classNames.add(impl)) {
                             Class implClass = classLoader.loadClass(impl);
                             if(!clazz.isAssignableFrom(implClass)) {
-                                if(debug) {
-                                    System.out.println(impl+" is not a subclass of "+clazz+". Skipping");
-                                }
+                                pluginLoadFailure = impl+" is not a subclass of "+clazz+". Skipping";
+                                if(debug)
+                                    System.out.println(pluginLoadFailure);
                                 continue;
                             }
                             if(debug) {
@@ -891,8 +901,11 @@ public class Options
                     reader.close();
                 } catch( Exception ex ) {
                     // let it go.
+                    StringWriter w = new StringWriter();
+                    ex.printStackTrace(new PrintWriter(w));
+                    pluginLoadFailure = w.toString();
                     if(debug) {
-                        ex.printStackTrace(System.out);
+                        System.out.println(pluginLoadFailure);
                     }
                     if( reader!=null ) {
                         try {
@@ -907,8 +920,11 @@ public class Options
             return a.toArray((T[])Array.newInstance(clazz,a.size()));
         } catch( Throwable e ) {
             // ignore any error
+            StringWriter w = new StringWriter();
+            e.printStackTrace(new PrintWriter(w));
+            pluginLoadFailure = w.toString();
             if(debug) {
-                e.printStackTrace(System.out);
+                System.out.println(pluginLoadFailure);
             }
             return (T[])Array.newInstance(clazz,0);
         }
