@@ -176,4 +176,7 @@ class Messages
         "NAME_CONVERTER_CONFLICT";
     static final String FAILED_TO_LOAD = // 2 args
         "FAILED_TO_LOAD";
+
+    static final String PLUGIN_LOAD_FAILURE = // 1 arg
+        "PLUGIN_LOAD_FAILURE";
 }
