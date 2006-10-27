@@ -2,6 +2,7 @@ package com.sun.xml.bind.v2.runtime.reflect.opt;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.ref.WeakReference;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collections;
@@ -30,8 +31,8 @@ final class Injector {
      *
      * We only need one injector per one user class loader.
      */
-    private static final Map<ClassLoader,Injector> injectors =
-        Collections.synchronizedMap(new WeakHashMap<ClassLoader,Injector>());
+    private static final Map<ClassLoader,WeakReference<Injector>> injectors =
+        Collections.synchronizedMap(new WeakHashMap<ClassLoader,WeakReference<Injector>>());
 
     private static final Logger logger = Util.getClassLogger();
 
@@ -67,10 +68,13 @@ final class Injector {
      *      if it fails.
      */
     private static Injector get(ClassLoader cl) {
-        Injector injector = injectors.get(cl);
+        Injector injector = null;
+        WeakReference<Injector> wr = injectors.get(cl);
+        if(wr!=null)
+            injector = wr.get();
         if(injector==null)
             try {
-                injectors.put(cl,injector = new Injector(cl));
+                injectors.put(cl,new WeakReference<Injector>(injector = new Injector(cl)));
             } catch (SecurityException e) {
                 logger.log(Level.FINE,"Unable to set up a back-door for the injector",e);
                 return null;

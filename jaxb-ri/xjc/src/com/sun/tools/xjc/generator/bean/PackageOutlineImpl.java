@@ -43,6 +43,7 @@ import com.sun.tools.xjc.model.CTypeRef;
 import com.sun.tools.xjc.model.CValuePropertyInfo;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.outline.PackageOutline;
+import com.sun.tools.xjc.outline.Aspect;
 
 /**
  * {@link PackageOutline} enhanced with schema2java specific
@@ -172,7 +173,7 @@ final class PackageOutlineImpl implements PackageOutline {
         // generate package-info.java
         // we won't get this far if the user specified -npa
         if(!mostUsedNamespaceURI.equals("") || elementFormDefault==XmlNsForm.QUALIFIED) {
-            XmlSchemaWriter w = _package.annotate2(XmlSchemaWriter.class);
+            XmlSchemaWriter w = _model.strategy.getPackage(_package, Aspect.IMPLEMENTATION).annotate2(XmlSchemaWriter.class);
             if(!mostUsedNamespaceURI.equals(""))
                 w.namespace(mostUsedNamespaceURI);
             if(elementFormDefault==XmlNsForm.QUALIFIED)

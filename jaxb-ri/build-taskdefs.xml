@@ -137,8 +137,10 @@
         <pattern from="com.sun.xsom" to="com.sun.internal.xsom" />
         <pattern from="com.sun.txw2" to="com.sun.internal.txw2" />
         <pattern from="com.sun.istack" to="com.sun.istack.internal" />
-	<pattern from="org.kohsuke.rngom" to="com.sun.xml.internal.rngom" />
+        <pattern from="org.kohsuke.rngom" to="com.sun.xml.internal.rngom" />
         <pattern from="org.jvnet.fastinfoset" to="com.sun.xml.internal.org.jvnet.fastinfoset" />
+        <pattern from="com.sun.tools.xjc" to="com.sun.tools.internal.xjc" />
+        <pattern from="com.sun.tools.jxc" to="com.sun.tools.internal.jxc" />
       </prename>
     </sequential>
   </macrodef>

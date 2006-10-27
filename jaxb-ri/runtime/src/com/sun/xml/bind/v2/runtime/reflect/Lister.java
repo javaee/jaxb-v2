@@ -1,5 +1,6 @@
 package com.sun.xml.bind.v2.runtime.reflect;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -108,7 +109,7 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
 
         if(adapter!=null)
             l = new AdaptedLister(l,adapter.adapterType);
-        
+
         return l;
     }
 
@@ -119,21 +120,23 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
     /**
      * Cache instances of {@link ArrayLister}s.
      */
-    private static final Map<Class,Lister> arrayListerCache =
-        Collections.synchronizedMap(new WeakHashMap<Class,Lister>());
-    
+    private static final Map<Class,WeakReference<Lister>> arrayListerCache =
+        Collections.synchronizedMap(new WeakHashMap<Class,WeakReference<Lister>>());
+
     /**
      * Creates a lister for array type.
      */
     private static Lister getArrayLister( Class componentType ) {
-        Lister l;
+        Lister l=null;
         if(componentType.isPrimitive())
             l = primitiveArrayListers.get(componentType);
         else {
-            l = arrayListerCache.get(componentType);
+            WeakReference<Lister> wr = arrayListerCache.get(componentType);
+            if(wr!=null)
+                l = wr.get();
             if(l==null) {
                 l = new ArrayLister(componentType);
-                arrayListerCache.put(componentType,l);
+                arrayListerCache.put(componentType,new WeakReference<Lister>(l));
             }
         }
         assert l!=null;
