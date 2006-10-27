@@ -1,23 +1,3 @@
-/*
- * The contents of this file are subject to the terms
- * of the Common Development and Distribution License
- * (the "License").  You may not use this file except
- * in compliance with the License.
- * 
- * You can obtain a copy of the license at
- * https://jwsdp.dev.java.net/CDDLv1.0.html
- * See the License for the specific language governing
- * permissions and limitations under the License.
- * 
- * When distributing Covered Code, include this CDDL
- * HEADER in each file and include the License file at
- * https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
- * add the following below this CDDL HEADER, with the
- * fields enclosed by brackets "[]" replaced with your
- * own identifying information: Portions Copyright [yyyy]
- * [name of copyright owner]
- */
- 
 import java.io.File;
 
 import javax.xml.bind.JAXBContext;
@@ -25,19 +5,11 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.parsers.SAXParserFactory;
 
+import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
+
 import org.xml.sax.XMLReader;
 
 import simple.*;
-
-/*
- * @(#)$Id: Main.java,v 1.3 2006-07-28 21:00:35 kohsuke Exp $
- *
- * Copyright 2003 Sun Microsystems, Inc. All Rights Reserved.
- * 
- * This software is the proprietary information of Sun Microsystems, Inc.  
- * Use is subject to license terms.
- * 
- */
 
 public class Main {
     public static void main( String[] args ) throws Exception {
@@ -64,7 +36,7 @@ public class Main {
         marshaller.setProperty( "jaxb.encoding", "US-ASCII" );
         marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
         marshaller.setProperty(
-          "com.sun.xml.bind.characterEscapeHandler",
+          CharacterEscapeHandler.class.getName(),
           new CustomCharacterEscapeHandler() );
         
         // check out the console output
