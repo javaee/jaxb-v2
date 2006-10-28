@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="codemodel/src"/>
-	<classpathentry kind="src" path="schemagen/build/src"/>
-	<classpathentry kind="src" path="schemagen/src"/>
 	<classpathentry kind="src" path="runtime/build/src"/>
 	<classpathentry kind="src" path="xjc/build/src"/>
-	<classpathentry kind="src" path="runtime-api/src"/>
 	<classpathentry kind="src" path="codemodel/test"/>
 	<classpathentry kind="src" path="runtime/src"/>
 	<classpathentry kind="src" path="runtime/test"/>
@@ -16,15 +13,12 @@
 	<classpathentry kind="src" path="samples/src"/>
 	<classpathentry kind="src" path="tools/jing-rnc-driver/src"/>
 	<classpathentry kind="src" path="tools/installer/src"/>
-	<classpathentry kind="src" path="tools/toc-processor/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry sourcepath="tools/lib/src/args4j-1.0-RC-src.zip" kind="lib" path="tools/lib/util/args4j-1.0-RC.jar"/>
 	<classpathentry exported="true" sourcepath="tools/lib/redist/jaxb-api-src.zip" kind="lib" path="tools/lib/redist/jaxb-api.jar"/>
 	<classpathentry sourcepath="tools/lib/src/jing-src.zip" kind="lib" path="tools/lib/util/jing.jar"/>
 	<classpathentry kind="lib" path="tools/lib/util/relaxngcc.jar"/>
 	<classpathentry exported="true" sourcepath="tools/lib/src/jsr173_1.0_src.jar" kind="lib" path="tools/lib/redist/jsr173_1.0_api.jar"/>
-	<classpathentry kind="lib" path="tools/toc-processor/lib/nekohtml.jar"/>
-	<classpathentry kind="lib" path="tools/toc-processor/lib/nekohtmlXni.jar"/>
 	<classpathentry sourcepath="tools/lib/src/Xerces-J-src.2.3.0.zip" kind="lib" path="tools/lib/util/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="test/schemas"/>
 	<classpathentry exported="true" kind="lib" path="tools/lib/redist/activation.jar"/>
@@ -39,5 +33,7 @@
 	<classpathentry sourcepath="tools/lib/src/sjsxp-src.zip" kind="lib" path="tools/lib/util/sjsxp.jar"/>
 	<classpathentry kind="lib" path="tools/lib/rebundle/compiler/relaxngDatatype.jar"/>
 	<classpathentry kind="var" path="JUNIT_HOME/junit.jar"/>
+	<classpathentry sourcepath="tools/lib/src/istack-commons-tools-src.zip" kind="lib" path="tools/lib/rebundle/compiler/istack-commons-tools.jar"/>
+	<classpathentry kind="lib" path="tools/lib/rebundle/runtime2/istack-commons-runtime.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
