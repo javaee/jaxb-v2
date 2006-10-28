@@ -95,62 +95,68 @@ public final class SCDBasedBindingSet {
         }
 
         /**
-         * Apply bindings to the schema component for this and its siblings.
+         * Applies bindings to the schema component for this and its siblings.
+         */
+        private void applyAll(Collection<? extends XSComponent> contextNode) {
+            for( Target self=this; self!=null; self=self.nextSibling )
+                self.apply(contextNode);
+        }
+
+        /**
+         * Applies bindings to the schema component for just this node.
          */
         private void apply(Collection<? extends XSComponent> contextNode) {
-            for( Target self=this; self!=null; self=self.nextSibling ) { // if only Java could do tail-recursion better!
-                // apply the SCD...
-                Collection<XSComponent> childNodes = self.scd.select(contextNode);
-                if(childNodes.isEmpty()) {
-                    // no node matched
-                    if(self.src.getAttributeNode("if-exists")!=null) {
-                        // if this attribute exists, it's not an error if SCD didn't match. 
-                        continue;
-                    }
-
-                    reportError( src, Messages.format(Messages.ERR_SCD_EVALUATED_EMPTY,scd) );
-                    continue;
+            // apply the SCD...
+            Collection<XSComponent> childNodes = scd.select(contextNode);
+            if(childNodes.isEmpty()) {
+                // no node matched
+                if(src.getAttributeNode("if-exists")!=null) {
+                    // if this attribute exists, it's not an error if SCD didn't match.
+                    return;
                 }
 
-                if(firstChild!=null)
-                    firstChild.apply(childNodes);
+                reportError( src, Messages.format(Messages.ERR_SCD_EVALUATED_EMPTY,scd) );
+                return;
+            }
 
-                if(!bindings.isEmpty()) {
-                    // error to match more than one components
-                    Iterator<XSComponent> itr = childNodes.iterator();
-                    XSComponent target = itr.next();
-                    if(itr.hasNext()) {
-                        reportError( src, Messages.format(Messages.ERR_SCD_MATCHED_MULTIPLE_NODES,scd,childNodes.size()) );
-                        errorReceiver.error( target.getLocator(), Messages.format(Messages.ERR_SCD_MATCHED_MULTIPLE_NODES_FIRST) );
-                        errorReceiver.error( itr.next().getLocator(), Messages.format(Messages.ERR_SCD_MATCHED_MULTIPLE_NODES_SECOND) );
-                    }
+            if(firstChild!=null)
+                    firstChild.applyAll(childNodes);
 
-                    // apply bindings to the target
-                    for (Element binding : bindings) {
-                        for (Element item : DOMUtils.getChildElements(binding)) {
-                            String localName = item.getLocalName();
+            if(!bindings.isEmpty()) {
+                // error to match more than one components
+                Iterator<XSComponent> itr = childNodes.iterator();
+                XSComponent target = itr.next();
+                if(itr.hasNext()) {
+                    reportError( src, Messages.format(Messages.ERR_SCD_MATCHED_MULTIPLE_NODES,scd,childNodes.size()) );
+                    errorReceiver.error( target.getLocator(), Messages.format(Messages.ERR_SCD_MATCHED_MULTIPLE_NODES_FIRST) );
+                    errorReceiver.error( itr.next().getLocator(), Messages.format(Messages.ERR_SCD_MATCHED_MULTIPLE_NODES_SECOND) );
+                }
 
-                            if ("bindings".equals(localName))
-                                continue;   // this should be already in Target.bindings of some Target.
+                // apply bindings to the target
+                for (Element binding : bindings) {
+                    for (Element item : DOMUtils.getChildElements(binding)) {
+                        String localName = item.getLocalName();
 
-                            try {
-                                new DOMForestScanner(forest).scan(item,loader);
-                                BIDeclaration decl = (BIDeclaration)unmarshaller.getResult();
+                        if ("bindings".equals(localName))
+                            continue;   // this should be already in Target.bindings of some Target.
 
-                                // add this binding to the target
-                                XSAnnotation ann = target.getAnnotation(true);
-                                BindInfo bi = (BindInfo)ann.getAnnotation();
-                                if(bi==null) {
-                                    bi = new BindInfo();
-                                    ann.setAnnotation(bi);
-                                }
-                                bi.addDecl(decl);
-                            } catch (SAXException e) {
-                                // the error should have already been reported.
-                            } catch (JAXBException e) {
-                                // if validation didn't fail, then unmarshalling can't go wrong
-                                throw new AssertionError(e);
+                        try {
+                            new DOMForestScanner(forest).scan(item,loader);
+                            BIDeclaration decl = (BIDeclaration)unmarshaller.getResult();
+
+                            // add this binding to the target
+                            XSAnnotation ann = target.getAnnotation(true);
+                            BindInfo bi = (BindInfo)ann.getAnnotation();
+                            if(bi==null) {
+                                bi = new BindInfo();
+                                ann.setAnnotation(bi);
                             }
+                            bi.addDecl(decl);
+                        } catch (SAXException e) {
+                            // the error should have already been reported.
+                        } catch (JAXBException e) {
+                            // if validation didn't fail, then unmarshalling can't go wrong
+                            throw new AssertionError(e);
                         }
                     }
                 }
@@ -192,7 +198,7 @@ public final class SCDBasedBindingSet {
             v.setErrorHandler(errorReceiver);
             loader = new ForkContentHandler(v,unmarshaller);
 
-            topLevel.apply(schema.getSchemas());
+            topLevel.applyAll(schema.getSchemas());
 
             this.loader = null;
             this.unmarshaller = null;
