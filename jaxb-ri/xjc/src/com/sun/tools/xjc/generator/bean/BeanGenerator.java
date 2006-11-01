@@ -63,7 +63,7 @@ import com.sun.codemodel.JVar;
 import com.sun.codemodel.fmt.JStaticJavaFile;
 import com.sun.tools.xjc.AbortException;
 import com.sun.tools.xjc.ErrorReceiver;
-import com.sun.tools.xjc.Options;
+import com.sun.tools.xjc.api.SpecVersion;
 import com.sun.tools.xjc.generator.annotation.spec.XmlAnyAttributeWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlEnumValueWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlEnumWriter;
@@ -481,7 +481,7 @@ public final class BeanGenerator implements Outline
                 xtw.namespace(typeNameURI);
         }
 
-        if(model.options.target.isLaterThan(Options.Target.V2_1)) {
+        if(model.options.target.isLaterThan(SpecVersion.V2_1)) {
             // @XmlSeeAlso
             Iterator<CClassInfo> subclasses = cc.target.listSubclasses();
             if(subclasses.hasNext()) {

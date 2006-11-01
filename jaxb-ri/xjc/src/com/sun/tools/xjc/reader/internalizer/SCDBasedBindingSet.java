@@ -138,7 +138,7 @@ public final class SCDBasedBindingSet {
                         String localName = item.getLocalName();
 
                         if ("bindings".equals(localName))
-                            continue;   // this should be already in Target.bindings of some Target.
+                            continue;   // this should be already in Target.bindings of some SpecVersion.
 
                         try {
                             new DOMForestScanner(forest).scan(item,loader);
