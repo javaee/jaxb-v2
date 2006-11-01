@@ -90,6 +90,16 @@ public interface SchemaCompiler {
      *      Its system Id must be set to an absolute URI.
      */
     void parseSchema( InputSource source );
+
+    /**
+     * Specifies the target spec version for this compilaion.
+     *
+     * @param version
+     *      If null, XJC will generate the source code that
+     *      takes advantage of the latest JAXB spec that it understands.
+     * @since 2.1 EA2
+     */
+    void setTargetVersion( SpecVersion version );
     
     /**
      * Parses a schema or an external binding file

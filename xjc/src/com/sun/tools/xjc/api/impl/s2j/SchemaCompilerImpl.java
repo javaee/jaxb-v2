@@ -38,6 +38,7 @@ import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.api.ClassNameAllocator;
 import com.sun.tools.xjc.api.ErrorListener;
 import com.sun.tools.xjc.api.SchemaCompiler;
+import com.sun.tools.xjc.api.SpecVersion;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.reader.internalizer.DOMForest;
@@ -135,6 +136,12 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
             // so we should never see this error.
             e.printStackTrace();
         }
+    }
+
+    public void setTargetVersion(SpecVersion version) {
+        if(version==null)
+            version = SpecVersion.LATEST;
+        opts.target = version;
     }
 
     public void parseSchema(String systemId, XMLStreamReader reader) throws XMLStreamException {

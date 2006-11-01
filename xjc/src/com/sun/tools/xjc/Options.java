@@ -47,6 +47,7 @@ import com.sun.codemodel.writer.PrologCodeWriter;
 import com.sun.org.apache.xml.internal.resolver.CatalogManager;
 import com.sun.org.apache.xml.internal.resolver.tools.CatalogResolver;
 import com.sun.tools.xjc.api.ClassNameAllocator;
+import com.sun.tools.xjc.api.SpecVersion;
 import com.sun.tools.xjc.generator.bean.field.FieldRendererFactory;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Util;
@@ -115,35 +116,10 @@ public class Options
         return compatibilityMode==EXTENSION;
     }
 
-    public enum Target {
-        V2_0, V2_1;
-
-        /**
-         * Returns true if this version is equal or later than the given one.
-         */
-        public boolean isLaterThan(Target t) {
-            return this.ordinal()>=t.ordinal();
-        }
-
-        /**
-         * Parses "2.0" and "2.1" into the {@link Target} object.
-         *
-         * @return null for parsing failure.
-         */
-        public static Target parse(String token) {
-            if(token.equals("2.0"))
-                return Target.V2_0;
-            else
-            if(token.equals("2.1"))
-                return Target.V2_1;
-            return null;
-        }
-    }
-
     /**
      * Generates output for the specified version of the runtime.
      */
-    public Target target = Target.V2_1;
+    public SpecVersion target = SpecVersion.V2_1;
 
 
     /** Target direcoty when producing files. */
@@ -532,7 +508,7 @@ public class Options
         }
         if (args[i].equals("-target")) {
             String token = requireArgument("-target",args,++i);
-            target = Target.parse(token);
+            target = SpecVersion.parse(token);
             if(target==null)
                 throw new BadCommandLineException(Messages.format(Messages.ILLEGAL_TARGET_VERSION,token));
         }
