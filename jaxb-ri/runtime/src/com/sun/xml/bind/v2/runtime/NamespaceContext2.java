@@ -73,16 +73,11 @@ public interface NamespaceContext2 extends NamespaceContext
     String declareNamespace( String namespaceUri, String preferedPrefix, boolean requirePrefix );
 
     /**
-     * Puts this new binding into the declared prefixes list
-     * without doing any duplicate check.
+     * Forcibly make a namespace declaration in effect.
      *
-     * This can be used to forcibly set namespace declarations.
-     *
-     * <p>
-     * Most of the time {@link #declareNamespace(String, String, boolean)} shall be used.
-     *
-     * @return
-     *      the index of this new binding.
+     * If the (prefix,uri) binding is already in-scope, this method
+     * simply returns the assigned prefix index. Otherwise a new
+     * declaration will be put. 
      */
-    int put(@NotNull String uri, @NotNull String prefix);
+    int force(@NotNull String uri, @NotNull String prefix);
 }

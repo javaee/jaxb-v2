@@ -191,11 +191,32 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
         }
     }
 
+    public int force(@NotNull String uri, @NotNull String prefix) {
+        // check for the existing binding
+        for( int i=size-1; i>=0; i-- ) {
+            if(prefixes[i].equals(prefix)) {
+                if(nsUris[i].equals(uri))
+                    return i;   // found duplicate
+                else
+                    // the prefix is used for another namespace. we need to declare it
+                    break;
+            }
+        }
+
+        return put(uri, prefix);
+    }
+
     /**
-     * {@inheritDoc}.
+     * Puts this new binding into the declared prefixes list
+     * without doing any duplicate check.
      *
-     * @param prefix
-     *      if null, an unique prefix (including "") is allocated.
+     * This can be used to forcibly set namespace declarations.
+     *
+     * <p>
+     * Most of the time {@link #declareNamespace(String, String, boolean)} shall be used.
+     *
+     * @return
+     *      the index of this new binding.
      */
     public int put(@NotNull String uri, @Nullable String prefix) {
         if(size==nsUris.length) {

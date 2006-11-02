@@ -70,6 +70,15 @@ final class ContentHandlerAdaptor extends DefaultHandler {
 
             serializer.startElement(namespaceURI,localName,getPrefix(qName),null);
             // declare namespace events
+            for( int i=0; i<prefixMap.size(); i+=2 ) {
+                // forcibly set this binding, instead of using declareNsUri.
+                // this guarantees that namespaces used in DOM will show up
+                // as-is in the marshalled output (instead of reassigned to something else,
+                // which may happen if you'd use declareNsUri.)
+                serializer.getNamespaceContext().force(
+                    prefixMap.get(i+1), prefixMap.get(i) );
+            }
+            // make sure namespaces needed by attributes are bound 
             for( int i=0; i<len; i++ ) {
                 String qname = atts.getQName(i);
                 if(qname.startsWith("xmlns"))
@@ -78,14 +87,6 @@ final class ContentHandlerAdaptor extends DefaultHandler {
 
                 serializer.getNamespaceContext().declareNamespace(
                     atts.getURI(i), prefix, true );
-            }
-            for( int i=0; i<prefixMap.size(); i+=2 ) {
-                // forcibly set this binding, instead of using declareNsUri.
-                // this guarantees that namespaces used in DOM will show up
-                // as-is in the marshalled output (instead of reassigned to something else,
-                // which may happen if you'd use declareNsUri.)
-                serializer.getNamespaceContext().put(
-                    prefixMap.get(i+1), prefixMap.get(i) );
             }
 
             serializer.endNamespaceDecls(null);
