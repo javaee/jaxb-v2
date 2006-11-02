@@ -37,6 +37,7 @@ import com.sun.codemodel.writer.FilterCodeWriter;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Util;
 import com.sun.tools.xjc.util.ForkEntityResolver;
+import com.sun.tools.xjc.api.SpecVersion;
 
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
@@ -280,7 +281,7 @@ public class XJC2Task extends Task {
      * Sets the target version of the compilation
      */
     public void setTarget( String version ) {
-        options.target = Options.Target.parse(version);
+        options.target = SpecVersion.parse(version);
         if(options.target==null)
             throw new BuildException(version+" is not a valid version number");
     }
