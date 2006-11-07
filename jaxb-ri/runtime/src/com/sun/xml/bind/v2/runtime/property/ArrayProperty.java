@@ -26,7 +26,7 @@ abstract class ArrayProperty<BeanT,ListT,ItemT> extends PropertyImpl<BeanT> {
         lister = Lister.create(
             Navigator.REFLECTION.erasure(prop.getRawType()),prop.id(),prop.getAdapter());
         assert lister!=null;
-        acc = prop.getAccessor().optimize();
+        acc = prop.getAccessor().optimize(context);
         assert acc!=null;
     }
 

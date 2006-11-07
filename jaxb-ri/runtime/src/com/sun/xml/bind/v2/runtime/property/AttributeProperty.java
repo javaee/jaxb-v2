@@ -6,7 +6,6 @@ import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.util.QNameMap;
-import com.sun.xml.bind.v2.util.QNameMap;
 import com.sun.xml.bind.v2.model.core.AttributePropertyInfo;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.runtime.RuntimeAttributePropertyInfo;
@@ -14,7 +13,6 @@ import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
-import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
@@ -47,10 +45,10 @@ public final class AttributeProperty<BeanT> extends PropertyImpl<BeanT>
 
     private final Accessor acc;
 
-    public AttributeProperty(JAXBContextImpl p, RuntimeAttributePropertyInfo prop) {
-        super(p,prop);
-        this.attName = p.nameBuilder.createAttributeName(prop.getXmlName());
-        this.xacc = TransducedAccessor.get(prop);
+    public AttributeProperty(JAXBContextImpl context, RuntimeAttributePropertyInfo prop) {
+        super(context,prop);
+        this.attName = context.nameBuilder.createAttributeName(prop.getXmlName());
+        this.xacc = TransducedAccessor.get(context,prop);
         this.acc = prop.getAccessor();   // we only use this for binder, so don't waste memory by optimizing
     }
 

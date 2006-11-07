@@ -26,12 +26,14 @@ import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
+import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
+import org.apache.tools.ant.RuntimeConfigurable;
 
 /**
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
@@ -146,7 +148,8 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
         if( !valuep.getTarget().isSimpleType() )
             return null;    // if there's an error, recover from it by returning null.
         
-        return new TransducerImpl(getClazz(),TransducedAccessor.get(valuep));
+        return new TransducerImpl(getClazz(),TransducedAccessor.get(
+                ((RuntimeModelBuilder)builder).context,valuep));
     }
 
     /**

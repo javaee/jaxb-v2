@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.model.core.ClassInfo;
-import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.annotation.XmlLocation;
 

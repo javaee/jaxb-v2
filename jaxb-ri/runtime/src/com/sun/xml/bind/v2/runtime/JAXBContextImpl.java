@@ -37,6 +37,7 @@ import java.util.TreeSet;
 
 import javax.xml.bind.Binder;
 import javax.xml.bind.DatatypeConverter;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBIntrospector;
@@ -110,7 +111,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.78 $
+ * @version $Revision: 1.79 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -196,6 +197,14 @@ public final class JAXBContextImpl extends JAXBRIContext {
     private WeakReference<RuntimeTypeInfoSet> typeInfoSetCache;
 
     /**
+     * If true, we aim for faster {@link JAXBContext} instanciation performance,
+     * instead of going after efficient sustained unmarshalling/marshalling performance.
+     *
+     * @since 2.0.4
+     */
+    public final boolean fastBoot;
+
+    /**
      *
      * @param typeRefs
      *      used to build {@link Bridge}s. Can be empty.
@@ -208,6 +217,14 @@ public final class JAXBContextImpl extends JAXBRIContext {
         DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
 
         if(defaultNsUri==null)      defaultNsUri="";    // fool-proof
+
+        boolean fastBoot;
+        try {
+            fastBoot = Boolean.getBoolean(JAXBContextImpl.class.getName()+".fastBoot");
+        } catch (SecurityException e) {
+            fastBoot = false;
+        }
+        this.fastBoot = fastBoot;
 
         this.defaultNsUri = defaultNsUri;
         this.c14nSupport = c14nSupport;
@@ -342,7 +359,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
                 return r;
         }
 
-        final RuntimeModelBuilder builder = new RuntimeModelBuilder(
+        final RuntimeModelBuilder builder = new RuntimeModelBuilder( this,
                 new RuntimeInlineAnnotationReader(),
                 defaultNsUri);
         IllegalAnnotationsException.Builder errorHandler = new IllegalAnnotationsException.Builder();
