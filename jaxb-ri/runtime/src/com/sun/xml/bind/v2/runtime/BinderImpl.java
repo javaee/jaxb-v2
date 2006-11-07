@@ -117,6 +117,7 @@ public class BinderImpl<XmlNode> extends Binder<XmlNode> {
     }
 
     public void setSchema(Schema schema) {
+        getMarshaller().setSchema(schema);
         getUnmarshaller().setSchema(schema);
     }
 
