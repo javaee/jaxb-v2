@@ -58,6 +58,16 @@ abstract class PropertyInfoImpl<T,C,F,M>
         this.parent = parent;
         this.id = calcId();
 
+        if(parent==null)
+            /*
+                Various people reported a bug where this parameter is somehow null.
+                In an attempt to catch the error better, let's do an explicit check here.
+
+                http://forums.java.net/jive/thread.jspa?threadID=18479
+                http://forums.java.net/jive/thread.jspa?messageID=165946
+             */
+            throw new AssertionError();
+
         MimeType mt = Util.calcExpectedMediaType(seed,parent.builder);
         if(mt!=null && !kind().canHaveXmlMimeType) {
             parent.builder.reportError(new IllegalAnnotationException(
