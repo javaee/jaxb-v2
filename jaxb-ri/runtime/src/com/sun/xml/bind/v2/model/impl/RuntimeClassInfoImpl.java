@@ -99,8 +99,8 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
 
 
     public void link() {
-        super.link();
         getTransducer();    // populate the transducer
+        super.link();
     }
 
     private Accessor<?,Map<QName,String>> attributeWildcardAccessor;
