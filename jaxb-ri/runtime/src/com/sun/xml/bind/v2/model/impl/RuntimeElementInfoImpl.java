@@ -96,7 +96,7 @@ final class RuntimeElementInfoImpl extends ElementInfoImpl<Type,Class,Field,Meth
     }
 
     public Class<? extends JAXBElement> getType() {
-        return JAXBElement.class;
+        return (Class<? extends JAXBElement>)super.getType();
     }
 
     public RuntimeClassInfo getScope() {
