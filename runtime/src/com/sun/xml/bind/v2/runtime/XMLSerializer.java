@@ -502,19 +502,9 @@ public final class XMLSerializer extends Coordinator {
         }
 
         // cycle detected and no one is catching the error.
-        StringBuilder sb = new StringBuilder();
-        sb.append(obj);
-        int i=cycleDetectionStack.size()-1;
-        Object x;
-        do {
-            sb.append(" -> ");
-            x = cycleDetectionStack.get(--i);
-            sb.append(x);
-        } while(obj!=x);
-
         reportError(new ValidationEventImpl(
             ValidationEvent.ERROR,
-            Messages.CYCLE_IN_MARSHALLER.format(sb),
+            Messages.CYCLE_IN_MARSHALLER.format(cycleDetectionStack.getCycleString()),
             getCurrentLocation(fieldName),
             null));
         return null;

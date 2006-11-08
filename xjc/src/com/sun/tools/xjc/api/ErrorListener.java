@@ -29,7 +29,7 @@ import org.xml.sax.SAXParseException;
  * <p>
  * This class implements {@link ErrorHandler} so it can be
  * passed to anywhere where {@link ErrorHandler} is expected.
- * 
+ *
  * <p>
  * However, to make the error handling easy (and make it work
  * with visitor patterns nicely), this interface is not allowed
@@ -37,7 +37,7 @@ import org.xml.sax.SAXParseException;
  * 
  * @author Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-public interface ErrorListener extends ErrorHandler {
+public interface ErrorListener extends com.sun.xml.bind.api.ErrorListener {
     void error(SAXParseException exception);
     void fatalError(SAXParseException exception);
     void warning(SAXParseException exception);

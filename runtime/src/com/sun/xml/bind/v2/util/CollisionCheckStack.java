@@ -166,4 +166,22 @@ public final class CollisionCheckStack<E> extends AbstractList<E> {
             Arrays.fill(initialHash,0);
         }
     }
+
+    /**
+     * String that represents the cycle.
+     */
+    public String getCycleString() {
+        StringBuilder sb = new StringBuilder();
+        int i=size()-1;
+        E obj = get(i);
+        sb.append(obj);
+        Object x;
+        do {
+            sb.append(" -> ");
+            x = get(--i);
+            sb.append(x);
+        } while(obj!=x);
+        
+        return sb.toString();
+    }
 }

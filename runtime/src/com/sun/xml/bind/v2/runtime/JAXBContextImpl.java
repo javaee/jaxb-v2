@@ -72,6 +72,7 @@ import com.sun.xml.bind.api.CompositeStructure;
 import com.sun.xml.bind.api.JAXBRIContext;
 import com.sun.xml.bind.api.RawAccessor;
 import com.sun.xml.bind.api.TypeReference;
+import com.sun.xml.bind.api.ErrorListener;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.bind.util.Which;
 import com.sun.xml.bind.v2.WellKnownNamespace;
@@ -109,12 +110,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75.2.9 $
+ * @version $Revision: 1.75.2.10 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -727,7 +729,27 @@ public final class JAXBContextImpl extends JAXBRIContext {
     public void generateSchema(SchemaOutputResolver outputResolver) throws IOException {
         if(outputResolver==null)
             throw new IOException(Messages.NULL_OUTPUT_RESOLVER.format());
-        createSchemaGenerator().write(outputResolver);
+
+        final SAXParseException[] e = new SAXParseException[1];
+
+        createSchemaGenerator().write(outputResolver, new ErrorListener() {
+            public void error(SAXParseException exception) {
+                e[0] = exception;
+            }
+
+            public void fatalError(SAXParseException exception) {
+                e[0] = exception;
+            }
+
+            public void warning(SAXParseException exception) {}
+            public void info(SAXParseException exception) {}
+        });
+
+        if(e[0]!=null) {
+            IOException x = new IOException(Messages.FAILED_TO_GENERATE_SCHEMA.format());
+            x.initCause(e[0]);
+            throw x;
+        }
     }
 
     private XmlSchemaGenerator<Type,Class,Field,Method> createSchemaGenerator() {

@@ -1227,5 +1227,10 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
     public Method getFactoryMethod(){
         return (Method) factoryMethod;
     }
+
+    public String toString() {
+        return "ClassInfo("+clazz+')';
+    }
+
     private static final String[] DEFAULT_ORDER = new String[0];
 }
