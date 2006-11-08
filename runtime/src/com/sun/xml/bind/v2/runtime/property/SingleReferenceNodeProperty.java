@@ -1,6 +1,7 @@
 package com.sun.xml.bind.v2.runtime.property;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -111,7 +112,15 @@ final class SingleReferenceNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT
 
                     public void set(BeanT bean, Object value) throws AccessorException {
                         if(value!=null) {
-                            value = ebi.createInstanceFromValue(value);
+                            try {
+                                value = ebi.createInstanceFromValue(value);
+                            } catch (IllegalAccessException e) {
+                                throw new AccessorException(e);
+                            } catch (InvocationTargetException e) {
+                                throw new AccessorException(e);
+                            } catch (InstantiationException e) {
+                                throw new AccessorException(e);
+                            }
                         }
                         acc.set(bean,(ValueT)value);
                     }
