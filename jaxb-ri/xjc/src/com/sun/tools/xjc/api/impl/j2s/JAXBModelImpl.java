@@ -142,7 +142,7 @@ final class JAXBModelImpl implements J2SJAXBModel {
     }
 
     public void generateSchema(SchemaOutputResolver outputResolver, ErrorListener errorListener) throws IOException {
-        getSchemaGenerator().write(outputResolver);
+        getSchemaGenerator().write(outputResolver,errorListener);
     }
 
     public void generateEpisodeFile(Result output) {

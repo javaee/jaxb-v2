@@ -26,8 +26,10 @@ import com.sun.istack.Nullable;
 import com.sun.istack.NotNull;
 import com.sun.xml.bind.Util;
 import com.sun.xml.bind.api.CompositeStructure;
+import com.sun.xml.bind.api.ErrorListener;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.WellKnownNamespace;
+import com.sun.xml.bind.v2.util.CollisionCheckStack;
 import static com.sun.xml.bind.v2.WellKnownNamespace.XML_SCHEMA;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.ArrayInfo;
@@ -79,6 +81,8 @@ import com.sun.xml.txw2.TypedXmlWriter;
 import com.sun.xml.txw2.output.ResultFactory;
 import com.sun.xml.txw2.output.XmlSerializer;
 
+import org.xml.sax.SAXParseException;
+
 /**
  * Generates a set of W3C XML Schema documents from a set of Java classes.
  *
@@ -109,6 +113,11 @@ public final class XmlSchemaGenerator<T,C,F,M> {
      */
     private final Map<String,Namespace> namespaces = new TreeMap<String,Namespace>(NAMESPACE_COMPARATOR);
 
+    /**
+     * {@link ErrorListener} to send errors to.
+     */
+    private ErrorListener errorListener;
+
     /** model navigator **/
     private Navigator<T,C,F,M> navigator;
 
@@ -123,6 +132,11 @@ public final class XmlSchemaGenerator<T,C,F,M> {
      * Represents xs:anyType.
      */
     private final NonElement<T,C> anyType;
+
+    /**
+     * Used to detect cycles in anonymous types.
+     */
+    private final CollisionCheckStack<ClassInfo<T,C>> collisionChecker = new CollisionCheckStack<ClassInfo<T,C>>();
 
     public XmlSchemaGenerator( Navigator<T,C,F,M> navigator, TypeInfoSet<T,C,F,M> types ) {
         this.navigator = navigator;
@@ -359,12 +373,13 @@ public final class XmlSchemaGenerator<T,C,F,M> {
     /**
      * Write out the schema documents.
      */
-    public void write(SchemaOutputResolver resolver) throws IOException {
+    public void write(SchemaOutputResolver resolver, ErrorListener errorListener) throws IOException {
         if(resolver==null)
             throw new IllegalArgumentException();
 
         // make it fool-proof
         resolver = new FoolProofResolver(resolver);
+        this.errorListener = errorListener;
 
         Map<String, String> schemaLocations = types.getSchemaLocations();
 
@@ -684,9 +699,18 @@ public final class XmlSchemaGenerator<T,C,F,M> {
          */
         private void writeTypeRef(TypeHost th, NonElement<T,C> type, String refAttName) {
             if(type.getTypeName()==null) {
+                // anonymous
                 th.block(); // so that the caller may write other attribuets
                 if(type instanceof ClassInfo) {
-                    writeClass( (ClassInfo<T,C>)type, th );
+                    if(collisionChecker.push((ClassInfo<T,C>)type)) {
+                        errorListener.error(new SAXParseException(
+                            Messages.ANONYMOUS_TYPE_CYCLE.format(collisionChecker.getCycleString()),
+                            null
+                        ));
+                    } else {
+                        writeClass( (ClassInfo<T,C>)type, th );
+                    }
+                    collisionChecker.pop();
                 } else {
                     writeEnum( (EnumLeafInfo<T,C>)type, (SimpleTypeHost)th);
                 }

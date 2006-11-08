@@ -29,6 +29,7 @@ enum Messages {
     UNABLE_TO_DISCOVER_EVENTHANDLER, // 1 arg
     ELEMENT_NEEDED_BUT_FOUND_DOCUMENT, // 1 arg
     UNKNOWN_CLASS, // 1 arg
+    FAILED_TO_GENERATE_SCHEMA, // 0 args
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());
