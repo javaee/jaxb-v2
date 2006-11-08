@@ -198,6 +198,9 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
 
         @Override
         public Accessor<BeanT,ValueT> optimize(JAXBContextImpl context) {
+            if(context.fastBoot)
+                // let's not waste time on doing this for the sake of faster boot.
+                return this;
             Accessor<BeanT,ValueT> acc = OptimizedAccessorFactory.get(f);
             if(acc!=null)
                 return acc;
