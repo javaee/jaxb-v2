@@ -38,6 +38,7 @@ import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Util;
 import com.sun.tools.xjc.util.ForkEntityResolver;
 import com.sun.tools.xjc.api.SpecVersion;
+import com.sun.xml.bind.v2.util.EditDistance;
 
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
@@ -146,6 +147,23 @@ public class XJC2Task extends Task {
     
     public void setClasspathRef(Reference r) {
         classpath.createPath().setRefid(r);
+    }
+
+    /**
+     * Sets the schema language.
+     */
+    public void setLanguage(String language) {
+        Language l = Language.valueOf(language.toUpperCase());
+        if(l==null) {
+            Language[] languages = Language.values();
+            String[] candidates = new String[languages.length];
+            for( int i=0; i<candidates.length; i++ )
+                candidates[i] = languages[i].name();
+
+            throw new BuildException("Unrecognized language: "+language+". Did you mean "+
+            EditDistance.findNearest(language.toUpperCase(),candidates)+" ?");
+        }
+        options.setSchemaLanguage(l);
     }
     
     /**
