@@ -250,6 +250,16 @@ public final class XMLSerializer extends Coordinator {
         nse.setTagName(idx,localName,outerPeer);
     }
 
+    /**
+     * Variation of {@link #startElement(String, String, String, Object)} that forces
+     * a specific prefix. Needed to preserve the prefix when marshalling DOM.
+     */
+    public void startElementForce(String nsUri, String localName, String forcedPrefix, Object outerPeer) {
+        startElement();
+        int idx = nsContext.force(nsUri, forcedPrefix);
+        nse.setTagName(idx,localName,outerPeer);
+    }
+
     public void endNamespaceDecls(Object innerPeer) throws IOException, XMLStreamException {
         nsContext.collectionMode = false;
         nse.startElement(out,innerPeer);

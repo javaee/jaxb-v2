@@ -61,6 +61,15 @@ final class ContentHandlerAdaptor extends DefaultHandler {
         prefixMap.add(uri);
     }
 
+    private boolean containsPrefixMapping(String prefix, String uri) {
+        for( int i=0; i<prefixMap.size(); i+=2 ) {
+            if(prefixMap.get(i).equals(prefix)
+            && prefixMap.get(i+1).equals(uri))
+                return true;
+        }
+        return false;
+    }
+
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts)
         throws SAXException {
         try {
@@ -68,7 +77,14 @@ final class ContentHandlerAdaptor extends DefaultHandler {
 
             int len = atts.getLength();
 
-            serializer.startElement(namespaceURI,localName,getPrefix(qName),null);
+            String p = getPrefix(qName);
+
+            // is this prefix going to be declared on this element?
+            if(containsPrefixMapping(p,namespaceURI))
+                serializer.startElementForce(namespaceURI,localName,p,null);
+            else
+                serializer.startElement(namespaceURI,localName, p,null);
+            
             // declare namespace events
             for( int i=0; i<prefixMap.size(); i+=2 ) {
                 // forcibly set this binding, instead of using declareNsUri.
