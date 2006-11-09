@@ -133,6 +133,11 @@
           <td>Specifies the runtime environment in which the generated code is supposed to run. This value must be smaller than the <tt>source</tt> attribute, if specified (IOW, you can't do <tt>source="1.0" target="2.0"</tt>) This allows more up-to-date versions of XJC to be used for developing applications that run on earlier JAXB versions.</td>
           <td>No, defaults to "2.1"</td>
       </tbody>
+        <tr>
+          <td>language<img src="new.gif"/></td>
+          <td>Specifies the schema language to compile. Supported values are "WSDL", "XMLSCHEMA", and "WSDL." Case insensitive</td>
+          <td>No, defaults to "XMLSCHEMA"</td>
+      </tbody>
     </table>
 
 		<h3>Nested Elements</h3>
@@ -335,8 +340,8 @@ there is no native support for
 
 	<hr/>
 	<div class="footer">
-	  $Revision: 1.7.4.3 $<br/>
-	  $Date: 2006-09-06 21:03:54 $
+	  $Revision: 1.7.4.4 $<br/>
+	  $Date: 2006-11-09 23:45:04 $
 	</div>
   </body>
 </html>
