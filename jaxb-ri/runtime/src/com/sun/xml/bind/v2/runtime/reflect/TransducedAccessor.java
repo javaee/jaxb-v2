@@ -125,7 +125,7 @@ public abstract class TransducedAccessor<BeanT> {
         if(prop.id()==ID.IDREF)
             return new IDREFTransducedAccessorImpl(prop.getAccessor());
 
-        if(xducer.isDefault()) {
+        if(xducer.isDefault() && !context.fastBoot) {
             TransducedAccessor xa = OptimizedTransducedAccessorFactory.get(prop);
             if(xa!=null)    return xa;
         }
