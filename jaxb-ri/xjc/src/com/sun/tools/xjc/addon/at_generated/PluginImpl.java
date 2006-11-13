@@ -66,7 +66,7 @@ public class PluginImpl extends Plugin {
         m.annotate(annotation)
                 .param("value",Driver.class.getName())
                 .param("date", getISO8601Date())
-                .param("comment", "JAXB RI v" + Options.getBuildID());
+                .param("comments", "JAXB RI v" + Options.getBuildID());
     }
 
     // cache the timestamp so that all the @Generated annotations match
