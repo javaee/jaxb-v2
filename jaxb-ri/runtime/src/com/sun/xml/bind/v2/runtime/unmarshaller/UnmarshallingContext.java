@@ -19,7 +19,6 @@ import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.ValidationEventLocator;
 import javax.xml.bind.helpers.ValidationEventImpl;
-import javax.xml.bind.helpers.ValidationEventLocatorImpl;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
@@ -572,11 +571,11 @@ public final class UnmarshallingContext extends Coordinator
     /**
      * Called when there's no corresponding ID value.
      */
-    public void errorUnresolvedIDREF(Object bean, String idref) throws SAXException {
+    public void errorUnresolvedIDREF(Object bean, String idref, LocatorEx loc) throws SAXException {
         handleEvent( new ValidationEventImpl(
             ValidationEvent.ERROR,
             Messages.UNRESOLVED_IDREF.format(idref),
-            new ValidationEventLocatorImpl(bean)), true );
+            loc.getLocation()), true );
     }
 
 

@@ -24,6 +24,7 @@ import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.reflect.opt.OptimizedTransducedAccessorFactory;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Patcher;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
+import com.sun.xml.bind.v2.runtime.unmarshaller.LocatorEx;
 
 import org.xml.sax.SAXException;
 
@@ -267,7 +268,8 @@ public abstract class TransducedAccessor<BeanT> {
 
             final Callable callable = context.getObjectFromId(idref,acc.valueType);
             if(callable==null) {
-                context.errorUnresolvedIDREF(bean,idref);
+                // the IDResolver decided to abort it now
+                context.errorUnresolvedIDREF(bean,idref,context.getLocator());
                 return;
             }
 
@@ -285,12 +287,13 @@ public abstract class TransducedAccessor<BeanT> {
                 assign(bean,t,context);
             } else {
                 // try again later
+                final LocatorEx loc = new LocatorEx.Snapshot(context.getLocator());
                 context.addPatcher(new Patcher() {
                     public void run() throws SAXException {
                         try {
                             TargetT t = (TargetT)callable.call();
                             if(t==null) {
-                                context.errorUnresolvedIDREF(bean,idref);
+                                context.errorUnresolvedIDREF(bean,idref,loc);
                             } else {
                                 assign(bean,t,context);
                             }
