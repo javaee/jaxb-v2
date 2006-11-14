@@ -16,7 +16,7 @@
     <orderEntry type="library" name="runtime" level="project" />
     <orderEntry type="library" name="rebundle/runtime" level="project" />
     <orderEntry type="library" name="rebundle/compiler" level="project" />
-    <orderEntry type="module" module-name="runtime" />
+    <orderEntry type="module" module-name="runtime" exported="" />
     <orderEntryProperties />
   </component>
   <component name="org.mevenide.idea.module.ModuleSettings">
