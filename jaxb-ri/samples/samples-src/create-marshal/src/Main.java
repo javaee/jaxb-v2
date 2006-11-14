@@ -36,7 +36,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import primer.po.*;
 
 /*
- * $Id: Main.java,v 1.4 2005-12-23 20:08:24 kohsuke Exp $
+ * $Id: Main.java,v 1.4.4.1 2006-11-14 02:41:17 kohsuke Exp $
  *
  * Copyright 2003 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -52,76 +52,66 @@ public class Main {
     // to XML data
     
     public static void main( String[] args ) {
-        try {
-            // create a JAXBContext
-            JAXBContext jc = JAXBContext.newInstance( "primer.po" );
-            
-            // create an empty PurchaseOrder
-            PurchaseOrderType po = new PurchaseOrderType();
-            
-            // set the required orderDate attribute
-            po.setOrderDate( getDate() );
-            
-            // create shipTo USAddress object
-            USAddress shipTo = createUSAddress( "Alice Smith",
-                                                "123 Maple Street",
-                                                "Cambridge",
-                                                "MA",
-                                                "12345" );
-                                                
-            // set the required shipTo address 
-            po.setShipTo( shipTo );
-            
-            // create billTo USAddress object
-            USAddress billTo = createUSAddress( "Robert Smith",
-                                                "8 Oak Avenue",
-                                                "Cambridge",
-                                                "MA",
-                                                "12345" );
-            
-            // set the requred billTo address
-            po.setBillTo( billTo );
-                                                
-            // create an empty Items object
-            Items items = new Items();
-            
-            // get a reference to the ItemType list
-            List<Items.Item> itemList = items.getItem();
-            
-            // start adding ItemType objects into it
-            itemList.add( createItem( "Nosferatu - Special Edition (1929)", 
-                                      5, 
-                                      new BigDecimal( "19.99" ), 
-                                      null,
-                                      null,
-                                      "242-NO" ) );
-            itemList.add( createItem( "The Mummy (1959)", 
-                                      3, 
-                                      new BigDecimal( "19.98" ), 
-                                      null,
-                                      null,
-                                      "242-MU" ) );
-            itemList.add( createItem( "Godzilla and Mothra: Battle for Earth/Godzilla vs. King Ghidora", 
-                                      3, 
-                                      new BigDecimal( "27.95" ), 
-                                      null,
-                                      null,
-                                      "242-GZ" ) );
-            
-            // set the required Items list
-            po.setItems( items );
-           
-	    // create an element for marshalling
-	    JAXBElement<PurchaseOrderType> poElement = (new ObjectFactory()).createPurchaseOrder(po);
+        // create an empty PurchaseOrder
+        PurchaseOrderType po = new PurchaseOrderType();
+        
+        // set the required orderDate attribute
+        po.setOrderDate( getDate() );
+        
+        // create shipTo USAddress object
+        USAddress shipTo = createUSAddress( "Alice Smith",
+                                            "123 Maple Street",
+                                            "Cambridge",
+                                            "MA",
+                                            "12345" );
+                                            
+        // set the required shipTo address 
+        po.setShipTo( shipTo );
+        
+        // create billTo USAddress object
+        USAddress billTo = createUSAddress( "Robert Smith",
+                                            "8 Oak Avenue",
+                                            "Cambridge",
+                                            "MA",
+                                            "12345" );
+        
+        // set the requred billTo address
+        po.setBillTo( billTo );
+                                            
+        // create an empty Items object
+        Items items = new Items();
+        
+        // get a reference to the ItemType list
+        List<Items.Item> itemList = items.getItem();
+        
+        // start adding ItemType objects into it
+        itemList.add( createItem( "Nosferatu - Special Edition (1929)", 
+                                  5, 
+                                  new BigDecimal( "19.99" ), 
+                                  null,
+                                  null,
+                                  "242-NO" ) );
+        itemList.add( createItem( "The Mummy (1959)", 
+                                  3, 
+                                  new BigDecimal( "19.98" ), 
+                                  null,
+                                  null,
+                                  "242-MU" ) );
+        itemList.add( createItem( "Godzilla and Mothra: Battle for Earth/Godzilla vs. King Ghidora", 
+                                  3, 
+                                  new BigDecimal( "27.95" ), 
+                                  null,
+                                  null,
+                                  "242-GZ" ) );
+        
+        // set the required Items list
+        po.setItems( items );
+       
+        // create an element for marshalling
+        JAXBElement<PurchaseOrderType> poElement = (new ObjectFactory()).createPurchaseOrder(po);
 
-            // create a Marshaller and marshal to System.out
-            Marshaller m = jc.createMarshaller();
-            m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-            m.marshal( poElement, System.out );
-            
-        } catch( JAXBException je ) {
-            je.printStackTrace();
-        } 
+        // create a Marshaller and marshal to System.out
+        JAXB.marshal( poElement, System.out );
     }
     
     public static USAddress createUSAddress(  String name, String street,
