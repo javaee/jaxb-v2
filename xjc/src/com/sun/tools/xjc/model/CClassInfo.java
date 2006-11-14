@@ -215,6 +215,10 @@ public final class CClassInfo extends AbstractCElement implements ClassInfo<NTyp
         return properties;
     }
 
+    public boolean hasValueProperty() {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * Gets a propery by name.
      */

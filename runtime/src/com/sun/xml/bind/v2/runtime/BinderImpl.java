@@ -117,6 +117,7 @@ public class BinderImpl<XmlNode> extends Binder<XmlNode> {
     }
 
     public void setSchema(Schema schema) {
+        getMarshaller().setSchema(schema);
         getUnmarshaller().setSchema(schema);
     }
 
@@ -151,6 +152,8 @@ public class BinderImpl<XmlNode> extends Binder<XmlNode> {
     }
 
     public Object getJAXBNode(XmlNode xmlNode) {
+        if(xmlNode==null)
+            throw new IllegalArgumentException();
         AssociationMap.Entry e = assoc.byElement(xmlNode);
         if(e==null)     return null;
         if(e.outer()!=null)     return e.outer();

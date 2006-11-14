@@ -3,6 +3,7 @@ package com.sun.xml.bind.v2.model.core;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlValue;
 
 /**
  * Information about JAXB-bound class.
@@ -73,6 +74,12 @@ public interface ClassInfo<T,C> extends MaybeElement<T,C> {
      *      always non-null, but can be empty.
      */
     List<? extends PropertyInfo<T,C>> getProperties();
+
+    /**
+     * Returns true if this class or its ancestor has {@link XmlValue}
+     * property.
+     */
+    boolean hasValueProperty();
 
     /**
      * Gets the property that has the specified name.

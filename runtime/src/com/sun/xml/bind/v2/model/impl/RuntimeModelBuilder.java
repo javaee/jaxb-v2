@@ -24,6 +24,7 @@ import com.sun.xml.bind.v2.runtime.InlineBinaryTransducer;
 import com.sun.xml.bind.v2.runtime.MimeTypedTransducer;
 import com.sun.xml.bind.v2.runtime.SchemaTypeTransducer;
 import com.sun.xml.bind.v2.runtime.Transducer;
+import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 
 import org.xml.sax.SAXException;
@@ -39,9 +40,14 @@ import org.xml.sax.SAXException;
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
 public class RuntimeModelBuilder extends ModelBuilder<Type,Class,Field,Method> {
+    /**
+     * The {@link JAXBContextImpl} for which the model is built.
+     */
+    public final JAXBContextImpl context;
 
-    public RuntimeModelBuilder(RuntimeAnnotationReader annotationReader, Map<Class,Class> subclassReplacements, String defaultNamespaceRemap) {
+    public RuntimeModelBuilder(JAXBContextImpl context, RuntimeAnnotationReader annotationReader, Map<Class,Class> subclassReplacements, String defaultNamespaceRemap) {
         super(annotationReader, Navigator.REFLECTION, subclassReplacements, defaultNamespaceRemap);
+        this.context = context;
     }
 
     @Override

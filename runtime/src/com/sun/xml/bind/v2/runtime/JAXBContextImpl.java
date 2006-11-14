@@ -38,6 +38,7 @@ import java.util.Collections;
 
 import javax.xml.bind.Binder;
 import javax.xml.bind.DatatypeConverter;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.JAXBIntrospector;
@@ -116,7 +117,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75.2.11 $
+ * @version $Revision: 1.75.2.12 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -207,6 +208,14 @@ public final class JAXBContextImpl extends JAXBRIContext {
     private final @NotNull Map<Class,Class> subclassReplacements;
 
     /**
+     * If true, we aim for faster {@link JAXBContext} instanciation performance,
+     * instead of going after efficient sustained unmarshalling/marshalling performance.
+     *
+     * @since 2.0.4
+     */
+    public final boolean fastBoot;
+
+    /**
      *
      * @param typeRefs
      *      used to build {@link Bridge}s. Can be empty.
@@ -227,6 +236,15 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
         this.annotaitonReader = ar;
         this.subclassReplacements = subclassReplacements;
+
+        boolean fastBoot;
+        try {
+            fastBoot = Boolean.getBoolean(JAXBContextImpl.class.getName()+".fastBoot");
+        } catch (SecurityException e) {
+            fastBoot = false;
+        }
+        this.fastBoot = fastBoot;
+
         this.defaultNsUri = defaultNsUri;
         this.c14nSupport = c14nSupport;
         this.classes = new Class[classes.length];
@@ -368,7 +386,8 @@ public final class JAXBContextImpl extends JAXBRIContext {
                 return r;
         }
 
-        final RuntimeModelBuilder builder = new RuntimeModelBuilder(annotaitonReader,subclassReplacements,defaultNsUri);
+        final RuntimeModelBuilder builder = new RuntimeModelBuilder(this,annotaitonReader,subclassReplacements,defaultNsUri);
+
         IllegalAnnotationsException.Builder errorHandler = new IllegalAnnotationsException.Builder();
         builder.setErrorHandler(errorHandler);
 

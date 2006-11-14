@@ -836,30 +836,40 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             // if there is a base class, we need to generate an extension in the schema
             final ClassInfo<T,C> bc = c.getBaseClass();
             if (bc != null) {
-                ComplexExtension ce = ct.complexContent().extension();
-                contentModel = ce;
-                contentModelOwner = ce;
+                if(bc.hasValueProperty()) {
+                    // extending complex type with simple content
+                    SimpleExtension se = ct.simpleContent().extension();
+                    contentModel = se;
+                    contentModelOwner = null;
+                    se.base(bc.getTypeName());
+                } else {
+                    ComplexExtension ce = ct.complexContent().extension();
+                    contentModel = ce;
+                    contentModelOwner = ce;
 
-                ce.base(bc.getTypeName());
-                // TODO: what if the base type is anonymous?
-            }
-
-            // build the tree that represents the explicit content model from iterate over the properties
-            ArrayList<Tree> children = new ArrayList<Tree>();
-            for (PropertyInfo<T,C> p : c.getProperties()) {
-                // handling for <complexType @mixed='true' ...>
-                if(p instanceof ReferencePropertyInfo && ((ReferencePropertyInfo)p).isMixed()) {
-                    ct.mixed(true);
+                    ce.base(bc.getTypeName());
+                    // TODO: what if the base type is anonymous?
                 }
-                Tree t = buildPropertyContentModel(p);
-                if(t!=null)
-                    children.add(t);
             }
 
-            Tree top = Tree.makeGroup( c.isOrdered() ? GroupKind.SEQUENCE : GroupKind.ALL, children);
+            if(contentModelOwner!=null) {
+                // build the tree that represents the explicit content model from iterate over the properties
+                ArrayList<Tree> children = new ArrayList<Tree>();
+                for (PropertyInfo<T,C> p : c.getProperties()) {
+                    // handling for <complexType @mixed='true' ...>
+                    if(p instanceof ReferencePropertyInfo && ((ReferencePropertyInfo)p).isMixed()) {
+                        ct.mixed(true);
+                    }
+                    Tree t = buildPropertyContentModel(p);
+                    if(t!=null)
+                        children.add(t);
+                }
 
-            // write the content model
-            top.write(contentModelOwner);
+                Tree top = Tree.makeGroup( c.isOrdered() ? GroupKind.SEQUENCE : GroupKind.ALL, children);
+
+                // write the content model
+                top.write(contentModelOwner);
+            }
 
             // then attributes
             for (PropertyInfo<T,C> p : c.getProperties()) {

@@ -22,6 +22,7 @@ import com.sun.xml.bind.v2.runtime.reflect.opt.OptimizedAccessorFactory;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Receiver;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
+import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 
 import org.xml.sax.SAXException;
 
@@ -57,10 +58,12 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
     /**
      * Returns the optimized version of the same accessor.
      *
+     * @param context
+     *      The {@link JAXBContextImpl} that owns the whole thing.
      * @return
      *      At least the implementation can return <tt>this</tt>.
      */
-    public Accessor<BeanT,ValueT> optimize() {
+    public Accessor<BeanT,ValueT> optimize(JAXBContextImpl context) {
         return this;
     }
 
@@ -194,7 +197,10 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
         }
 
         @Override
-        public Accessor<BeanT,ValueT> optimize() {
+        public Accessor<BeanT,ValueT> optimize(JAXBContextImpl context) {
+            if(context.fastBoot)
+                // let's not waste time on doing this for the sake of faster boot.
+                return this;
             Accessor<BeanT,ValueT> acc = OptimizedAccessorFactory.get(f);
             if(acc!=null)
                 return acc;
@@ -216,7 +222,7 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
         }
 
         @Override
-        public Accessor<BeanT,ValueT> optimize() {
+        public Accessor<BeanT,ValueT> optimize(JAXBContextImpl context) {
             return this;
         }
     }
@@ -300,9 +306,12 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
         }
 
         @Override
-        public Accessor<BeanT,ValueT> optimize() {
+        public Accessor<BeanT,ValueT> optimize(JAXBContextImpl context) {
             if(getter==null || setter==null)
                 // if we aren't complete, OptimizedAccessor won't always work
+                return this;
+            if(context.fastBoot)
+                // let's not waste time on doing this for the sake of faster boot.
                 return this;
 
             Accessor<BeanT,ValueT> acc = OptimizedAccessorFactory.get(getter,setter);

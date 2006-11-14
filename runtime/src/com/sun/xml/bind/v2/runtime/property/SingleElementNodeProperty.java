@@ -23,7 +23,6 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.DefaultValueLoaderDecorator;
-import com.sun.xml.bind.v2.runtime.unmarshaller.XsiTypeLoader;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 
 import org.xml.sax.SAXException;
@@ -50,7 +49,7 @@ final class SingleElementNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT> 
 
     public SingleElementNodeProperty(JAXBContextImpl context, RuntimeElementPropertyInfo prop) {
         super(context,prop);
-        acc = prop.getAccessor().optimize();
+        acc = prop.getAccessor().optimize(context);
         this.prop = prop;
 
         QName nt = null;

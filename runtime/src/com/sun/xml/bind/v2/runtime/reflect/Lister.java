@@ -26,6 +26,7 @@ import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Patcher;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
+import com.sun.xml.bind.v2.runtime.unmarshaller.LocatorEx;
 
 import org.xml.sax.SAXException;
 
@@ -314,11 +315,13 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
             private final List<String> idrefs = new ArrayList<String>();
             private final UnmarshallingContext context;
             private final Accessor<BeanT,PropT> acc;
+            private final LocatorEx location;
 
             public Pack(BeanT bean, Accessor<BeanT,PropT> acc) {
                 this.bean = bean;
                 this.acc = acc;
                 this.context = UnmarshallingContext.getInstance();
+                this.location = new LocatorEx.Snapshot(context.getLocator());
                 context.addPatcher(this);
             }
 
@@ -346,7 +349,7 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
                         }
 
                         if(t==null) {
-                            context.errorUnresolvedIDREF(bean,id);
+                            context.errorUnresolvedIDREF(bean,id,location);
                         } else {
                             TODO.prototype(); // TODO: check if the type of t is proper.
                             core.addToPack(pack,t);
