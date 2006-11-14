@@ -36,9 +36,9 @@ public final class ValueProperty<BeanT> extends PropertyImpl<BeanT> {
     private final Accessor<BeanT,?> acc;
 
 
-    public ValueProperty(JAXBContextImpl grammar, RuntimeValuePropertyInfo prop) {
-        super(grammar,prop);
-        xacc = TransducedAccessor.get(prop);
+    public ValueProperty(JAXBContextImpl context, RuntimeValuePropertyInfo prop) {
+        super(context,prop);
+        xacc = TransducedAccessor.get(context,prop);
         acc = prop.getAccessor();   // we only use this for binder, so don't waste memory by optimizing
     }
 

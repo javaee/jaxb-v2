@@ -2,6 +2,7 @@ package org.jvnet.jaxb.reflection;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Collections;
 
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
 import com.sun.xml.bind.v2.model.annotation.RuntimeAnnotationReader;
@@ -72,7 +73,7 @@ public abstract class JAXBModelFactory {
         ErrorHandler errorHandler,
         Class... classes ) {
 
-        RuntimeModelBuilder builder = new RuntimeModelBuilder(reader,Collections.emptyMap(),null);
+        RuntimeModelBuilder builder = new RuntimeModelBuilder(null,reader,Collections.emptyMap(),null);
         builder.setErrorHandler(errorHandler);
         for( Class c : classes )
             builder.getTypeInfo(new Ref<Type,Class>(c));

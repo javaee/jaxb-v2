@@ -29,7 +29,6 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.TagName;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Receiver;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
-import com.sun.xml.bind.v2.runtime.unmarshaller.XsiTypeLoader;
 
 import org.xml.sax.SAXException;
 
@@ -63,7 +62,7 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
 
     public SingleMapNodeProperty(JAXBContextImpl context, RuntimeMapPropertyInfo prop) {
         super(context, prop);
-        acc = prop.getAccessor().optimize();
+        acc = prop.getAccessor().optimize(context);
         this.tagName = context.nameBuilder.createElementName(prop.getXmlName());
         this.entryTag = context.nameBuilder.createElementName("","entry");
         this.keyTag = context.nameBuilder.createElementName("","key");

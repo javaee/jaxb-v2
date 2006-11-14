@@ -42,9 +42,9 @@ final class SingleElementLeafProperty<BeanT> extends PropertyImpl<BeanT> {
         assert tagName!=null;
         nillable = ref.isNillable();
         defaultValue = ref.getDefaultValue();
-        this.acc = prop.getAccessor().optimize();
+        this.acc = prop.getAccessor().optimize(context);
 
-        xacc = TransducedAccessor.get(ref);
+        xacc = TransducedAccessor.get(context,ref);
         assert xacc!=null;
     }
 

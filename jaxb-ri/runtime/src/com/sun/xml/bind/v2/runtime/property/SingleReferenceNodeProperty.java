@@ -37,12 +37,12 @@ final class SingleReferenceNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT
     private final DomHandler domHandler;
     private final WildcardMode wcMode;
 
-    public SingleReferenceNodeProperty(JAXBContextImpl p, RuntimeReferencePropertyInfo prop) {
-        super(p,prop);
-        acc = prop.getAccessor().optimize();
+    public SingleReferenceNodeProperty(JAXBContextImpl context, RuntimeReferencePropertyInfo prop) {
+        super(context,prop);
+        acc = prop.getAccessor().optimize(context);
 
         for (RuntimeElement e : prop.getElements()) {
-            expectedElements.put( e.getElementName(), p.getOrCreate(e) );
+            expectedElements.put( e.getElementName(), context.getOrCreate(e) );
         }
 
         if(prop.getWildcard()!=null) {
