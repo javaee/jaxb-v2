@@ -51,6 +51,7 @@ import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
+import com.sun.xml.bind.v2.model.core.ValuePropertyInfo;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
 
@@ -323,6 +324,18 @@ class ClassInfoImpl<T,C,F,M>
         }
 
         return properties;
+    }
+
+    public final boolean hasValueProperty() {
+        ClassInfoImpl<T, C, F, M> bc = getBaseClass();
+        if(bc!=null && bc.hasValueProperty())
+            return true;
+
+        for (PropertyInfo p : getProperties()) {
+            if (p instanceof ValuePropertyInfo) return true;
+        }
+
+        return false;
     }
 
     public PropertyInfo<T,C> getProperty(String name) {

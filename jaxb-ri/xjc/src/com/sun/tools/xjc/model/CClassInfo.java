@@ -21,6 +21,8 @@ import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
 import com.sun.xml.bind.v2.model.core.Element;
+import com.sun.xml.bind.v2.model.core.PropertyInfo;
+import com.sun.xml.bind.v2.model.core.ValuePropertyInfo;
 import com.sun.xml.xsom.XSComponent;
 
 import org.xml.sax.Locator;
@@ -210,6 +212,17 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
      */
     public List<CPropertyInfo> getProperties() {
         return properties;
+    }
+
+    public boolean hasValueProperty() {
+        if(baseClass!=null && baseClass.hasValueProperty())
+            return true;
+        for (PropertyInfo p : getProperties()) {
+            if (p instanceof CValuePropertyInfo)
+                return true;
+        }
+
+        return false;
     }
 
     /**

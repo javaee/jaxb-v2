@@ -733,16 +733,23 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             // if there is a base class, we need to generate an extension in the schema
             final ClassInfo<T,C> bc = c.getBaseClass();
             if (bc != null) {
-                ComplexExtension ce = ct.complexContent().extension();
-                contentModel = ce;
-
-                ce.base(bc.getTypeName());
-                // TODO: what if the base type is anonymous?
-                // ordered props go in a sequence, unordered go in an all
-                if( c.isOrdered() ) {
-                    compositor = ce.sequence();
+                if(bc.hasValueProperty()) {
+                    // extending complex type with simple content
+                    SimpleExtension se = ct.simpleContent().extension();
+                    contentModel = se;
+                    se.base(bc.getTypeName());
                 } else {
-                    compositor = ce.all();
+                    ComplexExtension ce = ct.complexContent().extension();
+                    contentModel = ce;
+
+                    ce.base(bc.getTypeName());
+                    // TODO: what if the base type is anonymous?
+                    // ordered props go in a sequence, unordered go in an all
+                    if( c.isOrdered() ) {
+                        compositor = ce.sequence();
+                    } else {
+                        compositor = ce.all();
+                    }
                 }
             }
 
