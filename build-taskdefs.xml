@@ -117,6 +117,9 @@
         <property key="JWSDP_ROOTDIR"       value="${jwsdp.root.directory}"/>
       </htmlmacro>
       <copy file="docs/catalog.html" todir="@{dest}"/>
+      <copy todir="@{dest}">
+        <fileset dir="docs" includes="style/*"/>
+      </copy>
     </sequential>
   </macrodef>
 
