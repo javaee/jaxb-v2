@@ -440,7 +440,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
             return indent;
         if( ENCODING_HANDLER.equals(name) )
             return escapeHandler;
-        if( PREFIX_MAPPER.equals(name) )
+        if( NamespacePrefixMapper.PROPERTY.equals(name) )
             return prefixMapper;
         if( XMLDECLARATION.equals(name) )
             return !isFragment();
@@ -468,7 +468,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
             escapeHandler = (CharacterEscapeHandler)value;
             return;
         }
-        if( PREFIX_MAPPER.equals(name) ) {
+        if( NamespacePrefixMapper.PROPERTY.equals(name) ) {
             if(!(value instanceof NamespacePrefixMapper))
                 throw new PropertyException(
                     Messages.MUST_BE_X.format(
@@ -577,7 +577,6 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
 
     // features supported
     protected static final String INDENT_STRING = "com.sun.xml.bind.indentString";
-    protected static final String PREFIX_MAPPER = "com.sun.xml.bind.namespacePrefixMapper";
     protected static final String ENCODING_HANDLER = "com.sun.xml.bind.characterEscapeHandler";
     protected static final String XMLDECLARATION = "com.sun.xml.bind.xmlDeclaration";
     protected static final String XML_HEADERS = "com.sun.xml.bind.xmlHeaders";
