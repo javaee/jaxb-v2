@@ -24,6 +24,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
 
+import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
+
 
 /**
  * This example shows you how you can change the way
@@ -58,7 +60,7 @@ public class PrefixExample {
         // tell the marshaller to consult your mapper
         // to assign a prefix for a namespace.
         try {
-            marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper",new NamespacePrefixMapperImpl());
+            marshaller.setProperty(NamespacePrefixMapper.PROPERTY,new NamespacePrefixMapperImpl());
         } catch( PropertyException e ) {
             // if the JAXB provider doesn't recognize the prefix mapper,
             // it will throw this exception. Since being unable to specify
