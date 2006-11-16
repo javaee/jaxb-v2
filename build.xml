@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.11 2006-11-08 17:57:27 kohsuke Exp $
+       $Id: build.xml,v 1.71.2.12 2006-11-16 02:39:37 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -517,18 +517,20 @@ Class-Path: ${manifest.classpath}
       <maven-repository-importer
           destdir="build/maven-repo" version="${jar.suffix}">
         <artifact
-          jar="dist/lib/jaxb-api.jar"
+          jar=   "dist/lib/jaxb-api.jar"
           srczip="dist/lib/jaxb-api-src.zip"
           pom="tools/poms/jaxb-api.pom" />
         <artifact
-          jar="dist/lib/jaxb-impl.jar"
+          jar=   "dist/lib/jaxb-impl.jar"
+          srczip="dist/lib/jaxb-impl.src.zip"
           pom="tools/poms/jaxb-impl.pom" />
         <artifact
-          jar="dist/lib/jaxb-xjc.jar"
+          jar=   "dist/lib/jaxb-xjc.jar"
+          srczip="dist/lib/jaxb-xjc.src.zip"
           pom="tools/poms/jaxb-xjc.pom" />
         <artifact
-          jar="dist/lib/jaxb1-impl.jar"
-          pom="tools/poms/jaxb1-impl.pom" />
+          jar=   "dist/lib/jaxb1-impl.jar"
+          pom="tools/poms/jaxb1-impl.pom" /> <!-- source jar not available right now -->
         <filterset>
           <filter token="API_VERSION" value="${release.spec.version}"/>
         </filterset>
