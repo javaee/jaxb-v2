@@ -92,17 +92,20 @@ public final class RuntimeInlineAnnotationReader extends AbstractInlineAnnotatio
         try {
             return (Class)a.annotationType().getMethod(name).invoke(a);
         } catch (IllegalAccessException e) {
-            // impossible
-            throw new IllegalAccessError(e.getMessage());
+            throw initCause(new IllegalAccessError(e.getMessage()),e);
         } catch (InvocationTargetException e) {
-            // impossible
-            throw new InternalError(e.getMessage());
+            throw initCause(new InternalError(e.getMessage()),e);
         } catch (NoSuchMethodException e) {
-            throw new NoSuchMethodError(e.getMessage());
+            throw initCause(new NoSuchMethodError(e.getMessage()),e);
         }
     }
 
     protected String fullName(Method m) {
         return m.getDeclaringClass().getName()+'#'+m.getName();
+    }
+
+    private <T extends Throwable> T initCause(T t, Throwable cause) {
+        t.initCause(cause);
+        return t;
     }
 }
