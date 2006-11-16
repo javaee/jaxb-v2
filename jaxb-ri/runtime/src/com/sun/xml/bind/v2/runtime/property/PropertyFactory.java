@@ -87,9 +87,9 @@ public abstract class PropertyFactory {
         try {
             return c.newInstance( grammar, info );
         } catch (InstantiationException e) {
-            throw new InstantiationError(e.getMessage());
+            throw initCause(new InstantiationError(e.getMessage()),e);
         } catch (IllegalAccessException e) {
-            throw new IllegalAccessError(e.getMessage());
+            throw initCause(new IllegalAccessError(e.getMessage()),e);
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();
             if(t instanceof Error)
@@ -126,5 +126,10 @@ public abstract class PropertyFactory {
             return false;
 
         return true;
+    }
+
+    private static <T extends Throwable> T initCause(T t, Throwable cause) {
+        t.initCause(cause);
+        return t;
     }
 }

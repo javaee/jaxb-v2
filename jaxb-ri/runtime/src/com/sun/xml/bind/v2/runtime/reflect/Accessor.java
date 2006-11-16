@@ -182,7 +182,7 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
             try {
                 return (ValueT)f.get(bean);
             } catch (IllegalAccessException e) {
-                throw new IllegalAccessError(e.getMessage());
+                throw initCause(new IllegalAccessError(e.getMessage()),e);
             }
         }
 
@@ -192,7 +192,7 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
                     value = (ValueT)uninitializedValues.get(valueType);
                 f.set(bean,value);
             } catch (IllegalAccessException e) {
-                throw new IllegalAccessError(e.getMessage());
+                throw initCause(new IllegalAccessError(e.getMessage()),e);
             }
         }
 
@@ -271,7 +271,7 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
             try {
                 return (ValueT)getter.invoke(bean);
             } catch (IllegalAccessException e) {
-                throw new IllegalAccessError(e.getMessage());
+                throw initCause(new IllegalAccessError(e.getMessage()),e);
             } catch (InvocationTargetException e) {
                 throw handleInvocationTargetException(e);
             }
@@ -283,7 +283,7 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
                     value = (ValueT)uninitializedValues.get(valueType);
                 setter.invoke(bean,value);
             } catch (IllegalAccessException e) {
-                throw new IllegalAccessError(e.getMessage());
+                throw initCause(new IllegalAccessError(e.getMessage()),e);
             } catch (InvocationTargetException e) {
                 throw handleInvocationTargetException(e);
             }
@@ -407,4 +407,8 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
         uninitializedValues.put(short.class,Short.valueOf((short)0));
     }
 
+    private static <T extends Throwable> T initCause(T t, Throwable cause) {
+        t.initCause(cause);
+        return t;
+    }
 }

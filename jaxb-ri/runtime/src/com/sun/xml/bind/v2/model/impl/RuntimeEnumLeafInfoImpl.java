@@ -63,7 +63,9 @@ final class RuntimeEnumLeafInfoImpl<T extends Enum<T>,B> extends EnumLeafInfoImp
             t = (T)constant.get(null);
         } catch (IllegalAccessException e) {
             // impossible, because this is an enum constant
-            throw new IllegalAccessError(e.getMessage());
+            IllegalAccessError iae = new IllegalAccessError(e.getMessage());
+            iae.initCause(e);
+            throw iae;
         }
 
         B b = null;

@@ -312,7 +312,9 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                         try {
                             tracker.waitForAll();
                         } catch (InterruptedException e) {
-                            throw new IOException(e.getMessage());
+                            IOException ioe = new IOException(e.getMessage());
+                            ioe.initCause(e);
+                            throw ioe;
                         }
                         BufferedImage bufImage = new BufferedImage(
                                 image.getWidth(null),

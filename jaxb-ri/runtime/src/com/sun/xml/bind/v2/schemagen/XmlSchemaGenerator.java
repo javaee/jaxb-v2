@@ -521,7 +521,9 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                 schema.commit();
             } catch( TxwException e ) {
                 logger.log(Level.INFO,e.getMessage(),e);
-                throw new IOException(e.getMessage());
+                IOException ioe = new IOException(e.getMessage());
+                ioe.initCause(e);
+                throw ioe;
             }
         }
 
