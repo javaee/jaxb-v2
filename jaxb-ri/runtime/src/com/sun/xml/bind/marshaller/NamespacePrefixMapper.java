@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.dom.DOMResult;
+import javax.xml.bind.Marshaller;
 
 import org.w3c.dom.Node;
 
@@ -228,4 +229,11 @@ public abstract class NamespacePrefixMapper {
     public String[] getContextualNamespaceDecls() {
         return EMPTY_STRING;
     }
+
+    /**
+     * Property name to be used for {@link Marshaller#setProperty(String, Object)}
+     *
+     * @since 2.0.5
+     */
+    public static final String PROPERTY = "com.sun.xml.bind.namespacePrefixMapper";
 }
