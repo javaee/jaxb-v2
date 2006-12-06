@@ -83,7 +83,9 @@ class EnumLeafInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
      */
     protected void calcConstants() {
         EnumConstantImpl<T,C,F,M> last = null;
-        for( F constant : nav().getEnumConstants(clazz) ) {
+        F[] constants = nav().getEnumConstants(clazz);
+        for( int i=constants.length-1; i>=0; i-- ) {
+            F constant = constants[i];
             String name = nav().getFieldName(constant);
             XmlEnumValue xev = builder.reader.getFieldAnnotation(XmlEnumValue.class, constant, this);
 
