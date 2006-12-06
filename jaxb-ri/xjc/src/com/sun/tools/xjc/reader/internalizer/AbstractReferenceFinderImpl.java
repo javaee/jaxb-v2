@@ -20,6 +20,7 @@
 package com.sun.tools.xjc.reader.internalizer;
 
 import java.io.IOException;
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -77,10 +78,15 @@ public abstract class AbstractReferenceFinderImpl extends XMLFilterImpl {
             // but don't mark this document as a root.
             parent.parse(ref,false);
         } catch( URISyntaxException e ) {
+            String msg = e.getMessage();
+            if(new File(relativeRef).exists()) {
+                msg = Messages.format(Messages.ERR_FILENAME_IS_NOT_URI)+' '+msg;
+            }
+
             SAXParseException spe = new SAXParseException2(
-                Messages.format(Messages.ERR_UNABLE_TO_PARSE,relativeRef,e.getMessage()),
+                Messages.format(Messages.ERR_UNABLE_TO_PARSE,relativeRef, msg),
                 locator, e );
-                
+
             fatalError(spe);
             throw spe;
         } catch( IOException e ) {
