@@ -764,7 +764,7 @@ public final class UnmarshallingContext extends Coordinator
      *      is represented by the empty string.
      */
     public String[] getAllDeclaredPrefixes() {
-        return getPrefixList( 2 );  // skip the default ""->"" mapping
+        return getPrefixList(0);
     }
 
     private String[] getPrefixList( int startIndex ) {
