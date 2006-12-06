@@ -1,4 +1,4 @@
-/* $Id: StAXStreamConnector.java,v 1.9.2.3 2006-08-08 14:37:53 sandoz Exp $
+/* $Id: StAXStreamConnector.java,v 1.9.2.4 2006-12-06 17:56:18 kohsuke Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -74,6 +74,12 @@ class StAXStreamConnector extends StAXConnector {
             } catch (Exception t) {
             }
         }
+
+        // Quick hack until SJSXP fixes 6270116
+        boolean isZephyr = readerClass.getName().equals("com.sun.xml.stream.XMLReaderImpl");
+        if(!isZephyr)
+            visitor = new InterningXmlVisitor(visitor);
+
         if (STAX_EX_READER_CLASS!=null && STAX_EX_READER_CLASS.isAssignableFrom(readerClass)) {
             try {
                 return STAX_EX_CONNECTOR_CTOR.newInstance(reader,visitor);
@@ -81,10 +87,6 @@ class StAXStreamConnector extends StAXConnector {
             }
         }
 
-        // Quick hack until SJSXP fixes 6270116
-        boolean isZephyr = readerClass.getName().equals("com.sun.xml.stream.XMLReaderImpl");
-        if(!isZephyr)
-            visitor = new InterningXmlVisitor(visitor);
         return new StAXStreamConnector(reader,visitor);
     }
 
