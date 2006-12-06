@@ -364,8 +364,6 @@ public final class UnmarshallingContext extends Coordinator
         isUnmarshalInProgress = true;
         nsLen=0;
 
-        startPrefixMapping("",""); // by default, the default ns is bound to "".
-
         setThreadAffinity();
 
         if(expectedType!=null)
@@ -738,6 +736,12 @@ public final class UnmarshallingContext extends Coordinator
             // temporary workaround until Zephyr fixes 6337180
             return environmentNamespaceContext.getNamespaceURI(prefix.intern());
 
+        // by default, the default ns is bound to "".
+        // but allow environmentNamespaceContext to take precedence
+        if(prefix.equals(""))
+            return "";
+
+        // unresolved. error.
         return null;
     }
 
