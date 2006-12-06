@@ -70,6 +70,8 @@ class Messages
         "Internalizer.OrphanedCustomization";
     static final String ERR_UNABLE_TO_PARSE = // arg:2
         "AbstractReferenceFinderImpl.UnableToParse";
+    static final String ERR_FILENAME_IS_NOT_URI = // arg:0
+        "ERR_FILENAME_IS_NOT_URI";
     static final String ERR_GENERAL_SCHEMA_CORRECTNESS_ERROR = // arg:1
         "ERR_GENERAL_SCHEMA_CORRECTNESS_ERROR";
 }
