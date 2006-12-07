@@ -47,7 +47,7 @@ public abstract class JAXBModelFactory {
         ErrorHandler errorHandler,
         Collection<C> classes ) {
 
-        ModelBuilder<T,C,F,M> builder = new ModelBuilder<T,C,F,M>(reader,navigator,null);
+        ModelBuilder<T,C,F,M> builder = new ModelBuilder<T,C,F,M>(reader,navigator,Collections.<Class,Class>emptyMap(),null);
         builder.setErrorHandler(errorHandler);
         for( C c : classes )
             builder.getTypeInfo(new Ref<T,C>(navigator.use(c)));
@@ -73,7 +73,7 @@ public abstract class JAXBModelFactory {
         ErrorHandler errorHandler,
         Class... classes ) {
 
-        RuntimeModelBuilder builder = new RuntimeModelBuilder(null,reader,Collections.emptyMap(),null);
+        RuntimeModelBuilder builder = new RuntimeModelBuilder(null,reader,Collections.<Class,Class>emptyMap(),null);
         builder.setErrorHandler(errorHandler);
         for( Class c : classes )
             builder.getTypeInfo(new Ref<Type,Class>(c));
