@@ -301,7 +301,7 @@ public class XJC2Task extends Task {
     public void setTarget( String version ) {
         options.target = SpecVersion.parse(version);
         if(options.target==null)
-            throw new BuildException(version+" is not a valid version number");
+            throw new BuildException(version+" is not a valid version number. Perhaps you meant @destdir?");
     }
 
     /**
