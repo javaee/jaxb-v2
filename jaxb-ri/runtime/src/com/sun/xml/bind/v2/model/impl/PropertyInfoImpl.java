@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.TODO;
@@ -82,21 +83,43 @@ abstract class PropertyInfoImpl<T,C,F,M>
                 getIndividualType(),this);
 
         T t = seed.getRawType();
-        this.isCollection = nav().isSubClassOf(t, nav().ref(Collection.class))
-                         || nav().isArrayButNotByteArray(t);
 
-        XmlJavaTypeAdapter xjta = getApplicableAdapter(getIndividualType());
-        if(xjta==null) {
-            // ugly ugly hack, but we implement swaRef as adapter
-            XmlAttachmentRef xsa = seed.readAnnotation(XmlAttachmentRef.class);
-            if(xsa!=null) {
-                parent.builder.hasSwaRef = true;
-                adapter = new Adapter<T,C>(nav().asDecl(SwaRefAdapter.class),nav());
-            } else {
-                adapter = null;
-            }
-        } else {
+        // check if there's an adapter applicable to the whole property
+        XmlJavaTypeAdapter xjta = getApplicableAdapter(t);
+        if(xjta!=null) {
+            isCollection = false;
             adapter = new Adapter<T,C>(xjta,reader(),nav());
+        } else {
+            // check if the adapter is applicable to the individual item in the property
+
+            this.isCollection = nav().isSubClassOf(t, nav().ref(Collection.class))
+                             || nav().isArrayButNotByteArray(t);
+
+            xjta = getApplicableAdapter(getIndividualType());
+            if(xjta==null) {
+                // ugly ugly hack, but we implement swaRef as adapter
+                XmlAttachmentRef xsa = seed.readAnnotation(XmlAttachmentRef.class);
+                if(xsa!=null) {
+                    parent.builder.hasSwaRef = true;
+                    adapter = new Adapter<T,C>(nav().asDecl(SwaRefAdapter.class),nav());
+                } else {
+                    adapter = null;
+
+                    // if this field has adapter annotation but not applicable,
+                    // that must be an error of the user
+                    xjta = seed.readAnnotation(XmlJavaTypeAdapter.class);
+                    if(xjta!=null) {
+                        T adapter = reader().getClassValue(xjta,"value");
+                        parent.builder.reportError(new IllegalAnnotationException(
+                            Messages.UNMATCHABLE_ADAPTER.format(
+                                    nav().getTypeName(adapter), nav().getTypeName(t)),
+                            xjta
+                        ));
+                    }
+                }
+            } else {
+                adapter = new Adapter<T,C>(xjta,reader(),nav());
+            }
         }
     }
 
@@ -145,13 +168,21 @@ abstract class PropertyInfoImpl<T,C,F,M>
         if(jta==null)   return false;
 
         T type = reader().getClassValue(jta,"type");
-        return declaredType.equals(type);
+        if(declaredType.equals(type))
+            return true;    // for types explicitly marked in XmlJavaTypeAdapter.type()
+        
+        T adapter = reader().getClassValue(jta,"value");
+        T ba = nav().getBaseClass(adapter, nav().asDecl(XmlAdapter.class));
+        if(!nav().isParameterizedType(ba))
+            return true;   // can't check type applicability. assume Object, which means applicable to any.
+        T inMemType = nav().getTypeArgument(ba, 1);
 
+        return nav().isSubClassOf(declaredType,inMemType);
     }
 
     private XmlJavaTypeAdapter getApplicableAdapter(T type) {
         XmlJavaTypeAdapter jta = seed.readAnnotation(XmlJavaTypeAdapter.class);
-        if(jta!=null)
+        if(jta!=null && isApplicable(jta,type))
             return jta;
 
         // check the applicable adapters on the package
@@ -170,7 +201,7 @@ abstract class PropertyInfoImpl<T,C,F,M>
         C refType = nav().asDecl(seed.getRawType());
         if(refType!=null) {
             jta = reader().getClassAnnotation(XmlJavaTypeAdapter.class, refType, seed );
-            if(jta!=null) // the one on the type always apply.
+            if(jta!=null && isApplicable(jta,type)) // the one on the type always apply.
                 return jta;
         }
 
