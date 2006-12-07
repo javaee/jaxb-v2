@@ -63,7 +63,8 @@ enum Messages {
     
     MISSING_JAXB_PROPERTIES, // 1arg
     TRANSIENT_FIELD_NOT_BINDABLE, // 1 arg
-    THERE_MUST_BE_VALUE_IN_XMLVALUE // 1 arg
+    THERE_MUST_BE_VALUE_IN_XMLVALUE, // 1 arg
+    UNMATCHABLE_ADAPTER, // 2 args
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());
