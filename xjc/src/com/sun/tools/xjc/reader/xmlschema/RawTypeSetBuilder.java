@@ -240,7 +240,7 @@ public class RawTypeSetBuilder implements XSTermVisitor {
             // annotation, and there's more than one element,
             // we have no place to put the special annotation, so we need JAXBElement.
             if(parent.refs.size()>1 || !parent.mul.isAtMostOnce()) {
-                if(p.getAdapter()!=null || p.id()!=ID.NONE)
+                if(p.id()!=ID.NONE)
                     return RawTypeSet.Mode.MUST_BE_REFERENCE;
             }
 
@@ -314,7 +314,7 @@ public class RawTypeSetBuilder implements XSTermVisitor {
             // annotation, and there's more than one element,
             // we have no place to put the special annotation, so we need JAXBElement.
             if(parent.refs.size()>1 || !parent.mul.isAtMostOnce()) {
-                if(target.getAdapterUse()!=null || target.idUse()!=ID.NONE)
+                if(target.idUse()!=ID.NONE)
                     return RawTypeSet.Mode.MUST_BE_REFERENCE;
             }
 
