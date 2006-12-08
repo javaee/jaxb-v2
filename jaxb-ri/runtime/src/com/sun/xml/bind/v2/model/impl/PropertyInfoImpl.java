@@ -198,7 +198,7 @@ abstract class PropertyInfoImpl<T,C,F,M>
             return jta;
 
         // then on the target class
-        C refType = nav().asDecl(seed.getRawType());
+        C refType = nav().asDecl(type);
         if(refType!=null) {
             jta = reader().getClassAnnotation(XmlJavaTypeAdapter.class, refType, seed );
             if(jta!=null && isApplicable(jta,type)) // the one on the type always apply.
