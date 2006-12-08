@@ -384,10 +384,17 @@ public class Options
     }
 
     /**
-     * Adds a new input schema.
+     * Adds a new binding file.
      */
     public void addBindFile( InputSource is ) {
         bindFiles.add(absolutize(is));
+    }
+
+    /**
+     * Adds a new binding file.
+     */
+    public void addBindFile( File bindFile ) {
+        bindFiles.add(fileToInputSource(bindFile));
     }
 
     /**

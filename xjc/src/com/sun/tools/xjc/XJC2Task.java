@@ -174,7 +174,7 @@ public class XJC2Task extends Task {
             options.addBindFile( getInputSource(new URL(binding)) );
         } catch( MalformedURLException e ) {
             File f = getProject().resolveFile(binding);
-            options.addBindFile( getInputSource(f) );
+            options.addBindFile(f);
             dependsSet.add(f);
         }
     }
