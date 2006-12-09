@@ -239,10 +239,10 @@ public class RawTypeSetBuilder implements XSTermVisitor {
             // if we have an adapter or IDness, which requires special
             // annotation, and there's more than one element,
             // we have no place to put the special annotation, so we need JAXBElement.
-            if(parent.refs.size()>1 || !parent.mul.isAtMostOnce()) {
-                if(p.id()!=ID.NONE)
-                    return RawTypeSet.Mode.MUST_BE_REFERENCE;
-            }
+            if((parent.refs.size()>1 || !parent.mul.isAtMostOnce()) && p.id()!=ID.NONE)
+                return RawTypeSet.Mode.MUST_BE_REFERENCE;
+            if(parent.refs.size() > 1 && p.getAdapter() != null)
+                return RawTypeSet.Mode.MUST_BE_REFERENCE;
 
             return RawTypeSet.Mode.SHOULD_BE_TYPEREF;
         }
@@ -313,10 +313,10 @@ public class RawTypeSetBuilder implements XSTermVisitor {
             // if we have an adapter or IDness, which requires special
             // annotation, and there's more than one element,
             // we have no place to put the special annotation, so we need JAXBElement.
-            if(parent.refs.size()>1 || !parent.mul.isAtMostOnce()) {
-                if(target.idUse()!=ID.NONE)
-                    return RawTypeSet.Mode.MUST_BE_REFERENCE;
-            }
+            if((parent.refs.size()>1 || !parent.mul.isAtMostOnce()) && target.idUse()!=ID.NONE)
+                return RawTypeSet.Mode.MUST_BE_REFERENCE;
+            if(parent.refs.size() > 1 && target.getAdapterUse() != null)
+                return RawTypeSet.Mode.MUST_BE_REFERENCE;
 
             // nillable and optional at the same time. needs an element wrapper to distinguish those
             // two states. But this is not a hard requirement.
