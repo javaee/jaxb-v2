@@ -1102,6 +1102,8 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     protected void write(ContentModelContainer parent, boolean isOptional, boolean repeated) {
                         LocalElement eref = parent.element();
 
+                        boolean local=false;
+
                         QName en = e.getElementName();
                         if(e.getScope()!=null) {
                             // scoped. needs to be inlined
@@ -1119,6 +1121,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                                         eref.form("qualified");
                                 }
 
+                                local = true;
                                 eref.name(en.getLocalPart());
 
                                 // write out type reference
@@ -1129,7 +1132,8 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                                 }
                             }
                         }
-                        eref.ref(en);
+                        if(!local)
+                            eref.ref(en);
                         writeOccurs(eref,isOptional,repeated);
                     }
                 });
