@@ -45,6 +45,8 @@ class ElementInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M> implements ElementI
 
     private final NonElement<T,C> contentType;
 
+    private final T tOfJAXBElementT;
+
     private final T elementType;
 
     private final ClassInfo<T,C> scope;
@@ -243,15 +245,16 @@ class ElementInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M> implements ElementI
         }
         this.adapter = a;
 
+        // T of JAXBElement<T>
+        tOfJAXBElementT =
+            methodParams.length>0 ? methodParams[0] // this is more reliable, as it works even for ObjectFactory that sometimes have to return public types
+            : nav().getTypeArgument(baseClass,0); // fall back to infer from the return type if no parameter.
+        
         if(adapter==null) {
-            // T of JAXBElement<T>
-            T typeType =
-                methodParams.length>0 ? methodParams[0] // this is more reliable, as it works even for ObjectFactory that sometimes have to return public types
-                : nav().getTypeArgument(baseClass,0); // fall back to infer from the return type if no parameter.
-            T list = nav().getBaseClass(typeType,nav().asDecl(List.class));
+            T list = nav().getBaseClass(tOfJAXBElementT,nav().asDecl(List.class));
             if(list==null) {
                 isCollection = false;
-                contentType = builder.getTypeInfo(typeType,this);  // suck this type into the current set.
+                contentType = builder.getTypeInfo(tOfJAXBElementT,this);  // suck this type into the current set.
             } else {
                 isCollection = true;
                 contentType = builder.getTypeInfo(nav().getTypeArgument(list,0),this);
@@ -318,7 +321,7 @@ class ElementInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M> implements ElementI
 
     public T getContentInMemoryType() {
         if(adapter==null) {
-            return contentType.getType();
+            return tOfJAXBElementT;
         } else {
             return adapter.customType;
         }
