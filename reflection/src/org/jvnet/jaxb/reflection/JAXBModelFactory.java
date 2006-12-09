@@ -47,7 +47,7 @@ public abstract class JAXBModelFactory {
         ErrorHandler errorHandler,
         Collection<C> classes ) {
 
-        ModelBuilder<T,C,F,M> builder = new ModelBuilder<T,C,F,M>(reader,navigator,Collections.<Class,Class>emptyMap(),null);
+        ModelBuilder<T,C,F,M> builder = new ModelBuilder<T,C,F,M>(reader,navigator,Collections.<C,C>emptyMap(),null);
         builder.setErrorHandler(errorHandler);
         for( C c : classes )
             builder.getTypeInfo(new Ref<T,C>(navigator.use(c)));
