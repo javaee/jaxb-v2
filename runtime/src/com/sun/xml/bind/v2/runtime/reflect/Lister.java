@@ -267,7 +267,11 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
         }
 
         public void reset(BeanT bean, Accessor<BeanT, T> acc) throws AccessorException {
-            acc.get(bean).clear();
+            T collection = acc.get(bean);
+            if(collection == null) {
+                return;
+            }
+            collection.clear();
         }
     }
 
