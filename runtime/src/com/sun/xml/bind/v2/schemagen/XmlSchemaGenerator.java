@@ -571,8 +571,8 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     if(n.uri.length()!=0)
                         imp.namespace(n.uri);
                     String refSystemId = systemIds.get(n);
-                    if(!refSystemId.equals("")) {
-                        // "" means implied.
+                    if(refSystemId!=null && !refSystemId.equals("")) {
+                        // "" means implied. null if the SchemaOutputResolver said "don't generate!"
                         imp.schemaLocation(relativize(refSystemId,result.getSystemId()));
                     }
                     schema._pcdata(newline);
