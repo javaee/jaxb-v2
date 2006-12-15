@@ -1,4 +1,4 @@
-/* $Id: StAXStreamConnector.java,v 1.9 2006-07-21 21:12:20 kohsuke Exp $
+/* $Id: StAXStreamConnector.java,v 1.10 2006-12-15 00:02:20 kohsuke Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -61,6 +61,11 @@ class StAXStreamConnector extends StAXConnector {
      * This method checks if the parser is FI parser and acts accordingly.
      */
     public static StAXConnector create(XMLStreamReader reader, XmlVisitor visitor) {
+        // Quick hack until SJSXP fixes 6270116
+        boolean isZephyr = reader.getClass().getName().equals("com.sun.xml.stream.XMLReaderImpl");
+        if(!isZephyr)
+            visitor = new InterningXmlVisitor(visitor);
+
         // try optimized codepath
         if (reader.getClass()==FI_STAX_READER_CLASS && FI_CONNECTOR_CTOR!=null) {
             try {
@@ -75,10 +80,6 @@ class StAXStreamConnector extends StAXConnector {
             }
         }
 
-        // Quick hack until SJSXP fixes 6270116
-        boolean isZephyr = reader.getClass().getName().equals("com.sun.xml.stream.XMLReaderImpl");
-        if(!isZephyr)
-            visitor = new InterningXmlVisitor(visitor);
         return new StAXStreamConnector(reader,visitor);
     }
 
