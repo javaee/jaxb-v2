@@ -98,10 +98,7 @@ public final class CollisionCheckStack<E> extends AbstractList<E> {
     }
 
     private int hash(Object o) {
-    	if (useIdentity)
-            return System.identityHashCode(o) % initialHash.length;
-    	else
-            return Math.abs(o.hashCode() % initialHash.length);
+        return ((useIdentity?System.identityHashCode(o):o.hashCode())&0x7FFFFFFF) % initialHash.length;
     }
 
     /**
