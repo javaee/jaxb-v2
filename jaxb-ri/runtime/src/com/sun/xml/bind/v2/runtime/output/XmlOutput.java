@@ -1,7 +1,6 @@
 package com.sun.xml.bind.v2.runtime.output;
 
 import java.io.IOException;
-import java.io.OutputStream;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.stream.XMLStreamException;
