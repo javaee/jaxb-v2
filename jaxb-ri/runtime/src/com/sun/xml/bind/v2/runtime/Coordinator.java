@@ -101,7 +101,8 @@ public abstract class Coordinator implements ErrorHandler, ValidationEventHandle
      * Sohuld be called at the end of the episode to avoid memory leak.
      */
     protected final void resetThreadAffinity() {
-        guyWhoSetTheTableToNull = new Exception(); // remember that we set it to null
+        if(debugTableNPE)
+            guyWhoSetTheTableToNull = new Exception(); // remember that we set it to null
         table = null;
     }
 
@@ -179,5 +180,12 @@ public abstract class Coordinator implements ErrorHandler, ValidationEventHandle
         }
     }
 
+    public static boolean debugTableNPE;
 
+    static {
+        try {
+            debugTableNPE = Boolean.getBoolean(Coordinator.class.getName()+".debugTableNPE");
+        } catch (SecurityException t) {
+        }
+    }
 }
