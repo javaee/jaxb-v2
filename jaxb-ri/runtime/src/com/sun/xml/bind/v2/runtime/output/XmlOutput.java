@@ -91,8 +91,9 @@ public interface XmlOutput {
      *      true if we are marshalling a fragment.
      */
     public void startDocument(XMLSerializer serializer, boolean fragment, int[] nsUriIndex2prefixIndex, NamespaceContextImpl nsContext) throws IOException, SAXException, XMLStreamException;
+
     /**
-     * Called at the very end.
+     * Called at the very end. This is the last method to be invoked.
      *
      * @param fragment
      *      false if we are writing the whole document.
@@ -147,11 +148,4 @@ public interface XmlOutput {
      * @param needsSeparatingWhitespace
      */
     public void text( Pcdata value, boolean needsSeparatingWhitespace ) throws IOException, SAXException, XMLStreamException;
-
-    /**
-     * Flush the output.
-     *
-     * @see OutputStream#flush()
-     */
-    public void flush() throws IOException, XMLStreamException;
 }

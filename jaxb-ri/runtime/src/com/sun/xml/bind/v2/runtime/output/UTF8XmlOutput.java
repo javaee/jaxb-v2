@@ -351,13 +351,6 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
         out.write(octetBuffer, 0, octetBufferIndex);
         octetBufferIndex = 0;
     }
-    
-    public void flush() throws IOException {
-        flushBuffer();
-        out.flush();
-    }
-
-
 
     static byte[] toBytes(String s) {
         byte[] buf = new byte[s.length()];

@@ -101,8 +101,4 @@ public final class MTOMXmlOutput extends XmlOutputAbstractImpl {
         }
         next.text(value, needsSeparatingWhitespace);
     }
-
-    public void flush() throws IOException, XMLStreamException {
-        next.flush();
-    }
 }

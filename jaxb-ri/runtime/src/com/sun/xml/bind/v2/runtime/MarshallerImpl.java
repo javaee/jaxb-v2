@@ -250,7 +250,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
                         serializer.childAsXsiType(obj,"root",bi);
                 }
                 serializer.endElement();
-                postwrite(out);
+                postwrite();
             } catch( SAXException e ) {
                 throw new MarshalException(e);
             } catch (IOException e) {
@@ -299,7 +299,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
             try {
                 prewrite(out,isFragment(),postInitAction);
                 serializer.childAsRoot(obj);
-                postwrite(out);
+                postwrite();
             } catch( SAXException e ) {
                 throw new MarshalException(e);
             } catch (IOException e) {
@@ -351,10 +351,9 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         serializer.setPrefixMapper(prefixMapper);
     }
 
-    private void postwrite(XmlOutput out) throws IOException, SAXException, XMLStreamException {
+    private void postwrite() throws IOException, SAXException, XMLStreamException {
         serializer.endDocument();
         serializer.reconcileID();   // extra check
-        out.flush();
     }
 
 
