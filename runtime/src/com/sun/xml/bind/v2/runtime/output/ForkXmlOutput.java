@@ -52,12 +52,6 @@ public final class ForkXmlOutput extends XmlOutputAbstractImpl {
         rhs.endTag(name);
     }
 
-    @Override
-    public void flush() throws IOException, XMLStreamException {
-        lhs.flush();
-        rhs.flush();
-    }
-
     public void beginStartTag(int prefix, String localName) throws IOException, XMLStreamException {
         lhs.beginStartTag(prefix,localName);
         rhs.beginStartTag(prefix,localName);

@@ -98,8 +98,4 @@ public class XMLEventWriterOutput extends XmlOutputAbstractImpl {
     public void text(Pcdata value, boolean needsSeparatingWhitespace) throws IOException, SAXException, XMLStreamException {
         text(value.toString(),needsSeparatingWhitespace);
     }
-
-    public void flush() throws IOException, XMLStreamException {
-        out.flush();
-    }
 }

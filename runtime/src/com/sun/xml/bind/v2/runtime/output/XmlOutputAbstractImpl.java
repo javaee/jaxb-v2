@@ -85,14 +85,6 @@ public abstract class XmlOutputAbstractImpl implements XmlOutput {
     }
     public abstract void endTag(int prefix, String localName) throws IOException, SAXException, XMLStreamException;
 
-    /**
-     * Flush the output.
-     *
-     * @see OutputStream#flush()
-     */
-    public void flush() throws IOException, XMLStreamException {
-    }
-
 
 
 
