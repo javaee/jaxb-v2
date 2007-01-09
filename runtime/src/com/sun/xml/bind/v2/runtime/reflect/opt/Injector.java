@@ -133,6 +133,9 @@ final class Injector {
             } catch (SecurityException e) {
                 logger.log(Level.FINE,"Unable to inject "+className,e);
                 return null;
+            } catch (LinkageError e) {
+                logger.log(Level.FINE,"Unable to inject "+className,e);
+                return null;
             }
             classes.put(className,c);
         }
