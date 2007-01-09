@@ -102,7 +102,7 @@ public abstract class Coordinator implements ErrorHandler, ValidationEventHandle
      */
     protected final void resetThreadAffinity() {
         if(debugTableNPE)
-            guyWhoSetTheTableToNull = new Exception(); // remember that we set it to null
+            guyWhoSetTheTableToNull = new Exception(); // remember that we set it to null 
         table = null;
     }
 
