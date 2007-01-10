@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: EditDistance.java,v 1.1 2006-04-26 21:55:07 kohsuke Exp $
+ * @(#)$Id: EditDistance.java,v 1.1.4.1 2007-01-10 18:09:56 kohsuke Exp $
  */
 
 /*
@@ -22,6 +22,9 @@
  * [name of copyright owner]
  */
 package com.sun.xml.bind.v2.util;
+
+import java.util.Collection;
+import java.util.Arrays;
 
 /**
  * Computes the string edit distance.
@@ -52,14 +55,24 @@ public class EditDistance {
      * @return null if group.length==0. 
      */
     public static String findNearest( String key, String[] group ) {
+        return findNearest(key, Arrays.asList(group));
+    }
+
+    /**
+     * Finds the string in the <code>group</code> closest to
+     * <code>key</code> and returns it.
+     *
+     * @return null if group.length==0.
+     */
+    public static String findNearest( String key, Collection<String> group ) {
         int c = Integer.MAX_VALUE;
         String r = null;
-        
-        for( int i=0; i<group.length; i++ ) {
-            int ed = editDistance(key,group[i]);
+
+        for (String s : group) {
+            int ed = editDistance(key,s);
             if( c>ed ) {
                 c = ed;
-                r = group[i];
+                r = s;
             }
         }
         return r;
