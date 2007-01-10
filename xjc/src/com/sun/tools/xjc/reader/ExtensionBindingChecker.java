@@ -25,6 +25,7 @@ import java.util.StringTokenizer;
 
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.Plugin;
+import com.sun.xml.bind.v2.util.EditDistance;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -207,10 +208,11 @@ public final class ExtensionBindingChecker extends XMLFilterImpl {
                         // undeclared prefix
                         error( Messages.ERR_UNDECLARED_PREFIX.format(prefix) );
                     } else {
-                        if( !isRecognizableExtension(uri) )
+                        if( !isRecognizableExtension(uri) ) {
+                            String nearest = EditDistance.findNearest(uri, recognizableExtensions);
                             // not the namespace URI we know of
-                            error( Messages.ERR_UNSUPPORTED_EXTENSION.format(prefix) );
-                        else
+                            error( Messages.ERR_UNSUPPORTED_EXTENSION.format(uri,nearest) );
+                        } else
                         if( !isSupportedExtension(uri) ) {
                             // recognizable but not not supported, meaning
                             // the plug-in isn't enabled
