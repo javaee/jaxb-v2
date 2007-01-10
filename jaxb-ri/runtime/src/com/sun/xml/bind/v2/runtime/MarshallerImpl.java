@@ -446,7 +446,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     public Object getProperty(String name) throws PropertyException {
         if( INDENT_STRING.equals(name) )
             return indent;
-        if( ENCODING_HANDLER.equals(name) )
+        if( ENCODING_HANDLER.equals(name) || ENCODING_HANDLER2.equals(name) )
             return escapeHandler;
         if( PREFIX_MAPPER.equals(name) )
             return prefixMapper;
@@ -469,7 +469,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
             indent = (String)value;
             return;
         }
-        if( ENCODING_HANDLER.equals(name) ) {
+        if( ENCODING_HANDLER.equals(name) || ENCODING_HANDLER2.equals(name)) {
             if(!(value instanceof CharacterEscapeHandler))
                 throw new PropertyException(
                     Messages.MUST_BE_X.format(
@@ -595,6 +595,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     protected static final String INDENT_STRING = "com.sun.xml.bind.indentString";
     protected static final String PREFIX_MAPPER = "com.sun.xml.bind.namespacePrefixMapper";
     protected static final String ENCODING_HANDLER = "com.sun.xml.bind.characterEscapeHandler";
+    protected static final String ENCODING_HANDLER2 = "com.sun.xml.bind.characterEscapeHandler";
     protected static final String XMLDECLARATION = "com.sun.xml.bind.xmlDeclaration";
     protected static final String XML_HEADERS = "com.sun.xml.bind.xmlHeaders";
     protected static final String C14N = JAXBRIContext.CANONICALIZATION_SUPPORT;
