@@ -471,7 +471,7 @@ public class Driver {
      *      If the parsing of options have started, set a partly populated
      *      {@link Options} object.
      */
-    protected static void usage( @Nullable Options opts, boolean privateUsage ) {
+    public static void usage( @Nullable Options opts, boolean privateUsage ) {
         if( privateUsage ) {
             System.out.println(Messages.format(Messages.DRIVER_PRIVATE_USAGE));
         } else {
