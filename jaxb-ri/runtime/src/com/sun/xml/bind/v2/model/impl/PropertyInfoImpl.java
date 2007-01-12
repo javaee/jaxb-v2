@@ -90,6 +90,7 @@ abstract class PropertyInfoImpl<T,C,F,M>
             // ugly ugly hack, but we implement swaRef as adapter
             XmlAttachmentRef xsa = seed.readAnnotation(XmlAttachmentRef.class);
             if(xsa!=null) {
+                parent.builder.hasSwaRef = true;
                 adapter = new Adapter<T,C>(nav().asDecl(SwaRefAdapter.class),nav());
             } else {
                 adapter = null;

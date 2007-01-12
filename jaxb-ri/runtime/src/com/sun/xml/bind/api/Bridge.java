@@ -47,6 +47,15 @@ public abstract class Bridge<T> {
     protected final JAXBContextImpl context;
 
     /**
+     * Gets the {@link JAXBRIContext} to which this object belongs.
+     *
+     * @since 2.0.5
+     */
+    public @NotNull JAXBRIContext getContext() {
+        return context;
+    }
+
+    /**
      *
      * @throws JAXBException
      *      if there was an error while marshalling.

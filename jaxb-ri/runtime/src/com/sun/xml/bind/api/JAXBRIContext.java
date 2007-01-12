@@ -30,6 +30,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.SchemaOutputResolver;
+import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.namespace.QName;
 
 import com.sun.istack.NotNull;
@@ -92,6 +93,14 @@ public abstract class JAXBRIContext extends JAXBContext {
             throw new JAXBException(e);
         }
     }
+
+    /**
+     * Returns true if this context includes a class
+     * that has {@link XmlAttachmentRef}.
+     *
+     * @since 2.0.5
+     */
+    public abstract boolean hasSwaRef();
 
     /**
      * If the given object is bound to an element in XML by JAXB,
