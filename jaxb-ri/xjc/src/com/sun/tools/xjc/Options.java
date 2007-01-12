@@ -425,7 +425,7 @@ public class Options
      * @exception BadCommandLineException
      *      If the callee wants to provide a custom message for an error.
      */
-    protected int parseArgument( String[] args, int i ) throws BadCommandLineException {
+    public int parseArgument( String[] args, int i ) throws BadCommandLineException {
         if (args[i].equals("-classpath") || args[i].equals("-cp")) {
             File file = new File(requireArgument(args[i],args,++i));
             try {
