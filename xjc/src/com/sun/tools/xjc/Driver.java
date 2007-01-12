@@ -422,7 +422,7 @@ public class Driver {
         public boolean noNS = false;
         
         /** Parse XJC-specific options. */
-        protected int parseArgument(String[] args, int i) throws BadCommandLineException {
+        public int parseArgument(String[] args, int i) throws BadCommandLineException {
             if (args[i].equals("-noNS")) {
                 noNS = true;
                 return 1;
