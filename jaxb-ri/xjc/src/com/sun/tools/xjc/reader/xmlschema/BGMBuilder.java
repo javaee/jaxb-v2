@@ -69,7 +69,7 @@ public class BGMBuilder extends BindingComponent {
 
             Ring.add(XSSchemaSet.class,_schemas);
             Ring.add(codeModel);
-            Model model = new Model(opts, codeModel, null/*set later*/, opts.classNameAllocator);
+            Model model = new Model(opts, codeModel, null/*set later*/, opts.classNameAllocator, _schemas);
             Ring.add(model);
             Ring.add(ErrorReceiver.class,ef);
             Ring.add(CodeModelClassFactory.class,new CodeModelClassFactory(ef));
@@ -155,6 +155,9 @@ public class BGMBuilder extends BindingComponent {
 
         for( XSSchema s : schemas.getSchemas() ) {
             BindInfo bi = getBindInfo(s);
+
+            // collect all global customizations
+            model.getCustomizations().addAll(bi.toCustomizationList());
 
             BIGlobalBinding gb = bi.get(BIGlobalBinding.class);
             if(gb==null)

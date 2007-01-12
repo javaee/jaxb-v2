@@ -95,7 +95,7 @@ public class TDTDReader extends DTDHandlerBase
                 ErrorReceiverFilter ef = new ErrorReceiverFilter(errorReceiver);
 
                 JCodeModel cm = new JCodeModel();
-                Model model = new Model(opts,cm,NameConverter.standard,opts.classNameAllocator);
+                Model model = new Model(opts,cm,NameConverter.standard,opts.classNameAllocator,null);
 
                 Ring.add(cm);
                 Ring.add(model);
