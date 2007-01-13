@@ -207,6 +207,13 @@ public interface SchemaCompiler {
     void setClassNameAllocator( ClassNameAllocator allocator );
 
     /**
+     * Clears all the schema files parsed so far.
+     *
+     * @since 2.1.1
+     */
+    void resetSchema();
+
+    /**
      * Obtains the compiled schema object model.
      * 
      * Once this method is called, no other method should be
