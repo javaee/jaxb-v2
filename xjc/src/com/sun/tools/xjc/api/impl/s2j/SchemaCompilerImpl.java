@@ -76,7 +76,7 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
 
     protected final Options opts = new Options();
 
-    protected final DOMForest forest;
+    protected @NotNull DOMForest forest;
 
     /**
      * Set to true once an error is found.
@@ -84,9 +84,8 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
     private boolean hadError;
 
     public SchemaCompilerImpl() {
-        forest = new DOMForest(new XMLSchemaInternalizationLogic());
         opts.compatibilityMode = Options.EXTENSION;
-        forest.setErrorHandler(this);
+        resetSchema();
 
         if(System.getProperty("xjc-api.test")!=null) {
             opts.debugMode = true;
@@ -183,6 +182,11 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
 
     public void setClassNameAllocator(ClassNameAllocator allocator) {
         opts.classNameAllocator = allocator;
+    }
+
+    public void resetSchema() {
+        forest = new DOMForest(new XMLSchemaInternalizationLogic());
+        forest.setErrorHandler(this);
     }
 
 
