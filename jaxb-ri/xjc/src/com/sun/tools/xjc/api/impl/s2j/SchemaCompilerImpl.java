@@ -187,6 +187,7 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
     public void resetSchema() {
         forest = new DOMForest(new XMLSchemaInternalizationLogic());
         forest.setErrorHandler(this);
+        forest.setEntityResolver(opts.entityResolver);
     }
 
 
