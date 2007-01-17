@@ -95,6 +95,7 @@ import com.sun.tools.xjc.util.CodeModelClassFactory;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
 import com.sun.xml.xsom.XmlString;
+import com.sun.istack.NotNull;
 
 /**
  * Generates fields and accessors.
@@ -170,7 +171,7 @@ public final class BeanGenerator implements Outline
 
         // build enum classes
         for( CEnumLeafInfo p : model.enums().values() )
-            enums.put( p, generateEnum(p) );
+            enums.put( p, generateEnumDef(p) );
 
         JPackage[] packages = getUsedPackages(EXPOSED);
 
@@ -215,6 +216,9 @@ public final class BeanGenerator implements Outline
         // fill in implementation classes
         for( ClassOutlineImpl co : getClasses() )
             generateClassBody(co);
+
+        for( EnumOutline eo : enums.values() )
+            generateEnumBody(eo);
 
         // create factories for the impl-less elements
         for( CElementInfo ei : model.getAllElements())
@@ -471,15 +475,7 @@ public final class BeanGenerator implements Outline
         // [RESULT]
         // @XmlType(name="foo", targetNamespace="bar://baz")
         XmlTypeWriter xtw = cc.implClass.annotate2(XmlTypeWriter.class);
-        QName typeName = cc.target.getTypeName();
-        if(typeName==null) {
-            xtw.name("");
-        } else {
-            xtw.name(typeName.getLocalPart());
-            final String typeNameURI = typeName.getNamespaceURI();
-            if(!typeNameURI.equals(mostUsedNamespaceURI)) // only generate if necessary
-                xtw.namespace(typeNameURI);
-        }
+        writeTypeName(cc.target.getTypeName(), xtw, mostUsedNamespaceURI);
 
         if(model.options.target.isLaterThan(SpecVersion.V2_1)) {
             // @XmlSeeAlso
@@ -530,6 +526,17 @@ public final class BeanGenerator implements Outline
         cc._package().objectFactoryGenerator().populate(cc);
     }
 
+    private void writeTypeName(QName typeName, XmlTypeWriter xtw, String mostUsedNamespaceURI) {
+        if(typeName ==null) {
+            xtw.name("");
+        } else {
+            xtw.name(typeName.getLocalPart());
+            final String typeNameURI = typeName.getNamespaceURI();
+            if(!typeNameURI.equals(mostUsedNamespaceURI)) // only generate if necessary
+                xtw.namespace(typeNameURI);
+        }
+    }
+
     /**
      * Generates an attribute wildcard property on a class.
      */
@@ -564,24 +571,43 @@ public final class BeanGenerator implements Outline
 
 
 
-    private EnumOutline generateEnum(CEnumLeafInfo e) {
+    /**
+     * Generates the minimum {@link JDefinedClass} skeleton
+     * without filling in its body.
+     */
+    private EnumOutline generateEnumDef(CEnumLeafInfo e) {
         JDefinedClass type;
+
+        type = getClassFactory().createClass(
+            getContainer(e.parent, EXPOSED),e.shortName,e.getLocator(), ClassType.ENUM);
+        type.javadoc().append(e.javadoc);
+
+        return new EnumOutline(e, type) {
+            @Override
+            public @NotNull Outline parent() {
+                return BeanGenerator.this;
+            }
+        };
+    }
+
+    private void generateEnumBody(EnumOutline eo) {
+        JDefinedClass type = eo.clazz;
+        CEnumLeafInfo e = eo.target;
+
+        XmlTypeWriter xtw = type.annotate2(XmlTypeWriter.class);
+        writeTypeName(e.getTypeName(), xtw,
+                eo._package().getMostUsedNamespaceURI());
+
+        JCodeModel codeModel = model.codeModel;
 
         // since constant values are never null, no point in using the boxed types.
         JType baseExposedType = e.base.toType(this, EXPOSED).unboxify();
         JType baseImplType = e.base.toType(this,Aspect.IMPLEMENTATION).unboxify();
 
 
-        type = getClassFactory().createClass(
-            getContainer(e.parent, EXPOSED),e.shortName,e.getLocator(), ClassType.ENUM);
-        type.javadoc().append(e.javadoc);
-
         XmlEnumWriter xew = type.annotate2(XmlEnumWriter.class);
         xew.value(baseExposedType);
-
-        JCodeModel codeModel = model.codeModel;
-
-        EnumOutline enumOutline = new EnumOutline(e, type) {};
+        
 
         boolean needsValue = e.needsValueField();
 
@@ -617,7 +643,7 @@ public final class BeanGenerator implements Outline
             if( mem.javadoc!=null )
                 constRef.javadoc().append(mem.javadoc);
 
-            enumOutline.constants.add(new EnumConstantOutline(mem,constRef){});
+            eo.constants.add(new EnumConstantOutline(mem,constRef){});
         }
 
 
@@ -682,10 +708,7 @@ public final class BeanGenerator implements Outline
             JMethod m = type.method(JMod.PUBLIC|JMod.STATIC, type, "fromValue" );
             m.body()._return( JExpr.invoke("valueOf").arg(m.param(String.class,"v")));
         }
-
-        return enumOutline;
     }
-
 
 
 

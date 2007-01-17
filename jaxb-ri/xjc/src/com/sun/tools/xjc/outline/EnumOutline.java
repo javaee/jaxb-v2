@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.sun.codemodel.JDefinedClass;
 import com.sun.tools.xjc.model.CEnumLeafInfo;
+import com.sun.istack.NotNull;
 
 /**
  * Outline object that provides per-{@link CEnumLeafInfo} information
@@ -30,6 +31,19 @@ public abstract class EnumOutline {
      * Constants.
      */
     public final List<EnumConstantOutline> constants = new ArrayList<EnumConstantOutline>();
+
+    /**
+     * {@link PackageOutline} that contains this class.
+     */
+    public @NotNull
+    PackageOutline _package() {
+        return parent().getPackageContext(clazz._package());
+    }
+
+    /**
+     * A {@link Outline} that encloses all the class outlines.
+     */
+    public abstract @NotNull Outline parent();
 
     protected EnumOutline(CEnumLeafInfo target, JDefinedClass clazz) {
         this.target = target;
