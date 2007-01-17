@@ -595,7 +595,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     protected static final String INDENT_STRING = "com.sun.xml.bind.indentString";
     protected static final String PREFIX_MAPPER = "com.sun.xml.bind.namespacePrefixMapper";
     protected static final String ENCODING_HANDLER = "com.sun.xml.bind.characterEscapeHandler";
-    protected static final String ENCODING_HANDLER2 = "com.sun.xml.bind.CharacterEscapeHandler";
+    protected static final String ENCODING_HANDLER2 = "com.sun.xml.bind.marshaller.CharacterEscapeHandler";
     protected static final String XMLDECLARATION = "com.sun.xml.bind.xmlDeclaration";
     protected static final String XML_HEADERS = "com.sun.xml.bind.xmlHeaders";
     protected static final String C14N = JAXBRIContext.CANONICALIZATION_SUPPORT;
