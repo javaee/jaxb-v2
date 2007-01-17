@@ -41,6 +41,7 @@ import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIClass;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIGlobalBinding;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BISchemaBinding;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BindInfo;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIXSubstitutable;
 import com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeFieldBuilder;
 import com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeBindingMode;
 import com.sun.xml.xsom.XSAnnotation;
@@ -193,6 +194,14 @@ final class DefaultClassBinder implements ClassBinder
         if(decl.isNillable())
             // because nillable needs JAXBElement to represent correctly
             return false;
+
+        BIXSubstitutable bixSubstitutable = builder.getBindInfo(decl).get(BIXSubstitutable.class);
+        if(bixSubstitutable !=null) {
+            // see https://jaxb.dev.java.net/issues/show_bug.cgi?id=289
+            // this customization forces non-collapsing behavior.
+            bixSubstitutable.markAsAcknowledged();
+            return false;
+        }
 
         if( getGlobalBinding().isSimpleMode() && decl.isGlobal()) {
             // in the simple mode, we do more aggressive optimization, and get rid of

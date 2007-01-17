@@ -20,6 +20,9 @@
   <xs:element name="noValidator">
     <xs:complexType/>
   </xs:element>
+  <xs:element name="substitutable">
+    <xs:complexType/>
+  </xs:element>
   <xs:element name="noValidatingUnmarshaller">
     <xs:complexType/>
   </xs:element>
