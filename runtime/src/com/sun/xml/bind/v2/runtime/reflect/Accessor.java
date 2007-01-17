@@ -357,9 +357,14 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
     }
 
     /**
-     * Special {@link Accessor} used to recover from errors.
+     * Gets the special {@link Accessor} used to recover from errors.
      */
-    public static final Accessor ERROR = new Accessor(Object.class) {
+    @SuppressWarnings("unchecked")
+    public static <A,B> Accessor<A,B> getErrorInstance() {
+        return ERROR;
+    }
+
+    private static final Accessor ERROR = new Accessor<Object,Object>(Object.class) {
         public Object get(Object o) {
             return null;
         }
