@@ -11,7 +11,7 @@
       <maximumHeapSize value="128" />
       <properties />
     </buildFile>
-    <buildFile url="file://$PROJECT_DIR$/codemodel/build.xml">
+    <buildFile url="file://codemodel/build.xml">
       <additionalClassPath />
       <antReference projectDefault="true" />
       <customJdkName value="" />
@@ -315,6 +315,33 @@
     <option name="FILTER_INFO" value="true" />
     <option name="CUSTOM_FILTER" />
   </component>
+  <component name="Maven Reloaded">
+    <option name="config">
+      <value>
+        <option name="pluginEnabled" value="false" />
+        <option name="updateClasspathsEnabled" value="true" />
+        <option name="sortDependenciesEnabled" value="false" />
+        <option name="removeDuplicateDependenciesEnabled" value="false" />
+        <option name="manageSourceRootsEnabled" value="true" />
+        <option name="manageModuleInterdependenciesEnabled" value="true" />
+        <option name="downloadSourcesEnabled" value="false" />
+        <option name="downloadJavadocEnabled" value="false" />
+        <option name="generateSourcesEnabled" value="false" />
+        <option name="settingsPath" value="C:\Documents and Settings\kohsuke/.m2/settings.xml" />
+        <option name="disabledPoms">
+          <value>
+            <collection type="java.util.TreeSet" />
+          </value>
+        </option>
+        <option name="moduleInterDependencies">
+          <value>
+            <map type="java.util.TreeMap" />
+          </value>
+        </option>
+        <option name="logLevel" value="1" />
+      </value>
+    </option>
+  </component>
   <component name="Palette">
     <group name="Swing">
       <item class="com.intellij.uiDesigner.HSpacer" tooltip-text="Horizontal Spacer" icon="/com/intellij/uiDesigner/icons/hspacer.png" removable="true">
@@ -521,7 +548,6 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/codemodel/codemodel.iml" filepath="$PROJECT_DIR$/codemodel/codemodel.iml" />
       <module fileurl="file://$PROJECT_DIR$/tools/installer/installer.iml" filepath="$PROJECT_DIR$/tools/installer/installer.iml" />
       <module fileurl="file://$PROJECT_DIR$/tools/installer-builder/installer-builder.iml" filepath="$PROJECT_DIR$/tools/installer-builder/installer-builder.iml" />
       <module fileurl="file://$PROJECT_DIR$/javadoc/javadoc.iml" filepath="$PROJECT_DIR$/javadoc/javadoc.iml" />
@@ -535,6 +561,7 @@
       <module fileurl="file://$PROJECT_DIR$/tools/taglets/taglets.iml" filepath="$PROJECT_DIR$/tools/taglets/taglets.iml" />
       <module fileurl="file://$PROJECT_DIR$/../jaxb-unit/test/test.iml" filepath="$PROJECT_DIR$/../jaxb-unit/test/test.iml" />
       <module fileurl="file://$PROJECT_DIR$/xjc/xjc.iml" filepath="$PROJECT_DIR$/xjc/xjc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../jaxb2-commons/property-listener-injector/xjc-listener-injector.iml" filepath="$PROJECT_DIR$/../jaxb2-commons/property-listener-injector/xjc-listener-injector.iml" />
     </modules>
   </component>
   <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="JDK1.5" />
