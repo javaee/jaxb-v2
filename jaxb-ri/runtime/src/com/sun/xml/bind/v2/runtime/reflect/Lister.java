@@ -114,7 +114,7 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
         return l;
     }
 
-    private static Class getImplClass(Class fieldType) {
+    private static Class getImplClass(Class<?> fieldType) {
         return ClassFactory.inferImplClass(fieldType,ClassFactory.COLLECTION_IMPL_CLASSES);
     }
 
@@ -407,8 +407,13 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
     }
 
     /**
-     * Special {@link Lister} used to recover from an error.
+     * Gets the special {@link Lister} used to recover from an error.
      */
+    @SuppressWarnings("unchecked")
+    public static <A,B,C,D> Lister<A,B,C,D> getErrorInstance() {
+        return ERROR;
+    }
+
     public static final Lister ERROR = new Lister() {
         public ListIterator iterator(Object o, XMLSerializer context) {
             return EMPTY_ITERATOR;
