@@ -33,6 +33,7 @@
 		<li><a href="#javaType">&lt;xjc:javaType></a> - Enhanced &lt;jaxb:javaType> customization</li>
 		<li><a href="#simple">&lt;xjc:simple></a> - Experimental simpler&amp;better binding mode</li>
 		<li><a href="#treatRestrictionLikeNewType">&lt;xjc:treatRestrictionLikeNewType></a> - Alternative derivation-by-restriction binding mode</li>
+		<li><a href="#substitutable">&lt;xjc:substitutable></a> - Allow separate compilations to perform element substitutions</li>
 		<!--
 		<li><a href="">&lt;></a></li>
 		-->
@@ -339,10 +340,28 @@ public class Person {
   // it simply inherits List<String> ResponseOptionType.getFoo()
 }</xmp></pre>
 
+
+
+	<a name="substitutable"></a>
+	<h3>Allow separate compilations to perform element substitutions</h3>
+	<p>
+		In an attempt to make the generated code easier to use, the JAXB specification sometimes choose bindings based on how certain feature is used. One of them is element substitution feature. If no actual element substitution happens in the schema, JAXB assumes that the element is not used for substitution, and generates code that assumes it.
+	<p>
+		Most of the time this is fine, but when you expect other "extension" schemas to be compiled later on top of your base schema, and if those extension schemas do element substitutions, this binding causes a problem (<a href="https://jaxb.dev.java.net/issues/show_bug.cgi?id=289">see example</a>.)
+	<p>
+		&lt;xjc:substitutable> customization is a work around for this issue. It explicitly tells XJC that a certain element is used for element substitution head, even though no actual substitution might be present in the current compilation. This customization should be attached in the element declaration itself, like this:
+<pre class=code><xmp
+><xs:element name="Model" type="Model">
+  <xs:annotation><xs:appinfo>
+    <xjc:substitutable />
+  </xs:appinfo></xs:annotation>
+</xs:element></xmp></pre>
+
+
     <hr>
     <div class="footer">
-      $Revision: 1.6.4.6 $<br>
-      $Date: 2006-10-17 23:51:23 $
+      $Revision: 1.6.4.7 $<br>
+      $Date: 2007-01-17 19:03:15 $
     </div>
   </body>
  </html>
