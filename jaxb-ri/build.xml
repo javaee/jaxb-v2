@@ -34,8 +34,8 @@
         The build files are setup such that you can build the sub-
         projects independently or all together.
 
-        For example, building the codemodel sub-project causes all of codemodel sources 
-        in jaxb-ri/codemodel/src to be compiled into jaxb-ri/codemodel/build/classes.
+        For example, building the runtime sub-project causes all of runtime sources 
+        in jaxb-ri/runtime/src to be compiled into jaxb-ri/runtime/build/classes.
 
         To build the entire project, simply run 'ant' in the jaxb-ri directory.
         To build a sub-project, simply cd into the directory and run 'ant'.
@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.12 2006-11-16 02:39:37 kohsuke Exp $
+       $Id: build.xml,v 1.71.2.13 2007-01-17 00:30:14 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -70,9 +70,7 @@
     <!-- compile all of the sources into <project>/build/classes-->
     <target name="compile"
             depends="init"
-            description="compile codemodel, runtime, and xjc sub-projects">
-        <ant dir="codemodel"           target="compile" />
-        <ant dir="codemodel"           target="annotation-compiler" />
+            description="compile runtime, and xjc sub-projects">
         <ant dir="apgen"               target="compile" />
         <ant dir="runtime"             target="compile" />
         <ant dir="runtime-fi"          target="compile" />
@@ -85,7 +83,6 @@
   <target name="j2se-integration"
           description="prepare renamed source code for J2SE integration">
     <subant target="j2se-integration">
-      <fileset file="codemodel/build.xml" />
       <fileset file="runtime/build.xml" />
       <fileset file="runtime-fi/build.xml" />
       <fileset file="xjc/build.xml" />
@@ -99,9 +96,6 @@
         <params>
           <packageset dir="${jaxb.root}/javadoc"/>
           <group title="Root Architecture Document" packages="jaxb" />
-
-          <packageset dir="${codemodel.src}"/>
-          <group title="CodeModel" packages="com.sun.codemodel*" />
 
           <packageset dir="${runtime.src}"/>
           <packageset dir="${runtime.root}/arch-doc"/>
@@ -249,7 +243,7 @@
           </sequential>
 
 
-          <!-- generate jaxb-xjc.jar: xjc, codemodel, and schemagen subprojects -->
+          <!-- generate jaxb-xjc.jar: xjc, and schemagen subprojects -->
           <sequential>
               <createManifest file="${xjc.root}/manifest.xjc" extensionName="com.sun.tools.xjc" />
 
@@ -280,7 +274,6 @@ Class-Path: ${manifest.classpath}
                   <!-- can't use zipgroupfileset because of the duplicate LICENSE.txt -->
                   <fileset dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
                   <fileset dir="${xjc.classes}"/>
-                  <fileset dir="${codemodel.classes}"/>
                   <metainf dir="${xjc.src}/META-INF" />
                   <!-- bundle the 1.0 compiler in the side directory -->
                   <zipfileset dir="${xjc10.classes}/.." />
@@ -369,7 +362,7 @@ Class-Path: ${manifest.classpath}
           <zip zipfile="${jaxb.dist}/lib/jaxb-xjc.src.zip">
             <fileset dir="${xjc.src}"/>
             <fileset dir="${xjc.root}/facade"/>
-            <fileset dir="${codemodel.src}"/>
+            <zipfileset src="${jaxb.libs}/src/codemodel.src.zip" />
             <zipfileset src="${jaxb.libs}/src/resolver-src.zip" />
             <fileset dir="tmp/src"/>
           </zip>
@@ -451,9 +444,6 @@ Class-Path: ${manifest.classpath}
                 <patternset refid="src-includes"/>
             </zipfileset>
             <zipfileset dir="runtime/build/src" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
-                <patternset refid="src-includes"/>
-            </zipfileset>
-            <zipfileset dir="${codemodel.src}" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
                 <patternset refid="src-includes"/>
             </zipfileset>
             <zipfileset dir="${jaxb.root}" includes="src-installer-build.xml"
@@ -563,7 +553,6 @@ Class-Path: ${manifest.classpath}
           <!-- <delete dir="${jaxb.root}/dist" /> -->
 
           <!-- clean sub-projects -->
-          <ant dir="codemodel"          target="clean" />
           <ant dir="runtime"            target="clean" />
           <ant dir="runtime-fi"         target="clean" />
           <ant dir="runtime-staxex"     target="clean" />
@@ -586,7 +575,6 @@ Class-Path: ${manifest.classpath}
         <echo message="wspack.home is set to ${wspack.home}"/>
 
         <!-- replicate the build dirs from our build in ${build.home} -->
-        <mkdir dir="${build.home}/codemodel/build/classes"/>
         <mkdir dir="${build.home}/runtime/build/classes"/>
         <mkdir dir="${build.home}/xjc/build/classes"/>
 
@@ -596,8 +584,6 @@ Class-Path: ${manifest.classpath}
 
         <!-- compile each of the jaxb sub-projects into ${build.home} -->
         <antcall target="dist">
-            <param name="codemodel.build"   value="${build.home}/codemodel/build"/>
-            <param name="codemodel.classes" value="${build.home}/codemodel/build/classes"/>
             <param name="runtime.classes"   value="${build.home}/runtime/build/classes"/>
             <param name="xjc.classes"       value="${build.home}/xjc/build/classes"/>
             <param name="jaxb.dist"         value="${dist.home}"/>
@@ -846,6 +832,20 @@ Class-Path: ${manifest.classpath}
             <include name="tags/**/*" />
           </patternset>
         </unzip>
+    </target>
+
+    <target name="integrate-codemodel">
+        <property name="codemodel-version" value="2.0-SNAPSHOT" />
+        <get src="http://kohsuke.sfbay/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel-version}.jar"
+             dest="tools/lib/rebundle/compiler/codemodel.jar" />
+        <get src="http://kohsuke.sfbay/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel-version}.jar"
+             dest="tools/lib/util/codemodel-annotation-compiler.jar" />
+             
+        <get src="http://kohsuke.sfbay/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel-version}-sources.jar"
+             dest="tools/lib/src/codemodel.src.zip" />
+        <get src="http://kohsuke.sfbay/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel-version}-sources.jar"
+             dest="tools/lib/src/codemodel-annotation-compiler.src.zip" />
+
     </target>
     
     

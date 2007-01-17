@@ -40,8 +40,8 @@
             debug="${compile.debug}" optimize="${compile.optimize}"
             deprecation="${compile.deprecation}" >
             <classpath>
-              <pathelement path="${codemodel.classes}" />
-        <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
+              <pathelement path="${jaxb.libs.compiler}/codemodel.jar" />
+              <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
             </classpath>
         </javac>
     </target>

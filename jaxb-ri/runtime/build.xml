@@ -125,7 +125,7 @@
       <taskdef name="apgen" classname="com.sun.tools.GeneratorTask">
         <classpath>
           <pathelement path="${apgen.classes}" />
-          <pathelement path="${codemodel.classes}" />
+          <pathelement path="${jaxb.libs.compiler}/codemodel.jar" />
         </classpath>
       </taskdef>
       
