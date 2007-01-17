@@ -22,6 +22,7 @@ import com.sun.tools.xjc.reader.RawTypeSet;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIDom;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIGlobalBinding;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIXSubstitutable;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
 import com.sun.xml.xsom.XSElementDecl;
@@ -208,7 +209,7 @@ public class RawTypeSetBuilder implements XSTermVisitor {
     /**
      * Reference to a class that maps from an element.
      */
-    public static final class CElementInfoRef extends RawTypeSet.Ref {
+    public final class CElementInfoRef extends RawTypeSet.Ref {
         public final CElementInfo target;
         public final XSElementDecl decl;
 
@@ -233,6 +234,12 @@ public class RawTypeSetBuilder implements XSTermVisitor {
             // if element substitution can occur, no way it can be mapped to a list of types
             if(decl.getSubstitutables().size()>1)
                 return RawTypeSet.Mode.MUST_BE_REFERENCE;
+            // BIXSubstitutable also simulates this effect. Useful for separate compilation
+            BIXSubstitutable subst = builder.getBindInfo(decl).get(BIXSubstitutable.class);
+            if(subst!=null) {
+                subst.markAsAcknowledged();
+                return RawTypeSet.Mode.MUST_BE_REFERENCE;
+            }
 
             // we have no place to put an adater if this thing maps to a type
             CElementPropertyInfo p = target.getProperty();
