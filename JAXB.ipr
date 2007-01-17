@@ -722,6 +722,7 @@
         <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/dtd-parser-1.0.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/relaxngDatatype.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/istack-commons-tools.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/compiler/codemodel.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -732,6 +733,7 @@
         <root url="jar://$PROJECT_DIR$/tools/lib/src/dtd-parser-1.0-src.zip!/dtd-parser-1.0/src" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/relaxngDatatype-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/istack-commons-tools-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/codemodel.src.zip!/" />
       </SOURCES>
     </library>
     <library name="ant">
