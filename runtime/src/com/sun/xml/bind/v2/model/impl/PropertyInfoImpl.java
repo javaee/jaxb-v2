@@ -57,7 +57,6 @@ abstract class PropertyInfoImpl<T,C,F,M>
     protected PropertyInfoImpl(ClassInfoImpl<T,C,F,M> parent, PropertySeed<T,C,F,M> spi) {
         this.seed = spi;
         this.parent = parent;
-        this.id = calcId();
 
         if(parent==null)
             /*
@@ -121,6 +120,8 @@ abstract class PropertyInfoImpl<T,C,F,M>
                 adapter = new Adapter<T,C>(xjta,reader(),nav());
             }
         }
+
+        this.id = calcId();
     }
 
 
@@ -228,7 +229,7 @@ abstract class PropertyInfoImpl<T,C,F,M>
     private ID calcId() {
         if(seed.hasAnnotation(XmlID.class)) {
             // check the type
-            if(!seed.getRawType().equals(nav().ref(String.class)))
+            if(!getIndividualType().equals(nav().ref(String.class)))
                 parent.builder.reportError(new IllegalAnnotationException(
                     Messages.ID_MUST_BE_STRING.format(getName()), seed )
                 );
