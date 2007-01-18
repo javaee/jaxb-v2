@@ -38,6 +38,8 @@ import com.sun.istack.SAXParseException2;
 import com.sun.tools.xjc.AbortException;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.SchemaCache;
+import com.sun.tools.xjc.model.CCustomizations;
+import com.sun.tools.xjc.model.CPluginCustomization;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.reader.ExtensionBindingChecker;
@@ -69,7 +71,6 @@ public class BindInfo
     private final String defaultPackage;
     
     public BindInfo(Model model, InputSource source, ErrorReceiver _errorReceiver) throws AbortException {
-        
         this( model, parse(model,source,_errorReceiver), _errorReceiver);
     }
     
@@ -82,7 +83,10 @@ public class BindInfo
         // TODO: decide name converter from the binding file
 
         this.defaultPackage = model.options.defaultPackage;
-        
+
+        // copy global customizations to the model
+        model.getCustomizations().addAll(getGlobalCustomizations());
+
         // process element declarations
         for( Element ele : DOMUtil.getChildElements(dom,"element")) {
             BIElement e = new BIElement(this,ele);
@@ -236,6 +240,24 @@ public class BindInfo
     public Collection<BIInterface> interfaces() {
         return interfaces.values();
     }
+
+    /**
+     * Gets the list of top-level {@link CPluginCustomization}s.
+     */
+    private CCustomizations getGlobalCustomizations() {
+        CCustomizations r=null;
+        for( Element e : DOMUtil.getChildElements(dom) ) {
+            if(model.options.pluginURIs.contains(e.getNamespaceURI()))
+                continue;   // this isn't a plugin customization
+            if(r==null)
+                r = new CCustomizations();
+            r.add(new CPluginCustomization(e,DOM4JLocator.getLocationInfo(e)));
+        }
+
+        if(r==null)     r = CCustomizations.EMPTY;
+        return new CCustomizations(r);
+    }
+    
     
     
     
