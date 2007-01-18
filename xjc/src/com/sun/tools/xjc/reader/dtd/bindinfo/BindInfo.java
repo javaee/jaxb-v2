@@ -251,7 +251,7 @@ public class BindInfo
                 continue;   // this isn't a plugin customization
             if(r==null)
                 r = new CCustomizations();
-            r.add(new CPluginCustomization(e,DOM4JLocator.getLocationInfo(e)));
+            r.add(new CPluginCustomization(e, DOMLocator.getLocationInfo(e)));
         }
 
         if(r==null)     r = CCustomizations.EMPTY;

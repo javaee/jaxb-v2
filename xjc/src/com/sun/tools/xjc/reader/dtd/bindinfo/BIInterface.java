@@ -71,7 +71,7 @@ public final class BIInterface
     
     /** Gets the location where this declaration is declared. */
     public Locator getSourceLocation() {
-        return DOM4JLocator.getLocationInfo(dom);
+        return DOMLocator.getLocationInfo(dom);
     }
     
     

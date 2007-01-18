@@ -23,6 +23,6 @@ final class DOMBuilder extends SAX2DOMEx {
 
     public void startElement(String namespace, String localName, String qName, Attributes attrs) {
         super.startElement(namespace, localName, qName, attrs);
-        DOM4JLocator.setLocationInfo(getCurrentElement(),locator);
+        DOMLocator.setLocationInfo(getCurrentElement(),locator);
     }
 }

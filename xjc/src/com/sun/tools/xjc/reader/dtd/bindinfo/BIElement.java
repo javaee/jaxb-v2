@@ -109,7 +109,7 @@ public final class BIElement
      * Gets the source location where this element is declared.
      */
     public Locator getLocation() {
-        return DOM4JLocator.getLocationInfo(e);
+        return DOMLocator.getLocationInfo(e);
     }
 
 
@@ -262,6 +262,6 @@ public final class BIElement
 
     /** Gets the location where this declaration is declared. */
     public Locator getSourceLocation() {
-        return DOM4JLocator.getLocationInfo(e);
+        return DOMLocator.getLocationInfo(e);
     }
 }

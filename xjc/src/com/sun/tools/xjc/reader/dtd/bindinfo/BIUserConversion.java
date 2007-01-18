@@ -43,8 +43,6 @@ import com.sun.tools.xjc.model.CAdapter;
 import com.sun.tools.xjc.model.CBuiltinLeafInfo;
 import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.model.TypeUseFactory;
-import com.sun.tools.xjc.reader.Ring;
-import com.sun.tools.xjc.reader.xmlschema.ClassSelector;
 
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -106,7 +104,7 @@ public class BIUserConversion implements BIConversion
 
     /** Gets the location where this declaration is declared. */
     public Locator getSourceLocation() {
-        return DOM4JLocator.getLocationInfo(e);
+        return DOMLocator.getLocationInfo(e);
     }
     
     /** Gets the conversion name. */
