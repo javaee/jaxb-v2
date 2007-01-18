@@ -1,8 +1,8 @@
 package com.sun.tools.xjc.reader.gbind;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -26,8 +26,8 @@ public abstract class Element extends Expression implements ElementSet {
      * we represent an edge e1 -> e2 by {@code e1.foreEdges.contains(e2)}
      * and {@code e2.backEdges.contains(e1)}.
      */
-    final Set<Element> foreEdges = new HashSet<Element>();
-    final Set<Element> backEdges = new HashSet<Element>();
+    final Set<Element> foreEdges = new LinkedHashSet<Element>();
+    final Set<Element> backEdges = new LinkedHashSet<Element>();
 
     /**
      * Previous element in the DFS post-order traveral
