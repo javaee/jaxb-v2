@@ -48,12 +48,15 @@ final class DTDExtensionBindingChecker extends AbstractExtensionBindingChecker {
         throws SAXException {
 
         if( !isCutting() ) {
-            checkAndEnable(uri);
+            if(!uri.equals("")) {
+                // "" is the standard namespace
+                checkAndEnable(uri);
 
-            verifyTagName(uri, localName, qName);
+                verifyTagName(uri, localName, qName);
 
-            if(needsToBePruned(uri))
-                startCutting();
+                if(needsToBePruned(uri))
+                    startCutting();
+            }
         }
 
         super.startElement(uri, localName, qName, atts);
