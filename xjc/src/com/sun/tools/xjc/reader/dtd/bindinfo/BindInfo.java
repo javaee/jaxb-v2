@@ -246,7 +246,7 @@ public class BindInfo
     private CCustomizations getGlobalCustomizations() {
         CCustomizations r=null;
         for( Element e : DOMUtil.getChildElements(dom) ) {
-            if(model.options.pluginURIs.contains(e.getNamespaceURI()))
+            if(!model.options.pluginURIs.contains(e.getNamespaceURI()))
                 continue;   // this isn't a plugin customization
             if(r==null)
                 r = new CCustomizations();
