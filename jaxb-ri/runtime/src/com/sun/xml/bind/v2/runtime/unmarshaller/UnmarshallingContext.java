@@ -951,7 +951,7 @@ public final class UnmarshallingContext extends Coordinator
 
             // the registry doesn't know about this element.
             // try its xsi:type
-            JaxBeanInfo beanInfo = XsiTypeLoader.parseXsiType(state, ea);
+            JaxBeanInfo beanInfo = XsiTypeLoader.parseXsiType(state, ea, null);
             if(beanInfo==null) {
                 // we don't even know its xsi:type
                 reportUnexpectedChildElement(ea,false);
