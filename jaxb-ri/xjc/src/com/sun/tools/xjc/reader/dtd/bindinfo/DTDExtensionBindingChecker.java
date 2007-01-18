@@ -19,7 +19,7 @@ import org.xml.sax.XMLFilter;
  *
  * @author Kohsuke Kawaguchi
  */
-public final class DTDExtensionBindingChecker extends AbstractExtensionBindingChecker {
+final class DTDExtensionBindingChecker extends AbstractExtensionBindingChecker {
     public DTDExtensionBindingChecker(String schemaLanguage, Options options, ErrorHandler handler) {
         super(schemaLanguage, options, handler);
     }
