@@ -15,11 +15,11 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="compiler-libs" level="project" />
-    <orderEntry type="library" name="runtime" level="project" />
-    <orderEntry type="module" module-name="runtime" />
+    <orderEntry type="library" exported="" name="compiler-libs" level="project" />
+    <orderEntry type="library" exported="" name="runtime" level="project" />
+    <orderEntry type="module" module-name="runtime" exported="" />
     <orderEntry type="library" name="JAM" level="project" />
-    <orderEntry type="library" name="rebundle/compiler" level="project" />
+    <orderEntry type="library" exported="" name="rebundle/compiler" level="project" />
     <orderEntry type="library" name="ant" level="project" />
     <orderEntryProperties />
   </component>
