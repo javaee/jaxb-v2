@@ -6,7 +6,6 @@ import java.util.HashSet;
 import com.sun.tools.xjc.util.SubtreeCutter;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.Plugin;
-import com.sun.tools.xjc.reader.dtd.bindinfo.DTDExtensionBindingChecker;
 import com.sun.xml.bind.v2.util.EditDistance;
 
 import org.xml.sax.helpers.NamespaceSupport;
@@ -16,7 +15,7 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
 
 /**
- * Common code between {@link DTDExtensionBindingChecker} and {@link ExtensionBindingChecker}.
+ * Common code between {@code DTDExtensionBindingChecker} and {@link ExtensionBindingChecker}.
  *
  * @author Kohsuke Kawaguchi
  */
