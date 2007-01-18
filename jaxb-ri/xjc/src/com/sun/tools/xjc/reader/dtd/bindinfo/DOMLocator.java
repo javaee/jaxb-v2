@@ -23,10 +23,9 @@ package com.sun.tools.xjc.reader.dtd.bindinfo;
 import org.w3c.dom.Element;
 import org.xml.sax.Locator;
 
-class DOM4JLocator
-{
+class DOMLocator {
     private static final String locationNamespace =
-        "http://www.sun.com/xmlns/jaxb/dom4j-location";
+        "http://www.sun.com/xmlns/jaxb/dom-location";
     private static final String systemId    = "systemid";
     private static final String column      = "column";
     private static final String line        = "line";

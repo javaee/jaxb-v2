@@ -69,7 +69,7 @@ public final class BIEnumeration implements BIConversion
                 CBuiltinLeafInfo.STRING,
                 buildMemberList(parent.model,dom),
                 null, null/*TODO*/,
-                DOM4JLocator.getLocationInfo(dom)));
+                DOMLocator.getLocationInfo(dom)));
     }
     
     /** Creates an element-local enumeration declaration. */
@@ -85,7 +85,7 @@ public final class BIEnumeration implements BIConversion
                 CBuiltinLeafInfo.STRING,
                 buildMemberList(parent.parent.model,dom),
                 null, null/*TODO*/,
-                DOM4JLocator.getLocationInfo(dom) ));
+                DOMLocator.getLocationInfo(dom) ));
     }
     
     private static List<CEnumConstant> buildMemberList( Model model, Element dom ) {
