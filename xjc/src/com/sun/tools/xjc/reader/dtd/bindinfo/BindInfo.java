@@ -42,7 +42,6 @@ import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.model.CPluginCustomization;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Const;
-import com.sun.tools.xjc.reader.ExtensionBindingChecker;
 import com.sun.tools.xjc.util.CodeModelClassFactory;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
 import com.sun.tools.xjc.util.ForkContentHandler;
@@ -305,7 +304,7 @@ public class BindInfo
             XMLReader reader = pf.newSAXParser().getXMLReader();
             reader.setErrorHandler(controller);
 
-            ExtensionBindingChecker checker = new ExtensionBindingChecker("", model.options, controller);
+            DTDExtensionBindingChecker checker = new DTDExtensionBindingChecker("", model.options, controller);
             checker.setContentHandler(validator);
 
             reader.setContentHandler(new ForkContentHandler(checker,builder));
