@@ -40,6 +40,7 @@ import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.SchemaCache;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Const;
+import com.sun.tools.xjc.reader.ExtensionBindingChecker;
 import com.sun.tools.xjc.util.CodeModelClassFactory;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
 import com.sun.tools.xjc.util.ForkContentHandler;
@@ -69,7 +70,7 @@ public class BindInfo
     
     public BindInfo(Model model, InputSource source, ErrorReceiver _errorReceiver) throws AbortException {
         
-        this( model, parse(source,_errorReceiver), _errorReceiver);
+        this( model, parse(model,source,_errorReceiver), _errorReceiver);
     }
     
     public BindInfo(Model model, Document _dom, ErrorReceiver _errorReceiver) {
@@ -265,12 +266,14 @@ public class BindInfo
      * Parses an InputSource into dom4j Document.
      * Returns null in case of an exception.
      */
-    private static Document parse( InputSource is, ErrorReceiver receiver ) throws AbortException {
+    private static Document parse( Model model, InputSource is, ErrorReceiver receiver ) throws AbortException {
         try {
             ValidatorHandler validator = bindingFileSchema.newValidator();
 
             // set up the pipe line as :
-            //   parser->validator->factory
+            //              /-> extensionChecker -> validator
+            //   parser-> -<
+            //              \-> DOM builder
             SAXParserFactory pf = SAXParserFactory.newInstance();
             pf.setNamespaceAware(true);
             DOMBuilder builder = new DOMBuilder();
@@ -279,7 +282,11 @@ public class BindInfo
             validator.setErrorHandler(controller);
             XMLReader reader = pf.newSAXParser().getXMLReader();
             reader.setErrorHandler(controller);
-            reader.setContentHandler(new ForkContentHandler(validator,builder));
+
+            ExtensionBindingChecker checker = new ExtensionBindingChecker("", model.options, controller);
+            checker.setContentHandler(validator);
+
+            reader.setContentHandler(new ForkContentHandler(checker,builder));
 
             reader.parse(is);
             

@@ -26,7 +26,7 @@ import java.util.ResourceBundle;
 /**
  * Formats error messages.
  */
-enum Messages {
+public enum Messages {
     DUPLICATE_PROPERTY, // 1 arg
 
     ERR_UNDECLARED_PREFIX,
