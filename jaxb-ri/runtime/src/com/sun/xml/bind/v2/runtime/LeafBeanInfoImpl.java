@@ -12,7 +12,6 @@ import com.sun.xml.bind.v2.model.runtime.RuntimeLeafInfo;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.TextLoader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
-import com.sun.xml.bind.v2.runtime.unmarshaller.XsiTypeLoader;
 
 import org.xml.sax.SAXException;
 
@@ -32,7 +31,6 @@ import org.xml.sax.SAXException;
 final class LeafBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
 
     private final Loader loader;
-    private final Loader loaderWithSubst;
 
     private final Transducer<BeanT> xducer;
 
@@ -46,7 +44,6 @@ final class LeafBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
 
         xducer = li.getTransducer();
         loader = new TextLoader(xducer);
-        loaderWithSubst = new XsiTypeLoader(this);
 
         if(isElement())
             tagName = grammar.nameBuilder.createElementName(li.getElementName());
@@ -125,10 +122,8 @@ final class LeafBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
     }
 
     public final Loader getLoader(JAXBContextImpl context, boolean typeSubstitutionCapable) {
-        if(typeSubstitutionCapable)
-            return loaderWithSubst;
-        else
-            return loader;
+        // we don't do simple type substitutions because they won't match the type that the caller is expecting.
+        return loader;
     }
 
     public Transducer<BeanT> getTransducer() {
