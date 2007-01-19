@@ -386,6 +386,12 @@ final class DefaultClassBinder implements ClassBinder
         BIClass decl=bindInfo.get(BIClass.class);
         if(decl==null)  return null;
 
+        if (component instanceof XSAttGroupDecl){
+            //- attributeGroup can not be customized to a class
+            Ring.get(ErrorReceiver.class).error( decl.getLocation(),
+                    Messages.format( Messages.ERR_INCORRECT_ATTRIBUTEGROUP_CUSTOMIZATION, defaultBaseName));    
+            return null;
+        }
         decl.markAsAcknowledged();
 
         // determine the package to put this class in.

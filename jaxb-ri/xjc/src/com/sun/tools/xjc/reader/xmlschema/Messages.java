@@ -131,4 +131,7 @@ public class Messages
         "ERR_MULTIPLE_GLOBAL_BINDINGS";
     public static final String ERR_MULTIPLE_GLOBAL_BINDINGS_OTHER =
         "ERR_MULTIPLE_GLOBAL_BINDINGS_OTHER";
+    
+    public static final String ERR_INCORRECT_ATTRIBUTEGROUP_CUSTOMIZATION =
+        "ClassSelector.IncorrectAttributeGroupCustomization";    
 }
