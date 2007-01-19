@@ -112,11 +112,11 @@ final class AnyTypeBeanInfo extends JaxBeanInfo<Object> {
         for( int i=0; i<len; i++ ) {
             Attr a = (Attr)al.item(i);
             if( "xmlns".equals(a.getPrefix()) ) {
-                context.declareNamespace( a.getValue(), a.getLocalName(), true );
+                context.force(a.getValue(), a.getLocalName());
                 continue;
             }
             if( "xmlns".equals(a.getName()) ) {
-                context.declareNamespace( a.getValue(), "", false );
+                context.force(a.getValue(), "");
                 continue;
             }
             String nsUri = a.getNamespaceURI();
