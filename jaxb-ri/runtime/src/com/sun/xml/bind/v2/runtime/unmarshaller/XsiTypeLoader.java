@@ -54,7 +54,7 @@ public class XsiTypeLoader extends Loader {
             if(type==null) {
                 reportError(Messages.NOT_A_QNAME.format(value),true);
             } else {
-                if(defaultBeanInfo.getTypeNames().contains(type))
+                if(defaultBeanInfo!=null && defaultBeanInfo.getTypeNames().contains(type))
                     // if this xsi:type is something that the default type can already handle,
                     // let it do so. This is added as a work around to bug https://jax-ws.dev.java.net/issues/show_bug.cgi?id=195
                     // where a redundant xsi:type="xs:dateTime" causes JAXB to unmarshal XMLGregorianCalendar,
