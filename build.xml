@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.13 2007-01-17 00:30:14 kohsuke Exp $
+       $Id: build.xml,v 1.71.2.14 2007-01-23 21:53:25 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -350,21 +350,33 @@ Class-Path: ${manifest.classpath}
     <target name="src-zip" depends="dist"
             description="source zip files for JAXB RI jar files into the dist dir.">
       <parallel>
-        <zip zipfile="${jaxb.dist}/lib/jaxb-impl.src.zip">
-          <fileset dir="${runtime.src}"/>
-          <fileset dir="${runtime-fi.src}"/>
-          <fileset dir="${runtime-staxex.src}"/>
-          <zipfileset src="${jaxb.libs}/src/txw2-src.zip" />
-        </zip>
+        <mkdir dir="tmp" />
         <sequential>
-          <mkdir dir="tmp" />
+          <unjar src="${jaxb.libs}/src/txw2-src.zip" dest="tmp"/>
+          <zip zipfile="${jaxb.dist}/lib/jaxb-impl.src.zip">
+            <fileset dir="${runtime.src}"/>
+            <fileset dir="${runtime-fi.src}"/>
+            <fileset dir="${runtime-staxex.src}"/>
+            <fileset dir="${runtime.root}/build/src" />
+            <zipfileset src="${jaxb.libs}/src/txw2-src.zip" />
+            <zipfileset src="${jaxb.libs}/src/istack-commons-runtime-src.zip" />
+            <fileset dir="tmp/runtime"/>
+          </zip>
+        </sequential>
+        <sequential>
           <unjar src="${jaxb.libs}/src/xsom-src.zip" dest="tmp"/>
+          <unjar src="${jaxb.libs}/src/dtd-parser-1.0-src.zip" dest="tmp" />
           <zip zipfile="${jaxb.dist}/lib/jaxb-xjc.src.zip">
             <fileset dir="${xjc.src}"/>
+            <fileset dir="${xjc.gensrc}"/>
             <fileset dir="${xjc.root}/facade"/>
             <zipfileset src="${jaxb.libs}/src/codemodel.src.zip" />
             <zipfileset src="${jaxb.libs}/src/resolver-src.zip" />
+            <zipfileset src="${jaxb.libs}/src/istack-commons-tools-src.zip" />
+            <zipfileset src="${jaxb.libs}/src/relaxngDatatype-src.zip" />
+            <zipfileset src="${jaxb.libs}/src/rngom-src.zip" />
             <fileset dir="tmp/src"/>
+            <fileset dir="tmp/dtd-parser-1.0/src"/>
           </zip>
           <delete dir="tmp" />
         </sequential>
