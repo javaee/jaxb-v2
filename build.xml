@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.14 2007-01-23 21:53:25 kohsuke Exp $
+       $Id: build.xml,v 1.71.2.15 2007-01-23 22:01:19 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -378,9 +378,9 @@ Class-Path: ${manifest.classpath}
             <fileset dir="tmp/src"/>
             <fileset dir="tmp/dtd-parser-1.0/src"/>
           </zip>
-          <delete dir="tmp" />
         </sequential>
       </parallel>
+      <delete dir="tmp" />
     </target>
 
 
