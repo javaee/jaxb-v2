@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.15 2007-01-23 22:01:19 kohsuke Exp $
+       $Id: build.xml,v 1.71.2.16 2007-01-24 19:50:06 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -364,7 +364,6 @@ Class-Path: ${manifest.classpath}
           </zip>
         </sequential>
         <sequential>
-          <unjar src="${jaxb.libs}/src/xsom-src.zip" dest="tmp"/>
           <unjar src="${jaxb.libs}/src/dtd-parser-1.0-src.zip" dest="tmp" />
           <zip zipfile="${jaxb.dist}/lib/jaxb-xjc.src.zip">
             <fileset dir="${xjc.src}"/>
@@ -372,6 +371,7 @@ Class-Path: ${manifest.classpath}
             <fileset dir="${xjc.root}/facade"/>
             <zipfileset src="${jaxb.libs}/src/codemodel.src.zip" />
             <zipfileset src="${jaxb.libs}/src/resolver-src.zip" />
+            <zipfileset src="${jaxb.libs}/src/xsom-src.zip" />
             <zipfileset src="${jaxb.libs}/src/istack-commons-tools-src.zip" />
             <zipfileset src="${jaxb.libs}/src/relaxngDatatype-src.zip" />
             <zipfileset src="${jaxb.libs}/src/rngom-src.zip" />
