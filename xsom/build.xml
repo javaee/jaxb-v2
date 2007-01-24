@@ -181,14 +181,8 @@
 		<tstamp />
 		<mkdir dir="build" />
 		<zip zipfile="build/xsom-src.zip" compress="true">
-			<zipfileset dir="." defaultexcludes="no">
-				<include name="src/**/*" />
-				<include name="build/src/**/*" />
-				<include name="build.xml" />
-				<include name="CVS/*" />
-				<include name="license.txt" />
-				<include name="lib/**/*" />
-			</zipfileset>
+			<zipfileset dir="build/src" />
+			<zipfileset dir="src" excludes="*.rng" />
 		</zip>
 	</target>
 	
