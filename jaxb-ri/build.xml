@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.16 2007-01-24 19:50:06 kohsuke Exp $
+       $Id: build.xml,v 1.71.2.17 2007-01-24 20:32:24 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -375,7 +375,6 @@ Class-Path: ${manifest.classpath}
             <zipfileset src="${jaxb.libs}/src/istack-commons-tools-src.zip" />
             <zipfileset src="${jaxb.libs}/src/relaxngDatatype-src.zip" />
             <zipfileset src="${jaxb.libs}/src/rngom-src.zip" />
-            <fileset dir="tmp/src"/>
             <fileset dir="tmp/dtd-parser-1.0/src"/>
           </zip>
         </sequential>
