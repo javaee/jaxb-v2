@@ -1,4 +1,4 @@
-/* $Id: StAXStreamConnector.java,v 1.9.2.4 2006-12-06 17:56:18 kohsuke Exp $
+/* $Id: StAXStreamConnector.java,v 1.9.2.5 2007-01-25 12:34:57 oleksiys Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -68,7 +68,7 @@ class StAXStreamConnector extends StAXConnector {
     public static StAXConnector create(XMLStreamReader reader, XmlVisitor visitor) {
         // try optimized codepath
         final Class readerClass = reader.getClass();
-        if (readerClass==FI_STAX_READER_CLASS && FI_CONNECTOR_CTOR!=null) {
+        if (FI_STAX_READER_CLASS != null && FI_STAX_READER_CLASS.isAssignableFrom(readerClass) && FI_CONNECTOR_CTOR!=null) {
             try {
                 return FI_CONNECTOR_CTOR.newInstance(reader,visitor);
             } catch (Exception t) {
