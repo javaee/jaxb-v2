@@ -17,17 +17,18 @@
  * own identifying information: Portions Copyright [yyyy]
  * [name of copyright owner]
  */
-package com.sun.tools.xjc.maven2;
+package com.sun.tools.jxc.maven2;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
-import org.apache.tools.ant.DirectoryScanner;
+import org.apache.maven.artifact.Artifact;
 import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.selectors.FilenameSelector;
 
 import java.io.File;
-import java.util.Collection;
+import java.util.Set;
 
 /**
  * A mojo that generates XML schema from Java files. For
@@ -38,6 +39,7 @@ import java.util.Collection;
  * @author Rebecca Searls (rebecca.searls@sun.com)
  * @goal generate
  * @phase generate-sources
+ * @requiresDependencyResolution compile
  * @description JAXB Java files to XML schema from generator plugin
  */
 public class SchemaGenMojo extends AbstractMojo {
@@ -100,7 +102,17 @@ public class SchemaGenMojo extends AbstractMojo {
         if (project != null) {
             project.addCompileSourceRoot(generateDirectory.getPath());
         }
-     
+
+        // add dependency jars in Maven as classpath to schemagen
+        Path path = schemaGenAdapter.createClasspath();
+        for( Artifact a : (Set<Artifact>)project.getArtifacts() ) {
+            File jarFile = a.getFile();
+            if(jarFile!=null && jarFile.exists()) {
+                // don't know if this method can really return null but let's be defensive
+                path.createPathElement().setLocation(jarFile);
+            }
+        }
+
         // Pom dependency - typically when configuration settings change.
         if (project != null) {
             FileSet pomDependencies = new FileSet();

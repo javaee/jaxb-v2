@@ -17,7 +17,7 @@
  * own identifying information: Portions Copyright [yyyy]
  * [name of copyright owner]
  */
-package com.sun.tools.xjc.maven2;
+package com.sun.tools.jxc.maven2;
 
 import java.io.File;
 
