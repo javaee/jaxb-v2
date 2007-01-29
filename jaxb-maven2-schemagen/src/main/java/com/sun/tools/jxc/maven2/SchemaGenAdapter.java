@@ -22,7 +22,9 @@ package com.sun.tools.jxc.maven2;
 import java.io.File;
 
 import com.sun.tools.jxc.SchemaGenTask;
+import com.sun.tools.jxc.SchemaGenTask.*;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Path;
 /**
@@ -53,6 +55,44 @@ public class SchemaGenAdapter extends SchemaGenTask
      */
     public void setSrcdir(File srcdir){
         setSrcdir(new Path(getProject(), srcdir.getAbsolutePath()));
+    }
+    
+    /**
+     * Transfer the schema information from the pom to the ant task.
+     * Elements namespace and file are mandatory for each Schema.
+     *
+     * @throws MojoExecutionException
+     */
+    public void addSchemas(com.sun.tools.jxc.maven2.Schema[] schemas) 
+    throws MojoExecutionException {
+        
+        if (schemas == null)
+            return;
+        
+        //- check of invalid schema definitions.
+        for (int i = 0; i < schemas.length; i++ ){
+            if (schemas[i].getNamespace() == null || schemas[i].getFile() == null){
+                throw new MojoExecutionException(
+                "Invalid schema definition in pom file. " +
+                "Neither namespace nor file elements may be unset." +
+                "\nschema: " + i + 
+                "\t namespace = " + schemas[i].getNamespace() + "\tfile = " + schemas[i].getFile());
+            }
+        }
+       
+        for (com.sun.tools.jxc.maven2.Schema s : schemas){
+            SchemaGenTask.Schema tmpS = null;
+            if (s.getNamespace() != null){
+                tmpS = createSchema();
+                tmpS.setNamespace(s.getNamespace());
+            }
+            if (s.getFile() != null){
+                if (tmpS == null){
+                    tmpS = createSchema();
+                }
+                tmpS.setFile(s.getFile());
+            }
+        }
     }
     
     /**

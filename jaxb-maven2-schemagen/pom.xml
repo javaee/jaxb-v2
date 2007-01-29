@@ -47,7 +47,6 @@
     </licenses>
 
     <dependencies>
-
         <!-- Maven plugin and api classes -->
         <dependency>
             <groupId>org.apache.maven</groupId>
@@ -113,7 +112,7 @@
             <systemPath>${java.home}/../lib/tools.jar</systemPath>
         </dependency>
     </dependencies>
-   
+ 
     <developers>
         <developer>
             <id>rebeccas</id>
