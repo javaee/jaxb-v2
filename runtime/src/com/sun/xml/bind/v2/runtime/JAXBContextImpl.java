@@ -117,7 +117,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75.2.12 $
+ * @version $Revision: 1.75.2.13 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -802,6 +802,9 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
             if(tr.type==void.class || tr.type==Void.class) {
                 xsdgen.add(tr.tagName,false,null);
+            } else
+            if(tr.type==CompositeStructure.class) {
+                // ignore this element since this is just used for rpc/lit hack
             } else {
                 NonElement<Type,Class> typeInfo = getXmlType(tis,tr);
                 xsdgen.add(tr.tagName, !Navigator.REFLECTION.isPrimitive(tr.type),typeInfo);
