@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -20,6 +22,7 @@ import com.sun.xml.bind.api.TypeReference;
 import com.sun.xml.bind.v2.model.annotation.RuntimeAnnotationReader;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.util.TypeCast;
+import com.sun.xml.bind.Util;
 
 /**
  * This class is responsible for producing RI JAXBContext objects.  In
@@ -49,6 +52,15 @@ public class ContextFactory {
         if(c14nSupport==null)
             c14nSupport = false;
 
+        Boolean xmlAccessorFactorySupport = getPropertyValue(properties,
+           JAXBRIContext.XMLACCESSORFACTORY_SUPPORT,Boolean.class);
+        if(xmlAccessorFactorySupport==null){
+            xmlAccessorFactorySupport = false;
+            Util.getClassLogger().log(Level.FINE, "Property " + 
+                JAXBRIContext.XMLACCESSORFACTORY_SUPPORT + 
+                "is not active.  Using JAXB's implementation");
+        }
+
         RuntimeAnnotationReader ar = getPropertyValue(properties,JAXBRIContext.ANNOTATION_READER,RuntimeAnnotationReader.class);
 
         Map<Class,Class> subclassReplacements;
@@ -63,7 +75,7 @@ public class ContextFactory {
             throw new JAXBException(Messages.UNSUPPORTED_PROPERTY.format(properties.keySet().iterator().next()));
         }
 
-        return createContext(classes,Collections.<TypeReference>emptyList(),subclassReplacements,defaultNsUri,c14nSupport,ar);
+        return createContext(classes,Collections.<TypeReference>emptyList(),subclassReplacements,defaultNsUri,c14nSupport,ar, xmlAccessorFactorySupport);
     }
 
     /**
@@ -80,8 +92,8 @@ public class ContextFactory {
             return type.cast(o);
     }
 
-    public static JAXBRIContext createContext( Class[] classes, Collection<TypeReference> typeRefs, Map<Class,Class> subclassReplacements, String defaultNsUri, boolean c14nSupport, RuntimeAnnotationReader ar ) throws JAXBException {
-        return new JAXBContextImpl(classes,typeRefs,subclassReplacements,defaultNsUri,c14nSupport,ar);
+    public static JAXBRIContext createContext( Class[] classes, Collection<TypeReference> typeRefs, Map<Class,Class> subclassReplacements, String defaultNsUri, boolean c14nSupport, RuntimeAnnotationReader ar, boolean xmlAccessorFactorySupport) throws JAXBException {
+        return new JAXBContextImpl(classes,typeRefs,subclassReplacements,defaultNsUri,c14nSupport,ar, xmlAccessorFactorySupport);
     }
 
     /**

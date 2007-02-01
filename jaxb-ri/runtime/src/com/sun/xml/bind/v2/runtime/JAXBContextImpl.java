@@ -117,7 +117,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75.2.13 $
+ * @version $Revision: 1.75.2.14 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -200,6 +200,12 @@ public final class JAXBContextImpl extends JAXBRIContext {
      */
     protected final boolean c14nSupport;
 
+    /**
+     * Flag that user has provided a custom AccessorFactory for JAXB to use
+     */
+    protected final boolean xmlAccessorFactorySupport;
+
+
     private WeakReference<RuntimeTypeInfoSet> typeInfoSetCache;
 
     private @NotNull RuntimeAnnotationReader annotaitonReader;
@@ -221,8 +227,10 @@ public final class JAXBContextImpl extends JAXBRIContext {
      *      used to build {@link Bridge}s. Can be empty.
      * @param c14nSupport
      *      {@link #c14nSupport}.
+     * @param xmlAccessorFactorySupport
+     *      Use custom com.sun.xml.bind.v2.runtime.reflect.Accessor implementation.
      */
-    public JAXBContextImpl(Class[] classes, Collection<TypeReference> typeRefs, Map<Class,Class> subclassReplacements, String defaultNsUri, boolean c14nSupport, @Nullable RuntimeAnnotationReader ar) throws JAXBException {
+    public JAXBContextImpl(Class[] classes, Collection<TypeReference> typeRefs, Map<Class,Class> subclassReplacements, String defaultNsUri, boolean c14nSupport, @Nullable RuntimeAnnotationReader ar, boolean xmlAccessorFactorySupport) throws JAXBException {
         // initialize datatype converter with ours
         DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
 
@@ -247,6 +255,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
         this.defaultNsUri = defaultNsUri;
         this.c14nSupport = c14nSupport;
+        this.xmlAccessorFactorySupport = xmlAccessorFactorySupport;
         this.classes = new Class[classes.length];
         System.arraycopy(classes,0,this.classes,0,classes.length);
 
@@ -386,7 +395,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
                 return r;
         }
 
-        final RuntimeModelBuilder builder = new RuntimeModelBuilder(this,annotaitonReader,subclassReplacements,defaultNsUri);
+        final RuntimeModelBuilder builder = new RuntimeModelBuilder(this,annotaitonReader,subclassReplacements,defaultNsUri, xmlAccessorFactorySupport);
 
         IllegalAnnotationsException.Builder errorHandler = new IllegalAnnotationsException.Builder();
         builder.setErrorHandler(errorHandler);
@@ -802,9 +811,6 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
             if(tr.type==void.class || tr.type==Void.class) {
                 xsdgen.add(tr.tagName,false,null);
-            } else
-            if(tr.type==CompositeStructure.class) {
-                // ignore this element since this is just used for rpc/lit hack
             } else {
                 NonElement<Type,Class> typeInfo = getXmlType(tis,tr);
                 xsdgen.add(tr.tagName, !Navigator.REFLECTION.isPrimitive(tr.type),typeInfo);

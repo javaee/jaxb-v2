@@ -65,6 +65,11 @@ enum Messages {
     TRANSIENT_FIELD_NOT_BINDABLE, // 1 arg
     THERE_MUST_BE_VALUE_IN_XMLVALUE, // 1 arg
     UNMATCHABLE_ADAPTER, // 2 args
+
+    ACCESSORFACTORY_INSTANTIATION_EXCEPTION, // 2 arg
+    ACCESSORFACTORY_ACCESS_EXCEPTION, // 2 arg
+    CUSTOM_ACCESSORFACTORY_PROPERTY_ERROR, // 2 arg
+    CUSTOM_ACCESSORFACTORY_FIELD_ERROR, // 2 arg
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());
