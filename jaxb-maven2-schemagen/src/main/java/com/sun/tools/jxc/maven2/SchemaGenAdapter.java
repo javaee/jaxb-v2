@@ -27,6 +27,9 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Path;
+import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.BuildException;
+
 /**
  * Inherit all the Ant SchemaGenTask behaviour and compensate for the missing Ant
  * project and Maven logging facility.
@@ -35,7 +38,17 @@ public class SchemaGenAdapter extends SchemaGenTask
 {
     /** The logging system. */
     Log log;
-
+    
+    /**
+     * User provided file include patterns
+     */
+    private String[] includePatterns = null;
+    
+    /**
+     * User provided file exclude patterns
+     */
+    private String[] excludePatterns = null;
+    
     /**
      * Constructor
      *
@@ -45,7 +58,6 @@ public class SchemaGenAdapter extends SchemaGenTask
     {
         // Logger used when overloading SchemaGenTask log methods
         this.log = log;
-
         // Create an empty project for the base SchemaGenTask
         setProject(new Project());
     }
@@ -56,6 +68,48 @@ public class SchemaGenAdapter extends SchemaGenTask
     public void setSrcdir(File srcdir){
         setSrcdir(new Path(getProject(), srcdir.getAbsolutePath()));
     }
+    
+    
+    public void setIncludeExclude(String[] includePatterns,
+            String[] excludePatterns){
+        this.includePatterns = includePatterns;
+        this.excludePatterns = excludePatterns;
+    }
+    
+    /**
+     * This method overrides Javac.execute().  This was done in order
+     * to apply the includePatterns/excludePatterns.
+     */
+    public void execute() throws BuildException {
+        checkParameters();
+        resetFileLists();
+
+        // scan source directories and dest directory to build up
+        // compile lists
+        Path src = getSrcdir();
+        String[] list = src.list();
+        for (int i = 0; i < list.length; i++) {
+            File srcDir = getProject().resolveFile(list[i]);
+            if (!srcDir.exists()) {
+                throw new BuildException("srcdir \""
+                + srcDir.getPath() + "\" does not exist!", getLocation());
+            }
+
+            //- prune the file list based upon include/exclude patterns
+            DirectoryScanner ds = this.getDirectoryScanner(srcDir);
+            if (includePatterns != null){
+                ds.setIncludes(includePatterns);
+            }
+            if (excludePatterns != null){
+                ds.setExcludes(excludePatterns);
+            }
+            ds.scan();
+            String[] files = ds.getIncludedFiles();
+            File destDir = getDestdir();
+            scanDir(srcDir, destDir != null ? destDir : srcDir, files);
+        }
+        compile();
+    }  
     
     /**
      * Transfer the schema information from the pom to the ant task.

@@ -22,14 +22,10 @@ package com.sun.tools.jxc.maven2;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
-import org.apache.tools.ant.DirectoryScanner;
-import org.apache.tools.ant.types.FileSet;
-import org.apache.tools.ant.types.selectors.FilenameSelector;
-import org.apache.tools.ant.types.Path;
 import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.tools.ant.types.Path;
         
 import java.io.File;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.Iterator;
@@ -62,16 +58,22 @@ public class SchemaGenMojo extends AbstractMojo {
     protected File destdir;
     
     /**
-     * By default this utility uses the jaxb-api.jar defined in the
-     * maven-jaxb-schemagen-plugin POM.xml file.  The user can over ride
-     * that reference by providing the path name to the jaxb-api.jar file
-     * preferred (e.g.  ../local/lib/jaxb-api.jar).
-     *
-     * Jar file that contains the Jaxb annotations. 
-     *
-     * @parameter expression=null
+     * A list of regular expression file search patterns to specify the Java files
+     * to be processed.  Searching is based from the root of srcdir. If
+     * this is not set then all .java files in srcdir will be processed.
+     * <p/>
+     * @parameter
      */
-    protected String jaxbApiJar;
+    protected String[] includes;
+
+    /**
+     * A list of regular expression file search patterns to specify the Java files
+     * to be excluded from the include list.  Searching is based from the
+     * root of srcdir.
+     *
+     * @parameter
+     */
+    protected String[] excludes;
     
     /**
      *  groupId:artifactId of needed jar file.
@@ -106,9 +108,11 @@ public class SchemaGenMojo extends AbstractMojo {
      *        <file>schemafilename.xsd</file>
      *     </schema>
      *  </schemas>
+     *
      * @parameter
      */
     private Schema[] schemas;
+    
     
     /**
      * The Maven project reference.
@@ -136,120 +140,174 @@ public class SchemaGenMojo extends AbstractMojo {
         
         // Create the schemagen adapter
         SchemaGenAdapter schemaGenAdapter = new SchemaGenAdapter(getLog());
-   
+        
         if (destdir != null) {
             schemaGenAdapter.setDestdir(destdir);
         }
         schemaGenAdapter.setSrcdir(srcdir);
-   
         if (project != null) {
             project.addCompileSourceRoot(destdir.getPath());
         }
-     
-        // Pom dependency - typically when configuration settings change.
-        if (project != null) {
-            FileSet pomDependencies = new FileSet();
-            pomDependencies.setDir(project.getFile().getParentFile());
-            
-            if (verbose) {
-                getLog().info("pom dependency: " + project.getFile().getPath());
-            }
-            pomDependencies.addFilename(
-                    createFilenameSelector(project.getFile().getName()));
-            
-            //-Pass dependency jar list to schema task
-            schemaGenAdapter.addConfiguredDepends(pomDependencies);
-       
-            //- Set the (required) path to jaxb-api.jar
-            addSchemaGenClasspath(schemaGenAdapter);
-        }
-        // Configure production artifacts to determine generation
-        FileSet products = new FileSet();
-        File outDir = destdir;
-        products.setDir(outDir);
-        products.setIncludes("**/*.java");
-        //method appears to be xjc specific; may need to remove block
-        //-schemaGenAdapter.addConfiguredProduces(products);
-/**   unclear if this is to remain; SchemaGenTask would need to be changed     
-        if (args != null) {
-            schemaGenAdapter.createArg().setLine(args);
-            //xjc2TaskAdapter.createArg().setLine(args);
-        }
-***/ 
+   
+        // forward file prune list
+        schemaGenAdapter.setIncludeExclude(includes, excludes);
+        //- Set the (required) path to jaxb-api.jar
+        addSchemaGenClasspath(schemaGenAdapter);
+        addUserDefinedJars(schemaGenAdapter);
+        //-checkArtifacts(); //- debug
         //- forward all schema def to the processing task
         schemaGenAdapter.addSchemas(schemas);
-        
         schemaGenAdapter.execute();
     }
     
     /**
      * SchemaGenTask requires the jaxb-api.jar ref to resolve annotation references
      * when the internal utility compiles the java files.  This utility can not proceed
-     * successfully without it.  
+     * successfully without it.  The plugin already references this jar so take
+     * it from therem
      * 
-     * There is a search hierarchy to resolve the reference. The user can override the 
-     * default reference by setting element <jaxbApiJar> to the jar file to be used; 
-     * this value is checked first. The default reference in the plugin is checked last.
+     * @param SchemaGenAdapter
+     * @throws MojoExecutionException
      */
-    private void addSchemaGenClasspath(SchemaGenAdapter schemaGenAdapter)throws MojoExecutionException{
-        File tmpJar = null;
-        
-        //- Check for user override.  (Maven passing string null when value not set.)
-        if (!jaxbApiJar.equals("null")){
-            File tmpF = new File(jaxbApiJar);
-            if (!tmpF.getName().endsWith(".jar") || !tmpF.exists() || !tmpF.isFile()){
-                getLog().info("jaxbApiJar: " + jaxbApiJar + " jar file is not found.");
-                getLog().info("Checking maven-jaxb-schemagen-plugin artifacts for jaxb-api.jar reference");
-            } else {
-                tmpJar = tmpF;
+    private void addSchemaGenClasspath(SchemaGenAdapter schemaGenAdapter)throws MojoExecutionException{        
+        Iterator itl =  pluginArtifacts.iterator();
+        while(itl.hasNext()){
+            DefaultArtifact df = (DefaultArtifact)itl.next();
+            String tmpName = df.getGroupId() + ":" + df.getArtifactId();
+            if (tmpName.equals(JAXB_API_JAR_IDENTIFIER)){
+                String tmpS = df.getFile().getAbsolutePath();
+                getLog().info("jaxb-schemagen classpath addition: " + tmpS);
+                schemaGenAdapter.setClasspath(new Path(schemaGenAdapter.getProject(), tmpS));
+                return;
             }
-        }         
-        
-        //- check the plugin's dependencies for a reference to the needed jar file.
-        if (tmpJar == null){
-            Iterator itl =  pluginArtifacts.iterator();
-            while(itl.hasNext()){
-                DefaultArtifact df = (DefaultArtifact)itl.next();
-                String tmpName = df.getGroupId() + ":" + df.getArtifactId();
-                if (tmpName.equals(JAXB_API_JAR_IDENTIFIER)){
-                    tmpJar = df.getFile();
-                    break;
-                }
-            }
-            if (tmpJar == null)
-                getLog().info("jaxb-api.jar reference not found in maven-jaxb-schemagen-plugin artifacts");
         }
-        if (tmpJar == null){
-            throw new MojoExecutionException(
-                "jaxb-api.jar is required and was not found.");
-        }
-        getLog().info("jaxb-schemagen classpath addition: " + tmpJar.getAbsolutePath());
-        schemaGenAdapter.setClasspath(new Path(schemaGenAdapter.getProject(), tmpJar.getAbsolutePath()));
+        getLog().info("jaxb-api.jar reference not found in maven-jaxb-schemagen-plugin artifacts");
+        throw new MojoExecutionException("jaxb-api.jar is required and was not found.");
     }
     
     /**
-     * Create a FilenameSelector from a filename.
-     *
-     * @param filename filename to wrap in FilenameSelector.
-     * @return the FilenameSelector based on the given filename.
+     * Add any user specified jars to the internal classpath.
+     * These are JARs that are needed to resolve references in the users java files.
+     * Dependencies must have been set at the project level.
+     *      <project>
+     *         <dependencies>
+     *            <dependency>
+     *            </dependency>
+     *         </dependencies>
+     *      <project>
+     *          
+     * @param SchemaGenAdapter
      */
-    private static FilenameSelector createFilenameSelector(String filename) {
-        FilenameSelector selector = new FilenameSelector();
-        selector.setName(filename);
-        return selector;
+    private void addUserDefinedJars(SchemaGenAdapter schemaGenAdapter){
+        Set tmpDa = project.getDependencyArtifacts();
+        Iterator itl =  tmpDa.iterator();
+        while(itl.hasNext()){
+            DefaultArtifact df = (DefaultArtifact)itl.next();          
+            getLog().info("jaxb-schemagen classpath addition: " + df.getFile().getAbsolutePath());
+            schemaGenAdapter.setClasspath(new Path(schemaGenAdapter.getProject(), df.getFile().getAbsolutePath()));
+        }
     }
     
+    //-- debugging only
+    private void checkArtifacts(){
+        Set tmpS = project.getArtifacts();
+        Set tmpP = project.getPluginArtifacts();
+        Set tmpDa = project.getDependencyArtifacts(); // returns all project/dependencies in the pom
+        Set tmpEx = project.getExtensionArtifacts();
+        Iterator itl =  tmpS.iterator();
+        while(itl.hasNext()){
+            DefaultArtifact df = (DefaultArtifact)itl.next();
+            //-System.out.println("checkArtifacts: tmpS: " + itl.next().getClass().getName());
+            System.out.println("checkArtifacts: tmpS: " + df);
+        }
+        itl =  tmpP.iterator();
+        while(itl.hasNext()){
+            DefaultArtifact df = (DefaultArtifact)itl.next();
+            //-System.out.println("checkArtifacts: tmpP: " + itl.next().getClass().getName());
+            System.out.println("checkArtifacts: tmpP: " + df);
+/***            
+            List trailList = df.getDependencyTrail();
+            itl =  trailList.iterator();
+            while(itl.hasNext()){
+                System.out.println("addSchemaGenClasspath:depTrail: " + ((String)itl.next()).toString());
+            }
+ ***/
+        }
+        itl =  tmpDa.iterator();
+        while(itl.hasNext()){
+            DefaultArtifact df = (DefaultArtifact)itl.next();
+            //-System.out.println("checkArtifacts: tmpP: " + itl.next().getClass().getName());
+            System.out.println("checkArtifacts: tmpDa: " + df.getFile().toString());
+        }
+        itl =  tmpEx.iterator();
+        while(itl.hasNext()){
+            DefaultArtifact df = (DefaultArtifact)itl.next();
+            //-System.out.println("checkArtifacts: tmpP: " + itl.next().getClass().getName());
+            System.out.println("checkArtifacts: tmpEx: " + df);
+        }
+        try {
+            List tmpRt = project.getRuntimeClasspathElements();
+            itl =  tmpRt.iterator();
+            while(itl.hasNext()){
+                //System.out.println("checkArtifacts: tmpRt: " + itl.next().getClass().getName());
+                System.out.println("checkArtifacts: tmpRt: " + ((String)itl.next()));
+            }
+        } catch(org.apache.maven.artifact.DependencyResolutionRequiredException e){
+            System.out.println("checkArtifacts: tmpRt: " + e);
+        }
+        
+        
+        /***************
+        List tmpB = project.getBuildPlugins();
+        itl =  tmpB.iterator();
+        while(itl.hasNext()){
+             org.apache.maven.model.Plugin p = (org.apache.maven.model.Plugin)itl.next();
+             //System.out.println("checkArtifacts: P: " + p.getClass().getName());
+            //java.lang.reflect.Method[] mlist = p.getClass().getMethods();
+            //for (java.lang.reflect.Method m : mlist){
+            //   System.out.println("checkArtifacts: method: " + m); 
+            //}
+            List dList = p.getDependencies();
+            Iterator jtl =  dList.iterator();
+            while(jtl.hasNext()){
+                org.apache.maven.model.Dependency tmpDep =
+                        (org.apache.maven.model.Dependency)jtl.next();
+                java.lang.reflect.Method[] deplist = tmpDep.getClass().getMethods();
+                System.out.println("checkArtifacts: Dependencies: " + tmpDep.getClass().getName());
+                for (java.lang.reflect.Method m : deplist){
+                    System.out.println("checkArtifacts: Dependencies: method: " + m); 
+                }
+            }
+            jtl =  dList.iterator();
+            while(jtl.hasNext()){
+                org.apache.maven.model.Dependency tmpDep =
+                        (org.apache.maven.model.Dependency)jtl.next();
+                System.out.println("checkArtifacts: Dependencies: " + tmpDep.toString());
+                System.out.println("checkArtifacts: Dependencies: classpath: " + tmpDep.getSystemPath());
+            }
+            //System.out.println("checkArtifacts: tmpP: " + df);
+        }
+        *************/
+    }
+ 
     /**
      * Log the configuration settings.  Shown when exception thrown or when
      * verbose is true.
      */
     private void logSettings() {
         getLog().info("srcdir: " + srcdir);
-        getLog().info("jaxbApiJar: " + jaxbApiJar);
         getLog().info("destdir: " + destdir);
+        if (includes != null){
+           for(String s : includes)
+                getLog().info("include: " + s); 
+        }
+        if (excludes != null){
+           for(String s : excludes)
+                getLog().info("exclude: " + s); 
+        }
         if (schemas != null){
             for(Schema tmpS : schemas)
                 getLog().info("schema: " + tmpS);
         }
-    }
+    } 
 }
