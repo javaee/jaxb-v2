@@ -9,8 +9,10 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.bind.JAXBException;
 
 import com.sun.istack.NotNull;
 import com.sun.xml.bind.annotation.XmlLocation;
@@ -28,8 +30,12 @@ import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
+import com.sun.xml.bind.AccessorFactory;
+import com.sun.xml.bind.AccessorFactoryImpl;
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
+import com.sun.xml.bind.XmlAccessorFactory;
+import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -49,9 +55,57 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
      */
     private Accessor<?,Locator> xmlLocationAccessor;
 
+    private AccessorFactory accessorFactory;
+
     public RuntimeClassInfoImpl(RuntimeModelBuilder modelBuilder, Locatable upstream, Class clazz) {
         super(modelBuilder, upstream, clazz);
+        accessorFactory = createAccessorFactory(clazz);
     }
+
+    protected AccessorFactory createAccessorFactory(Class clazz) {
+        XmlAccessorFactory factoryAnn = null;
+        AccessorFactory accFactory = null;
+
+        // user providing class to be used.
+        if (builder.xmlAccessorFactorySupport){
+            factoryAnn = findXmlAccessorFactoryAnnotation(clazz);
+
+            if (factoryAnn != null) {
+                try {
+                    accFactory = factoryAnn.value().newInstance();
+                } catch (InstantiationException e) {
+                    builder.reportError(new IllegalAnnotationException(
+                            Messages.ACCESSORFACTORY_INSTANTIATION_EXCEPTION.form
+at(
+                            factoryAnn.getClass().getName(), nav().getClassName(c
+lazz)), this));
+                } catch (IllegalAccessException e) {
+                    builder.reportError(new IllegalAnnotationException(
+                            Messages.ACCESSORFACTORY_ACCESS_EXCEPTION.format(
+                            factoryAnn.getClass().getName(), nav().getClassName(c
+lazz)),this));
+                }
+            }
+        }
+
+        // Fall back to local AccessorFactory when no
+        // user not providing one or as error recovery.
+        if (accFactory == null){
+            accFactory = AccessorFactoryImpl.getInstance();
+        }
+        return accFactory;
+    }
+
+    protected XmlAccessorFactory findXmlAccessorFactoryAnnotation(Class clazz) {
+        XmlAccessorFactory factoryAnn = reader().getClassAnnotation(XmlAccessorFa
+ctory.class,clazz,this);
+        if (factoryAnn == null) {
+            factoryAnn = reader().getPackageAnnotation(XmlAccessorFactory.class,c
+lazz,this);
+        }
+        return factoryAnn;
+    }
+
 
     public Method getFactoryMethod(){
         return super.getFactoryMethod();
@@ -162,29 +216,32 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
 
     @Override
     protected RuntimePropertySeed createFieldSeed(Field field) {
-        Accessor.FieldReflection acc;
-        if(Modifier.isStatic(field.getModifiers()))
-            acc = new Accessor.ReadOnlyFieldReflection(field);
-        else
-            acc = new Accessor.FieldReflection(field);
-
-        return new RuntimePropertySeed(
-            super.createFieldSeed(field),
-                acc );
+       final boolean readOnly = Modifier.isStatic(field.getModifiers());
+        Accessor acc;
+        try {
+            acc = accessorFactory.createFieldAccessor(clazz, field, readOnly);
+        } catch(JAXBException e) {
+            builder.reportError(new IllegalAnnotationException(
+                    Messages.CUSTOM_ACCESSORFACTORY_FIELD_ERROR.format(
+                    nav().getClassName(clazz), e.toString()), this ));
+            acc = Accessor.ERROR; // error recovery
+        }
+        return new RuntimePropertySeed(super.createFieldSeed(field), acc );
     }
 
     @Override
     public RuntimePropertySeed createAccessorSeed(Method getter, Method setter) {
         Accessor acc;
-        if(getter==null)
-            acc = new Accessor.SetterOnlyReflection(setter);
-        else
-        if(setter==null)
-            acc = new Accessor.GetterOnlyReflection(getter);
-        else
-            acc = new Accessor.GetterSetterReflection(getter, setter);
-
-        return new RuntimePropertySeed( super.createAccessorSeed(getter,setter), acc );
+        try {
+            acc = accessorFactory.createPropertyAccessor(clazz, getter, setter);
+        } catch(JAXBException e) {
+            builder.reportError(new IllegalAnnotationException(
+                Messages.CUSTOM_ACCESSORFACTORY_PROPERTY_ERROR.format(
+                nav().getClassName(clazz), e.toString()), this ));
+            acc = Accessor.ERROR; // error recovery
+        }
+        return new RuntimePropertySeed( super.createAccessorSeed(getter,setter),
+          acc );
     }
 
     @Override

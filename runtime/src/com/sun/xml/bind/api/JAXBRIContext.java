@@ -378,4 +378,13 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @since 2.1 EA2
      */
     public static final String SUBCLASS_REPLACEMENTS = "com.sun.xml.bind.subclassReplacements";
+
+    /**
+     * The property that you can specify to {@link JAXBContext#newInstance}
+     * enable support of XmlAccessorFactory annotation in the {@link JAXBContext}.
+     *
+     * @since 2.1 EA2
+     */
+    public static final String XMLACCESSORFACTORY_SUPPORT = "com.sun.xml.bind.XmlAccessorFactory";
+
 }
