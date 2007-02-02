@@ -18,7 +18,7 @@ import org.apache.tools.ant.types.Commandline;
  *
  * @author Kohsuke Kawaguchi
  */
-public class SchemaGenTask extends AptBasedTask {
+public final class SchemaGenTask extends AptBasedTask {
     private final List/*<Schema>*/ schemas = new ArrayList();
 
     protected void setupCommandlineSwitches(Commandline cmd) {
