@@ -117,7 +117,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75.2.14 $
+ * @version $Revision: 1.75.2.15 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -230,7 +230,9 @@ public final class JAXBContextImpl extends JAXBRIContext {
      * @param xmlAccessorFactorySupport
      *      Use custom com.sun.xml.bind.v2.runtime.reflect.Accessor implementation.
      */
-    public JAXBContextImpl(Class[] classes, Collection<TypeReference> typeRefs, Map<Class,Class> subclassReplacements, String defaultNsUri, boolean c14nSupport, @Nullable RuntimeAnnotationReader ar, boolean xmlAccessorFactorySupport) throws JAXBException {
+    public JAXBContextImpl(Class[] classes, Collection<TypeReference> typeRefs, 
+        Map<Class,Class> subclassReplacements, String defaultNsUri, boolean c14nSupport, 
+        @Nullable RuntimeAnnotationReader ar, boolean xmlAccessorFactorySupport) throws JAXBException {
         // initialize datatype converter with ours
         DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
 
@@ -960,7 +962,8 @@ public final class JAXBContextImpl extends JAXBRIContext {
         System.arraycopy(classes,0,newList,0,classes.length);
         newList[classes.length] = clazz;
 
-        return new JAXBContextImpl(newList,bridges.keySet(),subclassReplacements,defaultNsUri,c14nSupport,annotaitonReader);
+        return new JAXBContextImpl(newList,bridges.keySet(),subclassReplacements,
+        defaultNsUri,c14nSupport,annotaitonReader, xmlAccessorFactorySupport);
     }
 
     private static final Comparator<QName> QNAME_COMPARATOR = new Comparator<QName>() {

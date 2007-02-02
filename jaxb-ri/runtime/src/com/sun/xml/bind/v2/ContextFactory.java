@@ -75,7 +75,8 @@ public class ContextFactory {
             throw new JAXBException(Messages.UNSUPPORTED_PROPERTY.format(properties.keySet().iterator().next()));
         }
 
-        return createContext(classes,Collections.<TypeReference>emptyList(),subclassReplacements,defaultNsUri,c14nSupport,ar, xmlAccessorFactorySupport);
+        return createContext(classes,Collections.<TypeReference>emptyList(),
+                subclassReplacements,defaultNsUri,c14nSupport,ar, xmlAccessorFactorySupport);
     }
 
     /**
@@ -92,8 +93,12 @@ public class ContextFactory {
             return type.cast(o);
     }
 
-    public static JAXBRIContext createContext( Class[] classes, Collection<TypeReference> typeRefs, Map<Class,Class> subclassReplacements, String defaultNsUri, boolean c14nSupport, RuntimeAnnotationReader ar, boolean xmlAccessorFactorySupport) throws JAXBException {
-        return new JAXBContextImpl(classes,typeRefs,subclassReplacements,defaultNsUri,c14nSupport,ar, xmlAccessorFactorySupport);
+    public static JAXBRIContext createContext( Class[] classes, 
+            Collection<TypeReference> typeRefs, Map<Class,Class> subclassReplacements, 
+            String defaultNsUri, boolean c14nSupport, RuntimeAnnotationReader ar, 
+            boolean xmlAccessorFactorySupport) throws JAXBException {
+        return new JAXBContextImpl(classes,typeRefs,subclassReplacements,defaultNsUri,
+                c14nSupport,ar, xmlAccessorFactorySupport);
     }
 
     /**

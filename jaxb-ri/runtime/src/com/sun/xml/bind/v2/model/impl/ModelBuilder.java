@@ -106,16 +106,16 @@ public class ModelBuilder<T,C,F,M> {
     public ModelBuilder(
         AnnotationReader<T,C,F,M> reader,
         Navigator<T,C,F,M> navigator,
+        Map<C,C> subclassReplacements,
         String defaultNamespaceRemap) {
-        this(reader,navigator,defaultNamespaceRemap,
-        false);
+        this(reader,navigator,subclassReplacements, defaultNamespaceRemap, false);
     }
 
     public ModelBuilder(
         AnnotationReader<T,C,F,M> reader,
         Navigator<T,C,F,M> navigator,
         Map<C,C> subclassReplacements,
-        String defaultNamespaceRemap,'
+        String defaultNamespaceRemap,
         boolean xmlAccessorFactorySupport ) {
 
         this.reader = reader;

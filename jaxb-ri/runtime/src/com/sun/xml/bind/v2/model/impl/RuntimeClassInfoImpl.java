@@ -75,15 +75,12 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
                     accFactory = factoryAnn.value().newInstance();
                 } catch (InstantiationException e) {
                     builder.reportError(new IllegalAnnotationException(
-                            Messages.ACCESSORFACTORY_INSTANTIATION_EXCEPTION.form
-at(
-                            factoryAnn.getClass().getName(), nav().getClassName(c
-lazz)), this));
+                            Messages.ACCESSORFACTORY_INSTANTIATION_EXCEPTION.format(
+                            factoryAnn.getClass().getName(), nav().getClassName(clazz)), this));
                 } catch (IllegalAccessException e) {
                     builder.reportError(new IllegalAnnotationException(
                             Messages.ACCESSORFACTORY_ACCESS_EXCEPTION.format(
-                            factoryAnn.getClass().getName(), nav().getClassName(c
-lazz)),this));
+                            factoryAnn.getClass().getName(), nav().getClassName(clazz)),this));
                 }
             }
         }
@@ -97,11 +94,9 @@ lazz)),this));
     }
 
     protected XmlAccessorFactory findXmlAccessorFactoryAnnotation(Class clazz) {
-        XmlAccessorFactory factoryAnn = reader().getClassAnnotation(XmlAccessorFa
-ctory.class,clazz,this);
+        XmlAccessorFactory factoryAnn = reader().getClassAnnotation(XmlAccessorFactory.class,clazz,this);
         if (factoryAnn == null) {
-            factoryAnn = reader().getPackageAnnotation(XmlAccessorFactory.class,c
-lazz,this);
+            factoryAnn = reader().getPackageAnnotation(XmlAccessorFactory.class,clazz,this);
         }
         return factoryAnn;
     }
@@ -224,7 +219,7 @@ lazz,this);
             builder.reportError(new IllegalAnnotationException(
                     Messages.CUSTOM_ACCESSORFACTORY_FIELD_ERROR.format(
                     nav().getClassName(clazz), e.toString()), this ));
-            acc = Accessor.ERROR; // error recovery
+            acc = Accessor.getErrorInstance(); // error recovery
         }
         return new RuntimePropertySeed(super.createFieldSeed(field), acc );
     }
@@ -238,7 +233,7 @@ lazz,this);
             builder.reportError(new IllegalAnnotationException(
                 Messages.CUSTOM_ACCESSORFACTORY_PROPERTY_ERROR.format(
                 nav().getClassName(clazz), e.toString()), this ));
-            acc = Accessor.ERROR; // error recovery
+            acc = Accessor.getErrorInstance(); // error recovery
         }
         return new RuntimePropertySeed( super.createAccessorSeed(getter,setter),
           acc );

@@ -79,19 +79,28 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @param ar
      *      See {@link #ANNOTATION_READER} for the meaning of this parameter.
      *      Can be null.
-     *
+     *@param xmlAccessorFactorySupport
+     *      Use custom com.sun.xml.bind.v2.runtime.reflect.Accessor implementation.
      * @since JAXB 2.1 EA2
      */
-    public static JAXBRIContext newInstance(@NotNull Class[] classes, @Nullable Collection<TypeReference> typeRefs, @Nullable Map<Class,Class> subclassReplacements, @Nullable String defaultNamespaceRemap, boolean c14nSupport, @Nullable RuntimeAnnotationReader ar) throws JAXBException {
-        return ContextFactory.createContext(classes, typeRefs, subclassReplacements, defaultNamespaceRemap, c14nSupport, ar);
+    public static JAXBRIContext newInstance(@NotNull Class[] classes, 
+       @Nullable Collection<TypeReference> typeRefs, 
+       @Nullable Map<Class,Class> subclassReplacements, 
+       @Nullable String defaultNamespaceRemap, boolean c14nSupport, 
+       @Nullable RuntimeAnnotationReader ar) throws JAXBException {
+        return ContextFactory.createContext(classes, typeRefs, subclassReplacements, 
+                defaultNamespaceRemap, c14nSupport, ar, false);
     }
 
     /**
      * @deprecated
      *      Compatibility with older versions.
      */
-    public static JAXBRIContext newInstance(@NotNull Class[] classes, @Nullable Collection<TypeReference> typeRefs, @Nullable String defaultNamespaceRemap, boolean c14nSupport ) throws JAXBException {
-        return newInstance(classes,typeRefs, Collections.<Class,Class>emptyMap(), defaultNamespaceRemap,c14nSupport,null);
+    public static JAXBRIContext newInstance(@NotNull Class[] classes,
+        @Nullable Collection<TypeReference> typeRefs,
+        @Nullable String defaultNamespaceRemap, boolean c14nSupport ) throws JAXBException {
+        return newInstance(classes,typeRefs, Collections.<Class,Class>emptyMap(), 
+                defaultNamespaceRemap,c14nSupport,null);
     }
 
     /**
