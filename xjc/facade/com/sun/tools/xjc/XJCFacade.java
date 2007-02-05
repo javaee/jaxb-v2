@@ -70,7 +70,7 @@ public class XJCFacade {
             // JAXB API is loaded from the bootstrap. We need to override one with ours
             mustang = true;
 
-            List<String> mask = new ArrayList<String>(Arrays.asList(maskedPackages));
+            List mask = new ArrayList(Arrays.asList(maskedPackages));
             mask.add("javax.xml.bind.");
 
             cl = new MaskingClassLoader(cl,mask);
