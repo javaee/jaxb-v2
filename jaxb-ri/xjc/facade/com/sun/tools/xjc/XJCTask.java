@@ -40,7 +40,7 @@ public class XJCTask extends ProtectedTask {
 
 
     protected ClassLoader createClassLoader() throws ClassNotFoundException, IOException {
-        return XJCFacade.createProtectiveClassLoader(XJCTask.class.getClassLoader(),source);
+        return ClassLoaderBuilder.createProtectiveClassLoader(XJCTask.class.getClassLoader(),source);
     }
 
     protected String getCoreClassName() {
