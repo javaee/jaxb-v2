@@ -71,7 +71,10 @@
     <property name="build.id" value="${now}(${user.name})" />
     
     <zip destfile="build/txw2-src.zip">
-      <fileset dir="src" includes="**/*" defaultexcludes="no"/>
+      <fileset dir="src/runtime" includes="**/*" defaultexcludes="no"/>
+    </zip>
+    <zip destfile="build/txw2c-src.zip">
+      <fileset dir="src/compiler" includes="**/*" defaultexcludes="no"/>
     </zip>
     <jar destfile="build/txw2.jar">
       <manifest>
