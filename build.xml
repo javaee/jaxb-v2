@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.18 2007-02-07 22:38:17 kohsuke Exp $
+       $Id: build.xml,v 1.71.2.19 2007-02-07 22:38:40 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -791,6 +791,8 @@ Class-Path: ${manifest.classpath}
              dest="tools/lib/util/txwc2.jar" />
         <get src="http://kohsuke.sfbay/hudson/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2-src.zip"
              dest="tools/lib/src/txw2-src.zip" />
+        <get src="http://kohsuke.sfbay/hudson/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2c-src.zip"
+             dest="tools/lib/src/txw2c-src.zip" />
     </target>
 
     <target name="integrate-rngom">
