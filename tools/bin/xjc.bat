@@ -28,7 +28,7 @@ if not "%JAXB_HOME%" == "" goto CHECKJAVAHOME
 rem Try to locate JAXB_HOME
 set JAXB_HOME=%~dp0
 set JAXB_HOME=%JAXB_HOME%\..
-if exist %JAXB_HOME%\lib\jaxb-xjc.jar goto CHECKJAVAHOME
+if exist "%JAXB_HOME%\lib\jaxb-xjc.jar" goto CHECKJAVAHOME
 
 rem Unable to find it
 echo JAXB_HOME must be set before running this script
@@ -45,7 +45,7 @@ set JAVA="%JAVA_HOME%\bin\java"
 goto LAUNCHXJC
 
 :LAUNCHXJC
-%JAVA% %XJC_OPTS% -jar %JAXB_HOME%\lib\jaxb-xjc.jar %*
+%JAVA% %XJC_OPTS% -jar "%JAXB_HOME%\lib\jaxb-xjc.jar" %*
 
 :END
 %COMSPEC% /C exit %ERRORLEVEL%
