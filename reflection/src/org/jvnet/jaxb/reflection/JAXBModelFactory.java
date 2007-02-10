@@ -73,7 +73,7 @@ public abstract class JAXBModelFactory {
         ErrorHandler errorHandler,
         Class... classes ) {
 
-        RuntimeModelBuilder builder = new RuntimeModelBuilder(null,reader,Collections.<Class,Class>emptyMap(),null);
+        RuntimeModelBuilder builder = new RuntimeModelBuilder(null,reader,Collections.<Class,Class>emptyMap(),null,false);
         builder.setErrorHandler(errorHandler);
         for( Class c : classes )
             builder.getTypeInfo(new Ref<Type,Class>(c));
