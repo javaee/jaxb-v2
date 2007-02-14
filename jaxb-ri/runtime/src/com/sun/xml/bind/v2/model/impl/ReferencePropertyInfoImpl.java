@@ -9,6 +9,8 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlMixed;
+import javax.xml.bind.annotation.XmlSchema;
+import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
@@ -160,8 +162,15 @@ class ReferencePropertyInfoImpl<T,C,F,M>
 
     private String getEffectiveNamespaceFor(XmlElementRef r) {
         String nsUri = r.namespace();
-        if(nsUri.length()==0)
-            nsUri = parent.builder.defaultNsUri;
+
+        XmlSchema xs = reader().getPackageAnnotation( XmlSchema.class, parent.getClazz(), this );
+        if(xs!=null && xs.attributeFormDefault()== XmlNsForm.QUALIFIED) {
+            // JAX-RPC doesn't want the default namespace URI swapping to take effect to
+            // local "unqualified" elements. UGLY.
+            if(nsUri.length()==0)
+                nsUri = parent.builder.defaultNsUri;
+        }
+
         return nsUri;
     }
 
