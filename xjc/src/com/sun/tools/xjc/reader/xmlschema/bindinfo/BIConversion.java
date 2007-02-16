@@ -36,6 +36,7 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
+import com.sun.codemodel.JConditional;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.model.CAdapter;
 import com.sun.tools.xjc.model.CBuiltinLeafInfo;
@@ -227,6 +228,10 @@ public abstract class BIConversion extends AbstractDeclarationImpl {
 
                 // RESULT: <value>.<method>()
                 inv = $value.invoke(printMethod);
+                
+                // check value is not null ... if(value == null) return null;
+                JConditional jcon = marshal.body()._if($value.eq(JExpr._null()));
+                jcon._then()._return(JExpr._null());
             } else {
                 // RESULT: <className>.<method>(<value>)
                 if(this.printMethod==null) {
