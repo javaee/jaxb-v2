@@ -3,6 +3,7 @@ package com.sun.tools.xjc.model;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.activation.MimeType;
 import javax.xml.namespace.QName;
@@ -173,5 +174,15 @@ public final class CElementPropertyInfo extends CPropertyInfo implements Element
         }
 
         public boolean isRepeated() { return col; }
+    }
+
+    @Override
+    public QName collectElementNames(Map<QName, CPropertyInfo> table) {
+        for (CTypeRef t : types) {
+            QName n = t.getTagName();
+            if(table.containsKey(n))    return n;
+            table.put(n, this);
+        }
+        return null;
     }
 }
