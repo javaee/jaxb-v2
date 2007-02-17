@@ -1,6 +1,10 @@
 package com.sun.tools.xjc.reader;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+
+import javax.xml.namespace.QName;
 
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.model.CClassInfo;
@@ -29,6 +33,7 @@ public final class ModelChecker {
 
     private void check( CClassInfo ci ) {
         List<CPropertyInfo> props = ci.getProperties();
+        Map<QName,CPropertyInfo> collisionTable = new HashMap<QName,CPropertyInfo>();
 
         OUTER:
         for( int i=0; i<props.size(); i++ ) {
@@ -37,6 +42,13 @@ public final class ModelChecker {
             if(p1.getName(true).equals("Class")) {
                 errorReceiver.error(p1.locator,Messages.PROPERTY_CLASS_IS_RESERVED.format());
                 continue;
+            }
+
+            QName n = p1.collectElementNames(collisionTable);
+            if(n!=null) {
+                CPropertyInfo p2 = collisionTable.get(n);
+                errorReceiver.error(p1.locator,Messages.DUPLICATE_ELEMENT.format(n));
+                errorReceiver.error(p2.locator,Messages.ERR_RELEVANT_LOCATION.format());
             }
 
             for( int j=i+1; j<props.size(); j++ ) {

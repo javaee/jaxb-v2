@@ -1,6 +1,7 @@
 package com.sun.tools.xjc.model;
 
 import java.util.Collection;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlSchemaType;
@@ -282,5 +283,17 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
 
         // if it's the default type name for this item, then no need
         return !itemType.equals(typeName);
+    }
+
+    /**
+     * Puts the element names that this property possesses to the map,
+     * so that we can find two properties that own the same element name,
+     * which is an error.
+     *
+     * @return
+     *      null if no conflict was found. Otherwise return the QName that has the collision.
+     */
+    public QName collectElementNames(Map<QName,CPropertyInfo> table) {
+        return null;
     }
 }

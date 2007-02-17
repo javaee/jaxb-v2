@@ -3,6 +3,7 @@ package com.sun.tools.xjc.model;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Map;
 
 import javax.activation.MimeType;
 import javax.xml.bind.annotation.W3CDomHandler;
@@ -170,6 +171,17 @@ public final class CReferencePropertyInfo extends CPropertyInfo implements Refer
 
     // reference property cannot have a type.
     public QName getSchemaType() {
+        return null;
+    }
+
+    @Override
+    public QName collectElementNames(Map<QName, CPropertyInfo> table) {
+        for (CElement e : elements) {
+            QName n = e.getElementName();
+            if(table.containsKey(n))
+                return n;
+            table.put(n,this);
+        }
         return null;
     }
 }

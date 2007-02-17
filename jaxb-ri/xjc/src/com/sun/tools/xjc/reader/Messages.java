@@ -28,6 +28,7 @@ import java.util.ResourceBundle;
  */
 public enum Messages {
     DUPLICATE_PROPERTY, // 1 arg
+    DUPLICATE_ELEMENT, // 1 arg
 
     ERR_UNDECLARED_PREFIX,
     ERR_UNEXPECTED_EXTENSION_BINDING_PREFIXES,
