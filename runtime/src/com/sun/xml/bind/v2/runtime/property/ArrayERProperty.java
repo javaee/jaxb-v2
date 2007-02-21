@@ -148,7 +148,7 @@ abstract class ArrayERProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,Li
             QNameMap<ChildLoader> m = new QNameMap<ChildLoader>();
             createBodyUnmarshaller(c,m);
             Loader loader = new ItemsLoader(acc, lister, m);
-            if(isWrapperNillable)
+            if(isWrapperNillable || chain.context.allNillable)
                 loader = new XsiNilLoader(loader);
             loaders.put(wrapperTagName,new ChildLoader(loader,null));
         } else {

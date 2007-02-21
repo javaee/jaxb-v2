@@ -165,7 +165,7 @@ abstract class ArrayElementProperty<BeanT,ListT,ItemT> extends ArrayERProperty<B
             Name tagName = chain.context.nameBuilder.createElementName(typeRef.getTagName());
             Loader item = createItemUnmarshaller(chain,typeRef);
 
-            if(typeRef.isNillable())
+            if(typeRef.isNillable() || chain.context.allNillable)
                 item = new XsiNilLoader.Array(item);
             if(typeRef.getDefaultValue()!=null)
                 item = new DefaultValueLoaderDecorator(item,typeRef.getDefaultValue());

@@ -129,7 +129,7 @@ final class SingleElementNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT> 
             Loader l = bi.getLoader(context,true);
             if(e.getDefaultValue()!=null)
                 l = new DefaultValueLoaderDecorator(l,e.getDefaultValue());
-            if(nillable)
+            if(nillable || chain.context.allNillable)
                 l = new XsiNilLoader.Single(l,acc);
             handlers.put( e.getTagName(), new ChildLoader(l,acc));
         }
