@@ -171,16 +171,21 @@ public class XMLStreamReaderToContentHandler {
         QName qName = staxStreamReader.getName();
 
         try {
+            String prefix = qName.getPrefix();
+            String rawname = (prefix == null || prefix.length() == 0)
+                    ? qName.getLocalPart()
+                    : prefix + ':' + qName.getLocalPart();
+
             // fire endElement
             saxHandler.endElement(
                 qName.getNamespaceURI(),
                 qName.getLocalPart(),
-                qName.toString());
+                rawname);
 
             // end namespace bindings
             int nsCount = staxStreamReader.getNamespaceCount();
             for (int i = nsCount - 1; i >= 0; i--) {
-                String prefix = staxStreamReader.getNamespacePrefix(i);
+                prefix = staxStreamReader.getNamespacePrefix(i);
                 if (prefix == null) { // true for default namespace
                     prefix = "";
                 }
