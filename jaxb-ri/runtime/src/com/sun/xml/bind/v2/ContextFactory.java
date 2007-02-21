@@ -51,6 +51,10 @@ public class ContextFactory {
         if(c14nSupport==null)
             c14nSupport = false;
 
+        Boolean allNillable = getPropertyValue(properties,JAXBRIContext.TREAT_EVERYTHING_NILLABLE,Boolean.class);
+        if(allNillable==null)
+            allNillable = false;
+
         Boolean xmlAccessorFactorySupport = getPropertyValue(properties,
            JAXBRIContext.XMLACCESSORFACTORY_SUPPORT,Boolean.class);
         if(xmlAccessorFactorySupport==null){
@@ -75,7 +79,7 @@ public class ContextFactory {
         }
 
         return createContext(classes,Collections.<TypeReference>emptyList(),
-                subclassReplacements,defaultNsUri,c14nSupport,ar, xmlAccessorFactorySupport);
+                subclassReplacements,defaultNsUri,c14nSupport,ar,xmlAccessorFactorySupport,allNillable);
     }
 
     /**
@@ -95,9 +99,9 @@ public class ContextFactory {
     public static JAXBRIContext createContext( Class[] classes, 
             Collection<TypeReference> typeRefs, Map<Class,Class> subclassReplacements, 
             String defaultNsUri, boolean c14nSupport, RuntimeAnnotationReader ar, 
-            boolean xmlAccessorFactorySupport) throws JAXBException {
+            boolean xmlAccessorFactorySupport, boolean allNillable) throws JAXBException {
         return new JAXBContextImpl(classes,typeRefs,subclassReplacements,defaultNsUri,
-                c14nSupport,ar, xmlAccessorFactorySupport);
+                c14nSupport,ar, xmlAccessorFactorySupport,allNillable);
     }
 
     /**

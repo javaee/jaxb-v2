@@ -72,7 +72,7 @@ final class SingleElementLeafProperty<BeanT> extends PropertyImpl<BeanT> {
         Loader l = new LeafPropertyLoader(xacc);
         if(defaultValue!=null)
             l = new DefaultValueLoaderDecorator(l,defaultValue);
-        if(nillable)
+        if(nillable || chain.context.allNillable)
             l = new XsiNilLoader.Single(l,acc);
         handlers.put(tagName,new ChildLoader(l,null));
     }

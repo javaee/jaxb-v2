@@ -3,11 +3,11 @@ package com.sun.xml.bind.v2.model.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.util.Which;
@@ -102,14 +102,6 @@ public class ModelBuilder<T,C,F,M> {
             reportError(e);
         }
     };
-
-    public ModelBuilder(
-        AnnotationReader<T,C,F,M> reader,
-        Navigator<T,C,F,M> navigator,
-        Map<C,C> subclassReplacements,
-        String defaultNamespaceRemap) {
-        this(reader,navigator,subclassReplacements, defaultNamespaceRemap, false);
-    }
 
     public ModelBuilder(
         AnnotationReader<T,C,F,M> reader,

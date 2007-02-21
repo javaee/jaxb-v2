@@ -79,8 +79,6 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @param ar
      *      See {@link #ANNOTATION_READER} for the meaning of this parameter.
      *      Can be null.
-     *@param xmlAccessorFactorySupport
-     *      Use custom com.sun.xml.bind.v2.runtime.reflect.Accessor implementation.
      * @since JAXB 2.1 EA2
      */
     public static JAXBRIContext newInstance(@NotNull Class[] classes, 
@@ -89,7 +87,7 @@ public abstract class JAXBRIContext extends JAXBContext {
        @Nullable String defaultNamespaceRemap, boolean c14nSupport, 
        @Nullable RuntimeAnnotationReader ar) throws JAXBException {
         return ContextFactory.createContext(classes, typeRefs, subclassReplacements, 
-                defaultNamespaceRemap, c14nSupport, ar, false);
+                defaultNamespaceRemap, c14nSupport, ar, false, false);
     }
 
     /**
@@ -361,6 +359,15 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @since 2.0 EA2
      */
     public static final String CANONICALIZATION_SUPPORT = "com.sun.xml.bind.c14n";
+
+    /**
+     * The property that you can specify to {@link JAXBContext#newInstance}
+     * to allow unmarshaller to honor <tt>xsi:nil</tt> anywhere, even if they are
+     * not specifically allowed by the schema.
+     *
+     * @since 2.1.3
+     */
+    public static final String TREAT_EVERYTHING_NILLABLE = "com.sun.xml.bind.treatEverythingNillable";
 
     /**
      * The property that you can specify to {@link JAXBContext#newInstance}

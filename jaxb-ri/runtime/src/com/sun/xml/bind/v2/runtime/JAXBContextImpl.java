@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.Collections;
 
 import javax.xml.bind.Binder;
 import javax.xml.bind.DatatypeConverter;
@@ -70,10 +70,10 @@ import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.Bridge;
 import com.sun.xml.bind.api.BridgeContext;
 import com.sun.xml.bind.api.CompositeStructure;
+import com.sun.xml.bind.api.ErrorListener;
 import com.sun.xml.bind.api.JAXBRIContext;
 import com.sun.xml.bind.api.RawAccessor;
 import com.sun.xml.bind.api.TypeReference;
-import com.sun.xml.bind.api.ErrorListener;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.bind.util.Which;
 import com.sun.xml.bind.v2.WellKnownNamespace;
@@ -117,7 +117,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75.2.15 $
+ * @version $Revision: 1.75.2.16 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -205,6 +205,11 @@ public final class JAXBContextImpl extends JAXBRIContext {
      */
     protected final boolean xmlAccessorFactorySupport;
 
+    /**
+     * @see JAXBRIContext#TREAT_EVERYTHING_NILLABLE
+     */
+    public final boolean allNillable;
+
 
     private WeakReference<RuntimeTypeInfoSet> typeInfoSetCache;
 
@@ -232,7 +237,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
      */
     public JAXBContextImpl(Class[] classes, Collection<TypeReference> typeRefs, 
         Map<Class,Class> subclassReplacements, String defaultNsUri, boolean c14nSupport, 
-        @Nullable RuntimeAnnotationReader ar, boolean xmlAccessorFactorySupport) throws JAXBException {
+        @Nullable RuntimeAnnotationReader ar, boolean xmlAccessorFactorySupport, boolean allNillable) throws JAXBException {
         // initialize datatype converter with ours
         DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
 
@@ -258,6 +263,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
         this.defaultNsUri = defaultNsUri;
         this.c14nSupport = c14nSupport;
         this.xmlAccessorFactorySupport = xmlAccessorFactorySupport;
+        this.allNillable = allNillable;
         this.classes = new Class[classes.length];
         System.arraycopy(classes,0,this.classes,0,classes.length);
 
@@ -397,7 +403,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
                 return r;
         }
 
-        final RuntimeModelBuilder builder = new RuntimeModelBuilder(this,annotaitonReader,subclassReplacements,defaultNsUri, xmlAccessorFactorySupport);
+        final RuntimeModelBuilder builder = new RuntimeModelBuilder(this,annotaitonReader,subclassReplacements,defaultNsUri,xmlAccessorFactorySupport);
 
         IllegalAnnotationsException.Builder errorHandler = new IllegalAnnotationsException.Builder();
         builder.setErrorHandler(errorHandler);
@@ -963,7 +969,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
         newList[classes.length] = clazz;
 
         return new JAXBContextImpl(newList,bridges.keySet(),subclassReplacements,
-        defaultNsUri,c14nSupport,annotaitonReader, xmlAccessorFactorySupport);
+        defaultNsUri,c14nSupport,annotaitonReader, xmlAccessorFactorySupport, allNillable);
     }
 
     private static final Comparator<QName> QNAME_COMPARATOR = new Comparator<QName>() {
