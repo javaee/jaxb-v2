@@ -256,9 +256,9 @@
       private void makeResult( int derivationMethod ) {
       
         if(finalValue==null)
-          finalValue = new Integer($runtime.finalDefault);
+          finalValue = $runtime.finalDefault;
         if(blockValue==null)
-          blockValue = new Integer($runtime.blockDefault);
+          blockValue = $runtime.blockDefault;
         
         result = new ComplexTypeImpl(
             $runtime.document,
@@ -270,8 +270,8 @@
             $runtime.parseBoolean(abstractValue),
             derivationMethod,
             baseType,
-            finalValue.intValue(),
-            blockValue.intValue(),
+            finalValue,
+            blockValue,
             $runtime.parseBoolean(mixedValue)
         );
       }
