@@ -27,18 +27,7 @@
         public XSSimpleType getType() {
           return (XSSimpleType)((XSComplexType)baseType.getType()).getContentType();
         }
-      };
-      private static class BaseContentRef implements Ref.ContentType {
-        private final Ref.Type baseType;
-        private BaseContentRef(Ref.Type _baseType ) { this.baseType = _baseType; }
-        public XSContentType getContentType() {
-            XSType t = baseType.getType();
-            if(t.asComplexType()!=null)
-                return t.asComplexType().getContentType();
-            else
-                return t.asSimpleType();
-        }
-      };
+      }
       
     </cc:java-body>
     
@@ -156,7 +145,7 @@
                 annotation = <ref name="annotation"/>(annotation,AnnotationContext.COMPLEXTYPE_DECL);
               </optional>
               <cc:java>
-                contentType = new BaseContentRef(baseType);
+                contentType = new BaseContentRef($runtime,baseType);
                 makeResult(XSType.EXTENSION);
                 result.setContentType(contentType);
               </cc:java>
