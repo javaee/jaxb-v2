@@ -117,7 +117,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75.2.16 $
+ * @version $Revision: 1.75.2.17 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -203,7 +203,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
     /**
      * Flag that user has provided a custom AccessorFactory for JAXB to use
      */
-    protected final boolean xmlAccessorFactorySupport;
+    public final boolean xmlAccessorFactorySupport;
 
     /**
      * @see JAXBRIContext#TREAT_EVERYTHING_NILLABLE
@@ -403,7 +403,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
                 return r;
         }
 
-        final RuntimeModelBuilder builder = new RuntimeModelBuilder(this,annotaitonReader,subclassReplacements,defaultNsUri,xmlAccessorFactorySupport);
+        final RuntimeModelBuilder builder = new RuntimeModelBuilder(this,annotaitonReader,subclassReplacements,defaultNsUri);
 
         IllegalAnnotationsException.Builder errorHandler = new IllegalAnnotationsException.Builder();
         builder.setErrorHandler(errorHandler);

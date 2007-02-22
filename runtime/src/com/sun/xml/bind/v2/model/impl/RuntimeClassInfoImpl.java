@@ -63,11 +63,11 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
     }
 
     protected AccessorFactory createAccessorFactory(Class clazz) {
-        XmlAccessorFactory factoryAnn = null;
+        XmlAccessorFactory factoryAnn;
         AccessorFactory accFactory = null;
 
         // user providing class to be used.
-        if (builder.xmlAccessorFactorySupport){
+        if (((RuntimeModelBuilder)builder).context.xmlAccessorFactorySupport){
             factoryAnn = findXmlAccessorFactoryAnnotation(clazz);
 
             if (factoryAnn != null) {

@@ -45,9 +45,8 @@ public class RuntimeModelBuilder extends ModelBuilder<Type,Class,Field,Method> {
      */
     public final JAXBContextImpl context;
 
-    public RuntimeModelBuilder(JAXBContextImpl context, RuntimeAnnotationReader annotationReader, Map<Class,Class> subclassReplacements, String defaultNamespaceRemap,
-        boolean xmlAccessorFactorySupport) {
-        super(annotationReader, Navigator.REFLECTION, subclassReplacements, defaultNamespaceRemap, xmlAccessorFactorySupport);
+    public RuntimeModelBuilder(JAXBContextImpl context, RuntimeAnnotationReader annotationReader, Map<Class, Class> subclassReplacements, String defaultNamespaceRemap) {
+        super(annotationReader, Navigator.REFLECTION, subclassReplacements, defaultNamespaceRemap);
         this.context = context;
     }
 

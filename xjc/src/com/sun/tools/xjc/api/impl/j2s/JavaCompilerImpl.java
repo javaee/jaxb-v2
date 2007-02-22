@@ -41,8 +41,7 @@ public class JavaCompilerImpl implements JavaCompiler {
                 InlineAnnotationReaderImpl.theInstance,
                 new APTNavigator(env),
                 Collections.<TypeDeclaration,TypeDeclaration>emptyMap(),
-                defaultNamespaceRemap, false
-            );
+                defaultNamespaceRemap );
 
         builder.setErrorHandler(new ErrorHandlerImpl(env.getMessager()));
 
