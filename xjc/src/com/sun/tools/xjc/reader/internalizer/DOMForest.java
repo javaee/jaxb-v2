@@ -54,7 +54,6 @@ import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.reader.xmlschema.parser.SchemaConstraintChecker;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
-import com.sun.tools.xjc.util.XMLStreamReaderToContentHandler;
 import com.sun.xml.bind.marshaller.DataWriter;
 import com.sun.xml.xsom.parser.JAXPParser;
 import com.sun.xml.xsom.parser.XMLParser;
