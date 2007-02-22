@@ -49,6 +49,7 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.validation.SchemaFactory;
 
 import com.sun.istack.NotNull;
+import com.sun.istack.XMLStreamReaderToContentHandler;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.reader.xmlschema.parser.SchemaConstraintChecker;
@@ -413,7 +414,7 @@ public final class DOMForest {
             throw new IllegalArgumentException("system id cannot be null");
         core.put( systemId, dom );
         
-        new XMLStreamReaderToContentHandler(parser,getParserHandler(dom)).bridge();
+        new XMLStreamReaderToContentHandler(parser,getParserHandler(dom),false,false).bridge();
         
         return dom;
     }
