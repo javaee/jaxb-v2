@@ -71,11 +71,6 @@ public class ModelBuilder<T,C,F,M> {
      */
     public final String defaultNsUri;
 
-    /**
-     * Flag that user has provided a custom AccessorFactory for JAXB to use
-     */
-    public final boolean xmlAccessorFactorySupport;
-
 
     /**
      * Packages whose registries are already added.
@@ -104,11 +99,11 @@ public class ModelBuilder<T,C,F,M> {
     };
 
     public ModelBuilder(
-        AnnotationReader<T,C,F,M> reader,
-        Navigator<T,C,F,M> navigator,
-        Map<C,C> subclassReplacements,
-        String defaultNamespaceRemap,
-        boolean xmlAccessorFactorySupport ) {
+            AnnotationReader<T, C, F, M> reader,
+            Navigator<T, C, F, M> navigator,
+            Map<C, C> subclassReplacements,
+            String defaultNamespaceRemap
+    ) {
 
         this.reader = reader;
         this.nav = navigator;
@@ -116,7 +111,6 @@ public class ModelBuilder<T,C,F,M> {
         if(defaultNamespaceRemap==null)
             defaultNamespaceRemap = "";
         this.defaultNsUri = defaultNamespaceRemap;
-        this.xmlAccessorFactorySupport = xmlAccessorFactorySupport;
         reader.setErrorHandler(proxyErrorHandler);
         typeInfoSet = createTypeInfoSet();
     }
