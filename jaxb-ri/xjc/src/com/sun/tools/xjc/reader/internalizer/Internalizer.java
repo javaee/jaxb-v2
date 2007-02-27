@@ -184,7 +184,7 @@ class Internalizer {
                 // continue with the original schemaLocation value
             }
             
-            target = forest.get(schemaLocation).getDocumentElement();
+            target = forest.get(schemaLocation);
             if(target==null) {
                 reportError( bindings,
                     Messages.format(Messages.ERR_INCORRECT_SCHEMA_REFERENCE,
@@ -193,6 +193,8 @@ class Internalizer {
                 
                 return; // abort processing this <jaxb:bindings>
             }
+
+            target = ((Document)target).getDocumentElement();
         }
         
         // look for @node
