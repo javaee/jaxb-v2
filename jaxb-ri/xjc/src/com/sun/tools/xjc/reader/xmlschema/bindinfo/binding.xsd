@@ -118,13 +118,13 @@
   </xs:element>
   <xs:element name="nameXmlTransform">
     <xs:complexType>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element ref="jaxb:typeName"/>
-        <xs:element ref="jaxb:elementName"/>
-        <xs:element ref="jaxb:attributeName"/>
-        <xs:element ref="jaxb:modelGroupName"/>
-        <xs:element ref="jaxb:anonymousTypeName"/>
-      </xs:choice>
+      <xs:all>
+        <xs:element ref="jaxb:typeName" minOccurs='0'/>
+        <xs:element ref="jaxb:elementName" minOccurs='0'/>
+        <xs:element ref="jaxb:attributeName" minOccurs='0'/>
+        <xs:element ref="jaxb:modelGroupName" minOccurs='0'/>
+        <xs:element ref="jaxb:anonymousTypeName" minOccurs='0'/>
+      </xs:all>
     </xs:complexType>
   </xs:element>
   <xs:element name="typeName">
