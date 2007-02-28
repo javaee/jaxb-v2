@@ -224,6 +224,9 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     }
                 }
             }
+
+            if(generateSwaRefAdapter(p))
+                n.useSwaRef = true;
         }
 
         // recurse on baseTypes to make sure that we can refer to them in the schema
@@ -468,6 +471,12 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         private Form attributeFormDefault;
         private Form elementFormDefault;
 
+        /**
+         * Does schema in this namespace uses swaRef? If so, we need to generate import
+         * statement.
+         */
+        private boolean useSwaRef;
+
         public Namespace(String uri) {
             this.uri = uri;
             assert !XmlSchemaGenerator.this.namespaces.containsKey(uri);
@@ -533,6 +542,9 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                     schema._namespace(e.getValue(),e.getKey());
                 }
 
+                if(useSwaRef)
+                    schema._namespace(WellKnownNamespace.SWA_URI,"swaRef");
+
                 attributeFormDefault = Form.get(types.getAttributeFormDefault(uri));
                 attributeFormDefault.declare("attributeFormDefault",schema);
 
@@ -576,6 +588,9 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                         imp.schemaLocation(relativize(refSystemId,result.getSystemId()));
                     }
                     schema._pcdata(newline);
+                }
+                if(useSwaRef) {
+                    schema._import().namespace(WellKnownNamespace.SWA_URI).schemaLocation("http://ws-i.org/profiles/basic/1.1/swaref.xsd");
                 }
 
                 // then write each component
@@ -671,18 +686,6 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
             // normal type generation
             writeTypeRef(th, typeRef.getTarget(), refAttName);
-        }
-
-        /**
-         * Examine the specified element ref and determine if a swaRef attribute needs to be generated
-         * @param typeRef
-         */
-        private boolean generateSwaRefAdapter(NonElementRef<T,C> typeRef) {
-            final Adapter<T,C> adapter = typeRef.getSource().getAdapter();
-            if (adapter == null) return false;
-            final Object o = navigator.asDecl(SwaRefAdapter.class);
-            if (o == null) return false;
-            return (o.equals(adapter.adapterType));
         }
 
         /**
@@ -1292,6 +1295,25 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         }
     }
 
+    /**
+     * Examine the specified element ref and determine if a swaRef attribute needs to be generated
+     * @param typeRef
+     */
+    private boolean generateSwaRefAdapter(NonElementRef<T,C> typeRef) {
+        return generateSwaRefAdapter(typeRef.getSource());
+    }
+
+    /**
+     * Examine the specified element ref and determine if a swaRef attribute needs to be generated
+     * @param typeRef
+     */
+    private boolean generateSwaRefAdapter(PropertyInfo<T,C> prop) {
+        final Adapter<T,C> adapter = prop.getAdapter();
+        if (adapter == null) return false;
+        final Object o = navigator.asDecl(SwaRefAdapter.class);
+        if (o == null) return false;
+        return (o.equals(adapter.adapterType));
+    }
 
     /**
      * return the string representation of the processContents mode of the
