@@ -1305,7 +1305,6 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
     /**
      * Examine the specified element ref and determine if a swaRef attribute needs to be generated
-     * @param typeRef
      */
     private boolean generateSwaRefAdapter(PropertyInfo<T,C> prop) {
         final Adapter<T,C> adapter = prop.getAdapter();
