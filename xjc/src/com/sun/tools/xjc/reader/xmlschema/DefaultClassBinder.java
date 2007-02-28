@@ -65,6 +65,8 @@ import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.XSXPath;
 
+import org.xml.sax.Locator;
+
 /**
  * Default classBinder implementation. Honors &lt;jaxb:class> customizations
  * and default bindings.
@@ -106,6 +108,8 @@ final class DefaultClassBinder implements ClassBinder
         if(type.isGlobal()) {
             QName tagName = null;
             String className = deriveName(type);
+            Locator loc = type.getLocator();
+
             if(getGlobalBinding().isSimpleMode()) {
                 // in the simple mode, we may optimize it away
                 XSElementDecl referer = getSoleElementReferer(type);
@@ -115,6 +119,7 @@ final class DefaultClassBinder implements ClassBinder
                     // and collapses element and complex type.
                     tagName = getName(referer);
                     className = deriveName(referer);
+                    loc = referer.getLocator();
                 }
             }
 
@@ -122,7 +127,7 @@ final class DefaultClassBinder implements ClassBinder
 
             JPackage pkg = selector.getPackage(type.getTargetNamespace());
 
-            return new CClassInfo(model,pkg,className,type.getLocator(),getTypeName(type),tagName,type,bi.toCustomizationList());
+            return new CClassInfo(model,pkg,className, loc,getTypeName(type),tagName,type,bi.toCustomizationList());
         } else {
             XSElementDecl element = type.getScope();
 
