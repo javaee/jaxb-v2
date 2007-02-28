@@ -1,12 +1,11 @@
 package com.sun.xml.bind.v2.model.impl;
 
-import java.beans.Introspector;
-
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
+import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.bind.v2.model.annotation.AnnotationReader;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
@@ -79,8 +78,7 @@ abstract class TypeInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
         String local = e.name();
         if(local.equals("##default")) {
             // if defaulted...
-            local = Introspector.decapitalize(nav().getClassShortName(clazz));
-            // local = NameConverter.standard.toVariableName(nav().getClassShortName(clazz));
+            local = NameConverter.standard.toVariableName(nav().getClassShortName(clazz));
         }
         String nsUri = e.namespace();
         if(nsUri.equals("##default")) {
@@ -125,8 +123,7 @@ abstract class TypeInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
         if(local.equals("##default"))
             // if defaulted ...
-            local = Introspector.decapitalize(nav().getClassShortName(clazz));
-            // local = NameConverter.standard.toVariableName(nav().getClassShortName(clazz));
+            local = NameConverter.standard.toVariableName(nav().getClassShortName(clazz));
 
         if(nsUri.equals("##default")) {
             // if defaulted ...
