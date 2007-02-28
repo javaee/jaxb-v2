@@ -1,11 +1,10 @@
 package com.sun.xml.bind.v2.model.impl;
 
-import java.beans.Introspector;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.namespace.QName;
 
+import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.bind.v2.model.core.AttributePropertyInfo;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 
@@ -41,8 +40,7 @@ class AttributePropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
 
         // compute the default
         if(local.equals("##default"))
-            // local = NameConverter.standard.toVariableName(getName());
-            local = Introspector.decapitalize(getName());
+            local = NameConverter.standard.toVariableName(getName());
         if(uri.equals("##default")) {
             XmlSchema xs = reader().getPackageAnnotation( XmlSchema.class, parent.getClazz(), this );
             // JAX-RPC doesn't want the default namespace URI swapping to take effect to
