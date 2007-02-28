@@ -19,7 +19,11 @@ public final class BaseContentRef implements Ref.ContentType, Patch {
     }
 
     public XSContentType getContentType() {
-        return baseType.getType().asSimpleType();
+        XSType t = baseType.getType();
+        if(t.asComplexType()!=null)
+            return t.asComplexType().getContentType();
+        else
+            return t.asSimpleType();
     }
 
     public void run() throws SAXException {
@@ -29,9 +33,9 @@ public final class BaseContentRef implements Ref.ContentType, Patch {
             ((Patch) baseType).run();
 
         XSType t = baseType.getType();
-        if (t.isComplexType()) {
+        if (t.isComplexType() && t.asComplexType().getContentType().asParticle()!=null) {
             runtime.reportError(
-                Messages.format(Messages.ERR_SIMPLE_TYPE_EXPECTED,
+                Messages.format(Messages.ERR_SIMPLE_CONTENT_EXPECTED,
                     t.getTargetNamespace(), t.getName()), loc);
         }
 
