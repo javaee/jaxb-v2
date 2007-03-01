@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.namespace.QName;
 
 import com.sun.istack.Nullable;
+import com.sun.xml.bind.v2.model.annotation.AnnotationSource;
 
 /**
  * Information about a JAXB-bound property.
@@ -23,7 +24,7 @@ import com.sun.istack.Nullable;
  *
  * @author Kohsuke Kawaguchi
  */
-public interface PropertyInfo<T,C> {
+public interface PropertyInfo<T,C> extends AnnotationSource {
 
     /**
      * Gets the {@link ClassInfo} or {@link ElementInfo} to which this property belongs.
