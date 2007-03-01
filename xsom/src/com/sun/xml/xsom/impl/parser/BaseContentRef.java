@@ -9,13 +9,21 @@ import org.xml.sax.SAXException;
 public final class BaseContentRef implements Ref.ContentType, Patch {
     private final Ref.Type baseType;
     private final Locator loc;
-    private NGCCRuntimeEx runtime;
 
-    public BaseContentRef(NGCCRuntimeEx $runtime, Ref.Type _baseType) {
+    public BaseContentRef(final NGCCRuntimeEx $runtime, Ref.Type _baseType) {
         this.baseType = _baseType;
         $runtime.addPatcher(this);
+        $runtime.addErrorChecker(new Patch() {
+            public void run() throws SAXException {
+                XSType t = baseType.getType();
+                if (t.isComplexType() && t.asComplexType().getContentType().asParticle()!=null) {
+                    $runtime.reportError(
+                        Messages.format(Messages.ERR_SIMPLE_CONTENT_EXPECTED,
+                            t.getTargetNamespace(), t.getName()), loc);
+                }
+            }
+        });
         this.loc = $runtime.copyLocator();
-        this.runtime = $runtime;
     }
 
     public XSContentType getContentType() {
@@ -27,18 +35,7 @@ public final class BaseContentRef implements Ref.ContentType, Patch {
     }
 
     public void run() throws SAXException {
-        if(runtime==null)   return;
-
         if (baseType instanceof Patch)
             ((Patch) baseType).run();
-
-        XSType t = baseType.getType();
-        if (t.isComplexType() && t.asComplexType().getContentType().asParticle()!=null) {
-            runtime.reportError(
-                Messages.format(Messages.ERR_SIMPLE_CONTENT_EXPECTED,
-                    t.getTargetNamespace(), t.getName()), loc);
-        }
-
-        runtime = null;
     }
 }

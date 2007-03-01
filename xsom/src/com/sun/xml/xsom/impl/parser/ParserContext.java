@@ -40,6 +40,7 @@ public class ParserContext {
 
 
     private final Vector<Patch> patchers = new Vector<Patch>();
+    private final Vector<Patch> errorCheckers = new Vector<Patch>();
 
     /**
      * Documents that are parsed already. Used to avoid cyclic inclusion/double
@@ -99,6 +100,12 @@ public class ParserContext {
         while(itr.hasNext())
             ((ElementDecl)itr.next()).updateSubstitutabilityMap();
 
+        // run all the error checkers
+        for (Patch patcher : errorCheckers)
+            patcher.run();
+        errorCheckers.clear();
+
+
         if(hadError)    return null;
         else            return schemaSet;
     }
@@ -122,6 +129,9 @@ public class ParserContext {
     final PatcherManager patcherManager = new PatcherManager() {
         public void addPatcher( Patch patch ) {
             patchers.add(patch);
+        }
+        public void addErrorChecker( Patch patch ) {
+            errorCheckers.add(patch);
         }
         public void reportError( String msg, Locator src ) throws SAXException {
             // set a flag to true to avoid returning a corrupted object.

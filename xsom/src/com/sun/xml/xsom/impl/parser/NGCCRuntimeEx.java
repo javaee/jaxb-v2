@@ -127,6 +127,9 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
     public void addPatcher( Patch patcher ) {
         parser.patcherManager.addPatcher(patcher);
     }
+    public void addErrorChecker( Patch patcher ) {
+        parser.patcherManager.addErrorChecker(patcher);
+    }
     public void reportError( String msg, Locator loc ) throws SAXException {
         parser.patcherManager.reportError(msg,loc);
     }

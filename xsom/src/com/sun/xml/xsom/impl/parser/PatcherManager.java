@@ -29,6 +29,7 @@ import org.xml.sax.SAXException;
  */
 public interface PatcherManager {
     void addPatcher( Patch p );
+    void addErrorChecker( Patch p );
     /**
      * Reports an error during the parsing.
      * 
