@@ -1,6 +1,7 @@
 package com.sun.xml.bind.v2.model.impl;
 
 import java.util.Collection;
+import java.lang.annotation.Annotation;
 
 import javax.activation.MimeType;
 import javax.xml.bind.annotation.XmlAttachmentRef;
@@ -348,5 +349,13 @@ abstract class PropertyInfoImpl<T,C,F,M>
 
     public int compareTo(PropertyInfoImpl that) {
         return this.getName().compareTo(that.getName());
+    }
+
+    public final <A extends Annotation> A readAnnotation(Class<A> annotationType) {
+        return seed.readAnnotation(annotationType);
+    }
+
+    public final boolean hasAnnotation(Class<? extends Annotation> annotationType) {
+        return seed.hasAnnotation(annotationType);
     }
 }

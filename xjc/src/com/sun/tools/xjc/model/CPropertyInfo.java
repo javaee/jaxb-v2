@@ -2,6 +2,7 @@ package com.sun.tools.xjc.model;
 
 import java.util.Collection;
 import java.util.Map;
+import java.lang.annotation.Annotation;
 
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlSchemaType;
@@ -295,5 +296,13 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
      */
     public QName collectElementNames(Map<QName,CPropertyInfo> table) {
         return null;
+    }
+
+    public final <A extends Annotation> A readAnnotation(Class<A> annotationType) {
+        throw new UnsupportedOperationException();
+    }
+
+    public final boolean hasAnnotation(Class<? extends Annotation> annotationType) {
+        throw new UnsupportedOperationException();
     }
 }
