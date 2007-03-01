@@ -32,10 +32,10 @@ import com.sun.tools.xjc.util.CodeModelClassFactory;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.api.impl.NameConverter;
-import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSAttributeUse;
 import com.sun.xml.xsom.XSComponent;
+import com.sun.xml.xsom.XSDeclaration;
 import com.sun.xml.xsom.XSParticle;
 import com.sun.xml.xsom.XSSchema;
 import com.sun.xml.xsom.XSSchemaSet;
@@ -43,7 +43,6 @@ import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSTerm;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSWildcard;
-import com.sun.xml.xsom.XSDeclaration;
 import com.sun.xml.xsom.util.XSFinder;
 
 import org.xml.sax.Locator;
@@ -266,14 +265,12 @@ public class BGMBuilder extends BindingComponent {
             getClassSelector().pushClassScope( new CClassInfoParent.Package(
                 getClassSelector().getPackage(s.getTargetNamespace())) );
 
-            if(!s.getTargetNamespace().equals(WellKnownNamespace.XML_SCHEMA)) {
-                checkMultipleSchemaBindings(s);
-                processPackageJavadoc(s);
-                populate(s.getAttGroupDecls(),s);
-                populate(s.getAttributeDecls(),s);
-                populate(s.getElementDecls(),s);
-                populate(s.getModelGroupDecls(),s);
-            }
+            checkMultipleSchemaBindings(s);
+            processPackageJavadoc(s);
+            populate(s.getAttGroupDecls(),s);
+            populate(s.getAttributeDecls(),s);
+            populate(s.getElementDecls(),s);
+            populate(s.getModelGroupDecls(),s);
 
             // fill in typeUses
             for (XSType t : s.getTypes().values()) {
