@@ -38,7 +38,7 @@ abstract class SingleTypePropertyInfoImpl<T,C,F,M>
             if(getAdapter()!=null && !isCollection())
                 // adapter for a single-value property is handled by accessor.
                 // adapter for a collection property is handled by lister.
-                rawAcc = rawAcc.adapt(getAdapter());
+                rawAcc = rawAcc.adapt(((RuntimePropertyInfo)this).getAdapter());
             this.acc = rawAcc;
         } else
             this.acc = null;
