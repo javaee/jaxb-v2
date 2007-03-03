@@ -292,6 +292,21 @@ public abstract class JAXBRIContext extends JAXBContext {
     }
 
     /**
+     * Computes a Java class name from a local name.
+     *
+     * <p>
+     * This method faithfully implements the name mangling rule as specified in the JAXB spec.
+     * This method works like {@link #mangleNameToClassName(String)} except that it looks
+     * for "getClass" and returns something else.
+     *
+     * @return
+     *      Typically, this method returns "NameLikeThis".
+     */
+    public static @NotNull String mangleNameToPropertyName(@NotNull String localName) {
+        return NameConverter.standard.toPropertyName(localName);
+    }
+
+    /**
      * Gets the parameterization of the given base type.
      *
      * <p>
