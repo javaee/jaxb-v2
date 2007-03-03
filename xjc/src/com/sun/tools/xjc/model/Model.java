@@ -129,6 +129,8 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void>, CCustom
 
         elementMappings.put(null,new HashMap<QName,CElementInfo>());
 
+        if(opts.automaticNameConflictResolution)
+            allocator = new AutoClassNameAllocator(allocator);
         this.allocator = new ClassNameAllocatorWrapper(allocator);
         this.schemaComponent = schemaComponent;
         this.gloablCustomizations.setParent(this,this);

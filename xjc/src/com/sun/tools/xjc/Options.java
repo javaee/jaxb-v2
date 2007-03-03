@@ -93,6 +93,11 @@ public class Options
      * This generates code that works around issues specific to 1.4 runtime.
      */
     public boolean runtime14 = false;
+
+    /**
+     * If true, try to resolve name conflicts automatically by assigning mechanical numbers.
+     */
+    public boolean automaticNameConflictResolution = false;
     
     /**
      * strictly follow the compatibility rules and reject schemas that
@@ -483,6 +488,10 @@ public class Options
         }
         if (args[i].equals("-XexplicitAnnotation")) {
             runtime14 = true;
+            return 1;
+        }
+        if (args[i].equals("-XautoNameResolution")) {
+            automaticNameConflictResolution = true;
             return 1;
         }
         if (args[i].equals("-b")) {
