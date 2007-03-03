@@ -101,8 +101,7 @@ public class TDTDReader extends DTDHandlerBase
                 Ring.add(model);
                 Ring.add(ErrorReceiver.class,ef);
 
-                TDTDReader reader = new TDTDReader( ef, opts.entityResolver,
-                        bindingInfo);
+                TDTDReader reader = new TDTDReader( ef, opts, bindingInfo);
 
                 DTDParser parser = new DTDParser();
                 parser.setDtdHandler(reader);
@@ -133,9 +132,9 @@ public class TDTDReader extends DTDHandlerBase
             return null;
         }
     }
-    protected TDTDReader(ErrorReceiver errorReceiver, EntityResolver entityResolver, InputSource _bindInfo)
+    protected TDTDReader(ErrorReceiver errorReceiver, Options opts, InputSource _bindInfo)
         throws AbortException {
-        this.entityResolver = entityResolver;
+        this.entityResolver = opts.entityResolver;
         this.errorReceiver = new ErrorReceiverFilter(errorReceiver);
         bindInfo = new BindInfo(model,_bindInfo, this.errorReceiver);
         classFactory = new CodeModelClassFactory(errorReceiver);
