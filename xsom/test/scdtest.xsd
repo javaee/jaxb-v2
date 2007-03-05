@@ -6,6 +6,8 @@
     </xs:sequence>
   </xs:complexType>
 
+  <xs:element name="foo-bar" />
+
   <xs:element name="chapter">
     <xs:complexType>
       <xs:sequence>

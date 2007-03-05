@@ -15,6 +15,7 @@ public class SCDTest extends AbstractXSOMTest {
 
         MapNamespaceContext nsc = new MapNamespaceContext("", "", "my", "tns");
 
+        assertOne("foo-bar element declaration",s.select("/my:foo-bar",nsc));
         assertOne("articleType complex type",s.select("type::my:articleType",nsc));
         assertOne("articleType complex type",s.select("/type::my:articleType",nsc));
         assertOne("section element declaration", s.select("/type::my:articleType/model::sequence/element::my:section",nsc));
