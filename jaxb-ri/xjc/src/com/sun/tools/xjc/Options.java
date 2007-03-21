@@ -527,6 +527,7 @@ public class Options
             target = SpecVersion.parse(token);
             if(target==null)
                 throw new BadCommandLineException(Messages.format(Messages.ILLEGAL_TARGET_VERSION,token));
+            return 2;
         }
         if (args[i].equals("-httpproxyfile")) {
             if (i == args.length - 1 || args[i + 1].startsWith("-")) {
