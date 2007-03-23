@@ -3,6 +3,34 @@
 
   <!-- official builds should set this property -->
   <property name="build.id" value="(private build)" />
+  
+  <!--
+    import files to CVS
+    
+    For example, <cvs-import src="build/doc" dest="jaxb/www/doc" />
+  -->
+  <macrodef name="cvs-import">
+    <attribute name="src"/>
+    <attribute name="dest"/>
+    <attribute name="cvsroot"/>
+    <sequential>
+      <tstamp />
+      <echo>importing to CVS...</echo>
+      <cvs dest="@{src}">
+        <commandline>
+          <argument value="-d@{cvsroot}"/>
+          <argument line="-z9 import -ko"/>
+          <argument value="-W"/>
+          <argument line="*.jar -kb"/>
+          <argument value="-m"/>
+          <argument value="deploying new jars to the java.net maven repository"/>
+          
+          <argument value="@{dest}"/>
+          <argument line="deployment-to-maven-repository t${DSTAMP}${TSTAMP}" />
+        </commandline>
+      </cvs>
+    </sequential>
+  </macrodef>
 
 	<!-- check if RelaxNGCC needs to be run -->
 	<target name="ngcc-check">
@@ -177,7 +205,7 @@
 	
 	
 	
-	<target name="src-zip" depends="compile">
+	<target name="src-zip" depends="jar">
 		<tstamp />
 		<mkdir dir="build" />
 		<zip zipfile="build/xsom-src.zip" compress="true">
@@ -216,16 +244,49 @@
 		
 		<echo>source installer produced at ${src.installer.class}</echo>
 	</target>
-	
-	<target name="clean">
-		<delete dir="build"/>
+  
+  <target name="clean">
+    <delete dir="build"/>
     <delete dir="j2se-integration"/>
-	</target>
+  </target>
 
+  <target name="push-to-maven-prepare"
+    description="prepare a repository iamge for the push-to-maven target">
+    <taskdef resource="maven-repository-importer.properties">
+      <classpath>
+        <pathelement path="lib/maven-repository-importer.jar" />
+      </classpath>
+    </taskdef>
+    <delete dir="build/maven-repo" /><!-- clean it -->
+    <!-- ${suffix} can be overridden to "" for posting releases -->
+    <!--
+      when building jars for Maven, we want to put suffix
+      (sometimes with version like '-2.0.beta1', with date '-20051208', or with '-SNAPSHOT')
+      this property lets you do that.
+    -->
+    <fail unless="jar.suffix">jar.suffix property needs to be defined</fail>
+    <maven-repository-importer
+        destdir="build/maven-repo" version="${jar.suffix}">
+      <artifact
+        jar=   "build/xsom.jar"
+        srczip="build/xsom-src.zip"
+        pom="xsom.pom" />
+    </maven-repository-importer>
+  </target>
+
+  <target name="push-to-maven" depends="push-to-maven-prepare"
+    description="publish artifacts into the maven repository">
+    <cvs-import src="build/maven-repo" dest="xsom/repo" cvsroot=":pserver:${user.name}@cvs.dev.java.net:/cvs" />
+  </target>
 
   <target name="integrate-package-rename-task">
     <get src="http://kohsuke.sfbay/hudson/job/package-rename-task/lastSuccessfulBuild/artifact/target/package-rename-task-1.0.jar"
          dest="lib/package-rename-task.jar"/>
+  </target>
+
+  <target name="integrate-maven-repository-importer">
+    <get src="http://kohsuke.sfbay/hudson/job/maven-repository-importer/lastSuccessfulBuild/artifact/build/maven-repository-importer.jar"
+         dest="lib/maven-repository-importer.jar" />
   </target>
 
   <target name="j2se-integration" depends="ngcc"
