@@ -37,6 +37,12 @@ public class StaxSerializer implements XmlSerializer {
     private final XMLStreamWriter out;
 
     public StaxSerializer(XMLStreamWriter writer) {
+        this(writer,true);
+    }
+
+    public StaxSerializer(XMLStreamWriter writer, boolean indenting) {
+        if(indenting)
+            writer = new IndentingXMLStreamWriter(writer);
         this.out = writer;
     }
 
