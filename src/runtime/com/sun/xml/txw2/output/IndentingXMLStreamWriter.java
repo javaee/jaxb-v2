@@ -1,10 +1,7 @@
 package com.sun.xml.txw2.output;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-
-import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import java.util.Stack;
 
 /**
@@ -18,7 +15,7 @@ public class IndentingXMLStreamWriter extends DelegatingXMLStreamWriter {
     private Object state = SEEN_NOTHING;
     private Stack<Object> stateStack = new Stack<Object>();
 
-    private String indentStep = "";
+    private String indentStep = "  ";
     private int depth = 0;
 
     public IndentingXMLStreamWriter(XMLStreamWriter writer) {
@@ -100,9 +97,8 @@ public class IndentingXMLStreamWriter extends DelegatingXMLStreamWriter {
      */
     private void doIndent() throws XMLStreamException {
         if (depth > 0) {
-            char[] ch = indentStep.toCharArray();
             for (int i = 0; i < depth; i++)
-                super.writeCharacters(ch, 0, ch.length);
+                super.writeCharacters(indentStep);
         }
     }
 
