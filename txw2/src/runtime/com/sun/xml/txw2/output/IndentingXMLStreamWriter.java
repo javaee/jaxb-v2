@@ -103,6 +103,21 @@ public class IndentingXMLStreamWriter extends DelegatingXMLStreamWriter {
     }
 
 
+    public void writeStartDocument() throws XMLStreamException {
+        super.writeStartDocument();
+        super.writeCharacters("\n");
+    }
+
+    public void writeStartDocument(String version) throws XMLStreamException {
+        super.writeStartDocument(version);
+        super.writeCharacters("\n");
+    }
+
+    public void writeStartDocument(String encoding, String version) throws XMLStreamException {
+        super.writeStartDocument(encoding, version);
+        super.writeCharacters("\n");
+    }
+
     public void writeStartElement(String localName) throws XMLStreamException {
         onStartElement();
         super.writeStartElement(localName);
