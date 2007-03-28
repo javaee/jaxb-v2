@@ -899,10 +899,15 @@ public final class UnmarshallingContext extends Coordinator
      */
     public void endScope(int frameSize) throws SAXException {
         try {
-            for( ; frameSize>0; frameSize-- )
-                scopes[scopeTop--].finish();
+            for( ; frameSize>0; frameSize--, scopeTop-- )
+                scopes[scopeTop].finish();
         } catch (AccessorException e) {
             handleError(e);
+
+            // the error might have left scopes in inconsistent state,
+            // so replace them by fresh ones
+            for( ; frameSize>0; frameSize-- )
+                scopes[scopeTop--] = new Scope(this);
         }
     }
 

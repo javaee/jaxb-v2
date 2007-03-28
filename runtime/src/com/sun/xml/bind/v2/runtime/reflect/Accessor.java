@@ -109,6 +109,15 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
     }
 
     /**
+     * Returns true if this accessor wraps an adapter.
+     *
+     * This method needs to be used with care, but it helps some optimization.
+     */
+    public boolean isAdapted() {
+        return false;
+    }
+
+    /**
      * Sets the value without adapting the value.
      *
      * This ugly entry point is only used by JAX-WS.
