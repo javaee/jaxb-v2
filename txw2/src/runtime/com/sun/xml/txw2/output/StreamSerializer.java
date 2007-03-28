@@ -79,7 +79,7 @@ public class StreamSerializer implements XmlSerializer {
             throw new IllegalArgumentException();
 
         // now delegate to the SaxSerializer
-        serializer = new SaxSerializer(writer,writer) {
+        serializer = new SaxSerializer(writer,writer,false) {
             public void endDocument() {
                 super.endDocument();
                 if(autoClose[0]!=null) {
@@ -97,7 +97,7 @@ public class StreamSerializer implements XmlSerializer {
     private StreamSerializer(XMLWriter writer) {
         this.writer = writer;
         // now delegate to the SaxSerializer
-        serializer = new SaxSerializer(writer,writer);
+        serializer = new SaxSerializer(writer,writer,false);
     }
 
     private String convertURL(String url) {

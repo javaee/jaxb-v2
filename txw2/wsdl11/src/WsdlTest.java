@@ -3,6 +3,8 @@ import com.sun.xml.txw2.TXW;
 import com.sun.xml.txw2.output.StreamSerializer;
 import wsdl.Definitions;
 
+import javax.xml.namespace.QName;
+
 /**
  * @author Kohsuke Kawaguchi
  */
