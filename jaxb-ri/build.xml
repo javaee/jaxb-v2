@@ -46,7 +46,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.72 2006-08-10 23:52:53 kohsuke Exp $
+       $Id: build.xml,v 1.73 2007-03-28 21:26:21 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -837,11 +837,11 @@ Class-Path: ${manifest.classpath}
     </target>
 
     <target name="integrate-jsr222">
-        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api.jar"
+        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror-2.0/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api.jar"
              dest="tools/lib/redist/jaxb-api.jar" />
-        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-src.zip"
+        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror-2.0/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-src.zip"
              dest="tools/lib/redist/jaxb-api-src.zip" />
-        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-doc.zip"
+        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror-2.0/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-doc.zip"
              dest="tools/lib/redist/jaxb-api-doc.zip" />
     </target>
 
