@@ -23,6 +23,11 @@ final class AdaptedAccessor<BeanT,InMemValueT,OnWireValueT> extends Accessor<Bea
         this.adapter = adapter;
     }
 
+    @Override
+    public boolean isAdapted() {
+        return true;
+    }
+
     public OnWireValueT get(BeanT bean) throws AccessorException {
         InMemValueT v = core.get(bean);
 

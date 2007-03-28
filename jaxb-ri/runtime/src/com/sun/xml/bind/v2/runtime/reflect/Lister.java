@@ -250,6 +250,8 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
             T collection = acc.get(bean);
             if(collection==null) {
                 collection = ClassFactory.create(implClass);
+                if(!acc.isAdapted())
+                    acc.set(bean,collection);
             }
             collection.clear();
             return collection;
@@ -262,8 +264,13 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
         public void endPacking( T collection, BeanT bean, Accessor<BeanT,T> acc ) throws AccessorException {
             // this needs to be done in the endPacking, because
             // sometimes the accessor uses an adapter, and the adapter needs to see
-            // the whole thing
-            acc.set(bean,collection);
+            // the whole thing.
+
+            // but always doing so causes a problem when this collection property
+            // is getter-only
+
+            if(acc.isAdapted())
+                acc.set(bean,collection);
         }
 
         public void reset(BeanT bean, Accessor<BeanT, T> acc) throws AccessorException {
