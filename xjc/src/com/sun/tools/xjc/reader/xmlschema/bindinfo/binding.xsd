@@ -3,6 +3,15 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://java.sun.com/xml/ns/jaxb" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc">
   <xs:import namespace="http://java.sun.com/xml/ns/jaxb/xjc" schemaLocation="xjc.xsd"/>
   <xs:import namespace="http://www.w3.org/2001/XMLSchema" schemaLocation="xs.xsd"/>
+  <xs:element name="bindings">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:any processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="schemaLocation" type="xs:string" />
+      <xs:attribute name="node" type="xs:string" /> 
+    </xs:complexType>
+  </xs:element>
   <xs:element name="declaration" abstract="true"/>
   <xs:element name="globalBindings" substitutionGroup="jaxb:declaration">
     <xs:complexType>
