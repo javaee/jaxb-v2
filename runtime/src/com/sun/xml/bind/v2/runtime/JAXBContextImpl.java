@@ -117,7 +117,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75.2.17 $
+ * @version $Revision: 1.75.2.18 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -819,6 +819,9 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
             if(tr.type==void.class || tr.type==Void.class) {
                 xsdgen.add(tr.tagName,false,null);
+            } else
+            if(tr.type==CompositeStructure.class) {
+                // this is a special class we introduced for JAX-WS that we *don't* want in the schema
             } else {
                 NonElement<Type,Class> typeInfo = getXmlType(tis,tr);
                 xsdgen.add(tr.tagName, !Navigator.REFLECTION.isPrimitive(tr.type),typeInfo);
