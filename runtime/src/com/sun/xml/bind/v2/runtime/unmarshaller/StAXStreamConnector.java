@@ -1,4 +1,4 @@
-/* $Id: StAXStreamConnector.java,v 1.9.2.7 2007-04-02 21:37:40 kohsuke Exp $
+/* $Id: StAXStreamConnector.java,v 1.9.2.8 2007-04-06 16:25:00 kohsuke Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -99,8 +99,14 @@ class StAXStreamConnector extends StAXConnector {
     }
 
     private static boolean checkImplementaionNameOfSjsxp(XMLStreamReader reader) {
-        Object name = reader.getProperty("http://java.sun.com/xml/stream/properties/implementation-name");
-        return name!=null && name.equals("sjsxp");
+        try {
+            Object name = reader.getProperty("http://java.sun.com/xml/stream/properties/implementation-name");
+            return name!=null && name.equals("sjsxp");
+        } catch (Exception e) {
+            // be defensive against broken StAX parsers since javadoc is not clear
+            // about when an error happens
+            return false;
+        }
     }
 
     private static boolean getBoolProp(XMLStreamReader r, String n) {
