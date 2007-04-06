@@ -1,6 +1,6 @@
 package com.sun.tools.xjc.reader.gbind;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 /**
  * Factory methods for {@link ElementSet}.
@@ -28,7 +28,7 @@ public final class ElementSets {
      *
      * This isn't particularly efficient or anything, but it will do for now.
      */
-    private static final class MultiValueSet extends HashSet<Element> implements ElementSet {
+    private static final class MultiValueSet extends LinkedHashSet<Element> implements ElementSet {
         public MultiValueSet(ElementSet lhs, ElementSet rhs) {
             addAll(lhs);
             addAll(rhs);
