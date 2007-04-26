@@ -1,4 +1,4 @@
-/* $Id: StAXStreamConnector.java,v 1.9.2.8 2007-04-06 16:25:00 kohsuke Exp $
+/* $Id: StAXStreamConnector.java,v 1.9.2.9 2007-04-26 16:46:28 kohsuke Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -82,6 +82,7 @@ class StAXStreamConnector extends StAXConnector {
         else
         if(checkImplementaionNameOfSjsxp(reader))
             ; // no need for interning
+        else
         if(getBoolProp(reader,"org.codehaus.stax2.internNames")
         && getBoolProp(reader,"org.codehaus.stax2.internNsUris"))
             ; // no need for interning.
