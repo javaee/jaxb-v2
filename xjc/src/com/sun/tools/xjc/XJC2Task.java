@@ -258,8 +258,10 @@ public class XJC2Task extends Task {
      * @param xmlCatalog the XMLCatalog instance to use to look up DTDs
      */
     public void addConfiguredXMLCatalog(XMLCatalog xmlCatalog) {
-        if(this.xmlCatalog==null)
+        if(this.xmlCatalog==null) {
             this.xmlCatalog = new XMLCatalog();
+            this.xmlCatalog.setProject(getProject());
+        }
         this.xmlCatalog.addConfiguredXMLCatalog(xmlCatalog);
     }
 
