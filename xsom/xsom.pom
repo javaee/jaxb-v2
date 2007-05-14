@@ -1,4 +1,5 @@
 <project>
+  <modelVersion>4.0.0</modelVersion>
   <groupId>com.sun.xsom</groupId>
   <artifactId>xsom</artifactId>
   <version>@VERSION@</version>
