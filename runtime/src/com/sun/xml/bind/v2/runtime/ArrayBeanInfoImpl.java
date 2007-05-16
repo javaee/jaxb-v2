@@ -30,14 +30,18 @@ final class ArrayBeanInfoImpl  extends JaxBeanInfo {
 
     private final Class itemType;
     private final JaxBeanInfo itemBeanInfo;
-    private final Loader loader;
+    private Loader loader;
 
     public ArrayBeanInfoImpl(JAXBContextImpl owner, RuntimeArrayInfo rai) {
         super(owner,rai,rai.getType(), rai.getTypeName(), false, true, false);
         this.itemType = jaxbType.getComponentType();
         this.itemBeanInfo = owner.getOrCreate(rai.getItemType());
+    }
 
-        loader = new ArrayLoader(owner);
+    @Override
+    protected void link(JAXBContextImpl grammar) {
+        getLoader(grammar,false);
+        super.link(grammar);
     }
 
     private final class ArrayLoader extends Loader implements Receiver {
@@ -144,6 +148,9 @@ final class ArrayBeanInfoImpl  extends JaxBeanInfo {
     }
 
     public final Loader getLoader(JAXBContextImpl context, boolean typeSubstitutionCapable) {
+        if(loader==null)
+            loader = new ArrayLoader(context);
+
         // type substitution not possible
         return loader;
     }
