@@ -47,7 +47,7 @@ import com.sun.xml.bind.v2.TODO;
  * This class is responsible for whitespace normalization.
  *
  * @author <ul><li>Ryan Shoemaker, Sun Microsystems, Inc.</li></ul>
- * @version $Revision: 1.9.6.2 $
+ * @version $Revision: 1.9.6.3 $
  * @since JAXB1.0
  */
 public final class DatatypeConverterImpl implements DatatypeConverterInterface {
@@ -353,7 +353,8 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         final int len = s.length();
 
         // "111" is not a valid hex encoding.
-        if( len%2 != 0 )    return null;
+        if( len%2 != 0 )
+            throw new IllegalArgumentException("hexBinary needs to be even-length: "+s);
 
         byte[] out = new byte[len/2];
 
@@ -361,7 +362,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
             int h = hexToBin(s.charAt(i  ));
             int l = hexToBin(s.charAt(i+1));
             if( h==-1 || l==-1 )
-                return null;    // illegal character
+                throw new IllegalArgumentException("contains illegal character for hexBinary: "+s);
 
             out[i/2] = (byte)(h*16+l);
         }
