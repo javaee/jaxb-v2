@@ -23,8 +23,11 @@ final class MixedComplexTypeBuilder extends CTBuilder {
         // see issue 148. handle complex type extended from another and added mixed=true.
         // the current implementation only works when the base type doesn't define
         // any elements, and we should ideally warn it.
+        //
+        // also see issue #356 where complex type with simple content can have pointless mixed.
         if(bt.isComplexType() && !bt.asComplexType().isMixed()
-        && ct.isMixed() && ct.getDerivationMethod()==XSType.EXTENSION)
+        && ct.isMixed() && ct.getDerivationMethod()==XSType.EXTENSION
+        && ct.getContentType().asParticle()!=null)
             return true;
 
         return false;
