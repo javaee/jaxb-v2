@@ -146,6 +146,12 @@ final class DefaultParticleBinder extends ParticleBinder {
         }
 
         public void modelGroup(XSModelGroup mg) {
+            // choice gets mapped to a property
+            if(mg.getCompositor()== XSModelGroup.Compositor.CHOICE && builder.getGlobalBinding().isChoiceContentPropertyEnabled()) {
+                mark(outerParticle);
+                return;
+            }
+            
             for( XSParticle child : mg.getChildren() )
                 particle(child);
         }
