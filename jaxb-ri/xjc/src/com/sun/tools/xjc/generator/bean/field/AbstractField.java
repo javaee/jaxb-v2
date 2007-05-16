@@ -239,8 +239,14 @@ abstract class AbstractField implements FieldOutline {
 
         // these values are used to determine how to optimize the generated annotation
         XmlNsForm formDefault = parent()._package().getElementFormDefault();
-        String mostUsedURI = parent()._package().getMostUsedNamespaceURI();
         String propName = prop.getName(false);
+
+        String enclosingTypeNS;
+
+        if(parent().target.getTypeName()==null)
+            enclosingTypeNS = parent()._package().getMostUsedNamespaceURI();
+        else
+            enclosingTypeNS = parent().target.getTypeName().getNamespaceURI();
 
         // generate the name property?
         String generatedName = ctype.getTagName().getLocalPart();
@@ -251,7 +257,7 @@ abstract class AbstractField implements FieldOutline {
 
         // generate the namespace property?
         String generatedNS = ctype.getTagName().getNamespaceURI();
-        if (((formDefault == XmlNsForm.QUALIFIED) && !generatedNS.equals(mostUsedURI)) ||
+        if (((formDefault == XmlNsForm.QUALIFIED) && !generatedNS.equals(enclosingTypeNS)) ||
                 ((formDefault == XmlNsForm.UNQUALIFIED) && !generatedNS.equals(""))) {
             if(xew == null) xew = getXew(checkWrapper, field);
             xew.namespace(generatedNS);
