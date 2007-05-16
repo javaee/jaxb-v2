@@ -143,6 +143,7 @@
         <classes includes="javax.xml.bind.annotation.XmlTransient" />
         <classes includes="javax.xml.bind.annotation.XmlType" />
         <classes includes="javax.xml.bind.annotation.XmlValue" />
+	<classes includes="javax.xml.bind.annotation.XmlSchemaType" />
         <classpath>
           <pathelement path="${jaxb.libs.redist}/jaxb-api.jar"/>
         </classpath>
