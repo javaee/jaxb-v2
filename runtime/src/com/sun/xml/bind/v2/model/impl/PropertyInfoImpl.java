@@ -328,13 +328,11 @@ abstract class PropertyInfoImpl<T,C,F,M>
             if(xs!=null) {
                 switch(xs.elementFormDefault()) {
                 case QUALIFIED:
-                    if(bugCompatibleWith213) {
-                        QName typeName = parent.getTypeName();
-                        if(typeName!=null)
-                            uri = typeName.getNamespaceURI();
-                        else
-                            uri = xs.namespace();
-                    } else
+                    parent.builder.
+                    QName typeName = parent.getTypeName();
+                    if(typeName!=null)
+                        uri = typeName.getNamespaceURI();
+                    else
                         uri = xs.namespace();
                     if(uri.length()==0)
                         uri = parent.builder.defaultNsUri;
@@ -361,6 +359,4 @@ abstract class PropertyInfoImpl<T,C,F,M>
     public final boolean hasAnnotation(Class<? extends Annotation> annotationType) {
         return seed.hasAnnotation(annotationType);
     }
-
-    public static boolean bugCompatibleWith213 = false;
 }
