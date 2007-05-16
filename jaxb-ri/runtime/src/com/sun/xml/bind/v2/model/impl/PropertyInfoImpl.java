@@ -328,7 +328,6 @@ abstract class PropertyInfoImpl<T,C,F,M>
             if(xs!=null) {
                 switch(xs.elementFormDefault()) {
                 case QUALIFIED:
-                    parent.builder.
                     QName typeName = parent.getTypeName();
                     if(typeName!=null)
                         uri = typeName.getNamespaceURI();
