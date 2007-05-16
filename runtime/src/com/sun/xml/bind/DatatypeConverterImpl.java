@@ -47,7 +47,7 @@ import com.sun.xml.bind.v2.TODO;
  * This class is responsible for whitespace normalization.
  *
  * @author <ul><li>Ryan Shoemaker, Sun Microsystems, Inc.</li></ul>
- * @version $Revision: 1.9.6.1 $
+ * @version $Revision: 1.9.6.2 $
  * @since JAXB1.0
  */
 public final class DatatypeConverterImpl implements DatatypeConverterInterface {
@@ -884,6 +884,11 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
                 offset = tz.getRawOffset() + (tz.useDaylightTime()?3600000:0);
             } else {
                 offset = tz.getRawOffset();
+            }
+
+            if(offset==0) {
+                buf.append('Z');
+                return;
             }
 
             if (offset >= 0)
