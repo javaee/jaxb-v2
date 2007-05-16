@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- THIS IS A GENERATED FILE. DO NOT MODIFY. -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://java.sun.com/xml/ns/jaxb" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc">
+  <xs:annotation>
+    <xs:documentation>
+      JAXB customization schema
+    </xs:documentation>
+  </xs:annotation>
+  
   <xs:import namespace="http://java.sun.com/xml/ns/jaxb/xjc" schemaLocation="xjc.xsd"/>
   <xs:import namespace="http://www.w3.org/2001/XMLSchema" schemaLocation="xs.xsd"/>
   <xs:element name="bindings">
@@ -14,6 +20,11 @@
   </xs:element>
   <xs:element name="declaration" abstract="true"/>
   <xs:element name="globalBindings" substitutionGroup="jaxb:declaration">
+    <xs:annotation>
+      <xs:documentation>
+        Defines global customization. Only one of this is allowed per compilation.
+      </xs:documentation>
+    </xs:annotation>
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element name="javaType">
