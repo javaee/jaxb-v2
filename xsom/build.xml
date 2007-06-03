@@ -289,7 +289,7 @@
          dest="lib/maven-repository-importer.jar" />
   </target>
 
-  <target name="j2se-integration" depends="ngcc"
+  <target name="j2se-integration" depends="compile"
           description="prepare renamed source code for J2SE integration">
     <taskdef name="prename" classname="com.sun.wts.tools.ant.PackageRenameTask">
       <classpath>
