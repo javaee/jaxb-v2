@@ -1,6 +1,0 @@
-jaxb2/bin/xjc.bat
-jaxb2/bin/schemagen.bat
-jaxb2/lib/jaxb-api.jar
-jaxb2/lib/jaxb-impl.jar
-jaxb2/lib/jaxb1-impl.jar
-jaxb2/lib/jaxb-xjc.jar
