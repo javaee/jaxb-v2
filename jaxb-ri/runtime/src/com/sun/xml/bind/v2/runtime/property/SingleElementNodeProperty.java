@@ -37,8 +37,8 @@
 package com.sun.xml.bind.v2.runtime.property;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,7 +46,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
-import com.sun.xml.bind.v2.util.QNameMap;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementPropertyInfo;
@@ -56,14 +55,14 @@ import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
-import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
-import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
-import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader;
-import com.sun.xml.bind.v2.runtime.unmarshaller.DefaultValueLoaderDecorator;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
+import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.DefaultValueLoaderDecorator;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader;
+import com.sun.xml.bind.v2.util.QNameMap;
 
 import org.xml.sax.SAXException;
-import bsh.Modifiers;
 
 /**
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
