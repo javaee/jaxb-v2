@@ -93,7 +93,7 @@ class ClassLoaderBuilder {
         if (v.equals("1.0")) {
             if(!mustang)
                 // if we haven't used Masking ClassLoader, do so now.
-                cl = new MaskingClassLoader(cl,maskedPackages);
+                cl = new MaskingClassLoader(cl,toolPackages);
             cl = new ParallelWorldClassLoader(cl,"1.0/");
         } else {
             if(mustang)
@@ -111,11 +111,19 @@ class ClassLoaderBuilder {
      * classLoader from loading
      */
     private static String[] maskedPackages = new String[]{
+        // toolPackages + alpha
         "com.sun.tools.",
         "com.sun.codemodel.",
         "com.sun.relaxng.",
         "com.sun.xml.xsom.",
         "com.sun.xml.bind.",
+    };
+
+    private static String[] toolPackages = new String[]{
+        "com.sun.tools.",
+        "com.sun.codemodel.",
+        "com.sun.relaxng.",
+        "com.sun.xml.xsom."
     };
 
     /**
