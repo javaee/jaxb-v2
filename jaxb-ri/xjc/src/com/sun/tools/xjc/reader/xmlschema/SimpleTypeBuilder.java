@@ -631,7 +631,7 @@ public final class SimpleTypeBuilder extends BindingComponent {
 
         for( XSFacet facet : type.getDeclaredFacets(XSFacet.FACET_ENUMERATION)) {
             String name=null;
-            String mdoc=null;
+            String mdoc=builder.getBindInfo(facet).getDocumentation();
 
             if(!enums.add(facet.getValue().value))
                 continue;   // ignore the 2nd occasion
