@@ -38,6 +38,7 @@ package com.sun.xml.bind.v2.runtime.property;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,6 +63,7 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.DefaultValueLoaderDecorator;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 
 import org.xml.sax.SAXException;
+import bsh.Modifiers;
 
 /**
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
@@ -162,7 +164,9 @@ final class SingleElementNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT> 
 
         for (TypeRef<Type,Class> e : prop.getTypes()) {
             JaxBeanInfo bi = context.getOrCreate((RuntimeTypeInfo) e.getTarget());
-            Loader l = bi.getLoader(context,true);
+            // if the expected Java type is already final, type substitution won't really work anyway.
+            // this also traps cases like trying to substitute xsd:long element with xsi:type='xsd:int'
+            Loader l = bi.getLoader(context,!Modifier.isFinal(bi.jaxbType.getModifiers()));
             if(e.getDefaultValue()!=null)
                 l = new DefaultValueLoaderDecorator(l,e.getDefaultValue());
             if(nillable || chain.context.allNillable)
