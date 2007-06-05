@@ -37,20 +37,20 @@
 -->
 
 <purchaseOrder orderDate="1999-10-20">
-    <shipTo country="US">
-        <name>Alice Smith</name>
-        <street>123 Maple Street</street>
-        <city>Cambridge</city>
-        <state>MA</state>
-        <zip>12345</zip>
-    </shipTo>
-    <billTo country="US">
-        <name>Robert Smith</name>
-        <street>8 Oak Avenue</street>
-        <city>Cambridge</city>
-        <state>MA</state>
-        <zip>12345</zip>
-    </billTo>
-    <items/>
+  <shipTo country="US">
+    <name>Alice Smith</name>
+    <street>123 Maple Street</street>
+    <city>Cambridge</city>
+    <state>MA</state>
+    <zip>12345</zip>
+  </shipTo>
+  <billTo country="US">
+    <name>Robert Smith</name>
+    <street>8 Oak Avenue</street>
+    <city>Cambridge</city>
+    <state>MA</state>
+    <zip>12345</zip>
+  </billTo>
+  <items/>
 </purchaseOrder>
 

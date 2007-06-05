@@ -38,14 +38,14 @@
         xmlns="http://www.w3.org/2001/XMLSchema"
         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
         xmlns:ipo="http://www.example.com/IPO">
- <include schemaLocation="ipo.xsd"/>
- <complexType name="USTaxExemptPurchaseOrderType">
-  <complexContent>
-   <extension base="ipo:PurchaseOrderType">
-    <sequence>
-      <element name="taxExemptId" type="xsd:string"/>
-    </sequence>
-   </extension>
-  </complexContent>
- </complexType>
+  <include schemaLocation="ipo.xsd"/>
+  <complexType name="USTaxExemptPurchaseOrderType">
+    <complexContent>
+      <extension base="ipo:PurchaseOrderType">
+        <sequence>
+          <element name="taxExemptId" type="xsd:string"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
 </schema>
