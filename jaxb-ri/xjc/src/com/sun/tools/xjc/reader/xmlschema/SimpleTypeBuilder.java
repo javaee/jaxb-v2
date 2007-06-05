@@ -627,9 +627,14 @@ public final class SimpleTypeBuilder extends BindingComponent {
     private List<CEnumConstant> buildCEnumConstants(XSRestrictionSimpleType type, boolean needsToGenerateMemberName, Map<String, BIEnumMember> members, XSFacet[] errorRef) {
         List<CEnumConstant> memberList = new ArrayList<CEnumConstant>();
         int idx=1;
+        Set<String> enums = new HashSet<String>(); // to avoid duplicates. See issue #366
+
         for( XSFacet facet : type.getDeclaredFacets(XSFacet.FACET_ENUMERATION)) {
             String name=null;
             String mdoc=null;
+
+            if(!enums.add(facet.getValue().value))
+                continue;   // ignore the 2nd occasion
 
             if( needsToGenerateMemberName ) {
                 // generate names for all member names.
