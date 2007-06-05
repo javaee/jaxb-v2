@@ -93,7 +93,7 @@ public final class BindInfo implements Iterable<BIDeclaration> {
     /**
      * Documentation taken from &lt;xs:documentation>s. 
      */
-    @XmlElement
+    @XmlElement(namespace=WellKnownNamespace.XML_SCHEMA)
     private Documentation documentation;
 
     /**
@@ -157,7 +157,7 @@ public final class BindInfo implements Iterable<BIDeclaration> {
 
 
     // only used by JAXB
-    @XmlElement
+    @XmlElement(namespace=WellKnownNamespace.XML_SCHEMA)
     void setAppinfo(AppInfo aib) {
         aib.addTo(this);
     }
