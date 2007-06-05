@@ -41,7 +41,8 @@
     <Foo xmlns="java:org.acme">
       <a>5</a>
       <b>text</b>
-      <c>bar</c><!-- inject bar bean here -->
+      <c>bar</c>
+      <!-- inject bar bean here -->
     </Foo>
   </value>
   <value id="bar">

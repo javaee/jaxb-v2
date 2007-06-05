@@ -37,20 +37,20 @@
 -->
 
 <addressBook>
-    <!-- list of contacts -->
-    
-    <contact>
-        <name>John Doe</name>
-        <email>john@acme.com</email>
-    </contact>
-    <contact>
-        <name>Jane Smith</name>
-        <email>jane@acme.org</email>
-    </contact>
-    
-    <!-- more extra records -->
-    <contact>
-        <name>Bob Cole</name>
-        <email>bob@acme.net</email>
-    </contact>
+  <!-- list of contacts -->
+
+  <contact>
+    <name>John Doe</name>
+    <email>john@acme.com</email>
+  </contact>
+  <contact>
+    <name>Jane Smith</name>
+    <email>jane@acme.org</email>
+  </contact>
+
+  <!-- more extra records -->
+  <contact>
+    <name>Bob Cole</name>
+    <email>bob@acme.net</email>
+  </contact>
 </addressBook>
