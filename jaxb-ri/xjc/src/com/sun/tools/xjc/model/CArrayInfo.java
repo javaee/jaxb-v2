@@ -50,7 +50,12 @@ import com.sun.xml.xsom.XSComponent;
 import org.xml.sax.Locator;
 
 /**
- * TODO: Because s2j doesn't generate the array binding, this is unnecessary.
+ * Because XJC doesn't generate the array binding, this class will
+ * never show up in the model constructed by XJC.
+ *
+ * <p>
+ * This class is nevertheless defined to make the type checker happy. 
+ *
  * @author Kohsuke Kawaguchi
  */
 public final class CArrayInfo extends AbstractCTypeInfoImpl implements ArrayInfo<NType,NClass>, CNonElement, NType {
