@@ -68,6 +68,7 @@ import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.helpers.ValidationEventImpl;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -378,8 +379,10 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                         Iterator<ImageWriter> itr = ImageIO.getImageWritersByMIMEType(mimeType);
                         if(itr.hasNext()) {
                             ImageWriter w = itr.next();
-                            w.setOutput(ImageIO.createImageOutputStream(imageData));
+                            ImageOutputStream os = ImageIO.createImageOutputStream(imageData);
+                            w.setOutput(os);
                             w.write(convertToBufferedImage(v));
+                            os.close();
                             w.dispose();
                         } else {
                             // no encoder
