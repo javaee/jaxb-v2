@@ -23,6 +23,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.artifact.Artifact;
 import org.apache.tools.ant.types.Path;
         
 import java.io.File;
@@ -166,7 +167,6 @@ public class SchemaGenMojo extends AbstractMojo {
      * successfully without it.  The plugin already references this jar so take
      * it from therem
      * 
-     * @param SchemaGenAdapter
      * @throws MojoExecutionException
      */
     private void addSchemaGenClasspath(SchemaGenAdapter schemaGenAdapter)throws MojoExecutionException{        
@@ -195,14 +195,10 @@ public class SchemaGenMojo extends AbstractMojo {
      *            </dependency>
      *         </dependencies>
      *      <project>
-     *          
-     * @param SchemaGenAdapter
      */
     private void addUserDefinedJars(SchemaGenAdapter schemaGenAdapter){
-        Set tmpDa = project.getDependencyArtifacts();
-        Iterator itl =  tmpDa.iterator();
-        while(itl.hasNext()){
-            DefaultArtifact df = (DefaultArtifact)itl.next();          
+        for (Artifact df : (Set<Artifact>)project.getArtifacts()) {
+            if (df.getFile() == null) continue; // skip
             getLog().info("jaxb-schemagen classpath addition: " + df.getFile().getAbsolutePath());
             schemaGenAdapter.setClasspath(new Path(schemaGenAdapter.getProject(), df.getFile().getAbsolutePath()));
         }
