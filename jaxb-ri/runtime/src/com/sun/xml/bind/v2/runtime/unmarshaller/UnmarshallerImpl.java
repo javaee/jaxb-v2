@@ -308,7 +308,7 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
                 scanner.scan((Document)node);
             else
                 // no other type of input is supported
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("Unexpected node type: "+node);
 
             return handler.getContext().getResult();
         } catch( SAXException e ) {
