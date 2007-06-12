@@ -560,7 +560,7 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
     }
 
     public boolean isInnerClass(Class clazz) {
-        return clazz.getEnclosingClass()!=null;
+        return clazz.getEnclosingClass()!=null && !Modifier.isStatic(clazz.getModifiers());
     }
 
 
