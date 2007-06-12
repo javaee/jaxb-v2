@@ -398,6 +398,9 @@ public interface Navigator<T,C,F,M> {
      *
      * This is only used to improve the error diagnostics, so
      * it's OK to fail to detect some inner classes as such.
+     *
+     * Note that this method should return false for nested classes
+     * (static classes.)
      */
     boolean isInnerClass(C clazz);
 }
