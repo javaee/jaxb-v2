@@ -103,8 +103,12 @@ public abstract class Loader {
         state.receiver = null;
     }
 
+    @SuppressWarnings({"StringEquality"})
     protected final void reportUnexpectedChildElement(TagName ea, boolean canRecover) throws SAXException {
-        reportError(Messages.UNEXPECTED_ELEMENT.format(ea.uri,ea.local,computeExpectedElements()), canRecover );
+        if(ea.uri!=ea.uri.intern() || ea.local!=ea.local.intern())
+            reportError(Messages.UNINTERNED_STRINGS.format(), canRecover );
+        else
+            reportError(Messages.UNEXPECTED_ELEMENT.format(ea.uri,ea.local,computeExpectedElements()), canRecover );
     }
 
     /**
