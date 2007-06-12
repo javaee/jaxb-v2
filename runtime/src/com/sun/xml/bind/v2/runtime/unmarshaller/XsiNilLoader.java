@@ -90,10 +90,6 @@ public class XsiNilLoader extends ProxyLoader {
         protected void onNil(UnmarshallingContext.State state) throws SAXException {
             try {
                 acc.set(state.prev.target,null);
-                state.receiver = null;
-                // now that we set the value to null, cancel the receiver to avoid double invocation
-                // of the setter. This is a kind of a hack, and I'm not entirely sure if this won't
-                // cause problematic interactions in some cases.
             } catch (AccessorException e) {
                 handleGenericException(e,true);
             }
