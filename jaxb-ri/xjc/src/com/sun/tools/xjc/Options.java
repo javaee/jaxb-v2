@@ -58,6 +58,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sun.codemodel.CodeWriter;
+import com.sun.codemodel.JPackage;
+import com.sun.codemodel.JResourceFile;
 import com.sun.codemodel.writer.FileCodeWriter;
 import com.sun.codemodel.writer.PrologCodeWriter;
 import com.sun.org.apache.xml.internal.resolver.CatalogManager;
@@ -143,7 +145,13 @@ public class Options
     public SpecVersion target = SpecVersion.V2_1;
 
 
-    /** Target direcoty when producing files. */
+    /**
+     * Target direcoty when producing files.
+     * <p>
+     * This field is not used when XJC is driven through the XJC API.
+     * Plugins that need to generate extra files should do so by using
+     * {@link JPackage#addResourceFile(JResourceFile)}.
+     */
     public File targetDir = new File(".");
     
     /**
