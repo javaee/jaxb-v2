@@ -153,4 +153,34 @@
       </classpath>
     </javac>
   </target>
+
+  <target name="push-maven" depends="jar">
+    <fail unless="version">The 'version' property needs to be defined</fail>
+    <fail unless="repositoryURL">The 'version' property needs to be defined</fail>
+
+    <macrodef name="push">
+      <attribute name="artifactId" />
+      <attribute name="file" />
+      <sequential>
+        <echo file="build/@{artifactId}.pom"><![CDATA[<project>
+      <modelVersion>4.0.0</modelVersion>
+      <groupId>com.sun.xml.txw2</groupId>
+      <artifactId>@{artifactId}</artifactId>
+      <packaging>jar</packaging>
+      <version>${version}</version>
+    </project>
+        ]]></echo>
+        <exec executable="mvn.bat">
+          <arg value="deploy:deploy-file"/>
+          <arg value="-DpomFile=build/@{artifactId}.pom"/>
+          <arg value="-Dfile=@{file}"/>
+          <arg value="-DrepositoryId=java.net2"/>
+          <arg value="-Durl=${repositoryURL}"/>
+        </exec>
+      </sequential>
+    </macrodef>
+
+    <push artifactId="txw2" file="build/txw2.jar" />
+    <!--push artifactId="txw2c" file="build/txw2c.jar" /-->
+  </target>
 </project>
