@@ -49,6 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.AbstractList;
 
 import javax.xml.bind.annotation.XmlAccessOrder;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -91,6 +92,7 @@ import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.model.core.ValuePropertyInfo;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
+import com.sun.xml.bind.v2.util.EditDistance;
 
 
 /**
@@ -512,8 +514,17 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
             for( int i=0; i<used.length; i++ )
                 if(used[i]==null) {
                     String unusedName = propOrder[i];
+                    String nearest = EditDistance.findNearest(unusedName, new AbstractList<String>() {
+                        public String get(int index) {
+                            return properties.get(index).getName();
+                        }
+
+                        public int size() {
+                            return properties.size();
+                        }
+                    });
                     builder.reportError(new IllegalAnnotationException(
-                        Messages.PROPERTY_ORDER_CONTAINS_UNUSED_ENTRY.format(unusedName),ClassInfoImpl.this));
+                        Messages.PROPERTY_ORDER_CONTAINS_UNUSED_ENTRY.format(unusedName,nearest),ClassInfoImpl.this));
                 }
         }
     }
