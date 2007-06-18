@@ -194,7 +194,7 @@ public final class CClassInfo extends AbstractCElement implements ClassInfo<NTyp
      */
     public boolean inheritsAttributeWildcard() {
         for( CClassInfo c=getBaseClass(); c!=null; c=c.getBaseClass() ) {
-            if(hasAttributeWildcard)
+            if(c.hasAttributeWildcard)
                 return true;
         }
         return false;
