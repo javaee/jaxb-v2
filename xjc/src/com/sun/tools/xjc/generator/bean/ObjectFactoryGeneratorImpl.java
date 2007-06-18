@@ -169,7 +169,7 @@ abstract class ObjectFactoryGeneratorImpl extends ObjectFactoryGenerator {
 
         JClass scope=null;
         if(ei.getScope()!=null)
-            scope = outline.getClazz(ei.getScope()).implRef;
+            scope = outline.getClazz(ei.getScope()).implClass;
 
 
         JMethod m;
