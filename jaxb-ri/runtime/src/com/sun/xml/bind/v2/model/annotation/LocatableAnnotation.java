@@ -108,8 +108,12 @@ public class LocatableAnnotation implements InvocationHandler, Locatable, Locati
         try {
             if(method.getDeclaringClass()==Locatable.class)
                 return method.invoke(this,args);
-            else
+            if(method.getDeclaringClass().isAssignableFrom(core.annotationType()))
                 return method.invoke(core,args);
+
+            // malicious code can pass in a static Method object to execute that.
+            // so we need to protect against it.
+            throw new IllegalArgumentException();
         } catch (InvocationTargetException e) {
             if(e.getTargetException()!=null)
                 throw e.getTargetException();
