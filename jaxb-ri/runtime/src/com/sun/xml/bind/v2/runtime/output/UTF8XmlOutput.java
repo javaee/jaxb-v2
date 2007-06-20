@@ -44,6 +44,7 @@ import javax.xml.stream.XMLStreamException;
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
+import com.sun.xml.bind.v2.runtime.MarshallerImpl;
 
 import org.xml.sax.SAXException;
 
@@ -93,6 +94,11 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     protected boolean closeStartTagPending = false;
 
     /**
+     * @see MarshallerImpl#header
+     */
+    private String header;
+
+    /**
      *
      * @param localNames
      *      local names encoded in UTF-8.
@@ -104,6 +110,10 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
             prefixes[i] = new Encoded();
     }
 
+    public void setHeader(String header) {
+        this.header = header;
+    }
+
     @Override
     public void startDocument(XMLSerializer serializer, boolean fragment, int[] nsUriIndex2prefixIndex, NamespaceContextImpl nsContext) throws IOException, SAXException, XMLStreamException {
         super.startDocument(serializer, fragment,nsUriIndex2prefixIndex,nsContext);
@@ -111,6 +121,10 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
         octetBufferIndex = 0;
         if(!fragment) {
             write(XML_DECL);
+        }
+        if(header!=null) {
+            textBuffer.set(header);
+            textBuffer.write(this);
         }
     }
 
