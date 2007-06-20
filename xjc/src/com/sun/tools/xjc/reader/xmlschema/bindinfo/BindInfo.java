@@ -336,6 +336,7 @@ public final class BindInfo implements Iterable<BIDeclaration> {
                             BIConversion.User.class,
                             BIConversion.UserAdapter.class,
                             BIDom.class,
+                            BIInlineBinaryData.class,
                             BIXDom.class,
                             BIXSubstitutable.class,
                             BIEnum.class,

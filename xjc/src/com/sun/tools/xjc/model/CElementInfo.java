@@ -56,6 +56,7 @@ import com.sun.tools.xjc.model.nav.NType;
 import com.sun.tools.xjc.model.nav.NavigatorImpl;
 import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIInlineBinaryData;
 import com.sun.xml.bind.v2.model.core.ElementInfo;
 import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XmlString;
@@ -155,6 +156,7 @@ public final class CElementInfo extends AbstractCElement
                 contentType.getExpectedMimeType(),
                 source,null,getLocator(),true);
         this.property.setAdapter(contentType.getAdapterUse());
+        BIInlineBinaryData.handle(source,property);
         property.getTypes().add(new CTypeRef(contentType.getInfo(),tagName,CTypeRef.getSimpleTypeName(source), true,defaultValue));
         this.type = NavigatorImpl.createParameterizedType(
             NavigatorImpl.theInstance.ref(JAXBElement.class),
