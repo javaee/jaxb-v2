@@ -98,6 +98,17 @@ public final class UnmarshallingContext extends Coordinator
      */
     private State current;
 
+    private static final LocatorEx DUMMY_INSTANCE;
+
+    static {
+        LocatorImpl loc = new LocatorImpl();
+        loc.setPublicId(null);
+        loc.setSystemId(null);
+        loc.setLineNumber(-1);
+        loc.setColumnNumber(-1);
+        DUMMY_INSTANCE = new LocatorExWrapper(loc);
+    }
+
     private @NotNull LocatorEx locator = DUMMY_INSTANCE;
 
     /** Root object that is being unmarshalled. */
@@ -1136,16 +1147,5 @@ public final class UnmarshallingContext extends Coordinator
      */
     public static UnmarshallingContext getInstance() {
         return (UnmarshallingContext) Coordinator._getInstance();
-    }
-
-    private static final LocatorEx DUMMY_INSTANCE;
-
-    static {
-        LocatorImpl loc = new LocatorImpl();
-        loc.setPublicId(null);
-        loc.setSystemId(null);
-        loc.setLineNumber(-1);
-        loc.setColumnNumber(-1);
-        DUMMY_INSTANCE = new LocatorExWrapper(loc);
     }
 }
