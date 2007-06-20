@@ -302,7 +302,9 @@ public final class BIProperty extends AbstractDeclarationImpl {
                 name = JJavaName.getPluralForm(name);
         }
 
-        return wrapUp(new CValuePropertyInfo(name, source,getCustomizations(source),source.getLocator(), tu, typeName ),source);
+        CValuePropertyInfo prop = wrapUp(new CValuePropertyInfo(name, source, getCustomizations(source), source.getLocator(), tu, typeName), source);
+        BIInlineBinaryData.handle(source, prop);
+        return prop;
     }
 
     public CAttributePropertyInfo createAttributeProperty( XSAttributeUse use, TypeUse tu ) {
@@ -364,6 +366,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
 
         types.addTo(prop);
 
+        BIInlineBinaryData.handle(source.getTerm(), prop);
         return prop;
     }
 
@@ -391,6 +394,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
 
         types.addTo(prop);
 
+        BIInlineBinaryData.handle(source, prop);
         return prop;
     }
 

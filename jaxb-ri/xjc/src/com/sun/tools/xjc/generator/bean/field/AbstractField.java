@@ -44,6 +44,7 @@ import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlValue;
+import javax.xml.bind.annotation.XmlInlineBinaryData;
 import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JAnnotatable;
@@ -159,6 +160,9 @@ abstract class AbstractField implements FieldOutline {
             field.annotate2(XmlSchemaTypeWriter.class)
                 .name(st.getLocalPart())
                 .namespace(st.getNamespaceURI());
+
+        if(prop.inlineBinaryData())
+            field.annotate(XmlInlineBinaryData.class);
     }
 
     private void annotateReference(JAnnotatable field) {

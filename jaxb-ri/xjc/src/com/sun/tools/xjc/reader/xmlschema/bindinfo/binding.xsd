@@ -301,6 +301,18 @@
       <xs:attribute name="type" default="w3c"/>
     </xs:complexType>
   </xs:element>
+
+  <xs:element name="inlineBinaryData">
+    <xs:annotation><xs:documentation><![CDATA[
+      Disable binary optimization.
+
+      Used on elements like <xs:element name="foo" type="xs:base64Binary"/> to indicate
+      that this base64 binary data is always inlined and never subjected to the binary
+      transfer optimization (such as XOP/MTOM)
+    ]]></xs:documentation></xs:annotation>
+    <xs:complexType />
+  </xs:element>
+
   <xs:group name="anyContents">
     <xs:sequence>
       <xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
