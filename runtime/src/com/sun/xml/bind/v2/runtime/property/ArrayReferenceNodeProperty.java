@@ -134,7 +134,7 @@ class ArrayReferenceNodeProperty<BeanT,ListT,ItemT> extends ArrayERProperty<Bean
         if(isMixed) {
             // handler for processing mixed contents.
             loaders.put(TEXT_HANDLER,
-                new ChildLoader(new MixedTextoader(recv),null));
+                new ChildLoader(new MixedTextLoader(recv),null));
         }
 
         if(domHandler!=null) {
@@ -143,17 +143,18 @@ class ArrayReferenceNodeProperty<BeanT,ListT,ItemT> extends ArrayERProperty<Bean
         }
     }
 
-    private static final class MixedTextoader extends Loader {
+    private static final class MixedTextLoader extends Loader {
 
         private final Receiver recv;
 
-        public MixedTextoader(Receiver recv) {
+        public MixedTextLoader(Receiver recv) {
             super(true);
             this.recv = recv;
         }
 
         public void text(UnmarshallingContext.State state, CharSequence text) throws SAXException {
-            recv.receive(state,text.toString());
+            if(text.length()!=0) // length 0 text is pointless
+                recv.receive(state,text.toString());
         }
     }
 
