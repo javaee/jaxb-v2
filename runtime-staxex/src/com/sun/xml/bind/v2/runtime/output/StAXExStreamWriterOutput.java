@@ -64,7 +64,7 @@ public final class StAXExStreamWriterOutput extends XMLStreamWriterOutput {
             out.writeCharacters(value.toString());
         } else {
             Base64Data v = (Base64Data)value;
-            out.writeBinary( v.get(), 0, v.getDataLen(), v.getMimeType() );
+            out.writeBinary(v.getDataHandler());
         }
     }
 }
