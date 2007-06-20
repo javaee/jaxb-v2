@@ -1038,7 +1038,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                         if(ep.isCollectionNillable()) {
                             e.nillable(true);
                         }
-                        writeOccurs(e,true,repeated);
+                        writeOccurs(e,!ep.isCollectionRequired(),repeated);
 
                         ComplexType p = e.complexType();
                         choice.write(p);
