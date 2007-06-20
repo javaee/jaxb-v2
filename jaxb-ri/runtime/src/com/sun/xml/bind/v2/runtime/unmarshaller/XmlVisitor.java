@@ -155,9 +155,9 @@ public interface XmlVisitor {
          *
          * <p>
          * If this method returns true, all the whitespaces are considered significant
-         * and thus need to be reported as a {@link #text} event. Furthermore,
+         * and thus need to be reported as a {@link XmlVisitor#text} event. Furthermore,
          * if the element has no children (like &lt;foo/>), then it has to be reported
-         * an empty {@link #text} event.
+         * an empty {@link XmlVisitor#text} event.
          */
         boolean expectText();
     }
