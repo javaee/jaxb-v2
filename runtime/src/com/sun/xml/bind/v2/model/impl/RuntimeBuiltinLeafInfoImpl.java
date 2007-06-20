@@ -295,6 +295,20 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                     return v.toExternalForm();
                 }
             },
+            new StringImpl<URI>(URI.class, createXS("string")) {
+                public URI parse(CharSequence text) throws SAXException {
+                    try {
+                        return new URI(text.toString());
+                    } catch (URISyntaxException e) {
+                        UnmarshallingContext.getInstance().handleError(e);
+                        return null;
+                    }
+                }
+
+                public String print(URI v) {
+                    return v.toString();
+                }
+            },
             new StringImpl<Class>(Class.class, createXS("string")) {
                 public Class parse(CharSequence text) throws SAXException {
                     TODO.checkSpec("JSR222 Issue #42");
@@ -758,21 +772,6 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                     w.getNamespaceContext().declareNamespace(v.getNamespaceURI(),v.getPrefix(),false);
                 }
             },
-            new StringImpl<URI>(URI.class, createXS("anyURI")) {
-                public URI parse(CharSequence text) throws SAXException {
-                    TODO.checkSpec("JSR222 Issue #42");
-                    try {
-                        return new URI(text.toString());
-                    } catch (URISyntaxException e) {
-                        UnmarshallingContext.getInstance().handleError(e);
-                        return null;
-                    }
-                }
-
-                public String print(URI v) {
-                    return v.toString();
-                }
-            },
             new StringImpl<Duration>(Duration.class,  createXS("duration")) {
                 public String print(Duration duration) {
                     return duration.toString();
@@ -845,8 +844,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
 	private static void checkXmlGregorianCalendarFieldRef(QName type, 
 		XMLGregorianCalendar cal)throws javax.xml.bind.MarshalException{
 		StringBuffer buf = new StringBuffer();
-		Integer tmpI = xmlGregorianCalendarFieldRef.get(type);
-		int bitField = tmpI.intValue();
+		int bitField = xmlGregorianCalendarFieldRef.get(type);
 		final int l = 0x1;
 		int pos = 0;
 		while (bitField != 0x0){
@@ -888,7 +886,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
 						break;
 					case 7:  // ignore timezone setting
 						break;
-				};
+				}
 			}
 		}
 		if (buf.length() > 0){
@@ -930,14 +928,14 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
 		new HashMap<QName, Integer>();
 	static {
 		Map<QName, Integer> f = xmlGregorianCalendarFieldRef;
-		f.put(DatatypeConstants.DATETIME,   new Integer(0x1111111));
-		f.put(DatatypeConstants.DATE,       new Integer(0x1111000));
-		f.put(DatatypeConstants.TIME,       new Integer(0x1000111));
-		f.put(DatatypeConstants.GDAY,       new Integer(0x1001000));
-		f.put(DatatypeConstants.GMONTH,     new Integer(0x1010000));
-		f.put(DatatypeConstants.GYEAR,      new Integer(0x1100000));
-		f.put(DatatypeConstants.GYEARMONTH, new Integer(0x1110000));
-		f.put(DatatypeConstants.GMONTHDAY,  new Integer(0x1011000));
+		f.put(DatatypeConstants.DATETIME,   0x1111111);
+		f.put(DatatypeConstants.DATE,       0x1111000);
+		f.put(DatatypeConstants.TIME,       0x1000111);
+		f.put(DatatypeConstants.GDAY,       0x1001000);
+		f.put(DatatypeConstants.GMONTH,     0x1010000);
+		f.put(DatatypeConstants.GYEAR,      0x1100000);
+		f.put(DatatypeConstants.GYEARMONTH, 0x1110000);
+		f.put(DatatypeConstants.GMONTHDAY,  0x1011000);
 	}
 	
     /**
