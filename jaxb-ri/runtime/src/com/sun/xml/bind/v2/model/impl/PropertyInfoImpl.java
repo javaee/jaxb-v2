@@ -115,8 +115,6 @@ abstract class PropertyInfoImpl<T,C,F,M>
         }
         this.expectedMimeType = mt;
         this.inlineBinary = seed.hasAnnotation(XmlInlineBinaryData.class);
-        this.schemaType = Util.calcSchemaType(reader(),seed,parent.clazz,
-                getIndividualType(),this);
 
         T t = seed.getRawType();
 
@@ -159,6 +157,8 @@ abstract class PropertyInfoImpl<T,C,F,M>
         }
 
         this.id = calcId();
+        this.schemaType = Util.calcSchemaType(reader(),seed,parent.clazz,
+                getIndividualType(),this);
     }
 
 
