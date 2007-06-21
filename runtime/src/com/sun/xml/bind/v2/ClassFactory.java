@@ -154,7 +154,7 @@ public final class ClassFactory {
     /**
      *  Call a method in the factory class to get the object.
      */
-    public static Object create(final Method method) {
+    public static Object create(Method method) {
         Throwable errorMsg;
         try {
             return method.invoke(null, emptyObject);
