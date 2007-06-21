@@ -45,11 +45,10 @@ import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 
 public class AccessorFactoryImpl implements AccessorFactory {
 
-    private static AccessorFactoryImpl instance = null;
+    private static AccessorFactoryImpl instance = new AccessorFactoryImpl();
     private AccessorFactoryImpl(){}
-    public static synchronized AccessorFactoryImpl getInstance(){
-        if (instance == null)
-            instance = new AccessorFactoryImpl();
+
+    public static AccessorFactoryImpl getInstance(){
         return instance;
     }
     
