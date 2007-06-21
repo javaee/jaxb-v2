@@ -63,7 +63,7 @@ import com.sun.xml.bind.v2.TODO;
  * This class is responsible for whitespace normalization.
  *
  * @author <ul><li>Ryan Shoemaker, Sun Microsystems, Inc.</li></ul>
- * @version $Revision: 1.9.6.4 $
+ * @version $Revision: 1.9.6.5 $
  * @since JAXB1.0
  */
 public final class DatatypeConverterImpl implements DatatypeConverterInterface {
@@ -128,7 +128,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
                 sign = -1;
             } else
             if(ch=='+') {
-                ; // noop
+                // noop
             } else
                 throw new NumberFormatException("Not a number: "+s);
         }
@@ -148,7 +148,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         return _parseShort(lexicalXSDShort);
     }
 
-    public static final short _parseShort(CharSequence s) {
+    public static short _parseShort(CharSequence s) {
         return (short)_parseInt(s);
     }
 
@@ -923,7 +923,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         }
 
         /** formats Integer into two-character-wide string. */
-        private static final void formatTwoDigits(int n,StringBuilder buf) {
+        private static void formatTwoDigits(int n,StringBuilder buf) {
             // n is always non-negative.
             if (n < 10) buf.append('0');
             buf.append(n);
