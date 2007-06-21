@@ -409,11 +409,23 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
         return buf;
     }
 
-    private static final byte[] XMLNS_EQUALS = toBytes(" xmlns=\"");
-    private static final byte[] XMLNS_COLON = toBytes(" xmlns:");
-    private static final byte[] EQUALS = toBytes("=\"");
-    private static final byte[] CLOSE_TAG = toBytes("</");
-    private static final byte[] EMPTY_TAG = toBytes("/>");
+    // per instance copy to prevent an attack where malicious OutputStream
+    // rewrites the byte array.
+    private final byte[] XMLNS_EQUALS = _XMLNS_EQUALS.clone();
+    private final byte[] XMLNS_COLON = _XMLNS_COLON.clone();
+    private final byte[] EQUALS = _EQUALS.clone();
+    private final byte[] CLOSE_TAG = _CLOSE_TAG.clone();
+    private final byte[] EMPTY_TAG = _EMPTY_TAG.clone();
+    private final byte[] XML_DECL = _XML_DECL.clone();
+
+    // masters
+    private static final byte[] _XMLNS_EQUALS = toBytes(" xmlns=\"");
+    private static final byte[] _XMLNS_COLON = toBytes(" xmlns:");
+    private static final byte[] _EQUALS = toBytes("=\"");
+    private static final byte[] _CLOSE_TAG = toBytes("</");
+    private static final byte[] _EMPTY_TAG = toBytes("/>");
+    private static final byte[] _XML_DECL = toBytes("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
+
+    // no need to copy
     private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
-    private static final byte[] XML_DECL = toBytes("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
 }
