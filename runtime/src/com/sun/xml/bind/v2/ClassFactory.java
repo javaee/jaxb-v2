@@ -155,10 +155,9 @@ public final class ClassFactory {
      *  Call a method in the factory class to get the object.
      */
     public static Object create(final Method method) {
-        Object cons = null;
-        Throwable errorMsg = null;
+        Throwable errorMsg;
         try {
-            cons = method.invoke(null, emptyObject);
+            return method.invoke(null, emptyObject);
         } catch (InvocationTargetException ive) {
             Throwable target = ive.getTargetException();
 
@@ -182,13 +181,11 @@ public final class ClassFactory {
             logger.log(Level.INFO,"failed to create a new instance of "+method.getReturnType().getName(),eie);
             errorMsg = eie;
         }
-        if (errorMsg != null){
-            NoSuchMethodError exp;
-            exp = new NoSuchMethodError(errorMsg.getMessage());
-            exp.initCause(errorMsg);
-            throw exp;
-        }
-        return cons;
+
+        NoSuchMethodError exp;
+        exp = new NoSuchMethodError(errorMsg.getMessage());
+        exp.initCause(errorMsg);
+        throw exp;
     }
     
     /**
