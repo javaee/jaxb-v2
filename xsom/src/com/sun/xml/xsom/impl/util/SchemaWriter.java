@@ -41,10 +41,14 @@ import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSUnionSimpleType;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.XSXPath;
+import com.sun.xml.xsom.XSWildcard.Any;
+import com.sun.xml.xsom.XSWildcard.Other;
+import com.sun.xml.xsom.XSWildcard.Union;
 import com.sun.xml.xsom.impl.Const;
 import com.sun.xml.xsom.visitor.XSSimpleTypeVisitor;
 import com.sun.xml.xsom.visitor.XSTermVisitor;
 import com.sun.xml.xsom.visitor.XSVisitor;
+import com.sun.xml.xsom.visitor.XSWildcardFunction;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -432,6 +436,10 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
         itr = type.iterateDeclaredAttributeUses();
         while(itr.hasNext())
             attributeUse( (XSAttributeUse)itr.next() );
+
+        XSWildcard awc = type.getAttributeWildcard();
+        if(awc!=null)
+            wildcard("anyAttribute",awc,"");
     }
 
     public void elementDecl( XSElementDecl decl ) {
@@ -525,19 +533,51 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
                 SchemaWriter.this.modelGroup(group,extraAtts);
             }
             public void wildcard( XSWildcard wc ) {
-                SchemaWriter.this.wildcard(wc,extraAtts);
+                SchemaWriter.this.wildcard("any",wc,extraAtts);
             }
         });
     }
 
     public void wildcard( XSWildcard wc ) {
-        wildcard(wc,"");
+        wildcard("any",wc,"");
     }
 
-    private void wildcard( XSWildcard wc, String extraAtts ) {
-        // TODO
-        println(MessageFormat.format("<any/>", extraAtts));
+    private void wildcard( String tagName, XSWildcard wc, String extraAtts ) {
+        final String proessContents;
+        switch(wc.getMode()) {
+        case XSWildcard.LAX:
+            proessContents = " processContents='lax'";break;
+        case XSWildcard.STRTICT:
+            proessContents = "";break;
+        case XSWildcard.SKIP:
+            proessContents = " processContents='skip'";break;
+        default:
+            throw new AssertionError();
+        }
+
+        println(MessageFormat.format("<{0}{1}{2}{3}/>",tagName, proessContents, wc.apply(WILDCARD_NS), extraAtts));
     }
+
+    private static final XSWildcardFunction<String> WILDCARD_NS = new XSWildcardFunction<String>() {
+        public String any(Any wc) {
+            return ""; // default
+        }
+
+        public String other(Other wc) {
+            return " namespace='##other'";
+        }
+
+        public String union(Union wc) {
+            StringBuffer buf = new StringBuffer(" namespace='");
+            boolean first = true;
+            for (String s : wc.getNamespaces()) {
+                if(first)   first=false;
+                else        buf.append(' ');
+                buf.append(s);
+            }
+            return buf.append('\'').toString();
+        }
+    };
 
     public void annotation( XSAnnotation ann ) {
         // TODO: it would be nice even if we just put <xs:documentation>
