@@ -76,7 +76,7 @@
     <rename srcdir="${reflection.src}" />
 
     <mkdir dir="${reflection.classes}"/>
-    <javac srcdir="${reflection.root}/build/src" destdir="${reflection.classes}">
+    <javac srcdir="${reflection.root}/build/src" destdir="${reflection.classes}" debug="on">
       <classpath>
         <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
         <fileset dir="${jaxb.libs.runtime2}" includes="**/*.jar"/>
