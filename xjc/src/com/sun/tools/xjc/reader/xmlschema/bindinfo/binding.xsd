@@ -313,6 +313,16 @@
     <xs:complexType />
   </xs:element>
 
+  <xs:element name="factoryMethod">
+    <xs:annotation><xs:documentation><![CDATA[
+      Controls the name of the factory method on ObjectFactory. 
+    ]]></xs:documentation></xs:annotation>
+    <xs:complexType>
+      <xs:sequence />
+      <xs:attribute name="name" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+
   <xs:group name="anyContents">
     <xs:sequence>
       <xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
