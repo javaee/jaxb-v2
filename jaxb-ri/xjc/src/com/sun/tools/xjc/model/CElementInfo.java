@@ -57,6 +57,9 @@ import com.sun.tools.xjc.model.nav.NavigatorImpl;
 import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIInlineBinaryData;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIFactoryMethod;
+import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
+import com.sun.tools.xjc.reader.Ring;
 import com.sun.xml.bind.v2.model.core.ElementInfo;
 import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XmlString;
@@ -113,6 +116,11 @@ public final class CElementInfo extends AbstractCElement
     private CElementPropertyInfo property;
 
     /**
+     * Custom {@link #getSqueezedName() squeezed name}, if any.
+     */
+    private /*almost final*/ @Nullable String squeezedName;
+
+    /**
      * Creates an element in the given parent.
      *
      * <p>
@@ -161,6 +169,13 @@ public final class CElementInfo extends AbstractCElement
         this.type = NavigatorImpl.createParameterizedType(
             NavigatorImpl.theInstance.ref(JAXBElement.class),
             getContentInMemoryType() );
+
+        BIFactoryMethod factoryMethod = Ring.get(BGMBuilder.class).getBindInfo(source).get(BIFactoryMethod.class);
+        if(factoryMethod!=null) {
+            factoryMethod.markAsAcknowledged();
+            this.squeezedName = factoryMethod.name;
+        }
+
     }
 
     public final String getDefaultValue() {
@@ -222,6 +237,8 @@ public final class CElementInfo extends AbstractCElement
      */
     @XmlElement
     public String getSqueezedName() {
+        if(squeezedName!=null)  return squeezedName;
+        
         StringBuilder b = new StringBuilder();
         CClassInfo s = getScope();
         if(s!=null)
