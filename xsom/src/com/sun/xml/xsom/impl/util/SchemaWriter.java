@@ -502,11 +502,11 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
         if(i==XSParticle.UNBOUNDED)
             buf.append(" maxOccurs=\"unbounded\"");
         else if(i!=1)
-            buf.append(" maxOccurs=\""+i+'\"');
+            buf.append(" maxOccurs=\"").append(i).append('\"');
 
         i = part.getMinOccurs();
         if(i!=1)
-            buf.append(" minOccurs=\""+i+'\"');
+            buf.append(" minOccurs=\"").append(i).append('\"');
 
         final String extraAtts = buf.toString();
 
