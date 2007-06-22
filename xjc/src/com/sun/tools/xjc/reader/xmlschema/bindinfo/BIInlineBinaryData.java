@@ -1,6 +1,7 @@
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlInlineBinaryData;
 import javax.xml.namespace.QName;
 
 import com.sun.tools.xjc.reader.Const;
@@ -10,6 +11,8 @@ import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.xml.xsom.XSComponent;
 
 /**
+ * Generates {@link @XmlInlineBinaryData}.
+ * 
  * @author Kohsuke Kawaguchi
  */
 @XmlRootElement(name="inlineBinaryData")
