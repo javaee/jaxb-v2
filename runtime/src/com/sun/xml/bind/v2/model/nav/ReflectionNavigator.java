@@ -155,7 +155,7 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
 
         Type replace( TypeVariable v ) {
             for(int i=0; i<params.length; i++)
-                if(params[i]==v)
+                if(params[i].equals(v))
                     return args[i];
             return v;   // this is a free variable
         }
