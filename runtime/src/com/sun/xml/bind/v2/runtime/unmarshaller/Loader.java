@@ -105,6 +105,11 @@ public abstract class Loader {
 
     @SuppressWarnings({"StringEquality"})
     protected final void reportUnexpectedChildElement(TagName ea, boolean canRecover) throws SAXException {
+        if(canRecover && !UnmarshallingContext.getInstance().parent.hasEventHandler())
+            // this error happens particurly often (when input documents contain a lot of unexpected elements to be ignored),
+            // so don't bother computing all the messages and etc if we know that
+            // there's no event handler to receive the error in the end. See #286 
+            return;
         if(ea.uri!=ea.uri.intern() || ea.local!=ea.local.intern())
             reportError(Messages.UNINTERNED_STRINGS.format(), canRecover );
         else

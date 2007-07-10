@@ -277,6 +277,15 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
         }
     }
 
+    /**
+     * Returns true if an event handler is installed.
+     * <p>
+     * The default handler ignores any errors, and for that this method returns false.
+     */
+    public final boolean hasEventHandler() {
+        return getEventHandler()!=this;
+    }
+
     @Override
     public <T> JAXBElement<T> unmarshal(Node node, Class<T> expectedType) throws JAXBException {
         if(expectedType==null)
