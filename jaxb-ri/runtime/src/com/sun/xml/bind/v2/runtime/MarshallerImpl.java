@@ -64,6 +64,7 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.Schema;
 import javax.xml.validation.ValidatorHandler;
+import javax.xml.namespace.NamespaceContext;
 
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.api.JAXBRIContext;
@@ -158,6 +159,16 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
 
     public JAXBContextImpl getContext() {
         return context;
+    }
+
+    /**
+     * Marshals to {@link OutputStream} with the given in-scope namespaces
+     * taken into account.
+     *
+     * @since 2.1.5
+     */
+    public void marshal(Object obj, OutputStream out, NamespaceContext inscopeNamespace) throws JAXBException {
+        write(obj, createWriter(out), new StAXPostInitAction(inscopeNamespace,serializer));
     }
 
     public void marshal(Object obj, XMLStreamWriter writer) throws JAXBException {
