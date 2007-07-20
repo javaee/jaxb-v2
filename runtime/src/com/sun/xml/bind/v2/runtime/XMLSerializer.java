@@ -63,6 +63,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.sax.SAXResult;
 
 import com.sun.istack.SAXException2;
+import com.sun.xml.bind.CycleRecoverable;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import com.sun.xml.bind.util.ValidationEventLocatorExImpl;
@@ -75,7 +76,6 @@ import com.sun.xml.bind.v2.runtime.output.XmlOutput;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Base64Data;
 import com.sun.xml.bind.v2.runtime.unmarshaller.IntData;
 import com.sun.xml.bind.v2.util.CollisionCheckStack;
-import com.sun.xml.bind.CycleRecoverable;
 
 import org.xml.sax.SAXException;
 
@@ -203,13 +203,15 @@ public final class XMLSerializer extends Coordinator {
 
     /**
      * Gets the cached instance of {@link Base64Data}.
+     *
+     * @deprecated
+     *      {@link Base64Data} is no longer cached, so that
+     *      XMLStreamWriterEx impl can retain the data, like JAX-WS does.
      */
     public Base64Data getCachedBase64DataInstance() {
-        if(base64Data==null)
-            base64Data = new Base64Data();
-        return base64Data;
+        return new Base64Data();
     }
-
+    
     /**
      * Gets the ID value from an identifiable object.
      */
