@@ -412,7 +412,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                         // TODO: proper error reporting
                         throw new RuntimeException(e);
                     }
-                    Base64Data bd = xs.getCachedBase64DataInstance();
+                    Base64Data bd = new Base64Data();
                     imageData.set(bd,mimeType);
                     return bd;
                 }
@@ -427,7 +427,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                 }
 
                 public Base64Data print(DataHandler v) {
-                    Base64Data bd = XMLSerializer.getInstance().getCachedBase64DataInstance();
+                    Base64Data bd = new Base64Data();
                     bd.set(v);
                     return bd;
                 }
@@ -448,7 +448,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
 
                 public Base64Data print(Source v) {
                     XMLSerializer xs = XMLSerializer.getInstance();
-                    Base64Data bd = xs.getCachedBase64DataInstance();
+                    Base64Data bd = new Base64Data();
 
                     String contentType = xs.getXMIMEContentType();
                     MimeType mt = null;
@@ -646,7 +646,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
 
                 public Base64Data print(byte[] v) {
                     XMLSerializer w = XMLSerializer.getInstance();
-                    Base64Data bd = w.getCachedBase64DataInstance();
+                    Base64Data bd = new Base64Data();
                     String mimeType = w.getXMIMEContentType();
                     bd.set(v,mimeType);
                     return bd;
