@@ -1,0 +1,6 @@
+<project>
+  <target name="process-samples">
+    <!-- dummy -->
+    <mkdir dir="work" />
+  </target>
+</project>
