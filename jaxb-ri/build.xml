@@ -62,7 +62,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.22 2007-06-14 00:02:16 kohsuke Exp $
+       $Id: build.xml,v 1.71.2.23 2007-07-24 19:13:13 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -396,6 +396,15 @@ Class-Path: ${manifest.classpath}
       <delete dir="tmp" />
     </target>
 
+  <target name="licensee-zip"
+          description="licensee bundle. Dumbed down version of the workspace bundle">
+    <zip zipfile="build/jaxb-ri.licensee.zip">
+      <fileset dir="." excludes="dist/**, **/build/**, samples/**, docs/**, sandbox/**" />
+      <fileset dir="." includes="docs/manifest/" />
+      <!-- place a stub build.xml to get the build going -->
+      <zipfileset dir="." includes="samples/dummy-build.xml" fullpath="samples/build.xml"/>
+    </zip>
+  </target>
 
 
 

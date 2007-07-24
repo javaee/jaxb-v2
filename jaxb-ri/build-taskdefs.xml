@@ -132,7 +132,9 @@
         <property key="JWSDP_VERSION"       value="${jwsdp.impl.version}"/>
         <property key="JWSDP_ROOTDIR"       value="${jwsdp.root.directory}"/>
       </htmlmacro>
-      <copy file="docs/catalog.html" todir="@{dest}"/>
+      <copy todir="@{dest}"><!-- this is so that it can work even when catalog.html doesn't exist -->
+        <fileset dir="docs" includes="catalog.html" />
+      </copy>
       <copy todir="@{dest}">
         <fileset dir="docs" includes="style/*"/>
       </copy>
