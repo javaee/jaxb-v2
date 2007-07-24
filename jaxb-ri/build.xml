@@ -62,7 +62,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.23 2007-07-24 19:13:13 kohsuke Exp $
+       $Id: build.xml,v 1.71.2.24 2007-07-24 19:23:51 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -755,7 +755,7 @@ Class-Path: ${manifest.classpath}
     
     <target name="release-engineering"
             description="target for Sun RE builds"
-            depends="src-zip,bin-installer,src-installer" />
+            depends="src-zip,bin-installer,src-installer,licensee-zip" />
 
 
     <target name="project.dtd" description="create DTD for DTD-aware editing">
