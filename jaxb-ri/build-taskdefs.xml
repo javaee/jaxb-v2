@@ -155,15 +155,15 @@
     <attribute name="destdir" />
     <sequential>
       <prename srcdir="@{srcdir}" destdir="@{destdir}">
-        <pattern from="com.sun.codemodel" to="com.sun.codemodel.internal" />
-        <pattern from="com.sun.xml" to="com.sun.xml.internal" />
-        <pattern from="com.sun.xsom" to="com.sun.internal.xsom" />
-        <pattern from="com.sun.txw2" to="com.sun.internal.txw2" />
-        <pattern from="com.sun.istack" to="com.sun.istack.internal" />
-        <pattern from="org.kohsuke.rngom" to="com.sun.xml.internal.rngom" />
-        <pattern from="org.jvnet.fastinfoset" to="com.sun.xml.internal.org.jvnet.fastinfoset" />
-        <pattern from="com.sun.tools.xjc" to="com.sun.tools.internal.xjc" />
-        <pattern from="com.sun.tools.jxc" to="com.sun.tools.internal.jxc" />
+        <pattern from="com.sun.codemodel" to="sun.codemodel.internal" />
+        <pattern from="com.sun.xml" to="sun.xml.internal" />
+        <pattern from="com.sun.xsom" to="sun.internal.xsom" />
+        <pattern from="com.sun.txw2" to="sun.internal.txw2" />
+        <pattern from="com.sun.istack" to="sun.istack.internal" />
+        <pattern from="org.kohsuke.rngom" to="sun.xml.internal.rngom" />
+        <pattern from="org.jvnet.fastinfoset" to="sun.xml.internal.org.jvnet.fastinfoset" />
+        <pattern from="com.sun.tools.xjc" to="sun.tools.internal.xjc" />
+        <pattern from="com.sun.tools.jxc" to="sun.tools.internal.jxc" />
       </prename>
     </sequential>
   </macrodef>
