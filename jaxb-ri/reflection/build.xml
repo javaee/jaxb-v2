@@ -100,6 +100,7 @@
 
   <target name="jar" depends="compile">
     <jar jarfile="${reflection.root}/build/jaxb2-reflection.jar">
+      <fileset dir="${reflection.root}/build/src" includes="**/*.properties" />
       <fileset dir="${reflection.classes}" />
       <zipgroupfileset dir="${jaxb.libs.runtime2}" includes="istack-commons-runtime.jar" />
     </jar>
