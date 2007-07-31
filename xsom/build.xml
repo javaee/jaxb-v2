@@ -335,10 +335,10 @@
     </taskdef>
 
     <prename srcdir="src" destdir="j2se-integration/xsom/src">
-      <pattern from="com.sun.xml.xsom" to="com.sun.xml.internal.xsom" />
+      <pattern from="com.sun.xml.xsom" to="sun.xml.internal.xsom" />
     </prename>
     <prename srcdir="build/src" destdir="j2se-integration/xsom/src">
-      <pattern from="com.sun.xml.xsom" to="com.sun.xml.internal.xsom" />
+      <pattern from="com.sun.xml.xsom" to="sun.xml.internal.xsom" />
     </prename>
 
     <!-- sanity test -->
