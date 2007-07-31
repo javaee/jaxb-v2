@@ -90,4 +90,8 @@
             description="clean jaxb-ri/runtime-staxex/build">
         <delete dir="${runtime-staxex.root}/build" />
     </target>
+
+    <target name="j2se-integration" depends="compile">
+      <package-rename srcdir="${runtime-staxex.src}" destdir="j2se-integration/runtime-staxex/src" />
+    </target>
 </project>

@@ -62,7 +62,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.24 2007-07-24 19:23:51 kohsuke Exp $
+       $Id: build.xml,v 1.71.2.25 2007-07-31 20:38:20 ramapulavarthi Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -101,6 +101,7 @@
     <subant target="j2se-integration">
       <fileset file="runtime/build.xml" />
       <fileset file="runtime-fi/build.xml" />
+      <fileset file="runtime-staxex/build.xml" />
       <fileset file="xjc/build.xml" />
     </subant>
   </target>
