@@ -62,7 +62,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.26 2007-08-02 19:03:22 kohsuke Exp $
+       $Id: build.xml,v 1.71.2.27 2007-08-02 21:35:27 ramapulavarthi Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -96,7 +96,7 @@
         <ant dir="tools"               target="compile" />
     </target>
 
-  <target name="j2se-integration" depends="init"
+  <target name="j2se-integration" depends="init, integrate-package-rename-task"
           description="prepare renamed source code for J2SE integration">
     <ant dir="apgen" target="compile" />
     <subant target="j2se-integration">
@@ -857,7 +857,7 @@ Class-Path: ${manifest.classpath}
     </target>
 
     <target name="integrate-package-rename-task">
-        <get src="http://kohsuke.sfbay/hudson/job/package-rename-task/lastSuccessfulBuild/artifact/target/package-rename-task-1.0.jar"
+        <get src="http://kohsuke.sfbay/hudson/job/package-rename-task/lastSuccessfulBuild/artifact/target/package-rename-task.jar"
              dest="tools/lib/util/package-rename-task.jar"/>
     </target>
 
