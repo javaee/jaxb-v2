@@ -62,7 +62,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.27 2007-08-02 21:35:27 ramapulavarthi Exp $
+       $Id: build.xml,v 1.71.2.28 2007-08-02 23:51:13 ramapulavarthi Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -96,8 +96,15 @@
         <ant dir="tools"               target="compile" />
     </target>
 
+  <!--
+  Invoke j2se-integration target with property ${jaxb.version.in.jdk} set
+  to right target version
+  -->
+
   <target name="j2se-integration" depends="init, integrate-package-rename-task"
           description="prepare renamed source code for J2SE integration">
+    <property name="jaxb.version.in.jdk" value="JAXB 2.0 in JDK 1.6"/>
+    
     <ant dir="apgen" target="compile" />
     <subant target="j2se-integration">
       <fileset file="runtime/build.xml" />
@@ -105,10 +112,29 @@
       <fileset file="runtime-staxex/build.xml" />
       <fileset file="xjc/build.xml" />
     </subant>
+
+    <!-- exclude ant tasks -->
+    <delete file="j2se-integration/xjc/src/com/sun/tools/internal/xjc/XJC2Task.java"/>
+    <!-- move META-INF/services to tools/META-INF/services -->
+    <move file="j2se-integration/xjc/src/META-INF/services/com.sun.tools.xjc.Plugin"
+          tofile="j2se-integration/tools/etc/META-INF/services/sun.tools.xjc.Plugin"/>
+    <delete dir="j2se-integration/xjc/src/META-INF"/>
+    
+    <!-- insert the RI version number into the file prolog message that
+        is placed at the head of every generated file and the output
+        message for "xjc -version"  and
+        message for "schemagen -version" -->
+    <replace dir="j2se-integration/xjc/src/sun/tools/internal/xjc" includes="MessageBundle*.properties">
+      <replacefilter token="@@BUILD_VERSION@@" value="${jaxb.version.in.jdk}"/>
+    </replace>
+    <replace dir="j2se-integration/xjc/src/sun/tools/internal/jxc" includes="MessageBundle*.properties">
+      <replacefilter token="@@BUILD_VERSION@@" value="${jaxb.version.in.jdk}"/>
+    </replace>
+
   </target>
 
 
-    <target name="architecture-document"
+  <target name="architecture-document"
             description="generate architecture documents (which is just a glorified javadoc)">
       <arch-doc destdir="${jaxb.root}/build/javadoc" title="JAXB RI">
         <params>
