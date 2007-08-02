@@ -29,11 +29,11 @@
     <mkdir dir="build/runtime-classes" />
     <mkdir dir="build/compiler-classes" />
     
-    <javac source="1.5" srcdir="src/runtime" destdir="build/runtime-classes" debug="on">
+    <javac source="1.5" target="1.5" srcdir="src/runtime" destdir="build/runtime-classes" debug="on">
     	<classpath refid="runtime.lib"/>
     </javac>
     
-    <javac source="1.5" srcdir="src/compiler" destdir="build/compiler-classes" debug="on">
+    <javac source="1.5" target="1.5" srcdir="src/compiler" destdir="build/compiler-classes" debug="on">
     	<classpath refid="runtime.lib"/>
     	<classpath>
     		<pathelement path="build/runtime-classes"/>
@@ -156,7 +156,8 @@
 
     <macrodef name="push">
       <attribute name="artifactId" />
-      <attribute name="file" />
+      <attribute name="jar" />
+      <attribute name="srczip" />
       <sequential>
         <echo file="build/@{artifactId}.pom"><![CDATA[<project>
       <modelVersion>4.0.0</modelVersion>
@@ -169,14 +170,25 @@
         <exec executable="mvn.bat">
           <arg value="deploy:deploy-file"/>
           <arg value="-DpomFile=build/@{artifactId}.pom"/>
-          <arg value="-Dfile=@{file}"/>
+          <arg value="-Dfile=@{jar}"/>
+          <arg value="-DrepositoryId=java.net2"/>
+          <arg value="-Durl=${repositoryURL}"/>
+        </exec>
+        <exec executable="mvn.bat">
+          <arg value="deploy:deploy-file"/>
+          <arg value="-DgroupId=com.sun.xml.txw2"/>
+          <arg value="-DartifactId=@{artifactId}"/>
+          <arg value="-Dversion=${version}"/>
+          <arg value="-Dpackaging=jar"/>
+          <arg value="-Dfile=@{srczip}"/>
+          <arg value="-Dclassifier=sources"/>
           <arg value="-DrepositoryId=java.net2"/>
           <arg value="-Durl=${repositoryURL}"/>
         </exec>
       </sequential>
     </macrodef>
 
-    <push artifactId="txw2" file="build/txw2.jar" />
+    <push artifactId="txw2" jar="build/txw2.jar" srczip="build/txw2-src.zip" />
     <!--push artifactId="txw2c" file="build/txw2c.jar" /-->
   </target>
 </project>
