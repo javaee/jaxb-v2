@@ -119,6 +119,12 @@ public class TxwTask extends org.apache.tools.ant.Task {
     public void execute() throws BuildException {
         options.errorListener = new AntErrorListener(getProject());
 
+        // when we run in Mustang, relaxng datatype gets loaded from tools.jar
+        // and thus without setting the context classloader, they won't find
+        // any datatype libraries
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+
         try {
             InputSource in = new InputSource(schemaFile.toURL().toExternalForm());
 
@@ -149,6 +155,8 @@ public class TxwTask extends org.apache.tools.ant.Task {
             }
         } catch (MalformedURLException e) {
             throw new BuildException(e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(cl);
         }
 
         // kick off the compiler
