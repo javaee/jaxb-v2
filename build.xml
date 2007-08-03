@@ -62,7 +62,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.28 2007-08-02 23:51:13 ramapulavarthi Exp $
+       $Id: build.xml,v 1.71.2.29 2007-08-03 23:18:47 ramapulavarthi Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -101,7 +101,7 @@
   to right target version
   -->
 
-  <target name="j2se-integration" depends="init, integrate-package-rename-task"
+  <target name="j2se-integration" depends="init"
           description="prepare renamed source code for J2SE integration">
     <property name="jaxb.version.in.jdk" value="JAXB 2.0 in JDK 1.6"/>
     
