@@ -62,6 +62,7 @@ import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
+import com.sun.xml.bind.WhiteSpaceProcessor;
 
 
 /**
@@ -171,6 +172,22 @@ public class ModelBuilder<T,C,F,M> {
 
             throw new LinkageError( res.format(
                 Which.which(XmlSchema.class),
+                Which.which(ModelBuilder.class)
+            ));
+        }
+    }
+
+    /**
+     * Makes sure that we don't have conflicting 1.0 runtime,
+     * and report an error if we do.
+     */
+    static {
+        try {
+            WhiteSpaceProcessor.isWhiteSpace("xyz");
+        } catch (NoSuchMethodError e) {
+            // we seem to be getting 1.0 runtime
+            throw new LinkageError( Messages.RUNNING_WITH_1_0_RUNTIME.format(
+                Which.which(WhiteSpaceProcessor.class),
                 Which.which(ModelBuilder.class)
             ));
         }
