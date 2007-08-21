@@ -58,6 +58,8 @@ package com.sun.xml.xsom;
 import com.sun.xml.xsom.visitor.XSSimpleTypeFunction;
 import com.sun.xml.xsom.visitor.XSSimpleTypeVisitor;
 
+import java.util.List;
+
 /**
  * Simple type.
  * 
@@ -161,7 +163,14 @@ public interface XSSimpleType extends XSType, XSContentType
      *      anywhere in its derivation chain, null will be returned.
      */
     XSFacet getFacet( String name );
-    
+
+    /**
+     * For multi-valued facets (enumeration and pattern), obtain all values.
+     *
+     * @see #getFacet(String)
+     */
+    List<XSFacet> getFacets( String name );
+
     
     
     void visit( XSSimpleTypeVisitor visitor );

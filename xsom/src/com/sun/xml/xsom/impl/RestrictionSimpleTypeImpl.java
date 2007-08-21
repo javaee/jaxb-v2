@@ -119,6 +119,14 @@ public class RestrictionSimpleTypeImpl extends SimpleTypeImpl implements XSRestr
         return getSimpleBaseType().getFacet(name);
     }
 
+    public List<XSFacet> getFacets( String name ) {
+        List<XSFacet> f = getDeclaredFacets(name);
+        if(!f.isEmpty())     return f;
+
+        // none was found on this datatype. check the base type.
+        return getSimpleBaseType().getFacets(name);
+    }
+
     public XSVariety getVariety() { return getSimpleBaseType().getVariety(); }
 
     public XSSimpleType getPrimitiveType() {

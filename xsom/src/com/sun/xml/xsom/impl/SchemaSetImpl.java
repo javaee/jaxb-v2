@@ -316,6 +316,7 @@ public class SchemaSetImpl implements XSSchemaSet
         public XSListSimpleType getBaseListType() {return null;}
         public XSUnionSimpleType getBaseUnionType() {return null;}
         public XSFacet getFacet(String name) { return null; }
+        public List<XSFacet> getFacets( String name ) { return Collections.EMPTY_LIST; }
         public XSFacet getDeclaredFacet(String name) { return null; }
         public List<XSFacet> getDeclaredFacets(String name) { return Collections.EMPTY_LIST; }
 

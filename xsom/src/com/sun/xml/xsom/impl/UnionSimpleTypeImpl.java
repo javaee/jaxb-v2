@@ -66,6 +66,8 @@ import org.xml.sax.Locator;
 
 import java.util.Iterator;
 import java.util.Set;
+import java.util.List;
+import java.util.Collections;
 
 public class UnionSimpleTypeImpl extends SimpleTypeImpl implements XSUnionSimpleType
 {
@@ -114,6 +116,7 @@ public class UnionSimpleTypeImpl extends SimpleTypeImpl implements XSUnionSimple
 
     // union type by itself doesn't have any facet. */
     public XSFacet getFacet( String name ) { return null; }
+    public List<XSFacet> getFacets( String name ) { return Collections.EMPTY_LIST; }
 
     public XSVariety getVariety() { return XSVariety.LIST; }
 
