@@ -168,6 +168,9 @@ public interface XSSimpleType extends XSType, XSContentType
      * For multi-valued facets (enumeration and pattern), obtain all values.
      *
      * @see #getFacet(String)
+     *
+     * @return
+     *      can be empty but never null.
      */
     List<XSFacet> getFacets( String name );
 
