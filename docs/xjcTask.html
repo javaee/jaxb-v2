@@ -69,7 +69,7 @@
         <tr>
           <td>destdir</td>
           <td>Generated code will be written under this directory. If you
-              specify <code>target="abc/def"</code> and <code>package="org.acme"</code>, 
+              specify <code>destdir="abc/def"</code> and <code>package="org.acme"</code>, 
               then files are generated to <code>abc/def/org/acme</code>.</td>
           <td>Yes</td>
         </tr>
@@ -258,7 +258,7 @@ there is no native support for
        <code>src/org/acme/foo</code>:</p>
 
 <pre class=ant-example>
-&lt;xjc schema="src/myschema.xsd" target="src" package="org.acme.foo"/&gt;
+&lt;xjc schema="src/myschema.xsd" destdir="src" package="org.acme.foo"/&gt;
 </pre>
 
     <p>Compile all XML Schema files in the <code>src</code> directory and place the 
@@ -266,7 +266,7 @@ there is no native support for
        directory:</p>
 
 <pre class=ant-example>
-&lt;xjc target="src"&gt;
+&lt;xjc destdir="src"&gt;
   &lt;schema  dir="src" includes="*.xsd"/&gt;
 &lt;/xjc&gt;
 </pre>
@@ -278,7 +278,7 @@ there is no native support for
        subdirectories of the <code>src</code> directory to look for schema files.</p>
 
 <pre class=ant-example>
-&lt;xjc target="src">
+&lt;xjc destdir="src">
   &lt;schema  dir="src" includes="*.xsd"/>
   &lt;binding dir="src" includes="*.xjb"/>
 &lt;/xjc>
@@ -295,7 +295,7 @@ there is no native support for
 
 <pre class=ant-example><xmp>
 <mkdir dir="src/org/acme/foo" />
-<xjc target="src" schema="abc.xsd" removeOldOutput="yes" package="org.acme.foo">
+<xjc destdir="src" schema="abc.xsd" removeOldOutput="yes" package="org.acme.foo">
   <produces dir="src/org/acme/foo" includes="* impl/*" />
 </xjc>
 </xmp></pre>
@@ -307,7 +307,7 @@ there is no native support for
 
 <pre class=ant-example><xmp>
 <mkdir dir="src/org/acme/foo" />
-<xjc target="src" removeOldOutput="yes" package="org.acme.foo">
+<xjc destdir="src" removeOldOutput="yes" package="org.acme.foo">
   <schema dir="schema" includes="*.xsd" />
   <depends dir="schema" includes="*.dtd" />
   <produces dir="build/generated-src/org/acme/foo" includes="**/*" />
@@ -320,7 +320,7 @@ there is no native support for
        specifies the "<tt>-nv</tt>" option, which disables the strict schema correctness checking:</p>
 
 <pre class=ant-example>
-&lt;xjc target="src"&gt;
+&lt;xjc destdir="src"&gt;
   &lt;schema dir="src" includes="**/*.xsd" excludes="**/debug.xsd"/&gt;
   &lt;arg value="-nv" />
 &lt;/xjc&gt;
@@ -340,8 +340,8 @@ there is no native support for
 
 	<hr/>
 	<div class="footer">
-	  $Revision: 1.7.4.4 $<br/>
-	  $Date: 2006-11-09 23:45:04 $
+	  $Revision: 1.7.4.5 $<br/>
+	  $Date: 2007-08-22 23:51:01 $
 	</div>
   </body>
 </html>
