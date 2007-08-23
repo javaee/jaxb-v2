@@ -67,7 +67,7 @@ final class StAXExConnector extends StAXStreamConnector {
             if(pcdata instanceof org.jvnet.staxex.Base64Data) {
                 org.jvnet.staxex.Base64Data bd = (org.jvnet.staxex.Base64Data) pcdata;
                 Base64Data binary = new Base64Data();
-                if(!binary.hasData())
+                if(!bd.hasData())
                     binary.set(bd.getDataHandler());
                 else
                     binary.set( bd.get(), bd.getDataLen(), bd.getMimeType() );
