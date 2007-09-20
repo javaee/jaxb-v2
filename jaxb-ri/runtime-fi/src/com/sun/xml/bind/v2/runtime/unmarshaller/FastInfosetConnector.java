@@ -42,6 +42,7 @@ import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.WhiteSpaceProcessor;
 import com.sun.xml.fastinfoset.stax.StAXDocumentParser;
+import org.jvnet.fastinfoset.EncodingAlgorithmIndexes;
 import org.xml.sax.SAXException;
 
 /**
@@ -249,26 +250,42 @@ final class FastInfosetConnector extends StAXConnector {
     
     private void processNonIgnorableText() throws SAXException {
         textReported = true;
-        if (fastInfosetStreamReader.getTextAlgorithmBytes() == null) {            
-            charArray.set();
-            visitor.text(charArray);
-        } else {
+        boolean isTextAlgorithmAplied = 
+                (fastInfosetStreamReader.getTextAlgorithmBytes() != null);
+        
+        if (isTextAlgorithmAplied &&
+                fastInfosetStreamReader.getTextAlgorithmIndex() == EncodingAlgorithmIndexes.BASE64) {
             base64Data.set(fastInfosetStreamReader.getTextAlgorithmBytesClone(),null);
             visitor.text(base64Data);
+        } else {
+            if (isTextAlgorithmAplied) {
+                fastInfosetStreamReader.getText();
+            }
+            
+            charArray.set();
+            visitor.text(charArray);
         }
     }
-        
+    
     private void processIgnorableText() throws SAXException {
-        if (fastInfosetStreamReader.getTextAlgorithmBytes() == null) {
+        boolean isTextAlgorithmAplied = 
+                (fastInfosetStreamReader.getTextAlgorithmBytes() != null);
+
+        if (isTextAlgorithmAplied &&
+                fastInfosetStreamReader.getTextAlgorithmIndex() == EncodingAlgorithmIndexes.BASE64) {
+            base64Data.set(fastInfosetStreamReader.getTextAlgorithmBytesClone(),null);
+            visitor.text(base64Data);
+            textReported = true;
+        } else {
+            if (isTextAlgorithmAplied) {
+                fastInfosetStreamReader.getText();
+            }
+
             charArray.set();
             if (!WhiteSpaceProcessor.isWhiteSpace(charArray)) {
                 visitor.text(charArray);
                 textReported = true;
             }
-        } else {
-            base64Data.set(fastInfosetStreamReader.getTextAlgorithmBytesClone(),null);
-            visitor.text(base64Data);
-            textReported = true;
         }
     }
     

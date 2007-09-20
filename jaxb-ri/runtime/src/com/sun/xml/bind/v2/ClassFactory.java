@@ -40,6 +40,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -73,9 +74,9 @@ public final class ClassFactory {
      *
      * To avoid synchronization among threads, we use {@link ThreadLocal}.
      */
-    private static final ThreadLocal<Map<Class,Constructor>> tls = new ThreadLocal<Map<Class,Constructor>>() {
-        public Map<Class, Constructor> initialValue() {
-            return new WeakHashMap<Class,Constructor>();
+    private static final ThreadLocal<Map<Class, WeakReference<Constructor>>> tls = new ThreadLocal<Map<Class,WeakReference<Constructor>>>() {
+        public Map<Class,WeakReference<Constructor>> initialValue() {
+            return new WeakHashMap<Class,WeakReference<Constructor>>();
         }
     };
 
@@ -83,8 +84,11 @@ public final class ClassFactory {
      * Creates a new instance of the class but throw exceptions without catching it.
      */
     public static <T> T create0( final Class<T> clazz ) throws IllegalAccessException, InvocationTargetException, InstantiationException {
-        Map<Class,Constructor> m = tls.get();
-        Constructor<T> cons = m.get(clazz);
+        Map<Class,WeakReference<Constructor>> m = tls.get();
+        Constructor<T> cons = null;
+        WeakReference<Constructor> consRef = m.get(clazz);
+        if(consRef!=null)
+            cons = consRef.get();
         if(cons==null) {
             try {
                 cons = clazz.getDeclaredConstructor(emptyClass);
@@ -113,7 +117,7 @@ public final class ClassFactory {
                 }
             }
 
-            m.put(clazz,cons);
+            m.put(clazz,new WeakReference<Constructor>(cons));
         }
 
         return cons.newInstance(emptyObject);

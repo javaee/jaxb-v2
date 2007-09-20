@@ -347,7 +347,11 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                         // normally images can be content-sniffed.
                         // so the MIME type check will only make us slower and draconian, both of which
                         // JAXB 2.0 isn't interested.
-                        return ImageIO.read(is);
+                        try {
+                            return ImageIO.read(is);
+                        } finally {
+                            is.close();
+                        }
                     } catch (IOException e) {
                         UnmarshallingContext.getInstance().handleError(e);
                         return null;

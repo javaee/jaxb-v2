@@ -3,4 +3,6 @@
     <!-- dummy -->
     <mkdir dir="work" />
   </target>
+  
+  <target name="clean" />
 </project>
