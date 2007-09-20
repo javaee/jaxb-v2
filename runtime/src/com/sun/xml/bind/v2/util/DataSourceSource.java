@@ -70,6 +70,12 @@ public final class DataSourceSource extends StreamSource {
      */
     private final String charset;
 
+    // remember the value we returned so that the 2nd invocation
+    // will return the same object, which is what's expeted out of
+    // StreamSource
+    private Reader r;
+    private InputStream is;
+
     public DataSourceSource(DataHandler dh) throws MimeTypeParseException {
         this(dh.getDataSource());
     }
@@ -100,7 +106,9 @@ public final class DataSourceSource extends StreamSource {
     public Reader getReader() {
         try {
             if(charset==null)   return null;
-            else                return new InputStreamReader(source.getInputStream(),charset);
+            if(r==null)
+                r = new InputStreamReader(source.getInputStream(),charset);
+            return r;
         } catch (IOException e) {
             // argh
             throw new RuntimeException(e);
@@ -110,8 +118,10 @@ public final class DataSourceSource extends StreamSource {
     @Override
     public InputStream getInputStream() {
         try {
-            if(charset==null)   return source.getInputStream();
-            else                return null;
+            if(charset!=null)   return null;
+            if(is==null)
+                is = source.getInputStream();
+            return is;
         } catch (IOException e) {
             // argh
             throw new RuntimeException(e);

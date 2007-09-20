@@ -326,10 +326,14 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
     }
 
     public void serializeAttributes(BeanT bean, XMLSerializer target) throws SAXException, IOException, XMLStreamException {
-        try {
-            for( AttributeProperty<BeanT> p : attributeProperties )
+        for( AttributeProperty<BeanT> p : attributeProperties )
+            try {
                 p.serializeAttributes(bean,target);
+            } catch (AccessorException e) {
+                target.reportError(null,e);
+            }
 
+        try {
             if(inheritedAttWildcard!=null) {
                 Map<QName,String> map = inheritedAttWildcard.get(bean);
                 target.attWildcardAsAttributes(map,null);

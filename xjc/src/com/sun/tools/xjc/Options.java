@@ -44,6 +44,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -871,6 +872,36 @@ public class Options
     private static <T> T[] findServices( Class<T> clazz, ClassLoader classLoader ) {
         // if true, print debug output
         final boolean debug = com.sun.tools.xjc.util.Util.getSystemProperty(Options.class,"findServices")!=null;
+
+        // if we are running on Mustang or Dolphin, use ServiceLoader
+        // so that we can take advantage of JSR-277 module system.
+        try {
+            Class<?> serviceLoader = Class.forName("java.util.ServiceLoader");
+            if(debug)
+                System.out.println("Using java.util.ServiceLoader");
+            Iterable<T> itr = (Iterable<T>)serviceLoader.getMethod("load",Class.class,ClassLoader.class).invoke(null,clazz,classLoader);
+            List<T> r = new ArrayList<T>();
+            for (T t : itr)
+                r.add(t);
+            return r.toArray((T[])Array.newInstance(clazz,r.size()));
+        } catch (ClassNotFoundException e) {
+            // fall through
+        } catch (IllegalAccessException e) {
+            Error x = new IllegalAccessError();
+            x.initCause(e);
+            throw x;
+        } catch (InvocationTargetException e) {
+            Throwable x = e.getTargetException();
+            if (x instanceof RuntimeException)
+                throw (RuntimeException) x;
+            if (x instanceof Error)
+                throw (Error) x;
+            throw new Error(x);
+        } catch (NoSuchMethodException e) {
+            Error x = new NoSuchMethodError();
+            x.initCause(e);
+            throw x;
+        }
 
         String serviceId = "META-INF/services/" + clazz.getName();
 
