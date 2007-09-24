@@ -7,8 +7,8 @@
 
   <name>Architecture document doclet</name>
   <scm>
-    <connection>scm:cvs:pserver:guest@cvs.dev.java.net:/cvs/jaxb2-sources:/jaxb-ri/tools/taglets</connection>
-    <developerConnection>scm:cvs:pserver:${user.name}@cvs.dev.java.net:/cvs/jaxb2-sources:/jaxb-ri/tools/taglets</developerConnection>
+    <connection>scm:cvs:pserver:guest@cvs.dev.java.net:/cvs:jaxb2-sources/jaxb-ri/tools/taglets</connection>
+    <developerConnection>scm:cvs:pserver:${user.name}@cvs.dev.java.net:/cvs:jaxb2-sources/jaxb-ri/tools/taglets</developerConnection>
   </scm>
 
   <distributionManagement>
