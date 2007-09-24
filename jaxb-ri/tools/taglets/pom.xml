@@ -3,13 +3,12 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.sun.xml.bind</groupId>
   <artifactId>doclet</artifactId>
-  <version>1.0</version>
+  <version>1.1-SNAPSHOT</version>
 
   <name>Architecture document doclet</name>
   <scm>
     <connection>scm:cvs:pserver:guest@cvs.dev.java.net:/cvs:jaxb2-sources/jaxb-ri/tools/taglets</connection>
-    <developerConnection>scm:cvs:pserver:${user.name}@cvs.dev.java.net:/cvs:jaxb2-sources/jaxb-ri/tools/taglets</developerConnection>
-    <tag>doclet-1_0</tag>
+    <developerConnection>scm:cvs:pserver:kohsuke@cvs.dev.java.net:/cvs:jaxb2-sources/jaxb-ri/tools/taglets</developerConnection>
   </scm>
 
   <distributionManagement>
