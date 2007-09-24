@@ -99,7 +99,7 @@ abstract class FileGeneratingTag implements Taglet {
      *      just the base name of the file name.
      */
     protected final File getOutputFile(TagletWriter writer, PackageDoc pkg, String imageFileName) {
-        File rootDir = new File(writer.configuration().destDirName);
+        File rootDir = writer.configuration().destDirName.length()==0 ? new File(".") : new File(writer.configuration().destDirName);
         File pkgDir = new File(rootDir,pkg.name().replace('.','/'));
         File imageFile = new File(pkgDir,imageFileName);
         return imageFile;
