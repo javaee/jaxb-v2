@@ -62,7 +62,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.30 2007-08-08 06:29:26 ramapulavarthi Exp $
+       $Id: build.xml,v 1.71.2.31 2007-09-26 23:04:02 ramapulavarthi Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -114,7 +114,7 @@
     </subant>
 
     <!-- exclude ant tasks -->
-    <delete file="j2se-integration/xjc/src/sun/tools/internal/xjc/XJC2Task.java"/>
+    <delete file="j2se-integration/xjc/src/com/sun/tools/internal/xjc/XJC2Task.java"/>
     <!-- move META-INF/services to tools/META-INF/services -->
     <move file="j2se-integration/xjc/src/META-INF/services/com.sun.tools.xjc.Plugin"
           tofile="j2se-integration/tools/etc/META-INF/services/sun.tools.xjc.Plugin"/>
@@ -124,10 +124,10 @@
         is placed at the head of every generated file and the output
         message for "xjc -version"  and
         message for "schemagen -version" -->
-    <replace dir="j2se-integration/xjc/src/sun/tools/internal/xjc" includes="MessageBundle*.properties">
+    <replace dir="j2se-integration/xjc/src/com/sun/tools/internal/xjc" includes="MessageBundle*.properties">
       <replacefilter token="@@BUILD_VERSION@@" value="${jaxb.version.in.jdk}"/>
     </replace>
-    <replace dir="j2se-integration/xjc/src/sun/tools/internal/jxc" includes="MessageBundle*.properties">
+    <replace dir="j2se-integration/xjc/src/com/sun/tools/internal/jxc" includes="MessageBundle*.properties">
       <replacefilter token="@@BUILD_VERSION@@" value="${jaxb.version.in.jdk}"/>
     </replace>
 
