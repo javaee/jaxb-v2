@@ -138,7 +138,7 @@
     </taskdef>
 
     <prename srcdir="src/runtime" destdir="j2se-integration/runtime">
-      <pattern from="com.sun.xml.txw2" to="sun.xml.internal.txw2" />
+      <pattern from="com.sun.xml.txw2" to="com.sun.xml.internal.txw2" />
     </prename>
 
     <!-- sanity test -->
