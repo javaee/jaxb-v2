@@ -1,22 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- The contents of this file are subject to the terms
- of the Common Development and Distribution License
- (the "License").  You may not use this file except
- in compliance with the License.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  
- You can obtain a copy of the license at
- https://jwsdp.dev.java.net/CDDLv1.0.html
- See the License for the specific language governing
- permissions and limitations under the License.
+ Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
  
- When distributing Covered Code, include this CDDL
- HEADER in each file and include the License file at
- https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
- add the following below this CDDL HEADER, with the
- fields enclosed by brackets "[]" replaced with your
- own identifying information: Portions Copyright [yyyy]
- [name of copyright owner]
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 2 only ("GPL") or the Common Development
+ and Distribution License("CDDL") (collectively, the "License").  You
+ may not use this file except in compliance with the License. You can obtain
+ a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ language governing permissions and limitations under the License.
+ 
+ When distributing the software, include this License Header Notice in each
+ file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ Sun designates this particular file as subject to the "Classpath" exception
+ as provided by Sun in the GPL Version 2 section of the License file that
+ accompanied this code.  If applicable, add the following below the License
+ Header, with the fields enclosed by brackets [] replaced by your own
+ identifying information: "Portions Copyrighted [year]
+ [name of copyright owner]"
+ 
+ Contributor(s):
+ 
+ If you wish your version of this file to be governed by only the CDDL or
+ only the GPL Version 2, indicate your decision by adding "[Contributor]
+ elects to include this software in this distribution under the [CDDL or GPL
+ Version 2] license."  If you don't indicate a single choice of license, a
+ recipient has the option to distribute your version of this file under
+ either the CDDL, the GPL Version 2 or to extend the choice of license to
+ its licensees as provided above.  However, if you add GPL Version 2 code
+ and therefore, elected the GPL Version 2 license, then the option applies
+ only if the new code is made subject to such option by the copyright
+ holder.
 -->
 
 <!-- Use the following doctypedecl for DTD aware editing.  Comment out b/c
@@ -46,7 +62,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.20 2007-02-08 01:37:59 kohsuke Exp $
+       $Id: build.xml,v 1.71.2.31 2007-09-26 23:04:02 ramapulavarthi Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -80,17 +96,45 @@
         <ant dir="tools"               target="compile" />
     </target>
 
-  <target name="j2se-integration"
+  <!--
+  Invoke j2se-integration target with property ${jaxb.version.in.jdk} set
+  to right target version
+  -->
+
+  <target name="j2se-integration" depends="init"
           description="prepare renamed source code for J2SE integration">
+    <property name="jaxb.version.in.jdk" value="JAXB 2.0 in JDK 1.6"/>
+    
+    <ant dir="apgen" target="compile" />
     <subant target="j2se-integration">
       <fileset file="runtime/build.xml" />
       <fileset file="runtime-fi/build.xml" />
+      <fileset file="runtime-staxex/build.xml" />
       <fileset file="xjc/build.xml" />
     </subant>
+
+    <!-- exclude ant tasks -->
+    <delete file="j2se-integration/xjc/src/com/sun/tools/internal/xjc/XJC2Task.java"/>
+    <!-- move META-INF/services to tools/META-INF/services -->
+    <move file="j2se-integration/xjc/src/META-INF/services/com.sun.tools.xjc.Plugin"
+          tofile="j2se-integration/tools/etc/META-INF/services/sun.tools.xjc.Plugin"/>
+    <delete dir="j2se-integration/xjc/src/META-INF"/>
+    
+    <!-- insert the RI version number into the file prolog message that
+        is placed at the head of every generated file and the output
+        message for "xjc -version"  and
+        message for "schemagen -version" -->
+    <replace dir="j2se-integration/xjc/src/com/sun/tools/internal/xjc" includes="MessageBundle*.properties">
+      <replacefilter token="@@BUILD_VERSION@@" value="${jaxb.version.in.jdk}"/>
+    </replace>
+    <replace dir="j2se-integration/xjc/src/com/sun/tools/internal/jxc" includes="MessageBundle*.properties">
+      <replacefilter token="@@BUILD_VERSION@@" value="${jaxb.version.in.jdk}"/>
+    </replace>
+
   </target>
 
 
-    <target name="architecture-document"
+  <target name="architecture-document"
             description="generate architecture documents (which is just a glorified javadoc)">
       <arch-doc destdir="${jaxb.root}/build/javadoc" title="JAXB RI">
         <params>
@@ -380,6 +424,15 @@ Class-Path: ${manifest.classpath}
       <delete dir="tmp" />
     </target>
 
+  <target name="licensee-zip"
+          description="licensee bundle. Dumbed down version of the workspace bundle">
+    <zip zipfile="build/jaxb-ri.licensee.zip">
+      <fileset dir="." excludes="dist/**, **/build/**, samples/**, docs/**, sandbox/**" />
+      <fileset dir="." includes="docs/manifest/" />
+      <!-- place a stub build.xml to get the build going -->
+      <zipfileset dir="." includes="samples/dummy-build.xml" fullpath="samples/build.xml"/>
+    </zip>
+  </target>
 
 
 
@@ -730,7 +783,7 @@ Class-Path: ${manifest.classpath}
     
     <target name="release-engineering"
             description="target for Sun RE builds"
-            depends="src-zip,bin-installer,src-installer" />
+            depends="src-zip,bin-installer,src-installer,licensee-zip" />
 
 
     <target name="project.dtd" description="create DTD for DTD-aware editing">
@@ -830,7 +883,7 @@ Class-Path: ${manifest.classpath}
     </target>
 
     <target name="integrate-package-rename-task">
-        <get src="http://kohsuke.sfbay/hudson/job/package-rename-task/lastSuccessfulBuild/artifact/target/package-rename-task-1.0.jar"
+        <get src="http://kohsuke.sfbay/hudson/job/package-rename-task/lastSuccessfulBuild/artifact/target/package-rename-task.jar"
              dest="tools/lib/util/package-rename-task.jar"/>
     </target>
 
@@ -846,7 +899,7 @@ Class-Path: ${manifest.classpath}
     </target>
 
     <target name="integrate-codemodel">
-        <property name="codemodel-version" value="2.0-SNAPSHOT" />
+        <property name="codemodel-version" value="2.1-SNAPSHOT" />
         <get src="http://kohsuke.sfbay/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel-version}.jar"
              dest="tools/lib/rebundle/compiler/codemodel.jar" />
         <get src="http://kohsuke.sfbay/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel-version}.jar"
