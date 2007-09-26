@@ -121,7 +121,7 @@
       <zipfileset prefix="jaxb2-reflection"
         dir="${reflection.root}/build" includes="javadoc/**/*, src.zip"/>
       <zipfileset fullpath="jaxb2-reflection/license.html"
-        dir="${jaxb.root}" includes="CDDL_ver_1_0.html"/>
+        dir="${jaxb.root}" includes="CDDL+GPLv2.html"/>
     </zip>
 
     <ant dir="tools/installer-builder" />
@@ -134,7 +134,7 @@
 
     <installerBuilder
       jarFile="${reflection.root}/build/jaxb2-reflection.${build.id}.jar"
-      licenseFile="${jaxb.root}/CDDL_ver_1_0.txt"
+      licenseFile="${jaxb.root}/CDDL+GPLv2.txt"
       zipFile="${reflection.root}/build/jaxb2-reflection.zip" />
   </target>
 
