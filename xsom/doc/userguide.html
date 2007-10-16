@@ -19,13 +19,13 @@
 <h1 style="text-align:center">XSOM User's Guide</h1>
 <div align=right style="font-size:smaller">
 By <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke Kawaguchi</a><br>
-$Id: userguide.html,v 1.2 2005-10-18 22:12:49 kohsuke Exp $
+$Id: userguide.html,v 1.3 2007-10-16 16:56:32 kohsuke Exp $
 </div>
 
 <h1>Parsing a schema</h1>
 
 <p>
-	Use the <code>com.sun.xml.xsom.impl.parser.XSOMParser</code> class to parse schemas. There are a couple of overloaded versions of the <code>parse</code> method.
+	Use the <code>com.sun.xml.xsom.parser.XSOMParser</code> class to parse schemas. There are a couple of overloaded versions of the <code>parse</code> method.
 </p><p>
 	<code>XSOMParser</code> works like this; You create a new instance of XSOMParser, set it up, then call the parse method to parse a schema file. When a schema is parsed, all the schemas that are refered from it (&lt;include>and &lt;import>) will also be parsed.
 	
@@ -34,7 +34,7 @@ $Id: userguide.html,v 1.2 2005-10-18 22:12:49 kohsuke Exp $
 	Once you parse all the schemas you want, call the getResult method to obtain the <code>XSSchemaSet</code> object, then use that object to obtain information about the schema.
 </p>
 <pre>
-import com.sun.xml.xsom.impl.parser.XSOMParser;
+import com.sun.xml.xsom.parser.XSOMParser;
 import com.sun.xml.xsom.XSSchemaSet;
 
 XSOMParser parser = new XSOMParser();
@@ -63,7 +63,7 @@ XSSchemaSet sset = parser.getResult();
 	The following example shows how one can apply a XSLT transformation to produce XML Schema and parse it into XSOM:
 </p>
 <pre><xmp>
-import com.sun.xml.xsom.impl.parser.XSOMParser;
+import com.sun.xml.xsom.parser.XSOMParser;
 import com.sun.xml.xsom.XSSchemaSet;
 
 XSOMParser parser = new XSOMParser();
