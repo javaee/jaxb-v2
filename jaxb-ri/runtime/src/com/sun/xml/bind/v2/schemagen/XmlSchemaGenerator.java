@@ -66,6 +66,7 @@ import com.sun.xml.bind.api.ErrorListener;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.util.CollisionCheckStack;
+import com.sun.xml.bind.v2.util.StackRecorder;
 import static com.sun.xml.bind.v2.WellKnownNamespace.XML_SCHEMA;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.ArrayInfo;
@@ -415,6 +416,11 @@ public final class XmlSchemaGenerator<T,C,F,M> {
     public void write(SchemaOutputResolver resolver, ErrorListener errorListener) throws IOException {
         if(resolver==null)
             throw new IllegalArgumentException();
+
+        if(logger.isLoggable(Level.FINE)) {
+            // debug logging to see what's going on.
+            logger.log(Level.FINE,"Wrigin XML Schema for "+toString(),new StackRecorder());
+        }
 
         // make it fool-proof
         resolver = new FoolProofResolver(resolver);
@@ -1265,6 +1271,15 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             addDependencyTo(tref.getTarget().getTypeName());
         }
 
+        public String toString() {
+            StringBuilder buf = new StringBuilder();
+            buf.append("[classes=").append(classes);
+            buf.append(",elementDecls=").append(elementDecls);
+            buf.append(",enums=").append(enums);
+            buf.append("]");
+            return super.toString();
+        }
+
         /**
          * Represents a global element declaration to be written.
          *
@@ -1348,6 +1363,18 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         final Object o = navigator.asDecl(SwaRefAdapter.class);
         if (o == null) return false;
         return (o.equals(adapter.adapterType));
+    }
+
+    /**
+     * Debug information of what's in this {@link XmlSchemaGenerator}.
+     */
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        for (Namespace ns : namespaces.values()) {
+            if(buf.length()>0)  buf.append(',');
+            buf.append(ns.uri).append('=').append(ns);
+        }
+        return super.toString()+'['+buf+']';
     }
 
     /**
