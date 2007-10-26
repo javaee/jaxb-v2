@@ -95,7 +95,8 @@ final class PrimitiveArrayListerByte<BeanT> extends Lister<BeanT,byte[],Byte,Pri
                 System.arraycopy(buf,0,nb,0,buf.length);
                 buf = nb;
             }
-            buf[size++] = b;
+            if(b!=null)
+                buf[size++] = b;
         }
 
         byte[] build() {
