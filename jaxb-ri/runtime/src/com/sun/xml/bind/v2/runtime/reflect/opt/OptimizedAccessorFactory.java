@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 
 import com.sun.xml.bind.Util;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
+import com.sun.xml.bind.v2.runtime.RuntimeUtil;
 
 import static com.sun.xml.bind.v2.bytecode.ClassTailor.toVMClassName;
 import static com.sun.xml.bind.v2.bytecode.ClassTailor.toVMTypeName;
@@ -101,7 +102,7 @@ public abstract class OptimizedAccessorFactory {
 
         if(t.isPrimitive())
             opt = AccessorInjector.prepare( getter.getDeclaringClass(),
-                methodTemplateName+t.getName(),
+                methodTemplateName+RuntimeUtil.primitiveToBox.get(t).getSimpleName(),
                 newClassName,
                 toVMClassName(Bean.class),
                 toVMClassName(getter.getDeclaringClass()),
@@ -154,7 +155,7 @@ public abstract class OptimizedAccessorFactory {
 
         if(field.getType().isPrimitive())
             opt = AccessorInjector.prepare( field.getDeclaringClass(),
-                fieldTemplateName+field.getType().getName(),
+                fieldTemplateName+RuntimeUtil.primitiveToBox.get(field.getType()).getSimpleName(),
                 newClassName,
                 toVMClassName(Bean.class),
                 toVMClassName(field.getDeclaringClass()),
