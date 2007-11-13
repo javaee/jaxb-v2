@@ -37,6 +37,7 @@ package com.sun.xml.bind.marshaller;
 
 import java.io.OutputStream;
 
+import javax.xml.bind.JAXBContext;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.dom.DOMResult;
@@ -71,6 +72,26 @@ public abstract class NamespacePrefixMapper {
      * Returns a preferred prefix for the given namespace URI.
      * 
      * This method is intended to be overrided by a derived class.
+     *
+     *
+     * <p>
+     * As noted in the return value portion of the javadoc, there
+     * are several cases where the preference cannot be honored.
+     * Specifically, as of JAXB RI 2.0 and onward:
+     *
+     * <ol>
+     * <li>
+     * If the prefix returned is already in use as one of the in-scope
+     * namespace bindings. This is partly necessary for correctness
+     * (so that we don't unexpectedly change the meaning of QNames
+     * bound to {@link String}), partly to simplify the marshaller.
+     * <li>
+     * If the prefix returned is "" yet the current {@link JAXBContext}
+     * includes classes that use the empty namespace URI. This allows
+     * the JAXB RI to reserve the "" prefix for the empty namespace URI,
+     * which is the only possible prefix for the URI.
+     * This restriction is also to simplify the marshaller.
+     * </ol>
      *
      * @param namespaceUri
      *      The namespace URI for which the prefix needs to be found.
