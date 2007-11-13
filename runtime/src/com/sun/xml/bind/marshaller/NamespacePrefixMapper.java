@@ -150,7 +150,7 @@ public abstract class NamespacePrefixMapper {
      *   <ns1:child> ... </ns1:child>
      *   ...
      * </root>
-     * <xmp></pre>
+     * </xmp></pre>
      * <p>
      * To control prefixes assigned to those namespace URIs, use the
      * {@link #getPreferredPrefix(String, String, boolean)} method. 
