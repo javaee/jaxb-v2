@@ -71,7 +71,7 @@ public abstract class NamespacePrefixMapper {
      * Returns a preferred prefix for the given namespace URI.
      * 
      * This method is intended to be overrided by a derived class.
-     * 
+     *
      * @param namespaceUri
      *      The namespace URI for which the prefix needs to be found.
      *      Never be null. "" is used to denote the default namespace.
@@ -123,7 +123,7 @@ public abstract class NamespacePrefixMapper {
      *   <ns3:child xmlns:ns3="urn:foo"> ... </ns3:child>
      *   ...
      * </root>
-     * <xmp></pre>
+     * </xmp></pre>
      *
      * <p>
      * The JAXB RI 2.x mostly doesn't exhibit this behavior any more,
