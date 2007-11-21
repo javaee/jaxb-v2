@@ -19,7 +19,7 @@
     </repository>
     <site>
       <id>local</id>
-      <url>file:../www/</url>
+      <url>file:${java.net.www}/www/</url>
     </site>
   </distributionManagement>
 
