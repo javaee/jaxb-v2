@@ -1,3 +1,39 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * 
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ */
+
 package com.sun.tools.xjc.model;
 
 import java.awt.*;
@@ -88,8 +124,17 @@ public abstract class CBuiltinLeafInfo extends BuiltinLeafInfoImpl<NType,NClass>
      * Since {@link CBuiltinLeafInfo} represents a default binding,
      * it is never a collection.
      */
+    @Deprecated
     public final boolean isCollection() {
         return false;
+    }
+
+    /**
+     * Guaranteed to return this.
+     */
+    @Deprecated
+    public CNonElement getInfo() {
+        return this;
     }
 
     public ID idUse() {
@@ -103,15 +148,9 @@ public abstract class CBuiltinLeafInfo extends BuiltinLeafInfoImpl<NType,NClass>
         return null;
     }
 
-    /**
-     * By definition, a default handling doesn't need any adapter.
-     */
+    @Deprecated
     public final CAdapter getAdapterUse() {
         return null;
-    }
-
-    public final CBuiltinLeafInfo getInfo() {
-        return this;
     }
 
     public Locator getLocator() {
@@ -234,7 +273,9 @@ public abstract class CBuiltinLeafInfo extends BuiltinLeafInfoImpl<NType,NClass>
         }
     };
     // XMLGregorianCalendar is mutable, so we can't support default values anyhow.
-    public static final CBuiltinLeafInfo CALENDAR = new NoConstantBuiltin(XMLGregorianCalendar.class,"dateTime");
+	// For CALENAR we are uses a most unlikely name so as to avoid potential name 
+	// conflicts in the furture.
+	public static final CBuiltinLeafInfo CALENDAR = new NoConstantBuiltin(XMLGregorianCalendar.class,"\u0000");
     public static final CBuiltinLeafInfo DURATION = new NoConstantBuiltin(Duration.class,"duration");
 
     public static final CBuiltinLeafInfo BIG_INTEGER = new Builtin(BigInteger.class,"integer") {

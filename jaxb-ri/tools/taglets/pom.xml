@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.sun.xml.bind</groupId>
+  <artifactId>doclet</artifactId>
+  <version>1.2-SNAPSHOT</version>
+
+  <name>Architecture document doclet</name>
+  <scm>
+    <connection>scm:cvs:pserver:guest@cvs.dev.java.net:/cvs:jaxb2-sources/jaxb-ri/tools/taglets</connection>
+    <developerConnection>scm:cvs:pserver:kohsuke@cvs.dev.java.net:/cvs:jaxb2-sources/jaxb-ri/tools/taglets</developerConnection>
+  </scm>
+
+  <distributionManagement>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>local-repository</id>
+      <url>file:${path-to-m2-repo.java.net}</url>
+    </repository>
+    <site>
+      <id>local</id>
+      <url>file:${java.net.www}/www/</url>
+    </site>
+  </distributionManagement>
+
+  <build>
+    <directory>${basedir}/build</directory>
+    <sourceDirectory>src</sourceDirectory>
+
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  
+  <dependencies>
+    <dependency><!-- for Ant task -->
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant</artifactId>
+      <version>1.7.0</version>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+  
+  <profiles>
+    <profile>
+      <!-- This is only for non MAC OS X builds, hence the property below -->
+      <id>default-tools.jar</id>
+      <activation>
+        <property>
+          <name>java.vendor</name>
+          <value>Sun Microsystems Inc.</value>
+       </property>
+     </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.sun</groupId>
+          <artifactId>tools</artifactId>
+          <version>1.5</version>
+          <scope>system</scope>
+          <systemPath>${java.home}/../lib/tools.jar</systemPath>
+       </dependency>
+     </dependencies>
+   </profile>
+ </profiles>
+
+</project>

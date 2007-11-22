@@ -1,27 +1,40 @@
 /*
- * The contents of this file are subject to the terms
- * of the Common Development and Distribution License
- * (the "License").  You may not use this file except
- * in compliance with the License.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * You can obtain a copy of the license at
- * https://jwsdp.dev.java.net/CDDLv1.0.html
- * See the License for the specific language governing
- * permissions and limitations under the License.
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
  * 
- * When distributing Covered Code, include this CDDL
- * HEADER in each file and include the License file at
- * https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
- * add the following below this CDDL HEADER, with the
- * fields enclosed by brackets "[]" replaced with your
- * own identifying information: Portions Copyright [yyyy]
- * [name of copyright owner]
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
  */
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
-import java.util.Collections;
-
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.UnmarshallerHandler;
@@ -31,8 +44,6 @@ import javax.xml.validation.ValidatorHandler;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.SchemaCache;
 import com.sun.tools.xjc.reader.Const;
-import com.sun.xml.bind.api.TypeReference;
-import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.xsom.parser.AnnotationContext;
 import com.sun.xml.xsom.parser.AnnotationParser;
 import com.sun.xml.xsom.parser.AnnotationParserFactory;
@@ -63,44 +74,9 @@ public class AnnotationParserFactoryImpl implements AnnotationParserFactory {
      */
     private ValidatorHandler validator;
 
-    /**
-     * Lazily parsed schema for the binding file.
-     */
-    private static final SchemaCache bindingFileSchema = new SchemaCache(AnnotationParserFactoryImpl.class.getResource("binding.xsd"));
-
-    /**
-     * Lazily prepared {@link JAXBContext}.
-     */
-    private static JAXBContextImpl customizationContext;
-
-    private static JAXBContextImpl getJAXBContext() {
-        synchronized(AnnotationParserFactoryImpl.class) {
-            try {
-                if(customizationContext==null)
-                    customizationContext = new JAXBContextImpl(
-                        new Class[] {
-                            BindInfo.class, // for xs:annotation
-                            BIClass.class,
-                            BIConversion.User.class,
-                            BIConversion.UserAdapter.class,
-                            BIDom.class,
-                            BIXDom.class,
-                            BIEnum.class,
-                            BIEnumMember.class,
-                            BIGlobalBinding.class,
-                            BIProperty.class,
-                            BISchemaBinding.class
-                        }, Collections.<TypeReference>emptyList(), null, false);
-                return customizationContext;
-            } catch (JAXBException e) {
-                throw new AssertionError(e);
-            }
-        }
-    }
-
     public AnnotationParser create() {
         return new AnnotationParser() {
-            private Unmarshaller u = getJAXBContext().createUnmarshaller();
+            private Unmarshaller u = BindInfo.getJAXBContext().createUnmarshaller();
 
             private UnmarshallerHandler handler;
 
@@ -133,7 +109,7 @@ public class AnnotationParserFactoryImpl implements AnnotationParserFactory {
                         && getSideHandler()==null) {
                             // set up validator
                             if(validator==null)
-                                validator = bindingFileSchema.newValidator();
+                                validator = BindInfo.bindingFileSchema.newValidator();
                             validator.setErrorHandler(errorHandler);
                             startForking(uri,localName,qName,atts,new ValidatorProtecter(validator));
                         }

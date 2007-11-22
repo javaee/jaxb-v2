@@ -1,7 +1,44 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * 
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ */
+
 package com.sun.xml.bind.v2.model.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,6 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.AbstractList;
 
 import javax.xml.bind.annotation.XmlAccessOrder;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -42,18 +80,19 @@ import javax.xml.namespace.QName;
 
 import com.sun.istack.FinalArrayList;
 import com.sun.xml.bind.annotation.XmlLocation;
-import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.annotation.MethodLocatable;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
 import com.sun.xml.bind.v2.model.core.Element;
 import com.sun.xml.bind.v2.model.core.ID;
+import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.model.core.ValuePropertyInfo;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
+import com.sun.xml.bind.v2.util.EditDistance;
 
 
 /**
@@ -62,8 +101,7 @@ import com.sun.xml.bind.v2.runtime.Location;
  *
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
-class ClassInfoImpl<T,C,F,M>
-    extends TypeInfoImpl<T,C,F,M>
+class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
     implements ClassInfo<T,C>, Element<T,C> {
 
     protected final C clazz;
@@ -145,12 +183,17 @@ class ClassInfoImpl<T,C,F,M>
             propOrder = DEFAULT_ORDER;
         }
 
+        if(nav().isInterface(clazz)) {
+            builder.reportError(new IllegalAnnotationException(
+                Messages.CANT_HANDLE_INTERFACE.format(nav().getClassName(clazz)), this ));
+        }
+
         // the class must have the default constructor
         if (!hasFactoryConstructor(t)){
             if(!nav().hasDefaultConstructor(clazz)){
                 Messages msg;
-                if(nav().isInterface(clazz))
-                    msg = Messages.CANT_HANDLE_INTERFACE;
+                if(nav().isInnerClass(clazz))
+                    msg = Messages.CANT_HANDLE_INNER_CLASS;
                 else
                     msg = Messages.NO_DEFAULT_CONSTRUCTOR;
 
@@ -168,8 +211,13 @@ class ClassInfoImpl<T,C,F,M>
             if(s==null || s==nav().asDecl(Object.class))
                 baseClass = null;
             else {
-                baseClass = (ClassInfoImpl<T,C,F,M>) builder.getClassInfo(s,this);
-                baseClass.hasSubClasses = true;
+                NonElement<T,C> b = builder.getClassInfo(s, true, this);
+                if(b instanceof ClassInfoImpl) {
+                    baseClass = (ClassInfoImpl<T,C,F,M>) b;
+                    baseClass.hasSubClasses = true;
+                } else {
+                    baseClass = null;
+                }
             }
         }
         return baseClass;
@@ -215,7 +263,7 @@ class ClassInfoImpl<T,C,F,M>
             if(p.id()== ID.ID)
                 return true;
         }
-        ClassInfoImpl<T, C, F, M> base = getBaseClass();
+        ClassInfoImpl<T,C,F,M> base = getBaseClass();
         if(base!=null)
             return base.canBeReferencedByIDREF();
         else
@@ -245,28 +293,7 @@ class ClassInfoImpl<T,C,F,M>
 
         properties = new FinalArrayList<PropertyInfoImpl<T,C,F,M>>();
 
-        // find properties from fields
-        for( F f : nav().getDeclaredFields(clazz) ) {
-            Annotation[] annotations = reader().getAllFieldAnnotations(f,this);
-            if( nav().isTransient(f) ) {
-                // it's an error for transient field to have any binding annotation
-                if(hasJAXBAnnotation(annotations))
-                    builder.reportError(new IllegalAnnotationException(
-                        Messages.TRANSIENT_FIELD_NOT_BINDABLE.format(nav().getFieldName(f)),
-                            getSomeJAXBAnnotation(annotations)));
-            } else
-            if( nav().isStaticField(f) ) {
-                // static fields are bound only when there's explicit annotation.
-                if(hasJAXBAnnotation(annotations))
-                    addProperty(createFieldSeed(f),annotations);
-            } else {
-                if(at==XmlAccessType.FIELD
-                ||(at==XmlAccessType.PUBLIC_MEMBER && nav().isPublicField(f))
-                || hasJAXBAnnotation(annotations))
-                    addProperty(createFieldSeed(f),annotations);
-                checkFieldXmlLocation(f);
-            }
-        }
+        findFieldProperties(clazz,at);
 
         findGetterSetterProperties(at);
 
@@ -324,6 +351,35 @@ class ClassInfoImpl<T,C,F,M>
         }
 
         return properties;
+    }
+
+    private void findFieldProperties(C c, XmlAccessType at) {
+        // always find properties from the super class first
+        C sc = nav().getSuperClass(c);
+        if(shouldRecurseSuperClass(sc))
+            findFieldProperties(sc,at);
+
+        for( F f : nav().getDeclaredFields(c) ) {
+            Annotation[] annotations = reader().getAllFieldAnnotations(f,this);
+            if( nav().isTransient(f) ) {
+                // it's an error for transient field to have any binding annotation
+                if(hasJAXBAnnotation(annotations))
+                    builder.reportError(new IllegalAnnotationException(
+                        Messages.TRANSIENT_FIELD_NOT_BINDABLE.format(nav().getFieldName(f)),
+                            getSomeJAXBAnnotation(annotations)));
+            } else
+            if( nav().isStaticField(f) ) {
+                // static fields are bound only when there's explicit annotation.
+                if(hasJAXBAnnotation(annotations))
+                    addProperty(createFieldSeed(f),annotations);
+            } else {
+                if(at==XmlAccessType.FIELD
+                ||(at==XmlAccessType.PUBLIC_MEMBER && nav().isPublicField(f))
+                || hasJAXBAnnotation(annotations))
+                    addProperty(createFieldSeed(f),annotations);
+                checkFieldXmlLocation(f);
+            }
+        }
     }
 
     public final boolean hasValueProperty() {
@@ -458,8 +514,17 @@ class ClassInfoImpl<T,C,F,M>
             for( int i=0; i<used.length; i++ )
                 if(used[i]==null) {
                     String unusedName = propOrder[i];
+                    String nearest = EditDistance.findNearest(unusedName, new AbstractList<String>() {
+                        public String get(int index) {
+                            return properties.get(index).getName();
+                        }
+
+                        public int size() {
+                            return properties.size();
+                        }
+                    });
                     builder.reportError(new IllegalAnnotationException(
-                        Messages.PROPERTY_ORDER_CONTAINS_UNUSED_ENTRY.format(unusedName),ClassInfoImpl.this));
+                        Messages.PROPERTY_ORDER_CONTAINS_UNUSED_ENTRY.format(unusedName,nearest),ClassInfoImpl.this));
                 }
         }
     }
@@ -805,23 +870,23 @@ class ClassInfoImpl<T,C,F,M>
         }
     }
 
-    protected ReferencePropertyInfoImpl<T,C,F,M> createReferenceProperty(PropertySeed<T, C, F, M> seed) {
+    protected ReferencePropertyInfoImpl<T,C,F,M> createReferenceProperty(PropertySeed<T,C,F,M> seed) {
         return new ReferencePropertyInfoImpl<T,C,F,M>(this,seed);
     }
 
-    protected AttributePropertyInfoImpl<T, C, F, M> createAttributeProperty(PropertySeed<T, C, F, M> seed) {
+    protected AttributePropertyInfoImpl<T,C,F,M> createAttributeProperty(PropertySeed<T,C,F,M> seed) {
         return new AttributePropertyInfoImpl<T,C,F,M>(this,seed);
     }
 
-    protected ValuePropertyInfoImpl<T, C, F, M> createValueProperty(PropertySeed<T, C, F, M> seed) {
+    protected ValuePropertyInfoImpl<T,C,F,M> createValueProperty(PropertySeed<T,C,F,M> seed) {
         return new ValuePropertyInfoImpl<T,C,F,M>(this,seed);
     }
 
-    protected ElementPropertyInfoImpl<T, C, F, M> createElementProperty(PropertySeed<T, C, F, M> seed) {
+    protected ElementPropertyInfoImpl<T,C,F,M> createElementProperty(PropertySeed<T,C,F,M> seed) {
         return new ElementPropertyInfoImpl<T,C,F,M>(this,seed);
     }
 
-    protected MapPropertyInfoImpl<T, C, F, M> createMapProperty(PropertySeed<T, C, F, M> seed) {
+    protected MapPropertyInfoImpl<T,C,F,M> createMapProperty(PropertySeed<T,C,F,M> seed) {
         return new MapPropertyInfoImpl<T,C,F,M>(this,seed);
     }
 
@@ -830,54 +895,19 @@ class ClassInfoImpl<T,C,F,M>
      * Adds properties that consists of accessors.
      */
     private void findGetterSetterProperties(XmlAccessType at) {
-        TODO.checkSpec();   // TODO: I don't think the spec describes how properties are found
-
         // in the first step we accumulate getters and setters
         // into this map keyed by the property name.
         Map<String,M> getters = new LinkedHashMap<String,M>();
         Map<String,M> setters = new LinkedHashMap<String,M>();
 
-        Collection<? extends M> methods = nav().getDeclaredMethods(clazz);
-        for( M method : methods ) {
-            boolean used = false;   // if this method is added to getters or setters
+        C c = clazz;
+        do {
+            collectGetterSetters(clazz, getters, setters);
 
-            if(nav().isBridgeMethod(method))
-                continue;   // ignore
+            // take super classes into account if they have @XmlTransient
+            c = nav().getSuperClass(c);
+        } while(shouldRecurseSuperClass(c));
 
-            String name = nav().getMethodName(method);
-            int arity = nav().getMethodParameters(method).length;
-
-            if(nav().isStaticMethod(method)) {
-                ensureNoAnnotation(method);
-                continue;
-            }
-
-            // don't look at XmlTransient. We'll deal with that later.
-
-            // is this a get method?
-            String propName = getPropertyNameFromGetMethod(name);
-            if(propName!=null) {
-                if(arity==0) {
-                    getters.put(propName,method);
-                    used = true;
-                }
-                // TODO: do we support indexed property?
-            }
-
-            // is this a set method?
-            propName = getPropertyNameFromSetMethod(name);
-            if(propName!=null) {
-                if(arity==1) {
-                    // TODO: we should check collisions like setFoo(int) and setFoo(String)
-                    setters.put(propName,method);
-                    used = true;
-                }
-                // TODO: do we support indexed property?
-            }
-
-            if(!used)
-                ensureNoAnnotation(method);
-        }
 
         // compute the intersection
         Set<String> complete = new TreeSet<String>(getters.keySet());
@@ -899,8 +929,8 @@ class ClassInfoImpl<T,C,F,M>
             if(!hasAnnotation) {
                 // checking if the method is overriding others isn't free,
                 // so we don't compute it if it's not necessary.
-                isOverriding = (getter!=null && nav().isOverriding(getter))
-                            || (setter!=null && nav().isOverriding(setter));
+                isOverriding = (getter!=null && nav().isOverriding(getter,c))
+                            || (setter!=null && nav().isOverriding(setter,c));
             }
 
             if((at==XmlAccessType.PROPERTY && !isOverriding)
@@ -948,6 +978,90 @@ class ClassInfoImpl<T,C,F,M>
         //   void setFoo(int x);
         // }
         // and how it will be XML-ized.
+    }
+
+    private void collectGetterSetters(C c, Map<String,M> getters, Map<String,M> setters) {
+        // take super classes into account if they have @XmlTransient.
+        // always visit them first so that
+        //   1) order is right
+        //   2) overriden properties are handled accordingly
+        C sc = nav().getSuperClass(c);
+        if(shouldRecurseSuperClass(sc))
+            collectGetterSetters(sc,getters,setters);
+
+
+        Collection<? extends M> methods = nav().getDeclaredMethods(c);
+        Map<String,List<M>> allSetters = new LinkedHashMap<String,List<M>>();
+        for( M method : methods ) {
+            boolean used = false;   // if this method is added to getters or setters
+
+            if(nav().isBridgeMethod(method))
+                continue;   // ignore
+
+            String name = nav().getMethodName(method);
+            int arity = nav().getMethodParameters(method).length;
+
+            if(nav().isStaticMethod(method)) {
+                ensureNoAnnotation(method);
+                continue;
+            }
+
+            // don't look at XmlTransient on properties. We'll deal with that later.
+
+            // is this a get method?
+            String propName = getPropertyNameFromGetMethod(name);
+            if(propName!=null && arity==0) {
+                getters.put(propName,method);
+                used = true;
+            }
+
+            // is this a set method?
+            propName = getPropertyNameFromSetMethod(name);
+            if(propName!=null && arity==1) {
+                List<M> propSetters = allSetters.get(propName);
+                if(null == propSetters){
+                    propSetters = new ArrayList<M>();
+                    allSetters.put(propName, propSetters);
+                }
+                propSetters.add(method);
+                used = true; // used check performed later
+            }
+
+            if(!used)
+                ensureNoAnnotation(method);
+        }
+
+        // Match getter with setters by comparing getter return type to setter param
+        for (Map.Entry<String,M> entry : getters.entrySet()) {
+            String propName = entry.getKey();
+            M getter = entry.getValue();
+            List<M> propSetters = allSetters.remove(propName);
+            if (null == propSetters) {
+                //no matching setter
+                continue;
+            }
+            T getterType = nav().getReturnType(getter);
+            for (M setter : propSetters) {
+                T setterType = nav().getMethodParameters(setter)[0];
+                if (setterType.equals(getterType)) {
+                    setters.put(propName, setter);
+                    break;
+                }
+            }
+        }
+
+        // also allow set-only properties
+        for (Map.Entry<String,List<M>> e : allSetters.entrySet()) {
+            setters.put(e.getKey(),e.getValue().get(0));
+        }
+    }
+
+    /**
+     * Checks if the properties in this given super class should be aggregated into this class.
+     */
+    private boolean shouldRecurseSuperClass(C sc) {
+        return sc!=null
+            && (builder.isReplaced(sc) || reader().hasClassAnnotation(sc, XmlTransient.class));
     }
 
     /**
@@ -1170,9 +1284,13 @@ class ClassInfoImpl<T,C,F,M>
         return factoryMethod != null;
     }
 
-
     public Method getFactoryMethod(){
         return (Method) factoryMethod;
     }
+
+    public String toString() {
+        return "ClassInfo("+clazz+')';
+    }
+
     private static final String[] DEFAULT_ORDER = new String[0];
 }

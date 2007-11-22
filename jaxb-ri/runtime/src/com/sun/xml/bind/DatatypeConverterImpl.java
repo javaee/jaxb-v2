@@ -1,21 +1,37 @@
 /*
- * The contents of this file are subject to the terms
- * of the Common Development and Distribution License
- * (the "License").  You may not use this file except
- * in compliance with the License.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * You can obtain a copy of the license at
- * https://jwsdp.dev.java.net/CDDLv1.0.html
- * See the License for the specific language governing
- * permissions and limitations under the License.
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
  * 
- * When distributing Covered Code, include this CDDL
- * HEADER in each file and include the License file at
- * https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
- * add the following below this CDDL HEADER, with the
- * fields enclosed by brackets "[]" replaced with your
- * own identifying information: Portions Copyright [yyyy]
- * [name of copyright owner]
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
  */
 package com.sun.xml.bind;
 
@@ -47,7 +63,7 @@ import com.sun.xml.bind.v2.TODO;
  * This class is responsible for whitespace normalization.
  *
  * @author <ul><li>Ryan Shoemaker, Sun Microsystems, Inc.</li></ul>
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since JAXB1.0
  */
 public final class DatatypeConverterImpl implements DatatypeConverterInterface {
@@ -112,7 +128,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
                 sign = -1;
             } else
             if(ch=='+') {
-                ; // noop
+                // noop
             } else
                 throw new NumberFormatException("Not a number: "+s);
         }
@@ -132,7 +148,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         return _parseShort(lexicalXSDShort);
     }
 
-    public static final short _parseShort(CharSequence s) {
+    public static short _parseShort(CharSequence s) {
         return (short)_parseInt(s);
     }
 
@@ -353,7 +369,8 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         final int len = s.length();
 
         // "111" is not a valid hex encoding.
-        if( len%2 != 0 )    return null;
+        if( len%2 != 0 )
+            throw new IllegalArgumentException("hexBinary needs to be even-length: "+s);
 
         byte[] out = new byte[len/2];
 
@@ -361,7 +378,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
             int h = hexToBin(s.charAt(i  ));
             int l = hexToBin(s.charAt(i+1));
             if( h==-1 || l==-1 )
-                return null;    // illegal character
+                throw new IllegalArgumentException("contains illegal character for hexBinary: "+s);
 
             out[i/2] = (byte)(h*16+l);
         }
@@ -449,7 +466,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
     }
 
     public static String _printDecimal(BigDecimal val) {
-        return val.toString();
+        return val.toPlainString();
     }
 
     public String printDouble(double v) {
@@ -530,28 +547,48 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
     }
 
     /**
-     * computes the length of binary data.
+     * computes the length of binary data speculatively.
      *
-     * This function also performs format check.
-     * @return    -1        if format is illegal.
+     * <p>
+     * Our requirement is to create byte[] of the exact length to store the binary data.
+     * If we do this in a straight-forward way, it takes two passes over the data.
+     * Experiments show that this is a non-trivial overhead (35% or so is spent on
+     * the first pass in calculating the length.)
      *
+     * <p>
+     * So the approach here is that we compute the length speculatively, without looking
+     * at the whole contents. The obtained speculative value is never less than the
+     * actual length of the binary data, but it may be bigger. So if the speculation
+     * goes wrong, we'll pay the cost of reallocation and buffer copying.
+     *
+     * <p>
+     * If the base64 text is tightly packed with no indentation nor illegal char
+     * (like what most web services produce), then the speculation of this method
+     * will be correct, so we get the performance benefit.
      */
-    private static int calcLength( String text ) {
+    private static int guessLength( String text ) {
         final int len = text.length();
-        int base64count=0;
-        int i;
 
-        for( i=0; i<len; i++ ) {
-            char ch = text.charAt(i);
-            if( ch=='=' )    // decodeMap['=']!=-1, so we have to check this first.
-                break;
-            if( ch>=128 )
-                return -1;      // incorrect character
-            if( decodeMap[ch]!=-1 )
-                base64count++;
+        // compute the tail '=' chars
+        int j=len-1;
+        for(; j>=0; j-- ) {
+            byte code = decodeMap[text.charAt(j)];
+            if(code==PADDING)
+                continue;
+            if(code==-1)
+                // most likely this base64 text is indented. go with the upper bound
+                return text.length()/4*3;
+            break;
         }
 
-        return (base64count/4)*3+Math.max(0,(base64count%4)-1);
+        j++;    // text.charAt(j) is now at some base64 char, so +1 to make it the size
+        int padSize = len-j;
+        if(padSize >2) // something is wrong with base64. be safe and go with the upper bound
+            return text.length()/4*3;
+
+        // so far this base64 looks like it's unindented tightly packed base64.
+        // take a chance and create an array with the expected size
+        return text.length()/4*3-padSize;
     }
 
     /**
@@ -564,9 +601,8 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
      *      because JIT can inline a lot of string access (with data of 1K chars, it was twice as fast)
      */
     public static byte[] _parseBase64Binary(String text) {
-        final int outlen = calcLength(text);
-        if( outlen==-1 )    return null;
-        final byte[] out = new byte[outlen];
+        final int buflen = guessLength(text);
+        final byte[] out = new byte[buflen];
         int o=0;
 
         final int len = text.length();
@@ -579,6 +615,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         for( i=0; i<len; i++ ) {
             char ch = text.charAt(i);
             byte v = decodeMap[ch];
+
             if( v!=-1 )
                 quadruplet[q++] = v;
 
@@ -593,7 +630,13 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
             }
         }
 
-        return out;
+        if(buflen==o) // speculation worked out to be OK
+            return out;
+
+        // we overestimated, so need to create a new buffer
+        byte[] nb = new byte[o];
+        System.arraycopy(out,0,nb,0,o);
+        return nb;
     }
 
     private static final char[] encodeMap = initEncodeMap();
@@ -860,6 +903,11 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
                 offset = tz.getRawOffset();
             }
 
+            if(offset==0) {
+                buf.append('Z');
+                return;
+            }
+
             if (offset >= 0)
                 buf.append('+');
             else {
@@ -875,7 +923,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         }
 
         /** formats Integer into two-character-wide string. */
-        private static final void formatTwoDigits(int n,StringBuilder buf) {
+        private static void formatTwoDigits(int n,StringBuilder buf) {
             // n is always non-negative.
             if (n < 10) buf.append('0');
             buf.append(n);

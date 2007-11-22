@@ -1,21 +1,37 @@
 /*
- * The contents of this file are subject to the terms
- * of the Common Development and Distribution License
- * (the "License").  You may not use this file except
- * in compliance with the License.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * You can obtain a copy of the license at
- * https://jwsdp.dev.java.net/CDDLv1.0.html
- * See the License for the specific language governing
- * permissions and limitations under the License.
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
  * 
- * When distributing Covered Code, include this CDDL
- * HEADER in each file and include the License file at
- * https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
- * add the following below this CDDL HEADER, with the
- * fields enclosed by brackets "[]" replaced with your
- * own identifying information: Portions Copyright [yyyy]
- * [name of copyright owner]
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
  */
 
 package com.sun.xml.bind.v2.runtime;
@@ -47,6 +63,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.sax.SAXResult;
 
 import com.sun.istack.SAXException2;
+import com.sun.xml.bind.CycleRecoverable;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import com.sun.xml.bind.util.ValidationEventLocatorExImpl;
@@ -186,13 +203,15 @@ public final class XMLSerializer extends Coordinator {
 
     /**
      * Gets the cached instance of {@link Base64Data}.
+     *
+     * @deprecated
+     *      {@link Base64Data} is no longer cached, so that
+     *      XMLStreamWriterEx impl can retain the data, like JAX-WS does.
      */
     public Base64Data getCachedBase64DataInstance() {
-        if(base64Data==null)
-            base64Data = new Base64Data();
-        return base64Data;
+        return new Base64Data();
     }
-
+    
     /**
      * Gets the ID value from an identifiable object.
      */
@@ -246,6 +265,16 @@ public final class XMLSerializer extends Coordinator {
     public void startElement(String nsUri, String localName, String preferredPrefix, Object outerPeer) {
         startElement();
         int idx = nsContext.declareNsUri(nsUri, preferredPrefix, false);
+        nse.setTagName(idx,localName,outerPeer);
+    }
+
+    /**
+     * Variation of {@link #startElement(String, String, String, Object)} that forces
+     * a specific prefix. Needed to preserve the prefix when marshalling DOM.
+     */
+    public void startElementForce(String nsUri, String localName, String forcedPrefix, Object outerPeer) {
+        startElement();
+        int idx = nsContext.force(nsUri, forcedPrefix);
         nse.setTagName(idx,localName,outerPeer);
     }
 
@@ -467,30 +496,51 @@ public final class XMLSerializer extends Coordinator {
         cycleDetectionStack.pop();
     }
 
-    private void pushObject(Object obj, String fieldName) throws SAXException {
-        if(cycleDetectionStack.push(obj)) {
-            // cycle detected
-            StringBuilder sb = new StringBuilder();
-            sb.append(obj);
-            int i=cycleDetectionStack.size()-1;
-            Object x;
-            do {
-                sb.append(" -> ");
-                x = cycleDetectionStack.get(--i);
-                sb.append(x);
-            } while(obj!=x);
+    /**
+     * Pushes the object to {@link #cycleDetectionStack} and also
+     * detect any cycles.
+     *
+     * When a cycle is found, this method tries to recover from it.
+     *
+     * @return
+     *      the object that should be marshalled instead of the given <tt>obj</tt>,
+     *      or null if the error is found and we need to avoid marshalling this object
+     *      to prevent infinite recursion. When this method returns null, the error
+     *      has already been reported.
+     */
+    private Object pushObject(Object obj, String fieldName) throws SAXException {
+        if(!cycleDetectionStack.push(obj))
+            return obj;
 
-            reportError(new ValidationEventImpl(
-                ValidationEvent.ERROR,
-                Messages.CYCLE_IN_MARSHALLER.format(sb),
-                getCurrentLocation(fieldName),
-                null));
+        // allow the object to nominate its replacement
+        if(obj instanceof CycleRecoverable) {
+            obj = ((CycleRecoverable)obj).onCycleDetected(new CycleRecoverable.Context(){
+                public Marshaller getMarshaller() {
+                    return marshaller;
+                }
+            });
+            if(obj!=null) {
+                // object nominated its replacement.
+                // we still need to make sure that the nominated.
+                // this may cause inifinite recursion on its own.
+                cycleDetectionStack.pop();
+                return pushObject(obj,fieldName);
+            } else
+                return null;
         }
+
+        // cycle detected and no one is catching the error.
+        reportError(new ValidationEventImpl(
+            ValidationEvent.ERROR,
+            Messages.CYCLE_IN_MARSHALLER.format(cycleDetectionStack.getCycleString()),
+            getCurrentLocation(fieldName),
+            null));
+        return null;
     }
 
     /**
      * The equivalent of:
-     * 
+     *
      * <pre>
      * childAsURIs(child, fieldName);
      * endNamespaceDecls();
@@ -498,7 +548,7 @@ public final class XMLSerializer extends Coordinator {
      * endAttributes();
      * childAsBody(child, fieldName);
      * </pre>
-     * 
+     *
      * This produces the given child object as the sole content of
      * an element.
      * Used to reduce the code size in the generated marshaller.
@@ -507,6 +557,14 @@ public final class XMLSerializer extends Coordinator {
         if(child==null) {
             handleMissingObjectError(fieldName);
         } else {
+            child = pushObject(child,fieldName);
+            if(child==null) {
+                // error recovery
+                endNamespaceDecls(null);
+                endAttributes();
+                cycleDetectionStack.pop();
+            }
+
             JaxBeanInfo beanInfo;
             try {
                 beanInfo = grammar.getBeanInfo(child,true);
@@ -515,10 +573,9 @@ public final class XMLSerializer extends Coordinator {
                 // recover by ignore
                 endNamespaceDecls(null);
                 endAttributes();
+                cycleDetectionStack.pop();
                 return;
             }
-
-            pushObject(child,fieldName);
 
             final boolean lookForLifecycleMethods = beanInfo.lookForLifecycleMethods();
             if (lookForLifecycleMethods) {
@@ -542,17 +599,17 @@ public final class XMLSerializer extends Coordinator {
 
     // the version of childAsXXX where it produces @xsi:type if the expected type name
     // and the actual type name differs.
-    
+
     /**
      * This method is called when a type child object is found.
-     * 
+     *
      * <p>
      * This method produces events of the following form:
      * <pre>
      * NSDECL* "endNamespaceDecls" ATTRIBUTE* "endAttributes" BODY
      * </pre>
      * optionally including @xsi:type if necessary.
-     * 
+     *
      * @param child
      *      Object to be marshalled. The {@link JaxBeanInfo} for
      *      this object must return a type name.
@@ -561,17 +618,22 @@ public final class XMLSerializer extends Coordinator {
      * @param fieldName
      *      property name of the parent objeect from which 'o' comes.
      *      Used as a part of the error message in case anything goes wrong
-     *      with 'o'. 
+     *      with 'o'.
      */
     public final void childAsXsiType( Object child, String fieldName, JaxBeanInfo expected ) throws SAXException, IOException, XMLStreamException {
         if(child==null) {
             handleMissingObjectError(fieldName);
         } else {
+            child = pushObject(child,fieldName);
+            if(child==null) { // error recovery
+                endNamespaceDecls(null);
+                endAttributes();
+                return;
+            }
+
             boolean asExpected = child.getClass()==expected.jaxbType;
             JaxBeanInfo actual = expected;
             QName actualTypeName = null;
-
-            pushObject(child,fieldName);
 
             if((asExpected) && (actual.lookForLifecycleMethods())) {
                 fireBeforeMarshalEvents(actual, child);
@@ -638,7 +700,7 @@ public final class XMLSerializer extends Coordinator {
     private void fireAfterMarshalEvents(final JaxBeanInfo beanInfo, Object currentTarget) {
         // first invoke bean embedded listener
         if (beanInfo.hasAfterMarshalMethod()) {
-            Method m = beanInfo.getLifecycleMethods().getAfterMarshal();
+            Method m = beanInfo.getLifecycleMethods().afterMarshal;
             fireMarshalEvent(currentTarget, m);
         }
 
@@ -662,7 +724,7 @@ public final class XMLSerializer extends Coordinator {
     private void fireBeforeMarshalEvents(final JaxBeanInfo beanInfo, Object currentTarget) {
         // first invoke bean embedded listener
         if (beanInfo.hasBeforeMarshalMethod()) {
-            Method m = beanInfo.getLifecycleMethods().getBeforeMarshal();
+            Method m = beanInfo.getLifecycleMethods().beforeMarshal;
             fireMarshalEvent(currentTarget, m);
         }
 
@@ -901,6 +963,13 @@ public final class XMLSerializer extends Coordinator {
 
     public QName getSchemaType() {
         return schemaType;
+    }
+
+    public void setObjectIdentityCycleDetection(boolean val) {
+        cycleDetectionStack.setUseIdentity(val);
+    }
+    public boolean getObjectIdentityCycleDetection() {
+        return cycleDetectionStack.getUseIdentity();
     }
 
     void reconcileID() throws SAXException {

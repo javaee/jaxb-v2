@@ -5,9 +5,9 @@
   <version>@API_VERSION@</version>
   <dependencies>
     <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jsr173_api</artifactId>
-      <version>1.0</version>
+      <groupId>javax.xml.stream</groupId>
+      <artifactId>stax-api</artifactId>
+      <version>1.0-2</version>
     </dependency>
     <dependency>
       <groupId>javax.activation</groupId>

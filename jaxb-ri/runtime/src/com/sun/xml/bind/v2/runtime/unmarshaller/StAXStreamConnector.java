@@ -1,4 +1,40 @@
-/* $Id: StAXStreamConnector.java,v 1.10 2006-12-15 00:02:20 kohsuke Exp $
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * 
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ */
+
+/* $Id: StAXStreamConnector.java,v 1.11 2007-11-22 00:52:25 kohsuke Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -48,6 +84,11 @@ import org.xml.sax.SAXException;
 /**
  * Reads XML from StAX {@link XMLStreamReader} and
  * feeds events to {@link XmlVisitor}.
+ * <p>
+ * TODO:
+ * Finding the optimized FI implementations is a bit hacky and not very
+ * extensible. Can we use the service provider mechnism in general for 
+ * concrete implementations of StAXConnector.
  *
  * @author Ryan.Shoemaker@Sun.COM
  * @author Kohsuke Kawaguchi
@@ -61,19 +102,30 @@ class StAXStreamConnector extends StAXConnector {
      * This method checks if the parser is FI parser and acts accordingly.
      */
     public static StAXConnector create(XMLStreamReader reader, XmlVisitor visitor) {
-        // Quick hack until SJSXP fixes 6270116
-        boolean isZephyr = reader.getClass().getName().equals("com.sun.xml.stream.XMLReaderImpl");
-        if(!isZephyr)
-            visitor = new InterningXmlVisitor(visitor);
-
         // try optimized codepath
-        if (reader.getClass()==FI_STAX_READER_CLASS && FI_CONNECTOR_CTOR!=null) {
+        final Class readerClass = reader.getClass();
+        if (FI_STAX_READER_CLASS != null && FI_STAX_READER_CLASS.isAssignableFrom(readerClass) && FI_CONNECTOR_CTOR!=null) {
             try {
                 return FI_CONNECTOR_CTOR.newInstance(reader,visitor);
             } catch (Exception t) {
             }
         }
-        if (STAX_EX_READER!=null && STAX_EX_READER.isAssignableFrom(reader.getClass())) {
+
+        // Quick hack until SJSXP fixes 6270116
+        boolean isZephyr = readerClass.getName().equals("com.sun.xml.stream.XMLReaderImpl");
+        if(isZephyr)
+            ; // no need for interning
+        else
+        if(checkImplementaionNameOfSjsxp(reader))
+            ; // no need for interning
+        else
+        if(getBoolProp(reader,"org.codehaus.stax2.internNames")
+        && getBoolProp(reader,"org.codehaus.stax2.internNsUris"))
+            ; // no need for interning.
+        else
+            visitor = new InterningXmlVisitor(visitor);
+
+        if (STAX_EX_READER_CLASS!=null && STAX_EX_READER_CLASS.isAssignableFrom(readerClass)) {
             try {
                 return STAX_EX_CONNECTOR_CTOR.newInstance(reader,visitor);
             } catch (Exception t) {
@@ -83,6 +135,28 @@ class StAXStreamConnector extends StAXConnector {
         return new StAXStreamConnector(reader,visitor);
     }
 
+    private static boolean checkImplementaionNameOfSjsxp(XMLStreamReader reader) {
+        try {
+            Object name = reader.getProperty("http://java.sun.com/xml/stream/properties/implementation-name");
+            return name!=null && name.equals("sjsxp");
+        } catch (Exception e) {
+            // be defensive against broken StAX parsers since javadoc is not clear
+            // about when an error happens
+            return false;
+        }
+    }
+
+    private static boolean getBoolProp(XMLStreamReader r, String n) {
+        try {
+            Object o = r.getProperty(n);
+            if(o instanceof Boolean)    return (Boolean)o;
+            return false;
+        } catch (Exception e) {
+            // be defensive against broken StAX parsers since javadoc is not clear
+            // about when an error happens
+            return false;
+        }
+    }
 
 
     // StAX event source
@@ -306,7 +380,15 @@ class StAXStreamConnector extends StAXConnector {
 
     private static Class initFIStAXReaderClass() {
         try {
-            return UnmarshallerImpl.class.getClassLoader().loadClass("com.sun.xml.fastinfoset.stax.StAXDocumentParser");
+            Class fisr = UnmarshallerImpl.class.getClassLoader().
+                    loadClass("org.jvnet.fastinfoset.stax.FastInfosetStreamReader");
+            Class sdp = UnmarshallerImpl.class.getClassLoader().
+                    loadClass("com.sun.xml.fastinfoset.stax.StAXDocumentParser");
+            // Check if StAXDocumentParser implements FastInfosetStreamReader
+            if (fisr.isAssignableFrom(sdp))
+                return sdp;
+            else
+                return null;
         } catch (Throwable e) {
             return null;
         }
@@ -314,18 +396,21 @@ class StAXStreamConnector extends StAXConnector {
 
     private static Constructor<? extends StAXConnector> initFastInfosetConnectorClass() {
         try {
-            Class c = UnmarshallerImpl.class.getClassLoader().loadClass("com.sun.xml.bind.v2.runtime.unmarshaller.FastInfosetConnector");
+            if (FI_STAX_READER_CLASS == null)
+                return null;
+            
+            Class c = UnmarshallerImpl.class.getClassLoader().loadClass(
+                    "com.sun.xml.bind.v2.runtime.unmarshaller.FastInfosetConnector");                
             return c.getConstructor(FI_STAX_READER_CLASS,XmlVisitor.class);
         } catch (Throwable e) {
             return null;
         }
     }
 
-
     //
     // reference to StAXEx classes
     //
-    private static final Class STAX_EX_READER = initStAXExReader();
+    private static final Class STAX_EX_READER_CLASS = initStAXExReader();
     private static final Constructor<? extends StAXConnector> STAX_EX_CONNECTOR_CTOR = initStAXExConnector();
 
     private static Class initStAXExReader() {
@@ -339,7 +424,7 @@ class StAXStreamConnector extends StAXConnector {
     private static Constructor<? extends StAXConnector> initStAXExConnector() {
         try {
             Class c = UnmarshallerImpl.class.getClassLoader().loadClass("com.sun.xml.bind.v2.runtime.unmarshaller.StAXExConnector");
-            return c.getConstructor(STAX_EX_READER,XmlVisitor.class);
+            return c.getConstructor(STAX_EX_READER_CLASS,XmlVisitor.class);
         } catch (Throwable e) {
             return null;
         }

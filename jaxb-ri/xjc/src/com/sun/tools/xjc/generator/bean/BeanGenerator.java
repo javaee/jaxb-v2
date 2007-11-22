@@ -1,30 +1,49 @@
 /*
- * The contents of this file are subject to the terms
- * of the Common Development and Distribution License
- * (the "License").  You may not use this file except
- * in compliance with the License.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * You can obtain a copy of the license at
- * https://jwsdp.dev.java.net/CDDLv1.0.html
- * See the License for the specific language governing
- * permissions and limitations under the License.
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
  * 
- * When distributing Covered Code, include this CDDL
- * HEADER in each file and include the License file at
- * https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
- * add the following below this CDDL HEADER, with the
- * fields enclosed by brackets "[]" replaced with your
- * own identifying information: Portions Copyright [yyyy]
- * [name of copyright owner]
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
  */
 
 package com.sun.tools.xjc.generator.bean;
+
+import static com.sun.tools.xjc.outline.Aspect.EXPOSED;
 
 import java.io.Serializable;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -60,12 +79,14 @@ import com.sun.codemodel.JVar;
 import com.sun.codemodel.fmt.JStaticJavaFile;
 import com.sun.tools.xjc.AbortException;
 import com.sun.tools.xjc.ErrorReceiver;
+import com.sun.tools.xjc.api.SpecVersion;
 import com.sun.tools.xjc.generator.annotation.spec.XmlAnyAttributeWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlEnumValueWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlEnumWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlJavaTypeAdapterWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlMimeTypeWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlRootElementWriter;
+import com.sun.tools.xjc.generator.annotation.spec.XmlSeeAlsoWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlTypeWriter;
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
 import com.sun.tools.xjc.model.CAdapter;
@@ -78,6 +99,7 @@ import com.sun.tools.xjc.model.CEnumLeafInfo;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.model.CTypeRef;
 import com.sun.tools.xjc.model.Model;
+import com.sun.tools.xjc.model.CClassRef;
 import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.ClassOutline;
 import com.sun.tools.xjc.outline.EnumConstantOutline;
@@ -89,6 +111,7 @@ import com.sun.tools.xjc.util.CodeModelClassFactory;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
 import com.sun.xml.xsom.XmlString;
+import com.sun.istack.NotNull;
 
 /**
  * Generates fields and accessors.
@@ -164,9 +187,9 @@ public final class BeanGenerator implements Outline
 
         // build enum classes
         for( CEnumLeafInfo p : model.enums().values() )
-            enums.put( p, generateEnum(p) );
+            enums.put( p, generateEnumDef(p) );
 
-        JPackage[] packages = getUsedPackages(Aspect.EXPOSED);
+        JPackage[] packages = getUsedPackages(EXPOSED);
 
         // generates per-package code and remember the results as contexts.
         for( JPackage pkg : packages )
@@ -193,17 +216,25 @@ public final class BeanGenerator implements Outline
                 // use the specified super class
                 model.strategy._extends(cc,getClazz(superClass));
             } else {
-                // use the default one, if any
-                if( model.rootClass!=null && cc.implClass._extends().equals(OBJECT) )
-                    cc.implClass._extends(model.rootClass);
-                if( model.rootInterface!=null)
-                    cc.ref._implements(model.rootInterface);
+                CClassRef refSuperClass = cc.target.getRefBaseClass();
+                if(refSuperClass!=null) {
+                    cc.implClass._extends(refSuperClass.toType(this,EXPOSED));
+                } else {
+                    // use the default one, if any
+                    if( model.rootClass!=null && cc.implClass._extends().equals(OBJECT) )
+                        cc.implClass._extends(model.rootClass);
+                    if( model.rootInterface!=null)
+                        cc.ref._implements(model.rootInterface);
+                }
             }
         }
 
         // fill in implementation classes
         for( ClassOutlineImpl co : getClasses() )
             generateClassBody(co);
+
+        for( EnumOutline eo : enums.values() )
+            generateEnumBody(eo);
 
         // create factories for the impl-less elements
         for( CElementInfo ei : model.getAllElements())
@@ -297,7 +328,7 @@ public final class BeanGenerator implements Outline
         }
 
         public JClassContainer onPackage(JPackage pkg) {
-            return model.strategy.getPackage(pkg,Aspect.EXPOSED);
+            return model.strategy.getPackage(pkg, EXPOSED);
         }
     };
 
@@ -460,16 +491,19 @@ public final class BeanGenerator implements Outline
         // [RESULT]
         // @XmlType(name="foo", targetNamespace="bar://baz")
         XmlTypeWriter xtw = cc.implClass.annotate2(XmlTypeWriter.class);
-        QName typeName = cc.target.getTypeName();
-        if(typeName==null) {
-            xtw.name("");
-        } else {
-            xtw.name(typeName.getLocalPart());
-            final String typeNameURI = typeName.getNamespaceURI();
-            if(!typeNameURI.equals(mostUsedNamespaceURI)) // only generate if necessary
-                xtw.namespace(typeNameURI);
-        }
+        writeTypeName(cc.target.getTypeName(), xtw, mostUsedNamespaceURI);
 
+        if(model.options.target.isLaterThan(SpecVersion.V2_1)) {
+            // @XmlSeeAlso
+            Iterator<CClassInfo> subclasses = cc.target.listSubclasses();
+            if(subclasses.hasNext()) {
+                XmlSeeAlsoWriter saw = cc.implClass.annotate2(XmlSeeAlsoWriter.class);
+                while (subclasses.hasNext()) {
+                    CClassInfo s = subclasses.next();
+                    saw.value(getClazz(s).implRef);
+                }
+            }
+        }
 
         if(target.isElement()) {
             String namespaceURI = target.getElementName().getNamespaceURI();
@@ -508,6 +542,17 @@ public final class BeanGenerator implements Outline
         cc._package().objectFactoryGenerator().populate(cc);
     }
 
+    private void writeTypeName(QName typeName, XmlTypeWriter xtw, String mostUsedNamespaceURI) {
+        if(typeName ==null) {
+            xtw.name("");
+        } else {
+            xtw.name(typeName.getLocalPart());
+            final String typeNameURI = typeName.getNamespaceURI();
+            if(!typeNameURI.equals(mostUsedNamespaceURI)) // only generate if necessary
+                xtw.namespace(typeNameURI);
+        }
+    }
+
     /**
      * Generates an attribute wildcard property on a class.
      */
@@ -542,24 +587,43 @@ public final class BeanGenerator implements Outline
 
 
 
-    private EnumOutline generateEnum(CEnumLeafInfo e) {
+    /**
+     * Generates the minimum {@link JDefinedClass} skeleton
+     * without filling in its body.
+     */
+    private EnumOutline generateEnumDef(CEnumLeafInfo e) {
         JDefinedClass type;
 
-        // since constant values are never null, no point in using the boxed types.
-        JType baseExposedType = e.base.toType(this,Aspect.EXPOSED).unboxify();
-        JType baseImplType = e.base.toType(this,Aspect.IMPLEMENTATION).unboxify();
-
-
         type = getClassFactory().createClass(
-            getContainer(e.parent,Aspect.EXPOSED),e.shortName,e.getLocator(), ClassType.ENUM);
+            getContainer(e.parent, EXPOSED),e.shortName,e.getLocator(), ClassType.ENUM);
         type.javadoc().append(e.javadoc);
 
-        XmlEnumWriter xew = type.annotate2(XmlEnumWriter.class);
-        xew.value(baseExposedType);
+        return new EnumOutline(e, type) {
+            @Override
+            public @NotNull Outline parent() {
+                return BeanGenerator.this;
+            }
+        };
+    }
+
+    private void generateEnumBody(EnumOutline eo) {
+        JDefinedClass type = eo.clazz;
+        CEnumLeafInfo e = eo.target;
+
+        XmlTypeWriter xtw = type.annotate2(XmlTypeWriter.class);
+        writeTypeName(e.getTypeName(), xtw,
+                eo._package().getMostUsedNamespaceURI());
 
         JCodeModel codeModel = model.codeModel;
 
-        EnumOutline enumOutline = new EnumOutline(e, type) {};
+        // since constant values are never null, no point in using the boxed types.
+        JType baseExposedType = e.base.toType(this, EXPOSED).unboxify();
+        JType baseImplType = e.base.toType(this,Aspect.IMPLEMENTATION).unboxify();
+
+
+        XmlEnumWriter xew = type.annotate2(XmlEnumWriter.class);
+        xew.value(baseExposedType);
+        
 
         boolean needsValue = e.needsValueField();
 
@@ -595,7 +659,7 @@ public final class BeanGenerator implements Outline
             if( mem.javadoc!=null )
                 constRef.javadoc().append(mem.javadoc);
 
-            enumOutline.constants.add(new EnumConstantOutline(mem,constRef){});
+            eo.constants.add(new EnumConstantOutline(mem,constRef){});
         }
 
 
@@ -639,11 +703,16 @@ public final class BeanGenerator implements Outline
 
                 JInvocation ex = JExpr._new(codeModel.ref(IllegalArgumentException.class));
 
+                JExpression strForm;
                 if(baseExposedType.isPrimitive()) {
-                    m.body()._throw(ex.arg(codeModel.ref(String.class).staticInvoke("valueOf").arg($v)));
+                    strForm = codeModel.ref(String.class).staticInvoke("valueOf").arg($v);
+                } else
+                if(baseExposedType==codeModel.ref(String.class)){
+                    strForm = $v;
                 } else {
-                    m.body()._throw(ex.arg($v.invoke("toString")));
+                    strForm = $v.invoke("toString");
                 }
+                m.body()._throw(ex.arg(strForm));
             }
         } else {
             // [RESULT]
@@ -655,10 +724,7 @@ public final class BeanGenerator implements Outline
             JMethod m = type.method(JMod.PUBLIC|JMod.STATIC, type, "fromValue" );
             m.body()._return( JExpr.invoke("valueOf").arg(m.param(String.class,"v")));
         }
-
-        return enumOutline;
     }
-
 
 
 
@@ -696,7 +762,7 @@ public final class BeanGenerator implements Outline
                 // [RESULT]
                 // @XmlJavaTypeAdapter( Foo.class )
                 XmlJavaTypeAdapterWriter xjtw = field.annotate2(XmlJavaTypeAdapterWriter.class);
-                xjtw.value(adapter.adapterType.toType(this,Aspect.EXPOSED));
+                xjtw.value(adapter.adapterType.toType(this, EXPOSED));
             }
         }
 

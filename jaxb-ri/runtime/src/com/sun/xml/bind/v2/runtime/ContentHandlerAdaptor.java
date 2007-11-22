@@ -1,21 +1,37 @@
 /*
- * The contents of this file are subject to the terms
- * of the Common Development and Distribution License
- * (the "License").  You may not use this file except
- * in compliance with the License.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * You can obtain a copy of the license at
- * https://jwsdp.dev.java.net/CDDLv1.0.html
- * See the License for the specific language governing
- * permissions and limitations under the License.
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
  * 
- * When distributing Covered Code, include this CDDL
- * HEADER in each file and include the License file at
- * https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
- * add the following below this CDDL HEADER, with the
- * fields enclosed by brackets "[]" replaced with your
- * own identifying information: Portions Copyright [yyyy]
- * [name of copyright owner]
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -40,7 +56,7 @@ import org.xml.sax.helpers.DefaultHandler;
 final class ContentHandlerAdaptor extends DefaultHandler {
 
     /** Stores newly declared prefix-URI mapping. */
-    private final FinalArrayList prefixMap = new FinalArrayList();
+    private final FinalArrayList<String> prefixMap = new FinalArrayList<String>();
 
     /** Events will be sent to this object. */
     private final XMLSerializer serializer;
@@ -61,6 +77,15 @@ final class ContentHandlerAdaptor extends DefaultHandler {
         prefixMap.add(uri);
     }
 
+    private boolean containsPrefixMapping(String prefix, String uri) {
+        for( int i=0; i<prefixMap.size(); i+=2 ) {
+            if(prefixMap.get(i).equals(prefix)
+            && prefixMap.get(i+1).equals(uri))
+                return true;
+        }
+        return false;
+    }
+
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts)
         throws SAXException {
         try {
@@ -68,8 +93,24 @@ final class ContentHandlerAdaptor extends DefaultHandler {
 
             int len = atts.getLength();
 
-            serializer.startElement(namespaceURI,localName,getPrefix(qName),null);
+            String p = getPrefix(qName);
+
+            // is this prefix going to be declared on this element?
+            if(containsPrefixMapping(p,namespaceURI))
+                serializer.startElementForce(namespaceURI,localName,p,null);
+            else
+                serializer.startElement(namespaceURI,localName, p,null);
+            
             // declare namespace events
+            for( int i=0; i<prefixMap.size(); i+=2 ) {
+                // forcibly set this binding, instead of using declareNsUri.
+                // this guarantees that namespaces used in DOM will show up
+                // as-is in the marshalled output (instead of reassigned to something else,
+                // which may happen if you'd use declareNsUri.)
+                serializer.getNamespaceContext().force(
+                    prefixMap.get(i+1), prefixMap.get(i) );
+            }
+            // make sure namespaces needed by attributes are bound 
             for( int i=0; i<len; i++ ) {
                 String qname = atts.getQName(i);
                 if(qname.startsWith("xmlns"))
@@ -78,13 +119,6 @@ final class ContentHandlerAdaptor extends DefaultHandler {
 
                 serializer.getNamespaceContext().declareNamespace(
                     atts.getURI(i), prefix, true );
-            }
-            for( int i=0; i<prefixMap.size(); i+=2 ) {
-                String prefix = (String)prefixMap.get(i);
-                serializer.getNamespaceContext().declareNamespace(
-                    (String)prefixMap.get(i+1),
-                    prefix,
-                    prefix.length()!=0 );
             }
 
             serializer.endNamespaceDecls(null);

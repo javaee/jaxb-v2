@@ -1,3 +1,39 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * 
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ */
+
 package com.sun.tools.xjc.reader.xmlschema;
 
 import java.util.HashSet;
@@ -7,16 +43,22 @@ import javax.activation.MimeType;
 import javax.xml.namespace.QName;
 
 import com.sun.tools.xjc.model.CAdapter;
+import com.sun.tools.xjc.model.CClass;
 import com.sun.tools.xjc.model.CClassInfo;
+import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.model.CElement;
 import com.sun.tools.xjc.model.CElementInfo;
 import com.sun.tools.xjc.model.CElementPropertyInfo;
 import com.sun.tools.xjc.model.CReferencePropertyInfo;
 import com.sun.tools.xjc.model.CTypeRef;
+import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.model.Multiplicity;
+import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.reader.RawTypeSet;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIDom;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIGlobalBinding;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIXSubstitutable;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
 import com.sun.xml.xsom.XSElementDecl;
@@ -100,14 +142,15 @@ public class RawTypeSetBuilder implements XSTermVisitor {
 
     public void elementDecl(XSElementDecl decl) {
 
-        QName n = new QName(decl.getTargetNamespace(),decl.getName());
+        QName n = BGMBuilder.getName(decl);
         if(elementNames.add(n)) {
-            CElement elementBean = Ring.get(ClassSelector.class).bindToType(decl);
+            CElement elementBean = Ring.get(ClassSelector.class).bindToType(decl,null);
             if(elementBean==null)
-                refs.add(new RawTypeSet.XmlTypeRef(decl));
+                refs.add(new XmlTypeRef(decl));
             else {
-                if(elementBean instanceof CClassInfo)
-                    refs.add(new CClassInfoRef(decl,(CClassInfo)elementBean));
+                // yikes!
+                if(elementBean instanceof CClass)
+                    refs.add(new CClassRef(decl,(CClass)elementBean));
                 else
                     refs.add(new CElementInfoRef(decl,(CElementInfo)elementBean));
             }
@@ -162,21 +205,20 @@ public class RawTypeSetBuilder implements XSTermVisitor {
         }
     }
 
-
     /**
      * Reference to a class that maps from an element.
      */
-    public static final class CClassInfoRef extends RawTypeSet.Ref {
-        public final CClassInfo target;
+    public static final class CClassRef extends RawTypeSet.Ref {
+        public final CClass target;
         public final XSElementDecl decl;
 
-        CClassInfoRef(XSElementDecl decl, CClassInfo target) {
+        CClassRef(XSElementDecl decl, CClass target) {
             this.decl = decl;
             this.target = target;
         }
 
         protected CTypeRef toTypeRef(CElementPropertyInfo ep) {
-            return new CTypeRef(target,target.getElementName(),decl.isNillable(),decl.getDefaultValue());
+            return new CTypeRef(target,decl);
         }
 
         protected void toElementRef(CReferencePropertyInfo prop) {
@@ -203,7 +245,7 @@ public class RawTypeSetBuilder implements XSTermVisitor {
     /**
      * Reference to a class that maps from an element.
      */
-    public static final class CElementInfoRef extends RawTypeSet.Ref {
+    public final class CElementInfoRef extends RawTypeSet.Ref {
         public final CElementInfo target;
         public final XSElementDecl decl;
 
@@ -217,8 +259,7 @@ public class RawTypeSetBuilder implements XSTermVisitor {
             CAdapter a = target.getProperty().getAdapter();
             if(a!=null && ep!=null) ep.setAdapter(a);
 
-            return new CTypeRef(target.getContentType(),target.getElementName(),
-                decl.isNillable(),decl.getDefaultValue());
+            return new CTypeRef(target.getContentType(),decl);
         }
 
         protected void toElementRef(CReferencePropertyInfo prop) {
@@ -229,16 +270,22 @@ public class RawTypeSetBuilder implements XSTermVisitor {
             // if element substitution can occur, no way it can be mapped to a list of types
             if(decl.getSubstitutables().size()>1)
                 return RawTypeSet.Mode.MUST_BE_REFERENCE;
+            // BIXSubstitutable also simulates this effect. Useful for separate compilation
+            BIXSubstitutable subst = builder.getBindInfo(decl).get(BIXSubstitutable.class);
+            if(subst!=null) {
+                subst.markAsAcknowledged();
+                return RawTypeSet.Mode.MUST_BE_REFERENCE;
+            }
 
             // we have no place to put an adater if this thing maps to a type
             CElementPropertyInfo p = target.getProperty();
             // if we have an adapter or IDness, which requires special
             // annotation, and there's more than one element,
             // we have no place to put the special annotation, so we need JAXBElement.
-            if(parent.refs.size()>1 || !parent.mul.isAtMostOnce()) {
-                if(p.getAdapter()!=null || p.id()!=ID.NONE)
-                    return RawTypeSet.Mode.MUST_BE_REFERENCE;
-            }
+            if((parent.refs.size()>1 || !parent.mul.isAtMostOnce()) && p.id()!=ID.NONE)
+                return RawTypeSet.Mode.MUST_BE_REFERENCE;
+            if(parent.refs.size() > 1 && p.getAdapter() != null)
+                return RawTypeSet.Mode.MUST_BE_REFERENCE;
 
             return RawTypeSet.Mode.SHOULD_BE_TYPEREF;
         }
@@ -253,6 +300,85 @@ public class RawTypeSetBuilder implements XSTermVisitor {
 
         protected MimeType getExpectedMimeType() {
             return target.getProperty().getExpectedMimeType();
+        }
+    }
+
+    /**
+     * References to a type. Could be global or local.
+     */
+    public static final class XmlTypeRef extends RawTypeSet.Ref {
+        private final XSElementDecl decl;
+        private final TypeUse target;
+
+        public XmlTypeRef(XSElementDecl decl) {
+            this.decl = decl;
+            SimpleTypeBuilder stb = Ring.get(SimpleTypeBuilder.class);
+            stb.refererStack.push(decl);
+            TypeUse r = Ring.get(ClassSelector.class).bindToType(decl.getType(),decl);
+            stb.refererStack.pop();
+            target = r;
+        }
+
+        protected CTypeRef toTypeRef(CElementPropertyInfo ep) {
+            if(ep!=null && target.getAdapterUse()!=null)
+                ep.setAdapter(target.getAdapterUse());
+            return new CTypeRef(target.getInfo(),decl);
+        }
+
+        /**
+         * The whole type set can be later bound to a reference property,
+         * in which case we need to generate additional code to wrap this
+         * type reference into an element class.
+         *
+         * This method generates such an element class and returns it.
+         */
+        protected void toElementRef(CReferencePropertyInfo prop) {
+            CClassInfo scope = Ring.get(ClassSelector.class).getCurrentBean();
+            Model model = Ring.get(Model.class);
+
+            CCustomizations custs = Ring.get(BGMBuilder.class).getBindInfo(decl).toCustomizationList();
+
+            if(target instanceof CClassInfo && Ring.get(BIGlobalBinding.class).isSimpleMode()) {
+                CClassInfo bean = new CClassInfo(model,scope,
+                                model.getNameConverter().toClassName(decl.getName()),
+                                decl.getLocator(), null, BGMBuilder.getName(decl), decl,
+                                custs);
+                bean.setBaseClass((CClassInfo)target);
+                prop.getElements().add(bean);
+            } else {
+                CElementInfo e = new CElementInfo(model,BGMBuilder.getName(decl),scope,target,
+                        decl.getDefaultValue(), decl, custs, decl.getLocator());
+                prop.getElements().add(e);
+            }
+        }
+
+        protected RawTypeSet.Mode canBeType(RawTypeSet parent) {
+            // if we have an adapter or IDness, which requires special
+            // annotation, and there's more than one element,
+            // we have no place to put the special annotation, so we need JAXBElement.
+            if((parent.refs.size()>1 || !parent.mul.isAtMostOnce()) && target.idUse()!=ID.NONE)
+                return RawTypeSet.Mode.MUST_BE_REFERENCE;
+            if(parent.refs.size() > 1 && target.getAdapterUse() != null)
+                return RawTypeSet.Mode.MUST_BE_REFERENCE;
+
+            // nillable and optional at the same time. needs an element wrapper to distinguish those
+            // two states. But this is not a hard requirement.
+            if(decl.isNillable() && parent.mul.isOptional())
+                return RawTypeSet.Mode.CAN_BE_TYPEREF;
+
+            return RawTypeSet.Mode.SHOULD_BE_TYPEREF;
+        }
+
+        protected boolean isListOfValues() {
+            return target.isCollection();
+        }
+
+        protected ID id() {
+            return target.idUse();
+        }
+
+        protected MimeType getExpectedMimeType() {
+            return target.getExpectedMimeType();
         }
     }
 }

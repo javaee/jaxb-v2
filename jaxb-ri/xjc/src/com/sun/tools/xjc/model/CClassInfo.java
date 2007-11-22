@@ -1,28 +1,64 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * 
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ */
+
 package com.sun.tools.xjc.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
+import com.sun.istack.Nullable;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
 import com.sun.xml.bind.v2.model.core.Element;
-import com.sun.xml.bind.v2.model.core.PropertyInfo;
-import com.sun.xml.bind.v2.model.core.ValuePropertyInfo;
 import com.sun.xml.xsom.XSComponent;
 
 import org.xml.sax.Locator;
@@ -35,19 +71,34 @@ import org.xml.sax.Locator;
  *
  * @author Kohsuke Kawaguchi
  */
-public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo<NType,NClass>, CClassInfoParent, CElement, CNonElement, NClass, CTypeInfo {
+public final class CClassInfo extends AbstractCElement implements ClassInfo<NType,NClass>, CClassInfoParent, CClass, NClass {
 
     @XmlIDREF
-    private CClassInfo baseClass;
+    private CClass baseClass;
+
+    /**
+     * List of all subclasses, together with {@link #nextSibling}.
+     *
+     * If this class has no sub-class, this field is null. Otherwise,
+     * this field points to a sub-class of this class. From there you can enumerate
+     * all the sub-classes by using {@link #nextSibling}.
+     */
+    private CClassInfo firstSubclass;
+
+    /**
+     * @see #firstSubclass
+     */
+    private CClassInfo nextSibling = null;
 
     /**
      * @see #getTypeName()
      */
     private final QName typeName;
+
     /**
-     * Can be null.
+     * If this class also gets {@link XmlRootElement}, the class name.
      */
-    private final QName elementName;
+    private final @Nullable QName elementName;
 
     private boolean isOrdered = true;
 
@@ -70,17 +121,9 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
     public final String shortName;
 
     /**
-     * The location in the source file where this class was declared.
-     */
-    @XmlTransient
-    private final Locator location;
-
-    private boolean isAbstract;
-
-    /**
      * Optional user-specified implementation override class.
      */
-    private String implClass;
+    private @Nullable String implClass;
 
     /**
      * The {@link Model} object to which this bean belongs.
@@ -98,11 +141,10 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
     }
 
     public CClassInfo(Model model,CClassInfoParent p, String shortName, Locator location, QName typeName, QName elementName, XSComponent source, CCustomizations customizations) {
-        super(model,source,customizations);
+        super(model,source,location,customizations);
         this.model = model;
         this.parent = p;
         this.shortName = model.allocator.assignClassName(parent,shortName);
-        this.location = location;
         this.typeName = typeName;
         this.elementName = elementName;
 
@@ -110,7 +152,7 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
     }
 
     public CClassInfo(Model model,JCodeModel cm, String fullName, Locator location, QName typeName, QName elementName, XSComponent source, CCustomizations customizations) {
-        super(model,source,customizations);
+        super(model,source,location,customizations);
         this.model = model;
         int idx = fullName.indexOf('.');
         if(idx<0) {
@@ -120,15 +162,10 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
             this.parent = model.getPackage(cm._package(fullName.substring(0,idx)));
             this.shortName = model.allocator.assignClassName(parent,fullName.substring(idx+1));
         }
-        this.location = location;
         this.typeName = typeName;
         this.elementName = elementName;
 
         model.add(this);
-    }
-
-    public Locator getLocator() {
-        return location;
     }
 
     public boolean hasAttributeWildcard() {
@@ -140,7 +177,7 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
     }
 
     public boolean hasSubClasses() {
-        throw new UnsupportedOperationException();
+        return firstSubclass!=null;
     }
 
     /**
@@ -157,7 +194,7 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
      */
     public boolean inheritsAttributeWildcard() {
         for( CClassInfo c=getBaseClass(); c!=null; c=c.getBaseClass() ) {
-            if(hasAttributeWildcard)
+            if(c.hasAttributeWildcard)
                 return true;
         }
         return false;
@@ -215,20 +252,11 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
     }
 
     public boolean hasValueProperty() {
-        if(baseClass!=null && baseClass.hasValueProperty())
-            return true;
-        for (PropertyInfo p : getProperties()) {
-            if (p instanceof CValuePropertyInfo)
-                return true;
-        }
-
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     /**
      * Gets a propery by name.
-     *
-     * TODO: consider moving this up to {@link ClassInfo}
      */
     public CPropertyInfo getProperty(String name) {
         // TODO: does this method need to be fast?
@@ -246,6 +274,14 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
         return elementName!=null;
     }
 
+    /**
+     * Guaranteed to return this.
+     */
+    @Deprecated
+    public CNonElement getInfo() {
+        return this;
+    }
+    
     public Element<NType,NClass> asElement() {
         if(isElement())
             return this;
@@ -317,20 +353,75 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
         properties.add(prop);
     }
 
-    public void setBaseClass(CClassInfo base) {
+    /**
+     * This method accepts both {@link CClassInfo} (which means the base class
+     * is also generated), or {@link CClassRef} (which means the base class is
+     * already generated and simply referenced.)
+     *
+     * The latter is treated somewhat special --- from the rest of the model
+     * this external base class is invisible. This modeling might need more
+     * thoughts to get right.
+     */
+    public void setBaseClass(CClass base) {
         assert baseClass==null;
         assert base!=null;
         baseClass = base;
+
+        assert nextSibling==null;
+        if (base instanceof CClassInfo) {
+            CClassInfo realBase = (CClassInfo) base;
+            this.nextSibling = realBase.firstSubclass;
+            realBase.firstSubclass = this;
+        }
     }
 
+    /**
+     * This inherited version returns null if this class extends from {@link CClassRef}.
+     *
+     * @see #getRefBaseClass()
+     */
     public CClassInfo getBaseClass() {
-        return baseClass;
+        if (baseClass instanceof CClassInfo) {
+            return (CClassInfo) baseClass;
+        } else {
+            return null;
+        }
+    }
+    
+    public CClassRef getRefBaseClass() {
+        if (baseClass instanceof CClassRef) {
+            return (CClassRef) baseClass;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Enumerates all the sub-classes of this class.
+     */
+    public Iterator<CClassInfo> listSubclasses() {
+        return new Iterator<CClassInfo>() {
+            CClassInfo cur = firstSubclass;
+            public boolean hasNext() {
+                return cur!=null;
+            }
+
+            public CClassInfo next() {
+                CClassInfo r = cur;
+                cur = cur.nextSibling;
+                return r;
+            }
+
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
     }
 
     public CClassInfo getSubstitutionHead() {
-        CClassInfo c=baseClass;
+        CClassInfo c=getBaseClass();
         while(c!=null && !c.isElement())
-            c=c.baseClass;
+            c=c.getBaseClass();
         return c;
     }
 
@@ -390,13 +481,5 @@ public final class CClassInfo extends AbstractCTypeInfoImpl implements ClassInfo
 
     public String toString() {
         return fullName();
-    }
-
-    public void setAbstract() {
-        isAbstract = true;
-    }
-
-    public boolean isAbstract() {
-        return isAbstract;
     }
 }

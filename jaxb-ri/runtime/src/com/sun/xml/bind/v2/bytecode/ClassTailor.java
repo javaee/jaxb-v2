@@ -1,3 +1,39 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * 
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ */
+
 package com.sun.xml.bind.v2.bytecode;
 
 import java.io.ByteArrayOutputStream;
@@ -24,7 +60,7 @@ public final class ClassTailor {
     /**
      * Returns the class name in the JVM format (such as "java/lang/String")
      */
-    public static final String toVMClassName( Class c ) {
+    public static String toVMClassName( Class c ) {
         assert !c.isPrimitive();
         if(c.isArray())
             // I have no idea why it is designed like this, but javap says so.
@@ -32,7 +68,7 @@ public final class ClassTailor {
         return c.getName().replace('.','/');
     }
 
-    public static final String toVMTypeName( Class c ) {
+    public static String toVMTypeName( Class c ) {
         if(c.isArray()) {
             // TODO: study how an array type is encoded.
             return '['+toVMTypeName(c.getComponentType());
@@ -54,7 +90,7 @@ public final class ClassTailor {
 
 
 
-    public static final byte[] tailor( Class templateClass, String newClassName, String... replacements ) {
+    public static byte[] tailor( Class templateClass, String newClassName, String... replacements ) {
         String vmname = toVMClassName(templateClass);
         return tailor(
             templateClass.getClassLoader().getResourceAsStream(vmname+".class"),
@@ -74,7 +110,7 @@ public final class ClassTailor {
      *      The search strings found in the constant pool will be replaced by the corresponding
      *      replacement string.
      */
-    public static final byte[] tailor( InputStream image, String templateClassName, String newClassName, String... replacements ) {
+    public static byte[] tailor( InputStream image, String templateClassName, String newClassName, String... replacements ) {
         DataInputStream in = new DataInputStream(image);
 
         try {

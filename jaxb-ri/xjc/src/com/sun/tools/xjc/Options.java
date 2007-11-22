@@ -1,21 +1,37 @@
 /*
- * The contents of this file are subject to the terms
- * of the Common Development and Distribution License
- * (the "License").  You may not use this file except
- * in compliance with the License.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * You can obtain a copy of the license at
- * https://jwsdp.dev.java.net/CDDLv1.0.html
- * See the License for the specific language governing
- * permissions and limitations under the License.
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
  * 
- * When distributing Covered Code, include this CDDL
- * HEADER in each file and include the License file at
- * https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
- * add the following below this CDDL HEADER, with the
- * fields enclosed by brackets "[]" replaced with your
- * own identifying information: Portions Copyright [yyyy]
- * [name of copyright owner]
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
  */
 
 package com.sun.tools.xjc;
@@ -25,7 +41,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -40,11 +59,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sun.codemodel.CodeWriter;
+import com.sun.codemodel.JPackage;
+import com.sun.codemodel.JResourceFile;
 import com.sun.codemodel.writer.FileCodeWriter;
 import com.sun.codemodel.writer.PrologCodeWriter;
 import com.sun.org.apache.xml.internal.resolver.CatalogManager;
 import com.sun.org.apache.xml.internal.resolver.tools.CatalogResolver;
 import com.sun.tools.xjc.api.ClassNameAllocator;
+import com.sun.tools.xjc.api.SpecVersion;
 import com.sun.tools.xjc.generator.bean.field.FieldRendererFactory;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Util;
@@ -90,6 +112,11 @@ public class Options
      * This generates code that works around issues specific to 1.4 runtime.
      */
     public boolean runtime14 = false;
+
+    /**
+     * If true, try to resolve name conflicts automatically by assigning mechanical numbers.
+     */
+    public boolean automaticNameConflictResolution = false;
     
     /**
      * strictly follow the compatibility rules and reject schemas that
@@ -109,7 +136,23 @@ public class Options
      */
     public int compatibilityMode = STRICT;
 
-    /** Target direcoty when producing files. */
+    public boolean isExtensionMode() {
+        return compatibilityMode==EXTENSION;
+    }
+
+    /**
+     * Generates output for the specified version of the runtime.
+     */
+    public SpecVersion target = SpecVersion.V2_1;
+
+
+    /**
+     * Target direcoty when producing files.
+     * <p>
+     * This field is not used when XJC is driven through the XJC API.
+     * Plugins that need to generate extra files should do so by using
+     * {@link JPackage#addResourceFile(JResourceFile)}.
+     */
     public File targetDir = new File(".");
     
     /**
@@ -371,10 +414,17 @@ public class Options
     }
 
     /**
-     * Adds a new input schema.
+     * Adds a new binding file.
      */
     public void addBindFile( InputSource is ) {
         bindFiles.add(absolutize(is));
+    }
+
+    /**
+     * Adds a new binding file.
+     */
+    public void addBindFile( File bindFile ) {
+        bindFiles.add(fileToInputSource(bindFile));
     }
 
     /**
@@ -405,12 +455,9 @@ public class Options
      * @exception BadCommandLineException
      *      If the callee wants to provide a custom message for an error.
      */
-    protected int parseArgument( String[] args, int i ) throws BadCommandLineException {
+    public int parseArgument( String[] args, int i ) throws BadCommandLineException {
         if (args[i].equals("-classpath") || args[i].equals("-cp")) {
-            if (i == args.length - 1)
-                throw new BadCommandLineException(
-                    Messages.format(Messages.MISSING_CLASSPATH));
-            File file = new File(args[++i]);
+            File file = new File(requireArgument(args[i],args,++i));
             try {
                 classpaths.add(file.toURL());
             } catch (MalformedURLException e) {
@@ -420,10 +467,7 @@ public class Options
             return 2;
         }
         if (args[i].equals("-d")) {
-            if (i == args.length - 1)
-                throw new BadCommandLineException(
-                    Messages.format(Messages.MISSING_DIR));
-            targetDir = new File(args[++i]);
+            targetDir = new File(requireArgument("-d",args,++i));
             if( !targetDir.exists() )
                 throw new BadCommandLineException(
                     Messages.format(Messages.NON_EXISTENT_DIR,targetDir));
@@ -434,10 +478,7 @@ public class Options
             return 1;
         }
         if (args[i].equals("-p")) {
-            if (i == args.length - 1)
-                throw new BadCommandLineException(
-                    Messages.format(Messages.MISSING_PACKAGENAME));
-            defaultPackage = args[++i];
+            defaultPackage = requireArgument("-p",args,++i);
             if(defaultPackage.length()==0) { // user specified default package
                 // there won't be any package to annotate, so disable them
                 // automatically as a usability feature
@@ -474,12 +515,12 @@ public class Options
             runtime14 = true;
             return 1;
         }
+        if (args[i].equals("-XautoNameResolution")) {
+            automaticNameConflictResolution = true;
+            return 1;
+        }
         if (args[i].equals("-b")) {
-            if (i==args.length-1 || args[i + 1].startsWith("-"))
-                throw new BadCommandLineException(
-                    Messages.format(Messages.MISSING_FILENAME));
-
-            addFile(args[i + 1],bindFiles,".xjb");
+            addFile(requireArgument("-b",args,++i),bindFiles,".xjb");
             return 2;
         }
         if (args[i].equals("-dtd")) {
@@ -505,6 +546,13 @@ public class Options
         if (args[i].equals("-extension")) {
             compatibilityMode = EXTENSION;
             return 1;
+        }
+        if (args[i].equals("-target")) {
+            String token = requireArgument("-target",args,++i);
+            target = SpecVersion.parse(token);
+            if(target==null)
+                throw new BadCommandLineException(Messages.format(Messages.ILLEGAL_TARGET_VERSION,token));
+            return 2;
         }
         if (args[i].equals("-httpproxyfile")) {
             if (i == args.length - 1 || args[i + 1].startsWith("-")) {
@@ -539,32 +587,19 @@ public class Options
             return 2;
         }
         if (args[i].equals("-host")) {
-            // legacy option. we use -httpproxy for more control
-            if (i == args.length - 1 || args[i + 1].startsWith("-")) {
-                throw new BadCommandLineException(
-                    Messages.format(Messages.MISSING_PROXYHOST));
-            }
-            proxyHost = args[++i];
+            proxyHost = requireArgument("-host",args,++i);
             return 2;
         }
         if (args[i].equals("-port")) {
-            // legacy option. we use -httpproxy for more control
-            if (i == args.length - 1 || args[i + 1].startsWith("-")) {
-                throw new BadCommandLineException(
-                    Messages.format(Messages.MISSING_PROXYPORT));
-            }
-            proxyPort = args[++i];
+            proxyPort = requireArgument("-port",args,++i);
             return 2;
         }
         if( args[i].equals("-catalog") ) {
             // use Sun's "XML Entity and URI Resolvers" by Norman Walsh
             // to resolve external entities.
             // http://www.sun.com/xml/developers/resolver/
-            if (i == args.length - 1)
-                throw new BadCommandLineException(
-                    Messages.format(Messages.MISSING_CATALOG));
 
-            File catalogFile = new File(args[++i]);
+            File catalogFile = new File(requireArgument("-catalog",args,++i));
             try {
                 addCatalog(catalogFile);
             } catch (IOException e) {
@@ -574,14 +609,11 @@ public class Options
             return 2;
         }
         if (args[i].equals("-source")) {
-            if (i == args.length - 1)
-                throw new BadCommandLineException(
-                    Messages.format(Messages.MISSING_VERSION));
-            String version = args[++i];
+            String version = requireArgument("-source",args,++i);
             //For source 1.0 the 1.0 Driver is loaded
             //Hence anything other than 2.0 is defaulted to
             //2.0
-            if( !version.equals("2.0") )
+            if( !version.equals("2.0") && !version.equals("2.1") )
                 throw new BadCommandLineException(
                     Messages.format(Messages.DEFAULT_VERSION));
             return 2;
@@ -598,14 +630,23 @@ public class Options
 
         // see if this is one of the extensions
         for( Plugin plugin : getAllPlugins() ) {
-            if( ('-'+plugin.getOptionName()).equals(args[i]) ) {
-                activePlugins.add(plugin);
-                plugin.onActivated(this);
-                pluginURIs.addAll(plugin.getCustomizationURIs());
-                return 1;
-            }
-
             try {
+                if( ('-'+plugin.getOptionName()).equals(args[i]) ) {
+                    activePlugins.add(plugin);
+                    plugin.onActivated(this);
+                    pluginURIs.addAll(plugin.getCustomizationURIs());
+
+                    // give the plugin a chance to parse arguments to this option.
+                    // this is new in 2.1, and due to the backward compatibility reason,
+                    // if plugin didn't understand it, we still return 1 to indicate
+                    // that this option is consumed.
+                    int r = plugin.parseArgument(this,args,i);
+                    if(r!=0)
+                        return r;
+                    else
+                        return 1;
+                }
+
                 int r = plugin.parseArgument(this,args,i);
                 if(r!=0)    return r;
             } catch (IOException e) {
@@ -634,6 +675,17 @@ public class Options
         } catch (NumberFormatException e) {
             throw new BadCommandLineException(Messages.format(Messages.ILLEGAL_PROXY,text));
         }
+    }
+
+    /**
+     * Obtains an operand and reports an error if it's not there.
+     */
+    public String requireArgument(String optionName, String[] args, int i) throws BadCommandLineException {
+        if (i == args.length || args[i].startsWith("-")) {
+            throw new BadCommandLineException(
+                Messages.format(Messages.MISSING_OPERAND,optionName));
+        }
+        return args[i];
     }
 
     /**
@@ -693,7 +745,10 @@ public class Options
                         Messages.format(Messages.UNRECOGNIZED_PARAMETER, args[i]));
                 i += (j-1);
             } else {
-                addFile(args[i],grammars,".xsd");
+                if(args[i].endsWith(".jar"))
+                    scanEpisodeFile(new File(args[i]));
+                else
+                    addFile(args[i],grammars,".xsd");
             }
         }
         
@@ -724,9 +779,30 @@ public class Options
         
         if( schemaLanguage==null )
             schemaLanguage = guessSchemaLanguage();
+
+        if(pluginLoadFailure!=null)
+            throw new BadCommandLineException(
+                Messages.format(Messages.PLUGIN_LOAD_FAILURE,pluginLoadFailure));
     }
-    
-    
+
+    /**
+     * Finds the <tt>META-INF/sun-jaxb.episode</tt> file to add as a binding customization.
+     */
+    private void scanEpisodeFile(File jar) throws BadCommandLineException {
+        try {
+            URLClassLoader ucl = new URLClassLoader(new URL[]{jar.toURL()});
+            Enumeration<URL> resources = ucl.findResources("META-INF/sun-jaxb.episode");
+            while (resources.hasMoreElements()) {
+                URL url = resources.nextElement();
+                addBindFile(new InputSource(url.toExternalForm()));
+            }
+        } catch (IOException e) {
+            throw new BadCommandLineException(
+                    Messages.format(Messages.FAILED_TO_LOAD,jar,e.getMessage()), e);
+        }
+    }
+
+
     /**
      * Guesses the schema language.
      */
@@ -762,6 +838,14 @@ public class Options
         if(noFileHeader)
             return core;
 
+        return new PrologCodeWriter( core,getPrologComment() );
+    }
+
+    /**
+     * Gets the string suitable to be used as the prolog comment baked into artifacts.
+     * This is the string like "This file was generated by the JAXB RI on YYYY/mm/dd..."
+     */
+    public String getPrologComment() {
         // generate format syntax: <date> 'at' <time>
         String format =
             Messages.format(Messages.DATE_FORMAT)
@@ -771,15 +855,16 @@ public class Options
                 + Messages.format(Messages.TIME_FORMAT);
         SimpleDateFormat dateFormat = new SimpleDateFormat(format);
 
-        return new PrologCodeWriter( core,
-                Messages.format(
-                    Messages.FILE_PROLOG_COMMENT,
-                    dateFormat.format(new Date())) );
+        return Messages.format(
+            Messages.FILE_PROLOG_COMMENT,
+            dateFormat.format(new Date()));
     }
 
-    
-    
-    
+    /**
+     * If a plugin failed to load, report.
+     */
+    private static String pluginLoadFailure;
+
     /**
      * Looks for all "META-INF/services/[className]" files and
      * create one instance for each class name found inside this file.
@@ -787,7 +872,37 @@ public class Options
     private static <T> T[] findServices( Class<T> clazz, ClassLoader classLoader ) {
         // if true, print debug output
         final boolean debug = com.sun.tools.xjc.util.Util.getSystemProperty(Options.class,"findServices")!=null;
-        
+
+        // if we are running on Mustang or Dolphin, use ServiceLoader
+        // so that we can take advantage of JSR-277 module system.
+        try {
+            Class<?> serviceLoader = Class.forName("java.util.ServiceLoader");
+            if(debug)
+                System.out.println("Using java.util.ServiceLoader");
+            Iterable<T> itr = (Iterable<T>)serviceLoader.getMethod("load",Class.class,ClassLoader.class).invoke(null,clazz,classLoader);
+            List<T> r = new ArrayList<T>();
+            for (T t : itr)
+                r.add(t);
+            return r.toArray((T[])Array.newInstance(clazz,r.size()));
+        } catch (ClassNotFoundException e) {
+            // fall through
+        } catch (IllegalAccessException e) {
+            Error x = new IllegalAccessError();
+            x.initCause(e);
+            throw x;
+        } catch (InvocationTargetException e) {
+            Throwable x = e.getTargetException();
+            if (x instanceof RuntimeException)
+                throw (RuntimeException) x;
+            if (x instanceof Error)
+                throw (Error) x;
+            throw new Error(x);
+        } catch (NoSuchMethodException e) {
+            Error x = new NoSuchMethodError();
+            x.initCause(e);
+            throw x;
+        }
+
         String serviceId = "META-INF/services/" + clazz.getName();
 
         // used to avoid creating the same instance twice
@@ -796,21 +911,21 @@ public class Options
         if(debug) {
             System.out.println("Looking for "+serviceId+" for add-ons");
         }
-        
+
         // try to find services in CLASSPATH
         try {
             Enumeration<URL> e = classLoader.getResources(serviceId);
             if(e==null) return (T[])Array.newInstance(clazz,0);
-    
+
             ArrayList<T> a = new ArrayList<T>();
             while(e.hasMoreElements()) {
                 URL url = e.nextElement();
                 BufferedReader reader=null;
-                
+
                 if(debug) {
                     System.out.println("Checking "+url+" for an add-on");
                 }
-                
+
                 try {
                     reader = new BufferedReader(new InputStreamReader(url.openStream()));
                     String impl;
@@ -820,9 +935,9 @@ public class Options
                         if(classNames.add(impl)) {
                             Class implClass = classLoader.loadClass(impl);
                             if(!clazz.isAssignableFrom(implClass)) {
-                                if(debug) {
-                                    System.out.println(impl+" is not a subclass of "+clazz+". Skipping");
-                                }
+                                pluginLoadFailure = impl+" is not a subclass of "+clazz+". Skipping";
+                                if(debug)
+                                    System.out.println(pluginLoadFailure);
                                 continue;
                             }
                             if(debug) {
@@ -834,8 +949,11 @@ public class Options
                     reader.close();
                 } catch( Exception ex ) {
                     // let it go.
+                    StringWriter w = new StringWriter();
+                    ex.printStackTrace(new PrintWriter(w));
+                    pluginLoadFailure = w.toString();
                     if(debug) {
-                        ex.printStackTrace(System.out);
+                        System.out.println(pluginLoadFailure);
                     }
                     if( reader!=null ) {
                         try {
@@ -846,12 +964,15 @@ public class Options
                     }
                 }
             }
-            
+
             return a.toArray((T[])Array.newInstance(clazz,a.size()));
         } catch( Throwable e ) {
             // ignore any error
+            StringWriter w = new StringWriter();
+            e.printStackTrace(new PrintWriter(w));
+            pluginLoadFailure = w.toString();
             if(debug) {
-                e.printStackTrace(System.out);
+                System.out.println(pluginLoadFailure);
             }
             return (T[])Array.newInstance(clazz,0);
         }

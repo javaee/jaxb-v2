@@ -1,22 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- The contents of this file are subject to the terms
- of the Common Development and Distribution License
- (the "License").  You may not use this file except
- in compliance with the License.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  
- You can obtain a copy of the license at
- https://jwsdp.dev.java.net/CDDLv1.0.html
- See the License for the specific language governing
- permissions and limitations under the License.
+ Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
  
- When distributing Covered Code, include this CDDL
- HEADER in each file and include the License file at
- https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
- add the following below this CDDL HEADER, with the
- fields enclosed by brackets "[]" replaced with your
- own identifying information: Portions Copyright [yyyy]
- [name of copyright owner]
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 2 only ("GPL") or the Common Development
+ and Distribution License("CDDL") (collectively, the "License").  You
+ may not use this file except in compliance with the License. You can obtain
+ a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ language governing permissions and limitations under the License.
+ 
+ When distributing the software, include this License Header Notice in each
+ file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ Sun designates this particular file as subject to the "Classpath" exception
+ as provided by Sun in the GPL Version 2 section of the License file that
+ accompanied this code.  If applicable, add the following below the License
+ Header, with the fields enclosed by brackets [] replaced by your own
+ identifying information: "Portions Copyrighted [year]
+ [name of copyright owner]"
+ 
+ Contributor(s):
+ 
+ If you wish your version of this file to be governed by only the CDDL or
+ only the GPL Version 2, indicate your decision by adding "[Contributor]
+ elects to include this software in this distribution under the [CDDL or GPL
+ Version 2] license."  If you don't indicate a single choice of license, a
+ recipient has the option to distribute your version of this file under
+ either the CDDL, the GPL Version 2 or to extend the choice of license to
+ its licensees as provided above.  However, if you add GPL Version 2 code
+ and therefore, elected the GPL Version 2 license, then the option applies
+ only if the new code is made subject to such option by the copyright
+ holder.
 -->
 
 <!-- Use the following doctypedecl for DTD aware editing.  Comment out b/c
@@ -34,8 +50,8 @@
         The build files are setup such that you can build the sub-
         projects independently or all together.
 
-        For example, building the codemodel sub-project causes all of codemodel sources 
-        in jaxb-ri/codemodel/src to be compiled into jaxb-ri/codemodel/build/classes.
+        For example, building the runtime sub-project causes all of runtime sources 
+        in jaxb-ri/runtime/src to be compiled into jaxb-ri/runtime/build/classes.
 
         To build the entire project, simply run 'ant' in the jaxb-ri directory.
         To build a sub-project, simply cd into the directory and run 'ant'.
@@ -46,7 +62,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.73 2007-03-28 21:26:21 kohsuke Exp $
+       $Id: build.xml,v 1.74 2007-11-22 00:51:59 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -70,9 +86,7 @@
     <!-- compile all of the sources into <project>/build/classes-->
     <target name="compile"
             depends="init"
-            description="compile codemodel, runtime, and xjc sub-projects">
-        <ant dir="codemodel"           target="compile" />
-        <ant dir="codemodel"           target="annotation-compiler" />
+            description="compile runtime, and xjc sub-projects">
         <ant dir="apgen"               target="compile" />
         <ant dir="runtime"             target="compile" />
         <ant dir="runtime-fi"          target="compile" />
@@ -82,26 +96,50 @@
         <ant dir="tools"               target="compile" />
     </target>
 
-  <target name="j2se-integration"
+  <!--
+  Invoke j2se-integration target with property ${jaxb.version.in.jdk} set
+  to right target version
+  -->
+
+  <target name="j2se-integration" depends="init"
           description="prepare renamed source code for J2SE integration">
+    <property name="jaxb.version.in.jdk" value="JAXB 2.0 in JDK 1.6"/>
+    
+    <ant dir="apgen" target="compile" />
     <subant target="j2se-integration">
-      <fileset file="codemodel/build.xml" />
       <fileset file="runtime/build.xml" />
       <fileset file="runtime-fi/build.xml" />
+      <fileset file="runtime-staxex/build.xml" />
       <fileset file="xjc/build.xml" />
     </subant>
+
+    <!-- exclude ant tasks -->
+    <delete file="j2se-integration/xjc/src/com/sun/tools/internal/xjc/XJC2Task.java"/>
+    <!-- move META-INF/services to tools/META-INF/services -->
+    <move file="j2se-integration/xjc/src/META-INF/services/com.sun.tools.xjc.Plugin"
+          tofile="j2se-integration/tools/etc/META-INF/services/sun.tools.xjc.Plugin"/>
+    <delete dir="j2se-integration/xjc/src/META-INF"/>
+    
+    <!-- insert the RI version number into the file prolog message that
+        is placed at the head of every generated file and the output
+        message for "xjc -version"  and
+        message for "schemagen -version" -->
+    <replace dir="j2se-integration/xjc/src/com/sun/tools/internal/xjc" includes="MessageBundle*.properties">
+      <replacefilter token="@@BUILD_VERSION@@" value="${jaxb.version.in.jdk}"/>
+    </replace>
+    <replace dir="j2se-integration/xjc/src/com/sun/tools/internal/jxc" includes="MessageBundle*.properties">
+      <replacefilter token="@@BUILD_VERSION@@" value="${jaxb.version.in.jdk}"/>
+    </replace>
+
   </target>
 
 
-    <target name="architecture-document"
+  <target name="architecture-document"
             description="generate architecture documents (which is just a glorified javadoc)">
       <arch-doc destdir="${jaxb.root}/build/javadoc" title="JAXB RI">
         <params>
           <packageset dir="${jaxb.root}/javadoc"/>
           <group title="Root Architecture Document" packages="jaxb" />
-
-          <packageset dir="${codemodel.src}"/>
-          <group title="CodeModel" packages="com.sun.codemodel*" />
 
           <packageset dir="${runtime.src}"/>
           <packageset dir="${runtime.root}/arch-doc"/>
@@ -249,7 +287,7 @@
           </sequential>
 
 
-          <!-- generate jaxb-xjc.jar: xjc, codemodel, and schemagen subprojects -->
+          <!-- generate jaxb-xjc.jar: xjc, and schemagen subprojects -->
           <sequential>
               <createManifest file="${xjc.root}/manifest.xjc" extensionName="com.sun.tools.xjc" />
 
@@ -280,7 +318,6 @@ Class-Path: ${manifest.classpath}
                   <!-- can't use zipgroupfileset because of the duplicate LICENSE.txt -->
                   <fileset dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
                   <fileset dir="${xjc.classes}"/>
-                  <fileset dir="${codemodel.classes}"/>
                   <metainf dir="${xjc.src}/META-INF" />
                   <!-- bundle the 1.0 compiler in the side directory -->
                   <zipfileset dir="${xjc10.classes}/.." />
@@ -357,26 +394,46 @@ Class-Path: ${manifest.classpath}
     <target name="src-zip" depends="dist"
             description="source zip files for JAXB RI jar files into the dist dir.">
       <parallel>
-        <zip zipfile="${jaxb.dist}/lib/jaxb-impl.src.zip">
-          <fileset dir="${runtime.src}"/>
-          <fileset dir="${runtime-fi.src}"/>
-          <fileset dir="${runtime-staxex.src}"/>
-        </zip>
+        <mkdir dir="tmp" />
         <sequential>
-          <mkdir dir="tmp" />
-          <unjar src="${jaxb.libs}/src/xsom-src.zip" dest="tmp"/>
+          <zip zipfile="${jaxb.dist}/lib/jaxb-impl.src.zip">
+            <fileset dir="${runtime.src}"/>
+            <fileset dir="${runtime-fi.src}"/>
+            <fileset dir="${runtime-staxex.src}"/>
+            <fileset dir="${runtime.root}/build/src" />
+            <zipfileset src="${jaxb.libs}/src/txw2-src.zip" />
+            <zipfileset src="${jaxb.libs}/src/istack-commons-runtime-src.zip" />
+          </zip>
+        </sequential>
+        <sequential>
+          <unjar src="${jaxb.libs}/src/dtd-parser-1.0-src.zip" dest="tmp" />
           <zip zipfile="${jaxb.dist}/lib/jaxb-xjc.src.zip">
             <fileset dir="${xjc.src}"/>
+            <fileset dir="${xjc.gensrc}"/>
             <fileset dir="${xjc.root}/facade"/>
-            <fileset dir="${codemodel.src}"/>
+            <zipfileset src="${jaxb.libs}/src/codemodel.src.zip" />
             <zipfileset src="${jaxb.libs}/src/resolver-src.zip" />
-            <fileset dir="tmp/src"/>
+            <zipfileset src="${jaxb.libs}/src/xsom-src.zip" />
+            <zipfileset src="${jaxb.libs}/src/istack-commons-tools-src.zip" />
+            <zipfileset src="${jaxb.libs}/src/relaxngDatatype-src.zip" />
+            <zipfileset src="${jaxb.libs}/src/rngom-src.zip" />
+            <fileset dir="tmp/dtd-parser-1.0/src"/>
           </zip>
-          <delete dir="tmp" />
         </sequential>
       </parallel>
+      <delete dir="tmp" />
     </target>
 
+  <target name="licensee-zip"
+          description="licensee bundle. Dumbed down version of the workspace bundle">
+    <mkdir dir="build"/>
+    <zip zipfile="build/jaxb-ri.licensee.zip">
+      <fileset dir="." excludes="dist/**, **/build/**, samples/**, docs/**, sandbox/**" />
+      <fileset dir="." includes="docs/manifest/" />
+      <!-- place a stub build.xml to get the build going -->
+      <zipfileset dir="." includes="samples/dummy-build.xml" fullpath="samples/build.xml"/>
+    </zip>
+  </target>
 
 
 
@@ -452,9 +509,6 @@ Class-Path: ${manifest.classpath}
             <zipfileset dir="runtime/build/src" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
                 <patternset refid="src-includes"/>
             </zipfileset>
-            <zipfileset dir="${codemodel.src}" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
-                <patternset refid="src-includes"/>
-            </zipfileset>
             <zipfileset dir="${jaxb.root}" includes="src-installer-build.xml"
                 fullpath="jaxb-ri-${DSTAMP}/build.xml"/>
             <!-- additional jar files -->
@@ -516,17 +570,20 @@ Class-Path: ${manifest.classpath}
       <maven-repository-importer
           destdir="build/maven-repo" version="${jar.suffix}">
         <artifact
-          jar="dist/lib/jaxb-api.jar"
+          jar=   "dist/lib/jaxb-api.jar"
+          srczip="dist/lib/jaxb-api-src.zip"
           pom="tools/poms/jaxb-api.pom" />
         <artifact
-          jar="dist/lib/jaxb-impl.jar"
+          jar=   "dist/lib/jaxb-impl.jar"
+          srczip="dist/lib/jaxb-impl.src.zip"
           pom="tools/poms/jaxb-impl.pom" />
         <artifact
-          jar="dist/lib/jaxb-xjc.jar"
+          jar=   "dist/lib/jaxb-xjc.jar"
+          srczip="dist/lib/jaxb-xjc.src.zip"
           pom="tools/poms/jaxb-xjc.pom" />
         <artifact
-          jar="dist/lib/jaxb1-impl.jar"
-          pom="tools/poms/jaxb1-impl.pom" />
+          jar=   "dist/lib/jaxb1-impl.jar"
+          pom="tools/poms/jaxb1-impl.pom" /> <!-- source jar not available right now -->
         <filterset>
           <filter token="API_VERSION" value="${release.spec.version}"/>
         </filterset>
@@ -559,7 +616,6 @@ Class-Path: ${manifest.classpath}
           <!-- <delete dir="${jaxb.root}/dist" /> -->
 
           <!-- clean sub-projects -->
-          <ant dir="codemodel"          target="clean" />
           <ant dir="runtime"            target="clean" />
           <ant dir="runtime-fi"         target="clean" />
           <ant dir="runtime-staxex"     target="clean" />
@@ -582,7 +638,6 @@ Class-Path: ${manifest.classpath}
         <echo message="wspack.home is set to ${wspack.home}"/>
 
         <!-- replicate the build dirs from our build in ${build.home} -->
-        <mkdir dir="${build.home}/codemodel/build/classes"/>
         <mkdir dir="${build.home}/runtime/build/classes"/>
         <mkdir dir="${build.home}/xjc/build/classes"/>
 
@@ -592,8 +647,6 @@ Class-Path: ${manifest.classpath}
 
         <!-- compile each of the jaxb sub-projects into ${build.home} -->
         <antcall target="dist">
-            <param name="codemodel.build"   value="${build.home}/codemodel/build"/>
-            <param name="codemodel.classes" value="${build.home}/codemodel/build/classes"/>
             <param name="runtime.classes"   value="${build.home}/runtime/build/classes"/>
             <param name="xjc.classes"       value="${build.home}/xjc/build/classes"/>
             <param name="jaxb.dist"         value="${dist.home}"/>
@@ -654,80 +707,6 @@ Class-Path: ${manifest.classpath}
                 <exclude name="lib/activation.jar"/>
             </fileset>
         </copy>
-
-    </target>
-
-    <target name="srcbundle"
-            description="Create a src bundle for licensees">
-
-        <!-- mkdir and copy entire tree minus private stuff -->
-        <mkdir dir="${srcbundle.dist}"/>
-        <copy todir="${srcbundle.dist}" includeemptydirs="true">
-            <fileset dir="${jaxb.root}" >
-                <exclude name="**/.cvsignore"/>
-                <exclude name="**/.classpath"/>
-                <exclude name="**/.project"/>
-                <exclude name="**/CHANGELOG.txt"/>
-                <exclude name="relaxng/"/>
-                <exclude name="**/wspack/"/>
-                <exclude name="**/srcbundle/"/>
-                <exclude name="**/CVS/"/>
-                <exclude name="**/test/"/>
-                <exclude name="**/xjc/HOWTO*"/>
-                <exclude name="**/tools/bin/*nxjc*"/>
-                <exclude name="**/tools/etc/"/>
-                <exclude name="**/tools/serialbox/"/>
-                <exclude name="**/tools/servlet/"/>
-                <exclude name="**/tools/locator-support/"/>
-                <exclude name="**/tools/ls/"/>
-                <exclude name="**/tools/synchronized-methods/"/>
-                <exclude name="**/tools/webapp-commons/"/>
-                <exclude name="**/tools/prelim-build/"/>
-                <exclude name="**/tools/lib/util/commons-logging.jar"/>
-                <exclude name="**/tools/lib/util/jaxm*"/>
-                <exclude name="**/tools/lib/util/jdom.jar"/>
-                <exclude name="**/tools/lib/util/js.jar"/>
-                <exclude name="**/tools/lib/util/junit.jar"/>
-                <exclude name="**/tools/lib/util/mailapi.jar"/>
-                <exclude name="**/tools/lib/util/saaj*"/>
-                <exclude name="**/tools/lib/util/servlet.jar"/>
-                <exclude name="**/tools/lib/util/vmtools-0.4.jar"/>
-                <exclude name="**/tools/lib/util/activation.jar"/>
-                <exclude name="**/tools/lib/util/bsh-core.jar"/>
-                <exclude name="**/tools/lib/util/smtp.jar"/>
-                <exclude name="**/tools/lib/util/antlr.jar"/>
-                <exclude name="**/tools/lib/util/bsh.jar"/>
-                <exclude name="**/tools/lib/util/gsc.jar"/>
-                <exclude name="**/tools/lib/util/jing.jar"/>
-                <exclude name="**/tools/lib/src/ant-src.zip"/>
-                <exclude name="**/tools/lib/src/antlr.src.zip"/>
-                <exclude name="**/tools/lib/src/bsh-src.zip"/>
-                <exclude name="**/tools/lib/src/dom4j-src.zip"/>
-                <exclude name="**/tools/lib/src/gsc.src.zip"/>
-                <exclude name="**/tools/lib/src/junit-src.zip"/>
-                <exclude name="**/tools/lib/src/servlet-src.zip"/>
-                <exclude name="**/tools/lib/src/Xerces-J-src.2.2.1.zip"/>
-                <exclude name="**/tools/lib/src/xalan-j_2_4_0-src.zip"/>
-                <exclude name="**/tools/lib/src/xmlpull_1_1_4_src.zip"/>
-                <exclude name="**/pkg/"/>
-                <exclude name="**/samples/*-workaround-*/"/>
-                <exclude name="**/samples/pull-parser/lib/*.jar"/>
-                <!-- these are the only two jars that we require people to get from
-                     the web.  Comment these lines out for testing purposes  -->
-                <exclude name="**/tools/lib/util/dom4j.jar"/>
-            </fileset>
-        </copy>
-
-        <!-- clobber the real build files with the src build files -->
-        <move file="${srcbundle.dist}/src-build.xml"
-              tofile="${srcbundle.dist}/build.xml"
-              overwrite="true"/>
-        <move file="${srcbundle.dist}/src-build.properties"
-              tofile="${srcbundle.dist}/build.properties"
-              overwrite="true"/>
-        <move file="${srcbundle.dist}/src-build.readme"
-              tofile="${srcbundle.dist}/HOWTO-buildingJAXB.txt"
-              overwrite="true"/>
 
     </target>
 
@@ -805,7 +784,7 @@ Class-Path: ${manifest.classpath}
     
     <target name="release-engineering"
             description="target for Sun RE builds"
-            depends="src-zip,bin-installer,src-installer" />
+            depends="src-zip,bin-installer,src-installer,licensee-zip" />
 
 
     <target name="project.dtd" description="create DTD for DTD-aware editing">
@@ -822,9 +801,9 @@ Class-Path: ${manifest.classpath}
 
 
     <target name="integrate-fi">
-      <get src="http://kohsuke.sfbay/hudson/job/fi/lastSuccessfulBuild/artifact/fi/FastInfoset/dist/FastInfoset.jar"
+      <get src="http://kohsuke.sfbay/hudson/job/fi-1.2/lastSuccessfulBuild/artifact/fi/FastInfoset/dist/FastInfoset.jar"
            dest="tools/lib/util/FastInfoset.jar" />
-      <get src="http://kohsuke.sfbay/hudson/job/fi/lastSuccessfulBuild/artifact/fi/package/FastInfoset.src.zip"
+      <get src="http://kohsuke.sfbay/hudson/job/fi-1.2/lastSuccessfulBuild/artifact/fi/FastInfoset/dist/FastInfoset.src.zip"
            dest="tools/lib/src/FastInfoset.src.zip" />
     </target>
 
@@ -837,11 +816,11 @@ Class-Path: ${manifest.classpath}
     </target>
 
     <target name="integrate-jsr222">
-        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror-2.0/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api.jar"
+        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api.jar"
              dest="tools/lib/redist/jaxb-api.jar" />
-        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror-2.0/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-src.zip"
+        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-src.zip"
              dest="tools/lib/redist/jaxb-api-src.zip" />
-        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror-2.0/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-doc.zip"
+        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-doc.zip"
              dest="tools/lib/redist/jaxb-api-doc.zip" />
     </target>
 
@@ -860,11 +839,13 @@ Class-Path: ${manifest.classpath}
 
     <target name="integrate-txw2">
         <get src="http://kohsuke.sfbay/hudson/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2.jar"
-             dest="tools/lib/rebundle/compiler/txw2.jar" />
+             dest="tools/lib/rebundle/runtime2/txw2.jar" />
         <get src="http://kohsuke.sfbay/hudson/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txwc2.jar"
              dest="tools/lib/util/txwc2.jar" />
         <get src="http://kohsuke.sfbay/hudson/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2-src.zip"
              dest="tools/lib/src/txw2-src.zip" />
+        <get src="http://kohsuke.sfbay/hudson/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2c-src.zip"
+             dest="tools/lib/src/txw2c-src.zip" />
     </target>
 
     <target name="integrate-rngom">
@@ -903,7 +884,34 @@ Class-Path: ${manifest.classpath}
     </target>
 
     <target name="integrate-package-rename-task">
-        <get src="http://kohsuke.sfbay/hudson/job/package-rename-task/lastSuccessfulBuild/artifact/target/package-rename-task-1.0.jar"
+        <get src="http://kohsuke.sfbay/hudson/job/package-rename-task/lastSuccessfulBuild/artifact/target/package-rename-task.jar"
              dest="tools/lib/util/package-rename-task.jar"/>
     </target>
+
+    <target name="integrate-htmlmacro">
+        <get src="http://kohsuke.sfbay/hudson/job/htmlmacro/lastSuccessfulBuild/artifact/htmlmacro/build/htmlmacro.zip"
+             dest="build/htmlmacro.zip"/>
+        <unzip src="build/htmlmacro.zip" dest="tools/htmlmacro">
+          <patternset>
+            <include name="htmlmacro.*" />
+            <include name="tags/**/*" />
+          </patternset>
+        </unzip>
+    </target>
+
+    <target name="integrate-codemodel">
+        <property name="codemodel-version" value="2.1-SNAPSHOT" />
+        <get src="http://kohsuke.sfbay/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel-version}.jar"
+             dest="tools/lib/rebundle/compiler/codemodel.jar" />
+        <get src="http://kohsuke.sfbay/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel-version}.jar"
+             dest="tools/lib/util/codemodel-annotation-compiler.jar" />
+             
+        <get src="http://kohsuke.sfbay/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel-version}-sources.jar"
+             dest="tools/lib/src/codemodel.src.zip" />
+        <get src="http://kohsuke.sfbay/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel-version}-sources.jar"
+             dest="tools/lib/src/codemodel-annotation-compiler.src.zip" />
+
+    </target>
+    
+    
 </project>

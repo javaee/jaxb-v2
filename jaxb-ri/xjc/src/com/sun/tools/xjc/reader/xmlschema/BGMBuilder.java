@@ -1,3 +1,39 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * 
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ */
+
 package com.sun.tools.xjc.reader.xmlschema;
 
 import java.util.ArrayList;
@@ -14,6 +50,7 @@ import javax.xml.transform.TransformerFactory;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.fmt.JTextFile;
 import com.sun.istack.NotNull;
+import com.sun.istack.Nullable;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.generator.bean.field.FieldRendererFactory;
@@ -31,10 +68,10 @@ import com.sun.tools.xjc.util.CodeModelClassFactory;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.api.impl.NameConverter;
-import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSAttributeUse;
 import com.sun.xml.xsom.XSComponent;
+import com.sun.xml.xsom.XSDeclaration;
 import com.sun.xml.xsom.XSParticle;
 import com.sun.xml.xsom.XSSchema;
 import com.sun.xml.xsom.XSSchemaSet;
@@ -67,13 +104,13 @@ public class BGMBuilder extends BindingComponent {
 
             Ring.add(XSSchemaSet.class,_schemas);
             Ring.add(codeModel);
-            Model model = new Model(opts, codeModel, null/*set later*/, opts.classNameAllocator);
+            Model model = new Model(opts, codeModel, null/*set later*/, opts.classNameAllocator, _schemas);
             Ring.add(model);
             Ring.add(ErrorReceiver.class,ef);
             Ring.add(CodeModelClassFactory.class,new CodeModelClassFactory(ef));
 
             BGMBuilder builder = new BGMBuilder(opts.defaultPackage,opts.defaultPackage2,
-                opts.compatibilityMode==Options.EXTENSION,opts.getFieldRendererFactory());
+                opts.isExtensionMode(),opts.getFieldRendererFactory());
             builder._build();
 
             if(ef.hadError())   return null;
@@ -153,6 +190,9 @@ public class BGMBuilder extends BindingComponent {
 
         for( XSSchema s : schemas.getSchemas() ) {
             BindInfo bi = getBindInfo(s);
+
+            // collect all global customizations
+            model.getCustomizations().addAll(bi.toCustomizationList());
 
             BIGlobalBinding gb = bi.get(BIGlobalBinding.class);
             if(gb==null)
@@ -251,22 +291,27 @@ public class BGMBuilder extends BindingComponent {
         SimpleTypeBuilder stb = Ring.get(SimpleTypeBuilder.class);
 
         for( XSSchema s : Ring.get(XSSchemaSet.class).getSchemas() ) {
+            BISchemaBinding sb = getBindInfo(s).get(BISchemaBinding.class);
+
+            if(sb!=null && !sb.map) {
+                sb.markAsAcknowledged();
+                continue;       // no mapping for this package
+            }
+
             getClassSelector().pushClassScope( new CClassInfoParent.Package(
                 getClassSelector().getPackage(s.getTargetNamespace())) );
 
-            if(!s.getTargetNamespace().equals(WellKnownNamespace.XML_SCHEMA)) {
-                checkMultipleSchemaBindings(s);
-                processPackageJavadoc(s);
-                populate(s.getAttGroupDecls());
-                populate(s.getAttributeDecls());
-                populate(s.getElementDecls());
-                populate(s.getModelGroupDecls());
-            }
+            checkMultipleSchemaBindings(s);
+            processPackageJavadoc(s);
+            populate(s.getAttGroupDecls(),s);
+            populate(s.getAttributeDecls(),s);
+            populate(s.getElementDecls(),s);
+            populate(s.getModelGroupDecls(),s);
 
             // fill in typeUses
             for (XSType t : s.getTypes().values()) {
                 stb.refererStack.push(t);
-                model.typeUses().put( new QName(t.getTargetNamespace(),t.getName()), cs.bindToType(t) );
+                model.typeUses().put( getName(t), cs.bindToType(t,s) );
                 stb.refererStack.pop();
             }
 
@@ -298,10 +343,10 @@ public class BGMBuilder extends BindingComponent {
      * Calls {@link ClassSelector} for each item in the iterator
      * to populate class items if there is any.
      */
-    private void populate( Map<String,? extends XSComponent> col ) {
+    private void populate( Map<String,? extends XSComponent> col, XSSchema schema ) {
         ClassSelector cs = getClassSelector();
         for( XSComponent sc : col.values() )
-            cs.bindToType(sc);
+            cs.bindToType(sc,schema);
     }
 
     /**
@@ -446,8 +491,8 @@ public class BGMBuilder extends BindingComponent {
      * If the component is mapped to a type, this method needs to return true.
      * See the chart at the class javadoc.
      */
-    public void ying( XSComponent sc ) {
-        if(sc.apply(toPurple)==true || getClassSelector().bindToType(sc)!=null)
+    public void ying( XSComponent sc, @Nullable XSComponent referer ) {
+        if(sc.apply(toPurple)==true || getClassSelector().bindToType(sc,referer)!=null)
             sc.visit(purple);
         else
             sc.visit(green);
@@ -477,5 +522,43 @@ public class BGMBuilder extends BindingComponent {
             refFinder.schemaSet(Ring.get(XSSchemaSet.class));
         }
         return refFinder.getReferer(c);
+    }
+
+    /**
+     * Returns the QName of the declaration.
+     * @return null
+     *      if the declaration is anonymous.
+     */
+    public static QName getName(XSDeclaration decl) {
+        String local = decl.getName();
+        if(local==null) return null;
+        return new QName(decl.getTargetNamespace(),local);
+    }
+
+    /**
+     * Derives a name from a schema component.
+     *
+     * This method handles prefix/suffix modification and
+     * XML-to-Java name conversion.
+     *
+     * @param name
+     *      The base name. This should be things like element names
+     *      or type names.
+     * @param comp
+     *      The component from which the base name was taken.
+     *      Used to determine how names are modified.
+     */
+    public String deriveName( String name, XSComponent comp ) {
+        XSSchema owner = comp.getOwnerSchema();
+
+        name = getNameConverter().toClassName(name);
+
+        if( owner!=null ) {
+            BISchemaBinding sb = getBindInfo(owner).get(BISchemaBinding.class);
+
+            if(sb!=null)    name = sb.mangleClassName(name,comp);
+        }
+
+        return name;
     }
 }

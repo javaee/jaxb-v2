@@ -1,21 +1,37 @@
 /*
- * The contents of this file are subject to the terms
- * of the Common Development and Distribution License
- * (the "License").  You may not use this file except
- * in compliance with the License.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * You can obtain a copy of the license at
- * https://jwsdp.dev.java.net/CDDLv1.0.html
- * See the License for the specific language governing
- * permissions and limitations under the License.
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
  * 
- * When distributing Covered Code, include this CDDL
- * HEADER in each file and include the License file at
- * https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
- * add the following below this CDDL HEADER, with the
- * fields enclosed by brackets "[]" replaced with your
- * own identifying information: Portions Copyright [yyyy]
- * [name of copyright owner]
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
  */
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
@@ -24,9 +40,12 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlMixed;
@@ -38,14 +57,17 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import com.sun.codemodel.JDocComment;
+import com.sun.tools.xjc.SchemaCache;
 import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.model.CPluginCustomization;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.xml.bind.annotation.XmlLocation;
+import com.sun.xml.bind.api.TypeReference;
 import com.sun.xml.bind.marshaller.MinimumEscapeHandler;
 import com.sun.xml.bind.v2.WellKnownNamespace;
+import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.xsom.XSComponent;
 
 import org.w3c.dom.Element;
@@ -71,7 +93,7 @@ public final class BindInfo implements Iterable<BIDeclaration> {
     /**
      * Documentation taken from &lt;xs:documentation>s. 
      */
-    @XmlElement
+    @XmlElement(namespace=WellKnownNamespace.XML_SCHEMA)
     private Documentation documentation;
 
     /**
@@ -135,7 +157,7 @@ public final class BindInfo implements Iterable<BIDeclaration> {
 
 
     // only used by JAXB
-    @XmlElement
+    @XmlElement(namespace=WellKnownNamespace.XML_SCHEMA)
     void setAppinfo(AppInfo aib) {
         aib.addTo(this);
     }
@@ -298,5 +320,43 @@ public final class BindInfo implements Iterable<BIDeclaration> {
     /** An instance with the empty contents. */
     public final static BindInfo empty = new BindInfo();
 
+    /**
+     * Lazily prepared {@link JAXBContext}.
+     */
+    private static JAXBContextImpl customizationContext;
+
+    public static JAXBContextImpl getJAXBContext() {
+        synchronized(AnnotationParserFactoryImpl.class) {
+            try {
+                if(customizationContext==null)
+                    customizationContext = new JAXBContextImpl(
+                        new Class[] {
+                            BindInfo.class, // for xs:annotation
+                            BIClass.class,
+                            BIConversion.User.class,
+                            BIConversion.UserAdapter.class,
+                            BIDom.class,
+                            BIFactoryMethod.class,
+                            BIInlineBinaryData.class,
+                            BIXDom.class,
+                            BIXSubstitutable.class,
+                            BIEnum.class,
+                            BIEnumMember.class,
+                            BIGlobalBinding.class,
+                            BIProperty.class,
+                            BISchemaBinding.class
+                        }, Collections.<TypeReference>emptyList(),
+                            Collections.<Class,Class>emptyMap(), null, false, null, false, false);
+                return customizationContext;
+            } catch (JAXBException e) {
+                throw new AssertionError(e);
+            }
+        }
+    }
+
+    /**
+     * Lazily parsed schema for the binding file.
+     */
+    public static final SchemaCache bindingFileSchema = new SchemaCache(BindInfo.class.getResource("binding.xsd"));
 }
 

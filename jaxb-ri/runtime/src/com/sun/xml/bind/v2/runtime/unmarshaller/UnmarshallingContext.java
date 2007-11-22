@@ -1,3 +1,39 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * 
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ */
+
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
 import java.lang.reflect.InvocationTargetException;
@@ -23,9 +59,11 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import com.sun.istack.NotNull;
+import com.sun.istack.Nullable;
 import com.sun.istack.SAXParseException2;
 import com.sun.xml.bind.IDResolver;
 import com.sun.xml.bind.api.AccessorException;
+import com.sun.xml.bind.api.ClassResolver;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
 import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.runtime.AssociationMap;
@@ -59,6 +97,17 @@ public final class UnmarshallingContext extends Coordinator
      * The currently active state.
      */
     private State current;
+
+    private static final LocatorEx DUMMY_INSTANCE;
+
+    static {
+        LocatorImpl loc = new LocatorImpl();
+        loc.setPublicId(null);
+        loc.setSystemId(null);
+        loc.setLineNumber(-1);
+        loc.setColumnNumber(-1);
+        DUMMY_INSTANCE = new LocatorExWrapper(loc);
+    }
 
     private @NotNull LocatorEx locator = DUMMY_INSTANCE;
 
@@ -128,6 +177,10 @@ public final class UnmarshallingContext extends Coordinator
      */
     private NamespaceContext environmentNamespaceContext;
 
+    /**
+     * Used to discover additional classes when we hit unknown elements/types.
+     */
+    public @Nullable ClassResolver classResolver;
 
     /**
      * State information for each element.
@@ -267,6 +320,35 @@ public final class UnmarshallingContext extends Coordinator
     }
 
     /**
+     * On top of {@link JAXBContextImpl#selectRootLoader(State, TagName)},
+     * this method also consults {@link ClassResolver}.
+     *
+     * @throws SAXException
+     *      if {@link ValidationEventHandler} reported a failure.
+     */
+    public Loader selectRootLoader(State state, TagName tag) throws SAXException {
+        try {
+            Loader l = getJAXBContext().selectRootLoader(state, tag);
+            if(l!=null)     return l;
+
+            if(classResolver!=null) {
+                Class<?> clazz = classResolver.resolveElementName(tag.uri, tag.local);
+                if(clazz!=null) {
+                    JAXBContextImpl enhanced = getJAXBContext().createAugmented(clazz);
+                    JaxBeanInfo<?> bi = enhanced.getBeanInfo(clazz);
+                    return bi.getLoader(enhanced,true);
+                }
+            }
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            handleError(e);
+        }
+
+        return null;
+    }
+
+    /**
      * Allocates a few more {@link State}s.
      *
      * Allocating multiple {@link State}s at once allows those objects
@@ -328,8 +410,6 @@ public final class UnmarshallingContext extends Coordinator
         aborted = false;
         isUnmarshalInProgress = true;
         nsLen=0;
-
-        startPrefixMapping("",""); // by default, the default ns is bound to "".
 
         setThreadAffinity();
 
@@ -703,6 +783,12 @@ public final class UnmarshallingContext extends Coordinator
             // temporary workaround until Zephyr fixes 6337180
             return environmentNamespaceContext.getNamespaceURI(prefix.intern());
 
+        // by default, the default ns is bound to "".
+        // but allow environmentNamespaceContext to take precedence
+        if(prefix.equals(""))
+            return "";
+
+        // unresolved. error.
         return null;
     }
 
@@ -725,7 +811,7 @@ public final class UnmarshallingContext extends Coordinator
      *      is represented by the empty string.
      */
     public String[] getAllDeclaredPrefixes() {
-        return getPrefixList( 2 );  // skip the default ""->"" mapping
+        return getPrefixList(0);
     }
 
     private String[] getPrefixList( int startIndex ) {
@@ -860,10 +946,15 @@ public final class UnmarshallingContext extends Coordinator
      */
     public void endScope(int frameSize) throws SAXException {
         try {
-            for( ; frameSize>0; frameSize-- )
-                scopes[scopeTop--].finish();
+            for( ; frameSize>0; frameSize--, scopeTop-- )
+                scopes[scopeTop].finish();
         } catch (AccessorException e) {
             handleError(e);
+
+            // the error might have left scopes in inconsistent state,
+            // so replace them by fresh ones
+            for( ; frameSize>0; frameSize-- )
+                scopes[scopeTop--] = new Scope(this);
         }
     }
 
@@ -903,9 +994,7 @@ public final class UnmarshallingContext extends Coordinator
          * unmarshalling.
          */
         public void childElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
-            JAXBContextImpl jaxbContext = state.getContext().getJAXBContext();
-
-            Loader loader = jaxbContext.selectRootLoader(state,ea);
+            Loader loader = state.getContext().selectRootLoader(state,ea);
             if(loader!=null) {
                 state.loader = loader;
                 state.receiver = this;
@@ -914,7 +1003,7 @@ public final class UnmarshallingContext extends Coordinator
 
             // the registry doesn't know about this element.
             // try its xsi:type
-            JaxBeanInfo beanInfo = XsiTypeLoader.parseXsiType(state, ea);
+            JaxBeanInfo beanInfo = XsiTypeLoader.parseXsiType(state, ea, null);
             if(beanInfo==null) {
                 // we don't even know its xsi:type
                 reportUnexpectedChildElement(ea,false);
@@ -1058,16 +1147,5 @@ public final class UnmarshallingContext extends Coordinator
      */
     public static UnmarshallingContext getInstance() {
         return (UnmarshallingContext) Coordinator._getInstance();
-    }
-
-    private static final LocatorEx DUMMY_INSTANCE;
-
-    static {
-        LocatorImpl loc = new LocatorImpl();
-        loc.setPublicId(null);
-        loc.setSystemId(null);
-        loc.setLineNumber(-1);
-        loc.setColumnNumber(-1);
-        DUMMY_INSTANCE = new LocatorExWrapper(loc);
     }
 }

@@ -1,3 +1,39 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * 
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ */
+
 package com.sun.xml.bind.v2.model.impl;
 
 import java.text.MessageFormat;
@@ -14,6 +50,7 @@ enum Messages {
     DUPLICATE_ANNOTATIONS, // 1 arg
     NO_DEFAULT_CONSTRUCTOR, // 1 arg
     CANT_HANDLE_INTERFACE, // 1 arg
+    CANT_HANDLE_INNER_CLASS, // 1 arg
     ANNOTATION_ON_WRONG_METHOD, // 0 args
     GETTER_SETTER_INCOMPATIBLE_TYPE, // 2 args
     DUPLICATE_ENTRY_IN_PROP_ORDER, // 1 arg
@@ -31,7 +68,7 @@ enum Messages {
     SUPER_CLASS_HAS_WILDCARD, // 0 args
     INVALID_ATTRIBUTE_WILDCARD_TYPE, // 1 arg
     PROPERTY_MISSING_FROM_ORDER, // 1 arg
-    PROPERTY_ORDER_CONTAINS_UNUSED_ENTRY, // 1 arg
+    PROPERTY_ORDER_CONTAINS_UNUSED_ENTRY, // 2 args
 
     INVALID_XML_ENUM_VALUE, // 2 arg
     FAILED_TO_INITIALE_DATATYPE_FACTORY, // 0 args
@@ -57,9 +94,28 @@ enum Messages {
     NO_FACTORY_METHOD, // 2 args
     FACTORY_CLASS_NEEDS_FACTORY_METHOD, // 1 arg
 
+    INCOMPATIBLE_API_VERSION, // 2 args
+    INCOMPATIBLE_API_VERSION_MUSTANG, // 2 args
+    RUNNING_WITH_1_0_RUNTIME, // 2 args
+    
     MISSING_JAXB_PROPERTIES, // 1arg
     TRANSIENT_FIELD_NOT_BINDABLE, // 1 arg
-    THERE_MUST_BE_VALUE_IN_XMLVALUE // 1 arg
+    THERE_MUST_BE_VALUE_IN_XMLVALUE, // 1 arg
+    UNMATCHABLE_ADAPTER, // 2 args
+    ANONYMOUS_ARRAY_ITEM, // 1 arg
+
+    ACCESSORFACTORY_INSTANTIATION_EXCEPTION, // 2 arg
+    ACCESSORFACTORY_ACCESS_EXCEPTION, // 2 arg
+    CUSTOM_ACCESSORFACTORY_PROPERTY_ERROR, // 2 arg
+    CUSTOM_ACCESSORFACTORY_FIELD_ERROR, // 2 arg
+	XMLGREGORIANCALENDAR_INVALID, // 1 arg
+	XMLGREGORIANCALENDAR_SEC, // 0 arg
+	XMLGREGORIANCALENDAR_MIN, // 0 arg
+	XMLGREGORIANCALENDAR_HR, // 0 arg
+	XMLGREGORIANCALENDAR_DAY, // 0 arg
+	XMLGREGORIANCALENDAR_MONTH, // 0 arg
+	XMLGREGORIANCALENDAR_YEAR, // 0 arg
+	XMLGREGORIANCALENDAR_TIMEZONE, // 0 arg
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());

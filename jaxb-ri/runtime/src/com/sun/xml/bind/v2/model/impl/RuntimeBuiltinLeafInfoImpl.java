@@ -1,3 +1,39 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * 
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ */
+
 package com.sun.xml.bind.v2.model.impl;
 
 import java.awt.*;
@@ -32,6 +68,7 @@ import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.helpers.ValidationEventImpl;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -150,6 +187,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
     public static final RuntimeBuiltinLeafInfoImpl<String> STRING = new StringImpl<String>(String.class,
         createXS("string"),
         createXS("normalizedString"),
+        createXS("anyURI"),
         createXS("token"),
         createXS("language"),
         createXS("Name"),
@@ -258,6 +296,20 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                     return v.toExternalForm();
                 }
             },
+            new StringImpl<URI>(URI.class, createXS("string")) {
+                public URI parse(CharSequence text) throws SAXException {
+                    try {
+                        return new URI(text.toString());
+                    } catch (URISyntaxException e) {
+                        UnmarshallingContext.getInstance().handleError(e);
+                        return null;
+                    }
+                }
+
+                public String print(URI v) {
+                    return v.toString();
+                }
+            },
             new StringImpl<Class>(Class.class, createXS("string")) {
                 public Class parse(CharSequence text) throws SAXException {
                     TODO.checkSpec("JSR222 Issue #42");
@@ -295,7 +347,11 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                         // normally images can be content-sniffed.
                         // so the MIME type check will only make us slower and draconian, both of which
                         // JAXB 2.0 isn't interested.
-                        return ImageIO.read(is);
+                        try {
+                            return ImageIO.read(is);
+                        } finally {
+                            is.close();
+                        }
                     } catch (IOException e) {
                         UnmarshallingContext.getInstance().handleError(e);
                         return null;
@@ -312,9 +368,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                         try {
                             tracker.waitForAll();
                         } catch (InterruptedException e) {
-                            IOException ioe = new IOException(e.getMessage());
-                            ioe.initCause(e);
-                            throw ioe;
+                            throw new IOException(e.getMessage());
                         }
                         BufferedImage bufImage = new BufferedImage(
                                 image.getWidth(null),
@@ -344,8 +398,10 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                         Iterator<ImageWriter> itr = ImageIO.getImageWritersByMIMEType(mimeType);
                         if(itr.hasNext()) {
                             ImageWriter w = itr.next();
-                            w.setOutput(ImageIO.createImageOutputStream(imageData));
+                            ImageOutputStream os = ImageIO.createImageOutputStream(imageData);
+                            w.setOutput(os);
                             w.write(convertToBufferedImage(v));
+                            os.close();
                             w.dispose();
                         } else {
                             // no encoder
@@ -361,7 +417,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                         // TODO: proper error reporting
                         throw new RuntimeException(e);
                     }
-                    Base64Data bd = xs.getCachedBase64DataInstance();
+                    Base64Data bd = new Base64Data();
                     imageData.set(bd,mimeType);
                     return bd;
                 }
@@ -376,7 +432,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                 }
 
                 public Base64Data print(DataHandler v) {
-                    Base64Data bd = XMLSerializer.getInstance().getCachedBase64DataInstance();
+                    Base64Data bd = new Base64Data();
                     bd.set(v);
                     return bd;
                 }
@@ -397,7 +453,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
 
                 public Base64Data print(Source v) {
                     XMLSerializer xs = XMLSerializer.getInstance();
-                    Base64Data bd = xs.getCachedBase64DataInstance();
+                    Base64Data bd = new Base64Data();
 
                     String contentType = xs.getXMIMEContentType();
                     MimeType mt = null;
@@ -464,15 +520,21 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
 
                     QName type = xs.getSchemaType();
                     if(type!=null) {
-                        String format = xmlGregorianCalendarFormatString.get(type);
-                        if(format!=null)
-                            return format(format,cal);
-                        // TODO:
-                        // we need to think about how to report an error where @XmlSchemaType
-                        // didn't take effect. a general case is when a transducer isn't even
-                        // written to look at that value.
-                    }
-
+						try {
+							checkXmlGregorianCalendarFieldRef(type, cal);
+							String format = xmlGregorianCalendarFormatString.get(type);
+							if(format!=null)
+								return format(format,cal);
+							// TODO:
+							// we need to think about how to report an error where @XmlSchemaType
+							// didn't take effect. a general case is when a transducer isn't even
+							// written to look at that value.
+						} catch (javax.xml.bind.MarshalException e){
+							//-xs.handleError(e);
+							System.out.println(e.toString());
+							return "";
+						}
+					}
                     return cal.toXMLFormat();
                 }
 
@@ -589,7 +651,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
 
                 public Base64Data print(byte[] v) {
                     XMLSerializer w = XMLSerializer.getInstance();
-                    Base64Data bd = w.getCachedBase64DataInstance();
+                    Base64Data bd = new Base64Data();
                     String mimeType = w.getXMIMEContentType();
                     bd.set(v,mimeType);
                     return bd;
@@ -715,21 +777,6 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                     w.getNamespaceContext().declareNamespace(v.getNamespaceURI(),v.getPrefix(),false);
                 }
             },
-            new StringImpl<URI>(URI.class, createXS("anyURI")) {
-                public URI parse(CharSequence text) throws SAXException {
-                    TODO.checkSpec("JSR222 Issue #42");
-                    try {
-                        return new URI(text.toString());
-                    } catch (URISyntaxException e) {
-                        UnmarshallingContext.getInstance().handleError(e);
-                        return null;
-                    }
-                }
-
-                public String print(URI v) {
-                    return v.toString();
-                }
-            },
             new StringImpl<Duration>(Duration.class,  createXS("duration")) {
                 public String print(Duration duration) {
                     return duration.toString();
@@ -799,6 +846,61 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
         }
     }
 
+	private static void checkXmlGregorianCalendarFieldRef(QName type, 
+		XMLGregorianCalendar cal)throws javax.xml.bind.MarshalException{
+		StringBuffer buf = new StringBuffer();
+		int bitField = xmlGregorianCalendarFieldRef.get(type);
+		final int l = 0x1;
+		int pos = 0;
+		while (bitField != 0x0){
+			int bit = bitField & l;
+			bitField >>>= 4;
+			pos++;
+			
+			if (bit == 1) {
+				switch(pos){
+					case 1:
+						if (cal.getSecond() == DatatypeConstants.FIELD_UNDEFINED){
+							buf.append("  " + Messages.XMLGREGORIANCALENDAR_SEC);
+						}
+						break;
+					case 2:
+						if (cal.getMinute() == DatatypeConstants.FIELD_UNDEFINED){
+							buf.append("  " + Messages.XMLGREGORIANCALENDAR_MIN);
+						}
+						break;
+					case 3:
+						if (cal.getHour() == DatatypeConstants.FIELD_UNDEFINED){
+							buf.append("  " + Messages.XMLGREGORIANCALENDAR_HR);
+						}
+						break;
+					case 4:
+						if (cal.getDay() == DatatypeConstants.FIELD_UNDEFINED){
+							buf.append("  " + Messages.XMLGREGORIANCALENDAR_DAY);
+						}
+						break;
+					case 5:
+						if (cal.getMonth() == DatatypeConstants.FIELD_UNDEFINED){
+							buf.append("  " + Messages.XMLGREGORIANCALENDAR_MONTH);
+						}
+						break;
+					case 6:
+						if (cal.getYear() == DatatypeConstants.FIELD_UNDEFINED){
+							buf.append("  " + Messages.XMLGREGORIANCALENDAR_YEAR);
+						}
+						break;
+					case 7:  // ignore timezone setting
+						break;
+				}
+			}
+		}
+		if (buf.length() > 0){
+			throw new javax.xml.bind.MarshalException(
+			 Messages.XMLGREGORIANCALENDAR_INVALID.format(type.getLocalPart()) 
+			 + buf.toString());
+		}
+	}
+	
     /**
      * Format string for the {@link XMLGregorianCalendar}.
      */
@@ -817,6 +919,30 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
         m.put(DatatypeConstants.GMONTHDAY,  "--%M-%D" +"%z");
     }
 
+	/**
+	 * Field designations for XMLGregorianCalendar format string.
+	 * sec		0x0000001
+	 * min		0x0000010
+	 * hrs		0x0000100
+	 * day		0x0001000
+	 * month	0x0010000
+	 * year		0x0100000
+	 * timezone 0x1000000
+	 */
+	private static final Map<QName, Integer> xmlGregorianCalendarFieldRef =
+		new HashMap<QName, Integer>();
+	static {
+		Map<QName, Integer> f = xmlGregorianCalendarFieldRef;
+		f.put(DatatypeConstants.DATETIME,   0x1111111);
+		f.put(DatatypeConstants.DATE,       0x1111000);
+		f.put(DatatypeConstants.TIME,       0x1000111);
+		f.put(DatatypeConstants.GDAY,       0x1001000);
+		f.put(DatatypeConstants.GMONTH,     0x1010000);
+		f.put(DatatypeConstants.GYEAR,      0x1100000);
+		f.put(DatatypeConstants.GYEARMONTH, 0x1110000);
+		f.put(DatatypeConstants.GMONTHDAY,  0x1011000);
+	}
+	
     /**
      * {@link RuntimeBuiltinLeafInfoImpl} for {@link UUID}.
      *

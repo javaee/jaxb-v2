@@ -1,21 +1,37 @@
 /*
- * The contents of this file are subject to the terms
- * of the Common Development and Distribution License
- * (the "License").  You may not use this file except
- * in compliance with the License.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * You can obtain a copy of the license at
- * https://jwsdp.dev.java.net/CDDLv1.0.html
- * See the License for the specific language governing
- * permissions and limitations under the License.
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
  * 
- * When distributing Covered Code, include this CDDL
- * HEADER in each file and include the License file at
- * https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
- * add the following below this CDDL HEADER, with the
- * fields enclosed by brackets "[]" replaced with your
- * own identifying information: Portions Copyright [yyyy]
- * [name of copyright owner]
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
  */
 
 package com.sun.tools.xjc;
@@ -60,20 +76,8 @@ class Messages
     static final String EXPERIMENTAL_LANGUAGE_WARNING = // 2 arg
         "Driver.ExperimentalLanguageWarning";
     
-    static final String MISSING_CLASSPATH = // 0 args
-        "Driver.MissingClassPath";
-
-    static final String MISSING_DIR = // 0 args
-        "Driver.MissingDir";
-
     static final String NON_EXISTENT_DIR = // 1 arg
         "Driver.NonExistentDir";
-        
-    static final String MISSING_FILENAME = // 0 args
-        "Driver.MissingFileName";
-        
-    static final String MISSING_PACKAGENAME = // 0 args
-        "Driver.MissingPackageName";
         
     static final String MISSING_RUNTIME_PACKAGENAME = // 0 args
         "Driver.MissingRuntimePackageName";
@@ -81,9 +85,6 @@ class Messages
     static final String MISSING_MODE_OPERAND = // 0 args
         "Driver.MissingModeOperand";
 
-    static final String MISSING_CATALOG = // 0 args
-        "Driver.MissingCatalog";
-    
     static final String MISSING_COMPATIBILITY_OPERAND = // 0 args
         "Driver.MissingCompatibilityOperand";
     
@@ -98,6 +99,12 @@ class Messages
 
     static final String ILLEGAL_PROXY = // 1 arg
         "Driver.ILLEGAL_PROXY";
+
+    static final String ILLEGAL_TARGET_VERSION = // 1 arg
+        "Driver.ILLEGAL_TARGET_VERSION";
+
+    static final String MISSING_OPERAND = // 1 arg
+        "Driver.MissingOperand";
 
     static final String MISSING_PROXYHOST = // 0 args
         "Driver.MissingProxyHost";
@@ -165,9 +172,6 @@ class Messages
     static final String ERR_BINDING_FILE_NOT_SUPPORTED_FOR_RNC = // 0 args
         "ModelLoader.BindingFileNotSupportedForRNC";
 
-     static final String MISSING_VERSION = // 0 args
-        "Driver.MissingVersion";
-
     static final String DEFAULT_VERSION = // 0 args
         "Driver.DefaultVersion";
 
@@ -185,5 +189,10 @@ class Messages
         "FIELD_RENDERER_CONFLICT";
 
     static final String NAME_CONVERTER_CONFLICT = // 2 args
-            "NAME_CONVERTER_CONFLICT";
+        "NAME_CONVERTER_CONFLICT";
+    static final String FAILED_TO_LOAD = // 2 args
+        "FAILED_TO_LOAD";
+
+    static final String PLUGIN_LOAD_FAILURE = // 1 arg
+        "PLUGIN_LOAD_FAILURE";
 }

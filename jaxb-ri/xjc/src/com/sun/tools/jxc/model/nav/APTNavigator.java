@@ -1,3 +1,39 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * 
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ */
+
 package com.sun.tools.jxc.model.nav;
 
 import java.util.ArrayList;
@@ -256,24 +292,21 @@ public class APTNavigator implements Navigator<TypeMirror,TypeDeclaration,FieldD
         return method.getModifiers().contains(Modifier.VOLATILE);
     }
 
-    public boolean isOverriding(MethodDeclaration method) {
-        TypeDeclaration declaringType = method.getDeclaringType();
-        if(!(declaringType instanceof ClassDeclaration))
-            return false;   // act defensively. this might be because we are recovering from errors
-        ClassDeclaration sc = (ClassDeclaration) declaringType;
+    public boolean isOverriding(MethodDeclaration method, TypeDeclaration base) {
+        ClassDeclaration sc = (ClassDeclaration) base;
 
         Declarations declUtil = env.getDeclarationUtils();
 
-        while(sc.getSuperclass()!=null) {
-            sc = sc.getSuperclass().getDeclaration();
-
+        while(true) {
             for (MethodDeclaration m : sc.getMethods()) {
                 if(declUtil.overrides(method,m))
                     return true;
             }
-        }
 
-        return false;
+            if(sc.getSuperclass()==null)
+                return false;
+            sc = sc.getSuperclass().getDeclaration();
+        }
     }
 
     public boolean isInterface(TypeDeclaration clazz) {
@@ -282,6 +315,10 @@ public class APTNavigator implements Navigator<TypeMirror,TypeDeclaration,FieldD
 
     public boolean isTransient(FieldDeclaration f) {
         return f.getModifiers().contains(Modifier.TRANSIENT);
+    }
+
+    public boolean isInnerClass(TypeDeclaration clazz) {
+        return clazz.getDeclaringType()!=null && !clazz.getModifiers().contains(Modifier.STATIC);
     }
 
     public boolean isArray(TypeMirror t) {

@@ -1,21 +1,37 @@
 /*
- * The contents of this file are subject to the terms
- * of the Common Development and Distribution License
- * (the "License").  You may not use this file except
- * in compliance with the License.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * You can obtain a copy of the license at
- * https://jwsdp.dev.java.net/CDDLv1.0.html
- * See the License for the specific language governing
- * permissions and limitations under the License.
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
  * 
- * When distributing Covered Code, include this CDDL
- * HEADER in each file and include the License file at
- * https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
- * add the following below this CDDL HEADER, with the
- * fields enclosed by brackets "[]" replaced with your
- * own identifying information: Portions Copyright [yyyy]
- * [name of copyright owner]
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -26,6 +42,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -62,18 +79,21 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 
 import com.sun.istack.NotNull;
+import com.sun.istack.Nullable;
 import com.sun.istack.Pool;
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.Bridge;
 import com.sun.xml.bind.api.BridgeContext;
 import com.sun.xml.bind.api.CompositeStructure;
+import com.sun.xml.bind.api.ErrorListener;
 import com.sun.xml.bind.api.JAXBRIContext;
 import com.sun.xml.bind.api.RawAccessor;
 import com.sun.xml.bind.api.TypeReference;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.bind.util.Which;
 import com.sun.xml.bind.v2.WellKnownNamespace;
+import com.sun.xml.bind.v2.model.annotation.RuntimeAnnotationReader;
 import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.NonElement;
@@ -101,17 +121,19 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.xml.bind.v2.schemagen.XmlSchemaGenerator;
 import com.sun.xml.bind.v2.util.EditDistance;
 import com.sun.xml.bind.v2.util.QNameMap;
+import com.sun.xml.txw2.output.ResultFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.80 $
+ * @version $Revision: 1.81 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -194,7 +216,23 @@ public final class JAXBContextImpl extends JAXBRIContext {
      */
     protected final boolean c14nSupport;
 
+    /**
+     * Flag that user has provided a custom AccessorFactory for JAXB to use
+     */
+    public final boolean xmlAccessorFactorySupport;
+
+    /**
+     * @see JAXBRIContext#TREAT_EVERYTHING_NILLABLE
+     */
+    public final boolean allNillable;
+
+
     private WeakReference<RuntimeTypeInfoSet> typeInfoSetCache;
+
+    private @NotNull RuntimeAnnotationReader annotaitonReader;
+
+    private /*almost final*/ boolean hasSwaRef;
+    private final @NotNull Map<Class,Class> subclassReplacements;
 
     /**
      * If true, we aim for faster {@link JAXBContext} instanciation performance,
@@ -204,21 +242,31 @@ public final class JAXBContextImpl extends JAXBRIContext {
      */
     public final boolean fastBoot;
 
-    private /*almost final*/ boolean hasSwaRef;
-
     /**
      *
      * @param typeRefs
      *      used to build {@link Bridge}s. Can be empty.
      * @param c14nSupport
      *      {@link #c14nSupport}.
+     * @param xmlAccessorFactorySupport
+     *      Use custom com.sun.xml.bind.v2.runtime.reflect.Accessor implementation.
      */
-    public JAXBContextImpl(Class[] classes, Collection<TypeReference> typeRefs, String defaultNsUri, boolean c14nSupport) throws JAXBException {
-
+    public JAXBContextImpl(Class[] classes, Collection<TypeReference> typeRefs, 
+        Map<Class,Class> subclassReplacements, String defaultNsUri, boolean c14nSupport, 
+        @Nullable RuntimeAnnotationReader ar, boolean xmlAccessorFactorySupport, boolean allNillable) throws JAXBException {
         // initialize datatype converter with ours
         DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
 
         if(defaultNsUri==null)      defaultNsUri="";    // fool-proof
+
+        if(ar==null)
+            ar = new RuntimeInlineAnnotationReader();
+
+        if(subclassReplacements==null)  subclassReplacements=Collections.emptyMap();
+        if(typeRefs==null)              typeRefs=Collections.emptyList();
+
+        this.annotaitonReader = ar;
+        this.subclassReplacements = subclassReplacements;
 
         boolean fastBoot;
         try {
@@ -230,6 +278,8 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
         this.defaultNsUri = defaultNsUri;
         this.c14nSupport = c14nSupport;
+        this.xmlAccessorFactorySupport = xmlAccessorFactorySupport;
+        this.allNillable = allNillable;
         this.classes = new Class[classes.length];
         System.arraycopy(classes,0,this.classes,0,classes.length);
 
@@ -344,7 +394,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
         for (JaxBeanInfo bi : beanInfos.values())
             bi.wrapUp();
-        
+
         // no use for them now
         nameBuilder = null;
         beanInfos = null;
@@ -369,9 +419,8 @@ public final class JAXBContextImpl extends JAXBRIContext {
                 return r;
         }
 
-        final RuntimeModelBuilder builder = new RuntimeModelBuilder( this,
-                new RuntimeInlineAnnotationReader(),
-                defaultNsUri);
+        final RuntimeModelBuilder builder = new RuntimeModelBuilder(this,annotaitonReader,subclassReplacements,defaultNsUri);
+
         IllegalAnnotationsException.Builder errorHandler = new IllegalAnnotationsException.Builder();
         builder.setErrorHandler(errorHandler);
 
@@ -546,10 +595,9 @@ public final class JAXBContextImpl extends JAXBRIContext {
      * @return
      *      null if the given name pair is not recognized.
      */
-    public final Loader selectRootLoader( UnmarshallingContext.State state, TagName ea ) {
-        JaxBeanInfo beanInfo = rootMap.get(ea.uri,ea.local);
+    public final Loader selectRootLoader( UnmarshallingContext.State state, TagName tag ) {
+        JaxBeanInfo beanInfo = rootMap.get(tag.uri,tag.local);
         if(beanInfo==null)
-            // TODO: this is probably the right place to handle @xsi:type
             return null;
 
         return beanInfo.getLoader(this,true);
@@ -718,17 +766,46 @@ public final class JAXBContextImpl extends JAXBRIContext {
         XmlJavaTypeAdapter xjta = tr.get(XmlJavaTypeAdapter.class);
         XmlList xl = tr.get(XmlList.class);
 
-        Ref<Type,Class> ref = new Ref<Type,Class>(
-            new RuntimeInlineAnnotationReader(), tis.getNavigator(), tr.type, xjta, xl );
+        Ref<Type,Class> ref = new Ref<Type,Class>(annotaitonReader, tis.getNavigator(), tr.type, xjta, xl );
 
         return tis.getTypeInfo(ref);
     }
 
-    public void generateSchema(SchemaOutputResolver outputResolver) throws IOException {
-        if(outputResolver==null) {
-            throw new IOException(Messages.NULL_OUTPUT_RESOLVER.format());
-        }
+    @Override
+    public void generateEpisode(Result output) {
+        if(output==null)
+            throw new IllegalArgumentException();
+        createSchemaGenerator().writeEpisodeFile(ResultFactory.createSerializer(output));
+    }
 
+    @Override
+    public void generateSchema(SchemaOutputResolver outputResolver) throws IOException {
+        if(outputResolver==null)
+            throw new IOException(Messages.NULL_OUTPUT_RESOLVER.format());
+
+        final SAXParseException[] e = new SAXParseException[1];
+
+        createSchemaGenerator().write(outputResolver, new ErrorListener() {
+            public void error(SAXParseException exception) {
+                e[0] = exception;
+            }
+
+            public void fatalError(SAXParseException exception) {
+                e[0] = exception;
+            }
+
+            public void warning(SAXParseException exception) {}
+            public void info(SAXParseException exception) {}
+        });
+
+        if(e[0]!=null) {
+            IOException x = new IOException(Messages.FAILED_TO_GENERATE_SCHEMA.format());
+            x.initCause(e[0]);
+            throw x;
+        }
+    }
+
+    private XmlSchemaGenerator<Type,Class,Field,Method> createSchemaGenerator() {
         RuntimeTypeInfoSet tis;
         try {
             tis = getTypeInfoSet();
@@ -737,8 +814,8 @@ public final class JAXBContextImpl extends JAXBRIContext {
             throw new AssertionError(e);
         }
 
-        XmlSchemaGenerator<Type,Class, Field, Method> xsdgen =
-                new XmlSchemaGenerator<Type,Class, Field, Method>(tis.getNavigator(),tis);
+        XmlSchemaGenerator<Type,Class,Field,Method> xsdgen =
+                new XmlSchemaGenerator<Type,Class,Field,Method>(tis.getNavigator(),tis);
 
         // JAX-RPC uses Bridge objects that collide with
         // @XmlRootElement.
@@ -758,13 +835,15 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
             if(tr.type==void.class || tr.type==Void.class) {
                 xsdgen.add(tr.tagName,false,null);
+            } else
+            if(tr.type==CompositeStructure.class) {
+                // this is a special class we introduced for JAX-WS that we *don't* want in the schema
             } else {
                 NonElement<Type,Class> typeInfo = getXmlType(tis,tr);
                 xsdgen.add(tr.tagName, !Navigator.REFLECTION.isPrimitive(tr.type),typeInfo);
             }
         }
-
-        xsdgen.write(outputResolver);
+        return xsdgen;
     }
 
     public QName getTypeName(TypeReference tr) {
@@ -900,6 +979,18 @@ public final class JAXBContextImpl extends JAXBRIContext {
         return null;
     }
 
+    /**
+     * Creates a {@link JAXBContextImpl} that includes the specified additional classes.
+     */
+    public JAXBContextImpl createAugmented(Class<?> clazz) throws JAXBException {
+        Class[] newList = new Class[classes.length+1];
+        System.arraycopy(classes,0,newList,0,classes.length);
+        newList[classes.length] = clazz;
+
+        return new JAXBContextImpl(newList,bridges.keySet(),subclassReplacements,
+        defaultNsUri,c14nSupport,annotaitonReader, xmlAccessorFactorySupport, allNillable);
+    }
+
     private static final Comparator<QName> QNAME_COMPARATOR = new Comparator<QName>() {
         public int compare(QName lhs, QName rhs) {
             int r = lhs.getLocalPart().compareTo(rhs.getLocalPart());
@@ -907,5 +998,5 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
             return lhs.getNamespaceURI().compareTo(rhs.getNamespaceURI());
         }
-    }; ;
+    };
 }

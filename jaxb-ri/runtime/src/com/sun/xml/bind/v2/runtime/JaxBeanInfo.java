@@ -1,21 +1,37 @@
 /*
- * The contents of this file are subject to the terms
- * of the Common Development and Distribution License
- * (the "License").  You may not use this file except
- * in compliance with the License.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * You can obtain a copy of the license at
- * https://jwsdp.dev.java.net/CDDLv1.0.html
- * See the License for the specific language governing
- * permissions and limitations under the License.
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
  * 
- * When distributing Covered Code, include this CDDL
- * HEADER in each file and include the License file at
- * https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
- * add the following below this CDDL HEADER, with the
- * fields enclosed by brackets "[]" replaced with your
- * own identifying information: Portions Copyright [yyyy]
- * [name of copyright owner]
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -409,45 +425,38 @@ public abstract class JaxBeanInfo<BeanT> {
      */
     protected final void setLifecycleFlags() {
         try {
-            Method m;
-
-            // beforeUnmarshal
-            try {
-                m = jaxbType.getDeclaredMethod("beforeUnmarshal", unmarshalEventParams);
-                cacheLifecycleMethod(m, FLAG_HAS_BEFORE_UNMARSHAL_METHOD);
-            } catch (NoSuchMethodException e) {
-                // no-op, look for the next method
-            }
-
-            // afterUnmarshal
-            try {
-                m = jaxbType.getDeclaredMethod("afterUnmarshal", unmarshalEventParams);
-                cacheLifecycleMethod(m, FLAG_HAS_AFTER_UNMARSHAL_METHOD);
-            } catch (NoSuchMethodException e) {
-                // no-op, look for the next method
-            }
-
-            // beforeMarshal
-            try {
-                m = jaxbType.getDeclaredMethod("beforeMarshal", marshalEventParams);
-                cacheLifecycleMethod(m, FLAG_HAS_BEFORE_MARSHAL_METHOD);
-            } catch (NoSuchMethodException e) {
-                // no-op, look for the next method
-            }
-
-            // afterMarshal
-            try {
-                m = jaxbType.getDeclaredMethod("afterMarshal", marshalEventParams);
-                cacheLifecycleMethod(m, FLAG_HAS_AFTER_MARSHAL_METHOD);
-            } catch (NoSuchMethodException e) {
-                // no-op
+            for( Method m : jaxbType.getDeclaredMethods() ) {
+                String name = m.getName();
+                if(name.equals("beforeUnmarshal")) {
+                    if(match(m,unmarshalEventParams)) {
+                        cacheLifecycleMethod(m, FLAG_HAS_BEFORE_UNMARSHAL_METHOD);
+                    }
+                } else
+                if(name.equals("afterUnmarshal")) {
+                    if(match(m,unmarshalEventParams)) {
+                        cacheLifecycleMethod(m, FLAG_HAS_AFTER_UNMARSHAL_METHOD);
+                    }
+                } else
+                if(name.equals("beforeMarshal")) {
+                    if(match(m,marshalEventParams)) {
+                        cacheLifecycleMethod(m, FLAG_HAS_BEFORE_MARSHAL_METHOD);
+                    }
+                } else
+                if(name.equals("afterMarshal")) {
+                    if(match(m,marshalEventParams)) {
+                        cacheLifecycleMethod(m, FLAG_HAS_AFTER_MARSHAL_METHOD);
+                    }
+                }
             }
         } catch(SecurityException e) {
             // this happens when we don't have enough permission.
             logger.log( Level.WARNING, Messages.UNABLE_TO_DISCOVER_EVENTHANDLER.format(
-                jaxbType.getName(),
-                e ));
+                jaxbType.getName(), e ));
         }
+    }
+
+    private boolean match(Method m, Class[] params) {
+        return Arrays.equals(m.getParameterTypes(),params);
     }
 
     /**
@@ -471,16 +480,16 @@ public abstract class JaxBeanInfo<BeanT> {
 
         switch (lifecycleFlag) {
         case FLAG_HAS_BEFORE_UNMARSHAL_METHOD:
-            lcm.setBeforeUnmarshal(m);
+            lcm.beforeUnmarshal = m;
             break;
         case FLAG_HAS_AFTER_UNMARSHAL_METHOD:
-            lcm.setAfterUnmarshal(m);
+            lcm.afterUnmarshal = m;
             break;
         case FLAG_HAS_BEFORE_MARSHAL_METHOD:
-            lcm.setBeforeMarshal(m);
+            lcm.beforeMarshal = m;
             break;
         case FLAG_HAS_AFTER_MARSHAL_METHOD:
-            lcm.setAfterMarshal(m);
+            lcm.afterMarshal = m;
             break;
         }
     }
@@ -498,7 +507,7 @@ public abstract class JaxBeanInfo<BeanT> {
      * Invokes the beforeUnmarshal method if applicable.
      */
     public final void invokeBeforeUnmarshalMethod(UnmarshallerImpl unm, Object child, Object parent) throws SAXException {
-        Method m = getLifecycleMethods().getBeforeUnmarshal();
+        Method m = getLifecycleMethods().beforeUnmarshal;
         invokeUnmarshallCallback(m, child, unm, parent);
     }
 
@@ -506,7 +515,7 @@ public abstract class JaxBeanInfo<BeanT> {
      * Invokes the afterUnmarshal method if applicable.
      */
     public final void invokeAfterUnmarshalMethod(UnmarshallerImpl unm, Object child, Object parent) throws SAXException {
-        Method m = getLifecycleMethods().getAfterUnmarshal();
+        Method m = getLifecycleMethods().afterUnmarshal;
         invokeUnmarshallCallback(m, child, unm, parent);
     }
 

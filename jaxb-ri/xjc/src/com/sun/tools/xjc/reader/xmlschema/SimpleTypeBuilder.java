@@ -1,21 +1,37 @@
 /*
- * The contents of this file are subject to the terms
- * of the Common Development and Distribution License
- * (the "License").  You may not use this file except
- * in compliance with the License.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * You can obtain a copy of the license at
- * https://jwsdp.dev.java.net/CDDLv1.0.html
- * See the License for the specific language governing
- * permissions and limitations under the License.
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
  * 
- * When distributing Covered Code, include this CDDL
- * HEADER in each file and include the License file at
- * https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
- * add the following below this CDDL HEADER, with the
- * fields enclosed by brackets "[]" replaced with your
- * own identifying information: Portions Copyright [yyyy]
- * [name of copyright owner]
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
  */
 package com.sun.tools.xjc.reader.xmlschema;
 
@@ -32,13 +48,14 @@ import java.util.Set;
 import java.util.Stack;
 
 import javax.activation.MimeTypeParseException;
-import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JJavaName;
 import com.sun.codemodel.util.JavadocEscapeWriter;
+import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.model.CBuiltinLeafInfo;
 import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CClassInfoParent;
+import com.sun.tools.xjc.model.CClassRef;
 import com.sun.tools.xjc.model.CEnumConstant;
 import com.sun.tools.xjc.model.CEnumLeafInfo;
 import com.sun.tools.xjc.model.CNonElement;
@@ -322,7 +339,7 @@ public final class SimpleTypeBuilder extends BindingComponent {
             return conv.getTypeUse(type);
         }
 
-        // look for enum customization, which is noather user specified conversion
+        // look for enum customization, which is another user specified conversion
         BIEnum en = info.get(BIEnum.class);
         if( en!=null ) {
             en.markAsAcknowledged();
@@ -340,6 +357,19 @@ public final class SimpleTypeBuilder extends BindingComponent {
                     // recover by ignoring this customization
                     return null;
                 }
+
+                // reference?
+                if(en.ref!=null) {
+                    if(!JJavaName.isFullyQualifiedClassName(en.ref)) {
+                        Ring.get(ErrorReceiver.class).error( en.getLocation(),
+                            Messages.format(Messages.ERR_INCORRECT_CLASS_NAME, en.ref) );
+                        // recover by ignoring @ref
+                        return null;
+                    }
+
+                    return new CClassRef(model, type, en, info.toCustomizationList() );
+                }
+
                 // list and union cannot be mapped to a type-safe enum,
                 // so in this stage we can safely cast it to XSRestrictionSimpleType
                 return bindToTypeSafeEnum( (XSRestrictionSimpleType)type,
@@ -380,7 +410,7 @@ public final class SimpleTypeBuilder extends BindingComponent {
             }
         }
 
-        return getClassSelector()._bindToClass(type,false);
+        return (CNonElement)getClassSelector()._bindToClass(type,null,false);
     }
 
     /**
@@ -506,8 +536,9 @@ public final class SimpleTypeBuilder extends BindingComponent {
             }
             className = type.getName();
         }
+
         // we apply name conversion in any case
-        className = builder.getNameConverter().toClassName(className);
+        className = builder.deriveName(className,type);
 
         {// compute Javadoc
             StringWriter out = new StringWriter();
@@ -530,7 +561,7 @@ public final class SimpleTypeBuilder extends BindingComponent {
         if(use.isCollection())
             return null;    // can't bind a list to enum constant
 
-        CNonElement baseDt = (CNonElement)use.getInfo();   // for now just ignore that case
+        CNonElement baseDt = use.getInfo();   // for now just ignore that case
 
         if(baseDt instanceof CClassInfo)
             return null;    // can't bind to an enum if the base is a class, since we don't have the value constrctor
@@ -565,18 +596,13 @@ public final class SimpleTypeBuilder extends BindingComponent {
             }
         }
 
-        QName typeName = null;
-        if(type.isGlobal())
-            typeName = new QName(type.getTargetNamespace(),type.getName());
-
-
         // use the name of the simple type as the name of the class.
         CClassInfoParent scope;
         if(type.isGlobal())
             scope = new CClassInfoParent.Package(getClassSelector().getPackage(type.getTargetNamespace()));
         else
             scope = getClassSelector().getClassScope();
-        CEnumLeafInfo xducer = new CEnumLeafInfo( model, typeName, scope,
+        CEnumLeafInfo xducer = new CEnumLeafInfo( model, BGMBuilder.getName(type), scope,
             className, baseDt, memberList, type,
             builder.getBindInfo(type).toCustomizationList(), loc );
         xducer.javadoc = javadoc;
@@ -601,9 +627,14 @@ public final class SimpleTypeBuilder extends BindingComponent {
     private List<CEnumConstant> buildCEnumConstants(XSRestrictionSimpleType type, boolean needsToGenerateMemberName, Map<String, BIEnumMember> members, XSFacet[] errorRef) {
         List<CEnumConstant> memberList = new ArrayList<CEnumConstant>();
         int idx=1;
+        Set<String> enums = new HashSet<String>(); // to avoid duplicates. See issue #366
+
         for( XSFacet facet : type.getDeclaredFacets(XSFacet.FACET_ENUMERATION)) {
             String name=null;
-            String mdoc=null;
+            String mdoc=builder.getBindInfo(facet).getDocumentation();
+
+            if(!enums.add(facet.getValue().value))
+                continue;   // ignore the 2nd occasion
 
             if( needsToGenerateMemberName ) {
                 // generate names for all member names.

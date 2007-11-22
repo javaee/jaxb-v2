@@ -1,30 +1,46 @@
 /*
- * The contents of this file are subject to the terms
- * of the Common Development and Distribution License
- * (the "License").  You may not use this file except
- * in compliance with the License.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * You can obtain a copy of the license at
- * https://jwsdp.dev.java.net/CDDLv1.0.html
- * See the License for the specific language governing
- * permissions and limitations under the License.
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
  * 
- * When distributing Covered Code, include this CDDL
- * HEADER in each file and include the License file at
- * https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
- * add the following below this CDDL HEADER, with the
- * fields enclosed by brackets "[]" replaced with your
- * own identifying information: Portions Copyright [yyyy]
- * [name of copyright owner]
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
  */
 package com.sun.xml.bind.marshaller;
 
 import java.io.OutputStream;
 
+import javax.xml.bind.JAXBContext;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.dom.DOMResult;
-import javax.xml.bind.Marshaller;
 
 import org.w3c.dom.Node;
 
@@ -56,7 +72,27 @@ public abstract class NamespacePrefixMapper {
      * Returns a preferred prefix for the given namespace URI.
      * 
      * This method is intended to be overrided by a derived class.
-     * 
+     *
+     *
+     * <p>
+     * As noted in the return value portion of the javadoc, there
+     * are several cases where the preference cannot be honored.
+     * Specifically, as of JAXB RI 2.0 and onward:
+     *
+     * <ol>
+     * <li>
+     * If the prefix returned is already in use as one of the in-scope
+     * namespace bindings. This is partly necessary for correctness
+     * (so that we don't unexpectedly change the meaning of QNames
+     * bound to {@link String}), partly to simplify the marshaller.
+     * <li>
+     * If the prefix returned is "" yet the current {@link JAXBContext}
+     * includes classes that use the empty namespace URI. This allows
+     * the JAXB RI to reserve the "" prefix for the empty namespace URI,
+     * which is the only possible prefix for the URI.
+     * This restriction is also to simplify the marshaller.
+     * </ol>
+     *
      * @param namespaceUri
      *      The namespace URI for which the prefix needs to be found.
      *      Never be null. "" is used to denote the default namespace.
@@ -108,7 +144,7 @@ public abstract class NamespacePrefixMapper {
      *   <ns3:child xmlns:ns3="urn:foo"> ... </ns3:child>
      *   ...
      * </root>
-     * <xmp></pre>
+     * </xmp></pre>
      *
      * <p>
      * The JAXB RI 2.x mostly doesn't exhibit this behavior any more,
@@ -135,7 +171,7 @@ public abstract class NamespacePrefixMapper {
      *   <ns1:child> ... </ns1:child>
      *   ...
      * </root>
-     * <xmp></pre>
+     * </xmp></pre>
      * <p>
      * To control prefixes assigned to those namespace URIs, use the
      * {@link #getPreferredPrefix(String, String, boolean)} method. 
@@ -229,11 +265,4 @@ public abstract class NamespacePrefixMapper {
     public String[] getContextualNamespaceDecls() {
         return EMPTY_STRING;
     }
-
-    /**
-     * Property name to be used for {@link Marshaller#setProperty(String, Object)}
-     *
-     * @since 2.0.5
-     */
-    public static final String PROPERTY = "com.sun.xml.bind.namespacePrefixMapper";
 }

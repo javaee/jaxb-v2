@@ -1,3 +1,39 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * 
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ */
+
 package com.sun.tools.xjc;
 
 import java.util.ArrayList;
@@ -6,6 +42,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.io.IOException;
+
+import com.sun.istack.tools.ProtectedTask;
+import com.sun.istack.tools.ParallelWorldClassLoader;
+import com.sun.istack.tools.MaskingClassLoader;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DynamicConfigurator;
@@ -18,19 +59,9 @@ import org.apache.tools.ant.Task;
  *
  * @author Bhakti Mehta
  */
-public class XJCTask extends Task implements DynamicConfigurator {
+public class XJCTask extends ProtectedTask {
 
     private String source = "2.0";
-
-    private final AntElement root = new AntElement("root");
-
-    public void setDynamicAttribute(String name, String value) throws BuildException {
-        root.setDynamicAttribute(name,value);
-    }
-
-    public Object createDynamicElement(String name) throws BuildException {
-        return root.createDynamicElement(name);
-    }
 
     /**
      * The version of the compiler to run
@@ -43,96 +74,16 @@ public class XJCTask extends Task implements DynamicConfigurator {
         throw new BuildException("Illegal version "+version);
     }
 
-    public void execute() throws BuildException {
-        //Leave XJC2 in the publicly visible place
-        // and then isolate XJC1 in a child class loader,
-        // then use a MaskingClassLoader
-        // so that the XJC2 classes in the parent class loader
-        //  won't interfere with loading XJC1 classes in a child class loader
-        ClassLoader cl;
-        Class driver;
-        try {
-            if (source.equals("2.0")) {
-                cl = XJCTask.class.getClassLoader();
-                driver = cl.loadClass("com.sun.tools.xjc.XJC2Task");
-            } else {
-                cl = new ParallelWorldClassLoader(new MaskingClassLoader(
-                    getClass().getClassLoader(),maskedPackages),source);
-                driver = cl.loadClass("com.sun.tools.xjc.XJCTask");
-            }
-            Task t = (Task)driver.newInstance();
-            t.setProject(getProject());
-            t.setTaskName(getTaskName());
-            root.configure(t);
-            t.execute();
-        } catch (UnsupportedClassVersionError e) {
-            throw new BuildException("XJC requires JDK 5.0 or later. Please download it from http://java.sun.com/j2se/1.5/");
-        } catch (ClassNotFoundException e) {
-            throw new BuildException(e);
-        } catch (InstantiationException e) {
-            throw new BuildException(e);
-        } catch (IllegalAccessException e) {
-            throw new BuildException(e);
-        }
 
+    protected ClassLoader createClassLoader() throws ClassNotFoundException, IOException {
+        return ClassLoaderBuilder.createProtectiveClassLoader(XJCTask.class.getClassLoader(),source);
     }
 
-    /**
-     * Captures the elements and attributes.
-     */
-    private class AntElement implements DynamicConfigurator {
-        private final String name;
-
-        private final Map/*<String,String>*/ attributes = new HashMap();
-
-        private final List/*<AntElement>*/ elements = new ArrayList();
-
-        public AntElement(String name) {
-            this.name = name;
-        }
-
-        public void setDynamicAttribute(String name, String value) throws BuildException {
-            attributes.put(name,value);
-        }
-
-        public Object createDynamicElement(String name) throws BuildException {
-            AntElement e = new AntElement(name);
-            elements.add(e);
-            return e;
-        }
-
-        /**
-         * Copies the properties into the Ant task.
-         */
-        public void configure(Object antObject) {
-            IntrospectionHelper ih = IntrospectionHelper.getHelper(antObject.getClass());
-
-            // set attributes first
-            for( Iterator itr=attributes.entrySet().iterator(); itr.hasNext(); ) {
-                Map.Entry att = (Map.Entry)itr.next();
-                ih.setAttribute(getProject(), antObject, (String)att.getKey(),(String)att.getValue());
-            }
-
-            // then nested elements
-            for (Iterator itr = elements.iterator(); itr.hasNext();) {
-                AntElement e = (AntElement) itr.next();
-                Object child = ih.createElement(getProject(), antObject, e.name);
-                e.configure(child);
-                ih.storeElement(getProject(), antObject, child, e.name);
-            }
-        }
+    protected String getCoreClassName() {
+        if (source.equals("2.0"))
+            return "com.sun.tools.xjc.XJC2Task";
+        else
+            return "com.sun.tools.xjc.XJCTask";
     }
-
-    /**
-     * The list of package prefixes we want the
-     * {@link MaskingClassLoader} to prevent the parent
-     * classLoader from loading
-     */
-    private static List maskedPackages = Arrays.asList(new String[]{
-        "com.sun.tools.",
-        "com.sun.codemodel.",
-        "com.sun.relaxng.",
-        "com.sun.xml.xsom."
-    });
 }
 

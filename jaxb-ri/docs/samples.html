@@ -1,7 +1,7 @@
 <html>
-  <head>
-    <caption>Sample Apps Readme</caption>
+  <head caption="Sample Apps Readme">
     <link rel="stylesheet" type="text/css" href="style/default.css"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   </head>
 
   <body>
@@ -28,7 +28,7 @@
       <li>Run it!</li>
     </ol>
 
-    <h3>Java-2-Schema</h3>&nbsp;&nbsp;</a><img src="new.gif"/>
+    <h3>Java-2-Schema</h3>
     <p>Java-2-Schema is the process of augmenting existing Java classes with the annotations
        defined in the <tt>javax.xml.bind.annotation</tt> package so that the JAXB runtime
        binding framework is capable of performing the un/marshal operations.  Here are the
@@ -54,27 +54,8 @@
 
 	<h3>Building and Running the Sample Apps with Ant</h3>
 	
-    <p>To run the sample applications using the supplied Ant 
-    <tt>build.xml</tt> files, follow these steps:</p>
+    <p>To run the sample applications, just go into each sample directory, and run <tt>ant</tt> without any option.</p>
 
-    <blockquote>
-      <h5>For Solaris/Linux:</h5>
-      <blockquote>
-        <ol>
-          <li><tt>% &lt;your JWSDP@@JWSDP_VERSION@@ installation directory>/apache-ant/bin/ant -emacs</tt></li>    
-          <li>repeat for each sample app</li>    
-        </ol>
-      </blockquote>
-
-      <h5>For WindowsNT/2000/XP:</h5>
-      <blockquote>
-        <ol>
-          <li><tt>&gt; &lt;your JWSDP@@JWSDP_VERSION@@ installation directory>\apache-ant\bin\ant -emacs</tt></li>    
-          <li>repeat for each sample app</li>    
-        </ol>
-      </blockquote>
-    </blockquote>
-    
     <p>A few sample applications do <em>not</em> use Ant.  For
        those samples, refer to the included <tt>readme.txt</tt> files for 
        instructions.</p>
@@ -84,12 +65,12 @@
     <h3>List of Sample Apps</h3>
     
     <!-- generate list of samples go here -->
-    <SAMPLE-LIST href="samples.xml" />
+    <sample-list href="samples/work" />
 
 	<hr/>
 	<div class=footer>
-	  $Revision: 1.5 $<br/>
-	  $Date: 2006-03-15 23:54:49 $
+	  $Revision: 1.6 $<br/>
+	  $Date: 2007-11-22 00:52:06 $
 	</div>
   </body>
 </html>

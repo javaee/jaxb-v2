@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<sample since="2.1">
+    <title>Application-driven cycle handling</title>
+    <description><![CDATA[
+      JAXB RI's vendor extension "CycleRecoverable" provides application a hook to handle
+      cycles in the object graph. Advanced.
+    ]]></description>
+    
+    <project>
+        <javadoc/>
+        <java mainClass="Main" />
+    </project>
+</sample>

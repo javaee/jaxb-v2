@@ -1,6 +1,43 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * 
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ */
+
 package com.sun.xml.bind.v2.runtime.property;
 
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +46,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
-import com.sun.xml.bind.v2.util.QNameMap;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementPropertyInfo;
@@ -19,11 +55,12 @@ import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
-import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
-import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
-import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader;
-import com.sun.xml.bind.v2.runtime.unmarshaller.DefaultValueLoaderDecorator;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
+import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.DefaultValueLoaderDecorator;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader;
+import com.sun.xml.bind.v2.util.QNameMap;
 
 import org.xml.sax.SAXException;
 
@@ -126,10 +163,12 @@ final class SingleElementNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT> 
 
         for (TypeRef<Type,Class> e : prop.getTypes()) {
             JaxBeanInfo bi = context.getOrCreate((RuntimeTypeInfo) e.getTarget());
-            Loader l = bi.getLoader(context,true);
+            // if the expected Java type is already final, type substitution won't really work anyway.
+            // this also traps cases like trying to substitute xsd:long element with xsi:type='xsd:int'
+            Loader l = bi.getLoader(context,!Modifier.isFinal(bi.jaxbType.getModifiers()));
             if(e.getDefaultValue()!=null)
                 l = new DefaultValueLoaderDecorator(l,e.getDefaultValue());
-            if(nillable)
+            if(nillable || chain.context.allNillable)
                 l = new XsiNilLoader.Single(l,acc);
             handlers.put( e.getTagName(), new ChildLoader(l,acc));
         }

@@ -1,3 +1,39 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * 
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ */
+
 package com.sun.xml.bind.v2.model.nav;
 
 import java.lang.reflect.Array;
@@ -28,7 +64,10 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
     ReflectionNavigator() {}
 
     public Class getSuperClass(Class clazz) {
-        return clazz.getSuperclass();
+        if(clazz==Object.class) return null;
+        Class sc = clazz.getSuperclass();
+        if(sc==null)    sc=Object.class;        // error recovery
+        return sc;
     }
 
     private static final TypeVisitor<Type,Class> baseClassFinder = new TypeVisitor<Type,Class>() {
@@ -116,7 +155,7 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
 
         Type replace( TypeVariable v ) {
             for(int i=0; i<params.length; i++)
-                if(params[i]==v)
+                if(params[i].equals(v))
                     return args[i];
             return v;   // this is a free variable
         }
@@ -484,7 +523,7 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
         return method.isBridge();
     }
 
-    public boolean isOverriding(Method method) {
+    public boolean isOverriding(Method method, Class base) {
         // this isn't actually correct,
         // as the JLS considers
         // class Derived extends Base<Integer> {
@@ -495,19 +534,18 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
         // }
         // to be overrided. Handling this correctly needs a careful implementation
 
-        Class<?> s = method.getDeclaringClass().getSuperclass();
         String name = method.getName();
         Class[] params = method.getParameterTypes();
 
-        while(s!=null) {
+        while(base!=null) {
             try {
-                if(s.getDeclaredMethod(name,params)!=null)
+                if(base.getDeclaredMethod(name,params)!=null)
                     return true;
             } catch (NoSuchMethodException e) {
-                ; // recursively go into the base class
+                // recursively go into the base class
             }
 
-            s = s.getSuperclass();
+            base = base.getSuperclass();
         }
 
         return false;
@@ -519,6 +557,10 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
 
     public boolean isTransient(Field f) {
         return Modifier.isTransient(f.getModifiers());
+    }
+
+    public boolean isInnerClass(Class clazz) {
+        return clazz.getEnclosingClass()!=null && !Modifier.isStatic(clazz.getModifiers());
     }
 
 

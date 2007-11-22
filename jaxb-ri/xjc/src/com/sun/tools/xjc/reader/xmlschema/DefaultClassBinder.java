@@ -1,23 +1,41 @@
 /*
- * The contents of this file are subject to the terms
- * of the Common Development and Distribution License
- * (the "License").  You may not use this file except
- * in compliance with the License.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * You can obtain a copy of the license at
- * https://jwsdp.dev.java.net/CDDLv1.0.html
- * See the License for the specific language governing
- * permissions and limitations under the License.
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
  * 
- * When distributing Covered Code, include this CDDL
- * HEADER in each file and include the License file at
- * https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
- * add the following below this CDDL HEADER, with the
- * fields enclosed by brackets "[]" replaced with your
- * own identifying information: Portions Copyright [yyyy]
- * [name of copyright owner]
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
  */
 package com.sun.tools.xjc.reader.xmlschema;
+import static com.sun.tools.xjc.reader.xmlschema.BGMBuilder.getName;
+
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -29,6 +47,7 @@ import com.sun.istack.Nullable;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.model.CClassInfo;
 import com.sun.tools.xjc.model.CClassInfoParent;
+import com.sun.tools.xjc.model.CClassRef;
 import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.model.CElement;
 import com.sun.tools.xjc.model.CElementInfo;
@@ -38,7 +57,9 @@ import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIClass;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIGlobalBinding;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BISchemaBinding;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BindInfo;
-import com.sun.xml.bind.v2.TODO;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIXSubstitutable;
+import com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeFieldBuilder;
+import com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeBindingMode;
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSAttGroupDecl;
 import com.sun.xml.xsom.XSAttributeDecl;
@@ -59,6 +80,8 @@ import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.XSXPath;
+
+import org.xml.sax.Locator;
 
 /**
  * Default classBinder implementation. Honors &lt;jaxb:class> customizations
@@ -101,6 +124,8 @@ final class DefaultClassBinder implements ClassBinder
         if(type.isGlobal()) {
             QName tagName = null;
             String className = deriveName(type);
+            Locator loc = type.getLocator();
+
             if(getGlobalBinding().isSimpleMode()) {
                 // in the simple mode, we may optimize it away
                 XSElementDecl referer = getSoleElementReferer(type);
@@ -108,8 +133,9 @@ final class DefaultClassBinder implements ClassBinder
                     // if a global element contains
                     // a collpsable complex type, we bind this element to a named one
                     // and collapses element and complex type.
-                    tagName = new QName(referer.getTargetNamespace(),referer.getName());
+                    tagName = getName(referer);
                     className = deriveName(referer);
+                    loc = referer.getLocator();
                 }
             }
 
@@ -117,7 +143,7 @@ final class DefaultClassBinder implements ClassBinder
 
             JPackage pkg = selector.getPackage(type.getTargetNamespace());
 
-            return new CClassInfo(model,pkg,className,type.getLocator(),getTypeName(type),tagName,type,bi.toCustomizationList());
+            return new CClassInfo(model,pkg,className, loc,getTypeName(type),tagName,type,bi.toCustomizationList());
         } else {
             XSElementDecl element = type.getScope();
 
@@ -134,11 +160,11 @@ final class DefaultClassBinder implements ClassBinder
                 // which creates unnecessary classes
                 return new CClassInfo( model, selector.getClassScope(),
                     deriveName(element), element.getLocator(), null,
-                    new QName(element.getTargetNamespace(),element.getName()), element, bi.toCustomizationList() );
+                    getName(element), element, bi.toCustomizationList() );
             }
 
 
-            CElement parentType = selector.isBound(element);
+            CElement parentType = selector.isBound(element,type);
 
             String className;
             CClassInfoParent scope;
@@ -148,7 +174,7 @@ final class DefaultClassBinder implements ClassBinder
              && parentType instanceof CElementInfo
              && ((CElementInfo)parentType).hasClass() ) {
                 // special case where we put a nested 'Type' element
-                scope = parentType;
+                scope = (CElementInfo)parentType;
                 className = "Type";
             } else {
                 // since the parent element isn't bound to a type, merge the customizations associated to it, too.
@@ -165,15 +191,11 @@ final class DefaultClassBinder implements ClassBinder
         }
     }
 
-    private QName getTypeName(XSType type) {
-        return new QName(type.getTargetNamespace(),type.getName());
-    }
-
     private QName getTypeName(XSComplexType type) {
         if(type.getRedefinedBy()!=null)
             return null;
         else
-            return getTypeName((XSType)type);
+            return getName(type);
     }
 
     /**
@@ -193,6 +215,14 @@ final class DefaultClassBinder implements ClassBinder
         if(decl.isNillable())
             // because nillable needs JAXBElement to represent correctly
             return false;
+
+        BIXSubstitutable bixSubstitutable = builder.getBindInfo(decl).get(BIXSubstitutable.class);
+        if(bixSubstitutable !=null) {
+            // see https://jaxb.dev.java.net/issues/show_bug.cgi?id=289
+            // this customization forces non-collapsing behavior.
+            bixSubstitutable.markAsAcknowledged();
+            return false;
+        }
 
         if( getGlobalBinding().isSimpleMode() && decl.isGlobal()) {
             // in the simple mode, we do more aggressive optimization, and get rid of
@@ -241,14 +271,14 @@ final class DefaultClassBinder implements ClassBinder
         CElement r = allow(decl,decl.getName());
 
         if(r==null) {
-            QName tagName = new QName(decl.getTargetNamespace(),decl.getName());
+            QName tagName = getName(decl);
             CCustomizations custs = builder.getBindInfo(decl).toCustomizationList();
 
             if(decl.isGlobal()) {
                 if(isCollapsable(decl)) {
                     // we want the returned type to be built as a complex type,
                     // so the binding cannot be delayed.
-                    return selector.bindToType(decl.getType().asComplexType(),true);
+                    return selector.bindToType(decl.getType().asComplexType(),decl,true);
                 } else {
                     String className = null;
                     if(getGlobalBinding().isGenerateElementClass())
@@ -260,7 +290,7 @@ final class DefaultClassBinder implements ClassBinder
                     selector.boundElements.put(decl,cei);
 
                     stb.refererStack.push(decl);    // referer is element
-                    cei.initContentType( selector.bindToType(decl.getType()), decl, decl.getDefaultValue() );
+                    cei.initContentType( selector.bindToType(decl.getType(),decl), decl, decl.getDefaultValue() );
                     stb.refererStack.pop();
                     r = cei;
                 }
@@ -270,15 +300,13 @@ final class DefaultClassBinder implements ClassBinder
         // have the substitution member derive from the substitution head
         XSElementDecl top = decl.getSubstAffiliation();
         if(top!=null) {
-            CElement topci = selector.bindToType(top);
+            CElement topci = selector.bindToType(top,decl);
 
             if(r instanceof CClassInfo && topci instanceof CClassInfo)
                 ((CClassInfo)r).setBaseClass((CClassInfo)topci);
             if (r instanceof CElementInfo && topci instanceof CElementInfo)
                 ((CElementInfo)r).setSubstitutionHead((CElementInfo)topci);
         }
-
-        TODO.checkSpec();
 
         return r;
     }
@@ -303,7 +331,7 @@ final class DefaultClassBinder implements ClassBinder
 
         if(getGlobalBinding().isSimpleTypeSubstitution() && type.isGlobal()) {
             return new CClassInfo(model,selector.getClassScope(),
-                    deriveName(type), type.getLocator(), getTypeName(type), null, type, null );
+                    deriveName(type), type.getLocator(), getName(type), null, type, null );
         }
 
         return never();
@@ -386,15 +414,32 @@ final class DefaultClassBinder implements ClassBinder
         BIClass decl=bindInfo.get(BIClass.class);
         if(decl==null)  return null;
 
-        if (component instanceof XSAttGroupDecl){
-            //- attributeGroup can not be customized to a class
-            Ring.get(ErrorReceiver.class).error( decl.getLocation(),
-                    Messages.format( Messages.ERR_INCORRECT_ATTRIBUTEGROUP_CUSTOMIZATION, defaultBaseName));    
-            return null;
-        }
         decl.markAsAcknowledged();
 
-        // determine the package to put this class in.
+        // first consider binding to the class reference.
+        String ref = decl.getExistingClassRef();
+        if(ref!=null) {
+            if(!JJavaName.isFullyQualifiedClassName(ref)) {
+                Ring.get(ErrorReceiver.class).error( decl.getLocation(),
+                    Messages.format(Messages.ERR_INCORRECT_CLASS_NAME,ref) );
+                // recover by ignoring @ref
+            } else {
+                if(component instanceof XSComplexType) {
+                    // UGLY UGLY UGLY
+                    // since we are not going to bind this complex type, we need to figure out
+                    // its binding mode without actually binding it (and also expose this otherwise
+                    // hidden mechanism into this part of the code.)
+                    //
+                    // this code is potentially dangerous as the base class might have been bound
+                    // in different ways. To be correct, we need to figure out how the content type
+                    // would have been bound, from the schema.
+                    Ring.get(ComplexTypeFieldBuilder.class).recordBindingMode(
+                        (XSComplexType)component, ComplexTypeBindingMode.NORMAL
+                    );
+                }
+                return new CClassRef(model, component, decl, bindInfo.toCustomizationList() );
+            }
+        }
 
         String clsName = decl.getClassName();
         if(clsName==null) {
@@ -407,7 +452,7 @@ final class DefaultClassBinder implements ClassBinder
                 // recover by generating a pseudo-random name
                 defaultBaseName = "undefined"+component.hashCode();
             }
-            clsName = deriveName( defaultBaseName, component );
+            clsName = builder.deriveName( defaultBaseName, component );
         } else {
             if( !JJavaName.isJavaIdentifier(clsName) ) {
                 // not a valid Java class name
@@ -423,13 +468,12 @@ final class DefaultClassBinder implements ClassBinder
 
         if(component instanceof XSType) {
             XSType t = (XSType) component;
-            if(t.isGlobal())
-                typeName = new QName(t.getTargetNamespace(),t.getName());
+            typeName = getName(t);
         }
 
         if (component instanceof XSElementDecl) {
             XSElementDecl e = (XSElementDecl) component;
-            elementName = new QName(e.getTargetNamespace(),e.getName());
+            elementName = getName(e);
         }
 
         if (component instanceof XSElementDecl && !isCollapsable((XSElementDecl)component)) {
@@ -442,7 +486,7 @@ final class DefaultClassBinder implements ClassBinder
 
             stb.refererStack.push(component);    // referer is element
             cei.initContentType(
-                selector.bindToType(e.getType()),
+                selector.bindToType(e.getType(),e),
                 e,e.getDefaultValue());
             stb.refererStack.pop();
             return cei;
@@ -476,7 +520,7 @@ final class DefaultClassBinder implements ClassBinder
      * Use the name of the schema component as the default name.
      */
     private String deriveName( XSDeclaration comp ) {
-        return deriveName( comp.getName(), comp );
+        return builder.deriveName( comp.getName(), comp );
     }
 
     /**
@@ -485,38 +529,11 @@ final class DefaultClassBinder implements ClassBinder
      * deriving a default name.
      */
     private String deriveName( XSComplexType comp ) {
-        String seed = deriveName( comp.getName(), comp );
+        String seed = builder.deriveName( comp.getName(), comp );
         int cnt = comp.getRedefinedCount();
         for( ; cnt>0; cnt-- )
             seed = "Original"+seed;
         return seed;
     }
 
-    /**
-     * Derives a name from a schema component.
-     *
-     * This method handles prefix/suffix modification and
-     * XML-to-Java name conversion.
-     *
-     * @param name
-     *      The base name. This should be things like element names
-     *      or type names.
-     * @param comp
-     *      The component from which the base name was taken.
-     *      Used to determine how names are modified.
-     */
-    private String deriveName( String name, XSComponent comp ) {
-        XSSchema owner = comp.getOwnerSchema();
-
-        name = builder.getNameConverter().toClassName(name);
-
-        if( owner!=null ) {
-            BISchemaBinding sb = builder.getBindInfo(
-                owner).get(BISchemaBinding.class);
-
-            if(sb!=null)    name = sb.mangleClassName(name,comp);
-        }
-
-        return name;
-    }
 }

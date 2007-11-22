@@ -1,21 +1,37 @@
 /*
- * The contents of this file are subject to the terms
- * of the Common Development and Distribution License
- * (the "License").  You may not use this file except
- * in compliance with the License.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * You can obtain a copy of the license at
- * https://jwsdp.dev.java.net/CDDLv1.0.html
- * See the License for the specific language governing
- * permissions and limitations under the License.
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
  * 
- * When distributing Covered Code, include this CDDL
- * HEADER in each file and include the License file at
- * https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
- * add the following below this CDDL HEADER, with the
- * fields enclosed by brackets "[]" replaced with your
- * own identifying information: Portions Copyright [yyyy]
- * [name of copyright owner]
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
  */
 
 package com.sun.tools.xjc.reader.internalizer;
@@ -46,10 +62,20 @@ class Messages
         "Internalizer.XPathEvaluatesToNonElement";
     static final String XPATH_EVAL_TO_NON_SCHEMA_ELEMENT = // arg:2
         "Internalizer.XPathEvaluatesToNonSchemaElement";
+    static final String SCD_NOT_ENABLED = // arg:0
+        "SCD_NOT_ENABLED";
+    static final String ERR_SCD_EVAL = // arg: 1
+        "ERR_SCD_EVAL";
+    static final String ERR_SCD_EVALUATED_EMPTY = // arg:1
+        "ERR_SCD_EVALUATED_EMPTY";
+    static final String ERR_SCD_MATCHED_MULTIPLE_NODES = // arg:2
+        "ERR_SCD_MATCHED_MULTIPLE_NODES";
+    static final String ERR_SCD_MATCHED_MULTIPLE_NODES_FIRST = // arg:1
+        "ERR_SCD_MATCHED_MULTIPLE_NODES_FIRST";
+    static final String ERR_SCD_MATCHED_MULTIPLE_NODES_SECOND = // arg:1
+        "ERR_SCD_MATCHED_MULTIPLE_NODES_SECOND";
     static final String CONTEXT_NODE_IS_NOT_ELEMENT = // arg:0
         "Internalizer.ContextNodeIsNotElement";
-    static final String NO_CONTEXT_NODE_SPECIFIED = // arg:0
-            "Internalizer.NoContextNodeSpecified";
     static final String ERR_INCORRECT_VERSION = // arg:0
         "Internalizer.IncorrectVersion";
     static final String ERR_VERSION_NOT_FOUND = // arg:0
@@ -60,6 +86,8 @@ class Messages
         "Internalizer.OrphanedCustomization";
     static final String ERR_UNABLE_TO_PARSE = // arg:2
         "AbstractReferenceFinderImpl.UnableToParse";
+    static final String ERR_FILENAME_IS_NOT_URI = // arg:0
+        "ERR_FILENAME_IS_NOT_URI";
     static final String ERR_GENERAL_SCHEMA_CORRECTNESS_ERROR = // arg:1
         "ERR_GENERAL_SCHEMA_CORRECTNESS_ERROR";
 }

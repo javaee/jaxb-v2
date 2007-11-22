@@ -1,21 +1,37 @@
 /*
- * The contents of this file are subject to the terms
- * of the Common Development and Distribution License
- * (the "License").  You may not use this file except
- * in compliance with the License.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * You can obtain a copy of the license at
- * https://jwsdp.dev.java.net/CDDLv1.0.html
- * See the License for the specific language governing
- * permissions and limitations under the License.
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
  * 
- * When distributing Covered Code, include this CDDL
- * HEADER in each file and include the License file at
- * https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
- * add the following below this CDDL HEADER, with the
- * fields enclosed by brackets "[]" replaced with your
- * own identifying information: Portions Copyright [yyyy]
- * [name of copyright owner]
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
  */
  
 import java.math.BigDecimal;
@@ -23,6 +39,7 @@ import java.math.BigInteger;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -36,13 +53,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import primer.po.*;
 
 /*
- * $Id: Main.java,v 1.4 2005-12-23 20:08:24 kohsuke Exp $
- *
- * Copyright 2003 Sun Microsystems, Inc. All Rights Reserved.
- * 
- * This software is the proprietary information of Sun Microsystems, Inc.  
- * Use is subject to license terms.
- * 
+ * $Id: Main.java,v 1.5 2007-11-22 00:52:50 kohsuke Exp $
  */
  
 public class Main {
@@ -52,76 +63,66 @@ public class Main {
     // to XML data
     
     public static void main( String[] args ) {
-        try {
-            // create a JAXBContext
-            JAXBContext jc = JAXBContext.newInstance( "primer.po" );
-            
-            // create an empty PurchaseOrder
-            PurchaseOrderType po = new PurchaseOrderType();
-            
-            // set the required orderDate attribute
-            po.setOrderDate( getDate() );
-            
-            // create shipTo USAddress object
-            USAddress shipTo = createUSAddress( "Alice Smith",
-                                                "123 Maple Street",
-                                                "Cambridge",
-                                                "MA",
-                                                "12345" );
-                                                
-            // set the required shipTo address 
-            po.setShipTo( shipTo );
-            
-            // create billTo USAddress object
-            USAddress billTo = createUSAddress( "Robert Smith",
-                                                "8 Oak Avenue",
-                                                "Cambridge",
-                                                "MA",
-                                                "12345" );
-            
-            // set the requred billTo address
-            po.setBillTo( billTo );
-                                                
-            // create an empty Items object
-            Items items = new Items();
-            
-            // get a reference to the ItemType list
-            List<Items.Item> itemList = items.getItem();
-            
-            // start adding ItemType objects into it
-            itemList.add( createItem( "Nosferatu - Special Edition (1929)", 
-                                      5, 
-                                      new BigDecimal( "19.99" ), 
-                                      null,
-                                      null,
-                                      "242-NO" ) );
-            itemList.add( createItem( "The Mummy (1959)", 
-                                      3, 
-                                      new BigDecimal( "19.98" ), 
-                                      null,
-                                      null,
-                                      "242-MU" ) );
-            itemList.add( createItem( "Godzilla and Mothra: Battle for Earth/Godzilla vs. King Ghidora", 
-                                      3, 
-                                      new BigDecimal( "27.95" ), 
-                                      null,
-                                      null,
-                                      "242-GZ" ) );
-            
-            // set the required Items list
-            po.setItems( items );
-           
-	    // create an element for marshalling
-	    JAXBElement<PurchaseOrderType> poElement = (new ObjectFactory()).createPurchaseOrder(po);
+        // create an empty PurchaseOrder
+        PurchaseOrderType po = new PurchaseOrderType();
+        
+        // set the required orderDate attribute
+        po.setOrderDate( getDate() );
+        
+        // create shipTo USAddress object
+        USAddress shipTo = createUSAddress( "Alice Smith",
+                                            "123 Maple Street",
+                                            "Cambridge",
+                                            "MA",
+                                            "12345" );
+                                            
+        // set the required shipTo address 
+        po.setShipTo( shipTo );
+        
+        // create billTo USAddress object
+        USAddress billTo = createUSAddress( "Robert Smith",
+                                            "8 Oak Avenue",
+                                            "Cambridge",
+                                            "MA",
+                                            "12345" );
+        
+        // set the requred billTo address
+        po.setBillTo( billTo );
+                                            
+        // create an empty Items object
+        Items items = new Items();
+        
+        // get a reference to the ItemType list
+        List<Items.Item> itemList = items.getItem();
+        
+        // start adding ItemType objects into it
+        itemList.add( createItem( "Nosferatu - Special Edition (1929)", 
+                                  5, 
+                                  new BigDecimal( "19.99" ), 
+                                  null,
+                                  null,
+                                  "242-NO" ) );
+        itemList.add( createItem( "The Mummy (1959)", 
+                                  3, 
+                                  new BigDecimal( "19.98" ), 
+                                  null,
+                                  null,
+                                  "242-MU" ) );
+        itemList.add( createItem( "Godzilla and Mothra: Battle for Earth/Godzilla vs. King Ghidora", 
+                                  3, 
+                                  new BigDecimal( "27.95" ), 
+                                  null,
+                                  null,
+                                  "242-GZ" ) );
+        
+        // set the required Items list
+        po.setItems( items );
+       
+        // create an element for marshalling
+        JAXBElement<PurchaseOrderType> poElement = (new ObjectFactory()).createPurchaseOrder(po);
 
-            // create a Marshaller and marshal to System.out
-            Marshaller m = jc.createMarshaller();
-            m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-            m.marshal( poElement, System.out );
-            
-        } catch( JAXBException je ) {
-            je.printStackTrace();
-        } 
+        // create a Marshaller and marshal to System.out
+        JAXB.marshal( poElement, System.out );
     }
     
     public static USAddress createUSAddress(  String name, String street,

@@ -1,21 +1,37 @@
 /*
- * The contents of this file are subject to the terms
- * of the Common Development and Distribution License
- * (the "License").  You may not use this file except
- * in compliance with the License.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * You can obtain a copy of the license at
- * https://jwsdp.dev.java.net/CDDLv1.0.html
- * See the License for the specific language governing
- * permissions and limitations under the License.
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
  * 
- * When distributing Covered Code, include this CDDL
- * HEADER in each file and include the License file at
- * https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
- * add the following below this CDDL HEADER, with the
- * fields enclosed by brackets "[]" replaced with your
- * own identifying information: Portions Copyright [yyyy]
- * [name of copyright owner]
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
  */
 package com.sun.xml.bind.v2.runtime;
 
@@ -48,6 +64,7 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.Schema;
 import javax.xml.validation.ValidatorHandler;
+import javax.xml.namespace.NamespaceContext;
 
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.api.JAXBRIContext;
@@ -144,8 +161,18 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         return context;
     }
 
+    /**
+     * Marshals to {@link OutputStream} with the given in-scope namespaces
+     * taken into account.
+     *
+     * @since 2.1.5
+     */
+    public void marshal(Object obj, OutputStream out, NamespaceContext inscopeNamespace) throws JAXBException {
+        write(obj, createWriter(out), new StAXPostInitAction(inscopeNamespace,serializer));
+    }
+
     public void marshal(Object obj, XMLStreamWriter writer) throws JAXBException {
-        write(obj, XMLStreamWriterOutput.create(writer), new StAXPostInitAction(writer,serializer));
+        write(obj, XMLStreamWriterOutput.create(writer,context), new StAXPostInitAction(writer,serializer));
     }
 
     public void marshal(Object obj, XMLEventWriter writer) throws JAXBException {
@@ -189,7 +216,16 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
                         fileURL = fileURL.substring(8);
                     else
                         fileURL = fileURL.substring(7);
-                } // otherwise assume that it's a file name
+                }
+                if (fileURL.startsWith("file:/")) {
+                    // some people use broken URLs like "file:/c:/abc/def/ghi.txt"
+                    // so let's make it work with that
+                    if (fileURL.substring(6).indexOf(":") > 0)
+                        fileURL = fileURL.substring(6);
+                    else
+                        fileURL = fileURL.substring(5);
+                }
+                // otherwise assume that it's a file name
 
                 try {
                     FileOutputStream fos = new FileOutputStream(fileURL);
@@ -241,7 +277,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
                         serializer.childAsXsiType(obj,"root",bi);
                 }
                 serializer.endElement();
-                postwrite(out);
+                postwrite();
             } catch( SAXException e ) {
                 throw new MarshalException(e);
             } catch (IOException e) {
@@ -290,7 +326,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
             try {
                 prewrite(out,isFragment(),postInitAction);
                 serializer.childAsRoot(obj);
-                postwrite(out);
+                postwrite();
             } catch( SAXException e ) {
                 throw new MarshalException(e);
             } catch (IOException e) {
@@ -342,10 +378,9 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         serializer.setPrefixMapper(prefixMapper);
     }
 
-    private void postwrite(XmlOutput out) throws IOException, SAXException, XMLStreamException {
+    private void postwrite() throws IOException, SAXException, XMLStreamException {
         serializer.endDocument();
         serializer.reconcileID();   // extra check
-        out.flush();
     }
 
 
@@ -413,14 +448,18 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
 
         if(encoding.equals("UTF-8")) {
             Encoded[] table = context.getUTF8NameTable();
+            final UTF8XmlOutput out;
             if(isFormattedOutput())
-                return new IndentingUTF8XmlOutput(os,indent,table);
+                out = new IndentingUTF8XmlOutput(os,indent,table);
             else {
                 if(c14nSupport)
-                    return new C14nXmlOutput(os,table,context.c14nSupport);
+                    out = new C14nXmlOutput(os,table,context.c14nSupport);
                 else
-                    return new UTF8XmlOutput(os,table);
+                    out = new UTF8XmlOutput(os,table);
             }
+            if(header!=null)
+                out.setHeader(header);
+            return out;
         }
 
         try {
@@ -438,9 +477,9 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
     public Object getProperty(String name) throws PropertyException {
         if( INDENT_STRING.equals(name) )
             return indent;
-        if( ENCODING_HANDLER.equals(name) )
+        if( ENCODING_HANDLER.equals(name) || ENCODING_HANDLER2.equals(name) )
             return escapeHandler;
-        if( NamespacePrefixMapper.PROPERTY.equals(name) )
+        if( PREFIX_MAPPER.equals(name) )
             return prefixMapper;
         if( XMLDECLARATION.equals(name) )
             return !isFragment();
@@ -448,6 +487,9 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
             return header;
         if( C14N.equals(name) )
             return c14nSupport;
+        if ( OBJECT_IDENTITY_CYCLE_DETECTION.equals(name)) 
+        	return serializer.getObjectIdentityCycleDetection();
+;
 
         return super.getProperty(name);
     }
@@ -458,7 +500,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
             indent = (String)value;
             return;
         }
-        if( ENCODING_HANDLER.equals(name) ) {
+        if( ENCODING_HANDLER.equals(name) || ENCODING_HANDLER2.equals(name)) {
             if(!(value instanceof CharacterEscapeHandler))
                 throw new PropertyException(
                     Messages.MUST_BE_X.format(
@@ -468,7 +510,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
             escapeHandler = (CharacterEscapeHandler)value;
             return;
         }
-        if( NamespacePrefixMapper.PROPERTY.equals(name) ) {
+        if( PREFIX_MAPPER.equals(name) ) {
             if(!(value instanceof NamespacePrefixMapper))
                 throw new PropertyException(
                     Messages.MUST_BE_X.format(
@@ -493,6 +535,11 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         if( C14N.equals(name) ) {
             checkBoolean(name,value);
             c14nSupport = (Boolean)value;
+            return;
+        }
+        if (OBJECT_IDENTITY_CYCLE_DETECTION.equals(name)) {
+        	checkBoolean(name,value);
+            serializer.setObjectIdentityCycleDetection((Boolean)value);
             return;
         }
 
@@ -577,8 +624,11 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
 
     // features supported
     protected static final String INDENT_STRING = "com.sun.xml.bind.indentString";
+    protected static final String PREFIX_MAPPER = "com.sun.xml.bind.namespacePrefixMapper";
     protected static final String ENCODING_HANDLER = "com.sun.xml.bind.characterEscapeHandler";
+    protected static final String ENCODING_HANDLER2 = "com.sun.xml.bind.marshaller.CharacterEscapeHandler";
     protected static final String XMLDECLARATION = "com.sun.xml.bind.xmlDeclaration";
     protected static final String XML_HEADERS = "com.sun.xml.bind.xmlHeaders";
     protected static final String C14N = JAXBRIContext.CANONICALIZATION_SUPPORT;
+    protected static final String OBJECT_IDENTITY_CYCLE_DETECTION = "com.sun.xml.bind.objectIdentitityCycleDetection";
 }

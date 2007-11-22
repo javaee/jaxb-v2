@@ -1,3 +1,39 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * 
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ */
+
 package com.sun.tools.xjc.model;
 
 import java.util.Collections;
@@ -34,8 +70,11 @@ import com.sun.xml.bind.v2.model.core.Ref;
 import com.sun.xml.bind.v2.model.core.TypeInfoSet;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.util.FlattenIterator;
+import com.sun.xml.xsom.XSComponent;
+import com.sun.xml.xsom.XSSchemaSet;
 
 import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.LocatorImpl;
 
 /**
@@ -48,7 +87,7 @@ import org.xml.sax.helpers.LocatorImpl;
  *
  * @author Kohsuke Kawaguchi
  */
-public final class Model implements TypeInfoSet<NType,NClass,Void,Void> {
+public final class Model implements TypeInfoSet<NType,NClass,Void,Void>, CCustomizable {
 
     /**
      * Generated beans.
@@ -100,11 +139,24 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void> {
     private boolean packageLevelAnnotations = true;
 
     /**
+     * If this model was built from XML Schema, this field
+     * stores the root object of the parse schema model.
+     * Otherwise null.
+     *
+     * @sine 2.1.1
+     */
+    public final XSSchemaSet schemaComponent;
+
+    private CCustomizations gloablCustomizations = new CCustomizations();
+
+    /**
      * @param nc
      *      Usually this should be set in the constructor, but we do allow this parameter
      *      to be initially null, and then set later.
+     * @param schemaComponent
+     *      The source schema model, if this is built from XSD.
      */
-    public Model( Options opts, JCodeModel cm, NameConverter nc, ClassNameAllocator allocator ) {
+    public Model( Options opts, JCodeModel cm, NameConverter nc, ClassNameAllocator allocator, XSSchemaSet schemaComponent ) {
         this.options = opts;
         this.codeModel = cm;
         this.nameConverter = nc;
@@ -113,7 +165,11 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void> {
 
         elementMappings.put(null,new HashMap<QName,CElementInfo>());
 
+        if(opts.automaticNameConflictResolution)
+            allocator = new AutoClassNameAllocator(allocator);
         this.allocator = new ClassNameAllocatorWrapper(allocator);
+        this.schemaComponent = schemaComponent;
+        this.gloablCustomizations.setParent(this,this);
     }
 
     public void setNameConverter(NameConverter nameConverter) {
@@ -229,9 +285,13 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void> {
 
         Outline o = BeanGenerator.generate(this, ehf);
 
-        // run extensions
-        for( Plugin ma : opt.activePlugins )
-            ma.run(o,opt,ehf);
+        try {// run extensions
+            for( Plugin ma : opt.activePlugins )
+                ma.run(o,opt,ehf);
+        } catch (SAXException e) {
+            // fatal error. error should have been reported
+            return null;
+        }
 
         // check for unused plug-in customizations.
         // these can be only checked after the plug-ins run, so it's here.
@@ -353,9 +413,39 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void> {
     }
 
     /**
+     * @deprecated
+     *      Always return null. Perhaps you are interested in {@link #schemaComponent}?
+     */
+    public XSComponent getSchemaComponent() {
+        return null;
+    }
+
+    /**
+     * @deprecated
+     *      No line number available for the "root" component.
+     */
+    public Locator getLocator() {
+        LocatorImpl r = new LocatorImpl();
+        r.setLineNumber(-1);
+        r.setColumnNumber(-1);
+        return r;
+    }
+
+    /**
+     * Gets the global customizations.
+     */
+    public CCustomizations getCustomizations() {
+        return gloablCustomizations;
+    }
+
+    /**
      * Not implemented in the compile-time model.
      */
     public Map<String, String> getXmlNs(String namespaceUri) {
+        return Collections.emptyMap();
+    }
+
+    public Map<String, String> getSchemaLocations() {
         return Collections.emptyMap();
     }
 

@@ -1,6 +1,44 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * 
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ */
+
 package com.sun.xml.bind.v2.runtime;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -41,6 +79,12 @@ public final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
     public final Class expectedType;
     private final Class scope;
 
+    /**
+     * If non-null, use this to create an instance.
+     * It takes one value.
+     */
+    private final Constructor<? extends JAXBElement> constructor;
+
     ElementBeanInfoImpl(JAXBContextImpl grammar, RuntimeElementInfo rei) {
         super(grammar,rei,(Class<JAXBElement>)rei.getType(),true,false,true);
 
@@ -49,6 +93,19 @@ public final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
         tagName = rei.getElementName();
         expectedType = Navigator.REFLECTION.erasure(rei.getContentInMemoryType());
         scope = rei.getScope()==null ? JAXBElement.GlobalScope.class : rei.getScope().getClazz();
+
+        Class type = Navigator.REFLECTION.erasure(rei.getType());
+        if(type==JAXBElement.class)
+            constructor = null;
+        else {
+            try {
+                constructor = type.getConstructor(expectedType);
+            } catch (NoSuchMethodException e) {
+                NoSuchMethodError x = new NoSuchMethodError("Failed to find the constructor for " + type + " with " + expectedType);
+                x.initCause(e);
+                throw x;
+            }
+        }
     }
 
     /**
@@ -64,6 +121,7 @@ public final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
         tagName = null;
         expectedType = null;
         scope = null;
+        constructor = null;
 
         this.property = new Property<JAXBElement>() {
             public void reset(JAXBElement o) {
@@ -213,12 +271,15 @@ public final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
         return loader;
     }
 
-    public final JAXBElement createInstance(UnmarshallingContext context) {
+    public final JAXBElement createInstance(UnmarshallingContext context) throws IllegalAccessException, InvocationTargetException, InstantiationException {
         return createInstanceFromValue(null);
     }
 
-    public final JAXBElement createInstanceFromValue(Object o) {
-        return new JAXBElement(tagName,expectedType,scope,o);
+    public final JAXBElement createInstanceFromValue(Object o) throws IllegalAccessException, InvocationTargetException, InstantiationException {
+        if(constructor==null)
+            return new JAXBElement(tagName,expectedType,scope,o);
+        else
+            return constructor.newInstance(o);
     }
 
     public boolean reset(JAXBElement e, UnmarshallingContext context) {

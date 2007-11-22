@@ -1,6 +1,43 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * 
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ */
+
 package com.sun.xml.bind.v2.model.impl;
 
 import java.util.Collection;
+import java.lang.annotation.Annotation;
 
 import javax.activation.MimeType;
 import javax.xml.bind.annotation.XmlAttachmentRef;
@@ -13,6 +50,7 @@ import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.v2.TODO;
@@ -56,7 +94,6 @@ abstract class PropertyInfoImpl<T,C,F,M>
     protected PropertyInfoImpl(ClassInfoImpl<T,C,F,M> parent, PropertySeed<T,C,F,M> spi) {
         this.seed = spi;
         this.parent = parent;
-        this.id = calcId();
 
         if(parent==null)
             /*
@@ -78,26 +115,50 @@ abstract class PropertyInfoImpl<T,C,F,M>
         }
         this.expectedMimeType = mt;
         this.inlineBinary = seed.hasAnnotation(XmlInlineBinaryData.class);
-        this.schemaType = Util.calcSchemaType(reader(),seed,parent.clazz,
-                getIndividualType(),this);
 
         T t = seed.getRawType();
-        this.isCollection = nav().isSubClassOf(t, nav().ref(Collection.class))
-                         || nav().isArrayButNotByteArray(t);
 
-        XmlJavaTypeAdapter xjta = getApplicableAdapter(getIndividualType());
-        if(xjta==null) {
-            // ugly ugly hack, but we implement swaRef as adapter
-            XmlAttachmentRef xsa = seed.readAnnotation(XmlAttachmentRef.class);
-            if(xsa!=null) {
-                parent.builder.hasSwaRef = true;
-                adapter = new Adapter<T,C>(nav().asDecl(SwaRefAdapter.class),nav());
-            } else {
-                adapter = null;
-            }
-        } else {
+        // check if there's an adapter applicable to the whole property
+        XmlJavaTypeAdapter xjta = getApplicableAdapter(t);
+        if(xjta!=null) {
+            isCollection = false;
             adapter = new Adapter<T,C>(xjta,reader(),nav());
+        } else {
+            // check if the adapter is applicable to the individual item in the property
+
+            this.isCollection = nav().isSubClassOf(t, nav().ref(Collection.class))
+                             || nav().isArrayButNotByteArray(t);
+
+            xjta = getApplicableAdapter(getIndividualType());
+            if(xjta==null) {
+                // ugly ugly hack, but we implement swaRef as adapter
+                XmlAttachmentRef xsa = seed.readAnnotation(XmlAttachmentRef.class);
+                if(xsa!=null) {
+                    parent.builder.hasSwaRef = true;
+                    adapter = new Adapter<T,C>(nav().asDecl(SwaRefAdapter.class),nav());
+                } else {
+                    adapter = null;
+
+                    // if this field has adapter annotation but not applicable,
+                    // that must be an error of the user
+                    xjta = seed.readAnnotation(XmlJavaTypeAdapter.class);
+                    if(xjta!=null) {
+                        T adapter = reader().getClassValue(xjta,"value");
+                        parent.builder.reportError(new IllegalAnnotationException(
+                            Messages.UNMATCHABLE_ADAPTER.format(
+                                    nav().getTypeName(adapter), nav().getTypeName(t)),
+                            xjta
+                        ));
+                    }
+                }
+            } else {
+                adapter = new Adapter<T,C>(xjta,reader(),nav());
+            }
         }
+
+        this.id = calcId();
+        this.schemaType = Util.calcSchemaType(reader(),seed,parent.clazz,
+                getIndividualType(),this);
     }
 
 
@@ -145,13 +206,21 @@ abstract class PropertyInfoImpl<T,C,F,M>
         if(jta==null)   return false;
 
         T type = reader().getClassValue(jta,"type");
-        return declaredType.equals(type);
+        if(declaredType.equals(type))
+            return true;    // for types explicitly marked in XmlJavaTypeAdapter.type()
+        
+        T adapter = reader().getClassValue(jta,"value");
+        T ba = nav().getBaseClass(adapter, nav().asDecl(XmlAdapter.class));
+        if(!nav().isParameterizedType(ba))
+            return true;   // can't check type applicability. assume Object, which means applicable to any.
+        T inMemType = nav().getTypeArgument(ba, 1);
 
+        return nav().isSubClassOf(declaredType,inMemType);
     }
 
     private XmlJavaTypeAdapter getApplicableAdapter(T type) {
         XmlJavaTypeAdapter jta = seed.readAnnotation(XmlJavaTypeAdapter.class);
-        if(jta!=null)
+        if(jta!=null && isApplicable(jta,type))
             return jta;
 
         // check the applicable adapters on the package
@@ -167,10 +236,10 @@ abstract class PropertyInfoImpl<T,C,F,M>
             return jta;
 
         // then on the target class
-        C refType = nav().asDecl(seed.getRawType());
+        C refType = nav().asDecl(type);
         if(refType!=null) {
             jta = reader().getClassAnnotation(XmlJavaTypeAdapter.class, refType, seed );
-            if(jta!=null) // the one on the type always apply.
+            if(jta!=null && isApplicable(jta,type)) // the one on the type always apply.
                 return jta;
         }
 
@@ -197,7 +266,7 @@ abstract class PropertyInfoImpl<T,C,F,M>
     private ID calcId() {
         if(seed.hasAnnotation(XmlID.class)) {
             // check the type
-            if(!seed.getRawType().equals(nav().ref(String.class)))
+            if(!getIndividualType().equals(nav().ref(String.class)))
                 parent.builder.reportError(new IllegalAnnotationException(
                     Messages.ID_MUST_BE_STRING.format(getName()), seed )
                 );
@@ -316,5 +385,13 @@ abstract class PropertyInfoImpl<T,C,F,M>
 
     public int compareTo(PropertyInfoImpl that) {
         return this.getName().compareTo(that.getName());
+    }
+
+    public final <A extends Annotation> A readAnnotation(Class<A> annotationType) {
+        return seed.readAnnotation(annotationType);
+    }
+
+    public final boolean hasAnnotation(Class<? extends Annotation> annotationType) {
+        return seed.hasAnnotation(annotationType);
     }
 }

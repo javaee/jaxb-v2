@@ -1,3 +1,39 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * 
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ */
+
 package com.sun.xml.bind.v2.model.impl;
 
 import java.lang.annotation.Annotation;
@@ -16,6 +52,7 @@ import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
+import com.sun.istack.FinalArrayList;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.annotation.AnnotationSource;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
@@ -32,7 +69,6 @@ import com.sun.xml.bind.v2.model.core.TypeRef;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
-import com.sun.istack.FinalArrayList;
 
 /**
  * {@link ElementInfo} implementation.
@@ -44,6 +80,8 @@ class ElementInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M> implements ElementI
     private final QName tagName;
 
     private final NonElement<T,C> contentType;
+
+    private final T tOfJAXBElementT;
 
     private final T elementType;
 
@@ -113,6 +151,10 @@ class ElementInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M> implements ElementI
 
         public QName getXmlName() {
             return tagName;
+        }
+
+        public boolean isCollectionRequired() {
+            return false;
         }
 
         public boolean isCollectionNillable() {
@@ -239,15 +281,16 @@ class ElementInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M> implements ElementI
         }
         this.adapter = a;
 
+        // T of JAXBElement<T>
+        tOfJAXBElementT =
+            methodParams.length>0 ? methodParams[0] // this is more reliable, as it works even for ObjectFactory that sometimes have to return public types
+            : nav().getTypeArgument(baseClass,0); // fall back to infer from the return type if no parameter.
+        
         if(adapter==null) {
-            // T of JAXBElement<T>
-            T typeType =
-                methodParams.length>0 ? methodParams[0] // this is more reliable, as it works even for ObjectFactory that sometimes have to return public types
-                : nav().getTypeArgument(baseClass,0); // fall back to infer from the return type if no parameter.
-            T list = nav().getBaseClass(typeType,nav().asDecl(List.class));
+            T list = nav().getBaseClass(tOfJAXBElementT,nav().asDecl(List.class));
             if(list==null) {
                 isCollection = false;
-                contentType = builder.getTypeInfo(typeType,this);  // suck this type into the current set.
+                contentType = builder.getTypeInfo(tOfJAXBElementT,this);  // suck this type into the current set.
             } else {
                 isCollection = true;
                 contentType = builder.getTypeInfo(nav().getTypeArgument(list,0),this);
@@ -314,7 +357,7 @@ class ElementInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M> implements ElementI
 
     public T getContentInMemoryType() {
         if(adapter==null) {
-            return contentType.getType();
+            return tOfJAXBElementT;
         } else {
             return adapter.customType;
         }

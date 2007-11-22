@@ -1,21 +1,37 @@
 /*
- * The contents of this file are subject to the terms
- * of the Common Development and Distribution License
- * (the "License").  You may not use this file except
- * in compliance with the License.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * You can obtain a copy of the license at
- * https://jwsdp.dev.java.net/CDDLv1.0.html
- * See the License for the specific language governing
- * permissions and limitations under the License.
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
  * 
- * When distributing Covered Code, include this CDDL
- * HEADER in each file and include the License file at
- * https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
- * add the following below this CDDL HEADER, with the
- * fields enclosed by brackets "[]" replaced with your
- * own identifying information: Portions Copyright [yyyy]
- * [name of copyright owner]
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
  */
 package com.sun.tools.xjc.generator.bean.field;
 
@@ -28,6 +44,7 @@ import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlValue;
+import javax.xml.bind.annotation.XmlInlineBinaryData;
 import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JAnnotatable;
@@ -44,6 +61,7 @@ import com.sun.tools.xjc.generator.annotation.spec.XmlElementRefWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlElementRefsWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlElementWriter;
 import com.sun.tools.xjc.generator.annotation.spec.XmlElementsWriter;
+import com.sun.tools.xjc.generator.annotation.spec.XmlSchemaTypeWriter;
 import com.sun.tools.xjc.generator.bean.ClassOutlineImpl;
 import com.sun.tools.xjc.model.CAttributePropertyInfo;
 import com.sun.tools.xjc.model.CElement;
@@ -136,6 +154,15 @@ abstract class AbstractField implements FieldOutline {
         }
 
         outline.parent().generateAdapterIfNecessary(prop,field);
+
+        QName st = prop.getSchemaType();
+        if(st!=null)
+            field.annotate2(XmlSchemaTypeWriter.class)
+                .name(st.getLocalPart())
+                .namespace(st.getNamespaceURI());
+
+        if(prop.inlineBinaryData())
+            field.annotate(XmlInlineBinaryData.class);
     }
 
     private void annotateReference(JAnnotatable field) {
@@ -232,8 +259,14 @@ abstract class AbstractField implements FieldOutline {
 
         // these values are used to determine how to optimize the generated annotation
         XmlNsForm formDefault = parent()._package().getElementFormDefault();
-        String mostUsedURI = parent()._package().getMostUsedNamespaceURI();
         String propName = prop.getName(false);
+
+        String enclosingTypeNS;
+
+        if(parent().target.getTypeName()==null)
+            enclosingTypeNS = parent()._package().getMostUsedNamespaceURI();
+        else
+            enclosingTypeNS = parent().target.getTypeName().getNamespaceURI();
 
         // generate the name property?
         String generatedName = ctype.getTagName().getLocalPart();
@@ -244,7 +277,7 @@ abstract class AbstractField implements FieldOutline {
 
         // generate the namespace property?
         String generatedNS = ctype.getTagName().getNamespaceURI();
-        if (((formDefault == XmlNsForm.QUALIFIED) && !generatedNS.equals(mostUsedURI)) ||
+        if (((formDefault == XmlNsForm.QUALIFIED) && !generatedNS.equals(enclosingTypeNS)) ||
                 ((formDefault == XmlNsForm.UNQUALIFIED) && !generatedNS.equals(""))) {
             if(xew == null) xew = getXew(checkWrapper, field);
             xew.namespace(generatedNS);

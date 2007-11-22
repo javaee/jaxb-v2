@@ -1,23 +1,39 @@
 @echo off
 
 REM
-REM The contents of this file are subject to the terms
-REM of the Common Development and Distribution License
-REM (the "License").  You may not use this file except
-REM in compliance with the License.
+REM DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 REM 
-REM You can obtain a copy of the license at
-REM https://jwsdp.dev.java.net/CDDLv1.0.html
-REM See the License for the specific language governing
-REM permissions and limitations under the License.
+REM Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
 REM 
-REM When distributing Covered Code, include this CDDL
-REM HEADER in each file and include the License file at
-REM https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
-REM add the following below this CDDL HEADER, with the
-REM fields enclosed by brackets "[]" replaced with your
-REM own identifying information: Portions Copyright [yyyy]
-REM [name of copyright owner]
+REM The contents of this file are subject to the terms of either the GNU
+REM General Public License Version 2 only ("GPL") or the Common Development
+REM and Distribution License("CDDL") (collectively, the "License").  You
+REM may not use this file except in compliance with the License. You can obtain
+REM a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+REM or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+REM language governing permissions and limitations under the License.
+REM 
+REM When distributing the software, include this License Header Notice in each
+REM file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+REM Sun designates this particular file as subject to the "Classpath" exception
+REM as provided by Sun in the GPL Version 2 section of the License file that
+REM accompanied this code.  If applicable, add the following below the License
+REM Header, with the fields enclosed by brackets [] replaced by your own
+REM identifying information: "Portions Copyrighted [year]
+REM [name of copyright owner]"
+REM 
+REM Contributor(s):
+REM 
+REM If you wish your version of this file to be governed by only the CDDL or
+REM only the GPL Version 2, indicate your decision by adding "[Contributor]
+REM elects to include this software in this distribution under the [CDDL or GPL
+REM Version 2] license."  If you don't indicate a single choice of license, a
+REM recipient has the option to distribute your version of this file under
+REM either the CDDL, the GPL Version 2 or to extend the choice of license to
+REM its licensees as provided above.  However, if you add GPL Version 2 code
+REM and therefore, elected the GPL Version 2 license, then the option applies
+REM only if the new code is made subject to such option by the copyright
+REM holder.
 REM
 
 rem
@@ -28,7 +44,7 @@ if not "%JAXB_HOME%" == "" goto CHECKJAVAHOME
 rem Try to locate JAXB_HOME
 set JAXB_HOME=%~dp0
 set JAXB_HOME=%JAXB_HOME%\..
-if exist %JAXB_HOME%\lib\jaxb-xjc.jar goto CHECKJAVAHOME
+if exist "%JAXB_HOME%\lib\jaxb-xjc.jar" goto CHECKJAVAHOME
 
 rem Unable to find it
 echo JAXB_HOME must be set before running this script
@@ -45,7 +61,7 @@ set JAVA="%JAVA_HOME%\bin\java"
 goto LAUNCHXJC
 
 :LAUNCHXJC
-%JAVA% %XJC_OPTS% -jar %JAXB_HOME%\lib\jaxb-xjc.jar %*
+%JAVA% %XJC_OPTS% -jar "%JAXB_HOME%\lib\jaxb-xjc.jar" %*
 
 :END
 %COMSPEC% /C exit %ERRORLEVEL%

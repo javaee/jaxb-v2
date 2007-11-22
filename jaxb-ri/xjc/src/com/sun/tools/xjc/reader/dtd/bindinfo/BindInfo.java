@@ -1,21 +1,37 @@
 /*
- * The contents of this file are subject to the terms
- * of the Common Development and Distribution License
- * (the "License").  You may not use this file except
- * in compliance with the License.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * You can obtain a copy of the license at
- * https://jwsdp.dev.java.net/CDDLv1.0.html
- * See the License for the specific language governing
- * permissions and limitations under the License.
+ * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
  * 
- * When distributing Covered Code, include this CDDL
- * HEADER in each file and include the License file at
- * https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
- * add the following below this CDDL HEADER, with the
- * fields enclosed by brackets "[]" replaced with your
- * own identifying information: Portions Copyright [yyyy]
- * [name of copyright owner]
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License. You can obtain
+ * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ * Sun designates this particular file as subject to the "Classpath" exception
+ * as provided by Sun in the GPL Version 2 section of the License file that
+ * accompanied this code.  If applicable, add the following below the License
+ * Header, with the fields enclosed by brackets [] replaced by your own
+ * identifying information: "Portions Copyrighted [year]
+ * [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * 
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
  */
 package com.sun.tools.xjc.reader.dtd.bindinfo;
 
@@ -38,6 +54,8 @@ import com.sun.istack.SAXParseException2;
 import com.sun.tools.xjc.AbortException;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.SchemaCache;
+import com.sun.tools.xjc.model.CCustomizations;
+import com.sun.tools.xjc.model.CPluginCustomization;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.util.CodeModelClassFactory;
@@ -68,8 +86,7 @@ public class BindInfo
     private final String defaultPackage;
     
     public BindInfo(Model model, InputSource source, ErrorReceiver _errorReceiver) throws AbortException {
-        
-        this( model, parse(source,_errorReceiver), _errorReceiver);
+        this( model, parse(model,source,_errorReceiver), _errorReceiver);
     }
     
     public BindInfo(Model model, Document _dom, ErrorReceiver _errorReceiver) {
@@ -81,7 +98,10 @@ public class BindInfo
         // TODO: decide name converter from the binding file
 
         this.defaultPackage = model.options.defaultPackage;
-        
+
+        // copy global customizations to the model
+        model.getCustomizations().addAll(getGlobalCustomizations());
+
         // process element declarations
         for( Element ele : DOMUtil.getChildElements(dom,"element")) {
             BIElement e = new BIElement(this,ele);
@@ -187,8 +207,14 @@ public class BindInfo
         return c;
     }
 
-    /** Gets the specified package name (options/@package). */
+    /**
+     * Gets the specified package name (options/@package).
+     */
     public JPackage getTargetPackage() {
+        if(model.options.defaultPackage!=null)
+            // "-p" takes precedence over everything else
+            return codeModel._package(model.options.defaultPackage);
+
         String p;
         if( defaultPackage!=null )
             p = defaultPackage;
@@ -229,6 +255,24 @@ public class BindInfo
     public Collection<BIInterface> interfaces() {
         return interfaces.values();
     }
+
+    /**
+     * Gets the list of top-level {@link CPluginCustomization}s.
+     */
+    private CCustomizations getGlobalCustomizations() {
+        CCustomizations r=null;
+        for( Element e : DOMUtil.getChildElements(dom) ) {
+            if(!model.options.pluginURIs.contains(e.getNamespaceURI()))
+                continue;   // this isn't a plugin customization
+            if(r==null)
+                r = new CCustomizations();
+            r.add(new CPluginCustomization(e, DOMLocator.getLocationInfo(e)));
+        }
+
+        if(r==null)     r = CCustomizations.EMPTY;
+        return new CCustomizations(r);
+    }
+    
     
     
     
@@ -259,12 +303,14 @@ public class BindInfo
      * Parses an InputSource into dom4j Document.
      * Returns null in case of an exception.
      */
-    private static Document parse( InputSource is, ErrorReceiver receiver ) throws AbortException {
+    private static Document parse( Model model, InputSource is, ErrorReceiver receiver ) throws AbortException {
         try {
             ValidatorHandler validator = bindingFileSchema.newValidator();
 
             // set up the pipe line as :
-            //   parser->validator->factory
+            //              /-> extensionChecker -> validator
+            //   parser-> -<
+            //              \-> DOM builder
             SAXParserFactory pf = SAXParserFactory.newInstance();
             pf.setNamespaceAware(true);
             DOMBuilder builder = new DOMBuilder();
@@ -273,7 +319,11 @@ public class BindInfo
             validator.setErrorHandler(controller);
             XMLReader reader = pf.newSAXParser().getXMLReader();
             reader.setErrorHandler(controller);
-            reader.setContentHandler(new ForkContentHandler(validator,builder));
+
+            DTDExtensionBindingChecker checker = new DTDExtensionBindingChecker("", model.options, controller);
+            checker.setContentHandler(validator);
+
+            reader.setContentHandler(new ForkContentHandler(checker,builder));
 
             reader.parse(is);
             
