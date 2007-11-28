@@ -204,8 +204,6 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
 
         private static final Logger logger = Util.getClassLogger();
 
-        // TODO: revisit. this is a security hole because this method can be used by anyone
-        // to enable access to a field.
         public FieldReflection(Field f) {
             super((Class<ValueT>)f.getType());
             this.f = f;
@@ -213,6 +211,9 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
             int mod = f.getModifiers();
             if(!Modifier.isPublic(mod) || Modifier.isFinal(mod) || !Modifier.isPublic(f.getDeclaringClass().getModifiers())) {
                 try {
+                    // attempt to make it accessible, but do so in the security context of the calling application.
+                    // don't do this in the doPrivilege block, as that would create a security hole for anyone
+                    // to make any field accessible.
                     f.setAccessible(true);
                 } catch( SecurityException e ) {
                     if(!accessWarned)
