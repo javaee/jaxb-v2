@@ -40,8 +40,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIDeclaration;
+import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSAttContainer;
 import com.sun.xml.xsom.XSAttGroupDecl;
@@ -70,12 +72,18 @@ import com.sun.xml.xsom.visitor.XSVisitor;
 
 /**
  * Reports all unacknowledged customizations as errors.
- * 
+ *
+ * <p>
+ * Since we scan the whole content tree, we use this to check for unused
+ * <tt>xmime:expectedContentTypes</tt> attributes. TODO: if we find this kind of error checks more
+ * common, use the visitors so that we don't have to mix everything in one class.
+ *
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 class UnusedCustomizationChecker extends BindingComponent implements XSVisitor, XSSimpleTypeVisitor {
     private final BGMBuilder builder = Ring.get(BGMBuilder.class);
+    private final SimpleTypeBuilder stb = Ring.get(SimpleTypeBuilder.class);
 
     private final Set<XSComponent> visitedComponents = new HashSet<XSComponent>();
 
@@ -113,7 +121,22 @@ class UnusedCustomizationChecker extends BindingComponent implements XSVisitor, 
         for( BIDeclaration decl : builder.getBindInfo(c).getDecls() )
             check(decl, c);
 
+        checkExpectedContentTypes(c);
+
         return true;
+    }
+
+    private void checkExpectedContentTypes(XSComponent c) {
+        if(c.getForeignAttribute(WellKnownNamespace.XML_MIME_URI, Const.EXPECTED_CONTENT_TYPES)==null)
+            return; // no such attribute
+        if(c instanceof XSParticle)
+            return; // particles get the same foreign attributes as local element decls,
+                    // so we need to skip them
+
+        if(!stb.isAcknowledgedXmimeContentTypes(c)) {
+            // this is not used
+            getErrorReporter().warning(c.getLocator(),Messages.WARN_UNUSED_EXPECTED_CONTENT_TYPES);
+        }
     }
 
     private void check(BIDeclaration decl, XSComponent c) {

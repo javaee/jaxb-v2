@@ -54,6 +54,9 @@ public class Messages
     static final String WARN_NO_GLOBAL_ELEMENT =
         "BGMBuilder.NoGlobalElement";
 
+    static final String WARN_UNUSED_EXPECTED_CONTENT_TYPES =
+        "UnusedCustomizationChecker.WarnUnusedExpectedContentTypes";
+
     static final String ERR_MULTIPLE_SCHEMA_BINDINGS =
         "BGMBuilder.MultipleSchemaBindings"; // arg:1
 
