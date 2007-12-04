@@ -76,10 +76,6 @@ public abstract class Expression {
             // noop
         }
 
-        void assignElementNumber(Set<Element> allElements) {
-            // noop
-        }
-
         public String toString() {
             return "-";
         }
