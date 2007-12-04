@@ -42,7 +42,6 @@ import javax.xml.bind.helpers.DefaultValidationEventHandler;
 import javax.xml.validation.ValidatorHandler;
 
 import com.sun.tools.xjc.Options;
-import com.sun.tools.xjc.SchemaCache;
 import com.sun.tools.xjc.reader.Const;
 import com.sun.xml.xsom.parser.AnnotationContext;
 import com.sun.xml.xsom.parser.AnnotationParser;
@@ -117,7 +116,7 @@ public class AnnotationParserFactoryImpl implements AnnotationParserFactory {
                 };
             }
 
-            public Object getResult( Object existing ) {
+            public BindInfo getResult( Object existing ) {
                 if(handler==null)
                     // interface contract violation.
                     // the getContentHandler method must have been called.
