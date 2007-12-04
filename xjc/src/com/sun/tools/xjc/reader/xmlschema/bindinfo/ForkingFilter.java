@@ -92,6 +92,10 @@ public class ForkingFilter extends XMLFilterImpl {
         this.loc = locator;
     }
 
+    public Locator getDocumentLocator() {
+        return loc;
+    }
+
     public void startDocument() throws SAXException {
         reset();
         super.startDocument();
