@@ -63,7 +63,7 @@ import com.sun.xml.bind.v2.TODO;
  * This class is responsible for whitespace normalization.
  *
  * @author <ul><li>Ryan Shoemaker, Sun Microsystems, Inc.</li></ul>
- * @version $Revision: 1.9.6.6 $
+ * @version $Revision: 1.9.6.7 $
  * @since JAXB1.0
  */
 public final class DatatypeConverterImpl implements DatatypeConverterInterface {
@@ -220,7 +220,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
     }
 
     public static String _printFloat(float v) {
-        if( v==Float.NaN )                  return "NaN";
+        if( Float.isNaN(v) )                return "NaN";
         if( v==Float.POSITIVE_INFINITY )    return "INF";
         if( v==Float.NEGATIVE_INFINITY )    return "-INF";
         return String.valueOf(v);
@@ -474,7 +474,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
     }
 
     public static String _printDouble(double v) {
-        if( v==Double.NaN )                    return "NaN";
+        if(Double.isNaN(v))                  return "NaN";
         if( v==Double.POSITIVE_INFINITY )    return "INF";
         if( v==Double.NEGATIVE_INFINITY )    return "-INF";
         return String.valueOf(v);
