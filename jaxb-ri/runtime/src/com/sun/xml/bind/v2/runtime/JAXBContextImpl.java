@@ -133,7 +133,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75.2.19 $
+ * @version $Revision: 1.75.2.20 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -484,7 +484,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
     }
 
     protected JaxBeanInfo getOrCreate( RuntimeArrayInfo ai ) {
-        JaxBeanInfo abi = beanInfos.get(ai.getType());
+        JaxBeanInfo abi = beanInfos.get(ai);
         if(abi!=null)   return abi;
 
         abi = new ArrayBeanInfoImpl(this,ai);
