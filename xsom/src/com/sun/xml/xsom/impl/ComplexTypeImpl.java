@@ -71,7 +71,10 @@ import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSVisitor;
 import org.xml.sax.Locator;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class ComplexTypeImpl extends AttributesHolder implements XSComplexType, Ref.ComplexType
 {
@@ -260,7 +263,25 @@ public class ComplexTypeImpl extends AttributesHolder implements XSComplexType, 
             },
             super.iterateAttributeUses() );
     }
-    
+
+    public Collection<XSAttributeUse> getAttributeUses() {
+        XSComplexType baseType = getBaseType().asComplexType();
+
+        if( baseType==null )    return super.getAttributeUses();
+
+        // TODO: this is fairly inefficient
+        Map<UName,XSAttributeUse> uses = new HashMap<UName, XSAttributeUse>();
+        for( XSAttributeUse a : baseType.getAttributeUses())
+            uses.put(new UName(a.getDecl()),a);
+
+        uses.keySet().removeAll(prohibitedAtts);
+        
+        for( XSAttributeUse a : super.getAttributeUses())
+            uses.put(new UName(a.getDecl()),a);
+
+        return uses.values();
+    }
+
     
     public XSType[] listSubstitutables() {
         return Util.listSubstitutables(this);

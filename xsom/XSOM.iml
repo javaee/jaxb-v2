@@ -4,11 +4,17 @@
     <facet type="web" name="Web" implicit="true">
       <configuration>
         <descriptors>
-          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/ref/xml/web.xml" optional="false" version="2.4" />
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/ref/xml/web.xml" optional="false" version="2.5" />
         </descriptors>
         <webroots>
           <root url="file://$MODULE_DIR$/ref/xml" relative="/WEB-INF" />
         </webroots>
+        <sourceRoots>
+          <root url="file://$MODULE_DIR$/build/src" />
+          <root url="file://$MODULE_DIR$/examples/dumper" />
+          <root url="file://$MODULE_DIR$/src" />
+          <root url="file://$MODULE_DIR$/test" />
+        </sourceRoots>
         <building>
           <setting name="EXPLODED_URL" value="file://" />
           <setting name="EXPLODED_ENABLED" value="false" />
@@ -20,6 +26,12 @@
           <setting name="RUN_JASPER_VALIDATION" value="true" />
           <setting name="BUILD_ONLY_WEB_RESOURCES" value="false" />
         </building>
+        <packaging>
+          <containerElement type="module" name="XSOM">
+            <attribute name="method" value="1" />
+            <attribute name="URI" value="/WEB-INF/classes" />
+          </containerElement>
+        </packaging>
       </configuration>
     </facet>
   </component>

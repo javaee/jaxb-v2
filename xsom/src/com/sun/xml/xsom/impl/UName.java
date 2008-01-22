@@ -36,6 +36,8 @@
 
 package com.sun.xml.xsom.impl;
 
+import com.sun.xml.xsom.XSDeclaration;
+
 import java.util.Comparator;
 
 /**
@@ -60,7 +62,11 @@ public final class UName {
     public UName( String nsUri, String localName ) {
         this(nsUri,localName,localName);
     }
-    
+
+    public UName(XSDeclaration decl) {
+        this(decl.getTargetNamespace(),decl.getName());
+    }
+
     private final String nsUri;
     private final String localName;
     private final String qname;
