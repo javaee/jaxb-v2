@@ -118,7 +118,7 @@ public class UnionSimpleTypeImpl extends SimpleTypeImpl implements XSUnionSimple
     public XSFacet getFacet( String name ) { return null; }
     public List<XSFacet> getFacets( String name ) { return Collections.EMPTY_LIST; }
 
-    public XSVariety getVariety() { return XSVariety.LIST; }
+    public XSVariety getVariety() { return XSVariety.UNION; }
 
     public XSSimpleType getPrimitiveType() { return null; }
 
