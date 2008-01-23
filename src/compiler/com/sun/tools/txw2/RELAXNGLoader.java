@@ -20,15 +20,15 @@
 
 package com.sun.tools.txw2;
 
-import org.kohsuke.rngom.parse.Parseable;
-import org.kohsuke.rngom.parse.IllegalSchemaException;
+import com.sun.tools.txw2.builder.relaxng.SchemaBuilderImpl;
+import com.sun.tools.txw2.model.Leaf;
+import com.sun.tools.txw2.model.NodeSet;
 import org.kohsuke.rngom.ast.util.CheckingSchemaBuilder;
 import org.kohsuke.rngom.dt.CascadingDatatypeLibraryFactory;
 import org.kohsuke.rngom.dt.builtin.BuiltinDatatypeLibraryFactory;
+import org.kohsuke.rngom.parse.IllegalSchemaException;
+import org.kohsuke.rngom.parse.Parseable;
 import org.relaxng.datatype.helpers.DatatypeLibraryLoader;
-import com.sun.tools.txw2.model.NodeSet;
-import com.sun.tools.txw2.model.Leaf;
-import com.sun.tools.txw2.builder.relaxng.SchemaBuilderImpl;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -41,12 +41,20 @@ class RELAXNGLoader implements SchemaBuilder {
     }
 
     public NodeSet build(TxwOptions options) throws IllegalSchemaException {
-        SchemaBuilderImpl stage1 = new SchemaBuilderImpl(options.codeModel);
-        Leaf pattern = (Leaf)parseable.parse(new CheckingSchemaBuilder(stage1,options.errorListener,
-            new CascadingDatatypeLibraryFactory(
-                new BuiltinDatatypeLibraryFactory(new DatatypeLibraryLoader()),
-                new DatatypeLibraryLoader())));
+        // create DatatypeLibraryLoader with the right context classloader so that it picks up
+        // our classpath.
+        ClassLoader ccl = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+        try {
+            SchemaBuilderImpl stage1 = new SchemaBuilderImpl(options.codeModel);
+            Leaf pattern = (Leaf)parseable.parse(new CheckingSchemaBuilder(stage1,options.errorListener,
+                new CascadingDatatypeLibraryFactory(
+                    new BuiltinDatatypeLibraryFactory(new DatatypeLibraryLoader()),
+                    new DatatypeLibraryLoader())));
 
-        return new NodeSet(options,pattern);
+            return new NodeSet(options,pattern);
+        } finally {
+            Thread.currentThread().setContextClassLoader(ccl);
+        }
     }
 }
