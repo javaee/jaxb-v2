@@ -788,7 +788,7 @@ public class Options
     /**
      * Finds the <tt>META-INF/sun-jaxb.episode</tt> file to add as a binding customization.
      */
-    private void scanEpisodeFile(File jar) throws BadCommandLineException {
+    public void scanEpisodeFile(File jar) throws BadCommandLineException {
         try {
             URLClassLoader ucl = new URLClassLoader(new URL[]{jar.toURL()});
             Enumeration<URL> resources = ucl.findResources("META-INF/sun-jaxb.episode");
