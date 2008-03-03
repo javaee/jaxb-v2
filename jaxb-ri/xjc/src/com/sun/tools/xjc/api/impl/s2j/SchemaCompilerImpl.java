@@ -211,6 +211,11 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
         // this has been problematic. turn it off.
 //        if(!forest.checkSchemaCorrectness(this))
 //            return null;
+
+        // parse all the binding files given via XJC -b options.
+        // this also takes care of the binding files given in the -episode option.
+        for (InputSource is : opts.getBindFiles())
+            parseSchema(is);
         
         // internalization
         SCDBasedBindingSet scdBasedBindingSet = forest.transform(opts.isExtensionMode());
