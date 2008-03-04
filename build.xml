@@ -62,7 +62,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.32 2007-10-01 16:33:16 kohsuke Exp $
+       $Id: build.xml,v 1.71.2.33 2008-03-04 18:03:15 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -900,7 +900,7 @@ Class-Path: ${manifest.classpath}
     </target>
 
     <target name="integrate-codemodel">
-        <property name="codemodel-version" value="2.1-SNAPSHOT" />
+        <property name="codemodel-version" value="2.2-SNAPSHOT" />
         <get src="http://kohsuke.sfbay/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel-version}.jar"
              dest="tools/lib/rebundle/compiler/codemodel.jar" />
         <get src="http://kohsuke.sfbay/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel-version}.jar"
