@@ -16,7 +16,7 @@
         <x:parse var="meta" xml="${metaFile.toURL()}"/>
 
         <dt>
-          <a href="../samples/{file.name}">
+          <a href="../samples/${file.name}">
             <x:expr select="$meta/sample/title" />
           </a>
           <!-- put 'new' icon on samples introduced in this release -->
