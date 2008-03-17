@@ -133,7 +133,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75.2.20 $
+ * @version $Revision: 1.75.2.21 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -410,7 +410,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
     /**
      * Creates a {@link RuntimeTypeInfoSet}.
      */
-    private RuntimeTypeInfoSet getTypeInfoSet() throws IllegalAnnotationsException {
+    public RuntimeTypeInfoSet getTypeInfoSet() throws IllegalAnnotationsException {
 
         // check cache
         if(typeInfoSetCache!=null) {
