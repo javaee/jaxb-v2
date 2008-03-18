@@ -45,7 +45,9 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.Base64Data;
 import com.sun.xml.fastinfoset.EncodingConstants;
 import com.sun.xml.fastinfoset.stax.StAXDocumentSerializer;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import javax.xml.bind.JAXBContext;
@@ -86,7 +88,7 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
      * local name tables.
      */
     final static class TablesPerJAXBContext {
-        final int[] elementIndexes;
+        final ElementIndexMap[] elementIndexes;
         final int[] attributeIndexes;
         final int[] localNameIndexes;
 
@@ -114,7 +116,7 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
          *
          */
         TablesPerJAXBContext(JAXBContextImpl context, int initialIndexOffset) {
-            elementIndexes = new int[context.getNumberOfElementNames()];
+            elementIndexes = new ElementIndexMap[context.getNumberOfElementNames()];
             attributeIndexes = new int[context.getNumberOfAttributeNames()];
             localNameIndexes = new int[context.getNumberOfLocalNames()];
             
@@ -164,6 +166,12 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
             clear(attributeIndexes);
             clear(localNameIndexes);
             indexOffset = 1;
+        }
+        
+        private void clear(ElementIndexMap[] elementIndexes) {
+            for (int i = 0; i < elementIndexes.length; i++) {
+                elementIndexes[i] = null;
+            }
         }
         
         private void clear(int[] array) {
@@ -226,6 +234,34 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
         }
     }
     
+    final static class ElementIndexMap {
+        final static class Pair {
+            final int prefixIndex;
+            final int mappedFIIndex;
+
+            public Pair(int prefixIndex, int mappedFIIndex) {
+                this.prefixIndex = prefixIndex;
+                this.mappedFIIndex = mappedFIIndex;
+            }
+        }
+        
+        List<Pair> elements = new ArrayList<Pair>(4);
+        
+        int getByPrefixIndex(int prefixIndex) {
+            for(Pair pair : elements) {
+                if (pair.prefixIndex == prefixIndex) {
+                    return pair.mappedFIIndex;
+                }
+            }
+            
+            return -1;
+        }
+        
+        void add(int prefixIndex, int mappedIndex) {
+            elements.add(new Pair(prefixIndex, mappedIndex));
+        }
+    }
+    
     public FastInfosetStreamWriterOutput(StAXDocumentSerializer out,
             JAXBContextImpl context) {
         super(out);
@@ -256,6 +292,7 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
         }
     }
     
+    @Override
     public void startDocument(XMLSerializer serializer, boolean fragment, 
             int[] nsUriIndex2prefixIndex, NamespaceContextImpl nsContext) 
             throws IOException, SAXException, XMLStreamException {
@@ -265,21 +302,41 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
             fiout.initiateLowLevelWriting();
     }
     
+    @Override
     public void endDocument(boolean fragment) throws IOException, SAXException, XMLStreamException {
         super.endDocument(fragment);
     }
     
+    private int getMappedElementIndex(Name name, int prefixIndex) {
+        ElementIndexMap map = tables.elementIndexes[name.qNameIndex];
+        if (map != null) {
+            return map.getByPrefixIndex(prefixIndex);
+        }
+        
+        return -1;
+    }
+    
+    private void setMappedElementIndex(Name name, int prefixIndex, int mappedFIIndex) {
+        ElementIndexMap map = tables.elementIndexes[name.qNameIndex];
+        if (map == null) {
+            map = new ElementIndexMap();
+        }
+        
+        map.add(prefixIndex, mappedFIIndex);
+    }
+
+    @Override
     public void beginStartTag(Name name) throws IOException {
         fiout.writeLowLevelTerminationAndMark();
         
         if (nsContext.getCurrent().count() == 0) {
-            final int qNameIndex = tables.elementIndexes[name.qNameIndex] - tables.indexOffset;
+            final int prefix = nsUriIndex2prefixIndex[name.nsUriIndex];
+            final int qNameIndex = getMappedElementIndex(name, prefix) - tables.indexOffset;
             if (qNameIndex >= 0) {
                 fiout.writeLowLevelStartElementIndexed(EncodingConstants.ELEMENT, qNameIndex);
             } else {
-                tables.elementIndexes[name.qNameIndex] = fiout.getNextElementIndex() + tables.indexOffset;
+                setMappedElementIndex(name, prefix, fiout.getNextElementIndex() + tables.indexOffset);
                 
-                final int prefix = nsUriIndex2prefixIndex[name.nsUriIndex];
                 writeLiteral(EncodingConstants.ELEMENT | EncodingConstants.ELEMENT_LITERAL_QNAME_FLAG,
                         name,
                         nsContext.getPrefix(prefix),
@@ -302,13 +359,17 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
         }
         fiout.writeLowLevelEndNamespaces();
         
-        final int qNameIndex = tables.elementIndexes[name.qNameIndex] - tables.indexOffset;
+        final int prefix = nsUriIndex2prefixIndex[name.nsUriIndex];
+        final int qNameIndex = getMappedElementIndex(name, prefix) - tables.indexOffset;
+        
+        String prefix1S = nsContext.getPrefix(prefix);
+        String uri1S = nsContext.getNamespaceURI(prefix);
+
         if (qNameIndex >= 0) {
             fiout.writeLowLevelStartElementIndexed(0, qNameIndex);
         } else {
-            tables.elementIndexes[name.qNameIndex] = fiout.getNextElementIndex() + tables.indexOffset;
+            setMappedElementIndex(name, prefix, fiout.getNextElementIndex() + tables.indexOffset);
             
-            final int prefix = nsUriIndex2prefixIndex[name.nsUriIndex];
             writeLiteral(EncodingConstants.ELEMENT_LITERAL_QNAME_FLAG,
                     name,
                     nsContext.getPrefix(prefix),
@@ -316,6 +377,7 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
         }
     }
     
+    @Override
     public void attribute(Name name, String value) throws IOException {
         fiout.writeLowLevelStartAttributes();
         
@@ -342,7 +404,7 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
         
         fiout.writeLowLevelAttributeValue(value);
     }
-    
+
     private void writeLiteral(int type, Name name, String prefix, String namespaceURI) throws IOException {
         final int localNameIndex = tables.localNameIndexes[name.localNameIndex] - tables.indexOffset;
         
@@ -363,19 +425,23 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
         }
     }
     
+    @Override
     public void endStartTag() throws IOException {
         fiout.writeLowLevelEndStartElement();
     }
     
+    @Override
     public void endTag(Name name) throws IOException {
         fiout.writeLowLevelEndElement();
     }
     
+    @Override
     public void endTag(int prefix, String localName) throws IOException {
         fiout.writeLowLevelEndElement();
     }
     
     
+    @Override
     public void text(Pcdata value, boolean needsSeparatingWhitespace) throws IOException {
         if (needsSeparatingWhitespace)
             fiout.writeLowLevelText(" ");
@@ -399,6 +465,7 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
     }
     
     
+    @Override
     public void text(String value, boolean needsSeparatingWhitespace) throws IOException {
         if (needsSeparatingWhitespace)
             fiout.writeLowLevelText(" ");
@@ -407,6 +474,7 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
     }
     
     
+    @Override
     public void beginStartTag(int prefix, String localName) throws IOException {
         fiout.writeLowLevelTerminationAndMark();
         
@@ -436,6 +504,7 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
             tables.incrementMaxIndexValue();
     }
     
+    @Override
     public void attribute(int prefix, String localName, String value) throws IOException {
         fiout.writeLowLevelStartAttributes();
 
