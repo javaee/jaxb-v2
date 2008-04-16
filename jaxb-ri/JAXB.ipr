@@ -477,6 +477,13 @@
     </modules>
   </component>
   <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="JDK1.5" />
+  <component name="ResourceManagerContainer">
+    <option name="myResourceBundles">
+      <value>
+        <list size="0" />
+      </value>
+    </option>
+  </component>
   <component name="RmicSettings">
     <option name="IS_EANABLED" value="false" />
     <option name="DEBUGGING_INFO" value="true" />
@@ -494,6 +501,11 @@
         <list size="0" />
       </value>
     </option>
+  </component>
+  <component name="copyright">
+    <Base>
+      <setting name="state" value="2" />
+    </Base>
   </component>
   <component name="libraryTable">
     <library name="util">
@@ -527,6 +539,7 @@
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/jaxen-1.1-beta-4.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/util/ant-junit.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/util/istack-commons-test.jar!/" />
+        <root url="file://$PROJECT_DIR$/tools/lib/redist" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -543,7 +556,6 @@
         <root url="jar://$PROJECT_DIR$/tools/lib/src/jing-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/args4j-1.0-RC-src.zip!/args4j-1.0-RC/src" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/sjsxp-src.zip!/" />
-        <root url="jar://$PROJECT_DIR$/tools/lib/src/txw2-src.zip!/compiler" />
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/junit-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/junit-format.src.zip!/" />
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/jfreechart-0.9.19.src.zip!/src" />
@@ -556,6 +568,7 @@
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/bsh-src.zip!/src" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/ant-src.zip!/apache-ant-1.6.2/src/main" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/istack-commons-test-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/src/txw2-src.zip!/" />
       </SOURCES>
     </library>
     <library name="runtime">
@@ -572,7 +585,6 @@
         <root url="jar://$PROJECT_DIR$/tools/lib/redist/jaxb-api-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/jsr173_1.0_src.jar!/src" />
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/activation-src.zip!/" />
-        <root url="jar://$PROJECT_DIR$/tools/lib/src/txw2-src.zip!/runtime" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/istack-commons-runtime-src.zip!/" />
       </SOURCES>
     </library>
@@ -646,6 +658,7 @@
         <root url="jar://$PROJECT_DIR$/tools/lib/src/codemodel.src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/xsom-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/txw2-src.zip!/" />
+        <root url="intellijad://intellijad" />
       </SOURCES>
     </library>
     <library name="ant">
@@ -670,5 +683,8 @@
       </SOURCES>
     </library>
   </component>
+  <UsedPathMacros>
+    <macro name="TEMPLATE" />
+  </UsedPathMacros>
 </project>
 

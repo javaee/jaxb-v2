@@ -19,6 +19,11 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntryProperties />
   </component>
+  <component name="copyright">
+    <Base>
+      <setting name="state" value="2" />
+    </Base>
+  </component>
   <component name="org.mevenide.idea.module.ModuleSettings">
     <favoriteGoals>
       <list size="0" />
