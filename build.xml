@@ -62,7 +62,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.33 2008-03-04 18:03:15 kohsuke Exp $
+       $Id: build.xml,v 1.71.2.34 2008-04-16 22:23:50 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -167,7 +167,7 @@
       <attribute name="file"/>
       <sequential>
         <copy tofile="@{file}"
-              file="${manifest.root}/manifest.mf"
+              file="./MANIFEST.MF"
               overwrite="yes"/>
         <replace file="@{file}">
             <replacefilter token="@@@@SPEC_VERSION@@@@"
@@ -216,17 +216,6 @@
 
 
         <parallel>
-          <!-- copy docs -->
-          <sequential>
-              <unzip src="${jaxb.libs.redist}/jaxb-api-doc.zip"
-                     dest="${jaxb.dist}/docs/api" />
-              <generate-docs dest="${jaxb.dist}/docs">
-                  <source>
-                      <fileset dir="${jaxb.docs}" />
-                  </source>
-              </generate-docs>
-          </sequential>
-
           <!-- copy redist jars -->
           <sequential>
               <copy todir="${jaxb.dist}/lib">
