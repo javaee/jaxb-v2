@@ -62,7 +62,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.35 2008-04-16 22:35:10 kohsuke Exp $
+       $Id: build.xml,v 1.71.2.36 2008-04-16 22:36:52 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -180,15 +180,6 @@
     </macrodef>
 
 
-    <target name="test-docs" description="generate docs for a test">
-        <mkdir dir="build/docs" />
-        <generate-docs dest="build/docs">
-            <source>
-                <fileset dir="${jaxb.docs}" />
-            </source>
-        </generate-docs>
-    </target>
-
     <!-- generate a distribution -->
     <target name="dist"
             depends="compile,integrate-1.0-compiler"
@@ -196,7 +187,6 @@
         <mkdir dir="${jaxb.dist}" />
         <mkdir dir="${jaxb.dist}/bin" />
         <mkdir dir="${jaxb.dist}/lib" />
-        <mkdir dir="${jaxb.dist}/docs/api" />
 
         <parallel>
           <!-- copy redist jars -->
@@ -359,7 +349,6 @@ Class-Path: ${manifest.classpath}
     <mkdir dir="build"/>
     <zip zipfile="build/jaxb-ri.licensee.zip">
       <fileset dir="." excludes="dist/**, **/build/**, sandbox/**" />
-      <fileset dir="." includes="docs/manifest/" />
     </zip>
   </target>
 
@@ -531,17 +520,12 @@ Class-Path: ${manifest.classpath}
 
     <!-- clean all of the builds -->
     <target name="clean"
-            description="clean dist, build, docs, and each sub-project">
+            description="clean dist, build, and each sub-project">
         <parallel>
           <!-- clean dist, and srcbundle -->
           <delete dir="${jaxb.dist}" />
           <delete dir="${srcbundle.dist}" />
           <delete dir="j2se-integration" />
-
-          <!-- clean up docs and dists -->
-          <!-- don't delete the top level docs directory -->
-          <delete dir="${jaxb.docs}/api" />
-          <!-- <delete dir="${jaxb.root}/dist" /> -->
 
           <!-- clean sub-projects -->
           <ant dir="runtime"            target="clean" />
