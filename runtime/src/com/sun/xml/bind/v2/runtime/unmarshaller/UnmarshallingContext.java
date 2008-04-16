@@ -183,6 +183,12 @@ public final class UnmarshallingContext extends Coordinator
     public @Nullable ClassResolver classResolver;
 
     /**
+     * User-supplied {@link ClassLoader} for converting name to {@link Class}.
+     * For backward compatibility, when null, use thread context classloader.
+     */
+    public @Nullable ClassLoader classLoader;
+
+    /**
      * State information for each element.
      */
     public final class State {
