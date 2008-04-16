@@ -62,7 +62,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.36 2008-04-16 22:36:52 kohsuke Exp $
+       $Id: build.xml,v 1.71.2.37 2008-04-16 23:02:45 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -533,7 +533,6 @@ Class-Path: ${manifest.classpath}
           <ant dir="runtime-staxex"     target="clean" />
           <ant dir="runtime-deprecated" target="clean" />
           <ant dir="xjc"                target="clean" />
-          <ant dir="pkg"                target="clean" />
           <ant dir="tools"              target="clean"/>
           <ant dir="apgen"              target="clean" />
           <ant dir="reflection"         target="clean" />
