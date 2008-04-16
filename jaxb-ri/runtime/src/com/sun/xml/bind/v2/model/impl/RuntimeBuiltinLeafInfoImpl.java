@@ -315,7 +315,10 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                     TODO.checkSpec("JSR222 Issue #42");
                     try {
                         String name = WhiteSpaceProcessor.trim(text).toString();
-                        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+                        ClassLoader cl = UnmarshallingContext.getInstance().classLoader;
+                        if(cl==null)
+                            cl = Thread.currentThread().getContextClassLoader();
+
                         if(cl!=null)
                             return cl.loadClass(name);
                         else

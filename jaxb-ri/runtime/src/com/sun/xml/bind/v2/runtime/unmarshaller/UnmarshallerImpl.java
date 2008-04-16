@@ -442,6 +442,10 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
             coordinator.classResolver = (ClassResolver)value;
             return;
         }
+        if(name.equals(ClassLoader.class.getName())) {
+            coordinator.classLoader = (ClassLoader)value;
+            return;
+        }
         super.setProperty(name, value);
     }
 
