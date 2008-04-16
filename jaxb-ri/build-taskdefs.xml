@@ -107,40 +107,6 @@
     </sequential>
   </macrodef>
   
-  
-  <!--
-    generates documentation by TOC processor
-  -->
-  <macrodef name="generate-docs">
-    <element name="source" />
-    <attribute name="dest" />
-    <sequential>
-      <taskdef name="htmlmacro" classname="com.sun.wts.tools.htmlmacro.HtmlMacroTask">
-        <classpath>
-          <pathelement path="tools/htmlmacro/htmlmacro.jar" />
-        </classpath>
-      </taskdef>
-      <htmlmacro destdir="@{dest}">
-        <documents dir="${jaxb.docs}" includes="*.html" excludes="catalog.html" />
-        <classpath>
-          <fileset dir="tools/htmlmacro" includes="commons-jelly-*.jar"/>
-        </classpath>
-        <tags dir="tools/htmlmacro/tags" includes="**/*.tag" excludes="jax/body.tag" />
-        <property file="build.properties"/>
-        <property key="IMPL_VERSION"        value="${release.impl.version}" />
-        <property key="IMPL_VERSION_SUFFIX" value="${release.impl.version.suffix}" />
-        <property key="JWSDP_VERSION"       value="${jwsdp.impl.version}"/>
-        <property key="JWSDP_ROOTDIR"       value="${jwsdp.root.directory}"/>
-      </htmlmacro>
-      <copy todir="@{dest}"><!-- this is so that it can work even when catalog.html doesn't exist -->
-        <fileset dir="docs" includes="catalog.html" />
-      </copy>
-      <copy todir="@{dest}">
-        <fileset dir="docs" includes="style/*"/>
-      </copy>
-    </sequential>
-  </macrodef>
-
   <!-- package rename task -->
   <taskdef name="prename" classname="com.sun.wts.tools.ant.PackageRenameTask">
     <classpath>
