@@ -62,7 +62,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.34 2008-04-16 22:23:50 kohsuke Exp $
+       $Id: build.xml,v 1.71.2.35 2008-04-16 22:35:10 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -153,11 +153,6 @@
       </arch-doc>
     </target>
 
-    <!-- process sample app meta data -->
-    <target name="process-samples"
-            description="process sample.meta data">
-        <ant dir="samples" target="process-samples"/>
-    </target>
 
 
 
@@ -202,18 +197,6 @@
         <mkdir dir="${jaxb.dist}/bin" />
         <mkdir dir="${jaxb.dist}/lib" />
         <mkdir dir="${jaxb.dist}/docs/api" />
-
-        <!-- Process samples first. We need to decide which samples to ship first,
-             or otherwise we can't generate documentation.
-
-             if wspack.home is set, then process samples as 'JWSDP',
-             otherwise process samples as 'RI' -->
-        <condition property="in.wspack">
-            <isset property="wspack.home"/>
-        </condition>
-        <antcall target="process-sample.inwspack"/>
-        <antcall target="process-sample.notinwspack"/>
-
 
         <parallel>
           <!-- copy redist jars -->
@@ -324,24 +307,6 @@ Class-Path: ${manifest.classpath}
               <chmod file="${jaxb.dist}/bin/xjc.sh" perm="ugo+rx"/>
               <chmod file="${jaxb.dist}/bin/schemagen.sh" perm="ugo+rx"/>
           </sequential>
-
-
-          <!-- copy samples -->
-          <sequential>
-              <mkdir dir="${jaxb.dist}/samples"/>
-              <copy todir="${jaxb.dist}/samples">
-                  <fileset dir="${jaxb.root}/samples/work"
-                           defaultexcludes="yes">
-                      <exclude name="CHANGELOG.txt"/>
-                      <exclude name="**/build.golden.regexp" />
-                      <!-- .cvsignore is a control file used for CVS -->
-                      <exclude name="**/.cvsignore" />
-                      <exclude name="**/sample.meta" />
-                      <exclude name="**/gen-src/**/*" />
-                      <exclude name="**/classes/**/*" />
-                  </fileset>
-              </copy>
-          </sequential>
         </parallel>
     </target>
 
@@ -353,30 +318,6 @@ Class-Path: ${manifest.classpath}
         </zip>
     </target>
 
-    <!-- this target will be run when the jwsdp build is driving.  It will
-         cause the sample apps to have a jwsdp appropriate classpath -->
-    <target name="process-sample.inwspack" if="in.wspack">
-        <ant dir="samples" target="process-samples">
-            <property name="samples.target" value="JWSDP"/>
-        </ant>
-        <!--replace dir="${jaxb.dist}/samples">
-            <include name="**/build.xml"/>
-            <replacefilter token="@@JAXB-RI_BUILD_PATH@@" />
-        </replace-->
-    </target>
-
-    <!-- this target will be run when building a standalone RI dist.  It
-         will cause the sample apps to have an RI appropriate classpath -->
-    <target name="process-sample.notinwspack" unless="in.wspack">
-        <ant dir="samples" target="process-samples">
-            <property name="samples.target" value="RI"/>
-        </ant>
-        <!--replace dir="${jaxb.dist}/samples">
-            <include name="**/build.xml"/>
-            <replacefilter token="@@JAXB-RI_BUILD_PATH@@"
-                           value="&lt;fileset dir=&quot;../..&quot; includes=&quot;lib/*.jar&quot; />" />
-        </replace-->
-    </target>
 
     <target name="dist-zip-with-src" depends="src-zip, dist-zip"/>
 
@@ -417,10 +358,8 @@ Class-Path: ${manifest.classpath}
           description="licensee bundle. Dumbed down version of the workspace bundle">
     <mkdir dir="build"/>
     <zip zipfile="build/jaxb-ri.licensee.zip">
-      <fileset dir="." excludes="dist/**, **/build/**, samples/**, docs/**, sandbox/**" />
+      <fileset dir="." excludes="dist/**, **/build/**, sandbox/**" />
       <fileset dir="." includes="docs/manifest/" />
-      <!-- place a stub build.xml to get the build going -->
-      <zipfileset dir="." includes="samples/dummy-build.xml" fullpath="samples/build.xml"/>
     </zip>
   </target>
 
@@ -611,7 +550,6 @@ Class-Path: ${manifest.classpath}
           <ant dir="runtime-deprecated" target="clean" />
           <ant dir="xjc"                target="clean" />
           <ant dir="pkg"                target="clean" />
-          <ant dir="samples"            target="clean"/>
           <ant dir="tools"              target="clean"/>
           <ant dir="apgen"              target="clean" />
           <ant dir="reflection"         target="clean" />
