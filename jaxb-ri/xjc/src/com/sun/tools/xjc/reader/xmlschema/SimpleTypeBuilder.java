@@ -603,6 +603,10 @@ public final class SimpleTypeBuilder extends BindingComponent {
                 break;
             }
         }
+        if(memberList.isEmpty()) {
+            getErrorReporter().error( loc, Messages.ERR_NO_ENUM_FACET );
+            return null;
+        }
 
         // use the name of the simple type as the name of the class.
         CClassInfoParent scope;
