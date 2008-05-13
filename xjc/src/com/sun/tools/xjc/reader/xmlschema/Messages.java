@@ -87,6 +87,9 @@ public class Messages
     static final String ERR_NO_ENUM_NAME_AVAILABLE =
         "ConversionFinder.NoEnumNameAvailable"; // arg:0
 
+    static final String ERR_NO_ENUM_FACET =
+        "ConversionFinder.NoEnumFacet"; // arg:0
+
     static final String ERR_ILLEGAL_EXPECTED_MIME_TYPE =
         "ERR_ILLEGAL_EXPECTED_MIME_TYPE"; // args:2
 
