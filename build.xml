@@ -62,7 +62,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.37 2008-04-16 23:02:45 kohsuke Exp $
+       $Id: build.xml,v 1.71.2.38 2008-05-14 23:49:18 ramapulavarthi Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -119,7 +119,13 @@
     <move file="j2se-integration/xjc/src/META-INF/services/com.sun.tools.xjc.Plugin"
           tofile="j2se-integration/tools/etc/META-INF/services/sun.tools.xjc.Plugin"/>
     <delete dir="j2se-integration/xjc/src/META-INF"/>
-    
+	
+	<!-- delete binary doc-files -->
+	<delete>
+		<fileset dir="j2se-integration/runtime/src/com/sun/xml/internal/bind/v2/doc-files" includes="*.gif,*.png,*.sxd,*.vsd"/>
+		<fileset dir="j2se-integration/xjc/src/com/sun/tools/internal/xjc/reader/xmlschema/doc-files" includes="*.gif,*.png,*.sxd,*.vsd"/>
+	</delete>
+	    
     <!-- insert the RI version number into the file prolog message that
         is placed at the head of every generated file and the output
         message for "xjc -version"  and
