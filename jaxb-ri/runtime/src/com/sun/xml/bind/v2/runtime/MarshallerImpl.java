@@ -143,9 +143,6 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
      *      non-null if the marshaller is working inside {@link BinderImpl}.
      */
     public MarshallerImpl( JAXBContextImpl c, AssociationMap assoc ) {
-        // initialize datatype converter with ours
-        DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
-
         context = c;
         serializer = new XMLSerializer(this);
         c14nSupport = context.c14nSupport;
