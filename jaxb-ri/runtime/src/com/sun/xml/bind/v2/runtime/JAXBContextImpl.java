@@ -51,6 +51,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import javax.xml.bind.Binder;
 import javax.xml.bind.DatatypeConverter;
@@ -133,7 +135,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75.2.21 $
+ * @version $Revision: 1.75.2.22 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -255,7 +257,13 @@ public final class JAXBContextImpl extends JAXBRIContext {
         Map<Class,Class> subclassReplacements, String defaultNsUri, boolean c14nSupport, 
         @Nullable RuntimeAnnotationReader ar, boolean xmlAccessorFactorySupport, boolean allNillable) throws JAXBException {
         // initialize datatype converter with ours
-        DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
+        // starting 2.2, we need to elevate the privileges
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            public Void run() {
+                DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
+                return null;
+            }
+        });
 
         if(defaultNsUri==null)      defaultNsUri="";    // fool-proof
 
