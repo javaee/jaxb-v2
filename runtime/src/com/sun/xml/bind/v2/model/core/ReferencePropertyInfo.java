@@ -128,9 +128,6 @@ public interface ReferencePropertyInfo<T,C> extends PropertyInfo<T,C> {
 
     /**
      * Returns true if this element is mandatory.
-     *
-     * For collections, this property isn't used.
-     * TODO: define the semantics when this is a collection
      */
     boolean isRequired();
 
