@@ -36,7 +36,7 @@
  holder.
 -->
 
-<!-- $Id: build.xml,v 1.22.4.2 2007-05-31 22:01:19 ofung Exp $ -->
+<!-- $Id: build.xml,v 1.22.4.3 2008-05-20 22:08:50 kohsuke Exp $ -->
 <project name="xjc" basedir=".." default="compile">
 
   <description>
@@ -136,7 +136,7 @@
                 excludes="javax.xml.bind.annotation.XmlJavaTypeAdapter" />
        <classes includes="javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter" />
        <classpath>
-         <pathelement path="${jaxb.libs.redist}/jaxb-api.jar"/>
+         <pathelement path="${jaxb.libs.redist.2.2}/jaxb-api.jar"/>
        </classpath>
      </cac>
      <cac destdir="${xjc.gensrc}"
