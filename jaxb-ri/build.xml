@@ -62,7 +62,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.39 2008-05-20 18:46:48 kohsuke Exp $
+       $Id: build.xml,v 1.71.2.40 2008-05-20 18:50:02 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -651,15 +651,23 @@ Class-Path: ${manifest.classpath}
            dest="tools/lib/util/stax-ex-src.zip" />
     </target>
 
-    <target name="integrate-jsr222">
-        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api.jar"
+    <target name="integrate-api-2.1" description="Integrate JAXB 2.1 API from Hudson">
+        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror-2.1/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api.jar"
              dest="tools/lib/redist/jaxb-api.jar" />
-        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-src.zip"
+        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror-2.1/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-src.zip"
              dest="tools/lib/redist/jaxb-api-src.zip" />
-        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-doc.zip"
+        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror-2.1/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-doc.zip"
              dest="tools/lib/redist/jaxb-api-doc.zip" />
     </target>
 
+    <target name="integrate-api-2.2" description="Integrate JAXB 2.2 API from Hudson">
+        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api.jar"
+             dest="tools/lib/redist2.2/jaxb-api.jar" />
+        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-src.zip"
+             dest="tools/lib/redist2.2/jaxb-api-src.zip" />
+        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-doc.zip"
+             dest="tools/lib/redist2.2/jaxb-api-doc.zip" />
+    </target>
 
     <target name="integrate-xsom">
         <get src="http://kohsuke.sfbay/hudson/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom.jar"
