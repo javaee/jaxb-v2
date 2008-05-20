@@ -161,7 +161,7 @@
         <classes includes="javax.xml.bind.annotation.XmlValue" />
 	<classes includes="javax.xml.bind.annotation.XmlSchemaType" />
         <classpath>
-          <pathelement path="${jaxb.libs.redist}/jaxb-api.jar"/>
+          <pathelement path="${jaxb.libs.redist.2.2}/jaxb-api.jar"/>
         </classpath>
       </apgen>
     </target>
