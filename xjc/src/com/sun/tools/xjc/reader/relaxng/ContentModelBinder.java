@@ -113,7 +113,7 @@ final class ContentModelBinder extends DPatternWalker {
             clazz.addProperty(prop);
         } else {
             CReferencePropertyInfo prop = new CReferencePropertyInfo(
-                    calcName(p),true,false/*TODO*/,null,null,p.getLocation());
+                    calcName(p),true,!optional,false/*TODO*/,null,null,p.getLocation());
             rts.addTo(prop);
             clazz.addProperty(prop);
         }

@@ -79,6 +79,11 @@ class ReferencePropertyInfoImpl<T,C,F,M>
 
     private final WildcardMode wildcard;
     private final C domHandler;
+    /**
+     * Lazily computed.
+     * @see #isRequired()
+     */
+    private Boolean isRequired;
 
 
     public ReferencePropertyInfoImpl(
@@ -143,6 +148,8 @@ class ReferencePropertyInfoImpl<T,C,F,M>
                 ann = null;
         }
 
+        isRequired = true;  // this is by default, to remain compatible with 2.1
+
         if(ann!=null) {
             Navigator<T,C,F,M> nav = nav();
             AnnotationReader<T,C,F,M> reader = reader();
@@ -158,6 +165,9 @@ class ReferencePropertyInfoImpl<T,C,F,M>
                     yield = addGenericElement(r);
                 else
                     yield = addAllSubtypes(type);
+
+                if(isRequired && !isRequired(r))
+                    isRequired = false;
 
                 if(last && !yield) {
                     // a reference didn't produce any type.
@@ -184,6 +194,29 @@ class ReferencePropertyInfoImpl<T,C,F,M>
         }
 
         types = Collections.unmodifiableSet(types);
+    }
+
+    public boolean isRequired() {
+        if(isRequired==null)
+            calcTypes(false);
+        return isRequired;
+    }
+
+    /**
+     * If we find out that we are working with 2.1 API, remember the fact so that
+     * we don't waste time generating exceptions every time we call {@link #isRequired(XmlElementRef)}.
+     */
+    private static boolean is2_2 = true;
+
+    private boolean isRequired(XmlElementRef ref) {
+        if(!is2_2)  return false;
+
+        try {
+            return ref.required();
+        } catch(LinkageError e) {
+            is2_2 = false;
+            return false;
+        }
     }
 
     /**

@@ -70,7 +70,7 @@ final class DefaultParticleBinder extends ParticleBinder {
         if(checker.hasNameCollision()) {
             CReferencePropertyInfo prop = new CReferencePropertyInfo(
                 getCurrentBean().getBaseClass()==null?"Content":"Rest",
-                true, false, p,
+                true, false, false, p,
                 builder.getBindInfo(p).toCustomizationList(),
                 p.getLocator() );
             RawTypeSetBuilder.build(p,false).addTo(prop);
