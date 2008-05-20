@@ -457,12 +457,15 @@ public class Options
      */
     public int parseArgument( String[] args, int i ) throws BadCommandLineException {
         if (args[i].equals("-classpath") || args[i].equals("-cp")) {
-            File file = new File(requireArgument(args[i],args,++i));
-            try {
-                classpaths.add(file.toURL());
-            } catch (MalformedURLException e) {
-                throw new BadCommandLineException(
-                    Messages.format(Messages.NOT_A_VALID_FILENAME,file),e);
+            String a = requireArgument(args[i], args, ++i);
+            for (String p : a.split(File.pathSeparator)) {
+                File file = new File(p);
+                try {
+                    classpaths.add(file.toURL());
+                } catch (MalformedURLException e) {
+                    throw new BadCommandLineException(
+                        Messages.format(Messages.NOT_A_VALID_FILENAME,file),e);
+                }
             }
             return 2;
         }
