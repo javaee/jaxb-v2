@@ -51,7 +51,8 @@
     </target>
     
     <target name="clean">
-        <ant dir="${jaxb.root}/tools/webapp-commons"       target="clean" />
+        <ant dir="${jaxb.root}/tools/source-tidy"          target="clean"/>
+        <ant dir="${jaxb.root}/tools/webapp-commons"       target="clean"/>
         <ant dir="${jaxb.root}/tools/pretty-printer"       target="clean"/>
         <ant dir="${jaxb.root}/tools/jing-rnc-driver"      target="clean"/>
         <ant dir="${jaxb.root}/tools/xmllint"              target="clean"/>

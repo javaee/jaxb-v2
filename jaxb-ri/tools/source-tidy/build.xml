@@ -40,7 +40,7 @@
   base dir has to be jaxb-ri for this to be work correctly
   when it's called from the jaxb-ri/build.xml
 
-  $Id: build.xml,v 1.2.6.1 2007-05-31 22:01:15 ofung Exp $
+  $Id: build.xml,v 1.2.6.2 2008-05-20 23:36:00 kohsuke Exp $
 -->
 <project name="sourceTidy" basedir="../.." default="compile">
 
@@ -53,4 +53,7 @@
             debug="${compile.debug}" optimize="${compile.optimize}" />
     </target>
 
+    <target name="clean">
+        <delete dir="${jaxb.root}/tools/source-tidy" includes="*.class" />
+    </target>
 </project>
