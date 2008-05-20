@@ -62,7 +62,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.38 2008-05-14 23:49:18 ramapulavarthi Exp $
+       $Id: build.xml,v 1.71.2.39 2008-05-20 18:46:48 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -545,86 +545,6 @@ Class-Path: ${manifest.classpath}
         </parallel>
     </target>
 
-
-    <!-- wspack targets -->
-    <target name="wspack"
-            description="Create a jaxb distribution for the JWSDP">
-        <echo message=" build.home is set to ${build.home}"/>
-        <echo message="  dist.home is set to ${dist.home}"/>
-        <echo message="wspack.home is set to ${wspack.home}"/>
-
-        <!-- replicate the build dirs from our build in ${build.home} -->
-        <mkdir dir="${build.home}/runtime/build/classes"/>
-        <mkdir dir="${build.home}/xjc/build/classes"/>
-
-        <!-- we need to redefine some of the jaxb properties when being built
-             by wspack, so we will use <antcall> instead of listing an @depends
-             on the wspack target.  -->
-
-        <!-- compile each of the jaxb sub-projects into ${build.home} -->
-        <antcall target="dist">
-            <param name="runtime.classes"   value="${build.home}/runtime/build/classes"/>
-            <param name="xjc.classes"       value="${build.home}/xjc/build/classes"/>
-            <param name="jaxb.dist"         value="${dist.home}"/>
-        </antcall>
-
-        <!-- replace the manifest file in jaxb-xjc.jar -->
-        <createManifest file="${xjc.root}/manifest.xjc.jwsdp" extensionName="com.sun.tools.xjc" />
-
-        <property name="jaxp.jars"          value="../../jaxp/lib"/>
-        <property name="jwsdp.shared"       value="../../jwsdp-shared/lib"/>
-        <property name="sjsxp.jars"         value="../../sjsxp/lib"/>
-        <property name="jes.rpm"            value="../../lib"/>
-        <property name="jes.svr4"           value="."/>
-        <property name="jes.zip"            value="../../jwsdp-shared/lib"/>
-
-        <property name="manifest.classpath" value="jaxb-api.jar jaxb-impl.jar jaxb1-impl.jar
-        activation.jar
-        ${jwsdp.shared}/activation.jar
-        ${jes.svr4}/../../../../usr/share/lib/activation.jar
-        ${jes.rpm}/activation.jar
-        ${jes.zip}/activation.jar
-        jsr173_api.jar
-        ${sjsxp.jars}/jsr173_api.jar
-        ${jes.svr4}/jsr173_api.jar
-        ${jes.rpm}/jsr173_api.jar
-        ${jes.zip}/jsr173_api.jar
-          " />
-        <echo file="${xjc.root}/manifest.xjc.jwsdp"
-              append="true"
->Main-Class: com.sun.tools.xjc.XJCFacade
-Class-Path: ${manifest.classpath}
-
-</echo>
-        <mkdir dir="${dist.home}/lib/tmp"/>
-        <unjar src="${dist.home}/lib/jaxb-xjc.jar" dest="${dist.home}/lib/tmp"/>
-        <move file="${dist.home}/lib/jaxb-xjc.jar" tofile="${dist.home}/lib/jaxb-xjc.jar.orig"/>
-        <delete file="${dist.home}/lib/tmp/META-INF/MANIFEST.MF"/>
-        <jar jarfile="${dist.home}/lib/jaxb-xjc.jar"
-             manifest="${xjc.root}/manifest.xjc.jwsdp">
-             <!-- unfortunately, we have to unjar and rejar the files to preserve the
-                  other META-INF files, also need to strip out the resolver code -->
-             <fileset dir="${dist.home}/lib/tmp">
-                <exclude name="com/sun/org/apache/xml/internal/resolver/"/>
-             </fileset>
-        </jar>
-        <delete dir="${dist.home}/lib/tmp"/>
-        <delete file="${dist.home}/lib/jaxb-xjc.jar.orig"/>
-
-
-        <!-- make the wspack dist, excluding unnecessary jaxb files -->
-        <copy todir="${wspack.home}">
-            <fileset dir="${dist.home}">
-                <exclude name="lib/jaxb-api-src.zip"/>
-                <exclude name="lib/jaxp-api.jar"/>
-                <exclude name="lib/jaxb-api-doc.zip"/>
-                <exclude name="**/api/"/>
-                <exclude name="lib/jsr173_1.0_api.jar"/>
-                <exclude name="lib/activation.jar"/>
-            </fileset>
-        </copy>
-
-    </target>
 
     <target name="check.os">
       <condition property="is.unix">
