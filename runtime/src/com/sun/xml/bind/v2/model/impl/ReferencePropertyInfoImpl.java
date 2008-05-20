@@ -148,7 +148,7 @@ class ReferencePropertyInfoImpl<T,C,F,M>
                 ann = null;
         }
 
-        isRequired = true;  // this is by default, to remain compatible with 2.1
+        isRequired = !isCollection();  // this is by default, to remain compatible with 2.1
 
         if(ann!=null) {
             Navigator<T,C,F,M> nav = nav();
