@@ -117,6 +117,7 @@
             <emptyLine />
           </value>
         </option>
+        <option name="XML_KEEP_BLANK_LINES" value="4" />
         <ADDITIONAL_INDENT_OPTIONS fileType="js">
           <option name="INDENT_SIZE" value="4" />
           <option name="CONTINUATION_INDENT_SIZE" value="8" />
