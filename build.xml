@@ -62,7 +62,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.40 2008-05-20 18:50:02 kohsuke Exp $
+       $Id: build.xml,v 1.71.2.41 2008-05-20 22:58:06 kohsuke Exp $
     </description>
 
     <!-- initialize build properties -->
@@ -314,6 +314,13 @@ Class-Path: ${manifest.classpath}
         </zip>
     </target>
 
+    <target name="dist-zip-2.2" depends="dist"
+            description="create jaxb-ri-2.2.zip">
+        <zip destfile="${jaxb.root}/jaxb-ri-2.2.zip" duplicate="fail">
+            <zipfileset dir="${jaxb.dist}" prefix="jaxb-ri" excludes="lib/jaxb-api*.*" />
+            <zipfileset dir="${jaxb.libs.redist.2.2}" prefix="jaxb-ri/lib" includes="jaxb-api*.*"/> 
+        </zip>
+    </target>
 
     <target name="dist-zip-with-src" depends="src-zip, dist-zip"/>
 
@@ -349,6 +356,9 @@ Class-Path: ${manifest.classpath}
       </parallel>
       <delete dir="tmp" />
     </target>
+
+    <target name="hudson" depends="clean, dist-zip-with-src, dist-zip-2.2"
+            description="Target to be invoked on Hudson"/>
 
   <target name="licensee-zip"
           description="licensee bundle. Dumbed down version of the workspace bundle">
