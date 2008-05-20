@@ -1199,9 +1199,6 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
 
             final Tree choice = Tree.makeGroup(GroupKind.CHOICE, children).makeRepeated(rp.isCollection()).makeOptional(!rp.isRequired());
-            // it's a curious omission that XmlElementRef doesn't have required().
-            // instead right now a collection will make it [0,unbounded]
-
 
             final QName ename = rp.getXmlName();
 
