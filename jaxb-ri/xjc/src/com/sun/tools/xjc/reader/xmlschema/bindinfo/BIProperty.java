@@ -388,6 +388,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
             new CReferencePropertyInfo(
                 name,
                 types.getCollectionMode().isRepeated()||isMixed,
+                types.isRequired(),
                 isMixed, source,
                 getCustomizations(source), source.getLocator() ),
             source);

@@ -64,6 +64,11 @@ import org.xml.sax.Locator;
 public final class CReferencePropertyInfo extends CPropertyInfo implements ReferencePropertyInfo<NType,NClass> {
 
     /**
+     * True if this property can never be absent legally.
+     */
+    private final boolean required;
+
+    /**
      * List of referenced elements.
      */
     private final Set<CElement> elements = new HashSet<CElement>();
@@ -71,10 +76,11 @@ public final class CReferencePropertyInfo extends CPropertyInfo implements Refer
     private final boolean isMixed;
     private WildcardMode wildcard;
 
-    public CReferencePropertyInfo(String name, boolean collection, boolean isMixed, XSComponent source,
+    public CReferencePropertyInfo(String name, boolean collection, boolean required, boolean isMixed, XSComponent source,
                                   CCustomizations customizations, Locator locator) {
         super(name, collection||isMixed, source, customizations, locator );
         this.isMixed = isMixed;
+        this.required = required;
     }
 
     public Set<? extends CTypeInfo> ref() {
@@ -208,6 +214,10 @@ public final class CReferencePropertyInfo extends CPropertyInfo implements Refer
     // reference property cannot have a type.
     public QName getSchemaType() {
         return null;
+    }
+
+    public boolean isRequired() {
+        return required;
     }
 
     @Override
