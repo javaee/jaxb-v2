@@ -52,7 +52,7 @@
 
   <!-- classpath -->
   <path id="javac.classpath">
-    <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
+    <fileset dir="${jaxb.libs.redist.2.2}" includes="*.jar"/>
     <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
     <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
   </path>
