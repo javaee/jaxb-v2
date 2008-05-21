@@ -24,7 +24,7 @@
   base dir has to be jaxb-ri for this to be work correctly
   when it's called from the jaxb-ri/build.xml
 
-  $Id: build.xml,v 1.2 2005-09-10 19:08:39 kohsuke Exp $
+  $Id: build.xml,v 1.2.12.1 2008-05-21 00:12:57 ramapulavarthi Exp $
 -->
 <project name="sourceTidy" basedir="../.." default="compile">
 
@@ -36,5 +36,7 @@
         <javac srcdir="${jaxb.root}/tools/source-tidy" destdir="${jaxb.root}/tools/source-tidy"
             debug="${compile.debug}" optimize="${compile.optimize}" />
     </target>
-
+    <target name="clean">
+        <delete dir="${jaxb.root}/tools/source-tidy" includes="*.class" />
+    </target>
 </project>
