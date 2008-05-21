@@ -215,7 +215,7 @@ class ReferencePropertyInfoImpl<T,C,F,M>
             return ref.required();
         } catch(LinkageError e) {
             is2_2 = false;
-            return false;
+            return true;    // the value defaults to true
         }
     }
 
