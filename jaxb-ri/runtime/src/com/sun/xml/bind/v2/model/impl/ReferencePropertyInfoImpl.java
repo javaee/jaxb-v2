@@ -166,6 +166,8 @@ class ReferencePropertyInfoImpl<T,C,F,M>
                 else
                     yield = addAllSubtypes(type);
 
+                // essentially "isRequired &= isRequired(r)" except that we'd like to skip evaluating isRequird(r)
+                // if the value is already false.
                 if(isRequired && !isRequired(r))
                     isRequired = false;
 
@@ -208,15 +210,19 @@ class ReferencePropertyInfoImpl<T,C,F,M>
      */
     private static boolean is2_2 = true;
 
+    /**
+     * Reads the value of {@code XmlElementRef.required()}.
+     *
+     * If we are working as 2.1 RI, this defaults to true.
+     */
     private boolean isRequired(XmlElementRef ref) {
-        if(!is2_2)  return false;
+        if(!is2_2)  return true;
 
         try {
             return ref.required();
         } catch(LinkageError e) {
             is2_2 = false;
-            throw new Error();  // test
-//            return true;    // the value defaults to true
+            return true;    // the value defaults to true
         }
     }
 
