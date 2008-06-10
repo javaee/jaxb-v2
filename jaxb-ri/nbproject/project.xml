@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  
@@ -35,7 +34,6 @@
  only if the new code is made subject to such option by the copyright
  holder.
 -->
-
 <project xmlns="http://www.netbeans.org/ns/project/1">
     <type>org.netbeans.modules.ant.freeform</type>
     <configuration>
@@ -98,6 +96,21 @@
                     <type>java</type>
                     <location>runtime-fi/src</location>
                 </source-folder>
+                <source-folder>
+                    <label>runtime/test</label>
+                    <type>java</type>
+                    <location>runtime/test</location>
+                </source-folder>
+                <source-folder>
+                    <label>runtime-deprecated/test</label>
+                    <type>java</type>
+                    <location>runtime-deprecated/test</location>
+                </source-folder>
+                <source-folder>
+                    <label>xjc/test</label>
+                    <type>java</type>
+                    <location>xjc/test</location>
+                </source-folder>
             </folders>
             <ide-actions>
                 <action name="build">
@@ -114,6 +127,26 @@
                     <target>compile</target>
                 </action>
             </ide-actions>
+            <export>
+                <type>jar</type>
+                <location>dist/lib/jaxb-api.jar</location>
+                <build-target>dist</build-target>
+            </export>
+            <export>
+                <type>jar</type>
+                <location>dist/lib/jaxb-impl.jar</location>
+                <build-target>dist</build-target>
+            </export>
+            <export>
+                <type>jar</type>
+                <location>dist/lib/jaxb-xjc.jar</location>
+                <build-target>dist</build-target>
+            </export>
+            <export>
+                <type>jar</type>
+                <location>dist/lib/jaxb1-impl.jar</location>
+                <build-target>dist</build-target>
+            </export>
             <view>
                 <items>
                     <source-folder style="packages">
@@ -160,6 +193,18 @@
                         <label>runtime-fi/src</label>
                         <location>runtime-fi/src</location>
                     </source-folder>
+                    <source-folder style="packages">
+                        <label>runtime/test</label>
+                        <location>runtime/test</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>runtime-deprecated/test</label>
+                        <location>runtime-deprecated/test</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>xjc/test</label>
+                        <location>xjc/test</location>
+                    </source-folder>
                     <source-file>
                         <location>build.xml</location>
                     </source-file>
@@ -172,20 +217,120 @@
             </view>
             <subprojects/>
         </general-data>
-        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/1">
+        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/2">
             <compilation-unit>
                 <package-root>apgen/src</package-root>
+                <classpath mode="compile">tools/lib/rebundle/compiler/relaxng.javadt.jar:tools/lib/rebundle/compiler/resolver.jar:tools/lib/rebundle/compiler/rngom.jar:tools/lib/rebundle/compiler/txw2.jar:tools/lib/rebundle/compiler/xsom.jar:tools/lib/rebundle/runtime/isorelax.jar:tools/lib/rebundle/runtime/msv.jar:tools/lib/redist/activation.jar:tools/lib/redist/jaxb-api.jar:tools/lib/redist/jsr173_1.0_api.jar:tools/lib/redist/relaxngDatatype.jar:tools/lib/redist/xsdlib.jar:tools/lib/util/ant-contrib-0.6.jar:tools/lib/util/ant-fsget.jar:tools/lib/util/ant-launcher.jar:tools/lib/util/ant-trax.jar:tools/lib/util/ant.jar:tools/lib/util/args4j-1.0-RC.jar:tools/lib/util/jam.jar:tools/lib/util/jing.jar:tools/lib/util/nekohtml.jar:tools/lib/util/relaxngcc.jar:tools/lib/util/sfx4j-1.0.jar:tools/lib/util/sjsxp.jar:tools/lib/util/txwc2.jar:tools/lib/util/xercesImpl.jar:tools/lib/util/FastInfoset.jar:tools/lib/src/codemodel-annotation-compiler.src.zip:tools/lib/src/codemodel.src.zip:tools/lib/rebundle/compiler/codemodel.jar:tools/lib/rebundle/compiler/istack-commons-tools.jar:runtime/src:tools/lib/rebundle/runtime2/istack-commons-runtime.jar</classpath>
+                <built-to>dist/lib/jaxb-api.jar</built-to>
+                <built-to>dist/lib/jaxb-impl.jar</built-to>
+                <built-to>dist/lib/jaxb-xjc.jar</built-to>
+                <built-to>dist/lib/jaxb1-impl.jar</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
                 <package-root>codemodel/src</package-root>
+                <classpath mode="compile">tools/lib/rebundle/compiler/relaxng.javadt.jar:tools/lib/rebundle/compiler/resolver.jar:tools/lib/rebundle/compiler/rngom.jar:tools/lib/rebundle/compiler/txw2.jar:tools/lib/rebundle/compiler/xsom.jar:tools/lib/rebundle/runtime/isorelax.jar:tools/lib/rebundle/runtime/msv.jar:tools/lib/redist/activation.jar:tools/lib/redist/jaxb-api.jar:tools/lib/redist/jsr173_1.0_api.jar:tools/lib/redist/relaxngDatatype.jar:tools/lib/redist/xsdlib.jar:tools/lib/util/ant-contrib-0.6.jar:tools/lib/util/ant-fsget.jar:tools/lib/util/ant-launcher.jar:tools/lib/util/ant-trax.jar:tools/lib/util/ant.jar:tools/lib/util/args4j-1.0-RC.jar:tools/lib/util/jam.jar:tools/lib/util/jing.jar:tools/lib/util/nekohtml.jar:tools/lib/util/relaxngcc.jar:tools/lib/util/sfx4j-1.0.jar:tools/lib/util/sjsxp.jar:tools/lib/util/txwc2.jar:tools/lib/util/xercesImpl.jar:tools/lib/util/FastInfoset.jar:tools/lib/src/codemodel-annotation-compiler.src.zip:tools/lib/src/codemodel.src.zip</classpath>
+                <built-to>dist/lib/jaxb-api.jar</built-to>
+                <built-to>dist/lib/jaxb-impl.jar</built-to>
+                <built-to>dist/lib/jaxb-xjc.jar</built-to>
+                <built-to>dist/lib/jaxb1-impl.jar</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
                 <package-root>runtime/src</package-root>
+                <classpath mode="compile">tools/lib/rebundle/compiler/relaxng.javadt.jar:tools/lib/rebundle/compiler/resolver.jar:tools/lib/rebundle/compiler/rngom.jar:tools/lib/rebundle/compiler/txw2.jar:tools/lib/rebundle/compiler/xsom.jar:tools/lib/rebundle/runtime/isorelax.jar:tools/lib/rebundle/runtime/msv.jar:tools/lib/redist/activation.jar:tools/lib/redist/jaxb-api.jar:tools/lib/redist/jsr173_1.0_api.jar:tools/lib/redist/relaxngDatatype.jar:tools/lib/redist/xsdlib.jar:tools/lib/util/ant-contrib-0.6.jar:tools/lib/util/ant-fsget.jar:tools/lib/util/ant-launcher.jar:tools/lib/util/ant-trax.jar:tools/lib/util/ant.jar:tools/lib/util/args4j-1.0-RC.jar:tools/lib/util/jam.jar:tools/lib/util/jing.jar:tools/lib/util/nekohtml.jar:tools/lib/util/relaxngcc.jar:tools/lib/util/sfx4j-1.0.jar:tools/lib/util/sjsxp.jar:tools/lib/util/txwc2.jar:tools/lib/util/xercesImpl.jar:tools/lib/util/FastInfoset.jar:tools/lib/src/codemodel-annotation-compiler.src.zip:tools/lib/src/codemodel.src.zip:tools/lib/rebundle/compiler/istack-commons-tools.jar:tools/lib/rebundle/runtime2/istack-commons-runtime.jar:runtime/src:runtime/build/src:tools/lib/rebundle/runtime2/txw2.jar:runtime/build/classes</classpath>
+                <built-to>dist/lib/jaxb-api.jar</built-to>
+                <built-to>dist/lib/jaxb-impl.jar</built-to>
+                <built-to>dist/lib/jaxb-xjc.jar</built-to>
+                <built-to>dist/lib/jaxb1-impl.jar</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
                 <package-root>runtime-deprecated/src</package-root>
+                <classpath mode="compile">tools/lib/rebundle/compiler/relaxng.javadt.jar:tools/lib/rebundle/compiler/resolver.jar:tools/lib/rebundle/compiler/rngom.jar:tools/lib/rebundle/compiler/txw2.jar:tools/lib/rebundle/compiler/xsom.jar:tools/lib/rebundle/runtime/isorelax.jar:tools/lib/rebundle/runtime/msv.jar:tools/lib/redist/activation.jar:tools/lib/redist/jaxb-api.jar:tools/lib/redist/jsr173_1.0_api.jar:tools/lib/redist/relaxngDatatype.jar:tools/lib/redist/xsdlib.jar:tools/lib/util/ant-contrib-0.6.jar:tools/lib/util/ant-fsget.jar:tools/lib/util/ant-launcher.jar:tools/lib/util/ant-trax.jar:tools/lib/util/ant.jar:tools/lib/util/args4j-1.0-RC.jar:tools/lib/util/jam.jar:tools/lib/util/jing.jar:tools/lib/util/nekohtml.jar:tools/lib/util/relaxngcc.jar:tools/lib/util/sfx4j-1.0.jar:tools/lib/util/sjsxp.jar:tools/lib/util/txwc2.jar:tools/lib/util/xercesImpl.jar:tools/lib/util/FastInfoset.jar:tools/lib/src/codemodel-annotation-compiler.src.zip:tools/lib/src/codemodel.src.zip:runtime/src</classpath>
+                <built-to>dist/lib/jaxb-api.jar</built-to>
+                <built-to>dist/lib/jaxb-impl.jar</built-to>
+                <built-to>dist/lib/jaxb-xjc.jar</built-to>
+                <built-to>dist/lib/jaxb1-impl.jar</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
                 <package-root>samples/src</package-root>
+                <classpath mode="compile">tools/lib/rebundle/compiler/relaxng.javadt.jar:tools/lib/rebundle/compiler/resolver.jar:tools/lib/rebundle/compiler/rngom.jar:tools/lib/rebundle/compiler/txw2.jar:tools/lib/rebundle/compiler/xsom.jar:tools/lib/rebundle/runtime/isorelax.jar:tools/lib/rebundle/runtime/msv.jar:tools/lib/redist/activation.jar:tools/lib/redist/jaxb-api.jar:tools/lib/redist/jsr173_1.0_api.jar:tools/lib/redist/relaxngDatatype.jar:tools/lib/redist/xsdlib.jar:tools/lib/util/ant-contrib-0.6.jar:tools/lib/util/ant-fsget.jar:tools/lib/util/ant-launcher.jar:tools/lib/util/ant-trax.jar:tools/lib/util/ant.jar:tools/lib/util/args4j-1.0-RC.jar:tools/lib/util/jam.jar:tools/lib/util/jing.jar:tools/lib/util/nekohtml.jar:tools/lib/util/relaxngcc.jar:tools/lib/util/sfx4j-1.0.jar:tools/lib/util/sjsxp.jar:tools/lib/util/txwc2.jar:tools/lib/util/xercesImpl.jar:tools/lib/util/FastInfoset.jar:tools/lib/src/codemodel-annotation-compiler.src.zip:tools/lib/src/codemodel.src.zip:tools/pretty-printer/src:tools/pretty-printer/build/classes:tools/jing-rnc-driver/src:tools/jing-rnc-driver/build/classes</classpath>
+                <built-to>dist/lib/jaxb-api.jar</built-to>
+                <built-to>dist/lib/jaxb-impl.jar</built-to>
+                <built-to>dist/lib/jaxb-xjc.jar</built-to>
+                <built-to>dist/lib/jaxb1-impl.jar</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
                 <package-root>schemagen/src</package-root>
+                <classpath mode="compile">tools/lib/rebundle/compiler/relaxng.javadt.jar:tools/lib/rebundle/compiler/resolver.jar:tools/lib/rebundle/compiler/rngom.jar:tools/lib/rebundle/compiler/txw2.jar:tools/lib/rebundle/compiler/xsom.jar:tools/lib/rebundle/runtime/isorelax.jar:tools/lib/rebundle/runtime/msv.jar:tools/lib/redist/activation.jar:tools/lib/redist/jaxb-api.jar:tools/lib/redist/jsr173_1.0_api.jar:tools/lib/redist/relaxngDatatype.jar:tools/lib/redist/xsdlib.jar:tools/lib/util/ant-contrib-0.6.jar:tools/lib/util/ant-fsget.jar:tools/lib/util/ant-launcher.jar:tools/lib/util/ant-trax.jar:tools/lib/util/ant.jar:tools/lib/util/args4j-1.0-RC.jar:tools/lib/util/jam.jar:tools/lib/util/jing.jar:tools/lib/util/nekohtml.jar:tools/lib/util/relaxngcc.jar:tools/lib/util/sfx4j-1.0.jar:tools/lib/util/sjsxp.jar:tools/lib/util/txwc2.jar:tools/lib/util/xercesImpl.jar:tools/lib/util/FastInfoset.jar:tools/lib/src/codemodel-annotation-compiler.src.zip:tools/lib/src/codemodel.src.zip</classpath>
+                <built-to>dist/lib/jaxb-api.jar</built-to>
+                <built-to>dist/lib/jaxb-impl.jar</built-to>
+                <built-to>dist/lib/jaxb-xjc.jar</built-to>
+                <built-to>dist/lib/jaxb1-impl.jar</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
                 <package-root>xjc/src</package-root>
+                <classpath mode="compile">tools/lib/rebundle/compiler/relaxng.javadt.jar:tools/lib/rebundle/compiler/resolver.jar:tools/lib/rebundle/compiler/rngom.jar:tools/lib/rebundle/compiler/txw2.jar:tools/lib/rebundle/compiler/xsom.jar:tools/lib/rebundle/runtime/isorelax.jar:tools/lib/rebundle/runtime/msv.jar:tools/lib/redist/activation.jar:tools/lib/redist/jaxb-api.jar:tools/lib/redist/jsr173_1.0_api.jar:tools/lib/redist/relaxngDatatype.jar:tools/lib/redist/xsdlib.jar:tools/lib/util/ant-contrib-0.6.jar:tools/lib/util/ant-fsget.jar:tools/lib/util/ant-launcher.jar:tools/lib/util/ant-trax.jar:tools/lib/util/ant.jar:tools/lib/util/args4j-1.0-RC.jar:tools/lib/util/jam.jar:tools/lib/util/jing.jar:tools/lib/util/nekohtml.jar:tools/lib/util/relaxngcc.jar:tools/lib/util/sfx4j-1.0.jar:tools/lib/util/sjsxp.jar:tools/lib/util/txwc2.jar:tools/lib/util/xercesImpl.jar:tools/lib/util/FastInfoset.jar:tools/lib/src/codemodel-annotation-compiler.src.zip:tools/lib/src/codemodel.src.zip:xjc/build/src:xjc/build/classes:runtime/src:tools/lib/rebundle/compiler/istack-commons-tools.jar:tools/lib/rebundle/runtime2/istack-commons-runtime.jar:tools/lib/rebundle/compiler/codemodel.jar:tools/lib/rebundle/runtime2/txw2.jar:tools/lib/rebundle/compiler/dtd-parser-1.0.jar</classpath>
+                <built-to>dist/lib/jaxb-api.jar</built-to>
+                <built-to>dist/lib/jaxb-impl.jar</built-to>
+                <built-to>dist/lib/jaxb-xjc.jar</built-to>
+                <built-to>dist/lib/jaxb1-impl.jar</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
                 <package-root>xjc/facade</package-root>
+                <classpath mode="compile">tools/lib/rebundle/compiler/relaxng.javadt.jar:tools/lib/rebundle/compiler/resolver.jar:tools/lib/rebundle/compiler/rngom.jar:tools/lib/rebundle/compiler/txw2.jar:tools/lib/rebundle/compiler/xsom.jar:tools/lib/rebundle/runtime/isorelax.jar:tools/lib/rebundle/runtime/msv.jar:tools/lib/redist/activation.jar:tools/lib/redist/jaxb-api.jar:tools/lib/redist/jsr173_1.0_api.jar:tools/lib/redist/relaxngDatatype.jar:tools/lib/redist/xsdlib.jar:tools/lib/util/ant-contrib-0.6.jar:tools/lib/util/ant-fsget.jar:tools/lib/util/ant-launcher.jar:tools/lib/util/ant-trax.jar:tools/lib/util/ant.jar:tools/lib/util/args4j-1.0-RC.jar:tools/lib/util/jam.jar:tools/lib/util/jing.jar:tools/lib/util/nekohtml.jar:tools/lib/util/relaxngcc.jar:tools/lib/util/sfx4j-1.0.jar:tools/lib/util/sjsxp.jar:tools/lib/util/txwc2.jar:tools/lib/util/xercesImpl.jar:tools/lib/util/FastInfoset.jar:tools/lib/src/codemodel-annotation-compiler.src.zip:tools/lib/src/codemodel.src.zip:xjc/src:tools/lib/rebundle/compiler/istack-commons-tools.jar</classpath>
+                <built-to>dist/lib/jaxb-api.jar</built-to>
+                <built-to>dist/lib/jaxb-impl.jar</built-to>
+                <built-to>dist/lib/jaxb-xjc.jar</built-to>
+                <built-to>dist/lib/jaxb1-impl.jar</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
                 <package-root>istack-ap/src</package-root>
+                <classpath mode="compile">tools/lib/rebundle/compiler/relaxng.javadt.jar:tools/lib/rebundle/compiler/resolver.jar:tools/lib/rebundle/compiler/rngom.jar:tools/lib/rebundle/compiler/txw2.jar:tools/lib/rebundle/compiler/xsom.jar:tools/lib/rebundle/runtime/isorelax.jar:tools/lib/rebundle/runtime/msv.jar:tools/lib/redist/activation.jar:tools/lib/redist/jaxb-api.jar:tools/lib/redist/jsr173_1.0_api.jar:tools/lib/redist/relaxngDatatype.jar:tools/lib/redist/xsdlib.jar:tools/lib/util/ant-contrib-0.6.jar:tools/lib/util/ant-fsget.jar:tools/lib/util/ant-launcher.jar:tools/lib/util/ant-trax.jar:tools/lib/util/ant.jar:tools/lib/util/args4j-1.0-RC.jar:tools/lib/util/jam.jar:tools/lib/util/jing.jar:tools/lib/util/nekohtml.jar:tools/lib/util/relaxngcc.jar:tools/lib/util/sfx4j-1.0.jar:tools/lib/util/sjsxp.jar:tools/lib/util/txwc2.jar:tools/lib/util/xercesImpl.jar:tools/lib/util/FastInfoset.jar:tools/lib/src/codemodel-annotation-compiler.src.zip:tools/lib/src/codemodel.src.zip</classpath>
+                <built-to>dist/lib/jaxb-api.jar</built-to>
+                <built-to>dist/lib/jaxb-impl.jar</built-to>
+                <built-to>dist/lib/jaxb-xjc.jar</built-to>
+                <built-to>dist/lib/jaxb1-impl.jar</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
                 <package-root>runtime-api/src</package-root>
+                <classpath mode="compile">tools/lib/rebundle/compiler/relaxng.javadt.jar:tools/lib/rebundle/compiler/resolver.jar:tools/lib/rebundle/compiler/rngom.jar:tools/lib/rebundle/compiler/txw2.jar:tools/lib/rebundle/compiler/xsom.jar:tools/lib/rebundle/runtime/isorelax.jar:tools/lib/rebundle/runtime/msv.jar:tools/lib/redist/activation.jar:tools/lib/redist/jaxb-api.jar:tools/lib/redist/jsr173_1.0_api.jar:tools/lib/redist/relaxngDatatype.jar:tools/lib/redist/xsdlib.jar:tools/lib/util/ant-contrib-0.6.jar:tools/lib/util/ant-fsget.jar:tools/lib/util/ant-launcher.jar:tools/lib/util/ant-trax.jar:tools/lib/util/ant.jar:tools/lib/util/args4j-1.0-RC.jar:tools/lib/util/jam.jar:tools/lib/util/jing.jar:tools/lib/util/nekohtml.jar:tools/lib/util/relaxngcc.jar:tools/lib/util/sfx4j-1.0.jar:tools/lib/util/sjsxp.jar:tools/lib/util/txwc2.jar:tools/lib/util/xercesImpl.jar:tools/lib/util/FastInfoset.jar:tools/lib/src/codemodel-annotation-compiler.src.zip:tools/lib/src/codemodel.src.zip</classpath>
+                <built-to>dist/lib/jaxb-api.jar</built-to>
+                <built-to>dist/lib/jaxb-impl.jar</built-to>
+                <built-to>dist/lib/jaxb-xjc.jar</built-to>
+                <built-to>dist/lib/jaxb1-impl.jar</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
                 <package-root>runtime-fi/src</package-root>
-                <classpath mode="compile">tools/lib/rebundle/compiler/relaxng.javadt.jar:tools/lib/rebundle/compiler/resolver.jar:tools/lib/rebundle/compiler/rngom.jar:tools/lib/rebundle/compiler/txw2.jar:tools/lib/rebundle/compiler/xsom.jar:tools/lib/rebundle/runtime/isorelax.jar:tools/lib/rebundle/runtime/msv.jar:tools/lib/redist/activation.jar:tools/lib/redist/jaxb-api.jar:tools/lib/redist/jsr173_1.0_api.jar:tools/lib/redist/relaxngDatatype.jar:tools/lib/redist/xsdlib.jar:tools/lib/util/ant-contrib-0.6.jar:tools/lib/util/ant-fsget.jar:tools/lib/util/ant-launcher.jar:tools/lib/util/ant-trax.jar:tools/lib/util/ant.jar:tools/lib/util/args4j-1.0-RC.jar:tools/lib/util/jam.jar:tools/lib/util/jing.jar:tools/lib/util/nekohtml.jar:tools/lib/util/relaxngcc.jar:tools/lib/util/sfx4j-1.0.jar:tools/lib/util/sjsxp.jar:tools/lib/util/txwc2.jar:tools/lib/util/xercesImpl.jar:tools/lib/util/FastInfoset.jar</classpath>
+                <classpath mode="compile">tools/lib/rebundle/compiler/relaxng.javadt.jar:tools/lib/rebundle/compiler/resolver.jar:tools/lib/rebundle/compiler/rngom.jar:tools/lib/rebundle/compiler/txw2.jar:tools/lib/rebundle/compiler/xsom.jar:tools/lib/rebundle/runtime/isorelax.jar:tools/lib/rebundle/runtime/msv.jar:tools/lib/redist/activation.jar:tools/lib/redist/jaxb-api.jar:tools/lib/redist/jsr173_1.0_api.jar:tools/lib/redist/relaxngDatatype.jar:tools/lib/redist/xsdlib.jar:tools/lib/util/ant-contrib-0.6.jar:tools/lib/util/ant-fsget.jar:tools/lib/util/ant-launcher.jar:tools/lib/util/ant-trax.jar:tools/lib/util/ant.jar:tools/lib/util/args4j-1.0-RC.jar:tools/lib/util/jam.jar:tools/lib/util/jing.jar:tools/lib/util/nekohtml.jar:tools/lib/util/relaxngcc.jar:tools/lib/util/sfx4j-1.0.jar:tools/lib/util/sjsxp.jar:tools/lib/util/txwc2.jar:tools/lib/util/xercesImpl.jar:tools/lib/util/FastInfoset.jar:tools/lib/src/codemodel-annotation-compiler.src.zip:tools/lib/src/codemodel.src.zip:runtime/src</classpath>
+                <built-to>dist/lib/jaxb-api.jar</built-to>
+                <built-to>dist/lib/jaxb-impl.jar</built-to>
+                <built-to>dist/lib/jaxb-xjc.jar</built-to>
+                <built-to>dist/lib/jaxb1-impl.jar</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>runtime/test</package-root>
+                <unit-tests/>
+                <classpath mode="compile">tools/lib/util/ant-junit.jar</classpath>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>runtime-deprecated/test</package-root>
+                <unit-tests/>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>xjc/test</package-root>
+                <unit-tests/>
                 <source-level>1.5</source-level>
             </compilation-unit>
         </java-data>
