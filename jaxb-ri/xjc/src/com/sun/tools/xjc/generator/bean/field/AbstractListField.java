@@ -147,7 +147,7 @@ abstract class AbstractListField extends AbstractField {
             .assign(field,newCoreList());
     }
 
-    public final JType getRawType() {
+    public JType getRawType() {
         return codeModel.ref(List.class).narrow(exposedType.boxify());
     }
     
