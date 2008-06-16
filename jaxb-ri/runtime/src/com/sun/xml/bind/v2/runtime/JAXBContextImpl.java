@@ -125,6 +125,9 @@ import com.sun.xml.bind.v2.util.EditDistance;
 import com.sun.xml.bind.v2.util.QNameMap;
 import com.sun.xml.txw2.output.ResultFactory;
 
+import java.io.File;
+import java.io.File;
+import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -135,7 +138,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75.2.22 $
+ * @version $Revision: 1.75.2.23 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -292,7 +295,6 @@ public final class JAXBContextImpl extends JAXBRIContext {
         System.arraycopy(classes,0,this.classes,0,classes.length);
 
         RuntimeTypeInfoSet typeSet = getTypeInfoSet();
-
 
         // at least prepare the empty table so that we don't have to check for null later
         elements.put(null,new LinkedHashMap<QName, ElementBeanInfoImpl>());
