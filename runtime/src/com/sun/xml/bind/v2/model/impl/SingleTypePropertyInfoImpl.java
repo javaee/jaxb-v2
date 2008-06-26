@@ -99,8 +99,8 @@ abstract class SingleTypePropertyInfoImpl<T,C,F,M>
     public void link() {
         super.link();
 
-        if (!(NonElement.ANYTYPE_NAME.equals(type.getTypeName()) && id()!=ID.IDREF)) {
-            parent.builder.reportError(new IllegalAnnotationException(
+        if (!(NonElement.ANYTYPE_NAME.equals(type.getTypeName()) || type.isSimpleType() || id()==ID.IDREF)) {
+                parent.builder.reportError(new IllegalAnnotationException(
                 Messages.SIMPLE_TYPE_IS_REQUIRED.format(),
                 seed
             ));
