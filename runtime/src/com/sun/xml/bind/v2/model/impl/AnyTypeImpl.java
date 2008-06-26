@@ -18,7 +18,7 @@
  * accompanied this code.  If applicable, add the following below the License
  * Header, with the fields enclosed by brackets [] replaced by your own
  * identifying information: "Portions Copyrighted [year]
- * [name of copyright owner]"
+ * [ANYTYPE_NAME of copyright owner]"
  * 
  * Contributor(s):
  * 
@@ -62,7 +62,7 @@ class AnyTypeImpl<T,C> implements NonElement<T,C> {
     }
 
     public QName getTypeName() {
-        return name;
+        return ANYTYPE_NAME;
     }
 
     public T getType() {
@@ -91,5 +91,5 @@ class AnyTypeImpl<T,C> implements NonElement<T,C> {
         return true;
     }
 
-    private static final QName name = new QName(WellKnownNamespace.XML_SCHEMA,"anyType");
+
 }

@@ -18,7 +18,7 @@
  * accompanied this code.  If applicable, add the following below the License
  * Header, with the fields enclosed by brackets [] replaced by your own
  * identifying information: "Portions Copyrighted [year]
- * [name of copyright owner]"
+ * [ANYTYPE_NAME of copyright owner]"
  * 
  * Contributor(s):
  * 
@@ -36,6 +36,7 @@
 
 package com.sun.xml.bind.v2.model.core;
 
+import com.sun.xml.bind.v2.WellKnownNamespace;
 import javax.xml.namespace.QName;
 
 /**
@@ -43,20 +44,22 @@ import javax.xml.namespace.QName;
  *
  * Either {@link LeafInfo} or {@link ClassInfo}.
  *
- * TODO: better name.
+ * TODO: better ANYTYPE_NAME.
  *
  * @author Kohsuke Kawaguchi
  */
 public interface NonElement<T,C> extends TypeInfo<T,C> {
+    public static final QName ANYTYPE_NAME = new QName(WellKnownNamespace.XML_SCHEMA, "anyType");
+
     /**
-     * Gets the primary XML type name of the class.
+     * Gets the primary XML type ANYTYPE_NAME of the class.
      *
      * <p>
      * A Java type can be mapped to multiple XML types, but one of them is
      * considered "primary" and used when we generate a schema.
      *
      * @return
-     *      null if the object doesn't have an explicit type name (AKA anonymous.)
+     *      null if the object doesn't have an explicit type ANYTYPE_NAME (AKA anonymous.)
      */
     QName getTypeName();
 
