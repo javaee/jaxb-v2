@@ -21,6 +21,7 @@
 package com.sun.xml.txw2;
 
 import java.util.AbstractList;
+import java.util.Collections;
 import java.util.List;
 import javax.xml.namespace.QName;
 
@@ -50,7 +51,7 @@ public interface DatatypeWriter<DT> {
      */
     void print(DT dt, NamespaceResolver resolver, StringBuilder buf);
 
-    static final List<DatatypeWriter<?>> BUILTIN = new AbstractList() {
+    static final List<DatatypeWriter<?>> BUILTIN = Collections.unmodifiableList(new AbstractList() {
         
         private DatatypeWriter<?>[] BUILTIN_ARRAY = new DatatypeWriter<?>[] {
             new DatatypeWriter<String>() {
@@ -105,5 +106,5 @@ public interface DatatypeWriter<DT> {
         public int size() {
           return BUILTIN_ARRAY.length;
         }
-      };
+      });
 }
