@@ -82,7 +82,9 @@ abstract class AbstractFieldWithVar extends AbstractField {
      * {@code isXXXX} as the method name.
      */
     protected String getGetterMethod() {
-        return (getFieldType().boxify().getPrimitiveType()==codeModel.BOOLEAN?"is":"get")+prop.getName(true);
+        return ((getFieldType().isPrimitive() &&
+                 getFieldType().boxify().getPrimitiveType()==codeModel.BOOLEAN) ?
+                     "is":"get") + prop.getName(true);
     }
 
     /**
