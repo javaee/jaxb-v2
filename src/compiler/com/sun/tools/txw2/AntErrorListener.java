@@ -48,7 +48,9 @@ public class AntErrorListener implements ErrorListener {
     }
 
     private void print(SAXParseException e, int level) {
-        project.log(e.getMessage(),level);
+        String msg = e.getMessage();
+        if(msg==null)   msg=e.toString();
+        project.log(msg,level);
         project.log(getLocation(e),level);
     }
 
