@@ -35,6 +35,8 @@
  */
 package com.sun.tools.xjc.generator.bean.field;
 
+import com.sun.codemodel.JAssignmentTarget;
+import com.sun.codemodel.JAssignmentTarget;
 import java.util.List;
 
 import com.sun.codemodel.JBlock;
@@ -50,6 +52,8 @@ import com.sun.codemodel.JVar;
 import com.sun.tools.xjc.generator.bean.ClassOutlineImpl;
 import com.sun.tools.xjc.generator.bean.MethodWriter;
 import com.sun.tools.xjc.model.CPropertyInfo;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBElement;
 
 /**
  * Realizes a property as an "indexed property"
@@ -178,6 +182,10 @@ final class ArrayField extends AbstractListField {
         $value = writer.addParameter(exposedType.array(),"values");        
         JVar $len = $setAll.body().decl(codeModel.INT,"len", $value.ref("length"));
 
+        $setAll.body().assign(
+                (JAssignmentTarget) acc.ref(true),
+                JExpr.newArray(codeModel.ref(JAXBElement.class), $len));
+        
         JForLoop _for = $setAll.body()._for();
         JVar $i = _for.init( codeModel.INT, "i", JExpr.lit(0) );
         _for.test( JOp.lt($i,$len) );
