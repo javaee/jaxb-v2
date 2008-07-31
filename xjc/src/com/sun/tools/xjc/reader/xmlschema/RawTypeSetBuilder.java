@@ -287,12 +287,7 @@ public class RawTypeSetBuilder implements XSTermVisitor {
             if(parent.refs.size() > 1 && p.getAdapter() != null)
                 return RawTypeSet.Mode.MUST_BE_REFERENCE;
 
-            if(target.hasClass())
-                // if the CElementInfo was explicitly bound to a class (which happen if and only if
-                // the user requested so, then map that to reference property so that the user sees a class
-                return RawTypeSet.Mode.CAN_BE_TYPEREF;
-            else
-                return RawTypeSet.Mode.SHOULD_BE_TYPEREF;
+            return RawTypeSet.Mode.SHOULD_BE_TYPEREF;
         }
 
         protected boolean isListOfValues() {
