@@ -454,8 +454,6 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
             }
             context.size = baseIndex;
             context.current = prev;
-            // release references to user objects
-            outerPeer = innerPeer = null;
             return prev;
         }
 
