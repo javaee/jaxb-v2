@@ -90,7 +90,7 @@ final class MTOMDecorator implements XmlVisitor {
     }
 
     public void startElement(TagName tagName) throws SAXException {
-        if(tagName.local=="Include" && tagName.uri==WellKnownNamespace.XOP) {
+        if(tagName.local.equals("Include") && tagName.uri.equals(WellKnownNamespace.XOP)) {
             // found xop:Include
             String href = tagName.atts.getValue("href");
             DataHandler attachment = au.getAttachmentAsDataHandler(href);
