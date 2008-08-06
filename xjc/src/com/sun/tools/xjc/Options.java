@@ -60,7 +60,6 @@ import java.util.regex.Pattern;
 
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JPackage;
-import com.sun.codemodel.JResourceFile;
 import com.sun.codemodel.writer.FileCodeWriter;
 import com.sun.codemodel.writer.PrologCodeWriter;
 import com.sun.org.apache.xml.internal.resolver.CatalogManager;
@@ -72,6 +71,7 @@ import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Util;
 import com.sun.xml.bind.api.impl.NameConverter;
 
+import javax.xml.bind.JAXBPermission;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
@@ -143,11 +143,27 @@ public class Options
     /**
      * Generates output for the specified version of the runtime.
      */
-    public SpecVersion target = SpecVersion.V2_1;
+    public SpecVersion target = SpecVersion.LATEST;
 
+    private boolean is2_2 = true;
+    
+    public Options() {
+        if (is2_2) {
+            try {
+                JAXBPermission jaxbPermission = new JAXBPermission("check");
+            } catch (LinkageError e) {
+                is2_2 = false;
+            }
+            if (!is2_2) {
+                target = SpecVersion.V2_1;
+            } else {
+                target = SpecVersion.LATEST;
+            }
+        }
+    }
 
     /**
-     * Target direcoty when producing files.
+     * Target directory when producing files.
      * <p>
      * This field is not used when XJC is driven through the XJC API.
      * Plugins that need to generate extra files should do so by using
