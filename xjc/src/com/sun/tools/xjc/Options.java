@@ -71,7 +71,6 @@ import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Util;
 import com.sun.xml.bind.api.impl.NameConverter;
 
-import javax.xml.bind.JAXBPermission;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
@@ -150,8 +149,8 @@ public class Options
     public Options() {
         if (is2_2) {
             try {
-                JAXBPermission jaxbPermission = new JAXBPermission("check");
-            } catch (LinkageError e) {
+                Class.forName("javax.xml.bind.JAXBPermission");
+            } catch (ClassNotFoundException cnfe) {
                 is2_2 = false;
             }
             if (!is2_2) {
