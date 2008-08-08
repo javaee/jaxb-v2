@@ -200,7 +200,7 @@ final class ArrayField extends AbstractListField {
 
             $setAll.body().assign(
                     (JAssignmentTarget) acc.ref(true),
-                    JExpr.newArray(codeModel.ref(JAXBElement.class), $len));
+                    JExpr.newArray(codeModel.ref(exposedType.fullName()), $len));
 
             JForLoop _for = $setAll.body()._for();
             JVar $i = _for.init( codeModel.INT, "i", JExpr.lit(0) );
@@ -348,7 +348,11 @@ final class ArrayField extends AbstractListField {
     }
     
     protected JClass getCoreListType() {
-        return codeModel.ref(ArrayList.class).narrow(exposedType.boxify());
+        if (getOptions().target.isLaterThan(SpecVersion.V2_2)) {
+            return exposedType.array();
+        } else {
+            return codeModel.ref(ArrayList.class).narrow(exposedType.boxify());
+        }
     }
     
     public Accessor create(JExpression targetObject) {
