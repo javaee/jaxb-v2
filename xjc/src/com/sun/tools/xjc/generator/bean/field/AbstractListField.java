@@ -56,7 +56,7 @@ import com.sun.tools.xjc.model.CPropertyInfo;
  * its underlying data structure.
  * 
  * <p>
- * For performance reaons, the actual list object used to store
+ * For performance reasons, the actual list object used to store
  * data is lazily created.
  * 
  * @author
