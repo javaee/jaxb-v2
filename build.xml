@@ -62,7 +62,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.42 2008-06-24 13:27:17 snajper Exp $
+       $Id: build.xml,v 1.71.2.43 2008-08-12 14:17:50 ritzmann Exp $
     </description>
 
     <import file="nbproject/build-impl.xml"/>
@@ -617,6 +617,7 @@ Class-Path: ${manifest.classpath}
           <ant dir="tools"              target="clean"/>
           <ant dir="apgen"              target="clean" />
           <ant dir="reflection"         target="clean" />
+          <ant dir="osgi"               target="clean" />
         </parallel>
     </target>
 

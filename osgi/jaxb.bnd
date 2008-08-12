@@ -1,0 +1,6 @@
+Bundle-SymbolicName: javax.xml.bind
+Bundle-Name: jaxb
+Bundle-ClassPath: .,1.0
+Export-Package: com.sun.xml.bind.api;version=@RELEASE_IMPL_VERSION@, javax.xml.bind;version=@RELEASE_SPEC_VERSION@
+Private-Package: *
+Import-Package: *
