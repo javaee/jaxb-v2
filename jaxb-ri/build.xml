@@ -62,7 +62,7 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.71.2.43 2008-08-12 14:17:50 ritzmann Exp $
+       $Id: build.xml,v 1.71.2.44 2008-08-13 13:48:12 ritzmann Exp $
     </description>
 
     <import file="nbproject/build-impl.xml"/>
@@ -423,7 +423,10 @@ Class-Path: ${manifest.classpath}
     </target>
 
     <target name="hudson" depends="clean, dist-zip-with-src, dist-zip-2.2"
-            description="Target to be invoked on Hudson"/>
+            description="Target to be invoked on Hudson">
+
+        <ant dir="osgi" target="bundle" />
+    </target>
 
   <target name="licensee-zip"
           description="licensee bundle. Dumbed down version of the workspace bundle">
