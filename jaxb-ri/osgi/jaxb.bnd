@@ -1,6 +1,6 @@
 Bundle-SymbolicName: javax.xml.bind
 Bundle-Name: jaxb
-Bundle-ClassPath: .,1.0.
+Bundle-ClassPath: .,1.0
 Export-Package: \
   com.sun.msv.datatype;version=@RELEASE_IMPL_VERSION@, \
   com.sun.msv.datatype.xsd;version=@RELEASE_IMPL_VERSION@, \
