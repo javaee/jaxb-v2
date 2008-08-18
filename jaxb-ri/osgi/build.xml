@@ -58,6 +58,7 @@
         <ant dir="${jaxb.root}" target="dist"/>
 
         <mkdir dir="${osgi.build}"/>
+        
         <copy file="${osgi.root}/jaxb.bnd" todir="${osgi.build}">
             <filterset>
                 <filter token="RELEASE_IMPL_VERSION" value="${release.impl.version}"/>
@@ -65,13 +66,39 @@
             </filterset>
         </copy>
 
+        <!-- JAXB 1.0 uses its own classloader and should be ignored by bnd. -->
+        <!-- Since bnd insists on processing the entire jar, we need to remove JAXB 1.0 classes first. -->
+        <mkdir dir="${osgi.build}/jaxb-xjc"/>
+        <unjar src="${jaxb.dist}/lib/jaxb-xjc.jar"
+               dest="${osgi.build}/jaxb-xjc">
+            <patternset>
+                <exclude name="1.0/**"/>
+            </patternset>
+        </unjar>
+
         <!-- The bnd task does not recognize when input files have changed, -->
         <!-- hence we delete the output file to ensure a rebuild            -->
-        <delete file="${osgi.build}/jaxb.jar" quiet="true"/>
-        <bnd classpath="${jaxb.dist}/lib/jaxb-api.jar, ${jaxb.dist}/lib/jaxb-impl.jar, ${jaxb.dist}/lib/jaxb1-impl.jar, ${jaxb.dist}/lib/jaxb-xjc.jar"
+        <delete file="${osgi.build}/jaxb-bnd.jar" quiet="true"/>
+        <bnd classpath="${jaxb.dist}/lib/jaxb-api.jar, ${jaxb.dist}/lib/jaxb-impl.jar, ${osgi.build}/jaxb-xjc"
              failok="false"
-             output="${osgi.build}/jaxb.jar"
+             output="${osgi.build}/jaxb-bnd.jar"
              files="${osgi.build}/jaxb.bnd"/>
+
+        <!-- Readd the JAXB 1.0 files -->
+        <unjar src="${osgi.build}/jaxb-bnd.jar"
+               dest="${osgi.build}">
+            <patternset>
+                <include name="META-INF/MANIFEST.MF"/>
+            </patternset>
+        </unjar>
+        <jar destfile="${osgi.build}/jaxb.jar"
+             manifest="${osgi.build}/META-INF/MANIFEST.MF">
+            <zipfileset src="${osgi.build}/jaxb-bnd.jar"/>
+            <zipfileset src="${jaxb.dist}/lib/jaxb1-impl.jar"/>
+            <zipfileset src="${jaxb.dist}/lib/jaxb-xjc.jar">
+                <include name="1.0/**"/>
+            </zipfileset>
+        </jar>
     </target>
 
     <target name="clean">
