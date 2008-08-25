@@ -53,6 +53,8 @@ import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
 import com.sun.istack.Nullable;
+import com.sun.tools.xjc.Language;
+import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.tools.xjc.outline.Aspect;
@@ -156,10 +158,14 @@ public final class CClassInfo extends AbstractCElement implements ClassInfo<NTyp
         this.typeName = typeName;
         this.elementName = elementName;
 
-        BIFactoryMethod factoryMethod = Ring.get(BGMBuilder.class).getBindInfo(source).get(BIFactoryMethod.class);
-        if(factoryMethod!=null) {
-            factoryMethod.markAsAcknowledged();
-            this.squeezedName = factoryMethod.name;
+        Language schemaLanguage = model.options.getSchemaLanguage();
+        if ((schemaLanguage != null) &&
+            (schemaLanguage.equals(Language.XMLSCHEMA) || schemaLanguage.equals(Language.WSDL))) {
+            BIFactoryMethod factoryMethod = Ring.get(BGMBuilder.class).getBindInfo(source).get(BIFactoryMethod.class);
+            if(factoryMethod!=null) {
+                factoryMethod.markAsAcknowledged();
+                this.squeezedName = factoryMethod.name;
+            }
         }
         
         model.add(this);
