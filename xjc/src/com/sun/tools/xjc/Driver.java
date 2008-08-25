@@ -113,7 +113,7 @@ public class Driver {
 
     private static void _main( String[] args ) throws Exception {
         try {
-            System.exit(run( args, System.err, System.out ));
+            System.exit(run( args, System.out, System.out ));
         } catch (BadCommandLineException e) {
             // there was an error in the command line.
             // print usage and abort.
