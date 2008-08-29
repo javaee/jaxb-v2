@@ -53,10 +53,15 @@ import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
 import com.sun.istack.Nullable;
+import com.sun.tools.xjc.Language;
+import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
+import com.sun.tools.xjc.reader.Ring;
+import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIFactoryMethod;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
 import com.sun.xml.bind.v2.model.core.Element;
 import com.sun.xml.xsom.XSComponent;
@@ -95,6 +100,11 @@ public final class CClassInfo extends AbstractCElement implements ClassInfo<NTyp
      */
     private final QName typeName;
 
+    /**
+     * Custom {@link #getSqueezedName() squeezed name}, if any.
+     */
+    private /*almost final*/ @Nullable String squeezedName;
+    
     /**
      * If this class also gets {@link XmlRootElement}, the class name.
      */
@@ -148,6 +158,16 @@ public final class CClassInfo extends AbstractCElement implements ClassInfo<NTyp
         this.typeName = typeName;
         this.elementName = elementName;
 
+        Language schemaLanguage = model.options.getSchemaLanguage();
+        if ((schemaLanguage != null) &&
+            (schemaLanguage.equals(Language.XMLSCHEMA) || schemaLanguage.equals(Language.WSDL))) {
+            BIFactoryMethod factoryMethod = Ring.get(BGMBuilder.class).getBindInfo(source).get(BIFactoryMethod.class);
+            if(factoryMethod!=null) {
+                factoryMethod.markAsAcknowledged();
+                this.squeezedName = factoryMethod.name;
+            }
+        }
+        
         model.add(this);
     }
 
@@ -227,6 +247,7 @@ public final class CClassInfo extends AbstractCElement implements ClassInfo<NTyp
      */
     @XmlElement
     public String getSqueezedName() {
+        if (squeezedName != null)  return squeezedName;
         return calcSqueezedName.onBean(this);
     }
 
