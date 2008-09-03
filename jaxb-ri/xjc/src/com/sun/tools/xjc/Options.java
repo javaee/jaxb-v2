@@ -830,18 +830,21 @@ public class Options
      * Guesses the schema language.
      */
     public Language guessSchemaLanguage() {
+
         // otherwise, use the file extension.
         // not a good solution, but very easy.
-        String name = grammars.get(0).getSystemId().toLowerCase();
+        if ((grammars != null) && (grammars.size() > 0)) {
+            String name = grammars.get(0).getSystemId().toLowerCase();
 
-        if (name.endsWith(".rng"))
-            return Language.RELAXNG;
-        if (name.endsWith(".rnc"))
-            return Language.RELAXNG_COMPACT;
-        if (name.endsWith(".dtd"))
-            return Language.DTD;
-        if (name.endsWith(".wsdl"))
-            return Language.WSDL;
+            if (name.endsWith(".rng"))
+                return Language.RELAXNG;
+            if (name.endsWith(".rnc"))
+                return Language.RELAXNG_COMPACT;
+            if (name.endsWith(".dtd"))
+                return Language.DTD;
+            if (name.endsWith(".wsdl"))
+                return Language.WSDL;
+        }
 
         // by default, assume XML Schema
         return Language.XMLSCHEMA;
