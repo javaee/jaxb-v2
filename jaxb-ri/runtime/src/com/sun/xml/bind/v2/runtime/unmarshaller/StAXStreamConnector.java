@@ -34,7 +34,7 @@
  * holder.
  */
 
-/* $Id: StAXStreamConnector.java,v 1.9.2.10 2007-05-31 21:59:57 ofung Exp $
+/* $Id: StAXStreamConnector.java,v 1.9.2.11 2008-09-12 15:11:04 snajper Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.
@@ -113,14 +113,14 @@ class StAXStreamConnector extends StAXConnector {
 
         // Quick hack until SJSXP fixes 6270116
         boolean isZephyr = readerClass.getName().equals("com.sun.xml.stream.XMLReaderImpl");
-        if(isZephyr)
+        if (getBoolProp(reader,"org.codehaus.stax2.internNames") &&
+            getBoolProp(reader,"org.codehaus.stax2.internNsUris"))
             ; // no need for interning
         else
-        if(checkImplementaionNameOfSjsxp(reader))
+        if (isZephyr)
             ; // no need for interning
         else
-        if(getBoolProp(reader,"org.codehaus.stax2.internNames")
-        && getBoolProp(reader,"org.codehaus.stax2.internNsUris"))
+        if (checkImplementaionNameOfSjsxp(reader))
             ; // no need for interning.
         else
             visitor = new InterningXmlVisitor(visitor);
