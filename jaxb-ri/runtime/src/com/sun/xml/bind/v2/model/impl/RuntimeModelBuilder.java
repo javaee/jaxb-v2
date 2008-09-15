@@ -64,8 +64,6 @@ import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
 import com.sun.istack.Nullable;
 
-import com.sun.xml.bind.v2.WellKnownNamespace;
-import javax.xml.namespace.QName;
 import org.xml.sax.SAXException;
 
 /**
@@ -160,19 +158,13 @@ public class RuntimeModelBuilder extends ModelBuilder<Type,Class,Field,Method> {
         if(src.inlineBinaryData())
             t = new InlineBinaryTransducer(t);
 
-        if(src.getSchemaType()!=null) {
-            if (src.getSchemaType().equals(createXSSimpleType())) {
-                return RuntimeBuiltinLeafInfoImpl.STRING;
-            }
+        if(src.getSchemaType()!=null)
             t = new SchemaTypeTransducer(t,src.getSchemaType());
-        }
-        
+
         return t;
     }
 
-    private static QName createXSSimpleType() {
-        return new QName(WellKnownNamespace.XML_SCHEMA,"anySimpleType");
-    }
+
 
     /**
      * Transducer implementation for ID.
