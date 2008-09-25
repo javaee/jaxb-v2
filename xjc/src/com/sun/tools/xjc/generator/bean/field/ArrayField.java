@@ -211,11 +211,11 @@ final class ArrayField extends AbstractListField {
     
     @Override
     public JType getRawType() {
-        if (getOptions().target.isLaterThan(SpecVersion.V2_2)) {
+//        if (getOptions().target.isLaterThan(SpecVersion.V2_2)) {
             return exposedType.array();
-        } else {
-            return super.getRawType();
-        }
+//        } else {
+//            return super.getRawType();
+//        }
     }
     
     protected JClass getCoreListType() {
