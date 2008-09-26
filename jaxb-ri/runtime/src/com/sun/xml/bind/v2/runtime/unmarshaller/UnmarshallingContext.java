@@ -543,6 +543,13 @@ public final class UnmarshallingContext extends Coordinator
         throw new UnmarshalException((String)null);
     }
 
+    void clearResult() {
+        if (isUnmarshalInProgress) {
+            throw new IllegalStateException();
+        }
+        result = null;
+    }
+    
     /**
      * Creates a new instance of the specified class.
      * In the unmarshaller, we need to check the user-specified factory class.
