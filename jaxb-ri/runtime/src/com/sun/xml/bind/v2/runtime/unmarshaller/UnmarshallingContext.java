@@ -547,7 +547,6 @@ public final class UnmarshallingContext extends Coordinator
         if (isUnmarshalInProgress) {
             throw new IllegalStateException();
         }
-        System.out.println("Clearing");
         result = null;
     }
     
