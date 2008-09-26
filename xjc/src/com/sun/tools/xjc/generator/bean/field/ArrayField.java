@@ -48,7 +48,7 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JOp;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
-import com.sun.tools.xjc.api.SpecVersion;
+//import com.sun.tools.xjc.api.SpecVersion;
 import com.sun.tools.xjc.generator.bean.ClassOutlineImpl;
 import com.sun.tools.xjc.generator.bean.MethodWriter;
 import com.sun.tools.xjc.model.CPropertyInfo;
@@ -212,9 +212,9 @@ final class ArrayField extends AbstractListField {
     @Override
     public JType getRawType() {
 //        if (getOptions().target.isLaterThan(SpecVersion.V2_2)) {
-            return exposedType.array();
+//            return exposedType.array();
 //        } else {
-//            return super.getRawType();
+            return super.getRawType();
 //        }
     }
     
