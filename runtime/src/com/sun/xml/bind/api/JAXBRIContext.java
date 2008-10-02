@@ -141,6 +141,14 @@ public abstract class JAXBRIContext extends JAXBContext {
     public abstract @Nullable QName getElementName(@NotNull Object o) throws JAXBException;
 
     /**
+     * Allows to retrieve the element name based on Class.
+     * @param o
+     * @return
+     * @throws javax.xml.bind.JAXBException
+     */
+    public abstract @Nullable QName getElementName(@NotNull Class o) throws JAXBException;
+
+    /**
      * Creates a mini-marshaller/unmarshaller that can process a {@link TypeReference}.
      *
      * @return
