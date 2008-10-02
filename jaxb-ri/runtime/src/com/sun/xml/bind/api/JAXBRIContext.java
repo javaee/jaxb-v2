@@ -145,6 +145,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @param o
      * @return
      * @throws javax.xml.bind.JAXBException
+     * @since 2.1.10
      */
     public abstract @Nullable QName getElementName(@NotNull Class o) throws JAXBException;
 
@@ -291,7 +292,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      * This is useful for doing a deeper integration with the JAXB RI.
      * For more information about the model, see https://jaxb2-reflection.dev.java.net/
      *
-     * @since 2.1.9
+     * @since 2.1.10
      */
     public abstract RuntimeTypeInfoSet getRuntimeTypeInfoSet();
     
