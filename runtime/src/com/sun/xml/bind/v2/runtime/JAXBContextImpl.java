@@ -138,7 +138,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75.2.23 $
+ * @version $Revision: 1.75.2.24 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -894,6 +894,13 @@ public final class JAXBContextImpl extends JAXBRIContext {
     }
 
     public QName getElementName(Object o) throws JAXBException {
+        JaxBeanInfo bi = getBeanInfo(o,true);
+        if(!bi.isElement())
+            return null;
+        return new QName(bi.getElementNamespaceURI(o),bi.getElementLocalName(o));
+    }
+
+    public QName getElementName(Class o) throws JAXBException {
         JaxBeanInfo bi = getBeanInfo(o,true);
         if(!bi.isElement())
             return null;
