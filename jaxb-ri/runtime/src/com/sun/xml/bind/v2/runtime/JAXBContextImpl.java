@@ -138,7 +138,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75.2.24 $
+ * @version $Revision: 1.75.2.25 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -415,6 +415,15 @@ public final class JAXBContextImpl extends JAXBRIContext {
      */
     public boolean hasSwaRef() {
         return hasSwaRef;
+    }
+
+    public RuntimeTypeInfoSet getRuntimeTypeInfoSet() {
+        try {
+            return getTypeInfoSet();
+        } catch (IllegalAnnotationsException e) {
+            // impossible, once the model is constructred
+            throw new AssertionError(e);
+        }
     }
 
     /**
