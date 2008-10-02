@@ -54,8 +54,10 @@ import com.sun.istack.NotNull;
 import com.sun.istack.Nullable;
 import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.bind.v2.ContextFactory;
+import com.sun.xml.bind.v2.runtime.IllegalAnnotationsException;
 import com.sun.xml.bind.v2.model.annotation.RuntimeAnnotationReader;
 import com.sun.xml.bind.v2.model.nav.Navigator;
+import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfoSet;
 
 /**
  * {@link JAXBContext} enhanced with JAXB RI specific functionalities.
@@ -274,6 +276,17 @@ public abstract class JAXBRIContext extends JAXBContext {
      */
     public abstract void generateEpisode(Result output);
 
+    /**
+     * Allows you to access the runtime model information of the JAXB XML/Java binding.
+     *
+     * <p>
+     * This is useful for doing a deeper integration with the JAXB RI.
+     * For more information about the model, see https://jaxb2-reflection.dev.java.net/
+     *
+     * @since 2.1.9
+     */
+    public abstract RuntimeTypeInfoSet getRuntimeTypeInfoSet();
+    
     /**
      * Computes a Java identifier from a local name.
      *
