@@ -1161,4 +1161,17 @@ public final class UnmarshallingContext extends Coordinator
     public static UnmarshallingContext getInstance() {
         return (UnmarshallingContext) Coordinator._getInstance();
     }
+
+    /**
+     * Allows to access elements which are expected in current state.
+     * Useful for getting elements/attributes for current parent.
+     * 
+     * @return
+     */
+    public Collection<QName> getCurrentExpectedElements() {
+        State s = getCurrentState();
+        Loader l = s.loader;
+        return l.getExpectedChildElements();
+    }
+    
 }
