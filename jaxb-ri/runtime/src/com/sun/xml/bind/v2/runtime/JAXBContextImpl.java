@@ -138,7 +138,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75.2.25 $
+ * @version $Revision: 1.75.2.26 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -231,6 +231,10 @@ public final class JAXBContextImpl extends JAXBRIContext {
      */
     public final boolean allNillable;
 
+    /**
+     * Store properties, so that they can be recovered in the run (is here because of JSON encoding of Jersey).
+     */
+    public final boolean retainPropertyInfo;
 
     private WeakReference<RuntimeTypeInfoSet> typeInfoSetCache;
 
@@ -258,7 +262,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
      */
     public JAXBContextImpl(Class[] classes, Collection<TypeReference> typeRefs, 
         Map<Class,Class> subclassReplacements, String defaultNsUri, boolean c14nSupport, 
-        @Nullable RuntimeAnnotationReader ar, boolean xmlAccessorFactorySupport, boolean allNillable) throws JAXBException {
+        @Nullable RuntimeAnnotationReader ar, boolean xmlAccessorFactorySupport, boolean allNillable, boolean retainPropertyInfo) throws JAXBException {
         // initialize datatype converter with ours
         // starting 2.2, we need to elevate the privileges
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
@@ -276,6 +280,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
         if(subclassReplacements==null)  subclassReplacements=Collections.emptyMap();
         if(typeRefs==null)              typeRefs=Collections.emptyList();
 
+        this.retainPropertyInfo = retainPropertyInfo;
         this.annotaitonReader = ar;
         this.subclassReplacements = subclassReplacements;
 
@@ -1014,7 +1019,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
         newList[classes.length] = clazz;
 
         return new JAXBContextImpl(newList,bridges.keySet(),subclassReplacements,
-        defaultNsUri,c14nSupport,annotaitonReader, xmlAccessorFactorySupport, allNillable);
+        defaultNsUri,c14nSupport,annotaitonReader, xmlAccessorFactorySupport, allNillable, retainPropertyInfo);
     }
 
     private static final Comparator<QName> QNAME_COMPARATOR = new Comparator<QName>() {
