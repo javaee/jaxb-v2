@@ -91,6 +91,10 @@ public class ContextFactory {
         if(allNillable==null)
             allNillable = false;
 
+        Boolean retainPropertyInfo = getPropertyValue(properties, JAXBRIContext.RETAIN_REFERENCE_TO_INFO, Boolean.class);
+        if(retainPropertyInfo==null)
+            retainPropertyInfo = false;
+
         Boolean xmlAccessorFactorySupport = getPropertyValue(properties,
            JAXBRIContext.XMLACCESSORFACTORY_SUPPORT,Boolean.class);
         if(xmlAccessorFactorySupport==null){
@@ -115,7 +119,7 @@ public class ContextFactory {
         }
 
         return createContext(classes,Collections.<TypeReference>emptyList(),
-                subclassReplacements,defaultNsUri,c14nSupport,ar,xmlAccessorFactorySupport,allNillable);
+                subclassReplacements,defaultNsUri,c14nSupport,ar,xmlAccessorFactorySupport,allNillable, retainPropertyInfo);
     }
 
     /**
@@ -135,9 +139,9 @@ public class ContextFactory {
     public static JAXBRIContext createContext( Class[] classes, 
             Collection<TypeReference> typeRefs, Map<Class,Class> subclassReplacements, 
             String defaultNsUri, boolean c14nSupport, RuntimeAnnotationReader ar, 
-            boolean xmlAccessorFactorySupport, boolean allNillable) throws JAXBException {
+            boolean xmlAccessorFactorySupport, boolean allNillable, boolean retainPropertyInfo) throws JAXBException {
         return new JAXBContextImpl(classes,typeRefs,subclassReplacements,defaultNsUri,
-                c14nSupport,ar, xmlAccessorFactorySupport,allNillable);
+                c14nSupport,ar, xmlAccessorFactorySupport,allNillable, retainPropertyInfo);
     }
 
     /**
