@@ -46,7 +46,6 @@ import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 
-import com.thaiopensource.relaxng.parse.Context;
 import org.xml.sax.SAXException;
 
 /**
