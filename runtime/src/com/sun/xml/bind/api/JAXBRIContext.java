@@ -54,7 +54,6 @@ import com.sun.istack.NotNull;
 import com.sun.istack.Nullable;
 import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.bind.v2.ContextFactory;
-import com.sun.xml.bind.v2.runtime.IllegalAnnotationsException;
 import com.sun.xml.bind.v2.model.annotation.RuntimeAnnotationReader;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfoSet;
@@ -105,7 +104,7 @@ public abstract class JAXBRIContext extends JAXBContext {
        @Nullable String defaultNamespaceRemap, boolean c14nSupport, 
        @Nullable RuntimeAnnotationReader ar) throws JAXBException {
         return ContextFactory.createContext(classes, typeRefs, subclassReplacements, 
-                defaultNamespaceRemap, c14nSupport, ar, false, false);
+                defaultNamespaceRemap, c14nSupport, ar, false, false, false);
     }
 
     /**
@@ -242,6 +241,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @throws IOException
      *      if {@link SchemaOutputResolver} throws an {@link IOException}.
      */
+    @Override
     public abstract void generateSchema(@NotNull SchemaOutputResolver outputResolver) throws IOException;
 
     /**
@@ -455,5 +455,12 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @since 2.1 EA2
      */
     public static final String XMLACCESSORFACTORY_SUPPORT = "com.sun.xml.bind.XmlAccessorFactory";
+
+    /**
+     * Retains references to PropertyInfos.
+     *
+     * @since 2.1.10
+     */
+    public static final String RETAIN_REFERENCE_TO_INFO = "retainReferenceToInfo";
 
 }
