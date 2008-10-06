@@ -346,7 +346,7 @@ public final class BindInfo implements Iterable<BIDeclaration> {
                             BIProperty.class,
                             BISchemaBinding.class
                         }, Collections.<TypeReference>emptyList(),
-                            Collections.<Class,Class>emptyMap(), null, false, null, false, false);
+                            Collections.<Class,Class>emptyMap(), null, false, null, false, false, false);
                 return customizationContext;
             } catch (JAXBException e) {
                 throw new AssertionError(e);
