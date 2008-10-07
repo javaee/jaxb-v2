@@ -140,8 +140,18 @@ public class ContextFactory {
             Collection<TypeReference> typeRefs, Map<Class,Class> subclassReplacements, 
             String defaultNsUri, boolean c14nSupport, RuntimeAnnotationReader ar, 
             boolean xmlAccessorFactorySupport, boolean allNillable, boolean retainPropertyInfo) throws JAXBException {
-        return new JAXBContextImpl(classes,typeRefs,subclassReplacements,defaultNsUri,
-                c14nSupport,ar, xmlAccessorFactorySupport,allNillable, retainPropertyInfo);
+
+        JAXBContextImpl.JAXBContextBuilder builder = new JAXBContextImpl.JAXBContextBuilder();
+        builder.setClasses(classes);
+        builder.setTypeRefs(typeRefs);
+        builder.setSubclassReplacements(subclassReplacements);
+        builder.setDefaultNsUri(defaultNsUri);
+        builder.setC14NSupport(c14nSupport);
+        builder.setAnnotationReader(ar);
+        builder.setXmlAccessorFactorySupport(xmlAccessorFactorySupport);
+        builder.setAllNillable(allNillable);
+        builder.setRetainPropertyInfo(retainPropertyInfo);
+        return builder.build();
     }
 
     /**
