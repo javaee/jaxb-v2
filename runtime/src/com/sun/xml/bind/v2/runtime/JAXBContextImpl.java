@@ -81,7 +81,6 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 
 import com.sun.istack.NotNull;
-import com.sun.istack.Nullable;
 import com.sun.istack.Pool;
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.api.AccessorException;
@@ -125,9 +124,6 @@ import com.sun.xml.bind.v2.util.EditDistance;
 import com.sun.xml.bind.v2.util.QNameMap;
 import com.sun.xml.txw2.output.ResultFactory;
 
-import java.io.File;
-import java.io.File;
-import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -138,7 +134,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75.2.26 $
+ * @version $Revision: 1.75.2.27 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -260,11 +256,19 @@ public final class JAXBContextImpl extends JAXBRIContext {
      * @param xmlAccessorFactorySupport
      *      Use custom com.sun.xml.bind.v2.runtime.reflect.Accessor implementation.
      */
-    public JAXBContextImpl(Class[] classes, Collection<TypeReference> typeRefs, 
-        Map<Class,Class> subclassReplacements, String defaultNsUri, boolean c14nSupport, 
-        @Nullable RuntimeAnnotationReader ar, boolean xmlAccessorFactorySupport, boolean allNillable, boolean retainPropertyInfo) throws JAXBException {
-        // initialize datatype converter with ours
-        // starting 2.2, we need to elevate the privileges
+    public JAXBContextImpl(JAXBContextBuilder builder) throws JAXBException {
+        
+        this.defaultNsUri = builder.defaultNsUri;
+        this.retainPropertyInfo = builder.retainPropertyInfo;
+        this.annotaitonReader = builder.annotationReader;
+        this.subclassReplacements = builder.subclassReplacements;
+        this.c14nSupport = builder.c14nSupport;
+        this.classes = builder.classes;
+        this.xmlAccessorFactorySupport = builder.xmlAccessorFactorySupport;
+        this.allNillable = builder.allNillable;
+
+        Collection<TypeReference> typeRefs = builder.typeRefs;
+
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
             public Void run() {
                 DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
@@ -272,31 +276,14 @@ public final class JAXBContextImpl extends JAXBRIContext {
             }
         });
 
-        if(defaultNsUri==null)      defaultNsUri="";    // fool-proof
-
-        if(ar==null)
-            ar = new RuntimeInlineAnnotationReader();
-
-        if(subclassReplacements==null)  subclassReplacements=Collections.emptyMap();
-        if(typeRefs==null)              typeRefs=Collections.emptyList();
-
-        this.retainPropertyInfo = retainPropertyInfo;
-        this.annotaitonReader = ar;
-        this.subclassReplacements = subclassReplacements;
-
-        boolean fastBoot;
+        boolean fastB;
         try {
-            fastBoot = Boolean.getBoolean(JAXBContextImpl.class.getName()+".fastBoot");
+            fastB = Boolean.getBoolean(JAXBContextImpl.class.getName()+".fastBoot");
         } catch (SecurityException e) {
-            fastBoot = false;
+            fastB = false;
         }
-        this.fastBoot = fastBoot;
+        this.fastBoot = fastB;
 
-        this.defaultNsUri = defaultNsUri;
-        this.c14nSupport = c14nSupport;
-        this.xmlAccessorFactorySupport = xmlAccessorFactorySupport;
-        this.allNillable = allNillable;
-        this.classes = new Class[classes.length];
         System.arraycopy(classes,0,this.classes,0,classes.length);
 
         RuntimeTypeInfoSet typeSet = getTypeInfoSet();
@@ -404,7 +391,6 @@ public final class JAXBContextImpl extends JAXBRIContext {
             bridges.put(tr,bridge);
         }
 
-
         this.nameList = nameBuilder.conclude();
 
         for (JaxBeanInfo bi : beanInfos.values())
@@ -412,7 +398,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
         // no use for them now
         nameBuilder = null;
-        beanInfos = null;
+        beanInfos = null;        
     }
 
     /**
@@ -967,6 +953,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
         return pkg.getImplementationVersion();
     }
 
+    @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(Which.which(getClass()) + " Build-Id: " + getBuildId());
         buf.append("\nClasses known to this context:\n");
@@ -1017,9 +1004,10 @@ public final class JAXBContextImpl extends JAXBRIContext {
         Class[] newList = new Class[classes.length+1];
         System.arraycopy(classes,0,newList,0,classes.length);
         newList[classes.length] = clazz;
-
-        return new JAXBContextImpl(newList,bridges.keySet(),subclassReplacements,
-        defaultNsUri,c14nSupport,annotaitonReader, xmlAccessorFactorySupport, allNillable, retainPropertyInfo);
+        
+        JAXBContextBuilder builder = new JAXBContextBuilder(this);
+        builder.setClasses(newList);
+        return builder.build();
     }
 
     private static final Comparator<QName> QNAME_COMPARATOR = new Comparator<QName>() {
@@ -1030,4 +1018,96 @@ public final class JAXBContextImpl extends JAXBRIContext {
             return lhs.getNamespaceURI().compareTo(rhs.getNamespaceURI());
         }
     };
+
+    public static class JAXBContextBuilder {
+
+        private boolean retainPropertyInfo = false;
+        private String defaultNsUri = "";
+        private @NotNull RuntimeAnnotationReader annotationReader = new RuntimeInlineAnnotationReader();
+        private @NotNull Map<Class,Class> subclassReplacements = Collections.emptyMap();
+        private boolean c14nSupport = false;
+        private Class[] classes;
+        private Collection<TypeReference> typeRefs;
+        private boolean xmlAccessorFactorySupport = false;
+        private boolean allNillable;
+
+        public JAXBContextBuilder() {};
+
+        public JAXBContextBuilder(JAXBContextImpl baseImpl) {
+            this.retainPropertyInfo = baseImpl.retainPropertyInfo;
+            this.defaultNsUri = baseImpl.defaultNsUri;
+            this.annotationReader = baseImpl.annotaitonReader;
+            this.subclassReplacements = baseImpl.subclassReplacements;
+            this.c14nSupport = baseImpl.c14nSupport;
+            this.classes = baseImpl.classes;
+            this.typeRefs = baseImpl.bridges.keySet();
+            this.xmlAccessorFactorySupport = baseImpl.xmlAccessorFactorySupport;
+            this.allNillable = baseImpl.allNillable;
+        }
+
+        public JAXBContextBuilder setRetainPropertyInfo(boolean val) {
+            this.retainPropertyInfo = val;
+            return this;
+        }
+
+        public JAXBContextBuilder setC14NSupport(boolean val) {
+            this.c14nSupport = val;
+            return this;
+        }
+
+        public JAXBContextBuilder setXmlAccessorFactorySupport(boolean val) {
+            this.xmlAccessorFactorySupport = val;
+            return this;
+        }
+
+        public JAXBContextBuilder setDefaultNsUri(String val) {
+            this.defaultNsUri = val;
+            return this;
+        }
+
+        public JAXBContextBuilder setAllNillable(boolean val) {
+            this.allNillable = val;
+            return this;
+        }
+
+        public JAXBContextBuilder setClasses(Class[] val) {
+            this.classes = val;
+            return this;
+        }
+
+        public JAXBContextBuilder setAnnotationReader(RuntimeAnnotationReader val) {
+            this.annotationReader = val;
+            return this;
+        }
+
+        public JAXBContextBuilder setSubclassReplacements(Map<Class,Class> val) {
+            this.subclassReplacements = val;
+            return this;
+        }
+
+        public JAXBContextBuilder setTypeRefs(Collection<TypeReference> val) {
+            this.typeRefs = val;
+            return this;
+        }
+
+        public JAXBContextImpl build() throws JAXBException {
+
+            // fool-proof
+            if (this.defaultNsUri==null) {
+                this.defaultNsUri="";
+            }   
+
+            if (this.subclassReplacements==null) {
+                this.subclassReplacements=Collections.emptyMap();
+            }
+
+            if (this.annotationReader==null) {
+                this.annotationReader = new RuntimeInlineAnnotationReader();
+            }
+
+            return new JAXBContextImpl(this);
+        }
+
+    }
+
 }
