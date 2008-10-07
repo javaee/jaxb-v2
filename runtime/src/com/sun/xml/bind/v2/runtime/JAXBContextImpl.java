@@ -134,7 +134,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.75.2.27 $
+ * @version $Revision: 1.75.2.28 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -1093,16 +1093,20 @@ public final class JAXBContextImpl extends JAXBRIContext {
         public JAXBContextImpl build() throws JAXBException {
 
             // fool-proof
-            if (this.defaultNsUri==null) {
-                this.defaultNsUri="";
+            if (this.defaultNsUri == null) {
+                this.defaultNsUri = "";
             }   
 
-            if (this.subclassReplacements==null) {
-                this.subclassReplacements=Collections.emptyMap();
+            if (this.subclassReplacements == null) {
+                this.subclassReplacements = Collections.emptyMap();
             }
 
-            if (this.annotationReader==null) {
+            if (this.annotationReader == null) {
                 this.annotationReader = new RuntimeInlineAnnotationReader();
+            }
+
+            if (this.typeRefs == null) {
+                this.typeRefs = Collections.<TypeReference>emptyList();
             }
 
             return new JAXBContextImpl(this);
