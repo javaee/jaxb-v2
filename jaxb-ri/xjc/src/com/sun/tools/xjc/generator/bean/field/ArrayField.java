@@ -200,8 +200,8 @@ final class ArrayField extends AbstractListField {
 
             $setAll.body().assign(
                     (JAssignmentTarget) acc.ref(true),
-                    acc.box(JExpr.newArray(
-                        codeModel.ref(exposedType.name()),
+                    castToImplTypeArray(JExpr.newArray(
+                        codeModel.ref(JAXBElement.class),
                         $len)));
 
             JForLoop _for = $setAll.body()._for();
