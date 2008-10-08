@@ -54,6 +54,7 @@ import com.sun.tools.xjc.api.SpecVersion;
 import com.sun.tools.xjc.generator.bean.ClassOutlineImpl;
 import com.sun.tools.xjc.generator.bean.MethodWriter;
 import com.sun.tools.xjc.model.CPropertyInfo;
+import javax.xml.bind.JAXBElement;
 
 /**
  * Realizes a property as an "indexed property"
@@ -199,7 +200,9 @@ final class ArrayField extends AbstractListField {
 
             $setAll.body().assign(
                     (JAssignmentTarget) acc.ref(true),
-                    JExpr.newArray(codeModel.ref(exposedType.fullName()), $len));
+                    acc.box(JExpr.newArray(
+                        codeModel.ref(exposedType.name()),
+                        $len)));
 
             JForLoop _for = $setAll.body()._for();
             JVar $i = _for.init( codeModel.INT, "i", JExpr.lit(0) );
@@ -339,19 +342,11 @@ final class ArrayField extends AbstractListField {
     
     @Override
     public JType getRawType() {
-        if (getOptions().target.isLaterThan(SpecVersion.V2_2)) {
-            return exposedType.array();
-        } else {
-            return super.getRawType();
-        }
+        return exposedType.array();
     }
     
     protected JClass getCoreListType() {
-        if (getOptions().target.isLaterThan(SpecVersion.V2_2)) {
-            return exposedType.array();
-        } else {
-            return codeModel.ref(ArrayList.class).narrow(exposedType.boxify());
-        }
+        return exposedType.array();
     }
     
     public Accessor create(JExpression targetObject) {
