@@ -428,13 +428,6 @@ abstract class AbstractField implements FieldOutline {
     }
 
     /**
-     * Case from {@link #exposedType} to array of {@link #implType} .
-     */
-    protected final JExpression castToImplTypeArray( JExpression exp ) {
-        return JExpr.cast(implType.array(), exp);
-    }
-
-    /**
      * Compute the type of a {@link CPropertyInfo}
      * @param aspect
      */
