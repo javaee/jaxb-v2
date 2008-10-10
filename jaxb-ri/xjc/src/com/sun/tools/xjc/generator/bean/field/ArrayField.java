@@ -224,4 +224,12 @@ final class ArrayField extends AbstractListField {
     public Accessor create(JExpression targetObject) {
         return new Accessor(targetObject);
     }
+
+    /**
+     * Case from {@link #exposedType} to array of {@link #implType} .
+     */
+    protected final JExpression castToImplTypeArray( JExpression exp ) {
+        return JExpr.cast(implType.array(), exp);
+    }
+
 }
