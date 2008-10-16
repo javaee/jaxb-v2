@@ -60,20 +60,9 @@ public final class BindRed extends ColorBinder {
 
     private final ComplexTypeFieldBuilder ctBuilder = Ring.get(ComplexTypeFieldBuilder.class);
 
-
-
-
-
-
-
-
-
-
     public void complexType(XSComplexType ct) {
         ctBuilder.build(ct);
     }
-
-
 
     public void wildcard(XSWildcard xsWildcard) {
         // TODO: implement this method later
@@ -96,8 +85,6 @@ public final class BindRed extends ColorBinder {
         createSimpleTypeProperty(type,"Value");
         stb.refererStack.pop();
     }
-
-
 
 /*
     Components that can never be mapped to a class
