@@ -69,7 +69,7 @@
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/1">
             <compilation-unit>
                 <package-root>${project.dir}/compiler</package-root>
-                <classpath mode="compile">C:\kohsuke\Sun\txw2\lib\compiler\ant.jar;C:\kohsuke\Sun\txw2\lib\compiler\codemodel.jar;C:\kohsuke\Sun\txw2\lib\compiler\commons-cli-1.0.jar;C:\kohsuke\Sun\txw2\lib\compiler\relaxngDatatype.jar;C:\kohsuke\Sun\txw2\lib\compiler\rngom.jar;C:\kohsuke\Sun\txw2\lib\compiler\xsdlib.jar;C:\kohsuke\Sun\txw2\lib\compiler\xsom.jar</classpath>
+                <classpath mode="compile">${project.dir}/compiler</classpath>
                 <source-level>1.5</source-level>
             </compilation-unit>
             <compilation-unit>
