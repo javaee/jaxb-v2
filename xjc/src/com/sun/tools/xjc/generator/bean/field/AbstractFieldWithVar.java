@@ -116,7 +116,11 @@ abstract class AbstractFieldWithVar extends AbstractField {
         protected final JFieldRef $ref;
 
         public final void toRawValue(JBlock block, JVar $var) {
-            block.assign($var,$target.invoke(getGetterMethod()));
+            if (getOptions().target.isLaterThan(SpecVersion.V2_2)) {
+                block.assign($var,$target.invoke(getGetterMethod()));
+            } else {
+                block.assign($var,$target.invoke(getGetterMethod()));
+            }
         }
 
         public final void fromRawValue(JBlock block, String uniqueName, JExpression $var) {
