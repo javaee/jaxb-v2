@@ -79,6 +79,12 @@ public class FieldRendererFactory {
     public FieldRenderer getList(JClass coreList) {
         return new UntypedListFieldRenderer(coreList);
     }
+    public FieldRenderer getContentList(JClass coreList) {
+        return new UntypedListFieldRenderer(coreList, false, true);
+    }
+    public FieldRenderer getDummyList(JClass coreList) {
+        return new UntypedListFieldRenderer(coreList, true, false);
+    }
     public FieldRenderer getConst(FieldRenderer fallback) {
         return new ConstFieldRenderer(fallback);
     }
