@@ -41,7 +41,6 @@ import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.reader.RawTypeSet;
 import com.sun.tools.xjc.reader.xmlschema.RawTypeSetBuilder;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
-import static com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeBindingMode.FALLBACK_CONTENT;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSContentType;
 import com.sun.xml.xsom.XSType;
@@ -49,52 +48,67 @@ import com.sun.xml.xsom.XSType;
 /**
  * @author Kohsuke Kawaguchi
  */
-final class MixedComplexTypeBuilder extends CTBuilder {
+final class MixedExtendedComplexTypeBuilder extends AbstractExtendedComplexTypeBuilder {
 
     public boolean isApplicable(XSComplexType ct) {
         XSType bt = ct.getBaseType();
-        if(bt ==schemas.getAnyType() && ct.isMixed())
-            return true;    // fresh mixed complex type
-
-        // there's no complex type in the inheritance tree yet
         if (bt.isComplexType() &&
-            !bt.asComplexType().isMixed() &&
+            bt.asComplexType().isMixed() &&
             ct.isMixed() &&
-            ct.getDerivationMethod() == XSType.EXTENSION) {
+            ct.getDerivationMethod()==XSType.EXTENSION &&
+            ct.getContentType().asParticle() != null &&
+            ct.getExplicitContent().asEmpty() == null
+            )  {
                 return true;
         }
 
         return false;
     }
 
-    public void build(XSComplexType ct) {
-        XSContentType contentType = ct.getContentType();
+    private boolean checkFallback(XSComplexType t) {
+//        (bt.getBaseType() != schemas.getAnyType())
+//                            ||
+//                (bt.asComplexType().getExplicitContent() != null &&
+//                 bt.asComplexType().getExplicitContent().asParticle() != null) &&
+//                 (bgmBuilder.getParticleBinder().checkFallback(bt.asComplexType().getExplicitContent().asParticle()) && // continues (can't check for CONTENT binding mode itself because the element might not have been bound yet
 
-        if (!(ct.getBaseType() == schemas.getAnyType() && ct.isMixed())) {
-            XSComplexType baseType = ct.getBaseType().asComplexType();
-            // build the base class
-            CClass baseClass = selector.bindToType(baseType, ct, true);
-            selector.getCurrentBean().setBaseClass(baseClass);
+        return false;
+    }
+
+    public void build(XSComplexType ct) {
+        System.out.println("-----\nMixed Extended: " + ct.getName());
+
+        XSComplexType baseType = ct.getBaseType().asComplexType();
+        System.out.println("Base Type: " + baseType.getName());
+
+        // build the base class
+        CClass baseClass = selector.bindToType(baseType, ct, true);
+        assert baseClass != null;   // global complex type must map to a class
+
+        if (!checkIfExtensionSafe(baseType, ct)) {
+            // error. We can't handle any further extension
+            errorReceiver.error(ct.getLocator(),
+                    Messages.ERR_NO_FURTHER_EXTENSION.format(
+                    baseType.getName(), ct.getName() )
+            );
+            return;
         }
 
-        builder.recordBindingMode(ct, FALLBACK_CONTENT);
-        BIProperty prop = BIProperty.getCustomization(ct);
+        selector.getCurrentBean().setBaseClass(baseClass);
+        builder.recordBindingMode(ct, ComplexTypeBindingMode.FALLBACK_EXTENSION);
 
+        BIProperty prop = BIProperty.getCustomization(ct);
         CPropertyInfo p;
 
-        if (contentType.asEmpty() != null) {
-            p = prop.createReferenceProperty("Content",false,ct, null, true, false);
-        } else if (contentType.asParticle() == null) {
-            p = prop.createReferenceProperty("Content",false,ct, null, true, false);
-        } else {
-            RawTypeSet ts = RawTypeSetBuilder.build(contentType.asParticle(), false);
-            p = prop.createReferenceProperty("Content", false, ct, ts, true, false);
-        }
+        RawTypeSet ts = RawTypeSetBuilder.build(ct.getContentType().asParticle(), false);
+        p = prop.createExtendedMixedReferenceProperty("contentOverrideFor" + ct.getName(), ct, ts);
 
+        System.out.println("Children: " + prop.getChildren());
+        
         selector.getCurrentBean().addProperty(p);
 
         // adds attributes and we are through.
-        green.attContainer(ct);
+        green.attContainer(ct);        
     }
 
 }

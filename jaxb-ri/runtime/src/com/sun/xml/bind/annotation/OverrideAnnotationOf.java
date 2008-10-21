@@ -33,42 +33,21 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package com.sun.tools.xjc.generator.bean.field;
 
-import com.sun.codemodel.JClass;
-import com.sun.tools.xjc.generator.bean.ClassOutlineImpl;
-import com.sun.tools.xjc.model.CPropertyInfo;
-import com.sun.tools.xjc.outline.FieldOutline;
+package com.sun.xml.bind.annotation;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * 
- * 
- * @author
- *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
+ * Designates an annotation from base class which shall be overriden by annotation placed together with this.
+ *
+ * @author Martin Grebac
  */
-public final class UntypedListFieldRenderer implements FieldRenderer {
-
-    private JClass coreList;
-    private boolean dummy;
-    private boolean content;
-
-    protected UntypedListFieldRenderer( JClass coreList) {
-        this(coreList, false, false);
-    }
-
-    protected UntypedListFieldRenderer( JClass coreList, boolean dummy, boolean content) {
-        this.coreList = coreList;
-        this.dummy = dummy;
-        this.content = content;
-    }
-
-    public FieldOutline generate(ClassOutlineImpl context, CPropertyInfo prop) {
-        if (dummy) {
-            return new DummyListField(context, prop, coreList);
-        }
-        if (content) {
-            return new ContentListField(context, prop, coreList);
-        }
-        return new UntypedListField(context, prop, coreList);
-    }
+@Retention(RUNTIME)
+@Target({FIELD})
+public @interface OverrideAnnotationOf {
+    String value() default "content";
 }

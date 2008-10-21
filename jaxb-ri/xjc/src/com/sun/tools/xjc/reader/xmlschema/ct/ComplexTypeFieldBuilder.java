@@ -60,6 +60,7 @@ public final class ComplexTypeFieldBuilder extends BindingComponent {
      */
     private final CTBuilder[] complexTypeBuilders = new CTBuilder[]{
 //        new ChoiceContentComplexTypeBuilder(),
+        new MixedExtendedComplexTypeBuilder(),
         new MixedComplexTypeBuilder(),
         new FreshComplexTypeBuilder(),
         new ExtendedComplexTypeBuilder(),

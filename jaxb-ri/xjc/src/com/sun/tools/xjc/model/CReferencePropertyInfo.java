@@ -75,12 +75,16 @@ public final class CReferencePropertyInfo extends CPropertyInfo implements Refer
 
     private final boolean isMixed;
     private WildcardMode wildcard;
+    private boolean dummy;
+    private boolean content;
 
     public CReferencePropertyInfo(String name, boolean collection, boolean required, boolean isMixed, XSComponent source,
-                                  CCustomizations customizations, Locator locator) {
-        super(name, collection||isMixed, source, customizations, locator );
+                                  CCustomizations customizations, Locator locator, boolean dummy, boolean content) {   // 'dummy' and 'content' here for NHIN fix - a hack in order to be able to handle extended mixed types better
+        super(name, (collection||isMixed) && (!dummy), source, customizations, locator);
         this.isMixed = isMixed;
         this.required = required;
+        this.dummy = dummy;
+        this.content = content;
     }
 
     public Set<? extends CTypeInfo> ref() {
@@ -126,7 +130,6 @@ public final class CReferencePropertyInfo extends CPropertyInfo implements Refer
         if(isMixed())
             r.add(CBuiltinLeafInfo.STRING);
 
-
         return r;
     }
 
@@ -136,6 +139,14 @@ public final class CReferencePropertyInfo extends CPropertyInfo implements Refer
 
     public boolean isMixed() {
         return isMixed;
+    }
+
+    public boolean isDummy() {
+        return dummy;
+    }
+
+    public boolean isContent() {
+        return content;
     }
 
     /**

@@ -36,7 +36,12 @@
 package com.sun.tools.xjc.reader.xmlschema.ct;
 
 import com.sun.tools.xjc.model.CClass;
+import com.sun.tools.xjc.model.CPropertyInfo;
+import com.sun.tools.xjc.reader.RawTypeSet;
+import com.sun.tools.xjc.reader.xmlschema.RawTypeSetBuilder;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
 import com.sun.xml.xsom.XSComplexType;
+import com.sun.xml.xsom.XSParticle;
 import com.sun.xml.xsom.XSType;
 
 /**
@@ -56,22 +61,42 @@ final class RestrictedComplexTypeBuilder extends CTBuilder {
     }
 
     public void build(XSComplexType ct) {
-        if(bgmBuilder.getGlobalBinding().isRestrictionFreshType()) {
+        System.out.println("-----\nRestricted: " + ct.getName());
+
+        if (bgmBuilder.getGlobalBinding().isRestrictionFreshType()) {
             // handle derivation-by-restriction like a whole new type
             new FreshComplexTypeBuilder().build(ct);
             return;
         }
 
-
         XSComplexType baseType = ct.getBaseType().asComplexType();
+        System.out.println("Base Type: " + baseType.getName());
 
         // build the base class
         CClass baseClass = selector.bindToType(baseType,ct,true);
         assert baseClass!=null;   // global complex type must map to a class
-
+        
         selector.getCurrentBean().setBaseClass(baseClass);
+        
+        boolean forceFallbackInExtension = baseType.isMixed() &&
+                                           ct.isMixed() &&
+                                           (ct.getExplicitContent() != null) &&
+                                           bgmBuilder.inExtensionMode;
+        if (forceFallbackInExtension) {
+            builder.recordBindingMode(ct, ComplexTypeBindingMode.NORMAL);
 
-        // determine the binding of this complex type.
-        builder.recordBindingMode(ct,builder.getBindingMode(baseType));
+            BIProperty prop = BIProperty.getCustomization(ct);
+            CPropertyInfo p;
+
+            XSParticle particle = ct.getContentType().asParticle();
+            if (particle != null) {
+                RawTypeSet ts = RawTypeSetBuilder.build(particle, false);
+                p = prop.createExtendedMixedReferenceProperty("Content", ct, ts);
+                selector.getCurrentBean().addProperty(p);
+            }
+        } else {
+            // determine the binding of this complex type.
+            builder.recordBindingMode(ct,builder.getBindingMode(baseType));
+        }
     }
 }

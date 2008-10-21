@@ -59,6 +59,7 @@ import com.sun.xml.bind.v2.model.core.ReferencePropertyInfo;
 import com.sun.xml.bind.v2.model.core.WildcardMode;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
+import java.util.Iterator;
 
 /**
  * Implementation of {@link ReferencePropertyInfo}.
@@ -67,13 +68,14 @@ import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
  */
 class ReferencePropertyInfoImpl<T,C,F,M>
     extends ERPropertyInfoImpl<T,C,F,M>
-    implements ReferencePropertyInfo<T,C>
+    implements ReferencePropertyInfo<T,C>, DummyPropertyInfo<T, C, F, M>
 {
     /**
      * Lazily computed.
      * @see #getElements()
      */
     private Set<Element<T,C>> types;
+    private Set<PropertyInfoImpl<T,C,F,M>> subTypes = new LinkedHashSet<PropertyInfoImpl<T,C,F,M>>();
 
     private final boolean isMixed;
 
@@ -85,14 +87,13 @@ class ReferencePropertyInfoImpl<T,C,F,M>
      */
     private Boolean isRequired;
 
-
     public ReferencePropertyInfoImpl(
         ClassInfoImpl<T,C,F,M> classInfo,
         PropertySeed<T,C,F,M> seed) {
 
         super(classInfo, seed);
 
-        isMixed = seed.readAnnotation(XmlMixed.class)!=null;
+        isMixed = seed.readAnnotation(XmlMixed.class) != null;
 
         XmlAnyElement xae = seed.readAnnotation(XmlAnyElement.class);
         if(xae==null) {
@@ -195,6 +196,77 @@ class ReferencePropertyInfoImpl<T,C,F,M>
             }
         }
 
+        Iterator<PropertyInfoImpl<T,C,F,M>> i = subTypes.iterator();
+        while (i.hasNext()) {
+
+            ReferencePropertyInfoImpl<T,C,F,M> info = (ReferencePropertyInfoImpl<T, C, F, M>) i.next();
+            PropertySeed sd = info.seed;
+            refs = sd.readAnnotation(XmlElementRefs.class);
+            ref = sd.readAnnotation(XmlElementRef.class);
+
+            if (refs != null && ref != null) {
+                parent.builder.reportError(new IllegalAnnotationException(
+                        Messages.MUTUALLY_EXCLUSIVE_ANNOTATIONS.format(
+                        nav().getClassName(parent.getClazz())+'#'+seed.getName(),
+                        ref.annotationType().getName(), refs.annotationType().getName()),
+                        ref, refs ));
+            }
+
+            if (refs != null) {
+                ann = refs.value();
+            } else {
+                if (ref != null) {
+                    ann = new XmlElementRef[]{ref};
+                } else {
+                    ann = null;
+                }
+            }
+
+            if (ann != null) {
+                Navigator<T,C,F,M> nav = nav();
+                AnnotationReader<T,C,F,M> reader = reader();
+
+                final T defaultType = nav.ref(XmlElementRef.DEFAULT.class);
+                final C je = nav.asDecl(JAXBElement.class);
+
+                for( XmlElementRef r : ann ) {
+                    boolean yield;
+                    T type = reader.getClassValue(r,"type");
+                    if (type.equals(defaultType)) {
+                        type = nav.erasure(getIndividualType());
+                    }
+                    if (nav.getBaseClass(type,je) != null) {
+                        yield = addGenericElement(r, info);
+
+                    } else {
+                        yield = addAllSubtypes(type);
+                    }
+
+                    if(last && !yield) {
+                        // a reference didn't produce any type.
+                        // diagnose the problem
+                        if(type.equals(nav.ref(JAXBElement.class))) {
+                            // no XmlElementDecl
+                            parent.builder.reportError(new IllegalAnnotationException(
+                                Messages.NO_XML_ELEMENT_DECL.format(
+                                    getEffectiveNamespaceFor(r), r.name()),
+                                this
+                            ));
+                        } else {
+                            parent.builder.reportError(new IllegalAnnotationException(
+                                Messages.INVALID_XML_ELEMENT_REF.format(),this));
+                        }
+
+                        // reporting one error would do.
+                        // often the element ref field is using @XmlElementRefs
+                        // to point to multiple JAXBElements.
+                        // reporting one error for each @XmlElemetnRef is thus often redundant.
+                        return;
+                    }
+                }
+            }
+        }
+
         types = Collections.unmodifiableSet(types);
     }
 
@@ -234,6 +306,13 @@ class ReferencePropertyInfoImpl<T,C,F,M>
         String nsUri = getEffectiveNamespaceFor(r);
         // TODO: check spec. defaulting of localName.
         return addGenericElement(parent.owner.getElementInfo(parent.getClazz(),new QName(nsUri,r.name())));
+    }
+
+    private boolean addGenericElement(XmlElementRef r, ReferencePropertyInfoImpl<T,C,F,M> info) {
+        String nsUri = info.getEffectiveNamespaceFor(r);
+        ElementInfo ei = parent.owner.getElementInfo(info.parent.getClazz(), new QName(nsUri, r.name()));
+        types.add(ei);
+        return true;
     }
 
     private String getEffectiveNamespaceFor(XmlElementRef r) {
@@ -296,6 +375,7 @@ class ReferencePropertyInfoImpl<T,C,F,M>
     }
 
 
+    @Override
     protected void link() {
         super.link();
 
@@ -306,6 +386,9 @@ class ReferencePropertyInfoImpl<T,C,F,M>
 
     }
 
+    public final void addType(PropertyInfoImpl<T,C,F,M> info) {
+        subTypes.add(info);
+    }
 
     public final boolean isMixed() {
         return isMixed;

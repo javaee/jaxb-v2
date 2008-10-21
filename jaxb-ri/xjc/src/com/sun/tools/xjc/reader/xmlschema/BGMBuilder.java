@@ -447,6 +447,9 @@ public class BGMBuilder extends BindingComponent {
      * Gets the {@link BIDom} object that applies to the given particle.
      */
     protected final BIDom getLocalDomCustomization( XSParticle p ) {
+        if (p == null) {
+            return null;
+        }
         BIDom dom = getBindInfo(p).get(BIDom.class);
         if(dom!=null)  return dom;
 
