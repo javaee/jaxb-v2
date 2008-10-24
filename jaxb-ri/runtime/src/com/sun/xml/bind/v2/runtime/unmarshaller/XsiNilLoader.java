@@ -63,12 +63,22 @@ public class XsiNilLoader extends ProxyLoader {
 
         if(idx!=-1) {
             String value = ea.atts.getValue(idx);
-            if(DatatypeConverterImpl._parseBoolean(value)) {
+            int hasattribute = 0;
+            for (int i = 0 ; i < ea.atts.getLength(); i++ ) {
+            	if (!(ea.atts.getQName(i).contains("xsi:"))) {
+            		hasattribute++;
+                    break;
+                }
+            }
+            if(DatatypeConverterImpl._parseBoolean(value)&&(hasattribute < 1)) {
                 onNil(state);
                 return Discarder.INSTANCE;
+            } else {
+                if ((hasattribute >= 1) && (DatatypeConverterImpl._parseBoolean(value))) {
+                    onNil(state);
+                }
             }
         }
-
         return defaultLoader;
     }
 
