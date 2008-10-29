@@ -62,9 +62,11 @@ public class XsiNilLoader extends ProxyLoader {
         int idx = ea.atts.getIndex(WellKnownNamespace.XML_SCHEMA_INSTANCE,"nil");
         if (idx!=-1) {
             boolean hasAttribute = (ea.atts.getLength() - 1) > 0;
-            if (DatatypeConverterImpl._parseBoolean(ea.atts.getValue(idx)) && !hasAttribute) {
+            if (DatatypeConverterImpl._parseBoolean(ea.atts.getValue(idx))) {
                 onNil(state);
-                return Discarder.INSTANCE;
+                if (!hasAttribute) {
+                    return Discarder.INSTANCE;
+                }
             }
         }
         return defaultLoader;
