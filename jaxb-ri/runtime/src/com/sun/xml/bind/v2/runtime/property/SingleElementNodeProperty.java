@@ -150,6 +150,10 @@ final class SingleElementNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT> 
                 w.childAsXsiType(v,fieldName,tt.beanInfo, nillable);
             }
             w.endElement();
+        } else if (nillable) {
+            w.startElement(nullTagName,null);
+            w.writeXsiNilTrue();
+            w.endElement();
         }
     }
 
