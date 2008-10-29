@@ -239,6 +239,8 @@ public final class UnmarshallingContext extends Coordinator
         public final State prev;
         private State next;
 
+        public boolean nil = false;
+
         /**
          * Gets the context.
          */
@@ -1006,6 +1008,7 @@ public final class UnmarshallingContext extends Coordinator
          * Receives the root element and determines how to start
          * unmarshalling.
          */
+        @Override
         public void childElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
             Loader loader = state.getContext().selectRootLoader(state,ea);
             if(loader!=null) {
@@ -1037,6 +1040,9 @@ public final class UnmarshallingContext extends Coordinator
             if(state.backup!=null) {
                 ((JAXBElement<Object>)state.backup).setValue(o);
                 o = state.backup;
+            }
+            if (state.nil) {
+                ((JAXBElement<Object>)o).setNil(true);
             }
             state.getContext().result = o;
         }

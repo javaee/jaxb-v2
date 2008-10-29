@@ -87,13 +87,16 @@ public class XsiNilLoader extends ProxyLoader {
             this.acc = acc;
         }
 
+        @Override
         protected void onNil(UnmarshallingContext.State state) throws SAXException {
             try {
                 acc.set(state.prev.target,null);
+                state.prev.nil = true;
             } catch (AccessorException e) {
                 handleGenericException(e,true);
             }
         }
+
     }
 
     public static final class Array extends XsiNilLoader {
@@ -101,6 +104,7 @@ public class XsiNilLoader extends ProxyLoader {
             super(core);
         }
 
+        @Override
         protected void onNil(UnmarshallingContext.State state) {
             // let the receiver add this to the lister
             state.target = null;
