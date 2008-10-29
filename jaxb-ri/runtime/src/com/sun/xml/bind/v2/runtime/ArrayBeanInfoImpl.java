@@ -135,7 +135,7 @@ final class ArrayBeanInfoImpl  extends JaxBeanInfo {
             if(item==null) {
                 target.writeXsiNilTrue();
             } else {
-                target.childAsXsiType(item,"arrayItem",itemBeanInfo);
+                target.childAsXsiType(item,"arrayItem",itemBeanInfo, false);
             }
             target.endElement();
         }

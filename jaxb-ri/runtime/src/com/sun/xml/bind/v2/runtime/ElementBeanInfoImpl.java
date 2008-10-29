@@ -148,7 +148,7 @@ public final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
                     if(value==null) {
                         target.writeXsiNilTrue();
                     } else {
-                        target.childAsXsiType(value,"value",tbi);
+                        target.childAsXsiType(value,"value",tbi, false);
                     }
                     target.endElement();
                 } else {
