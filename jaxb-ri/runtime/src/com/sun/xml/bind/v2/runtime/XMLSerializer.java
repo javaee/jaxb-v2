@@ -620,7 +620,7 @@ public final class XMLSerializer extends Coordinator {
      *      Used as a part of the error message in case anything goes wrong
      *      with 'o'.
      */
-    public final void childAsXsiType( Object child, String fieldName, JaxBeanInfo expected ) throws SAXException, IOException, XMLStreamException {
+    public final void childAsXsiType( Object child, String fieldName, JaxBeanInfo expected, boolean nillable) throws SAXException, IOException, XMLStreamException {
         if(child==null) {
             handleMissingObjectError(fieldName);
         } else {
@@ -671,12 +671,22 @@ public final class XMLSerializer extends Coordinator {
                 }
             }
             actual.serializeURIs(child,this);
+
+            if (nillable) {
+                getNamespaceContext().declareNamespace(WellKnownNamespace.XML_SCHEMA_INSTANCE,"xsi",true);
+            }
+            
             endNamespaceDecls(child);
             if(!asExpected) {
                 attribute(WellKnownNamespace.XML_SCHEMA_INSTANCE,"type",
                     DatatypeConverter.printQName(actualTypeName,getNamespaceContext()));
             }
             actual.serializeAttributes(child,this);
+
+            if (nillable) {
+                attribute(WellKnownNamespace.XML_SCHEMA_INSTANCE,"nil","true");
+            }
+            
             endAttributes();
             actual.serializeBody(child,this);
 
