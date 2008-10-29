@@ -62,6 +62,7 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader;
 import com.sun.xml.bind.v2.util.QNameMap;
 
+import javax.xml.bind.JAXBElement;
 import org.xml.sax.SAXException;
 
 /**
@@ -103,7 +104,7 @@ final class SingleElementNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT> 
                 context.nameBuilder.createElementName(e.getTagName()),beanInfo) );
             nil |= e.isNillable();
         }
-
+        
         nullTagName = context.nameBuilder.createElementName(nt);
 
         nillable = nil;
@@ -124,7 +125,7 @@ final class SingleElementNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT> 
 
     public void serializeBody(BeanT o, XMLSerializer w, Object outerPeer) throws SAXException, AccessorException, IOException, XMLStreamException {
         ValueT v = acc.get(o);
-        if(v!=null) {
+        if (v!=null) {
             Class vtype = v.getClass();
             TagAndType tt=typeNames.get(vtype); // quick way that usually works
 
@@ -137,6 +138,7 @@ final class SingleElementNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT> 
                 }
             }
 
+            boolean addNilDecl = (o instanceof JAXBElement) && ((JAXBElement)o).isNil();
             if(tt==null) {
                 // actually this is an error, because the actual type was not a sub-type
                 // of any of the types specified in the annotations,
@@ -144,10 +146,10 @@ final class SingleElementNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT> 
                 // it's convenient to marshal this anyway (for example so that classes
                 // generated from simple types like String can be marshalled as expected.)
                 w.startElement(typeNames.values().iterator().next().tagName,null);
-                w.childAsXsiType(v,fieldName,w.grammar.getBeanInfo(Object.class), nillable);
+                w.childAsXsiType(v,fieldName,w.grammar.getBeanInfo(Object.class), addNilDecl);
             } else {
                 w.startElement(tt.tagName,null);
-                w.childAsXsiType(v,fieldName,tt.beanInfo, nillable);
+                w.childAsXsiType(v,fieldName,tt.beanInfo, addNilDecl);
             }
             w.endElement();
         } else if (nillable) {
