@@ -60,23 +60,11 @@ public class XsiNilLoader extends ProxyLoader {
 
     protected Loader selectLoader(UnmarshallingContext.State state, TagName ea) throws SAXException {
         int idx = ea.atts.getIndex(WellKnownNamespace.XML_SCHEMA_INSTANCE,"nil");
-
-        if(idx!=-1) {
-            String value = ea.atts.getValue(idx);
-            int hasattribute = 0;
-            for (int i = 0 ; i < ea.atts.getLength(); i++ ) {
-            	if (!(ea.atts.getQName(i).contains("xsi:"))) {
-            		hasattribute++;
-                    break;
-                }
-            }
-            if(DatatypeConverterImpl._parseBoolean(value)&&(hasattribute < 1)) {
+        if (idx!=-1) {
+            boolean hasAttribute = (ea.atts.getLength() - 1) > 0;
+            if (DatatypeConverterImpl._parseBoolean(ea.atts.getValue(idx)) && !hasAttribute) {
                 onNil(state);
                 return Discarder.INSTANCE;
-            } else {
-                if ((hasattribute >= 1) && (DatatypeConverterImpl._parseBoolean(value))) {
-                    onNil(state);
-                }
             }
         }
         return defaultLoader;
