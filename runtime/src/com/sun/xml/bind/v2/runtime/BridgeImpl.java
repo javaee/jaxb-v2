@@ -144,7 +144,7 @@ final class BridgeImpl<T> extends InternalBridge<T> {
         if(value==null) {
             out.writeXsiNilTrue();
         } else {
-            out.childAsXsiType(value,null,bi);
+            out.childAsXsiType(value,null,bi,false);
         }
         out.endElement();
     }

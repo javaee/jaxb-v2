@@ -271,7 +271,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
                     if(obj==null)
                         serializer.writeXsiNilTrue();
                     else
-                        serializer.childAsXsiType(obj,"root",bi);
+                        serializer.childAsXsiType(obj,"root",bi, false);
                 }
                 serializer.endElement();
                 postwrite();
