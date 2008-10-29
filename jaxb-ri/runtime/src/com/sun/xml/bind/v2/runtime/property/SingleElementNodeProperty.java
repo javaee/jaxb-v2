@@ -144,16 +144,11 @@ final class SingleElementNodeProperty<BeanT,ValueT> extends PropertyImpl<BeanT> 
                 // it's convenient to marshal this anyway (for example so that classes
                 // generated from simple types like String can be marshalled as expected.)
                 w.startElement(typeNames.values().iterator().next().tagName,null);
-                w.childAsXsiType(v,fieldName,w.grammar.getBeanInfo(Object.class));
+                w.childAsXsiType(v,fieldName,w.grammar.getBeanInfo(Object.class), nillable);
             } else {
                 w.startElement(tt.tagName,null);
-                w.childAsXsiType(v,fieldName,tt.beanInfo);
+                w.childAsXsiType(v,fieldName,tt.beanInfo, nillable);
             }
-            w.endElement();
-        } else
-        if(nillable) {
-            w.startElement(nullTagName,null);
-            w.writeXsiNilTrue();
             w.endElement();
         }
     }
