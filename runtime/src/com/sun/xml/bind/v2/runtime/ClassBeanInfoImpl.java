@@ -56,6 +56,7 @@ import com.sun.istack.FinalArrayList;
 import com.sun.xml.bind.Util;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.ClassFactory;
+import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.runtime.RuntimeClassInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
@@ -77,8 +78,10 @@ import org.xml.sax.helpers.LocatorImpl;
  *
  * @author Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
+public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> implements AttributeAccessor<BeanT> {
 
+    private boolean isNilIncluded = false;
+    
     /**
      * Properties of this bean class but not its ancestor classes.
      */
@@ -329,6 +332,9 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
         for( AttributeProperty<BeanT> p : attributeProperties )
             try {
                 p.serializeAttributes(bean,target);
+                if (p.attName.equals(WellKnownNamespace.XML_SCHEMA_INSTANCE, "nil")) {
+                    isNilIncluded = true;
+                }
             } catch (AccessorException e) {
                 target.reportError(null,e);
             }
@@ -385,5 +391,9 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> {
     private static final AttributeProperty[] EMPTY_PROPERTIES = new AttributeProperty[0];
 
     private static final Logger logger = Util.getClassLogger();
+
+    public boolean isNilIncluded() {
+        return isNilIncluded;
+    }
 }
 

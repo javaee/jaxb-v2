@@ -681,9 +681,13 @@ public final class XMLSerializer extends Coordinator {
                 attribute(WellKnownNamespace.XML_SCHEMA_INSTANCE,"type",
                     DatatypeConverter.printQName(actualTypeName,getNamespaceContext()));
             }
-            actual.serializeAttributes(child,this);
 
-            if (nillable) {
+            actual.serializeAttributes(child,this);
+            boolean nilDefined = false;
+            if (actual instanceof AttributeAccessor) {
+                nilDefined = ((AttributeAccessor)actual).isNilIncluded();
+            }
+            if ((nillable) && (!nilDefined)) {
                 attribute(WellKnownNamespace.XML_SCHEMA_INSTANCE,"nil","true");
             }
             
