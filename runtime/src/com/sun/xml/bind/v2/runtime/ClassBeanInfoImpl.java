@@ -321,8 +321,10 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> implement
         if(superClazz!=null)
             superClazz.serializeBody(bean,target);
         try {
-            for( Property<BeanT> p : properties )
+            for( Property<BeanT> p : properties ) {
+                target.currentProperty.set(p);
                 p.serializeBody(bean,target, null);
+            }
         } catch (AccessorException e) {
             target.reportError(null,e);
         }
