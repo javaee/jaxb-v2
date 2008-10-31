@@ -144,7 +144,7 @@ public final class XMLSerializer extends Coordinator {
     private NamespaceContextImpl.Element nse;
 
     // Introduced based on Jersey requirements - to be able to retrieve marshalled name
-    ThreadLocal<Property> currentProperty;
+    ThreadLocal<Property> currentProperty = new ThreadLocal<Property>();
     
     /**
      * Set to true if a text is already written,
