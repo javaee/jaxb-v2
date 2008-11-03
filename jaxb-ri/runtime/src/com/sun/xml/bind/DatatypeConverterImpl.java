@@ -63,7 +63,7 @@ import com.sun.xml.bind.v2.TODO;
  * This class is responsible for whitespace normalization.
  *
  * @author <ul><li>Ryan Shoemaker, Sun Microsystems, Inc.</li></ul>
- * @version $Revision: 1.9.6.10 $
+ * @version $Revision: 1.9.6.11 $
  * @since JAXB1.0
  */
 public final class DatatypeConverterImpl implements DatatypeConverterInterface {
@@ -253,16 +253,18 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         return _parseBoolean(lexicalXSDBoolean);
     }
 
-    public static boolean _parseBoolean(CharSequence literal) {
+    public static Boolean _parseBoolean(CharSequence literal) {
         int i=0;
         int len = literal.length();
         char ch;
+        if (literal.length() <= 0) {
+            return null;
+        }
         do {
             ch = literal.charAt(i++);
         } while(WhiteSpaceProcessor.isWhiteSpace(ch) && i<len);
 
         // if we are strict about errors, check i==len. and report an error
-
         if( ch=='t' || ch=='1' )        return true;
         if( ch=='f' || ch=='0' )        return false;
         TODO.checkSpec("issue #42");
