@@ -544,4 +544,8 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
     public void setListener(Listener listener) {
         externalListener = listener;
     }
+
+    public UnmarshallingContext getContext() {
+        return coordinator;
+    }
 }
