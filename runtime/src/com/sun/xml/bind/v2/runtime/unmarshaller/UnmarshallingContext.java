@@ -72,7 +72,6 @@ import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.LocatorImpl;
 
@@ -1175,9 +1174,14 @@ public final class UnmarshallingContext extends Coordinator
      * @return
      */
     public Collection<QName> getCurrentExpectedElements() {
-        State s = getCurrentState();
-        Loader l = s.loader;
-        return l.getExpectedChildElements();
+        pushCoordinator();
+        try {
+            State s = getCurrentState();
+            Loader l = s.loader;
+            return l.getExpectedChildElements();
+        } finally {
+            popCoordinator();
+        }
     }
     
 }
