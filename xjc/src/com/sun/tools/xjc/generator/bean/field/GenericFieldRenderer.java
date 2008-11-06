@@ -59,7 +59,7 @@ public final class GenericFieldRenderer implements FieldRenderer {
         }
     }
     
-    public FieldOutline generate(ClassOutlineImpl context, CPropertyInfo prop) {
+    public FieldOutline generate(ClassOutlineImpl context, CPropertyInfo prop, boolean ext) {
         try {
             return (FieldOutline)constructor.newInstance(new Object[]{context,prop});
         } catch (InstantiationException e) {

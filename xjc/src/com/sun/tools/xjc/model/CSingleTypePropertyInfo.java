@@ -42,7 +42,6 @@ import java.util.List;
 import javax.activation.MimeType;
 import javax.xml.namespace.QName;
 
-import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.xsom.XSComponent;
 

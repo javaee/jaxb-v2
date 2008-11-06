@@ -73,11 +73,11 @@ final class DefaultFieldRenderer implements FieldRenderer {
     private FieldRenderer defaultCollectionFieldRenderer;
 
 
-    public FieldOutline generate(ClassOutlineImpl outline, CPropertyInfo prop) {
-        return decideRenderer(outline,prop).generate(outline,prop);
+    public FieldOutline generate(ClassOutlineImpl outline, CPropertyInfo prop, boolean ext) {
+        return decideRenderer(outline,prop,ext).generate(outline,prop,ext);
     }
     
-    private FieldRenderer decideRenderer(ClassOutlineImpl outline, CPropertyInfo prop) {
+    private FieldRenderer decideRenderer(ClassOutlineImpl outline, CPropertyInfo prop, boolean ext) {
 
         if (prop instanceof CReferencePropertyInfo) {
             CReferencePropertyInfo p = (CReferencePropertyInfo)prop;
@@ -87,6 +87,9 @@ final class DefaultFieldRenderer implements FieldRenderer {
             if (p.isContent()) {
                 return frf.getContentList(outline.parent().getCodeModel().ref(ArrayList.class).narrow(Serializable.class));
             }
+//            if (p.isMixed() && !ext) {
+//                return frf.getContentList(outline.parent().getCodeModel().ref(ArrayList.class).narrow(Serializable.class));
+//            }
         }
         
         if(!prop.isCollection()) {

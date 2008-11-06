@@ -47,17 +47,10 @@ import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 import com.sun.tools.xjc.generator.bean.ClassOutlineImpl;
 import com.sun.tools.xjc.generator.bean.MethodWriter;
-import com.sun.tools.xjc.model.CElementInfo;
 import com.sun.tools.xjc.model.CPropertyInfo;
-import com.sun.tools.xjc.model.CTypeInfo;
-import com.sun.tools.xjc.model.nav.EagerNClass;
 import com.sun.tools.xjc.outline.Aspect;
-import com.sun.tools.xjc.reader.TypeUtil;
 import com.sun.xml.bind.api.impl.NameConverter;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Realizes a property as an untyped {@link List}.
@@ -96,7 +89,6 @@ public class ContentListField extends AbstractListField {
      * for this field.
      */
     private final JClass coreList;
-
 
     /** List getFIELD() method. */
     private JMethod $get;
