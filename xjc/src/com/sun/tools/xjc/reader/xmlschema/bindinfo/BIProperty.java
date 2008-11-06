@@ -404,8 +404,8 @@ public final class BIProperty extends AbstractDeclarationImpl {
         CReferencePropertyInfo prop = wrapUp(
                                             new CReferencePropertyInfo(
                                                 name,
-                                                (types != null) ? true : types.getCollectionMode().isRepeated()||isMixed,
-                                                (types != null) ? false : types.isRequired(),
+                                                (types == null) ? true : types.getCollectionMode().isRepeated()||isMixed,
+                                                (types == null) ? false : types.isRequired(),
                                                 isMixed,
                                                 source,
                                                 getCustomizations(source), source.getLocator(), dummy, content),
