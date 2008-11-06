@@ -65,21 +65,8 @@ final class MixedExtendedComplexTypeBuilder extends AbstractExtendedComplexTypeB
         return false;
     }
 
-    private boolean checkFallback(XSComplexType t) {
-//        (bt.getBaseType() != schemas.getAnyType())
-//                            ||
-//                (bt.asComplexType().getExplicitContent() != null &&
-//                 bt.asComplexType().getExplicitContent().asParticle() != null) &&
-//                 (bgmBuilder.getParticleBinder().checkFallback(bt.asComplexType().getExplicitContent().asParticle()) && // continues (can't check for CONTENT binding mode itself because the element might not have been bound yet
-
-        return false;
-    }
-
     public void build(XSComplexType ct) {
-        System.out.println("-----\nMixed Extended: " + ct.getName());
-
         XSComplexType baseType = ct.getBaseType().asComplexType();
-        System.out.println("Base Type: " + baseType.getName());
 
         // build the base class
         CClass baseClass = selector.bindToType(baseType, ct, true);
@@ -103,8 +90,6 @@ final class MixedExtendedComplexTypeBuilder extends AbstractExtendedComplexTypeB
         RawTypeSet ts = RawTypeSetBuilder.build(ct.getContentType().asParticle(), false);
         p = prop.createExtendedMixedReferenceProperty("contentOverrideFor" + ct.getName(), ct, ts);
 
-        System.out.println("Children: " + prop.getChildren());
-        
         selector.getCurrentBean().addProperty(p);
 
         // adds attributes and we are through.

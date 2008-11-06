@@ -61,7 +61,6 @@ final class RestrictedComplexTypeBuilder extends CTBuilder {
     }
 
     public void build(XSComplexType ct) {
-        System.out.println("-----\nRestricted: " + ct.getName());
 
         if (bgmBuilder.getGlobalBinding().isRestrictionFreshType()) {
             // handle derivation-by-restriction like a whole new type
@@ -70,7 +69,6 @@ final class RestrictedComplexTypeBuilder extends CTBuilder {
         }
 
         XSComplexType baseType = ct.getBaseType().asComplexType();
-        System.out.println("Base Type: " + baseType.getName());
 
         // build the base class
         CClass baseClass = selector.bindToType(baseType,ct,true);

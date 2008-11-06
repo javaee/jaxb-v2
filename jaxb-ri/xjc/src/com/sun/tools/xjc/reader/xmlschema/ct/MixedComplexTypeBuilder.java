@@ -83,12 +83,12 @@ final class MixedComplexTypeBuilder extends CTBuilder {
         CPropertyInfo p;
 
         if (contentType.asEmpty() != null) {
-            p = prop.createReferenceProperty("Content",false,ct, null, true, false);
+            p = prop.createReferenceProperty("Content",false,ct, null, true, false, true);
         } else if (contentType.asParticle() == null) {
-            p = prop.createReferenceProperty("Content",false,ct, null, true, false);
+            p = prop.createReferenceProperty("Content",false,ct, null, true, false, true);
         } else {
             RawTypeSet ts = RawTypeSetBuilder.build(contentType.asParticle(), false);
-            p = prop.createReferenceProperty("Content", false, ct, ts, true, false);
+            p = prop.createReferenceProperty("Content", false, ct, ts, true, false, true);
         }
 
         selector.getCurrentBean().addProperty(p);

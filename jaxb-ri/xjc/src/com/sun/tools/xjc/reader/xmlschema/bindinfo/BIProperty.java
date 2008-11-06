@@ -379,15 +379,14 @@ public final class BIProperty extends AbstractDeclarationImpl {
                     source,
                     types,
                     true,
-                    true);
+                    true,
+                    false);
     }
 
     public CReferencePropertyInfo createReferenceProperty(
             String defaultName, boolean forConstant, XSComponent source,
-            RawTypeSet types, boolean isMixed, boolean dummy) {
+            RawTypeSet types, boolean isMixed, boolean dummy, boolean content) {
 
-        boolean content = false;
-        
         if (types == null) {    // this is a special case where we need to generate content because potential subtypes would need to be able to override what's store inside
             content = true;
         } else {
@@ -405,12 +404,15 @@ public final class BIProperty extends AbstractDeclarationImpl {
         CReferencePropertyInfo prop = wrapUp(
                                             new CReferencePropertyInfo(
                                                 name,
-                                                content ? true : types.getCollectionMode().isRepeated()||isMixed,
-                                                content ? false : types.isRequired(),
-                                                isMixed, source,
+                                                (types != null) ? true : types.getCollectionMode().isRepeated()||isMixed,
+                                                (types != null) ? false : types.isRequired(),
+                                                isMixed,
+                                                source,
                                                 getCustomizations(source), source.getLocator(), dummy, content),
                                         source);
-        if (!content) types.addTo(prop);
+        if (types != null) {
+            types.addTo(prop);
+        }
 
         BIInlineBinaryData.handle(source, prop);
         return prop;
@@ -440,7 +442,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
         }
 
         if(generateRef) {
-            return createReferenceProperty(defaultName,forConstant,source,types, false, false);
+            return createReferenceProperty(defaultName,forConstant,source,types, false, false, false);
         } else {
             return createElementProperty(defaultName,forConstant,source,types);
         }
