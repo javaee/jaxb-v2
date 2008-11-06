@@ -38,10 +38,12 @@ package com.sun.tools.xjc.generator.bean.field;
 import java.util.ArrayList;
 
 import com.sun.tools.xjc.generator.bean.ClassOutlineImpl;
+import com.sun.tools.xjc.model.CElement;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.model.CReferencePropertyInfo;
 import com.sun.tools.xjc.outline.FieldOutline;
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * Default implementation of the FieldRendererFactory
@@ -85,11 +87,12 @@ final class DefaultFieldRenderer implements FieldRenderer {
                 return frf.getDummyList(outline.parent().getCodeModel().ref(ArrayList.class));
             }
             if (p.isContent()) {
-                return frf.getContentList(outline.parent().getCodeModel().ref(ArrayList.class).narrow(Serializable.class));
+                Set<CElement> elems = p.getElements();
+                if ((elems != null) && (elems.size() > 0)) {
+                    return frf.getContentList(outline.parent().getCodeModel().ref(ArrayList.class).narrow(Serializable.class));
+                }
+                return frf.getContentList(outline.parent().getCodeModel().ref(ArrayList.class).narrow(String.class));
             }
-//            if (p.isMixed() && !ext) {
-//                return frf.getContentList(outline.parent().getCodeModel().ref(ArrayList.class).narrow(Serializable.class));
-//            }
         }
         
         if(!prop.isCollection()) {

@@ -167,7 +167,7 @@ public class NoExtendedContentField extends AbstractListField {
             // [RESULT]
             // $<var>.addAll(bean.getLIST());
             // list.toArray( array );
-            block.assign($var,JExpr._new(codeModel.ref(ArrayList.class).narrow(exposedType.boxify())).arg(
+            block.assign($var,JExpr._new(codeModel.ref(ArrayList.class).narrow(getType(Aspect.EXPOSED).boxify())).arg(
                 $target.invoke($get)
             ));
         }
