@@ -36,6 +36,7 @@
 
 package com.sun.tools.xjc.generator.bean;
 
+import com.sun.codemodel.JFieldVar;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
@@ -43,6 +44,7 @@ import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
+import com.sun.codemodel.JFieldRef;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
@@ -83,14 +85,23 @@ final class ElementOutlineImpl extends ElementOutline {
             if(ei.getScope()!=null)
                 scope = parent.getClazz(ei.getScope()).implRef;
             JExpression scopeClass = scope==null?JExpr._null():scope.dotclass();
+            JFieldVar valField = implClass.field(JMod.PROTECTED|JMod.FINAL|JMod.STATIC,QName.class,"NAME",createQName(cm,ei.getElementName()));
 
             // take this opportunity to generate a constructor in the element class
             JMethod cons = implClass.constructor(JMod.PUBLIC);
             cons.body().invoke("super")
-                .arg(implClass.field(JMod.PROTECTED|JMod.FINAL|JMod.STATIC,QName.class,"NAME",createQName(cm,ei.getElementName())))
+                .arg(valField)
                 .arg(declaredType)
                 .arg(scopeClass)
                 .arg(cons.param(implType,"value"));
+
+            // generate no-arg constructor in the element class (bug #391; section 5.6.2 in JAXB spec 2.1)
+            JMethod noArgCons = implClass.constructor(JMod.PUBLIC);
+            noArgCons.body().invoke("super")
+                .arg(valField)
+                .arg(declaredType)
+                .arg(scopeClass)
+                .arg(JExpr._null());
 
         }
     }
