@@ -87,11 +87,7 @@ final class DefaultFieldRenderer implements FieldRenderer {
                 return frf.getDummyList(outline.parent().getCodeModel().ref(ArrayList.class));
             }
             if (p.isContent()) {
-                Set<CElement> elems = p.getElements();
-                if ((elems != null) && (elems.size() > 0)) {
-                    return frf.getContentList(outline.parent().getCodeModel().ref(ArrayList.class).narrow(Serializable.class));
-                }
-                return frf.getContentList(outline.parent().getCodeModel().ref(ArrayList.class).narrow(String.class));
+                return frf.getContentList(outline.parent().getCodeModel().ref(ArrayList.class).narrow(Serializable.class));
             }
         }
         
