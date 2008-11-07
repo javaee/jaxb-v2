@@ -89,6 +89,7 @@ import org.xml.sax.Locator;
 
 import javax.xml.namespace.NamespaceContext;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -394,5 +395,17 @@ public class SchemaSetImpl implements XSSchemaSet
                         XSParticle.UNBOUNDED, 0 )
                 })
                 ,null,1,1);
+        public List<XSComplexType> getSubtypes() {
+            ArrayList subtypeList = new ArrayList();
+            Iterator<XSComplexType> cTypes = getRoot().iterateComplexTypes();
+            while (cTypes.hasNext()) {
+                XSComplexType cType= cTypes.next();
+                XSType base = cType.getBaseType();
+                if ((base != null) && (base.equals(this))) {
+                    subtypeList.add(cType);
+                }
+            }
+            return subtypeList;
+        }
     }
 }

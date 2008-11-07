@@ -55,6 +55,8 @@
  */
 package com.sun.xml.xsom;
 
+import java.util.List;
+
 
 /**
  * Complex type.
@@ -129,4 +131,6 @@ public interface XSComplexType extends XSType, XSAttContainer
      *      if this component has not been redefined.
      */
     public XSComplexType getRedefinedBy();
+
+    public List<XSComplexType> getSubtypes();
 }

@@ -69,6 +69,8 @@ import com.sun.xml.xsom.impl.parser.SchemaDocumentImpl;
 import com.sun.xml.xsom.impl.scd.Iterators;
 import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.xsom.visitor.XSVisitor;
+import java.util.ArrayList;
+import java.util.List;
 import org.xml.sax.Locator;
 
 import java.util.Collection;
@@ -287,8 +289,6 @@ public class ComplexTypeImpl extends AttributesHolder implements XSComplexType, 
         return Util.listSubstitutables(this);
     }
     
-
-
     public void visit( XSVisitor visitor ) {
         visitor.complexType(this);
     }
@@ -298,4 +298,17 @@ public class ComplexTypeImpl extends AttributesHolder implements XSComplexType, 
 
     // Ref.ComplexType implementation
     public XSComplexType getType() { return this; }
+
+    public List<XSComplexType> getSubtypes() {
+        ArrayList subtypeList = new ArrayList();
+        Iterator<XSComplexType> cTypes = getRoot().iterateComplexTypes();
+        while (cTypes.hasNext()) {
+            XSComplexType cType= cTypes.next();
+            XSType base = cType.getBaseType();
+            if ((base != null) && (base.equals(this))) {
+                subtypeList.add(cType);
+            }
+        }
+        return subtypeList;
+    }
 }
