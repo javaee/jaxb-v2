@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: MinimumEscapeHandler.java,v 1.2.6.1 2007-05-31 21:58:55 ofung Exp $
+ * @(#)$Id: MinimumEscapeHandler.java,v 1.2.6.2 2008-11-07 16:54:19 pavel_bucek Exp $
  */
 
 /*
@@ -62,23 +62,23 @@ public class MinimumEscapeHandler implements CharacterEscapeHandler {
         int limit = start+length;
         for (int i = start; i < limit; i++) {
             char c = ch[i];
-            if( c=='&' || c=='<' || c=='>' || (c=='\"' && isAttVal) ) {
+                if(c == '&' || c == '<' || c == '>' || c == '\r' || (c == '\"' && isAttVal) ) {
                 if(i!=start)
                     out.write(ch,start,i-start);
                 start = i+1;
                 switch (ch[i]) {
-                case '&' :
-                    out.write("&amp;");
-                    break;
-                case '<' :
-                    out.write("&lt;");
-                    break;
-                case '>' :
-                    out.write("&gt;");
-                    break;
-                case '\"' :
-                    out.write("&quot;");
-                    break;
+                    case '&':
+                        out.write("&amp;");
+                        break;
+                    case '<':
+                        out.write("&lt;");
+                        break;
+                    case '>':
+                        out.write("&gt;");
+                        break;
+                    case '\"':
+                        out.write("&quot;");
+                        break;
                 }
             }
         }
