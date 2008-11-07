@@ -131,6 +131,10 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
         return generateElementClass;
     }
 
+    public boolean isGenerateMixedExtensions() {
+        return generateMixedExtensions;
+    }
+
     public boolean isChoiceContentPropertyEnabled() {
         return choiceContentProperty;
     }
@@ -295,6 +299,9 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
      */
     @XmlAttribute
     boolean generateElementClass = false;
+
+    @XmlAttribute
+    boolean generateMixedExtensions = false;
 
     @XmlElement(namespace=Const.XJC_EXTENSION_URI)
     Boolean generateElementProperty = null;

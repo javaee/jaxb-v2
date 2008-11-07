@@ -39,6 +39,7 @@ import com.sun.tools.xjc.model.CClass;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.reader.RawTypeSet;
 import com.sun.tools.xjc.reader.xmlschema.RawTypeSetBuilder;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIGlobalBinding;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSParticle;
@@ -76,24 +77,34 @@ final class RestrictedComplexTypeBuilder extends CTBuilder {
         
         selector.getCurrentBean().setBaseClass(baseClass);
         
-        boolean forceFallbackInExtension = baseType.isMixed() &&
-                                           ct.isMixed() &&
-                                           (ct.getExplicitContent() != null) &&
-                                           bgmBuilder.inExtensionMode;
-        if (forceFallbackInExtension) {
-            builder.recordBindingMode(ct, ComplexTypeBindingMode.NORMAL);
+        boolean generateMixedExtensions = false;
+        BIGlobalBinding globalBinding = bgmBuilder.getGlobalBinding();
+        if (globalBinding != null) {
+            generateMixedExtensions = globalBinding.isGenerateMixedExtensions();
+        }
 
-            BIProperty prop = BIProperty.getCustomization(ct);
-            CPropertyInfo p;
+        if (generateMixedExtensions) {
+            boolean forceFallbackInExtension = baseType.isMixed() &&
+                                               ct.isMixed() &&
+                                               (ct.getExplicitContent() != null) &&
+                                               bgmBuilder.inExtensionMode;
+            if (forceFallbackInExtension) {
+                builder.recordBindingMode(ct, ComplexTypeBindingMode.NORMAL);
 
-            XSParticle particle = ct.getContentType().asParticle();
-            if (particle != null) {
-                RawTypeSet ts = RawTypeSetBuilder.build(particle, false);
-                p = prop.createExtendedMixedReferenceProperty("Content", ct, ts);
-                selector.getCurrentBean().addProperty(p);
+                BIProperty prop = BIProperty.getCustomization(ct);
+                CPropertyInfo p;
+
+                XSParticle particle = ct.getContentType().asParticle();
+                if (particle != null) {
+                    RawTypeSet ts = RawTypeSetBuilder.build(particle, false);
+                    p = prop.createExtendedMixedReferenceProperty("Content", ct, ts);
+                    selector.getCurrentBean().addProperty(p);
+                }
+            } else {
+                // determine the binding of this complex type.
+                builder.recordBindingMode(ct,builder.getBindingMode(baseType));
             }
         } else {
-            // determine the binding of this complex type.
             builder.recordBindingMode(ct,builder.getBindingMode(baseType));
         }
     }
