@@ -67,8 +67,7 @@ public final class UntypedListFieldRenderer implements FieldRenderer {
             return new DummyListField(context, prop, coreList);
         }
         if (content) {
-            return ext ? new ContentListField(context, prop, coreList) :
-                         new NoExtendedContentField(context, prop, coreList);
+            return new ContentListField(context, prop, coreList);
         }
         return new UntypedListField(context, prop, coreList);
     }
