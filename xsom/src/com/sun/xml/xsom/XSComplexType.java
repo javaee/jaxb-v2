@@ -132,5 +132,11 @@ public interface XSComplexType extends XSType, XSAttContainer
      */
     public XSComplexType getRedefinedBy();
 
+    /**
+     * Returns a list of direct subtypes of this complex type. If the type is not subtyped, returns empty list.
+     * Doesn't return null.
+     * Note that the complex type may be extended outside of the scope of the schemaset known to XSOM.
+     * @return
+     */
     public List<XSComplexType> getSubtypes();
 }
