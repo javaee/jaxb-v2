@@ -142,6 +142,12 @@
     <delete dir="${reflection.root}/build" />
   </target>
 
+    <target name="push-snapshot-to-maven"
+      description="publish snapshot jars into the maven repository">
+      <property name="jar.suffix" value="${release.impl.version}-SNAPSHOT" />
+      <antcall target="push-to-maven-prepare" />
+    </target>
+
     <target name="push-to-maven-prepare" depends="clean, dist"
       description="prepare a repository iamge for the push-to-maven target">
       <taskdef resource="maven-repository-importer.properties">
@@ -156,9 +162,9 @@
         (sometimes with version like '-2.0.beta1', with date '-20051208', or with '-SNAPSHOT')
         this property lets you do that.
       -->
-      <fail unless="reflection.jar.suffix">reflection.jar.suffix property needs to be defined</fail>
+      <fail unless="jar.suffix">jar.suffix property needs to be defined</fail>
       <maven-repository-importer
-          destdir="build/maven-repo" version="${reflection.jar.suffix}">
+          destdir="build/maven-repo" version="${jar.suffix}">
         <artifact
           jar=   "${reflection.root}/build/jaxb2-reflection.jar"
           srczip="${reflection.root}/build/src.zip"
@@ -169,7 +175,7 @@
       </maven-repository-importer>
     </target>
 
-    <target name="push-to-maven" depends="push-to-maven-prepare"
+    <target name="push-to-maven"
       description="publish artifacts into the maven repository">
       <cvs-import src="build/maven-repo" dest="jaxb/repo" cvsroot=":pserver:${user.name}@cvs.dev.java.net:/cvs" />
     </target>
