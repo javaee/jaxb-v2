@@ -48,7 +48,7 @@
   </description>
   
   <!-- import build properties -->
-  <property file="${basedir}/build.properties" />
+  <property file="build.properties" />
   <import file="${jaxb.root}/build-taskdefs.xml" />
 
   <target name="compile"
@@ -142,7 +142,7 @@
     <delete dir="${reflection.root}/build" />
   </target>
 
-    <target name="push-to-maven-prepare"
+    <target name="push-to-maven-prepare" depends="clean, dist"
       description="prepare a repository iamge for the push-to-maven target">
       <taskdef resource="maven-repository-importer.properties">
         <classpath>
@@ -156,13 +156,13 @@
         (sometimes with version like '-2.0.beta1', with date '-20051208', or with '-SNAPSHOT')
         this property lets you do that.
       -->
-      <fail unless="jar.suffix">jar.suffix property needs to be defined</fail>
+      <fail unless="reflection.jar.suffix">reflection.jar.suffix property needs to be defined</fail>
       <maven-repository-importer
-          destdir="build/maven-repo" version="${jar.suffix}">
+          destdir="build/maven-repo" version="${reflection.jar.suffix}">
         <artifact
           jar=   "${reflection.root}/build/jaxb2-reflection.jar"
           srczip="${reflection.root}/build/src.zip"
-          pom   ="${reflection.root}/jaxb2-reflection.pom" />
+          pom   ="${jaxb.root}/tools/poms/jaxb2-reflection.pom" />
         <filterset>
           <filter token="API_VERSION" value="${release.spec.version}"/>
         </filterset>
