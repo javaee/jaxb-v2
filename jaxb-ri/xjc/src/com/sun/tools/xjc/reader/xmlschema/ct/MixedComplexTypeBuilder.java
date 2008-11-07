@@ -74,12 +74,7 @@ final class MixedComplexTypeBuilder extends CTBuilder {
     public void build(XSComplexType ct) {
         XSContentType contentType = ct.getContentType();
 
-        boolean generateMixedExtensions = false;
-        BIGlobalBinding globalBinding = bgmBuilder.getGlobalBinding();
-        if (globalBinding != null) {
-            generateMixedExtensions = globalBinding.isGenerateMixedExtensions();
-        }
-
+        boolean generateMixedExtensions = bgmBuilder.isGenerateMixedExtensions();
         if (generateMixedExtensions) {
             if (!(ct.getBaseType() == schemas.getAnyType() && ct.isMixed())) {
                 XSComplexType baseType = ct.getBaseType().asComplexType();

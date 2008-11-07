@@ -53,14 +53,8 @@ final class MixedExtendedComplexTypeBuilder extends AbstractExtendedComplexTypeB
 
     public boolean isApplicable(XSComplexType ct) {
 
-        boolean generateMixedExtensions = false;
-        BIGlobalBinding globalBinding = bgmBuilder.getGlobalBinding();
-        if (globalBinding != null) {
-            generateMixedExtensions = globalBinding.isGenerateMixedExtensions();
-        }
+        if (!bgmBuilder.isGenerateMixedExtensions()) return false;
 
-        if (!generateMixedExtensions) return false;
-        
         XSType bt = ct.getBaseType();
         if (bt.isComplexType() &&
             bt.asComplexType().isMixed() &&

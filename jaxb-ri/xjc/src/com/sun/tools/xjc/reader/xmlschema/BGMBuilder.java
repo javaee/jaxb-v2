@@ -564,4 +564,12 @@ public class BGMBuilder extends BindingComponent {
 
         return name;
     }
+
+    public boolean isGenerateMixedExtensions() {
+        if (globalBinding != null) {
+            return globalBinding.isGenerateMixedExtensions();
+        }
+        return false;
+    }
+
 }
