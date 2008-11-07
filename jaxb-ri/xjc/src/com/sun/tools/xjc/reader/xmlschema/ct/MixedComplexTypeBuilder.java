@@ -36,6 +36,7 @@
 
 package com.sun.tools.xjc.reader.xmlschema.ct;
 
+import com.sun.tools.xjc.model.CBuiltinLeafInfo;
 import com.sun.tools.xjc.model.CClass;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.reader.RawTypeSet;
@@ -45,6 +46,7 @@ import static com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeBindingMode.FALLB
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSContentType;
 import com.sun.xml.xsom.XSType;
+import java.util.List;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -82,8 +84,15 @@ final class MixedComplexTypeBuilder extends CTBuilder {
 
         CPropertyInfo p;
 
+        List<XSComplexType> cType = ct.getSubtypes();
+        boolean isSubtyped = (cType != null) && (cType.size() > 0);
+
         if (contentType.asEmpty() != null) {
-            p = prop.createReferenceProperty("Content",false,ct, null, true, false, true);
+            if (isSubtyped) {
+                p = prop.createReferenceProperty("Content",false,ct, null, true, false, true);
+            } else {
+                p = prop.createValueProperty("Content",false,ct,CBuiltinLeafInfo.STRING,null);
+            }
         } else if (contentType.asParticle() == null) {
             p = prop.createReferenceProperty("Content",false,ct, null, true, false, true);
         } else {
