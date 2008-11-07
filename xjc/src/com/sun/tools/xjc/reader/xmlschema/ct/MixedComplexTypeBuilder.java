@@ -65,6 +65,9 @@ final class MixedComplexTypeBuilder extends CTBuilder {
             !bt.asComplexType().isMixed() &&
             ct.isMixed() &&
             ct.getDerivationMethod() == XSType.EXTENSION) {
+                if (!bgmBuilder.isGenerateMixedExtensions() && (ct.getContentType().asParticle() == null)) {
+                    return false;
+                }
                 return true;
         }
 
