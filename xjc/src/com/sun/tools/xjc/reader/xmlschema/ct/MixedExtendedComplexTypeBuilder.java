@@ -40,6 +40,7 @@ import com.sun.tools.xjc.model.CClass;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.reader.RawTypeSet;
 import com.sun.tools.xjc.reader.xmlschema.RawTypeSetBuilder;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIGlobalBinding;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSContentType;
@@ -51,6 +52,15 @@ import com.sun.xml.xsom.XSType;
 final class MixedExtendedComplexTypeBuilder extends AbstractExtendedComplexTypeBuilder {
 
     public boolean isApplicable(XSComplexType ct) {
+
+        boolean generateMixedExtensions = false;
+        BIGlobalBinding globalBinding = bgmBuilder.getGlobalBinding();
+        if (globalBinding != null) {
+            generateMixedExtensions = globalBinding.isGenerateMixedExtensions();
+        }
+
+        if (!generateMixedExtensions) return false;
+        
         XSType bt = ct.getBaseType();
         if (bt.isComplexType() &&
             bt.asComplexType().isMixed() &&

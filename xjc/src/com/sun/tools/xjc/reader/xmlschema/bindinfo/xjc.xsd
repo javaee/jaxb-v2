@@ -93,6 +93,8 @@
     </xs:sequence>
   </xs:group>
 
+  <xs:element name="allowMixedTypeExtensions" type="xs:boolean" />
+  
   <xs:element name="generateElementProperty" type="xs:boolean" />
   <xs:element name="dom">
     <xs:complexType>
