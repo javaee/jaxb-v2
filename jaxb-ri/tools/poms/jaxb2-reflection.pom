@@ -1,0 +1,13 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jvnet.jaxb.reflection</groupId>
+  <artifactId>jaxb2-reflection</artifactId>
+  <version>@VERSION@</version>
+  <dependencies>
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>@API_VERSION@</version>
+    </dependency>
+  </dependencies>
+</project>
