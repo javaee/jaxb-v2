@@ -77,13 +77,7 @@ final class RestrictedComplexTypeBuilder extends CTBuilder {
         
         selector.getCurrentBean().setBaseClass(baseClass);
         
-        boolean generateMixedExtensions = false;
-        BIGlobalBinding globalBinding = bgmBuilder.getGlobalBinding();
-        if (globalBinding != null) {
-            generateMixedExtensions = globalBinding.isGenerateMixedExtensions();
-        }
-
-        if (generateMixedExtensions) {
+        if (bgmBuilder.isGenerateMixedExtensions()) {
             boolean forceFallbackInExtension = baseType.isMixed() &&
                                                ct.isMixed() &&
                                                (ct.getExplicitContent() != null) &&
