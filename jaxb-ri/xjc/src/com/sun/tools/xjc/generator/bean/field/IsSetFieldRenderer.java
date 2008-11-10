@@ -65,9 +65,9 @@ public class IsSetFieldRenderer implements FieldRenderer {
         this.generateIsSetMethod = generateIsSetMethod;
     }
 
-    public FieldOutline generate(ClassOutlineImpl context, CPropertyInfo prop, boolean ext) {
+    public FieldOutline generate(ClassOutlineImpl context, CPropertyInfo prop) {
         return new IsSetField(context,prop,
-            core.generate(context,prop, ext),
+            core.generate(context, prop),
             generateUnSetMethod,generateIsSetMethod);
     }
 }

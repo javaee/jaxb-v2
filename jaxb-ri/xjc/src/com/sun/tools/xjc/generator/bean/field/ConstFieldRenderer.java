@@ -58,9 +58,9 @@ final class ConstFieldRenderer implements FieldRenderer {
         this.fallback = fallback;
     }
 
-    public FieldOutline generate(ClassOutlineImpl outline, CPropertyInfo prop, boolean ext) {
+    public FieldOutline generate(ClassOutlineImpl outline, CPropertyInfo prop) {
         if(prop.defaultValue.compute(outline.parent())==null)
-            return fallback.generate(outline,prop, ext);
+            return fallback.generate(outline, prop);
         else
             return new ConstField(outline,prop);
     }

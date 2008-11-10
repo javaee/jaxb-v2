@@ -58,7 +58,6 @@ import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.RuntimeUtil;
 import com.sun.xml.xsom.XSComponent;
 
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
 
 /**

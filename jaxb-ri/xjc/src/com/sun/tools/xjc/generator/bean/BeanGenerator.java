@@ -744,18 +744,7 @@ public final class BeanGenerator implements Outline
             // none is specified. use the default factory
             fr = model.options.getFieldRendererFactory().getDefault();
 
-        CClassInfo baseClass = null;
-
-
-        boolean isExtended = false;
-        for (ClassOutlineImpl outline : getClasses()) {
-            baseClass = outline.target.getBaseClass();
-            if (cc.target.equals(baseClass) && !(cc.equals(outline))) {
-                isExtended = true; break;
-            }
-        }
-
-        FieldOutline field = fr.generate(cc, prop, isExtended);
+        FieldOutline field = fr.generate(cc, prop);
         fields.put(prop,field);       
    
         return field;

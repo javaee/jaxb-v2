@@ -72,7 +72,7 @@ final class DefaultParticleBinder extends ParticleBinder {
                 getCurrentBean().getBaseClass()==null?"Content":"Rest",
                 true, false, false, p,
                 builder.getBindInfo(p).toCustomizationList(),
-                p.getLocator(), false, false);
+                p.getLocator(), false, false, false);
             RawTypeSetBuilder.build(p,false).addTo(prop);
             prop.javadoc = Messages.format( Messages.MSG_FALLBACK_JAVADOC,
                     checker.getCollisionInfo().toString() );

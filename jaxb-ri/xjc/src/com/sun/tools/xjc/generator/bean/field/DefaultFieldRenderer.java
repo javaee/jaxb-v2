@@ -75,18 +75,18 @@ final class DefaultFieldRenderer implements FieldRenderer {
     private FieldRenderer defaultCollectionFieldRenderer;
 
 
-    public FieldOutline generate(ClassOutlineImpl outline, CPropertyInfo prop, boolean ext) {
-        return decideRenderer(outline,prop,ext).generate(outline,prop,ext);
+    public FieldOutline generate(ClassOutlineImpl outline, CPropertyInfo prop) {
+        return decideRenderer(outline,prop).generate(outline,prop);
     }
     
-    private FieldRenderer decideRenderer(ClassOutlineImpl outline, CPropertyInfo prop, boolean ext) {
-
+    private FieldRenderer decideRenderer(ClassOutlineImpl outline, CPropertyInfo prop) {
+        
         if (prop instanceof CReferencePropertyInfo) {
             CReferencePropertyInfo p = (CReferencePropertyInfo)prop;
             if (p.isDummy()) {
                 return frf.getDummyList(outline.parent().getCodeModel().ref(ArrayList.class));
             }
-            if (p.isContent()) {
+            if (p.isContent() && (p.isMixedExtendedCust())) {
                 return frf.getContentList(outline.parent().getCodeModel().ref(ArrayList.class).narrow(Serializable.class));
             }
         }
