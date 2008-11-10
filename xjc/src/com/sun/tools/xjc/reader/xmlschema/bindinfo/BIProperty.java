@@ -63,7 +63,6 @@ import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.TypeUtil;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.xml.bind.api.impl.NameConverter;
-import com.sun.xml.bind.v2.model.core.WildcardMode;
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSAttGroupDecl;
 import com.sun.xml.xsom.XSAttributeDecl;
@@ -371,7 +370,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
         return prop;
     }
 
-    public CReferencePropertyInfo createExtendedMixedReferenceProperty(
+    public CReferencePropertyInfo createDummyExtendedMixedReferenceProperty(
             String defaultName, XSComponent source, RawTypeSet types) {
             return createReferenceProperty(
                     defaultName,
@@ -380,12 +379,26 @@ public final class BIProperty extends AbstractDeclarationImpl {
                     types,
                     true,
                     true,
-                    false);
+                    false,
+                    true);
+    }
+
+    public CReferencePropertyInfo createContentExtendedMixedReferenceProperty(
+            String defaultName, XSComponent source, RawTypeSet types) {
+            return createReferenceProperty(
+                    defaultName,
+                    false,
+                    source,
+                    types,
+                    true,
+                    false,
+                    true,
+                    true);
     }
 
     public CReferencePropertyInfo createReferenceProperty(
             String defaultName, boolean forConstant, XSComponent source,
-            RawTypeSet types, boolean isMixed, boolean dummy, boolean content) {
+            RawTypeSet types, boolean isMixed, boolean dummy, boolean content, boolean isMixedExtended) {
 
         if (types == null) {    // this is a special case where we need to generate content because potential subtypes would need to be able to override what's store inside
             content = true;
@@ -396,7 +409,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
                 markAsAcknowledged();
         }
         constantPropertyErrorCheck();
-
+        
         String name = getPropertyName(forConstant);
         if(name==null)
             name = defaultName;
@@ -408,7 +421,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
                                                 (types == null) ? false : types.isRequired(),
                                                 isMixed,
                                                 source,
-                                                getCustomizations(source), source.getLocator(), dummy, content),
+                                                getCustomizations(source), source.getLocator(), dummy, content, isMixedExtended),
                                         source);
         if (types != null) {
             types.addTo(prop);
@@ -442,7 +455,7 @@ public final class BIProperty extends AbstractDeclarationImpl {
         }
 
         if(generateRef) {
-            return createReferenceProperty(defaultName,forConstant,source,types, false, false, false);
+            return createReferenceProperty(defaultName,forConstant,source,types, false, false, false, false);
         } else {
             return createElementProperty(defaultName,forConstant,source,types);
         }

@@ -92,7 +92,7 @@ final class MixedExtendedComplexTypeBuilder extends AbstractExtendedComplexTypeB
         CPropertyInfo p;
 
         RawTypeSet ts = RawTypeSetBuilder.build(ct.getContentType().asParticle(), false);
-        p = prop.createExtendedMixedReferenceProperty("contentOverrideFor" + ct.getName(), ct, ts);
+        p = prop.createDummyExtendedMixedReferenceProperty("contentOverrideFor" + ct.getName(), ct, ts);
 
         selector.getCurrentBean().addProperty(p);
 

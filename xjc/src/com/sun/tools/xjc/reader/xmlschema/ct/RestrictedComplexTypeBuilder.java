@@ -91,7 +91,7 @@ final class RestrictedComplexTypeBuilder extends CTBuilder {
                 XSParticle particle = ct.getContentType().asParticle();
                 if (particle != null) {
                     RawTypeSet ts = RawTypeSetBuilder.build(particle, false);
-                    p = prop.createExtendedMixedReferenceProperty("Content", ct, ts);
+                    p = prop.createDummyExtendedMixedReferenceProperty("Content", ct, ts);
                     selector.getCurrentBean().addProperty(p);
                 }
             } else {

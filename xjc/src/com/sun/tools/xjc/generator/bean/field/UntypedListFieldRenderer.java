@@ -62,7 +62,7 @@ public final class UntypedListFieldRenderer implements FieldRenderer {
         this.content = content;
     }
 
-    public FieldOutline generate(ClassOutlineImpl context, CPropertyInfo prop, boolean ext) {
+    public FieldOutline generate(ClassOutlineImpl context, CPropertyInfo prop) {
         if (dummy) {
             return new DummyListField(context, prop, coreList);
         }

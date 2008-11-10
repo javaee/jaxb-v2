@@ -70,7 +70,7 @@ public interface FieldRenderer {
      * class, then return {@link FieldOutline} for accessing
      * the generated field.
      */
-    public FieldOutline generate( ClassOutlineImpl context, CPropertyInfo prop, boolean extended );
+    public FieldOutline generate( ClassOutlineImpl context, CPropertyInfo prop);
     
 //    //
 //    // field renderers
