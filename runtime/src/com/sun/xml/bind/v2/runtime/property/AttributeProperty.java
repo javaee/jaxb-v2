@@ -75,6 +75,11 @@ public final class AttributeProperty<BeanT> extends PropertyImpl<BeanT>
     public final Name attName;
 
     /**
+     * Required
+     */
+    public final boolean required;
+
+    /**
      * Heart of the conversion logic.
      */
     public final TransducedAccessor<BeanT> xacc;
@@ -84,6 +89,7 @@ public final class AttributeProperty<BeanT> extends PropertyImpl<BeanT>
     public AttributeProperty(JAXBContextImpl context, RuntimeAttributePropertyInfo prop) {
         super(context,prop);
         this.attName = context.nameBuilder.createAttributeName(prop.getXmlName());
+        this.required = prop.isRequired();
         this.xacc = TransducedAccessor.get(context,prop);
         this.acc = prop.getAccessor();   // we only use this for binder, so don't waste memory by optimizing
     }
@@ -95,8 +101,10 @@ public final class AttributeProperty<BeanT> extends PropertyImpl<BeanT>
      */
     public void serializeAttributes(BeanT o, XMLSerializer w) throws SAXException, AccessorException, IOException, XMLStreamException {
         CharSequence value = xacc.print(o);
-        if(value!=null)
-            w.attribute(attName,value.toString());
+        if(value != null)
+            w.attribute(attName, value.toString());
+        else if(required)
+           w.attribute(attName, "");
     }
 
     public void serializeURIs(BeanT o, XMLSerializer w) throws AccessorException, SAXException {
