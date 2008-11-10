@@ -46,6 +46,7 @@ import com.sun.tools.xjc.reader.dtd.TDTDReader;
 import com.sun.tools.xjc.reader.internalizer.DOMForest;
 import com.sun.tools.xjc.reader.internalizer.DOMForestScanner;
 import com.sun.tools.xjc.reader.internalizer.InternalizationLogic;
+import com.sun.tools.xjc.reader.internalizer.SCDBasedBindingSet;
 import com.sun.tools.xjc.reader.internalizer.VersionChecker;
 import com.sun.tools.xjc.reader.internalizer.SCDBasedBindingSet;
 import com.sun.tools.xjc.reader.relaxng.RELAXNGCompiler;

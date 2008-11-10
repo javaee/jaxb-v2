@@ -63,7 +63,7 @@ import com.sun.xml.bind.v2.TODO;
  * This class is responsible for whitespace normalization.
  *
  * @author <ul><li>Ryan Shoemaker, Sun Microsystems, Inc.</li></ul>
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since JAXB1.0
  */
 public final class DatatypeConverterImpl implements DatatypeConverterInterface {
@@ -220,7 +220,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
     }
 
     public static String _printFloat(float v) {
-        if( v==Float.NaN )                  return "NaN";
+        if( Float.isNaN(v) )                return "NaN";
         if( v==Float.POSITIVE_INFINITY )    return "INF";
         if( v==Float.NEGATIVE_INFINITY )    return "-INF";
         return String.valueOf(v);
@@ -253,16 +253,18 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         return _parseBoolean(lexicalXSDBoolean);
     }
 
-    public static boolean _parseBoolean(CharSequence literal) {
+    public static Boolean _parseBoolean(CharSequence literal) {
         int i=0;
         int len = literal.length();
         char ch;
+        if (literal.length() <= 0) {
+            return null;
+        }
         do {
             ch = literal.charAt(i++);
         } while(WhiteSpaceProcessor.isWhiteSpace(ch) && i<len);
 
         // if we are strict about errors, check i==len. and report an error
-
         if( ch=='t' || ch=='1' )        return true;
         if( ch=='f' || ch=='0' )        return false;
         TODO.checkSpec("issue #42");
@@ -474,7 +476,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
     }
 
     public static String _printDouble(double v) {
-        if( v==Double.NaN )                    return "NaN";
+        if(Double.isNaN(v))                  return "NaN";
         if( v==Double.POSITIVE_INFINITY )    return "INF";
         if( v==Double.NEGATIVE_INFINITY )    return "-INF";
         return String.valueOf(v);
@@ -526,7 +528,6 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
 
 
 // base64 decoder
-//====================================
 
     private static final byte[] decodeMap = initDecodeMap();
     private static final byte PADDING = 127;
@@ -896,11 +897,11 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
             if (tz == null)      return;
 
             // otherwise print out normally.
-            int offset;
-            if (tz.inDaylightTime(cal.getTime())) {
-                offset = tz.getRawOffset() + (tz.useDaylightTime()?3600000:0);
-            } else {
-                offset = tz.getRawOffset();
+            int offset = tz.getOffset(cal.getTime().getTime());
+
+            if(offset==0) {
+                buf.append('Z');
+                return;
             }
 
             if(offset==0) {

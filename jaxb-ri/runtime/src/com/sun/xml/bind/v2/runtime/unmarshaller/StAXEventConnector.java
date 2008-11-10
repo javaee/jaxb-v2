@@ -34,7 +34,7 @@
  * holder.
  */
 
-/* $Id: StAXEventConnector.java,v 1.7 2007-11-22 00:52:25 kohsuke Exp $
+/* $Id: StAXEventConnector.java,v 1.8 2008-11-10 13:32:01 snajper Exp $
  *
  * Copyright (c) 2004, Sun Microsystems, Inc.
  * All rights reserved.

@@ -248,14 +248,14 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
                 Object key = e.getKey();
                 if(key!=null) {
                     w.startElement(keyTag,key);
-                    w.childAsXsiType(key,fieldName,keyBeanInfo);
+                    w.childAsXsiType(key,fieldName,keyBeanInfo, false);
                     w.endElement();
                 }
 
                 Object value = e.getValue();
                 if(value!=null) {
                     w.startElement(valueTag,value);
-                    w.childAsXsiType(value,fieldName,valueBeanInfo);
+                    w.childAsXsiType(value,fieldName,valueBeanInfo, false);
                     w.endElement();
                 }
 

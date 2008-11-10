@@ -43,7 +43,6 @@
 <project name="jaxb" basedir="." default="compile">
     <description>
         JAXB-RI Master Project
-        ======================
  
         This project is organized into multiple sub-projects.  Each sub-project is
         responsible for building itself.
@@ -62,15 +61,78 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.74 2007-11-22 00:51:59 kohsuke Exp $
+       $Id: build.xml,v 1.75 2008-11-10 13:32:35 snajper Exp $
     </description>
+
+    <import file="nbproject/build-impl.xml"/>
+    <!--
+
+    There exist several targets which are by default empty and which can be
+    used for execution of your tasks. These targets are usually executed
+    before and after some main targets. They are:
+
+      -pre-init:                 called before initialization of project properties
+      -post-init:                called after initialization of project properties
+      -pre-compile:              called before javac compilation
+      -post-compile:             called after javac compilation
+      -pre-compile-single:       called before javac compilation of single file
+      -post-compile-single:      called after javac compilation of single file
+      -pre-compile-test:         called before javac compilation of JUnit tests
+      -post-compile-test:        called after javac compilation of JUnit tests
+      -pre-compile-test-single:  called before javac compilation of single JUnit test
+      -post-compile-test-single: called after javac compilation of single JUunit test
+      -pre-jar:                  called before JAR building
+      -post-jar:                 called after JAR building
+      -post-clean:               called after cleaning build products
+
+    (Targets beginning with '-' are not intended to be called on their own.)
+
+    Example of inserting an obfuscator after compilation could look like this:
+
+        <target name="-post-compile">
+            <obfuscate>
+                <fileset dir="${build.classes.dir}"/>
+            </obfuscate>
+        </target>
+
+    For list of available properties check the imported
+    nbproject/build-impl.xml file.
+
+
+    Another way to customize the build is by overriding existing main targets.
+    The targets of interest are:
+
+      -init-macrodef-javac:     defines macro for javac compilation
+      -init-macrodef-junit:     defines macro for junit execution
+      -init-macrodef-debug:     defines macro for class debugging
+      -init-macrodef-java:      defines macro for class execution
+      -do-jar-with-manifest:    JAR building (if you are using a manifest)
+      -do-jar-without-manifest: JAR building (if you are not using a manifest)
+      run:                      execution of project
+      -javadoc-build:           Javadoc generation
+      test-report:              JUnit report generation
+
+    An example of overriding the target for project execution could look like this:
+
+        <target name="run" depends="JAXB_2.1-impl.jar">
+            <exec dir="bin" executable="launcher.exe">
+                <arg file="${dist.jar}"/>
+            </exec>
+        </target>
+
+    Notice that the overridden target depends on the jar target and not only on
+    the compile target as the regular run target does. Again, for a list of available
+    properties which you can use, check the target you are overriding in the
+    nbproject/build-impl.xml file.
+
+    -->
 
     <!-- initialize build properties -->
     <property file="${basedir}/build.properties" />
 
     <import file="build-taskdefs.xml" />
 
-    <target name="init">
+    <target name="init-standalone">
         <!-- this property is used by "xjc -version" and is also set in each of the
              generated ObjectFactory classes.  It should be set via the RE build
              scripts via 'ant -Dbuild.id="b08"' otherwise the current date and time
@@ -83,9 +145,11 @@
         <echo message="The build id is: ${build.version}" />
     </target>
 
+    <target name="jar" depends="compile"/>
+
     <!-- compile all of the sources into <project>/build/classes-->
     <target name="compile"
-            depends="init"
+            depends="init-standalone"
             description="compile runtime, and xjc sub-projects">
         <ant dir="apgen"               target="compile" />
         <ant dir="runtime"             target="compile" />
@@ -101,7 +165,7 @@
   to right target version
   -->
 
-  <target name="j2se-integration" depends="init"
+  <target name="j2se-integration" depends="init-standalone"
           description="prepare renamed source code for J2SE integration">
     <property name="jaxb.version.in.jdk" value="JAXB 2.0 in JDK 1.6"/>
     
@@ -119,7 +183,13 @@
     <move file="j2se-integration/xjc/src/META-INF/services/com.sun.tools.xjc.Plugin"
           tofile="j2se-integration/tools/etc/META-INF/services/sun.tools.xjc.Plugin"/>
     <delete dir="j2se-integration/xjc/src/META-INF"/>
-    
+	
+	<!-- delete binary doc-files -->
+	<delete>
+		<fileset dir="j2se-integration/runtime/src/com/sun/xml/internal/bind/v2/doc-files" includes="*.gif,*.png,*.sxd,*.vsd"/>
+		<fileset dir="j2se-integration/xjc/src/com/sun/tools/internal/xjc/reader/xmlschema/doc-files" includes="*.gif,*.png,*.sxd,*.vsd"/>
+	</delete>
+	    
     <!-- insert the RI version number into the file prolog message that
         is placed at the head of every generated file and the output
         message for "xjc -version"  and
@@ -153,11 +223,6 @@
       </arch-doc>
     </target>
 
-    <!-- process sample app meta data -->
-    <target name="process-samples"
-            description="process sample.meta data">
-        <ant dir="samples" target="process-samples"/>
-    </target>
 
 
 
@@ -167,7 +232,7 @@
       <attribute name="file"/>
       <sequential>
         <copy tofile="@{file}"
-              file="${manifest.root}/manifest.mf"
+              file="./MANIFEST.MF"
               overwrite="yes"/>
         <replace file="@{file}">
             <replacefilter token="@@@@SPEC_VERSION@@@@"
@@ -185,15 +250,6 @@
     </macrodef>
 
 
-    <target name="test-docs" description="generate docs for a test">
-        <mkdir dir="build/docs" />
-        <generate-docs dest="build/docs">
-            <source>
-                <fileset dir="${jaxb.docs}" />
-            </source>
-        </generate-docs>
-    </target>
-
     <!-- generate a distribution -->
     <target name="dist"
             depends="compile,integrate-1.0-compiler"
@@ -201,32 +257,8 @@
         <mkdir dir="${jaxb.dist}" />
         <mkdir dir="${jaxb.dist}/bin" />
         <mkdir dir="${jaxb.dist}/lib" />
-        <mkdir dir="${jaxb.dist}/docs/api" />
-
-        <!-- Process samples first. We need to decide which samples to ship first,
-             or otherwise we can't generate documentation.
-
-             if wspack.home is set, then process samples as 'JWSDP',
-             otherwise process samples as 'RI' -->
-        <condition property="in.wspack">
-            <isset property="wspack.home"/>
-        </condition>
-        <antcall target="process-sample.inwspack"/>
-        <antcall target="process-sample.notinwspack"/>
-
 
         <parallel>
-          <!-- copy docs -->
-          <sequential>
-              <unzip src="${jaxb.libs.redist}/jaxb-api-doc.zip"
-                     dest="${jaxb.dist}/docs/api" />
-              <generate-docs dest="${jaxb.dist}/docs">
-                  <source>
-                      <fileset dir="${jaxb.docs}" />
-                  </source>
-              </generate-docs>
-          </sequential>
-
           <!-- copy redist jars -->
           <sequential>
               <copy todir="${jaxb.dist}/lib">
@@ -335,24 +367,6 @@ Class-Path: ${manifest.classpath}
               <chmod file="${jaxb.dist}/bin/xjc.sh" perm="ugo+rx"/>
               <chmod file="${jaxb.dist}/bin/schemagen.sh" perm="ugo+rx"/>
           </sequential>
-
-
-          <!-- copy samples -->
-          <sequential>
-              <mkdir dir="${jaxb.dist}/samples"/>
-              <copy todir="${jaxb.dist}/samples">
-                  <fileset dir="${jaxb.root}/samples/work"
-                           defaultexcludes="yes">
-                      <exclude name="CHANGELOG.txt"/>
-                      <exclude name="**/build.golden.regexp" />
-                      <!-- .cvsignore is a control file used for CVS -->
-                      <exclude name="**/.cvsignore" />
-                      <exclude name="**/sample.meta" />
-                      <exclude name="**/gen-src/**/*" />
-                      <exclude name="**/classes/**/*" />
-                  </fileset>
-              </copy>
-          </sequential>
         </parallel>
     </target>
 
@@ -364,29 +378,12 @@ Class-Path: ${manifest.classpath}
         </zip>
     </target>
 
-    <!-- this target will be run when the jwsdp build is driving.  It will
-         cause the sample apps to have a jwsdp appropriate classpath -->
-    <target name="process-sample.inwspack" if="in.wspack">
-        <ant dir="samples" target="process-samples">
-            <property name="samples.target" value="JWSDP"/>
-        </ant>
-        <!--replace dir="${jaxb.dist}/samples">
-            <include name="**/build.xml"/>
-            <replacefilter token="@@JAXB-RI_BUILD_PATH@@" />
-        </replace-->
-    </target>
-
-    <!-- this target will be run when building a standalone RI dist.  It
-         will cause the sample apps to have an RI appropriate classpath -->
-    <target name="process-sample.notinwspack" unless="in.wspack">
-        <ant dir="samples" target="process-samples">
-            <property name="samples.target" value="RI"/>
-        </ant>
-        <!--replace dir="${jaxb.dist}/samples">
-            <include name="**/build.xml"/>
-            <replacefilter token="@@JAXB-RI_BUILD_PATH@@"
-                           value="&lt;fileset dir=&quot;../..&quot; includes=&quot;lib/*.jar&quot; />" />
-        </replace-->
+    <target name="dist-zip-2.2" depends="dist"
+            description="create jaxb-ri-2.2.zip">
+        <zip destfile="${jaxb.root}/jaxb-ri-2.2.zip" duplicate="fail">
+            <zipfileset dir="${jaxb.dist}" prefix="jaxb-ri" excludes="lib/jaxb-api*.*" />
+            <zipfileset dir="${jaxb.libs.redist.2.2}" prefix="jaxb-ri/lib" includes="jaxb-api*.*"/> 
+        </zip>
     </target>
 
     <target name="dist-zip-with-src" depends="src-zip, dist-zip"/>
@@ -424,14 +421,17 @@ Class-Path: ${manifest.classpath}
       <delete dir="tmp" />
     </target>
 
+    <target name="hudson" depends="clean, dist-zip-with-src, dist-zip-2.2"
+            description="Target to be invoked on Hudson">
+
+        <ant dir="osgi" target="bundle" />
+    </target>
+
   <target name="licensee-zip"
           description="licensee bundle. Dumbed down version of the workspace bundle">
     <mkdir dir="build"/>
     <zip zipfile="build/jaxb-ri.licensee.zip">
-      <fileset dir="." excludes="dist/**, **/build/**, samples/**, docs/**, sandbox/**" />
-      <fileset dir="." includes="docs/manifest/" />
-      <!-- place a stub build.xml to get the build going -->
-      <zipfileset dir="." includes="samples/dummy-build.xml" fullpath="samples/build.xml"/>
+      <fileset dir="." excludes="dist/**, **/build/**, sandbox/**" />
     </zip>
   </target>
 
@@ -603,17 +603,12 @@ Class-Path: ${manifest.classpath}
 
     <!-- clean all of the builds -->
     <target name="clean"
-            description="clean dist, build, docs, and each sub-project">
+            description="clean dist, build, and each sub-project">
         <parallel>
           <!-- clean dist, and srcbundle -->
           <delete dir="${jaxb.dist}" />
           <delete dir="${srcbundle.dist}" />
           <delete dir="j2se-integration" />
-
-          <!-- clean up docs and dists -->
-          <!-- don't delete the top level docs directory -->
-          <delete dir="${jaxb.docs}/api" />
-          <!-- <delete dir="${jaxb.root}/dist" /> -->
 
           <!-- clean sub-projects -->
           <ant dir="runtime"            target="clean" />
@@ -621,94 +616,13 @@ Class-Path: ${manifest.classpath}
           <ant dir="runtime-staxex"     target="clean" />
           <ant dir="runtime-deprecated" target="clean" />
           <ant dir="xjc"                target="clean" />
-          <ant dir="pkg"                target="clean" />
-          <ant dir="samples"            target="clean"/>
           <ant dir="tools"              target="clean"/>
           <ant dir="apgen"              target="clean" />
           <ant dir="reflection"         target="clean" />
+          <ant dir="osgi"               target="clean" />
         </parallel>
     </target>
 
-
-    <!-- wspack targets -->
-    <target name="wspack"
-            description="Create a jaxb distribution for the JWSDP">
-        <echo message=" build.home is set to ${build.home}"/>
-        <echo message="  dist.home is set to ${dist.home}"/>
-        <echo message="wspack.home is set to ${wspack.home}"/>
-
-        <!-- replicate the build dirs from our build in ${build.home} -->
-        <mkdir dir="${build.home}/runtime/build/classes"/>
-        <mkdir dir="${build.home}/xjc/build/classes"/>
-
-        <!-- we need to redefine some of the jaxb properties when being built
-             by wspack, so we will use <antcall> instead of listing an @depends
-             on the wspack target.  -->
-
-        <!-- compile each of the jaxb sub-projects into ${build.home} -->
-        <antcall target="dist">
-            <param name="runtime.classes"   value="${build.home}/runtime/build/classes"/>
-            <param name="xjc.classes"       value="${build.home}/xjc/build/classes"/>
-            <param name="jaxb.dist"         value="${dist.home}"/>
-        </antcall>
-
-        <!-- replace the manifest file in jaxb-xjc.jar -->
-        <createManifest file="${xjc.root}/manifest.xjc.jwsdp" extensionName="com.sun.tools.xjc" />
-
-        <property name="jaxp.jars"          value="../../jaxp/lib"/>
-        <property name="jwsdp.shared"       value="../../jwsdp-shared/lib"/>
-        <property name="sjsxp.jars"         value="../../sjsxp/lib"/>
-        <property name="jes.rpm"            value="../../lib"/>
-        <property name="jes.svr4"           value="."/>
-        <property name="jes.zip"            value="../../jwsdp-shared/lib"/>
-
-        <property name="manifest.classpath" value="jaxb-api.jar jaxb-impl.jar jaxb1-impl.jar
-        activation.jar
-        ${jwsdp.shared}/activation.jar
-        ${jes.svr4}/../../../../usr/share/lib/activation.jar
-        ${jes.rpm}/activation.jar
-        ${jes.zip}/activation.jar
-        jsr173_api.jar
-        ${sjsxp.jars}/jsr173_api.jar
-        ${jes.svr4}/jsr173_api.jar
-        ${jes.rpm}/jsr173_api.jar
-        ${jes.zip}/jsr173_api.jar
-          " />
-        <echo file="${xjc.root}/manifest.xjc.jwsdp"
-              append="true"
->Main-Class: com.sun.tools.xjc.XJCFacade
-Class-Path: ${manifest.classpath}
-
-</echo>
-        <mkdir dir="${dist.home}/lib/tmp"/>
-        <unjar src="${dist.home}/lib/jaxb-xjc.jar" dest="${dist.home}/lib/tmp"/>
-        <move file="${dist.home}/lib/jaxb-xjc.jar" tofile="${dist.home}/lib/jaxb-xjc.jar.orig"/>
-        <delete file="${dist.home}/lib/tmp/META-INF/MANIFEST.MF"/>
-        <jar jarfile="${dist.home}/lib/jaxb-xjc.jar"
-             manifest="${xjc.root}/manifest.xjc.jwsdp">
-             <!-- unfortunately, we have to unjar and rejar the files to preserve the
-                  other META-INF files, also need to strip out the resolver code -->
-             <fileset dir="${dist.home}/lib/tmp">
-                <exclude name="com/sun/org/apache/xml/internal/resolver/"/>
-             </fileset>
-        </jar>
-        <delete dir="${dist.home}/lib/tmp"/>
-        <delete file="${dist.home}/lib/jaxb-xjc.jar.orig"/>
-
-
-        <!-- make the wspack dist, excluding unnecessary jaxb files -->
-        <copy todir="${wspack.home}">
-            <fileset dir="${dist.home}">
-                <exclude name="lib/jaxb-api-src.zip"/>
-                <exclude name="lib/jaxp-api.jar"/>
-                <exclude name="lib/jaxb-api-doc.zip"/>
-                <exclude name="**/api/"/>
-                <exclude name="lib/jsr173_1.0_api.jar"/>
-                <exclude name="lib/activation.jar"/>
-            </fileset>
-        </copy>
-
-    </target>
 
     <target name="check.os">
       <condition property="is.unix">
@@ -815,15 +729,23 @@ Class-Path: ${manifest.classpath}
            dest="tools/lib/util/stax-ex-src.zip" />
     </target>
 
-    <target name="integrate-jsr222">
-        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api.jar"
+    <target name="integrate-api-2.1" description="Integrate JAXB 2.1 API from Hudson">
+        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror-2.1/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api.jar"
              dest="tools/lib/redist/jaxb-api.jar" />
-        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-src.zip"
+        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror-2.1/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-src.zip"
              dest="tools/lib/redist/jaxb-api-src.zip" />
-        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-doc.zip"
+        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror-2.1/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-doc.zip"
              dest="tools/lib/redist/jaxb-api-doc.zip" />
     </target>
 
+    <target name="integrate-api-2.2" description="Integrate JAXB 2.2 API from Hudson">
+        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api.jar"
+             dest="tools/lib/redist2.2/jaxb-api.jar" />
+        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-src.zip"
+             dest="tools/lib/redist2.2/jaxb-api-src.zip" />
+        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-doc.zip"
+             dest="tools/lib/redist2.2/jaxb-api-doc.zip" />
+    </target>
 
     <target name="integrate-xsom">
         <get src="http://kohsuke.sfbay/hudson/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom.jar"
@@ -900,7 +822,7 @@ Class-Path: ${manifest.classpath}
     </target>
 
     <target name="integrate-codemodel">
-        <property name="codemodel-version" value="2.1-SNAPSHOT" />
+        <property name="codemodel-version" value="2.2-SNAPSHOT" />
         <get src="http://kohsuke.sfbay/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel-version}.jar"
              dest="tools/lib/rebundle/compiler/codemodel.jar" />
         <get src="http://kohsuke.sfbay/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel-version}.jar"

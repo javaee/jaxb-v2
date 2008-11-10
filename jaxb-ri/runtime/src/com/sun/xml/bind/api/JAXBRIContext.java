@@ -56,6 +56,7 @@ import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.bind.v2.ContextFactory;
 import com.sun.xml.bind.v2.model.annotation.RuntimeAnnotationReader;
 import com.sun.xml.bind.v2.model.nav.Navigator;
+import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfoSet;
 
 /**
  * {@link JAXBContext} enhanced with JAXB RI specific functionalities.
@@ -103,7 +104,7 @@ public abstract class JAXBRIContext extends JAXBContext {
        @Nullable String defaultNamespaceRemap, boolean c14nSupport, 
        @Nullable RuntimeAnnotationReader ar) throws JAXBException {
         return ContextFactory.createContext(classes, typeRefs, subclassReplacements, 
-                defaultNamespaceRemap, c14nSupport, ar, false, false);
+                defaultNamespaceRemap, c14nSupport, ar, false, false, false);
     }
 
     /**
@@ -137,6 +138,15 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @since 2.0 EA1
      */
     public abstract @Nullable QName getElementName(@NotNull Object o) throws JAXBException;
+
+    /**
+     * Allows to retrieve the element name based on Class.
+     * @param o
+     * @return
+     * @throws javax.xml.bind.JAXBException
+     * @since 2.1.10
+     */
+    public abstract @Nullable QName getElementName(@NotNull Class o) throws JAXBException;
 
     /**
      * Creates a mini-marshaller/unmarshaller that can process a {@link TypeReference}.
@@ -231,6 +241,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @throws IOException
      *      if {@link SchemaOutputResolver} throws an {@link IOException}.
      */
+    @Override
     public abstract void generateSchema(@NotNull SchemaOutputResolver outputResolver) throws IOException;
 
     /**
@@ -274,6 +285,17 @@ public abstract class JAXBRIContext extends JAXBContext {
      */
     public abstract void generateEpisode(Result output);
 
+    /**
+     * Allows you to access the runtime model information of the JAXB XML/Java binding.
+     *
+     * <p>
+     * This is useful for doing a deeper integration with the JAXB RI.
+     * For more information about the model, see https://jaxb2-reflection.dev.java.net/
+     *
+     * @since 2.1.10
+     */
+    public abstract RuntimeTypeInfoSet getRuntimeTypeInfoSet();
+    
     /**
      * Computes a Java identifier from a local name.
      *
@@ -433,5 +455,12 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @since 2.1 EA2
      */
     public static final String XMLACCESSORFACTORY_SUPPORT = "com.sun.xml.bind.XmlAccessorFactory";
+
+    /**
+     * Retains references to PropertyInfos.
+     *
+     * @since 2.1.10
+     */
+    public static final String RETAIN_REFERENCE_TO_INFO = "retainReferenceToInfo";
 
 }

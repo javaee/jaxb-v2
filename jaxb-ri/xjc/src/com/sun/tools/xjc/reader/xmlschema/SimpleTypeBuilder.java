@@ -62,6 +62,7 @@ import com.sun.tools.xjc.model.CNonElement;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.model.TypeUseFactory;
+import com.sun.tools.xjc.reader.Const;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIConversion;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIEnum;
@@ -131,6 +132,13 @@ public final class SimpleTypeBuilder extends BindingComponent {
      * UGLY: Implemented as a Stack of XSComponent to fix a bug
      */
     public final Stack<XSComponent> refererStack = new Stack<XSComponent>();
+
+    /**
+     * Records what xmime:expectedContentTypes annotations we honored and processed,
+     * so that we can later check if the user had these annotations in the places
+     * where we didn't anticipate them.
+     */
+    private final Set<XSComponent> acknowledgedXmimeContentTypes = new HashSet<XSComponent>();
 
     /**
      * The type that was originally passed to this {@link SimpleTypeBuilder#build(XSSimpleType)}.
@@ -595,6 +603,10 @@ public final class SimpleTypeBuilder extends BindingComponent {
                 break;
             }
         }
+        if(memberList.isEmpty()) {
+            getErrorReporter().error( loc, Messages.ERR_NO_ENUM_FACET );
+            return null;
+        }
 
         // use the name of the simple type as the name of the class.
         CClassInfoParent scope;
@@ -755,8 +767,9 @@ public final class SimpleTypeBuilder extends BindingComponent {
      */
     private TypeUse lookupBinaryTypeBinding() {
         XSComponent referer = getReferer();
-        String emt = referer.getForeignAttribute(XML_MIME_URI,"expectedContentTypes");
+        String emt = referer.getForeignAttribute(XML_MIME_URI, Const.EXPECTED_CONTENT_TYPES);
         if(emt!=null) {
+            acknowledgedXmimeContentTypes.add(referer);
             try {
                 // see http://www.xml.com/lpt/a/2004/07/21/dive.html
                 List<MimeTypeRange> types = MimeTypeRange.parseRanges(emt);
@@ -786,6 +799,10 @@ public final class SimpleTypeBuilder extends BindingComponent {
         }
         // default
         return CBuiltinLeafInfo.BASE64_BYTE_ARRAY;
+    }
+
+    public boolean isAcknowledgedXmimeContentTypes(XSComponent c) {
+        return acknowledgedXmimeContentTypes.contains(c);
     }
 
     /**

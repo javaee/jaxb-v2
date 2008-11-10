@@ -35,6 +35,7 @@
  */
 package com.sun.tools.xjc;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -112,7 +113,7 @@ public class Driver {
 
     private static void _main( String[] args ) throws Exception {
         try {
-            System.exit(run( args, System.err, System.out ));
+            System.exit(run( args, System.out, System.out ));
         } catch (BadCommandLineException e) {
             // there was an error in the command line.
             // print usage and abort.
@@ -251,12 +252,15 @@ public class Driver {
                 listener.message(Messages.format(Messages.PARSING_SCHEMA));
             }
 
+            final boolean[] hadWarning = new boolean[1];
+
             ErrorReceiver receiver = new ErrorReceiverFilter(listener) {
                 public void info(SAXParseException exception) {
                     if(opt.verbose)
                         super.info(exception);
                 }
                 public void warning(SAXParseException exception) {
+                    hadWarning[0] = true;
                     if(!opt.quiet)
                         super.warning(exception);
                 }
@@ -376,6 +380,15 @@ public class Driver {
                 }
             default :
                 assert false;
+            }
+
+            if(opt.debugMode) {
+                try {
+                    new FileOutputStream(new File(opt.targetDir,hadWarning[0]?"hadWarning":"noWarning")).close();
+                } catch (IOException e) {
+                    receiver.error(e);
+                    return -1;
+                }
             }
 
             return 0;

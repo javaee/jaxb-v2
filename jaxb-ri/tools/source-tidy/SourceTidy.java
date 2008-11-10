@@ -9,7 +9,7 @@ import java.io.Writer;
 import java.util.regex.Pattern;
 
 /*
- * @(#)$Id: SourceTidy.java,v 1.3 2007-11-22 00:53:40 kohsuke Exp $
+ * @(#)$Id: SourceTidy.java,v 1.4 2008-11-10 13:32:52 snajper Exp $
  */
 
 /*

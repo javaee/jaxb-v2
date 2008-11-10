@@ -329,7 +329,7 @@ public final class BindInfo implements Iterable<BIDeclaration> {
         synchronized(AnnotationParserFactoryImpl.class) {
             try {
                 if(customizationContext==null)
-                    customizationContext = new JAXBContextImpl(
+                    customizationContext = new JAXBContextImpl.JAXBContextBuilder().setClasses(
                         new Class[] {
                             BindInfo.class, // for xs:annotation
                             BIClass.class,
@@ -345,8 +345,7 @@ public final class BindInfo implements Iterable<BIDeclaration> {
                             BIGlobalBinding.class,
                             BIProperty.class,
                             BISchemaBinding.class
-                        }, Collections.<TypeReference>emptyList(),
-                            Collections.<Class,Class>emptyMap(), null, false, null, false, false);
+                        }).build();
                 return customizationContext;
             } catch (JAXBException e) {
                 throw new AssertionError(e);

@@ -36,15 +36,19 @@
 
 package com.sun.tools.xjc.reader.xmlschema.ct;
 
+import com.sun.tools.javac.util.Options;
 import com.sun.tools.xjc.model.CBuiltinLeafInfo;
+import com.sun.tools.xjc.model.CClass;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.reader.RawTypeSet;
 import com.sun.tools.xjc.reader.xmlschema.RawTypeSetBuilder;
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIGlobalBinding;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIProperty;
 import static com.sun.tools.xjc.reader.xmlschema.ct.ComplexTypeBindingMode.FALLBACK_CONTENT;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSContentType;
 import com.sun.xml.xsom.XSType;
+import java.util.List;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -56,15 +60,13 @@ final class MixedComplexTypeBuilder extends CTBuilder {
         if(bt ==schemas.getAnyType() && ct.isMixed())
             return true;    // fresh mixed complex type
 
-        // see issue 148. handle complex type extended from another and added mixed=true.
-        // the current implementation only works when the base type doesn't define
-        // any elements, and we should ideally warn it.
-        //
-        // also see issue #356 where complex type with simple content can have pointless mixed.
-        if(bt.isComplexType() && !bt.asComplexType().isMixed()
-        && ct.isMixed() && ct.getDerivationMethod()==XSType.EXTENSION
-        && ct.getContentType().asParticle()!=null)
-            return true;
+        // there's no complex type in the inheritance tree yet
+        if (bt.isComplexType() &&
+            !bt.asComplexType().isMixed() &&
+            ct.isMixed() &&
+            ct.getDerivationMethod() == XSType.EXTENSION) {
+                return true;
+        }
 
         return false;
     }
@@ -72,18 +74,45 @@ final class MixedComplexTypeBuilder extends CTBuilder {
     public void build(XSComplexType ct) {
         XSContentType contentType = ct.getContentType();
 
-        // if mixed, we fallback immediately
-        builder.recordBindingMode(ct,FALLBACK_CONTENT);
+        boolean generateMixedExtensions = bgmBuilder.isGenerateMixedExtensions();
+        if (generateMixedExtensions) {
+            if (!(ct.getBaseType() == schemas.getAnyType() && ct.isMixed())) {
+                XSComplexType baseType = ct.getBaseType().asComplexType();
+                // build the base class
+                CClass baseClass = selector.bindToType(baseType, ct, true);
+                selector.getCurrentBean().setBaseClass(baseClass);
+            }
+        }
 
+        builder.recordBindingMode(ct, FALLBACK_CONTENT);
         BIProperty prop = BIProperty.getCustomization(ct);
 
         CPropertyInfo p;
 
-        if(contentType.asEmpty()!=null) {
-            p = prop.createValueProperty("Content",false,ct,CBuiltinLeafInfo.STRING,null);
+        if (generateMixedExtensions) {            
+            List<XSComplexType> cType = ct.getSubtypes();
+            boolean isSubtyped = (cType != null) && (cType.size() > 0);
+
+            if (contentType.asEmpty() != null) {
+                if (isSubtyped) {
+                    p = prop.createReferenceProperty("Content",false,ct, null, true, false, true);
+                } else {
+                    p = prop.createValueProperty("Content",false,ct,CBuiltinLeafInfo.STRING,null);
+                }
+            } else if (contentType.asParticle() == null) {
+                p = prop.createReferenceProperty("Content",false,ct, null, true, false, true);
+            } else {
+                RawTypeSet ts = RawTypeSetBuilder.build(contentType.asParticle(), false);
+                p = prop.createReferenceProperty("Content", false, ct, ts, true, false, true);
+            }
+
         } else {
-            RawTypeSet ts = RawTypeSetBuilder.build(contentType.asParticle(),false);
-            p = prop.createReferenceProperty("Content",false,ct,ts, true);
+            if(contentType.asEmpty()!=null) {
+                p = prop.createValueProperty("Content",false,ct,CBuiltinLeafInfo.STRING,null);
+            } else {
+                RawTypeSet ts = RawTypeSetBuilder.build(contentType.asParticle(),false);
+                p = prop.createReferenceProperty("Content", false, ct, ts, true, false, true);
+            }
         }
 
         selector.getCurrentBean().addProperty(p);

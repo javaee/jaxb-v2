@@ -62,7 +62,7 @@ final class ArrayElementNodeProperty<BeanT,ListT,ItemT> extends ArrayElementProp
         if(item==null) {
             w.writeXsiNilTrue();
         } else {
-            w.childAsXsiType(item,fieldName,expected);
+            w.childAsXsiType(item,fieldName,expected, false);
         }
     }
 }

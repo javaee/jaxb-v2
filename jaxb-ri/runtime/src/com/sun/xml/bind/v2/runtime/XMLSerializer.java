@@ -73,6 +73,7 @@ import com.sun.xml.bind.v2.runtime.output.MTOMXmlOutput;
 import com.sun.xml.bind.v2.runtime.output.NamespaceContextImpl;
 import com.sun.xml.bind.v2.runtime.output.Pcdata;
 import com.sun.xml.bind.v2.runtime.output.XmlOutput;
+import com.sun.xml.bind.v2.runtime.property.Property;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Base64Data;
 import com.sun.xml.bind.v2.runtime.unmarshaller.IntData;
 import com.sun.xml.bind.v2.util.CollisionCheckStack;
@@ -142,6 +143,9 @@ public final class XMLSerializer extends Coordinator {
 
     private NamespaceContextImpl.Element nse;
 
+    // Introduced based on Jersey requirements - to be able to retrieve marshalled name
+    ThreadLocal<Property> currentProperty = new ThreadLocal<Property>();
+    
     /**
      * Set to true if a text is already written,
      * and we need to print ' ' for additional text methods.
@@ -191,7 +195,6 @@ public final class XMLSerializer extends Coordinator {
     private final IntData intData = new IntData();
 
     public AttachmentMarshaller attachmentMarshaller;
-
 
     /*package*/ XMLSerializer( MarshallerImpl _owner ) {
         this.marshaller = _owner;
@@ -620,7 +623,7 @@ public final class XMLSerializer extends Coordinator {
      *      Used as a part of the error message in case anything goes wrong
      *      with 'o'.
      */
-    public final void childAsXsiType( Object child, String fieldName, JaxBeanInfo expected ) throws SAXException, IOException, XMLStreamException {
+    public final void childAsXsiType( Object child, String fieldName, JaxBeanInfo expected, boolean nillable) throws SAXException, IOException, XMLStreamException {
         if(child==null) {
             handleMissingObjectError(fieldName);
         } else {
@@ -671,12 +674,26 @@ public final class XMLSerializer extends Coordinator {
                 }
             }
             actual.serializeURIs(child,this);
+
+            if (nillable) {
+                getNamespaceContext().declareNamespace(WellKnownNamespace.XML_SCHEMA_INSTANCE,"xsi",true);
+            }
+            
             endNamespaceDecls(child);
             if(!asExpected) {
                 attribute(WellKnownNamespace.XML_SCHEMA_INSTANCE,"type",
                     DatatypeConverter.printQName(actualTypeName,getNamespaceContext()));
             }
+
             actual.serializeAttributes(child,this);
+            boolean nilDefined = false;
+            if (actual instanceof AttributeAccessor) {
+                nilDefined = ((AttributeAccessor)actual).isNilIncluded();
+            }
+            if ((nillable) && (!nilDefined)) {
+                attribute(WellKnownNamespace.XML_SCHEMA_INSTANCE,"nil","true");
+            }
+            
             endAttributes();
             actual.serializeBody(child,this);
 
@@ -1039,6 +1056,14 @@ public final class XMLSerializer extends Coordinator {
 
     protected ValidationEventLocator getLocation() {
         return getCurrentLocation(null);
+    }
+
+    /**
+     * May return null when the property hasn't been set.
+     * Introduced based on Jersey requirements.
+     */
+    public Property getCurrentProperty() {
+        return currentProperty.get();
     }
 
     /**

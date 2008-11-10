@@ -36,12 +36,11 @@
  holder.
 -->
 
-<!-- $Id: build.xml,v 1.23 2007-11-22 00:53:45 kohsuke Exp $ -->
+<!-- $Id: build.xml,v 1.24 2008-11-10 13:32:00 snajper Exp $ -->
 <project name="xjc" basedir=".." default="compile">
 
   <description>
     XJC Sub-Project
-    ===============
     
     The xjc project contains all of the source code necessary to process
     schemas and binding customization files into java sources.
@@ -54,7 +53,7 @@
     <path id="javac.classpath">
       <pathelement path="${runtime.classes}" />
       <pathelement path="${schemagen.classes}" />
-      <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
+      <fileset dir="${jaxb.libs.redist.2.2}" includes="*.jar"/>
       <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
       <!-- XJCTask depends on Ant. -->
       <fileset dir="${jaxb.libs.util}" includes="ant.jar"/>
@@ -136,7 +135,7 @@
                 excludes="javax.xml.bind.annotation.XmlJavaTypeAdapter" />
        <classes includes="javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter" />
        <classpath>
-         <pathelement path="${jaxb.libs.redist}/jaxb-api.jar"/>
+         <pathelement path="${jaxb.libs.redist.2.2}/jaxb-api.jar"/>
        </classpath>
      </cac>
      <cac destdir="${xjc.gensrc}"

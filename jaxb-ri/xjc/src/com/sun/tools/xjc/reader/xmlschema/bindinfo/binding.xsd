@@ -146,6 +146,7 @@
       <xs:attribute name="choiceContentProperty" type="xs:boolean"/>
       <xs:attribute name="generateValueClass" type="xs:boolean"/>
       <xs:attribute name="generateElementClass" type="xs:boolean"/>
+      <xs:attribute name="generateMixedExtensions" type="xs:boolean"/>
       <xs:attribute name="generateElementProperty" type="xs:boolean"/>
       <xs:attribute name="enableValidation" type="xs:boolean"/>
       <xs:attribute name="enableFailFastCheck" type="xs:boolean"/>

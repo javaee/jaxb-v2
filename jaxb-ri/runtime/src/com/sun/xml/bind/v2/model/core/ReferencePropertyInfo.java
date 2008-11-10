@@ -126,5 +126,10 @@ public interface ReferencePropertyInfo<T,C> extends PropertyInfo<T,C> {
      */
     C getDOMHandler();
 
+    /**
+     * Returns true if this element is mandatory.
+     */
+    boolean isRequired();
+
     Adapter<T,C> getAdapter();
 }

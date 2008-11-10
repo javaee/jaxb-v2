@@ -112,6 +112,7 @@ import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
 import com.sun.xml.xsom.XmlString;
 import com.sun.istack.NotNull;
+import com.sun.tools.xjc.model.CReferencePropertyInfo;
 
 /**
  * Generates fields and accessors.
@@ -467,7 +468,6 @@ public final class BeanGenerator implements Outline
     private void generateClassBody( ClassOutlineImpl cc ) {
         CClassInfo target = cc.target;
 
-
         // if serialization support is turned on, generate
         // [RESULT]
         // class ... implements Serializable {
@@ -520,7 +520,10 @@ public final class BeanGenerator implements Outline
         if(target.isOrdered()) {
             for(CPropertyInfo p : target.getProperties() ) {
                 if( ! (p instanceof CAttributePropertyInfo )) {
-                    xtw.propOrder(p.getName(false));
+                    if (!( (p instanceof CReferencePropertyInfo) &&
+                           ((CReferencePropertyInfo)p).isDummy())) {
+                        xtw.propOrder(p.getName(false));
+                    }
                 }
             }
         } else {
@@ -741,9 +744,19 @@ public final class BeanGenerator implements Outline
             // none is specified. use the default factory
             fr = model.options.getFieldRendererFactory().getDefault();
 
-        FieldOutline field = fr.generate(cc,prop);
-        fields.put(prop,field);
-       
+        CClassInfo baseClass = null;
+
+
+        boolean isExtended = false;
+        for (ClassOutlineImpl outline : getClasses()) {
+            baseClass = outline.target.getBaseClass();
+            if (cc.target.equals(baseClass) && !(cc.equals(outline))) {
+                isExtended = true; break;
+            }
+        }
+
+        FieldOutline field = fr.generate(cc, prop, isExtended);
+        fields.put(prop,field);       
    
         return field;
     }

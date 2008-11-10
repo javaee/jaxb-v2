@@ -39,7 +39,6 @@
 <project name="reflection" basedir=".." default="compile">
   <description>
     Reflection Library Sub-Project
-    ==============================
     
     The reflection library module provides a library to process
     JAXB annotations at runtime. We ship this in a different package
@@ -48,7 +47,7 @@
   </description>
   
   <!-- import build properties -->
-  <property file="${basedir}/build.properties" />
+  <property file="build.properties" />
   <import file="${jaxb.root}/build-taskdefs.xml" />
 
   <target name="compile"
@@ -78,7 +77,7 @@
     <mkdir dir="${reflection.classes}"/>
     <javac srcdir="${reflection.root}/build/src" destdir="${reflection.classes}" debug="on">
       <classpath>
-        <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
+        <fileset dir="${jaxb.libs.redist.2.2}" includes="*.jar"/>
         <fileset dir="${jaxb.libs.runtime2}" includes="**/*.jar"/>
       </classpath>
     </javac>
@@ -142,7 +141,13 @@
     <delete dir="${reflection.root}/build" />
   </target>
 
-    <target name="push-to-maven-prepare"
+    <target name="push-snapshot-to-maven"
+      description="publish snapshot jars into the maven repository">
+      <property name="jar.suffix" value="${release.impl.version}-SNAPSHOT" />
+      <antcall target="push-to-maven-prepare" />
+    </target>
+
+    <target name="push-to-maven-prepare" depends="clean, dist"
       description="prepare a repository iamge for the push-to-maven target">
       <taskdef resource="maven-repository-importer.properties">
         <classpath>
@@ -162,14 +167,14 @@
         <artifact
           jar=   "${reflection.root}/build/jaxb2-reflection.jar"
           srczip="${reflection.root}/build/src.zip"
-          pom   ="${reflection.root}/jaxb2-reflection.pom" />
+          pom   ="${jaxb.root}/tools/poms/jaxb2-reflection.pom" />
         <filterset>
           <filter token="API_VERSION" value="${release.spec.version}"/>
         </filterset>
       </maven-repository-importer>
     </target>
 
-    <target name="push-to-maven" depends="push-to-maven-prepare"
+    <target name="push-to-maven"
       description="publish artifacts into the maven repository">
       <cvs-import src="build/maven-repo" dest="jaxb/repo" cvsroot=":pserver:${user.name}@cvs.dev.java.net:/cvs" />
     </target>

@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: XmlLint.java,v 1.3 2007-11-22 00:53:45 kohsuke Exp $
+ * @(#)$Id: XmlLint.java,v 1.4 2008-11-10 13:32:56 snajper Exp $
  */
 
 /*

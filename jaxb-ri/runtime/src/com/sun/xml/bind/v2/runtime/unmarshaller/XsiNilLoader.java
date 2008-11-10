@@ -60,15 +60,15 @@ public class XsiNilLoader extends ProxyLoader {
 
     protected Loader selectLoader(UnmarshallingContext.State state, TagName ea) throws SAXException {
         int idx = ea.atts.getIndex(WellKnownNamespace.XML_SCHEMA_INSTANCE,"nil");
-
-        if(idx!=-1) {
-            String value = ea.atts.getValue(idx);
-            if(DatatypeConverterImpl._parseBoolean(value)) {
+        if (idx!=-1) {
+            boolean hasAttribute = (ea.atts.getLength() - 1) > 0;
+            if (DatatypeConverterImpl._parseBoolean(ea.atts.getValue(idx))) {
                 onNil(state);
-                return Discarder.INSTANCE;
+                if (!hasAttribute) {
+                    return Discarder.INSTANCE;
+                }
             }
         }
-
         return defaultLoader;
     }
 
@@ -87,13 +87,16 @@ public class XsiNilLoader extends ProxyLoader {
             this.acc = acc;
         }
 
+        @Override
         protected void onNil(UnmarshallingContext.State state) throws SAXException {
             try {
                 acc.set(state.prev.target,null);
+                state.prev.nil = true;
             } catch (AccessorException e) {
                 handleGenericException(e,true);
             }
         }
+
     }
 
     public static final class Array extends XsiNilLoader {
@@ -101,6 +104,7 @@ public class XsiNilLoader extends ProxyLoader {
             super(core);
         }
 
+        @Override
         protected void onNil(UnmarshallingContext.State state) {
             // let the receiver add this to the lister
             state.target = null;

@@ -60,7 +60,6 @@ import java.util.regex.Pattern;
 
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JPackage;
-import com.sun.codemodel.JResourceFile;
 import com.sun.codemodel.writer.FileCodeWriter;
 import com.sun.codemodel.writer.PrologCodeWriter;
 import com.sun.org.apache.xml.internal.resolver.CatalogManager;
@@ -143,11 +142,27 @@ public class Options
     /**
      * Generates output for the specified version of the runtime.
      */
-    public SpecVersion target = SpecVersion.V2_1;
+    public SpecVersion target = SpecVersion.LATEST;
 
+    private boolean is2_2 = true;
+    
+    public Options() {
+        if (is2_2) {
+            try {
+                Class.forName("javax.xml.bind.JAXBPermission");
+            } catch (ClassNotFoundException cnfe) {
+                is2_2 = false;
+            }
+            if (!is2_2) {
+                target = SpecVersion.V2_1;
+            } else {
+                target = SpecVersion.LATEST;
+            }
+        }
+    }
 
     /**
-     * Target direcoty when producing files.
+     * Target directory when producing files.
      * <p>
      * This field is not used when XJC is driven through the XJC API.
      * Plugins that need to generate extra files should do so by using
@@ -457,12 +472,15 @@ public class Options
      */
     public int parseArgument( String[] args, int i ) throws BadCommandLineException {
         if (args[i].equals("-classpath") || args[i].equals("-cp")) {
-            File file = new File(requireArgument(args[i],args,++i));
-            try {
-                classpaths.add(file.toURL());
-            } catch (MalformedURLException e) {
-                throw new BadCommandLineException(
-                    Messages.format(Messages.NOT_A_VALID_FILENAME,file),e);
+            String a = requireArgument(args[i], args, ++i);
+            for (String p : a.split(File.pathSeparator)) {
+                File file = new File(p);
+                try {
+                    classpaths.add(file.toURL());
+                } catch (MalformedURLException e) {
+                    throw new BadCommandLineException(
+                        Messages.format(Messages.NOT_A_VALID_FILENAME,file),e);
+                }
             }
             return 2;
         }
@@ -807,18 +825,21 @@ public class Options
      * Guesses the schema language.
      */
     public Language guessSchemaLanguage() {
+
         // otherwise, use the file extension.
         // not a good solution, but very easy.
-        String name = grammars.get(0).getSystemId().toLowerCase();
+        if ((grammars != null) && (grammars.size() > 0)) {
+            String name = grammars.get(0).getSystemId().toLowerCase();
 
-        if (name.endsWith(".rng"))
-            return Language.RELAXNG;
-        if (name.endsWith(".rnc"))
-            return Language.RELAXNG_COMPACT;
-        if (name.endsWith(".dtd"))
-            return Language.DTD;
-        if (name.endsWith(".wsdl"))
-            return Language.WSDL;
+            if (name.endsWith(".rng"))
+                return Language.RELAXNG;
+            if (name.endsWith(".rnc"))
+                return Language.RELAXNG_COMPACT;
+            if (name.endsWith(".dtd"))
+                return Language.DTD;
+            if (name.endsWith(".wsdl"))
+                return Language.WSDL;
+        }
 
         // by default, assume XML Schema
         return Language.XMLSCHEMA;

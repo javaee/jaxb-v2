@@ -35,7 +35,7 @@
  */
 
 /*
- * @(#)$Id: WildcardLoader.java,v 1.4 2007-11-22 00:52:25 kohsuke Exp $
+ * @(#)$Id: WildcardLoader.java,v 1.5 2008-11-10 13:32:02 snajper Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 

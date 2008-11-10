@@ -319,7 +319,9 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
                 // no other type of input is supported
                 throw new IllegalArgumentException("Unexpected node type: "+node);
 
-            return handler.getContext().getResult();
+            Object retVal = handler.getContext().getResult();
+            handler.getContext().clearResult();
+            return retVal;
         } catch( SAXException e ) {
             throw createUnmarshalException(e);
         }
@@ -360,7 +362,9 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
             throw handleStreamException(e);
         }
 
-        return h.getContext().getResult();
+        Object retVal = h.getContext().getResult();
+        h.getContext().clearResult();
+        return retVal;
     }
 
     @Override
@@ -440,6 +444,10 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
         }
         if(name.equals(ClassResolver.class.getName())) {
             coordinator.classResolver = (ClassResolver)value;
+            return;
+        }
+        if(name.equals(ClassLoader.class.getName())) {
+            coordinator.classLoader = (ClassLoader)value;
             return;
         }
         super.setProperty(name, value);
@@ -535,5 +543,9 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
     @Override
     public void setListener(Listener listener) {
         externalListener = listener;
+    }
+
+    public UnmarshallingContext getContext() {
+        return coordinator;
     }
 }

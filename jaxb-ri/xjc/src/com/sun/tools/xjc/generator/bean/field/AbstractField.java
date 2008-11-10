@@ -79,6 +79,8 @@ import com.sun.tools.xjc.outline.ClassOutline;
 import com.sun.tools.xjc.outline.FieldAccessor;
 import com.sun.tools.xjc.outline.FieldOutline;
 import com.sun.tools.xjc.reader.TypeUtil;
+import com.sun.tools.xjc.Options;
+import com.sun.tools.xjc.api.SpecVersion;
 import com.sun.xml.bind.v2.TODO;
 
 /**
@@ -180,6 +182,8 @@ abstract class AbstractField implements FieldOutline {
             refw.name(e.getElementName().getLocalPart())
                 .namespace(e.getElementName().getNamespaceURI())
                 .type(e.getType().toType(outline.parent(),IMPLEMENTATION));
+            if(getOptions().target.isLaterThan(SpecVersion.V2_2))
+                refw.required(rp.isRequired());
         } else
         if(elements.size()>1) {
             XmlElementRefsWriter refsw = field.annotate2(XmlElementRefsWriter.class);
@@ -188,6 +192,8 @@ abstract class AbstractField implements FieldOutline {
                 refw.name(e.getElementName().getLocalPart())
                     .namespace(e.getElementName().getNamespaceURI())
                     .type(e.getType().toType(outline.parent(),IMPLEMENTATION));
+                if(getOptions().target.isLaterThan(SpecVersion.V2_2))
+                    refw.required(rp.isRequired());
             }
         }
 
@@ -302,7 +308,7 @@ abstract class AbstractField implements FieldOutline {
         // when generating code for 1.4, the runtime can't infer that ArrayList<Foo> derives
         // from Collection<Foo> (because List isn't parameterized), so always expclitly
         // generate @XmlElement(type=...)
-        if( !jtype.equals(exposedType) || (parent().parent().getModel().options.runtime14 && prop.isCollection())) {
+        if( !jtype.equals(exposedType) || (getOptions().runtime14 && prop.isCollection())) {
             if(xew == null) xew = getXew(checkWrapper, field);
             xew.type(jtype);
         }
@@ -319,6 +325,13 @@ abstract class AbstractField implements FieldOutline {
             if(xew == null) xew = getXew(checkWrapper, field);
             xew.nillable(true);
         }
+    }
+
+    /**
+     * Gets the {@link Options} in the current compilation context.
+     */
+    protected final Options getOptions() {
+        return parent().parent().getModel().options;
     }
 
     // ugly hack to lazily create

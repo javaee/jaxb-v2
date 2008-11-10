@@ -67,6 +67,7 @@ import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
+import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
@@ -100,7 +101,8 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
         AccessorFactory accFactory = null;
 
         // user providing class to be used.
-        if (((RuntimeModelBuilder)builder).context.xmlAccessorFactorySupport){
+        JAXBContextImpl context = ((RuntimeModelBuilder) builder).context;
+        if (context!=null && context.xmlAccessorFactorySupport){
             factoryAnn = findXmlAccessorFactoryAnnotation(clazz);
 
             if (factoryAnn != null) {

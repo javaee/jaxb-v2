@@ -72,7 +72,6 @@ import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.LocatorImpl;
 
@@ -183,6 +182,12 @@ public final class UnmarshallingContext extends Coordinator
     public @Nullable ClassResolver classResolver;
 
     /**
+     * User-supplied {@link ClassLoader} for converting name to {@link Class}.
+     * For backward compatibility, when null, use thread context classloader.
+     */
+    public @Nullable ClassLoader classLoader;
+
+    /**
      * State information for each element.
      */
     public final class State {
@@ -232,6 +237,8 @@ public final class UnmarshallingContext extends Coordinator
          */
         public final State prev;
         private State next;
+
+        public boolean nil = false;
 
         /**
          * Gets the context.
@@ -537,6 +544,13 @@ public final class UnmarshallingContext extends Coordinator
         throw new UnmarshalException((String)null);
     }
 
+    void clearResult() {
+        if (isUnmarshalInProgress) {
+            throw new IllegalStateException();
+        }
+        result = null;
+    }
+    
     /**
      * Creates a new instance of the specified class.
      * In the unmarshaller, we need to check the user-specified factory class.
@@ -993,6 +1007,7 @@ public final class UnmarshallingContext extends Coordinator
          * Receives the root element and determines how to start
          * unmarshalling.
          */
+        @Override
         public void childElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
             Loader loader = state.getContext().selectRootLoader(state,ea);
             if(loader!=null) {
@@ -1024,6 +1039,9 @@ public final class UnmarshallingContext extends Coordinator
             if(state.backup!=null) {
                 ((JAXBElement<Object>)state.backup).setValue(o);
                 o = state.backup;
+            }
+            if (state.nil) {
+                ((JAXBElement<Object>)o).setNil(true);
             }
             state.getContext().result = o;
         }
@@ -1148,4 +1166,22 @@ public final class UnmarshallingContext extends Coordinator
     public static UnmarshallingContext getInstance() {
         return (UnmarshallingContext) Coordinator._getInstance();
     }
+
+    /**
+     * Allows to access elements which are expected in current state.
+     * Useful for getting elements/attributes for current parent.
+     * 
+     * @return
+     */
+    public Collection<QName> getCurrentExpectedElements() {
+        pushCoordinator();
+        try {
+            State s = getCurrentState();
+            Loader l = s.loader;
+            return l.getExpectedChildElements();
+        } finally {
+            popCoordinator();
+        }
+    }
+    
 }

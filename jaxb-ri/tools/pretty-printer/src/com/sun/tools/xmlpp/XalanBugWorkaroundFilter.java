@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: XalanBugWorkaroundFilter.java,v 1.3 2007-11-22 00:53:37 kohsuke Exp $
+ * @(#)$Id: XalanBugWorkaroundFilter.java,v 1.4 2008-11-10 13:32:20 snajper Exp $
  */
 
 /*

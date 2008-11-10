@@ -35,7 +35,7 @@
  */
 
 /*
- * @(#)$Id: Discarder.java,v 1.6 2007-11-22 00:52:24 kohsuke Exp $
+ * @(#)$Id: Discarder.java,v 1.7 2008-11-10 13:32:02 snajper Exp $
  */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 

@@ -42,6 +42,7 @@ import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
+import com.sun.tools.xjc.api.SpecVersion;
 import com.sun.tools.xjc.generator.bean.ClassOutlineImpl;
 import com.sun.tools.xjc.model.CPropertyInfo;
 
@@ -82,7 +83,13 @@ abstract class AbstractFieldWithVar extends AbstractField {
      * {@code isXXXX} as the method name.
      */
     protected String getGetterMethod() {
-        return (getFieldType().boxify().getPrimitiveType()==codeModel.BOOLEAN?"is":"get")+prop.getName(true);
+        if (getOptions().target.isLaterThan(SpecVersion.V2_2)) {
+            return ((getFieldType().isPrimitive() &&
+                     getFieldType().boxify().getPrimitiveType()==codeModel.BOOLEAN) ?
+                         "is":"get") + prop.getName(true);
+        } else {
+            return (getFieldType().boxify().getPrimitiveType()==codeModel.BOOLEAN?"is":"get")+prop.getName(true);
+        }
     }
 
     /**
@@ -109,7 +116,11 @@ abstract class AbstractFieldWithVar extends AbstractField {
         protected final JFieldRef $ref;
 
         public final void toRawValue(JBlock block, JVar $var) {
-            block.assign($var,$target.invoke(getGetterMethod()));
+            if (getOptions().target.isLaterThan(SpecVersion.V2_2)) {
+                block.assign($var,$target.invoke(getGetterMethod()));
+            } else {
+                block.assign($var,$target.invoke(getGetterMethod()));
+            }
         }
 
         public final void fromRawValue(JBlock block, String uniqueName, JExpression $var) {

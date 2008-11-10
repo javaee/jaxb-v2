@@ -214,12 +214,4 @@ public final class ClassFactory {
         // and returns null
         return null;
     }
-
-    public static final Class[] COLLECTION_IMPL_CLASSES = new Class[] {
-        ArrayList.class,
-        LinkedList.class,
-        HashSet.class,
-        TreeSet.class,
-        Stack.class,
-    };
 }

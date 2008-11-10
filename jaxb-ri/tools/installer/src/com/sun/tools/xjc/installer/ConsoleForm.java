@@ -1,5 +1,5 @@
 /*
- * $Id: ConsoleForm.java,v 1.3 2007-11-22 00:53:19 kohsuke Exp $
+ * $Id: ConsoleForm.java,v 1.4 2008-11-10 13:32:35 snajper Exp $
  */
 
 /*
@@ -45,7 +45,7 @@ import java.io.Reader;
 
 /**
  * @author Ryan Shoemaker, Sun Microsystems, Inc.
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class ConsoleForm {
 

@@ -49,6 +49,7 @@ import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementInfo;
+import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
 import com.sun.xml.bind.v2.runtime.property.Property;
 import com.sun.xml.bind.v2.runtime.property.PropertyFactory;
 import com.sun.xml.bind.v2.runtime.property.UnmarshallerChain;
@@ -148,7 +149,7 @@ public final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
                     if(value==null) {
                         target.writeXsiNilTrue();
                     } else {
-                        target.childAsXsiType(value,"value",tbi);
+                        target.childAsXsiType(value,"value",tbi, false);
                     }
                     target.endElement();
                 } else {
@@ -184,6 +185,11 @@ public final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
 
             public void wrapUp() {
             }
+
+            public RuntimePropertyInfo getInfo() {
+                return property.getInfo();
+            }
+
         };
     }
 

@@ -191,6 +191,7 @@
       private boolean xSimpleMode;
       private boolean generateValueClass = true;
       private boolean generateElementClass = false;
+      private boolean generateMixedExtensions = false;
 
       public BIGlobalBinding makeResult() {
         if( enumBaseTypes.size()==0 )
@@ -335,6 +336,12 @@
         </attribute>
       </optional>
 
+      <optional>
+        <attribute name="generateMixedExtensions">
+          value = <data type="boolean"/>
+          generateMixedExtensions = $runtime.parseBoolean(value);
+        </attribute>
+      </optional>
 
       <!-- unimplemented attributes -->
       <optional>

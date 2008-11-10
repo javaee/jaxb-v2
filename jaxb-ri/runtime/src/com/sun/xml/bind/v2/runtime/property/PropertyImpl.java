@@ -56,9 +56,17 @@ abstract class PropertyImpl<BeanT> implements Property<BeanT> {
      * Name of this field.
      */
     protected final String fieldName;
+    private RuntimePropertyInfo propertyInfo = null;
 
     public PropertyImpl(JAXBContextImpl context, RuntimePropertyInfo prop) {
         fieldName = prop.getName();
+        if (context.retainPropertyInfo) {
+            propertyInfo = prop;
+        }
+    }
+
+    public RuntimePropertyInfo getInfo() {
+        return propertyInfo;
     }
 
     public void serializeBody(BeanT o, XMLSerializer w, Object outerPeer) throws SAXException, AccessorException, IOException, XMLStreamException {

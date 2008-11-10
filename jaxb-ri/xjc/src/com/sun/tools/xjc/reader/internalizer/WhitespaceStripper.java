@@ -1,5 +1,5 @@
 /*
- * @(#)$Id: WhitespaceStripper.java,v 1.4 2007-11-22 00:54:04 kohsuke Exp $
+ * @(#)$Id: WhitespaceStripper.java,v 1.5 2008-11-10 13:32:45 snajper Exp $
  */
 
 /*
