@@ -135,7 +135,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.82 $
+ * @version $Revision: 1.83 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
@@ -416,13 +416,6 @@ public final class JAXBContextImpl extends JAXBRIContext {
             // impossible, once the model is constructred
             throw new AssertionError(e);
         }
-    }
-
-    /**
-     * True if this JAXBContext has {@link XmlAttachmentRef}.
-     */
-    public boolean hasSwaRef() {
-        return hasSwaRef;
     }
 
     /**
