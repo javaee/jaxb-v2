@@ -158,12 +158,17 @@ public final class SimpleTypeBuilder extends BindingComponent {
      *      the simple type to be bound.
      */
     public TypeUse build( XSSimpleType type ) {
+        System.out.println("build type: " + type);
         XSSimpleType oldi = initiatingType;
+        System.out.println("oldi: " + oldi);
         this.initiatingType = type;
+        System.out.println("init: " + initiatingType);
 
         TypeUse e = checkRefererCustomization(type);
+        System.out.println("e1: " + e);
         if(e==null)
             e = compose(type);
+        System.out.println("e2: " + e);
 
         initiatingType = oldi;
 
@@ -308,7 +313,7 @@ public final class SimpleTypeBuilder extends BindingComponent {
         public TypeUse unionSimpleType(XSUnionSimpleType type) {
             boolean isCollection = false;
             for( int i=0; i<type.getMemberSize(); i++ )
-                if(type.getMember(i).getVariety()==XSVariety.LIST) {
+                if(type.getMember(i).getVariety()==XSVariety.LIST || type.getMember(i).getVariety()==XSVariety.UNION) {
                     isCollection = true;
                     break;
                 }
