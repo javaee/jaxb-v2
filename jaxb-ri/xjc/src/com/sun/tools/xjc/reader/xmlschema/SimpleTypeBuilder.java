@@ -158,17 +158,12 @@ public final class SimpleTypeBuilder extends BindingComponent {
      *      the simple type to be bound.
      */
     public TypeUse build( XSSimpleType type ) {
-        System.out.println("build type: " + type);
         XSSimpleType oldi = initiatingType;
-        System.out.println("oldi: " + oldi);
         this.initiatingType = type;
-        System.out.println("init: " + initiatingType);
 
         TypeUse e = checkRefererCustomization(type);
-        System.out.println("e1: " + e);
         if(e==null)
             e = compose(type);
-        System.out.println("e2: " + e);
 
         initiatingType = oldi;
 
