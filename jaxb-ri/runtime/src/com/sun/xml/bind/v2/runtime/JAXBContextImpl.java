@@ -81,7 +81,6 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 
 import com.sun.istack.NotNull;
-import com.sun.istack.Nullable;
 import com.sun.istack.Pool;
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.api.AccessorException;
@@ -135,7 +134,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.83 $
+ * @version $Revision: 1.84 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 

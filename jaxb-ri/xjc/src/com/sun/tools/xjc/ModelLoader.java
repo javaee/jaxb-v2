@@ -48,7 +48,6 @@ import com.sun.tools.xjc.reader.internalizer.DOMForestScanner;
 import com.sun.tools.xjc.reader.internalizer.InternalizationLogic;
 import com.sun.tools.xjc.reader.internalizer.SCDBasedBindingSet;
 import com.sun.tools.xjc.reader.internalizer.VersionChecker;
-import com.sun.tools.xjc.reader.internalizer.SCDBasedBindingSet;
 import com.sun.tools.xjc.reader.relaxng.RELAXNGCompiler;
 import com.sun.tools.xjc.reader.relaxng.RELAXNGInternalizationLogic;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;

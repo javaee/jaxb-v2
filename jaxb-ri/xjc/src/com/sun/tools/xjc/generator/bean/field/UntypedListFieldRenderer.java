@@ -53,8 +53,14 @@ public final class UntypedListFieldRenderer implements FieldRenderer {
     protected UntypedListFieldRenderer( JClass coreList ) {
         this.coreList = coreList;
     }
-    
+
     public FieldOutline generate(ClassOutlineImpl context, CPropertyInfo prop) {
-        return new UntypedListField(context,prop,coreList);
+        if (dummy) {
+            return new DummyListField(context, prop, coreList);
+        }
+        if (content) {
+            return new ContentListField(context, prop, coreList);
+        }
+        return new UntypedListField(context, prop, coreList);
     }
 }

@@ -40,7 +40,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -64,7 +63,6 @@ import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.xml.bind.annotation.XmlLocation;
-import com.sun.xml.bind.api.TypeReference;
 import com.sun.xml.bind.marshaller.MinimumEscapeHandler;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;

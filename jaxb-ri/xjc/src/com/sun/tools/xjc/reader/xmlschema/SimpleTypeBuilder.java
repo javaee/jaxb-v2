@@ -308,7 +308,7 @@ public final class SimpleTypeBuilder extends BindingComponent {
         public TypeUse unionSimpleType(XSUnionSimpleType type) {
             boolean isCollection = false;
             for( int i=0; i<type.getMemberSize(); i++ )
-                if(type.getMember(i).getVariety()==XSVariety.LIST) {
+                if(type.getMember(i).getVariety()==XSVariety.LIST || type.getMember(i).getVariety()==XSVariety.UNION) {
                     isCollection = true;
                     break;
                 }

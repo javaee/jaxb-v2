@@ -65,6 +65,9 @@ final class MixedComplexTypeBuilder extends CTBuilder {
             !bt.asComplexType().isMixed() &&
             ct.isMixed() &&
             ct.getDerivationMethod() == XSType.EXTENSION) {
+                if (!bgmBuilder.isGenerateMixedExtensions() && (ct.getContentType().asParticle() == null)) {
+                    return false;
+                }
                 return true;
         }
 
@@ -95,15 +98,15 @@ final class MixedComplexTypeBuilder extends CTBuilder {
 
             if (contentType.asEmpty() != null) {
                 if (isSubtyped) {
-                    p = prop.createReferenceProperty("Content",false,ct, null, true, false, true);
+                    p = prop.createContentExtendedMixedReferenceProperty("Content", ct, null);
                 } else {
                     p = prop.createValueProperty("Content",false,ct,CBuiltinLeafInfo.STRING,null);
                 }
             } else if (contentType.asParticle() == null) {
-                p = prop.createReferenceProperty("Content",false,ct, null, true, false, true);
+                p = prop.createContentExtendedMixedReferenceProperty("Content", ct, null);
             } else {
                 RawTypeSet ts = RawTypeSetBuilder.build(contentType.asParticle(), false);
-                p = prop.createReferenceProperty("Content", false, ct, ts, true, false, true);
+                p = prop.createContentExtendedMixedReferenceProperty("Content", ct, ts);
             }
 
         } else {
@@ -111,7 +114,7 @@ final class MixedComplexTypeBuilder extends CTBuilder {
                 p = prop.createValueProperty("Content",false,ct,CBuiltinLeafInfo.STRING,null);
             } else {
                 RawTypeSet ts = RawTypeSetBuilder.build(contentType.asParticle(),false);
-                p = prop.createReferenceProperty("Content", false, ct, ts, true, false, true);
+                p = prop.createReferenceProperty("Content", false, ct, ts, true, false, true, false);
             }
         }
 

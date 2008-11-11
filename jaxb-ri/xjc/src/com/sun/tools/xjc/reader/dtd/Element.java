@@ -233,7 +233,7 @@ final class Element extends Term implements Comparable<Element> {
 
         switch(contentModelType) {
         case DTDEventListener.CONTENT_MODEL_ANY:
-            CReferencePropertyInfo rp = new CReferencePropertyInfo("Content",true,true,null,null/*TODO*/,locator);
+            CReferencePropertyInfo rp = new CReferencePropertyInfo("Content",true,false,true,null,null/*TODO*/,locator, false, false, false);
             rp.setWildcard(WildcardMode.SKIP);
             ci.addProperty(rp);
             return;
