@@ -66,6 +66,7 @@ public class XsiNilLoader extends ProxyLoader {
             if (DatatypeConverterImpl._parseBoolean(ea.atts.getValue(idx))) {
                 onNil(state);
                 boolean hasOtherAttributes = (ea.atts.getLength() - 1) > 0;
+                // see issues 6759703 and 565 - need to preserve attributes even if the element is nil; only when the type is stored in JAXBElement
                 if (!(hasOtherAttributes && (state.prev.target instanceof JAXBElement))) {
                     return Discarder.INSTANCE;
                 }
