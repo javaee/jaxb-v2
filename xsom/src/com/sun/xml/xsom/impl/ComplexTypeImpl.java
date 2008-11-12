@@ -61,6 +61,8 @@ import com.sun.xml.xsom.XSAttributeUse;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSContentType;
 import com.sun.xml.xsom.XSElementDecl;
+import com.sun.xml.xsom.XSSchema;
+import com.sun.xml.xsom.XSSchemaSet;
 import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSWildcard;
@@ -310,5 +312,18 @@ public class ComplexTypeImpl extends AttributesHolder implements XSComplexType, 
             }
         }
         return subtypeList;
+    }
+
+    public List<XSElementDecl> getElementDecls() {
+        ArrayList declList = new ArrayList();
+        XSSchemaSet schemaSet = getRoot();
+        for (XSSchema sch : schemaSet.getSchemas()) {
+            for (XSElementDecl decl : sch.getElementDecls().values()) {
+                if (decl.getType().equals(this)) {
+                    declList.add(decl);
+                }
+            }
+        }
+        return declList;
     }
 }

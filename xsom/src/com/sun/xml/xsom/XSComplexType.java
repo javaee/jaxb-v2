@@ -139,4 +139,11 @@ public interface XSComplexType extends XSType, XSAttContainer
      * @return
      */
     public List<XSComplexType> getSubtypes();
+
+    /**
+     * Returns a list of element declarations of this type.
+     * @return
+     */
+    public List<XSElementDecl> getElementDecls();
+
 }
