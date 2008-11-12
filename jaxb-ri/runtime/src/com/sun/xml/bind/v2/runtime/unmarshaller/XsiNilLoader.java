@@ -41,6 +41,7 @@ import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 
+import javax.xml.bind.JAXBElement;
 import org.xml.sax.SAXException;
 
 /**
@@ -60,11 +61,12 @@ public class XsiNilLoader extends ProxyLoader {
 
     protected Loader selectLoader(UnmarshallingContext.State state, TagName ea) throws SAXException {
         int idx = ea.atts.getIndex(WellKnownNamespace.XML_SCHEMA_INSTANCE,"nil");
+
         if (idx!=-1) {
-            boolean hasAttribute = (ea.atts.getLength() - 1) > 0;
             if (DatatypeConverterImpl._parseBoolean(ea.atts.getValue(idx))) {
                 onNil(state);
-                if (!hasAttribute) {
+                boolean hasOtherAttributes = (ea.atts.getLength() - 1) > 0;
+                if (!(hasOtherAttributes && (state.prev.target instanceof JAXBElement))) {
                     return Discarder.INSTANCE;
                 }
             }
