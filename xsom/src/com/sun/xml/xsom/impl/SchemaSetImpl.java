@@ -407,5 +407,18 @@ public class SchemaSetImpl implements XSSchemaSet
             }
             return subtypeList;
         }
+
+        public List<XSElementDecl> getElementDecls() {
+            ArrayList declList = new ArrayList();
+            XSSchemaSet schemaSet = getRoot();
+            for (XSSchema sch : schemaSet.getSchemas()) {
+                for (XSElementDecl decl : sch.getElementDecls().values()) {
+                    if (decl.getType().equals(this)) {
+                        declList.add(decl);
+                    }
+                }
+            }
+            return declList;
+        }
     }
 }
