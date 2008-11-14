@@ -70,6 +70,7 @@ import com.sun.xml.bind.v2.runtime.AssociationMap;
 import com.sun.xml.bind.v2.runtime.Coordinator;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
+import com.sun.xml.bind.v2.runtime.ElementBeanInfoImpl;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -211,6 +212,30 @@ public final class UnmarshallingContext extends Coordinator
 
         /**
          * Hack for making JAXBElement unmarshalling work.
+         *
+         * <p>
+         * While the unmarshalling is in progress, the {@link #target} field stores the object being unmarshalled.
+         * This makes it convenient to keep track of the unmarshalling activity in context of XML infoset, but
+         * since there's only one {@link State} per element, this mechanism only works when there's one object
+         * per element, which breaks down when we have {@link JAXBElement}, since the presence of JAXBElement
+         * requires that we have two objects unmarshalled (a JAXBElement X and a value object Y bound to an XML type.)
+         *
+         * <p>
+         * So to make room for storing both, this {@link #backup} field is used. When we create X instance
+         * in the above example, we set that to {@code state.prev.target} and displace its old value to
+         * {@code state.prev.backup} (where Y goes to {@code state.target}.) Upon the completion of the unmarshalling
+         * of Y, we revert this.
+         *
+         * <p>
+         * While this attributes X incorrectly to its parent element, this preserves the parent/child
+         * relationship between unmarshalled objects and {@link State} parent/child relationship, and
+         * it thereby makes {@link Receiver} mechanism simpler.
+         *
+         * <p>
+         * Yes, I know this is a hack, and no, I'm not proud of it. 
+         *
+         * @see ElementBeanInfoImpl.IntercepterLoader#startElement(State, TagName)
+         * @see ElementBeanInfoImpl.IntercepterLoader#intercept(State, Object)
          */
         public Object backup;
 

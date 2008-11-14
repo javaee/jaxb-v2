@@ -95,8 +95,6 @@ import com.sun.xml.bind.v2.model.core.ValuePropertyInfo;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.bind.v2.util.EditDistance;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
 
 
 /**
@@ -134,7 +132,7 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
      *
      * @see #isOrdered()
      */
-    private final String[] propOrder;
+    private /*final*/ String[] propOrder;
 
     /**
      * Lazily computed.
@@ -185,6 +183,12 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
             }
         } else {
             propOrder = DEFAULT_ORDER;
+        }
+
+        // obtain XmlAccessorOrder and  set proporder (<xs:all> vs <xs:sequence>)
+        XmlAccessorOrder xao = reader().getClassAnnotation(XmlAccessorOrder.class, clazz, this);
+        if((xao != null) && (xao.value() == XmlAccessOrder.UNDEFINED)) {
+            propOrder = null;
         }
 
         if(nav().isInterface(clazz)) {

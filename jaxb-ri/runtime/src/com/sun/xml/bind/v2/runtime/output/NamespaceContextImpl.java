@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
- * 
+ *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -10,7 +10,7 @@
  * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
  * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- * 
+ *
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
  * Sun designates this particular file as subject to the "Classpath" exception
@@ -19,9 +19,9 @@
  * Header, with the fields enclosed by brackets [] replaced by your own
  * identifying information: "Portions Copyrighted [year]
  * [name of copyright owner]"
- * 
+ *
  * Contributor(s):
- * 
+ *
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
  * elects to include this software in this distribution under the [CDDL or GPL
@@ -229,6 +229,14 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
 
     public int force(@NotNull String uri, @NotNull String prefix) {
         // check for the existing binding
+
+        // added check: if namespace already present and have prefix,
+        // return its  index instead creating another one (see Issue 462)
+
+        for(int i = (size - 1); i >= 0; i--) {
+            if(nsUris[i].compareTo(uri) == 0) return i;
+        }
+        
         for( int i=size-1; i>=0; i-- ) {
             if(prefixes[i].equals(prefix)) {
                 if(nsUris[i].equals(uri))
@@ -268,7 +276,7 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
             if(size==1)
                 prefix = "";    // if this is the first user namespace URI we see, use "".
             else {
-                // otherwise make up an unique name 
+                // otherwise make up an unique name
                 prefix = makeUniquePrefix();
             }
         }
