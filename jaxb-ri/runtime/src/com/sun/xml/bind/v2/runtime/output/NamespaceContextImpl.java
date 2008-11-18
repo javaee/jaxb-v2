@@ -234,7 +234,7 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
         // return its  index instead creating another one (see Issue 462)
 
         for(int i = (size - 1); i >= 0; i--) {
-            if(nsUris[i].compareTo(uri) == 0) return i;
+            if((nsUris[i].compareTo(uri) == 0) && (!prefixes[i].equals(""))) return i;
         }
         
         for( int i=size-1; i>=0; i-- ) {
