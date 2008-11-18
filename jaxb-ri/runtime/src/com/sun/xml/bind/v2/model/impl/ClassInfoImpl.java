@@ -80,7 +80,6 @@ import javax.xml.namespace.QName;
 
 import com.sun.istack.FinalArrayList;
 import com.sun.xml.bind.annotation.OverrideAnnotationOf;
-import com.sun.xml.bind.annotation.XmlLocation;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.annotation.MethodLocatable;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
@@ -89,7 +88,6 @@ import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
-import com.sun.xml.bind.v2.model.core.TypeInfo;
 import com.sun.xml.bind.v2.model.core.ValuePropertyInfo;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
@@ -211,13 +209,12 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
         }        
 
     public ClassInfoImpl<T,C,F,M> getBaseClass() {
-        if(!baseClassComputed) {
-            baseClassComputed = true;
+        if (!baseClassComputed) {
             // compute the base class
             C s = nav().getSuperClass(clazz);
-            if(s==null || s==nav().asDecl(Object.class))
+            if(s==null || s==nav().asDecl(Object.class)) {
                 baseClass = null;
-            else {
+            } else {
                 NonElement<T,C> b = builder.getClassInfo(s, true, this);
                 if(b instanceof ClassInfoImpl) {
                     baseClass = (ClassInfoImpl<T,C,F,M>) b;
@@ -226,6 +223,7 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
                     baseClass = null;
                 }
             }
+            baseClassComputed = true;
         }
         return baseClass;
     }
