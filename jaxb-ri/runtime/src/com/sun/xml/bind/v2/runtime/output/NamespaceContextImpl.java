@@ -237,7 +237,8 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
 
         for(int i = (size - 1); i >= 0; i--) {
             if(nsUris[i].compareTo(uri) == 0) {
-                prefixes[i] = prefix;
+                if(prefixes[i].compareTo("") != 0)
+                    prefixes[i] = prefix;
                 return i;
 
 //                if(!prefixes[i].equals(prefix)) {
