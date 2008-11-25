@@ -309,8 +309,11 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
         } else {
             //sort them as specified
             PropertySorter sorter = new PropertySorter();
-            for (PropertyInfoImpl p : properties)
-                sorter.checkedGet(p);   // have it check for errors
+            for (PropertyInfoImpl p : properties) {
+                if (!((p instanceof ReferencePropertyInfoImpl) && ((ReferencePropertyInfoImpl)p).isMixed())) {
+                    sorter.checkedGet(p);   // have it check for errors
+                }
+            }
             Collections.sort(properties,sorter);
             sorter.checkUnusedProperties();
         }
@@ -501,7 +504,7 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
             Integer i = get(p.getName());
             if(i==null) {
                 // missing
-                if((p.kind().isOrdered))
+                if (p.kind().isOrdered)
                     builder.reportError(new IllegalAnnotationException(
                         Messages.PROPERTY_MISSING_FROM_ORDER.format(p.getName()),p));
 
