@@ -54,6 +54,7 @@ import java.util.logging.Logger;
 
 import javax.activation.MimeType;
 import javax.xml.bind.SchemaOutputResolver;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
@@ -280,9 +281,17 @@ public final class XmlSchemaGenerator<T,C,F,M> {
     public void add( ElementInfo<T,C> elem ) {
         assert elem!=null;
 
+        boolean nillable;
+
         QName name = elem.getElementName();
         Namespace n = getNamespace(name.getNamespaceURI());
-        n.elementDecls.put(name.getLocalPart(),n.new ElementWithType(true,elem.getContentType()));
+        AttributePropertyInfo attrPropInfo = n.attributeDecls.get(name.getLocalPart());
+        XmlElement xmlelem = (attrPropInfo == null ? null : attrPropInfo.readAnnotation(XmlElement.class));
+
+        if(xmlelem == null) nillable = false;
+        else nillable = xmlelem.nillable();
+
+        n.elementDecls.put(name.getLocalPart(),n.new ElementWithType(nillable, elem.getContentType()));
 
         // search for foreign namespace references
         n.processForeignNamespaces(elem.getProperty());
