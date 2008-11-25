@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
- * 
+ *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -10,7 +10,7 @@
  * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
  * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- * 
+ *
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
  * Sun designates this particular file as subject to the "Classpath" exception
@@ -19,9 +19,9 @@
  * Header, with the fields enclosed by brackets [] replaced by your own
  * identifying information: "Portions Copyrighted [year]
  * [name of copyright owner]"
- * 
+ *
  * Contributor(s):
- * 
+ *
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
  * elects to include this software in this distribution under the [CDDL or GPL
@@ -281,16 +281,26 @@ public final class XmlSchemaGenerator<T,C,F,M> {
     public void add( ElementInfo<T,C> elem ) {
         assert elem!=null;
 
-        boolean nillable;
+        boolean nillable = false; // default value
 
         QName name = elem.getElementName();
         Namespace n = getNamespace(name.getNamespaceURI());
-        AttributePropertyInfo attrPropInfo = n.attributeDecls.get(name.getLocalPart());
-        XmlElement xmlelem = (attrPropInfo == null ? null : attrPropInfo.readAnnotation(XmlElement.class));
+        ElementInfo ei;
 
-        if(xmlelem == null) nillable = false;
-        else nillable = xmlelem.nillable();
+        if (elem.getScope() != null) { // (probably) never happens
+            ei = this.types.getElementInfo(elem.getScope().getClazz(), name);
+        } else {
+            ei = this.types.getElementInfo(null, name);
+        }
 
+        XmlElement xmlElem = ei.getProperty().readAnnotation(XmlElement.class);
+
+        if (xmlElem == null) {
+            nillable = false;
+        } else {
+            nillable = xmlElem.nillable();
+        }
+        
         n.elementDecls.put(name.getLocalPart(),n.new ElementWithType(nillable, elem.getContentType()));
 
         // search for foreign namespace references
@@ -1277,6 +1287,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             addDependencyTo(tref.getTarget().getTypeName());
         }
 
+        @Override
         public String toString() {
             StringBuilder buf = new StringBuilder();
             buf.append("[classes=").append(classes);
@@ -1403,7 +1414,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
     /**
      * TODO: JAX-WS dependency on this method - consider moving this method into com.sun.tools.jxc.util.Util
-     * 
+     *
      * Relativizes a URI by using another URI (base URI.)
      *
      * <p>
