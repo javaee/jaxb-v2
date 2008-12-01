@@ -81,6 +81,7 @@ import com.sun.tools.xjc.outline.FieldOutline;
 import com.sun.tools.xjc.reader.TypeUtil;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.api.SpecVersion;
+import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.bind.v2.TODO;
 
 /**
@@ -364,8 +365,9 @@ abstract class AbstractField implements FieldOutline {
         final String generatedName = attName.getLocalPart();
         final String generatedNS = attName.getNamespaceURI();
 
+        // Issue 570; always force generating name="" when do it when globalBindings underscoreBinding is set to non default value
         // generate name property?
-        if(!generatedName.equals(ap.getName(false))) {
+        if(!generatedName.equals(ap.getName(false)) || (outline.parent().getModel().getNameConverter() != NameConverter.standard)) {
             xaw.name(generatedName);
         }
 
