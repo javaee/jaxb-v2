@@ -544,9 +544,9 @@ public abstract class JaxBeanInfo<BeanT> {
         try {
             m.invoke(child,unm,parent);
         } catch (IllegalAccessException e) {
-            UnmarshallingContext.getInstance().handleError(e);
+            UnmarshallingContext.getInstance().handleError(e, false);
         } catch (InvocationTargetException e) {
-            UnmarshallingContext.getInstance().handleError(e);
+            UnmarshallingContext.getInstance().handleError(e, false);
         }
     }
 
