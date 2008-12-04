@@ -184,7 +184,7 @@ class ReferencePropertyInfoImpl<T,C,F,M>
                         ));
                     } else {
                         parent.builder.reportError(new IllegalAnnotationException(
-                            Messages.INVALID_XML_ELEMENT_REF.format(),this));
+                            Messages.INVALID_XML_ELEMENT_REF.format(type),this));
                     }
 
                     // reporting one error would do.
