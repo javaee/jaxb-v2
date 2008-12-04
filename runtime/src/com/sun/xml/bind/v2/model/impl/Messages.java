@@ -84,7 +84,7 @@ enum Messages {
     SIMPLE_TYPE_IS_REQUIRED, // 1 arg
     PROPERTY_COLLISION, // 1 arg
     INVALID_IDREF, // 1 arg
-    INVALID_XML_ELEMENT_REF, // 0 arg
+    INVALID_XML_ELEMENT_REF, // 1 arg
     NO_XML_ELEMENT_DECL, // 2 args
     XML_ELEMENT_WRAPPER_ON_NON_COLLECTION, // 1 arg
 
@@ -120,6 +120,7 @@ enum Messages {
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());
 
+    @Override
     public String toString() {
         return format();
     }
