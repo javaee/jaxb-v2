@@ -39,8 +39,6 @@
 <!--
   base dir has to be jaxb-ri for this to be work correctly
   when it's called from the jaxb-ri/build.xml
-
-  $Id: build.xml,v 1.5 2008-11-10 13:32:51 snajper Exp $
 -->
 <project name="taglets" basedir="../.." default="compile">
 

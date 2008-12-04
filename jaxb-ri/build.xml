@@ -61,7 +61,6 @@
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
 
-       $Id: build.xml,v 1.75 2008-11-10 13:32:35 snajper Exp $
     </description>
 
     <import file="nbproject/build-impl.xml"/>

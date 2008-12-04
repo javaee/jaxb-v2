@@ -1,8 +1,4 @@
 /*
- * @(#)$Id: MinimumEscapeHandler.java,v 1.5 2008-11-11 13:45:37 snajper Exp $
- */
-
-/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
  * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.

@@ -57,7 +57,6 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * then they have to write their own filter to add the values.
  * 
  * @author <ul><li>Ryan Shoemaker, Sun Microsystems, Inc.</li></ul>
- * @version $Revision: 1.4 $
  * @since JAXB1.0
  * @deprecated not used in 2.0
  */

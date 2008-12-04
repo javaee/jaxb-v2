@@ -54,7 +54,6 @@ import com.sun.xml.bind.validator.ValidatorImpl;
  * also creates the GrammarInfoFacade that unifies all of the grammar
  * info from packages on the contextPath.
  *
- * @version $Revision: 1.4 $
  * @since JAXB1.0
  * @deprecated in JAXB1.0.1
  */

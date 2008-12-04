@@ -55,7 +55,6 @@
 # Combined with setenv.sh, this shell script lets you launch OptimizeIt
 # without going through a tedious classpath setting dialog of OptimizeIt.
 #
-# $Id: optit.sh,v 1.4 2008-11-10 13:32:48 snajper Exp $
 
 if [ "$OPTIMIZEIT_HOME" = "" ]; then
   echo the OPTIMIZEIT_HOME env var has to be set.

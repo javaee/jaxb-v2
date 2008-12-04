@@ -36,7 +36,6 @@
  holder.
 -->
 
-<!-- $Id: build.xml,v 1.24 2008-11-10 13:32:00 snajper Exp $ -->
 <project name="xjc" basedir=".." default="compile">
 
   <description>

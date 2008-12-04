@@ -39,8 +39,6 @@
 // Written by David Megginson, david@megginson.com
 // NO WARRANTY!  This class is in the public domain.
 
-// $Id: XMLWriter.java,v 1.3 2008-11-10 13:32:20 snajper Exp $
-
 package com.sun.tools.xmlpp;
 
 import java.io.IOException;

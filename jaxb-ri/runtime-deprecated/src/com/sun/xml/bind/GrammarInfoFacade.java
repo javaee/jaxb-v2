@@ -48,7 +48,6 @@ import com.sun.msv.grammar.Grammar;
  * This class is a facade to a collection of GrammarInfo objects.  It
  * dispatches rootElement requests to the underlying GrammarInfo objects.
  *
- * @version $Revision: 1.4 $
  * @since JAXB1.0
  * @deprecated in JAXB1.0.1
  */

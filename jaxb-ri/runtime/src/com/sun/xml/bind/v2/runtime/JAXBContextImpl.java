@@ -134,7 +134,6 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class provides the implementation of JAXBContext.
  *
- * @version $Revision: 1.84 $
  */
 public final class JAXBContextImpl extends JAXBRIContext {
 
