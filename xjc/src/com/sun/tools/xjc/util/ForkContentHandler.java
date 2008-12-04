@@ -46,7 +46,6 @@ import org.xml.sax.SAXException;
  * two ContentHandlers.
  *
  *
- * @version	$Id: ForkContentHandler.java,v 1.2.12.1 2007-05-31 22:02:01 ofung Exp $
  * @author  <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ForkContentHandler implements ContentHandler {

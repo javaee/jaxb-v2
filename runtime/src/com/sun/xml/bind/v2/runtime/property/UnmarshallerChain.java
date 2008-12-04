@@ -34,9 +34,6 @@
  * holder.
  */
 
-/*
- * @(#)$Id:
- */
 package com.sun.xml.bind.v2.runtime.property;
 
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;

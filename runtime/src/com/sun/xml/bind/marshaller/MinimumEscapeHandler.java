@@ -1,8 +1,4 @@
 /*
- * @(#)$Id: MinimumEscapeHandler.java,v 1.2.6.2 2008-11-07 16:54:19 pavel_bucek Exp $
- */
-
-/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
  * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.

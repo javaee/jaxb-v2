@@ -1,8 +1,4 @@
 /*
- * @(#)$Id: MS1252Encoder.java,v 1.2.6.1 2007-05-31 22:00:06 ofung Exp $
- */
-
-/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
  * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.

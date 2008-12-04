@@ -1,8 +1,4 @@
 /*
- * $Id: ConsoleForm.java,v 1.2.6.2 2008-12-04 15:57:53 snajper Exp $
- */
-
-/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
  * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
