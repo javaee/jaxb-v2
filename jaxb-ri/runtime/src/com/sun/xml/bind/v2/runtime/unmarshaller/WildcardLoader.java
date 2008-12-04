@@ -34,9 +34,6 @@
  * holder.
  */
 
-/*
- * @(#)$Id: WildcardLoader.java,v 1.3.6.3 2007-05-31 21:59:57 ofung Exp $
- */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
 import javax.xml.bind.annotation.DomHandler;

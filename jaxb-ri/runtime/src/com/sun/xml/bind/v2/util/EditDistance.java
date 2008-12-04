@@ -1,8 +1,4 @@
 /*
- * @(#)$Id: EditDistance.java,v 1.1.4.2 2007-05-31 22:00:01 ofung Exp $
- */
-
-/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
  * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.

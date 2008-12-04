@@ -9,10 +9,6 @@ import java.io.Writer;
 import java.util.regex.Pattern;
 
 /*
- * @(#)$Id: SourceTidy.java,v 1.2.6.1 2007-05-31 22:01:15 ofung Exp $
- */
-
-/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
  * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.

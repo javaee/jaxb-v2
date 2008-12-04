@@ -39,8 +39,6 @@
 <!--
   base dir has to be jaxb-ri for this to be work correctly
   when it's called from the jaxb-ri/build.xml
-
-  $Id: build.xml,v 1.1.12.1 2007-05-31 22:01:05 ofung Exp $
 -->
 <project name="installer-builder" basedir="../.." default="jar">
     <property name="name" value="installer-builder" />

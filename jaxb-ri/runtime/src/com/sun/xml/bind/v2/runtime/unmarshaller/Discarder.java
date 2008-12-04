@@ -34,9 +34,6 @@
  * holder.
  */
 
-/*
- * @(#)$Id: Discarder.java,v 1.5.6.1 2007-05-31 21:59:54 ofung Exp $
- */
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
 
