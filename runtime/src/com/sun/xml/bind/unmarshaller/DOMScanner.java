@@ -65,7 +65,6 @@ import org.xml.sax.helpers.NamespaceSupport;
  * classes like this.
  *
  * @author <ul><li>Kohsuke Kawaguchi, Sun Microsystems, Inc.</li></ul>
- * @version $Revision: 1.6.4.2 $ $Date: 2007-05-31 21:58:56 $
  * @since JAXB1.0
  */
 public class DOMScanner implements LocatorEx,InfosetScanner/*<Node> --- but can't do this to protect 1.0 clients, or can I? */
