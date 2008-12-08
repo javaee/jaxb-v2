@@ -544,7 +544,7 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
                             return properties.size();
                         }
                     });
-                    boolean isOverriding = properties.get(i).hasAnnotation(OverrideAnnotationOf.class);
+                    boolean isOverriding = (i > (properties.size()-1)) ? false : properties.get(i).hasAnnotation(OverrideAnnotationOf.class);
                     if (!isOverriding) {
                         builder.reportError(new IllegalAnnotationException(
                         Messages.PROPERTY_ORDER_CONTAINS_UNUSED_ENTRY.format(unusedName,nearest),ClassInfoImpl.this));
