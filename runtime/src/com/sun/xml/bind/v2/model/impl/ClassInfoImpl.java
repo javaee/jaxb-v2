@@ -310,9 +310,7 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
             //sort them as specified
             PropertySorter sorter = new PropertySorter();
             for (PropertyInfoImpl p : properties) {
-                if (!((p instanceof ReferencePropertyInfoImpl) && ((ReferencePropertyInfoImpl)p).isMixed())) {
-                    sorter.checkedGet(p);   // have it check for errors
-                }
+                sorter.checkedGet(p);   // have it check for errors
             }
             Collections.sort(properties,sorter);
             sorter.checkUnusedProperties();
@@ -546,8 +544,11 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
                             return properties.size();
                         }
                     });
-                    builder.reportError(new IllegalAnnotationException(
+                    boolean isOverriding = properties.get(i).hasAnnotation(OverrideAnnotationOf.class);
+                    if (!isOverriding) {
+                        builder.reportError(new IllegalAnnotationException(
                         Messages.PROPERTY_ORDER_CONTAINS_UNUSED_ENTRY.format(unusedName,nearest),ClassInfoImpl.this));
+                    }
                 }
         }
     }
