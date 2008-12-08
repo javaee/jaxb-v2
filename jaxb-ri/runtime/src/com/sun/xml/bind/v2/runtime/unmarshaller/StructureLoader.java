@@ -268,4 +268,8 @@ public final class StructureLoader extends Loader {
     }
 
     private static final QNameMap<TransducedAccessor> EMPTY = new QNameMap<TransducedAccessor>();
+
+    public JaxBeanInfo getBeanInfo() {
+        return beanInfo;
+    }
 }

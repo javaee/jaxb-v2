@@ -1208,5 +1208,16 @@ public final class UnmarshallingContext extends Coordinator
             popCoordinator();
         }
     }
-    
+
+    /**
+     * Gets StructureLoader if used as loader.
+     * Useful when determining if element is mixed or not.
+     *
+     */
+    public StructureLoader getStructureLoader() {
+        if(current.loader instanceof StructureLoader)
+            return (StructureLoader)current.loader;
+
+        return null;
+    }
 }
