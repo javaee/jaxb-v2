@@ -400,10 +400,14 @@ public final class BIProperty extends AbstractDeclarationImpl {
             String defaultName, boolean forConstant, XSComponent source,
             RawTypeSet types, boolean isMixed, boolean dummy, boolean content, boolean isMixedExtended) {
 
-        if(!types.refs.isEmpty())
-            // if this property is empty, don't acknowleedge the customization
-            // this allows pointless property customization to be reported as an error
-            markAsAcknowledged();
+        if (types == null) {    // this is a special case where we need to generate content because potential subtypes would need to be able to override what's store inside
+            content = true;
+        } else {
+            if(!types.refs.isEmpty())
+                // if this property is empty, don't acknowleedge the customization
+                // this allows pointless property customization to be reported as an error
+                markAsAcknowledged();
+        }
         constantPropertyErrorCheck();
         
         String name = getPropertyName(forConstant);

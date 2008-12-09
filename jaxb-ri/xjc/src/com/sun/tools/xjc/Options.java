@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
- * 
+ *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -10,7 +10,7 @@
  * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
  * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- * 
+ *
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
  * Sun designates this particular file as subject to the "Classpath" exception
@@ -19,9 +19,9 @@
  * Header, with the fields enclosed by brackets [] replaced by your own
  * identifying information: "Portions Copyrighted [year]
  * [name of copyright owner]"
- * 
+ *
  * Contributor(s):
- * 
+ *
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
  * elects to include this software in this distribution under the [CDDL or GPL
@@ -76,7 +76,7 @@ import org.xml.sax.InputSource;
 
 /**
  * Global options.
- * 
+ *
  * <p>
  * This class stores invocation configuration for XJC.
  * The configuration in this class shoule be abstract enough so that
@@ -86,10 +86,10 @@ public class Options
 {
     /** If "-debug" is specified. */
     public boolean debugMode;
-    
+
     /** If the "-verbose" option is specified. */
     public boolean verbose;
-    
+
     /** If the "-quiet" option is specified. */
     public boolean quiet;
 
@@ -98,7 +98,7 @@ public class Options
 
     /** No file header comment (to be more friendly with diff.) */
     public boolean noFileHeader;
-    
+
     /**
      * Check the source schemas with extra scrutiny.
      * The exact meaning depends on the schema language.
@@ -116,7 +116,7 @@ public class Options
      * If true, try to resolve name conflicts automatically by assigning mechanical numbers.
      */
     public boolean automaticNameConflictResolution = false;
-    
+
     /**
      * strictly follow the compatibility rules and reject schemas that
      * contain features from App. E.2, use vendor binding extensions
@@ -127,7 +127,7 @@ public class Options
      * binding extensions
      */
     public static final int EXTENSION = 2;
-    
+
     /**
      * this switch determines how carefully the compiler will follow
      * the compatibility rules in the spec. Either <code>STRICT</code>
@@ -145,7 +145,7 @@ public class Options
     public SpecVersion target = SpecVersion.LATEST;
 
     private boolean is2_2 = true;
-    
+
     public Options() {
         if (is2_2) {
             try {
@@ -169,7 +169,7 @@ public class Options
      * {@link JPackage#addResourceFile(JResourceFile)}.
      */
     public File targetDir = new File(".");
-    
+
     /**
      * Actually stores {@link CatalogResolver}, but the field
      * type is made to {@link EntityResolver} so that XJC can be
@@ -182,7 +182,7 @@ public class Options
      * constants.
      */
     private Language schemaLanguage = null;
-    
+
     /**
      * The -p option that should control the default Java package that
      * will contain the generated code. Null if unspecified.
@@ -199,9 +199,9 @@ public class Options
      * Input schema files as a list of {@link InputSource}s.
      */
     private final List<InputSource> grammars = new ArrayList<InputSource>();
-    
+
     private final List<InputSource> bindFiles = new ArrayList<InputSource>();
-    
+
     // Proxy setting.
     private String proxyHost = null;
     private String proxyPort = null;
@@ -363,12 +363,12 @@ public class Options
     public void setSchemaLanguage(Language _schemaLanguage) {
         this.schemaLanguage = _schemaLanguage;
     }
-    
+
     /** Input schema files. */
     public InputSource[] getGrammars() {
         return grammars.toArray(new InputSource[grammars.size()]);
     }
-    
+
     /**
      * Adds a new input schema.
      */
@@ -414,7 +414,7 @@ public class Options
         // absolutize all the system IDs in the input,
         // so that we can map system IDs to DOM trees.
         try {
-            URL baseURL = new File(".").getCanonicalFile().toURL(); 
+            URL baseURL = new File(".").getCanonicalFile().toURL();
             is.setSystemId( new URL(baseURL,is.getSystemId()).toExternalForm() );
         } catch( IOException e ) {
             // ignore
@@ -422,7 +422,7 @@ public class Options
         return is;
     }
 
-    
+
     /** Input external binding files. */
     public InputSource[] getBindFiles() {
         return bindFiles.toArray(new InputSource[bindFiles.size()]);
@@ -459,11 +459,11 @@ public class Options
                 classpaths.toArray(new URL[classpaths.size()]),parent);
     }
 
-    
+
     /**
      * Parses an option <code>args[i]</code> and return
      * the number of tokens consumed.
-     * 
+     *
      * @return
      *      0 if the argument is not understood. Returning 0
      *      will let the caller report an error.
@@ -671,7 +671,7 @@ public class Options
                 throw new BadCommandLineException(e.getMessage(),e);
             }
         }
-        
+
         return 0;   // unrecognized
     }
 
@@ -744,10 +744,10 @@ public class Options
         }
         ((CatalogResolver)entityResolver).getCatalog().parseCatalog(catalogFile.getPath());
     }
-    
+
     /**
      * Parses arguments and fill fields of this object.
-     * 
+     *
      * @exception BadCommandLineException
      *      thrown when there's a problem in the command-line arguments
      */
@@ -769,7 +769,7 @@ public class Options
                     addFile(args[i],grammars,".xsd");
             }
         }
-        
+
         // configure proxy
         if (proxyHost != null || proxyPort != null) {
             if (proxyHost != null && proxyPort != null) {
@@ -794,9 +794,14 @@ public class Options
         if (grammars.size() == 0)
             throw new BadCommandLineException(
                 Messages.format(Messages.MISSING_GRAMMAR));
-        
+
         if( schemaLanguage==null )
             schemaLanguage = guessSchemaLanguage();
+
+//        if(target==SpecVersion.V2_2 && !isExtensionMode())
+//            throw new BadCommandLineException(
+//                "Currently 2.2 is still not finalized yet, so using it requires the -extension switch." +
+//                "NOTE THAT 2.2 SPEC MAY CHANGE BEFORE IT BECOMES FINAL.");
 
         if(pluginLoadFailure!=null)
             throw new BadCommandLineException(
@@ -806,7 +811,7 @@ public class Options
     /**
      * Finds the <tt>META-INF/sun-jaxb.episode</tt> file to add as a binding customization.
      */
-    private void scanEpisodeFile(File jar) throws BadCommandLineException {
+    public void scanEpisodeFile(File jar) throws BadCommandLineException {
         try {
             URLClassLoader ucl = new URLClassLoader(new URL[]{jar.toURL()});
             Enumeration<URL> resources = ucl.findResources("META-INF/sun-jaxb.episode");

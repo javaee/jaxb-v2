@@ -58,7 +58,7 @@ public class MinimumEscapeHandler implements CharacterEscapeHandler {
         int limit = start+length;
         for (int i = start; i < limit; i++) {
             char c = ch[i];
-            if( c=='&' || c=='<' || c=='>' || (c=='\"' && isAttVal) ) {
+                if(c == '&' || c == '<' || c == '>' || c == '\r' || (c == '\"' && isAttVal) ) {
                 if(i!=start)
                     out.write(ch,start,i-start);
                 start = i+1;

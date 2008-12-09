@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
- * 
+ *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -10,7 +10,7 @@
  * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
  * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- * 
+ *
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
  * Sun designates this particular file as subject to the "Classpath" exception
@@ -19,9 +19,9 @@
  * Header, with the fields enclosed by brackets [] replaced by your own
  * identifying information: "Portions Copyrighted [year]
  * [name of copyright owner]"
- * 
+ *
  * Contributor(s):
- * 
+ *
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
  * elects to include this software in this distribution under the [CDDL or GPL
@@ -51,7 +51,7 @@ import javax.xml.namespace.QName;
 import com.sun.xml.bind.v2.TODO;
 
 /**
- * This class is the JAXB RI's default implementation of the 
+ * This class is the JAXB RI's default implementation of the
  * {@link DatatypeConverterInterface}.
  *
  * <p>
@@ -66,15 +66,15 @@ import com.sun.xml.bind.v2.TODO;
  * @since JAXB1.0
  */
 public final class DatatypeConverterImpl implements DatatypeConverterInterface {
-    
+
     /**
      * To avoid re-creating instances, we cache one instance.
      */
     public static final DatatypeConverterInterface theInstance = new DatatypeConverterImpl();
-        
+
     protected DatatypeConverterImpl() {
     }
-    
+
     public String parseString(String lexicalXSDString) {
         return lexicalXSDString;
     }
@@ -166,9 +166,9 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         content = WhiteSpaceProcessor.trim(content);
 
         return new BigDecimal(content.toString());
-        
+
         // from purely XML Schema perspective,
-        // this implementation has a problem, since 
+        // this implementation has a problem, since
         // in xs:decimal "1.0" and "1" is equal whereas the above
         // code will return different values for those two forms.
         //
@@ -177,7 +177,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         // could take non-trivial time.
         //
         // also, from the user's point of view, one might be surprised if
-        // 1 (not 1.0) is returned from "1.000" 
+        // 1 (not 1.0) is returned from "1.000"
     }
 
     public float parseFloat(String lexicalXSDFloat) {
@@ -276,7 +276,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
     public static String _printBoolean(boolean val) {
         return val?"true":"false";
     }
-    
+
     public byte parseByte(String lexicalXSDByte) {
         return _parseByte(lexicalXSDByte);
     }
@@ -490,7 +490,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         String qname;
         String prefix = nsc.getPrefix( val.getNamespaceURI() );
         String localPart = val.getLocalPart();
-        
+
         if( prefix == null || prefix.length()==0 ) { // be defensive
             qname = localPart;
         } else {
@@ -511,8 +511,8 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
     public String printAnySimpleType(String val) {
         return val;
     }
-    
-    
+
+
     /**
      * Just return the string passed as a parameter but
      * installs an instance of this class as the DatatypeConverter
@@ -527,6 +527,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
 
 
 // base64 decoder
+//====================================
 
     private static final byte[] decodeMap = initDecodeMap();
     private static final byte PADDING = 127;
@@ -897,11 +898,6 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
 
             // otherwise print out normally.
             int offset = tz.getOffset(cal.getTime().getTime());
-
-            if(offset==0) {
-                buf.append('Z');
-                return;
-            }
 
             if(offset==0) {
                 buf.append('Z');
