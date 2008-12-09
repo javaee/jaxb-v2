@@ -234,6 +234,9 @@ public abstract class Loader {
         reportError(e.getMessage(), e, canRecover );
     }
 
+    public static void handleGenericError(Error e) throws SAXException {
+        reportError(e.getMessage(), false);
+    }
 
     protected static void reportError(String msg, boolean canRecover) throws SAXException {
         reportError(msg, null, canRecover );

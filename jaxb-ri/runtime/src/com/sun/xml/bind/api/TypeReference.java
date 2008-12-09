@@ -77,8 +77,17 @@ public final class TypeReference {
     public final Annotation[] annotations;
 
     public TypeReference(QName tagName, Type type, Annotation... annotations) {
-        if(tagName==null || type==null || annotations==null)
-            throw new IllegalArgumentException();
+        if(tagName==null || type==null || annotations==null) {
+            String nullArgs = "";
+
+            if(tagName == null)     nullArgs = "tagName";
+            if(type == null)        nullArgs += (nullArgs.length() > 0 ? ", type" : "type");
+            if(annotations == null) nullArgs += (nullArgs.length() > 0 ? ", annotations" : "annotations");
+
+            Messages.ARGUMENT_CANT_BE_NULL.format(nullArgs);
+            
+            throw new IllegalArgumentException(Messages.ARGUMENT_CANT_BE_NULL.format(nullArgs));
+        }
 
         this.tagName = new QName(tagName.getNamespaceURI().intern(), tagName.getLocalPart().intern(), tagName.getPrefix());
         this.type = type;

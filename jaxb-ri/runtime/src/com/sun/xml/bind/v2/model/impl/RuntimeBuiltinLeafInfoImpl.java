@@ -543,7 +543,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
 
                 public XMLGregorianCalendar parse(CharSequence lexical) throws SAXException {
                     try {
-                        return datatypeFactory.newXMLGregorianCalendar(lexical.toString());
+                        return datatypeFactory.newXMLGregorianCalendar(lexical.toString().trim()); // (.trim() - issue 396)
                     } catch (Exception e) {
                         UnmarshallingContext.getInstance().handleError(e);
                         return null;

@@ -48,6 +48,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.helpers.ValidationEventImpl;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -303,12 +304,16 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> implement
 
     public void serializeRoot(BeanT bean, XMLSerializer target) throws SAXException, IOException, XMLStreamException {
         if(tagName==null) {
-            target.reportError(
-                    new ValidationEventImpl(
-                            ValidationEvent.ERROR,
-                            Messages.UNABLE_TO_MARSHAL_NON_ELEMENT.format(bean.getClass().getName()),
-                            null,
-                            null));
+            Class beanClass = bean.getClass();
+            String message;
+
+            if (beanClass.isAnnotationPresent(XmlRootElement.class)) {
+                message = Messages.UNABLE_TO_MARSHAL_UNBOUND_CLASS.format(beanClass.getName());
+            } else {
+                message = Messages.UNABLE_TO_MARSHAL_NON_ELEMENT.format(beanClass.getName());
+            }
+
+            target.reportError(new ValidationEventImpl(ValidationEvent.ERROR,message,null, null));
         }
         else {
             target.startElement(tagName,bean);

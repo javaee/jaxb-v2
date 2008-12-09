@@ -40,6 +40,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.UnmarshallerHandler;
 
 import com.sun.xml.bind.WhiteSpaceProcessor;
+import com.sun.xml.bind.v2.runtime.ClassBeanInfoImpl;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
@@ -128,7 +129,17 @@ public final class SAXConnector implements UnmarshallerHandler {
         if( qname==null || qname.length()==0 )
             qname=local;
 
-        processText(true);
+
+        boolean ignorable = true;
+        StructureLoader sl;
+
+        // not null only if element content is processed (StructureLoader is used)
+        // ugly
+        if((sl = this.context.getStructureLoader()) != null) {
+            ignorable = ((ClassBeanInfoImpl)sl.getBeanInfo()).hasElementOnlyContentModel();
+        }
+
+        processText(ignorable);
 
         tagName.uri = uri;
         tagName.local = local;

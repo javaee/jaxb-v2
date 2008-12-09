@@ -171,6 +171,9 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
             set((BeanT)state.target,(ValueT)o);
         } catch (AccessorException e) {
             Loader.handleGenericException(e,true);
+        } catch (IllegalAccessError iae) {
+            // throw UnmarshalException instead IllegalAccesssError | Issue 475
+            Loader.handleGenericError(iae);
         }
     }
 
