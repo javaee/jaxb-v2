@@ -239,6 +239,7 @@ public final class StructureLoader extends Loader {
     @Override
     public void childElement(UnmarshallingContext.State state, TagName arg) throws SAXException {
         ChildLoader child = childUnmarshallers.get(arg.uri,arg.local);
+        if((child == null) && (arg.uri.compareTo("") != 0)) child = childUnmarshallers.get("" ,arg.local);
         if(child==null) {
             child = catchAll;
             if(child==null) {

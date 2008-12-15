@@ -299,7 +299,7 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
 
     static {
         try {
-            NO_CORRECTNESS_CHECK = Boolean.getBoolean(SchemaCompilerImpl.class+".noCorrectnessCheck");
+            NO_CORRECTNESS_CHECK = Boolean.getBoolean(SchemaCompilerImpl.class.getName()+".noCorrectnessCheck");
         } catch( Throwable t) {
             // ignore
         }
