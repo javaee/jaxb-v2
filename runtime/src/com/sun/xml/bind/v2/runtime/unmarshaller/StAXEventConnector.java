@@ -258,8 +258,8 @@ final class StAXEventConnector extends StAXConnector {
 
         // fire endElement
         QName qName = event.getName();
-        tagName.uri = fixNull(qName.getNamespaceURI().intern());
-        tagName.local = qName.getLocalPart().intern();
+        tagName.uri = fixNull(qName.getNamespaceURI());
+        tagName.local = qName.getLocalPart();
         visitor.endElement(tagName);
 
         // end namespace bindings
@@ -282,10 +282,10 @@ final class StAXEventConnector extends StAXConnector {
 
         // fire startElement
         QName qName = event.getName();
-        tagName.uri = fixNull(qName.getNamespaceURI().intern());
+        tagName.uri = fixNull(qName.getNamespaceURI());
         String localName = qName.getLocalPart();
-        tagName.uri = fixNull(qName.getNamespaceURI().intern());
-        tagName.local = localName.intern();
+        tagName.uri = fixNull(qName.getNamespaceURI());
+        tagName.local = localName;
         tagName.atts = getAttributes(event);
         visitor.startElement(tagName);
 
@@ -311,9 +311,9 @@ final class StAXEventConnector extends StAXConnector {
             Attribute staxAttr = (Attribute)i.next();
 
             QName name = staxAttr.getName();
-            String uri = fixNull(name.getNamespaceURI().intern());
-            String localName = name.getLocalPart().intern();
-            String prefix = name.getPrefix().intern();
+            String uri = fixNull(name.getNamespaceURI());
+            String localName = name.getLocalPart();
+            String prefix = name.getPrefix();
             String qName;
             if (prefix == null || prefix.length() == 0)
                 qName = localName;
