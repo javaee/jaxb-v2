@@ -212,8 +212,8 @@ class StAXStreamConnector extends StAXConnector {
         processText(false);
 
         // fire endElement
-        tagName.uri = fixNull(staxStreamReader.getNamespaceURI());
-        tagName.local = staxStreamReader.getLocalName();
+        tagName.uri = fixNull(staxStreamReader.getNamespaceURI().intern());
+        tagName.local = staxStreamReader.getLocalName().intern();
         visitor.endElement(tagName);
 
         // end namespace bindings
@@ -235,8 +235,8 @@ class StAXStreamConnector extends StAXConnector {
         }
 
         // fire startElement
-        tagName.uri = fixNull(staxStreamReader.getNamespaceURI());
-        tagName.local = staxStreamReader.getLocalName();
+        tagName.uri = fixNull(staxStreamReader.getNamespaceURI().intern());
+        tagName.local = staxStreamReader.getLocalName().intern();
         tagName.atts = attributes;
 
         visitor.startElement(tagName);
