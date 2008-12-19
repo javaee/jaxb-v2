@@ -878,11 +878,11 @@ public final class SimpleTypeBuilder extends BindingComponent {
         m.put("decimal",        CBuiltinLeafInfo.BIG_DECIMAL);
         m.put("integer",        CBuiltinLeafInfo.BIG_INTEGER);
         m.put("long",           CBuiltinLeafInfo.LONG);
-        m.put("unsignedInt",    CBuiltinLeafInfo.LONG);
+        // m.put("unsignedInt",    CBuiltinLeafInfo.LONG);
         m.put("int",            CBuiltinLeafInfo.INT);
-        m.put("unsignedShort",  CBuiltinLeafInfo.INT);
+        // m.put("unsignedShort",  CBuiltinLeafInfo.INT);
         m.put("short",          CBuiltinLeafInfo.SHORT);
-        m.put("unsignedByte",   CBuiltinLeafInfo.SHORT);
+        // m.put("unsignedByte",   CBuiltinLeafInfo.SHORT);
         m.put("byte",           CBuiltinLeafInfo.BYTE);
         m.put("double",         CBuiltinLeafInfo.DOUBLE);
         m.put("QName",          CBuiltinLeafInfo.QNAME);
