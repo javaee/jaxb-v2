@@ -387,8 +387,13 @@ public final class SimpleTypeBuilder extends BindingComponent {
             }
         }
 
+
+        // Issue 558 .. ugly fix; see https://wsit-docs.dev.java.net/releases/1-0-FCS/DataBinding5.html and https://jaxb.dev.java.net/issues/show_bug.cgi?id=558
+        // need to check specification
         if (type.isSimpleType() && builder.getGlobalBinding().isSimpleTypeSubstitution() &&
-                type.getName() != null && !type.getName().equals("anySimpleType") && !type.getName().equals("string")) {
+                type.isGlobal() && type.getName() != null &&
+                (type.getName().equals("unsignedInt") || type.getName().equals("unsignedShort") || type.getName().equals("unsignedByte"))) {
+                // !type.getName().equals("anySimpleType") && !type.getName().equals("string")) {
             return (CNonElement) getClassSelector()._bindToClass(type, type.getSimpleBaseType(), false);
         }
 
