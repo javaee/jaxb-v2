@@ -392,6 +392,7 @@ public final class SimpleTypeBuilder extends BindingComponent {
         // need to check specification
         if (type.isSimpleType() && builder.getGlobalBinding().isSimpleTypeSubstitution() &&
                 type.isGlobal() && type.getName() != null &&
+                !(type.isRestriction() && !noAutoEnum) && // fix fot tck-ri-2.1a test
                 (type.getName().equals("unsignedInt") || type.getName().equals("unsignedShort") || type.getName().equals("unsignedByte"))) {
                 // !type.getName().equals("anySimpleType") && !type.getName().equals("string")) {
             return (CNonElement) getClassSelector()._bindToClass(type, type.getSimpleBaseType(), false);
