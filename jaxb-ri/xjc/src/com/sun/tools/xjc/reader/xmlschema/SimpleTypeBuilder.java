@@ -387,6 +387,10 @@ public final class SimpleTypeBuilder extends BindingComponent {
             }
         }
 
+        if (type.isSimpleType() && builder.getGlobalBinding().isSimpleTypeSubstitution() &&
+                type.getName() != null && !type.getName().equals("anySimpleType")) {
+            return (CNonElement) getClassSelector()._bindToClass(type, null, false);
+        }
 
         // if the type is built in, look for the default binding
         if(type.getTargetNamespace().equals(WellKnownNamespace.XML_SCHEMA)) {
