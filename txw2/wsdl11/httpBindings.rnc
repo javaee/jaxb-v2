@@ -1,7 +1,6 @@
 # RELAX NG Schema for WSDL 1.1 HTTP Binding
 #
 #                   Written by Kohsuke Kawaguchi
-#                   $Id: httpBindings.rnc,v 1.1 2005-05-10 19:46:23 kohsuke Exp $
 #
 # This schema is in public domain. Feel free to use it in anyway you can.
 # If you find a bug, please let me know.

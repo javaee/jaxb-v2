@@ -59,7 +59,6 @@ import com.sun.xml.xsom.visitor.XSFunction;
  * Extract the name of the components.
  * 
  * @author <ul><li>Ryan Shoemaker, Sun Microsystems, Inc.</li></ul>
- * @version $Revision: 1.2 $
  */
 public class ComponentNameFunction implements XSFunction<String> {
 
