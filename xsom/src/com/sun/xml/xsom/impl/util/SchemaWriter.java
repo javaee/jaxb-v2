@@ -485,7 +485,12 @@ public class SchemaWriter implements XSVisitor, XSSimpleTypeVisitor {
         XSType type = decl.getType();
         
         // TODO: various other attributes 
-        
+
+        // qualified attr; Issue 
+        if(decl.getForm() != null) {
+            extraAtts += " form=\"" + (decl.getForm() ? "qualified" : "unqualified" ) + "\"";
+        }
+
         println(MessageFormat.format("<element name=\"{0}\"{1}{2}{3}>",
             decl.getName(),
             type.isLocal()?"":" type=\"{"+

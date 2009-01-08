@@ -171,4 +171,15 @@ public interface XSElementDecl extends XSDeclaration, XSTerm
 
     XmlString getDefaultValue();
     XmlString getFixedValue();
+
+    /**
+     * Used for javadoc schema generation
+     *
+     * @return
+     *    null if form attribute not present,
+     *    true if form attribute present and set to qualified,
+     *    false if form attribute present and set to unqualified.
+     */
+
+    Boolean getForm();
 }
