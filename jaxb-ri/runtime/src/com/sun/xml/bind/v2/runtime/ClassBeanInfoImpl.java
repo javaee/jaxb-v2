@@ -338,6 +338,7 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> implement
     public void serializeAttributes(BeanT bean, XMLSerializer target) throws SAXException, IOException, XMLStreamException {
         for( AttributeProperty<BeanT> p : attributeProperties )
             try {
+                target.currentProperty.set(p);
                 p.serializeAttributes(bean,target);
                 if (p.attName.equals(WellKnownNamespace.XML_SCHEMA_INSTANCE, "nil")) {
                     isNilIncluded = true;
