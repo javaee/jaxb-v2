@@ -46,7 +46,7 @@ then
     progname=`basename $0`
     saveddir=`pwd`
     
-    cd `dirname $PRG`
+    cd "`dirname $PRG`"
     
     while [ -h "$PRG" ] ; do
         ls=`ls -ld "$PRG"`
@@ -64,7 +64,7 @@ then
     cd "$saveddir"
     JAXB_HOME=`cd "$JAXB_HOME" && pwd`
     
-    cd $saveddir
+    cd "$saveddir"
 fi
 
 [ `expr \`uname\` : 'CYGWIN'` -eq 6 ] &&
