@@ -319,6 +319,7 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> implement
             target.startElement(tagName,bean);
             target.childAsSoleContent(bean,null);
             target.endElement();
+            target.currentProperty.remove();
         }
     }
 
@@ -338,7 +339,10 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> implement
     public void serializeAttributes(BeanT bean, XMLSerializer target) throws SAXException, IOException, XMLStreamException {
         for( AttributeProperty<BeanT> p : attributeProperties )
             try {
+                final Property parentProperty = target.getCurrentProperty();
+                target.currentProperty.set(p);
                 p.serializeAttributes(bean,target);
+                target.currentProperty.set(parentProperty);
                 if (p.attName.equals(WellKnownNamespace.XML_SCHEMA_INSTANCE, "nil")) {
                     isNilIncluded = true;
                 }
@@ -358,8 +362,12 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> implement
 
     public void serializeURIs(BeanT bean, XMLSerializer target) throws SAXException {
         try {
-            for( Property<BeanT> p : uriProperties )
+            final Property parentProperty = target.getCurrentProperty();
+            for( Property<BeanT> p : uriProperties ) {
+                target.currentProperty.set(p);
                 p.serializeURIs(bean,target);
+            }
+            target.currentProperty.set(parentProperty);
 
             if(inheritedAttWildcard!=null) {
                 Map<QName,String> map = inheritedAttWildcard.get(bean);
