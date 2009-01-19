@@ -51,7 +51,6 @@ import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -189,30 +188,9 @@ public class BinderImpl<XmlNode> extends Binder<XmlNode> {
         // TODO
         // for now just marshal
         // TODO: object model independenc
-
-        // issue 459 Binder.updateXML() fails if called twice
         Element e = (Element)xmlNode;
-//        Node ns = e.getNextSibling();
-//        Node p = e.getParentNode().cloneNode(true);
-//        p.removeChild(e = (Element) e.cloneNode(true));
-
-        Node p = e.getParentNode().cloneNode(true);
-        NodeList nl = p.getChildNodes();
-        for (int i = 0; i < nl.getLength(); i++) {
-            System.out.println(nl.item(i).getClass().getName());
-
-            if (xmlNode instanceof Node) {
-                Node n = (Node) xmlNode;
-                Node m = nl.item(i);
-
-                if (n.isEqualNode(m)) {
-                    e = (Element) nl.item(i);
-                    break;
-                }
-            }
-        }
-
-        // Node ns = e.getNextSibling();
+        Node ns = e.getNextSibling();
+        Node p = e.getParentNode();
         p.removeChild(e);
 
         // if the type object is passed, the following step is necessary to make
@@ -221,14 +199,13 @@ public class BinderImpl<XmlNode> extends Binder<XmlNode> {
         if(!bi.isElement())
             jaxbObject = new JAXBElement(new QName(e.getNamespaceURI(),e.getLocalName()),bi.jaxbType,jaxbObject);
 
-        return xmlNode;
 
-//        getMarshaller().marshal(jaxbObject,p);
-//        Node newNode = p.getLastChild();
-//        p.removeChild(newNode);
-//        p.insertBefore(newNode,ns);
-//
-//        return (XmlNode)newNode;
+        getMarshaller().marshal(jaxbObject,p);
+        Node newNode = p.getLastChild();
+        p.removeChild(newNode);
+        p.insertBefore(newNode,ns);
+
+        return (XmlNode)newNode;
     }
 
     public void setEventHandler(ValidationEventHandler handler) throws JAXBException {
