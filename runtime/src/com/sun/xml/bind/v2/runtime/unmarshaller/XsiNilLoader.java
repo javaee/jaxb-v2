@@ -41,7 +41,9 @@ import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 
+import java.util.Collection;
 import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
 import org.xml.sax.SAXException;
 
 /**
@@ -74,6 +76,11 @@ public class XsiNilLoader extends ProxyLoader {
         }
         return defaultLoader;
     }
+
+        @Override
+        public Collection<QName> getExpectedChildElements() {
+            return defaultLoader.getExpectedChildElements();
+        }
 
     /**
      * Called when xsi:nil='true' was found.
