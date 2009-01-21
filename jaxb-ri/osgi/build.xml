@@ -42,7 +42,7 @@
       OSGi Sub-Project
       ===================
 
-      The OSGi project creates an OSGi bundle jaxb.jar for use
+      The OSGi project creates an OSGi bundle jaxb-osgi.jar for use
       in GlassFish V3.
     </description>
 
@@ -91,7 +91,7 @@
                 <include name="META-INF/MANIFEST.MF"/>
             </patternset>
         </unjar>
-        <jar destfile="${osgi.build}/jaxb.jar"
+        <jar destfile="${osgi.build}/jaxb-osgi.jar"
              manifest="${osgi.build}/META-INF/MANIFEST.MF">
             <zipfileset src="${osgi.build}/jaxb-bnd.jar"/>
             <zipfileset src="${jaxb.dist}/lib/jaxb1-impl.jar"/>
