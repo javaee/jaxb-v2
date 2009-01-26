@@ -94,7 +94,12 @@
         <jar destfile="${osgi.build}/jaxb-osgi.jar"
              manifest="${osgi.build}/META-INF/MANIFEST.MF">
             <zipfileset src="${osgi.build}/jaxb-bnd.jar"/>
-            <zipfileset src="${jaxb.dist}/lib/jaxb1-impl.jar"/>
+            <zipfileset src="${jaxb.dist}/lib/jaxb1-impl.jar">
+                <!-- The following file is present both in jaxb-impl.jar and jaxb1-impl.jar       -->
+                <!-- and mostly identical. Some OSGi tools are confused by duplicate              -->
+                <!-- entries. See also https://glassfish.dev.java.net/issues/show_bug.cgi?id=7019 -->
+                <exclude name="com/sun/xml/bind/unmarshaller/Patcher.class"/>
+            </zipfileset>
             <zipfileset src="${jaxb.dist}/lib/jaxb-xjc.jar">
                 <include name="1.0/**"/>
             </zipfileset>
