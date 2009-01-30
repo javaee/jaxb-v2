@@ -229,13 +229,6 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
 
     public int force(@NotNull String uri, @NotNull String prefix) {
         // check for the existing binding
-
-        // added check: if namespace already present and have prefix,
-        // return its  index instead creating another one (see Issue 462)
-
-        for(int i = (size - 1); i >= 0; i--) {
-            if((nsUris[i].compareTo(uri) == 0) && (!prefixes[i].equals(""))) return i;
-        }
         
         for( int i=size-1; i>=0; i-- ) {
             if(prefixes[i].equals(prefix)) {
