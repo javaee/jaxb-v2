@@ -390,8 +390,8 @@ Class-Path: ${manifest.classpath}
 
     <target name="src-zip" depends="dist"
             description="source zip files for JAXB RI jar files into the dist dir.">
-      <parallel>
-        <mkdir dir="tmp" />
+      <mkdir dir="tmp" />
+      <parallel>                 
         <sequential>
           <zip zipfile="${jaxb.dist}/lib/jaxb-impl.src.zip">
             <fileset dir="${runtime.src}"/>
