@@ -388,7 +388,7 @@ Class-Path: ${manifest.classpath}
 
     <target name="dist-zip-with-src" depends="src-zip, dist-zip"/>
 
-    <target name="src-zip" depends="dist"
+    <target name="src-zip" depends="init-standalone,dist"
             description="source zip files for JAXB RI jar files into the dist dir.">
       <mkdir dir="tmp" />
       <parallel>                 
@@ -403,9 +403,22 @@ Class-Path: ${manifest.classpath}
           </zip>
         </sequential>
         <sequential>
+          <mkdir dir="tmp_xjc" />
+          <copy todir="tmp_xjc">
+            <fileset dir="${xjc.src}"/>
+          </copy>
+          <replace dir="tmp_xjc/com/sun/tools/xjc" includes="MessageBundle*.properties">
+            <replacefilter token="@@BUILD_VERSION@@" value="${build.version}"/>
+          </replace>
+          <replace dir="tmp_xjc/com/sun/tools/jxc" includes="MessageBundle*.properties">
+            <replacefilter token="@@BUILD_VERSION@@" value="${build.version}"/>
+          </replace>
+          <replace dir="tmp_xjc/com/sun/tools/xjc" includes="MessageBundle*.properties">
+            <replacefilter token="@@JAXB_JDK_VERSION@@" value="${release.impl.version}"/>
+          </replace>
           <unjar src="${jaxb.libs}/src/dtd-parser-1.0-src.zip" dest="tmp" />
           <zip zipfile="${jaxb.dist}/lib/jaxb-xjc.src.zip">
-            <fileset dir="${xjc.src}"/>
+            <fileset dir="tmp_xjc"/>
             <fileset dir="${xjc.gensrc}"/>
             <fileset dir="${xjc.root}/facade"/>
             <zipfileset src="${jaxb.libs}/src/codemodel.src.zip" />
@@ -419,11 +432,11 @@ Class-Path: ${manifest.classpath}
         </sequential>
       </parallel>
       <delete dir="tmp" />
+      <delete dir="tmp_xjc" />
     </target>
 
     <target name="hudson" depends="clean, dist-zip-with-src, dist-zip-2.2"
             description="Target to be invoked on Hudson">
-
         <ant dir="osgi" target="bundle" />
     </target>
 
