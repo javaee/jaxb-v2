@@ -603,7 +603,15 @@ Class-Path: ${manifest.classpath}
       </maven-repository-importer>
     </target>
 
-    <target name="push-to-maven" depends="push-to-maven-prepare"
+    <target name="push-to-maven2-prepare">
+      <fail unless="jar.suffix">jar.suffix property needs to be defined</fail>
+      <copy file="${osgi.root}/jaxb-osgi.pom" todir="${osgi.build}"/>
+      <replace dir="${osgi.build}" includes="*.pom">
+        <replacefilter token="@VERSION@" value="${jar.suffix}"/>
+      </replace>
+    </target>
+
+    <target name="push-to-maven" depends="push-to-maven-prepare, push-to-maven2-prepare"
       description="publish artifacts into the maven repository">
       <cvs-import src="build/maven-repo" dest="jaxb/repo" cvsroot=":pserver:${user.name}@cvs.dev.java.net:/cvs" />
     </target>
