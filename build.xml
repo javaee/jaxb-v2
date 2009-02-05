@@ -565,63 +565,6 @@ Class-Path: ${manifest.classpath}
             depends="bin-installer,src-installer"
             description="build both the binary and the source installer" />
 
-    <target name="push-to-maven-prepare"
-      description="prepare a repository iamge for the push-to-maven target">
-      <taskdef resource="maven-repository-importer.properties">
-        <classpath>
-          <pathelement path="tools/lib/util/maven-repository-importer.jar" />
-        </classpath>
-      </taskdef>
-      <delete dir="build/maven-repo" /><!-- clean it -->
-      <!-- ${suffix} can be overridden to "" for posting releases -->
-      <!--
-        when building jars for Maven, we want to put suffix
-        (sometimes with version like '-2.0.beta1', with date '-20051208', or with '-SNAPSHOT')
-        this property lets you do that.
-      -->
-      <fail unless="jar.suffix">jar.suffix property needs to be defined</fail>
-      <maven-repository-importer
-          destdir="build/maven-repo" version="${jar.suffix}">
-        <artifact
-          jar=   "dist/lib/jaxb-api.jar"
-          srczip="dist/lib/jaxb-api-src.zip"
-          pom="tools/poms/jaxb-api.pom" />
-        <artifact
-          jar=   "dist/lib/jaxb-impl.jar"
-          srczip="dist/lib/jaxb-impl.src.zip"
-          pom="tools/poms/jaxb-impl.pom" />
-        <artifact
-          jar=   "dist/lib/jaxb-xjc.jar"
-          srczip="dist/lib/jaxb-xjc.src.zip"
-          pom="tools/poms/jaxb-xjc.pom" />
-        <artifact
-          jar=   "dist/lib/jaxb1-impl.jar"
-          pom="tools/poms/jaxb1-impl.pom" /> <!-- source jar not available right now -->
-        <filterset>
-          <filter token="API_VERSION" value="${release.spec.version}"/>
-        </filterset>
-      </maven-repository-importer>
-    </target>
-
-    <target name="push-to-maven2-prepare">
-      <fail unless="jar.suffix">jar.suffix property needs to be defined</fail>
-      <copy file="${osgi.root}/jaxb-osgi.pom" todir="${osgi.build}"/>
-      <replace dir="${osgi.build}" includes="*.pom">
-        <replacefilter token="@VERSION@" value="${jar.suffix}"/>
-      </replace>
-    </target>
-
-    <target name="push-to-maven" depends="push-to-maven-prepare, push-to-maven2-prepare"
-      description="publish artifacts into the maven repository">
-      <cvs-import src="build/maven-repo" dest="jaxb/repo" cvsroot=":pserver:${user.name}@cvs.dev.java.net:/cvs" />
-    </target>
-
-    <target name="push-snapshot-to-maven" depends="dist"
-      description="publish snapshot jars into the maven repository">
-      <property name="jar.suffix" value="${release.impl.version}-SNAPSHOT" />
-      <antcall target="push-to-maven-prepare" />
-    </target>
-
     <!-- clean all of the builds -->
     <target name="clean"
             description="clean dist, build, and each sub-project">
