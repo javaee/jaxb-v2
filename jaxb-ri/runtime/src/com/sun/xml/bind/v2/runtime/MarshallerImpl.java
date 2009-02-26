@@ -45,7 +45,7 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
-import javax.xml.bind.DatatypeConverter;
+import java.net.URI;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.MarshalException;
 import javax.xml.bind.Marshaller;
@@ -66,7 +66,6 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.ValidatorHandler;
 import javax.xml.namespace.NamespaceContext;
 
-import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.api.JAXBRIContext;
 import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
 import com.sun.xml.bind.marshaller.DataWriter;
@@ -88,6 +87,7 @@ import com.sun.xml.bind.v2.runtime.output.XMLStreamWriterOutput;
 import com.sun.xml.bind.v2.runtime.output.XmlOutput;
 import com.sun.xml.bind.v2.util.FatalAdapter;
 
+import java.net.URISyntaxException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -208,21 +208,11 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
             else if (sr.getSystemId() != null) {
                 String fileURL = sr.getSystemId();
 
-                if (fileURL.startsWith("file:///")) {
-                    if (fileURL.substring(8).indexOf(":") > 0)
-                        fileURL = fileURL.substring(8);
-                    else
-                        fileURL = fileURL.substring(7);
+                try {
+                    fileURL = new URI(fileURL).getPath();
+                } catch (URISyntaxException use) {
+                    // otherwise assume that it's a file name
                 }
-                if (fileURL.startsWith("file:/")) {
-                    // some people use broken URLs like "file:/c:/abc/def/ghi.txt"
-                    // so let's make it work with that
-                    if (fileURL.substring(6).indexOf(":") > 0)
-                        fileURL = fileURL.substring(6);
-                    else
-                        fileURL = fileURL.substring(5);
-                }
-                // otherwise assume that it's a file name
 
                 try {
                     FileOutputStream fos = new FileOutputStream(fileURL);

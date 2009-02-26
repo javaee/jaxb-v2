@@ -232,7 +232,6 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
         JCodeModel codeModel = new JCodeModel();
 
         ModelLoader gl = new ModelLoader(opts,codeModel,this);
-
         try {
             XSSchemaSet result = gl.createXSOM(forest, scdBasedBindingSet);
             if(result==null)
@@ -247,6 +246,8 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
             if(model==null)   return null;
 
             if(hadError)        return null;    // if we have any error by now, abort
+
+            model.setPackageLevelAnnotations(opts.packageLevelAnnotations);
 
             Outline context = model.generateCode(opts,this);
             if(context==null)   return null;
