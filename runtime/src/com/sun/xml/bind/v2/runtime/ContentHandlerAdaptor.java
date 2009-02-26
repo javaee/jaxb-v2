@@ -113,7 +113,7 @@ final class ContentHandlerAdaptor extends DefaultHandler {
             // make sure namespaces needed by attributes are bound 
             for( int i=0; i<len; i++ ) {
                 String qname = atts.getQName(i);
-                if(qname.startsWith("xmlns"))
+                if(qname.startsWith("xmlns") || atts.getURI(i).length() == 0)
                     continue;
                 String prefix = getPrefix(qname);
 

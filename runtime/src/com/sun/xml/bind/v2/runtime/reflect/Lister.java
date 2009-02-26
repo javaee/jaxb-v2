@@ -309,8 +309,12 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
             // but always doing so causes a problem when this collection property
             // is getter-only
 
-            if(acc.isAdapted())
+            // invoke set when possible (see Issue 488)
+            try {
                 acc.set(bean,collection);
+            } catch (AccessorException ae) {
+                if(acc.isAdapted()) throw ae;
+            }
         }
 
         public void reset(BeanT bean, Accessor<BeanT, T> acc) throws AccessorException {

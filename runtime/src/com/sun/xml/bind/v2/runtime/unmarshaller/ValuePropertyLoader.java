@@ -36,6 +36,8 @@
 
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
+import javax.xml.bind.JAXBElement;
+
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
 import com.sun.xml.bind.api.AccessorException;
 
@@ -62,7 +64,17 @@ public class ValuePropertyLoader extends Loader {
         } catch (AccessorException e) {
             handleGenericException(e,true);
         } catch (RuntimeException e) {
-            handleParseConversionException(state,e);
+            if(state.prev != null) {
+                if(state.prev.target instanceof JAXBElement) {
+                    ; // do nothing - issue 601 - don't report exceptions like
+                      // NumberFormatException when unmarshalling "nillable" element
+                      // (I suppose JAXBElement indicates this
+                } else {
+                    handleParseConversionException(state,e);
+                }
+            } else {
+                handleParseConversionException(state,e);
+            }
         }
     }
 }

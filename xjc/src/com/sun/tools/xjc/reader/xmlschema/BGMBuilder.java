@@ -38,6 +38,7 @@ package com.sun.tools.xjc.reader.xmlschema;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -53,6 +54,7 @@ import com.sun.istack.NotNull;
 import com.sun.istack.Nullable;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.Options;
+import com.sun.tools.xjc.Plugin;
 import com.sun.tools.xjc.generator.bean.field.FieldRendererFactory;
 import com.sun.tools.xjc.model.CClassInfoParent;
 import com.sun.tools.xjc.model.Model;
@@ -110,7 +112,7 @@ public class BGMBuilder extends BindingComponent {
             Ring.add(CodeModelClassFactory.class,new CodeModelClassFactory(ef));
 
             BGMBuilder builder = new BGMBuilder(opts.defaultPackage,opts.defaultPackage2,
-                opts.isExtensionMode(),opts.getFieldRendererFactory());
+                opts.isExtensionMode(),opts.getFieldRendererFactory(), opts.activePlugins);
             builder._build();
 
             if(ef.hadError())   return null;
@@ -153,14 +155,19 @@ public class BGMBuilder extends BindingComponent {
      */
     private RefererFinder refFinder;
 
+    private List<Plugin> activePlugins;
 
 
 
-    protected BGMBuilder(String defaultPackage1, String defaultPackage2, boolean _inExtensionMode, FieldRendererFactory fieldRendererFactory) {
+
+    protected BGMBuilder(String defaultPackage1, String defaultPackage2,
+            boolean _inExtensionMode, FieldRendererFactory fieldRendererFactory,
+            List<Plugin> activePlugins) {
         this.inExtensionMode = _inExtensionMode;
         this.defaultPackage1 = defaultPackage1;
         this.defaultPackage2 = defaultPackage2;
         this.fieldRendererFactory = fieldRendererFactory;
+        this.activePlugins = activePlugins;
 
         DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
 
@@ -180,6 +187,10 @@ public class BGMBuilder extends BindingComponent {
         Ring.get(UnusedCustomizationChecker.class).run();
 
         Ring.get(ModelChecker.class).check();
+
+        for( Plugin ma : activePlugins )
+            ma.postProcessModel(model, Ring.get(ErrorReceiver.class));
+
     }
 
 

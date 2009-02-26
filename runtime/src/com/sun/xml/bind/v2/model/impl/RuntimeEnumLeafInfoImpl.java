@@ -145,8 +145,12 @@ final class RuntimeEnumLeafInfoImpl<T extends Enum<T>,B> extends EnumLeafInfoImp
         // TODO: error handling
 
         B b = baseXducer.parse(lexical);
-        if(b==null) {
 
+        if(b instanceof String) { // issue 602 - ugly patch
+            b = (B) ((String)b).trim();
+        }
+
+        if(b==null) {
             return null;
         }
 

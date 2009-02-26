@@ -68,7 +68,7 @@ import com.sun.tools.xjc.outline.Aspect;
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-final class PackageOutlineImpl implements PackageOutline {
+public final class PackageOutlineImpl implements PackageOutline {
     private final Model _model;
     private final JPackage _package;
     private final ObjectFactoryGenerator objectFactoryGenerator;

@@ -279,9 +279,9 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void>, CCustom
     public Outline generateCode(Options opt,ErrorReceiver receiver) {
         ErrorReceiverFilter ehf = new ErrorReceiverFilter(receiver);
 
-        // run extensions
-        for( Plugin ma : opt.activePlugins )
-            ma.postProcessModel(this,ehf);
+        // run extensions // moved to BGMBuilder._build() - issue with hyperjaxb3
+//        for( Plugin ma : opt.activePlugins )
+//            ma.postProcessModel(this,ehf);
 
         Outline o = BeanGenerator.generate(this, ehf);
 
