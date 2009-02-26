@@ -50,6 +50,7 @@ import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.ValidationEventLocator;
 import javax.xml.bind.annotation.DomHandler;
+import javax.xml.bind.annotation.XmlNs;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.attachment.AttachmentMarshaller;
 import javax.xml.bind.helpers.NotIdentifiableEventImpl;
@@ -897,6 +898,15 @@ public final class XMLSerializer extends Coordinator {
         nse = nse.push();
 
         if( !seenRoot ) {
+
+            if (grammar.getXmlNsSet() != null) {
+                for(XmlNs xmlNs : grammar.getXmlNsSet())
+                    nsContext.declareNsUri(
+                        xmlNs.namespaceURI(),
+                        xmlNs.prefix() == null ? "" : xmlNs.prefix(),
+                        xmlNs.prefix() != null);
+            }
+
             // seenRoot set to true in endAttributes
             // first declare all known URIs
             String[] knownUris = nameList.namespaceURIs;
