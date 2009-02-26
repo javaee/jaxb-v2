@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
- * 
+ *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -10,7 +10,7 @@
  * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
  * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- * 
+ *
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
  * Sun designates this particular file as subject to the "Classpath" exception
@@ -19,9 +19,9 @@
  * Header, with the fields enclosed by brackets [] replaced by your own
  * identifying information: "Portions Copyrighted [year]
  * [name of copyright owner]"
- * 
+ *
  * Contributor(s):
- * 
+ *
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
  * elects to include this software in this distribution under the [CDDL or GPL
@@ -59,7 +59,7 @@ import java.util.Set;
 final class DefaultFieldRenderer implements FieldRenderer {
 
     private final FieldRendererFactory frf;
-    
+
     /**
      * Use {@link FieldRendererFactory#getDefault()}.
      */
@@ -71,16 +71,16 @@ final class DefaultFieldRenderer implements FieldRenderer {
         this.frf = frf;
         this.defaultCollectionFieldRenderer = defaultCollectionFieldRenderer;
     }
-    
+
     private FieldRenderer defaultCollectionFieldRenderer;
 
 
     public FieldOutline generate(ClassOutlineImpl outline, CPropertyInfo prop) {
         return decideRenderer(outline,prop).generate(outline,prop);
     }
-    
+
     private FieldRenderer decideRenderer(ClassOutlineImpl outline, CPropertyInfo prop) {
-        
+
         if (prop instanceof CReferencePropertyInfo) {
             CReferencePropertyInfo p = (CReferencePropertyInfo)prop;
             if (p.isDummy()) {
@@ -90,7 +90,7 @@ final class DefaultFieldRenderer implements FieldRenderer {
                 return frf.getContentList(outline.parent().getCodeModel().ref(ArrayList.class).narrow(Serializable.class));
             }
         }
-        
+
         if(!prop.isCollection()) {
             // non-collection field
 
@@ -103,11 +103,11 @@ final class DefaultFieldRenderer implements FieldRenderer {
                 // otherwise use the default non-collection field
                 return frf.getSingle();
         }
-        
+
         if( defaultCollectionFieldRenderer==null ) {
             return frf.getList(outline.parent().getCodeModel().ref(ArrayList.class));
         }
-        
+
         // this field is a collection field.
         // use untyped list as the default. This is consistent
         // to the JAXB spec.
