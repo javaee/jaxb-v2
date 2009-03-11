@@ -437,7 +437,6 @@ Class-Path: ${manifest.classpath}
 
     <target name="hudson" depends="clean, dist-zip-with-src, dist-zip-2.2"
             description="Target to be invoked on Hudson">
-        <ant dir="osgi" target="bundle" />
     </target>
 
   <target name="licensee-zip"
@@ -583,7 +582,6 @@ Class-Path: ${manifest.classpath}
           <ant dir="tools"              target="clean"/>
           <ant dir="apgen"              target="clean" />
           <ant dir="reflection"         target="clean" />
-          <ant dir="osgi"               target="clean" />
         </parallel>
     </target>
 
