@@ -164,6 +164,10 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
     }
     public static BigDecimal _parseDecimal(CharSequence content) {
         content = WhiteSpaceProcessor.trim(content);
+        
+        if (content.length() <= 0) {
+            return null;
+        }
 
         return new BigDecimal(content.toString());
         
@@ -256,18 +260,61 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         int i=0;
         int len = literal.length();
         char ch;
+        boolean value = false;
+
         if (literal.length() <= 0) {
             return null;
+            // throw new IllegalArgumentException("Input is empty");
         }
+        
         do {
             ch = literal.charAt(i++);
         } while(WhiteSpaceProcessor.isWhiteSpace(ch) && i<len);
 
-        // if we are strict about errors, check i==len. and report an error
-        if( ch=='t' || ch=='1' )        return true;
-        if( ch=='f' || ch=='0' )        return false;
-        TODO.checkSpec("issue #42");
-        return false;
+        int strIndex = 0;
+
+        switch(ch) {
+            case '1':
+                value = true;
+                break;
+            case '0':
+                value = false;
+                break;
+            case 't':
+                String strTrue = "rue";
+                do {
+                    ch = literal.charAt(i++);
+                } while ((strTrue.charAt(strIndex++) == ch) && i < len && strIndex < 3);
+
+                if(strIndex == 3)
+                    value = true;
+                else
+                    throw new IllegalArgumentException("String \"" + literal + "\" is not valid boolean value.");
+
+                break;
+            case 'f':
+                String strFalse = "alse";
+                do {
+                    ch = literal.charAt(i++);
+                } while ((strFalse.charAt(strIndex++) == ch) && i < len && strIndex < 4);
+
+
+                if(strIndex == 4)
+                    value = false;
+                else
+                    throw new IllegalArgumentException("String \"" + literal + "\" is not valid boolean value.");
+
+                break;
+        }
+
+        if(i < len) do {
+            ch = literal.charAt(i++);
+        } while (WhiteSpaceProcessor.isWhiteSpace(ch) && i < len);
+
+        if(i == len)
+            return value;
+        else
+            throw new IllegalArgumentException("String \"" + literal + "\" is not valid boolean value.");
     }
 
     public String printBoolean(boolean val) {
