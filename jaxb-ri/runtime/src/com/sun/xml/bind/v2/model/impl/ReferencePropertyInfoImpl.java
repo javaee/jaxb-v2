@@ -288,14 +288,14 @@ class ReferencePropertyInfoImpl<T,C,F,M>
      * If we are working as 2.1 RI, this defaults to true.
      */
     private boolean isRequired(XmlElementRef ref) {
-        if(!is2_2)  return true;
-
-        try {
-            return ref.required();
-        } catch(LinkageError e) {
-            is2_2 = false;
+//        if(!is2_2)  return true;
+//
+//        try {
+//            return ref.required();
+//        } catch(LinkageError e) {
+//            is2_2 = false;
             return true;    // the value defaults to true
-        }
+//        }
     }
 
     /**

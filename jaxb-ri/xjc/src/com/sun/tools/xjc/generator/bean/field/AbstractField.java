@@ -183,8 +183,8 @@ abstract class AbstractField implements FieldOutline {
             refw.name(e.getElementName().getLocalPart())
                 .namespace(e.getElementName().getNamespaceURI())
                 .type(e.getType().toType(outline.parent(),IMPLEMENTATION));
-            if(getOptions().target.isLaterThan(SpecVersion.V2_2))
-                refw.required(rp.isRequired());
+//            if(getOptions().target.isLaterThan(SpecVersion.V2_2))
+//                refw.required(rp.isRequired());
         } else
         if(elements.size()>1) {
             XmlElementRefsWriter refsw = field.annotate2(XmlElementRefsWriter.class);
@@ -193,8 +193,8 @@ abstract class AbstractField implements FieldOutline {
                 refw.name(e.getElementName().getLocalPart())
                     .namespace(e.getElementName().getNamespaceURI())
                     .type(e.getType().toType(outline.parent(),IMPLEMENTATION));
-                if(getOptions().target.isLaterThan(SpecVersion.V2_2))
-                    refw.required(rp.isRequired());
+//                if(getOptions().target.isLaterThan(SpecVersion.V2_2))
+//                    refw.required(rp.isRequired());
             }
         }
 
