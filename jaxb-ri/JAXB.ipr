@@ -718,14 +718,14 @@
         <root url="jar://$PROJECT_DIR$/tools/lib/redist/activation.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/runtime2/txw2.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/runtime2/istack-commons-runtime.jar!/" />
-        <root url="jar://$PROJECT_DIR$/tools/lib/redist2.2/jaxb-api.jar!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/redist/jaxb-api.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
         <root url="jar://$PROJECT_DIR$/tools/lib/src/jsr173_1.0_src.jar!/src" />
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/activation-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/istack-commons-runtime-src.zip!/" />
-        <root url="jar://$PROJECT_DIR$/tools/lib/redist2.2/jaxb-api-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/tools/lib/redist/jaxb-api-src.zip!/" />
       </SOURCES>
     </library>
     <library name="compiler-libs">

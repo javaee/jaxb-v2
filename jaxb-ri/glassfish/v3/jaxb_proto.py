@@ -1,6 +1,6 @@
 pkg = {
     "name"          : "jaxb",
-    "version"       : "2.1.10,0-0.1",
+    "version"       : "2.2,0-0.1",
     "attributes"    : { "pkg.summary" : "JAXB API and RI",
                         "pkg.description" : 
 "JAXB Specification Reference Implementation (under dual CDDL+GPL license)",
