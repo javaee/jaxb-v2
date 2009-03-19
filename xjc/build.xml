@@ -53,7 +53,7 @@
     <path id="javac.classpath">
       <pathelement path="${runtime.classes}" />
       <pathelement path="${schemagen.classes}" />
-      <fileset dir="${jaxb.libs.redist.2.2}" includes="*.jar"/>
+      <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
       <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
       <!-- XJCTask depends on Ant. -->
       <fileset dir="${jaxb.libs.util}" includes="ant.jar"/>
@@ -135,7 +135,7 @@
                 excludes="javax.xml.bind.annotation.XmlJavaTypeAdapter" />
        <classes includes="javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter" />
        <classpath>
-         <pathelement path="${jaxb.libs.redist.2.2}/jaxb-api.jar"/>
+         <pathelement path="${jaxb.libs.redist}/jaxb-api.jar"/>
        </classpath>
      </cac>
      <cac destdir="${xjc.gensrc}"

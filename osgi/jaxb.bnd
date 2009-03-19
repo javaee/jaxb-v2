@@ -1,0 +1,37 @@
+Bundle-SymbolicName: com.sun.xml.bind
+Bundle-Name: jaxb
+Export-Package: \
+  com.sun.codemodel;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.codemodel.writer;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.istack;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.istack.localization;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.istack.tools;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.tools.xjc;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.tools.xjc.api;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.tools.xjc.api.util;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.tools.xjc.reader;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.tools.xjc.reader.internalizer;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.tools.xjc.util;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.bind;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.bind.api;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.bind.api.impl;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.bind.marshaller;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.bind.unmarshaller;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.bind.util;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.bind.v2.model.nav;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.bind.v2.runtime;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.bind.v2.runtime.output;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.bind.v2.runtime.reflect;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.bind.v2.runtime.unmarshaller;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.bind.v2.schemagen;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.bind.v2.util;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.bind.validator;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.txw2;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.txw2.annotation;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.txw2.output;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.xsom;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.xsom.parser;version=@RELEASE_IMPL_VERSION@, \
+  javax.xml.bind;version=@RELEASE_SPEC_VERSION@, \
+  *
+Import-Package: *
+Private-Package: *

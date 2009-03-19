@@ -52,7 +52,7 @@
 
   <!-- classpath -->
   <path id="javac.classpath">
-    <fileset dir="${jaxb.libs.redist.2.2}" includes="*.jar"/>
+    <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
     <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
     <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
   </path>
@@ -161,7 +161,7 @@
         <classes includes="javax.xml.bind.annotation.XmlValue" />
 	<classes includes="javax.xml.bind.annotation.XmlSchemaType" />
         <classpath>
-          <pathelement path="${jaxb.libs.redist.2.2}/jaxb-api.jar"/>
+          <pathelement path="${jaxb.libs.redist}/jaxb-api.jar"/>
         </classpath>
       </apgen>
     </target>
