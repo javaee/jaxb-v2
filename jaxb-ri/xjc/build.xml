@@ -59,7 +59,6 @@
       <fileset dir="${jaxb.libs.util}" includes="ant.jar"/>
       <!-- dependency on dom4j ??? -->  
       <pathelement path="${jaxb.libs.util}/dom4j.jar" />
-      <pathelement path="${jaxb.libs.util}/jam.jar" />
       <pathelement path="${jaxb.libs.compiler}/txw2.jar" />
     </path>
 
