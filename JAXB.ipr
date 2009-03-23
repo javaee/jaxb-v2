@@ -750,15 +750,6 @@
         <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/junit-src.zip!/" />
       </SOURCES>
     </library>
-    <library name="JAM">
-      <CLASSES>
-        <root url="jar://$PROJECT_DIR$/tools/lib/util/jam.jar!/" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES>
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/jam-src.zip!/" />
-      </SOURCES>
-    </library>
     <library name="rebundle/runtime">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/tools/lib/rebundle/runtime/isorelax.jar!/" />
