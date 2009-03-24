@@ -1,0 +1,9 @@
+Bundle-SymbolicName: jaxb-api
+Bundle-Name: jaxb-api
+Export-Package: *;version=2.2
+
+Import-Package: *
+
+
+
+
