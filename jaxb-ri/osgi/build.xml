@@ -55,9 +55,17 @@
         <taskdef resource="aQute/bnd/ant/taskdef.properties"
                  classpath="${jaxb.root}/tools/lib/util/bnd-0.0.249.jar"/>
 
-        <mkdir dir="${osgi.build}"/>
+        <mkdir dir="${osgi.build.api}"/>
+        <mkdir dir="${osgi.build.rt}"/>
         
-        <copy file="${osgi.root}/jaxb.bnd" todir="${osgi.build}">
+        <copy file="${osgi.root}/jaxb.bnd" todir="${osgi.build.rt}">
+            <filterset>
+                <filter token="RELEASE_IMPL_VERSION" value="${release.impl.version}"/>
+                <filter token="RELEASE_SPEC_VERSION" value="${release.spec.version}"/>
+            </filterset>
+        </copy>
+
+        <copy file="${osgi.root}/jaxb-api.bnd" todir="${osgi.build.api}">
             <filterset>
                 <filter token="RELEASE_IMPL_VERSION" value="${release.impl.version}"/>
                 <filter token="RELEASE_SPEC_VERSION" value="${release.spec.version}"/>
@@ -76,27 +84,37 @@
 
         <!-- The bnd task does not recognize when input files have changed, -->
         <!-- hence we delete the output file to ensure a rebuild            -->
-        <delete file="${osgi.build}/jaxb-bnd.jar" quiet="true"/>
-        <bnd classpath="${jaxb.dist}/lib/jaxb-api.jar, ${jaxb.dist}/lib/jaxb-impl.jar, ${osgi.build}/jaxb-xjc"
-             failok="false"
-             output="${osgi.build}/jaxb-bnd.jar"
-             files="${osgi.build}/jaxb.bnd"/>
+        <delete file="${osgi.build.rt}/jaxb-bnd.jar" quiet="true"/>
+        <delete file="${osgi.build.api}/jaxb-api-bnd.jar" quiet="true"/>
 
-        <!-- Readd the JAXB 1.0 files -->
-        <unjar src="${osgi.build}/jaxb-bnd.jar"
-               dest="${osgi.build}">
+       <bnd classpath="${jaxb.dist}/lib/jaxb-api.jar"
+                  failok="false"
+                  output="${osgi.build.api}/jaxb-api-bnd.jar"
+                  exceptions="true"
+                  files="${osgi.build.api}/jaxb-api.bnd"/>
+
+        <bnd classpath="${jaxb.dist}/lib/jaxb-impl.jar, ${osgi.build}/jaxb-xjc"
+             failok="false"
+             output="${osgi.build.rt}/jaxb-bnd.jar"
+             files="${osgi.build.rt}/jaxb.bnd"/>
+         <!--Readd the JAXB 1.0 files -->
+        <unjar src="${osgi.build.rt}/jaxb-bnd.jar"
+               dest="${osgi.build.rt}">
             <patternset>
                 <include name="META-INF/MANIFEST.MF"/>
             </patternset>
         </unjar>
         <jar destfile="${osgi.build}/jaxb-osgi.jar"
-             manifest="${osgi.build}/META-INF/MANIFEST.MF">
-            <zipfileset src="${osgi.build}/jaxb-bnd.jar"/>
+             manifest="${osgi.build.rt}/META-INF/MANIFEST.MF">
+            <zipfileset src="${osgi.build.rt}/jaxb-bnd.jar"/>
             <zipfileset src="${jaxb.dist}/lib/jaxb1-impl.jar"/>
             <zipfileset src="${jaxb.dist}/lib/jaxb-xjc.jar">
                 <include name="1.0/**"/>
             </zipfileset>
         </jar>
+        <move  file="${osgi.build.api}/jaxb-api-bnd.jar" tofile="${osgi.build}/jaxb-api-osgi.jar"/>
+
+         
     </target>
 
     <target name="clean">
