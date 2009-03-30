@@ -122,6 +122,8 @@
         dir="${reflection.root}/build" includes="javadoc/**/*, src.zip"/>
       <zipfileset fullpath="jaxb2-reflection/license.html"
         dir="${jaxb.root}" includes="CDDL+GPLv2.html"/>
+      <zipfileset fullpath="jaxb2-reflection/ThirdPartyLicenseReadme.txt"
+        dir="${jaxb.root}" includes="ThirdPartyLicenseReadme.txt"/>
     </zip>
 
     <ant dir="tools/installer-builder" />
