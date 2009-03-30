@@ -6,5 +6,5 @@ pkg = {
 "JAXB Specification Reference Implementation (under dual CDDL+GPL license)",
                      "info.classification" : "Frameworks"  },
     "dirtrees" : [ "glassfish"],
-    "licenses" : [{ "CDDL+GPLv2.txt" : { "license" : "CDDL+GPL" }}, {"ThirdPartyLicenseReadme.txt":{"license":"Third Party Readme"}}]
+    "licenses" : [{ "License.txt" : { "license" : "CDDL+GPL" }}, {"ThirdPartyLicenseReadme.txt":{"license":"Third Party Readme"}}]
 }

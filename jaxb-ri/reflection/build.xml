@@ -121,7 +121,7 @@
       <zipfileset prefix="jaxb2-reflection"
         dir="${reflection.root}/build" includes="javadoc/**/*, src.zip"/>
       <zipfileset fullpath="jaxb2-reflection/license.html"
-        dir="${jaxb.root}" includes="CDDL+GPLv2.html"/>
+        dir="${jaxb.root}" includes="License.html"/>
       <zipfileset fullpath="jaxb2-reflection/ThirdPartyLicenseReadme.txt"
         dir="${jaxb.root}" includes="ThirdPartyLicenseReadme.txt"/>
     </zip>
@@ -136,7 +136,7 @@
 
     <installerBuilder
       jarFile="${reflection.root}/build/jaxb2-reflection.${build.id}.jar"
-      licenseFile="${jaxb.root}/CDDL+GPLv2.txt"
+      licenseFile="${jaxb.root}/License.txt"
       zipFile="${reflection.root}/build/jaxb2-reflection.zip" />
   </target>
 
