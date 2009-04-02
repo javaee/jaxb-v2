@@ -44,6 +44,7 @@ import java.util.Collections;
 import com.sun.xml.bind.api.JAXBRIContext;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.istack.FinalArrayList;
+import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
 
 /**
  * {@link XmlOutput} that generates canonical XML.
@@ -52,8 +53,8 @@ import com.sun.istack.FinalArrayList;
  * @author Kohsuke Kawaguchi
  */
 public class C14nXmlOutput extends UTF8XmlOutput {
-    public C14nXmlOutput(OutputStream out, Encoded[] localNames, boolean namedAttributesAreOrdered) {
-        super(out, localNames);
+    public C14nXmlOutput(OutputStream out, Encoded[] localNames, boolean namedAttributesAreOrdered, CharacterEscapeHandler escapeHandler) {
+        super(out, localNames, escapeHandler);
         this.namedAttributesAreOrdered = namedAttributesAreOrdered;
 
         for( int i=0; i<staticAttributes.length; i++ )

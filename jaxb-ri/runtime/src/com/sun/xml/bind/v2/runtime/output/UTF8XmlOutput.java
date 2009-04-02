@@ -39,9 +39,11 @@ package com.sun.xml.bind.v2.runtime.output;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import java.io.StringWriter;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.DatatypeConverterImpl;
+import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.MarshallerImpl;
@@ -98,16 +100,19 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
      */
     private String header;
 
+    private CharacterEscapeHandler escapeHandler = null;
+
     /**
      *
      * @param localNames
      *      local names encoded in UTF-8.
      */
-    public UTF8XmlOutput(OutputStream out, Encoded[] localNames) {
+    public UTF8XmlOutput(OutputStream out, Encoded[] localNames, CharacterEscapeHandler escapeHandler) {
         this.out = out;
         this.localNames = localNames;
         for( int i=0; i<prefixes.length; i++ )
             prefixes[i] = new Encoded();
+        this.escapeHandler = escapeHandler;
     }
 
     public void setHeader(String header) {
@@ -302,7 +307,14 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     }
 
     private void doText(String value,boolean isAttribute) throws IOException {
-        textBuffer.setEscape(value,isAttribute);
+        if (escapeHandler != null) {
+            StringWriter sw = new StringWriter();
+            escapeHandler.escape(value.toCharArray(), 0, value.length(), isAttribute, sw);
+            textBuffer.setEscape(sw.toString(), isAttribute);
+        } else {
+            textBuffer.setEscape(value, isAttribute);
+        }
+
         textBuffer.write(this);
     }
 

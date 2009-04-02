@@ -437,12 +437,12 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
             Encoded[] table = context.getUTF8NameTable();
             final UTF8XmlOutput out;
             if(isFormattedOutput())
-                out = new IndentingUTF8XmlOutput(os,indent,table);
+                out = new IndentingUTF8XmlOutput(os, indent, table, escapeHandler);
             else {
                 if(c14nSupport)
-                    out = new C14nXmlOutput(os,table,context.c14nSupport);
+                    out = new C14nXmlOutput(os, table, context.c14nSupport, escapeHandler);
                 else
-                    out = new UTF8XmlOutput(os,table);
+                    out = new UTF8XmlOutput(os, table, escapeHandler);
             }
             if(header!=null)
                 out.setHeader(header);
