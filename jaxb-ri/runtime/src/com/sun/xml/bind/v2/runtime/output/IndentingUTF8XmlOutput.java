@@ -36,6 +36,7 @@
 
 package com.sun.xml.bind.v2.runtime.output;
 
+import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -79,8 +80,8 @@ public final class IndentingUTF8XmlOutput extends UTF8XmlOutput {
      *      set to null for no indentation and optimal performance.
      *      otherwise the string is used for indentation.
      */
-    public IndentingUTF8XmlOutput(OutputStream out, String indentStr, Encoded[] localNames) {
-        super(out, localNames);
+    public IndentingUTF8XmlOutput(OutputStream out, String indentStr, Encoded[] localNames, CharacterEscapeHandler escapeHandler) {
+        super(out, localNames, escapeHandler);
 
         if(indentStr!=null) {
             Encoded e = new Encoded(indentStr);
