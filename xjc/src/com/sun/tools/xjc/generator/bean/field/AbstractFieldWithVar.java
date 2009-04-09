@@ -83,13 +83,13 @@ abstract class AbstractFieldWithVar extends AbstractField {
      * {@code isXXXX} as the method name.
      */
     protected String getGetterMethod() {
-        if (getOptions().target.isLaterThan(SpecVersion.V2_2)) {
-            return ((getFieldType().isPrimitive() &&
-                     getFieldType().boxify().getPrimitiveType()==codeModel.BOOLEAN) ?
-                         "is":"get") + prop.getName(true);
-        } else {
+//        if (getOptions().target.isLaterThan(SpecVersion.V2_2)) {
+//            return ((getFieldType().isPrimitive() &&
+//                     getFieldType().boxify().getPrimitiveType()==codeModel.BOOLEAN) ?
+//                         "is":"get") + prop.getName(true);
+//        } else {
             return (getFieldType().boxify().getPrimitiveType()==codeModel.BOOLEAN?"is":"get")+prop.getName(true);
-        }
+//        }
     }
 
     /**
@@ -116,11 +116,11 @@ abstract class AbstractFieldWithVar extends AbstractField {
         protected final JFieldRef $ref;
 
         public final void toRawValue(JBlock block, JVar $var) {
-            if (getOptions().target.isLaterThan(SpecVersion.V2_2)) {
+//            if (getOptions().target.isLaterThan(SpecVersion.V2_2)) {
+//                block.assign($var,$target.invoke(getGetterMethod()));
+//            } else {
                 block.assign($var,$target.invoke(getGetterMethod()));
-            } else {
-                block.assign($var,$target.invoke(getGetterMethod()));
-            }
+//            }
         }
 
         public final void fromRawValue(JBlock block, String uniqueName, JExpression $var) {
