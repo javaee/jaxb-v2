@@ -675,6 +675,13 @@ Class-Path: ${manifest.classpath}
            dest="tools/lib/src/FastInfoset.src.zip" />
     </target>
 
+    <target name="integrate-dtdparser">
+      <!--<get src="http://hudson.sfbay/job/dtd-parser/lastSuccessfulBuild/artifact/dtd-parser/dtd-parser/target/distributions/dtd-parser-1.0.zip"
+           dest="tools/lib/rebundle/compiler/dtd-parser-1.0.jar" />-->
+      <get src="http://hudson.sfbay/job/dtd-parser/lastSuccessfulBuild/artifact/dtd-parser/dtd-parser/target/distributions/dtd-parser-1.0-src.zip"
+           dest="tools/lib/src/dtd-parser-1.0-src.zip" />
+    </target>
+
     <target name="integrate-stax-ex-hudson"
             description="integrate the last successful stax-ex Hudson build">
       <get src="http://kohsuke.sfbay/hudson/job/stax-ex/lastSuccessfulBuild/artifact/stax-ex/stax-ex/target/stax-ex.jar"
