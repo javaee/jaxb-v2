@@ -176,8 +176,10 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
                                 break;
                             }
                         }
-                        current.setTagName(subst, current.elementLocalName, current.getOuterPeer());
-                        return i;
+                        if (current.elementLocalName != null) {
+                            current.setTagName(subst, current.elementLocalName, current.getOuterPeer());
+                        }
+                      return i;
                     } else {
                         // first, if the previous URI assigned to "" is
                         // a "known URI", remember what we've reallocated
