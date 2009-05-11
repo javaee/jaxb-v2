@@ -176,7 +176,9 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
                                 break;
                             }
                         }
-                        current.setTagName(subst, current.elementLocalName, current.getOuterPeer());
+                        if (current.elementLocalName != null) {
+                            current.setTagName(subst, current.elementLocalName, current.getOuterPeer());
+                        }
                         return i;
                     } else {
                         // first, if the previous URI assigned to "" is
