@@ -171,13 +171,13 @@ public final class StructureLoader extends Loader {
         // let's see if we can reuse the existing peer object
         child = context.getInnerPeer();
 
-        if(child!=null && beanInfo.jaxbType!=child.getClass())
+        if(child != null && beanInfo.jaxbType!=child.getClass())
             child = null;   // unexpected type.
 
-        if(child!=null)
+        if(child != null)
             beanInfo.reset(child,context);
 
-        if(child==null)
+        if(child == null)
             child = context.createInstance(beanInfo);
 
         context.recordInnerPeer(child);
@@ -254,6 +254,11 @@ public final class StructureLoader extends Loader {
     @Override
     public Collection<QName> getExpectedChildElements() {
         return childUnmarshallers.keySet();
+    }
+
+    @Override
+    public Collection<QName> getExpectedAttributes() {
+        return attUnmarshallers.keySet();
     }
 
     @Override

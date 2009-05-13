@@ -1061,7 +1061,7 @@ public final class UnmarshallingContext extends Coordinator
         }
 
         public void receive(State state, Object o) {
-            if(state.backup!=null) {
+             if(state.backup!=null) {
                 ((JAXBElement<Object>)state.backup).setValue(o);
                 o = state.backup;
             }
@@ -1194,7 +1194,7 @@ public final class UnmarshallingContext extends Coordinator
 
     /**
      * Allows to access elements which are expected in current state.
-     * Useful for getting elements/attributes for current parent.
+     * Useful for getting elements for current parent.
      * 
      * @return
      */
@@ -1203,7 +1203,24 @@ public final class UnmarshallingContext extends Coordinator
         try {
             State s = getCurrentState();
             Loader l = s.loader;
-            return l.getExpectedChildElements();
+            return (l != null) ? l.getExpectedChildElements() : null;
+        } finally {
+            popCoordinator();
+        }
+    }
+
+    /**
+     * Allows to access attributes which are expected in current state.
+     * Useful for getting attributes for current parent.
+     *
+     * @return
+     */
+    public Collection<QName> getCurrentExpectedAttributes() {
+        pushCoordinator();
+        try {
+            State s = getCurrentState();
+            Loader l = s.loader;
+            return (l != null) ? l.getExpectedAttributes() : null;
         } finally {
             popCoordinator();
         }

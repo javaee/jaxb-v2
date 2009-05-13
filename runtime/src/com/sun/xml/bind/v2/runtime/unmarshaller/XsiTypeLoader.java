@@ -43,6 +43,9 @@ import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 import com.sun.istack.Nullable;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -118,5 +121,15 @@ public class XsiTypeLoader extends Loader {
             }
         }
         return beanInfo;
+    }
+
+    static final QName XsiTypeQNAME = new QName(WellKnownNamespace.XML_SCHEMA_INSTANCE,"type");
+
+    @Override
+    public Collection<QName> getExpectedAttributes() {
+        final Collection<QName> expAttrs =  new HashSet<QName>();
+        expAttrs.addAll(super.getExpectedAttributes());
+        expAttrs.add(XsiTypeQNAME);
+        return Collections.unmodifiableCollection(expAttrs);
     }
 }

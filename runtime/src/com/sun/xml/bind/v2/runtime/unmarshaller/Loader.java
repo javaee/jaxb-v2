@@ -124,6 +124,13 @@ public abstract class Loader {
     }
 
     /**
+     * Returns a set of tag names expected as possible child elements in this context.
+     */
+    public Collection<QName> getExpectedAttributes() {
+        return Collections.emptyList();
+    }
+
+    /**
      * Called when this loaderis an active loaderand we see a chunk of text.
      *
      * The runtime makes sure that adjacent characters (even those separated
