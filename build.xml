@@ -422,6 +422,20 @@ Class-Path: ${manifest.classpath}
             <fileset dir="tmp/dtd-parser-1.0/src"/>
           </zip>
         </sequential>
+        <sequential>
+              <mkdir dir="${jaxb.root}/build/jaxb-1-impl-src"/>
+              <unzip dest="${jaxb.root}/build/jaxb-1-impl-src">
+                <fileset dir="${jaxb.libs.src}" includes="iso-relax-src.zip"/>
+                <fileset dir="${jaxb.libs.src}" includes="msv-src.zip"/>
+                <fileset dir="${jaxb.libs.src}" includes="relangDatatype-src.zip"/>
+                <fileset dir="${jaxb.libs.src}" includes="xsdlib-src.zip"/>
+              </unzip>
+              <zip zipfile="${jaxb.dist}/lib/jaxb1-impl-src.zip">
+                  <fileset dir="${jaxb.root}/build/jaxb-1-impl-src"/>
+                  <fileset dir="${runtime-deprecated.src}"/>
+              </zip>
+              <delete dir="${jaxb.root}/build/jaxb-1-impl-src"/>
+        </sequential>
       </parallel>
       <delete dir="tmp" />
       <delete dir="tmp_xjc" />
@@ -438,9 +452,6 @@ Class-Path: ${manifest.classpath}
       <fileset dir="." excludes="dist/**, **/build/**, sandbox/**" />
     </zip>
   </target>
-
-
-
 
     <target name="bin-installer"
             description="generate the binary distribution installer with the license click-through"
@@ -474,8 +485,6 @@ Class-Path: ${manifest.classpath}
 
         <echo>binary installer produced at ${bin.installer.jar}</echo>
     </target>
-
-
 
     <patternset id="src-includes"
                 description="This pattern set defines which files will be in/excluded in the src bundle">
