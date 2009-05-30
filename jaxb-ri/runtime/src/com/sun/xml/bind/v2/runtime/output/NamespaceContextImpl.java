@@ -194,7 +194,10 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
                                 break;
                             }
                         }
-
+                        if (current.elementLocalName!=null) {
+    						current.setTagName(size, current.elementLocalName, current.getOuterPeer());
+                        }
+                        
                         put(nsUris[i],null);
                         return put("", "");
                     }
