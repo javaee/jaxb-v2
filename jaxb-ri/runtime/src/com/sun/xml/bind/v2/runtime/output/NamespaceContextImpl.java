@@ -179,7 +179,7 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
                         if (current.elementLocalName != null) {
                             current.setTagName(subst, current.elementLocalName, current.getOuterPeer());
                         }
-                      return i;
+                        return i;
                     } else {
                         // first, if the previous URI assigned to "" is
                         // a "known URI", remember what we've reallocated
@@ -194,7 +194,10 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
                                 break;
                             }
                         }
-
+                        if (current.elementLocalName!=null) {
+    						current.setTagName(size, current.elementLocalName, current.getOuterPeer());
+                        }
+                        
                         put(nsUris[i],null);
                         return put("", "");
                     }
