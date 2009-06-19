@@ -83,8 +83,11 @@ public final class ModelChecker {
             QName n = p1.collectElementNames(collisionTable);
             if(n!=null) {
                 CPropertyInfo p2 = collisionTable.get(n);
-                errorReceiver.error(p1.locator,Messages.DUPLICATE_ELEMENT.format(n));
-                errorReceiver.error(p2.locator,Messages.ERR_RELEVANT_LOCATION.format());
+                
+                if (p2.getName(true).equals(n.toString()) || p2.getName(false).equals(n.toString())) {
+                    errorReceiver.error(p1.locator, Messages.DUPLICATE_ELEMENT.format(n));
+                    errorReceiver.error(p2.locator, Messages.ERR_RELEVANT_LOCATION.format());
+                }
             }
 
             for( int j=i+1; j<props.size(); j++ ) {
