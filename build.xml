@@ -36,6 +36,7 @@
     <javac source="1.5" target="1.5" srcdir="src/compiler" destdir="build/compiler-classes" debug="on">
     	<classpath refid="runtime.lib"/>
     	<classpath>
+            <pathelement path="${cpath.fromsource}"/>
     		<pathelement path="build/runtime-classes"/>
     		<fileset dir="lib" includes="compiler/*.jar"/>
     	</classpath>
