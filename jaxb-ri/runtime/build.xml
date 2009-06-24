@@ -47,11 +47,16 @@
     unmarshalling, and validation.
   </description>
   
-    <!-- import build properties -->
-    <property file="${basedir}/build.properties" />
+  <!-- import build properties -->
+  <property file="${basedir}/build.properties" />
+
+      <path id="source.classpath">
+        <pathelement path="${cpath.fromsource}"/>
+      </path>
 
   <!-- classpath -->
   <path id="javac.classpath">
+    <path refid="source.classpath"/>
     <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
     <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
     <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
@@ -65,9 +70,8 @@
     <pathelement path="${jaxb.libs.compiler}/rngom.jar"/>
     <pathelement path="${codemodel.classes}"/>
   </path>
-
-    
-    <target name="generate-array-listers">
+  
+  <target name="generate-array-listers">
         <macrodef name="generateCopiesForPrimitives">
           <attribute name="srcdir"/>
           <attribute name="destdir"/>
@@ -140,6 +144,7 @@
            description="generate annotation proxies">
       <taskdef name="apgen" classname="com.sun.tools.GeneratorTask">
         <classpath>
+          <pathelement path="${cpath.fromsource}" />
           <pathelement path="${apgen.classes}" />
           <pathelement path="${jaxb.libs.compiler}/codemodel.jar" />
         </classpath>
@@ -159,7 +164,7 @@
         <classes includes="javax.xml.bind.annotation.XmlTransient" />
         <classes includes="javax.xml.bind.annotation.XmlType" />
         <classes includes="javax.xml.bind.annotation.XmlValue" />
-	<classes includes="javax.xml.bind.annotation.XmlSchemaType" />
+    	<classes includes="javax.xml.bind.annotation.XmlSchemaType" />
         <classpath>
           <pathelement path="${jaxb.libs.redist}/jaxb-api.jar"/>
         </classpath>

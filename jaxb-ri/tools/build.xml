@@ -41,11 +41,11 @@
     <property file="${basedir}/build.properties" />
 
     <target name="compile" 
-            description="build tools and deploy them into necessary locations">
+            description="build tools and deploy them into necessary locations" unless="from.source">
         <!--ant dir="${jaxb.root}/tools/webapp-commons"       target="dist" /-->
         <ant dir="${jaxb.root}/tools/source-tidy"          target="compile" />
         <ant dir="${jaxb.root}/tools/pretty-printer" />
-        <ant dir="${jaxb.root}/tools/jing-rnc-driver" />
+        <ant dir="${jaxb.root}/tools/jing-rnc-driver"/>
         <ant dir="${jaxb.root}/tools/xmllint" />
         <!--ant dir="${jaxb.root}/tools/servlet"              target="war" /-->
     </target>

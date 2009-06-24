@@ -56,6 +56,7 @@
             debug="${compile.debug}" optimize="${compile.optimize}"
             deprecation="${compile.deprecation}" >
             <classpath>
+              <pathelement path="${cpath.fromsource}"/>
               <pathelement path="${jaxb.libs.compiler}/codemodel.jar" />
               <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
             </classpath>
