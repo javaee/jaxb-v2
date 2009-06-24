@@ -49,8 +49,13 @@
     <!-- import build properties -->
     <property file="${basedir}/build.properties" />
 
+      <path id="source.classpath">
+        <pathelement path="${cpath.fromsource}"/>
+      </path>
+
     <!-- classpath -->
     <path id="javac.classpath">
+        <path refid="source.classpath"/>
         <pathelement path="${runtime.classes}" />
         <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
         <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>

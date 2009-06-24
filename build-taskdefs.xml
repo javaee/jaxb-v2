@@ -108,13 +108,13 @@
   </macrodef>
   
   <!-- package rename task -->
-  <taskdef name="prename" classname="com.sun.wts.tools.ant.PackageRenameTask">
+<!--    <taskdef name="prename" classname="com.sun.wts.tools.ant.PackageRenameTask">
     <classpath>
       <pathelement path="${jaxb.root}/tools/lib/util/package-rename-task.jar" />
     </classpath>
   </taskdef>
 
-  <macrodef name="package-rename">
+<macrodef name="package-rename">
     <attribute name="srcdir" />
     <attribute name="destdir" />
     <sequential>
@@ -134,5 +134,5 @@
       </prename>
     </sequential>
   </macrodef>
-
+-->
 </project>
