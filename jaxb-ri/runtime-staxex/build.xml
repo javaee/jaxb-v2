@@ -51,6 +51,7 @@
 
     <!-- classpath -->
     <path id="javac.classpath">
+        <pathelement path="${cpath.fromsource}"/>
         <pathelement path="${runtime.classes}" />
         <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
         <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>

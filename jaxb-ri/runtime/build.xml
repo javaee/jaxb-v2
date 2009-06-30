@@ -50,13 +50,9 @@
   <!-- import build properties -->
   <property file="${basedir}/build.properties" />
 
-      <path id="source.classpath">
-        <pathelement path="${cpath.fromsource}"/>
-      </path>
-
   <!-- classpath -->
   <path id="javac.classpath">
-    <path refid="source.classpath"/>
+    <pathelement path="${cpath.fromsource}"/>
     <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
     <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
     <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
@@ -149,7 +145,8 @@
           <pathelement path="${jaxb.libs.compiler}/codemodel.jar" />
         </classpath>
       </taskdef>
-      
+
+      <property name="jaxb-api.path" value="${jaxb.libs.redist}/jaxb-api.jar"/>
       <mkdir dir="${runtime.root}/build/src"/>
       <apgen destdir="${runtime.root}/build/src"
         package="com.sun.xml.bind.v2.model.annotation">
@@ -166,7 +163,7 @@
         <classes includes="javax.xml.bind.annotation.XmlValue" />
     	<classes includes="javax.xml.bind.annotation.XmlSchemaType" />
         <classpath>
-          <pathelement path="${jaxb.libs.redist}/jaxb-api.jar"/>
+          <pathelement path="${jaxb-api.path}"/>
         </classpath>
       </apgen>
     </target>
