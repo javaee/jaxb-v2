@@ -357,13 +357,13 @@ Class-Path: ${manifest.classpath}
               <delete dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
           </sequential>
 
-
           <!-- copy bin scripts -->
           <sequential>
               <copy file="${jaxb.root}/tools/bin/xjc.bat" todir="${jaxb.dist}/bin"/>
               <copy file="${jaxb.root}/tools/bin/xjc.sh"  todir="${jaxb.dist}/bin"/>
               <copy file="${jaxb.root}/tools/bin/schemagen.bat" todir="${jaxb.dist}/bin"/>
               <copy file="${jaxb.root}/tools/bin/schemagen.sh"  todir="${jaxb.dist}/bin"/>
+              <echo message="chmod: ${jaxb.dist}/bin/xjc.sh"/>
               <chmod file="${jaxb.dist}/bin/xjc.sh" perm="ugo+rx"/>
               <chmod file="${jaxb.dist}/bin/schemagen.sh" perm="ugo+rx"/>
           </sequential>

@@ -128,7 +128,8 @@
          <pathelement path="${jaxb.libs.util}/codemodel-annotation-compiler.jar" />
        </classpath>
      </taskdef>
-     
+
+     <property name="jaxb-api.path" value="${jaxb.libs.redist}/jaxb-api.jar"/>
      <mkdir dir="${xjc.gensrc}"/>
      <cac destdir="${xjc.gensrc}"
        package="com.sun.tools.xjc.generator.annotation.spec">
@@ -136,7 +137,7 @@
                 excludes="javax.xml.bind.annotation.XmlJavaTypeAdapter" />
        <classes includes="javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter" />
        <classpath>
-         <pathelement path="${jaxb.libs.redist}/jaxb-api.jar"/>
+         <pathelement path="${jaxb-api.path}"/>
        </classpath>
      </cac>
      <cac destdir="${xjc.gensrc}"
