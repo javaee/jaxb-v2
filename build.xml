@@ -261,12 +261,14 @@
         <parallel>
           <!-- copy redist jars -->
           <sequential>
+              <property name="jaxb-api.path" value="${jaxb.dist}/lib/jaxb-api.jar"/>
               <copy todir="${jaxb.dist}/lib">
                   <fileset dir="${jaxb.libs.redist}">
                        <include name="**/*.jar"/>
                        <include name="**/*.zip"/>
                   </fileset>
               </copy>
+              <copy file="${jaxb-api.path}" tofile="${jaxb.dist}/lib/jaxb-api.jar"/>
           </sequential>
 
 
