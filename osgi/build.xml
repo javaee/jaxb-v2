@@ -107,7 +107,11 @@
         <jar destfile="${osgi.build}/jaxb-osgi.jar"
              manifest="${osgi.build.rt}/META-INF/MANIFEST.MF">
             <zipfileset src="${osgi.build.rt}/jaxb-bnd.jar"/>
-            <zipfileset src="${jaxb.dist}/lib/jaxb1-impl.jar"/>
+            <zipfileset src="${jaxb.dist}/lib/jaxb1-impl.jar">
+                <patternset>
+                    <exclude name="org/relaxng/datatype/**"/>
+                </patternset>
+            </zipfileset>
             <zipfileset src="${jaxb.dist}/lib/jaxb-xjc.jar">
                 <include name="1.0/**"/>
             </zipfileset>
