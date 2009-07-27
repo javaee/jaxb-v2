@@ -180,7 +180,7 @@ public interface NameConverter
 
                 // get the token and remove illegal chars
                 String token = tokens.get( i );
-                token = removeIllegalIdentifierChars( token );
+                token = removeIllegalIdentifierChars( token.toLowerCase() );
 
                 // this will check for reserved keywords
                 if( !NameUtil.isJavaIdentifier( token ) ) {
