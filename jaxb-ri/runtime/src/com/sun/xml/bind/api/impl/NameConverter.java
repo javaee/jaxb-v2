@@ -183,7 +183,7 @@ public interface NameConverter
                 token = removeIllegalIdentifierChars( token );
 
                 // this will check for reserved keywords
-                if( !NameUtil.isJavaIdentifier( token ) ) {
+                if( !NameUtil.isJavaIdentifier( token.toLowerCase() ) ) {
                     token = '_' + token;
                 }
 
