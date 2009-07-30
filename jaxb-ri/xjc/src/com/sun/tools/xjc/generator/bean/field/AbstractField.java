@@ -367,7 +367,7 @@ abstract class AbstractField implements FieldOutline {
 
         // Issue 570; always force generating name="" when do it when globalBindings underscoreBinding is set to non default value
         // generate name property?
-        if(!generatedName.equals(ap.getName(false)) || (outline.parent().getModel().getNameConverter() != NameConverter.standard)) {
+        if(!generatedName.equals(ap.getName(false)) || !generatedName.equals(ap.getName(true)) || (outline.parent().getModel().getNameConverter() != NameConverter.standard)) {
             xaw.name(generatedName);
         }
 
