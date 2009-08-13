@@ -691,7 +691,7 @@ public final class SimpleTypeBuilder extends BindingComponent {
                 return null;    // unable to generate a name
             }
 
-            memberList.add(new CEnumConstant(name,mdoc,facet.getValue().value,facet.getLocator()));
+            memberList.add(new CEnumConstant(name,mdoc,facet.getValue().value,facet,builder.getBindInfo(facet).toCustomizationList(),facet.getLocator()));
         }
         return memberList;
     }
