@@ -114,7 +114,7 @@ public final class BIEnumeration implements BIConversion
         while(tokens.hasMoreTokens()) {
             String token = tokens.nextToken();
             r.add(new CEnumConstant(model.getNameConverter().toConstantName(token),
-                    null,token,null));
+                    null,token,null/*TODO*/,null,null));
         }
         
         return r;

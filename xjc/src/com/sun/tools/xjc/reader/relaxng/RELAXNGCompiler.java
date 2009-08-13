@@ -192,7 +192,7 @@ public final class RELAXNGCompiler {
 
                         members.add(new CEnumConstant(
                             model.getNameConverter().toConstantName(c.getValue()),
-                            null, c.getValue(), c.getLocation()
+                            null, c.getValue(), null, null/*TODO*/, c.getLocation()
                         ));
                     } else
                         continue OUTER; // not a value

@@ -40,6 +40,7 @@ import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.xml.bind.v2.model.core.EnumConstant;
 
+import com.sun.xml.xsom.XSComponent;
 import org.xml.sax.Locator;
 
 /**
@@ -47,7 +48,7 @@ import org.xml.sax.Locator;
  *
  * @author Kohsuke Kawaguchi
  */
-public final class CEnumConstant implements EnumConstant<NType,NClass> {
+public final class CEnumConstant implements EnumConstant<NType,NClass>, CCustomizable {
     /** Name of the constant. */
     public final String name;
     /** Javadoc comment. Can be null. */
@@ -57,16 +58,22 @@ public final class CEnumConstant implements EnumConstant<NType,NClass> {
 
     private CEnumLeafInfo parent;
 
+    private final XSComponent source;
+
+    private final CCustomizations customizations;
+
     private final Locator locator;
 
     /**
      * @param name
      */
-    public CEnumConstant(String name, String javadoc, String lexical, Locator loc) {
+    public CEnumConstant(String name, String javadoc, String lexical, XSComponent source, CCustomizations customizations, Locator loc) {
         assert name!=null;
         this.name = name;
         this.javadoc = javadoc;
         this.lexical = lexical;
+        this.source = source;
+        this.customizations = customizations;
         this.locator = loc;
     }
 
@@ -84,6 +91,14 @@ public final class CEnumConstant implements EnumConstant<NType,NClass> {
 
     public String getName() {
         return name;
+    }
+
+    public XSComponent getSchemaComponent() {
+        return source;
+    }
+
+    public CCustomizations getCustomizations() {
+    	return customizations;
     }
 
     public Locator getLocator() {
