@@ -76,6 +76,7 @@ import com.sun.xml.xsom.XSModelGroupDecl;
 import com.sun.xml.xsom.XSNotation;
 import com.sun.xml.xsom.XSParticle;
 import com.sun.xml.xsom.XSSchema;
+import com.sun.xml.xsom.XSSchemaSet;
 import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSWildcard;
@@ -95,6 +96,7 @@ final class DefaultClassBinder implements ClassBinder
     protected final BGMBuilder builder = Ring.get(BGMBuilder.class);
     protected final ClassSelector selector = Ring.get(ClassSelector.class);
 
+    protected final XSSchemaSet schemas = Ring.get(XSSchemaSet.class);
 
     public CElement attGroupDecl(XSAttGroupDecl decl) {
         return allow(decl,decl.getName());
@@ -410,9 +412,36 @@ final class DefaultClassBinder implements ClassBinder
      *      if a name is not given by the customization.
      */
     private CElement allow( XSComponent component, String defaultBaseName ) {
+
+        BIClass decl = null;
+
+        if(component instanceof XSComplexType) {
+            XSType complexType = (XSType)component;
+
+            BIClass lastFoundRecursiveBiClass = null;
+
+            if(complexType.getName() != null) {
+                while( ! schemas.getAnyType().equals(complexType)) {
+                    BindInfo bindInfo = builder.getBindInfo(complexType);
+                    BIClass biClass = bindInfo.get(BIClass.class);
+
+                    if(biClass != null && "true".equals(biClass.getRecursive()))
+                        lastFoundRecursiveBiClass = biClass;
+
+                    complexType = complexType.getBaseType();
+                }
+            }
+
+            // use this as biclass for current component
+            decl = lastFoundRecursiveBiClass;
+
+        }
+
         BindInfo bindInfo = builder.getBindInfo(component);
-        BIClass decl=bindInfo.get(BIClass.class);
-        if(decl==null)  return null;
+        if(decl == null) {
+            decl = bindInfo.get(BIClass.class);
+            if(decl==null)  return null;
+        }
 
         decl.markAsAcknowledged();
 

@@ -100,6 +100,9 @@ public final class BIClass extends AbstractDeclarationImpl {
     @XmlAttribute(name="ref")
     private String ref;
 
+    @XmlAttribute(name="recursive", namespace=Const.XJC_EXTENSION_URI)
+    private String recursive;
+
     /**
      * Reference to the existing class, or null.
      * Fully qualified name.
@@ -109,6 +112,10 @@ public final class BIClass extends AbstractDeclarationImpl {
      */
     public String getExistingClassRef() {
         return ref;
+    }
+
+    public String getRecursive() {
+        return recursive;
     }
 
     @XmlElement
