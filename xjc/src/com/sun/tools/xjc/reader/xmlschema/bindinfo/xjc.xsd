@@ -117,4 +117,7 @@
       </xs:attribute>
     </xs:complexType>
   </xs:element>
+
+  <xs:attribute name="recursive"/>
+
 </xs:schema>
