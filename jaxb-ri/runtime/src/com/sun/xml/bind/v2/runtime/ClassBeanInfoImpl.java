@@ -217,7 +217,7 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> implement
         List<AttributeProperty> attProps = new FinalArrayList<AttributeProperty>();
         List<Property> uriProps = new FinalArrayList<Property>();
         for (ClassBeanInfoImpl bi = this; bi != null; bi = bi.superClazz) {
-            for (int i = bi.properties.length - 1; i >= 0; i--) {
+            for (int i = 0; i < bi.properties.length; i++) {
                 Property p = bi.properties[i];
                 if(p instanceof AttributeProperty)
                     attProps.add((AttributeProperty) p);
