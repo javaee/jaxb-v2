@@ -81,6 +81,13 @@
                 <exclude name="1.0/**"/>
             </patternset>
         </unjar>
+        <unjar src="${jaxb.dist}/../tools/lib/rebundle/runtime/xsdlib.jar"
+               dest="${osgi.build}/jaxb-xjc">
+            <patternset>
+                <exclude name="1.0/**"/>
+            </patternset>
+        </unjar>
+
 
         <!-- The bnd task does not recognize when input files have changed, -->
         <!-- hence we delete the output file to ensure a rebuild            -->
@@ -93,7 +100,7 @@
                   exceptions="true"
                   files="${osgi.build.api}/jaxb-api.bnd"/>
 
-        <bnd classpath="${jaxb.dist}/lib/jaxb-impl.jar, ${osgi.build}/jaxb-xjc"
+        <bnd classpath="${jaxb.dist}/lib/jaxb-impl.jar, ${jaxb.dist}/..//tools/lib/rebundle/runtime/xsdlib.jar, ${osgi.build}/jaxb-xjc"
              failok="false"
              output="${osgi.build.rt}/jaxb-bnd.jar"
              files="${osgi.build.rt}/jaxb.bnd"/>
