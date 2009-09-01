@@ -81,12 +81,6 @@
                 <exclude name="1.0/**"/>
             </patternset>
         </unjar>
-        <unjar src="${jaxb.dist}/../tools/lib/rebundle/runtime/xsdlib.jar"
-               dest="${osgi.build}/jaxb-xjc">
-            <patternset>
-                <exclude name="1.0/**"/>
-            </patternset>
-        </unjar>
 
 
         <!-- The bnd task does not recognize when input files have changed, -->
