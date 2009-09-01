@@ -77,7 +77,7 @@
         <!-- The bnd task does not recognize when input files have changed, -->
         <!-- hence we delete the output file to ensure a rebuild            -->
         <delete file="${osgi.build}/jaxb-bnd.jar" quiet="true"/>
-        <bnd classpath="${jaxb.dist}/lib/jaxb-api.jar, ${jaxb.dist}/lib/jaxb-impl.jar, ${osgi.build}/jaxb-xjc"
+        <bnd classpath="${jaxb.dist}/lib/jaxb-api.jar, ${jaxb.dist}/..//tools/lib/rebundle/runtime/xsdlib.jar, ${jaxb.dist}/lib/jaxb-impl.jar, ${osgi.build}/jaxb-xjc"
              failok="false"
              output="${osgi.build}/jaxb-bnd.jar"
              files="${osgi.build}/jaxb.bnd"/>
