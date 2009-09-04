@@ -48,6 +48,8 @@
 
     <!-- import build properties -->
     <property file="${basedir}/build.properties" />
+   
+    <taskdef name="manifestreader" classname="manifestreader.ManifestReader" classpath="${osgi.build}/../ant" />
 
     <target name="bundle"
             description="create OSGi bundle for GlassFish V3">
@@ -94,17 +96,80 @@
                   exceptions="true"
                   files="${osgi.build.api}/jaxb-api.bnd"/>
 
-        <bnd classpath="${jaxb.dist}/lib/jaxb-impl.jar, ${jaxb.dist}/..//tools/lib/rebundle/runtime/xsdlib.jar, ${osgi.build}/jaxb-xjc"
+        <bnd classpath="${jaxb.dist}/lib/jaxb-impl.jar, ${osgi.build}/jaxb-xjc"
              failok="false"
              output="${osgi.build.rt}/jaxb-bnd.jar"
              files="${osgi.build.rt}/jaxb.bnd"/>
          <!--Readd the JAXB 1.0 files -->
-        <unjar src="${osgi.build.rt}/jaxb-bnd.jar"
+        <!-- <unjar src="${osgi.build.rt}/jaxb-bnd.jar"
                dest="${osgi.build.rt}">
             <patternset>
                 <include name="META-INF/MANIFEST.MF"/>
             </patternset>
-        </unjar>
+        </unjar> -->
+
+        <manifestreader fileName="${osgi.build.rt}/jaxb-bnd.jar">
+            <property name="jaxb.Ant-Version" value="Ant-Version" />
+            <property name="jaxb.Bnd-LastModified" value="Bnd-LastModified" />
+            <property name="jaxb.Build-Id" value="Build-Id" />
+            <property name="jaxb.Bundle-ManifestVersion" value="Bundle-ManifestVersion" />
+            <property name="jaxb.Bundle-Name" value="Bundle-Name" />
+            <property name="jaxb.Bundle-SymbolicName" value="Bundle-SymbolicName" />
+            <property name="jaxb.Bundle-Version" value="Bundle-Version" />
+            <property name="jaxb.Class-Path" value="Class-Path" />
+            <property name="jaxb.Created-By" value="Created-By" />
+            <property name="jaxb.Export-Package" value="Export-Package" />
+            <property name="jaxb.Extension-Name" value="Extension-Name" />
+            <property name="jaxb.Implementation-Title" value="Implementation-Title" />
+            <property name="jaxb.Implementation-Vendor" value="Implementation-Vendor" />
+            <property name="jaxb.Implementation-Vendor-Id" value="Implementation-Vendor-Id" />
+            <property name="jaxb.Implementation-Version" value="Implementation-Version" />
+            <property name="jaxb.Implementation-Version2" value="Implementation-Version" />
+            <property name="jaxb.Import-Package" value="Import-Package" />
+            <property name="jaxb.Manifest-Version" value="Manifest-Version" />
+            <property name="jaxb.Originally-Created-By" value="Originally-Created-By" />
+            <property name="jaxb.Private-Package" value="Private-Package" />
+            <property name="jaxb.Specification-Title" value="Specification-Title" />
+            <property name="jaxb.Specification-Vendor" value="Specification-Vendor" />
+            <property name="jaxb.Specification-Version" value="Specification-Version" />
+            <property name="jaxb.Tool" value="Tool" />
+        </manifestreader>
+
+        <mkdir dir="${osgi.build.rt}/META-INF/" />
+
+        <manifest file="${osgi.build.rt}/META-INF/MANIFEST.MF">
+            <attribute name="Ant-Version" value="${jaxb.Ant-Version}"/>
+            <attribute name="Bnd-LastModified" value="${jaxb.Bnd-LastModified}"/>
+            <attribute name="Build-Id" value="${jaxb.Build-Id}"/>
+            <attribute name="Bundle-ManifestVersion" value="${jaxb.Bundle-ManifestVersion}"/>
+            <attribute name="Bundle-Name" value="${jaxb.Bundle-Name}"/>
+            <attribute name="Bundle-SymbolicName" value="${jaxb.Bundle-SymbolicName}"/>
+            <attribute name="Bundle-Version" value="${jaxb.Bundle-Version}"/>
+            <attribute name="Class-Path" value="${jaxb.Class-Path}"/>
+            <attribute name="Created-By" value="${jaxb.Created-By}"/>
+
+            <!-- adding com/sun/msv/datatype/xsd to Export-package -->
+
+            <attribute name="Export-Package" value="${jaxb.Export-Package},com.sun.msv.datatype.xsd"/>
+            <attribute name="Extension-Name" value="${jaxb.Extension-Name}"/>
+            <attribute name="Implementation-Title" value="${jaxb.Implementation-Title}"/>
+            <attribute name="Implementation-Vendor" value="${jaxb.Implementation-Vendor}"/>
+            <attribute name="Implementation-Vendor-Id" value="${jaxb.Implementation-Vendor-Id}"/>
+            <attribute name="Import-Package" value="${jaxb.Import-Package}"/>
+            <attribute name="Manifest-Version" value="${jaxb.Manifest-Version}"/>
+            <attribute name="Originally-Created-By" value="${jaxb.Originally-Created-By}"/>
+            <attribute name="Private-Package" value="${jaxb.Private-Package}"/>
+            <attribute name="Specification-Title" value="${jaxb.Specification-Title}"/>
+            <attribute name="Specification-Vendor" value="${jaxb.Specification-Vendor}"/>
+            <attribute name="Specification-Version" value="${jaxb.Specification-Version}"/>
+            <attribute name="Tool" value="${jaxb.Tool}"/>
+            <attribute name="Implementation-Version" value="${jaxb.Implementation-Version}"/>
+            <section name="com.sun.xml.bind.v2.runtime">
+                <attribute name="Implementation-Version" value="${jaxb.Implementation-Version2}"/>
+            </section>
+        </manifest>
+
+
         <jar destfile="${osgi.build}/jaxb-osgi.jar"
              manifest="${osgi.build.rt}/META-INF/MANIFEST.MF">
             <zipfileset src="${osgi.build.rt}/jaxb-bnd.jar"/>
