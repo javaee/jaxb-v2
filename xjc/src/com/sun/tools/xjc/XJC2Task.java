@@ -429,6 +429,15 @@ public class XJC2Task extends Task {
     private void doXJC() throws BuildException {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
+            if (classpath != null) {
+                for (String pathElement : classpath.list()) {
+                    try {
+                        options.classpaths.add(new File(pathElement).toURI().toURL());
+                    } catch (MalformedURLException ex) {
+                        log("Classpath for XJC task not setup properly: " + pathElement);
+                    }
+                }
+            }
             // set the user-specified class loader so that XJC will use it.
             Thread.currentThread().setContextClassLoader(new AntClassLoader(getProject(),classpath));
             _doXJC();
