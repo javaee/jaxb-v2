@@ -581,7 +581,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                         case 's':
                             printNumber(buf,value.getSecond(),2);
                     if (value.getFractionalSecond() != null) {
-                        String frac = value.getFractionalSecond().toString();
+                        String frac = value.getFractionalSecond().toPlainString();
                         //skip leading zero.
                         buf.append(frac.substring(1, frac.length()));
                     }
