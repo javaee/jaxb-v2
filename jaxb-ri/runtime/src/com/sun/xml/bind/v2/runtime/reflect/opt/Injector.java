@@ -41,7 +41,6 @@ import java.lang.reflect.Method;
 import java.lang.ref.WeakReference;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -69,7 +68,8 @@ final class Injector {
      * We only need one injector per one user class loader.
      */
     private static final Map<ClassLoader,WeakReference<Injector>> injectors =
-        Collections.synchronizedMap(new WeakHashMap<ClassLoader,WeakReference<Injector>>());
+//        Collections.synchronizedMap(new WeakHashMap<ClassLoader,WeakReference<Injector>>());
+        new WeakHashMap<ClassLoader,WeakReference<Injector>>();
 
     private static final Logger logger = Util.getClassLogger();
 
@@ -106,17 +106,19 @@ final class Injector {
      */
     private static Injector get(ClassLoader cl) {
         Injector injector = null;
-        WeakReference<Injector> wr = injectors.get(cl);
-        if(wr!=null)
-            injector = wr.get();
-        if(injector==null)
-            try {
-                injectors.put(cl,new WeakReference<Injector>(injector = new Injector(cl)));
-            } catch (SecurityException e) {
-                logger.log(Level.FINE,"Unable to set up a back-door for the injector",e);
-                return null;
-            }
-        return injector;
+        synchronized(injectors){
+            WeakReference<Injector> wr = injectors.get(cl);
+            if(wr!=null)
+                injector = wr.get();
+            if(injector==null)
+                try {
+                    injectors.put(cl,new WeakReference<Injector>(injector = new Injector(cl)));
+                } catch (SecurityException e) {
+                    logger.log(Level.FINE,"Unable to set up a back-door for the injector",e);
+                    return null;
+                }
+            return injector;
+        }
     }
 
     /**
@@ -134,11 +136,13 @@ final class Injector {
 
     private static final Method defineClass;
     private static final Method resolveClass;
+    private static final Method findLoadedClass;
 
     static {
         try {
             defineClass = ClassLoader.class.getDeclaredMethod("defineClass",String.class,byte[].class,Integer.TYPE,Integer.TYPE);
             resolveClass = ClassLoader.class.getDeclaredMethod("resolveClass",Class.class);
+            findLoadedClass= ClassLoader.class.getDeclaredMethod("findLoadedClass",String.class);
         } catch (NoSuchMethodException e) {
             // impossible
             throw new NoSuchMethodError(e.getMessage());
@@ -149,6 +153,7 @@ final class Injector {
                 // do these setAccessible allow anyone to call these methods freely?s
                 defineClass.setAccessible(true);
                 resolveClass.setAccessible(true);
+                findLoadedClass.setAccessible(true);
                 return null;
             }
         });
@@ -175,6 +180,25 @@ final class Injector {
             return null;
 
         Class c = classes.get(className);
+        //find loaded class from classloader
+        if(c==null) {
+                try {
+                    c = (Class)findLoadedClass.invoke(parent,className.replace('/','.'));
+                } catch (IllegalArgumentException e) {
+                    logger.log(Level.FINE,"Unable to find "+className,e);
+                } catch (IllegalAccessException e) {
+                    logger.log(Level.FINE,"Unable to find "+className,e);
+                } catch (InvocationTargetException e) {
+                    Throwable t = e.getTargetException();
+                    logger.log(Level.FINE,"Unable to find "+className,t);
+                }
+
+                if(c!=null) {
+                    classes.put(className,c);
+                    return c;
+                }
+        }
+
         if(c==null) {
             // we need to inject a class into the
             try {
@@ -184,9 +208,17 @@ final class Injector {
                 logger.log(Level.FINE,"Unable to inject "+className,e);
                 return null;
             } catch (InvocationTargetException e) {
-                logger.log(Level.FINE,"Unable to inject "+className,e);
+                Throwable t = e.getTargetException();
+                if (t instanceof LinkageError){
+                    logger.log(Level.WARNING,"duplicate class definition bug occured? Please report this : "+className,t);
+                } else {
+                    logger.log(Level.FINE,"Unable to inject "+className,t);
+                }
                 return null;
             } catch (SecurityException e) {
+                logger.log(Level.FINE,"Unable to inject "+className,e);
+                return null;
+            } catch (LinkageError e) {
                 logger.log(Level.FINE,"Unable to inject "+className,e);
                 return null;
             } catch (LinkageError e) {

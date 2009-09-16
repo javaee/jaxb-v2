@@ -244,6 +244,7 @@ public final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
 
             if (state.nil) {
                 e.setNil(true);
+                state.nil = false;
             }
 
             if(o!=null)
