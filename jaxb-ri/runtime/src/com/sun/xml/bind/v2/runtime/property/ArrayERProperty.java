@@ -120,12 +120,15 @@ abstract class ArrayERProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,Li
         @Override
         public void childElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
             ChildLoader child = children.get(ea.uri,ea.local);
-            if(child!=null) {
-                state.loader = child.loader;
-                state.receiver = child.receiver;
-            } else {
-                super.childElement(state,ea);
+            if (child == null) {
+                child = children.get(CATCH_ALL);
             }
+            if (child == null) {
+                super.childElement(state,ea);
+                return;
+            }
+            state.loader = child.loader;
+            state.receiver = child.receiver;
         }
 
         @Override
