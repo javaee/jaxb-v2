@@ -209,18 +209,20 @@ public class BGMBuilder extends BindingComponent {
             if(gb==null)
                 continue;
 
+            gb.markAsAcknowledged();
+
             if(globalBinding==null) {
                 globalBinding = gb;
-                globalBinding.markAsAcknowledged();
             } else {
-                // acknowledge this customization and report an error
-                // otherwise the user will see "customization is attached to a wrong place" error,
-                // which is incorrect
-                gb.markAsAcknowledged();
-                getErrorReporter().error( gb.getLocation(),
-                    Messages.ERR_MULTIPLE_GLOBAL_BINDINGS);
-                getErrorReporter().error( globalBinding.getLocation(),
-                    Messages.ERR_MULTIPLE_GLOBAL_BINDINGS_OTHER);
+                if (!globalBinding.isEqual(gb)) { // see Issue 687 - this may happen with syntactically imported documents
+                    // acknowledge this customization and report an error
+                    // otherwise the user will see "customization is attached to a wrong place" error,
+                    // which is incorrect
+                    getErrorReporter().error( gb.getLocation(),
+                        Messages.ERR_MULTIPLE_GLOBAL_BINDINGS);
+                    getErrorReporter().error( globalBinding.getLocation(),
+                        Messages.ERR_MULTIPLE_GLOBAL_BINDINGS_OTHER);
+                }
             }
         }
 
@@ -291,10 +293,6 @@ public class BGMBuilder extends BindingComponent {
      * needs, instead of the JJavaName class in CodeModel.
      */
     public NameConverter getNameConverter() { return model.getNameConverter(); }
-
-
-
-
 
     /** Fill-in the contents of each classes. */
     private void buildContents() {
