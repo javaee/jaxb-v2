@@ -52,6 +52,7 @@ final class ValidatingUnmarshaller implements XmlVisitor, XmlVisitor.TextPredict
     
     private final XmlVisitor next;
     private final ValidatorHandler validator;
+    private NamespaceContext nsContext = null;
 
     /**
      * {@link TextPredictor} of the next {@link XmlVisitor}.
@@ -73,19 +74,25 @@ final class ValidatingUnmarshaller implements XmlVisitor, XmlVisitor.TextPredict
     }
 
     public void startDocument(LocatorEx locator, NamespaceContext nsContext) throws SAXException {
-        // when nsContext is non-null, validator won't probably work correctly.
-        // should we warn?
+        this.nsContext = nsContext;
         validator.setDocumentLocator(locator);
         validator.startDocument();
         next.startDocument(locator,nsContext);
     }
 
     public void endDocument() throws SAXException {
+        this.nsContext = null;
         validator.endDocument();
         next.endDocument();
     }
 
     public void startElement(TagName tagName) throws SAXException {
+        if(nsContext != null) {
+            String tagNamePrefix = tagName.getPrefix().intern();
+            if(tagNamePrefix != "") {
+                validator.startPrefixMapping(tagNamePrefix, nsContext.getNamespaceURI(tagNamePrefix));
+            }
+        }
         validator.startElement(tagName.uri,tagName.local,tagName.getQname(),tagName.atts);
         next.startElement(tagName);
     }
