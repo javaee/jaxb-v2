@@ -74,17 +74,20 @@ class AccessorInjector {
             ClassLoader cl = beanClass.getClassLoader();
             if(cl==null)    return null;    // how do I inject classes to this "null" class loader? for now, back off.
 
-            Class c = Injector.find(cl,newClassName);
-            if(c==null) {
-                byte[] image = tailor(templateClassName,newClassName,replacements);
-//                try {
-//                    new FileOutputStream("debug.class").write(image);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-                if(image==null)
-                    return null;
-                c = Injector.inject(cl,newClassName,image);
+            Class c = null;
+            synchronized (AccessorInjector.class) {
+                c = Injector.find(cl,newClassName);
+                if(c==null) {
+                    byte[] image = tailor(templateClassName,newClassName,replacements);
+    //                try {
+    //                    new FileOutputStream("debug.class").write(image);
+    //                } catch (IOException e) {
+    //                    e.printStackTrace();
+    //                }
+                    if(image==null)
+                        return null;
+                    c = Injector.inject(cl,newClassName,image);
+                }
             }
             return c;
         } catch(SecurityException e) {
