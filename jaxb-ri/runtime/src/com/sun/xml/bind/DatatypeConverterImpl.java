@@ -478,8 +478,11 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
     }
 
     public String printDate(Calendar val) {
+        return _printDate(val);
+    }
 
-        return CalendarFormatter.doFormat((new StringBuilder("%Y-%M-%D").append("%z")).toString(),val);
+    public static String _printDate(Calendar val) {
+        return CalendarFormatter.doFormat((new StringBuilder("%Y-%M-%D")).toString(),val);
     }
 
     public String parseAnySimpleType(String lexicalXSDAnySimpleType) {
@@ -574,7 +577,6 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
 
 
 // base64 decoder
-//====================================
 
     private static final byte[] decodeMap = initDecodeMap();
     private static final byte PADDING = 127;

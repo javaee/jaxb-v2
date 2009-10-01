@@ -43,6 +43,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.api.AccessorException;
+import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.runtime.ClassBeanInfoImpl;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
@@ -171,10 +172,10 @@ public final class StructureLoader extends Loader {
         // let's see if we can reuse the existing peer object
         child = context.getInnerPeer();
 
-        if(child != null && beanInfo.jaxbType!=child.getClass())
+        if(child != null && beanInfo.jaxbType!=child.getClass()) 
             child = null;   // unexpected type.
 
-        if(child != null)
+        if(child != null) 
             beanInfo.reset(child,context);
 
         if(child == null)
@@ -195,13 +196,12 @@ public final class StructureLoader extends Loader {
                 String auri = atts.getURI(i);
                 String alocal = atts.getLocalName(i);
                 String avalue = atts.getValue(i);
-                TransducedAccessor xacc = attUnmarshallers.get(auri,alocal);
-
+                String propName = NameConverter.standard.toPropertyName(alocal).intern();
+                TransducedAccessor xacc = attUnmarshallers.get(auri, propName);
                 try {
                     if(xacc!=null) {
                         xacc.parse(child,avalue);
-                    } else
-                    if(attCatchAll!=null) {
+                    } else if (attCatchAll!=null) {
                         String qname = atts.getQName(i);
                         if(atts.getURI(i).equals(WellKnownNamespace.XML_SCHEMA_INSTANCE))
                             continue;   // xsi:* attributes are meant to be processed by us, not by user apps.
@@ -267,6 +267,7 @@ public final class StructureLoader extends Loader {
             textHandler.loader.text(state,text);
     }
 
+    @Override
     public void leaveElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
         state.getContext().endScope(frameSize);
         fireAfterUnmarshal(beanInfo, state.target, state.prev);
