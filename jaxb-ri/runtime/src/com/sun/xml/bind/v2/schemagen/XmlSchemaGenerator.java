@@ -744,7 +744,6 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                 return;
             }
 
-
             // normal type generation
             writeTypeRef(th, typeRef.getTarget(), refAttName);
         }
@@ -1021,8 +1020,10 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
                         QName tn = t.getTagName();
 
-                        if(canBeDirectElementRef(t,tn) || (!tn.getNamespaceURI().equals(uri) && tn.getNamespaceURI().length()>0)) {
-                            e.ref(tn);
+                        NonElement target = t.getTarget();
+                        if (canBeDirectElementRef(t,tn) || ((!tn.getNamespaceURI().equals(uri) && tn.getNamespaceURI().length()>0) &&
+                                                            (!((target instanceof ClassInfo) && (target.getTypeName() == null))))) {     // see Issue 517
+                                e.ref(tn);
                         } else {
                             e.name(tn.getLocalPart());
                             writeTypeRef(e,t, "type");
@@ -1183,7 +1184,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                                 } else {
                                     if(!elementFormDefault.isEffectivelyQualified)
                                         eref.form("qualified");
-                                }
+                                    }
 
                                 local = true;
                                 eref.name(en.getLocalPart());

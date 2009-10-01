@@ -1081,6 +1081,7 @@ public final class UnmarshallingContext extends Coordinator
          * Receives the root element and determines how to start
          * unmarshalling.
          */
+        @Override
         public void childElement(UnmarshallingContext.State state, TagName ea) {
             UnmarshallingContext context = state.getContext();
 
