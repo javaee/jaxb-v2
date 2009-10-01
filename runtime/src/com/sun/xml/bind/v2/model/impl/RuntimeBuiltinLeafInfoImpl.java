@@ -211,6 +211,8 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
         }
     };
 
+    private static final String DATE = "date";
+    
     /**
      * List of all {@link RuntimeBuiltinLeafInfoImpl}s.
      *
@@ -269,9 +271,16 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                     return DatatypeConverterImpl._parseDateTime(text.toString()).getTime();
                 }
                 public String print(Date v) {
+                    XMLSerializer xs = XMLSerializer.getInstance();
+                    QName type = xs.getSchemaType();
                     GregorianCalendar cal = new GregorianCalendar(0,0,0);
                     cal.setTime(v);
-                    return DatatypeConverterImpl._printDateTime(cal);
+                    if ((type != null) && (WellKnownNamespace.XML_SCHEMA.equals(type.getNamespaceURI())) &&
+                            DATE.equals(type.getLocalPart())) {
+                        return DatatypeConverterImpl._printDate(cal);
+                    } else {
+                        return DatatypeConverterImpl._printDateTime(cal);
+                    }
                 }
             },
             new StringImpl<File>(File.class, createXS("string")) {
