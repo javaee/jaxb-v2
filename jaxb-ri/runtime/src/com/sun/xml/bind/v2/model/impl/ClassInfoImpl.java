@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
- * 
+ *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -10,7 +10,7 @@
  * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
  * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- * 
+ *
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
  * Sun designates this particular file as subject to the "Classpath" exception
@@ -19,9 +19,9 @@
  * Header, with the fields enclosed by brackets [] replaced by your own
  * identifying information: "Portions Copyrighted [year]
  * [name of copyright owner]"
- * 
+ *
  * Contributor(s):
- * 
+ *
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
  * elects to include this software in this distribution under the [CDDL or GPL
@@ -155,7 +155,7 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
      * @see #getFactoryMethod()
      */
     private M factoryMethod = null;
-    
+
     ClassInfoImpl(ModelBuilder<T,C,F,M> builder, Locatable upstream, C clazz) {
         super(builder,upstream);
         this.clazz = clazz;
@@ -182,8 +182,15 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
             propOrder = DEFAULT_ORDER;
         }
 
+        // obtain XmlAccessorOrder and  set proporder (XmlAccessorOrder can be defined for whole package)
+        // (<xs:all> vs <xs:sequence>)
+        XmlAccessorOrder xao = reader().getPackageAnnotation(XmlAccessorOrder.class, clazz, this);
+        if((xao != null) && (xao.value() == XmlAccessOrder.UNDEFINED)) {
+            propOrder = null;
+        }
+
         // obtain XmlAccessorOrder and  set proporder (<xs:all> vs <xs:sequence>)
-        XmlAccessorOrder xao = reader().getClassAnnotation(XmlAccessorOrder.class, clazz, this);
+        xao = reader().getClassAnnotation(XmlAccessorOrder.class, clazz, this);
         if((xao != null) && (xao.value() == XmlAccessOrder.UNDEFINED)) {
             propOrder = null;
         }
@@ -206,7 +213,7 @@ class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
                     msg.format(nav().getClassName(clazz)), this ));
             }
         }
-        }        
+        }
 
     public ClassInfoImpl<T,C,F,M> getBaseClass() {
         if (!baseClassComputed) {
