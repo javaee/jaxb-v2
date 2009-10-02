@@ -1,5 +1,3 @@
-import com.sun.tools.xjc.api.Driver;
-
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
@@ -35,6 +33,9 @@ import com.sun.tools.xjc.api.Driver;
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
+
+import com.sun.tools.xjc.api.Driver;
+
 /**
  * 
  * 
