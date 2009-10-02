@@ -34,6 +34,9 @@
  * holder.
  */
 
+import com.sun.tools.xjc.XJCFacade;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Alias of {@link com.sun.tools.jxc.SchemaGenerator}, just to make testing easier.
@@ -41,14 +44,38 @@
  * @author Kohsuke Kawaguchi
  */
 public class SchemaGenerator {
-    public static void main( String[] args ) throws Exception {
-        // since this is only used for testing/debugging,
-        // this is a good place to enable assertions.
-        ClassLoader loader = Driver.class.getClassLoader();
-        if (loader != null)
-            loader.setPackageAssertionStatus("com.sun", true);
 
-        // do not write anything here.
-        com.sun.tools.jxc.SchemaGenerator.main(args);
+    public static void main( String[] args ) throws Exception, Throwable {
+
+        String v = "2.0";      // by default, we go 2.0
+
+        for( int i=0; i<args.length; i++ ) {
+            if(args[i].equals("-source")) {
+                if(i+1<args.length) {
+                    v = ClassLoaderBuilder.parseVersion(args[i+1]);
+                }
+            }
+        }
+
+        try {
+            ClassLoader cl = ClassLoaderBuilder.createProtectiveClassLoader(XJCFacade.class.getClassLoader(), v);
+            if (cl != null) {
+                cl.setPackageAssertionStatus("com.sun", true);
+            }
+
+            Class driver = cl.loadClass("com.sun.tools.jxc.SchemaGenerator");
+            Method mainMethod = driver.getDeclaredMethod("main", new Class[]{String[].class});
+            try {
+                mainMethod.invoke(null,new Object[]{args});
+            } catch (IllegalAccessException e) {
+                throw e;
+            } catch (InvocationTargetException e) {
+                if(e.getTargetException()!=null)
+                    throw e.getTargetException();
+            }
+        } catch (UnsupportedClassVersionError e) {
+            System.err.println("XJC requires JDK 5.0 or later. Please download it from http://java.sun.com/j2se/1.5/");
+        }
     }
+
 }
