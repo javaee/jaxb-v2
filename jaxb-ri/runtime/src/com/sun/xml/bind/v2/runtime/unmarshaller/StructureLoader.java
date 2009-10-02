@@ -43,7 +43,6 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import com.sun.xml.bind.api.AccessorException;
-import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.runtime.ClassBeanInfoImpl;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
@@ -196,8 +195,7 @@ public final class StructureLoader extends Loader {
                 String auri = atts.getURI(i);
                 String alocal = atts.getLocalName(i);
                 String avalue = atts.getValue(i);
-                String propName = NameConverter.standard.toPropertyName(alocal).intern();
-                TransducedAccessor xacc = attUnmarshallers.get(auri, propName);
+                TransducedAccessor xacc = attUnmarshallers.get(auri, alocal);
                 try {
                     if(xacc!=null) {
                         xacc.parse(child,avalue);
