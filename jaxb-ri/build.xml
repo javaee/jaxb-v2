@@ -680,9 +680,9 @@ Class-Path: ${manifest.classpath}
 
 
     <target name="integrate-fi">
-      <get src="http://kohsuke.sfbay/hudson/job/fi-1.2/lastSuccessfulBuild/artifact/fi/FastInfoset/dist/FastInfoset.jar"
+      <get src="http://hudson.sfbay/job/fi-1.2/lastSuccessfulBuild/artifact/fi/FastInfoset/dist/FastInfoset.jar"
            dest="tools/lib/util/FastInfoset.jar" />
-      <get src="http://kohsuke.sfbay/hudson/job/fi-1.2/lastSuccessfulBuild/artifact/fi/FastInfoset/dist/FastInfoset.src.zip"
+      <get src="http://hudson.sfbay/job/fi-1.2/lastSuccessfulBuild/artifact/fi/FastInfoset/dist/FastInfoset.src.zip"
            dest="tools/lib/src/FastInfoset.src.zip" />
     </target>
 
@@ -695,62 +695,62 @@ Class-Path: ${manifest.classpath}
     
     <target name="integrate-stax-ex-hudson"
             description="integrate the last successful stax-ex Hudson build">
-      <get src="http://kohsuke.sfbay/hudson/job/stax-ex/lastSuccessfulBuild/artifact/stax-ex/stax-ex/target/stax-ex.jar"
+      <get src="http://hudson.sfbay/job/stax-ex/lastSuccessfulBuild/artifact/stax-ex/stax-ex/target/stax-ex.jar"
            dest="tools/lib/util/stax-ex.jar" />
-      <get src="http://kohsuke.sfbay/hudson/job/stax-ex/lastSuccessfulBuild/artifact/stax-ex/stax-ex/target/stax-ex-src.zip"
+      <get src="http://hudson.sfbay/job/stax-ex/lastSuccessfulBuild/artifact/stax-ex/stax-ex/target/stax-ex-src.zip"
            dest="tools/lib/util/stax-ex-src.zip" />
     </target>
 
     <target name="integrate-api" description="Integrate JAXB 2.2 API from Hudson">
-        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror-2.2/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api.jar"
+        <get src="http://hudson.sfbay/job/jsr222-mirror-2.2/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api.jar"
              dest="tools/lib/redist/jaxb-api.jar" />
-        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror-2.2/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-src.zip"
+        <get src="http://hudson.sfbay/job/jsr222-mirror-2.2/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-src.zip"
              dest="tools/lib/redist/jaxb-api-src.zip" />
-        <get src="http://kohsuke.sfbay/hudson/job/jsr222-mirror-2.2/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-doc.zip"
+        <get src="http://hudson.sfbay/job/jsr222-mirror-2.2/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-doc.zip"
              dest="tools/lib/redist/jaxb-api-doc.zip" />
     </target>
 
     <target name="integrate-xsom">
-        <get src="http://kohsuke.sfbay/hudson/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom.jar"
+        <get src="http://hudson.sfbay/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom.jar"
              dest="tools/lib/rebundle/compiler/xsom.jar" />
-        <get src="http://kohsuke.sfbay/hudson/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom-src.zip"
+        <get src="http://hudson.sfbay/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom-src.zip"
              dest="tools/lib/src/xsom-src.zip" />
     </target>
 
     <target name="integrate-maven-repository-importer">
-        <get src="http://kohsuke.sfbay/hudson/job/maven-repository-importer/lastSuccessfulBuild/artifact/build/maven-repository-importer.jar"
+        <get src="http://hudson.sfbay/job/maven-repository-importer/lastSuccessfulBuild/artifact/build/maven-repository-importer.jar"
              dest="tools/lib/util/maven-repository-importer.jar" />
     </target>
 
     <target name="integrate-txw2">
-        <get src="http://kohsuke.sfbay/hudson/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2.jar"
+        <get src="http://hudson.sfbay/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2.jar"
              dest="tools/lib/rebundle/runtime2/txw2.jar" />
-        <get src="http://kohsuke.sfbay/hudson/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txwc2.jar"
+        <get src="http://hudson.sfbay/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txwc2.jar"
              dest="tools/lib/util/txwc2.jar" />
-        <get src="http://kohsuke.sfbay/hudson/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2-src.zip"
+        <get src="http://hudson.sfbay/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2-src.zip"
              dest="tools/lib/src/txw2-src.zip" />
-        <get src="http://kohsuke.sfbay/hudson/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2c-src.zip"
+        <get src="http://hudson.sfbay/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2c-src.zip"
              dest="tools/lib/src/txw2c-src.zip" />
     </target>
 
     <target name="integrate-rngom">
-        <get src="http://kohsuke.sfbay/hudson/job/rngom/lastSuccessfulBuild/artifact/rngom/rngom/build/rngom.jar"
+        <get src="http://hudson.sfbay/job/rngom/lastSuccessfulBuild/artifact/rngom/rngom/build/rngom.jar"
              dest="tools/lib/rebundle/compiler/rngom.jar" />
-        <get src="http://kohsuke.sfbay/hudson/job/rngom/lastSuccessfulBuild/artifact/rngom/rngom/build/rngom-src.zip"
+        <get src="http://hudson.sfbay/job/rngom/lastSuccessfulBuild/artifact/rngom/rngom/build/rngom-src.zip"
              dest="tools/lib/src/rngom-src.zip" />
     </target>
 
     <target name="integrate-zehpyr">
-        <get src="http://kohsuke.sfbay/hudson/job/zephyr/lastSuccessfulBuild/artifact/dist/sjsxp-1_0/sjsxp.jar"
+        <get src="http://hudson.sfbay/job/zephyr/lastSuccessfulBuild/artifact/dist/sjsxp-1_0/sjsxp.jar"
              dest="tools/lib/util/sjsxp.jar" />
-        <get src="http://kohsuke.sfbay/hudson/job/zephyr/lastSuccessfulBuild/artifact/dist/sjsxp-src-1_0.zip"
+        <get src="http://hudson.sfbay/job/zephyr/lastSuccessfulBuild/artifact/dist/sjsxp-src-1_0.zip"
              dest="tools/lib/src/sjsxp-src.zip" />
     </target>
 
     <target name="integrate-istack-commons">
-        <property name="istack.commons.runtime" value="http://kohsuke.sfbay/hudson/job/istack-commons/lastSuccessfulBuild/artifact/runtime/build" />
-        <property name="istack.commons.tools" value="http://kohsuke.sfbay/hudson/job/istack-commons/lastSuccessfulBuild/artifact/tools/build" />
-        <property name="istack.commons.test" value="http://kohsuke.sfbay/hudson/job/istack-commons/lastSuccessfulBuild/artifact/test/build" />
+        <property name="istack.commons.runtime" value="http://hudson.sfbay/job/istack-commons/lastSuccessfulBuild/artifact/runtime/build" />
+        <property name="istack.commons.tools" value="http://hudson.sfbay/job/istack-commons/lastSuccessfulBuild/artifact/tools/build" />
+        <property name="istack.commons.test" value="http://hudson.sfbay/job/istack-commons/lastSuccessfulBuild/artifact/test/build" />
 
         <get src="${istack.commons.tools}/istack-commons-tools.jar"
              dest="tools/lib/rebundle/compiler/istack-commons-tools.jar" />
@@ -769,12 +769,12 @@ Class-Path: ${manifest.classpath}
     </target>
 
     <target name="integrate-package-rename-task">
-        <get src="http://kohsuke.sfbay/hudson/job/package-rename-task/lastSuccessfulBuild/artifact/target/package-rename-task.jar"
+        <get src="http://hudson.sfbay/job/package-rename-task/lastSuccessfulBuild/artifact/target/package-rename-task.jar"
              dest="tools/lib/util/package-rename-task.jar"/>
     </target>
 
     <target name="integrate-htmlmacro">
-        <get src="http://kohsuke.sfbay/hudson/job/htmlmacro/lastSuccessfulBuild/artifact/htmlmacro/build/htmlmacro.zip"
+        <get src="http://hudson.sfbay/job/htmlmacro/lastSuccessfulBuild/artifact/htmlmacro/build/htmlmacro.zip"
              dest="build/htmlmacro.zip"/>
         <unzip src="build/htmlmacro.zip" dest="tools/htmlmacro">
           <patternset>
@@ -786,14 +786,14 @@ Class-Path: ${manifest.classpath}
 
     <target name="integrate-codemodel">
         <property name="codemodel-version" value="2.2-SNAPSHOT" />
-        <get src="http://kohsuke.sfbay/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel-version}.jar"
+        <get src="http://hudson.sfbay/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel-version}.jar"
              dest="tools/lib/rebundle/compiler/codemodel.jar" />
-        <get src="http://kohsuke.sfbay/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel-version}.jar"
+        <get src="http://hudson.sfbay/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel-version}.jar"
              dest="tools/lib/util/codemodel-annotation-compiler.jar" />
              
-        <get src="http://kohsuke.sfbay/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel-version}-sources.jar"
+        <get src="http://hudson.sfbay/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel-version}-sources.jar"
              dest="tools/lib/src/codemodel.src.zip" />
-        <get src="http://kohsuke.sfbay/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel-version}-sources.jar"
+        <get src="http://hudson.sfbay/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel-version}-sources.jar"
              dest="tools/lib/src/codemodel-annotation-compiler.src.zip" />
 
     </target>
