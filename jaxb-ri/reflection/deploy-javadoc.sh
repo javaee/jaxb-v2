@@ -47,7 +47,7 @@ then
   cvs update -Pd
   cd ..
 else
-  cvs "-d:pserver:kohsuke@kohsuke.sfbay:/cvs" -z9 co -d www jaxb2-reflection/www
+  cvs "-d:pserver:kohsuke@cvs.dev.java.net:/cvs" -z9 co -d www jaxb2-reflection/www
 fi
 
 cd www
