@@ -151,8 +151,9 @@
             <attribute name="Created-By" value="${jaxb.Created-By}"/>
 
             <!-- adding com/sun/msv/datatype/xsd to Export-package -->
+            <!-- adding com.sun.msv.grammar,com.sun.msv.grammar.trex,com.sun.msv.reader,com.sun.msv.reader.trex.ng,com.sun.msv.reader.util,com.sun.msv.util,com.sun.msv.verifier,com.sun.msv.verifier.regexp  to Export-package (fabians request for woodstock) -->
 
-            <attribute name="Export-Package" value="${jaxb.Export-Package},com.sun.msv.datatype.xsd"/>
+            <attribute name="Export-Package" value="${jaxb.Export-Package},com.sun.msv.datatype.xsd,com.sun.msv.grammar,com.sun.msv.grammar.trex,com.sun.msv.reader,com.sun.msv.reader.trex.ng,com.sun.msv.reader.util,com.sun.msv.util,com.sun.msv.verifier,com.sun.msv.verifier.regexp"/>
             <attribute name="Extension-Name" value="${jaxb.Extension-Name}"/>
             <attribute name="Implementation-Title" value="${jaxb.Implementation-Title}"/>
             <attribute name="Implementation-Vendor" value="${jaxb.Implementation-Vendor}"/>
