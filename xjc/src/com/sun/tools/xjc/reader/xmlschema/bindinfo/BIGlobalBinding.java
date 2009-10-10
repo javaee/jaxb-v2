@@ -503,6 +503,22 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
     static final class GlobalStandardConversion extends BIConversion.User {
         @XmlAttribute
         QName xmlType;
+
+        @Override
+        public boolean equals(Object obj) {
+            if(obj instanceof GlobalStandardConversion) {
+                return ((GlobalStandardConversion)obj).xmlType.equals(xmlType);
+    }
+
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 73 * hash + (this.xmlType != null ? this.xmlType.hashCode() : 0);
+            return hash;
+        }
     }
 
     /**
@@ -511,6 +527,22 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
     static final class GlobalVendorConversion extends BIConversion.UserAdapter {
         @XmlAttribute
         QName xmlType;
+
+        @Override
+        public boolean equals(Object obj) {
+            if(obj instanceof GlobalVendorConversion) {
+                return ((GlobalVendorConversion)obj).xmlType.equals(xmlType);
+    }
+
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 73 * hash + (this.xmlType != null ? this.xmlType.hashCode() : 0);
+            return hash;
+        }
     }
 
     /* don't want to override equals to avoid overriding hashcode for this complex object, too */
