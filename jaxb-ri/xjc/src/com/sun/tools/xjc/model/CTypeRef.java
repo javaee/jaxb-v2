@@ -80,6 +80,10 @@ public final class CTypeRef implements TypeRef<NType,NClass> {
 
     }
 
+    public QName getTypeName() {
+        return typeName;
+    }
+    
     public static QName getSimpleTypeName(XSElementDecl decl) {
         if(decl==null)  return null;
         QName typeName = null;
