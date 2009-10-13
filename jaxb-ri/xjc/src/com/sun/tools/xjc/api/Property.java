@@ -91,4 +91,7 @@ public interface Property {
      *      always non-null valid {@link QName}.
      */
     QName elementName();
+
+    QName rawName();
+    
 }
