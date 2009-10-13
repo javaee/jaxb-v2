@@ -190,7 +190,7 @@
         </jar>
         <move  file="${osgi.build.api}/jaxb-api-bnd.jar" tofile="${osgi.build}/jaxb-api-osgi.jar"/>
          
-        <property name="apiosgisrc_path" value="${osgi.root}/build/jaxb-api-osgi-src.zip"/>
+        <property name="apiosgisrc_path" value="${osgi.root}/build/jaxb-api-osgi-sources.jar"/>
         <delete file="${apiosgisrc_path}" quiet="true"/>
         <copy file="${jaxb.dist}/lib/jaxb-api.jar" tofile="${apiosgisrc_path}"/>
 
