@@ -14,7 +14,6 @@
     <orderEntry type="library" name="util" level="project" />
     <orderEntry type="module" module-name="runtime" />
     <orderEntry type="library" name="rebundle/runtime" level="project" />
-    <orderEntryProperties />
   </component>
   <component name="copyright">
     <Base>

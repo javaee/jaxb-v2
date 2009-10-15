@@ -14,16 +14,15 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../tools/lib/util/FastInfoset.jar!/" />
+          <root url="jar://$TEMPLATE$/work/sources/jaxb/21/tools/lib/util/FastInfoset.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/../tools/lib/src/FastInfoset.src.zip!/FastInfoset/src" />
+          <root url="jar://$TEMPLATE$/work/sources/jaxb/21/tools/lib/src/FastInfoset.src.zip!/FastInfoset/src" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="library" name="runtime" level="project" />
-    <orderEntryProperties />
   </component>
   <component name="copyright">
     <Base>

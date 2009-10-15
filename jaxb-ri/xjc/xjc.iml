@@ -20,7 +20,6 @@
     <orderEntry type="library" name="JAM" level="project" />
     <orderEntry type="library" exported="" name="rebundle/compiler" level="project" />
     <orderEntry type="library" name="ant" level="project" />
-    <orderEntryProperties />
   </component>
   <component name="copyright">
     <Base>

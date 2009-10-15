@@ -90,7 +90,6 @@
   <component name="CodeStyleSettingsManager">
     <option name="PER_PROJECT_SETTINGS">
       <value>
-        <option name="USE_SAME_INDENTS" value="false" />
         <option name="XML_INDENT_OPTIONS">
           <value>
             <option name="INDENT_SIZE" value="2" />
@@ -118,10 +117,64 @@
           </value>
         </option>
         <option name="XML_KEEP_BLANK_LINES" value="4" />
+        <ADDITIONAL_INDENT_OPTIONS fileType="groovy">
+          <option name="INDENT_SIZE" value="2" />
+          <option name="CONTINUATION_INDENT_SIZE" value="8" />
+          <option name="TAB_SIZE" value="4" />
+          <option name="USE_TAB_CHARACTER" value="false" />
+          <option name="SMART_TABS" value="false" />
+          <option name="LABEL_INDENT_SIZE" value="0" />
+          <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+        </ADDITIONAL_INDENT_OPTIONS>
+        <ADDITIONAL_INDENT_OPTIONS fileType="gsp">
+          <option name="INDENT_SIZE" value="2" />
+          <option name="CONTINUATION_INDENT_SIZE" value="8" />
+          <option name="TAB_SIZE" value="4" />
+          <option name="USE_TAB_CHARACTER" value="false" />
+          <option name="SMART_TABS" value="false" />
+          <option name="LABEL_INDENT_SIZE" value="0" />
+          <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+        </ADDITIONAL_INDENT_OPTIONS>
+        <ADDITIONAL_INDENT_OPTIONS fileType="java">
+          <option name="INDENT_SIZE" value="4" />
+          <option name="CONTINUATION_INDENT_SIZE" value="8" />
+          <option name="TAB_SIZE" value="4" />
+          <option name="USE_TAB_CHARACTER" value="false" />
+          <option name="SMART_TABS" value="false" />
+          <option name="LABEL_INDENT_SIZE" value="0" />
+          <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+        </ADDITIONAL_INDENT_OPTIONS>
         <ADDITIONAL_INDENT_OPTIONS fileType="js">
           <option name="INDENT_SIZE" value="4" />
           <option name="CONTINUATION_INDENT_SIZE" value="8" />
           <option name="TAB_SIZE" value="4" />
+          <option name="USE_TAB_CHARACTER" value="false" />
+          <option name="SMART_TABS" value="false" />
+          <option name="LABEL_INDENT_SIZE" value="0" />
+          <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+        </ADDITIONAL_INDENT_OPTIONS>
+        <ADDITIONAL_INDENT_OPTIONS fileType="jsp">
+          <option name="INDENT_SIZE" value="4" />
+          <option name="CONTINUATION_INDENT_SIZE" value="8" />
+          <option name="TAB_SIZE" value="4" />
+          <option name="USE_TAB_CHARACTER" value="false" />
+          <option name="SMART_TABS" value="false" />
+          <option name="LABEL_INDENT_SIZE" value="0" />
+          <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+        </ADDITIONAL_INDENT_OPTIONS>
+        <ADDITIONAL_INDENT_OPTIONS fileType="sql">
+          <option name="INDENT_SIZE" value="2" />
+          <option name="CONTINUATION_INDENT_SIZE" value="8" />
+          <option name="TAB_SIZE" value="4" />
+          <option name="USE_TAB_CHARACTER" value="false" />
+          <option name="SMART_TABS" value="false" />
+          <option name="LABEL_INDENT_SIZE" value="0" />
+          <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+        </ADDITIONAL_INDENT_OPTIONS>
+        <ADDITIONAL_INDENT_OPTIONS fileType="xml">
+          <option name="INDENT_SIZE" value="2" />
+          <option name="CONTINUATION_INDENT_SIZE" value="8" />
+          <option name="TAB_SIZE" value="2" />
           <option name="USE_TAB_CHARACTER" value="false" />
           <option name="SMART_TABS" value="false" />
           <option name="LABEL_INDENT_SIZE" value="0" />
@@ -150,6 +203,9 @@
       <entry name="?*.tld" />
     </wildcardResourcePatterns>
   </component>
+  <component name="CopyrightManager" default="">
+    <module2copyright />
+  </component>
   <component name="DependenciesAnalyzeManager">
     <option name="myForwardDirection" value="false" />
   </component>
@@ -170,6 +226,7 @@
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
     <option name="MAXIMUM_HEAP_SIZE" value="128" />
   </component>
+  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" />
   <component name="EntryPointsManager">
     <entry_points version="2.0">
       <entry_point TYPE="method" FQNAME="com.sun.tools.xjc.runtime.JAXBContextFactory JAXBContext createContext(Class[] classes, Map properties)" />
@@ -452,7 +509,13 @@
       </item>
     </group>
   </component>
+  <component name="ProjectDetails">
+    <option name="projectName" value="JAXB" />
+  </component>
   <component name="ProjectFileVersion" converted="true" />
+  <component name="ProjectKey">
+    <option name="state" value=":pserver:snajper@cvs.dev.java.net:/cvs|jaxb2-sources/jaxb-ri/JAXB.ipr" />
+  </component>
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/tools/installer/installer.iml" filepath="$PROJECT_DIR$/tools/installer/installer.iml" />
@@ -465,11 +528,11 @@
       <module fileurl="file://$PROJECT_DIR$/runtime-fi/runtime-fi.iml" filepath="$PROJECT_DIR$/runtime-fi/runtime-fi.iml" />
       <module fileurl="file://$PROJECT_DIR$/runtime-staxex/runtime-staxex.iml" filepath="$PROJECT_DIR$/runtime-staxex/runtime-staxex.iml" />
       <module fileurl="file://$PROJECT_DIR$/tools/taglets/taglets.iml" filepath="$PROJECT_DIR$/tools/taglets/taglets.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../jaxb-unit/test/test.iml" filepath="$PROJECT_DIR$/../jaxb-unit/test/test.iml" />
+      <module fileurl="file://$TEMPLATE$/work/sources/jaxb/jaxb-unit/test/test.iml" filepath="$TEMPLATE$/work/sources/jaxb/jaxb-unit/test/test.iml" />
       <module fileurl="file://$PROJECT_DIR$/xjc/xjc.iml" filepath="$PROJECT_DIR$/xjc/xjc.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="JDK1.5" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="JDK1.5" />
   <component name="ResourceManagerContainer">
     <option name="myResourceBundles">
       <value>
@@ -661,22 +724,22 @@
         <root url="jar://$PROJECT_DIR$/tools/lib/util/ant-launcher.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/util/ant.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/util/sfx4j-1.0.jar!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/emma.jar!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/junit.jar!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/parallel-junit.jar!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/bsh.jar!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/junit-format.jar!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/dom4j.jar!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/jdom.jar!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/vmtools-0.5.jar!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/forehead.jar!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/jcommon-0.9.4.jar!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/jfreechart-0.9.19.jar!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/commons-jexl-1.0-beta-1.jar!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/xalan.jar!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/bsh-reflect-2.0b1.jar!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/bsh-classgen-2.0b1.jar!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/jaxen-1.1-beta-4.jar!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/util/emma.jar!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/util/junit.jar!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/util/parallel-junit.jar!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/util/bsh.jar!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/util/junit-format.jar!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/util/dom4j.jar!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/util/jdom.jar!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/util/vmtools-0.5.jar!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/util/forehead.jar!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/util/jcommon-0.9.4.jar!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/util/jfreechart-0.9.19.jar!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/util/commons-jexl-1.0-beta-1.jar!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/util/xalan.jar!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/util/bsh-reflect-2.0b1.jar!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/util/bsh-classgen-2.0b1.jar!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/util/jaxen-1.1-beta-4.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/util/ant-junit.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/util/istack-commons-test.jar!/" />
         <root url="file://$PROJECT_DIR$/tools/lib/redist" />
@@ -696,16 +759,16 @@
         <root url="jar://$PROJECT_DIR$/tools/lib/src/jing-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/args4j-1.0-RC-src.zip!/args4j-1.0-RC/src" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/sjsxp-src.zip!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/junit-src.zip!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/junit-format.src.zip!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/jfreechart-0.9.19.src.zip!/src" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/parallel-junit.src.zip!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/dom4j-src.zip!/src/java" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/jdom-src.zip!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/vmtools-0.5.src.zip!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/forehead.src.zip!/src/java" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/xalan-j_2_6_0-src.zip!/xalan-j_2_6_0/src" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/bsh-src.zip!/src" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/src/junit-src.zip!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/src/junit-format.src.zip!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/src/jfreechart-0.9.19.src.zip!/src" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/src/parallel-junit.src.zip!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/src/dom4j-src.zip!/src/java" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/src/jdom-src.zip!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/src/vmtools-0.5.src.zip!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/src/forehead.src.zip!/src/java" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/src/xalan-j_2_6_0-src.zip!/xalan-j_2_6_0/src" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/src/bsh-src.zip!/src" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/ant-src.zip!/apache-ant-1.6.2/src/main" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/istack-commons-test-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/txw2-src.zip!/" />
@@ -723,7 +786,7 @@
       <JAVADOC />
       <SOURCES>
         <root url="jar://$PROJECT_DIR$/tools/lib/src/jsr173_1.0_src.jar!/src" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/activation-src.zip!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/src/activation-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/istack-commons-runtime-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/redist/jaxb-api-src.zip!/" />
       </SOURCES>
@@ -732,7 +795,7 @@
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/tools/lib/util/sjsxp.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/util/args4j-1.0-RC.jar!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/util/junit.jar!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/util/junit.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -747,7 +810,7 @@
         <root url="jar://$PROJECT_DIR$/tools/lib/src/jsr173_1.0_javadoc.jar!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/jing-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/rngom-src.zip!/" />
-        <root url="jar://$PROJECT_DIR$/../jaxb-unit/tools/lib/src/junit-src.zip!/" />
+        <root url="jar://$TEMPLATE$/work/sources/jaxb/jaxb-unit/tools/lib/src/junit-src.zip!/" />
       </SOURCES>
     </library>
     <library name="rebundle/runtime">
@@ -789,7 +852,7 @@
         <root url="jar://$PROJECT_DIR$/tools/lib/src/codemodel.src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/xsom-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/tools/lib/src/txw2-src.zip!/" />
-        <root url="intellijad://intellijad" />
+        <root url="NullVirtualFilePointer" />
       </SOURCES>
     </library>
     <library name="ant">
@@ -815,7 +878,7 @@
     </library>
   </component>
   <UsedPathMacros>
-    <macro name="TEMPLATE" />
+    <macro name="TEMPLATE" description="" />
   </UsedPathMacros>
 </project>
 
