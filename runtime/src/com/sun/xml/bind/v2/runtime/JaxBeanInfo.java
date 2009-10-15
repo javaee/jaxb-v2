@@ -86,6 +86,8 @@ import org.xml.sax.SAXException;
  */
 public abstract class JaxBeanInfo<BeanT> {
 
+    protected boolean isNilIncluded = false;
+
     /**
      * For {@link JaxBeanInfo} that has multiple type names.
      */
@@ -217,6 +219,10 @@ public abstract class JaxBeanInfo<BeanT> {
             flag |= FLAG_HAS_ELEMENT_ONLY_CONTENTMODEL;
         else
             flag &= ~FLAG_HAS_ELEMENT_ONLY_CONTENTMODEL;
+    }
+
+    public boolean isNilIncluded() {
+        return isNilIncluded;
     }
 
     /**
