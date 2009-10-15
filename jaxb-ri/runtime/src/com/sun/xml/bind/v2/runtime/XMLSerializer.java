@@ -322,7 +322,7 @@ public final class XMLSerializer extends Coordinator {
             nse = nse.push();
             out.beginStartTag(tagName);
             out.endStartTag();
-            out.text(data,false);
+                        out.text(data,false);
             out.endTag(tagName);
             nse = nse.pop();
         } else {
@@ -342,7 +342,7 @@ public final class XMLSerializer extends Coordinator {
             nse = nse.push();
             out.beginStartTag(tagName);
             out.endStartTag();
-            out.text(data,false);
+                out.text(data,false);
             out.endTag(tagName);
             nse = nse.pop();
         } else {
@@ -687,10 +687,7 @@ public final class XMLSerializer extends Coordinator {
             }
 
             actual.serializeAttributes(child,this);
-            boolean nilDefined = false;
-            if (actual instanceof AttributeAccessor) {
-                nilDefined = ((AttributeAccessor)actual).isNilIncluded();
-            }
+            boolean nilDefined = actual.isNilIncluded();
             if ((nillable) && (!nilDefined)) {
                 attribute(WellKnownNamespace.XML_SCHEMA_INSTANCE,"nil","true");
             }
