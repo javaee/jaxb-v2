@@ -570,6 +570,10 @@ public final class JAXBContextImpl extends JAXBRIContext {
         }
         if(o instanceof Element)
             return beanInfoMap.get(Object.class);   // return the BeanInfo for xs:anyType
+        for( Class c : o.getClass().getInterfaces()) {
+            JaxBeanInfo bi = beanInfoMap.get(c);
+            if(bi!=null)    return bi;
+        }
         return null;
     }
 
