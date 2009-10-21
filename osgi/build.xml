@@ -92,7 +92,7 @@
         <delete file="${osgi.build.rt}/jaxb-bnd.jar" quiet="true"/>
         <delete file="${osgi.build.api}/jaxb-api-bnd.jar" quiet="true"/>
 
-       <bnd classpath="${jaxb.dist}/lib/jaxb-api.jar"
+        <bnd classpath="${jaxb.dist}/lib/jaxb-api.jar"
                   failok="false"
                   output="${osgi.build.api}/jaxb-api-bnd.jar"
                   exceptions="true"
