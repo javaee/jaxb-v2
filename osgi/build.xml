@@ -98,17 +98,17 @@
                   exceptions="true"
                   files="${osgi.build.api}/jaxb-api.bnd"/>
 
-        <bnd classpath="${jaxb.dist}/lib/jaxb-impl.jar, ${osgi.build}/jaxb-xjc"
+        <bnd classpath="${jaxb.dist}/lib/jaxb-impl.jar, ${osgi.build}/jaxb-xjc, ${jaxb.libs.util}/FastInfoset.jar"
              failok="false"
              output="${osgi.build.rt}/jaxb-bnd.jar"
              files="${osgi.build.rt}/jaxb.bnd"/>
-         <!--Readd the JAXB 1.0 files -->
-        <!-- <unjar src="${osgi.build.rt}/jaxb-bnd.jar"
-               dest="${osgi.build.rt}">
-            <patternset>
-                <include name="META-INF/MANIFEST.MF"/>
-            </patternset>
-        </unjar> -->
+            <!--Readd the JAXB 1.0 files -->
+            <!-- <unjar src="${osgi.build.rt}/jaxb-bnd.jar"
+                   dest="${osgi.build.rt}">
+                <patternset>
+                    <include name="META-INF/MANIFEST.MF"/>
+                </patternset>
+            </unjar> -->
 
         <manifestreader fileName="${osgi.build.rt}/jaxb-bnd.jar">
             <property name="jaxb.Ant-Version" value="Ant-Version" />
