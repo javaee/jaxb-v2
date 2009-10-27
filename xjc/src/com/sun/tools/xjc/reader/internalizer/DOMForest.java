@@ -398,7 +398,7 @@ public final class DOMForest {
             rootDocuments.remove(systemId);
             return null;
         } catch( IOException e ) {
-            errorReceiver.error(e.getMessage(),e);
+            errorReceiver.error(Messages.format(Messages.DOMFOREST_INPUTSOURCE_IOEXCEPTION, systemId, e.getMessage()),e);
             core.remove(systemId);
             rootDocuments.remove(systemId);
             return null;
