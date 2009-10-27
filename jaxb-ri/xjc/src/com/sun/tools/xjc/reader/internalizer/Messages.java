@@ -90,4 +90,7 @@ class Messages
         "ERR_FILENAME_IS_NOT_URI";
     static final String ERR_GENERAL_SCHEMA_CORRECTNESS_ERROR = // arg:1
         "ERR_GENERAL_SCHEMA_CORRECTNESS_ERROR";
+    static final String DOMFOREST_INPUTSOURCE_IOEXCEPTION = // arg:2
+        "DOMFOREST_INPUTSOURCE_IOEXCEPTION";
+
 }
