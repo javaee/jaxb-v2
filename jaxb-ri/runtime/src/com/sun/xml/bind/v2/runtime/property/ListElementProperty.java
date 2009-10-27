@@ -52,6 +52,7 @@ import com.sun.xml.bind.v2.runtime.Transducer;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.reflect.ListTransducedAccessorImpl;
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
+import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.LeafPropertyLoader;
 
@@ -94,6 +95,7 @@ final class ListElementProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,L
         handlers.put(tagName, new ChildLoader(new LeafPropertyLoader(xacc),null));
     }
 
+    @Override
     public void serializeBody(BeanT o, XMLSerializer w, Object outerPeer) throws SAXException, AccessorException, IOException, XMLStreamException {
         ListT list = acc.get(o);
 
@@ -109,5 +111,14 @@ final class ListElementProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,L
                 xacc.writeLeafElement(w, tagName, o, fieldName);
             }
         }
+    }
+
+    @Override
+    public Accessor getElementPropertyAccessor(String nsUri, String localName) {
+        if(tagName!=null) {
+            if(tagName.equals(nsUri,localName))
+                return acc;
+        }
+        return null;
     }
 }
