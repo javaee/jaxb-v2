@@ -98,7 +98,7 @@
                   exceptions="true"
                   files="${osgi.build.api}/jaxb-api.bnd"/>
 
-        <bnd classpath="${jaxb.dist}/lib/jaxb-impl.jar, ${osgi.build}/jaxb-xjc, ${jaxb.libs.util}/FastInfoset.jar"
+        <bnd classpath="${jaxb.dist}/lib/jaxb-impl.jar, ${osgi.build}/jaxb-xjc, ${jaxb.libs.util}/FastInfoset.jar, ${jaxb.libs.util}/stax-ex.jar"
              failok="false"
              output="${osgi.build.rt}/jaxb-bnd.jar"
              files="${osgi.build.rt}/jaxb.bnd"/>
