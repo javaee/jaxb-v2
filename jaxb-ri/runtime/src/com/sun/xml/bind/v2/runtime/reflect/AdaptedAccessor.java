@@ -78,7 +78,7 @@ final class AdaptedAccessor<BeanT,InMemValueT,OnWireValueT> extends Accessor<Bea
     public void set(BeanT bean, OnWireValueT o) throws AccessorException {
         XmlAdapter<OnWireValueT, InMemValueT> a = getAdapter();
         try {
-            core.set(bean,a.unmarshal(o));
+            core.set(bean, (o == null ? null : a.unmarshal(o)));
         } catch (Exception e) {
             throw new AccessorException(e);
         }
