@@ -313,7 +313,7 @@ public interface Navigator<T,C,F,M> {
     boolean isPublicMethod(M method);
 
     /**
-     * Returns true if the method is public.
+     * Returns true if the method is final.
      */
     boolean isFinalMethod(M method);
 
