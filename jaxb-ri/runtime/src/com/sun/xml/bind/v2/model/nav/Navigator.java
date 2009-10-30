@@ -195,6 +195,11 @@ public interface Navigator<T,C,F,M> {
     boolean isStaticMethod(M method);
 
     /**
+     * Returns true if the method is final.
+     */
+    boolean isFinalMethod(M method);
+
+    /**
      * Checks if {@code sub} is a sub-type of {@code sup}.
      *
      * TODO: should this method take T or C?
