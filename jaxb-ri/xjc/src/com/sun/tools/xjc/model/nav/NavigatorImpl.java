@@ -139,6 +139,10 @@ public final class NavigatorImpl implements Navigator<NType,NClass,Void,Void> {
         throw new UnsupportedOperationException();
     }
 
+    public boolean isFinalMethod(Void aVoid) {
+        throw new UnsupportedOperationException();
+    }
+
     public boolean isSubClassOf(NType sub, NType sup) {
         throw new UnsupportedOperationException();
     }

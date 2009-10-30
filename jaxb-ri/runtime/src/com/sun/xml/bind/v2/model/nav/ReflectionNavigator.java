@@ -293,6 +293,10 @@ public final class ReflectionNavigator implements Navigator<Type,Class,Field,Met
         return Modifier.isStatic(method.getModifiers());
     }
 
+    public boolean isFinalMethod(Method method) {
+        return Modifier.isFinal(method.getModifiers());
+    }
+
     public boolean isSubClassOf(Type sub, Type sup) {
         return erasure(sup).isAssignableFrom(erasure(sub));
     }
