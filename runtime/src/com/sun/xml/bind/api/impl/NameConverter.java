@@ -142,6 +142,11 @@ public interface NameConverter
                     nsUri = nsUri.substring(idx+1);
             }
 
+            // issue 709; s/(.*)#(.*)/\1/
+            idx = nsUri.indexOf("#");
+            if(idx >= 0)
+                nsUri = nsUri.substring(0, idx);
+
             // tokenize string
             ArrayList<String> tokens = tokenize( nsUri, "/: " );
             if( tokens.size() == 0 ) {
