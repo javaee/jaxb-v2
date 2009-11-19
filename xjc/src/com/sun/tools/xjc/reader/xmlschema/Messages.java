@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
- * 
+ *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -10,7 +10,7 @@
  * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
  * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- * 
+ *
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
  * Sun designates this particular file as subject to the "Classpath" exception
@@ -19,9 +19,9 @@
  * Header, with the fields enclosed by brackets [] replaced by your own
  * identifying information: "Portions Copyrighted [year]
  * [name of copyright owner]"
- * 
+ *
  * Contributor(s):
- * 
+ *
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
  * elects to include this software in this distribution under the [CDDL or GPL
@@ -119,7 +119,7 @@ public class Messages
 
     static final String JAVADOC_LINE_UNKNOWN = // 0 args
         "ClassSelector.JavadocLineUnknown";
-    
+
     static final String JAVADOC_VALUEOBJECT_PROPERTY =
         "FieldBuilder.Javadoc.ValueObject"; // args:2
 
@@ -141,6 +141,8 @@ public class Messages
         "ERR_ENUM_MEMBER_NAME_COLLISION_RELATED";
     static final String ERR_CANNOT_GENERATE_ENUM_NAME =
         "ERR_CANNOT_GENERATE_ENUM_NAME";
+    static final String WARN_ENUM_MEMBER_SIZE_CAP =
+        "WARN_ENUM_MEMBER_SIZE_CAP"; // args: 3
 
 
     // they are shared from the model
