@@ -166,9 +166,9 @@ final class FastInfosetConnector extends StAXConnector {
         buffer.setLength(0);
         
         // Append characters of first character event
-        buffer.append(fastInfosetStreamReader.accessTextCharacters(),
-                fastInfosetStreamReader.accessTextStart(),
-                fastInfosetStreamReader.accessTextLength());
+        buffer.append(fastInfosetStreamReader.getTextCharacters(),
+                fastInfosetStreamReader.getTextStart(),
+                fastInfosetStreamReader.getTextLength());
 
         // Consume all character
         while(true) {
@@ -184,9 +184,9 @@ final class FastInfosetConnector extends StAXConnector {
                 case XMLStreamConstants.SPACE :
                     // Append characters of second and subsequent character events
                     fastInfosetStreamReader.next();
-                    buffer.append(fastInfosetStreamReader.accessTextCharacters(),
-                            fastInfosetStreamReader.accessTextStart(),
-                            fastInfosetStreamReader.accessTextLength());
+                    buffer.append(fastInfosetStreamReader.getTextCharacters(),
+                            fastInfosetStreamReader.getTextStart(),
+                            fastInfosetStreamReader.getTextLength());
                     break;
                 default:
                     fastInfosetStreamReader.next();
@@ -222,9 +222,9 @@ final class FastInfosetConnector extends StAXConnector {
         }
         
         public void set() {
-            ch = fastInfosetStreamReader.accessTextCharacters();
-            start = fastInfosetStreamReader.accessTextStart();
-            length = fastInfosetStreamReader.accessTextLength();
+            ch = fastInfosetStreamReader.getTextCharacters();
+            start = fastInfosetStreamReader.getTextStart();
+            length = fastInfosetStreamReader.getTextLength();
         }
         
         // CharSequence interface
