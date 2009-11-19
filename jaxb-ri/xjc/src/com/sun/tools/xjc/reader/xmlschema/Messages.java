@@ -141,6 +141,8 @@ public class Messages
         "ERR_ENUM_MEMBER_NAME_COLLISION_RELATED";
     static final String ERR_CANNOT_GENERATE_ENUM_NAME =
         "ERR_CANNOT_GENERATE_ENUM_NAME";
+    static final String WARN_ENUM_MEMBER_SIZE_CAP =
+        "WARN_ENUM_MEMBER_SIZE_CAP"; // args: 3
 
 
     // they are shared from the model
