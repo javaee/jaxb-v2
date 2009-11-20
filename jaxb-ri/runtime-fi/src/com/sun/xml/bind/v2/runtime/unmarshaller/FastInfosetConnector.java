@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
- * 
+ *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -10,7 +10,7 @@
  * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
  * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- * 
+ *
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
  * Sun designates this particular file as subject to the "Classpath" exception
@@ -19,9 +19,9 @@
  * Header, with the fields enclosed by brackets [] replaced by your own
  * identifying information: "Portions Copyrighted [year]
  * [name of copyright owner]"
- * 
+ *
  * Contributor(s):
- * 
+ *
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
  * elects to include this software in this distribution under the [CDDL or GPL
@@ -86,8 +86,8 @@ final class FastInfosetConnector extends StAXConnector {
                 while( !fastInfosetStreamReader.isStartElement() )
                     event = fastInfosetStreamReader.next();
             }
-            
-                  
+
+
             if( event!=XMLStreamConstants.START_ELEMENT)
                 throw new IllegalStateException("The current event is not START_ELEMENT\n but " + event);
 
@@ -117,7 +117,7 @@ final class FastInfosetConnector extends StAXConnector {
                             // Peek at the next event to see if there are
                             // fragmented characters
                             event = fastInfosetStreamReader.peekNext();
-                            if (event == XMLStreamConstants.END_ELEMENT) 
+                            if (event == XMLStreamConstants.END_ELEMENT)
                                 processNonIgnorableText();
                             else if (event == XMLStreamConstants.START_ELEMENT)
                                 processIgnorableText();
@@ -127,7 +127,7 @@ final class FastInfosetConnector extends StAXConnector {
                         break;
                     // otherwise simply ignore
                 }
-                
+
                 event=fastInfosetStreamReader.next();
             }
 
@@ -149,7 +149,7 @@ final class FastInfosetConnector extends StAXConnector {
 
     private void handleStartElement() throws SAXException {
         processUnreportedText();
-                
+
         for (int i = 0; i < fastInfosetStreamReader.accessNamespaceCount(); i++) {
             visitor.startPrefixMapping(fastInfosetStreamReader.getNamespacePrefix(i),
                     fastInfosetStreamReader.getNamespaceURI(i));
@@ -164,11 +164,11 @@ final class FastInfosetConnector extends StAXConnector {
 
     private void handleFragmentedCharacters() throws XMLStreamException, SAXException {
         buffer.setLength(0);
-        
+
         // Append characters of first character event
-        buffer.append(fastInfosetStreamReader.accessTextCharacters(),
-                fastInfosetStreamReader.accessTextStart(),
-                fastInfosetStreamReader.accessTextLength());
+        buffer.append(fastInfosetStreamReader.getTextCharacters(),
+                fastInfosetStreamReader.getTextStart(),
+                fastInfosetStreamReader.getTextLength());
 
         // Consume all character
         while(true) {
@@ -184,16 +184,16 @@ final class FastInfosetConnector extends StAXConnector {
                 case XMLStreamConstants.SPACE :
                     // Append characters of second and subsequent character events
                     fastInfosetStreamReader.next();
-                    buffer.append(fastInfosetStreamReader.accessTextCharacters(),
-                            fastInfosetStreamReader.accessTextStart(),
-                            fastInfosetStreamReader.accessTextLength());
+                    buffer.append(fastInfosetStreamReader.getTextCharacters(),
+                            fastInfosetStreamReader.getTextStart(),
+                            fastInfosetStreamReader.getTextLength());
                     break;
                 default:
                     fastInfosetStreamReader.next();
             }
         }
     }
-    
+
     private void handleEndElement() throws SAXException {
         processUnreportedText();
 
@@ -206,8 +206,8 @@ final class FastInfosetConnector extends StAXConnector {
             visitor.endPrefixMapping(fastInfosetStreamReader.getNamespacePrefix(i));
         }
     }
-    
-    final private class CharSequenceImpl implements CharSequence {        
+
+    final private class CharSequenceImpl implements CharSequence {
         char[] ch;
         int start;
         int length;
@@ -220,13 +220,13 @@ final class FastInfosetConnector extends StAXConnector {
             this.start = start;
             this.length = length;
         }
-        
+
         public void set() {
-            ch = fastInfosetStreamReader.accessTextCharacters();
-            start = fastInfosetStreamReader.accessTextStart();
-            length = fastInfosetStreamReader.accessTextLength();
+            ch = fastInfosetStreamReader.getTextCharacters();
+            start = fastInfosetStreamReader.getTextStart();
+            length = fastInfosetStreamReader.getTextLength();
         }
-        
+
         // CharSequence interface
 
         public final int length() {
@@ -243,16 +243,16 @@ final class FastInfosetConnector extends StAXConnector {
 
         public String toString() {
             return new String(ch, start, length);
-        }        
+        }
     }
-    
+
     final private CharSequenceImpl charArray = new CharSequenceImpl();
-    
+
     private void processNonIgnorableText() throws SAXException {
         textReported = true;
-        boolean isTextAlgorithmAplied = 
+        boolean isTextAlgorithmAplied =
                 (fastInfosetStreamReader.getTextAlgorithmBytes() != null);
-        
+
         if (isTextAlgorithmAplied &&
                 fastInfosetStreamReader.getTextAlgorithmIndex() == EncodingAlgorithmIndexes.BASE64) {
             base64Data.set(fastInfosetStreamReader.getTextAlgorithmBytesClone(),null);
@@ -261,14 +261,14 @@ final class FastInfosetConnector extends StAXConnector {
             if (isTextAlgorithmAplied) {
                 fastInfosetStreamReader.getText();
             }
-            
+
             charArray.set();
             visitor.text(charArray);
         }
     }
-    
+
     private void processIgnorableText() throws SAXException {
-        boolean isTextAlgorithmAplied = 
+        boolean isTextAlgorithmAplied =
                 (fastInfosetStreamReader.getTextAlgorithmBytes() != null);
 
         if (isTextAlgorithmAplied &&
@@ -288,14 +288,14 @@ final class FastInfosetConnector extends StAXConnector {
             }
         }
     }
-    
+
     private void processBufferedText(boolean ignorable) throws SAXException {
         if (!ignorable || !WhiteSpaceProcessor.isWhiteSpace(buffer)) {
             visitor.text(buffer);
             textReported = true;
         }
     }
-    
+
     private void processUnreportedText() throws SAXException {
         if(!textReported && predictor.expectText()) {
             visitor.text("");
