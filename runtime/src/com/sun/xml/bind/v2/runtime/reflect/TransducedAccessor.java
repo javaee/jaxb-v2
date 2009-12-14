@@ -196,10 +196,12 @@ public abstract class TransducedAccessor<BeanT> {
             assert xducer.useNamespace();
         }
 
+        @Override
         public boolean useNamespace() {
             return true;
         }
 
+        @Override
         public void declareNamespace(BeanT bean, XMLSerializer w) throws AccessorException {
             ValueT o = acc.get(bean);
             if(o!=null)
@@ -222,7 +224,7 @@ public abstract class TransducedAccessor<BeanT> {
      * Implementation of {@link TransducedAccessor} that
      * simply combines a {@link Transducer} and {@link Accessor}.
      */
-    static class CompositeTransducedAccessorImpl<BeanT,ValueT> extends TransducedAccessor<BeanT> {
+    public static class CompositeTransducedAccessorImpl<BeanT,ValueT> extends TransducedAccessor<BeanT> {
         protected final Transducer<ValueT> xducer;
         protected final Accessor<BeanT,ValueT> acc;
 

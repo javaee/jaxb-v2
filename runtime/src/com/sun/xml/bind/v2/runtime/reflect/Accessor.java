@@ -43,6 +43,8 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -175,6 +177,26 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
             // throw UnmarshalException instead IllegalAccesssError | Issue 475
             Loader.handleGenericError(iae);
         }
+    }
+
+    private static List<Class> nonAbstractableClasses = Arrays.asList(new Class[]{
+            Object.class,
+            java.util.Calendar.class,
+            javax.xml.datatype.XMLGregorianCalendar.class,
+            java.awt.Image.class,
+            javax.activation.DataHandler.class,
+            javax.xml.transform.Source.class,
+            java.util.Date.class,
+            java.io.File.class,
+            java.net.URI.class,
+            java.net.URL.class,
+            Class.class,
+            String.class,
+            javax.xml.transform.Source.class}
+    );
+
+    public boolean isValueTypeAbstractable() {
+        return !nonAbstractableClasses.contains(getValueType());
     }
 
     /**
