@@ -95,9 +95,11 @@ public abstract class OptimizedAccessorFactory {
 
         Class t = sparams[0];
         String typeName = t.getName().replace('.','_');
+        if (t.isArray()) {
+            typeName = "Array_Of_" + t.getComponentType().getName().replace('.','_');
+        }
 
         String newClassName = toVMClassName(getter.getDeclaringClass())+"$JaxbAccessorM_"+getter.getName()+'_'+setter.getName()+'_'+typeName;
-
         Class opt;
 
         if(t.isPrimitive())
