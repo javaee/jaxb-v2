@@ -182,6 +182,7 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
     private static List<Class> nonAbstractableClasses = Arrays.asList(new Class[]{
             Object.class,
             java.util.Calendar.class,
+            javax.xml.datatype.Duration.class,
             javax.xml.datatype.XMLGregorianCalendar.class,
             java.awt.Image.class,
             javax.activation.DataHandler.class,
