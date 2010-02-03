@@ -174,7 +174,7 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
         } catch (AccessorException e) {
             Loader.handleGenericException(e,true);
         } catch (IllegalAccessError iae) {
-            // throw UnmarshalException instead IllegalAccesssError | Issue 475
+            // throw UnmarshalException instead IllegalAccessError | Issue 475
             Loader.handleGenericError(iae);
         }
     }
@@ -182,6 +182,7 @@ public abstract class Accessor<BeanT,ValueT> implements Receiver {
     private static List<Class> nonAbstractableClasses = Arrays.asList(new Class[]{
             Object.class,
             java.util.Calendar.class,
+            javax.xml.datatype.Duration.class,
             javax.xml.datatype.XMLGregorianCalendar.class,
             java.awt.Image.class,
             javax.activation.DataHandler.class,
