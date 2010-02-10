@@ -184,32 +184,11 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
      */
     public static final Map<Type,RuntimeBuiltinLeafInfoImpl<?>> LEAVES = new HashMap<Type, RuntimeBuiltinLeafInfoImpl<?>>();
 
-    public static final RuntimeBuiltinLeafInfoImpl<String> STRING = new StringImpl<String>(String.class,
-        createXS("string"),
-        createXS("normalizedString"),
-        createXS("anyURI"),
-        createXS("token"),
-        createXS("language"),
-        createXS("Name"),
-        createXS("NCName"),
-        createXS("NMTOKEN"),
-        createXS("ENTITY")
-        ) {
-        public String parse(CharSequence text) {
-            return text.toString();
-        }
-        public String print(String s) {
-            return s;
-        }
-        @Override
-        public final void writeText(XMLSerializer w, String o, String fieldName) throws IOException, SAXException, XMLStreamException {
-            w.text(o,fieldName);
-        }
-        @Override
-        public final void writeLeafElement(XMLSerializer w, Name tagName, String o, String fieldName) throws IOException, SAXException, XMLStreamException {
-            w.leafElement(tagName,o,fieldName);
-        }
-    };
+    private static QName createXS(String typeName) {
+        return new QName(WellKnownNamespace.XML_SCHEMA,typeName);
+    }
+
+    public static final RuntimeBuiltinLeafInfoImpl<String> STRING;
 
     private static final String DATE = "date";
     
@@ -222,7 +201,33 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
      */
     public static final List<RuntimeBuiltinLeafInfoImpl<?>> builtinBeanInfos;
 
+    public static final String MAP_ANYURI_TO_URI = "mapAnyUriToUri";
+    
     static {
+
+        QName[] qnames = (System.getProperty(MAP_ANYURI_TO_URI) == null) ? new QName[] {
+                                createXS("string"),
+                                createXS("normalizedString"),
+                                createXS("anyURI"),
+                                createXS("token"),
+                                createXS("language"),
+                                createXS("Name"),
+                                createXS("NCName"),
+                                createXS("NMTOKEN"),
+                                createXS("ENTITY")}
+                                    :
+                         new QName[] {
+                                createXS("string"),
+                                createXS("normalizedString"),
+                                createXS("token"),
+                                createXS("language"),
+                                createXS("Name"),
+                                createXS("NCName"),
+                                createXS("NMTOKEN"),
+                                createXS("ENTITY")};
+
+        STRING = new StringImplImpl(String.class, qnames);
+
         RuntimeBuiltinLeafInfoImpl[] secondary = new RuntimeBuiltinLeafInfoImpl[] {
             /*
                 There are cases where more than one Java classes map to the same XML type.
@@ -531,22 +536,20 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                     XMLSerializer xs = XMLSerializer.getInstance();
 
                     QName type = xs.getSchemaType();
-                    if(type!=null) {
-						try {
-							checkXmlGregorianCalendarFieldRef(type, cal);
-							String format = xmlGregorianCalendarFormatString.get(type);
-							if(format!=null)
-								return format(format,cal);
-							// TODO:
-							// we need to think about how to report an error where @XmlSchemaType
-							// didn't take effect. a general case is when a transducer isn't even
-							// written to look at that value.
-						} catch (javax.xml.bind.MarshalException e){
-							//-xs.handleError(e);
-							System.out.println(e.toString());
-							return "";
-						}
-					}
+                    if (type != null) {
+                        try {
+                            checkXmlGregorianCalendarFieldRef(type, cal);
+                            String format = xmlGregorianCalendarFormatString.get(type);
+                            if (format != null) {
+                                return format(format, cal);
+                            }
+                        } catch (javax.xml.bind.MarshalException e) {
+                            // see issue 649
+                            xs.handleEvent(new ValidationEventImpl(ValidationEvent.ERROR, e.getMessage(),
+                                xs.getCurrentLocation(null) ));
+                            return "";
+                        }
+                    }
                     return cal.toXMLFormat();
                 }
 
@@ -781,10 +784,12 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                     return DatatypeConverterImpl._printQName(v,XMLSerializer.getInstance().getNamespaceContext());
                 }
 
+                @Override
                 public boolean useNamespace() {
                     return true;
                 }
 
+                @Override
                 public void declareNamespace(QName v, XMLSerializer w) {
                     w.getNamespaceContext().declareNamespace(v.getNamespaceURI(),v.getPrefix(),false);
                 }
@@ -839,10 +844,6 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
         }
     }
 
-
-    private static QName createXS(String typeName) {
-        return new QName(WellKnownNamespace.XML_SCHEMA,typeName);
-    }
 
     /**
      * Cached instance of {@link DatatypeFactory} to create
@@ -977,6 +978,31 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
 
         public String print(UUID v) {
             return v.toString();
+        }
+    }
+
+    private static class StringImplImpl extends StringImpl<String> {
+
+        public StringImplImpl(Class type, QName[] typeNames) {
+            super(type, typeNames);
+        }
+
+        public String parse(CharSequence text) {
+            return text.toString();
+        }
+
+        public String print(String s) {
+            return s;
+        }
+
+        @Override
+        public final void writeText(XMLSerializer w, String o, String fieldName) throws IOException, SAXException, XMLStreamException {
+            w.text(o, fieldName);
+        }
+
+        @Override
+        public final void writeLeafElement(XMLSerializer w, Name tagName, String o, String fieldName) throws IOException, SAXException, XMLStreamException {
+            w.leafElement(tagName, o, fieldName);
         }
     }
 }
