@@ -545,7 +545,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                             }
                         } catch (javax.xml.bind.MarshalException e) {
                             // see issue 649
-                            xs.handleEvent(new ValidationEventImpl(ValidationEvent.ERROR, e.getMessage(),
+                            xs.handleEvent(new ValidationEventImpl(ValidationEvent.WARNING, e.getMessage(),
                                 xs.getCurrentLocation(null) ));
                             return "";
                         }
