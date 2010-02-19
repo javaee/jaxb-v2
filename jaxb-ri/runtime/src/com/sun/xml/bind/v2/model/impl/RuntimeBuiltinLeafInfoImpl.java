@@ -187,7 +187,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
     public static final RuntimeBuiltinLeafInfoImpl<String> STRING = new StringImpl<String>(String.class,
         createXS("string"),
         createXS("normalizedString"),
-//        createXS("anyURI"),
+        createXS("anyURI"),
         createXS("token"),
         createXS("language"),
         createXS("Name"),
