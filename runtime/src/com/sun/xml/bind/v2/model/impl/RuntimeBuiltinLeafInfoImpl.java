@@ -205,7 +205,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
     
     static {
 
-        QName[] qnames = (System.getProperty(MAP_ANYURI_TO_URI) != null) ? new QName[] {
+        QName[] qnames = (System.getProperty(MAP_ANYURI_TO_URI) == null) ? new QName[] {
                                 createXS("string"),
                                 createXS("normalizedString"),
                                 createXS("anyURI"),
