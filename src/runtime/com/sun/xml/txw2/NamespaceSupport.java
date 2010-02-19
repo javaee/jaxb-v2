@@ -736,13 +736,16 @@ final class NamespaceSupport
 	 * @return The associated prefix, or null if none is declared.
 	 * @see org.xml.sax.helpers.NamespaceSupport#getPrefix
 	 */
-	String getPrefix (String uri)
-	{
-	    if (uriTable == null) {
-		return null;
-	    } else {
-		return (String)uriTable.get(uri);
+	String getPrefix (String uri) {
+	    if (uriTable != null) {
+                String uriPrefix = (String)uriTable.get(uri);
+                if (uriPrefix == null) return null;
+		String verifyNamespace = (String) prefixTable.get(uriPrefix);                
+                if (uri.equals(verifyNamespace)) {
+                    return uriPrefix;
+                }
 	    }
+            return null;
 	}
 
 
