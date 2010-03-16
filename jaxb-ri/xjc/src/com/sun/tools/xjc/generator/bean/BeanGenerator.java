@@ -228,6 +228,23 @@ public final class BeanGenerator implements Outline
                         cc.ref._implements(model.rootInterface);
                 }
             }
+
+            // if serialization support is turned on, generate
+            // [RESULT]
+            // class ... implements Serializable {
+            //     private static final long serialVersionUID = <id>;
+            //     ....
+            // }
+            if( model.serializable ) {
+                cc.implClass._implements(Serializable.class);
+                if( model.serialVersionUID!=null ) {
+                    cc.implClass.field(
+                        JMod.PRIVATE|JMod.STATIC|JMod.FINAL,
+                        codeModel.LONG,
+                        "serialVersionUID",
+                        JExpr.lit(model.serialVersionUID));
+                }
+            }
         }
 
         // fill in implementation classes
@@ -467,23 +484,6 @@ public final class BeanGenerator implements Outline
      */
     private void generateClassBody( ClassOutlineImpl cc ) {
         CClassInfo target = cc.target;
-
-        // if serialization support is turned on, generate
-        // [RESULT]
-        // class ... implements Serializable {
-        //     private static final long serialVersionUID = <id>;
-        //     ....
-        // }
-        if( model.serializable ) {
-            cc.implClass._implements(Serializable.class);
-            if( model.serialVersionUID!=null ) {
-                cc.implClass.field(
-                    JMod.PRIVATE|JMod.STATIC|JMod.FINAL,
-                    codeModel.LONG,
-                    "serialVersionUID",
-                    JExpr.lit(model.serialVersionUID));
-            }
-        }
 
         // used to simplify the generated annotations
         String mostUsedNamespaceURI = cc._package().getMostUsedNamespaceURI();
