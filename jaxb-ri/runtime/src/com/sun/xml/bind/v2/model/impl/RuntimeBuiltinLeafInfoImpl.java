@@ -228,7 +228,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
 
         STRING = new StringImplImpl(String.class, qnames);
 
-        RuntimeBuiltinLeafInfoImpl[] secondary = new RuntimeBuiltinLeafInfoImpl[] {
+        ArrayList<RuntimeBuiltinLeafInfoImpl<?>> secondaryList = new ArrayList<RuntimeBuiltinLeafInfoImpl<?>>();
             /*
                 There are cases where more than one Java classes map to the same XML type.
                 But when we see the same XML type in an incoming document, we only pick
@@ -246,6 +246,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
             /*
                 secondary bindings
             */
+        secondaryList.add(
             new StringImpl<Character>(Character.class, createXS("unsignedShort")) {
                 public Character parse(CharSequence text) {
                     // TODO.checkSpec("default mapping for char is not defined yet");
@@ -254,7 +255,8 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                 public String print(Character v) {
                     return Integer.toString(v);
                 }
-            },
+            });
+        secondaryList.add(
             new StringImpl<Calendar>(Calendar.class, DatatypeConstants.DATETIME) {
                 public Calendar parse(CharSequence text) {
                     return DatatypeConverterImpl._parseDateTime(text.toString());
@@ -262,7 +264,8 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                 public String print(Calendar v) {
                     return DatatypeConverterImpl._printDateTime(v);
                 }
-            },
+            });
+        secondaryList.add(
             new StringImpl<GregorianCalendar>(GregorianCalendar.class, DatatypeConstants.DATETIME) {
                 public GregorianCalendar parse(CharSequence text) {
                     return DatatypeConverterImpl._parseDateTime(text.toString());
@@ -270,7 +273,8 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                 public String print(GregorianCalendar v) {
                     return DatatypeConverterImpl._printDateTime(v);
                 }
-            },
+            });
+        secondaryList.add(
             new StringImpl<Date>(Date.class, DatatypeConstants.DATETIME) {
                 public Date parse(CharSequence text) {
                     return DatatypeConverterImpl._parseDateTime(text.toString()).getTime();
@@ -287,7 +291,8 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                         return DatatypeConverterImpl._printDateTime(cal);
                     }
                 }
-            },
+            });
+        secondaryList.add(
             new StringImpl<File>(File.class, createXS("string")) {
                 public File parse(CharSequence text) {
                     return new File(WhiteSpaceProcessor.trim(text).toString());
@@ -295,7 +300,8 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                 public String print(File v) {
                     return v.getPath();
                 }
-            },
+            });
+        secondaryList.add(
             new StringImpl<URL>(URL.class, createXS("anyURI")) {
                 public URL parse(CharSequence text) throws SAXException {
                     TODO.checkSpec("JSR222 Issue #42");
@@ -309,21 +315,25 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                 public String print(URL v) {
                     return v.toExternalForm();
                 }
-            },
-            new StringImpl<URI>(URI.class, createXS("string")) {
-                public URI parse(CharSequence text) throws SAXException {
-                    try {
-                        return new URI(text.toString());
-                    } catch (URISyntaxException e) {
-                        UnmarshallingContext.getInstance().handleError(e);
-                        return null;
+            });
+        if (System.getProperty(MAP_ANYURI_TO_URI) == null) {
+            secondaryList.add(
+                new StringImpl<URI>(URI.class, createXS("string")) {
+                    public URI parse(CharSequence text) throws SAXException {
+                        try {
+                            return new URI(text.toString());
+                        } catch (URISyntaxException e) {
+                            UnmarshallingContext.getInstance().handleError(e);
+                            return null;
+                        }
                     }
-                }
 
-                public String print(URI v) {
-                    return v.toString();
-                }
-            },
+                    public String print(URI v) {
+                        return v.toString();
+                    }
+                });
+        }
+        secondaryList.add(
             new StringImpl<Class>(Class.class, createXS("string")) {
                 public Class parse(CharSequence text) throws SAXException {
                     TODO.checkSpec("JSR222 Issue #42");
@@ -345,12 +355,13 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                 public String print(Class v) {
                     return v.getName();
                 }
-            },
+            });
 
             /*
                 classes that map to base64Binary / MTOM related classes.
                 a part of the secondary binding.
             */
+        secondaryList.add(
             new PcdataImpl<Image>(Image.class, createXS("base64Binary")) {
                 public Image parse(CharSequence text) throws SAXException  {
                     try {
@@ -438,7 +449,8 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                     imageData.set(bd,mimeType);
                     return bd;
                 }
-            },
+            });
+        secondaryList.add(
             new PcdataImpl<DataHandler>(DataHandler.class, createXS("base64Binary")) {
                 public DataHandler parse(CharSequence text) {
                     if(text instanceof Base64Data)
@@ -453,7 +465,8 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                     bd.set(v);
                     return bd;
                 }
-            },
+            });
+        secondaryList.add(
             new PcdataImpl<Source>(Source.class, createXS("base64Binary")) {
                 public Source parse(CharSequence text) throws SAXException  {
                     try {
@@ -520,7 +533,8 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                     bd.set(new byte[0],"application/xml");
                     return bd;
                 }
-            },
+            });
+        secondaryList.add(
             new StringImpl<XMLGregorianCalendar>(XMLGregorianCalendar.class,
                     createXS("anySimpleType"),
                     DatatypeConstants.DATE,
@@ -637,15 +651,15 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                 public QName getTypeName(XMLGregorianCalendar cal) {
                     return cal.getXMLSchemaType();
                 }
-            }
-        };
+            });
 
-        RuntimeBuiltinLeafInfoImpl[] primary = new RuntimeBuiltinLeafInfoImpl[] {
-            /*
-                primary bindings
-            */
-            STRING,
-            new StringImpl<Boolean>(Boolean.class,
+        ArrayList<RuntimeBuiltinLeafInfoImpl<?>> primaryList = new ArrayList<RuntimeBuiltinLeafInfoImpl<?>>();
+
+        /*
+            primary bindings
+        */
+        primaryList.add(STRING);
+        primaryList.add(new StringImpl<Boolean>(Boolean.class,
                 createXS("boolean")
                 ) {
                 public Boolean parse(CharSequence text) {
@@ -655,8 +669,8 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                 public String print(Boolean v) {
                     return v.toString();
                 }
-            },
-            new PcdataImpl<byte[]>(byte[].class,
+            });
+        primaryList.add(new PcdataImpl<byte[]>(byte[].class,
                 createXS("base64Binary"),
                 createXS("hexBinary")
                 ) {
@@ -671,8 +685,8 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                     bd.set(v,mimeType);
                     return bd;
                 }
-            },
-            new StringImpl<Byte>(Byte.class,
+            });
+        primaryList.add(new StringImpl<Byte>(Byte.class,
                 createXS("byte")
                 ) {
                 public Byte parse(CharSequence text) {
@@ -682,8 +696,8 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                 public String print(Byte v) {
                     return DatatypeConverterImpl._printByte(v);
                 }
-            },
-            new StringImpl<Short>(Short.class,
+            });
+        primaryList.add(new StringImpl<Short>(Short.class,
                 createXS("short"),
                 createXS("unsignedByte")
                 ) {
@@ -694,8 +708,8 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                 public String print(Short v) {
                     return DatatypeConverterImpl._printShort(v);
                 }
-            },
-            new StringImpl<Integer>(Integer.class,
+            });
+        primaryList.add(new StringImpl<Integer>(Integer.class,
                 createXS("int"),
                 createXS("unsignedShort")
                 ) {
@@ -706,7 +720,8 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                 public String print(Integer v) {
                     return DatatypeConverterImpl._printInt(v);
                 }
-            },
+            });
+        primaryList.add(
             new StringImpl<Long>(Long.class,
                 createXS("long"),
                 createXS("unsignedInt")
@@ -718,7 +733,8 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                 public String print(Long v) {
                     return DatatypeConverterImpl._printLong(v);
                 }
-            },
+            });
+        primaryList.add(
             new StringImpl<Float>(Float.class,
                 createXS("float")
                 ) {
@@ -729,7 +745,8 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                 public String print(Float v) {
                     return DatatypeConverterImpl._printFloat(v);
                 }
-            },
+            });
+        primaryList.add(
             new StringImpl<Double>(Double.class,
                 createXS("double")
                 ) {
@@ -740,7 +757,8 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                 public String print(Double v) {
                     return DatatypeConverterImpl._printDouble(v);
                 }
-            },
+            });
+        primaryList.add(
             new StringImpl<BigInteger>(BigInteger.class,
                 createXS("integer"),
                 createXS("positiveInteger"),
@@ -756,7 +774,8 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                 public String print(BigInteger v) {
                     return DatatypeConverterImpl._printInteger(v);
                 }
-            },
+            });
+        primaryList.add(
             new StringImpl<BigDecimal>(BigDecimal.class,
                 createXS("decimal")
                 ) {
@@ -767,7 +786,8 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                 public String print(BigDecimal v) {
                     return DatatypeConverterImpl._printDecimal(v);
                 }
-            },
+            });
+        primaryList.add(
             new StringImpl<QName>(QName.class,
                 createXS("QName")
                 ) {
@@ -793,7 +813,25 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                 public void declareNamespace(QName v, XMLSerializer w) {
                     w.getNamespaceContext().declareNamespace(v.getNamespaceURI(),v.getPrefix(),false);
                 }
-            },
+            });
+        if (System.getProperty(MAP_ANYURI_TO_URI) != null) {
+            primaryList.add(
+                new StringImpl<URI>(URI.class, createXS("anyURI")) {
+                    public URI parse(CharSequence text) throws SAXException {
+                        try {
+                            return new URI(text.toString());
+                        } catch (URISyntaxException e) {
+                            UnmarshallingContext.getInstance().handleError(e);
+                            return null;
+                        }
+                    }
+
+                    public String print(URI v) {
+                        return v.toString();
+                    }
+                });
+        }
+        primaryList.add(
             new StringImpl<Duration>(Duration.class,  createXS("duration")) {
                 public String print(Duration duration) {
                     return duration.toString();
@@ -803,7 +841,8 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                     TODO.checkSpec("JSR222 Issue #42");
                     return datatypeFactory.newDuration(lexical.toString());
                 }
-            },
+            });
+        primaryList.add(
             new StringImpl<Void>(Void.class) {
                 // 'void' binding isn't defined by the spec, but when the JAX-RPC processes user-defined
                 // methods like "int actionFoo()", they need this pseudo-void property.
@@ -815,12 +854,10 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                 public Void parse(CharSequence lexical) {
                     return null;
                 }
-            }
-        };
+            });
 
-        List<RuntimeBuiltinLeafInfoImpl<?>> l = new ArrayList<RuntimeBuiltinLeafInfoImpl<?>>(secondary.length+primary.length+1);
-        for (RuntimeBuiltinLeafInfoImpl<?> item : secondary)
-            l.add(item);
+        List<RuntimeBuiltinLeafInfoImpl<?>> l = new ArrayList<RuntimeBuiltinLeafInfoImpl<?>>(secondaryList.size()+primaryList.size()+1);
+        l.addAll(secondaryList);
 
         // UUID may fail to load if we are running on JDK 1.4. Handle gracefully
         try {
@@ -829,8 +866,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
             // ignore
         }
 
-        for (RuntimeBuiltinLeafInfoImpl<?> item : primary)
-            l.add(item);
+        l.addAll(primaryList);
 
         builtinBeanInfos = Collections.unmodifiableList(l);
     }
