@@ -48,8 +48,6 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
-import com.sun.xml.bind.v2.TODO;
-
 /**
  * This class is the JAXB RI's default implementation of the 
  * {@link DatatypeConverterInterface}.
@@ -264,7 +262,6 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
 
         if (literal.length() <= 0) {
             return null;
-            // throw new IllegalArgumentException("Input is empty");
         }
         
         do {
