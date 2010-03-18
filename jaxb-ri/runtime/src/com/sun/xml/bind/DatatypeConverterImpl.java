@@ -48,8 +48,6 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
-import com.sun.xml.bind.v2.TODO;
-
 /**
  * This class is the JAXB RI's default implementation of the 
  * {@link DatatypeConverterInterface}.
@@ -264,7 +262,6 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
 
         if (literal.length() <= 0) {
             return null;
-            // throw new IllegalArgumentException("Input is empty");
         }
         
         do {
@@ -478,8 +475,11 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
     }
 
     public String printDate(Calendar val) {
+        return _printDate(val);
+    }
 
-        return CalendarFormatter.doFormat((new StringBuilder("%Y-%M-%D").append("%z")).toString(),val);
+    public static String _printDate(Calendar val) {
+        return CalendarFormatter.doFormat((new StringBuilder("%Y-%M-%D")).toString(),val);
     }
 
     public String parseAnySimpleType(String lexicalXSDAnySimpleType) {
@@ -574,7 +574,6 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
 
 
 // base64 decoder
-//====================================
 
     private static final byte[] decodeMap = initDecodeMap();
     private static final byte PADDING = 127;
