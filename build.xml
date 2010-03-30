@@ -77,6 +77,14 @@
     <zip destfile="build/txw2c-src.zip">
       <fileset dir="src/compiler" includes="**/*" defaultexcludes="no"/>
     </zip>
+    <zip destfile="build/txw2-full-src.zip">
+      <zipfileset dir="nbproject" prefix="nbproject"/>
+      <zipfileset dir="src" prefix="src"/>
+      <zipfileset dir="wsdl11" prefix="wsdl11"/>
+      <zipfileset dir="xmlschema" prefix="xmlschema"/>
+      <fileset file="*.xml"/>
+      <fileset file="*.pom"/>
+    </zip>
     <jar destfile="build/txw2.jar">
       <manifest>
         <attribute name="Date" value="${TODAY}"/>
