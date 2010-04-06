@@ -300,7 +300,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         } else {
             nillable = xmlElem.nillable();
         }
-        
+
         n.elementDecls.put(name.getLocalPart(),n.new ElementWithType(nillable, elem.getContentType()));
 
         // search for foreign namespace references
@@ -1020,10 +1020,11 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
                         QName tn = t.getTagName();
 
-                        NonElement target = t.getTarget();
+                        PropertyInfo propInfo = t.getSource();
+                        TypeInfo parentInfo = (propInfo == null) ? null : propInfo.parent();
                         if (canBeDirectElementRef(t,tn) || ((!tn.getNamespaceURI().equals(uri) && tn.getNamespaceURI().length()>0) &&
-                                                            (!((target instanceof ClassInfo) && (target.getTypeName() == null))))) {     // see Issue 517
-                                e.ref(tn);
+                                                            (!((parentInfo instanceof ClassInfo) && (((ClassInfo)parentInfo).getTypeName() == null))))) {     // see Issue 517
+                            e.ref(tn);
                         } else {
                             e.name(tn.getLocalPart());
                             writeTypeRef(e,t, "type");
