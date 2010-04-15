@@ -50,7 +50,7 @@ import com.sun.tools.xjc.model.CPropertyInfo;
  * 
  * 
  * @author
- *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
+ *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com), Martin Grebac
  */
 abstract class AbstractFieldWithVar extends AbstractField {
     
@@ -83,7 +83,7 @@ abstract class AbstractFieldWithVar extends AbstractField {
      * {@code isXXXX} as the method name.
      */
     protected String getGetterMethod() {
-        if (getOptions().target.isLaterThan(SpecVersion.V2_2)) {
+        if (getOptions().enableIntrospection) {
             return ((getFieldType().isPrimitive() &&
                      getFieldType().boxify().getPrimitiveType()==codeModel.BOOLEAN) ?
                          "is":"get") + prop.getName(true);
@@ -116,7 +116,7 @@ abstract class AbstractFieldWithVar extends AbstractField {
         protected final JFieldRef $ref;
 
         public final void toRawValue(JBlock block, JVar $var) {
-            if (getOptions().target.isLaterThan(SpecVersion.V2_2)) {
+            if (getOptions().enableIntrospection) {
                 block.assign($var,$target.invoke(getGetterMethod()));
             } else {
                 block.assign($var,$target.invoke(getGetterMethod()));
