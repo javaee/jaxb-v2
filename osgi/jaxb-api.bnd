@@ -1,7 +1,7 @@
 Bundle-SymbolicName: jaxb-api
 Bundle-Name: jaxb-api
-Bundle-Version: 2.2
-Export-Package: *;version=2.2
+Bundle-Version: @RELEASE_SPEC_VERSION@
+Export-Package: *;version=@RELEASE_SPEC_VERSION@
 
 Import-Package: *
 
