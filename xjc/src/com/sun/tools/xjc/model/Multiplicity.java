@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
- * 
+ *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -10,7 +10,7 @@
  * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
  * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- * 
+ *
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
  * Sun designates this particular file as subject to the "Classpath" exception
@@ -19,9 +19,9 @@
  * Header, with the fields enclosed by brackets [] replaced by your own
  * identifying information: "Portions Copyrighted [year]
  * [name of copyright owner]"
- * 
+ *
  * Contributor(s):
- * 
+ *
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
  * elects to include this software in this distribution under the [CDDL or GPL
@@ -35,82 +35,96 @@
  */
 package com.sun.tools.xjc.model;
 
+import java.math.BigInteger;
+
 
 
 /**
  * represents a possible number of occurence.
- * 
+ *
  * Usually, denoted by a pair of integers like (1,1) or (5,10).
  * A special value "unbounded" is allowed as the upper bound.
- * 
+ *
  * <p>
  * For example, (0,unbounded) corresponds to the '*' occurence of DTD.
  * (0,1) corresponds to the '?' occurence of DTD.
- * 
+ *
  * @author
  *    <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class Multiplicity {
-    public final int min;
-    public final Integer max;    // null is used to represent "unbounded".
+    public final BigInteger min;
+    public final BigInteger max;    // null is used to represent "unbounded".
 
-    public static Multiplicity create( int min, Integer max ) {
-        if(min==0 && max==null) return STAR;
-        if(min==1 && max==null) return PLUS;
-        if(max!=null) {
-            if(min==0 && max==0)    return ZERO;
-            if(min==0 && max==1)    return OPTIONAL;
-            if(min==1 && max==1)    return ONE;
+    public static Multiplicity create(BigInteger min, BigInteger max ) {
+        if (BigInteger.ZERO.equals(min) && max==null) return STAR;
+        if (BigInteger.ONE.equals(min) && max==null) return PLUS;
+        if (max!=null) {
+            if(BigInteger.ZERO.equals(min) && BigInteger.ZERO.equals(max))    return ZERO;
+            if(BigInteger.ZERO.equals(min) && BigInteger.ONE.equals(max))    return OPTIONAL;
+            if(BigInteger.ONE.equals(min) && BigInteger.ONE.equals(max))    return ONE;
         }
-        return new Multiplicity(min,max);
+        return new Multiplicity(min, max);
     }
 
-    private Multiplicity( int min, Integer max ) {
-        this.min = min; this.max = max;
+    public static Multiplicity create(int min, Integer max ) {
+        return Multiplicity.create(BigInteger.valueOf(min), BigInteger.valueOf(max.intValue()));
     }
 
+    private Multiplicity(BigInteger min, BigInteger max) {
+        this.min = min;
+        this.max = max;
+    }
+
+    private Multiplicity(int min, int max) {
+        this(BigInteger.valueOf(min), BigInteger.valueOf(max));
+    }
+
+    private Multiplicity(int min, Integer max) {
+        this(BigInteger.valueOf(min), (max == null) ? null : BigInteger.valueOf(max));
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof Multiplicity)) return false;
 
         Multiplicity that = (Multiplicity) o;
 
-        if (this.min != that.min) return false;
+        if (!this.min.equals(that.min)) return false;
         if (this.max != null ? !this.max.equals(that.max) : that.max != null) return false;
 
         return true;
     }
 
+    @Override
     public int hashCode() {
-        int result;
-        result = min;
-        result = 29 * result + (max != null ? max.hashCode() : 0);
-        return result;
+        return min.add(max).intValue();
     }
 
     /** returns true if the multiplicity is (1,1). */
     public boolean isUnique() {
         if(max==null)    return false;
-        return min==1 && max==1;
+        return BigInteger.ONE.equals(min) && BigInteger.ONE.equals(max);
     }
-    
+
     /** returns true if the multiplicity is (0,1) */
     public boolean isOptional() {
         if(max==null) return false;
-        return min==0 && max==1;
+        return BigInteger.ZERO.equals(min) && BigInteger.ONE.equals(max);
     }
-        
+
     /** returns true if the multiplicity is (0,1) or (1,1). */
     public boolean isAtMostOnce() {
         if(max==null)    return false;
-        return max<=1;
+        return max.compareTo(BigInteger.ONE)<=0;
     }
-    
+
     /** returns true if the multiplicity is (0,0). */
     public boolean isZero() {
         if(max==null)    return false;
-        return max==0;
+        return BigInteger.ZERO.equals(max);
     }
-    
+
     /**
      * Returns true if the multiplicity represented by this object
      * completely includes the multiplicity represented by the
@@ -118,10 +132,10 @@ public final class Multiplicity {
      * [2,4] doesn't include [1,3].
      */
     public boolean includes( Multiplicity rhs ) {
-        if( rhs.min<min )   return false;
-        if( max==null )     return true;
-        if( rhs.max==null ) return false;
-        return rhs.max <= max;
+        if (rhs.min.compareTo(min) == -1)   return false;
+        if (max==null) return true;
+        if (rhs.max==null) return false;
+        return rhs.max.compareTo(max) <= 0;
     }
 
     /**
@@ -132,20 +146,21 @@ public final class Multiplicity {
         if(max==null)       return "unbounded";
         else                return max.toString();
     }
-    
+
     /** gets the string representation.
      * mainly debug purpose.
      */
+    @Override
     public String toString() {
         return "("+min+','+getMaxString()+')';
     }
-    
+
     /** the constant representing the (0,0) multiplicity. */
     public static final Multiplicity ZERO = new Multiplicity(0,0);
-    
+
     /** the constant representing the (1,1) multiplicity. */
     public static final Multiplicity ONE = new Multiplicity(1,1);
-    
+
     /** the constant representing the (0,1) multiplicity. */
     public static final Multiplicity OPTIONAL = new Multiplicity(0,1);
 
@@ -156,51 +171,47 @@ public final class Multiplicity {
     public static final Multiplicity PLUS = new Multiplicity(1,null);
 
 // arithmetic methods
-//============================
     public static Multiplicity choice( Multiplicity lhs, Multiplicity rhs ) {
         return create(
-            Math.min(lhs.min,rhs.min),
-            (lhs.max==null||rhs.max==null)?
-                null:
-                (Integer)Math.max(lhs.max, rhs.max) );
+            lhs.min.min(rhs.min),
+            (lhs.max==null || rhs.max==null) ? null : lhs.max.max(rhs.max) );
     }
     public static Multiplicity group( Multiplicity lhs, Multiplicity rhs ) {
-        return create( lhs.min+rhs.min,
-            (lhs.max==null||rhs.max==null)?
-                null:
-                (Integer)(lhs.max + rhs.max) );
+        return create(
+            lhs.min.add(rhs.min),
+            (lhs.max==null || rhs.max==null) ? null : lhs.max.add(rhs.max) );
     }
     public static Multiplicity multiply( Multiplicity lhs, Multiplicity rhs ) {
-        int min = lhs.min*rhs.min;
-        Integer max;
-        if(isZero(lhs.max) || isZero(rhs.max))
-            max = 0;
+        BigInteger min = lhs.min.multiply(rhs.min);
+        BigInteger max;
+        if (isZero(lhs.max) || isZero(rhs.max))
+            max = BigInteger.ZERO;
         else
-        if(lhs.max==null || rhs.max==null)
+        if (lhs.max==null || rhs.max==null)
             max = null;
         else
-            max = lhs.max*rhs.max;
+            max = lhs.max.multiply(rhs.max);
         return create(min,max);
     }
 
-    private static boolean isZero(Integer i) {
-        return i!=null && i==0;
+    private static boolean isZero(BigInteger i) {
+        return (i != null && BigInteger.ZERO.equals(i));
     }
 
     public static Multiplicity oneOrMore( Multiplicity c ) {
         if(c.max==null)  return c; // (x,*) => (x,*)
-        if(c.max==0 )    return c; // (0,0) => (0,0)
+        if(BigInteger.ZERO.equals(c.max)) return c; // (0,0) => (0,0)
         else        return create( c.min, null );    // (x,y) => (x,*)
     }
 
     public Multiplicity makeOptional() {
-        if(min==0)    return this;
-        return create(0,max);
+        if (BigInteger.ZERO.equals(min)) return this;
+        return create(BigInteger.ZERO, max);
     }
 
     public Multiplicity makeRepeated() {
-        if(max==null || max==0)  return this;   // (0,0)* = (0,0)  and (n,unbounded)* = (n,unbounded)
+        if (max==null || BigInteger.ZERO.equals(max))  return this;   // (0,0)* = (0,0)  and (n,unbounded)* = (n,unbounded)
         return create(min,null);
     }
 }
-    
+
