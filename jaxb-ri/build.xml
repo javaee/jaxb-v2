@@ -689,7 +689,7 @@ Class-Path: ${manifest.classpath}
     <target name="integrate-dtdparser">
       <!--<get src="http://hudson.sfbay/job/dtd-parser/lastSuccessfulBuild/artifact/dtd-parser/dtd-parser/target/distributions/dtd-parser-1.0.zip"
            dest="tools/lib/rebundle/compiler/dtd-parser-1.0.jar" />-->
-      <get src="http://hudson.sfbay/job/dtd-parser/lastSuccessfulBuild/artifact/dtd-parser/dtd-parser/target/distributions/dtd-parser-1.0-src.zip"
+      <get src="http://sysifos-sol.czech.sun.com/hudson/job/dtd-parser/lastSuccessfulBuild/artifact/dtd-parser/dtd-parser/target/distributions/dtd-parser-1.0-src.zip"
            dest="tools/lib/src/dtd-parser-1.0-src.zip" />
     </target>
     
@@ -711,9 +711,9 @@ Class-Path: ${manifest.classpath}
     </target>
 
     <target name="integrate-xsom">
-        <get src="http://hudson.sfbay/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom.jar"
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom.jar"
              dest="tools/lib/rebundle/compiler/xsom.jar" />
-        <get src="http://hudson.sfbay/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom-src.zip"
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom-src.zip"
              dest="tools/lib/src/xsom-src.zip" />
     </target>
 
@@ -785,15 +785,15 @@ Class-Path: ${manifest.classpath}
     </target>
 
     <target name="integrate-codemodel">
-        <property name="codemodel-version" value="2.2-SNAPSHOT" />
-        <get src="http://hudson.sfbay/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel-version}.jar"
+        <property name="codemodel-version" value="2.3-SNAPSHOT" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel-version}.jar"
              dest="tools/lib/rebundle/compiler/codemodel.jar" />
-        <get src="http://hudson.sfbay/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel-version}.jar"
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel-version}.jar"
              dest="tools/lib/util/codemodel-annotation-compiler.jar" />
              
-        <get src="http://hudson.sfbay/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel-version}-sources.jar"
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel-version}-sources.jar"
              dest="tools/lib/src/codemodel.src.zip" />
-        <get src="http://hudson.sfbay/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel-version}-sources.jar"
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel-version}-sources.jar"
              dest="tools/lib/src/codemodel-annotation-compiler.src.zip" />
 
     </target>
