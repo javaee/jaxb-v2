@@ -702,11 +702,11 @@ Class-Path: ${manifest.classpath}
     </target>
 
     <target name="integrate-api" description="Integrate JAXB 2.2 API from Hudson">
-        <get src="http://hudson.sfbay/job/jsr222-mirror-2.2/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api.jar"
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/dist/jaxb-api.jar"
              dest="tools/lib/redist/jaxb-api.jar" />
-        <get src="http://hudson.sfbay/job/jsr222-mirror-2.2/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-src.zip"
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/dist/jaxb-api-src.zip"
              dest="tools/lib/redist/jaxb-api-src.zip" />
-        <get src="http://hudson.sfbay/job/jsr222-mirror-2.2/lastSuccessfulBuild/artifact/jsr222-mirror/dist/jaxb-api-doc.zip"
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/dist/jaxb-api-doc.zip"
              dest="tools/lib/redist/jaxb-api-doc.zip" />
     </target>
 
