@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- 
+
  Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
- 
+
  The contents of this file are subject to the terms of either the GNU
  General Public License Version 2 only ("GPL") or the Common Development
  and Distribution License("CDDL") (collectively, the "License").  You
@@ -11,7 +11,7 @@
  a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
  or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
  language governing permissions and limitations under the License.
- 
+
  When distributing the software, include this License Header Notice in each
  file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
  Sun designates this particular file as subject to the "Classpath" exception
@@ -20,9 +20,9 @@
  Header, with the fields enclosed by brackets [] replaced by your own
  identifying information: "Portions Copyrighted [year]
  [name of copyright owner]"
- 
+
  Contributor(s):
- 
+
  If you wish your version of this file to be governed by only the CDDL or
  only the GPL Version 2, indicate your decision by adding "[Contributor]
  elects to include this software in this distribution under the [CDDL or GPL
@@ -43,14 +43,13 @@
 <project name="jaxb" basedir="." default="compile">
     <description>
         JAXB-RI Master Project
-        ======================
- 
+
         This project is organized into multiple sub-projects.  Each sub-project is
         responsible for building itself.
         The build files are setup such that you can build the sub-
         projects independently or all together.
 
-        For example, building the runtime sub-project causes all of runtime sources 
+        For example, building the runtime sub-project causes all of runtime sources
         in jaxb-ri/runtime/src to be compiled into jaxb-ri/runtime/build/classes.
 
         To build the entire project, simply run 'ant' in the jaxb-ri directory.
@@ -65,67 +64,6 @@
     </description>
 
     <import file="nbproject/build-impl.xml"/>
-    <!--
-
-    There exist several targets which are by default empty and which can be
-    used for execution of your tasks. These targets are usually executed
-    before and after some main targets. They are:
-
-      -pre-init:                 called before initialization of project properties
-      -post-init:                called after initialization of project properties
-      -pre-compile:              called before javac compilation
-      -post-compile:             called after javac compilation
-      -pre-compile-single:       called before javac compilation of single file
-      -post-compile-single:      called after javac compilation of single file
-      -pre-compile-test:         called before javac compilation of JUnit tests
-      -post-compile-test:        called after javac compilation of JUnit tests
-      -pre-compile-test-single:  called before javac compilation of single JUnit test
-      -post-compile-test-single: called after javac compilation of single JUunit test
-      -pre-jar:                  called before JAR building
-      -post-jar:                 called after JAR building
-      -post-clean:               called after cleaning build products
-
-    (Targets beginning with '-' are not intended to be called on their own.)
-
-    Example of inserting an obfuscator after compilation could look like this:
-
-        <target name="-post-compile">
-            <obfuscate>
-                <fileset dir="${build.classes.dir}"/>
-            </obfuscate>
-        </target>
-
-    For list of available properties check the imported
-    nbproject/build-impl.xml file.
-
-
-    Another way to customize the build is by overriding existing main targets.
-    The targets of interest are:
-
-      -init-macrodef-javac:     defines macro for javac compilation
-      -init-macrodef-junit:     defines macro for junit execution
-      -init-macrodef-debug:     defines macro for class debugging
-      -init-macrodef-java:      defines macro for class execution
-      -do-jar-with-manifest:    JAR building (if you are using a manifest)
-      -do-jar-without-manifest: JAR building (if you are not using a manifest)
-      run:                      execution of project
-      -javadoc-build:           Javadoc generation
-      test-report:              JUnit report generation
-
-    An example of overriding the target for project execution could look like this:
-
-        <target name="run" depends="JAXB_2.1-impl.jar">
-            <exec dir="bin" executable="launcher.exe">
-                <arg file="${dist.jar}"/>
-            </exec>
-        </target>
-
-    Notice that the overridden target depends on the jar target and not only on
-    the compile target as the regular run target does. Again, for a list of available
-    properties which you can use, check the target you are overriding in the
-    nbproject/build-impl.xml file.
-
-    -->
 
     <!-- initialize build properties -->
     <property file="${basedir}/build.properties" />
@@ -168,7 +106,7 @@
   <target name="j2se-integration" depends="init-standalone"
           description="prepare renamed source code for J2SE integration">
     <property name="jaxb.version.in.jdk" value="JAXB 2.0 in JDK 1.6"/>
-    
+
     <ant dir="apgen" target="compile" />
     <subant target="j2se-integration">
       <fileset file="runtime/build.xml" />
@@ -183,13 +121,13 @@
     <move file="j2se-integration/xjc/src/META-INF/services/com.sun.tools.xjc.Plugin"
           tofile="j2se-integration/tools/etc/META-INF/services/sun.tools.xjc.Plugin"/>
     <delete dir="j2se-integration/xjc/src/META-INF"/>
-	
+
 	<!-- delete binary doc-files -->
 	<delete>
 		<fileset dir="j2se-integration/runtime/src/com/sun/xml/internal/bind/v2/doc-files" includes="*.gif,*.png,*.sxd,*.vsd"/>
 		<fileset dir="j2se-integration/xjc/src/com/sun/tools/internal/xjc/reader/xmlschema/doc-files" includes="*.gif,*.png,*.sxd,*.vsd"/>
 	</delete>
-	    
+
     <!-- insert the RI version number into the file prolog message that
         is placed at the head of every generated file and the output
         message for "xjc -version"  and
@@ -359,6 +297,7 @@ Class-Path: ${manifest.classpath}
               <delete dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
           </sequential>
 
+
           <!-- copy bin scripts -->
           <sequential>
               <copy file="${jaxb.root}/tools/bin/xjc.bat" todir="${jaxb.dist}/bin"/>
@@ -384,8 +323,11 @@ Class-Path: ${manifest.classpath}
 
     <target name="src-zip" depends="init-standalone,dist"
             description="source zip files for JAXB RI jar files into the dist dir.">
-      <mkdir dir="tmp" />
-      <parallel>                 
+        <mkdir dir="tmp"/>
+        <unzip dest="tmp">
+          <fileset dir="${jaxb.libs.src}" includes="istack-commons-src.zip"/>
+        </unzip>
+      <parallel>
         <sequential>
           <zip zipfile="${jaxb.dist}/lib/jaxb-impl.src.zip">
             <fileset dir="${runtime.src}"/>
@@ -393,7 +335,7 @@ Class-Path: ${manifest.classpath}
             <fileset dir="${runtime-staxex.src}"/>
             <fileset dir="${runtime.root}/build/src" />
             <zipfileset src="${jaxb.libs}/src/txw2-src.zip" />
-            <zipfileset src="${jaxb.libs}/src/istack-commons-runtime-src.zip" />
+            <fileset dir="tmp/istack-commons/runtime"/>
           </zip>
         </sequential>
         <sequential>
@@ -410,18 +352,18 @@ Class-Path: ${manifest.classpath}
           <replace dir="tmp_xjc/com/sun/tools/xjc" includes="MessageBundle*.properties">
             <replacefilter token="@@JAXB_JDK_VERSION@@" value="${release.impl.version}"/>
           </replace>
-          <unjar src="${jaxb.libs}/src/dtd-parser-1.0-src.zip" dest="tmp" />
+          <unjar src="${jaxb.libs}/src/dtd-parser-src.zip" dest="tmp" />
           <zip zipfile="${jaxb.dist}/lib/jaxb-xjc.src.zip">
             <fileset dir="tmp_xjc"/>
             <fileset dir="${xjc.gensrc}"/>
             <fileset dir="${xjc.root}/facade"/>
-            <zipfileset src="${jaxb.libs}/src/codemodel.src.zip" />
-            <zipfileset src="${jaxb.libs}/src/resolver-src.zip" />
+            <zipfileset src="${jaxb.libs}/src/codemodel-src.zip" />
+            <zipfileset src="${jaxb.libs}/src/resolver-comsun-src.zip" />
             <zipfileset src="${jaxb.libs}/src/xsom-src.zip" />
-            <zipfileset src="${jaxb.libs}/src/istack-commons-tools-src.zip" />
             <zipfileset src="${jaxb.libs}/src/relaxngDatatype-src.zip" />
             <zipfileset src="${jaxb.libs}/src/rngom-src.zip" />
-            <fileset dir="tmp/dtd-parser-1.0/src"/>
+            <fileset dir="tmp/dtd-parser/src"/>
+            <fileset dir="tmp/istack-commons/tools"/>
           </zip>
         </sequential>
         <sequential>
@@ -455,6 +397,9 @@ Class-Path: ${manifest.classpath}
     </zip>
   </target>
 
+
+
+
     <target name="bin-installer"
             description="generate the binary distribution installer with the license click-through"
             depends="dist">
@@ -487,6 +432,8 @@ Class-Path: ${manifest.classpath}
 
         <echo>binary installer produced at ${bin.installer.jar}</echo>
     </target>
+
+
 
     <patternset id="src-includes"
                 description="This pattern set defines which files will be in/excluded in the src bundle">
@@ -570,6 +517,9 @@ Class-Path: ${manifest.classpath}
     <!-- clean all of the builds -->
     <target name="clean"
             description="clean dist, build, and each sub-project">
+
+        <echo message="File update correctly."/>
+
         <parallel>
           <!-- clean dist, and srcbundle -->
           <delete dir="${jaxb.dist}" />
@@ -619,7 +569,7 @@ Class-Path: ${manifest.classpath}
       <property name="zip.release.dir"    value="${basedir}/zip-dist"/>
 
       <property name="zip.release"    value="1"/>
- 
+
       <!-- make build and output directories -->
       <mkdir dir="${zip.build.dir}"/>
       <mkdir dir="${zip.release.dir}"/>
@@ -660,7 +610,7 @@ Class-Path: ${manifest.classpath}
       <!-- make zip file -->
       <zip destfile="${zip.release.dir}/jaxb2.zip" basedir="${zip.build.dir}" />
     </target>
-    
+
     <target name="release-engineering"
             description="target for Sun RE builds"
             depends="src-zip,bin-installer,src-installer,licensee-zip" />
@@ -670,7 +620,6 @@ Class-Path: ${manifest.classpath}
       <antstructure output="project.dtd"/>
     </target>
 
-
     <target name = "integrate-1.0-compiler"
             description="extract XJC 1.0">
       <mkdir dir="${xjc10.classes}"/>
@@ -678,33 +627,32 @@ Class-Path: ${manifest.classpath}
       <delete dir="${xjc10.classes}/META-INF/MANIFEST.MF"/>
     </target>
 
-
     <target name="integrate-fi">
       <get src="http://hudson.sfbay/job/fi-1.2/lastSuccessfulBuild/artifact/fi/FastInfoset/dist/FastInfoset.jar"
            dest="tools/lib/util/FastInfoset.jar" />
-      <get src="http://hudson.sfbay/job/fi-1.2/lastSuccessfulBuild/artifact/fi/FastInfoset/dist/FastInfoset.src.zip"
-           dest="tools/lib/src/FastInfoset.src.zip" />
+      <get src="http://hudson.sfbay/job/fi-1.2/lastSuccessfulBuild/artifact/fi/FastInfoset/dist/fastinfoset-src.zip"
+           dest="tools/lib/src/fi-src.zip" />
     </target>
 
     <target name="integrate-dtdparser">
-      <!--<get src="http://hudson.sfbay/job/dtd-parser/lastSuccessfulBuild/artifact/dtd-parser/dtd-parser/target/distributions/dtd-parser-1.0.zip"
-           dest="tools/lib/rebundle/compiler/dtd-parser-1.0.jar" />-->
-      <get src="http://sysifos-sol.czech.sun.com/hudson/job/dtd-parser/lastSuccessfulBuild/artifact/dtd-parser/dtd-parser/target/distributions/dtd-parser-1.0-src.zip"
-           dest="tools/lib/src/dtd-parser-1.0-src.zip" />
+      <get src="http://hudson.sfbay/job/dtd-parser/lastSuccessfulBuild/artifact/dtd-parser/dtd-parser/target/distributions/dtd-parser-1.0.zip"
+           dest="tools/lib/rebundle/compiler/dtd-parser-1.0.jar" />
+      <get src="http://hudson.sfbay/job/dtd-parser/lastSuccessfulBuild/artifact/dtd-parser/dtd-parser/target/distributions/dtd-parser-1.0-src.zip"
+           dest="tools/lib/src/dtd-parser-src.zip" />
     </target>
-    
+
     <target name="integrate-stax-ex-hudson"
             description="integrate the last successful stax-ex Hudson build">
       <get src="http://hudson.sfbay/job/stax-ex/lastSuccessfulBuild/artifact/stax-ex/stax-ex/target/stax-ex.jar"
            dest="tools/lib/util/stax-ex.jar" />
-      <get src="http://hudson.sfbay/job/stax-ex/lastSuccessfulBuild/artifact/stax-ex/stax-ex/target/stax-ex-src.zip"
+      <get src="http://hudson.sfbay/job/stax-ex/lastSuccessfulBuild/artifact/stax-ex/stax-ex/target/stax-ex-full-src.zip"
            dest="tools/lib/util/stax-ex-src.zip" />
     </target>
 
     <target name="integrate-api" description="Integrate JAXB 2.2 API from Hudson">
         <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/dist/jaxb-api.jar"
              dest="tools/lib/redist/jaxb-api.jar" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/dist/jaxb-api-src.zip"
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/dist/jaxb-api-full-src.zip"
              dest="tools/lib/redist/jaxb-api-src.zip" />
         <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/dist/jaxb-api-doc.zip"
              dest="tools/lib/redist/jaxb-api-doc.zip" />
@@ -713,7 +661,7 @@ Class-Path: ${manifest.classpath}
     <target name="integrate-xsom">
         <get src="http://sysifos-sol.czech.sun.com/hudson/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom.jar"
              dest="tools/lib/rebundle/compiler/xsom.jar" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom-src.zip"
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom-full-src.zip"
              dest="tools/lib/src/xsom-src.zip" />
     </target>
 
@@ -727,16 +675,14 @@ Class-Path: ${manifest.classpath}
              dest="tools/lib/rebundle/runtime2/txw2.jar" />
         <get src="http://hudson.sfbay/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txwc2.jar"
              dest="tools/lib/util/txwc2.jar" />
-        <get src="http://hudson.sfbay/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2-src.zip"
+        <get src="http://hudson.sfbay/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2-full-src.zip"
              dest="tools/lib/src/txw2-src.zip" />
-        <get src="http://hudson.sfbay/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2c-src.zip"
-             dest="tools/lib/src/txw2c-src.zip" />
     </target>
 
     <target name="integrate-rngom">
         <get src="http://hudson.sfbay/job/rngom/lastSuccessfulBuild/artifact/rngom/rngom/build/rngom.jar"
              dest="tools/lib/rebundle/compiler/rngom.jar" />
-        <get src="http://hudson.sfbay/job/rngom/lastSuccessfulBuild/artifact/rngom/rngom/build/rngom-src.zip"
+        <get src="http://hudson.sfbay/job/rngom/lastSuccessfulBuild/artifact/rngom/rngom/rngom-full-src.zip"
              dest="tools/lib/src/rngom-src.zip" />
     </target>
 
@@ -762,10 +708,10 @@ Class-Path: ${manifest.classpath}
         <get src="${istack.commons.runtime}/istack-commons-runtime-src.zip"
              dest="tools/lib/src/istack-commons-runtime-src.zip" />
 
-      <get src="${istack.commons.test}/istack-commons-test.jar"
-           dest="tools/lib/util/istack-commons-test.jar" />
-      <get src="${istack.commons.test}/istack-commons-test-src.zip"
-           dest="tools/lib/src/istack-commons-test-src.zip" />
+        <get src="${istack.commons.test}/istack-commons-test.jar"
+             dest="tools/lib/util/istack-commons-test.jar" />
+        <get src="${istack.commons.test}/istack-commons-test-src.zip"
+             dest="tools/lib/src/istack-commons-test-src.zip" />
     </target>
 
     <target name="integrate-package-rename-task">
@@ -790,13 +736,347 @@ Class-Path: ${manifest.classpath}
              dest="tools/lib/rebundle/compiler/codemodel.jar" />
         <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel-version}.jar"
              dest="tools/lib/util/codemodel-annotation-compiler.jar" />
-             
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel-version}-sources.jar"
-             dest="tools/lib/src/codemodel.src.zip" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel-version}-sources.jar"
-             dest="tools/lib/src/codemodel-annotation-compiler.src.zip" />
+
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel-src.zip"
+             dest="tools/lib/src/codemodel-src.zip" />
+    </target>
+
+    <!-- Source build -->
+    <target name="depsfromsource" depends="init-standalone, clean">
+
+        <mkdir dir="${external.dir}/jaxb"/>
+        <delete failonerror="false">
+            <fileset dir="${external.dir}/jaxb" includes="**/*.jar">
+                <exclude name="**/jaxb1*.jar*"/>
+                <exclude name="**/bnd*.jar*"/>
+            </fileset>
+        </delete>
+
+        <echo message="building dtd-parser"/>
+        <unzip src="tools/lib/src/dtd-parser-src.zip" dest="${external.dir}"/>
+        <delete failonerror="false">
+            <fileset dir="${external.dir}/dtd-parser/" includes="**/*.jar"/>
+        </delete>
+        <exec executable="mvn" failonerror="true" >
+            <arg line="-f ${external.dir}/dtd-parser/pom.xml -Dmaven.repo.local=${maven.repo.local}" />
+            <arg line="clean install" />
+        </exec>
+        <copy file="${maven.repo.local}/${dtd-parser.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/dtd-parser-1.0.jar"/>
+
+        <echo message="building activation"/>
+        <unzip src="tools/lib/src/activation-src.zip" dest="${external.dir}"/>
+        <delete>
+            <fileset dir="${external.dir}/activation" includes="**/*.jar"/>
+        </delete>
+        <exec executable="ant" dir="${external.dir}/activation" failonerror="true" newenvironment="true" >
+            <arg line="-Djavac.target=1.5"/>
+            <arg line="-Djavac.source=1.5"/>
+            <arg line="dist"/>
+            <env key="JAVA_HOME" value="${JDK_1.5}" />
+        </exec>
+        <mvn.publish.local jar="${external.dir}/activation/activation.jar" mvngroup="javax.activation" mvnartid="activation" mvnversion="${activation.version}"/>
+        <copy file="${maven.repo.local}/${activation.mvn.path}" tofile="${jaxb.root}/tools/lib/redist/activation.jar"/>
+
+        <echo message="building jsr173api"/>
+        <unzip src="tools/lib/src/jsr173api-src.zip" dest="${external.dir}"/>
+        <delete>
+            <fileset dir="${external.dir}/jsr173api" includes="**/*.jar"/>
+        </delete>
+        <exec executable="ant" dir="${external.dir}/jsr173api" failonerror="true" newenvironment="true" >
+            <arg line="-Djavac.target=1.5"/>
+            <arg line="-Djavac.source=1.5"/>
+            <arg line="dist"/>
+            <env key="JAVA_HOME" value="${JDK_1.5}" />
+        </exec>
+        <mvn.publish.local jar="${external.dir}/jsr173api/jsr173_1.0_api.jar" mvngroup="javax.xml" mvnartid="jsr173" mvnversion="${jsr173api.version}"/>
+        <copy file="${maven.repo.local}/${jsr173api.mvn.path}" tofile="${jaxb.root}/tools/lib/redist/jsr173_1.0_api.jar"/>
+
+        <echo message="building stax-ex"/>
+        <unzip src="tools/lib/util/stax-ex-src.zip" dest="${external.dir}/stax-ex"/>
+        <delete>
+            <fileset dir="${external.dir}/stax-ex/" includes="**/*.jar"/>
+        </delete>
+        <exec executable="mvn" failonerror="true" >
+            <arg line="-f ${external.dir}/stax-ex/pom.xml -Dmaven.repo.local=${maven.repo.local}" />
+            <arg line="clean install" />
+        </exec>
+        <copy file="${maven.repo.local}/${stax-ex.mvn.path}" tofile="${jaxb.root}/tools/lib/util/stax-ex.jar"/>
+
+        <echo message="building relaxng-datatype"/>
+        <unzip src="tools/lib/src/relaxngDatatype-src.zip" dest="${external.dir}/rng-datatype"/>
+        <delete>
+            <fileset dir="${external.dir}/rng-datatype/relaxng-datatype/" includes="**/*.jar"/>
+        </delete>
+        <exec executable="ant" dir="${external.dir}/rng-datatype/relaxng-datatype/java" failonerror="true" newenvironment="true" >
+            <arg line="-Djavac.target=1.5"/>
+            <arg line="-Djavac.source=1.5"/>
+            <arg line="release"/>
+            <env key="JAVA_HOME" value="${JDK_1.5}" />
+        </exec>
+        <mvn.publish.local jar="${external.dir}/rng-datatype/relaxng-datatype/java/relaxngDatatype.jar" mvngroup="com.sun.xml" mvnartid="relaxngDatatype" mvnversion="${relaxng-datatype.version}"/>
+        <copy file="${maven.repo.local}/${relaxng-datatype.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/relaxngDatatype.jar"/>
+
+        <echo message="building resolver"/>
+        <unzip src="tools/lib/util/resolver-src.zip" dest="${external.dir}"/>
+        <delete>
+            <fileset dir="${external.dir}/resolver" includes="**/*.jar"/>
+        </delete>
+        <exec executable="ant" dir="${external.dir}/resolver/java" failonerror="true" newenvironment="true" >
+            <arg line="-f resolver.xml" />
+            <arg line="jar" />
+            <env key="JAVA_HOME" value="${JDK_1.5}" />
+        </exec>
+        <mvn.publish.local jar="${external.dir}/resolver/java/build/resolver.jar" mvngroup="xml-resolver" mvnartid="xml-resolver" mvnversion="${resolver.version}"/>
+
+        <echo message="building javacc"/>
+        <unzip src="tools/lib/util/javacc-src.zip" dest="${external.dir}"/>
+        <exec executable="ant" dir="${external.dir}/javacc" failonerror="true" newenvironment="true" >
+            <arg line="jar" />
+            <env key="JAVA_HOME" value="${JDK_1.5}" />
+        </exec>
+        <mvn.publish.local jar="${external.dir}/javacc/bin/lib/javacc.jar" mvngroup="javacc" mvnartid="javacc" mvnversion="${javacc.version}"/>
+
+        <echo message="building isorelax"/>
+        <unzip src="tools/lib/src/iso-relax-src.zip" dest="${external.dir}"/>
+        <delete>
+            <fileset dir="${external.dir}/isorelax/" includes="**/*.jar"/>
+        </delete>
+        <exec executable="ant" dir="${external.dir}/isorelax" failonerror="true" newenvironment="true" >
+            <arg line="release" />
+            <env key="JAVA_HOME" value="${JDK_1.5}" />
+        </exec>
+        <mvn.publish.local jar="${external.dir}/isorelax/isorelax.jar" mvngroup="isorelax" mvnartid="isorelax" mvnversion="${isorelax.version}"/>
+        <copy file="${maven.repo.local}/${isorelax.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/runtime/isorelax.jar"/>
+
+        <echo message="building xsdlib"/>
+        <unzip src="tools/lib/src/xsdlib-src.zip" dest="${external.dir}"/>
+        <delete>
+            <fileset dir="${external.dir}/xsdlib" includes="**/*.jar"/>
+        </delete>
+        <copy file="${maven.repo.local}/${relaxng-datatype.mvn.path}" tofile="${external.dir}/xsdlib/relaxng-datatype.jar"/>
+        <exec executable="ant" dir="${external.dir}/xsdlib" failonerror="true" newenvironment="false" >
+            <arg line="-Djavac.target=1.5"/>
+            <arg line="-Djavac.source=1.5"/>
+            <arg line="-DrelaxngDatatype.jar=relaxng-datatype.jar"/>
+            <arg line="-Dmaven.repo.local=${maven.repo.local}"/>
+            <arg line="dist"/>
+            <env key="JAVA_HOME" value="${JDK_1.5}" />
+        </exec>
+        <mvn.publish.local jar="${external.dir}/xsdlib/dist/xsdlib.jar" mvngroup="com.sun.msv.datatype.xsd" mvnartid="xsdlib" mvnversion="${xsdlib.version}"/>
+        <copy file="${maven.repo.local}/${xsdlib.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/runtime/xsdlib.jar"/>
+
+        <echo message="building msv"/>
+        <unzip src="tools/lib/src/msv-src.zip" dest="${external.dir}"/>
+        <delete>
+            <fileset dir="${external.dir}/msv/" includes="**/*.jar"/>
+        </delete>
+        <copy file="${maven.repo.local}/${relaxng-datatype.mvn.path}" tofile="${external.dir}/msv/msv/relaxng-datatype.jar"/>
+        <copy file="${maven.repo.local}/${xsdlib.mvn.path}" tofile="${external.dir}/msv/msv/xsdlib.jar"/>
+        <copy file="${maven.repo.local}/${isorelax.mvn.path}" tofile="${external.dir}/msv/msv/isorelax.jar"/>
+        <copy file="${maven.repo.local}/${resolver.mvn.path}" tofile="${external.dir}/msv/msv/resolver.jar"/>
+        <exec executable="ant" dir="${external.dir}/msv/msv" failonerror="true" newenvironment="true" >
+            <arg line="-Djavac.target=1.5"/>
+            <arg line="-Djavac.source=1.5"/>
+            <arg line="-Dfrom.source=true"/>
+            <arg line="-Dcpath.fromsource=relaxng-datatype.jar:xsdlib.jar:isorelax.jar:resolver.jar"/>
+            <arg line="dist"/>
+            <env key="JAVA_HOME" value="${JDK_1.5}" />
+        </exec>
+        <mvn.publish.local jar="${external.dir}/msv/msv/dist/msv.jar" mvngroup="com.sun.msv" mvnartid="msv" mvnversion="${msv.version}"/>
+        <copy file="${maven.repo.local}/${msv.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/runtime/msv.jar"/>
+
+        <echo message="building istack-commons"/>
+        <unzip src="tools/lib/src/istack-commons-src.zip" dest="${external.dir}"/>
+        <copy file="${maven.repo.local}/${activation.mvn.path}" tofile="${external.dir}/istack-commons/runtime/lib/activation.jar"/>
+        <copy file="${maven.repo.local}/${jsr173api.mvn.path}" tofile="${external.dir}/istack-commons/runtime/lib/jsr173_api.jar"/>
+        <exec executable="ant" dir="${external.dir}/istack-commons" failonerror="true" newenvironment="true" >
+            <arg line="-Djavac.target=1.5"/>
+            <arg line="-Djavac.source=1.5"/>
+            <arg line="-Dfrom.source=true"/>
+            <arg line="dist"/>
+            <env key="JAVA_HOME" value="${JDK_1.5}" />
+        </exec>
+        <mvn.publish.local jar="${external.dir}/istack-commons/runtime/build/istack-commons-runtime.jar" mvngroup="com.sun.istack.istack-commons-runtime" mvnartid="istack-commons-runtime" mvnversion="${istack-commons.version}"/>
+        <mvn.publish.local jar="${external.dir}/istack-commons/tools/build/istack-commons-tools.jar" mvngroup="com.sun.istack.istack-commons-tools" mvnartid="istack-commons-tools" mvnversion="${istack-commons.version}"/>
+        <copy file="${maven.repo.local}/${istack-commons.runtime.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/runtime2/istack-commons-runtime.jar"/>
+        <copy file="${maven.repo.local}/${istack-commons.tools.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/istack-commons-tools.jar"/>
+
+        <echo message="building codemodel"/>
+        <unzip src="tools/lib/src/codemodel-src.zip" dest="${external.dir}"/>
+        <delete>
+            <fileset dir="${external.dir}/codemodel" includes="**/*.jar"/>
+        </delete>
+        <exec executable="mvn" failonerror="true">
+    	    <arg line="-f ${external.dir}/codemodel/pom.xml -Dmaven.repo.local=${maven.repo.local}" />
+            <arg line="install" />
+        </exec>
+        <copy file="${maven.repo.local}/${codemodel.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/codemodel.jar"/>
+
+        <echo message="building args4j"/>
+        <unzip src="tools/lib/src/args4j-src.zip" dest="${external.dir}"/>
+        <delete>
+            <fileset dir="${external.dir}/args4j" includes="**/*.jar"/>
+        </delete>
+        <exec executable="mvn" failonerror="true" >
+            <arg line="-f ${external.dir}/args4j/pom.xml -Dmaven.repo.local=${maven.repo.local}" />
+            <arg line="clean install" />
+        </exec>
+        <copy file="${maven.repo.local}/${args4j.mvn.path}" tofile="${jaxb.root}/tools/lib/util/args4j.jar"/>
+
+        <echo message="building rngom"/>
+        <unzip src="tools/lib/src/rngom-src.zip" dest="${external.dir}/rngom"/>
+        <delete>
+            <fileset dir="${external.dir}/rngom" includes="**/*.jar"/>
+            <fileset dir="${external.dir}/rngom" includes="**/build-taskdefs.xml"/>
+        </delete>
+        <copy file="${maven.repo.local}/${javacc.mvn.path}" tofile="${external.dir}/rngom/lib/javacc/javacc.jar"/>
+        <copy file="${maven.repo.local}/${relaxng-datatype.mvn.path}" tofile="${external.dir}/rngom/lib/relaxng-datatype.jar"/>
+        <copy file="${maven.repo.local}/${jsr173api.mvn.path}" tofile="${external.dir}/rngom/lib/jsr173_1.0_api.jar"/>
+        <exec executable="ant" dir="${external.dir}/rngom" failonerror="true" newenvironment="true" >
+            <arg line="-Djavac.target=1.5"/>
+            <arg line="-Djavac.source=1.5"/>
+            <arg line="-Dfrom.source=true"/>
+            <arg line="-Dcpath.fromsource=lib/relaxng-datatype.jar"/>
+            <env key="JAVA_HOME" value="${JDK_1.5}" />
+            <arg line="jaxbjar"/>
+        </exec>
+        <mvn.publish.local jar="${external.dir}/rngom/build/rngom.jar" mvngroup="org.kohsuke.rngom" mvnartid="rngom" mvnversion="${rngom.version}"/>
+        <copy file="${maven.repo.local}/${rngom.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/rngom.jar"/>
+
+        <echo message="building relaxngcc"/>
+        <unzip src="tools/lib/util/relaxngcc-src.zip" dest="${external.dir}"/>
+        <delete>
+            <fileset dir="${external.dir}/relaxngcc" includes="**/*.jar"/>
+        </delete>
+        <copy file="${maven.repo.local}/${javacc.mvn.path}" tofile="${external.dir}/relaxngcc/lib/javacc.jar"/>
+        <copy file="${maven.repo.local}/${relaxng-datatype.mvn.path}" tofile="${external.dir}/relaxngcc/lib/relaxng-datatype.jar"/>
+        <copy file="${maven.repo.local}/${xsdlib.mvn.path}" tofile="${external.dir}/relaxngcc/lib/xsdlib.jar"/>
+        <copy file="${maven.repo.local}/${isorelax.mvn.path}" tofile="${external.dir}/relaxngcc/lib/isorelax.jar"/>
+        <copy file="${maven.repo.local}/${msv.mvn.path}" tofile="${external.dir}/relaxngcc/lib/msv.jar"/>
+        <subant buildpath="${external.dir}/relaxngcc" target="jar">
+            <property name="javac.source" value="1.4"/>
+            <property name="javac.target" value="1.5"/>
+            <property name="cpath.fromsource" value="lib/relaxng-datatype.jar:lib/xsdlib.jar:lib/isorelax.jar:lib/msv.jar"/>
+        </subant>
+        <mvn.publish.local jar="${external.dir}/relaxngcc/relaxngcc.jar" mvngroup="com.sun.xml" mvnartid="relaxngcc" mvnversion="${relaxngcc.version}"/>
+        <copy file="${maven.repo.local}/${relaxngcc.mvn.path}" tofile="${jaxb.root}/tools/lib/util/relaxngcc.jar"/>
+
+        <echo message="building xsom"/>
+        <unzip src="tools/lib/src/xsom-src.zip" dest="${external.dir}/xsom"/>
+        <delete>
+            <fileset dir="${external.dir}/xsom" includes="**/*.jar"/>
+        </delete>
+        <!-- this is required to overcome the stupidity combination of ant vs maven-->
+        <copy file="${maven.repo.local}/${javacc.mvn.path}" tofile="${external.dir}/xsom/lib/javacc.jar"/>
+        <copy file="${maven.repo.local}/${relaxng-datatype.mvn.path}" tofile="${external.dir}/xsom/lib/relaxng-datatype.jar"/>
+        <copy file="${maven.repo.local}/${relaxngcc.mvn.path}" tofile="${external.dir}/xsom/lib/relaxngcc.jar"/>
+        <exec executable="ant" dir="${external.dir}/xsom" failonerror="true" newenvironment="true" >
+            <arg line="-Djavac.target=1.5"/>
+            <arg line="-Djavac.source=1.5"/>
+            <arg line="-Dfrom.source=true"/>
+            <arg line="-Drelaxngcc-jar=lib/relaxngcc.jar"/>
+            <arg line="-Dcpath.fromsource=lib/relaxngcc.jar:lib/relaxng-datatype.jar"/>
+            <arg line="jar"/>
+            <env key="JAVA_HOME" value="${JDK_1.5}" />
+        </exec>
+        <mvn.publish.local jar="${external.dir}/xsom/build/xsom.jar" mvngroup="com.sun.xsom" mvnartid="xsom" mvnversion="${xsom.version}"/>
+        <copy file="${maven.repo.local}/${xsom.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/xsom.jar"/>
+
+        <echo message="building txw2"/>
+        <unzip src="tools/lib/src/txw2-src.zip" dest="${external.dir}/txw2"/>
+        <delete>
+            <fileset dir="${external.dir}/txw2" includes="**/*.jar"/>
+        </delete>
+        <copy file="${maven.repo.local}/${jsr173api.mvn.path}" tofile="${external.dir}/txw2/lib/runtime/jsr173_1.0_api.jar"/>
+        <copy file="${maven.repo.local}/${codemodel.mvn.path}" tofile="${external.dir}/txw2/lib/compiler/codemodel.jar"/>
+        <copy file="${maven.repo.local}/${args4j.mvn.path}" tofile="${external.dir}/txw2/lib/compiler/args4j-1.0-RC.jar"/>
+        <copy file="${maven.repo.local}/${rngom.mvn.path}" tofile="${external.dir}/txw2/lib/compiler/rngom.jar"/>
+        <copy file="${maven.repo.local}/${xsom.mvn.path}" tofile="${external.dir}/txw2/lib/compiler/xsom.jar"/>
+        <copy file="${maven.repo.local}/${relaxng-datatype.mvn.path}" tofile="${external.dir}/txw2/lib/compiler/relaxng-datatype.jar"/>
+        <exec executable="ant" dir="${external.dir}/txw2" failonerror="true" newenvironment="true" >
+            <arg line="-Djavac.target=1.5"/>
+            <arg line="-Djavac.source=1.5"/>
+            <arg line="-Dfrom.source=true"/>
+            <arg line="jar"/>
+            <env key="JAVA_HOME" value="${JDK_1.5}" />
+        </exec>
+        <mvn.publish.local jar="${external.dir}/txw2/build/txw2.jar" mvngroup="com.sun.xml.txw2" mvnartid="txw2" mvnversion="${txw2.version}"/>
+        <mvn.publish.local jar="${external.dir}/txw2/build/txwc2.jar" mvngroup="com.sun.xml.txw2" mvnartid="txwc2" mvnversion="${txw2.version}"/>
+        <copy file="${maven.repo.local}/${txw2.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/runtime2/txw2.jar"/>
+        <copy file="${maven.repo.local}/${txwc2.mvn.path}" tofile="${jaxb.root}/tools/lib/util/txwc2.jar"/>
+
+        <echo message="building fi"/>
+        <mkdir dir="${external.dir}/fi"/>
+        <unzip src="tools/lib/src/fi-src.zip" dest="${external.dir}/fi/${fi.version}"/>
+        <delete>
+            <fileset dir="${external.dir}/fi/${fi.version}" includes="**/*.jar"/>
+        </delete>
+        <copy file="${maven.repo.local}/${jsr173api.mvn.path}" tofile="${external.dir}/fi/${fi.version}/lib/jsr173_api.jar"/>
+        <exec executable="ant" dir="${external.dir}/fi/${fi.version}" failonerror="true" newenvironment="true" >
+            <arg line="-Djavac.target=1.5"/>
+            <arg line="-Djavac.source=1.5"/>
+            <arg line="jar"/>
+            <env key="JAVA_HOME" value="${JDK_1.5}" />
+        </exec>
+        <mvn.publish.local jar="${external.dir}/fi/${fi.version}/dist/FastInfoset.jar" mvngroup="com.sun.xml.fastinfoset" mvnartid="FastInfoset" mvnversion="${fi.version}"/>
+        <copy file="${maven.repo.local}/${fi.mvn.path}" tofile="${jaxb.root}/tools/lib/util/FastInfoset.jar"/>
+
+        <echo message="building resolver-comsun"/>
+        <unzip src="tools/lib/src/resolver-comsun-src.zip" dest="${external.dir}"/>
+        <delete>
+            <fileset dir="${external.dir}/resolver-comsun" includes="**/*.jar"/>
+        </delete>
+        <subant buildpath="${external.dir}/resolver-comsun" target="dist">
+            <property name="javac.source" value="1.5"/>
+            <property name="javac.target" value="1.5"/>
+        </subant>
+        <mvn.publish.local jar="${external.dir}/resolver-comsun/resolver.jar" mvngroup="xml-resolver" mvnartid="xml-resolver-comsun" mvnversion="${resolver-comsun.version}"/>
+        <copy file="${maven.repo.local}/${resolver-comsun.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/resolver.jar"/>
+
+        <echo message="building jaxb-api"/>
+        <unzip src="tools/lib/redist/jaxb-api-src.zip" dest="${external.dir}/jaxb-api"/>
+        <delete>
+            <fileset dir="${external.dir}/jaxb-api" includes="**/*.jar"/>
+        </delete>
+        <mkdir dir="${external.dir}/jaxb-api/lib/"/>
+        <copy file="${maven.repo.local}/${activation.mvn.path}" tofile="${external.dir}/jaxb-api/lib/activation.jar"/>
+        <copy file="${maven.repo.local}/${jsr173api.mvn.path}" tofile="${external.dir}/jaxb-api/lib/jsr173_1.0_api.jar"/>
+        <exec executable="ant" dir="${external.dir}/jaxb-api" failonerror="true" newenvironment="true" >
+            <arg line="-Djavac.target=1.5"/>
+            <arg line="-Djavac.source=1.5"/>
+            <arg line="dist"/>
+            <env key="JAVA_HOME" value="${JDK_1.5}" />
+        </exec>
+        <mvn.publish.local jar="${external.dir}/jaxb-api/dist/jaxb-api.jar" mvngroup="javax.xml.bind" mvnartid="jaxb-api" mvnversion="${jaxb-api.version}"/>
+        <copy file="${maven.repo.local}/${jaxb-api.mvn.path}" tofile="${jaxb.root}/tools/lib/redist/jaxb-api.jar"/>
+
+        <exec executable="ant" dir="${jaxb.root}" failonerror="true" newenvironment="false" >
+            <arg line="hudson" />
+            <arg line="-Dfrom.source=true"/>
+            <arg line="-Dmaven.repo.local=${maven.repo.local} -Djavac.target=1.5 -Djavac.source=1.5" />
+            <arg line="${cpath}"/>
+            <env key="JAVA_HOME" value="${JDK_1.5}" />
+        </exec>
+
+        <mvn.publish.local jar="${jaxb.root}/dist/lib/jaxb-impl.jar" mvngroup="com.sun.xml.bind" mvnartid="jaxb-impl" mvnversion="${jaxb.version}"/>
+        <mvn.publish.local jar="${jaxb.root}/dist/lib/jaxb-xjc.jar" mvngroup="com.sun.xml.bind" mvnartid="jaxb-xjc" mvnversion="${jaxb.version}"/>
+        <mvn.publish.local jar="${jaxb.root}/dist/lib/jaxb1-impl.jar" mvngroup="com.sun.xml.bind" mvnartid="jaxb1-impl" mvnversion="${jaxb.version}"/>
+
+        <property name="cpath" value="-Dcpath.fromsource=${maven.repo.local}/com/sun/codemodel/codemodel-annotation-compiler/2.1-SNAPSHOT/codemodel-annotation-compiler-2.1-SNAPSHOT.jar:${maven.repo.local}/${relaxngcc.mvn.path}:${maven.repo.local}/${fi.mvn.path}:${maven.repo.local}/${jsr173api.mvn.path}:${maven.repo.local}/${activation.mvn.path}:${maven.repo.local}/${stax-ex.mvn.path}:${maven.repo.local}/${resolver.mvn.path}"/>
+        <exec executable="ant" dir="${jaxb.root}/osgi" failonerror="true" newenvironment="false" >
+            <arg line="clean bundle" />
+            <arg line="-Dfrom.source=true"/>
+            <arg line="-Dmaven.repo.local=${maven.repo.local} -Djavac.target=1.5 -Djavac.source=1.5" />
+            <arg line="${cpath}"/>
+            <arg line="-Dosgi.build.api=osgi/build"/>
+            <arg line="-Dosgi.build.rt=osgi/build"/>
+            <env key="JAVA_HOME" value="${JDK_1.5}" />
+        </exec>
+
+        <mvn.publish.local jar="${jaxb.root}/osgi/build/jaxb-api-osgi.jar" mvngroup="javax.xml.bind" mvnartid="jaxb-api-osgi" mvnversion="${jaxb-api.version}"/>
+        <mvn.publish.local jar="${jaxb.root}/osgi/build/jaxb-osgi.jar" mvngroup="com.sun.xml.bind" mvnartid="jaxb-osgi" mvnversion="${jaxb.version}"/>
 
     </target>
-    
-    
+
+
 </project>

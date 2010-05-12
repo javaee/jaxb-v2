@@ -2,9 +2,9 @@
 
 <!--
  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- 
+
  Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
- 
+
  The contents of this file are subject to the terms of either the GNU
  General Public License Version 2 only ("GPL") or the Common Development
  and Distribution License("CDDL") (collectively, the "License").  You
@@ -12,7 +12,7 @@
  a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
  or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
  language governing permissions and limitations under the License.
- 
+
  When distributing the software, include this License Header Notice in each
  file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
  Sun designates this particular file as subject to the "Classpath" exception
@@ -21,9 +21,9 @@
  Header, with the fields enclosed by brackets [] replaced by your own
  identifying information: "Portions Copyrighted [year]
  [name of copyright owner]"
- 
+
  Contributor(s):
- 
+
  If you wish your version of this file to be governed by only the CDDL or
  only the GPL Version 2, indicate your decision by adding "[Contributor]
  elects to include this software in this distribution under the [CDDL or GPL
@@ -46,13 +46,13 @@
     <property file="${basedir}/build.properties" />
     <property name="name" value="pretty-printer" />
     <property name="root" value="${jaxb.root}/tools/${name}" />
-    
+
     <target name="compile">
         <mkdir dir="${root}/build/classes" />
         <javac srcdir="${root}/src" destdir="${root}/build/classes"
-            debug="${compile.debug}" optimize="${compile.optimize}" />
+            debug="${compile.debug}" optimize="${compile.optimize}" source="1.5" target="1.5" />
     </target>
-    
+
     <target name="jar" depends="compile">
         <jar destfile="${root}/build/${name}.jar">
             <fileset dir="${root}/build/classes"/>
@@ -60,10 +60,10 @@
         <zip destfile="${root}/build/${name}.src.zip">
             <fileset dir="${root}/src"/>
         </zip>
-        <copy todir="${jaxb.libs.util}" 
+        <copy todir="${jaxb.libs.util}"
               file="${root}/build/${name}.jar" />
     </target>
-    
+
     <target name="clean">
         <delete dir="${root}/build" />
     </target>

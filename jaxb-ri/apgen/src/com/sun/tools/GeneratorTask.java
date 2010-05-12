@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
- * 
+ *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -10,7 +10,7 @@
  * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
  * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- * 
+ *
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
  * Sun designates this particular file as subject to the "Classpath" exception
@@ -19,9 +19,9 @@
  * Header, with the fields enclosed by brackets [] replaced by your own
  * identifying information: "Portions Copyrighted [year]
  * [name of copyright owner]"
- * 
+ *
  * Contributor(s):
- * 
+ *
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
  * elects to include this software in this distribution under the [CDDL or GPL
@@ -42,11 +42,13 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
@@ -61,8 +63,11 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JArray;
+import com.sun.istack.tools.MaskingClassLoader;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.annotation.Quick;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
@@ -86,6 +91,8 @@ public class GeneratorTask extends Task {
 
     private final List<Pattern> patterns = new ArrayList<Pattern>();
 
+    private final List<URL> endorsedJars = new ArrayList<URL>();
+
     /**
      * Used during the build to load annotation classes.
      */
@@ -105,8 +112,6 @@ public class GeneratorTask extends Task {
      * Output directory
      */
     private File output = new File(".");
-
-
 
     /**
      * Generate a {@link Quick} implementation of the specified annotation
@@ -189,12 +194,23 @@ public class GeneratorTask extends Task {
     /**
      * Map from annotation classes to their writers.
      */
-    private final Map<Class,JDefinedClass> queue = new HashMap<Class,JDefinedClass>();
+    private final Map<Class,JDefinedClass> queue =
+    	new TreeMap<Class,JDefinedClass>(new Comparator<Object>() {
+
+			public int compare(Object o1, Object o2) {
+				if (o1 == o2) return 0;
+				if (o1 == null) return -1;
+				if (o2 == null) return 1;
+				if (!(o1 instanceof Class) || !(o2 instanceof Class))
+					throw new ClassCastException();
+				return ((Class)o1).getName().compareTo(((Class)o2).getName());
+			}});
 
     public GeneratorTask() {
         classpath = new Path(null);
     }
 
+    @Override
     public void setProject(Project project) {
         super.setProject(project);
         classpath.setProject(project);
@@ -208,7 +224,6 @@ public class GeneratorTask extends Task {
     public void setClasspath( Path cp ) {
         classpath.createPath().append(cp);
     }
-
     /** Nested &lt;classpath> element. */
     public Path createClasspath() {
         return classpath.createPath();
@@ -217,6 +232,7 @@ public class GeneratorTask extends Task {
     public void setClasspathRef(Reference r) {
         classpath.createPath().setRefid(r);
     }
+
     public void setDestdir( File output ) {
         this.output = output;
     }
@@ -277,15 +293,39 @@ public class GeneratorTask extends Task {
     }
 
     /**
+     * Nested &lt;endorse> elements.
+     */
+    public static class Endorse {
+        URL endorsedJar;
+
+        public void setPath( String jar ) throws MalformedURLException {
+            endorsedJar = new File(jar).toURI().toURL();
+        }
+    }
+
+    /**
      * List of classes to be handled
      */
     public void addConfiguredClasses( Classes c ) {
         patterns.add(c.p);
     }
 
+    /**
+     * List of endorsed jars
+     */
+    public void addConfiguredEndorse( Endorse e ) {
+        endorsedJars.add(e.endorsedJar);
+    }
 
+    @Override
     public void execute() throws BuildException {
-        userLoader = new AntClassLoader(project,classpath);
+        if ((endorsedJars != null) && (!endorsedJars.isEmpty())) {
+            ClassLoader maskedLoader = new MaskingClassLoader(new AntClassLoader(project,classpath), "javax.xml.bind");
+            URL[] jars = new URL[endorsedJars.size()];
+            userLoader = new URLClassLoader(endorsedJars.toArray(jars), maskedLoader);
+        } else {
+            userLoader = new AntClassLoader(project,classpath);
+        }
         try {
             // find clsses to be bound
             for( String path : classpath.list()) {
