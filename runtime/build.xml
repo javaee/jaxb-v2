@@ -2,9 +2,9 @@
 
 <!--
  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- 
+
  Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
- 
+
  The contents of this file are subject to the terms of either the GNU
  General Public License Version 2 only ("GPL") or the Common Development
  and Distribution License("CDDL") (collectively, the "License").  You
@@ -12,7 +12,7 @@
  a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
  or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
  language governing permissions and limitations under the License.
- 
+
  When distributing the software, include this License Header Notice in each
  file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
  Sun designates this particular file as subject to the "Classpath" exception
@@ -21,9 +21,9 @@
  Header, with the fields enclosed by brackets [] replaced by your own
  identifying information: "Portions Copyrighted [year]
  [name of copyright owner]"
- 
+
  Contributor(s):
- 
+
  If you wish your version of this file to be governed by only the CDDL or
  only the GPL Version 2, indicate your decision by adding "[Contributor]
  elects to include this software in this distribution under the [CDDL or GPL
@@ -41,33 +41,33 @@
   <description>
     Runtime Sub-Project
     ===================
-    
-    The runtime project implements all of the interfaces from the 
+
+    The runtime project implements all of the interfaces from the
     javax.xml.bind.* packages necessary to support marshalling,
     unmarshalling, and validation.
   </description>
-  
-  <!-- import build properties -->
-  <property file="${basedir}/build.properties" />
+
+    <!-- import build properties -->
+    <property file="${basedir}/build.properties" />
 
   <!-- classpath -->
   <path id="javac.classpath">
-    <pathelement path="${cpath.fromsource}"/>
     <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
     <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
     <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
   </path>
-  
+
   <path id="txw.classpath">
     <path refid="javac.classpath"/>
     <pathelement path="${jaxb.libs.runtime2}/txw2.jar"/>
     <pathelement path="${jaxb.libs.util}/txwc2.jar"/>
-    <pathelement path="${jaxb.libs.util}/args4j-1.0-RC.jar"/>
+    <pathelement path="${jaxb.libs.util}/args4j.jar"/>
     <pathelement path="${jaxb.libs.compiler}/rngom.jar"/>
     <pathelement path="${codemodel.classes}"/>
   </path>
-  
-  <target name="generate-array-listers">
+
+
+    <target name="generate-array-listers">
         <macrodef name="generateCopiesForPrimitives">
           <attribute name="srcdir"/>
           <attribute name="destdir"/>
@@ -85,7 +85,7 @@
                 </replace>
               </sequential>
             </macrodef>
-            
+
             <mkdir dir="@{destdir}"/>
             <generate primitive="boolean" box="Boolean" />
             <generate primitive="char"    box="Character" />
@@ -96,7 +96,7 @@
             <generate primitive="double"  box="Double" />
           </sequential>
         </macrodef>
-        
+
         <!-- generate ArrayLister for other primitive types -->
         <generateCopiesForPrimitives
           srcdir=       "${runtime.root}/src/com/sun/xml/bind/v2/runtime/reflect"
@@ -135,13 +135,13 @@
         <!-- integer version is also hand-coded. -->
         <delete file="${runtime.root}/build/src/com/sun/xml/bind/v2/runtime/reflect/opt/TransducedAccessor_method_Integer.java"/>
     </target>
-    
+
     <target name="generate-annotation-proxies"
            description="generate annotation proxies">
       <taskdef name="apgen" classname="com.sun.tools.GeneratorTask">
         <classpath>
-          <pathelement path="${cpath.fromsource}" />
           <pathelement path="${apgen.classes}" />
+          <pathelement path="${jaxb.libs.compiler}/istack-commons-tools.jar"/>
           <pathelement path="${jaxb.libs.compiler}/codemodel.jar" />
         </classpath>
       </taskdef>
@@ -162,6 +162,7 @@
         <classes includes="javax.xml.bind.annotation.XmlType" />
         <classes includes="javax.xml.bind.annotation.XmlValue" />
     	<classes includes="javax.xml.bind.annotation.XmlSchemaType" />
+        <endorse path="${jaxb-api.path}"/>
         <classpath>
           <pathelement path="${jaxb-api.path}"/>
         </classpath>
@@ -194,11 +195,12 @@
 
         <javac srcdir="${runtime.src}:${runtime.root}/build/src" destdir="${runtime.classes}"
             debug="${compile.debug}" optimize="${compile.optimize}"
+        	source="1.5" target="1.5"
             deprecation="${compile.deprecation}" >
             <classpath refid="javac.classpath" />
             <compilerarg line="${runtime.compilerarg}"/>
         </javac>
-        
+
         <copy toDir="${runtime.classes}">
             <fileset dir="${runtime.src}" includes="**/*.properties" />
         </copy>
@@ -245,30 +247,31 @@
             <delete file="${runtime.root}/manifest.rt" />
         </parallel>
     </target>
-    
+
     <!-- run unit test -->
-    <target name="test-runtime" 
+    <target name="test-runtime"
           depends="compile"
           description="execute client unit tests - requires junit.jar on system classpath">
-      
+
       <mkdir dir="${runtime.test.classes}" />
       <javac srcdir="${runtime.test}" destdir="${runtime.test.classes}"
         debug="true" optimize="true"
+      	source="1.5" target="1.5"
         deprecation="${compile.deprecation}" >
-        
+
         <classpath>
           <path refid="javac.classpath" />
           <pathelement path="${runtime.classes}" />
           <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
         </classpath>
       </javac>
-      
+
       <echo>running JUnit</echo>
       <junit printsummary="yes" fork="yes"
         haltonerror="no" haltonfailure="no">
-        
+
         <formatter type="brief" usefile="false" />
-        
+
         <classpath>
           <path refid="javac.classpath" />
           <pathelement path="${runtime.classes}"/>
@@ -276,7 +279,7 @@
           <fileset dir="${jaxb.libs.util}" includes="*.jar" />
           <fileset dir="${jaxb.libs.test}" includes="*.jar"/>
         </classpath>
-        
+
         <batchtest todir="${test.log}">
           <fileset dir="${runtime.test.classes}" includes="**/*Test.class" />
         </batchtest>
