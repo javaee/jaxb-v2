@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- 
+
  Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
- 
+
  The contents of this file are subject to the terms of either the GNU
  General Public License Version 2 only ("GPL") or the Common Development
  and Distribution License("CDDL") (collectively, the "License").  You
@@ -11,7 +11,7 @@
  a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
  or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
  language governing permissions and limitations under the License.
- 
+
  When distributing the software, include this License Header Notice in each
  file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
  Sun designates this particular file as subject to the "Classpath" exception
@@ -20,9 +20,9 @@
  Header, with the fields enclosed by brackets [] replaced by your own
  identifying information: "Portions Copyrighted [year]
  [name of copyright owner]"
- 
+
  Contributor(s):
- 
+
  If you wish your version of this file to be governed by only the CDDL or
  only the GPL Version 2, indicate your decision by adding "[Contributor]
  elects to include this software in this distribution under the [CDDL or GPL
@@ -78,10 +78,10 @@
       </javadoc>
     </sequential>
   </macrodef>
-  
+
   <!--
     import files to CVS
-    
+
     For example, <cvs-import src="build/doc" dest="jaxb/www/doc" />
   -->
   <macrodef name="cvs-import">
@@ -99,22 +99,22 @@
           <argument line="*.jar -kb"/>
           <argument value="-m"/>
           <argument value="deploying new jars to the java.net maven repository"/>
-          
+
           <argument value="@{dest}"/>
           <argument line="deployment-to-maven-repository t${DSTAMP}${TSTAMP}" />
         </commandline>
       </cvs>
     </sequential>
   </macrodef>
-  
+
   <!-- package rename task -->
-<!--    <taskdef name="prename" classname="com.sun.wts.tools.ant.PackageRenameTask">
+  <taskdef name="prename" classname="com.sun.wts.tools.ant.PackageRenameTask">
     <classpath>
       <pathelement path="${jaxb.root}/tools/lib/util/package-rename-task.jar" />
     </classpath>
   </taskdef>
 
-<macrodef name="package-rename">
+  <macrodef name="package-rename">
     <attribute name="srcdir" />
     <attribute name="destdir" />
     <sequential>
@@ -130,9 +130,146 @@
         <pattern from="com.sun.tools.xjc" to="com.sun.tools.internal.xjc" />
         <pattern from="com.sun.tools.jxc" to="com.sun.tools.internal.jxc" />
         <pattern from="com.sun.tools.txw2" to="com.sun.tools.internal.txw2" />
-        <pattern from="com.sun.tools.ws" to="com.sun.tools.internal.ws" />        
+        <pattern from="com.sun.tools.ws" to="com.sun.tools.internal.ws" />
       </prename>
     </sequential>
   </macrodef>
--->
+
+    <property file="${basedir}/build.properties"/>
+    <import file="build.xml"/>
+
+    <macrodef name="build.jar.from.srczip">
+       <attribute name="jar"/>
+       <attribute name="srczip"/>
+       <attribute name="unzipdir"/>
+       <attribute name="srcdir"/>
+       <attribute name="cp" default=""/>
+       <sequential>
+            <mkdir dir="@{unzipdir}"/>
+            <unzip src="@{srczip}" dest="@{unzipdir}/@{srcdir}"/>
+
+            <property name="build.dir" value="@{unzipdir}/build"/>
+            <mkdir dir="${build.dir}" />
+
+            <mkdir dir="@{unzipdir}/@{srcdir}" />
+            <javac srcdir="@{unzipdir}/@{srcdir}" debug="true" destdir="${build.dir}" source="1.5" target="1.5" classpath="@{cp}"/>
+
+            <jar jarfile="@{jar}" compress="false">
+                <fileset dir="${build.dir}" />
+                <fileset dir="@{unzipdir}/@{srcdir}">
+                    <patternset>
+                        <include name="**/*.properties" />
+                        <include name="**/*.rxm"/>
+                        <include name="**/*.dtd"/>
+                        <include name="**/*.rng"/>
+                        <include name="**/*.mod"/>
+                    </patternset>
+                </fileset>
+            </jar>
+            <delete dir="${build.dir}" />
+       </sequential>
+    </macrodef>
+
+    <macrodef name="mvn.publish.local">
+       <attribute name="jar"/>
+       <attribute name="mvngroup"/>
+       <attribute name="mvnartid"/>
+       <attribute name="mvnversion"/>
+       <attribute name="mvnclassifier" default="" />
+       <attribute name="extra-args" default="" />
+       <attribute name="generatepom" default="true" />
+       <sequential>
+            <exec executable="mvn" failonerror="true" >
+                <arg line="-Dmaven.repo.local=${maven.repo.local}" />
+                <arg line="install:install-file" />
+                <arg line="-Dfile=@{jar}" />
+                <arg line="-DgroupId=@{mvngroup}" />
+                <arg line="-DartifactId=@{mvnartid}" />
+                <arg line="-Dpackaging=jar" />
+                <arg line="-Dversion=@{mvnversion}" />
+                <arg line="-Dclassifier=@{mvnclassifier}" />
+                <arg line="-DgeneratePom=@{generatepom}" />
+                <arg line="-DlocalRepositoryPath=${maven.repo.local}" />
+                <arg line="@{extra-args}" />
+            </exec>
+       </sequential>
+    </macrodef>
+
+    <macrodef name="mvn.publish.remote">
+       <attribute name="jar"/>
+       <attribute name="mvngroup"/>
+       <attribute name="mvnartid"/>
+       <attribute name="mvnversion"/>
+       <attribute name="mvnclassifier" default="" />
+       <attribute name="extra-args" default="" />
+       <sequential>
+            <exec executable="mvn" failonerror="true" >
+                <arg line="-Dmaven.repo.local=${maven.repo.local}" />
+                <arg line="deploy:deploy-file" />
+                <arg line="-Dfile=@{jar}" />
+                <arg line="-Durl=${project.maven.repo} "/>
+                <arg line="-DrepositoryId=${project.maven.repo.id}" />
+                <arg line="-DgroupId=@{mvngroup}" />
+                <arg line="-DartifactId=@{mvnartid}" />
+                <arg line="-Dversion=@{mvnversion}" />
+                <arg line="-Dclassifier=@{mvnclassifier}" />
+                <arg line="-Dpackaging=jar" />
+                <arg line="@{extra-args}" />
+            </exec>
+       </sequential>
+    </macrodef>
+
+    <macrodef name="cvs.checkout">
+       <attribute name="tag" default="HEAD"/>
+       <attribute name="repo"/>
+       <attribute name="dest"/>
+       <attribute name="module"/>
+       <sequential>
+            <echo message="checkout @{module} from @{repo}"/>
+            <exec executable="cvs" dir="${external.dir}" failonerror="true" >
+                <arg line="-q -d @{repo}" />
+                <arg line="checkout" />
+                <arg line="-r @{tag}" />
+                <arg line="-d @{dest}" />
+                <arg line="@{module}" />
+            </exec>
+       </sequential>
+    </macrodef>
+
+    <macrodef name="svn.checkout">
+       <attribute name="tag"/>
+       <attribute name="repo"/>
+       <attribute name="dest"/>
+       <sequential>
+            <echo message="svn checkout from @{repo}"/>
+            <exec executable="svn" dir="${external.dir}" failonerror="true" >
+                <arg line="checkout" />
+                <arg line="-r @{tag}" />
+                <arg line="@{repo}" />
+                <arg line="@{dest}" />
+            </exec>
+       </sequential>
+    </macrodef>
+
+    <macrodef name="hg.clone">
+       <attribute name="tag"/>
+       <attribute name="repo"/>
+       <attribute name="dest"/>
+       <sequential>
+            <echo message="hg clone from @{repo} with tag @{tag}"/>
+            <exec executable="hg" dir="${external.dir}" failonerror="false" >
+                <arg line="clone" />
+                <arg line="@{repo}" />
+                <arg line="@{dest}" />
+            </exec>
+            <exec executable="hg" dir="${external.dir}/@{dest}" failonerror="true" >
+                <arg line="pull"/>
+            </exec>
+            <exec executable="hg" dir="${external.dir}/@{dest}" failonerror="true" >
+                <arg line="update" />
+                <arg line="-r @{tag}" />
+            </exec>
+       </sequential>
+    </macrodef>
+
 </project>
