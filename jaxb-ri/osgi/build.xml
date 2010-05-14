@@ -161,7 +161,7 @@
             <attribute name="Implementation-Title" value="${jaxb.Implementation-Title}"/>
             <attribute name="Implementation-Vendor" value="${jaxb.Implementation-Vendor}"/>
             <attribute name="Implementation-Vendor-Id" value="${jaxb.Implementation-Vendor-Id}"/>
-            <attribute name="Import-Package" value="${jaxb.Import-Package},com.sun.org.apache.xerces.internal.impl.xpath.regex"/>
+            <attribute name="Import-Package" value="${jaxb.Import-Package},com.sun.org.apache.xerces.internal.impl.xpath.regex;resolution:=optional"/>
             <attribute name="Manifest-Version" value="${jaxb.Manifest-Version}"/>
             <attribute name="Originally-Created-By" value="${jaxb.Originally-Created-By}"/>
             <attribute name="Private-Package" value="${jaxb.Private-Package}"/>
