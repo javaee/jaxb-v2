@@ -161,7 +161,7 @@
             <attribute name="Implementation-Title" value="${jaxb.Implementation-Title}"/>
             <attribute name="Implementation-Vendor" value="${jaxb.Implementation-Vendor}"/>
             <attribute name="Implementation-Vendor-Id" value="${jaxb.Implementation-Vendor-Id}"/>
-            <attribute name="Import-Package" value="${jaxb.Import-Package}"/>
+            <attribute name="Import-Package" value="${jaxb.Import-Package},com.sun.org.apache.xerces.internal.impl.xpath.regex"/>
             <attribute name="Manifest-Version" value="${jaxb.Manifest-Version}"/>
             <attribute name="Originally-Created-By" value="${jaxb.Originally-Created-By}"/>
             <attribute name="Private-Package" value="${jaxb.Private-Package}"/>
@@ -195,7 +195,7 @@
          
         <property name="apiosgisrc_path" value="${osgi.root}/build/jaxb-api-osgi-sources.jar"/>
         <delete file="${apiosgisrc_path}" quiet="true"/>
-        <copy file="${jaxb.dist}/lib/jaxb-api.jar" tofile="${apiosgisrc_path}"/>
+        <copy file="${jaxb.dist}/lib/jaxb-api-src.zip" tofile="${apiosgisrc_path}"/>
 
     </target>
 
