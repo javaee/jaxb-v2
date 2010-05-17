@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
- * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
- * 
+ *
+ * Copyright 1997-2010Sun Microsystems, Inc. All rights reserved.
+ *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -10,7 +10,7 @@
  * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
  * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- * 
+ *
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
  * Sun designates this particular file as subject to the "Classpath" exception
@@ -19,9 +19,9 @@
  * Header, with the fields enclosed by brackets [] replaced by your own
  * identifying information: "Portions Copyrighted [year]
  * [name of copyright owner]"
- * 
+ *
  * Contributor(s):
- * 
+ *
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
  * elects to include this software in this distribution under the [CDDL or GPL
@@ -33,7 +33,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
 package com.sun.tools.xjc.generator.bean;
 
 import static com.sun.tools.xjc.outline.Aspect.EXPOSED;
@@ -42,6 +41,7 @@ import java.io.Serializable;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -53,8 +53,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlMimeType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 import com.sun.codemodel.ClassType;
@@ -108,7 +106,6 @@ import com.sun.tools.xjc.outline.FieldOutline;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.outline.PackageOutline;
 import com.sun.tools.xjc.util.CodeModelClassFactory;
-import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
 import com.sun.xml.xsom.XmlString;
 import com.sun.istack.NotNull;
@@ -117,48 +114,37 @@ import com.sun.tools.xjc.model.CReferencePropertyInfo;
 /**
  * Generates fields and accessors.
  */
-public final class BeanGenerator implements Outline
-{
+public final class BeanGenerator implements Outline {
+
     /** Simplifies class/interface creation and collision detection. */
     private final CodeModelClassFactory codeModelClassFactory;
-    
     private final ErrorReceiver errorReceiver;
-
     /** all {@link PackageOutline}s keyed by their {@link PackageOutline#_package}. */
-    private final Map<JPackage,PackageOutlineImpl> packageContexts = new HashMap<JPackage,PackageOutlineImpl>();
-    
+    private final Map<JPackage, PackageOutlineImpl> packageContexts = new LinkedHashMap<JPackage, PackageOutlineImpl>();
     /** all {@link ClassOutline}s keyed by their {@link ClassOutline#target}. */
-    private final Map<CClassInfo,ClassOutlineImpl> classes = new HashMap<CClassInfo,ClassOutlineImpl>();
-
+    private final Map<CClassInfo, ClassOutlineImpl> classes = new LinkedHashMap<CClassInfo, ClassOutlineImpl>();
     /** all {@link EnumOutline}s keyed by their {@link EnumOutline#target}. */
-    private final Map<CEnumLeafInfo,EnumOutline> enums = new HashMap<CEnumLeafInfo,EnumOutline>();
-
+    private final Map<CEnumLeafInfo, EnumOutline> enums = new LinkedHashMap<CEnumLeafInfo, EnumOutline>();
     /**
      * Generated runtime classes.
      */
-    private final Map<Class,JClass> generatedRuntime = new HashMap<Class, JClass>();
-
+    private final Map<Class, JClass> generatedRuntime = new LinkedHashMap<Class, JClass>();
     /** the model object which we are processing. */
     private final Model model;
-    
     private final JCodeModel codeModel;
-
     /**
      * for each property, the information about the generated field.
      */
-    private final Map<CPropertyInfo,FieldOutline> fields = new HashMap<CPropertyInfo,FieldOutline>();
-
+    private final Map<CPropertyInfo, FieldOutline> fields = new LinkedHashMap<CPropertyInfo, FieldOutline>();
     /**
      * elements that generate classes to the generated classes.
      */
-    /*package*/ final Map<CElementInfo,ElementOutlineImpl> elements = new HashMap<CElementInfo,ElementOutlineImpl>();
-
-
+    /*package*/ final Map<CElementInfo, ElementOutlineImpl> elements = new LinkedHashMap<CElementInfo, ElementOutlineImpl>();
 
     /**
      * Generates beans into code model according to the BGM,
      * and produces the reflection model.
-     * 
+     *
      * @param _errorReceiver
      *      This object will receive all the errors discovered
      *      during the back-end stage.
@@ -170,15 +156,14 @@ public final class BeanGenerator implements Outline
      *      reported to the error recevier.)
      */
     public static Outline generate(Model model, ErrorReceiver _errorReceiver) {
-        
+
         try {
             return new BeanGenerator(model, _errorReceiver);
-        } catch( AbortException e ) {
+        } catch (AbortException e) {
             return null;
         }
     }
-    
-    
+
     private BeanGenerator(Model _model, ErrorReceiver _errorReceiver) {
 
         this.model = _model;
@@ -187,45 +172,51 @@ public final class BeanGenerator implements Outline
         this.codeModelClassFactory = new CodeModelClassFactory(errorReceiver);
 
         // build enum classes
-        for( CEnumLeafInfo p : model.enums().values() )
-            enums.put( p, generateEnumDef(p) );
+        for (CEnumLeafInfo p : model.enums().values()) {
+            enums.put(p, generateEnumDef(p));
+        }
 
         JPackage[] packages = getUsedPackages(EXPOSED);
 
         // generates per-package code and remember the results as contexts.
-        for( JPackage pkg : packages )
+        for (JPackage pkg : packages) {
             getPackageContext(pkg);
+        }
 
         // create the class definitions for all the beans first.
         // this should also fill in PackageContext#getClasses
-        for( CClassInfo bean : model.beans().values() )
+        for (CClassInfo bean : model.beans().values()) {
             getClazz(bean);
+        }
 
         // compute the package-level setting
-        for (PackageOutlineImpl p : packageContexts.values())
+        for (PackageOutlineImpl p : packageContexts.values()) {
             p.calcDefaultValues();
+        }
 
         JClass OBJECT = codeModel.ref(Object.class);
 
         // inheritance relationship needs to be set before we generate fields, or otherwise
         // we'll fail to compute the correct type signature (namely the common base type computation)
-        for( ClassOutlineImpl cc : getClasses() ) {
+        for (ClassOutlineImpl cc : getClasses()) {
 
             // setup inheritance between implementation hierarchy.
             CClassInfo superClass = cc.target.getBaseClass();
-            if(superClass!=null) {
+            if (superClass != null) {
                 // use the specified super class
-                model.strategy._extends(cc,getClazz(superClass));
+                model.strategy._extends(cc, getClazz(superClass));
             } else {
                 CClassRef refSuperClass = cc.target.getRefBaseClass();
-                if(refSuperClass!=null) {
-                    cc.implClass._extends(refSuperClass.toType(this,EXPOSED));
+                if (refSuperClass != null) {
+                    cc.implClass._extends(refSuperClass.toType(this, EXPOSED));
                 } else {
                     // use the default one, if any
-                    if( model.rootClass!=null && cc.implClass._extends().equals(OBJECT) )
+                    if (model.rootClass != null && cc.implClass._extends().equals(OBJECT)) {
                         cc.implClass._extends(model.rootClass);
-                    if( model.rootInterface!=null)
+                    }
+                    if (model.rootInterface != null) {
                         cc.ref._implements(model.rootInterface);
+                    }
                 }
             }
 
@@ -235,31 +226,35 @@ public final class BeanGenerator implements Outline
             //     private static final long serialVersionUID = <id>;
             //     ....
             // }
-            if( model.serializable ) {
+            if (model.serializable) {
                 cc.implClass._implements(Serializable.class);
-                if( model.serialVersionUID!=null ) {
+                if (model.serialVersionUID != null) {
                     cc.implClass.field(
-                        JMod.PRIVATE|JMod.STATIC|JMod.FINAL,
-                        codeModel.LONG,
-                        "serialVersionUID",
-                        JExpr.lit(model.serialVersionUID));
+                            JMod.PRIVATE | JMod.STATIC | JMod.FINAL,
+                            codeModel.LONG,
+                            "serialVersionUID",
+                            JExpr.lit(model.serialVersionUID));
                 }
             }
         }
 
         // fill in implementation classes
-        for( ClassOutlineImpl co : getClasses() )
+        for (ClassOutlineImpl co : getClasses()) {
             generateClassBody(co);
+        }
 
-        for( EnumOutline eo : enums.values() )
+        for (EnumOutline eo : enums.values()) {
             generateEnumBody(eo);
+        }
 
         // create factories for the impl-less elements
-        for( CElementInfo ei : model.getAllElements())
+        for (CElementInfo ei : model.getAllElements()) {
             getPackageContext(ei._package()).objectFactoryGenerator().populate(ei);
+        }
 
-        if(model.options.debugMode)
+        if (model.options.debugMode) {
             generateClassList();
+        }
     }
 
     /**
@@ -269,34 +264,38 @@ public final class BeanGenerator implements Outline
      * This is used in the debug mode so that a new properly configured
      * {@link JAXBContext} object can be used.
      */
+    @SuppressWarnings("CallToThreadDumpStack")
     private void generateClassList() {
         try {
             JDefinedClass jc = codeModel.rootPackage()._class("JAXBDebug");
-            JMethod m = jc.method(JMod.PUBLIC|JMod.STATIC,JAXBContext.class,"createContext");
-            JVar $classLoader = m.param(ClassLoader.class,"classLoader");
+            JMethod m = jc.method(JMod.PUBLIC | JMod.STATIC, JAXBContext.class, "createContext");
+            JVar $classLoader = m.param(ClassLoader.class, "classLoader");
             m._throws(JAXBException.class);
             JInvocation inv = codeModel.ref(JAXBContext.class).staticInvoke("newInstance");
             m.body()._return(inv);
 
-            switch(model.strategy) {
-            case INTF_AND_IMPL:
-                {
+            switch (model.strategy) {
+                case INTF_AND_IMPL: {
                     StringBuilder buf = new StringBuilder();
-                    for( PackageOutlineImpl po : packageContexts.values() ) {
-                        if(buf.length()>0)  buf.append(':');
+                    for (PackageOutlineImpl po : packageContexts.values()) {
+                        if (buf.length() > 0) {
+                            buf.append(':');
+                        }
                         buf.append(po._package().name());
                     }
                     inv.arg(buf.toString()).arg($classLoader);
                     break;
                 }
-            case BEAN_ONLY:
-                for( ClassOutlineImpl cc : getClasses() )
-                    inv.arg(cc.implRef.dotclass());
-                for( PackageOutlineImpl po : packageContexts.values() )
-                    inv.arg(po.objectFactory().dotclass());
-                break;
-            default:
-                throw new IllegalStateException();
+                case BEAN_ONLY:
+                    for (ClassOutlineImpl cc : getClasses()) {
+                        inv.arg(cc.implRef.dotclass());
+                    }
+                    for (PackageOutlineImpl po : packageContexts.values()) {
+                        inv.arg(po.objectFactory().dotclass());
+                    }
+                    break;
+                default:
+                    throw new IllegalStateException();
             }
         } catch (JClassAlreadyExistsException e) {
             e.printStackTrace();
@@ -304,7 +303,6 @@ public final class BeanGenerator implements Outline
             // this error is not fatal. just continue.
         }
     }
-
 
     public Model getModel() {
         return model;
@@ -316,55 +314,54 @@ public final class BeanGenerator implements Outline
 
     public JClassContainer getContainer(CClassInfoParent parent, Aspect aspect) {
         CClassInfoParent.Visitor<JClassContainer> v;
-        switch(aspect) {
-        case EXPOSED:
-            v = exposedContainerBuilder;
-            break;
-        case IMPLEMENTATION:
-            v = implContainerBuilder;
-            break;
-        default:
-            assert false;
-            throw new IllegalStateException();
+        switch (aspect) {
+            case EXPOSED:
+                v = exposedContainerBuilder;
+                break;
+            case IMPLEMENTATION:
+                v = implContainerBuilder;
+                break;
+            default:
+                assert false;
+                throw new IllegalStateException();
         }
         return parent.accept(v);
     }
 
-    public final JType resolve(CTypeRef ref,Aspect a) {
-        return ref.getTarget().getType().toType(this,a);
+    public final JType resolve(CTypeRef ref, Aspect a) {
+        return ref.getTarget().getType().toType(this, a);
     }
-
     private final CClassInfoParent.Visitor<JClassContainer> exposedContainerBuilder =
-        new CClassInfoParent.Visitor<JClassContainer>() {
-        public JClassContainer onBean(CClassInfo bean) {
-            return getClazz(bean).ref;
-        }
+            new CClassInfoParent.Visitor<JClassContainer>() {
 
-        public JClassContainer onElement(CElementInfo element) {
-            // hmm...
-            return getElement(element).implClass;
-        }
+                public JClassContainer onBean(CClassInfo bean) {
+                    return getClazz(bean).ref;
+                }
 
-        public JClassContainer onPackage(JPackage pkg) {
-            return model.strategy.getPackage(pkg, EXPOSED);
-        }
-    };
+                public JClassContainer onElement(CElementInfo element) {
+                    // hmm...
+                    return getElement(element).implClass;
+                }
 
+                public JClassContainer onPackage(JPackage pkg) {
+                    return model.strategy.getPackage(pkg, EXPOSED);
+                }
+            };
     private final CClassInfoParent.Visitor<JClassContainer> implContainerBuilder =
-        new CClassInfoParent.Visitor<JClassContainer>() {
-        public JClassContainer onBean(CClassInfo bean) {
-            return getClazz(bean).implClass;
-        }
+            new CClassInfoParent.Visitor<JClassContainer>() {
 
-        public JClassContainer onElement(CElementInfo element) {
-            return getElement(element).implClass;
-        }
+                public JClassContainer onBean(CClassInfo bean) {
+                    return getClazz(bean).implClass;
+                }
 
-        public JClassContainer onPackage(JPackage pkg) {
-            return model.strategy.getPackage(pkg,Aspect.IMPLEMENTATION);
-        }
-    };
+                public JClassContainer onElement(CElementInfo element) {
+                    return getElement(element).implClass;
+                }
 
+                public JClassContainer onPackage(JPackage pkg) {
+                    return model.strategy.getPackage(pkg, Aspect.IMPLEMENTATION);
+                }
+            };
 
     /**
      * Returns all <i>used</i> JPackages.
@@ -379,35 +376,40 @@ public final class BeanGenerator implements Outline
      *         Given the same input, the order of packages in the array
      *         is always the same regardless of the environment.
      */
-    public final JPackage[] getUsedPackages( Aspect aspect ) {
+    public final JPackage[] getUsedPackages(Aspect aspect) {
         Set<JPackage> s = new TreeSet<JPackage>();
 
-        for( CClassInfo bean : model.beans().values() ) {
-            JClassContainer cont = getContainer(bean.parent(),aspect);
-            if(cont.isPackage())
-                s.add( (JPackage)cont );
+        for (CClassInfo bean : model.beans().values()) {
+            JClassContainer cont = getContainer(bean.parent(), aspect);
+            if (cont.isPackage()) {
+                s.add((JPackage) cont);
+            }
         }
 
-        for( CElementInfo e : model.getElementMappings(null).values() ) {
+        for (CElementInfo e : model.getElementMappings(null).values()) {
             // at the first glance you might think we should be iterating all elements,
             // not just global ones, but if you think about it, local ones live inside
             // another class, so those packages are already enumerated when we were
             // walking over CClassInfos.
-            s.add( e._package() );
+            s.add(e._package());
         }
 
         return s.toArray(new JPackage[s.size()]);
     }
 
-    public ErrorReceiver getErrorReceiver() { return errorReceiver; }
-    
-    public CodeModelClassFactory getClassFactory() { return codeModelClassFactory; }
+    public ErrorReceiver getErrorReceiver() {
+        return errorReceiver;
+    }
 
-    public PackageOutlineImpl getPackageContext( JPackage p ) {
+    public CodeModelClassFactory getClassFactory() {
+        return codeModelClassFactory;
+    }
+
+    public PackageOutlineImpl getPackageContext(JPackage p) {
         PackageOutlineImpl r = packageContexts.get(p);
-        if(r==null) {
-            r=new PackageOutlineImpl(this,model,p);
-            packageContexts.put(p,r);
+        if (r == null) {
+            r = new PackageOutlineImpl(this, model, p);
+            packageContexts.put(p, r);
         }
         return r;
     }
@@ -417,47 +419,48 @@ public final class BeanGenerator implements Outline
      * without filling in its body.
      */
     private ClassOutlineImpl generateClassDef(CClassInfo bean) {
-        ImplStructureStrategy.Result r = model.strategy.createClasses(this,bean);
+        ImplStructureStrategy.Result r = model.strategy.createClasses(this, bean);
         JClass implRef;
 
-        if( bean.getUserSpecifiedImplClass()!=null ) {
+        if (bean.getUserSpecifiedImplClass() != null) {
             // create a place holder for a user-specified class.
             JDefinedClass usr;
             try {
                 usr = codeModel._class(bean.getUserSpecifiedImplClass());
                 // but hide that file so that it won't be generated.
                 usr.hide();
-            } catch( JClassAlreadyExistsException e ) {
+            } catch (JClassAlreadyExistsException e) {
                 // it's OK for this to collide.
                 usr = e.getExistingClass();
             }
             usr._extends(r.implementation);
             implRef = usr;
-        } else
-        	implRef = r.implementation;
+        } else {
+            implRef = r.implementation;
+        }
 
-        return new ClassOutlineImpl(this,bean,r.exposed,r.implementation,implRef);
+        return new ClassOutlineImpl(this, bean, r.exposed, r.implementation, implRef);
     }
-
 
     public Collection<ClassOutlineImpl> getClasses() {
         // make sure that classes are fully populated
-        assert model.beans().size()==classes.size();
+        assert model.beans().size() == classes.size();
         return classes.values();
     }
 
-    public ClassOutlineImpl getClazz( CClassInfo bean ) {
+    public ClassOutlineImpl getClazz(CClassInfo bean) {
         ClassOutlineImpl r = classes.get(bean);
-        if(r==null)
-            classes.put( bean, r=generateClassDef(bean) );
+        if (r == null) {
+            classes.put(bean, r = generateClassDef(bean));
+        }
         return r;
     }
 
     public ElementOutlineImpl getElement(CElementInfo ei) {
         ElementOutlineImpl def = elements.get(ei);
-        if(def==null && ei.hasClass()) {
+        if (def == null && ei.hasClass()) {
             // create one. in the constructor it adds itself to the elements.
-            def = new ElementOutlineImpl(this,ei);
+            def = new ElementOutlineImpl(this, ei);
         }
         return def;
     }
@@ -474,15 +477,15 @@ public final class BeanGenerator implements Outline
         return packageContexts.values();
     }
 
-    public FieldOutline getField( CPropertyInfo prop ) {
+    public FieldOutline getField(CPropertyInfo prop) {
         return fields.get(prop);
     }
 
     /**
      * Generates the body of a class.
-     * 
+     *
      */
-    private void generateClassBody( ClassOutlineImpl cc ) {
+    private void generateClassBody(ClassOutlineImpl cc) {
         CClassInfo target = cc.target;
 
         // used to simplify the generated annotations
@@ -493,10 +496,10 @@ public final class BeanGenerator implements Outline
         XmlTypeWriter xtw = cc.implClass.annotate2(XmlTypeWriter.class);
         writeTypeName(cc.target.getTypeName(), xtw, mostUsedNamespaceURI);
 
-        if(model.options.target.isLaterThan(SpecVersion.V2_1)) {
+        if (model.options.target.isLaterThan(SpecVersion.V2_1)) {
             // @XmlSeeAlso
             Iterator<CClassInfo> subclasses = cc.target.listSubclasses();
-            if(subclasses.hasNext()) {
+            if (subclasses.hasNext()) {
                 XmlSeeAlsoWriter saw = cc.implClass.annotate2(XmlSeeAlsoWriter.class);
                 while (subclasses.hasNext()) {
                     CClassInfo s = subclasses.next();
@@ -505,7 +508,7 @@ public final class BeanGenerator implements Outline
             }
         }
 
-        if(target.isElement()) {
+        if (target.isElement()) {
             String namespaceURI = target.getElementName().getNamespaceURI();
             String localPart = target.getElementName().getLocalPart();
 
@@ -513,15 +516,17 @@ public final class BeanGenerator implements Outline
             // @XmlRootElement(name="foo", targetNamespace="bar://baz")
             XmlRootElementWriter xrew = cc.implClass.annotate2(XmlRootElementWriter.class);
             xrew.name(localPart);
-            if(!namespaceURI.equals(mostUsedNamespaceURI)) // only generate if necessary
+            if (!namespaceURI.equals(mostUsedNamespaceURI)) // only generate if necessary
+            {
                 xrew.namespace(namespaceURI);
+            }
         }
 
-        if(target.isOrdered()) {
-            for(CPropertyInfo p : target.getProperties() ) {
-                if( ! (p instanceof CAttributePropertyInfo )) {
-                    if (!( (p instanceof CReferencePropertyInfo) &&
-                           ((CReferencePropertyInfo)p).isDummy())) {
+        if (target.isOrdered()) {
+            for (CPropertyInfo p : target.getProperties()) {
+                if (!(p instanceof CAttributePropertyInfo)) {
+                    if (!((p instanceof CReferencePropertyInfo)
+                            && ((CReferencePropertyInfo) p).isDummy())) {
                         xtw.propOrder(p.getName(false));
                     }
                 }
@@ -531,11 +536,11 @@ public final class BeanGenerator implements Outline
             xtw.getAnnotationUse().paramArray("propOrder");
         }
 
-        for( CPropertyInfo prop : target.getProperties() ) {
-            generateFieldDecl(cc,prop);
+        for (CPropertyInfo prop : target.getProperties()) {
+            generateFieldDecl(cc, prop);
         }
 
-        if( target.declaresAttributeWildcard() ) {
+        if (target.declaresAttributeWildcard()) {
             generateAttributeWildcard(cc);
         }
 
@@ -546,49 +551,49 @@ public final class BeanGenerator implements Outline
     }
 
     private void writeTypeName(QName typeName, XmlTypeWriter xtw, String mostUsedNamespaceURI) {
-        if(typeName ==null) {
+        if (typeName == null) {
             xtw.name("");
         } else {
             xtw.name(typeName.getLocalPart());
             final String typeNameURI = typeName.getNamespaceURI();
-            if(!typeNameURI.equals(mostUsedNamespaceURI)) // only generate if necessary
+            if (!typeNameURI.equals(mostUsedNamespaceURI)) // only generate if necessary
+            {
                 xtw.namespace(typeNameURI);
+            }
         }
     }
 
     /**
      * Generates an attribute wildcard property on a class.
      */
-    private void generateAttributeWildcard( ClassOutlineImpl cc ) {
+    private void generateAttributeWildcard(ClassOutlineImpl cc) {
         String FIELD_NAME = "otherAttributes";
         String METHOD_SEED = model.getNameConverter().toClassName(FIELD_NAME);
 
-        JClass mapType = codeModel.ref(Map.class).narrow(QName.class,String.class);
-        JClass mapImpl = codeModel.ref(HashMap.class).narrow(QName.class,String.class);
+        JClass mapType = codeModel.ref(Map.class).narrow(QName.class, String.class);
+        JClass mapImpl = codeModel.ref(HashMap.class).narrow(QName.class, String.class);
 
         // [RESULT]
         // Map<QName,String> m = new HashMap<QName,String>();
         JFieldVar $ref = cc.implClass.field(JMod.PRIVATE,
-                mapType, FIELD_NAME, JExpr._new(mapImpl) );
+                mapType, FIELD_NAME, JExpr._new(mapImpl));
         $ref.annotate2(XmlAnyAttributeWriter.class);
 
         MethodWriter writer = cc.createMethodWriter();
 
-        JMethod $get = writer.declareMethod( mapType, "get"+METHOD_SEED );
+        JMethod $get = writer.declareMethod(mapType, "get" + METHOD_SEED);
         $get.javadoc().append(
-            "Gets a map that contains attributes that aren't bound to any typed property on this class.\n\n" +
-            "<p>\n" +
-            "the map is keyed by the name of the attribute and \n" +
-            "the value is the string value of the attribute.\n" +
-            "\n" +
-            "the map returned by this method is live, and you can add new attribute\n" +
-            "by updating the map directly. Because of this design, there's no setter.\n");
+                "Gets a map that contains attributes that aren't bound to any typed property on this class.\n\n"
+                + "<p>\n"
+                + "the map is keyed by the name of the attribute and \n"
+                + "the value is the string value of the attribute.\n"
+                + "\n"
+                + "the map returned by this method is live, and you can add new attribute\n"
+                + "by updating the map directly. Because of this design, there's no setter.\n");
         $get.javadoc().addReturn().append("always non-null");
 
         $get.body()._return($ref);
     }
-
-
 
     /**
      * Generates the minimum {@link JDefinedClass} skeleton
@@ -598,12 +603,15 @@ public final class BeanGenerator implements Outline
         JDefinedClass type;
 
         type = getClassFactory().createClass(
-            getContainer(e.parent, EXPOSED),e.shortName,e.getLocator(), ClassType.ENUM);
+                getContainer(e.parent, EXPOSED), e.shortName, e.getLocator(), ClassType.ENUM);
         type.javadoc().append(e.javadoc);
 
         return new EnumOutline(e, type) {
+
             @Override
-            public @NotNull Outline parent() {
+            public
+            @NotNull
+            Outline parent() {
                 return BeanGenerator.this;
             }
         };
@@ -617,16 +625,16 @@ public final class BeanGenerator implements Outline
         writeTypeName(e.getTypeName(), xtw,
                 eo._package().getMostUsedNamespaceURI());
 
-        JCodeModel codeModel = model.codeModel;
+        JCodeModel cModel = model.codeModel;
 
         // since constant values are never null, no point in using the boxed types.
         JType baseExposedType = e.base.toType(this, EXPOSED).unboxify();
-        JType baseImplType = e.base.toType(this,Aspect.IMPLEMENTATION).unboxify();
+        JType baseImplType = e.base.toType(this, Aspect.IMPLEMENTATION).unboxify();
 
 
         XmlEnumWriter xew = type.annotate2(XmlEnumWriter.class);
         xew.value(baseExposedType);
-        
+
 
         boolean needsValue = e.needsValueField();
 
@@ -636,44 +644,49 @@ public final class BeanGenerator implements Outline
 
         Set<String> enumFieldNames = new HashSet<String>();    // record generated field names to detect collision
 
-        for( CEnumConstant mem : e.members ) {
+        for (CEnumConstant mem : e.members) {
             String constName = mem.getName();
 
-            if(!JJavaName.isJavaIdentifier(constName)) {
+            if (!JJavaName.isJavaIdentifier(constName)) {
                 // didn't produce a name.
-                getErrorReceiver().error( e.getLocator(),
-                    Messages.ERR_UNUSABLE_NAME.format(mem.getLexicalValue(), constName ) );
+                getErrorReceiver().error(e.getLocator(),
+                        Messages.ERR_UNUSABLE_NAME.format(mem.getLexicalValue(), constName));
             }
 
-            if( !enumFieldNames.add(constName) )
-                getErrorReceiver().error( e.getLocator(), Messages.ERR_NAME_COLLISION.format(constName));
+            if (!enumFieldNames.add(constName)) {
+                getErrorReceiver().error(e.getLocator(), Messages.ERR_NAME_COLLISION.format(constName));
+            }
 
             // [RESULT]
             // <Const>(...)
             // ASSUMPTION: datatype is outline-independent
             JEnumConstant constRef = type.enumConstant(constName);
-            if(needsValue)
+            if (needsValue) {
                 constRef.arg(e.base.createConstant(this, new XmlString(mem.getLexicalValue())));
+            }
 
-            if(!mem.getLexicalValue().equals(constName))
+            if (!mem.getLexicalValue().equals(constName)) {
                 constRef.annotate2(XmlEnumValueWriter.class).value(mem.getLexicalValue());
+            }
 
             // set javadoc
-            if( mem.javadoc!=null )
+            if (mem.javadoc != null) {
                 constRef.javadoc().append(mem.javadoc);
+            }
 
-            eo.constants.add(new EnumConstantOutline(mem,constRef){});
+            eo.constants.add(new EnumConstantOutline(mem, constRef) {
+            });
         }
 
 
-        if(needsValue) {
+        if (needsValue) {
             // [RESULT]
             // final <valueType> value;
-            JFieldVar $value = type.field( JMod.PRIVATE|JMod.FINAL, baseExposedType, "value" );
+            JFieldVar $value = type.field(JMod.PRIVATE | JMod.FINAL, baseExposedType, "value");
 
             // [RESULT]
             // public <valuetype> value() { return value; }
-            type.method(JMod.PUBLIC, baseExposedType, "value" ).body()._return($value);
+            type.method(JMod.PUBLIC, baseExposedType, "value").body()._return($value);
 
             // [RESULT]
             // <constructor>(<valueType> v) {
@@ -681,7 +694,7 @@ public final class BeanGenerator implements Outline
             // }
             {
                 JMethod m = type.constructor(0);
-                m.body().assign( $value,    m.param( baseImplType, "v" ) );
+                m.body().assign($value, m.param(baseImplType, "v"));
             }
 
             // [RESULT]
@@ -693,24 +706,24 @@ public final class BeanGenerator implements Outline
             //   throw new IllegalArgumentException(...);
             // }
             {
-                JMethod m = type.method(JMod.PUBLIC|JMod.STATIC , type, "fromValue" );
-                JVar $v = m.param(baseExposedType,"v");
-                JForEach fe = m.body().forEach(type,"c", type.staticInvoke("values") );
+                JMethod m = type.method(JMod.PUBLIC | JMod.STATIC, type, "fromValue");
+                JVar $v = m.param(baseExposedType, "v");
+                JForEach fe = m.body().forEach(type, "c", type.staticInvoke("values"));
                 JExpression eq;
-                if(baseExposedType.isPrimitive())
+                if (baseExposedType.isPrimitive()) {
                     eq = fe.var().ref($value).eq($v);
-                else
+                } else {
                     eq = fe.var().ref($value).invoke("equals").arg($v);
+                }
 
                 fe.body()._if(eq)._then()._return(fe.var());
 
-                JInvocation ex = JExpr._new(codeModel.ref(IllegalArgumentException.class));
+                JInvocation ex = JExpr._new(cModel.ref(IllegalArgumentException.class));
 
                 JExpression strForm;
-                if(baseExposedType.isPrimitive()) {
-                    strForm = codeModel.ref(String.class).staticInvoke("valueOf").arg($v);
-                } else
-                if(baseExposedType==codeModel.ref(String.class)){
+                if (baseExposedType.isPrimitive()) {
+                    strForm = cModel.ref(String.class).staticInvoke("valueOf").arg($v);
+                } else if (baseExposedType == cModel.ref(String.class)) {
                     strForm = $v;
                 } else {
                     strForm = $v.invoke("toString");
@@ -720,33 +733,32 @@ public final class BeanGenerator implements Outline
         } else {
             // [RESULT]
             // public String value() { return name(); }
-            type.method(JMod.PUBLIC, String.class, "value" ).body()._return(JExpr.invoke("name"));
+            type.method(JMod.PUBLIC, String.class, "value").body()._return(JExpr.invoke("name"));
 
             // [RESULT]
             // public <Const> fromValue(String v) { return valueOf(v); }
-            JMethod m = type.method(JMod.PUBLIC|JMod.STATIC, type, "fromValue" );
-            m.body()._return( JExpr.invoke("valueOf").arg(m.param(String.class,"v")));
+            JMethod m = type.method(JMod.PUBLIC | JMod.STATIC, type, "fromValue");
+            m.body()._return(JExpr.invoke("valueOf").arg(m.param(String.class, "v")));
         }
     }
-
-
 
     /**
      * Determines the FieldRenderer used for the given FieldUse,
      * then generates the field declaration and accessor methods.
-     * 
+     *
      * The <code>fields</code> map will be updated with the newly
      * created FieldRenderer.
      */
-    private FieldOutline generateFieldDecl( ClassOutlineImpl cc, CPropertyInfo prop ) {
+    private FieldOutline generateFieldDecl(ClassOutlineImpl cc, CPropertyInfo prop) {
         FieldRenderer fr = prop.realization;
-        if(fr==null)
-            // none is specified. use the default factory
+        if (fr == null) // none is specified. use the default factory
+        {
             fr = model.options.getFieldRendererFactory().getDefault();
+        }
 
         FieldOutline field = fr.generate(cc, prop);
-        fields.put(prop,field);       
-   
+        fields.put(prop, field);
+
         return field;
     }
 
@@ -757,8 +769,8 @@ public final class BeanGenerator implements Outline
      */
     public final void generateAdapterIfNecessary(CPropertyInfo prop, JAnnotatable field) {
         CAdapter adapter = prop.getAdapter();
-        if (adapter != null ) {
-            if(adapter.getAdapterIfKnown()==SwaRefAdapter.class) {
+        if (adapter != null) {
+            if (adapter.getAdapterIfKnown() == SwaRefAdapter.class) {
                 field.annotate(XmlAttachmentRef.class);
             } else {
                 // [RESULT]
@@ -768,26 +780,27 @@ public final class BeanGenerator implements Outline
             }
         }
 
-        switch(prop.id()) {
-        case ID:
-            field.annotate(XmlID.class);
-            break;
-        case IDREF:
-            field.annotate(XmlIDREF.class);
-            break;
+        switch (prop.id()) {
+            case ID:
+                field.annotate(XmlID.class);
+                break;
+            case IDREF:
+                field.annotate(XmlIDREF.class);
+                break;
         }
 
-        if(prop.getExpectedMimeType()!=null)
+        if (prop.getExpectedMimeType() != null) {
             field.annotate2(XmlMimeTypeWriter.class).value(prop.getExpectedMimeType().toString());
+        }
     }
 
     public final JClass addRuntime(Class clazz) {
         JClass g = generatedRuntime.get(clazz);
-        if(g==null) {
+        if (g == null) {
             // put code into a separate package to avoid name conflicts.
             JPackage implPkg = getUsedPackages(Aspect.IMPLEMENTATION)[0].subPackage("runtime");
-            g = generateStaticClass(clazz,implPkg);
-            generatedRuntime.put(clazz,g);
+            g = generateStaticClass(clazz, implPkg);
+            generatedRuntime.put(clazz, g);
         }
         return g;
     }
@@ -799,18 +812,20 @@ public final class BeanGenerator implements Outline
         // so when we build jars, we'' use ".java_". But when we run from the workspace,
         // we want the original source code to be used, so we check both here.
         // see bug 6211503.
-        URL res = src.getResource(shortName+".java");
-        if(res==null)
-            res = src.getResource(shortName+".java_");
-        if(res==null)
-            throw new InternalError("Unable to load source code of "+src.getName()+" as a resource");
+        URL res = src.getResource(shortName + ".java");
+        if (res == null) {
+            res = src.getResource(shortName + ".java_");
+        }
+        if (res == null) {
+            throw new InternalError("Unable to load source code of " + src.getName() + " as a resource");
+        }
 
-        JStaticJavaFile sjf = new JStaticJavaFile(out,shortName, res, null );
+        JStaticJavaFile sjf = new JStaticJavaFile(out, shortName, res, null);
         out.addResourceFile(sjf);
         return sjf.getJClass();
     }
 
-    private String getShortName( String name ) {
-        return name.substring(name.lastIndexOf('.')+1);
+    private String getShortName(String name) {
+        return name.substring(name.lastIndexOf('.') + 1);
     }
 }
