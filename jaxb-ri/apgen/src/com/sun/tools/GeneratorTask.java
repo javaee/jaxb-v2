@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * Copyright 1997-2010 Sun Microsystems, Inc. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -33,7 +33,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
 package com.sun.tools;
 
 import java.io.File;
@@ -88,26 +87,20 @@ public class GeneratorTask extends Task {
      * Used to load additional user-specified classes.
      */
     private final Path classpath;
-
     private final List<Pattern> patterns = new ArrayList<Pattern>();
-
     private final List<URL> endorsedJars = new ArrayList<URL>();
-
     /**
      * Used during the build to load annotation classes.
      */
     private ClassLoader userLoader;
-
     /**
      * Generated interfaces go into this codeModel.
      */
     private JCodeModel codeModel = new JCodeModel();
-
     /**
      * The writers will be generated into this package.
      */
     private JPackage pkg = codeModel.rootPackage();
-
     /**
      * Output directory
      */
@@ -120,7 +113,7 @@ public class GeneratorTask extends Task {
      * @param ann
      *      annotation type to
      */
-    void process( Class<? extends Annotation> ann, JDefinedClass c ) {
+    void process(Class<? extends Annotation> ann, JDefinedClass c) {
         // [RESULT]
         // public final class XmlAttributeQuick extends Quick implements XmlAttribute {
         c._extends(Quick.class);
@@ -128,7 +121,7 @@ public class GeneratorTask extends Task {
 
         // [RESULT]
         //     private final XmlAttribute core;
-        JFieldVar $core = c.field(JMod.PRIVATE|JMod.FINAL,ann,"core");
+        JFieldVar $core = c.field(JMod.PRIVATE | JMod.FINAL, ann, "core");
 
         // [RESULT]
         // public XmlAttributeQuick(Locatable upstream, XmlAttribute core) {
@@ -137,8 +130,8 @@ public class GeneratorTask extends Task {
         // }
         {
             JMethod m = c.constructor(JMod.PUBLIC);
-            m.body().invoke("super").arg(m.param(Locatable.class,"upstream"));
-            m.body().assign(JExpr._this().ref($core),m.param(ann,"core"));
+            m.body().invoke("super").arg(m.param(Locatable.class, "upstream"));
+            m.body().assign(JExpr._this().ref($core), m.param(ann, "core"));
         }
 
         // [RESULT]
@@ -146,7 +139,7 @@ public class GeneratorTask extends Task {
         //     return core;
         // }
         {
-            JMethod m = c.method(JMod.PROTECTED,Annotation.class,"getAnnotation");
+            JMethod m = c.method(JMod.PROTECTED, Annotation.class, "getAnnotation");
             m.body()._return($core);
         }
 
@@ -155,10 +148,8 @@ public class GeneratorTask extends Task {
         //     return new XmlAttributeQuick(upstream,(XmlAttribute)core);
         // }
         {
-            JMethod m = c.method(JMod.PROTECTED,Quick.class,"newInstance");
-            m.body()._return(JExpr._new(c)
-                    .arg(m.param(Locatable.class,"upstream"))
-                    .arg(JExpr.cast(codeModel.ref(ann),m.param(Annotation.class,"core"))));
+            JMethod m = c.method(JMod.PROTECTED, Quick.class, "newInstance");
+            m.body()._return(JExpr._new(c).arg(m.param(Locatable.class, "upstream")).arg(JExpr.cast(codeModel.ref(ann), m.param(Annotation.class, "core"))));
         }
 
         // [RESULT]
@@ -167,7 +158,7 @@ public class GeneratorTask extends Task {
         // }
         {
             JMethod m = c.method(JMod.PUBLIC,
-                codeModel.ref(Class.class).narrow(ann),"annotationType");
+                    codeModel.ref(Class.class).narrow(ann), "annotationType");
             m.body()._return(codeModel.ref(ann).dotclass());
         }
 
@@ -178,7 +169,7 @@ public class GeneratorTask extends Task {
             // public String name() {
             //    return core.name();
             //}
-            JMethod m = c.method(JMod.PUBLIC,method.getReturnType(),method.getName());
+            JMethod m = c.method(JMod.PUBLIC, method.getReturnType(), method.getName());
             m.body()._return($core.invoke(method.getName()));
         }
     }
@@ -188,23 +179,30 @@ public class GeneratorTask extends Task {
      */
     private static String getShortName(String className) {
         int idx = className.lastIndexOf('.');
-        return className.substring(idx+1);
+        return className.substring(idx + 1);
     }
-
     /**
      * Map from annotation classes to their writers.
      */
-    private final Map<Class,JDefinedClass> queue =
-    	new TreeMap<Class,JDefinedClass>(new Comparator<Object>() {
+    private final Map<Class, JDefinedClass> queue =
+            new TreeMap<Class, JDefinedClass>(new Comparator<Object>() {
 
-			public int compare(Object o1, Object o2) {
-				if (o1 == o2) return 0;
-				if (o1 == null) return -1;
-				if (o2 == null) return 1;
-				if (!(o1 instanceof Class) || !(o2 instanceof Class))
-					throw new ClassCastException();
-				return ((Class)o1).getName().compareTo(((Class)o2).getName());
-			}});
+        public int compare(Object o1, Object o2) {
+            if (o1 == o2) {
+                return 0;
+            }
+            if (o1 == null) {
+                return -1;
+            }
+            if (o2 == null) {
+                return 1;
+            }
+            if (!(o1 instanceof Class) || !(o2 instanceof Class)) {
+                throw new ClassCastException();
+            }
+            return ((Class) o1).getName().compareTo(((Class) o2).getName());
+        }
+    });
 
     public GeneratorTask() {
         classpath = new Path(null);
@@ -221,9 +219,10 @@ public class GeneratorTask extends Task {
     }
 
     /** Nested &lt;classpath> element. */
-    public void setClasspath( Path cp ) {
+    public void setClasspath(Path cp) {
         classpath.createPath().append(cp);
     }
+
     /** Nested &lt;classpath> element. */
     public Path createClasspath() {
         return classpath.createPath();
@@ -233,7 +232,7 @@ public class GeneratorTask extends Task {
         classpath.createPath().setRefid(r);
     }
 
-    public void setDestdir( File output ) {
+    public void setDestdir(File output) {
         this.output = output;
     }
 
@@ -241,9 +240,10 @@ public class GeneratorTask extends Task {
      * Nested &lt;classes> elements.
      */
     public static class Classes {
+
         Pattern p;
 
-        public void setIncludes( String pattern ) {
+        public void setIncludes(String pattern) {
             try {
                 p = Pattern.compile(convertToRegex(pattern));
             } catch (PatternSyntaxException e) {
@@ -254,36 +254,37 @@ public class GeneratorTask extends Task {
         private String convertToRegex(String pattern) {
             StringBuilder regex = new StringBuilder();
             char nc = ' ';
-            if (pattern.length() >0 ) {
+            if (pattern.length() > 0) {
 
-                for ( int i = 0 ; i < pattern.length(); i ++ ) {
+                for (int i = 0; i < pattern.length(); i++) {
                     char c = pattern.charAt(i);
                     int j = i;
                     nc = ' ';
-                    if ((j+1) != pattern.length()) {
-                        nc = pattern.charAt(j+1);
+                    if ((j + 1) != pattern.length()) {
+                        nc = pattern.charAt(j + 1);
                     }
                     //escape single '.'
-                    if ((c=='.') && ( nc !='.')){
+                    if ((c == '.') && (nc != '.')) {
                         regex.append('\\');
                         regex.append('.');
                         //do not allow patterns like a..b
-                    } else if ((c=='.') && ( nc =='.')){
+                    } else if ((c == '.') && (nc == '.')) {
                         continue;
                         // "**" gets replaced by ".*"
-                    } else if ((c=='*') && (nc == '*')) {
+                    } else if ((c == '*') && (nc == '*')) {
                         regex.append(".*");
                         break;
                         //'*' replaced by anything but '.' i.e [^\\.]+
-                    } else if (c=='*') {
+                    } else if (c == '*') {
                         regex.append("[^\\.]+");
                         continue;
                         //'?' replaced by anything but '.' i.e [^\\.]
-                    } else if (c=='?') {
+                    } else if (c == '?') {
                         regex.append("[^\\.]");
                         //else leave the chars as they occur in the pattern
-                    } else
+                    } else {
                         regex.append(c);
+                    }
                 }
 
             }
@@ -296,9 +297,10 @@ public class GeneratorTask extends Task {
      * Nested &lt;endorse> elements.
      */
     public static class Endorse {
+
         URL endorsedJar;
 
-        public void setPath( String jar ) throws MalformedURLException {
+        public void setPath(String jar) throws MalformedURLException {
             endorsedJar = new File(jar).toURI().toURL();
         }
     }
@@ -306,34 +308,35 @@ public class GeneratorTask extends Task {
     /**
      * List of classes to be handled
      */
-    public void addConfiguredClasses( Classes c ) {
+    public void addConfiguredClasses(Classes c) {
         patterns.add(c.p);
     }
 
     /**
      * List of endorsed jars
      */
-    public void addConfiguredEndorse( Endorse e ) {
+    public void addConfiguredEndorse(Endorse e) {
         endorsedJars.add(e.endorsedJar);
     }
 
     @Override
     public void execute() throws BuildException {
         if ((endorsedJars != null) && (!endorsedJars.isEmpty())) {
-            ClassLoader maskedLoader = new MaskingClassLoader(new AntClassLoader(project,classpath), "javax.xml.bind");
+            ClassLoader maskedLoader = new MaskingClassLoader(new AntClassLoader(project, classpath), "javax.xml.bind");
             URL[] jars = new URL[endorsedJars.size()];
             userLoader = new URLClassLoader(endorsedJars.toArray(jars), maskedLoader);
         } else {
-            userLoader = new AntClassLoader(project,classpath);
+            userLoader = new AntClassLoader(project, classpath);
         }
         try {
             // find clsses to be bound
-            for( String path : classpath.list()) {
+            for (String path : classpath.list()) {
                 File f = new File(path);
-                if(f.isDirectory())
-                    processDir(f,"");
-                else
+                if (f.isDirectory()) {
+                    processDir(f, "");
+                } else {
                     processJar(f);
+                }
             }
 
             // [RESULT]
@@ -344,13 +347,12 @@ public class GeneratorTask extends Task {
             // }
             try {
                 JArray all = JExpr.newArray(codeModel.ref(Quick.class));
-                JDefinedClass init = pkg._class(0,"Init");
-                init.method(JMod.STATIC,Quick[].class,"getAll")
-                .body()._return(all);
+                JDefinedClass init = pkg._class(0, "Init");
+                init.method(JMod.STATIC, Quick[].class, "getAll").body()._return(all);
 
 
-                for( Map.Entry<Class,JDefinedClass> e : queue.entrySet() ) {
-                    process(e.getKey(),e.getValue());
+                for (Map.Entry<Class, JDefinedClass> e : queue.entrySet()) {
+                    process(e.getKey(), e.getValue());
                     all.add(JExpr._new(e.getValue()).arg(JExpr._null()).arg(JExpr._null()));
                 }
             } catch (JClassAlreadyExistsException e) {
@@ -361,7 +363,7 @@ public class GeneratorTask extends Task {
             try {
                 codeModel.build(output);
             } catch (IOException e) {
-                throw new BuildException("Unable to queue code to "+output,e);
+                throw new BuildException("Unable to queue code to " + output, e);
             }
         } finally {
             userLoader = null;
@@ -374,12 +376,12 @@ public class GeneratorTask extends Task {
     private void processJar(File jarfile) {
         try {
             JarFile jar = new JarFile(jarfile);
-            for( Enumeration<JarEntry> en = jar.entries(); en.hasMoreElements(); ) {
+            for (Enumeration<JarEntry> en = jar.entries(); en.hasMoreElements();) {
                 JarEntry e = en.nextElement();
-                process(e.getName(),e.getTime());
+                process(e.getName(), e.getTime());
             }
         } catch (IOException e) {
-            throw new BuildException("Unable to process "+jarfile,e);
+            throw new BuildException("Unable to process " + jarfile, e);
         }
     }
 
@@ -392,23 +394,26 @@ public class GeneratorTask extends Task {
     private void processDir(File dir, String prefix) {
         // look for class files
         String[] classes = dir.list(new FilenameFilter() {
+
             public boolean accept(File dir, String name) {
                 return name.endsWith(".class");
             }
         });
 
-        for( String c : classes ) {
-            process(prefix+c, new File(dir,c).lastModified());
+        for (String c : classes) {
+            process(prefix + c, new File(dir, c).lastModified());
         }
 
         // look for subdirectories
         File[] subdirs = dir.listFiles(new FileFilter() {
+
             public boolean accept(File path) {
                 return path.isDirectory();
             }
         });
-        for( File f : subdirs )
-            processDir(f,prefix+f.getName()+'/');
+        for (File f : subdirs) {
+            processDir(f, prefix + f.getName() + '/');
+        }
     }
 
     /**
@@ -416,24 +421,26 @@ public class GeneratorTask extends Task {
      *
      * @param name such as "javax/xml/bind/Abc.class"
      */
-    private void process(String name,long timestamp) {
-        if(!name.endsWith(".class"))
+    private void process(String name, long timestamp) {
+        if (!name.endsWith(".class")) {
             return; // not a class
-        name = name.substring(0,name.length()-6);
-        name = name.replace('/','.'); // make it a class naem
+        }
+        name = name.substring(0, name.length() - 6);
+        name = name.replace('/', '.'); // make it a class naem
         // find a match
-        for( Pattern p : patterns )
-            if(p.matcher(name).matches()) {
-                queue(name,timestamp);
+        for (Pattern p : patterns) {
+            if (p.matcher(name).matches()) {
+                queue(name, timestamp);
                 return;
             }
+        }
     }
 
     /**
      * Queues a file for generation.
      */
     private void queue(String className, long timestamp) {
-        log("Processing "+className,Project.MSG_VERBOSE);
+        log("Processing " + className, Project.MSG_VERBOSE);
         Class ann;
         try {
             ann = userLoader.loadClass(className);
@@ -441,29 +448,32 @@ public class GeneratorTask extends Task {
             throw new BuildException(e);
         }
 
-        if(!Annotation.class.isAssignableFrom(ann)) {
-            log("Skipping "+className+". Not an annotation",Project.MSG_WARN);
+        if (!Annotation.class.isAssignableFrom(ann)) {
+            log("Skipping " + className + ". Not an annotation", Project.MSG_WARN);
             return;
         }
 
         JDefinedClass w;
         try {
-            w = pkg._class(JMod.FINAL,getShortName(ann.getName())+"Quick");
+            w = pkg._class(JMod.FINAL, getShortName(ann.getName()) + "Quick");
         } catch (JClassAlreadyExistsException e) {
-            throw new BuildException("Class name collision on "+className, e);
+            throw new BuildException("Class name collision on " + className, e);
         }
 
         // up to date check
         String name = pkg.name();
-        if(name.length()==0)    name = getShortName(className);
-        else                    name += '.'+getShortName(className);
+        if (name.length() == 0) {
+            name = getShortName(className);
+        } else {
+            name += '.' + getShortName(className);
+        }
 
-        File dst = new File(output,name.replace('.',File.separatorChar)+"Quick.java");
-        if(dst.exists() && dst.lastModified() > timestamp ) {
-            log("Skipping "+className+". Up to date.",Project.MSG_VERBOSE);
+        File dst = new File(output, name.replace('.', File.separatorChar) + "Quick.java");
+        if (dst.exists() && dst.lastModified() > timestamp) {
+            log("Skipping " + className + ". Up to date.", Project.MSG_VERBOSE);
             w.hide();
         }
 
-        queue.put(ann,w);
+        queue.put(ann, w);
     }
 }
