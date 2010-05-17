@@ -3,7 +3,7 @@
 <!--
  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  
- Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ Copyright 1997-2010 Sun Microsystems, Inc. All rights reserved.
  
  The contents of this file are subject to the terms of either the GNU
  General Public License Version 2 only ("GPL") or the Common Development
@@ -52,11 +52,12 @@
         
         <mkdir dir="${root}/build/classes" />
         <javac srcdir="${root}/src" destdir="${root}/build/classes"
-            debug="${compile.debug}" optimize="${compile.optimize}">
+            debug="${compile.debug}" optimize="${compile.optimize}"
+            source="1.5" target="1.5">
             <classpath>
-      			<fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
-      			<fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
-      			<fileset dir="${jaxb.libs.util}" includes="*.jar"/>
+                <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
+                <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
+                <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
             </classpath>
         </javac>
         <copy tofile="${root}/build/classes/raw-installer.jar" file="${jaxb.root}/tools/installer/build/installer.jar" />
@@ -73,16 +74,16 @@
             <fileset dir="${root}/build/classes"/>
         </jar-->
         <jar destfile="${root}/build/${name}.jar">
-		        <manifest>
-		            <attribute name="Main-Class" value="com.sun.tools.xjc.installer.builder.Main"/>
-		            <attribute name="Class-Path" value="sfx4j-1.0.jar"/>
-		        </manifest>
+            <manifest>
+                <attribute name="Main-Class" value="com.sun.tools.xjc.installer.builder.Main"/>
+                <attribute name="Class-Path" value="sfx4j-1.0.jar"/>
+            </manifest>
             <fileset dir="${root}/build/classes"/>
         </jar>
         <zip destfile="${root}/build/${name}.src.zip">
             <fileset dir="${root}/src"/>
         </zip>
-        <copy todir="${jaxb.libs.util}" 
+        <copy todir="${jaxb.libs.util}"
               file="${root}/build/${name}.jar" />
     </target>
     

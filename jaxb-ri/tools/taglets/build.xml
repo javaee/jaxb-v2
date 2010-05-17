@@ -50,7 +50,8 @@
     <target name="compile">
         <mkdir dir="${root}/build/classes" />
         <javac srcdir="${root}/src" destdir="${root}/build/classes"
-            debug="${compile.debug}" optimize="${compile.optimize}">
+            debug="${compile.debug}" optimize="${compile.optimize}"
+            source="1.5" target="1.5">
           <!-- ant seems to put tools.jar into classpath automatically -->
         </javac>
     </target>

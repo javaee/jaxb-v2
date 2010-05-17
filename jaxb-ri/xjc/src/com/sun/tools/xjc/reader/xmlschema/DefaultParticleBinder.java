@@ -55,6 +55,7 @@ import com.sun.xml.xsom.XSParticle;
 import com.sun.xml.xsom.XSTerm;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.visitor.XSTermVisitor;
+import java.math.BigInteger;
 
 /**
  * {@link ParticleBinder} that follows the JAXB spec.
@@ -368,7 +369,7 @@ final class DefaultParticleBinder extends ParticleBinder {
                 assert !p.isRepeated();
 
                 boolean oldIOP = insideOptionalParticle;
-                insideOptionalParticle |= p.getMinOccurs()==0;
+                insideOptionalParticle |= BigInteger.ZERO.equals(p.getMinOccurs());
                 // this is an unmarked particle
                 t.visit(this);
                 insideOptionalParticle = oldIOP;

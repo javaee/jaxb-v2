@@ -3,7 +3,7 @@
 <!--
  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  
- Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ Copyright 1997-2010 Sun Microsystems, Inc. All rights reserved.
  
  The contents of this file are subject to the terms of either the GNU
  General Public License Version 2 only ("GPL") or the Common Development
@@ -38,13 +38,13 @@
 
 <project name="runtime-staxex" basedir=".." default="compile">
 
-  <description>
+    <description>
     Runtime StAX-ex Sub-Project
     ===========================
     
     This sub-project hosts code that are used to integrate stax-ex (http://stax-ex.dev.java.net/)
     and JAXB RI runtime.
-  </description>
+    </description>
   
     <!-- import build properties -->
     <property file="${basedir}/build.properties" />
@@ -65,6 +65,7 @@
 
         <javac srcdir="${runtime-staxex.src}" destdir="${runtime-staxex.classes}"
             debug="${compile.debug}" optimize="${compile.optimize}"
+            source="1.5" target="1.5"
             deprecation="${compile.deprecation}" >
             <classpath refid="javac.classpath" />
         </javac>
@@ -92,6 +93,6 @@
     </target>
 
     <target name="j2se-integration" depends="compile">
-      <package-rename srcdir="${runtime-staxex.src}" destdir="j2se-integration/runtime-staxex/src" />
+        <package-rename srcdir="${runtime-staxex.src}" destdir="j2se-integration/runtime-staxex/src" />
     </target>
 </project>

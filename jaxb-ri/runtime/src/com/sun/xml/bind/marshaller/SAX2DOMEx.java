@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
- * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
- * 
+ *
+ * Copyright 1997-2010 Sun Microsystems, Inc. All rights reserved.
+ *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -10,7 +10,7 @@
  * a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
  * or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- * 
+ *
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
  * Sun designates this particular file as subject to the "Classpath" exception
@@ -19,9 +19,9 @@
  * Header, with the fields enclosed by brackets [] replaced by your own
  * identifying information: "Portions Copyrighted [year]
  * [name of copyright owner]"
- * 
+ *
  * Contributor(s):
- * 
+ *
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
  * elects to include this software in this distribution under the [CDDL or GPL
@@ -39,7 +39,6 @@
  *
  * Created on February 22, 2002, 1:55 PM
  */
-
 package com.sun.xml.bind.marshaller;
 
 import java.util.Stack;
@@ -60,35 +59,43 @@ import org.xml.sax.Locator;
 
 /**
  * Builds a DOM tree from SAX2 events.
- * 
+ *
  * @author  Vivek Pandey
  * @since 1.0
  */
 public class SAX2DOMEx implements ContentHandler {
 
-    private Node node=null;
-    private final Stack<Node> nodeStack = new Stack<Node>();
+    private Node node = null;
+    private boolean isConsolidate;
+    protected final Stack<Node> nodeStack = new Stack<Node>();
     private final FinalArrayList<String> unprocessedNamespaces = new FinalArrayList<String>();
-
-
     /**
      * Document object that owns the specified node.
      */
-    private final Document document;
+    protected final Document document;
 
     /**
      * @param   node
      *      Nodes will be created and added under this object.
      */
-    public SAX2DOMEx(Node node)
-    {
+    public SAX2DOMEx(Node node) {
+        this(node, false);
+    }
+
+    /**
+     * @param   node
+     *      Nodes will be created and added under this object.
+     */
+    public SAX2DOMEx(Node node, boolean isConsolidate) {
         this.node = node;
+        this.isConsolidate = isConsolidate;
         nodeStack.push(this.node);
 
-        if( node instanceof Document )
-            this.document = (Document)node;
-        else
+        if (node instanceof Document) {
+            this.document = (Document) node;
+        } else {
             this.document = node.getOwnerDocument();
+        }
     }
 
     /**
@@ -98,10 +105,10 @@ public class SAX2DOMEx implements ContentHandler {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         factory.setValidating(false);
-        
+
         document = factory.newDocumentBuilder().newDocument();
         node = document;
-        nodeStack.push( document );
+        nodeStack.push(document);
     }
 
     public final Element getCurrentElement() {
@@ -115,89 +122,105 @@ public class SAX2DOMEx implements ContentHandler {
     public void startDocument() {
     }
 
-    public void endDocument(){
+    public void endDocument() {
     }
 
-    public void startElement(String namespace, String localName, String qName, Attributes attrs){
+    protected void namespace(Element element, String prefix, String uri) {
+        String qname;
+        if ("".equals(prefix) || prefix == null) {
+            qname = "xmlns";
+        } else {
+            qname = "xmlns:" + prefix;
+        }
+
+        // older version of Xerces (I confirmed that the bug is gone with Xerces 2.4.0)
+        // have a problem of re-setting the same namespace attribute twice.
+        // work around this bug removing it first.
+        if (element.hasAttributeNS("http://www.w3.org/2000/xmlns/", qname)) {
+            // further workaround for an old Crimson bug where the removeAttribtueNS
+            // method throws NPE when the element doesn't have any attribute.
+            // to be on the safe side, check the existence of attributes before
+            // attempting to remove it.
+            // for details about this bug, see org.apache.crimson.tree.ElementNode2
+            // line 540 or the following message:
+            // https://jaxb.dev.java.net/servlets/ReadMsg?list=users&msgNo=2767
+            element.removeAttributeNS("http://www.w3.org/2000/xmlns/", qname);
+        }
+        // workaround until here
+
+        element.setAttributeNS("http://www.w3.org/2000/xmlns/", qname, uri);
+    }
+
+    public void startElement(String namespace, String localName, String qName, Attributes attrs) {
         Node parent = nodeStack.peek();
-        
+
         // some broken DOM implementatino (we confirmed it with SAXON)
         // return null from this method.
         Element element = document.createElementNS(namespace, qName);
-        
-        if( element==null ) {
+
+        if (element == null) {
             // if so, report an user-friendly error message,
             // rather than dying mysteriously with NPE.
             throw new AssertionError(
-                Messages.format(Messages.DOM_IMPL_DOESNT_SUPPORT_CREATELEMENTNS,
+                    Messages.format(Messages.DOM_IMPL_DOESNT_SUPPORT_CREATELEMENTNS,
                     document.getClass().getName(),
                     Which.which(document.getClass())));
         }
-        
+
         // process namespace bindings
-        for( int i=0; i<unprocessedNamespaces.size(); i+=2 ) {
-            String prefix = unprocessedNamespaces.get(i+0);
-            String uri = unprocessedNamespaces.get(i+1);
-            
-            String qname;
-            if( "".equals(prefix) || prefix==null )
-                qname = "xmlns";
-            else
-                qname = "xmlns:"+prefix;
-            
-            // older version of Xerces (I confirmed that the bug is gone with Xerces 2.4.0)
-            // have a problem of re-setting the same namespace attribute twice.
-            // work around this bug removing it first.
-            if( element.hasAttributeNS("http://www.w3.org/2000/xmlns/",qname) ) {
-                // further workaround for an old Crimson bug where the removeAttribtueNS
-                // method throws NPE when the element doesn't have any attribute.
-                // to be on the safe side, check the existence of attributes before
-                // attempting to remove it.
-                // for details about this bug, see org.apache.crimson.tree.ElementNode2
-                // line 540 or the following message:
-                // https://jaxb.dev.java.net/servlets/ReadMsg?list=users&msgNo=2767
-                element.removeAttributeNS("http://www.w3.org/2000/xmlns/",qname);
-            }
-            // workaround until here
-            
-            element.setAttributeNS("http://www.w3.org/2000/xmlns/",qname, uri);
+        for (int i = 0; i < unprocessedNamespaces.size(); i += 2) {
+            String prefix = unprocessedNamespaces.get(i + 0);
+            String uri = unprocessedNamespaces.get(i + 1);
+
+            namespace(element, prefix, uri);
         }
         unprocessedNamespaces.clear();
-        
-        
-        int length = attrs.getLength();
-        for(int i=0;i<length;i++){
-            String namespaceuri = attrs.getURI(i);
-            String value = attrs.getValue(i);
-            String qname = attrs.getQName(i);
-            element.setAttributeNS(namespaceuri, qname, value);
+
+
+        if (attrs != null) {
+            int length = attrs.getLength();
+            for (int i = 0; i < length; i++) {
+                String namespaceuri = attrs.getURI(i);
+                String value = attrs.getValue(i);
+                String qname = attrs.getQName(i);
+                element.setAttributeNS(namespaceuri, qname, value);
+            }
         }
         // append this new node onto current stack node
         parent.appendChild(element);
         // push this node onto stack
         nodeStack.push(element);
     }
-    
-    public void endElement(String namespace, String localName, String qName){
+
+    public void endElement(String namespace, String localName, String qName) {
         nodeStack.pop();
     }
 
-
     public void characters(char[] ch, int start, int length) {
-        Node parent = nodeStack.peek();
-        Text text = document.createTextNode(new String(ch, start, length));
-        parent.appendChild(text);
+        characters(new String(ch, start, length));
     }
 
-
+    protected Text characters(String s) {
+        Node parent = nodeStack.peek();
+        Node lastChild = parent.getLastChild();
+        Text text;
+        if (isConsolidate && lastChild != null && lastChild.getNodeType() == Node.TEXT_NODE) {
+            text = (Text) lastChild;
+            text.appendData(s);
+        } else {
+            text = document.createTextNode(s);
+            parent.appendChild(text);
+        }
+        return text;
+    }
 
     public void ignorableWhitespace(char[] ch, int start, int length) {
     }
 
-    public void processingInstruction(String target, String data) throws org.xml.sax.SAXException{
+    public void processingInstruction(String target, String data) throws org.xml.sax.SAXException {
         Node parent = nodeStack.peek();
-        Node node = document.createProcessingInstruction(target, data);
-        parent.appendChild(node);	
+        Node n = document.createProcessingInstruction(target, data);
+        parent.appendChild(n);
     }
 
     public void setDocumentLocator(Locator locator) {
