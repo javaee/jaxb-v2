@@ -300,7 +300,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         } else {
             nillable = xmlElem.nillable();
         }
-
+        
         n.elementDecls.put(name.getLocalPart(),n.new ElementWithType(nillable, elem.getContentType()));
 
         // search for foreign namespace references
@@ -1020,10 +1020,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
                         QName tn = t.getTagName();
 
-                        PropertyInfo propInfo = t.getSource();
-                        TypeInfo parentInfo = (propInfo == null) ? null : propInfo.parent();
-                        if (canBeDirectElementRef(t,tn) || ((!tn.getNamespaceURI().equals(uri) && tn.getNamespaceURI().length()>0) &&
-                                                            (!((parentInfo instanceof ClassInfo) && (((ClassInfo)parentInfo).getTypeName() == null))))) {     // see Issue 517
+                        if(canBeDirectElementRef(t,tn) || (!tn.getNamespaceURI().equals(uri) && tn.getNamespaceURI().length()>0)) {
                             e.ref(tn);
                         } else {
                             e.name(tn.getLocalPart());
@@ -1185,7 +1182,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                                 } else {
                                     if(!elementFormDefault.isEffectivelyQualified)
                                         eref.form("qualified");
-                                    }
+                                }
 
                                 local = true;
                                 eref.name(en.getLocalPart());
