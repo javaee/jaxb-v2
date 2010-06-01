@@ -37,5 +37,38 @@ Export-Package: \
   org.jvnet.fastinfoset.*;version=1.0, \
   org.jvnet.staxex;version=1.2, \
   *
-Import-Package: *
+Import-Package: \
+  com.sun.mirror.apt, \
+  com.sun.mirror.declaration, \
+  com.sun.mirror.type, \
+  com.sun.mirror.util, \
+  javax.activation, \
+  javax.imageio, \
+  javax.imageio.stream, \
+  javax.swing, \
+  javax.swing.border, \
+  javax.swing.tree, \
+  javax.xml.bind;version=@RELEASE_SPEC_VERSION@, \
+  javax.xml.bind.annotation;version=@RELEASE_SPEC_VERSION@, \
+  javax.xml.bind.annotation.adapters;version=@RELEASE_SPEC_VERSION@, \
+  javax.xml.bind.attachment;version=@RELEASE_SPEC_VERSION@, \
+  javax.xml.bind.helpers;version=@RELEASE_SPEC_VERSION@, \
+  javax.xml.datatype, \
+  javax.xml.namespace, \
+  javax.xml.parsers, \
+  javax.xml.stream, \
+  javax.xml.stream.events, \
+  javax.xml.stream.util, \
+  javax.xml.transform, \
+  javax.xml.transform.dom, \
+  javax.xml.transform.sax, \
+  javax.xml.transform.stream, \
+  javax.xml.validation, \
+  javax.xml.xpath, \
+  org.w3c.dom, \
+  org.w3c.dom.ls, \
+  org.xml.sax, \
+  org.xml.sax.ext, \
+  org.xml.sax.helpers, \
+  sun.nio.cs
 Private-Package: *
