@@ -207,8 +207,8 @@
             depends="compile"
 	    description="compile xjc/test">
         <javac srcdir="${xjc.test}" destdir="${xjc.classes}"
-            debug="${compile.debug}" optimize="${compile.optimize}">
-        	source="1.5" target="1.5"
+            debug="${compile.debug}" optimize="${compile.optimize}"
+        	source="1.5" target="1.5">
             <classpath refid="javac.classpath" />
             <classpath path="${xjc.classes}" />
             <classpath path="${runtime.classes}"/>
