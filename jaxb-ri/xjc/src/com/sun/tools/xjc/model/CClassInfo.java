@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * Copyright 1997-2010 Sun Microsystems, Inc. All rights reserved.
  * 
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -54,7 +54,6 @@ import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
 import com.sun.istack.Nullable;
 import com.sun.tools.xjc.Language;
-import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.tools.xjc.outline.Aspect;
@@ -201,7 +200,7 @@ public final class CClassInfo extends AbstractCElement implements ClassInfo<NTyp
     }
 
     /**
-     * Returns true iff a new attribute wildcard property needs to be
+     * Returns true if a new attribute wildcard property needs to be
      * declared on this class.
      */
     public boolean declaresAttributeWildcard() {
@@ -209,13 +208,20 @@ public final class CClassInfo extends AbstractCElement implements ClassInfo<NTyp
     }
 
     /**
-     * Returns true iff this class inherits a wildcard attribute property
+     * Returns true if this class inherits a wildcard attribute property
      * from its ancestor classes.
      */
     public boolean inheritsAttributeWildcard() {
-        for( CClassInfo c=getBaseClass(); c!=null; c=c.getBaseClass() ) {
-            if(c.hasAttributeWildcard)
+        if (getRefBaseClass() != null) {
+            CClassRef cref = (CClassRef)baseClass;
+            if (cref.getSchemaComponent().getForeignAttributes().size() > 0) {
                 return true;
+            }           
+        } else {
+            for( CClassInfo c=getBaseClass(); c!=null; c=c.getBaseClass() ) {
+                if(c.hasAttributeWildcard)
+                    return true;
+            }
         }
         return false;
     }
