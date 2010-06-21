@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * Copyright 1997-2010 Sun Microsystems, Inc. All rights reserved.
  * 
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -52,6 +52,7 @@ import javax.xml.stream.XMLStreamException;
 import com.sun.istack.NotNull;
 import com.sun.xml.bind.AccessorFactory;
 import com.sun.xml.bind.AccessorFactoryImpl;
+import com.sun.xml.bind.InternalAccessorFactory;
 import com.sun.xml.bind.XmlAccessorFactory;
 import com.sun.xml.bind.annotation.XmlLocation;
 import com.sun.xml.bind.api.AccessorException;
@@ -91,6 +92,8 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
 
     private AccessorFactory accessorFactory;
 
+    private boolean supressAccessorWarnings = false;
+
     public RuntimeClassInfoImpl(RuntimeModelBuilder modelBuilder, Locatable upstream, Class clazz) {
         super(modelBuilder, upstream, clazz);
         accessorFactory = createAccessorFactory(clazz);
@@ -102,23 +105,26 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
 
         // user providing class to be used.
         JAXBContextImpl context = ((RuntimeModelBuilder) builder).context;
-        if (context!=null && context.xmlAccessorFactorySupport){
-            factoryAnn = findXmlAccessorFactoryAnnotation(clazz);
-
-            if (factoryAnn != null) {
-                try {
-                    accFactory = factoryAnn.value().newInstance();
-                } catch (InstantiationException e) {
-                    builder.reportError(new IllegalAnnotationException(
-                            Messages.ACCESSORFACTORY_INSTANTIATION_EXCEPTION.format(
-                            factoryAnn.getClass().getName(), nav().getClassName(clazz)), this));
-                } catch (IllegalAccessException e) {
-                    builder.reportError(new IllegalAnnotationException(
-                            Messages.ACCESSORFACTORY_ACCESS_EXCEPTION.format(
-                            factoryAnn.getClass().getName(), nav().getClassName(clazz)),this));
+        if (context!=null) {
+            this.supressAccessorWarnings = context.supressAccessorWarnings;
+            if (context.xmlAccessorFactorySupport) {
+                factoryAnn = findXmlAccessorFactoryAnnotation(clazz);
+                if (factoryAnn != null) {
+                    try {
+                        accFactory = factoryAnn.value().newInstance();
+                    } catch (InstantiationException e) {
+                        builder.reportError(new IllegalAnnotationException(
+                                Messages.ACCESSORFACTORY_INSTANTIATION_EXCEPTION.format(
+                                factoryAnn.getClass().getName(), nav().getClassName(clazz)), this));
+                    } catch (IllegalAccessException e) {
+                        builder.reportError(new IllegalAnnotationException(
+                                Messages.ACCESSORFACTORY_ACCESS_EXCEPTION.format(
+                                factoryAnn.getClass().getName(), nav().getClassName(clazz)),this));
+                    }
                 }
             }
         }
+
 
         // Fall back to local AccessorFactory when no
         // user not providing one or as error recovery.
@@ -249,7 +255,11 @@ class RuntimeClassInfoImpl extends ClassInfoImpl<Type,Class,Field,Method>
        final boolean readOnly = Modifier.isStatic(field.getModifiers());
         Accessor acc;
         try {
-            acc = accessorFactory.createFieldAccessor(clazz, field, readOnly);
+            if (supressAccessorWarnings) { 
+                acc = ((InternalAccessorFactory)accessorFactory).createFieldAccessor(clazz, field, readOnly, supressAccessorWarnings);
+            } else {
+                acc = accessorFactory.createFieldAccessor(clazz, field, readOnly);
+            }
         } catch(JAXBException e) {
             builder.reportError(new IllegalAnnotationException(
                     Messages.CUSTOM_ACCESSORFACTORY_FIELD_ERROR.format(
