@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * Copyright 1997-2010 Sun Microsystems, Inc. All rights reserved.
  * 
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -95,6 +95,10 @@ public class ContextFactory {
         if(retainPropertyInfo==null)
             retainPropertyInfo = false;
 
+        Boolean supressAccessorWarnings = getPropertyValue(properties, JAXBRIContext.SUPRESS_ACCESSOR_WARNINGS, Boolean.class);
+        if(supressAccessorWarnings==null)
+            supressAccessorWarnings = false;
+
         Boolean xmlAccessorFactorySupport = getPropertyValue(properties,
            JAXBRIContext.XMLACCESSORFACTORY_SUPPORT,Boolean.class);
         if(xmlAccessorFactorySupport==null){
@@ -118,8 +122,18 @@ public class ContextFactory {
             throw new JAXBException(Messages.UNSUPPORTED_PROPERTY.format(properties.keySet().iterator().next()));
         }
 
-        return createContext(classes,Collections.<TypeReference>emptyList(),
-                subclassReplacements,defaultNsUri,c14nSupport,ar,xmlAccessorFactorySupport,allNillable, retainPropertyInfo);
+        JAXBContextImpl.JAXBContextBuilder builder = new JAXBContextImpl.JAXBContextBuilder();
+        builder.setClasses(classes);
+        builder.setTypeRefs(Collections.<TypeReference>emptyList());
+        builder.setSubclassReplacements(subclassReplacements);
+        builder.setDefaultNsUri(defaultNsUri);
+        builder.setC14NSupport(c14nSupport);
+        builder.setAnnotationReader(ar);
+        builder.setXmlAccessorFactorySupport(xmlAccessorFactorySupport);
+        builder.setAllNillable(allNillable);
+        builder.setRetainPropertyInfo(retainPropertyInfo);
+        builder.setSupressAccessorWarnings(supressAccessorWarnings);
+        return builder.build();
     }
 
     /**

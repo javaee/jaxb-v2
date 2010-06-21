@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * Copyright 1997-2010 Sun Microsystems, Inc. All rights reserved.
  * 
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -234,6 +234,11 @@ public final class JAXBContextImpl extends JAXBRIContext {
      */
     public final boolean retainPropertyInfo;
 
+    /**
+     * Supress reflection accessor warnings.
+     */
+    public final boolean supressAccessorWarnings;
+
     private WeakReference<RuntimeTypeInfoSet> typeInfoSetCache;
 
     private @NotNull RuntimeAnnotationReader annotaitonReader;
@@ -279,6 +284,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
         this.classes = builder.classes;
         this.xmlAccessorFactorySupport = builder.xmlAccessorFactorySupport;
         this.allNillable = builder.allNillable;
+        this.supressAccessorWarnings = builder.supressAccessorWarnings;
 
         Collection<TypeReference> typeRefs = builder.typeRefs;
 
@@ -1050,6 +1056,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
     public static class JAXBContextBuilder {
 
         private boolean retainPropertyInfo = false;
+        private boolean supressAccessorWarnings = false;
         private String defaultNsUri = "";
         private @NotNull RuntimeAnnotationReader annotationReader = new RuntimeInlineAnnotationReader();
         private @NotNull Map<Class,Class> subclassReplacements = Collections.emptyMap();
@@ -1062,6 +1069,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
         public JAXBContextBuilder() {};
 
         public JAXBContextBuilder(JAXBContextImpl baseImpl) {
+            this.supressAccessorWarnings = baseImpl.supressAccessorWarnings;
             this.retainPropertyInfo = baseImpl.retainPropertyInfo;
             this.defaultNsUri = baseImpl.defaultNsUri;
             this.annotationReader = baseImpl.annotaitonReader;
@@ -1075,6 +1083,11 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
         public JAXBContextBuilder setRetainPropertyInfo(boolean val) {
             this.retainPropertyInfo = val;
+            return this;
+        }
+
+        public JAXBContextBuilder setSupressAccessorWarnings(boolean val) {
+            this.supressAccessorWarnings = val;
             return this;
         }
 
