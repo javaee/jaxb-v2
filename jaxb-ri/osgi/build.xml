@@ -52,7 +52,8 @@
     <taskdef name="manifestreader" classname="manifestreader.ManifestReader" classpath="${osgi.build}/../ant" />
 
     <target name="bundle"
-            description="create OSGi bundle for GlassFish V3">
+            description="create OSGi bundle for GlassFish V3"
+	    depends="clean">
 
         <taskdef resource="aQute/bnd/ant/taskdef.properties"
                  classpath="${jaxb.root}/tools/lib/util/bnd-0.0.249.jar"/>
