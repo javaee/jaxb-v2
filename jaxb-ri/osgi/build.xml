@@ -84,8 +84,19 @@
                 <exclude name="com/sun/tools/xjc/*Task*"/>
                 <exclude name="com/sun/tools/jxc/*Task*"/>
                 <exclude name="com/sun/istack/tools/*Task*"/>
+                <exclude name="org/kohsuke/**"/>
             </patternset>
         </unjar>
+
+        <unjar src="${jaxb.libs.util}/FastInfoset.jar"
+               dest="${osgi.build}/fastinfoset">
+            <patternset>
+                <exclude name="org/jvnet/fastinfoset/sax/**"/>
+                <exclude name="org/jvnet/fastinfoset/stax/**"/>
+            </patternset>
+        </unjar>
+
+
 
         <!-- The bnd task does not recognize when input files have changed, -->
         <!-- hence we delete the output file to ensure a rebuild            -->
@@ -98,7 +109,7 @@
                   exceptions="true"
                   files="${osgi.build.api}/jaxb-api.bnd"/>
 
-        <bnd classpath="${jaxb.dist}/lib/jaxb-impl.jar, ${osgi.build}/jaxb-xjc, ${jaxb.libs.util}/FastInfoset.jar, ${jaxb.libs.util}/stax-ex.jar"
+        <bnd classpath="${jaxb.dist}/lib/jaxb-impl.jar, ${osgi.build}/jaxb-xjc, ${osgi.build}/fastinfoset, ${jaxb.libs.util}/stax-ex.jar"
              failok="false"
              output="${osgi.build.rt}/jaxb-bnd.jar"
              files="${osgi.build.rt}/jaxb.bnd"/>
@@ -189,6 +200,11 @@
                 <include name="com/sun/tools/xjc/*Task*"/>
                 <include name="com/sun/tools/jxc/*Task*"/>
                 <include name="com/sun/istack/tools/*Task*"/>
+                <include name="org/kohsuke/**"/>
+            </zipfileset>
+            <zipfileset src="${jaxb.libs.util}/FastInfoset.jar">
+                <include name="org/jvnet/fastinfoset/sax/**"/>
+                <include name="org/jvnet/fastinfoset/stax/**"/>
             </zipfileset>
         </jar>
         <move  file="${osgi.build.api}/jaxb-api-bnd.jar" tofile="${osgi.build}/jaxb-api-osgi.jar"/>
