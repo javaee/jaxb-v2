@@ -37,6 +37,7 @@ package com.sun.tools.xjc;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URL;
 
 import com.sun.codemodel.JCodeModel;
 import com.sun.tools.xjc.model.Model;
@@ -303,7 +304,7 @@ public final class ModelLoader {
      * Builds DOMForest and performs the internalization.
      *
      * @throws SAXException
-     *      when a fatal happe
+     *      when a fatal error happens
      */
     public DOMForest buildDOMForest( InternalizationLogic logic ) 
         throws SAXException {
@@ -428,7 +429,7 @@ public final class ModelLoader {
         XSOMParser p = createXSOMParser(forest.createParser());
         p.setEntityResolver(new EntityResolver() {
             public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
-                // DOMForest only parses documents that are rearchable through systemIds,
+                // DOMForest only parses documents that are reachable through systemIds,
                 // and it won't pick up references like <xs:import namespace="..." /> without
                 // @schemaLocation. So we still need to use an entity resolver here to resolve
                 // these references, yet we don't want to just run them blindly, since if we do that
@@ -476,7 +477,14 @@ public final class ModelLoader {
                 handler = wrapBy( new SpeculationChecker(), handler );
                 handler = wrapBy( new VersionChecker(null,errorReceiver,entityResolver), handler );
 
-                base.parse( source, handler, errorHandler, entityResolver );
+                try {
+                    // CR 6965945; check url before trying to parse it
+                    new URL(source.getSystemId()).openStream().read();
+
+                    base.parse( source, handler, errorHandler, entityResolver );
+                } catch (Exception e) {
+                    errorHandler.warning(new SAXParseException("Failed to process " + source.getSystemId() + ": " + e, null, e));
+                }
             }
             /**
              * Wraps the specified content handler by a filter.
