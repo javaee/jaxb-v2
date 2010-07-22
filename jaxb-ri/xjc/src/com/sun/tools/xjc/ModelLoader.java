@@ -480,11 +480,12 @@ public final class ModelLoader {
                 try {
                     // CR 6965945; check url before trying to parse it
                     new URL(source.getSystemId()).openStream().read();
-
-                    base.parse( source, handler, errorHandler, entityResolver );
                 } catch (Exception e) {
                     errorHandler.warning(new SAXParseException("Failed to process " + source.getSystemId() + ": " + e, null, e));
+                    return;
                 }
+
+                base.parse( source, handler, errorHandler, entityResolver );
             }
             /**
              * Wraps the specified content handler by a filter.
