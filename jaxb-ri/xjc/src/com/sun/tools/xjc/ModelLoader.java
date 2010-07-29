@@ -37,7 +37,6 @@ package com.sun.tools.xjc;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.URL;
 
 import com.sun.codemodel.JCodeModel;
 import com.sun.tools.xjc.model.Model;
@@ -476,14 +475,6 @@ public final class ModelLoader {
                 // set up the chain of handlers.
                 handler = wrapBy( new SpeculationChecker(), handler );
                 handler = wrapBy( new VersionChecker(null,errorReceiver,entityResolver), handler );
-
-                try {
-                    // CR 6965945; check url before trying to parse it
-                    new URL(source.getSystemId()).openStream().read();
-                } catch (Exception e) {
-                    errorHandler.warning(new SAXParseException("Failed to process " + source.getSystemId() + ": " + e, null, e));
-                    return;
-                }
 
                 base.parse( source, handler, errorHandler, entityResolver );
             }
