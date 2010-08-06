@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  * 
- * Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ * Copyright 1997-2010 Sun Microsystems, Inc. All rights reserved.
  * 
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -53,7 +53,7 @@ import javax.xml.namespace.QName;
  * {@link DatatypeConverterInterface}.
  *
  * <p>
- * When client apps specify the use of the static print/parse
+ * When client applications specify the use of the static print/parse
  * methods in {@link DatatypeConverter}, it will delegate
  * to this class.
  *
@@ -103,7 +103,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
      * Note that:
      * <ol>
      *  <li>XML Schema allows '+', but {@link Integer#valueOf(String)} is not.
-     *  <li>XML Schema allows leading and trailing (but not in-between) whitespaces..
+     *  <li>XML Schema allows leading and trailing (but not in-between) whitespaces.
      *      {@link Integer#valueOf(String)} doesn't allow any.
      * </ol>
      */
@@ -570,9 +570,6 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         return s;
     }
 
-
-
-
 // base64 decoder
 
     private static final byte[] decodeMap = initDecodeMap();
@@ -728,33 +725,33 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
      *      in the output buffer where the further bytes should be placed.
      */
     public static int _printBase64Binary(byte[] input, int offset, int len, char[] buf, int ptr) {
-        for( int i=offset; i<len; i+=3 ) {
-            switch( len-i ) {
-            case 1:
-                buf[ptr++] = encode(input[i]>>2);
-                buf[ptr++] = encode(((input[i])&0x3)<<4);
-                buf[ptr++] = '=';
-                buf[ptr++] = '=';
-                break;
-            case 2:
-                buf[ptr++] = encode(input[i]>>2);
-                buf[ptr++] = encode(
-                            ((input[i]&0x3)<<4) |
-                            ((input[i+1]>>4)&0xF));
-                buf[ptr++] = encode((input[i+1]&0xF)<<2);
-                buf[ptr++] = '=';
-                break;
-            default:
-                buf[ptr++] = encode(input[i]>>2);
-                buf[ptr++] = encode(
-                            ((input[i]&0x3)<<4) |
-                            ((input[i+1]>>4)&0xF));
-                buf[ptr++] = encode(
-                            ((input[i+1]&0xF)<<2)|
-                            ((input[i+2]>>6)&0x3));
-                buf[ptr++] = encode(input[i+2]&0x3F);
-                break;
-            }
+        // encode elements until only 1 or 2 elements are left to encode
+        int remaining = len - offset;
+        int i;
+        for (i = offset;remaining >= 3; remaining -= 3, i += 3) {
+            buf[ptr++] = encode(input[i] >> 2);
+            buf[ptr++] = encode(
+                    ((input[i] & 0x3) << 4)
+                    | ((input[i + 1] >> 4) & 0xF));
+            buf[ptr++] = encode(
+                    ((input[i + 1] & 0xF) << 2)
+                    | ((input[i + 2] >> 6) & 0x3));
+            buf[ptr++] = encode(input[i + 2] & 0x3F);
+        }
+        // encode when exactly 1 element (left) to encode
+        if (remaining == 1) {
+            buf[ptr++] = encode(input[i] >> 2);
+            buf[ptr++] = encode(((input[i]) & 0x3) << 4);
+            buf[ptr++] = '=';
+            buf[ptr++] = '=';
+        }
+        // encode when exactly 2 elements (left) to encode
+        if (remaining == 2) {
+            buf[ptr++] = encode(input[i] >> 2);
+            buf[ptr++] = encode(((input[i] & 0x3) << 4)
+                    | ((input[i + 1] >> 4) & 0xF));
+            buf[ptr++] = encode((input[i + 1] & 0xF) << 2);
+            buf[ptr++] = '=';
         }
         return ptr;
     }
@@ -771,34 +768,33 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
      */
     public static int _printBase64Binary(byte[] input, int offset, int len, byte[] out, int ptr) {
         byte[] buf = out;
-        int max = len+offset;
-        for( int i=offset; i<max; i+=3 ) {
-            switch( max-i ) {
-            case 1:
-                buf[ptr++] = encodeByte(input[i]>>2);
-                buf[ptr++] = encodeByte(((input[i])&0x3)<<4);
-                buf[ptr++] = '=';
-                buf[ptr++] = '=';
-                break;
-            case 2:
-                buf[ptr++] = encodeByte(input[i]>>2);
-                buf[ptr++] = encodeByte(
-                            ((input[i]&0x3)<<4) |
-                            ((input[i+1]>>4)&0xF));
-                buf[ptr++] = encodeByte((input[i+1]&0xF)<<2);
-                buf[ptr++] = '=';
-                break;
-            default:
-                buf[ptr++] = encodeByte(input[i]>>2);
-                buf[ptr++] = encodeByte(
-                            ((input[i]&0x3)<<4) |
-                            ((input[i+1]>>4)&0xF));
-                buf[ptr++] = encodeByte(
-                            ((input[i+1]&0xF)<<2)|
-                            ((input[i+2]>>6)&0x3));
-                buf[ptr++] = encodeByte(input[i+2]&0x3F);
-                break;
-            }
+        int remaining = len - offset;
+        int i;
+        for (i=offset; remaining >= 3; remaining -= 3, i += 3 ) {
+            buf[ptr++] = encodeByte(input[i]>>2);
+            buf[ptr++] = encodeByte(
+                        ((input[i]&0x3)<<4) |
+                        ((input[i+1]>>4)&0xF));
+            buf[ptr++] = encodeByte(
+                        ((input[i+1]&0xF)<<2)|
+                        ((input[i+2]>>6)&0x3));
+            buf[ptr++] = encodeByte(input[i+2]&0x3F);
+        }
+        // encode when exactly 1 element (left) to encode
+        if (remaining == 1) {
+            buf[ptr++] = encodeByte(input[i]>>2);
+            buf[ptr++] = encodeByte(((input[i])&0x3)<<4);
+            buf[ptr++] = '=';
+            buf[ptr++] = '=';
+        }
+        // encode when exactly 2 elements (left) to encode
+        if (remaining == 2) {
+            buf[ptr++] = encodeByte(input[i]>>2);
+            buf[ptr++] = encodeByte(
+                        ((input[i]&0x3)<<4) |
+                        ((input[i+1]>>4)&0xF));
+            buf[ptr++] = encodeByte((input[i+1]&0xF)<<2);
+            buf[ptr++] = '=';
         }
 
         return ptr;
