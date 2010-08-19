@@ -310,10 +310,10 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
             InterningXmlVisitor handler = new InterningXmlVisitor(createUnmarshallerHandler(null,false,expectedType));
             scanner.setContentHandler(new SAXConnector(handler,scanner));
 
-            if(node instanceof Element)
+            if(node.getNodeType() == Node.ELEMENT_NODE)
                 scanner.scan((Element)node);
             else
-            if(node instanceof Document)
+            if(node.getNodeType() == Node.DOCUMENT_NODE)
                 scanner.scan((Document)node);
             else
                 // no other type of input is supported
