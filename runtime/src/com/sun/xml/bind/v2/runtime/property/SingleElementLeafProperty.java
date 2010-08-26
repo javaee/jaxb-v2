@@ -108,7 +108,7 @@ final class SingleElementLeafProperty<BeanT> extends PropertyImpl<BeanT> {
         Class valueType = acc.getValueType();
 
         // check for different type than expected. If found, add xsi:type declaration
-        if (!valueType.isPrimitive() && acc.isValueTypeAbstractable() &&
+        if (!acc.isAdapted() && !valueType.isPrimitive() && acc.isValueTypeAbstractable() &&
                 ((obj != null) && !obj.getClass().equals(valueType))) {
 
             w.startElement(tagName, outerPeer);
