@@ -192,7 +192,8 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
                             if(knownURIs[j].equals(oldUri)) {
                                 current.defaultPrefixIndex = i;
                                 current.oldDefaultNamespaceUriIndex = j;
-                                assert owner.knownUri2prefixIndexMap[j]==current.defaultPrefixIndex;
+                                // assert commented out; too strict/not valid any more
+                                // assert owner.knownUri2prefixIndexMap[j]==current.defaultPrefixIndex;
                                 // update the table to point to the prefix we'll declare
                                 owner.knownUri2prefixIndexMap[j] = size;
                                 break;
