@@ -730,7 +730,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
      */
     public static int _printBase64Binary(byte[] input, int offset, int len, char[] buf, int ptr) {
         // encode elements until only 1 or 2 elements are left to encode
-        int remaining = len - offset;
+        int remaining = len;
         int i;
         for (i = offset;remaining >= 3; remaining -= 3, i += 3) {
             buf[ptr++] = encode(input[i] >> 2);
@@ -772,7 +772,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
      */
     public static int _printBase64Binary(byte[] input, int offset, int len, byte[] out, int ptr) {
         byte[] buf = out;
-        int remaining = len - offset;
+        int remaining = len;
         int i;
         for (i=offset; remaining >= 3; remaining -= 3, i += 3 ) {
             buf[ptr++] = encodeByte(input[i]>>2);
