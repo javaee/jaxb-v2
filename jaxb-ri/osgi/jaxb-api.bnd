@@ -4,6 +4,7 @@ Bundle-Version: @RELEASE_SPEC_VERSION@
 Export-Package: *;version=@RELEASE_SPEC_VERSION@
 
 Import-Package: *
+DynamicImport-Package: org.glassfish.hk2.osgiresourcelocator
 
 
 
