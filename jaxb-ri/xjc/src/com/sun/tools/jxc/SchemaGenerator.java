@@ -44,9 +44,12 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBContext;
 
@@ -198,14 +201,20 @@ public class SchemaGenerator {
             return null;    // not from file system
 
         try {
-            File f = new File(new URL(jarFileUrl).getFile());
-            if(f.exists() && f.getName().endsWith(".jar"))
+            File f = new File(new URL(jarFileUrl).toURI());
+            if (f.exists() && f.getName().endsWith(".jar")) { // see 6510966
                 return f;
-            else
-                return null;
-        } catch (MalformedURLException e) {
-            return null;    // impossible
+            }
+            f = new File(new URL(jarFileUrl).getFile()); 
+            if (f.exists() && f.getName().endsWith(".jar")) { // this is here for potential backw. compatibility issues
+                return f;
+            }
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(SchemaGenerator.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(SchemaGenerator.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return null;
     }
 
     /**
