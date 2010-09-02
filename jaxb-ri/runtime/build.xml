@@ -134,6 +134,7 @@
         <delete file="${runtime.root}/build/src/com/sun/xml/bind/v2/runtime/reflect/opt/TransducedAccessor_method_Character.java"/>
         <!-- integer version is also hand-coded. -->
         <delete file="${runtime.root}/build/src/com/sun/xml/bind/v2/runtime/reflect/opt/TransducedAccessor_method_Integer.java"/>
+        <delete file="${runtime.root}/build/src/com/sun/xml/bind/v2/runtime/reflect/opt/TransducedAccessor_field_Boolean.java"/>
     </target>
 
     <target name="generate-annotation-proxies"
