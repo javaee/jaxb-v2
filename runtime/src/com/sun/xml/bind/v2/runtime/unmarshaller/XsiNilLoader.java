@@ -40,14 +40,16 @@
 
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
+import java.util.Collection;
+
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
+
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 
-import java.util.Collection;
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
 import org.xml.sax.SAXException;
 
 /**
@@ -69,7 +71,9 @@ public class XsiNilLoader extends ProxyLoader {
         int idx = ea.atts.getIndex(WellKnownNamespace.XML_SCHEMA_INSTANCE,"nil");
 
         if (idx!=-1) {
-            if (DatatypeConverterImpl._parseBoolean(ea.atts.getValue(idx))) {
+            Boolean b = DatatypeConverterImpl._parseBoolean(ea.atts.getValue(idx));
+
+            if (b != null && b) {
                 onNil(state);
                 boolean hasOtherAttributes = (ea.atts.getLength() - 1) > 0;
                 // see issues 6759703 and 565 - need to preserve attributes even if the element is nil; only when the type is stored in JAXBElement
