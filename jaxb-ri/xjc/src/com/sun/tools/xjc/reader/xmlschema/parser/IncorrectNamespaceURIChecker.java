@@ -40,6 +40,7 @@
 package com.sun.tools.xjc.reader.xmlschema.parser;
 
 import com.sun.tools.xjc.reader.Const;
+import com.sun.xml.bind.v2.WellKnownNamespace;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ErrorHandler;
@@ -92,6 +93,7 @@ public class IncorrectNamespaceURIChecker extends XMLFilterImpl {
     /** Sets to true once we see the JAXB customization namespace URI. */ 
     private boolean isCustomizationUsed = false;
     
+    @Override
     public void endDocument() throws SAXException {
         if( isJAXBPrefixUsed && !isCustomizationUsed ) {
             SAXParseException e = new SAXParseException(
@@ -103,7 +105,9 @@ public class IncorrectNamespaceURIChecker extends XMLFilterImpl {
         super.endDocument();
     }
 
+    @Override
     public void startPrefixMapping(String prefix, String uri) throws SAXException {
+        if (WellKnownNamespace.XML_NAMESPACE_URI.equals(uri)) return; //xml prefix shall not be declared based on jdk api javadoc
         if( prefix.equals("jaxb") )
             isJAXBPrefixUsed = true;
         if( uri.equals(Const.JAXB_NSURI) )
@@ -112,6 +116,7 @@ public class IncorrectNamespaceURIChecker extends XMLFilterImpl {
         super.startPrefixMapping(prefix, uri);
     }
 
+    @Override
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts)
         throws SAXException {
         super.startElement(namespaceURI, localName, qName, atts);
@@ -125,6 +130,7 @@ public class IncorrectNamespaceURIChecker extends XMLFilterImpl {
             isCustomizationUsed = true;
     }
 
+    @Override
     public void setDocumentLocator( Locator locator ) {
         super.setDocumentLocator( locator );
         this.locator = locator;

@@ -40,6 +40,7 @@
 
 package com.sun.tools.xjc.reader.xmlschema.bindinfo;
 
+import com.sun.xml.bind.v2.WellKnownNamespace;
 import java.util.ArrayList;
 
 import org.xml.sax.Attributes;
@@ -91,6 +92,7 @@ public class ForkingFilter extends XMLFilterImpl {
         return side;
     }
 
+    @Override
     public void setDocumentLocator(Locator locator) {
         super.setDocumentLocator(locator);
         this.loc = locator;
@@ -100,6 +102,7 @@ public class ForkingFilter extends XMLFilterImpl {
         return loc;
     }
 
+    @Override
     public void startDocument() throws SAXException {
         reset();
         super.startDocument();
@@ -111,13 +114,16 @@ public class ForkingFilter extends XMLFilterImpl {
         depth = 0;
     }
 
+    @Override
     public void endDocument() throws SAXException {
         loc = null;
         reset();
         super.endDocument();
     }
 
+    @Override
     public void startPrefixMapping(String prefix, String uri) throws SAXException {
+        if (WellKnownNamespace.XML_NAMESPACE_URI.equals(uri)) return; //xml prefix shall not be declared based on jdk api javadoc
         if(side!=null)
             side.startPrefixMapping(prefix,uri);
         namespaces.add(prefix);
@@ -125,6 +131,7 @@ public class ForkingFilter extends XMLFilterImpl {
         super.startPrefixMapping(prefix,uri);
     }
 
+    @Override
     public void endPrefixMapping(String prefix) throws SAXException {
         if(side!=null)
             side.endPrefixMapping(prefix);
@@ -133,6 +140,7 @@ public class ForkingFilter extends XMLFilterImpl {
         namespaces.remove(namespaces.size()-1);
     }
 
+    @Override
     public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
         if(side!=null) {
             side.startElement(uri,localName,qName,atts);
@@ -156,6 +164,7 @@ public class ForkingFilter extends XMLFilterImpl {
         side.startElement(uri,localName,qName,atts);
     }
 
+    @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if(side!=null) {
             side.endElement(uri,localName,qName);
@@ -170,12 +179,14 @@ public class ForkingFilter extends XMLFilterImpl {
         super.endElement(uri, localName, qName);
     }
 
+    @Override
     public void characters(char ch[], int start, int length) throws SAXException {
         if(side!=null)
             side.characters(ch, start, length);
         super.characters(ch, start, length);
     }
 
+    @Override
     public void ignorableWhitespace(char ch[], int start, int length) throws SAXException {
         if(side!=null)
             side.ignorableWhitespace(ch, start, length);

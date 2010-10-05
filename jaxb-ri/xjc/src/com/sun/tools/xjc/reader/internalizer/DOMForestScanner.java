@@ -50,8 +50,6 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLFilterImpl;
 
-
-
 /**
  * Produces a complete series of SAX events from any DOM node
  * in the DOMForest.
@@ -128,25 +126,25 @@ public class DOMForestScanner {
          */
         private boolean inStart = false;
         
+        @Override
         public void setDocumentLocator(Locator locator) {
             // ignore one set by the parent.
             
             super.setDocumentLocator(this);
         }
         
+        @Override
         public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
             inStart = false;
             super.endElement(namespaceURI, localName, qName);
         }
 
+        @Override
         public void startElement(String namespaceURI, String localName, String qName, Attributes atts)
             throws SAXException {
             inStart = true;
             super.startElement(namespaceURI, localName, qName, atts);
         }
-        
-        
-        
         
         private Locator findLocator() {
             Node n = parent.getCurrentLocation();
