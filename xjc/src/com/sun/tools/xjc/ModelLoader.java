@@ -276,10 +276,6 @@ public final class ModelLoader {
         }
     }
     
-
-
-
-
     private void checkTooManySchemaErrors() {
         if( opt.getGrammars().length!=1 )
             errorReceiver.error(null,Messages.format(Messages.ERR_TOO_MANY_SCHEMA));
@@ -453,6 +449,7 @@ public final class ModelLoader {
     private static final class SpeculationFailure extends Error {}
 
     private static final class SpeculationChecker extends XMLFilterImpl {
+        @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
             if(localName.equals("bindings") && uri.equals(Const.JAXB_NSURI))
                 throw new SpeculationFailure();
@@ -545,6 +542,7 @@ public final class ModelLoader {
                 // foreset parser cannot change the receivers while it's working,
                 // so we need to have one XMLFilter that works as a buffer
                 XMLFilter buffer = new XMLFilterImpl() {
+                    @Override
                     public void parse(InputSource source) throws IOException, SAXException {
                         forest.createParser().parse( source, this, this, this );
                     }

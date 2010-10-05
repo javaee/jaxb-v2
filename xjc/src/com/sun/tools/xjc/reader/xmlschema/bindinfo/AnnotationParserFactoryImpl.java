@@ -164,6 +164,7 @@ public class AnnotationParserFactoryImpl implements AnnotationParserFactory {
             setContentHandler(h);
         }
 
+        @Override
         public void startPrefixMapping(String prefix, String uri) throws SAXException {
             // work around a bug in the validator implementation in Tiger
             super.startPrefixMapping(prefix.intern(),uri);

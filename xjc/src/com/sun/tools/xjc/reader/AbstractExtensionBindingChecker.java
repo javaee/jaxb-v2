@@ -54,6 +54,8 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
 
+import com.sun.xml.bind.v2.WellKnownNamespace;
+
 /**
  * Common code between {@code DTDExtensionBindingChecker} and {@link ExtensionBindingChecker}.
  *
@@ -174,12 +176,13 @@ public abstract class AbstractExtensionBindingChecker extends SubtreeCutter {
         return recognizableExtensions.contains(namespaceUri);
     }
 
-
+    @Override
     public void setDocumentLocator(Locator locator) {
         super.setDocumentLocator(locator);
         this.locator = locator;
     }
 
+    @Override
     public void startDocument() throws SAXException {
         super.startDocument();
 
@@ -187,12 +190,18 @@ public abstract class AbstractExtensionBindingChecker extends SubtreeCutter {
         enabledExtensions.clear();
     }
 
+    @Override
     public void startPrefixMapping(String prefix, String uri) throws SAXException {
-        super.startPrefixMapping(prefix, uri);
+        if (!(WellKnownNamespace.XML_NAMESPACE_URI.equals(uri))) {
+            super.startPrefixMapping(prefix, uri); //xml prefix shall not be declared based on jdk api javado
+        } else {
+            return;
+        }        
         nsSupport.pushContext();
         nsSupport.declarePrefix(prefix,uri);
     }
 
+    @Override
     public void endPrefixMapping(String prefix) throws SAXException {
         super.endPrefixMapping(prefix);
         nsSupport.popContext();

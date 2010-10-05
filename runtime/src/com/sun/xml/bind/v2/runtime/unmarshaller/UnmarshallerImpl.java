@@ -272,6 +272,7 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
     }
 
 
+    @Override
     public final ValidationEventHandler getEventHandler() {
         try {
             return super.getEventHandler();
@@ -430,6 +431,7 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
         return new UnmarshalException(e);
     }
 
+    @Override
     public Object getProperty(String name) throws PropertyException {
         if(name.equals(IDResolver.class.getName())) {
             return idResolver;
@@ -437,6 +439,7 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
         return super.getProperty(name);
     }
 
+    @Override
     public void setProperty(String name, Object value) throws PropertyException {
         if(name.equals(FACTORY)) {
             coordinator.setFactories(value);
@@ -514,6 +517,7 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
     }
 
     // opening up for public use
+    @Override
     public UnmarshalException createUnmarshalException( SAXException e ) {
         return super.createUnmarshalException(e);
     }

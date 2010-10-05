@@ -70,11 +70,11 @@ import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.ClassResolver;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
 import com.sun.xml.bind.v2.ClassFactory;
+import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.runtime.AssociationMap;
 import com.sun.xml.bind.v2.runtime.Coordinator;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
-import com.sun.xml.bind.v2.runtime.ElementBeanInfoImpl;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -815,7 +815,7 @@ public final class UnmarshallingContext extends Coordinator
     }
     private String resolveNamespacePrefix( String prefix ) {
         if(prefix.equals("xml"))
-            return "http://www.w3.org/XML/1998/namespace";
+            return WellKnownNamespace.XML_NAMESPACE_URI;
 
         for( int i=nsLen-2; i>=0; i-=2 ) {
             if(prefix.equals(nsBind[i]))
@@ -865,8 +865,6 @@ public final class UnmarshallingContext extends Coordinator
         return r;
     }
 
-
-    //
     //  NamespaceContext2 implementation
     //
     public Iterator<String> getPrefixes(String uri) {

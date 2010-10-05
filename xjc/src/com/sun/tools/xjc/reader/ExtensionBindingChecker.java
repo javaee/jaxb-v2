@@ -42,7 +42,6 @@ package com.sun.tools.xjc.reader;
 import java.util.StringTokenizer;
 
 import com.sun.tools.xjc.Options;
-import com.sun.tools.xjc.Plugin;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ErrorHandler;
@@ -101,11 +100,13 @@ public final class ExtensionBindingChecker extends AbstractExtensionBindingCheck
     }
 
 
+    @Override
     public void startDocument() throws SAXException {
         super.startDocument();
         count=0;
     }
 
+    @Override
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts)
         throws SAXException {
         

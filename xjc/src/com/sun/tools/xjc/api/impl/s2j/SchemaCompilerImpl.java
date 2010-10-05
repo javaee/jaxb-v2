@@ -171,6 +171,7 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
     /**
      * Checks if the system ID is absolute.
      */
+    @SuppressWarnings("ResultOfObjectAllocationIgnored")
     private void checkAbsoluteness(String systemId) {
         // we need to be able to handle system IDs like "urn:foo", which java.net.URL can't process,
         // but OTOH we also need to be able to process system IDs like "file://a b c/def.xsd",
@@ -210,7 +211,6 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
         forest.setEntityResolver(opts.entityResolver);
     }
 
-
     public JAXBModelImpl bind() {
         // this has been problematic. turn it off.
 //        if(!forest.checkSchemaCorrectness(this))
@@ -240,7 +240,6 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
             XSSchemaSet result = gl.createXSOM(forest, scdBasedBindingSet);
             if(result==null)
                 return null;
-
 
             // we need info about each field, so we go ahead and generate the
             // skeleton at this point.
@@ -274,7 +273,6 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
     public void setErrorListener(ErrorListener errorListener) {
         this.errorListener = errorListener;
     }
-
 
     public void info(SAXParseException exception) {
         if(errorListener!=null)
