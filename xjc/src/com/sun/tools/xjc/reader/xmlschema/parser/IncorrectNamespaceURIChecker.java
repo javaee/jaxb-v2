@@ -41,7 +41,6 @@ package com.sun.tools.xjc.reader.xmlschema.parser;
 
 import com.sun.tools.xjc.reader.Const;
 import com.sun.xml.bind.v2.WellKnownNamespace;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
@@ -114,6 +113,12 @@ public class IncorrectNamespaceURIChecker extends XMLFilterImpl {
             isCustomizationUsed = true;
         
         super.startPrefixMapping(prefix, uri);
+    }
+
+    @Override
+    public void endPrefixMapping(String prefix) throws SAXException {
+        if ("xml".equals(prefix)) return; //xml prefix shall not be declared based on jdk api javadoc
+        super.endPrefixMapping(prefix);
     }
 
     @Override

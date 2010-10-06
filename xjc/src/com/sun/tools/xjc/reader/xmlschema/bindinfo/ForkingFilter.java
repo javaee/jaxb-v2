@@ -133,6 +133,7 @@ public class ForkingFilter extends XMLFilterImpl {
 
     @Override
     public void endPrefixMapping(String prefix) throws SAXException {
+        if ("xml".equals(prefix)) return; //xml prefix shall not be declared based on jdk api javadoc
         if(side!=null)
             side.endPrefixMapping(prefix);
         super.endPrefixMapping(prefix);

@@ -192,17 +192,15 @@ public abstract class AbstractExtensionBindingChecker extends SubtreeCutter {
 
     @Override
     public void startPrefixMapping(String prefix, String uri) throws SAXException {
-        if (!(WellKnownNamespace.XML_NAMESPACE_URI.equals(uri))) {
-            super.startPrefixMapping(prefix, uri); //xml prefix shall not be declared based on jdk api javado
-        } else {
-            return;
-        }        
+        if (WellKnownNamespace.XML_NAMESPACE_URI.equals(uri)) return;
+        super.startPrefixMapping(prefix, uri); //xml prefix shall not be declared based on jdk api javado
         nsSupport.pushContext();
         nsSupport.declarePrefix(prefix,uri);
     }
 
     @Override
     public void endPrefixMapping(String prefix) throws SAXException {
+        if ("xml".equals(prefix)) return; //xml prefix shall not be declared based on jdk api javadoc
         super.endPrefixMapping(prefix);
         nsSupport.popContext();
     }

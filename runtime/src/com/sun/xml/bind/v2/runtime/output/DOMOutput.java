@@ -46,7 +46,6 @@ import com.sun.xml.bind.marshaller.SAX2DOMEx;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-
 /**
  * {@link XmlOutput} implementation that does associative marshalling to DOM.
  *
@@ -68,6 +67,7 @@ public final class DOMOutput extends SAXOutput {
         return (SAX2DOMEx)out;
     }
 
+    @Override
     public void endStartTag() throws SAXException {
         super.endStartTag();
 
