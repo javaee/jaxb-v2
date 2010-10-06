@@ -314,11 +314,10 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
         if (escapeHandler != null) {
             StringWriter sw = new StringWriter();
             escapeHandler.escape(value.toCharArray(), 0, value.length(), isAttribute, sw);
-            textBuffer.setEscape(sw.toString(), isAttribute);
+            textBuffer.set(sw.toString());
         } else {
             textBuffer.setEscape(value, isAttribute);
         }
-
         textBuffer.write(this);
     }
 
