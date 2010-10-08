@@ -210,6 +210,7 @@ public final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
             this.core = core;
         }
 
+        @Override
         public final void startElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
             state.loader = core;
             state.intercepter = this;
@@ -339,11 +340,13 @@ public final class ElementBeanInfoImpl extends JaxBeanInfo<JAXBElement> {
         return null;
     }
 
+    @Override
     public void wrapUp() {
         super.wrapUp();
         property.wrapUp();
     }
 
+    @Override
     public void link(JAXBContextImpl grammar) {
         super.link(grammar);
         getLoader(grammar,true);    // make sure to build them, if we hadn't done so
