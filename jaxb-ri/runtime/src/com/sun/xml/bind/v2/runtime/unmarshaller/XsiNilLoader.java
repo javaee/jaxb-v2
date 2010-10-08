@@ -101,8 +101,6 @@ public class XsiNilLoader extends ProxyLoader {
     protected void onNil(UnmarshallingContext.State state) throws SAXException {
     }
 
-
-
     public static final class Single extends XsiNilLoader {
         private final Accessor acc;
         public Single(Loader l, Accessor acc) {
