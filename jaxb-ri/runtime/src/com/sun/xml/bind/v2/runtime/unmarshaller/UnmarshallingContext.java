@@ -293,6 +293,7 @@ public final class UnmarshallingContext extends Coordinator
         private void pop() {
             assert prev!=null;
             loader = null;
+            nil = false;
             receiver = null;
             intercepter = null;
             elementDefaultValue = null;
