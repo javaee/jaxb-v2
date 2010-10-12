@@ -96,11 +96,16 @@ public abstract class OptimizedAccessorFactory {
             // we can't access private fields
             return null;
 
-
         Class t = sparams[0];
         String typeName = t.getName().replace('.','_');
         if (t.isArray()) {
-            typeName = "Array_Of_" + t.getComponentType().getName().replace('.','_');
+            typeName = "AOf_";
+            String compName = t.getComponentType().getName().replace('.','_');
+            while (compName.startsWith("[L")) {
+                compName = compName.substring(2);
+                typeName += "AOf_";
+            }
+            typeName = typeName + compName;
         }
 
         String newClassName = toVMClassName(getter.getDeclaringClass())+"$JaxbAccessorM_"+getter.getName()+'_'+setter.getName()+'_'+typeName;
