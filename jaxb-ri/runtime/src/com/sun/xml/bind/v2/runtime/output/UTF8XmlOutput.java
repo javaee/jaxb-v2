@@ -40,7 +40,6 @@
 
 package com.sun.xml.bind.v2.runtime.output;
 
-import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -48,6 +47,7 @@ import java.io.StringWriter;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.DatatypeConverterImpl;
+import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.MarshallerImpl;
@@ -77,7 +77,7 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     private final Encoded[] localNames;
 
     /** Temporary buffer used to encode text. */
-    /* 
+    /*
      * TODO
      * The textBuffer could write directly to the _octetBuffer
      * when encoding a string if Encoder is modified.
@@ -88,7 +88,7 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     /** Buffer of octets for writing. */
     // TODO: Obtain buffer size from property on the JAXB context
     protected final byte[] octetBuffer = new byte[1024];
-    
+
     /** Index in buffer to write to. */
     protected int octetBufferIndex;
 
@@ -314,11 +314,10 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
         if (escapeHandler != null) {
             StringWriter sw = new StringWriter();
             escapeHandler.escape(value.toCharArray(), 0, value.length(), isAttribute, sw);
-            textBuffer.setEscape(sw.toString(), isAttribute);
+            textBuffer.set(sw.toString());
         } else {
             textBuffer.setEscape(value, isAttribute);
         }
-
         textBuffer.write(this);
     }
 
@@ -368,7 +367,7 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
 
             if(batchSize<dataLen)
                 flushBuffer();
-            
+
             start += batchSize;
             dataLen -= batchSize;
 
@@ -401,7 +400,7 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     protected final void write(byte[] b) throws IOException {
         write(b, 0,  b.length);
     }
-    
+
     protected final void write(byte[] b, int start, int length) throws IOException {
         if ((octetBufferIndex + length) < octetBuffer.length) {
             System.arraycopy(b, start, octetBuffer, octetBufferIndex, length);
