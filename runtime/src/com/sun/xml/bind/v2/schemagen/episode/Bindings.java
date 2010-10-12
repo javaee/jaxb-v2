@@ -61,6 +61,11 @@ public interface Bindings extends TypedXmlWriter {
     @XmlElement("class")
     Klass klass();
 
+    /**
+     * Nested typesafeEnumClass customization
+     */
+    Klass typesafeEnumClass();
+
     @XmlElement
     SchemaBindings schemaBindings();
 
