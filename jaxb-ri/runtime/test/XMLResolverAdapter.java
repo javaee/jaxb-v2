@@ -38,7 +38,6 @@
  * holder.
  */
 
-
 import java.io.IOException;
 
 import javax.xml.stream.XMLInputFactory;

@@ -57,7 +57,6 @@
  * limitations under the License.
  */
 
-
 package com.sun.tools.xjc.reader.internalizer;
 
 import java.util.Iterator;

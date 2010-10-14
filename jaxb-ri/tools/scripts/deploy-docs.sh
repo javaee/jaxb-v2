@@ -1,4 +1,3 @@
-#
 # DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 #
 # Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
@@ -37,6 +36,7 @@
 # only if the new code is made subject to such option by the copyright
 # holder.
 #
+
 
 cd $JAXB_HOME/dist/docs
 cvs-socks -d:pserver:ryan_shoemaker@cvs.dev.java.net:/cvs -z3 import -ko -W "*.png -k 'b'" -W "*.gif -k 'b'" -W "*.zip -k 'b'" -m "deploying the new release notes" jaxb/www/jaxb20-ea/docs site-deployment t`date +%Y%m%d-%H%M%S`

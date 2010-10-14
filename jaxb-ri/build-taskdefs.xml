@@ -40,6 +40,7 @@
     holder.
 
 -->
+
 <project name="jaxb-taskdefs" basedir=".">
   <description>
     Common task/macro definitions.

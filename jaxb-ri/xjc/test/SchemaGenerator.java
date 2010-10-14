@@ -38,7 +38,6 @@
  * holder.
  */
 
-
 /**
  * Alias of {@link com.sun.tools.jxc.SchemaGenerator}, just to make testing easier.
  *

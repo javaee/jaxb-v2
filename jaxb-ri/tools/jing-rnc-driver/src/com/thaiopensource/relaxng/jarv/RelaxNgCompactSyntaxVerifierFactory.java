@@ -37,6 +37,7 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
+
 package com.thaiopensource.relaxng.jarv;
 
 import java.io.IOException;

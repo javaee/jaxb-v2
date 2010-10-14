@@ -1,5 +1,3 @@
-import java.io.File;
-
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
@@ -39,6 +37,8 @@ import java.io.File;
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
+
+import java.io.File;
 
 /**
  * Creates a list of files in a directory.
