@@ -72,12 +72,14 @@ final class ContentHandlerNamespacePrefixAdapter extends XMLFilterImpl {
         setParent(parent);
     }
 
+    @Override
     public boolean getFeature(String name) throws SAXNotRecognizedException, SAXNotSupportedException {
         if(name.equals(PREFIX_FEATURE))
             return namespacePrefixes;
         return super.getFeature(name);
     }
 
+    @Override
     public void setFeature(String name, boolean value) throws SAXNotRecognizedException, SAXNotSupportedException {
         if(name.equals(PREFIX_FEATURE)) {
             this.namespacePrefixes = value;
@@ -89,7 +91,9 @@ final class ContentHandlerNamespacePrefixAdapter extends XMLFilterImpl {
     }
 
 
+    @Override
     public void startPrefixMapping(String prefix, String uri) throws SAXException {
+        if (XMLConstants.XML_NS_URI.equals(uri)) return; //xml prefix shall not be declared based on jdk api javadoc
         if(len==nsBinding.length) {
             // reallocate
             String[] buf = new String[nsBinding.length*2];
@@ -101,6 +105,7 @@ final class ContentHandlerNamespacePrefixAdapter extends XMLFilterImpl {
         super.startPrefixMapping(prefix,uri);
     }
 
+    @Override
     public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
         if(namespacePrefixes) {
             this.atts.setAttributes(atts);
