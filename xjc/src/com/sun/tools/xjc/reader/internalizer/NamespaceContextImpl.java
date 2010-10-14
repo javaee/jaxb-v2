@@ -57,15 +57,11 @@
  * limitations under the License.
  */
 
-
 package com.sun.tools.xjc.reader.internalizer;
 
 import java.util.Iterator;
-
+import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
-
-import com.sun.xml.bind.v2.WellKnownNamespace;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -89,7 +85,7 @@ final class NamespaceContextImpl implements NamespaceContext {
         final String prefixColon = prefix + ':';
 
         if (prefix.equals("xml")) {
-            namespace = WellKnownNamespace.XML_NAMESPACE_URI;
+            namespace = XMLConstants.XML_NS_URI;
         } else {
             int type;
 

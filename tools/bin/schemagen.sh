@@ -1,5 +1,4 @@
 #!/bin/sh
-#
 # DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 #
 # Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
@@ -38,6 +37,7 @@
 # only if the new code is made subject to such option by the copyright
 # holder.
 #
+
 
 #
 # Make sure that JAXB_HOME and JAVA_HOME are set
