@@ -40,7 +40,6 @@
 
 package com.sun.tools.xjc.reader.internalizer;
 
-import com.sun.xml.bind.v2.WellKnownNamespace;
 import javax.xml.XMLConstants;
 
 import org.xml.sax.Attributes;
@@ -94,7 +93,7 @@ final class ContentHandlerNamespacePrefixAdapter extends XMLFilterImpl {
 
     @Override
     public void startPrefixMapping(String prefix, String uri) throws SAXException {
-        if (WellKnownNamespace.XML_NAMESPACE_URI.equals(uri)) return; //xml prefix shall not be declared based on jdk api javadoc
+        if (XMLConstants.XML_NS_URI.equals(uri)) return; //xml prefix shall not be declared based on jdk api javadoc
         if(len==nsBinding.length) {
             // reallocate
             String[] buf = new String[nsBinding.length*2];

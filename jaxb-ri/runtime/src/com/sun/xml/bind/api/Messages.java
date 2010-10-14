@@ -38,7 +38,6 @@
  * holder.
  */
 
-
 package com.sun.xml.bind.api;
 
 import java.text.MessageFormat;
