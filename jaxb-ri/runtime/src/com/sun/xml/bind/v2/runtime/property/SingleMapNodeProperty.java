@@ -155,20 +155,20 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
      */
     private final Loader itemsLoader = new Loader(false) {
 
-        private BeanT target;
-        private ValueT map;
+        private ThreadLocal<BeanT> target = new ThreadLocal<BeanT>();
+        private ThreadLocal<ValueT> map = new ThreadLocal<ValueT>();
 
         @Override
         public void startElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
             // create or obtain the Map object
             try {
-                target = (BeanT)state.prev.target;
-                map = acc.get(target);
-                if(map==null) {
-                    map = ClassFactory.create(mapImplClass);
+                target.set((BeanT)state.prev.target);
+                map.set(acc.get(target.get()));
+                if(map.get() == null) {
+                    map.set(ClassFactory.create(mapImplClass));
                 }
-                map.clear();
-                state.target = map;
+                map.get().clear();
+                state.target = map.get();
             } catch (AccessorException e) {
                 // recover from error by setting a dummy Map that receives and discards the values
                 handleGenericException(e,true);
@@ -180,7 +180,7 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
         public void leaveElement(State state, TagName ea) throws SAXException {
             super.leaveElement(state, ea);
             try {
-                acc.set(target, map);
+                acc.set(target.get(), map.get());
             } catch (AccessorException ex) {
                 handleGenericException(ex,true);
             }
