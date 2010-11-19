@@ -336,12 +336,12 @@ Class-Path: ${manifest.classpath}
       <parallel>
         <sequential>
           <zip zipfile="${jaxb.dist}/lib/jaxb-impl.src.zip">
-            <fileset dir="${runtime.src}"/>
-            <fileset dir="${runtime-fi.src}"/>
-            <fileset dir="${runtime-staxex.src}"/>
-            <fileset dir="${runtime.root}/build/src" />
-            <zipfileset src="${jaxb.libs}/src/txw2-src.zip" />
-            <fileset dir="tmp/istack-commons/runtime"/>
+            <zipfileset dir="${runtime.src}" prefix="impl"/>
+            <zipfileset dir="${runtime-fi.src}" prefix="fi"/>
+            <zipfileset dir="${runtime-staxex.src}" prefix="staxex"/>
+            <zipfileset dir="${runtime.root}/build/src" prefix="impl"/>
+            <zipfileset src="${jaxb.libs}/src/txw2-src.zip" prefix="txw2"/>
+            <zipfileset dir="tmp/istack-commons/runtime" prefix="istack-commons"/>
           </zip>
         </sequential>
         <sequential>
@@ -360,25 +360,25 @@ Class-Path: ${manifest.classpath}
           </replace>
           <unjar src="${jaxb.libs}/src/dtd-parser-src.zip" dest="tmp" />
           <zip zipfile="${jaxb.dist}/lib/jaxb-xjc.src.zip">
-            <fileset dir="tmp_xjc"/>
-            <fileset dir="${xjc.gensrc}"/>
-            <fileset dir="${xjc.root}/facade"/>
-            <zipfileset src="${jaxb.libs}/src/codemodel-src.zip" />
-            <zipfileset src="${jaxb.libs}/src/resolver-comsun-src.zip" />
-            <zipfileset src="${jaxb.libs}/src/xsom-src.zip" />
-            <zipfileset src="${jaxb.libs}/src/relaxngDatatype-src.zip" />
-            <zipfileset src="${jaxb.libs}/src/rngom-src.zip" />
-            <fileset dir="tmp/dtd-parser/src"/>
-            <fileset dir="tmp/istack-commons/tools"/>
+            <zipfileset dir="tmp_xjc" prefix="xjc"/>
+            <zipfileset dir="${xjc.gensrc}" prefix="xjc"/>
+            <zipfileset dir="${xjc.root}/facade" prefix="xjc"/>
+            <zipfileset src="${jaxb.libs}/src/codemodel-src.zip"/>
+            <zipfileset src="${jaxb.libs}/src/resolver-comsun-src.zip"/>
+            <zipfileset src="${jaxb.libs}/src/xsom-src.zip" prefix="xsom"/>
+            <zipfileset src="${jaxb.libs}/src/relaxngDatatype-src.zip"/>
+            <zipfileset src="${jaxb.libs}/src/rngom-src.zip" prefix="rngom"/>
+            <zipfileset dir="tmp/dtd-parser/src" prefix="dtd-parser"/>
+            <zipfileset dir="tmp/istack-commons/tools" prefix="istack-commons"/>
           </zip>
         </sequential>
         <sequential>
               <mkdir dir="${jaxb.root}/build/jaxb-1-impl-src"/>
               <unzip dest="${jaxb.root}/build/jaxb-1-impl-src">
-                <fileset dir="${jaxb.libs.src}" includes="iso-relax-src.zip"/>
-                <fileset dir="${jaxb.libs.src}" includes="msv-src.zip"/>
-                <fileset dir="${jaxb.libs.src}" includes="relangDatatype-src.zip"/>
-                <fileset dir="${jaxb.libs.src}" includes="xsdlib-src.zip"/>
+                <zipfileset dir="${jaxb.libs.src}" includes="iso-relax-src.zip"/>
+                <zipfileset dir="${jaxb.libs.src}" includes="msv-src.zip"/>
+                <zipfileset dir="${jaxb.libs.src}" includes="relangDatatype-src.zip"/>
+                <zipfileset dir="${jaxb.libs.src}" includes="xsdlib-src.zip"/>
               </unzip>
               <zip zipfile="${jaxb.dist}/lib/jaxb1-impl-src.zip">
                   <fileset dir="${jaxb.root}/build/jaxb-1-impl-src"/>
