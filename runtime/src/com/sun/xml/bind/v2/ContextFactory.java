@@ -159,6 +159,16 @@ public class ContextFactory {
             return type.cast(o);
     }
 
+    public static JAXBRIContext createContext( Class[] classes,
+            Collection<TypeReference> typeRefs, Map<Class,Class> subclassReplacements,
+            String defaultNsUri, boolean c14nSupport, RuntimeAnnotationReader ar,
+            boolean xmlAccessorFactorySupport, boolean allNillable, boolean retainPropertyInfo) throws JAXBException {
+
+        return createContext(classes, typeRefs, subclassReplacements,
+                defaultNsUri, c14nSupport, ar, xmlAccessorFactorySupport,
+                allNillable, retainPropertyInfo, false);
+    }
+
     public static JAXBRIContext createContext( Class[] classes, 
             Collection<TypeReference> typeRefs, Map<Class,Class> subclassReplacements, 
             String defaultNsUri, boolean c14nSupport, RuntimeAnnotationReader ar, 
