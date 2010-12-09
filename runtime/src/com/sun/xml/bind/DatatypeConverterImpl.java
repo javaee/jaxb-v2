@@ -271,7 +271,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         if (literal.length() <= 0) {
             return null;
         }
-        
+
         do {
             ch = literal.charAt(i++);
         } while(WhiteSpaceProcessor.isWhiteSpace(ch) && i<len);
@@ -294,7 +294,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
                 if(strIndex == 3)
                     value = true;
                 else
-                    return null;
+                    return false;
 //                    throw new IllegalArgumentException("String \"" + literal + "\" is not valid boolean value.");
 
                 break;
@@ -308,7 +308,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
                 if(strIndex == 4)
                     value = false;
                 else
-                    return null;
+                    return false;
 //                    throw new IllegalArgumentException("String \"" + literal + "\" is not valid boolean value.");
 
                 break;
@@ -321,7 +321,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         if(i == len)
             return value;
         else
-            return null;
+            return false;
 //            throw new IllegalArgumentException("String \"" + literal + "\" is not valid boolean value.");
     }
 
