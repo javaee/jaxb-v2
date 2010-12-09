@@ -109,7 +109,7 @@ public abstract class JAXBRIContext extends JAXBContext {
        @Nullable String defaultNamespaceRemap, boolean c14nSupport, 
        @Nullable RuntimeAnnotationReader ar) throws JAXBException {
         return ContextFactory.createContext(classes, typeRefs, subclassReplacements, 
-                defaultNamespaceRemap, c14nSupport, ar, false, false, false);
+                defaultNamespaceRemap, c14nSupport, ar, false, false, false, false);
     }
 
     /**
