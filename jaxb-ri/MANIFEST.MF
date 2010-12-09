@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Specification-Title: Java Architecture for XML Binding
+Specification-Version: @@SPEC_VERSION@@
+Specification-Vendor: Oracle Corporation
+Implementation-Title: JAXB Reference Implementation 
+Implementation-Version: @@IMPL_VERSION@@
+Implementation-Vendor: Oracle Corporation
+Implementation-Vendor-Id: @@VENDOR_ID@@
+Extension-Name: @@EXTENSION_NAME@@
+Build-Id: @@BUILD_ID@@
