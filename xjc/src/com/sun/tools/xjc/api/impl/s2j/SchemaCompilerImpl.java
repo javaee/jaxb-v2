@@ -40,6 +40,7 @@
 
 package com.sun.tools.xjc.api.impl.s2j;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -64,11 +65,14 @@ import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.reader.internalizer.DOMForest;
 import com.sun.tools.xjc.reader.internalizer.SCDBasedBindingSet;
+import com.sun.tools.xjc.reader.xmlschema.parser.LSInputSAXWrapper;
 import com.sun.tools.xjc.reader.xmlschema.parser.XMLSchemaInternalizationLogic;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.xsom.XSSchemaSet;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.ls.LSInput;
+import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -78,12 +82,12 @@ import org.xml.sax.helpers.LocatorImpl;
 
 /**
  * {@link SchemaCompiler} implementation.
- * 
+ *
  * This class builds a {@link DOMForest} until the {@link #bind()} method,
  * then this method does the rest of the hard work.
- * 
+ *
  * @see ModelLoader
- * 
+ *
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
@@ -146,7 +150,7 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
                 e.getMessage(), null, systemId,-1,-1, e));
         }
     }
-    
+
     public void parseSchema(InputSource source) {
         checkAbsoluteness(source.getSystemId());
         try {
@@ -191,7 +195,7 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
 
     public void setEntityResolver(EntityResolver entityResolver) {
         forest.setEntityResolver(entityResolver);
-        opts.entityResolver = entityResolver; 
+        opts.entityResolver = entityResolver;
     }
 
     public void setDefaultPackageName(String packageName) {
@@ -221,16 +225,39 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
         // this also takes care of the binding files given in the -episode option.
         for (InputSource is : opts.getBindFiles())
             parseSchema(is);
-        
+
         // internalization
         SCDBasedBindingSet scdBasedBindingSet = forest.transform(opts.isExtensionMode());
 
-        if(!NO_CORRECTNESS_CHECK) {
+        if (!NO_CORRECTNESS_CHECK) {
             // correctness check
             SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+
+            // fix for https://jaxb.dev.java.net/issues/show_bug.cgi?id=795
+            // taken from SchemaConstraintChecker, TODO XXX FIXME UGLY
+            if (opts.entityResolver != null) {
+                sf.setResourceResolver(new LSResourceResolver() {
+                    public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, String baseURI) {
+                        try {
+                            // XSOM passes the namespace URI to the publicID parameter.
+                            // we do the same here .
+                            InputSource is = opts.entityResolver.resolveEntity(namespaceURI, systemId);
+                            if (is == null) return null;
+                            return new LSInputSAXWrapper(is);
+                        } catch (SAXException e) {
+                            // TODO: is this sufficient?
+                            return null;
+                        } catch (IOException e) {
+                            // TODO: is this sufficient?
+                            return null;
+                        }
+                    }
+                });
+            }
+
             sf.setErrorHandler(new DowngradingErrorHandler(this));
             forest.weakSchemaCorrectnessCheck(sf);
-            if(hadError)
+            if (hadError)
                 return null;    // error in the correctness check. abort now
         }
 
