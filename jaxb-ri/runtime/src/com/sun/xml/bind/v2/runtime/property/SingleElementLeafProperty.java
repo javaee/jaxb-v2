@@ -75,6 +75,7 @@ final class SingleElementLeafProperty<BeanT> extends PropertyImpl<BeanT> {
     private final Accessor acc;
     private final String defaultValue;
     private final TransducedAccessor<BeanT> xacc;
+    private final boolean improvedXsiTypeHandling;
 
     public SingleElementLeafProperty(JAXBContextImpl context, RuntimeElementPropertyInfo prop) {
         super(context, prop);
@@ -87,6 +88,8 @@ final class SingleElementLeafProperty<BeanT> extends PropertyImpl<BeanT> {
 
         xacc = TransducedAccessor.get(context, ref);
         assert xacc != null;
+
+        improvedXsiTypeHandling = context.improvedXsiTypeHandling;
     }
 
     public void reset(BeanT o) throws AccessorException {
@@ -112,7 +115,7 @@ final class SingleElementLeafProperty<BeanT> extends PropertyImpl<BeanT> {
         Class valueType = acc.getValueType();
 
         // check for different type than expected. If found, add xsi:type declaration
-        if (!acc.isAdapted() && !valueType.isPrimitive() && acc.isValueTypeAbstractable() &&
+        if (improvedXsiTypeHandling && !acc.isAdapted() && !valueType.isPrimitive() && acc.isValueTypeAbstractable() &&
                 ((obj != null) && !obj.getClass().equals(valueType))) {
 
             w.startElement(tagName, outerPeer);
@@ -139,7 +142,7 @@ final class SingleElementLeafProperty<BeanT> extends PropertyImpl<BeanT> {
             l = new XsiNilLoader.Single(l, acc);
 
         // LeafPropertyXsiLoader doesn't work well with nillable elements
-        if (!nillable)
+        if (improvedXsiTypeHandling && !nillable)
             l = new LeafPropertyXsiLoader(l, xacc, acc);
 
         handlers.put(tagName, new ChildLoader(l, null));
