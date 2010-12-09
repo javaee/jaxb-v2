@@ -475,4 +475,11 @@ public abstract class JAXBRIContext extends JAXBContext {
      */
     public static final String SUPRESS_ACCESSOR_WARNINGS = "supressAccessorWarnings";
 
+    /**
+     * Improves handling of xsi:type used on leaf properties.
+     *
+     * @since 2.2.3
+     */
+    public static final String IMPROVED_XSI_TYPE_HANDLING = "com.sun.xml.bind.improvedXsiTypeHandling";
+
 }

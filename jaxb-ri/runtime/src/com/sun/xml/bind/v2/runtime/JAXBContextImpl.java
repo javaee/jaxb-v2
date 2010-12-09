@@ -244,6 +244,11 @@ public final class JAXBContextImpl extends JAXBRIContext {
      */
     public final boolean supressAccessorWarnings;
 
+    /**
+     * Improved xsi type handling.
+     */
+    public final boolean improvedXsiTypeHandling;
+
     private WeakReference<RuntimeTypeInfoSet> typeInfoSetCache;
 
     private @NotNull RuntimeAnnotationReader annotaitonReader;
@@ -290,6 +295,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
         this.xmlAccessorFactorySupport = builder.xmlAccessorFactorySupport;
         this.allNillable = builder.allNillable;
         this.supressAccessorWarnings = builder.supressAccessorWarnings;
+        this.improvedXsiTypeHandling = builder.improvedXsiTypeHandling;
 
         Collection<TypeReference> typeRefs = builder.typeRefs;
 
@@ -1070,6 +1076,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
         private Collection<TypeReference> typeRefs;
         private boolean xmlAccessorFactorySupport = false;
         private boolean allNillable;
+        private boolean improvedXsiTypeHandling = false;
 
         public JAXBContextBuilder() {};
 
@@ -1133,6 +1140,11 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
         public JAXBContextBuilder setTypeRefs(Collection<TypeReference> val) {
             this.typeRefs = val;
+            return this;
+        }
+
+        public JAXBContextBuilder setImprovedXsiTypeHandling(boolean val) {
+            this.improvedXsiTypeHandling = val;
             return this;
         }
 
