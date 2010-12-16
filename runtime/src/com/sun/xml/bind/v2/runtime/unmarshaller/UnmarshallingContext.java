@@ -70,7 +70,6 @@ import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.ClassResolver;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
 import com.sun.xml.bind.v2.ClassFactory;
-import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.runtime.AssociationMap;
 import com.sun.xml.bind.v2.runtime.Coordinator;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
@@ -236,7 +235,7 @@ public final class UnmarshallingContext extends Coordinator
          * it thereby makes {@link Receiver} mechanism simpler.
          *
          * <p>
-         * Yes, I know this is a hack, and no, I'm not proud of it. 
+         * Yes, I know this is a hack, and no, I'm not proud of it.
          *
          * @see ElementBeanInfoImpl.IntercepterLoader#startElement(State, TagName)
          * @see ElementBeanInfoImpl.IntercepterLoader#intercept(State, Object)
@@ -264,7 +263,7 @@ public final class UnmarshallingContext extends Coordinator
          *
          * {@link State} objects form a doubly linked list.
          */
-        public final State prev;
+        public State prev;
         private State next;
 
         public boolean nil = false;
@@ -399,6 +398,23 @@ public final class UnmarshallingContext extends Coordinator
         State s = current;
         for( int i=0; i<8; i++ )
             s = new State(s);
+    }
+
+    public void clearStates() {
+        State last = current;
+        while (last.next != null) last = last.next;
+        while (last.prev != null) {
+            last.loader = null;
+            last.nil = false;
+            last.receiver = null;
+            last.intercepter = null;
+            last.elementDefaultValue = null;
+            last.target = null;
+            last = last.prev;
+            last.next.prev = null;
+            last.next = null;
+        }
+        current = last;
     }
 
     /**
@@ -580,7 +596,7 @@ public final class UnmarshallingContext extends Coordinator
         }
         result = null;
     }
-    
+
     /**
      * Creates a new instance of the specified class.
      * In the unmarshaller, we need to check the user-specified factory class.
@@ -816,7 +832,7 @@ public final class UnmarshallingContext extends Coordinator
     }
     private String resolveNamespacePrefix( String prefix ) {
         if(prefix.equals("xml"))
-            return WellKnownNamespace.XML_NAMESPACE_URI;
+            return XMLConstants.XML_NS_URI;
 
         for( int i=nsLen-2; i>=0; i-=2 ) {
             if(prefix.equals(nsBind[i]))
@@ -928,8 +944,6 @@ public final class UnmarshallingContext extends Coordinator
         return resolveNamespacePrefix(prefix);
     }
 
-
-
 //
 //
 //
@@ -1012,8 +1026,6 @@ public final class UnmarshallingContext extends Coordinator
     public Scope getScope(int offset) {
         return scopes[scopeTop-offset];
     }
-
-
 
 //
 //
@@ -1107,8 +1119,6 @@ public final class UnmarshallingContext extends Coordinator
         }
     }
 
-
-
 //
 // in-place unmarshalling related capabilities
 //
@@ -1164,9 +1174,6 @@ public final class UnmarshallingContext extends Coordinator
             return null;
     }
 
-
-
-
     /**
      * Gets the xmime:contentType value for the current object.
      *
@@ -1199,7 +1206,7 @@ public final class UnmarshallingContext extends Coordinator
     /**
      * Allows to access elements which are expected in current state.
      * Useful for getting elements for current parent.
-     * 
+     *
      * @return
      */
     public Collection<QName> getCurrentExpectedElements() {
@@ -1241,5 +1248,6 @@ public final class UnmarshallingContext extends Coordinator
 
         return null;
     }
-    
+
 }
+

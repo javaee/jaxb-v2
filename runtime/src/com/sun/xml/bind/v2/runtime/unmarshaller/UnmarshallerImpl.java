@@ -194,6 +194,7 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
             throw new IllegalArgumentException();
         return (JAXBElement)unmarshal0(reader,source,getBeanInfo(expectedType));
     }
+
     private Object unmarshal0( XMLReader reader, InputSource source, JaxBeanInfo expectedType ) throws JAXBException {
 
         SAXConnector connector = getUnmarshallerHandler(needsInterning(reader),expectedType);
@@ -215,8 +216,10 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
         try {
             reader.parse(source);
         } catch( IOException e ) {
+            coordinator.clearStates();
             throw new UnmarshalException(e);
         } catch( SAXException e ) {
+            coordinator.clearStates();
             throw createUnmarshalException(e);
         }
 
@@ -525,7 +528,7 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
 
 
     /**
-     * Default error handling behavior fot {@link Unmarshaller}.
+     * Default error handling behavior for {@link Unmarshaller}.
      */
     public boolean handleEvent(ValidationEvent event) {
         return event.getSeverity()!=ValidationEvent.FATAL_ERROR;
