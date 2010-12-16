@@ -263,7 +263,7 @@ public final class UnmarshallingContext extends Coordinator
          *
          * {@link State} objects form a doubly linked list.
          */
-        public final State prev;
+        public State prev;
         private State next;
 
         public boolean nil = false;
@@ -398,6 +398,23 @@ public final class UnmarshallingContext extends Coordinator
         State s = current;
         for( int i=0; i<8; i++ )
             s = new State(s);
+    }
+
+    public void clearStates() {
+        State last = current;
+        while (last.next != null) last = last.next;
+        while (last.prev != null) {
+            last.loader = null;
+            last.nil = false;
+            last.receiver = null;
+            last.intercepter = null;
+            last.elementDefaultValue = null;
+            last.target = null;
+            last = last.prev;
+            last.next.prev = null;
+            last.next = null;
+        }
+        current = last;
     }
 
     /**
@@ -927,8 +944,6 @@ public final class UnmarshallingContext extends Coordinator
         return resolveNamespacePrefix(prefix);
     }
 
-
-
 //
 //
 //
@@ -1011,8 +1026,6 @@ public final class UnmarshallingContext extends Coordinator
     public Scope getScope(int offset) {
         return scopes[scopeTop-offset];
     }
-
-
 
 //
 //
@@ -1106,8 +1119,6 @@ public final class UnmarshallingContext extends Coordinator
         }
     }
 
-
-
 //
 // in-place unmarshalling related capabilities
 //
@@ -1162,9 +1173,6 @@ public final class UnmarshallingContext extends Coordinator
         else
             return null;
     }
-
-
-
 
     /**
      * Gets the xmime:contentType value for the current object.
@@ -1242,4 +1250,4 @@ public final class UnmarshallingContext extends Coordinator
     }
 
 }
-    
+
