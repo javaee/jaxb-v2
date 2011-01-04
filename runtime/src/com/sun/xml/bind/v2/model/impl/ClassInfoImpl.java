@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -104,7 +104,7 @@ import com.sun.xml.bind.v2.util.EditDistance;
  *
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
-class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
+public class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
     implements ClassInfo<T,C>, Element<T,C> {
 
     protected final C clazz;
