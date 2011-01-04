@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -68,6 +68,8 @@ public final class CollisionCheckStack<E> extends AbstractList<E> {
     private int[] next;
     private int size = 0;
 
+    private boolean latestPushResult = false;
+
     /**
      * True if the check shall be done by using the object identity.
      * False if the check shall be done with the equals method.
@@ -77,7 +79,7 @@ public final class CollisionCheckStack<E> extends AbstractList<E> {
     // for our purpose, there isn't much point in resizing this as we don't expect
     // the stack to grow that much.
     private final int[] initialHash;
-    
+
     public CollisionCheckStack() {
     	initialHash = new int[17];
         data = new Object[16];
@@ -96,6 +98,10 @@ public final class CollisionCheckStack<E> extends AbstractList<E> {
         return useIdentity;
     }
 
+    public boolean getLatestPushResult() {
+        return latestPushResult;
+    }
+
     /**
      * Pushes a new object to the stack.
      *
@@ -112,9 +118,10 @@ public final class CollisionCheckStack<E> extends AbstractList<E> {
         next[size] = initialHash[hash];
         initialHash[hash] = size+1;
         size++;
-        return r;
+        this.latestPushResult = r;
+        return latestPushResult;
     }
-    
+
     /**
      * Pushes a new object to the stack without making it participate
      * with the collision check.
@@ -125,6 +132,11 @@ public final class CollisionCheckStack<E> extends AbstractList<E> {
         data[size] = o;
         next[size] = -1;
         size++;
+    }
+
+    public boolean findDuplicate(E o) {
+        int hash = hash(o);
+        return findDuplicate(o, hash);
     }
 
     @Override
@@ -158,7 +170,7 @@ public final class CollisionCheckStack<E> extends AbstractList<E> {
         }
         return (E)o;
     }
-    
+
     /**
      * Returns the top of the stack.
      */
@@ -218,7 +230,7 @@ public final class CollisionCheckStack<E> extends AbstractList<E> {
             x = get(--i);
             sb.append(x);
         } while(obj!=x);
-        
+
         return sb.toString();
     }
 }
