@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -40,7 +40,7 @@
 
 package com.sun.tools.xjc.reader.xmlschema;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.activation.MimeType;
@@ -81,7 +81,7 @@ public class RawTypeSetBuilder implements XSTermVisitor {
     /**
      * @param optional
      *      if this whole property is optional due to the
-     *      occurence constraints on ancestors, set this to true.
+     *      occurrence constraints on ancestors, set this to true.
      *      this will prevent the primitive types to be generated.
      */
     public static RawTypeSet build( XSParticle p, boolean optional ) {
@@ -95,15 +95,14 @@ public class RawTypeSetBuilder implements XSTermVisitor {
         return new RawTypeSet(rtsb.refs,mul);
     }
 
-
     /**
      * To avoid declaring the same element twice for a content model like
      * (A,A), we keep track of element names here while we are building up
      * this instance.
      */
-    private final Set<QName> elementNames = new HashSet<QName>();
+    private final Set<QName> elementNames = new LinkedHashSet<QName>();
 
-    private final Set<RawTypeSet.Ref> refs = new HashSet<RawTypeSet.Ref>();
+    private final Set<RawTypeSet.Ref> refs = new LinkedHashSet<RawTypeSet.Ref>();
 
     protected final BGMBuilder builder = Ring.get(BGMBuilder.class);
 
@@ -307,6 +306,7 @@ public class RawTypeSetBuilder implements XSTermVisitor {
             return target.getProperty().id();
         }
 
+        @Override
         protected MimeType getExpectedMimeType() {
             return target.getProperty().getExpectedMimeType();
         }
@@ -386,6 +386,7 @@ public class RawTypeSetBuilder implements XSTermVisitor {
             return target.idUse();
         }
 
+        @Override
         protected MimeType getExpectedMimeType() {
             return target.getExpectedMimeType();
         }
