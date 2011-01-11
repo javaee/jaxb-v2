@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -44,6 +44,7 @@ import java.io.StringWriter;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -489,9 +490,7 @@ public final class SimpleTypeBuilder extends BindingComponent {
         String[] typeNames = new String[] {
             "string", "boolean", "float", "decimal", "double", "anyURI"
         };
-
-        for(String type : typeNames)
-            s.add(type);
+        s.addAll(Arrays.asList(typeNames));
 
         builtinTypeSafeEnumCapableTypes = Collections.unmodifiableSet(s);
     }
@@ -799,14 +798,14 @@ public final class SimpleTypeBuilder extends BindingComponent {
                 MimeTypeRange mt = MimeTypeRange.merge(types);
 
                 // see spec table I-1 in appendix I section 2.1.1 for bindings
-                if(mt.majorType.equals("image"))
+                if(mt.majorType.equalsIgnoreCase("image"))
                     return CBuiltinLeafInfo.IMAGE.makeMimeTyped(mt.toMimeType());
 
-                if(( mt.majorType.equals("application") || mt.majorType.equals("text"))
+                if(( mt.majorType.equalsIgnoreCase("application") || mt.majorType.equalsIgnoreCase("text"))
                         && isXml(mt.subType))
                     return CBuiltinLeafInfo.XML_SOURCE.makeMimeTyped(mt.toMimeType());
 
-                if((mt.majorType.equals("text") && (mt.subType.equals("plain")) )) {
+                if((mt.majorType.equalsIgnoreCase("text") && (mt.subType.equalsIgnoreCase("plain")) )) {
                     return CBuiltinLeafInfo.STRING.makeMimeTyped(mt.toMimeType());
                 }
 
