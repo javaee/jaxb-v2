@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -76,9 +76,9 @@ import org.xml.sax.SAXParseException;
 
 /**
  * XJC task for Ant.
- * 
+ *
  * See the accompanied document for the usage.
- * 
+ *
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
@@ -90,7 +90,7 @@ public class XJC2Task extends Task {
     }
 
     public final Options options = new Options();
-    
+
     /** User-specified stack size. */
     private long stackSize = -1;
 
@@ -105,7 +105,7 @@ public class XJC2Task extends Task {
      * invoking XJC.
      */
     private boolean removeOldOutput = false;
-    
+
     /**
      * Files used to determine whether XJC should run or not.
      */
@@ -117,19 +117,19 @@ public class XJC2Task extends Task {
      * This flag is used to issue a suggestion to users.
      */
     private boolean producesSpecified = false;
-    
+
     /**
      * Used to load additional user-specified classes.
      */
     private final Path classpath;
-    
+
     /** Additional command line arguments. */
     private final Commandline cmdLine = new Commandline();
 
     /** for resolving entities such as dtds */
     private XMLCatalog xmlCatalog = null;
 
-    
+
     /**
      * Parses the schema attribute. This attribute will be used when
      * there is only one schema.
@@ -147,25 +147,25 @@ public class XJC2Task extends Task {
             dependsSet.add(f);
         }
     }
-    
+
     /** Nested &lt;schema> element. */
     public void addConfiguredSchema( FileSet fs ) {
         for (InputSource value : toInputSources(fs))
             options.addGrammar(value);
-        
+
         addIndividualFilesTo( fs, dependsSet );
     }
-    
+
     /** Nested &lt;classpath> element. */
     public void setClasspath( Path cp ) {
         classpath.createPath().append(cp);
     }
-    
+
     /** Nested &lt;classpath> element. */
     public Path createClasspath() {
         return classpath.createPath();
     }
-    
+
     public void setClasspathRef(Reference r) {
         classpath.createPath().setRefid(r);
     }
@@ -186,7 +186,7 @@ public class XJC2Task extends Task {
         }
         options.setSchemaLanguage(l);
     }
-    
+
     /**
      * External binding file.
      */
@@ -199,23 +199,23 @@ public class XJC2Task extends Task {
             dependsSet.add(f);
         }
     }
-    
+
     /** Nested &lt;binding> element. */
     public void addConfiguredBinding( FileSet fs ) {
         for (InputSource is : toInputSources(fs))
             options.addBindFile(is);
-            
+
         addIndividualFilesTo( fs, dependsSet );
     }
-    
-    
+
+
     /**
      * Sets the package name of the generated code.
      */
     public void setPackage( String pkg ) {
         this.options.defaultPackage = pkg;
     }
-    
+
     /**
      * Adds a new catalog file.
      */
@@ -233,7 +233,7 @@ public class XJC2Task extends Task {
     public void setFailonerror(boolean value) {
         failonerror = value;
     }
-    
+
     /**
      * Sets the stack size of the XJC invocation.
      *
@@ -245,19 +245,19 @@ public class XJC2Task extends Task {
             stackSize = Long.parseLong(ss);
             return;
         } catch( NumberFormatException e ) {
-            ;
+            // ignore
         }
-        
+
         if( ss.length()>2 ) {
             String head = ss.substring(0,ss.length()-2);
             String tail = ss.substring(ss.length()-2);
-            
+
             if( tail.equalsIgnoreCase("kb") ) {
                 try {
                     stackSize = Long.parseLong(head)*1024;
                     return;
                 } catch( NumberFormatException ee ) {
-                    ;
+                    // ignore
                 }
             }
             if( tail.equalsIgnoreCase("mb") ) {
@@ -265,11 +265,11 @@ public class XJC2Task extends Task {
                     stackSize = Long.parseLong(head)*1024*1024;
                     return;
                 } catch( NumberFormatException ee ) {
-                    ;
+                    // ignore
                 }
             }
         }
-        
+
         throw new BuildException("Unrecognizable stack size: "+ss);
     }
 
@@ -294,7 +294,7 @@ public class XJC2Task extends Task {
     }
 
     /**
-     * Controls whether the file header comment is generated or not. 
+     * Controls whether the file header comment is generated or not.
      */
     public void setHeader( boolean flg ) {
         this.options.noFileHeader = !flg;
@@ -306,7 +306,7 @@ public class XJC2Task extends Task {
     public void setXexplicitAnnotation( boolean flg) {
         this.options.runtime14 = flg;
     }
-    
+
     /**
      * Controls whether the compiler will run in the strict
      * conformance mode (flg=false) or the extension mode (flg=true)
@@ -317,7 +317,7 @@ public class XJC2Task extends Task {
         else
             this.options.compatibilityMode = Options.STRICT;
     }
-    
+
     /**
      * Sets the target version of the compilation
      */
@@ -338,7 +338,7 @@ public class XJC2Task extends Task {
     public void addConfiguredDepends( FileSet fs ) {
         addIndividualFilesTo( fs, dependsSet );
     }
-    
+
     /** Nested &lt;produces> element. */
     public void addConfiguredProduces( FileSet fs ) {
         producesSpecified = true;
@@ -349,7 +349,7 @@ public class XJC2Task extends Task {
         } else
             addIndividualFilesTo( fs, producesSet );
     }
-    
+
     /** "removeOldOutput" attribute. */
     public void setRemoveOldOutput( boolean roo ) {
         this.removeOldOutput = roo;
@@ -358,17 +358,18 @@ public class XJC2Task extends Task {
     public Commandline.Argument createArg() {
         return cmdLine.createArgument();
     }
-    
-    
+
+
 
 
     /** Runs XJC. */
+    @Override
     public void execute() throws BuildException {
 
         log( "build id of XJC is " + Driver.getBuildID(), Project.MSG_VERBOSE );
 
         classpath.setProject(getProject());
-        
+
         try {
             if( stackSize==-1 )
                 doXJC();   // just invoke XJC
@@ -376,7 +377,7 @@ public class XJC2Task extends Task {
                 try {
                     // launch XJC with a new thread so that we can set the stack size.
                     final Throwable[] e = new Throwable[1];
-                    
+
                     Thread t;
                     Runnable job = new Runnable() {
                         public void run() {
@@ -387,7 +388,7 @@ public class XJC2Task extends Task {
                             }
                         }
                     };
-                    
+
                     try {
                         // this method is available only on JDK1.4
                         Constructor c = Thread.class.getConstructor(
@@ -406,8 +407,8 @@ public class XJC2Task extends Task {
                         doXJC();
                         return;
                     }
-                    
-                    
+
+
                     t.start();
                     t.join();
                     if( e[0] instanceof Error )             throw (Error)e[0];
@@ -430,7 +431,7 @@ public class XJC2Task extends Task {
             }
         }
     }
-    
+
     private void doXJC() throws BuildException {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         try {
@@ -451,7 +452,7 @@ public class XJC2Task extends Task {
             Thread.currentThread().setContextClassLoader(old);
         }
     }
-    
+
     private void _doXJC() throws BuildException {
         try {
             // parse additional command line params
@@ -467,28 +468,28 @@ public class XJC2Task extends Task {
                 options.entityResolver = new ForkEntityResolver(options.entityResolver,xmlCatalog);
             }
         }
-        
+
         if( !producesSpecified ) {
             log("Consider using <depends>/<produces> so that XJC won't do unnecessary compilation",Project.MSG_INFO);
         }
-        
+
         // up to date check
         long srcTime = computeTimestampFor(dependsSet,true);
         long dstTime = computeTimestampFor(producesSet,false);
         log("the last modified time of the inputs is  "+srcTime, Project.MSG_VERBOSE);
         log("the last modified time of the outputs is "+dstTime, Project.MSG_VERBOSE);
-        
+
         if( srcTime < dstTime ) {
             log("files are up to date");
             return;
         }
-        
+
         InputSource[] grammars = options.getGrammars();
-        
+
         String msg = "Compiling "+grammars[0].getSystemId();
         if( grammars.length>1 )  msg += " and others";
         log( msg, Project.MSG_INFO );
-        
+
         if( removeOldOutput ) {
             log( "removing old output files", Project.MSG_INFO );
             for( File f : producesSet )
@@ -497,7 +498,7 @@ public class XJC2Task extends Task {
 
         // TODO: I don't know if I should send output to stdout
         ErrorReceiver errorReceiver = new ErrorReceiverImpl();
-        
+
         Model model = ModelLoader.load( options, new JCodeModel(), errorReceiver );
 
         if(model==null)
@@ -509,18 +510,18 @@ public class XJC2Task extends Task {
                 throw new BuildException("failed to compile a schema");
 
             log( "Writing output to "+options.targetDir, Project.MSG_INFO );
-            
+
             model.codeModel.build( new AntProgressCodeWriter(options.createCodeWriter()));
         } catch( IOException e ) {
             throw new BuildException("unable to write files: "+e.getMessage(),e);
         }
     }
-    
+
     /**
      * Determines the timestamp of the newest/oldest file in the given set.
      */
     private long computeTimestampFor( List<File> files, boolean findNewest ) {
-        
+
         long lastModified = findNewest?Long.MIN_VALUE:Long.MAX_VALUE;
 
         for( File file : files ) {
@@ -537,10 +538,10 @@ public class XJC2Task extends Task {
 
         if( lastModified == Long.MAX_VALUE ) // no file was found
             return Long.MIN_VALUE;  // force re-run
-            
+
         return lastModified;
     }
-    
+
     /**
      * Extracts {@link File} objects that the given {@link FileSet}
      * represents and adds them all to the given {@link List}.
@@ -554,7 +555,7 @@ public class XJC2Task extends Task {
             lst.add(new File(baseDir, value));
         }
     }
-    
+
     /**
      * Extracts files in the given {@link FileSet}.
      */
@@ -562,22 +563,22 @@ public class XJC2Task extends Task {
         DirectoryScanner ds = fs.getDirectoryScanner(getProject());
         String[] includedFiles = ds.getIncludedFiles();
         File baseDir = ds.getBasedir();
-        
+
         ArrayList<InputSource> lst = new ArrayList<InputSource>();
 
         for (String value : includedFiles) {
             lst.add(getInputSource(new File(baseDir, value)));
         }
-        
+
         return lst.toArray(new InputSource[lst.size()]);
     }
-    
+
     /**
      * Converts a File object to an InputSource.
      */
     private InputSource getInputSource( File f ) {
         try {
-            return new InputSource(f.toURL().toExternalForm());
+            return new InputSource(f.toURI().toURL().toExternalForm());
         } catch( MalformedURLException e ) {
             return new InputSource(f.getPath());
         }
@@ -599,6 +600,7 @@ public class XJC2Task extends Task {
             super(output);
         }
 
+        @Override
         public OutputStream openBinary(JPackage pkg, String fileName) throws IOException {
             if(pkg.isUnnamed())
                 log( "generating " + fileName, Project.MSG_VERBOSE );
@@ -606,11 +608,11 @@ public class XJC2Task extends Task {
                 log( "generating " +
                     pkg.name().replace('.',File.separatorChar)+
                     File.separatorChar+fileName, Project.MSG_VERBOSE );
-        
+
             return super.openBinary(pkg,fileName);
         }
     }
-    
+
     /**
      * {@link ErrorReceiver} that produces messages
      * as Ant messages.
@@ -620,19 +622,19 @@ public class XJC2Task extends Task {
         public void warning(SAXParseException e) {
             print(Project.MSG_WARN,Messages.WARNING_MSG,e);
         }
-    
+
         public void error(SAXParseException e) {
             print(Project.MSG_ERR,Messages.ERROR_MSG,e);
         }
-    
+
         public void fatalError(SAXParseException e) {
             print(Project.MSG_ERR,Messages.ERROR_MSG,e);
         }
-    
+
         public void info(SAXParseException e) {
             print(Project.MSG_VERBOSE,Messages.INFO_MSG,e);
         }
-        
+
         private void print( int logLevel, String header, SAXParseException e ) {
             log( Messages.format(header,e.getMessage()), logLevel );
             log( getLocationString(e), logLevel );
