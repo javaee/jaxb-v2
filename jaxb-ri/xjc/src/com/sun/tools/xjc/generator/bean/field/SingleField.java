@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -58,7 +58,7 @@ import com.sun.xml.bind.api.impl.NameConverter;
 /**
  * Realizes a property through one getter and one setter.
  * This renders:
- * 
+ *
  * <pre>
  * T' field;
  * T getXXX() { ... }
@@ -71,7 +71,7 @@ import com.sun.xml.bind.api.impl.NameConverter;
  *
  * This realization is only applicable to fields with (1,1)
  * or (0,1) multiplicity.
- * 
+ *
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
@@ -90,9 +90,9 @@ public class SingleField extends AbstractFieldWithVar {
     protected SingleField(ClassOutlineImpl context, CPropertyInfo prop, boolean forcePrimitiveAccess ) {
         super(context, prop);
         assert !exposedType.isPrimitive() && !implType.isPrimitive();
-        
+
         createField();
-        
+
         MethodWriter writer = context.createMethodWriter();
         NameConverter nc = context.parent().getModel().getNameConverter();
 
@@ -111,7 +111,7 @@ public class SingleField extends AbstractFieldWithVar {
         // if Type is a wrapper and we have a default value,
         // we can use the primitive type.
         JType getterType;
-        if(defaultValue!=null || forcePrimitiveAccess)
+        if (defaultValue!=null || forcePrimitiveAccess)
             getterType = exposedType.unboxify();
         else
             getterType = exposedType;
@@ -135,7 +135,7 @@ public class SingleField extends AbstractFieldWithVar {
         writer.javadoc().addReturn()
             .append("possible object is\n")
             .append(possibleTypes);
-         
+
         // [RESULT]
         // void setXXX(Type newVal) {
         //     this.value = newVal;
@@ -145,7 +145,11 @@ public class SingleField extends AbstractFieldWithVar {
         if(forcePrimitiveAccess)    setterType = setterType.unboxify();
         JVar $value = writer.addParameter( setterType, "value" );
         JBlock body = $set.body();
-        body.assign(JExpr._this().ref(ref()),castToImplType($value));
+        if ($value.type().equals(implType)) {
+            body.assign(JExpr._this().ref(ref()), $value);
+        } else {
+            body.assign(JExpr._this().ref(ref()), castToImplType($value));
+        }
 
         // setter always get the default javadoc. See issue #381
         writer.javadoc().append(Messages.DEFAULT_SETTER_JAVADOC.format(nc.toVariableName(prop.getName(true))));
@@ -161,12 +165,12 @@ public class SingleField extends AbstractFieldWithVar {
     public FieldAccessor create(JExpression targetObject) {
         return new Accessor(targetObject);
     }
-    
+
     protected class Accessor extends AbstractFieldWithVar.Accessor {
         protected Accessor(JExpression $target) {
             super($target);
         }
-        
+
         public void unsetValues( JBlock body ) {
             body.assign( $ref, JExpr._null() );
         }
