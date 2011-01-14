@@ -73,7 +73,7 @@ final class FastInfosetConnector extends StAXConnector {
 
     public FastInfosetConnector(StAXDocumentParser fastInfosetStreamReader,
             XmlVisitor visitor) {
-        super(new InterningXmlVisitor(visitor));
+        super(visitor);
         fastInfosetStreamReader.setStringInterning(true);
         this.fastInfosetStreamReader = fastInfosetStreamReader;
     }
