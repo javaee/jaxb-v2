@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -143,8 +143,6 @@ public interface Property<BeanT> extends StructureLoaderBuilder {
      */
     void wrapUp();
 
-
-
     /**
      * Provides more {@link RuntimePropertyInfo} information on the property.
      *
@@ -152,4 +150,10 @@ public interface Property<BeanT> extends StructureLoaderBuilder {
      *      null if RETAIN_REFERENCE_TO_INFO property is not set on the {@link JAXBContext}
      */
     public RuntimePropertyInfo getInfo();
+    
+    public boolean isHiddenByOverride();
+    
+    public void setHiddenByOverride(boolean hidden);
+    
+    public String getFieldName();    
 }
