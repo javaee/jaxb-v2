@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -61,6 +61,7 @@ abstract class PropertyImpl<BeanT> implements Property<BeanT> {
      */
     protected final String fieldName;
     private RuntimePropertyInfo propertyInfo = null;
+    private boolean hiddenByOverride = false;
 
     public PropertyImpl(JAXBContextImpl context, RuntimePropertyInfo prop) {
         fieldName = prop.getName();
@@ -88,7 +89,17 @@ abstract class PropertyImpl<BeanT> implements Property<BeanT> {
         return null;
     }
 
-    public void wrapUp() {
-        // noop
+    public void wrapUp() {/*noop*/}
+    
+    public boolean isHiddenByOverride() {
+        return hiddenByOverride;
+    }
+
+    public void setHiddenByOverride(boolean hidden) {
+        this.hiddenByOverride = hidden;
+    }
+    
+    public String getFieldName() {
+        return fieldName;
     }
 }
