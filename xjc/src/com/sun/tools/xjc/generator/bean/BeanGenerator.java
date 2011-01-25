@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -149,7 +149,7 @@ public final class BeanGenerator implements Outline {
     /**
      * Generates beans into code model according to the BGM,
      * and produces the reflection model.
-     *
+     * 
      * @param _errorReceiver
      *      This object will receive all the errors discovered
      *      during the back-end stage.
@@ -241,6 +241,16 @@ public final class BeanGenerator implements Outline {
                             JExpr.lit(model.serialVersionUID));
                 }
             }
+            
+            CClassInfoParent base = cc.target.parent();
+            if ((base != null) && (base instanceof CClassInfo)) {
+                String pkg = base.getOwnerPackage().name();
+                String shortName = base.fullName().substring(base.fullName().indexOf(pkg)+pkg.length()+1);
+                if (cc.target.shortName.equals(shortName)) {
+                    getErrorReceiver().error(cc.target.getLocator(), Messages.ERR_KEYNAME_COLLISION.format(shortName));
+                }
+            }
+            
         }
 
         // fill in implementation classes
@@ -488,7 +498,7 @@ public final class BeanGenerator implements Outline {
 
     /**
      * Generates the body of a class.
-     *
+     * 
      */
     private void generateClassBody(ClassOutlineImpl cc) {
         CClassInfo target = cc.target;
@@ -614,7 +624,7 @@ public final class BeanGenerator implements Outline {
         return new EnumOutline(e, type) {
 
             @Override
-            public
+            public 
             @NotNull
             Outline parent() {
                 return BeanGenerator.this;
@@ -750,7 +760,7 @@ public final class BeanGenerator implements Outline {
     /**
      * Determines the FieldRenderer used for the given FieldUse,
      * then generates the field declaration and accessor methods.
-     *
+     * 
      * The <code>fields</code> map will be updated with the newly
      * created FieldRenderer.
      */
