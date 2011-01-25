@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -54,7 +54,7 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 /**
- * This class is the JAXB RI's default implementation of the
+ * This class is the JAXB RI's default implementation of the 
  * {@link DatatypeConverterInterface}.
  *
  * <p>
@@ -69,15 +69,15 @@ import javax.xml.namespace.QName;
  * @since JAXB1.0
  */
 public final class DatatypeConverterImpl implements DatatypeConverterInterface {
-
+    
     /**
      * To avoid re-creating instances, we cache one instance.
      */
     public static final DatatypeConverterInterface theInstance = new DatatypeConverterImpl();
-
+        
     protected DatatypeConverterImpl() {
     }
-
+    
     public String parseString(String lexicalXSDString) {
         return lexicalXSDString;
     }
@@ -167,15 +167,15 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
     }
     public static BigDecimal _parseDecimal(CharSequence content) {
         content = WhiteSpaceProcessor.trim(content);
-
+        
         if (content.length() <= 0) {
             return null;
         }
 
         return new BigDecimal(content.toString());
-
+        
         // from purely XML Schema perspective,
-        // this implementation has a problem, since
+        // this implementation has a problem, since 
         // in xs:decimal "1.0" and "1" is equal whereas the above
         // code will return different values for those two forms.
         //
@@ -184,7 +184,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         // could take non-trivial time.
         //
         // also, from the user's point of view, one might be surprised if
-        // 1 (not 1.0) is returned from "1.000"
+        // 1 (not 1.0) is returned from "1.000" 
     }
 
     public float parseFloat(String lexicalXSDFloat) {
@@ -271,7 +271,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         if (literal.length() <= 0) {
             return null;
         }
-
+        
         do {
             ch = literal.charAt(i++);
         } while(WhiteSpaceProcessor.isWhiteSpace(ch) && i<len);
@@ -331,7 +331,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
     public static String _printBoolean(boolean val) {
         return val?"true":"false";
     }
-
+    
     public byte parseByte(String lexicalXSDByte) {
         return _parseByte(lexicalXSDByte);
     }
@@ -548,7 +548,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         String qname;
         String prefix = nsc.getPrefix( val.getNamespaceURI() );
         String localPart = val.getLocalPart();
-
+        
         if( prefix == null || prefix.length()==0 ) { // be defensive
             qname = localPart;
         } else {
@@ -569,8 +569,8 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
     public String printAnySimpleType(String val) {
         return val;
     }
-
-
+    
+    
     /**
      * Just return the string passed as a parameter but
      * installs an instance of this class as the DatatypeConverter
@@ -736,10 +736,8 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
      *      in the output buffer where the further bytes should be placed.
      */
     public static int _printBase64Binary(byte[] input, int offset, int len, char[] buf, int ptr) {
-        // encode elements until only 1 or 2 elements are left to encode
-        int remaining = len;
-        int i;
-        for (i = offset;remaining >= 3; remaining -= 3, i += 3) {
+        int i = offset;
+        for (; i <= (len - 3); i += 3) {
             buf[ptr++] = encode(input[i] >> 2);
             buf[ptr++] = encode(
                     ((input[i] & 0x3) << 4)
@@ -749,19 +747,19 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
                     | ((input[i + 2] >> 6) & 0x3));
             buf[ptr++] = encode(input[i + 2] & 0x3F);
         }
-        // encode when exactly 1 element (left) to encode
-        if (remaining == 1) {
+        if (len - i == 2) {
+            //(i == len - 2) {
+            buf[ptr++] = encode(input[i] >> 2);
+            buf[ptr++] = encode(
+                    ((input[i] & 0x3) << 4)
+                    | ((input[i + 1] >> 4) & 0xF));
+            buf[ptr++] = encode((input[i + 1] & 0xF) << 2);
+            buf[ptr++] = '=';
+        } else if (len - i == 1) {
+            //if (i == len - 1) {
             buf[ptr++] = encode(input[i] >> 2);
             buf[ptr++] = encode(((input[i]) & 0x3) << 4);
             buf[ptr++] = '=';
-            buf[ptr++] = '=';
-        }
-        // encode when exactly 2 elements (left) to encode
-        if (remaining == 2) {
-            buf[ptr++] = encode(input[i] >> 2);
-            buf[ptr++] = encode(((input[i] & 0x3) << 4)
-                    | ((input[i + 1] >> 4) & 0xF));
-            buf[ptr++] = encode((input[i + 1] & 0xF) << 2);
             buf[ptr++] = '=';
         }
         return ptr;
