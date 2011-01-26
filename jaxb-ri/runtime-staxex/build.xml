@@ -3,7 +3,7 @@
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
 
     The contents of this file are subject to the terms of either the GNU
     General Public License Version 2 only ("GPL") or the Common Development
@@ -46,11 +46,11 @@
   <description>
     Runtime StAX-ex Sub-Project
     ===========================
-
+    
     This sub-project hosts code that are used to integrate stax-ex (http://stax-ex.dev.java.net/)
     and JAXB RI runtime.
   </description>
-
+  
     <!-- import build properties -->
     <property file="${basedir}/build.properties" />
 
@@ -61,8 +61,8 @@
         <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
         <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
     </path>
-
-
+    
+    
     <!-- compile Java source files -->
     <target name="compile"
                 description="compile all runtime src into jaxb-ri/runtime/build/classes">
@@ -74,16 +74,10 @@
             deprecation="${compile.deprecation}" >
             <classpath refid="javac.classpath" />
         </javac>
-
+        
         <copy toDir="${runtime-staxex.classes}">
             <fileset dir="${runtime-staxex.src}" includes="**/*.properties" />
         </copy>
-
-        <!-- expose the build version to the DefaultJAXBContextImpl class so
-             that it is available to the generated ObjectFactory classes -->
-        <!--replace file="${runtime.classes}/com/sun/xml/bind/Messages.properties">
-            <replacefilter token="@@BUILD_VERSION@@" value="${build.version}"/>
-        </replace-->
     </target>
 
     <!-- generate javadoc -->
