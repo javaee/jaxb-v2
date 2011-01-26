@@ -3,7 +3,7 @@
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
 
     The contents of this file are subject to the terms of either the GNU
     General Public License Version 2 only ("GPL") or the Common Development
@@ -45,17 +45,17 @@
      it presumably causes Ant problems for some users.
 <!DOCTYPE project PUBLIC "-//ANT//DTD project//EN" "project.dtd">
 -->
-
+ 
 <project name="jaxb" basedir="." default="compile">
     <description>
         JAXB-RI Master Project
-
+ 
         This project is organized into multiple sub-projects.  Each sub-project is
         responsible for building itself.
         The build files are setup such that you can build the sub-
         projects independently or all together.
 
-        For example, building the runtime sub-project causes all of runtime sources
+        For example, building the runtime sub-project causes all of runtime sources 
         in jaxb-ri/runtime/src to be compiled into jaxb-ri/runtime/build/classes.
 
         To build the entire project, simply run 'ant' in the jaxb-ri directory.
@@ -85,8 +85,13 @@
             <format property="now" pattern="MM/dd/yyyy hh:mm aa" unit="hour"/>
         </tstamp>
         <property name="build.id" value="${now}(${user.name})" />
-        <property name="build.version" value="${release.impl.version}-${build.id}-${release.impl.version.suffix}" />
-        <echo message="The build id is: ${build.version}" />
+        <property name="build.number" value="${build.number}" />
+        <property name="build.version" value="${release.impl.version}${release.impl.version.suffix}" />
+        <property name="build.full.version" value="${release.impl.version}${release.impl.version.suffix}-b${build.number}" />
+        <echo message="Build id:            ${build.id}" />
+        <echo message="Build number:        ${build.number}" />
+        <echo message="Build version:       ${build.version}" />
+        <echo message="Build full version:  ${build.full.version}" />
     </target>
 
     <target name="jar" depends="compile"/>
@@ -112,7 +117,7 @@
   <target name="j2se-integration" depends="init-standalone"
           description="prepare renamed source code for J2SE integration">
     <property name="jaxb.version.in.jdk" value="JAXB 2.0 in JDK 1.6"/>
-
+    
     <ant dir="apgen" target="compile" />
     <subant target="j2se-integration">
       <fileset file="runtime/build.xml" />
@@ -127,22 +132,24 @@
     <move file="j2se-integration/xjc/src/META-INF/services/com.sun.tools.xjc.Plugin"
           tofile="j2se-integration/tools/etc/META-INF/services/sun.tools.xjc.Plugin"/>
     <delete dir="j2se-integration/xjc/src/META-INF"/>
-
+	
 	<!-- delete binary doc-files -->
 	<delete>
 		<fileset dir="j2se-integration/runtime/src/com/sun/xml/internal/bind/v2/doc-files" includes="*.gif,*.png,*.sxd,*.vsd"/>
 		<fileset dir="j2se-integration/xjc/src/com/sun/tools/internal/xjc/reader/xmlschema/doc-files" includes="*.gif,*.png,*.sxd,*.vsd"/>
 	</delete>
-
+	    
     <!-- insert the RI version number into the file prolog message that
         is placed at the head of every generated file and the output
         message for "xjc -version"  and
         message for "schemagen -version" -->
     <replace dir="j2se-integration/xjc/src/com/sun/tools/internal/xjc" includes="MessageBundle*.properties">
       <replacefilter token="@@BUILD_VERSION@@" value="${jaxb.version.in.jdk}"/>
+      <replacefilter token="@@BUILD_FULL_VERSION@@" value="${jaxb.version.in.jdk}"/>
     </replace>
     <replace dir="j2se-integration/xjc/src/com/sun/tools/internal/jxc" includes="MessageBundle*.properties">
       <replacefilter token="@@BUILD_VERSION@@" value="${jaxb.version.in.jdk}"/>
+      <replacefilter token="@@BUILD_FULL_VERSION@@" value="${jaxb.version.in.jdk}"/>
     </replace>
 
   </target>
@@ -167,9 +174,6 @@
       </arch-doc>
     </target>
 
-
-
-
     <!-- task that generates a manifest file -->
     <macrodef name="createManifest">
       <attribute name="extensionName"/>
@@ -193,7 +197,6 @@
       </sequential>
     </macrodef>
 
-
     <!-- generate a distribution -->
     <target name="dist"
             depends="compile,integrate-1.0-compiler"
@@ -205,14 +208,12 @@
         <parallel>
           <!-- copy redist jars -->
           <sequential>
-              <property name="jaxb-api.path" value="${jaxb.dist}/lib/jaxb-api.jar"/>
               <copy todir="${jaxb.dist}/lib">
                   <fileset dir="${jaxb.libs.redist}">
                        <include name="**/*.jar"/>
                        <include name="**/*.zip"/>
                   </fileset>
               </copy>
-              <copy file="${jaxb-api.path}" tofile="${jaxb.dist}/lib/jaxb-api.jar"/>
           </sequential>
 
 
@@ -220,19 +221,8 @@
           <!-- generate jaxb-impl.jar for 2.0 runtime -->
           <sequential>
               <createManifest file="${runtime.root}/build/manifest.rt" extensionName="com.sun.xml.bind" />
-              <!--taskdef name="stripper" classname="org.kohsuke.stripper.StripperTask">
-                <classpath>
-                  <pathelement path="${jaxb.libs.util}/stripper.jar"/>
-                </classpath>
-              </taskdef>
-              <stripper remove="basicDebugInfo compilerInfo">
-                <source dir="${runtime.classes}" includes="**/*.class" />
-              </stripper-->
               <manifest mode="update" file="${runtime.root}/build/manifest.rt">
                 <attribute name="Class-Path" value="jaxb-api.jar activation.jar jsr173_1.0_api.jar jaxb1-impl.jar" /> <!-- added for JES4 script compatibility -->
-                <section name="com.sun.xml.bind.v2.runtime">
-                  <attribute name="Implementation-Version" value="${build.version}" />
-                </section>
               </manifest>
               <jar jarfile="${jaxb.dist}/lib/jaxb-impl.jar"
                    manifest="${runtime.root}/build/manifest.rt"
@@ -310,7 +300,6 @@ Class-Path: ${manifest.classpath}
               <copy file="${jaxb.root}/tools/bin/xjc.sh"  todir="${jaxb.dist}/bin"/>
               <copy file="${jaxb.root}/tools/bin/schemagen.bat" todir="${jaxb.dist}/bin"/>
               <copy file="${jaxb.root}/tools/bin/schemagen.sh"  todir="${jaxb.dist}/bin"/>
-              <echo message="chmod: ${jaxb.dist}/bin/xjc.sh"/>
               <chmod file="${jaxb.dist}/bin/xjc.sh" perm="ugo+rx"/>
               <chmod file="${jaxb.dist}/bin/schemagen.sh" perm="ugo+rx"/>
           </sequential>
@@ -336,12 +325,12 @@ Class-Path: ${manifest.classpath}
       <parallel>
         <sequential>
           <zip zipfile="${jaxb.dist}/lib/jaxb-impl.src.zip">
-            <zipfileset dir="${runtime.src}" prefix="impl"/>
-            <zipfileset dir="${runtime-fi.src}" prefix="fi"/>
-            <zipfileset dir="${runtime-staxex.src}" prefix="staxex"/>
-            <zipfileset dir="${runtime.root}/build/src" prefix="impl"/>
-            <zipfileset src="${jaxb.libs}/src/txw2-src.zip" prefix="txw2"/>
-            <zipfileset dir="tmp/istack-commons/runtime" prefix="istack-commons"/>
+            <fileset dir="${runtime.src}"/>
+            <fileset dir="${runtime-fi.src}"/>
+            <fileset dir="${runtime-staxex.src}"/>
+            <fileset dir="${runtime.root}/build/src" />
+            <zipfileset src="${jaxb.libs}/src/txw2-src.zip" />
+            <fileset dir="tmp/istack-commons/runtime"/>
           </zip>
         </sequential>
         <sequential>
@@ -351,34 +340,36 @@ Class-Path: ${manifest.classpath}
           </copy>
           <replace dir="tmp_xjc/com/sun/tools/xjc" includes="MessageBundle*.properties">
             <replacefilter token="@@BUILD_VERSION@@" value="${build.version}"/>
+            <replacefilter token="@@BUILD_FULL_VERSION@@" value="${build.full.version}"/>
           </replace>
           <replace dir="tmp_xjc/com/sun/tools/jxc" includes="MessageBundle*.properties">
             <replacefilter token="@@BUILD_VERSION@@" value="${build.version}"/>
+            <replacefilter token="@@BUILD_FULL_VERSION@@" value="${build.full.version}"/>
           </replace>
           <replace dir="tmp_xjc/com/sun/tools/xjc" includes="MessageBundle*.properties">
             <replacefilter token="@@JAXB_JDK_VERSION@@" value="${release.impl.version}"/>
           </replace>
           <unjar src="${jaxb.libs}/src/dtd-parser-src.zip" dest="tmp" />
           <zip zipfile="${jaxb.dist}/lib/jaxb-xjc.src.zip">
-            <zipfileset dir="tmp_xjc" prefix="xjc"/>
-            <zipfileset dir="${xjc.gensrc}" prefix="xjc"/>
-            <zipfileset dir="${xjc.root}/facade" prefix="xjc"/>
-            <zipfileset src="${jaxb.libs}/src/codemodel-src.zip"/>
-            <zipfileset src="${jaxb.libs}/src/resolver-comsun-src.zip"/>
-            <zipfileset src="${jaxb.libs}/src/xsom-src.zip" prefix="xsom"/>
-            <zipfileset src="${jaxb.libs}/src/relaxngDatatype-src.zip"/>
-            <zipfileset src="${jaxb.libs}/src/rngom-src.zip" prefix="rngom"/>
-            <zipfileset dir="tmp/dtd-parser/src" prefix="dtd-parser"/>
-            <zipfileset dir="tmp/istack-commons/tools" prefix="istack-commons"/>
+            <fileset dir="tmp_xjc"/>
+            <fileset dir="${xjc.gensrc}"/>
+            <fileset dir="${xjc.root}/facade"/>
+            <zipfileset src="${jaxb.libs}/src/codemodel-sources.jar" />
+            <zipfileset src="${jaxb.libs}/src/resolver-comsun-src.zip" />
+            <zipfileset src="${jaxb.libs}/src/xsom-sources.jar" />
+            <zipfileset src="${jaxb.libs}/src/relaxngDatatype-src.zip" />
+            <zipfileset src="${jaxb.libs}/src/rngom-src.zip" />
+            <fileset dir="tmp/dtd-parser/src"/>
+            <fileset dir="tmp/istack-commons/tools"/>
           </zip>
         </sequential>
         <sequential>
               <mkdir dir="${jaxb.root}/build/jaxb-1-impl-src"/>
               <unzip dest="${jaxb.root}/build/jaxb-1-impl-src">
-                <zipfileset dir="${jaxb.libs.src}" includes="iso-relax-src.zip"/>
-                <zipfileset dir="${jaxb.libs.src}" includes="msv-src.zip"/>
-                <zipfileset dir="${jaxb.libs.src}" includes="relangDatatype-src.zip"/>
-                <zipfileset dir="${jaxb.libs.src}" includes="xsdlib-src.zip"/>
+                <fileset dir="${jaxb.libs.src}" includes="iso-relax-src.zip"/>
+                <fileset dir="${jaxb.libs.src}" includes="msv-src.zip"/>
+                <fileset dir="${jaxb.libs.src}" includes="relangDatatype-src.zip"/>
+                <fileset dir="${jaxb.libs.src}" includes="xsdlib-src.zip"/>
               </unzip>
               <zip zipfile="${jaxb.dist}/lib/jaxb1-impl-src.zip">
                   <fileset dir="${jaxb.root}/build/jaxb-1-impl-src"/>
@@ -402,9 +393,6 @@ Class-Path: ${manifest.classpath}
       <fileset dir="." excludes="dist/**, **/build/**, sandbox/**" />
     </zip>
   </target>
-
-
-
 
     <target name="bin-installer"
             description="generate the binary distribution installer with the license click-through"
@@ -485,7 +473,7 @@ Class-Path: ${manifest.classpath}
             <zipfileset dir="${jaxb.libs.compiler}" includes="*.jar" prefix="jaxb-ri-${DSTAMP}/lib" excludes="relaxngDatatype.jar" />
             <zipfileset dir="${jaxb.libs}/redist"  includes="*.jar" prefix="jaxb-ri-${DSTAMP}/lib" />
             <zipfileset dir="${jaxb.libs}/src" prefix="jaxb-ri-${DSTAMP}/lib">
-                <include name="xsom-src.zip"/>
+                <include name="xsom-sources.jar"/>
             </zipfileset>
         </zip>
 
@@ -551,76 +539,9 @@ Class-Path: ${manifest.classpath}
       </condition>
     </target>
 
-    <!-- assumes wspack target has been run -->
-    <target name="create.pkg" depends="check.os" if="is.unix">
-      <ant dir="pkg" target="deploy-pkg"/>
-    </target>
-
-    <!-- assumes wspack target has been run -->
-    <target name="create.rpm" depends="check.os" if="is.unix">
-      <ant dir="rpm" target="deploy-rpm"/>
-    </target>
-
-    <!-- assumes wspack target has been run -->
-    <target name="create.hpux" depends="check.os" if="is.unix">
-      <ant dir="hpux" target="deploy-hpux"/>
-    </target>
-
-    <!-- assumes dist or wspack target has been run -->
-    <target name="create.zip" description="Create JAXB zip file distribution for JES">
-      <!-- The zip build directory -->
-      <property name="zip.build.dir"    value="${basedir}/build/zip"/>
-
-      <!-- The zip distribution directory -->
-      <property name="zip.release.dir"    value="${basedir}/zip-dist"/>
-
-      <property name="zip.release"    value="1"/>
-
-      <!-- make build and output directories -->
-      <mkdir dir="${zip.build.dir}"/>
-      <mkdir dir="${zip.release.dir}"/>
-
-      <!-- copy files into the right directory structure -->
-        <copy todir="${zip.build.dir}" overwrite="yes">
-          <fileset dir="${basedir}/zip">
-            <include name="filelist.txt"/>
-            <include name="version"/>
-          </fileset>
-        </copy>
-        <copy tofile="${zip.build.dir}/jaxb2/bin/xjc.bat"       file="${basedir}/tools/bin/xjc.zip.bat" />
-        <copy tofile="${zip.build.dir}/jaxb2/bin/schemagen.bat" file="${basedir}/tools/bin/schemagen.zip.bat" />
-        <copy todir="${zip.build.dir}/jaxb2/lib">
-          <fileset dir="${jaxb.dist}/lib">
-            <include name="jaxb-api.jar"/>
-            <include name="jaxb-impl.jar"/>
-            <include name="jaxb-xjc.jar"/>
-            <include name="jaxb1-impl.jar"/>
-          </fileset>
-        </copy>
-
-      <!-- replace parameters in version file  -->
-      <replace file="${zip.build.dir}/version" value="${release.impl.version}">
-        <replacetoken>@jaxb.version@</replacetoken>
-      </replace>
-      <!-- replace date stamp... 1st specify correct format  -->
-      <tstamp>
-        <format property="pkg.datestamp" pattern="yyyyMMdd"/>
-      </tstamp>
-      <replace file="${zip.build.dir}/version" value="${pkg.datestamp}">
-        <replacetoken>@datestamp@</replacetoken>
-      </replace>
-      <replace file="${zip.build.dir}/version" value="${zip.release}">
-        <replacetoken>@zip.release@</replacetoken>
-      </replace>
-
-      <!-- make zip file -->
-      <zip destfile="${zip.release.dir}/jaxb2.zip" basedir="${zip.build.dir}" />
-    </target>
-
     <target name="release-engineering"
             description="target for Sun RE builds"
             depends="src-zip,bin-installer,src-installer,licensee-zip" />
-
 
     <target name="project.dtd" description="create DTD for DTD-aware editing">
       <antstructure output="project.dtd"/>
@@ -662,13 +583,6 @@ Class-Path: ${manifest.classpath}
              dest="tools/lib/redist/jaxb-api-src.zip" />
         <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/dist/jaxb-api-doc.zip"
              dest="tools/lib/redist/jaxb-api-doc.zip" />
-    </target>
-
-    <target name="integrate-xsom">
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom.jar"
-             dest="tools/lib/rebundle/compiler/xsom.jar" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom-full-src.zip"
-             dest="tools/lib/src/xsom-src.zip" />
     </target>
 
     <target name="integrate-maven-repository-importer">
@@ -736,15 +650,43 @@ Class-Path: ${manifest.classpath}
         </unzip>
     </target>
 
-    <target name="integrate-codemodel">
-        <property name="codemodel-version" value="2.3-SNAPSHOT" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel-version}.jar"
-             dest="tools/lib/rebundle/compiler/codemodel.jar" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel-version}.jar"
-             dest="tools/lib/util/codemodel-annotation-compiler.jar" />
+    <target name="integrate-xsdlib">
+        <property name="xsdlib-version" value="2009.2-SNAPSHOT" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/msv/lastSuccessfulBuild/artifact/trunk/xsdlib/target/xsdlib-${xsdlib-version}.jar"
+             dest="tools/lib/rebundle/runtime/xsdlib.jar" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/msv/lastSuccessfulBuild/artifact/trunk/xsdlib/target/xsdlib-fullsrc.zip"
+             dest="tools/lib/src/xsdlib-src.zip" />
+    </target>
 
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel-src.zip"
-             dest="tools/lib/src/codemodel-src.zip" />
+<!-- mavenized projects -->
+    <target name="integrate-xsom">
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/xsom/lastSuccessfulBuild/artifact/xsom/target/xsom-${xsom.version}.jar"
+             dest="tools/lib/rebundle/compiler/xsom.jar" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/xsom/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel.version}-sources.jar"
+             dest="tools/lib/src/xsom-sources.jar" />
+    </target>
+
+    <target name="integrate-xsom-maven">
+        <get src="http://download.java.net/maven/2/com/sun/xsom/xsom/${xsom.version}/xsom-${xsom.version}.jar" dest="tools/lib/rebundle/compiler/xsom.jar" />
+        <get src="http://download.java.net/maven/2/com/sun/xsom/xsom/${xsom.version}/xsom-${xsom.version}-sources.jar" dest="tools/lib/src/xsom-sources.jar" />
+    </target>
+
+    <target name="integrate-codemodel">
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel.version}.jar"
+             dest="tools/lib/rebundle/compiler/codemodel.jar" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel.version}.jar"
+             dest="tools/lib/util/codemodel-annotation-compiler.jar" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel.version}-sources.jar"
+             dest="tools/lib/src/codemodel-sources.jar" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel.version}-sources.jar"
+             dest="tools/lib/util/codemodel-annotation-compiler-sources.jar" />
+    </target>
+
+    <target name="integrate-codemodel-maven">
+        <get src="http://download.java.net/maven/2/com/sun/codemodel/codemodel/${codemodel.version}/codemodel-${codemodel.version}.jar" dest="tools/lib/rebundle/compiler/codemodel.jar" />
+        <get src="http://download.java.net/maven/2/com/sun/codemodel/codemodel-annotation-compiler/${codemodel.version}/codemodel-annotation-compiler-${codemodel.version}.jar" dest="tools/lib/util/codemodel-annotation-compiler.jar"/>
+        <get src="http://download.java.net/maven/2/com/sun/codemodel/codemodel/${codemodel.version}/codemodel-${codemodel.version}-sources.jar" dest="tools/lib/src/codemodel-sources.jar" />
+        <get src="http://download.java.net/maven/2/com/sun/codemodel/codemodel-annotation-compiler/${codemodel.version}/codemodel-annotation-compiler-${codemodel.version}-sources.jar" dest="tools/lib/util/codemodel-annotation-compiler-sources.jar"/>
     </target>
 
     <!-- Source build -->
@@ -908,14 +850,8 @@ Class-Path: ${manifest.classpath}
         <copy file="${maven.repo.local}/${istack-commons.tools.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/istack-commons-tools.jar"/>
 
         <echo message="building codemodel"/>
-        <unzip src="tools/lib/src/codemodel-src.zip" dest="${external.dir}"/>
-        <delete>
-            <fileset dir="${external.dir}/codemodel" includes="**/*.jar"/>
-        </delete>
-        <exec executable="mvn" failonerror="true">
-    	    <arg line="-f ${external.dir}/codemodel/pom.xml -Dmaven.repo.local=${maven.repo.local}" />
-            <arg line="install" />
-        </exec>
+        <build.jar.from.srczip jar="${external.dir}/codemodel/codemodel.jar" srczip="tools/lib/src/codemodel-sources.jar" unzipdir="${external.dir}" srcdir="codemodel"/>
+        <mvn.publish.local jar="${external.dir}/codemodel/codemodel.jar" mvngroup="com.sun.codemodel" mvnartid="codemodel" mvnversion="${codemodel.version}"/>
         <copy file="${maven.repo.local}/${codemodel.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/codemodel.jar"/>
 
         <echo message="building args4j"/>
@@ -968,24 +904,8 @@ Class-Path: ${manifest.classpath}
         <copy file="${maven.repo.local}/${relaxngcc.mvn.path}" tofile="${jaxb.root}/tools/lib/util/relaxngcc.jar"/>
 
         <echo message="building xsom"/>
-        <unzip src="tools/lib/src/xsom-src.zip" dest="${external.dir}/xsom"/>
-        <delete>
-            <fileset dir="${external.dir}/xsom" includes="**/*.jar"/>
-        </delete>
-        <!-- this is required to overcome the stupidity combination of ant vs maven-->
-        <copy file="${maven.repo.local}/${javacc.mvn.path}" tofile="${external.dir}/xsom/lib/javacc.jar"/>
-        <copy file="${maven.repo.local}/${relaxng-datatype.mvn.path}" tofile="${external.dir}/xsom/lib/relaxng-datatype.jar"/>
-        <copy file="${maven.repo.local}/${relaxngcc.mvn.path}" tofile="${external.dir}/xsom/lib/relaxngcc.jar"/>
-        <exec executable="ant" dir="${external.dir}/xsom" failonerror="true" newenvironment="true" >
-            <arg line="-Djavac.target=1.5"/>
-            <arg line="-Djavac.source=1.5"/>
-            <arg line="-Dfrom.source=true"/>
-            <arg line="-Drelaxngcc-jar=lib/relaxngcc.jar"/>
-            <arg line="-Dcpath.fromsource=lib/relaxngcc.jar:lib/relaxng-datatype.jar"/>
-            <arg line="jar"/>
-            <env key="JAVA_HOME" value="${JDK_1.5}" />
-        </exec>
-        <mvn.publish.local jar="${external.dir}/xsom/build/xsom.jar" mvngroup="com.sun.xsom" mvnartid="xsom" mvnversion="${xsom.version}"/>
+        <build.jar.from.srczip jar="${external.dir}/xsom/xsom.jar" srczip="tools/lib/src/xsom-sources.jar" unzipdir="${external.dir}" srcdir="xsom"/>
+        <mvn.publish.local jar="${external.dir}/xsom/xsom.jar" mvngroup="com.sun.xsom" mvnartid="xsom" mvnversion="${xsom.version}"/>
         <copy file="${maven.repo.local}/${xsom.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/xsom.jar"/>
 
         <echo message="building txw2"/>
@@ -1084,5 +1004,5 @@ Class-Path: ${manifest.classpath}
 
     </target>
 
-
+    
 </project>

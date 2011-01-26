@@ -3,7 +3,7 @@
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
 
     The contents of this file are subject to the terms of either the GNU
     General Public License Version 2 only ("GPL") or the Common Development
@@ -141,7 +141,6 @@
             <property name="jaxb.Implementation-Vendor" value="Implementation-Vendor" />
             <property name="jaxb.Implementation-Vendor-Id" value="Implementation-Vendor-Id" />
             <property name="jaxb.Implementation-Version" value="Implementation-Version" />
-            <property name="jaxb.Implementation-Version2" value="Implementation-Version" />
             <property name="jaxb.Import-Package" value="Import-Package" />
             <property name="jaxb.Manifest-Version" value="Manifest-Version" />
             <property name="jaxb.Originally-Created-By" value="Originally-Created-By" />
@@ -185,9 +184,6 @@
             <attribute name="Specification-Version" value="${jaxb.Specification-Version}"/>
             <attribute name="Tool" value="${jaxb.Tool}"/>
             <attribute name="Implementation-Version" value="${jaxb.Implementation-Version}"/>
-            <section name="com.sun.xml.bind.v2.runtime">
-                <attribute name="Implementation-Version" value="${jaxb.Implementation-Version2}"/>
-            </section>
         </manifest>
 
 
@@ -205,7 +201,7 @@
                 <include name="com/sun/tools/jxc/*Task*"/>
                 <include name="com/sun/istack/tools/*Task*"/>
                 <include name="org/kohsuke/**"/>
-	    </zipfileset>
+            </zipfileset>
             <zipfileset src="${jaxb.libs.util}/FastInfoset.jar">
                 <include name="org/jvnet/fastinfoset/sax/**"/>
                 <include name="org/jvnet/fastinfoset/stax/**"/>

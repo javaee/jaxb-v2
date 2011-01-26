@@ -3,7 +3,7 @@
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
 
     The contents of this file are subject to the terms of either the GNU
     General Public License Version 2 only ("GPL") or the Common Development
@@ -46,12 +46,12 @@
   <description>
     Runtime Sub-Project
     ===================
-
-    The runtime project implements all of the interfaces from the
+    
+    The runtime project implements all of the interfaces from the 
     javax.xml.bind.* packages necessary to support marshalling,
     unmarshalling, and validation.
   </description>
-
+  
     <!-- import build properties -->
     <property file="${basedir}/build.properties" />
 
@@ -61,7 +61,7 @@
     <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
     <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
   </path>
-
+  
   <path id="txw.classpath">
     <path refid="javac.classpath"/>
     <pathelement path="${jaxb.libs.runtime2}/txw2.jar"/>
@@ -71,7 +71,7 @@
     <pathelement path="${codemodel.classes}"/>
   </path>
 
-
+    
     <target name="generate-array-listers">
         <macrodef name="generateCopiesForPrimitives">
           <attribute name="srcdir"/>
@@ -90,7 +90,7 @@
                 </replace>
               </sequential>
             </macrodef>
-
+            
             <mkdir dir="@{destdir}"/>
             <generate primitive="boolean" box="Boolean" />
             <generate primitive="char"    box="Character" />
@@ -101,7 +101,7 @@
             <generate primitive="double"  box="Double" />
           </sequential>
         </macrodef>
-
+        
         <!-- generate ArrayLister for other primitive types -->
         <generateCopiesForPrimitives
           srcdir=       "${runtime.root}/src/com/sun/xml/bind/v2/runtime/reflect"
@@ -141,7 +141,7 @@
         <delete file="${runtime.root}/build/src/com/sun/xml/bind/v2/runtime/reflect/opt/TransducedAccessor_method_Integer.java"/>
         <delete file="${runtime.root}/build/src/com/sun/xml/bind/v2/runtime/reflect/opt/TransducedAccessor_field_Boolean.java"/>
     </target>
-
+    
     <target name="generate-annotation-proxies"
            description="generate annotation proxies">
       <taskdef name="apgen" classname="com.sun.tools.GeneratorTask">
@@ -206,23 +206,16 @@
             <classpath refid="javac.classpath" />
             <compilerarg line="${runtime.compilerarg}"/>
         </javac>
-
+        
         <copy toDir="${runtime.classes}">
             <fileset dir="${runtime.src}" includes="**/*.properties" />
         </copy>
-
-        <!-- expose the build version to the DefaultJAXBContextImpl class so
-             that it is available to the generated ObjectFactory classes -->
-        <!--replace file="${runtime.classes}/com/sun/xml/bind/Messages.properties">
-            <replacefilter token="@@BUILD_VERSION@@" value="${build.version}"/>
-        </replace-->
     </target>
 
   <target name="j2se-integration" depends="compile">
     <package-rename srcdir="${runtime.src}"             destdir="j2se-integration/runtime/src" />
     <package-rename srcdir="${runtime.root}/build/src"  destdir="j2se-integration/runtime/src" />
   </target>
-
 
     <!-- generate javadoc -->
     <target name="javadoc">
@@ -253,31 +246,31 @@
             <delete file="${runtime.root}/manifest.rt" />
         </parallel>
     </target>
-
+    
     <!-- run unit test -->
-    <target name="test-runtime"
+    <target name="test-runtime" 
           depends="compile"
           description="execute client unit tests - requires junit.jar on system classpath">
-
+      
       <mkdir dir="${runtime.test.classes}" />
       <javac srcdir="${runtime.test}" destdir="${runtime.test.classes}"
         debug="true" optimize="true"
       	source="1.5" target="1.5"
         deprecation="${compile.deprecation}" >
-
+        
         <classpath>
           <path refid="javac.classpath" />
           <pathelement path="${runtime.classes}" />
           <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
         </classpath>
       </javac>
-
+      
       <echo>running JUnit</echo>
       <junit printsummary="yes" fork="yes"
         haltonerror="no" haltonfailure="no">
-
+        
         <formatter type="brief" usefile="false" />
-
+        
         <classpath>
           <path refid="javac.classpath" />
           <pathelement path="${runtime.classes}"/>
@@ -285,7 +278,7 @@
           <fileset dir="${jaxb.libs.util}" includes="*.jar" />
           <fileset dir="${jaxb.libs.test}" includes="*.jar"/>
         </classpath>
-
+        
         <batchtest todir="${test.log}">
           <fileset dir="${runtime.test.classes}" includes="**/*Test.class" />
         </batchtest>

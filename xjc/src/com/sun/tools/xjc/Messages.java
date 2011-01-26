@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -155,6 +155,9 @@ class Messages
     static final String VERSION = // 0 args
         "Driver.Version";
         
+    static final String FULLVERSION = // 0 args
+        "Driver.FullVersion";
+
     static final String BUILD_ID = // 0 args
         "Driver.BuildID";
         
