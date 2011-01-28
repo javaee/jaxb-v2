@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -82,7 +82,9 @@ import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 
@@ -211,6 +213,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
 
         QName[] qnames = (System.getProperty(MAP_ANYURI_TO_URI) == null) ? new QName[] {
                                 createXS("string"),
+                                createXS("anySimpleType"),
                                 createXS("normalizedString"),
                                 createXS("anyURI"),
                                 createXS("token"),
@@ -222,6 +225,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
                                     :
                          new QName[] {
                                 createXS("string"),
+                                createXS("anySimpleType"),
                                 createXS("normalizedString"),
                                 createXS("token"),
                                 createXS("language"),
@@ -522,8 +526,11 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
 
                     try {
                         ByteArrayOutputStreamEx baos = new ByteArrayOutputStreamEx();
-                        xs.getIdentityTransformer().transform(v,
-                            new StreamResult(new OutputStreamWriter(baos,charset)));
+                        Transformer tr = xs.getIdentityTransformer();
+                        String defaultEncoding = tr.getOutputProperty(OutputKeys.ENCODING);
+                        tr.setOutputProperty(OutputKeys.ENCODING, charset);                        
+                        tr.transform(v, new StreamResult(new OutputStreamWriter(baos,charset)));
+                        tr.setOutputProperty(OutputKeys.ENCODING, defaultEncoding);
                         baos.set(bd,"application/xml; charset="+charset);
                         return bd;
                     } catch (TransformerException e) {
@@ -901,7 +908,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
 
 	private static void checkXmlGregorianCalendarFieldRef(QName type, 
 		XMLGregorianCalendar cal)throws javax.xml.bind.MarshalException{
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		int bitField = xmlGregorianCalendarFieldRef.get(type);
 		final int l = 0x1;
 		int pos = 0;
@@ -914,32 +921,32 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
 				switch(pos){
 					case 1:
 						if (cal.getSecond() == DatatypeConstants.FIELD_UNDEFINED){
-							buf.append("  " + Messages.XMLGREGORIANCALENDAR_SEC);
+							buf.append("  ").append(Messages.XMLGREGORIANCALENDAR_SEC);
 						}
 						break;
 					case 2:
 						if (cal.getMinute() == DatatypeConstants.FIELD_UNDEFINED){
-							buf.append("  " + Messages.XMLGREGORIANCALENDAR_MIN);
+							buf.append("  ").append(Messages.XMLGREGORIANCALENDAR_MIN);
 						}
 						break;
 					case 3:
 						if (cal.getHour() == DatatypeConstants.FIELD_UNDEFINED){
-							buf.append("  " + Messages.XMLGREGORIANCALENDAR_HR);
+							buf.append("  ").append(Messages.XMLGREGORIANCALENDAR_HR);
 						}
 						break;
 					case 4:
 						if (cal.getDay() == DatatypeConstants.FIELD_UNDEFINED){
-							buf.append("  " + Messages.XMLGREGORIANCALENDAR_DAY);
+							buf.append("  ").append(Messages.XMLGREGORIANCALENDAR_DAY);
 						}
 						break;
 					case 5:
 						if (cal.getMonth() == DatatypeConstants.FIELD_UNDEFINED){
-							buf.append("  " + Messages.XMLGREGORIANCALENDAR_MONTH);
+							buf.append("  ").append(Messages.XMLGREGORIANCALENDAR_MONTH);
 						}
 						break;
 					case 6:
 						if (cal.getYear() == DatatypeConstants.FIELD_UNDEFINED){
-							buf.append("  " + Messages.XMLGREGORIANCALENDAR_YEAR);
+							buf.append("  ").append(Messages.XMLGREGORIANCALENDAR_YEAR);
 						}
 						break;
 					case 7:  // ignore timezone setting
@@ -980,7 +987,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
 	 * day		0x0001000
 	 * month	0x0010000
 	 * year		0x0100000
-	 * timezone 0x1000000
+	 * timezone     0x1000000
 	 */
 	private static final Map<QName, Integer> xmlGregorianCalendarFieldRef =
 		new HashMap<QName, Integer>();
