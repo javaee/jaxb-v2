@@ -1068,7 +1068,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
         private Collection<TypeReference> typeRefs;
         private boolean xmlAccessorFactorySupport = false;
         private boolean allNillable;
-        private boolean improvedXsiTypeHandling = false;
+        private boolean improvedXsiTypeHandling = true;
 
         public JAXBContextBuilder() {};
 
