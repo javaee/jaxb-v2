@@ -105,7 +105,7 @@ public class ContextFactory {
 
         Boolean improvedXsiTypeHandling = getPropertyValue(properties, JAXBRIContext.IMPROVED_XSI_TYPE_HANDLING, Boolean.class);
         if(improvedXsiTypeHandling == null)
-            improvedXsiTypeHandling = false;
+            improvedXsiTypeHandling = true;
 
         Boolean xmlAccessorFactorySupport = getPropertyValue(properties,
            JAXBRIContext.XMLACCESSORFACTORY_SUPPORT,Boolean.class);
