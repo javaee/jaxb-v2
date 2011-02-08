@@ -102,6 +102,10 @@ public final class LeafPropertyXsiLoader extends Loader {
                 return defaultLoader;
             }
 
+            if (null == cbii.getTransducer()) {
+                return defaultLoader;
+            }
+
             return new LeafPropertyLoader(
                     new TransducedAccessor.CompositeTransducedAccessorImpl(
                             state.getContext().getJAXBContext(),
