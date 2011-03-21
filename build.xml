@@ -96,6 +96,11 @@
 
     <target name="jar" depends="compile"/>
 
+    <target name="test" depends="dist">
+        <ant dir="runtime" target="test-runtime"/>
+        <ant dir="xjc"     target="run-xjc-test"/>
+    </target>
+
     <!-- compile all of the sources into <project>/build/classes-->
     <target name="compile"
             depends="init-standalone"
@@ -319,9 +324,6 @@ Class-Path: ${manifest.classpath}
     <target name="src-zip" depends="init-standalone,dist"
             description="source zip files for JAXB RI jar files into the dist dir.">
         <mkdir dir="tmp"/>
-        <unzip dest="tmp">
-          <fileset dir="${jaxb.libs.src}" includes="istack-commons-src.zip"/>
-        </unzip>
       <parallel>
         <sequential>
           <zip zipfile="${jaxb.dist}/lib/jaxb-impl.src.zip">
@@ -330,7 +332,7 @@ Class-Path: ${manifest.classpath}
             <fileset dir="${runtime-staxex.src}"/>
             <fileset dir="${runtime.root}/build/src" />
             <zipfileset src="${jaxb.libs}/src/txw2-src.zip" />
-            <fileset dir="tmp/istack-commons/runtime"/>
+            <zipfileset src="${jaxb.libs}/src/istack-commons-runtime-sources.jar"/>
           </zip>
         </sequential>
         <sequential>
@@ -360,7 +362,7 @@ Class-Path: ${manifest.classpath}
             <zipfileset src="${jaxb.libs}/src/relaxngDatatype-src.zip" />
             <zipfileset src="${jaxb.libs}/src/rngom-src.zip" />
             <fileset dir="tmp/dtd-parser/src"/>
-            <fileset dir="tmp/istack-commons/tools"/>
+            <zipfileset src="${jaxb.libs}/src/istack-commons-tools-sources.jar"/>
           </zip>
         </sequential>
         <sequential>
@@ -382,7 +384,7 @@ Class-Path: ${manifest.classpath}
       <delete dir="tmp_xjc" />
     </target>
 
-    <target name="hudson" depends="clean, dist-zip-with-src"
+    <target name="hudson" depends="clean, dist-zip-with-src, test"
             description="Target to be invoked on Hudson">
     </target>
 
@@ -613,27 +615,6 @@ Class-Path: ${manifest.classpath}
              dest="tools/lib/src/sjsxp-src.zip" />
     </target>
 
-    <target name="integrate-istack-commons">
-        <property name="istack.commons.runtime" value="http://hudson.sfbay/job/istack-commons/lastSuccessfulBuild/artifact/runtime/build" />
-        <property name="istack.commons.tools" value="http://hudson.sfbay/job/istack-commons/lastSuccessfulBuild/artifact/tools/build" />
-        <property name="istack.commons.test" value="http://hudson.sfbay/job/istack-commons/lastSuccessfulBuild/artifact/test/build" />
-
-        <get src="${istack.commons.tools}/istack-commons-tools.jar"
-             dest="tools/lib/rebundle/compiler/istack-commons-tools.jar" />
-        <get src="${istack.commons.tools}/istack-commons-tools-src.zip"
-             dest="tools/lib/src/istack-commons-tools-src.zip" />
-
-        <get src="${istack.commons.runtime}/istack-commons-runtime.jar"
-             dest="tools/lib/rebundle/runtime2/istack-commons-runtime.jar" />
-        <get src="${istack.commons.runtime}/istack-commons-runtime-src.zip"
-             dest="tools/lib/src/istack-commons-runtime-src.zip" />
-
-        <get src="${istack.commons.test}/istack-commons-test.jar"
-             dest="tools/lib/util/istack-commons-test.jar" />
-        <get src="${istack.commons.test}/istack-commons-test-src.zip"
-             dest="tools/lib/src/istack-commons-test-src.zip" />
-    </target>
-
     <target name="integrate-package-rename-task">
         <get src="http://hudson.sfbay/job/package-rename-task/lastSuccessfulBuild/artifact/target/package-rename-task.jar"
              dest="tools/lib/util/package-rename-task.jar"/>
@@ -660,9 +641,9 @@ Class-Path: ${manifest.classpath}
 
 <!-- mavenized projects -->
     <target name="integrate-xsom">
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/xsom/lastSuccessfulBuild/artifact/xsom/target/xsom-${xsom.version}.jar"
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/xsom/lastSuccessfulBuild/artifact/target/xsom-${xsom.version}.jar"
              dest="tools/lib/rebundle/compiler/xsom.jar" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/xsom/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel.version}-sources.jar"
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/xsom/lastSuccessfulBuild/artifact/target/xsom-${xsom.version}-sources.jar"
              dest="tools/lib/src/xsom-sources.jar" />
     </target>
 
@@ -687,6 +668,32 @@ Class-Path: ${manifest.classpath}
         <get src="http://download.java.net/maven/2/com/sun/codemodel/codemodel-annotation-compiler/${codemodel.version}/codemodel-annotation-compiler-${codemodel.version}.jar" dest="tools/lib/util/codemodel-annotation-compiler.jar"/>
         <get src="http://download.java.net/maven/2/com/sun/codemodel/codemodel/${codemodel.version}/codemodel-${codemodel.version}-sources.jar" dest="tools/lib/src/codemodel-sources.jar" />
         <get src="http://download.java.net/maven/2/com/sun/codemodel/codemodel-annotation-compiler/${codemodel.version}/codemodel-annotation-compiler-${codemodel.version}-sources.jar" dest="tools/lib/util/codemodel-annotation-compiler-sources.jar"/>
+    </target>
+
+    <target name="integrate-istack-commons">
+        <property name="istack.commons.runtime" value="http://sysifos-sol.czech.sun.com/hudson/job/istack-commons/lastSuccessfulBuild/artifact/runtime/target/" />
+        <property name="istack.commons.tools" value="http://sysifos-sol.czech.sun.com/hudson/job/istack-commons/lastSuccessfulBuild/artifact/tools/target/" />
+        <property name="istack.commons.test" value="http://sysifos-sol.czech.sun.com/hudson/job/istack-commons/lastSuccessfulBuild/artifact/test/target/" />
+
+        <get src="${istack.commons.tools}/istack-commons-tools-${istack-commons.version}.jar" dest="tools/lib/rebundle/compiler/istack-commons-tools.jar" />
+        <get src="${istack.commons.tools}/istack-commons-tools-${istack-commons.version}-sources.jar" dest="tools/lib/src/istack-commons-tools-sources.jar" />
+
+        <get src="${istack.commons.runtime}/istack-commons-runtime-${istack-commons.version}.jar" dest="tools/lib/rebundle/runtime2/istack-commons-runtime.jar" />
+        <get src="${istack.commons.runtime}/istack-commons-runtime-${istack-commons.version}-sources.jar" dest="tools/lib/src/istack-commons-runtime-sources.jar" />
+
+        <get src="${istack.commons.test}/istack-commons-test-${istack-commons.version}.jar" dest="tools/lib/util/istack-commons-test.jar" />
+        <get src="${istack.commons.test}/istack-commons-test-${istack-commons.version}-sources.jar" dest="tools/lib/util/istack-commons-test-sources.zip" />
+    </target>
+
+    <target name="integrate-istack-commons-maven">
+        <get src="http://download.java.net/maven/2/${istack-commons.tools.mvn.path}.jar" dest="tools/lib/rebundle/compiler/istack-commons-tools.jar" />
+        <get src="http://download.java.net/maven/2/${istack-commons.tools.mvn.path}-sources.jar" dest="tools/lib/src/istack-commons-tools-sources.jar" />
+        
+        <get src="http://download.java.net/maven/2/${istack-commons.runtime.mvn.path}.jar" dest="tools/lib/rebundle/runtime2/istack-commons-runtime.jar" />
+        <get src="http://download.java.net/maven/2/${istack-commons.runtime.mvn.path}-sources.jar" dest="tools/lib/src/istack-commons-runtime-sources.jar" />
+        
+        <get src="http://download.java.net/maven/2/${istack-commons.test.mvn.path}.jar" dest="tools/lib/util/istack-commons-test.jar" />
+        <get src="http://download.java.net/maven/2/${istack-commons.test.mvn.path}-sources.jar" dest="tools/lib/util/istack-commons-test-sources.jar" />
     </target>
 
     <!-- Source build -->
@@ -834,20 +841,14 @@ Class-Path: ${manifest.classpath}
         <copy file="${maven.repo.local}/${msv.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/runtime/msv.jar"/>
 
         <echo message="building istack-commons"/>
-        <unzip src="tools/lib/src/istack-commons-src.zip" dest="${external.dir}"/>
-        <copy file="${maven.repo.local}/${activation.mvn.path}" tofile="${external.dir}/istack-commons/runtime/lib/activation.jar"/>
-        <copy file="${maven.repo.local}/${jsr173api.mvn.path}" tofile="${external.dir}/istack-commons/runtime/lib/jsr173_api.jar"/>
-        <exec executable="ant" dir="${external.dir}/istack-commons" failonerror="true" newenvironment="true" >
-            <arg line="-Djavac.target=1.5"/>
-            <arg line="-Djavac.source=1.5"/>
-            <arg line="-Dfrom.source=true"/>
-            <arg line="dist"/>
-            <env key="JAVA_HOME" value="${JDK_1.5}" />
-        </exec>
-        <mvn.publish.local jar="${external.dir}/istack-commons/runtime/build/istack-commons-runtime.jar" mvngroup="com.sun.istack.istack-commons-runtime" mvnartid="istack-commons-runtime" mvnversion="${istack-commons.version}"/>
-        <mvn.publish.local jar="${external.dir}/istack-commons/tools/build/istack-commons-tools.jar" mvngroup="com.sun.istack.istack-commons-tools" mvnartid="istack-commons-tools" mvnversion="${istack-commons.version}"/>
-        <copy file="${maven.repo.local}/${istack-commons.runtime.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/runtime2/istack-commons-runtime.jar"/>
-        <copy file="${maven.repo.local}/${istack-commons.tools.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/istack-commons-tools.jar"/>
+        <build.jar.from.srczip jar="${external.dir}/istack-commons-runtime/istack-commons-runtime.jar" srczip="tools/lib/src/istack-commons-runtime-sources.jar" unzipdir="${external.dir}" srcdir="istack-commons-runtime"/>
+        <mvn.publish.local jar="${external.dir}/istack-commons-runtime/istack-commons-runtime.jar" mvngroup="com.sun.istack" mvnartid="istack-commons-runtime" mvnversion="${istack-commons.version}"/>
+        <copy file="${maven.repo.local}/${istack-commons.runtime.mvn.path}.jar" tofile="${jaxb.root}/tools/lib/rebundle/runtime2/istack-commons-runtime.jar"/>
+
+        <echo message="building istack-commons"/>
+        <build.jar.from.srczip jar="${external.dir}/istack-commons-tools/istack-commons-tools.jar" srczip="tools/lib/src/istack-commons-tools-sources.jar" unzipdir="${external.dir}" srcdir="istack-commons-tools"/>
+        <mvn.publish.local jar="${external.dir}/istack-commons-tools/istack-commons-tools.jar" mvngroup="com.sun.istack" mvnartid="istack-commons-tools" mvnversion="${istack-commons.version}"/>
+        <copy file="${maven.repo.local}/${istack-commons.tools.mvn.path}.jar" tofile="${jaxb.root}/tools/lib/rebundle/compiler/istack-commons-tools.jar"/>
 
         <echo message="building codemodel"/>
         <build.jar.from.srczip jar="${external.dir}/codemodel/codemodel.jar" srczip="tools/lib/src/codemodel-sources.jar" unzipdir="${external.dir}" srcdir="codemodel"/>
