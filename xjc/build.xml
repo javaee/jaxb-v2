@@ -210,40 +210,30 @@
             <classpath path="${spec.classes}"/>
             <classpath>
               <fileset dir="${jaxb.libs.util}" includes="*.jar" />
-              <fileset dir="${jaxb.libs.test}" includes="*.jar" />
             </classpath>
         </javac>
     </target>
-    
-    
-    
+        
     <target name="run-xjc-test" depends="xjc-junit"
             description="execute xjc unit tests - requires junit.jar on system classpath"/>
     
-    <!--
-      run JUnit-based individual tests.
-    -->
-    <target name="xjc-junit"
-            depends="compile-xjc-test"
-            description="runs XJC JUnit tests">
-      <junit printsummary="yes" fork="yes"
-        haltonerror="no" haltonfailure="no">
+    <target name="xjc-junit" depends="compile-xjc-test" description="runs XJC JUnit tests">
+      <mkdir dir="${xjc.root}/log"/>
+      <junit printsummary="yes" fork="no" haltonerror="yes" haltonfailure="yes">
         
-        <formatter type="plain" />
-        
-        <classpath path="${java.class.path}" />
         <classpath refid="javac.classpath"/>
         <classpath path="${xjc.classes}"/>
-        
-        <batchtest todir="test/log">
-          <fileset dir="${xjc.classes}" includes="**/*JUTest.class"/>
+        <classpath>
+            <fileset dir="${jaxb.libs.util}" includes="junit*.jar"/>
+        </classpath> 
+
+        <batchtest todir="${xjc.root}/log" filtertrace="false">
+            <formatter usefile="true" type="xml"/>
+            <fileset dir="${xjc.classes}" includes="**/*JUTest.class"/>
         </batchtest>
+
       </junit>
     </target>
-    
-    
-    
-    
     
     <path id="javadoc.classpath">
         <pathelement path="${xjc.classes}" />
@@ -254,7 +244,6 @@
         <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
     </path>
 
-    
     <target name="javadoc" 
             description="generate javadoc for xjc into jaxb-ri/xjc/docs/api">
       <mkdir dir="${xjc.root}/build/javadoc" />
@@ -273,27 +262,6 @@
       </javadoc>
     </target>
     
-    <target name="javadoc-xjc-api"
-      description="Builds javadoc for the XJC API">
-      <mkdir dir="docs" />
-      <javadoc packagenames="com.sun.tools.xjc.api"
-            locale="en_US"
-            sourcepath="${xjc.src}"
-            destdir="xjc/build/api-docs"
-            use="true"
-            useexternalfile="true"
-            author="false"
-            version="false"
-            windowtitle="XJC API"
-            doctitle="XJC API">
-        <link href="http://kohsuke.sfbay/javadoc/docs/codemodel/" />
-        <link href="http://kohsuke.sfbay/javadoc/docs/xsom/" />
-        <link href="http://kohsuke.sfbay/javadoc/docs/jaxp-api/" />
-        <link href="http://webwork.sfbay/j2se/1.4.2/docs/api/" />
-      </javadoc>
-    </target>
-    
-
     <!-- remove all intermediate files -->
     <target name="clean"
             description="clean jaxb-ri/xjc/build">
