@@ -59,7 +59,7 @@
   <path id="javac.classpath">
     <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
     <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
-    <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
+    <fileset dir="${jaxb.libs.util}" includes="*.jar" excludes="ant.jar"/>
   </path>
   
   <path id="txw.classpath">
@@ -129,6 +129,7 @@
         <delete file="${runtime.root}/build/src/com/sun/xml/bind/v2/runtime/reflect/opt/TransducedAccessor_field_Character.java"/>
         <!-- integer version is also hand-coded. -->
         <delete file="${runtime.root}/build/src/com/sun/xml/bind/v2/runtime/reflect/opt/TransducedAccessor_field_Integer.java"/>
+        <delete file="${runtime.root}/build/src/com/sun/xml/bind/v2/runtime/reflect/opt/TransducedAccessor_field_Boolean.java"/>
 
         <!-- generate TransducedAccessor for methods -->
         <generateCopiesForPrimitives
@@ -139,7 +140,6 @@
         <delete file="${runtime.root}/build/src/com/sun/xml/bind/v2/runtime/reflect/opt/TransducedAccessor_method_Character.java"/>
         <!-- integer version is also hand-coded. -->
         <delete file="${runtime.root}/build/src/com/sun/xml/bind/v2/runtime/reflect/opt/TransducedAccessor_method_Integer.java"/>
-        <delete file="${runtime.root}/build/src/com/sun/xml/bind/v2/runtime/reflect/opt/TransducedAccessor_field_Boolean.java"/>
     </target>
     
     <target name="generate-annotation-proxies"
@@ -252,7 +252,9 @@
           depends="compile"
           description="execute client unit tests - requires junit.jar on system classpath">
       
-      <mkdir dir="${runtime.test.classes}" />
+      <mkdir dir="${runtime.test.classes}"/>
+      <mkdir dir="${runtime.root}/log"/>
+      
       <javac srcdir="${runtime.test}" destdir="${runtime.test.classes}"
         debug="true" optimize="true"
       	source="1.5" target="1.5"
@@ -261,27 +263,23 @@
         <classpath>
           <path refid="javac.classpath" />
           <pathelement path="${runtime.classes}" />
-          <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
         </classpath>
       </javac>
       
       <echo>running JUnit</echo>
-      <junit printsummary="yes" fork="yes"
-        haltonerror="no" haltonfailure="no">
-        
-        <formatter type="brief" usefile="false" />
-        
+      <junit printsummary="yes" fork="no" haltonerror="yes" haltonfailure="yes">
+
         <classpath>
           <path refid="javac.classpath" />
           <pathelement path="${runtime.classes}"/>
           <pathelement path="${runtime.test.classes}"/>
-          <fileset dir="${jaxb.libs.util}" includes="*.jar" />
-          <fileset dir="${jaxb.libs.test}" includes="*.jar"/>
         </classpath>
         
-        <batchtest todir="${test.log}">
-          <fileset dir="${runtime.test.classes}" includes="**/*Test.class" />
+        <batchtest todir="${runtime.root}/log">
+            <formatter usefile="true" type="xml"/>
+            <fileset dir="${runtime.test.classes}" includes="**/*Test.class" />
         </batchtest>
+        
       </junit>
     </target>
 </project>
