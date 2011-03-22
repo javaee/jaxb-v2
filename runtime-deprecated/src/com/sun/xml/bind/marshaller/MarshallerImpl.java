@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -47,7 +47,6 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
-import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.MarshalException;
 import javax.xml.bind.PropertyException;
@@ -66,7 +65,6 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.LocatorImpl;
 
-import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.serializer.XMLSerializable;
 
 /**
@@ -85,10 +83,7 @@ public class MarshallerImpl extends AbstractMarshallerImpl
     /** Object that handles character escaping. */
     private CharacterEscapeHandler escapeHandler = null; 
     
-    public MarshallerImpl() {
-        // initialize datatype converter with ours
-        DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
-    }
+    public MarshallerImpl() { }
     
     public void marshal(Object obj, Result result) throws JAXBException {
         if (!(obj instanceof XMLSerializable) || obj == null)
@@ -240,6 +235,7 @@ public class MarshallerImpl extends AbstractMarshallerImpl
     }
     
     
+    @Override
     public Object getProperty(String name) throws PropertyException {
         if( INDENT_STRING.equals(name) )
             return indent;
@@ -249,6 +245,7 @@ public class MarshallerImpl extends AbstractMarshallerImpl
         return super.getProperty(name);
     }
 
+    @Override
     public void setProperty(String name, Object value) throws PropertyException {
         if( INDENT_STRING.equals(name) && value instanceof String ) {
             indent = (String)value;

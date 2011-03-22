@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -42,7 +42,6 @@ package com.sun.xml.bind.unmarshaller;
 
 import java.io.IOException;
 
-import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.UnmarshallerHandler;
 import javax.xml.bind.helpers.AbstractUnmarshallerImpl;
@@ -54,7 +53,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
-import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.DefaultJAXBContextImpl;
 import com.sun.xml.bind.ErrorHandlerToEventHandler;
 import com.sun.xml.bind.TypeRegistry;
@@ -83,13 +81,9 @@ public class UnmarshallerImpl extends AbstractUnmarshallerImpl
     /** Type registry that stores schema information. */
     private final TypeRegistry registry;
     
-    public UnmarshallerImpl( DefaultJAXBContextImpl context, TypeRegistry reg ) {
-        
+    public UnmarshallerImpl( DefaultJAXBContextImpl context, TypeRegistry reg ) {        
         this.context = context;
         this.registry = reg;
-
-        // initialize datatype converter with ours
-        DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
     }
     
     public UnmarshallerHandler getUnmarshallerHandler() {

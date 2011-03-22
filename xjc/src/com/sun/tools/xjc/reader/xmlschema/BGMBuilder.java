@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -46,7 +46,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -72,7 +71,6 @@ import com.sun.tools.xjc.reader.xmlschema.bindinfo.BISerializable;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BindInfo;
 import com.sun.tools.xjc.util.CodeModelClassFactory;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
-import com.sun.xml.bind.DatatypeConverterImpl;
 import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSAttributeUse;
@@ -172,8 +170,6 @@ public class BGMBuilder extends BindingComponent {
         this.defaultPackage2 = defaultPackage2;
         this.fieldRendererFactory = fieldRendererFactory;
         this.activePlugins = activePlugins;
-
-        DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
 
         promoteGlobalBindings();
     }
@@ -485,16 +481,19 @@ public class BGMBuilder extends BindingComponent {
      * Returns true if the component should be processed by purple.
      */
     private final XSFinder toPurple = new XSFinder() {
+        @Override
         public Boolean attributeUse(XSAttributeUse use) {
             // attribute use always maps to a property
             return true;
         }
 
+        @Override
         public Boolean simpleType(XSSimpleType xsSimpleType) {
             // simple type always maps to a type, hence we should take purple
             return true;
         }
 
+        @Override
         public Boolean wildcard(XSWildcard xsWildcard) {
             // attribute wildcards always maps to a property.
             // element wildcards should have been processed with particle binders
