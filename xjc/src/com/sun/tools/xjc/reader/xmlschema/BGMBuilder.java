@@ -159,9 +159,6 @@ public class BGMBuilder extends BindingComponent {
 
     private List<Plugin> activePlugins;
 
-
-
-
     protected BGMBuilder(String defaultPackage1, String defaultPackage2,
             boolean _inExtensionMode, FieldRendererFactory fieldRendererFactory,
             List<Plugin> activePlugins) {
@@ -170,12 +167,8 @@ public class BGMBuilder extends BindingComponent {
         this.defaultPackage2 = defaultPackage2;
         this.fieldRendererFactory = fieldRendererFactory;
         this.activePlugins = activePlugins;
-
         promoteGlobalBindings();
     }
-
-
-
 
     private void _build() {
         // do the binding
