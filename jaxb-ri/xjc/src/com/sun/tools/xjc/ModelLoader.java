@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -42,7 +42,6 @@ package com.sun.tools.xjc;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.URL;
 
 import com.sun.codemodel.JCodeModel;
 import com.sun.tools.xjc.model.Model;
@@ -63,11 +62,11 @@ import com.sun.tools.xjc.reader.xmlschema.parser.IncorrectNamespaceURIChecker;
 import com.sun.tools.xjc.reader.xmlschema.parser.SchemaConstraintChecker;
 import com.sun.tools.xjc.reader.xmlschema.parser.XMLSchemaInternalizationLogic;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
-import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.xsom.XSSchemaSet;
 import com.sun.xml.xsom.parser.JAXPParser;
 import com.sun.xml.xsom.parser.XMLParser;
 import com.sun.xml.xsom.parser.XSOMParser;
+import javax.xml.XMLConstants;
 
 import org.kohsuke.rngom.ast.builder.SchemaBuilder;
 import org.kohsuke.rngom.ast.util.CheckingSchemaBuilder;
@@ -94,15 +93,15 @@ import org.xml.sax.helpers.XMLFilterImpl;
 
 /**
  * Builds a {@link Model} object.
- * 
+ *
  * This is an utility class that makes it easy to load a grammar object
  * from various sources.
- * 
+ *
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 public final class ModelLoader {
-    
+
     private final Options opt;
     private final ErrorReceiverFilter errorReceiver;
     private final JCodeModel codeModel;
@@ -111,15 +110,15 @@ public final class ModelLoader {
      */
     private SCDBasedBindingSet scdBasedBindingSet;
 
-    
+
     /**
      * A convenience method to load schemas into a {@link Model}.
      */
     public static Model load( Options opt, JCodeModel codeModel, ErrorReceiver er ) {
         return new ModelLoader(opt,codeModel,er).load();
     }
-    
-    
+
+
     public ModelLoader(Options _opt, JCodeModel _codeModel, ErrorReceiver er) {
         this.opt = _opt;
         this.codeModel = _codeModel;
@@ -131,8 +130,8 @@ public final class ModelLoader {
 
         if(!sanityCheck())
             return null;
-        
-        
+
+
         try {
             switch (opt.getSchemaLanguage()) {
             case DTD :
@@ -172,7 +171,7 @@ public final class ModelLoader {
             case XMLSCHEMA:
                 grammar = annotateXMLSchema( loadXMLSchema() );
                 break;
-            
+
             default :
                 throw new AssertionError(); // assertion failed
             }
@@ -214,7 +213,7 @@ public final class ModelLoader {
     private boolean sanityCheck() {
         if( opt.getSchemaLanguage()==Language.XMLSCHEMA ) {
             Language guess = opt.guessSchemaLanguage();
-            
+
             String[] msg = null;
             switch(guess) {
             case DTD:
@@ -242,7 +241,7 @@ public final class ModelLoader {
 
     /**
      * {@link XMLParser} implementation that adds additional processors into the chain.
-     * 
+     *
      * <p>
      * This parser will parse a DOM forest as:
      * DOMForestParser -->
@@ -252,15 +251,15 @@ public final class ModelLoader {
      */
     private class XMLSchemaParser implements XMLParser {
         private final XMLParser baseParser;
-        
+
         private XMLSchemaParser(XMLParser baseParser) {
             this.baseParser = baseParser;
         }
-        
+
         public void parse(InputSource source, ContentHandler handler,
             ErrorHandler errorHandler, EntityResolver entityResolver ) throws SAXException, IOException {
             // set up the chain of handlers.
-            handler = wrapBy( new ExtensionBindingChecker(WellKnownNamespace.XML_SCHEMA,opt,errorReceiver), handler );
+            handler = wrapBy( new ExtensionBindingChecker(XMLConstants.W3C_XML_SCHEMA_NS_URI,opt,errorReceiver), handler );
             handler = wrapBy( new IncorrectNamespaceURIChecker(errorReceiver), handler );
             handler = wrapBy( new CustomizationContextChecker(errorReceiver), handler );
 //          handler = wrapBy( new VersionChecker(controller), handler );
@@ -277,19 +276,15 @@ public final class ModelLoader {
             return filter;
         }
     }
-    
-
-
-
 
     private void checkTooManySchemaErrors() {
         if( opt.getGrammars().length!=1 )
             errorReceiver.error(null,Messages.format(Messages.ERR_TOO_MANY_SCHEMA));
     }
-    
+
     /**
      * Parses a DTD file into an annotated grammar.
-     * 
+     *
      * @param   source
      *      DTD file
      * @param   bindFile
@@ -311,22 +306,22 @@ public final class ModelLoader {
      * @throws SAXException
      *      when a fatal error happens
      */
-    public DOMForest buildDOMForest( InternalizationLogic logic ) 
+    public DOMForest buildDOMForest( InternalizationLogic logic )
         throws SAXException {
-    
+
         // parse into DOM forest
         DOMForest forest = new DOMForest(logic);
-        
+
         forest.setErrorHandler(errorReceiver);
         if(opt.entityResolver!=null)
         forest.setEntityResolver(opt.entityResolver);
-        
+
         // parse source grammars
         for (InputSource value : opt.getGrammars()) {
             errorReceiver.pollAbort();
             forest.parse(value, true);
         }
-        
+
         // parse external binding files
         for (InputSource value : opt.getBindFiles()) {
             errorReceiver.pollAbort();
@@ -380,37 +375,37 @@ public final class ModelLoader {
         DOMForest forest = buildDOMForest( new XMLSchemaInternalizationLogic() );
         return createXSOM(forest, scdBasedBindingSet);
     }
-    
+
     /**
      * Parses a set of schemas inside a WSDL file.
-     * 
+     *
      * A WSDL file may contain multiple &lt;xsd:schema> elements.
      */
     private XSSchemaSet loadWSDL()
         throws SAXException {
 
-        
+
         // build DOMForest just like we handle XML Schema
         DOMForest forest = buildDOMForest( new XMLSchemaInternalizationLogic() );
-        
+
         DOMForestScanner scanner = new DOMForestScanner(forest);
-        
+
         XSOMParser xsomParser = createXSOMParser( forest );
-        
+
         // find <xsd:schema>s and parse them individually
         for( InputSource grammar : opt.getGrammars() ) {
             Document wsdlDom = forest.get( grammar.getSystemId() );
 
-            NodeList schemas = wsdlDom.getElementsByTagNameNS(WellKnownNamespace.XML_SCHEMA,"schema");
+            NodeList schemas = wsdlDom.getElementsByTagNameNS(XMLConstants.W3C_XML_SCHEMA_NS_URI,"schema");
             for( int i=0; i<schemas.getLength(); i++ )
                 scanner.scan( (Element)schemas.item(i), xsomParser.getParserHandler() );
         }
         return xsomParser.getResult();
     }
-    
+
     /**
      * Annotates the obtained schema set.
-     * 
+     *
      * @return
      *      null if an error happens. In that case, the error messages
      *      will be properly reported to the controller by this method.
@@ -455,6 +450,7 @@ public final class ModelLoader {
     private static final class SpeculationFailure extends Error {}
 
     private static final class SpeculationChecker extends XMLFilterImpl {
+        @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
             if(localName.equals("bindings") && uri.equals(Const.JAXB_NSURI))
                 throw new SpeculationFailure();
@@ -481,14 +477,6 @@ public final class ModelLoader {
                 // set up the chain of handlers.
                 handler = wrapBy( new SpeculationChecker(), handler );
                 handler = wrapBy( new VersionChecker(null,errorReceiver,entityResolver), handler );
-
-                try {
-                    // CR 6965945; check url before trying to parse it
-                    new URL(source.getSystemId()).openStream().read();
-                } catch (Exception e) {
-                    errorHandler.warning(new SAXParseException("Failed to process " + source.getSystemId() + ": " + e, null, e));
-                    return;
-                }
 
                 base.parse( source, handler, errorHandler, entityResolver );
             }
@@ -526,8 +514,9 @@ public final class ModelLoader {
         for (String systemId : forest.getRootDocuments()) {
             errorReceiver.pollAbort();
             Document dom = forest.get(systemId);
-            if (!dom.getDocumentElement().getNamespaceURI().equals(Const.JAXB_NSURI))
+            if (!dom.getDocumentElement().getNamespaceURI().equals(Const.JAXB_NSURI)) {
                 reader.parse(systemId);
+            }
         }
 
         XSSchemaSet result = reader.getResult();
@@ -537,7 +526,7 @@ public final class ModelLoader {
 
         return result;
     }
-    
+
     /**
      * Parses a RELAX NG grammar into an annotated grammar.
      */
@@ -555,6 +544,7 @@ public final class ModelLoader {
                 // foreset parser cannot change the receivers while it's working,
                 // so we need to have one XMLFilter that works as a buffer
                 XMLFilter buffer = new XMLFilterImpl() {
+                    @Override
                     public void parse(InputSource source) throws IOException, SAXException {
                         forest.createParser().parse( source, this, this, this );
                     }
