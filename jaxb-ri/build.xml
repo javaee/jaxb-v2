@@ -574,7 +574,7 @@ Class-Path: ${manifest.classpath}
     <target name="integrate-api" description="Integrate JAXB 2.2 API from Hudson">
         <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/dist/jaxb-api.jar"
              dest="tools/lib/redist/jaxb-api.jar" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/dist/jaxb-api-full-src.zip"
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/dist/jaxb-api-src.zip"
              dest="tools/lib/redist/jaxb-api-src.zip" />
         <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/dist/jaxb-api-doc.zip"
              dest="tools/lib/redist/jaxb-api-doc.zip" />
@@ -934,20 +934,8 @@ Class-Path: ${manifest.classpath}
         <copy file="${maven.repo.local}/${resolver-comsun.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/resolver.jar"/>
 
         <echo message="building jaxb-api"/>
-        <unzip src="tools/lib/redist/jaxb-api-src.zip" dest="${external.dir}/jaxb-api"/>
-        <delete>
-            <fileset dir="${external.dir}/jaxb-api" includes="**/*.jar"/>
-        </delete>
-        <mkdir dir="${external.dir}/jaxb-api/lib/"/>
-        <copy file="${maven.repo.local}/${activation.mvn.path}" tofile="${external.dir}/jaxb-api/lib/activation.jar"/>
-        <copy file="${maven.repo.local}/${jsr173api.mvn.path}" tofile="${external.dir}/jaxb-api/lib/jsr173_1.0_api.jar"/>
-        <exec executable="ant" dir="${external.dir}/jaxb-api" failonerror="true" newenvironment="true" >
-            <arg line="-Djavac.target=1.5"/>
-            <arg line="-Djavac.source=1.5"/>
-            <arg line="dist"/>
-            <env key="JAVA_HOME" value="${JDK_1.5}" />
-        </exec>
-        <mvn.publish.local jar="${external.dir}/jaxb-api/dist/jaxb-api.jar" mvngroup="javax.xml.bind" mvnartid="jaxb-api" mvnversion="${jaxb-api.version}"/>
+        <build.jar.from.srczip jar="${external.dir}/jaxb-api/jaxb-api.jar" srczip="tools/lib/redist/jaxb-api-src.zip" unzipdir="${external.dir}" srcdir="jaxb-api" cp="${maven.repo.local}/${activation.mvn.path}:${maven.repo.local}/${jsr173api.mvn.path}"/>
+        <mvn.publish.local jar="${external.dir}/jaxb-api/jaxb-api.jar" mvngroup="javax.xml.bind" mvnartid="jaxb-api" mvnversion="${jaxb-api.version}"/>
         <copy file="${maven.repo.local}/${jaxb-api.mvn.path}" tofile="${jaxb.root}/tools/lib/redist/jaxb-api.jar"/>
 
         <exec executable="ant" dir="${jaxb.root}" failonerror="true" newenvironment="false" >
