@@ -556,13 +556,6 @@ Class-Path: ${manifest.classpath}
       <delete dir="${xjc10.classes}/META-INF/MANIFEST.MF"/>
     </target>
 
-    <target name="integrate-fi">
-      <get src="http://hudson.sfbay/job/fi-1.2/lastSuccessfulBuild/artifact/fi/FastInfoset/dist/FastInfoset.jar"
-           dest="tools/lib/util/FastInfoset.jar" />
-      <get src="http://hudson.sfbay/job/fi-1.2/lastSuccessfulBuild/artifact/fi/FastInfoset/dist/fastinfoset-src.zip"
-           dest="tools/lib/src/fi-src.zip" />
-    </target>
-
     <target name="integrate-dtdparser">
       <get src="http://hudson.sfbay/job/dtd-parser/lastSuccessfulBuild/artifact/dtd-parser/dtd-parser/target/distributions/dtd-parser-1.0.zip"
            dest="tools/lib/rebundle/compiler/dtd-parser-1.0.jar" />
@@ -640,6 +633,21 @@ Class-Path: ${manifest.classpath}
     </target>
 
 <!-- mavenized projects -->
+
+    <target name="integrate-fi">
+      <get src="http://hudson-sca.us.oracle.com/job/fi-1.2/lastSuccessfulBuild/artifact/code/fastinfoset/target/FastInfoset-${fi.version}.jar"
+           dest="tools/lib/util/FastInfoset.jar" />
+      <get src="http://hudson-sca.us.oracle.com/job/fi-1.2/lastSuccessfulBuild/artifact/code/fastinfoset/target/FastInfoset-${fi.version}-sources.jar"
+           dest="tools/lib/src/fi-sources.jar" />
+    </target>
+
+    <target name="integrate-fi-maven">
+      <get src="http://download.java.net/maven/2/com/sun/xml/fastinfoset/FastInfoset/${fi.version}/FastInfoset-${fi.version}.jar"
+           dest="tools/lib/util/FastInfoset.jar" />
+      <get src="http://download.java.net/maven/2/com/sun/xml/fastinfoset/FastInfoset/${fi.version}/FastInfoset-${fi.version}-sources.jar"
+           dest="tools/lib/src/fi-sources.jar" />
+    </target>
+
     <target name="integrate-xsom">
         <get src="http://sysifos-sol.czech.sun.com/hudson/job/xsom/lastSuccessfulBuild/artifact/target/xsom-${xsom.version}.jar"
              dest="tools/lib/rebundle/compiler/xsom.jar" />
@@ -933,19 +941,8 @@ Class-Path: ${manifest.classpath}
         <copy file="${maven.repo.local}/${txwc2.mvn.path}" tofile="${jaxb.root}/tools/lib/util/txwc2.jar"/>
 
         <echo message="building fi"/>
-        <mkdir dir="${external.dir}/fi"/>
-        <unzip src="tools/lib/src/fi-src.zip" dest="${external.dir}/fi/${fi.version}"/>
-        <delete>
-            <fileset dir="${external.dir}/fi/${fi.version}" includes="**/*.jar"/>
-        </delete>
-        <copy file="${maven.repo.local}/${jsr173api.mvn.path}" tofile="${external.dir}/fi/${fi.version}/lib/jsr173_api.jar"/>
-        <exec executable="ant" dir="${external.dir}/fi/${fi.version}" failonerror="true" newenvironment="true" >
-            <arg line="-Djavac.target=1.5"/>
-            <arg line="-Djavac.source=1.5"/>
-            <arg line="jar"/>
-            <env key="JAVA_HOME" value="${JDK_1.5}" />
-        </exec>
-        <mvn.publish.local jar="${external.dir}/fi/${fi.version}/dist/FastInfoset.jar" mvngroup="com.sun.xml.fastinfoset" mvnartid="FastInfoset" mvnversion="${fi.version}"/>
+        <build.jar.from.srczip jar="${external.dir}/fi/${fi.version}/fi.jar" srczip="tools/lib/src/fi-sources.jar" unzipdir="${external.dir}" srcdir="fi/${fi.version}"/>
+        <mvn.publish.local jar="${external.dir}/fi/${fi.version}/fi.jar" mvngroup="com.sun.xml.fastinfoset" mvnartid="FastInfoset" mvnversion="${fi.version}"/>
         <copy file="${maven.repo.local}/${fi.mvn.path}" tofile="${jaxb.root}/tools/lib/util/FastInfoset.jar"/>
 
         <echo message="building resolver-comsun"/>
