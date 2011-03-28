@@ -331,7 +331,7 @@ Class-Path: ${manifest.classpath}
             <fileset dir="${runtime-fi.src}"/>
             <fileset dir="${runtime-staxex.src}"/>
             <fileset dir="${runtime.root}/build/src" />
-            <zipfileset src="${jaxb.libs}/src/txw2-src.zip" />
+            <zipfileset src="${jaxb.libs}/src/txw2-sources.jar" />
             <zipfileset src="${jaxb.libs}/src/istack-commons-runtime-sources.jar"/>
           </zip>
         </sequential>
@@ -585,15 +585,6 @@ Class-Path: ${manifest.classpath}
              dest="tools/lib/util/maven-repository-importer.jar" />
     </target>
 
-    <target name="integrate-txw2">
-        <get src="http://hudson.sfbay/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2.jar"
-             dest="tools/lib/rebundle/runtime2/txw2.jar" />
-        <get src="http://hudson.sfbay/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txwc2.jar"
-             dest="tools/lib/util/txwc2.jar" />
-        <get src="http://hudson.sfbay/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2-full-src.zip"
-             dest="tools/lib/src/txw2-src.zip" />
-    </target>
-
     <target name="integrate-rngom">
         <get src="http://hudson.sfbay/job/rngom/lastSuccessfulBuild/artifact/rngom/rngom/build/rngom.jar"
              dest="tools/lib/rebundle/compiler/rngom.jar" />
@@ -633,6 +624,28 @@ Class-Path: ${manifest.classpath}
     </target>
 
 <!-- mavenized projects -->
+
+    <target name="integrate-txw2">
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/txw2/lastSuccessfulBuild/artifact/txw2/runtime/target/txw2-${txw2.version}.jar"
+             dest="tools/lib/rebundle/runtime2/txw2.jar" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/txw2/lastSuccessfulBuild/artifact/txw2/compiler/target/txwc2-${txw2.version}.jar"
+             dest="tools/lib/util/txwc2.jar" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/txw2/lastSuccessfulBuild/artifact/txw2/runtime/target/txw2-${txw2.version}-sources.jar"
+             dest="tools/lib/src/txw2-sources.jar" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/txw2/lastSuccessfulBuild/artifact/txw2/compiler/target/txwc2-${txw2.version}-sources.jar"
+             dest="tools/lib/util/txwc2-sources.jar" />
+    </target>
+
+    <target name="integrate-txw2-maven">
+        <get src="http://download.java.net/maven/2/com/sun/xml/txw2/txw2/${txw2.version}/txw2-${txw2.version}.jar"
+             dest="tools/lib/rebundle/runtime2/txw2.jar" />
+        <get src="http://download.java.net/maven/2/com/sun/xml/txw2/txwc2/${txw2.version}/txwc2-${txw2.version}.jar"
+             dest="tools/lib/util/txwc2.jar" />
+        <get src="http://download.java.net/maven/2/com/sun/xml/txw2/txw2/${txw2.version}/txw2-${txw2.version}-sources.jar"
+             dest="tools/lib/src/txw2-sources.jar" />
+        <get src="http://download.java.net/maven/2/com/sun/xml/txw2/txwc2/${txw2.version}/txwc2-${txw2.version}-sources.jar"
+             dest="tools/lib/util/txwc2-sources.jar" />
+    </target>
 
     <target name="integrate-fi">
       <get src="http://hudson-sca.us.oracle.com/job/fi-1.2/lastSuccessfulBuild/artifact/code/fastinfoset/target/FastInfoset-${fi.version}.jar"
@@ -690,7 +703,7 @@ Class-Path: ${manifest.classpath}
         <get src="${istack.commons.runtime}/istack-commons-runtime-${istack-commons.version}-sources.jar" dest="tools/lib/src/istack-commons-runtime-sources.jar" />
 
         <get src="${istack.commons.test}/istack-commons-test-${istack-commons.version}.jar" dest="tools/lib/util/istack-commons-test.jar" />
-        <get src="${istack.commons.test}/istack-commons-test-${istack-commons.version}-sources.jar" dest="tools/lib/util/istack-commons-test-sources.zip" />
+        <get src="${istack.commons.test}/istack-commons-test-${istack-commons.version}-sources.jar" dest="tools/lib/util/istack-commons-test-sources.jar" />
     </target>
 
     <target name="integrate-istack-commons-maven">
@@ -766,30 +779,13 @@ Class-Path: ${manifest.classpath}
         <copy file="${maven.repo.local}/${stax-ex.mvn.path}" tofile="${jaxb.root}/tools/lib/util/stax-ex.jar"/>
 
         <echo message="building relaxng-datatype"/>
-        <unzip src="tools/lib/src/relaxngDatatype-src.zip" dest="${external.dir}/rng-datatype"/>
-        <delete>
-            <fileset dir="${external.dir}/rng-datatype/relaxng-datatype/" includes="**/*.jar"/>
-        </delete>
-        <exec executable="ant" dir="${external.dir}/rng-datatype/relaxng-datatype/java" failonerror="true" newenvironment="true" >
-            <arg line="-Djavac.target=1.5"/>
-            <arg line="-Djavac.source=1.5"/>
-            <arg line="release"/>
-            <env key="JAVA_HOME" value="${JDK_1.5}" />
-        </exec>
-        <mvn.publish.local jar="${external.dir}/rng-datatype/relaxng-datatype/java/relaxngDatatype.jar" mvngroup="com.sun.xml" mvnartid="relaxngDatatype" mvnversion="${relaxng-datatype.version}"/>
+        <build.jar.from.srczip jar="${external.dir}/rng-datatype/relaxngDatatype.jar" srczip="tools/lib/src/relaxngDatatype-src.zip" unzipdir="${external.dir}" srcdir="rng-datatype"/>
+        <mvn.publish.local jar="${external.dir}/rng-datatype/relaxngDatatype.jar" mvngroup="com.sun.xml" mvnartid="relaxngDatatype" mvnversion="${relaxng-datatype.version}"/>
         <copy file="${maven.repo.local}/${relaxng-datatype.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/relaxngDatatype.jar"/>
 
         <echo message="building resolver"/>
-        <unzip src="tools/lib/util/resolver-src.zip" dest="${external.dir}"/>
-        <delete>
-            <fileset dir="${external.dir}/resolver" includes="**/*.jar"/>
-        </delete>
-        <exec executable="ant" dir="${external.dir}/resolver/java" failonerror="true" newenvironment="true" >
-            <arg line="-f resolver.xml" />
-            <arg line="jar" />
-            <env key="JAVA_HOME" value="${JDK_1.5}" />
-        </exec>
-        <mvn.publish.local jar="${external.dir}/resolver/java/build/resolver.jar" mvngroup="xml-resolver" mvnartid="xml-resolver" mvnversion="${resolver.version}"/>
+        <build.jar.from.srczip jar="${external.dir}/resolver/resolver.jar" srczip="tools/lib/util/resolver-src.zip" unzipdir="${external.dir}" srcdir="resolver"/>
+        <mvn.publish.local jar="${external.dir}/resolver/resolver.jar" mvngroup="xml-resolver" mvnartid="xml-resolver" mvnversion="${resolver.version}"/>
 
         <echo message="building javacc"/>
         <unzip src="tools/lib/util/javacc-src.zip" dest="${external.dir}"/>
@@ -918,26 +914,13 @@ Class-Path: ${manifest.classpath}
         <copy file="${maven.repo.local}/${xsom.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/xsom.jar"/>
 
         <echo message="building txw2"/>
-        <unzip src="tools/lib/src/txw2-src.zip" dest="${external.dir}/txw2"/>
-        <delete>
-            <fileset dir="${external.dir}/txw2" includes="**/*.jar"/>
-        </delete>
-        <copy file="${maven.repo.local}/${jsr173api.mvn.path}" tofile="${external.dir}/txw2/lib/runtime/jsr173_1.0_api.jar"/>
-        <copy file="${maven.repo.local}/${codemodel.mvn.path}" tofile="${external.dir}/txw2/lib/compiler/codemodel.jar"/>
-        <copy file="${maven.repo.local}/${args4j.mvn.path}" tofile="${external.dir}/txw2/lib/compiler/args4j-1.0-RC.jar"/>
-        <copy file="${maven.repo.local}/${rngom.mvn.path}" tofile="${external.dir}/txw2/lib/compiler/rngom.jar"/>
-        <copy file="${maven.repo.local}/${xsom.mvn.path}" tofile="${external.dir}/txw2/lib/compiler/xsom.jar"/>
-        <copy file="${maven.repo.local}/${relaxng-datatype.mvn.path}" tofile="${external.dir}/txw2/lib/compiler/relaxng-datatype.jar"/>
-        <exec executable="ant" dir="${external.dir}/txw2" failonerror="true" newenvironment="true" >
-            <arg line="-Djavac.target=1.5"/>
-            <arg line="-Djavac.source=1.5"/>
-            <arg line="-Dfrom.source=true"/>
-            <arg line="jar"/>
-            <env key="JAVA_HOME" value="${JDK_1.5}" />
-        </exec>
-        <mvn.publish.local jar="${external.dir}/txw2/build/txw2.jar" mvngroup="com.sun.xml.txw2" mvnartid="txw2" mvnversion="${txw2.version}"/>
-        <mvn.publish.local jar="${external.dir}/txw2/build/txwc2.jar" mvngroup="com.sun.xml.txw2" mvnartid="txwc2" mvnversion="${txw2.version}"/>
+        <build.jar.from.srczip jar="${external.dir}/txw2/txw2.jar" srczip="tools/lib/src/txw2-sources.jar" unzipdir="${external.dir}" srcdir="txw2"/>
+        <mvn.publish.local jar="${external.dir}/txw2/txw2.jar" mvngroup="com.sun.xml.txw2" mvnartid="txw2" mvnversion="${txw2.version}"/>
         <copy file="${maven.repo.local}/${txw2.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/runtime2/txw2.jar"/>
+
+        <echo message="building txwc2"/>
+        <build.jar.from.srczip jar="${external.dir}/txwc2/txwc2.jar" srczip="tools/lib/util/txwc2-sources.jar" unzipdir="${external.dir}" srcdir="txwc2" cp="${maven.repo.local}/${rngom.mvn.path}:${maven.repo.local}/${codemodel.mvn.path}"/>
+        <mvn.publish.local jar="${external.dir}/txwc2/txwc2.jar" mvngroup="com.sun.xml.txw2" mvnartid="txwc2" mvnversion="${txw2.version}"/>
         <copy file="${maven.repo.local}/${txwc2.mvn.path}" tofile="${jaxb.root}/tools/lib/util/txwc2.jar"/>
 
         <echo message="building fi"/>
@@ -946,14 +929,7 @@ Class-Path: ${manifest.classpath}
         <copy file="${maven.repo.local}/${fi.mvn.path}" tofile="${jaxb.root}/tools/lib/util/FastInfoset.jar"/>
 
         <echo message="building resolver-comsun"/>
-        <unzip src="tools/lib/src/resolver-comsun-src.zip" dest="${external.dir}"/>
-        <delete>
-            <fileset dir="${external.dir}/resolver-comsun" includes="**/*.jar"/>
-        </delete>
-        <subant buildpath="${external.dir}/resolver-comsun" target="dist">
-            <property name="javac.source" value="1.5"/>
-            <property name="javac.target" value="1.5"/>
-        </subant>
+        <build.jar.from.srczip jar="${external.dir}/resolver-comsun/resolver.jar" srczip="tools/lib/src/resolver-comsun-src.zip" unzipdir="${external.dir}" srcdir="resolver-comsun"/>
         <mvn.publish.local jar="${external.dir}/resolver-comsun/resolver.jar" mvngroup="xml-resolver" mvnartid="xml-resolver-comsun" mvnversion="${resolver-comsun.version}"/>
         <copy file="${maven.repo.local}/${resolver-comsun.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/resolver.jar"/>
 
