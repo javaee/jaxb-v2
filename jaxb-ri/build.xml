@@ -866,6 +866,24 @@ Class-Path: ${manifest.classpath}
         </exec>
         <copy file="${maven.repo.local}/${args4j.mvn.path}" tofile="${jaxb.root}/tools/lib/util/args4j.jar"/>
 
+        <echo message="building relaxngcc"/>
+        <unzip src="tools/lib/util/relaxngcc-src.zip" dest="${external.dir}"/>
+        <delete>
+            <fileset dir="${external.dir}/relaxngcc" includes="**/*.jar"/>
+        </delete>
+        <copy file="${maven.repo.local}/${javacc.mvn.path}" tofile="${external.dir}/relaxngcc/lib/javacc.jar"/>
+        <copy file="${maven.repo.local}/${relaxng-datatype.mvn.path}" tofile="${external.dir}/relaxngcc/lib/relaxng-datatype.jar"/>
+        <copy file="${maven.repo.local}/${xsdlib.mvn.path}" tofile="${external.dir}/relaxngcc/lib/xsdlib.jar"/>
+        <copy file="${maven.repo.local}/${isorelax.mvn.path}" tofile="${external.dir}/relaxngcc/lib/isorelax.jar"/>
+        <copy file="${maven.repo.local}/${msv.mvn.path}" tofile="${external.dir}/relaxngcc/lib/msv.jar"/>
+        <subant buildpath="${external.dir}/relaxngcc" target="jar">
+            <property name="javac.source" value="1.4"/>
+            <property name="javac.target" value="1.5"/>
+            <property name="cpath.fromsource" value="lib/relaxng-datatype.jar:lib/xsdlib.jar:lib/isorelax.jar:lib/msv.jar"/>
+        </subant>
+        <mvn.publish.local jar="${external.dir}/relaxngcc/relaxngcc.jar" mvngroup="com.sun.xml" mvnartid="relaxngcc" mvnversion="${relaxngcc.version}"/>
+        <copy file="${maven.repo.local}/${relaxngcc.mvn.path}" tofile="${jaxb.root}/tools/lib/util/relaxngcc.jar"/>
+
         <echo message="building rngom"/>
         <unzip src="tools/lib/src/rngom-src.zip" dest="${external.dir}/rngom"/>
         <delete>
@@ -885,24 +903,6 @@ Class-Path: ${manifest.classpath}
         </exec>
         <mvn.publish.local jar="${external.dir}/rngom/build/rngom.jar" mvngroup="org.kohsuke.rngom" mvnartid="rngom" mvnversion="${rngom.version}"/>
         <copy file="${maven.repo.local}/${rngom.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/rngom.jar"/>
-
-        <echo message="building relaxngcc"/>
-        <unzip src="tools/lib/util/relaxngcc-src.zip" dest="${external.dir}"/>
-        <delete>
-            <fileset dir="${external.dir}/relaxngcc" includes="**/*.jar"/>
-        </delete>
-        <copy file="${maven.repo.local}/${javacc.mvn.path}" tofile="${external.dir}/relaxngcc/lib/javacc.jar"/>
-        <copy file="${maven.repo.local}/${relaxng-datatype.mvn.path}" tofile="${external.dir}/relaxngcc/lib/relaxng-datatype.jar"/>
-        <copy file="${maven.repo.local}/${xsdlib.mvn.path}" tofile="${external.dir}/relaxngcc/lib/xsdlib.jar"/>
-        <copy file="${maven.repo.local}/${isorelax.mvn.path}" tofile="${external.dir}/relaxngcc/lib/isorelax.jar"/>
-        <copy file="${maven.repo.local}/${msv.mvn.path}" tofile="${external.dir}/relaxngcc/lib/msv.jar"/>
-        <subant buildpath="${external.dir}/relaxngcc" target="jar">
-            <property name="javac.source" value="1.4"/>
-            <property name="javac.target" value="1.5"/>
-            <property name="cpath.fromsource" value="lib/relaxng-datatype.jar:lib/xsdlib.jar:lib/isorelax.jar:lib/msv.jar"/>
-        </subant>
-        <mvn.publish.local jar="${external.dir}/relaxngcc/relaxngcc.jar" mvngroup="com.sun.xml" mvnartid="relaxngcc" mvnversion="${relaxngcc.version}"/>
-        <copy file="${maven.repo.local}/${relaxngcc.mvn.path}" tofile="${jaxb.root}/tools/lib/util/relaxngcc.jar"/>
 
         <echo message="building xsom"/>
         <build.jar.from.srczip jar="${external.dir}/xsom/xsom.jar" srczip="tools/lib/src/xsom-sources.jar" unzipdir="${external.dir}" srcdir="xsom"/>

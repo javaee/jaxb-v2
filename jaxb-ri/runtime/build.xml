@@ -155,7 +155,7 @@
       <property name="jaxb-api.path" value="${jaxb.libs.redist}/jaxb-api.jar"/>
       <mkdir dir="${runtime.root}/build/src"/>
       <apgen destdir="${runtime.root}/build/src"
-        package="com.sun.xml.bind.v2.model.annotation">
+        package="com.sun.xml.bind.v2.model.annotation" licence="../licenceheader.txt">
         <classes includes="javax.xml.bind.annotation.XmlAttribute" />
         <classes includes="javax.xml.bind.annotation.XmlElement" />
         <classes includes="javax.xml.bind.annotation.XmlElementDecl" />
@@ -181,11 +181,24 @@
       <taskdef name="txwc" classname="com.sun.tools.txw2.TxwTask">
         <classpath refid="txw.classpath"/>
       </taskdef>
+
+      <taskdef name="licence" classname="com.sun.tools.LicenceTask">
+        <classpath>
+          <pathelement path="${apgen.classes}" />
+          <pathelement path="${jaxb.libs.compiler}/istack-commons-tools.jar"/>
+          <pathelement path="${jaxb.libs.compiler}/codemodel.jar" />
+        </classpath>
+      </taskdef>
+
       <mkdir dir="${runtime.root}/build/src" />
       <txwc schema="${runtime.src}/com/sun/xml/bind/v2/schemagen/xmlschema/xmlschema-for-jaxb.rng"
         destdir="${runtime.root}/build/src"
         package="com.sun.xml.bind.v2.schemagen.xmlschema"
         methodChaining="true"/>
+
+      <licence licence="../licenceheader.txt">
+        <fileset dir="${runtime.root}/build/src" includes="com/sun/xml/bind/v2/schemagen/xmlschema/*.java"/>
+      </licence>
     </target>
 
     <target name="codegen" depends="generate-array-listers,generate-annotation-proxies,txwc"
