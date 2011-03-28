@@ -76,6 +76,14 @@
 
     <target name="init">
         <ant dir="${jaxb.root}/tools/source-tidy" target="compile" />
+
+      <taskdef name="licence" classname="com.sun.tools.LicenceTask">
+        <classpath>
+          <pathelement path="${apgen.classes}" />
+          <pathelement path="${jaxb.libs.compiler}/istack-commons-tools.jar"/>
+          <pathelement path="${jaxb.libs.compiler}/codemodel.jar" />
+        </classpath>
+      </taskdef>
     </target>
 
     <!-- check if RelaxNGCC needs to be run -->
@@ -87,7 +95,7 @@
         </uptodate>
       </condition>
     </target>
-    
+
     <!-- run RELAXNGCC -->
     <target name="ngcc" 
             unless="ngcc.notrequired" 
@@ -110,10 +118,18 @@
         <!-- source file -->
         <arg path="${xjc.src}/com/sun/tools/jxc/gen/config/config.rng"/>
       </java>
+      <licence licence="../licenceheader.txt">
+        <fileset dir="${xjc.gensrc}" includes="com/sun/tools/jxc/**/*.java"/>
+      </licence>
     </target>
 
-  <target name="annotation-writers"
-          description="generate CodeModel typed annotation writers">
+  <target name="annotation-writers-check">
+      <available property="writers.not.required" file="${xjc.gensrc}/com/sun/tools/xjc/generator/annotation/ri/OverrideAnnotationOfWriter.java"/>
+  </target>
+  
+  <target name="annotation-writers" depends="annotation-writers-check"
+          description="generate CodeModel typed annotation writers"
+          unless="writers.not.required">
      <taskdef name="cac" classname="com.sun.codemodel.ac.ACTask">
        <classpath>
          <pathelement path="${jaxb.libs.compiler}/codemodel.jar" />
@@ -141,8 +157,12 @@
          <pathelement path="${runtime.classes}"/>
        </classpath>
      </cac>
+      <licence licence="../licenceheader.txt">
+        <fileset dir="${xjc.gensrc}" includes="com/sun/tools/xjc/generator/annotation/ri/*.java"/>
+        <fileset dir="${xjc.gensrc}" includes="com/sun/tools/xjc/generator/annotation/spec/*.java"/>
+      </licence>
   </target>
-
+    
      <!-- compile Java source files -->
     <target name="compile"
             depends="init, ngcc, annotation-writers"

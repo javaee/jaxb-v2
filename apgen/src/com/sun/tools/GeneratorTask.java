@@ -37,9 +37,9 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
 package com.sun.tools;
 
+import com.sun.codemodel.CodeWriter;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
@@ -55,6 +55,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -67,9 +69,12 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JArray;
+import com.sun.codemodel.writer.FileCodeWriter;
 import com.sun.istack.tools.MaskingClassLoader;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.annotation.Quick;
+import java.io.FileReader;
+import java.io.LineNumberReader;
 import java.net.URL;
 import java.net.URLClassLoader;
 
@@ -94,6 +99,9 @@ public class GeneratorTask extends Task {
     private final Path classpath;
     private final List<Pattern> patterns = new ArrayList<Pattern>();
     private final List<URL> endorsedJars = new ArrayList<URL>();
+    
+    private File licence = null;
+    
     /**
      * Used during the build to load annotation classes.
      */
@@ -213,6 +221,10 @@ public class GeneratorTask extends Task {
         classpath = new Path(null);
     }
 
+    public void setLicence(File licence) {
+        this.licence = licence;
+    }
+    
     @Override
     public void setProject(Project project) {
         super.setProject(project);
@@ -364,19 +376,55 @@ public class GeneratorTask extends Task {
                 throw new BuildException(e);
             }
 
+            CodeWriter fcw = new FileCodeWriter(output);
+            if (licence != null) {
+                String licenceHeader = null;
+                LineNumberReader lnr = null;
+                FileReader fr = null;
+                try {
 
-            try {
-                codeModel.build(output);
-            } catch (IOException e) {
-                throw new BuildException("Unable to queue code to " + output, e);
-            }
+                    fr = new FileReader(licence);
+                    lnr = new LineNumberReader(fr);
+
+                    licenceHeader = lnr.readLine();
+                    do {
+                        licenceHeader += "\n";
+                        String line = lnr.readLine();
+                        if (line == null) {
+                            break;
+                        } else {
+                            licenceHeader += line;
+                        }
+                    } while (true);
+                } catch (IOException ex) {
+                    if (lnr != null) {
+                        try {
+                            lnr.close();
+                        } catch (IOException ex1) {
+                            Logger.getLogger(GeneratorTask.class.getName()).log(Level.SEVERE, null, ex1);
+                        }
+                    }
+                    if (fr != null) {
+                        try {
+                            fr.close();
+                        } catch (IOException ex1) {
+                            Logger.getLogger(GeneratorTask.class.getName()).log(Level.SEVERE, null, ex1);
+                        }
+                    }
+                    Logger.getLogger(GeneratorTask.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                fcw = new LicenceCodeWriter(fcw, licenceHeader);
+            } 
+            codeModel.build(fcw);
+        } catch (IOException ex) {
+            Logger.getLogger(GeneratorTask.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             userLoader = null;
         }
     }
 
     /**
-     * Visits a jar fil and looks for classes that match the specified pattern.
+     * Visits a jar file and looks for classes that match the specified pattern.
      */
     private void processJar(File jarfile) {
         try {
