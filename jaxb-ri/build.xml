@@ -919,7 +919,7 @@ Class-Path: ${manifest.classpath}
         <copy file="${maven.repo.local}/${txw2.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/runtime2/txw2.jar"/>
 
         <echo message="building txwc2"/>
-        <build.jar.from.srczip jar="${external.dir}/txwc2/txwc2.jar" srczip="tools/lib/util/txwc2-sources.jar" unzipdir="${external.dir}" srcdir="txwc2" cp="${maven.repo.local}/${rngom.mvn.path}:${maven.repo.local}/${codemodel.mvn.path}"/>
+        <build.jar.from.srczip jar="${external.dir}/txwc2/txwc2.jar" srczip="tools/lib/util/txwc2-sources.jar" unzipdir="${external.dir}" srcdir="txwc2" cp="${maven.repo.local}/${rngom.mvn.path}:${maven.repo.local}/${codemodel.mvn.path}:${maven.repo.local}/${xsom.mvn.path}"/>
         <mvn.publish.local jar="${external.dir}/txwc2/txwc2.jar" mvngroup="com.sun.xml.txw2" mvnartid="txwc2" mvnversion="${txw2.version}"/>
         <copy file="${maven.repo.local}/${txwc2.mvn.path}" tofile="${jaxb.root}/tools/lib/util/txwc2.jar"/>
 
