@@ -155,7 +155,7 @@
       <property name="jaxb-api.path" value="${jaxb.libs.redist}/jaxb-api.jar"/>
       <mkdir dir="${runtime.root}/build/src"/>
       <apgen destdir="${runtime.root}/build/src"
-        package="com.sun.xml.bind.v2.model.annotation" licence="../licenceheader.txt">
+        package="com.sun.xml.bind.v2.model.annotation" licence="${jaxb.root}/licenceheader.txt">
         <classes includes="javax.xml.bind.annotation.XmlAttribute" />
         <classes includes="javax.xml.bind.annotation.XmlElement" />
         <classes includes="javax.xml.bind.annotation.XmlElementDecl" />
@@ -196,7 +196,7 @@
         package="com.sun.xml.bind.v2.schemagen.xmlschema"
         methodChaining="true"/>
 
-      <licence licence="../licenceheader.txt">
+      <licence licence="${jaxb.root}/licenceheader.txt">
         <fileset dir="${runtime.root}/build/src" includes="com/sun/xml/bind/v2/schemagen/xmlschema/*.java"/>
       </licence>
     </target>

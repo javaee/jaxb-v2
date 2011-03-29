@@ -353,12 +353,12 @@ Class-Path: ${manifest.classpath}
           </replace>
           <unjar src="${jaxb.libs}/src/dtd-parser-src.zip" dest="tmp" />
           <zip zipfile="${jaxb.dist}/lib/jaxb-xjc.src.zip">
-            <fileset dir="tmp_xjc"/>
+            <fileset dir="tmp_xjc" excludes="purify.xsl"/>
             <fileset dir="${xjc.gensrc}"/>
             <fileset dir="${xjc.root}/facade"/>
             <zipfileset src="${jaxb.libs}/src/codemodel-sources.jar" />
             <zipfileset src="${jaxb.libs}/src/resolver-comsun-src.zip" />
-            <zipfileset src="${jaxb.libs}/src/xsom-sources.jar" />
+            <zipfileset src="${jaxb.libs}/src/xsom-sources.jar" excludes="*.rng"/>
             <zipfileset src="${jaxb.libs}/src/relaxngDatatype-src.zip" />
             <zipfileset src="${jaxb.libs}/src/rngom-sources.jar" />
             <fileset dir="tmp/dtd-parser/src"/>

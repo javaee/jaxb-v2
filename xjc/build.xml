@@ -118,7 +118,7 @@
         <!-- source file -->
         <arg path="${xjc.src}/com/sun/tools/jxc/gen/config/config.rng"/>
       </java>
-      <licence licence="../licenceheader.txt">
+      <licence licence="${jaxb.root}/licenceheader.txt">
         <fileset dir="${xjc.gensrc}" includes="com/sun/tools/jxc/**/*.java"/>
       </licence>
     </target>
@@ -157,7 +157,7 @@
          <pathelement path="${runtime.classes}"/>
        </classpath>
      </cac>
-      <licence licence="../licenceheader.txt">
+      <licence licence="${jaxb.root}/licenceheader.txt">
         <fileset dir="${xjc.gensrc}" includes="com/sun/tools/xjc/generator/annotation/ri/*.java"/>
         <fileset dir="${xjc.gensrc}" includes="com/sun/tools/xjc/generator/annotation/spec/*.java"/>
       </licence>
