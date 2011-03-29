@@ -93,9 +93,8 @@ public class LicenceTask extends Task {
             DirectoryScanner ds = fset.getDirectoryScanner(project);
             File dir = ds.getBasedir();
             String[] filesInSet = ds.getIncludedFiles();
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + dir);
             for (String filename : filesInSet) {
-                System.out.println(filename);
+                System.out.println("applying licence header on: " + filename);
                 File file = new File(dir,filename);
 
                 String licenceHeader = readFile(licence);
