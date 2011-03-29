@@ -360,7 +360,7 @@ Class-Path: ${manifest.classpath}
             <zipfileset src="${jaxb.libs}/src/resolver-comsun-src.zip" />
             <zipfileset src="${jaxb.libs}/src/xsom-sources.jar" />
             <zipfileset src="${jaxb.libs}/src/relaxngDatatype-src.zip" />
-            <zipfileset src="${jaxb.libs}/src/rngom-src.zip" />
+            <zipfileset src="${jaxb.libs}/src/rngom-sources.jar" />
             <fileset dir="tmp/dtd-parser/src"/>
             <zipfileset src="${jaxb.libs}/src/istack-commons-tools-sources.jar"/>
           </zip>
@@ -585,13 +585,6 @@ Class-Path: ${manifest.classpath}
              dest="tools/lib/util/maven-repository-importer.jar" />
     </target>
 
-    <target name="integrate-rngom">
-        <get src="http://hudson.sfbay/job/rngom/lastSuccessfulBuild/artifact/rngom/rngom/build/rngom.jar"
-             dest="tools/lib/rebundle/compiler/rngom.jar" />
-        <get src="http://hudson.sfbay/job/rngom/lastSuccessfulBuild/artifact/rngom/rngom/rngom-full-src.zip"
-             dest="tools/lib/src/rngom-src.zip" />
-    </target>
-
     <target name="integrate-zehpyr">
         <get src="http://hudson.sfbay/job/zephyr/lastSuccessfulBuild/artifact/dist/sjsxp-1_0/sjsxp.jar"
              dest="tools/lib/util/sjsxp.jar" />
@@ -624,6 +617,20 @@ Class-Path: ${manifest.classpath}
     </target>
 
 <!-- mavenized projects -->
+
+    <target name="integrate-rngom">
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/rngom/lastSuccessfulBuild/artifact/target/rngom-${rngom.version}.jar"
+             dest="tools/lib/rebundle/compiler/rngom.jar" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/rngom/lastSuccessfulBuild/artifact/target/rngom-${rngom.version}-sources.jar"
+             dest="tools/lib/src/rngom-sources.jar" />
+    </target>
+
+    <target name="integrate-rngom-maven">
+        <get src="http://download.java.net/maven/2/org/kohsuke/rngom/rngom/${rngom.version}/rngom-${rngom.version}.jar"
+             dest="tools/lib/rebundle/compiler/rngom.jar" />
+        <get src="http://download.java.net/maven/2/org/kohsuke/rngom/rngom/${rngom.version}/rngom-${rngom.version}-sources.jar"
+             dest="tools/lib/src/rngom-sources.jar" />
+    </target>
 
     <target name="integrate-txw2">
         <get src="http://sysifos-sol.czech.sun.com/hudson/job/txw2/lastSuccessfulBuild/artifact/txw2/runtime/target/txw2-${txw2.version}.jar"
@@ -889,23 +896,8 @@ Class-Path: ${manifest.classpath}
         <copy file="${maven.repo.local}/${relaxngcc.mvn.path}" tofile="${jaxb.root}/tools/lib/util/relaxngcc.jar"/>
 
         <echo message="building rngom"/>
-        <unzip src="tools/lib/src/rngom-src.zip" dest="${external.dir}/rngom"/>
-        <delete>
-            <fileset dir="${external.dir}/rngom" includes="**/*.jar"/>
-            <fileset dir="${external.dir}/rngom" includes="**/build-taskdefs.xml"/>
-        </delete>
-        <copy file="${maven.repo.local}/${javacc.mvn.path}" tofile="${external.dir}/rngom/lib/javacc/javacc.jar"/>
-        <copy file="${maven.repo.local}/${relaxng-datatype.mvn.path}" tofile="${external.dir}/rngom/lib/relaxng-datatype.jar"/>
-        <copy file="${maven.repo.local}/${jsr173api.mvn.path}" tofile="${external.dir}/rngom/lib/jsr173_1.0_api.jar"/>
-        <exec executable="ant" dir="${external.dir}/rngom" failonerror="true" newenvironment="true" >
-            <arg line="-Djavac.target=1.5"/>
-            <arg line="-Djavac.source=1.5"/>
-            <arg line="-Dfrom.source=true"/>
-            <arg line="-Dcpath.fromsource=lib/relaxng-datatype.jar"/>
-            <env key="JAVA_HOME" value="${JDK_1.5}" />
-            <arg line="jaxbjar"/>
-        </exec>
-        <mvn.publish.local jar="${external.dir}/rngom/build/rngom.jar" mvngroup="org.kohsuke.rngom" mvnartid="rngom" mvnversion="${rngom.version}"/>
+        <build.jar.from.srczip jar="${external.dir}/rngom/rngom.jar" srczip="tools/lib/src/rngom-sources.jar" unzipdir="${external.dir}" srcdir="rngom"/>
+        <mvn.publish.local jar="${external.dir}/rngom/rngom.jar" mvngroup="org.kohsuke.rngom" mvnartid="rngom" mvnversion="${rngom.version}"/>
         <copy file="${maven.repo.local}/${rngom.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/rngom.jar"/>
 
         <echo message="building xsom"/>
