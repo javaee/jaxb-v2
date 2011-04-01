@@ -94,11 +94,16 @@ public class LicenceTask extends Task {
             File dir = ds.getBasedir();
             String[] filesInSet = ds.getIncludedFiles();
             for (String filename : filesInSet) {
-                System.out.println("applying licence header on: " + filename);
+                System.out.println("Applying licence header on: " + filename);
                 File file = new File(dir,filename);
 
                 String licenceHeader = readFile(licence);
                 String javafile = readFile(file);
+
+                if (javafile.contains(licenceHeader)) {
+                    System.out.println("Licence already present, no changed made.");
+                    continue;
+                }
 
                 PrintWriter pw = null;
                 try {
