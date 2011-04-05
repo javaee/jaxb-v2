@@ -351,17 +351,16 @@ Class-Path: ${manifest.classpath}
           <replace dir="tmp_xjc/com/sun/tools/xjc" includes="MessageBundle*.properties">
             <replacefilter token="@@JAXB_JDK_VERSION@@" value="${release.impl.version}"/>
           </replace>
-          <unjar src="${jaxb.libs}/src/dtd-parser-src.zip" dest="tmp" />
           <zip zipfile="${jaxb.dist}/lib/jaxb-xjc.src.zip">
             <fileset dir="tmp_xjc" excludes="purify.xsl"/>
             <fileset dir="${xjc.gensrc}"/>
             <fileset dir="${xjc.root}/facade"/>
+            <zipfileset src="${jaxb.libs}/src/dtd-parser-sources.jar" />
             <zipfileset src="${jaxb.libs}/src/codemodel-sources.jar" />
             <zipfileset src="${jaxb.libs}/src/resolver-comsun-src.zip" />
             <zipfileset src="${jaxb.libs}/src/xsom-sources.jar" excludes="*.rng"/>
             <zipfileset src="${jaxb.libs}/src/relaxngDatatype-src.zip" />
             <zipfileset src="${jaxb.libs}/src/rngom-sources.jar" />
-            <fileset dir="tmp/dtd-parser/src"/>
             <zipfileset src="${jaxb.libs}/src/istack-commons-tools-sources.jar"/>
           </zip>
         </sequential>
@@ -556,13 +555,6 @@ Class-Path: ${manifest.classpath}
       <delete dir="${xjc10.classes}/META-INF/MANIFEST.MF"/>
     </target>
 
-    <target name="integrate-dtdparser">
-      <get src="http://hudson.sfbay/job/dtd-parser/lastSuccessfulBuild/artifact/dtd-parser/dtd-parser/target/distributions/dtd-parser-1.0.zip"
-           dest="tools/lib/rebundle/compiler/dtd-parser-1.0.jar" />
-      <get src="http://hudson.sfbay/job/dtd-parser/lastSuccessfulBuild/artifact/dtd-parser/dtd-parser/target/distributions/dtd-parser-1.0-src.zip"
-           dest="tools/lib/src/dtd-parser-src.zip" />
-    </target>
-
     <target name="integrate-stax-ex-hudson"
             description="integrate the last successful stax-ex Hudson build">
       <get src="http://hudson.sfbay/job/stax-ex/lastSuccessfulBuild/artifact/stax-ex/stax-ex/target/stax-ex.jar"
@@ -617,6 +609,20 @@ Class-Path: ${manifest.classpath}
     </target>
 
 <!-- mavenized projects -->
+
+    <target name="integrate-dtdparser">
+      <get src="http://sysifos-sol.czech.sun.com/hudson/job/dtd-parser/lastSuccessfulBuild/artifact/target/dtd-parser-${dtd-parser.version}.jar"
+           dest="tools/lib/rebundle/compiler/dtd-parser.jar" />
+      <get src="http://sysifos-sol.czech.sun.com/hudson/job/dtd-parser/lastSuccessfulBuild/artifact/target/dtd-parser-${dtd-parser.version}-sources.jar"
+           dest="tools/lib/src/dtd-parser-sources.jar" />
+    </target>
+
+    <target name="integrate-dtdparser-maven">
+      <get src="http://download.java.net/maven/2/com/sun/xml/dtd-parser/dtd-parser/${dtd-parser.version}/dtd-parser-${dtd-parser.version}.jar"
+           dest="tools/lib/rebundle/compiler/dtd-parser.jar" />
+      <get src="http://download.java.net/maven/2/com/sun/xml/dtd-parser/dtd-parser/${dtd-parser.version}/dtd-parser-${dtd-parser.version}-sources.jar"
+           dest="tools/lib/src/dtd-parser-sources.jar" />
+    </target>
 
     <target name="integrate-rngom">
         <get src="http://sysifos-sol.czech.sun.com/hudson/job/rngom/lastSuccessfulBuild/artifact/target/rngom-${rngom.version}.jar"
@@ -736,15 +742,9 @@ Class-Path: ${manifest.classpath}
         </delete>
 
         <echo message="building dtd-parser"/>
-        <unzip src="tools/lib/src/dtd-parser-src.zip" dest="${external.dir}"/>
-        <delete failonerror="false">
-            <fileset dir="${external.dir}/dtd-parser/" includes="**/*.jar"/>
-        </delete>
-        <exec executable="mvn" failonerror="true" >
-            <arg line="-f ${external.dir}/dtd-parser/pom.xml -Dmaven.repo.local=${maven.repo.local}" />
-            <arg line="clean install" />
-        </exec>
-        <copy file="${maven.repo.local}/${dtd-parser.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/dtd-parser-1.0.jar"/>
+        <build.jar.from.srczip jar="${external.dir}/dtd-parser/dtd-parser.jar" srczip="tools/lib/src/dtd-parser-sources.jar" unzipdir="${external.dir}" srcdir="dtd-parser"/>
+        <mvn.publish.local jar="${external.dir}/dtd-parser/dtd-parser.jar" mvngroup="com.sun.xml.dtd-parser" mvnartid="dtd-parser" mvnversion="${dtd-parser.version}"/>
+        <copy file="${maven.repo.local}/${dtd-parser.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/dtd-parser.jar"/>
 
         <echo message="building activation"/>
         <unzip src="tools/lib/src/activation-src.zip" dest="${external.dir}"/>
