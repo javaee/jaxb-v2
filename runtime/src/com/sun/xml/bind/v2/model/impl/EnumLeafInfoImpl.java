@@ -54,6 +54,8 @@ import com.sun.xml.bind.v2.model.core.NonElement;
 import com.sun.xml.bind.v2.model.core.Element;
 import com.sun.xml.bind.v2.model.core.ClassInfo;
 import com.sun.xml.bind.v2.runtime.Location;
+import java.util.Collection;
+import javax.xml.bind.annotation.XmlSchemaType;
 
 /**
  * {@link EnumLeafInfo} implementation.
@@ -78,7 +80,7 @@ class EnumLeafInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
     private final QName typeName;
 
     /**
-     * All the {@link EnumConstantImpl}s are linked in this list.
+     * All the {@link EnumConstantImpl}s are linked in this list.   
      */
     private EnumConstantImpl<T,C,F,M> firstConstant;
 
@@ -88,6 +90,11 @@ class EnumLeafInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
      */
     private QName elementName;
 
+    /**
+     * Used to recognize token vs string.
+     */
+    protected boolean tokenStringType;
+            
     /**
      * @param clazz
      * @param type
@@ -123,6 +130,20 @@ class EnumLeafInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
      */
     protected void calcConstants() {
         EnumConstantImpl<T,C,F,M> last = null;
+        
+        // first check if we represent xs:token derived type
+        Collection<? extends F> fields = nav().getDeclaredFields(clazz);
+        for (F f : fields) {
+            if (nav().getFieldType(f).equals(String.class)) {
+                XmlSchemaType schemaTypeAnnotation = builder.reader.getFieldAnnotation(XmlSchemaType.class, f, this);
+                if (schemaTypeAnnotation != null) {
+                    if ("token".equals(schemaTypeAnnotation.name())) {
+                        tokenStringType = true;
+                        break;
+                    }
+                };
+            }
+        }
         F[] constants = nav().getEnumConstants(clazz);
         for( int i=constants.length-1; i>=0; i-- ) {
             F constant = constants[i];
@@ -147,6 +168,14 @@ class EnumLeafInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
         return type;
     }
 
+    /**
+     *
+     * @return true if enum is restriction/extension from xs:token type, otherwise false
+     */
+    public boolean isToken() {
+        return tokenStringType;
+    }
+    
     /**
      * Leaf-type cannot be referenced from IDREF.
      *
@@ -183,6 +212,7 @@ class EnumLeafInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
         return this;
     }
 
+    @Override
     public void link() {
         // make sure we've computed constants
         getConstants();
