@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -197,8 +197,12 @@ public final class StructureLoader extends Loader {
             Attributes atts = ea.atts;
             for (int i = 0; i < atts.getLength(); i ++){
                 String auri = atts.getURI(i);
+                // may be empty string based on parser settings
                 String alocal = atts.getLocalName(i);
-                String avalue = atts.getValue(i);
+                if ("".equals(alocal)) {
+                    alocal = atts.getQName(i);
+                }
+                String avalue = atts.getValue(i);                
                 TransducedAccessor xacc = attUnmarshallers.get(auri, alocal);
                 try {
                     if(xacc!=null) {
