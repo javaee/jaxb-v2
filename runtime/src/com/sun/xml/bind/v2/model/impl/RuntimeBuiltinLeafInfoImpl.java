@@ -526,11 +526,8 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
 
                     try {
                         ByteArrayOutputStreamEx baos = new ByteArrayOutputStreamEx();
-                        Transformer tr = xs.getIdentityTransformer();
-                        String defaultEncoding = tr.getOutputProperty(OutputKeys.ENCODING);
-                        tr.setOutputProperty(OutputKeys.ENCODING, charset);                        
-                        tr.transform(v, new StreamResult(new OutputStreamWriter(baos,charset)));
-                        tr.setOutputProperty(OutputKeys.ENCODING, defaultEncoding);
+                        xs.getIdentityTransformer().transform(v,
+                            new StreamResult(new OutputStreamWriter(baos,charset)));
                         baos.set(bd,"application/xml; charset="+charset);
                         return bd;
                     } catch (TransformerException e) {
