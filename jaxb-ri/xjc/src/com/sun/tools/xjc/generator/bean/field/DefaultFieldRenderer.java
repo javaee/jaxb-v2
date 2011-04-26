@@ -43,12 +43,10 @@ package com.sun.tools.xjc.generator.bean.field;
 import java.util.ArrayList;
 
 import com.sun.tools.xjc.generator.bean.ClassOutlineImpl;
-import com.sun.tools.xjc.model.CElement;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.model.CReferencePropertyInfo;
 import com.sun.tools.xjc.outline.FieldOutline;
 import java.io.Serializable;
-import java.util.Set;
 
 /**
  * Default implementation of the FieldRendererFactory

@@ -78,6 +78,7 @@ import com.sun.tools.xjc.reader.Util;
 import com.sun.xml.bind.api.impl.NameConverter;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import org.xml.sax.EntityResolver;
@@ -907,7 +908,7 @@ public class Options
                 + Messages.format(Messages.AT)
                 + "' "
                 + Messages.format(Messages.TIME_FORMAT);
-        SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
 
         return Messages.format(
             Messages.FILE_PROLOG_COMMENT,

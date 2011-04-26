@@ -292,6 +292,7 @@ public final class Base64Data extends Pcdata {
         return DatatypeConverterImpl._printBase64Binary(data, 0, dataLen);
     }
 
+    @Override
     public void writeTo(char[] buf, int start) {
         get();
         DatatypeConverterImpl._printBase64Binary(data, 0, dataLen, buf, start);
