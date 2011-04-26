@@ -137,6 +137,7 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
         }
     }
 
+    @Override
     public void endDocument(boolean fragment) throws IOException, SAXException, XMLStreamException {
         flushBuffer();
         super.endDocument(fragment);
@@ -160,6 +161,7 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
         writeNsDecls(base);
     }
 
+    @Override
     public void beginStartTag(Name name) throws IOException {
         closeStartTag();
         int base = pushNsDecls();
