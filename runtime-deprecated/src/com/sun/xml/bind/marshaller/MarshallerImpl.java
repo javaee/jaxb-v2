@@ -37,7 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
 package com.sun.xml.bind.marshaller;
 
 import java.io.FileOutputStream;
@@ -83,7 +82,7 @@ public class MarshallerImpl extends AbstractMarshallerImpl
     /** Object that handles character escaping. */
     private CharacterEscapeHandler escapeHandler = null; 
     
-    public MarshallerImpl() { }
+    public MarshallerImpl() {    }
     
     public void marshal(Object obj, Result result) throws JAXBException {
         if (!(obj instanceof XMLSerializable) || obj == null)

@@ -71,10 +71,13 @@ enum Messages {
     ELEMENT_NEEDED_BUT_FOUND_DOCUMENT, // 1 arg
     UNKNOWN_CLASS, // 1 arg
     FAILED_TO_GENERATE_SCHEMA, // 0 args
+    ERROR_PROCESSING_SCHEMA, // 0 args
+    ILLEGAL_CONTENT, // 2 args
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());
 
+    @Override
     public String toString() {
         return format();
     }
