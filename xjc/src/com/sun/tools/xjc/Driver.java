@@ -521,7 +521,7 @@ public class Driver {
             System.out.println(Messages.format(Messages.DRIVER_PRIVATE_USAGE));
         }
         
-        if( opts!=null && opts.getAllPlugins().isEmpty()) {
+        if( opts!=null && !opts.getAllPlugins().isEmpty()) {
             System.out.println(Messages.format(Messages.ADDON_USAGE));
             for (Plugin p : opts.getAllPlugins()) {
                 System.out.println(p.getUsage());
