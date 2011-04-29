@@ -69,7 +69,6 @@ import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 import com.sun.xml.bind.v2.runtime.Location;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
-import java.util.List;
 
 /**
  * Default partial implementation for {@link PropertyInfo}.
@@ -372,27 +371,8 @@ abstract class PropertyInfoImpl<T,C,F,M>
                     QName typeName = parent.getTypeName();
                     if(typeName!=null)
                         uri = typeName.getNamespaceURI();
-                    else {
-                        if ((this.getSchemaType() == null) && ("".equals(this.getName()))) {
-                            uri = "";
-                        } else {
-                            Object upS = parent.getUpstream();
-                            if ((upS != null) && (upS instanceof ElementPropertyInfoImpl)) {
-                                ElementPropertyInfoImpl info = (ElementPropertyInfoImpl)upS;
-                                if ((info != null) && (info.getSchemaType() == null)) {
-                                    List types = info.getTypes();
-                                    if ((types != null) && (types.size() > 0)) {
-                                        uri = ((TypeRefImpl)(types.get(0))).getTagName().getNamespaceURI();
-                                    } else {
-                                        uri = "";
-                                    }
-                                    break;
-                                }
-                            }
-                            uri = xs.namespace();
-                        }
-                        break;
-                    }
+                    else
+                        uri = xs.namespace();
                     if(uri.length()==0)
                         uri = parent.builder.defaultNsUri;
                     break;
