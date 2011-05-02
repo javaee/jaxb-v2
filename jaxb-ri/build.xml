@@ -782,17 +782,6 @@ Class-Path: ${manifest.classpath}
              dest="tools/lib/util/package-rename-task.jar"/>
     </target>
 
-    <target name="integrate-htmlmacro">
-        <get src="http://hudson.sfbay/job/htmlmacro/lastSuccessfulBuild/artifact/htmlmacro/build/htmlmacro.zip"
-             dest="build/htmlmacro.zip"/>
-        <unzip src="build/htmlmacro.zip" dest="tools/htmlmacro">
-          <patternset>
-            <include name="htmlmacro.*" />
-            <include name="tags/**/*" />
-          </patternset>
-        </unzip>
-    </target>
-
     <target name="integrate-codemodel">
         <property name="codemodel-version" value="2.2-SNAPSHOT" />
         <get src="http://hudson.sfbay/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel-version}.jar"
