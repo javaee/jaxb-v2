@@ -589,17 +589,6 @@ Class-Path: ${manifest.classpath}
              dest="tools/lib/util/package-rename-task.jar"/>
     </target>
 
-    <target name="integrate-htmlmacro">
-        <get src="http://hudson.sfbay/job/htmlmacro/lastSuccessfulBuild/artifact/htmlmacro/build/htmlmacro.zip"
-             dest="build/htmlmacro.zip"/>
-        <unzip src="build/htmlmacro.zip" dest="tools/htmlmacro">
-          <patternset>
-            <include name="htmlmacro.*" />
-            <include name="tags/**/*" />
-          </patternset>
-        </unzip>
-    </target>
-
     <target name="integrate-xsdlib">
         <property name="xsdlib-version" value="2009.2-SNAPSHOT" />
         <get src="http://sysifos-sol.czech.sun.com/hudson/job/msv/lastSuccessfulBuild/artifact/trunk/xsdlib/target/xsdlib-${xsdlib-version}.jar"
