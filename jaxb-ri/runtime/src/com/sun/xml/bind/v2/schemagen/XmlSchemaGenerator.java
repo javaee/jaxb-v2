@@ -72,7 +72,6 @@ import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.util.CollisionCheckStack;
 import com.sun.xml.bind.v2.util.StackRecorder;
-import static com.sun.xml.bind.v2.WellKnownNamespace.XML_SCHEMA;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.ArrayInfo;
 import com.sun.xml.bind.v2.model.core.AttributePropertyInfo;
@@ -125,6 +124,7 @@ import com.sun.xml.txw2.TypedXmlWriter;
 import com.sun.xml.txw2.output.ResultFactory;
 import com.sun.xml.txw2.output.XmlSerializer;
 import java.util.Collection;
+import javax.xml.XMLConstants;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -248,7 +248,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
         // search properties for foreign namespace references
         for( PropertyInfo<T,C> p : clazz.getProperties()) {
-            n.processForeignNamespaces(p);
+            n.processForeignNamespaces(p, 1);
             if (p instanceof AttributePropertyInfo) {
                 AttributePropertyInfo<T,C> ap = (AttributePropertyInfo<T,C>) p;
                 String aUri = ap.getXmlName().getNamespaceURI();
@@ -310,7 +310,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
         n.elementDecls.put(name.getLocalPart(),n.new ElementWithType(nillable, elem.getContentType()));
 
         // search for foreign namespace references
-        n.processForeignNamespaces(elem.getProperty());
+        n.processForeignNamespaces(elem.getProperty(), 1);
     }
 
     public void add( EnumLeafInfo<T,C> envm ) {
@@ -558,15 +558,19 @@ public final class XmlSchemaGenerator<T,C,F,M> {
          *
          * @param p the PropertyInfo
          */
-        private void processForeignNamespaces(PropertyInfo<T, C> p) {
-            // TODO: missing the correct handling of anonymous type,
-            // which requires recursive checks
-            for( TypeInfo<T, C> t : p.ref()) {
-                if(t instanceof Element) {
-                    addDependencyTo(((Element)t).getElementName());
+        private void processForeignNamespaces(PropertyInfo<T, C> p, int processingDepth) {
+            for (TypeInfo<T, C> t : p.ref()) {
+                if ((t instanceof ClassInfo) && (processingDepth > 0)) {
+                    java.util.List<PropertyInfo> l = ((ClassInfo) t).getProperties();
+                    for (PropertyInfo subp : l) {
+                        processForeignNamespaces(subp, --processingDepth);
+                    }
                 }
-                if(t instanceof NonElement) {
-                    addDependencyTo(((NonElement)t).getTypeName());
+                if (t instanceof Element) {
+                    addDependencyTo(((Element) t).getElementName());
+                }
+                if (t instanceof NonElement) {
+                    addDependencyTo(((NonElement) t).getTypeName());
                 }
             }
         }
@@ -575,15 +579,18 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             // even though the Element interface says getElementName() returns non-null,
             // ClassInfo always implements Element (even if an instance of ClassInfo might not be an Element).
             // so this check is still necessary
-            if(qname==null)   return;
+            if (qname==null) {
+                return;
+            }
 
             String nsUri = qname.getNamespaceURI();
 
-            if(nsUri.equals(XML_SCHEMA))
+            if (nsUri.equals(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
                 // no need to explicitly refer to XSD namespace
                 return;
+            }
 
-            if(nsUri.equals(uri)) {
+            if (nsUri.equals(uri)) {
                 selfReference = true;
                 return;
             }
@@ -622,9 +629,9 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
                 // declare XML Schema namespace to be xs, but allow the user to override it.
                 // if 'xs' is used for other things, we'll just let TXW assign a random prefix
-                if(!xmlNs.containsValue(WellKnownNamespace.XML_SCHEMA)
+                if(!xmlNs.containsValue(XMLConstants.W3C_XML_SCHEMA_NS_URI)
                 && !xmlNs.containsKey("xs"))
-                    schema._namespace(WellKnownNamespace.XML_SCHEMA,"xs");
+                    schema._namespace(XMLConstants.W3C_XML_SCHEMA_NS_URI,"xs");
                 schema.version("1.0");
 
                 if(uri.length()!=0)
@@ -720,10 +727,10 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             // ID / IDREF handling
             switch(typeRef.getSource().id()) {
             case ID:
-                th._attribute(refAttName, new QName(WellKnownNamespace.XML_SCHEMA, "ID"));
+                th._attribute(refAttName, new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "ID"));
                 return;
             case IDREF:
-                th._attribute(refAttName, new QName(WellKnownNamespace.XML_SCHEMA, "IDREF"));
+                th._attribute(refAttName, new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "IDREF"));
                 return;
             case NONE:
                 // no ID/IDREF, so continue on and generate the type
@@ -1131,7 +1138,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             Element te = null;
             ClassInfo ci = null;
             QName targetTagName = null;
-
+            
             if (t.getTarget() instanceof Element) {
                 te = (Element) t.getTarget();
                 targetTagName = te.getElementName();
@@ -1487,8 +1494,6 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
 
     /**
-     * TODO: JAX-WS dependency on this method - consider moving this method into com.sun.tools.jxc.util.Util
-     *
      * Relativizes a URI by using another URI (base URI.)
      *
      * <p>
