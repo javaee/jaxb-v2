@@ -72,6 +72,7 @@ import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.util.CollisionCheckStack;
 import com.sun.xml.bind.v2.util.StackRecorder;
+import static com.sun.xml.bind.v2.WellKnownNamespace.XML_SCHEMA;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.ArrayInfo;
 import com.sun.xml.bind.v2.model.core.AttributePropertyInfo;
@@ -124,7 +125,6 @@ import com.sun.xml.txw2.TypedXmlWriter;
 import com.sun.xml.txw2.output.ResultFactory;
 import com.sun.xml.txw2.output.XmlSerializer;
 import java.util.Collection;
-import javax.xml.XMLConstants;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -585,7 +585,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
             String nsUri = qname.getNamespaceURI();
 
-            if (nsUri.equals(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
+            if (nsUri.equals(XML_SCHEMA)) {
                 // no need to explicitly refer to XSD namespace
                 return;
             }
@@ -629,9 +629,9 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
                 // declare XML Schema namespace to be xs, but allow the user to override it.
                 // if 'xs' is used for other things, we'll just let TXW assign a random prefix
-                if(!xmlNs.containsValue(XMLConstants.W3C_XML_SCHEMA_NS_URI)
+                if(!xmlNs.containsValue(WellKnownNamespace.XML_SCHEMA)
                 && !xmlNs.containsKey("xs"))
-                    schema._namespace(XMLConstants.W3C_XML_SCHEMA_NS_URI,"xs");
+                    schema._namespace(WellKnownNamespace.XML_SCHEMA,"xs");
                 schema.version("1.0");
 
                 if(uri.length()!=0)
@@ -727,10 +727,10 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             // ID / IDREF handling
             switch(typeRef.getSource().id()) {
             case ID:
-                th._attribute(refAttName, new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "ID"));
+                th._attribute(refAttName, new QName(WellKnownNamespace.XML_SCHEMA, "ID"));
                 return;
             case IDREF:
-                th._attribute(refAttName, new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "IDREF"));
+                th._attribute(refAttName, new QName(WellKnownNamespace.XML_SCHEMA, "IDREF"));
                 return;
             case NONE:
                 // no ID/IDREF, so continue on and generate the type
@@ -1138,7 +1138,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             Element te = null;
             ClassInfo ci = null;
             QName targetTagName = null;
-            
+
             if (t.getTarget() instanceof Element) {
                 te = (Element) t.getTarget();
                 targetTagName = te.getElementName();
