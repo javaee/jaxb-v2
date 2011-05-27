@@ -720,10 +720,10 @@ Class-Path: ${manifest.classpath}
     </target>
 
     <target name="integrate-xsom">
-        <get src="http://hudson.sfbay/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom.jar"
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/xsom/lastSuccessfulBuild/artifact/target/xsom-${xsom.version}.jar"
              dest="tools/lib/rebundle/compiler/xsom.jar" />
-        <get src="http://hudson.sfbay/job/xsom/lastSuccessfulBuild/artifact/jaxb2-sources/xsom/build/xsom-src.zip"
-             dest="tools/lib/src/xsom-src.zip" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/xsom/lastSuccessfulBuild/artifact/target/xsom-${xsom.version}-sources.jar"
+             dest="tools/lib/src/xsom-sources.jar" />
     </target>
 
     <target name="integrate-maven-repository-importer">
