@@ -66,39 +66,21 @@ import javax.xml.namespace.QName;
  *
  * @author <ul><li>Ryan Shoemaker, Sun Microsystems, Inc.</li></ul>
  * @since JAXB1.0
+ * @deprecated in JAXB 2.2.4 - use javax.xml.bind.DatatypeConverterImpl instead
+ * or let us know why you can't
  */
-public final class DatatypeConverterImpl implements DatatypeConverterInterface {
-
-    /**
-     * To avoid re-creating instances, we cache one instance.
-     */
-    public static final DatatypeConverterInterface theInstance = new DatatypeConverterImpl();
+public final class DatatypeConverterImpl {
 
     protected DatatypeConverterImpl() {
-    }
-
-    public String parseString(String lexicalXSDString) {
-        return lexicalXSDString;
-    }
-
-    public BigInteger parseInteger(String lexicalXSDInteger) {
-        return _parseInteger(lexicalXSDInteger);
+        // shall not be used
     }
 
     public static BigInteger _parseInteger(CharSequence s) {
         return new BigInteger(removeOptionalPlus(WhiteSpaceProcessor.trim(s)).toString());
     }
 
-    public String printInteger(BigInteger val) {
-        return _printInteger(val);
-    }
-
     public static String _printInteger(BigInteger val) {
         return val.toString();
-    }
-
-    public int parseInt(String s) {
-        return _parseInt(s);
     }
 
     /**
@@ -135,32 +117,16 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         return r * sign;
     }
 
-    public long parseLong(String lexicalXSLong) {
-        return _parseLong(lexicalXSLong);
-    }
-
     public static long _parseLong(CharSequence s) {
         return Long.valueOf(removeOptionalPlus(WhiteSpaceProcessor.trim(s)).toString());
-    }
-
-    public short parseShort(String lexicalXSDShort) {
-        return _parseShort(lexicalXSDShort);
     }
 
     public static short _parseShort(CharSequence s) {
         return (short) _parseInt(s);
     }
 
-    public String printShort(short val) {
-        return _printShort(val);
-    }
-
     public static String _printShort(short val) {
         return String.valueOf(val);
-    }
-
-    public BigDecimal parseDecimal(String content) {
-        return _parseDecimal(content);
     }
 
     public static BigDecimal _parseDecimal(CharSequence content) {
@@ -183,10 +149,6 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         //
         // also, from the user's point of view, one might be surprised if
         // 1 (not 1.0) is returned from "1.000" 
-    }
-
-    public float parseFloat(String lexicalXSDFloat) {
-        return _parseFloat(lexicalXSDFloat);
     }
 
     public static float _parseFloat(CharSequence _val) {
@@ -226,10 +188,6 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         return Float.parseFloat(s);
     }
 
-    public String printFloat(float v) {
-        return _printFloat(v);
-    }
-
     public static String _printFloat(float v) {
         if (Float.isNaN(v)) {
             return "NaN";
@@ -241,10 +199,6 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
             return "-INF";
         }
         return String.valueOf(v);
-    }
-
-    public double parseDouble(String lexicalXSDDouble) {
-        return _parseDouble(lexicalXSDDouble);
     }
 
     public static double _parseDouble(CharSequence _val) {
@@ -269,10 +223,6 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
 
         // these screening process is necessary due to the wobble of Float.valueOf method
         return Double.parseDouble(val);
-    }
-
-    public boolean parseBoolean(String lexicalXSDBoolean) {
-        return _parseBoolean(lexicalXSDBoolean);
     }
 
     public static Boolean _parseBoolean(CharSequence literal) {
@@ -347,32 +297,16 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
 //            throw new IllegalArgumentException("String \"" + literal + "\" is not valid boolean value.");
     }
 
-    public String printBoolean(boolean val) {
-        return val ? "true" : "false";
-    }
-
     public static String _printBoolean(boolean val) {
         return val ? "true" : "false";
-    }
-
-    public byte parseByte(String lexicalXSDByte) {
-        return _parseByte(lexicalXSDByte);
     }
 
     public static byte _parseByte(CharSequence literal) {
         return (byte) _parseInt(literal);
     }
 
-    public String printByte(byte val) {
-        return _printByte(val);
-    }
-
     public static String _printByte(byte val) {
         return String.valueOf(val);
-    }
-
-    public QName parseQName(String lexicalXSDQName, NamespaceContext nsc) {
-        return _parseQName(lexicalXSDQName, nsc);
     }
 
     /**
@@ -428,141 +362,29 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         return new QName(uri, localPart, prefix);
     }
 
-    public Calendar parseDateTime(String lexicalXSDDateTime) {
-        return _parseDateTime(lexicalXSDDateTime);
-    }
-
     public static GregorianCalendar _parseDateTime(CharSequence s) {
         String val = WhiteSpaceProcessor.trim(s).toString();
         return datatypeFactory.newXMLGregorianCalendar(val).toGregorianCalendar();
-    }
-
-    public String printDateTime(Calendar val) {
-        return _printDateTime(val);
     }
 
     public static String _printDateTime(Calendar val) {
         return CalendarFormatter.doFormat("%Y-%M-%DT%h:%m:%s%z", val);
     }
 
-    public byte[] parseBase64Binary(String lexicalXSDBase64Binary) {
-        return _parseBase64Binary(lexicalXSDBase64Binary);
-    }
-
-    public byte[] parseHexBinary(String s) {
-        final int len = s.length();
-
-        // "111" is not a valid hex encoding.
-        if (len % 2 != 0) {
-            throw new IllegalArgumentException("hexBinary needs to be even-length: " + s);
-        }
-
-        byte[] out = new byte[len / 2];
-
-        for (int i = 0; i < len; i += 2) {
-            int h = hexToBin(s.charAt(i));
-            int l = hexToBin(s.charAt(i + 1));
-            if (h == -1 || l == -1) {
-                throw new IllegalArgumentException("contains illegal character for hexBinary: " + s);
-            }
-
-            out[i / 2] = (byte) (h * 16 + l);
-        }
-
-        return out;
-    }
-
-    private static int hexToBin(char ch) {
-        if ('0' <= ch && ch <= '9') {
-            return ch - '0';
-        }
-        if ('A' <= ch && ch <= 'F') {
-            return ch - 'A' + 10;
-        }
-        if ('a' <= ch && ch <= 'f') {
-            return ch - 'a' + 10;
-        }
-        return -1;
-    }
-    private static final char[] hexCode = "0123456789ABCDEF".toCharArray();
-
-    public String printHexBinary(byte[] data) {
-        StringBuilder r = new StringBuilder(data.length * 2);
-        for (byte b : data) {
-            r.append(hexCode[(b >> 4) & 0xF]);
-            r.append(hexCode[(b & 0xF)]);
-        }
-        return r.toString();
-    }
-
-    public long parseUnsignedInt(String lexicalXSDUnsignedInt) {
-        return _parseLong(lexicalXSDUnsignedInt);
-    }
-
-    public String printUnsignedInt(long val) {
-        return _printLong(val);
-    }
-
-    public int parseUnsignedShort(String lexicalXSDUnsignedShort) {
-        return _parseInt(lexicalXSDUnsignedShort);
-    }
-
-    public Calendar parseTime(String lexicalXSDTime) {
-        return datatypeFactory.newXMLGregorianCalendar(lexicalXSDTime).toGregorianCalendar();
-    }
-
-    public String printTime(Calendar val) {
-        return CalendarFormatter.doFormat("%h:%m:%s%z", val);
-    }
-
-    public Calendar parseDate(String lexicalXSDDate) {
-        return datatypeFactory.newXMLGregorianCalendar(lexicalXSDDate).toGregorianCalendar();
-    }
-
-    public String printDate(Calendar val) {
-        return _printDate(val);
-    }
-
     public static String _printDate(Calendar val) {
         return CalendarFormatter.doFormat((new StringBuilder("%Y-%M-%D").append("%z")).toString(),val);
-    }
-
-    public String parseAnySimpleType(String lexicalXSDAnySimpleType) {
-        return lexicalXSDAnySimpleType;
-//        return (String)SimpleURType.theInstance._createValue( lexicalXSDAnySimpleType, null );
-    }
-
-    public String printString(String val) {
-//        return StringType.theInstance.convertToLexicalValue( val, null );
-        return val;
-    }
-
-    public String printInt(int val) {
-        return _printInt(val);
     }
 
     public static String _printInt(int val) {
         return String.valueOf(val);
     }
 
-    public String printLong(long val) {
-        return _printLong(val);
-    }
-
     public static String _printLong(long val) {
         return String.valueOf(val);
     }
 
-    public String printDecimal(BigDecimal val) {
-        return _printDecimal(val);
-    }
-
     public static String _printDecimal(BigDecimal val) {
         return val.toPlainString();
-    }
-
-    public String printDouble(double v) {
-        return _printDouble(v);
     }
 
     public static String _printDouble(double v) {
@@ -576,10 +398,6 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
             return "-INF";
         }
         return String.valueOf(v);
-    }
-
-    public String printQName(QName val, NamespaceContext nsc) {
-        return _printQName(val, nsc);
     }
 
     public static String _printQName(QName val, NamespaceContext nsc) {
@@ -597,27 +415,6 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
         return qname;
     }
 
-    public String printBase64Binary(byte[] val) {
-        return _printBase64Binary(val);
-    }
-
-    public String printUnsignedShort(int val) {
-        return String.valueOf(val);
-    }
-
-    public String printAnySimpleType(String val) {
-        return val;
-    }
-
-    /**
-     * Just return the string passed as a parameter but
-     * installs an instance of this class as the DatatypeConverter
-     * implementation. Used from static fixed value initializers.
-     */
-    public static String installHook(String s) {
-        DatatypeConverter.setDatatypeConverter(theInstance);
-        return s;
-    }
 // base64 decoder
     private static final byte[] decodeMap = initDecodeMap();
     private static final byte PADDING = 127;
@@ -869,7 +666,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
 
         return ptr;
     }
-
+    
     private static CharSequence removeOptionalPlus(CharSequence s) {
         int len = s.length();
 
