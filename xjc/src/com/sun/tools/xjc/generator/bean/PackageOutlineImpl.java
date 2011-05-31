@@ -71,7 +71,7 @@ import com.sun.tools.xjc.outline.Aspect;
  * information.
  * 
  * @author
- *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
+ *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com), Martin Grebac (martin.grebac@oracle.com)
  */
 public final class PackageOutlineImpl implements PackageOutline {
     private final Model _model;
@@ -83,6 +83,7 @@ public final class PackageOutlineImpl implements PackageOutline {
 
     private String mostUsedNamespaceURI;
     private XmlNsForm elementFormDefault;
+    private XmlNsForm attributeFormDefault;
 
     /**
      * The namespace URI most commonly used in classes in this package.
@@ -95,6 +96,16 @@ public final class PackageOutlineImpl implements PackageOutline {
      */
     public String getMostUsedNamespaceURI() {
         return mostUsedNamespaceURI;
+    }
+
+    /**
+     * The attribute form default for this package.
+     * <p>
+     * The value is computed by examining what would yield the smallest generated code.
+     */
+    public XmlNsForm getAttributeFormDefault() {
+        assert attributeFormDefault!=null;
+        return attributeFormDefault;
     }
 
     /**
@@ -189,16 +200,26 @@ public final class PackageOutlineImpl implements PackageOutline {
                 p.accept(propVisitor);
         }
         mostUsedNamespaceURI = getMostUsedURI(uriCountMap);
+        
         elementFormDefault = getFormDefault();
-
+        attributeFormDefault = XmlNsForm.UNQUALIFIED;
+        try {
+            XmlNsForm modelValue = _model.getAttributeFormDefault(mostUsedNamespaceURI);
+            attributeFormDefault = modelValue;
+        } catch (Exception e) {
+            // ignore and accept default
+        }
+        
         // generate package-info.java
         // we won't get this far if the user specified -npa
-        if(!mostUsedNamespaceURI.equals("") || elementFormDefault==XmlNsForm.QUALIFIED) {
+        if(!mostUsedNamespaceURI.equals("") || elementFormDefault==XmlNsForm.QUALIFIED || (attributeFormDefault == XmlNsForm.QUALIFIED)) {
             XmlSchemaWriter w = _model.strategy.getPackage(_package, Aspect.IMPLEMENTATION).annotate2(XmlSchemaWriter.class);
             if(!mostUsedNamespaceURI.equals(""))
                 w.namespace(mostUsedNamespaceURI);
             if(elementFormDefault==XmlNsForm.QUALIFIED)
                 w.elementFormDefault(elementFormDefault);
+            if(attributeFormDefault==XmlNsForm.QUALIFIED)
+                w.attributeFormDefault(attributeFormDefault);
         }
     }
 
@@ -270,4 +291,5 @@ public final class PackageOutlineImpl implements PackageOutline {
         if (getMostUsedURI(propUriCountMap).equals("")) return XmlNsForm.UNQUALIFIED;
         else return XmlNsForm.QUALIFIED;
     }
+    
 }
