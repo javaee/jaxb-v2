@@ -89,6 +89,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLFilter;
 import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.XMLFilterImpl;
 
 /**
@@ -99,6 +100,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  *
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
+ *     Martin Grebac (martin.grebac@oracle.com)
  */
 public final class ModelLoader {
 
@@ -125,6 +127,7 @@ public final class ModelLoader {
         this.errorReceiver = new ErrorReceiverFilter(er);
     }
 
+    @SuppressWarnings("CallToThreadDumpStack")
     private Model load() {
         Model grammar;
 
@@ -458,6 +461,17 @@ public final class ModelLoader {
         }
     }
 
+    private static final class AttributeNormalizer extends XMLFilterImpl {
+        @Override
+        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+            AttributesImpl ai = new AttributesImpl(attributes);
+            for (int i=0; i<ai.getLength(); i++) {
+                ai.setValue(i, ai.getValue(i).trim());
+            }
+            super.startElement(uri,localName,qName,ai);
+        }
+    }
+
     /**
      * Parses schemas directly into XSOM by assuming that there's
      * no external annotations.
@@ -475,6 +489,7 @@ public final class ModelLoader {
             public void parse(InputSource source, ContentHandler handler,
                 ErrorHandler errorHandler, EntityResolver entityResolver ) throws SAXException, IOException {
                 // set up the chain of handlers.
+                handler = wrapBy( new AttributeNormalizer(), handler );
                 handler = wrapBy( new SpeculationChecker(), handler );
                 handler = wrapBy( new VersionChecker(null,errorReceiver,entityResolver), handler );
 
