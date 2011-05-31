@@ -54,6 +54,7 @@ import com.sun.tools.xjc.model.Multiplicity;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.xml.bind.v2.model.core.Element;
 import com.sun.xml.bind.v2.model.core.ID;
+import java.math.BigInteger;
 
 /**
  * Set of {@link Ref}.
@@ -92,7 +93,7 @@ public final class RawTypeSet {
     }
 
     public boolean isRequired() {
-        return mul.min>0;
+        return mul.min.compareTo(BigInteger.ZERO) == 1;
     }
 
 

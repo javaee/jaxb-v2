@@ -40,6 +40,7 @@
 
 package com.sun.tools.xjc.reader.xmlschema;
 
+import java.math.BigInteger;
 import com.sun.tools.xjc.model.Multiplicity;
 import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XSModelGroup;
@@ -65,8 +66,8 @@ public final class MultiplicityCounter implements XSTermFunction<Multiplicity> {
     public Multiplicity particle( XSParticle p ) {
         Multiplicity m = p.getTerm().apply(this);
 
-        Integer max;
-        if(m.max==null || p.getMaxOccurs()==XSParticle.UNBOUNDED)
+        BigInteger max;
+        if (m.max==null || (BigInteger.valueOf(XSParticle.UNBOUNDED).equals(p.getMaxOccurs())))
             max=null;
         else
             max=p.getMaxOccurs();

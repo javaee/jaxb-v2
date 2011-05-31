@@ -57,6 +57,7 @@ import com.sun.xml.xsom.XSModelGroupDecl;
 import com.sun.xml.xsom.XSParticle;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.visitor.XSTermFunction;
+import java.math.BigInteger;
 
 /**
  * Visits {@link XSParticle} and creates a corresponding {@link Expression} tree.
@@ -139,7 +140,7 @@ public final class ExpressionBuilder implements XSTermFunction<Expression> {
         if(p.isRepeated())
             e = new OneOrMore(e);
 
-        if(p.getMinOccurs()==0)
+        if (BigInteger.ZERO.equals(p.getMinOccurs()))
             e = new Choice(e,Expression.EPSILON);
 
         return e;
