@@ -446,7 +446,7 @@ public final class SimpleTypeBuilder extends BindingComponent {
             // if the type itself doesn't have the enumeration facet,
             // it won't be mapped to a type-safe enum.
             return false;
-
+        
         if(facets.size() > builder.getGlobalBinding().getDefaultEnumMemberSizeCap()) {
             // if there are too many facets, it's not very useful
             // produce warning when simple type is not mapped to enum
@@ -461,7 +461,7 @@ public final class SimpleTypeBuilder extends BindingComponent {
 
                 reportedEnumMemberSizeWarnings.add(type);
             }
-
+            
             return false;
         }
 
@@ -681,9 +681,11 @@ public final class SimpleTypeBuilder extends BindingComponent {
                     // look at the one attached to the facet object
                     mem = builder.getBindInfo(facet).get(BIEnumMember.class);
 
-                if( mem!=null ) {
+                if (mem!=null) {
                     name = mem.name;
-                    mdoc = mem.javadoc;
+                    if (mdoc != null) {
+                        mdoc = mem.javadoc;
+                    }
                 }
 
                 if(name==null) {
