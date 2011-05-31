@@ -74,11 +74,22 @@ public final class ClassFactory {
      * To avoid synchronization among threads, we use {@link ThreadLocal}.
      */
     private static final ThreadLocal<Map<Class, WeakReference<Constructor>>> tls = new ThreadLocal<Map<Class,WeakReference<Constructor>>>() {
+        @Override
         public Map<Class,WeakReference<Constructor>> initialValue() {
             return new WeakHashMap<Class,WeakReference<Constructor>>();
         }
     };
 
+    public static void cleanCache() {
+        if (tls != null) {
+            try {
+                tls.remove();
+            } catch (Exception e) {
+                logger.log(Level.WARNING, "Unable to clean Thread Local cache of classes used in Unmarshaller: {0}", e.getLocalizedMessage());
+            }
+        }
+    }
+    
     /**
      * Creates a new instance of the class but throw exceptions without catching it.
      */
@@ -199,8 +210,6 @@ public final class ClassFactory {
      */
     public static <T> Class<? extends T> inferImplClass(Class<T> fieldType, Class[] knownImplClasses) {
         if(!fieldType.isInterface())
-            // instanciable class?
-            // TODO: check if it has a default constructor
             return fieldType;
 
         for( Class<?> impl : knownImplClasses ) {

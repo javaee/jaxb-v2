@@ -71,6 +71,7 @@ import com.sun.xml.bind.api.ClassResolver;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
 import com.sun.xml.bind.unmarshaller.Messages;
+import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.runtime.AssociationMap;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
@@ -102,7 +103,6 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
      * schema which will be used to validate during calls to unmarshal
      */
     private Schema schema;
-
 
     public final UnmarshallingContext coordinator;
 
@@ -560,4 +560,15 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
     public UnmarshallingContext getContext() {
         return coordinator;
     }
+    
+    @Override
+    @SuppressWarnings("FinalizeDeclaration")
+    protected void finalize() throws Throwable {
+        try {
+            ClassFactory.cleanCache();
+        } finally {
+            super.finalize();
+        }
+    }
+    
 }
