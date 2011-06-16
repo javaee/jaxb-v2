@@ -47,7 +47,7 @@ import javax.xml.bind.JAXBException;
 
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 
-public class AccessorFactoryImpl implements AccessorFactory {
+public class AccessorFactoryImpl implements InternalAccessorFactory {
 
     private static AccessorFactoryImpl instance = new AccessorFactoryImpl();
     private AccessorFactoryImpl(){}
@@ -70,6 +70,23 @@ public class AccessorFactoryImpl implements AccessorFactory {
         return readOnly
                 ? new Accessor.ReadOnlyFieldReflection(field)
                 : new Accessor.FieldReflection(field);
+    }
+
+    /**
+     * Access a field of the class.
+     *
+     * @param bean the class to be processed.
+     * @param field the field within the class to be accessed.
+     * @param readOnly  the isStatic value of the field's modifier.
+     * @param supressWarning supress security warning about accessing fields through reflection
+     * @return Accessor the accessor for this field
+     *
+     * @throws JAXBException reports failures of the method.
+     */
+    public Accessor createFieldAccessor(Class bean, Field field, boolean readOnly, boolean supressWarning) {
+        return readOnly
+                ? new Accessor.ReadOnlyFieldReflection(field, supressWarning)
+                : new Accessor.FieldReflection(field, supressWarning);
     }
 
     /**
