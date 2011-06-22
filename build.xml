@@ -563,6 +563,16 @@ Class-Path: ${manifest.classpath}
            dest="tools/lib/util/stax-ex-src.zip" />
     </target>
 
+    <target name="integrate-api-maven" description="Integrate JAXB 2.2 API from maven">
+        <property name="mavenrepo.url" value="http://maven.java.net/content/repositories/snapshots/"/>
+        <get src="${mavenrepo.url}/javax/xml/bind/jaxb-api/${release.spec.version}/jaxb-api-${release.spec.version}.jar"
+             dest="tools/lib/redist/jaxb-api.jar" />
+        <get src="${mavenrepo.url}javax/xml/bind/jaxb-api/${release.spec.version}/jaxb-api-${release.spec.version}-sources.jar"
+             dest="tools/lib/redist/jaxb-api-src.zip" />
+        <get src="${mavenrepo.url}javax/xml/bind/jaxb-api/${release.spec.version}/jaxb-api-${release.spec.version}-javadoc.jar"
+             dest="tools/lib/redist/jaxb-api-doc.zip" />
+    </target>
+
     <target name="integrate-api-hudson" description="Integrate JAXB 2.2 API from Hudson">
         <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-${release.spec.version}.jar"
              dest="tools/lib/redist/jaxb-api.jar" />
