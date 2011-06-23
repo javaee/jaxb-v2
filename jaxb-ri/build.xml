@@ -41,11 +41,6 @@
 
 -->
 
-<!-- Use the following doctypedecl for DTD aware editing.  Comment out b/c
-     it presumably causes Ant problems for some users.
-<!DOCTYPE project PUBLIC "-//ANT//DTD project//EN" "project.dtd">
--->
- 
 <project name="jaxb" basedir="." default="compile">
     <description>
         JAXB-RI Master Project
@@ -66,7 +61,6 @@
 
         Use parse-ipr (http://parse-ipr.dev.java.net/) to set up the classpath for
         debugging.
-
     </description>
 
     <import file="nbproject/build-impl.xml"/>
@@ -114,71 +108,6 @@
         <ant dir="tools"               target="compile" />
     </target>
 
-  <!--
-  Invoke j2se-integration target with property ${jaxb.version.in.jdk} set
-  to right target version
-  -->
-
-  <target name="j2se-integration" depends="init-standalone"
-          description="prepare renamed source code for J2SE integration">
-    <property name="jaxb.version.in.jdk" value="JAXB 2.0 in JDK 1.6"/>
-    
-    <ant dir="apgen" target="compile" />
-    <subant target="j2se-integration">
-      <fileset file="runtime/build.xml" />
-      <fileset file="runtime-fi/build.xml" />
-      <fileset file="runtime-staxex/build.xml" />
-      <fileset file="xjc/build.xml" />
-    </subant>
-
-    <!-- exclude ant tasks -->
-    <delete file="j2se-integration/xjc/src/com/sun/tools/internal/xjc/XJC2Task.java"/>
-    <!-- move META-INF/services to tools/META-INF/services -->
-    <move file="j2se-integration/xjc/src/META-INF/services/com.sun.tools.xjc.Plugin"
-          tofile="j2se-integration/tools/etc/META-INF/services/sun.tools.xjc.Plugin"/>
-    <delete dir="j2se-integration/xjc/src/META-INF"/>
-	
-	<!-- delete binary doc-files -->
-	<delete>
-		<fileset dir="j2se-integration/runtime/src/com/sun/xml/internal/bind/v2/doc-files" includes="*.gif,*.png,*.sxd,*.vsd"/>
-		<fileset dir="j2se-integration/xjc/src/com/sun/tools/internal/xjc/reader/xmlschema/doc-files" includes="*.gif,*.png,*.sxd,*.vsd"/>
-	</delete>
-	    
-    <!-- insert the RI version number into the file prolog message that
-        is placed at the head of every generated file and the output
-        message for "xjc -version"  and
-        message for "schemagen -version" -->
-    <replace dir="j2se-integration/xjc/src/com/sun/tools/internal/xjc" includes="MessageBundle*.properties">
-      <replacefilter token="@@BUILD_VERSION@@" value="${jaxb.version.in.jdk}"/>
-      <replacefilter token="@@BUILD_FULL_VERSION@@" value="${jaxb.version.in.jdk}"/>
-    </replace>
-    <replace dir="j2se-integration/xjc/src/com/sun/tools/internal/jxc" includes="MessageBundle*.properties">
-      <replacefilter token="@@BUILD_VERSION@@" value="${jaxb.version.in.jdk}"/>
-      <replacefilter token="@@BUILD_FULL_VERSION@@" value="${jaxb.version.in.jdk}"/>
-    </replace>
-
-  </target>
-
-
-  <target name="architecture-document"
-            description="generate architecture documents (which is just a glorified javadoc)">
-      <arch-doc destdir="${jaxb.root}/build/javadoc" title="JAXB RI">
-        <params>
-          <packageset dir="${jaxb.root}/javadoc"/>
-          <group title="Root Architecture Document" packages="jaxb" />
-
-          <packageset dir="${runtime.src}"/>
-          <packageset dir="${runtime.root}/arch-doc"/>
-          <group title="Runtime API for JAX-WS" packages="com.sun.xml.bind.api" />
-          <group title="Runtime" packages="com.sun.xml.bind*" />
-
-          <packageset dir="${xjc.src}"/>
-          <group title="XJC API for JAX-WS" packages="com.sun.tools.xjc.api" />
-          <group title="XJC" packages="com.sun.tools.xjc*:com.sun.tools.jxc*" />
-        </params>
-      </arch-doc>
-    </target>
-
     <!-- task that generates a manifest file -->
     <macrodef name="createManifest">
       <attribute name="extensionName"/>
@@ -221,7 +150,6 @@
               </copy>
           </sequential>
 
-
           <!-- JAXB 2.0 runtime jar-->
           <!-- generate jaxb-impl.jar for 2.0 runtime -->
           <sequential>
@@ -239,7 +167,6 @@
                   <zipgroupfileset dir="${jaxb.libs.runtime2}" includes="*.jar" />
               </jar>
           </sequential>
-
 
           <!-- JAXB 1.0 runtime jar -->
           <!-- generate jaxb1-impl.jar for 1.0 runtime -->
@@ -540,14 +467,6 @@ Class-Path: ${manifest.classpath}
       </condition>
     </target>
 
-    <target name="release-engineering"
-            description="target for Sun RE builds"
-            depends="src-zip,bin-installer,src-installer,licensee-zip" />
-
-    <target name="project.dtd" description="create DTD for DTD-aware editing">
-      <antstructure output="project.dtd"/>
-    </target>
-
     <target name = "integrate-1.0-compiler"
             description="extract XJC 1.0">
       <mkdir dir="${xjc10.classes}"/>
@@ -563,40 +482,11 @@ Class-Path: ${manifest.classpath}
            dest="tools/lib/util/stax-ex-src.zip" />
     </target>
 
-    <target name="integrate-api-maven" description="Integrate JAXB 2.2 API from maven">
-        <property name="mavenrepo.url" value="http://maven.java.net/content/repositories/snapshots/"/>
-        <get src="${mavenrepo.url}/javax/xml/bind/jaxb-api/${release.spec.version}/jaxb-api-${release.spec.version}.jar"
-             dest="tools/lib/redist/jaxb-api.jar" />
-        <get src="${mavenrepo.url}javax/xml/bind/jaxb-api/${release.spec.version}/jaxb-api-${release.spec.version}-sources.jar"
-             dest="tools/lib/redist/jaxb-api-src.zip" />
-        <get src="${mavenrepo.url}javax/xml/bind/jaxb-api/${release.spec.version}/jaxb-api-${release.spec.version}-javadoc.jar"
-             dest="tools/lib/redist/jaxb-api-doc.zip" />
-    </target>
-
-    <target name="integrate-api-hudson" description="Integrate JAXB 2.2 API from Hudson">
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-${release.spec.version}.jar"
-             dest="tools/lib/redist/jaxb-api.jar" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-${release.spec.version}-sources.jar"
-             dest="tools/lib/redist/jaxb-api-src.zip" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-${release.spec.version}-javadoc.jar"
-             dest="tools/lib/redist/jaxb-api-doc.zip" />
-    </target>
-
-    <target name="integrate-maven-repository-importer">
-        <get src="http://hudson.sfbay/job/maven-repository-importer/lastSuccessfulBuild/artifact/build/maven-repository-importer.jar"
-             dest="tools/lib/util/maven-repository-importer.jar" />
-    </target>
-
     <target name="integrate-zehpyr">
         <get src="http://hudson.sfbay/job/zephyr/lastSuccessfulBuild/artifact/dist/sjsxp-1_0/sjsxp.jar"
              dest="tools/lib/util/sjsxp.jar" />
         <get src="http://hudson.sfbay/job/zephyr/lastSuccessfulBuild/artifact/dist/sjsxp-src-1_0.zip"
              dest="tools/lib/src/sjsxp-src.zip" />
-    </target>
-
-    <target name="integrate-package-rename-task">
-        <get src="http://hudson.sfbay/job/package-rename-task/lastSuccessfulBuild/artifact/target/package-rename-task.jar"
-             dest="tools/lib/util/package-rename-task.jar"/>
     </target>
 
     <target name="integrate-xsdlib">
@@ -608,6 +498,37 @@ Class-Path: ${manifest.classpath}
     </target>
 
 <!-- mavenized projects -->
+
+    <target name="integrate-api" description="Integrate JAXB 2.2 API from Hudson">
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-${release.spec.version}.jar"
+             dest="tools/lib/redist/jaxb-api.jar" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-${release.spec.version}-sources.jar"
+             dest="tools/lib/redist/jaxb-api-src.zip" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-${release.spec.version}-javadoc.jar"
+             dest="tools/lib/redist/jaxb-api-doc.zip" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-osgi-${release.spec.version}.jar"
+             dest="tools/lib/osgi/jaxb-api-osgi.jar" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-osgi-${release.spec.version}-sources.jar"
+             dest="tools/lib/osgi/jaxb-api-osgi-sources.jar" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-osgi-${release.spec.version}-javadoc.jar"
+             dest="tools/lib/osgi/jaxb-api-osgi-javadoc.jar" />
+    </target>
+
+    <target name="integrate-api-maven" description="Integrate JAXB 2.2 API from maven">
+        <property name="mavenrepo.url" value="http://maven.java.net/content/repositories/snapshots/"/>
+        <get src="${mavenrepo.url}/javax/xml/bind/jaxb-api/${release.spec.version}/jaxb-api-${release.spec.version}.jar"
+             dest="tools/lib/redist/jaxb-api.jar" />
+        <get src="${mavenrepo.url}javax/xml/bind/jaxb-api/${release.spec.version}/jaxb-api-${release.spec.version}-sources.jar"
+             dest="tools/lib/redist/jaxb-api-src.zip" />
+        <get src="${mavenrepo.url}javax/xml/bind/jaxb-api/${release.spec.version}/jaxb-api-${release.spec.version}-javadoc.jar"
+             dest="tools/lib/redist/jaxb-api-doc.zip" />
+        <get src="${mavenrepo.url}/javax/xml/bind/jaxb-api-osgi/${release.spec.version}/jaxb-api-osgi-${release.spec.version}.jar"
+             dest="tools/lib/osgi/jaxb-api-osgi.jar" />
+        <get src="${mavenrepo.url}javax/xml/bind/jaxb-api-osgi/${release.spec.version}/jaxb-api-osgi-${release.spec.version}-sources.jar"
+             dest="tools/lib/osgi/jaxb-api-osgi-sources.jar" />
+        <get src="${mavenrepo.url}javax/xml/bind/jaxb-api-osgi/${release.spec.version}/jaxb-api-osgi-${release.spec.version}-javadoc.jar"
+             dest="tools/lib/redist/jaxb-api-osgi-javadoc.jar" />
+    </target>
 
     <target name="integrate-dtdparser">
       <get src="http://sysifos-sol.czech.sun.com/hudson/job/dtd-parser/lastSuccessfulBuild/artifact/target/dtd-parser-${dtd-parser.version}.jar"
@@ -929,6 +850,11 @@ Class-Path: ${manifest.classpath}
         <mvn.publish.local jar="${external.dir}/jaxb-api/jaxb-api.jar" mvngroup="javax.xml.bind" mvnartid="jaxb-api" mvnversion="${jaxb-api.version}"/>
         <copy file="${maven.repo.local}/${jaxb-api.mvn.path}" tofile="${jaxb.root}/tools/lib/redist/jaxb-api.jar"/>
 
+        <echo message="building jaxb-api-osgi"/>
+        <build.jar.from.srczip jar="${external.dir}/jaxb-api-osgi/jaxb-api-osgi.jar" srczip="tools/lib/osgi/jaxb-api-sources.jar" unzipdir="${external.dir}" srcdir="jaxb-api-osgi" cp="${maven.repo.local}/${activation.mvn.path}:${maven.repo.local}/${jsr173api.mvn.path}"/>
+        <mvn.publish.local jar="${external.dir}/jaxb-api-osgi/jaxb-api-osgi.jar" mvngroup="javax.xml.bind" mvnartid="jaxb-api-osgi" mvnversion="${jaxb-api.version}"/>
+        <copy file="${maven.repo.local}/${jaxb-api-osgi.mvn.path}" tofile="${jaxb.root}/tools/lib/osgi/jaxb-api-osgi.jar"/>
+
         <exec executable="ant" dir="${jaxb.root}" failonerror="true" newenvironment="false" >
             <arg line="hudson" />
             <arg line="-Dfrom.source=true"/>
@@ -947,12 +873,9 @@ Class-Path: ${manifest.classpath}
             <arg line="-Dfrom.source=true"/>
             <arg line="-Dmaven.repo.local=${maven.repo.local} -Djavac.target=1.5 -Djavac.source=1.5" />
             <arg line="${cpath}"/>
-            <arg line="-Dosgi.build.api=osgi/build"/>
             <arg line="-Dosgi.build.rt=osgi/build"/>
             <env key="JAVA_HOME" value="${JDK_1.5}" />
         </exec>
-
-        <mvn.publish.local jar="${jaxb.root}/osgi/build/jaxb-api-osgi.jar" mvngroup="javax.xml.bind" mvnartid="jaxb-api-osgi" mvnversion="${jaxb-api.version}"/>
         <mvn.publish.local jar="${jaxb.root}/osgi/build/jaxb-osgi.jar" mvngroup="com.sun.xml.bind" mvnartid="jaxb-osgi" mvnversion="${jaxb.version}"/>
 
     </target>

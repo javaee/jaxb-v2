@@ -3,7 +3,7 @@
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
 
     The contents of this file are subject to the terms of either the GNU
     General Public License Version 2 only ("GPL") or the Common Development
@@ -146,41 +146,4 @@
     <delete dir="${reflection.root}/build" />
   </target>
 
-    <target name="push-snapshot-to-maven"
-      description="publish snapshot jars into the maven repository">
-      <property name="jar.suffix" value="${release.impl.version}-SNAPSHOT" />
-      <antcall target="push-to-maven-prepare" />
-    </target>
-
-    <target name="push-to-maven-prepare" depends="clean, dist"
-      description="prepare a repository iamge for the push-to-maven target">
-      <taskdef resource="maven-repository-importer.properties">
-        <classpath>
-          <pathelement path="tools/lib/util/maven-repository-importer.jar" />
-        </classpath>
-      </taskdef>
-      <delete dir="build/maven-repo" /><!-- clean it -->
-      <!-- ${suffix} can be overridden to "" for posting releases -->
-      <!--
-        when building jars for Maven, we want to put suffix
-        (sometimes with version like '-2.0.beta1', with date '-20051208', or with '-SNAPSHOT')
-        this property lets you do that.
-      -->
-      <fail unless="jar.suffix">jar.suffix property needs to be defined</fail>
-      <maven-repository-importer
-          destdir="build/maven-repo" version="${jar.suffix}">
-        <artifact
-          jar=   "${reflection.root}/build/jaxb2-reflection.jar"
-          srczip="${reflection.root}/build/src.zip"
-          pom   ="${jaxb.root}/tools/poms/jaxb2-reflection.pom" />
-        <filterset>
-          <filter token="API_VERSION" value="${release.spec.version}"/>
-        </filterset>
-      </maven-repository-importer>
-    </target>
-
-    <target name="push-to-maven"
-      description="publish artifacts into the maven repository">
-      <cvs-import src="build/maven-repo" dest="jaxb/repo" cvsroot=":pserver:${user.name}@cvs.dev.java.net:/cvs" />
-    </target>
 </project>

@@ -63,17 +63,9 @@
         <taskdef resource="aQute/bnd/ant/taskdef.properties"
                  classpath="${jaxb.root}/tools/lib/util/bnd-0.0.249.jar"/>
 
-        <mkdir dir="${osgi.build.api}"/>
         <mkdir dir="${osgi.build.rt}"/>
 
         <copy file="${osgi.root}/jaxb.bnd" todir="${osgi.build.rt}">
-            <filterset>
-                <filter token="RELEASE_IMPL_VERSION" value="${release.impl.version}"/>
-                <filter token="RELEASE_SPEC_VERSION" value="${release.spec.version}"/>
-            </filterset>
-        </copy>
-
-        <copy file="${osgi.root}/jaxb-api.bnd" todir="${osgi.build.api}">
             <filterset>
                 <filter token="RELEASE_IMPL_VERSION" value="${release.impl.version}"/>
                 <filter token="RELEASE_SPEC_VERSION" value="${release.spec.version}"/>
@@ -105,25 +97,11 @@
         <!-- The bnd task does not recognize when input files have changed, -->
         <!-- hence we delete the output file to ensure a rebuild            -->
         <delete file="${osgi.build.rt}/jaxb-bnd.jar" quiet="true"/>
-        <delete file="${osgi.build.api}/jaxb-api-bnd.jar" quiet="true"/>
-
-        <bnd classpath="${jaxb.dist}/lib/jaxb-api.jar"
-                  failok="false"
-                  output="${osgi.build.api}/jaxb-api-bnd.jar"
-                  exceptions="true"
-                  files="${osgi.build.api}/jaxb-api.bnd"/>
 
 	<bnd classpath="${jaxb.dist}/lib/jaxb-impl.jar, ${osgi.build}/jaxb-xjc, ${osgi.build}/fastinfoset, ${jaxb.libs.util}/stax-ex.jar"
              failok="false"
              output="${osgi.build.rt}/jaxb-bnd.jar"
              files="${osgi.build.rt}/jaxb.bnd"/>
-            <!--Readd the JAXB 1.0 files -->
-            <!-- <unjar src="${osgi.build.rt}/jaxb-bnd.jar"
-                   dest="${osgi.build.rt}">
-                <patternset>
-                    <include name="META-INF/MANIFEST.MF"/>
-                </patternset>
-            </unjar> -->
 
         <manifestreader fileName="${osgi.build.rt}/jaxb-bnd.jar">
             <property name="jaxb.Ant-Version" value="Ant-Version" />
@@ -186,7 +164,6 @@
             <attribute name="Implementation-Version" value="${jaxb.Implementation-Version}"/>
         </manifest>
 
-
         <jar destfile="${osgi.build}/jaxb-osgi.jar"
              manifest="${osgi.build.rt}/META-INF/MANIFEST.MF">
             <zipfileset src="${osgi.build.rt}/jaxb-bnd.jar"/>
@@ -207,12 +184,7 @@
                 <include name="org/jvnet/fastinfoset/stax/**"/>
              </zipfileset>
         </jar>
-        <move  file="${osgi.build.api}/jaxb-api-bnd.jar" tofile="${osgi.build}/jaxb-api-osgi.jar"/>
-
-        <property name="apiosgisrc_path" value="${osgi.root}/build/jaxb-api-osgi-sources.jar"/>
-        <delete file="${apiosgisrc_path}" quiet="true"/>
-        <copy file="${jaxb.dist}/lib/jaxb-api-src.zip" tofile="${apiosgisrc_path}"/>
-
+        
     </target>
 
     <target name="clean">
