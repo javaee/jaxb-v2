@@ -739,7 +739,7 @@
         <copy file="${maven.repo.local}/${jaxb-api.mvn.path}" tofile="${jaxb.root}/tools/lib/redist/jaxb-api.jar"/>
 
         <echo message="building jaxb-api-osgi"/>
-        <build.jar.from.srczip jar="${external.dir}/jaxb-api-osgi/jaxb-api-osgi.jar" srczip="tools/lib/osgi/jaxb-api-sources.jar" unzipdir="${external.dir}" srcdir="jaxb-api-osgi" cp="${maven.repo.local}/${activation.mvn.path}:${maven.repo.local}/${jsr173api.mvn.path}"/>
+        <build.jar.from.srczip jar="${external.dir}/jaxb-api-osgi/jaxb-api-osgi.jar" srczip="tools/lib/osgi/jaxb-api-osgi-sources.jar" unzipdir="${external.dir}" srcdir="jaxb-api-osgi" cp="${maven.repo.local}/${activation.mvn.path}:${maven.repo.local}/${jsr173api.mvn.path}"/>
         <mvn.publish.local jar="${external.dir}/jaxb-api-osgi/jaxb-api-osgi.jar" mvngroup="javax.xml.bind" mvnartid="jaxb-api-osgi" mvnversion="${jaxb-api.version}"/>
         <copy file="${maven.repo.local}/${jaxb-api-osgi.mvn.path}" tofile="${jaxb.root}/tools/lib/osgi/jaxb-api-osgi.jar"/>
 
