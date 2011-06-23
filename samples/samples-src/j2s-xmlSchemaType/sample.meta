@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<sample since="2.0" >
+    <title>Annotation @XmlSchemaType is used to customize the mapping of a 
+	property or field to an XML built-in type.</title>
+    <description><![CDATA[
+      This sample application demonstrates the use of annotation
+      @XmlSchemaType to customize the mapping of a property or field to 
+      an XML built-in type.
+    ]]></description>
+        
+    <project>
+        <javadoc/>
+        <schemagen>
+            <exclude name="Main.java"/>
+        </schemagen>
+        <java mainClass="Main" />
+    </project>
+    
+</sample>

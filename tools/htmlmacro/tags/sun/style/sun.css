@@ -1,0 +1,154 @@
+/*
+ * The contents of this file are subject to the terms
+ * of the Common Development and Distribution License
+ * (the "License").  You may not use this file except
+ * in compliance with the License.
+ * 
+ * You can obtain a copy of the license at
+ * https://jwsdp.dev.java.net/CDDLv1.0.html
+ * See the License for the specific language governing
+ * permissions and limitations under the License.
+ * 
+ * When distributing Covered Code, include this CDDL
+ * HEADER in each file and include the License file at
+ * https://jwsdp.dev.java.net/CDDLv1.0.html  If applicable,
+ * add the following below this CDDL HEADER, with the
+ * fields enclosed by brackets "[]" replaced with your
+ * own identifying information: Portions Copyright [yyyy]
+ * [name of copyright owner]
+ */
+
+/*
+ * Default CSS stylesheet
+ */
+
+body {
+    background-color: white;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-family: sans-serif;
+}
+
+h1 {
+  text-align: center;
+  color: rgb(231, 111, 0);
+}
+
+h3, h4, h5, h6 {
+    color: #000;
+}
+
+code {
+    font-family: Courier, monospace;
+}
+
+diff {
+    font-family: Courier, monospace;
+    color: red;
+}
+
+a {
+  text-decoration:none;
+}
+a:visited {
+  color:#917E9C;
+}
+a:link {
+  color:#3E6B8A;
+}
+
+a:hover {
+  text-decoration:underline;
+}
+
+DIV.footer {/* header on each HTML file that shows the revision */
+	text-align: right;
+	font-size: 0.8em;
+	padding-right: 80px;
+	background: url("sunlogo.gif") no-repeat right bottom;
+}
+
+
+/*------------------------------ navigation bar ------------------------------*/
+.navbar {
+  border-spacing: 0px;
+  border: 0px;
+  margin-left: 1em;
+}
+
+.navbar TD {
+  border-right:5px solid #FFF;
+  padding:0px;
+  vertical-align: top;
+}
+
+.navbar TD A {
+  padding: 6px 7px 3px 7px;
+  border: none;
+  margin: none;
+  display: block;
+  text-decoration: none;
+}
+
+.navbar TD A:hover {
+  text-decoration: underline;
+}
+
+
+.navbar TD.active {
+  background: #507c9a url("bg_titlebar.gif") no-repeat left top;
+}
+
+.navbar TD.active A {
+  background: url("a2_corner_tr.gif") no-repeat right top;
+  font-weight: bold;
+  color: white;
+}
+
+.navbar TD.inactive {
+  background: #CCDAE3 url("d7_tab_bg.gif") no-repeat left top;
+  border-top: 3px solid #FFF;  /* so that active tabs are drawn 3px taller than others */
+}
+
+.navbar TD.inactive A {
+  background: url("corner_navblue_tr.gif") no-repeat right top;
+  color: rgb(53, 85, 107);
+}
+
+
+.subnavbar {
+  display: block;
+  background: #507c9a;
+  padding: 9px 7px 5px 7px;
+}
+.subnavbar UL {
+  display: inline;
+  margin-left: 0px;
+  padding-left: 0px;
+}
+.subnavbar UL LI {
+  display: inline;
+  margin-left: 0px;
+  border-left: 1px solid #FFF;
+  padding-left: 5px;
+}
+.subnavbar UL LI.first {
+  border-left: none;
+}
+.subnavbar A {
+  font-weight:normal;
+  color:#CCDAE3;
+  text-decoration: none;
+}
+.subnavbar A:hover {
+  text-decoration: underline;
+}
+.subnavbar A:visited {
+  font-weight:normal;
+  color:#FFF;
+}
+.subnavbar UL LI A SPAN.active {
+  font-weight: bold;
+  color:#FFF;
+}

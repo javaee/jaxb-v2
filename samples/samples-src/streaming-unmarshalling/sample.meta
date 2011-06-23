@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<sample since="2.1">
+    <title>Streaming Unmarshalling w/o StAX</title>
+    <description><![CDATA[
+        This example illustrates a different approach to the streaming unmarshalling,
+        which is suitable for processing a large document.
+    ]]></description>
+    
+    <project>
+        <javadoc/>
+        <java mainClass="Main">
+            <arg value="test.xml"/>
+        </java>
+    </project>
+    
+</sample>

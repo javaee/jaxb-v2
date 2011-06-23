@@ -1,0 +1,109 @@
+<!--
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ 
+ Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ 
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 2 only ("GPL") or the Common Development
+ and Distribution License("CDDL") (collectively, the "License").  You
+ may not use this file except in compliance with the License. You can obtain
+ a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ language governing permissions and limitations under the License.
+ 
+ When distributing the software, include this License Header Notice in each
+ file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ Sun designates this particular file as subject to the "Classpath" exception
+ as provided by Sun in the GPL Version 2 section of the License file that
+ accompanied this code.  If applicable, add the following below the License
+ Header, with the fields enclosed by brackets [] replaced by your own
+ identifying information: "Portions Copyrighted [year]
+ [name of copyright owner]"
+ 
+ Contributor(s):
+ 
+ If you wish your version of this file to be governed by only the CDDL or
+ only the GPL Version 2, indicate your decision by adding "[Contributor]
+ elects to include this software in this distribution under the [CDDL or GPL
+ Version 2] license."  If you don't indicate a single choice of license, a
+ recipient has the option to distribute your version of this file under
+ either the CDDL, the GPL Version 2 or to extend the choice of license to
+ its licensees as provided above.  However, if you add GPL Version 2 code
+ and therefore, elected the GPL Version 2 license, then the option applies
+ only if the new code is made subject to such option by the copyright
+ holder.
+-->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="purchaseOrder" type="PurchaseOrderType"/>
+  <xs:element name="comment" type="xs:string"/>
+  <xs:complexType name="PurchaseOrderType">
+    <xs:sequence>
+      <xs:element name="shipTo" type="USAddress"/>
+      <xs:element name="billTo" type="USAddress"/>
+      <xs:element ref="comment" minOccurs="0"/>
+      <xs:element name="items" type="Items"/>
+    </xs:sequence>
+    <xs:attribute name="orderDate" type="xs:date"/>
+  </xs:complexType>
+
+  <xs:complexType name="USAddress">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string"/>
+      <xs:element name="street" type="xs:string"/>
+      <xs:element name="city" type="xs:string"/>
+      <xs:element name="state" type="USState"/>
+      <xs:element name="zip" type="ZipCodeType"/>
+    </xs:sequence>
+    <xs:attribute name="country" type="xs:NMTOKEN" fixed="US"/>
+  </xs:complexType>
+
+  <xs:complexType name="Items">
+    <xs:sequence>
+      <xs:element name="item" minOccurs="1" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="productName" type="xs:string"/>
+            <xs:element name="quantity" default="10">
+              <xs:simpleType>
+                <xs:restriction base="xs:positiveInteger">
+                  <xs:maxExclusive value="100"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+            <xs:element name="USPrice" type="xs:decimal"/>
+            <xs:element ref="comment" minOccurs="0"/>
+            <xs:element name="shipDate" type="xs:date" minOccurs="0"/>
+          </xs:sequence>
+          <xs:attribute name="partNum" type="SKU" use="required"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Stock Keeping Unit, a code for identifying products -->
+  <xs:simpleType name="SKU">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="\d{3}-[A-Z]{2}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+
+  <xs:simpleType name="USState">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="AK"/>
+      <xs:enumeration value="AL"/>
+      <xs:enumeration value="AR"/>
+      <xs:enumeration value="CA"/>
+      <xs:enumeration value="MA"/>
+      <!-- and so on ... -->
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="ZipCodeType">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="10000"/>
+      <xs:maxInclusive value="99999"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

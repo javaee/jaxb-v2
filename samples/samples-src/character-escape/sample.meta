@@ -1,0 +1,20 @@
+<sample since="1.0">
+    <title>character-escape</title>
+    <description>This example shows how you can use the new JAXB RI Marshaller 
+        property &quot;com.sun.xml.bind.characterEscapeHandler&quot; to change 
+        the default character escaping behavior.</description>
+        
+    <readme/>
+    
+    <project>
+        <xjc schema="simple.xsd" package="simple"/>
+        
+        <javadoc/>
+        
+        <java mainClass="Main">
+            <arg value="test.xml"/>
+        </java>
+    </project>
+    
+</sample>
+

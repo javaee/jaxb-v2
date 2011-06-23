@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ 
+ Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ 
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 2 only ("GPL") or the Common Development
+ and Distribution License("CDDL") (collectively, the "License").  You
+ may not use this file except in compliance with the License. You can obtain
+ a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ language governing permissions and limitations under the License.
+ 
+ When distributing the software, include this License Header Notice in each
+ file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ Sun designates this particular file as subject to the "Classpath" exception
+ as provided by Sun in the GPL Version 2 section of the License file that
+ accompanied this code.  If applicable, add the following below the License
+ Header, with the fields enclosed by brackets [] replaced by your own
+ identifying information: "Portions Copyrighted [year]
+ [name of copyright owner]"
+ 
+ Contributor(s):
+ 
+ If you wish your version of this file to be governed by only the CDDL or
+ only the GPL Version 2, indicate your decision by adding "[Contributor]
+ elects to include this software in this distribution under the [CDDL or GPL
+ Version 2] license."  If you don't indicate a single choice of license, a
+ recipient has the option to distribute your version of this file under
+ either the CDDL, the GPL Version 2 or to extend the choice of license to
+ its licensees as provided above.  However, if you add GPL Version 2 code
+ and therefore, elected the GPL Version 2 license, then the option applies
+ only if the new code is made subject to such option by the copyright
+ holder.
+-->
+
+<!-- 26 Aug 2002 - source: UBL_Library_0p70_Order.xls -->
+<!-- Created by: Gunther Stuhec, SAP AG -->
+<!-- 16 Jan 2003 - source: UBL_Library_0p70_Order.xls -->
+<!-- Edited by: Tim McGrath, UBL LC -->
+<!-- 21 Jan 2003 - source: UBL_Library_0p70_Order.xls -->
+<!-- Edited by: Gunther Stuhec, UBL NDRSC, SAP AG -->
+<!-- 25 Jan 2003 - source: UBL_Library_0p70_Order.xls -->
+<!-- Edited by: Tim McGrath, UBL LC -->
+<xsd:schema targetNamespace="urn:oasis:names:tc:ubl:Order:1.0:0.70" xmlns:cat="urn:oasis:names:tc:ubl:CommonAggregateTypes:1.0:0.70" xmlns:cct="urn:oasis:names:tc:ubl:CoreComponentTypes:1.0:0.70" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70" xmlns="urn:oasis:names:tc:ubl:Order:1.0:0.70" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:import namespace="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70" schemaLocation="CoreComponentParameters.xsd"/>
+	<xsd:import namespace="urn:oasis:names:tc:ubl:CoreComponentTypes:1.0:0.70" schemaLocation="CoreComponentTypes.xsd"/>
+	<xsd:import namespace="urn:oasis:names:tc:ubl:CommonAggregateTypes:1.0:0.70" schemaLocation="UBL_Library_0p70_Reusable.xsd"/>
+	<xsd:element name="Order" type="OrderType"/>
+	<xsd:complexType name="OrderType" id="UBL100001">
+		<xsd:annotation>
+			<xsd:documentation>
+				<ccts:ABIE dictionaryEntryName="Order. Details" definition="information directly relating to the order." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="" propertyTerm="Details" representationTerm="Details" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="cat:ID">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order. Identifier" definition="The OrderId element is a unique number assigned to the Order in respect to the parties assigning the number." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="" propertyTerm="Identification" representationTerm="Identifier" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:IssueDate">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order. Issue_ Date" definition="a date (and potentially time) stamp denoting when the Order was issued." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="Issue" propertyTerm="Date" representationTerm="Date" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="AcknowledgementResponseCode" id="UBL100004" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order. Acknowledgement Response. Code" definition="specifies the type of acknowledgment for the order that the buyer requires from the seller." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="" propertyTerm="Acknowledgement Response" representationTerm="Code" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="TransactionCurrencyCode" id="UBL100005" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order. Transaction_ Currency. Code" definition="the default currency of the Order transaction, which will be used for Invoicing." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="Transaction" propertyTerm="Currency" representationTerm="Code" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="PricingCurrencyCode" id="UBL100006" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order. Pricing_ Currency. Code" definition="the currency in which all pricing on the transaction will be specified." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="Pricing" propertyTerm="Currency" representationTerm="Code" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="EarliestDate" id="UBL100007" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order. Earliest_ Date" definition="the starting date on or after which Order should be considered valid" qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="Earliest" propertyTerm="Date" representationTerm="Date" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="CancelledByDate" id="UBL100008" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order. Cancelled By_ Date" definition="the date on or after which Order should be cancelled." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="Cancelled By" propertyTerm="Date" representationTerm="Date" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="ValidityDurationMeasure" id="UBL100009" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order. Validity_ Duration. Measure" definition="the period for which the order is valid." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="Validity" propertyTerm="Duration" representationTerm="Measure" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="LineitemCountQuantity" id="UBL100010" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order. Lineitem_ Count. Quantity" definition="the number of line items in the order." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="LineItem" propertyTerm="Count" representationTerm="Quantity" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="TaxTotalAmount" id="UBL100011" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order. Tax_ Total. Amount" definition="the total tax amount for the Order." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="Tax" propertyTerm="Total" representationTerm="Amount" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:LineExtensionTotalAmount" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order. Line Extension_ Total. Amount" definition="the total of line item extension amounts for the entire Order, but not adjusted by any payment settlement discount or taxation." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="Line Extension" propertyTerm="Total" representationTerm="Amount" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="TotalPackagesCountQuantity" id="UBL100013" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order. Total Packages_ Count. Quantity" definition="the count of the total number of packages contained in the purchase order." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="Total Packages" propertyTerm="Count" representationTerm="Quantity" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:GrossWeightMeasure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order. Gross_ Weight. Measure" definition="the total gross weight of the order." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="Gross" propertyTerm="Weight" representationTerm="Measure" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:NetWeightMeasure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order. Net_ Weight. Measure" definition="the total net weight of the order." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="Net" propertyTerm="Weight" representationTerm="Measure" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:NetNetWeightMeasure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order. Net Net_ Weight. Measure" definition="the weight (mass) of the goods themselves without any packing. Sometimes known as the &quot;NetNet Weight&quot;" qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="Net Net" propertyTerm="Weight" representationTerm="Measure" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:GrossVolumeMeasure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order. Gross_ Volume. Measure" definition="the total volume of the order." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="Gross" propertyTerm="Volume" representationTerm="Measure" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:NetVolumeMeasure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order. Net_ Volume. Measure" definition="the total volume of the order." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="Net" propertyTerm="Volume" representationTerm="Measure" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:BuyerParty">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Order. Buyer_ Party" definition="associates the order with information about the buyer involved in the transaction." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="Buyer" propertyTerm="Party" representationTerm="Party" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:SellerParty">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Order. Seller_ Party" definition="associates the order with information about the seller involved in the transaction." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="Seller" propertyTerm="Party" representationTerm="Party" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:FreightForwarderParty" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Order. Freight Forwarder_ Party" definition="associates the order with information about the freight forwarder involved in the transaction." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="Freight Forwarder" propertyTerm="Party" representationTerm="Party" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:AllowanceCharge" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Order. Allowance Charge" definition="associates the order with one or more pricing components for overall charges allowances etc." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="" propertyTerm="Allowance Charge" representationTerm="Allowance Charge" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:SalesConditions" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Order. Sales Conditions" definition="associates the order with one sales conditions applying to the whole order." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="" propertyTerm="Sales Conditions" representationTerm="Sales Conditions" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:DeliveryTerms" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Order. Delivery Terms" definition="associates the order with delivery terms agreed between seller and buyer with regard to the delivery of goods." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="" propertyTerm="Delivery Terms" representationTerm="Delivery Terms" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:DestinationCountry" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Order. Destination_ Country" definition="associates the order with the country to which it is destined, for Customs purposes. " qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="Destination" propertyTerm="Country" representationTerm="Country" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:OrderLine" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Order. Order Line" definition="associates the order with one or more order items." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="" propertyTerm="Order Line" representationTerm="Order Line" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:Contract" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Order. Contract" definition="associates the order with a previously agreed contract." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="" propertyTerm="Contract" representationTerm="Contract" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:Quote" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Order. Quote" definition="associates the order with a prior quote." qualifierTermObjectClassTerm="" objectClassTerm="Order" qualifierTerm_PropertyTerm="" propertyTerm="Quote" representationTerm="Quote" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="AcknowledgementResponseCode" type="cct:CodeType"/>
+	<xsd:element name="CancelledByDate" type="cct:DateType"/>
+	<xsd:element name="EarliestDate" type="cct:DateType"/>
+	<xsd:element name="LineitemCountQuantity" type="cct:QuantityType"/>
+	<xsd:element name="PricingCurrencyCode" type="cct:CodeType"/>
+	<xsd:element name="TaxTotalAmount" type="cct:AmountType"/>
+	<xsd:element name="TotalPackagesCountQuantity" type="cct:QuantityType"/>
+	<xsd:element name="TransactionCurrencyCode" type="cct:CodeType"/>
+	<xsd:element name="ValidityDurationMeasure" type="cct:MeasureType"/>
+</xsd:schema>

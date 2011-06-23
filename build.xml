@@ -131,121 +131,6 @@
       </sequential>
     </macrodef>
 
-    <!-- generate a distribution -->
-    <target name="dist"
-            depends="compile,integrate-1.0-compiler"
-            description="create a distribution in jaxb-ri/dist">
-        <mkdir dir="${jaxb.dist}" />
-        <mkdir dir="${jaxb.dist}/bin" />
-        <mkdir dir="${jaxb.dist}/lib" />
-
-        <parallel>
-          <!-- copy redist jars -->
-          <sequential>
-              <copy todir="${jaxb.dist}/lib">
-                  <fileset dir="${jaxb.libs.redist}">
-                       <include name="**/*.jar"/>
-                       <include name="**/*.zip"/>
-                  </fileset>
-              </copy>
-          </sequential>
-
-          <!-- JAXB 2.0 runtime jar-->
-          <!-- generate jaxb-impl.jar for 2.0 runtime -->
-          <sequential>
-              <createManifest file="${runtime.root}/build/manifest.rt" extensionName="com.sun.xml.bind" />
-              <manifest mode="update" file="${runtime.root}/build/manifest.rt">
-                <attribute name="Class-Path" value="jaxb-api.jar activation.jar jsr173_1.0_api.jar jaxb1-impl.jar" /> <!-- added for JES4 script compatibility -->
-              </manifest>
-              <jar jarfile="${jaxb.dist}/lib/jaxb-impl.jar"
-                   manifest="${runtime.root}/build/manifest.rt"
-                   duplicate="fail">
-                  <fileset dir="${runtime.classes}"/>
-                  <fileset dir="${runtime-fi.classes}"/>
-                  <fileset dir="${runtime-staxex.classes}"/>
-                  <fileset dir="${runtime.src}" includes="META-INF/**/*" />
-                  <zipgroupfileset dir="${jaxb.libs.runtime2}" includes="*.jar" />
-              </jar>
-          </sequential>
-
-          <!-- JAXB 1.0 runtime jar -->
-          <!-- generate jaxb1-impl.jar for 1.0 runtime -->
-          <!-- include the contents of the old jaxb-libs.jar -->
-          <sequential>
-              <createManifest file="${runtime.root}/build/manifest.rt1" extensionName="com.sun.xml.bind" />
-              <mkdir dir="${jaxb.root}/build/jaxb-1-impl-rejar"/>
-              <unzip dest="${jaxb.root}/build/jaxb-1-impl-rejar">
-                <fileset dir="${jaxb.libs.runtime}" includes="*.jar" />
-              </unzip>
-              <jar jarfile="${jaxb.dist}/lib/jaxb1-impl.jar"
-                   manifest="${runtime.root}/build/manifest.rt1">
-                  <!-- can't use zipgroupfileset because of the duplicate version.properties -->
-                  <fileset dir="${jaxb.root}/build/jaxb-1-impl-rejar"/>
-                  <fileset dir="${runtime-deprecated.classes}"/>
-              </jar>
-              <delete dir="${jaxb.root}/build/jaxb-1-impl-rejar"/>
-          </sequential>
-
-
-          <!-- generate jaxb-xjc.jar: xjc, and schemagen subprojects -->
-          <sequential>
-              <createManifest file="${xjc.root}/manifest.xjc" extensionName="com.sun.tools.xjc" />
-
-              <!-- the manifest classpath isn't quite like any of the path structures
-                   supported by Ant, so build the list the old fashioned way.
-
-                   and yes, it's OK to have new lines and spaces inbetween.
-              -->
-              <property name="manifest.classpath"
-                value="jaxb-api.jar jaxb-impl.jar jsr173_1.0_api.jar activation.jar" />
-              <echo file="${xjc.root}/manifest.xjc" append="true"
->Main-Class: com.sun.tools.xjc.XJCFacade
-Class-Path: ${manifest.classpath}
-
-</echo>
-              <copy todir="${xjc.classes}">
-                <fileset dir="${xjc.src}" includes="com/sun/tools/xjc/runtime/*.java" />
-                <mapper type="glob" from="*.java" to="*.java_" />
-              </copy>
-
-              <mkdir dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
-              <unzip dest="${jaxb.root}/build/jaxb-xjc-rejar">
-                <fileset dir="${jaxb.libs.compiler}" includes="*.jar" />
-              </unzip>
-              <jar jarfile="${jaxb.dist}/lib/jaxb-xjc.jar"
-                   manifest="${xjc.root}/manifest.xjc"
-                   duplicate="fail">
-                  <!-- can't use zipgroupfileset because of the duplicate LICENSE.txt -->
-                  <fileset dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
-                  <fileset dir="${xjc.classes}"/>
-                  <metainf dir="${xjc.src}/META-INF" />
-                  <!-- bundle the 1.0 compiler in the side directory -->
-                  <zipfileset dir="${xjc10.classes}/.." />
-              </jar>
-              <delete dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
-          </sequential>
-
-
-          <!-- copy bin scripts -->
-          <sequential>
-              <copy file="${jaxb.root}/tools/bin/xjc.bat" todir="${jaxb.dist}/bin"/>
-              <copy file="${jaxb.root}/tools/bin/xjc.sh"  todir="${jaxb.dist}/bin"/>
-              <copy file="${jaxb.root}/tools/bin/schemagen.bat" todir="${jaxb.dist}/bin"/>
-              <copy file="${jaxb.root}/tools/bin/schemagen.sh"  todir="${jaxb.dist}/bin"/>
-              <chmod file="${jaxb.dist}/bin/xjc.sh" perm="ugo+rx"/>
-              <chmod file="${jaxb.dist}/bin/schemagen.sh" perm="ugo+rx"/>
-          </sequential>
-        </parallel>
-    </target>
-
-    <target name="dist-zip" depends="dist"
-        description="run dist then package the image to jaxb-ri.zip">
-
-        <zip destfile="${jaxb.root}/jaxb-ri.zip">
-            <zipfileset dir="${jaxb.dist}" prefix="jaxb-ri" />
-        </zip>
-    </target>
-
     <target name="dist-zip-with-src" depends="src-zip, dist-zip"/>
 
     <target name="src-zip" depends="init-standalone,dist"
@@ -310,9 +195,7 @@ Class-Path: ${manifest.classpath}
       <delete dir="tmp_xjc" />
     </target>
 
-    <target name="hudson" depends="clean, dist-zip-with-src, test"
-            description="Target to be invoked on Hudson">
-    </target>
+    <target name="hudson" depends="clean, dist-zip-with-src, test, bin-installer" description="Target to be invoked on Hudson"/>
 
   <target name="licensee-zip"
           description="licensee bundle. Dumbed down version of the workspace bundle">
@@ -880,5 +763,170 @@ Class-Path: ${manifest.classpath}
 
     </target>
 
-    
+  <target name="process-sample.notinwspack" unless="in.wspack">
+    <ant dir="samples" target="process-samples">
+      <property name="samples.target" value="RI"/>
+    </ant>
+  </target>
+        
+  <!-- assumes wspack target has been run -->
+  <target name="create.pkg" depends="check.os" if="is.unix">
+    <ant dir="pkg" target="deploy-pkg"/>
+  </target>
+
+  <!-- assumes wspack target has been run -->
+  <target name="create.rpm" depends="check.os" if="is.unix">
+    <ant dir="rpm" target="deploy-rpm"/>
+  </target>
+
+  <!-- assumes wspack target has been run -->
+  <target name="create.hpux" depends="check.os" if="is.unix">
+    <ant dir="hpux" target="deploy-hpux"/>
+  </target>
+       
+    <!-- generate a distribution -->
+    <target name="dist"
+            depends="compile, integrate-1.0-compiler"
+            description="create a distribution in jaxb-ri/dist">
+        <mkdir dir="${jaxb.dist}" />
+        <mkdir dir="${jaxb.dist}/bin" />
+        <mkdir dir="${jaxb.dist}/lib" />
+        <mkdir dir="${jaxb.dist}/docs/api"/>
+
+        <parallel>
+
+            <sequential>
+                <copy todir="${jaxb.dist}/lib">
+                    <fileset dir="${jaxb.libs.redist}">
+                         <include name="**/*.jar"/>
+                         <include name="**/*.zip"/>
+                    </fileset>
+                </copy>
+            </sequential>
+
+              <!-- JAXB 2.0 runtime jar-->
+              <!-- generate jaxb-impl.jar for 2.0 runtime -->
+              <sequential>
+                  <createManifest file="${runtime.root}/build/manifest.rt" extensionName="com.sun.xml.bind" />
+                  <manifest mode="update" file="${runtime.root}/build/manifest.rt">
+                    <attribute name="Class-Path" value="jaxb-api.jar activation.jar jsr173_1.0_api.jar jaxb1-impl.jar" /> <!-- added for JES4 script compatibility -->
+                  </manifest>
+                  <jar jarfile="${jaxb.dist}/lib/jaxb-impl.jar"
+                       manifest="${runtime.root}/build/manifest.rt"
+                       duplicate="fail">
+                      <fileset dir="${runtime.classes}"/>
+                      <fileset dir="${runtime-fi.classes}"/>
+                      <fileset dir="${runtime-staxex.classes}"/>
+                      <fileset dir="${runtime.src}" includes="META-INF/**/*" />
+                      <zipgroupfileset dir="${jaxb.libs.runtime2}" includes="*.jar" />
+                  </jar>
+              </sequential>
+
+              <!-- JAXB 1.0 runtime jar -->
+              <!-- generate jaxb1-impl.jar for 1.0 runtime -->
+              <!-- include the contents of the old jaxb-libs.jar -->
+              <sequential>
+                  <createManifest file="${runtime.root}/build/manifest.rt1" extensionName="com.sun.xml.bind" />
+                  <mkdir dir="${jaxb.root}/build/jaxb-1-impl-rejar"/>
+                  <unzip dest="${jaxb.root}/build/jaxb-1-impl-rejar">
+                    <fileset dir="${jaxb.libs.runtime}" includes="*.jar" />
+                  </unzip>
+                  <jar jarfile="${jaxb.dist}/lib/jaxb1-impl.jar"
+                       manifest="${runtime.root}/build/manifest.rt1">
+                      <!-- can't use zipgroupfileset because of the duplicate version.properties -->
+                      <fileset dir="${jaxb.root}/build/jaxb-1-impl-rejar"/>
+                      <fileset dir="${runtime-deprecated.classes}"/>
+                  </jar>
+                  <delete dir="${jaxb.root}/build/jaxb-1-impl-rejar"/>
+              </sequential>
+
+
+              <!-- generate jaxb-xjc.jar: xjc, and schemagen subprojects -->
+              <sequential>
+                  <createManifest file="${xjc.root}/manifest.xjc" extensionName="com.sun.tools.xjc" />
+
+                  <!-- the manifest classpath isn't quite like any of the path structures
+                       supported by Ant, so build the list the old fashioned way.
+
+                       and yes, it's OK to have new lines and spaces inbetween.
+                  -->
+                  <property name="manifest.classpath" value="jaxb-api.jar jaxb-impl.jar jsr173_1.0_api.jar activation.jar" />
+                  <echo file="${xjc.root}/manifest.xjc" append="true"
+>Main-Class: com.sun.tools.xjc.XJCFacade
+Class-Path: ${manifest.classpath}
+
+</echo>
+                  <copy todir="${xjc.classes}">
+                    <fileset dir="${xjc.src}" includes="com/sun/tools/xjc/runtime/*.java" />
+                    <mapper type="glob" from="*.java" to="*.java_" />
+                  </copy>
+
+                  <mkdir dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
+                  <unzip dest="${jaxb.root}/build/jaxb-xjc-rejar">
+                    <fileset dir="${jaxb.libs.compiler}" includes="*.jar" />
+                  </unzip>
+                  <jar jarfile="${jaxb.dist}/lib/jaxb-xjc.jar"
+                       manifest="${xjc.root}/manifest.xjc"
+                       duplicate="fail">
+                      <!-- can't use zipgroupfileset because of the duplicate LICENSE.txt -->
+                      <fileset dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
+                      <fileset dir="${xjc.classes}"/>
+                      <metainf dir="${xjc.src}/META-INF" />
+                      <!-- bundle the 1.0 compiler in the side directory -->
+                      <zipfileset dir="${xjc10.classes}/.." />
+                  </jar>
+                  <delete dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
+              </sequential>
+
+              <!-- copy bin scripts -->
+              <sequential>
+                  <copy file="${jaxb.root}/tools/bin/xjc.bat" todir="${jaxb.dist}/bin"/>
+                  <copy file="${jaxb.root}/tools/bin/xjc.sh"  todir="${jaxb.dist}/bin"/>
+                  <copy file="${jaxb.root}/tools/bin/schemagen.bat" todir="${jaxb.dist}/bin"/>
+                  <copy file="${jaxb.root}/tools/bin/schemagen.sh"  todir="${jaxb.dist}/bin"/>
+                  <chmod file="${jaxb.dist}/bin/xjc.sh" perm="ugo+rx"/>
+                  <chmod file="${jaxb.dist}/bin/schemagen.sh" perm="ugo+rx"/>
+              </sequential>
+
+              <!-- copy licence files -->
+              <sequential>
+                  <copy todir="${jaxb.dist}">
+                    <fileset dir="${jaxb.root}">
+                        <include name="License.txt"/>
+                        <include name="ThirdParty*.txt"/>
+                    </fileset>
+                  </copy>
+              </sequential>
+
+        </parallel>
+
+        <unzip src="${jaxb.libs.redist}/jaxb-api-doc.zip" dest="${jaxb.dist}/docs/api"/>
+        <generate-docs dest="${jaxb.dist}/docs">
+          <source>
+            <fileset dir="${jaxb.docs}"/>
+          </source>
+        </generate-docs>
+
+        <antcall target="process-sample.notinwspack"/>
+        <!-- copy samples -->
+        <mkdir dir="${jaxb.dist}/samples"/>
+        <copy todir="${jaxb.dist}/samples">
+          <fileset dir="${jaxb.root}/samples/work" defaultexcludes="yes">
+            <exclude name="CHANGELOG.txt"/>
+            <exclude name="**/build.golden.regexp"/>
+            <exclude name="**/.cvsignore"/>
+            <exclude name="**/sample.meta"/>
+            <exclude name="**/gen-src/**/*"/>
+            <exclude name="**/classes/**/*"/>
+          </fileset>
+        </copy>
+
+    </target>
+
+    <target name="dist-zip" depends="dist" description="run dist then package the image to jaxb-ri.zip">
+        <zip destfile="${jaxb.root}/jaxb-ri.zip">
+            <zipfileset dir="${jaxb.dist}" prefix="jaxb-ri" />
+        </zip>
+    </target>
+        
 </project>

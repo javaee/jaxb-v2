@@ -1,0 +1,20 @@
+The following JAXB interfaces are JAXB 2.x
+------------------------------------------
+opt/sun/share/jaxb/README
+/opt/sun/share/jaxb/bin/schemagen
+/opt/sun/share/jaxb/bin/xjc
+/opt/sun/share/jaxb/lib/jaxb-api.jar
+/opt/sun/share/jaxb/lib/jaxb-impl.jar
+/opt/sun/share/jaxb/lib/jaxb-xjc.jar
+/opt/sun/share/jaxb/lib/jaxb1-impl.jar
+
+
+
+
+The following JAXB interfaces are JAXB 1.x
+------------------------------------------
+/opt/sun/bin/xjc
+/opt/sun/share/lib/jaxb-api.jar
+/opt/sun/share/lib/jaxb-impl.jar
+/opt/sun/share/lib/jaxb-libs.jar
+/opt/sun/share/lib/jaxb-xjc.jar

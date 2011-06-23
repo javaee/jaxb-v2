@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<sample since="1.0.2" exclude="true">
+    <title>subgroup-extend</title>
+    
+    <description><![CDATA[
+        This example shows how the use of the jxb:implClass customization and 
+        substitution groups can be used to inject virtual functions into the 
+        derived Java hierarchy. It compares two equivalent ways of achieving 
+        the same processing, but one is much simpler than the other (search for 
+        the "enlightened" boolean flag in the code).
+    ]]></description>
+    
+    <readme/>
+    
+    <project>
+        <xjc extension="true" schema="itinerary.xsd" package="org.example"/>
+        
+        <javadoc/>
+        
+        <java mainClass="Main"/>
+    </project>
+</sample>
