@@ -327,9 +327,13 @@
 
         <parallel>
           <!-- clean dist, and srcbundle -->
+          <delete dir="${jaxb.build}" />
           <delete dir="${jaxb.dist}" />
           <delete dir="${srcbundle.dist}" />
           <delete dir="j2se-integration" />
+          <delete dir="${jaxb.root}">
+              <include name="jaxb-ri.zip"/>
+          </delete>
 
           <!-- clean sub-projects -->
           <ant dir="runtime"            target="clean" />
@@ -340,6 +344,7 @@
           <ant dir="tools"              target="clean"/>
           <ant dir="apgen"              target="clean" />
           <ant dir="reflection"         target="clean" />
+          <ant dir="osgi"               target="clean" />
         </parallel>
     </target>
 
