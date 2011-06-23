@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ 
+ Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ 
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 2 only ("GPL") or the Common Development
+ and Distribution License("CDDL") (collectively, the "License").  You
+ may not use this file except in compliance with the License. You can obtain
+ a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ language governing permissions and limitations under the License.
+ 
+ When distributing the software, include this License Header Notice in each
+ file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ Sun designates this particular file as subject to the "Classpath" exception
+ as provided by Sun in the GPL Version 2 section of the License file that
+ accompanied this code.  If applicable, add the following below the License
+ Header, with the fields enclosed by brackets [] replaced by your own
+ identifying information: "Portions Copyrighted [year]
+ [name of copyright owner]"
+ 
+ Contributor(s):
+ 
+ If you wish your version of this file to be governed by only the CDDL or
+ only the GPL Version 2, indicate your decision by adding "[Contributor]
+ elects to include this software in this distribution under the [CDDL or GPL
+ Version 2] license."  If you don't indicate a single choice of license, a
+ recipient has the option to distribute your version of this file under
+ either the CDDL, the GPL Version 2 or to extend the choice of license to
+ its licensees as provided above.  However, if you add GPL Version 2 code
+ and therefore, elected the GPL Version 2 license, then the option applies
+ only if the new code is made subject to such option by the copyright
+ holder.
+-->
+
+<!-- 26 Aug 2002 - source: UBL_Library_0p70_OrderCancellation.xls -->
+<!-- Created by: Gunther Stuhec, SAP AG -->
+<!-- 16 Jan 2003 - source: UBL_Library_0p70_OrderCancellation.xls -->
+<!-- Edited by: Tim McGrath, UBL LC -->
+<!-- 21 Jan 2003 - source: UBL_Library_0p70_OrderCancellation.xls -->
+<!-- Edited by: Gunther Stuhec, UBL NDRSC, SAP AG -->
+<!-- 25 Jan 2003 - source: UBL_Library_0p70_OrderCancellation.xls -->
+<!-- Edited by: Tim McGrath, UBL LC -->
+<xsd:schema targetNamespace="urn:oasis:names:tc:ubl:OrderCancellation:1.0:0.70" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn:oasis:names:tc:ubl:OrderCancellation:1.0:0.70" 
+xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70" xmlns:cct="urn:oasis:names:tc:ubl:CoreComponentTypes:1.0:0.70" xmlns:cat="urn:oasis:names:tc:ubl:CommonAggregateTypes:1.0:0.70">
+	<xsd:import namespace="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70" schemaLocation="CoreComponentParameters.xsd"/>
+	<xsd:import namespace="urn:oasis:names:tc:ubl:CoreComponentTypes:1.0:0.70" schemaLocation="CoreComponentTypes.xsd"/>
+	<xsd:import namespace="urn:oasis:names:tc:ubl:CommonAggregateTypes:1.0:0.70" schemaLocation="UBL_Library_0p70_Reusable.xsd"/>
+	<xsd:element name="OrderCancellation" type="OrderCancellationType"/>
+	<xsd:complexType name="OrderCancellationType" id="UBL400001">
+		<xsd:annotation>
+			<xsd:documentation>
+				<ccts:ABIE dictionaryEntryName="Order Cancellation. Details" definition="information directly relating to the order cancellation." qualifierTermObjectClassTerm="" objectClassTerm="Order Cancellation" qualifierTerm_PropertyTerm="" propertyTerm="Details" representationTerm="Details" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="cat:ID" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order Cancellation. Identifier" definition="the unique number given to the order cancellation by the sender." qualifierTermObjectClassTerm="" objectClassTerm="Order Cancellation" qualifierTerm_PropertyTerm="" propertyTerm="ID" representationTerm="Identifier" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="IssueDateDateTime" id="UBL400003" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order Cancellation. Issue_ Date. Date Time" definition="a date (and potentially time) stamp denoting when the order cancellation was issued." qualifierTermObjectClassTerm="" objectClassTerm="Order Cancellation" qualifierTerm_PropertyTerm="Issue" propertyTerm="Date" representationTerm="Date Time" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="ReasonCode" id="UBL400004" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order Cancellation. Reason. Code" definition="the reason for cancellation of the referenced order." qualifierTermObjectClassTerm="" objectClassTerm="Order Cancellation" qualifierTerm_PropertyTerm="" propertyTerm="Reason" representationTerm="Code" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="ResponseRequiredIndicator" id="UBL400005" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order Cancellation. Response Required. Indicator" definition="indicates whether or not the sender of the cancellation requires a response to this message by its return." qualifierTermObjectClassTerm="" objectClassTerm="Order Cancellation" qualifierTerm_PropertyTerm="" propertyTerm="Response Required" representationTerm="Indicator" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="AcceptedIndicator" id="UBL400006" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order Cancellation. Accepted. Indicator" definition="indicates whether the order cancellation was accepted or not (if the message is responded to)" qualifierTermObjectClassTerm="" objectClassTerm="Order Cancellation" qualifierTerm_PropertyTerm="" propertyTerm="Accepted" representationTerm="Indicator" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:Note" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order Cancellation. Note. Text" definition="a note containing any other relevant information. (Note to Users: this note can only be processed by human intervention)" qualifierTermObjectClassTerm="" objectClassTerm="Order Cancellation" qualifierTerm_PropertyTerm="" propertyTerm="Note" representationTerm="Text" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:ReferencedOrder" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Order Cancellation. Referenced_ Order" definition="associates the order cancellation with the order that it refers to." qualifierTermObjectClassTerm="" objectClassTerm="Order Cancellation" qualifierTerm_PropertyTerm="Referenced" propertyTerm="Order" representationTerm="Order" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="AcceptedIndicator" type="cct:IndicatorType"/>
+	<xsd:element name="IssueDateDateTime" type="cct:DateTimeType"/>
+	<xsd:element name="ReasonCode" type="cct:CodeType"/>
+	<xsd:element name="ResponseRequiredIndicator" type="cct:IndicatorType"/>
+</xsd:schema>

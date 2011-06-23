@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ 
+ Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ 
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 2 only ("GPL") or the Common Development
+ and Distribution License("CDDL") (collectively, the "License").  You
+ may not use this file except in compliance with the License. You can obtain
+ a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ language governing permissions and limitations under the License.
+ 
+ When distributing the software, include this License Header Notice in each
+ file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ Sun designates this particular file as subject to the "Classpath" exception
+ as provided by Sun in the GPL Version 2 section of the License file that
+ accompanied this code.  If applicable, add the following below the License
+ Header, with the fields enclosed by brackets [] replaced by your own
+ identifying information: "Portions Copyrighted [year]
+ [name of copyright owner]"
+ 
+ Contributor(s):
+ 
+ If you wish your version of this file to be governed by only the CDDL or
+ only the GPL Version 2, indicate your decision by adding "[Contributor]
+ elects to include this software in this distribution under the [CDDL or GPL
+ Version 2] license."  If you don't indicate a single choice of license, a
+ recipient has the option to distribute your version of this file under
+ either the CDDL, the GPL Version 2 or to extend the choice of license to
+ its licensees as provided above.  However, if you add GPL Version 2 code
+ and therefore, elected the GPL Version 2 license, then the option applies
+ only if the new code is made subject to such option by the copyright
+ holder.
+-->
+
+<!-- 26 Aug 2002 - source: UBL_Library_0p70_OrderResponseSimple.xls -->
+<!-- Created by: Gunther Stuhec, SAP AG -->
+<!-- 16 Jan 2003 - source: UBL_Library_0p70_OrderResponseSimple.xls -->
+<!-- Edited by: Tim McGrath, UBL LC -->
+<!-- 21 Jan 2003 - source: UBL_Library_0p70_OrderResponseSimple.xls -->
+<!-- Edited by: Gunther Stuhec, UBL NDRSC, SAP AG -->
+<!-- 25 Jan 2003 - source: UBL_Library_0p70_OrderResponseSimple.xls -->
+<!-- Edited by: Tim McGrath, UBL LC -->
+<xsd:schema targetNamespace="urn:oasis:names:tc:ubl:OrderResponseSimple:1.0:0.70" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn:oasis:names:tc:ubl:OrderResponseSimple:1.0:0.70" 
+xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70" xmlns:cct="urn:oasis:names:tc:ubl:CoreComponentTypes:1.0:0.70" xmlns:cat="urn:oasis:names:tc:ubl:CommonAggregateTypes:1.0:0.70">
+	<xsd:import namespace="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70" schemaLocation="CoreComponentParameters.xsd"/>
+	<xsd:import namespace="urn:oasis:names:tc:ubl:CoreComponentTypes:1.0:0.70" schemaLocation="CoreComponentTypes.xsd"/>
+	<xsd:import namespace="urn:oasis:names:tc:ubl:CommonAggregateTypes:1.0:0.70" schemaLocation="UBL_Library_0p70_Reusable.xsd"/>
+	<xsd:element name="OrderResponseSimple" type="OrderResponseSimpleType"/>
+	<xsd:complexType name="OrderResponseSimpleType" id="UBL200001">
+		<xsd:annotation>
+			<xsd:documentation>
+				<ccts:ABIE dictionaryEntryName="Order Response Simple. Details" definition="information directly relating to the order response (simple)." qualifierTermObjectClassTerm="" objectClassTerm="Order Response Simple" qualifierTerm_PropertyTerm="" propertyTerm="Details" representationTerm="Details" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="cat:ID" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order Response Simple. Identifier" definition="The Order Response Id element is a unique number assigned to the OrderResponse by the Seller." qualifierTermObjectClassTerm="" objectClassTerm="Order Response Simple" qualifierTerm_PropertyTerm="" propertyTerm="Identification" representationTerm="Identifier" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:IssueDate" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order Response Simple. Issue_ Date" definition="a date (and potentially time) stamp denoting when the order response was issued." qualifierTermObjectClassTerm="" objectClassTerm="Order Response Simple" qualifierTerm_PropertyTerm="Issue" propertyTerm="Date" representationTerm="Date" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="AcceptedIndicator" id="UBL200004" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order Response Simple. Accepted. Indicator" definition="indicates whether the order was accepted or not." qualifierTermObjectClassTerm="" objectClassTerm="Order Response Simple" qualifierTerm_PropertyTerm="" propertyTerm="Accepted" representationTerm="Indicator" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="RejectionReasonCode" id="UBL200005" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order Response Simple. Rejection_ Reason. Code" definition="the reason for rejection if the order was not accepted." qualifierTermObjectClassTerm="" objectClassTerm="Order Response Simple" qualifierTerm_PropertyTerm="Rejection" propertyTerm="Reason" representationTerm="Code" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:Note" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Order Response Simple. Note. Text" definition="a note containing any other relevant information. (Note to Users: this note can only be processed by human intervention)" qualifierTermObjectClassTerm="" objectClassTerm="Order Response Simple" qualifierTerm_PropertyTerm="" propertyTerm="Note" representationTerm="Text" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:ReferencedOrder" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Order Response Simple. Referenced_ Order" definition="associates the order response with the order for reference purposes." qualifierTermObjectClassTerm="" objectClassTerm="Order Response Simple" qualifierTerm_PropertyTerm="Referenced" propertyTerm="Order" representationTerm="Order" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="AcceptedIndicator" type="cct:IndicatorType"/>
+	<xsd:element name="RejectionReasonCode" type="cct:CodeType"/>
+</xsd:schema>

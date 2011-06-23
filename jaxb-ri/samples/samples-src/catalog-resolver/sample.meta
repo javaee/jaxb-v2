@@ -1,0 +1,14 @@
+<sample since="1.0">
+    <title>catalog resolver</title>
+    <description><![CDATA[
+        This example demonstrates how to use the "-catalog"
+        compiler switch to handle references to schemas
+        in external web sites.
+    ]]></description>
+        
+    <project>
+        <xjc schema="test.xsd" catalog="catalog.cat" />
+        <javadoc/>
+    </project>
+    
+</sample>

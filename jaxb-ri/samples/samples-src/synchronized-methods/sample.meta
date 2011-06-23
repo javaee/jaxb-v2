@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<sample since="1.0.1">
+    <title>Generating synchronized methods</title>
+    <description><![CDATA[
+      This sample shows how to use the new non-standard synchronized
+      method support. By following the instructions in the readme.txt,
+      you can cause all of the generated impl class methods signatures
+      to contain the "synchronized" keyword.
+    ]]></description>
+        
+    <project>
+        <xjc extension="true" schema="po.xsd" package="primer.myPo">
+            <arg value="-Xsync-methods" />
+        </xjc>
+        <javadoc/>
+    </project>
+    
+</sample>

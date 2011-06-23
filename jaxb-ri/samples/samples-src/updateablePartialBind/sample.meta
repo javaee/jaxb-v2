@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<sample since="2.0">
+    <title>Updateable Partial Binding using Binder</title>
+    <description><![CDATA[
+      This sample application demonstrates how to partially map a DOM tree
+      to JAXB (using JAXP 1.3 XPath), modify JAXB mapped instance and then update modifications back to
+      the DOM tree.
+    ]]></description>
+        
+    <project>
+        <xjc schema="po.xsd" package="binder"/>
+        <javadoc/>
+        <java mainClass="UpdateablePartialBinding" />
+    </project>
+    
+</sample>

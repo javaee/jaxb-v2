@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<sample since="1.0">
+    <title>RI-specific customizations</title>
+    <description><![CDATA[
+			This example demonstrates how to use 
+			<xjc:superClass> vendor extensions provided by Sun's JAXB RI,
+			as well as <jaxb:serializable> customization.
+    ]]></description>
+        
+    <readme/>
+    
+    <project>
+        <xjc extension="true" schema="po.xsd" package="primer.myPo"/>
+        <javadoc/>
+        <java mainClass="Main" />
+    </project>
+    
+</sample>

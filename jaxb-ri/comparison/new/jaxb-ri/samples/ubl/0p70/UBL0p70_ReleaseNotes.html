@@ -1,0 +1,172 @@
+<!doctype html public "-//w3c//dtd html 3.2//en">
+
+<html>
+
+<head>
+<STYLE TYPE="text/css">
+body
+   {
+   font-family: "Times New Roman";
+   color: black;
+   }
+p, div
+   {
+   display: block;
+   font-size: 12pt;
+   margin-top: 6pt;
+   margin-bottom: 6pt;
+   margin-left: 24pt;
+   }
+ul, ol
+   {
+   display: block;
+   font-size: 12pt;
+   margin-top: 6pt;
+   margin-bottom: 6pt;
+   margin-left: 24pt;
+   padding-left: 24pt;
+   }
+li ul
+   {
+   margin-left: 0pt;
+   }
+li ol
+   {
+   margin-left: 0pt;
+   }
+li p
+   {
+   display: block;
+   margin-top: 6pt;
+   margin-bottom: 6pt;
+   margin-left: 0pt;
+   }
+dl
+   {
+   display: block;
+   font-size: 12pt;
+   margin-bottom: 6pt;
+   margin-top: 6pt;
+   }
+dt
+   {
+   display: block;
+   margin-top: 3pt;
+   margin-bottom: 0pt;
+   margin-left: 24pt;
+   }
+dd
+   {
+   display: block;
+   margin-top: 0pt;
+   margin-bottom: 0pt;
+   padding-left: 12pt;
+   }
+h1
+   {
+   display: block;
+   text-align: left;
+   font-family: arial, helvetica, sans-serif;
+   font-size: 24pt;
+   font-weight: bold;
+   margin-top: 18pt;
+   margin-bottom: 12pt;
+   }
+h2
+   {
+   display: block;
+   text-align: left;
+   font-family: arial, helvetica, sans-serif;
+   font-size: 20pt;
+   font-weight: bold;
+   margin-top: 15pt;
+   margin-bottom: 10pt;
+   }
+h3
+   {
+   display: block;
+   text-align: left;
+   font-family: arial, helvetica, sans-serif;
+   font-size: 18pt;
+   font-weight: bold;
+   margin-top: 8pt;
+   margin-bottom: 6pt;
+   }
+h4
+   {
+   display: block;
+   text-align: left;
+   font-family: arial, helvetica, sans-serif;
+   font-size: 14pt;
+   font-weight: bold;
+   margin-top: 6pt;
+   margin-bottom: 4pt;
+   margin-left: 24pt;
+   }
+h5
+   {
+   display: block;
+   text-align: left;
+   font-family: arial, helvetica, sans-serif;
+   font-size: 13pt;
+   margin-top: 3pt;
+   margin-bottom: 0pt;
+   margin-left: 24pt;
+   }
+h6
+   {
+   display: block;
+   text-align: left;
+   font-family: arial, helvetica, sans-serif;
+   font-size: 12pt;
+   font-style: italic;
+   margin-top: 2pt;
+   margin-bottom: 0pt;
+   margin-left: 24pt;
+   }
+address
+   {
+   display: block;
+   text-align: left;
+   font-size: 12pt;
+   font-style: italic;
+   margin-bottom: 12pt;
+   margin-top: 0pt;
+   margin-left: 0pt;
+   }
+</STYLE> 
+
+<title>Universal Business Language &#x0097; Library Content &#x0097; 0p70 Release Notes</title>
+<meta name="GENERATOR" content="Arachnophilia 4.0">
+<meta name="FORMATTER" content="Arachnophilia 4.0">
+</head>
+
+<body bgcolor="#ffffff" text="#000000" link="#800000" vlink="#800080" alink="#ff0000">
+<h1>Universal Business Language &#x0097; Library Content &#x0097; 0p70 Release Notes</h1>
+
+<H3>1. A Note on the UBL Extension Methodology</H3>
+
+<P>The UBL TC has not yet come to a final decision on all the details of the extension methodology to be followed by those using and customizing the UBL core libraries. It is anticipated that there will be a need for users to customize the core library, however, and much work has been done in this area. The following points should be borne in mind during review of this UBL Library release, as being probable features of future releases:</P>
+
+<OL>
+    <LI>All customizations (extensions and restrictions) will utilize XML namespaces owned by the customizing user, into which the core UBL libraries will be imported and referenced.
+    <LI>All extensions and refinements will be expressed as XSD extensions in the resulting XML schemas.
+    <LI>The business need for extensions and refinements will be described using a "context mechanism" based on that found in the UN/CEFACT Core Components Technical Specification, and earlier in the ebXML Core Components work. This mechanism provides for a rules language that lets machines determine the appropriateness of a specific extension for a given business purpose.
+    <LI>An "Ur Library" of XML types will be published in future as part of the UBL deliverables, in its own set of namespaces, from which 
+everything in the UBL library will itself be a refinement. This should have little or no effect on the direct use of the document types and 
+    components found in this library release - they will have the same types and names - but will affect how they are expressed in the schemas. The reason for having such a mechanism has to do with the ability to express some types of customizations within the capabilities of XSD syntax.</LI>
+</OL>
+
+<P>Those interested in further understanding of the anticipated extension methodology should see the white papers found at the Naming and Design Rules Sub-committee section of the UBL portal (<A 
+href="http://www.oasis-open.org/committees/ubl/ndrsc/">http://www.oasis-open.org/committees/ubl/ndrsc/</A>).</P>
+
+<h3>2. A Note on Global Element Declarations</h3>
+ <p>The current release conforms with the existing NDR rule which states that all elements will be globally declared.  The issue of global versus local element declarations, although decided by NDR, is being revisited at the request of a minority group within NDR.  It is possible that the existing global declaration rule may be changed in the future.  For those wishing to learn more about the issues surrounding this debate, please see the UBL TC section on the OASIS website.
+
+ <p>In this release, the global elements have no documentation in their declarations: the use of these elements within each type declaration is documented. Global elements that appear in the UBL Library will be fully documented for future releases, both where they are used within types, and independently where they are declared.
+
+<address>Last modified: January 27, 2003/11:46am CST</address>
+
+</body>
+
+</html>

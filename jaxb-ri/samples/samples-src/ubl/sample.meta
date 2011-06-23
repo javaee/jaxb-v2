@@ -1,0 +1,17 @@
+<sample hog="true" since="1.0">
+    <title>Universal Business Language (UBL)</title>
+    <description><![CDATA[
+This project processes a UBL (Universal Business Language) order
+instance and prints a report to the screen.]]></description>
+
+    <project>
+        <xjc binding="ubl.xjb">
+            <schema dir="cd-UBL-1.0/xsd" includes="**/*.xsd"/>
+        </xjc>
+
+        <javadoc/>
+
+        <java mainClass="samples.ubl.report.PrintOrder"/>
+    </project>
+
+</sample>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ 
+ Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ 
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 2 only ("GPL") or the Common Development
+ and Distribution License("CDDL") (collectively, the "License").  You
+ may not use this file except in compliance with the License. You can obtain
+ a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ language governing permissions and limitations under the License.
+ 
+ When distributing the software, include this License Header Notice in each
+ file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ Sun designates this particular file as subject to the "Classpath" exception
+ as provided by Sun in the GPL Version 2 section of the License file that
+ accompanied this code.  If applicable, add the following below the License
+ Header, with the fields enclosed by brackets [] replaced by your own
+ identifying information: "Portions Copyrighted [year]
+ [name of copyright owner]"
+ 
+ Contributor(s):
+ 
+ If you wish your version of this file to be governed by only the CDDL or
+ only the GPL Version 2, indicate your decision by adding "[Contributor]
+ elects to include this software in this distribution under the [CDDL or GPL
+ Version 2] license."  If you don't indicate a single choice of license, a
+ recipient has the option to distribute your version of this file under
+ either the CDDL, the GPL Version 2 or to extend the choice of license to
+ its licensees as provided above.  However, if you add GPL Version 2 code
+ and therefore, elected the GPL Version 2 license, then the option applies
+ only if the new code is made subject to such option by the copyright
+ holder.
+-->
+
+<!--
+  Universal Business Language (UBL) Schema 1.0
+
+  Copyright (C) OASIS Open (2004). All Rights Reserved.
+
+  This document and translations of it may be copied and furnished to others, and
+  derivative works that comment on or otherwise explain it or assist in its
+  implementation may be prepared, copied, published and distributed, in whole or
+  in part, without restriction of any kind, provided that the above copyright
+  notice and this paragraph are included on all such copies and derivative works.
+  However, this document itself may not be modified in any way, such as by
+  removing the copyright notice or references to OASIS, except as needed for the
+  purpose of developing OASIS specifications, in which case the procedures for
+  copyrights defined in the OASIS Intellectual Property Rights document must be
+  followed, or as required to translate it into languages other than English.
+
+  The limited permissions granted above are perpetual and will not be revoked by
+  OASIS or its successors or assigns.
+
+  This document and the information contained herein is provided on an "AS IS"
+  basis and OASIS DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+  LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT
+  INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR
+  A PARTICULAR PURPOSE.
+
+  ===============================================================================
+
+  For our absent friend, Michael J. Adcock  - il miglior fabbro
+
+  ===============================================================================
+
+  Universal Business Language Specification
+      (http://www.oasis-open.org/committees/tc_home.php?wg_abbrev=ubl)
+  OASIS Open (http://www.oasis-open.org/)
+
+
+  Document Type:     AcknowledgementResponseCode
+  Generated On:      Tue Apr 27 11:46:24 2004
+-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns="urn:oasis:names:tc:ubl:codelist:AcknowledgementResponseCode:1:0"
+    xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1:0"
+    targetNamespace="urn:oasis:names:tc:ubl:codelist:AcknowledgementResponseCode:1:0"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified"
+    version="1:0">
+  <xsd:import namespace="urn:oasis:names:tc:ubl:CoreComponentParameters:1:0" schemaLocation="../common/UBL-CoreComponentParameters-1.0.xsd"/>
+  <xsd:simpleType name="AcknowledgementResponseCodeContentType">
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:enumeration value="OrderResponse">
+        <xsd:annotation>
+          <xsd:documentation>
+            <CodeName>UBL OrderResponse document</CodeName>
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="OrderResponseSimple">
+        <xsd:annotation>
+          <xsd:documentation>
+            <CodeName>UBL OrderResponseSimple document</CodeName>
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="AcknowledgementResponseCodeType">
+    <xsd:annotation>
+      <xsd:documentation>
+        <ccts:Component>
+          <ccts:ComponentType>DT</ccts:ComponentType>
+          <ccts:DictionaryEntryName>Acknowledgement Response_ Code. Type</ccts:DictionaryEntryName>
+          <ccts:RepresentationTerm>Code</ccts:RepresentationTerm>
+          <ccts:DataTypeQualifier>Acknowledgement Response</ccts:DataTypeQualifier>
+          <ccts:DataType>Code. Type</ccts:DataType>
+        </ccts:Component>
+        <ccts:Instance>
+          <ccts:CodeListID>Acknowledgement Response</ccts:CodeListID>
+          <ccts:CodeListAgencyID>UBL</ccts:CodeListAgencyID>
+          <ccts:CodeListAgencyName>OASIS Universal Business Language</ccts:CodeListAgencyName>
+          <ccts:CodeListName>Acknowledgement Response</ccts:CodeListName>
+          <ccts:CodeListVersionID>1.0</ccts:CodeListVersionID>
+          <ccts:CodeListSchemeUniformResourceID>urn:oasis:names:tc:ubl:codelist:AcknowledgementResponseCode:1:0</ccts:CodeListSchemeUniformResourceID>
+          <ccts:LanguageID>en</ccts:LanguageID>
+        </ccts:Instance>
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:simpleContent>
+      <xsd:extension base="AcknowledgementResponseCodeContentType">
+        <xsd:attribute name="name" type="xsd:string" use="optional"/>
+        <xsd:attribute name="codeListID" type="xsd:normalizedString" fixed="Acknowledgement Response" use="optional"/>
+        <xsd:attribute name="codeListAgencyID" type="xsd:normalizedString" fixed="UBL" use="optional"/>
+        <xsd:attribute name="codeListAgencyName" type="xsd:string" fixed="OASIS Universal Business Language" use="optional"/>
+        <xsd:attribute name="codeListName" type="xsd:string" fixed="Acknowledgement Response" use="optional"/>
+        <xsd:attribute name="codeListVersionID" type="xsd:normalizedString" fixed="1.0" use="optional"/>
+        <xsd:attribute name="codeListURI" type="xsd:anyURI" use="optional"/>
+        <xsd:attribute name="codeListSchemeURI" type="xsd:anyURI" fixed="urn:oasis:names:tc:ubl:codelist:AcknowledgementResponseCode:1:0" use="optional"/>
+        <xsd:attribute name="languageID" type="xsd:language" fixed="en" use="optional"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+</xsd:schema>

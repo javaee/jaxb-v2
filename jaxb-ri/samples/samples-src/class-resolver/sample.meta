@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<sample since="2.1">
+    <title>ClassResolver</title>
+    <description><![CDATA[
+      This little DI-container-by-JAXB example demonstrates how one can avoid
+      passing in a list of classes upfront, and instead load classes lazily.
+    ]]></description>
+    
+    <project>
+        <javadoc/>
+        <java mainClass="Main" />
+    </project>
+</sample>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<sample since="2.0">
+    <title>Ordering Properties and Fieldes in Java to Schema Bindings</title>
+    <description><![CDATA[
+      This sample application demonstrates the use of mapping annotations
+      @XmlAccessorOrder and @XmlType.propOrder in Java classes for ordering 
+      properties and fields in Java to schema bindings.
+    ]]></description>
+        
+    <project>
+        <javadoc/>
+        <schemagen>
+            <exclude name="Main.java"/>
+        </schemagen>
+        <java mainClass="Main" />
+    </project>
+    
+</sample>

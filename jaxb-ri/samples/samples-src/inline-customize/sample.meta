@@ -1,0 +1,22 @@
+<sample since="1.0">
+    <title>inline-customize (formerly SampleApp6)</title>
+    <description><![CDATA[
+        This sample application demonstrates how to customize the default 
+        binding produced by the XJC binding compiler.
+    ]]></description>
+        
+    <project>
+        <datatypeConverterSrc>
+            <src>
+                <include name="**/MyDatatypeConverter.java"/>
+            </src>
+        </datatypeConverterSrc>
+        
+        <xjc schema="po.xsd"/>
+        
+        <javadoc/>
+        
+        <java mainClass="Main"/>
+    </project>
+    
+</sample>

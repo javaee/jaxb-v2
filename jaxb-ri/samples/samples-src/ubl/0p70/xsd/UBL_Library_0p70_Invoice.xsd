@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ 
+ Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ 
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 2 only ("GPL") or the Common Development
+ and Distribution License("CDDL") (collectively, the "License").  You
+ may not use this file except in compliance with the License. You can obtain
+ a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+ or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+ language governing permissions and limitations under the License.
+ 
+ When distributing the software, include this License Header Notice in each
+ file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+ Sun designates this particular file as subject to the "Classpath" exception
+ as provided by Sun in the GPL Version 2 section of the License file that
+ accompanied this code.  If applicable, add the following below the License
+ Header, with the fields enclosed by brackets [] replaced by your own
+ identifying information: "Portions Copyrighted [year]
+ [name of copyright owner]"
+ 
+ Contributor(s):
+ 
+ If you wish your version of this file to be governed by only the CDDL or
+ only the GPL Version 2, indicate your decision by adding "[Contributor]
+ elects to include this software in this distribution under the [CDDL or GPL
+ Version 2] license."  If you don't indicate a single choice of license, a
+ recipient has the option to distribute your version of this file under
+ either the CDDL, the GPL Version 2 or to extend the choice of license to
+ its licensees as provided above.  However, if you add GPL Version 2 code
+ and therefore, elected the GPL Version 2 license, then the option applies
+ only if the new code is made subject to such option by the copyright
+ holder.
+-->
+
+<!-- 26 Aug 2002 - source: UBL_Library_0p70_Invoice.xls -->
+<!-- Created by: Gunther Stuhec, SAP AG -->
+<!-- 16 Jan 2003 - source: UBL_Library_0p70_Invoice.xls -->
+<!-- Edited by: Tim McGrath, UBL LC -->
+<!-- 21 Jan 2003 - source: UBL_Library_0p70_Invoice.xls -->
+<!-- Edited by: Gunther Stuhec, UBL NDRSC, SAP AG -->
+<!-- 25 Jan 2003 - source: UBL_Library_0p70_Invoice.xls -->
+<!-- Edited by: Tim McGrath, UBL LC -->
+<xsd:schema targetNamespace="urn:oasis:names:tc:ubl:Invoice:1.0:0.70" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn:oasis:names:tc:ubl:Invoice:1.0:0.70" 
+xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70" xmlns:cct="urn:oasis:names:tc:ubl:CoreComponentTypes:1.0:0.70" xmlns:cat="urn:oasis:names:tc:ubl:CommonAggregateTypes:1.0:0.70">
+	<xsd:import namespace="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70" schemaLocation="CoreComponentParameters.xsd"/>
+	<xsd:import namespace="urn:oasis:names:tc:ubl:CoreComponentTypes:1.0:0.70" schemaLocation="CoreComponentTypes.xsd"/>
+	<xsd:import namespace="urn:oasis:names:tc:ubl:CommonAggregateTypes:1.0:0.70" schemaLocation="UBL_Library_0p70_Reusable.xsd"/>
+	<xsd:element name="Invoice" type="InvoiceType"/>
+	<xsd:complexType name="InvoiceType" id="UBL700001">
+		<xsd:annotation>
+			<xsd:documentation>
+				<ccts:ABIE dictionaryEntryName="Invoice. Details" definition="complete information of the invoice." qualifierTermObjectClassTerm="" objectClassTerm="Invoice" qualifierTerm_PropertyTerm="" propertyTerm="" representationTerm="Details" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="cat:ID" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Invoice. Identifier" definition="the unique number assigned to the invoice by the seller (invoicer) " qualifierTermObjectClassTerm="" objectClassTerm="Invoice" qualifierTerm_PropertyTerm="" propertyTerm="Identification" representationTerm="Identifier" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:IssueDate" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Invoice. Issue_ Date" definition="the date when the invoice was issued" qualifierTermObjectClassTerm="" objectClassTerm="Invoice" qualifierTerm_PropertyTerm="Issue" propertyTerm="Date" representationTerm="Date" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:TypeCode" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Invoice. Type. Code" definition="identifies the type of the Invoice by a code." qualifierTermObjectClassTerm="" objectClassTerm="Invoice" qualifierTerm_PropertyTerm="" propertyTerm="Type" representationTerm="Code" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="TaxPointDate" id="UBL700005" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Invoice. Tax Point_ Date" definition="the date of the invoice for tax purposes, in accordance with the applicable tax regulation." qualifierTermObjectClassTerm="" objectClassTerm="Invoice" qualifierTerm_PropertyTerm="Tax Point" propertyTerm="Date" representationTerm="Date" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="InvoiceCurrencyCode" id="UBL700006" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Invoice. Invoice_ Currency. Code" definition="the currency in which the Invoice is presented. This may be the same currency as the pricing or as the tax." qualifierTermObjectClassTerm="" objectClassTerm="Invoice" qualifierTerm_PropertyTerm="Invoice" propertyTerm="Currency" representationTerm="Code" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="TaxCurrencyCode" id="UBL700007" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Invoice. Tax_ Currency. Code" definition="the currency in which the tax on the Invoice is presented. This may be the same currency as the pricing or as the Invoice itself." qualifierTermObjectClassTerm="" objectClassTerm="Invoice" qualifierTerm_PropertyTerm="Tax" propertyTerm="Currency" representationTerm="Code" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="PricingCurrencyCode" id="UBL700008" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Invoice. Pricing_ Currency. Code" definition="the currency in which the prices are specified. This may be the same currency as the Invoice itself or as the tax." qualifierTermObjectClassTerm="" objectClassTerm="Invoice" qualifierTerm_PropertyTerm="Pricing" propertyTerm="Currency" representationTerm="Code" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="LineitemCountQuantity" id="UBL700009" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:BBIE dictionaryEntryName="Invoice. Lineitem_ Count. Quantity" definition="the number of line items in the invoice." qualifierTermObjectClassTerm="" objectClassTerm="Invoice" qualifierTerm_PropertyTerm="LineItem" propertyTerm="Count" representationTerm="Quantity" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:ReferencedOrder" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Invoice. Referenced_ Order" definition="an invoice is associated with one order." qualifierTermObjectClassTerm="" objectClassTerm="Invoice" qualifierTerm_PropertyTerm="Referenced" propertyTerm="Order" representationTerm="Order" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:ReferencedDespatchAdvice" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Invoice. Referenced_ Despatch Advice" definition="associates the invoice with a despatch advice. (This is 'either/or' with receipt advice.)" qualifierTermObjectClassTerm="" objectClassTerm="Invoice" qualifierTerm_PropertyTerm="Referenced" propertyTerm="Despatch Advice" representationTerm="Despatch Advice" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:ReferencedReceiptAdvice" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Invoice. Referenced_ Receipt Advice" definition="associates the invoice with a receipt advice. (This is 'either/or' with despatch advice.)" qualifierTermObjectClassTerm="" objectClassTerm="Invoice" qualifierTerm_PropertyTerm="Referenced" propertyTerm="Receipt Advice" representationTerm="Receipt Advice" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:BuyerParty" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Invoice. Buyer_ Party" definition="associates the invoice with the buyer (invoicee) party." qualifierTermObjectClassTerm="" objectClassTerm="Invoice" qualifierTerm_PropertyTerm="Buyer" propertyTerm="Party" representationTerm="Party" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:SellerParty" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Invoice. Seller_ Party" definition="associates the invoice with the seller (invoicer) party." qualifierTermObjectClassTerm="" objectClassTerm="Invoice" qualifierTerm_PropertyTerm="Seller" propertyTerm="Party" representationTerm="Party" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:PaymentMeans" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Invoice. Payment Means" definition="associates the invoice with the expected means of payment." qualifierTermObjectClassTerm="" objectClassTerm="Invoice" qualifierTerm_PropertyTerm="" propertyTerm="Payment Means" representationTerm="Payment Means" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:PaymentTerms" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Invoice. Payment Terms" definition="associates the invoice with the payment terms applicable/offered." qualifierTermObjectClassTerm="" objectClassTerm="Invoice" qualifierTerm_PropertyTerm="" propertyTerm="Payment Terms" representationTerm="Payment Terms" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:AllowanceCharge" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Invoice. Allowance Charge" definition="associates the invoice with an overall charge or allowance." qualifierTermObjectClassTerm="" objectClassTerm="Invoice" qualifierTerm_PropertyTerm="" propertyTerm="Allowance Charge" representationTerm="Allowance Charge" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:ExchangeRate" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Invoice. Exchange Rate" definition="associates the invoice with an exchange rate. In any one invoice there is only one exchange rate needed, either between invoicing at tax currency, or between pricing and invoice totalling." qualifierTermObjectClassTerm="" objectClassTerm="Invoice" qualifierTerm_PropertyTerm="" propertyTerm="Exchange Rate" representationTerm="Exchange Rate" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:TaxTotal" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Invoice. Tax Total" definition="associates the invoice with summary information for a particular tax." qualifierTermObjectClassTerm="" objectClassTerm="Invoice" qualifierTerm_PropertyTerm="" propertyTerm="Tax Total" representationTerm="Tax Total" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:LegalTotals" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Invoice. Legal Totals" definition="associates the invoice with a set of totals required for the invoice to be a legal document." qualifierTermObjectClassTerm="" objectClassTerm="Invoice" qualifierTerm_PropertyTerm="" propertyTerm="Legal Totals" representationTerm="Legal Totals" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="cat:InvoiceLine" minOccurs="1" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>
+						<ccts:ASBIE dictionaryEntryName="Invoice. Invoice Line" definition="an invoice has one or more invoice lines" qualifierTermObjectClassTerm="" objectClassTerm="Invoice" qualifierTerm_PropertyTerm="" propertyTerm="Invoice Line" representationTerm="Invoice Line" xmlns:ccts="urn:oasis:names:tc:ubl:CoreComponentParameters:1.0:0.70"/>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="InvoiceCurrencyCode" type="cct:CodeType"/>
+	<xsd:element name="LineitemCountQuantity" type="cct:QuantityType"/>
+	<xsd:element name="PricingCurrencyCode" type="cct:CodeType"/>
+	<xsd:element name="TaxCurrencyCode" type="cct:CodeType"/>
+	<xsd:element name="TaxPointDate" type="cct:DateType"/>
+</xsd:schema>

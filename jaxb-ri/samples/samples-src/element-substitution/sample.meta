@@ -1,0 +1,19 @@
+<sample since="1.0.2">
+    <title>element-substitution</title>
+    <description><![CDATA[
+        This sample application illustrates how W3C XML Schema substitution 
+        groups are supported in JAXB RI's extension mode. Please refer to the 
+        <a href="vendor.html">Vendor Extensions</a> page for more detail.
+    ]]></description>
+        
+    <readme/>
+    
+    <project>
+        <xjc schema="folder.xsd" package="org.example"/>
+        
+        <javadoc/>
+        
+        <java mainClass="Main"/>
+    </project>
+    
+</sample>
