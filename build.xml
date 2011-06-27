@@ -120,7 +120,7 @@
             <replacefilter token="@@@@SPEC_VERSION@@@@"
                            value="${release.spec.version}" />
             <replacefilter token="@@@@IMPL_VERSION@@@@"
-                           value="${release.impl.version}"/>
+                           value="${build.version}"/>
             <replacefilter token="@@@@VENDOR_ID@@@@"
                            value="com.sun"/>
             <replacefilter token="@@@@EXTENSION_NAME@@@@"
@@ -161,7 +161,7 @@
             <replacefilter token="@@BUILD_FULL_VERSION@@" value="${build.full.version}"/>
           </replace>
           <replace dir="tmp_xjc/com/sun/tools/xjc" includes="MessageBundle*.properties">
-            <replacefilter token="@@JAXB_JDK_VERSION@@" value="${release.impl.version}"/>
+            <replacefilter token="@@JAXB_JDK_VERSION@@" value="${release.impl.version}${release.impl.version.suffix}"/>
           </replace>
           <zip zipfile="${jaxb.dist}/lib/jaxb-xjc.src.zip">
             <fileset dir="tmp_xjc" excludes="purify.xsl"/>
@@ -929,6 +929,16 @@ Class-Path: ${manifest.classpath}
 
     </target>
 
+    <target name="push-to-maven">
+        <delete dir="${jaxb.build}" includes="*.pom"/>
+        <copy todir="${jaxb.build}">
+            <fileset dir="distributions/maven"/>
+        </copy>
+        <replace dir="${jaxb.build}" includes="*.pom" token="@VERSION@" value="${release.impl.version}${release.impl.version.suffix}"/>
+        <replace dir="${jaxb.build}" includes="*.pom" token="@API_VERSION@" value="${release.spec.version}"/>
+        
+    </target>
+    
     <target name="dist-zip" depends="dist" description="run dist then package the image to jaxb-ri.zip">
         <zip destfile="${jaxb.root}/jaxb-ri.zip">
             <zipfileset dir="${jaxb.dist}" prefix="jaxb-ri" />
