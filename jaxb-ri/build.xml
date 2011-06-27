@@ -545,6 +545,7 @@
         <delete failonerror="false">
             <fileset dir="${external.dir}/jaxb" includes="**/*.jar">
                 <exclude name="**/jaxb1*.jar*"/>
+                <exclude name="**/pretty-printer*.jar*"/>
                 <exclude name="**/bnd*.jar*"/>
             </fileset>
         </delete>
