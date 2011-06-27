@@ -45,14 +45,15 @@
     <!-- initialize build properties -->
     <property file="${basedir}/build.properties" />
 
-    <target name="compile" 
-            description="build tools and deploy them into necessary locations" unless="from.source">
-        <!--ant dir="${jaxb.root}/tools/webapp-commons"       target="dist" /-->
-        <ant dir="${jaxb.root}/tools/source-tidy"          target="compile" />
+    <target name="compile-for-source" description="build tools and deploy them into necessary locations" unless="from.source">
+        <ant dir="${jaxb.root}/tools/source-tidy" target="compile" />
+        <ant dir="${jaxb.root}/tools/xmllint" />
+    </target>
+
+    <target name="compile" depends="compile-for-source"
+            description="build tools and deploy them into necessary locations">
         <ant dir="${jaxb.root}/tools/pretty-printer" />
         <ant dir="${jaxb.root}/tools/jing-rnc-driver"/>
-        <ant dir="${jaxb.root}/tools/xmllint" />
-        <!--ant dir="${jaxb.root}/tools/servlet"              target="war" /-->
     </target>
     
     <target name="clean">
