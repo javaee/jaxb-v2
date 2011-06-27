@@ -131,7 +131,37 @@
       </sequential>
     </macrodef>
 
-    <target name="dist-zip-with-src" depends="src-zip, dist-zip"/>
+    <target name="dist-zip-with-src" depends="src-zip, javadoc, dist-zip"/>
+
+    <path id="javac.classpath">
+        <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
+        <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
+        <fileset dir="${jaxb.libs.util}" includes="*.jar" excludes="ant.jar"/>
+    </path>
+
+    <target name="javadoc">
+        <ant dir="runtime" target="javadoc" />
+        <ant dir="xjc"     target="javadoc" />
+        <zip zipfile="${jaxb.dist}/lib/jaxb-impl-javadoc.jar">
+            <fileset dir="${runtime.root}/build/api"/>
+        </zip>
+        <zip zipfile="${jaxb.dist}/lib/jaxb-xjc-javadoc.jar">
+            <fileset dir="${xjc.root}/build/javadoc"/>
+        </zip>
+        
+        <unzip src="${jaxb.dist}/lib/jaxb1-impl-src.zip" dest="${jaxb.build}/jaxb1src"/>
+        <mkdir dir="${jaxb.build}/jaxb1api" />
+        <javadoc destdir="${jaxb.build}/jaxb1api" use="true" defaultexcludes="yes"
+            author="false" version="false" windowtitle="JAXB 1 RI runtime"
+            useexternalfile="true" access="public">
+            <fileset dir="${jaxb.build}/jaxb1src" includes="com/sun/xml/bind/*.java"/>
+            <classpath refid="javac.classpath"/>
+            <arg value="-quiet"/>
+        </javadoc>
+        <zip zipfile="${jaxb.dist}/lib/jaxb1-impl-javadoc.jar">
+            <fileset dir="${jaxb.build}/jaxb1api"/>
+        </zip>
+    </target>
 
     <target name="src-zip" depends="init-standalone,dist"
             description="source zip files for JAXB RI jar files into the dist dir.">
@@ -237,8 +267,6 @@
 
         <echo>binary installer produced at ${bin.installer.jar}</echo>
     </target>
-
-
 
     <patternset id="src-includes"
                 description="This pattern set defines which files will be in/excluded in the src bundle">
@@ -928,13 +956,46 @@ Class-Path: ${manifest.classpath}
 
     </target>
 
-    <target name="push-to-maven">
+    <target name="push-snapshot-to-maven">
         <delete dir="${jaxb.build}" includes="*.pom"/>
         <copy todir="${jaxb.build}">
             <fileset dir="distributions/maven"/>
         </copy>
         <replace dir="${jaxb.build}" includes="*.pom" token="@VERSION@" value="${release.impl.version}${release.impl.version.suffix}"/>
         <replace dir="${jaxb.build}" includes="*.pom" token="@API_VERSION@" value="${release.spec.version}"/>
+        <mvn.publish.remote jar="dist/lib/jaxb-impl.jar" pom="build/jaxb-impl.pom"/>
+        <mvn.publish.remote jar="dist/lib/jaxb-impl.src.zip" pom="build/jaxb-impl.pom" classifier="sources"/>
+        <mvn.publish.remote jar="dist/lib/jaxb-xjc.jar" pom="build/jaxb-xjc.pom"/>
+        <mvn.publish.remote jar="dist/lib/jaxb-xjc.src.zip" pom="build/jaxb-xjc.pom" classifier="sources"/>
+        <mvn.publish.remote jar="dist/lib/jaxb1-impl.jar" pom="build/jaxb1-impl.pom"/>
+        <mvn.publish.remote jar="dist/lib/jaxb1-impl-src.zip" pom="build/jaxb1-impl.pom" classifier="sources"/>
+    </target>
+
+    <target name="push-release-to-maven">
+        <delete dir="${jaxb.build}" includes="*.pom"/>
+        <copy todir="${jaxb.build}">
+            <fileset dir="distributions/maven"/>
+        </copy>
+        <replace dir="${jaxb.build}" includes="*.pom" token="@VERSION@" value="${release.impl.version}"/>
+        <replace dir="${jaxb.build}" includes="*.pom" token="@API_VERSION@" value="${release.spec.version}"/>
+        <mvn.publish.remote jar="dist/lib/jaxb-impl.jar" pom="build/jaxb-impl.pom" 
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"/>
+        <mvn.publish.remote jar="dist/lib/jaxb-impl.src.zip" pom="build/jaxb-impl.pom" classifier="sources" 
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"/>
+        <mvn.publish.remote jar="dist/lib/jaxb-impl-javadoc.jar" pom="build/jaxb-impl.pom" classifier="javadoc" 
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"/>
+        <mvn.publish.remote jar="dist/lib/jaxb-xjc.jar" pom="build/jaxb-xjc.pom" 
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"/>
+        <mvn.publish.remote jar="dist/lib/jaxb-xjc.src.zip" pom="build/jaxb-xjc.pom" classifier="sources" 
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"/>
+        <mvn.publish.remote jar="dist/lib/jaxb-xjc-javadoc.jar" pom="build/jaxb-xjc.pom" classifier="sources" 
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"/>
+        <mvn.publish.remote jar="dist/lib/jaxb1-impl.jar" pom="build/jaxb1-impl.pom" 
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"/>
+        <mvn.publish.remote jar="dist/lib/jaxb1-impl-src.zip" pom="build/jaxb1-impl.pom" classifier="sources" 
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"/>
+        <mvn.publish.remote jar="dist/lib/jaxb1-impl-javadoc.jar" pom="build/jaxb1-impl.pom" classifier="sources" 
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"/>
     </target>
     
     <target name="dist-zip" depends="dist" description="run dist then package the image to jaxb-ri.zip">

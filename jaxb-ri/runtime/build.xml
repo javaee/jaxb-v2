@@ -230,13 +230,13 @@
         <mkdir dir="${runtime.root}/build/api" />
         <javadoc
             destdir="${runtime.root}/build/api"
-            use="true"
+            use="true" defaultexcludes="yes"
             author="false"
             version="false"
             windowtitle="JAXB RI runtime"
             useexternalfile="true"
-            access="package">
-            <fileset dir="${runtime.src}" includes="**/*.java"/>
+            access="public">
+            <fileset dir="${runtime.src}" includes="com/sun/xml/bind/*.java, com/sun/xml/bind/annotation/*.java, com/sun/xml/bind/api/*.java "/>
             <classpath refid="javac.classpath"/>
             <arg value="-quiet"/>
         </javadoc>

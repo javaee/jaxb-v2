@@ -263,15 +263,15 @@
             description="generate javadoc for xjc into jaxb-ri/xjc/docs/api">
       <mkdir dir="${xjc.root}/build/javadoc" />
       <javadoc sourcepath="${xjc.src}"
-            packagenames="com.*"
+            packagenames="com.sun.tools.xjc, com.sun.tools.jxc, com.sun.tools.xjc.api"
             destdir="${xjc.root}/build/javadoc"
-            use="true"
+            use="true" defaultexcludes="yes"
             author="false"
             version="false"
             useexternalfile="true"
             windowtitle="XJC"
             doctitle="XJC"
-            access="package">
+            access="public">
         <classpath refid="javadoc.classpath" />
         <arg value="-quiet"/>
       </javadoc>

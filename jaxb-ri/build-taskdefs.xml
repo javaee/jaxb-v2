@@ -136,23 +136,20 @@
 
     <macrodef name="mvn.publish.remote">
        <attribute name="jar"/>
-       <attribute name="mvngroup"/>
-       <attribute name="mvnartid"/>
-       <attribute name="mvnversion"/>
-       <attribute name="mvnclassifier" default="" />
+       <attribute name="pom"/>
+       <attribute name="command" default="deploy:deploy-file"/>
+       <attribute name="classifier" default="" />
+       <attribute name="repo" default="https://maven.java.net/content/repositories/snapshots/" />
+       <attribute name="repoid" default="jvnet-nexus-snapshots" />
        <attribute name="extra-args" default="" />
        <sequential>
             <exec executable="mvn" failonerror="true" >
-                <arg line="-Dmaven.repo.local=${maven.repo.local}" />
-                <arg line="deploy:deploy-file" />
-                <arg line="-Dfile=@{jar}" />
-                <arg line="-Durl=${project.maven.repo} "/>
-                <arg line="-DrepositoryId=${project.maven.repo.id}" />
-                <arg line="-DgroupId=@{mvngroup}" />
-                <arg line="-DartifactId=@{mvnartid}" />
-                <arg line="-Dversion=@{mvnversion}" />
-                <arg line="-Dclassifier=@{mvnclassifier}" />
-                <arg line="-Dpackaging=jar" />
+                <arg line="@{command}"/>
+                <arg line="-Durl=@{repo}"/>
+                <arg line="-DrepositoryId=@{repoid}"/>
+                <arg line="-DpomFile=@{pom}"/>
+                <arg line="-Dfile=@{jar}"/>
+                <arg line="-Dclassifier=@{classifier}" />
                 <arg line="@{extra-args}" />
             </exec>
        </sequential>
