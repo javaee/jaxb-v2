@@ -979,25 +979,34 @@ Class-Path: ${manifest.classpath}
         <replace dir="${jaxb.build}" includes="*.pom" token="@VERSION@" value="${release.impl.version}"/>
         <replace dir="${jaxb.build}" includes="*.pom" token="@API_VERSION@" value="${release.spec.version}"/>
         <mvn.publish.remote jar="dist/lib/jaxb-impl.jar" pom="build/jaxb-impl.pom" 
-            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"/>
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
+            password="${gpg.password}"/>
         <mvn.publish.remote jar="dist/lib/jaxb-impl.src.zip" pom="build/jaxb-impl.pom" classifier="sources" 
-            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"/>
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
+            password="${gpg.password}"/>
         <mvn.publish.remote jar="dist/lib/jaxb-impl-javadoc.jar" pom="build/jaxb-impl.pom" classifier="javadoc" 
-            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"/>
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
+            password="${gpg.password}"/>
             
         <mvn.publish.remote jar="dist/lib/jaxb-xjc.jar" pom="build/jaxb-xjc.pom" 
-            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"/>
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
+            password="${gpg.password}"/>
         <mvn.publish.remote jar="dist/lib/jaxb-xjc.src.zip" pom="build/jaxb-xjc.pom" classifier="sources" 
-            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"/>
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
+            password="${gpg.password}"/>
         <mvn.publish.remote jar="dist/lib/jaxb-xjc-javadoc.jar" pom="build/jaxb-xjc.pom" classifier="javadoc" 
-            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"/>
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
+            password="${gpg.password}"/>
             
         <mvn.publish.remote jar="dist/lib/jaxb1-impl.jar" pom="build/jaxb1-impl.pom" 
-            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"/>
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
+            password="${gpg.password}"/>
         <mvn.publish.remote jar="dist/lib/jaxb1-impl-src.zip" pom="build/jaxb1-impl.pom" classifier="sources" 
-            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"/>
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
+            password="${gpg.password}"/>
         <mvn.publish.remote jar="dist/lib/jaxb1-impl-javadoc.jar" pom="build/jaxb1-impl.pom" classifier="javadoc" 
-            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"/>
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
+            password="${gpg.password}"/>
     </target>
     
     <target name="dist-zip" depends="dist" description="run dist then package the image to jaxb-ri.zip">
