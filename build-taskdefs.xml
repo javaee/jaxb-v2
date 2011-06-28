@@ -141,7 +141,7 @@
        <attribute name="classifier" default="" />
        <attribute name="repo" default="https://maven.java.net/content/repositories/snapshots/" />
        <attribute name="repoid" default="jvnet-nexus-snapshots" />
-       <attribute name="password"/>
+       <attribute name="password" default=""/>
        <attribute name="extra-args" default="" />
        <sequential>
             <exec executable="mvn" failonerror="true" >
