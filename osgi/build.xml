@@ -41,7 +41,7 @@
 
 -->
 
-<project name="osgi" basedir=".." default="bundle">
+<project name="osgi" basedir=".." default="dist">
 
     <description>
       OSGi Sub-Project
@@ -56,6 +56,8 @@
 
     <taskdef name="manifestreader" classname="manifestreader.ManifestReader" classpath="${osgi.build}/../ant" />
 
+    <target name="dist" depends="bundle, javadoc, sources"/>
+    
     <target name="bundle"
             description="create OSGi bundle for GlassFish V3"
 	    depends="clean">
@@ -189,6 +191,35 @@
 
     <target name="clean">
         <delete dir="${osgi.build}" quiet="true"/>
+    </target>
+
+    <path id="javac.classpath">
+        <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
+        <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
+        <fileset dir="${jaxb.libs.util}" includes="*.jar" excludes="ant.jar"/>
+    </path>
+
+    <target name="javadoc">
+        <unzip src="${jaxb.dist}/lib/jaxb-impl.src.zip" dest="${jaxb.build}/jaxbosgisrc"/>
+        <unzip src="${jaxb.dist}/lib/jaxb-xjc.src.zip" dest="${jaxb.build}/jaxbosgisrc"/>
+        <mkdir dir="${jaxb.build}/jaxbosgiapi"/>
+        <javadoc destdir="${jaxb.build}/jaxbosgiapi" use="true" defaultexcludes="yes"
+            author="false" version="false" windowtitle="JAXB RI" useexternalfile="true" access="public">
+            <fileset dir="${jaxb.build}/jaxbosgisrc" includes="com/sun/xml/bind/*.java, com/sun/xml/bind/annotation/*.java, com/sun/xml/bind/api/*.java,
+                com/sun/tools/xjc/*.java, com/sun/tools/jxc/*.java, com/sun/tools/xjc/api/*.java"/>
+            <classpath refid="javac.classpath"/>
+            <arg value="-quiet"/>
+        </javadoc>
+        <zip zipfile="${osgi.build}/jaxb-osgi-javadoc.jar">
+            <fileset dir="${jaxb.build}/jaxbosgiapi"/>
+        </zip>
+    </target>
+
+    <target name="sources">
+        <jar destfile="${osgi.build}/jaxb-osgi-sources.jar">
+            <zipfileset src="${jaxb.dist}/lib/jaxb-impl.src.zip"/>
+            <zipfileset src="${jaxb.dist}/lib/jaxb-xjc.src.zip"/>
+        </jar>
     </target>
 
 </project>
