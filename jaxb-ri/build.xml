@@ -965,10 +965,13 @@ Class-Path: ${manifest.classpath}
         <replace dir="${jaxb.build}" includes="*.pom" token="@API_VERSION@" value="${release.spec.version}"/>
         <mvn.publish.remote jar="dist/lib/jaxb-impl.jar" pom="build/jaxb-impl.pom"/>
         <mvn.publish.remote jar="dist/lib/jaxb-impl.src.zip" pom="build/jaxb-impl.pom" classifier="sources"/>
+        <mvn.publish.remote jar="dist/lib/jaxb-impl-javadoc.jar" pom="build/jaxb-impl.pom" classifier="javadoc"/>
         <mvn.publish.remote jar="dist/lib/jaxb-xjc.jar" pom="build/jaxb-xjc.pom"/>
         <mvn.publish.remote jar="dist/lib/jaxb-xjc.src.zip" pom="build/jaxb-xjc.pom" classifier="sources"/>
+        <mvn.publish.remote jar="dist/lib/jaxb-xjc-javadoc.jar" pom="build/jaxb-xjc.pom" classifier="javadoc"/>
         <mvn.publish.remote jar="dist/lib/jaxb1-impl.jar" pom="build/jaxb1-impl.pom"/>
         <mvn.publish.remote jar="dist/lib/jaxb1-impl-src.zip" pom="build/jaxb1-impl.pom" classifier="sources"/>
+        <mvn.publish.remote jar="dist/lib/jaxb1-impl-javadoc.jar" pom="build/jaxb1-impl.pom" classifier="javadoc"/>
     </target>
 
     <target name="push-release-to-maven">
