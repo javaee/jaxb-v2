@@ -1,9 +1,9 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
 
     The contents of this file are subject to the terms of either the GNU
     General Public License Version 2 only ("GPL") or the Common Development
@@ -41,9 +41,14 @@
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>net.java</groupId>
+        <artifactId>jvnet-parent</artifactId>
+        <version>1</version>
+    </parent>
+    
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sun.xml.bind</groupId>
     <artifactId>jaxb-osgi</artifactId>
@@ -51,6 +56,12 @@
     <packaging>jar</packaging>
 
     <name>JAXB OSGi bundle for GlassFish V3</name>
+    <description>
+        JAXB (JSR 222) reference implementation
+
+        This module is exclusively meant for use in GlassFish V3 development. It
+        is highly unlikely to work in any other environment.
+    </description>
     <url>http://jaxb.java.net/</url>
     
     <organization>
@@ -58,6 +69,14 @@
         <url>http://www.oracle.com/</url>
     </organization>
 
+    <developers>
+        <developer>
+            <name>Martin Grebac</name>
+            <email>martin.grebac@oracle.com</email>
+            <organization>Oracle Corporation</organization>
+        </developer>
+    </developers>
+    
     <licenses>
         <license>
             <name>CDDL 1.1</name>
@@ -71,17 +90,12 @@
         </license>
     </licenses>
 
-    <description>
-        JAXB (JSR 222) reference implementation
-
-        This module is exclusively meant for use in GlassFish V3 development. It
-        is highly unlikely to work in any other environment.
-    </description>
-
     <scm>
-        <url>https://svn.java.net/svn/jaxb~version2/jaxb-ri</url>
+        <connection>scm:svn:http://svn.java.net/svn/jaxb~version2/branches/jaxb-2_2-branch/jaxb-ri</connection>
+        <developerConnection>scm:svn:https://svn.java.net/svn/jaxb~version2/branches/jaxb-2_2-branch/jaxb-ri</developerConnection>
+        <url>http://java.net/projects/jaxb/sources/version2/show/branches/jaxb-2_2-branch/jaxb-ri</url>
     </scm>
-
+    
     <dependencies>
         <dependency>
             <groupId>javax.xml.bind</groupId>
@@ -89,59 +103,5 @@
             <version>@API_VERSION@</version>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <!-- fake out maven and install the binary artifact -->
-            <plugin>
-                <groupId>org.jvnet.maven-antrun-extended-plugin</groupId>
-                <artifactId>maven-antrun-extended-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <tasks>
-                                <attachArtifact file="jaxb-osgi.jar"/>
-                            </tasks>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-        <extensions>
-            <extension>
-                <groupId>org.jvnet.wagon-svn</groupId>
-                <artifactId>wagon-svn</artifactId>
-                <version>1.8</version>
-            </extension>
-        </extensions>
-    </build>
-
-    <repositories>
-        <repository>
-            <id>maven2-repository.dev.java.net</id>
-            <name>Java.net Repository for Maven</name>
-            <url>http://download.java.net/maven/2/</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>maven2-repository.dev.java.net</id>
-            <name>Java.net Repository for Maven</name>
-            <url>http://download.java.net/maven/2/</url>
-        </pluginRepository>
-    </pluginRepositories>
-
-    <distributionManagement>
-        <repository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>java.net-maven2-repository</id>
-            <url>svn:https://svn.java.net/svn/maven2-repository~svn/trunk/repository</url>
-        </repository>
-    </distributionManagement>
 
 </project>
