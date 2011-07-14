@@ -46,8 +46,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.sun.tools.xjc.BadCommandLineException;
 import com.sun.tools.xjc.Options;
@@ -79,6 +81,7 @@ import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.XSXPath;
 import com.sun.xml.xsom.visitor.XSFunction;
 import com.sun.xml.bind.v2.schemagen.episode.Bindings;
+import com.sun.xml.bind.v2.schemagen.episode.SchemaBindings;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -118,7 +121,7 @@ public class PluginImpl extends Plugin {
         try {
             // reorganize qualifying components by their namespaces to
             // generate the list nicely
-            Map<XSSchema, List<OutlineAdaptor>> perSchema = new HashMap<XSSchema,List<OutlineAdaptor>>();
+            Map<XSSchema, PerSchemaOutlineAdaptors> perSchema = new HashMap<XSSchema,PerSchemaOutlineAdaptors>();
             boolean hasComponentInNoNamespace = false;
 
             // Combine classes and enums into a single list
@@ -127,16 +130,18 @@ public class PluginImpl extends Plugin {
             for (ClassOutline co : model.getClasses()) {
                 XSComponent sc = co.target.getSchemaComponent();
                 String fullName = co.implClass.fullName();
+                String packageName = co.implClass.getPackage().name();
                 OutlineAdaptor adaptor = new OutlineAdaptor(sc,
-                        OutlineAdaptor.OutlineType.CLASS, fullName);
+                        OutlineAdaptor.OutlineType.CLASS, fullName, packageName);
                 outlines.add(adaptor);
             }
 
             for (EnumOutline eo : model.getEnums()) {
                 XSComponent sc = eo.target.getSchemaComponent();
                 String fullName = eo.clazz.fullName();
+                String packageName = eo.clazz.getPackage().name();
                 OutlineAdaptor adaptor = new OutlineAdaptor(sc,
-                        OutlineAdaptor.OutlineType.ENUM, fullName);
+                        OutlineAdaptor.OutlineType.ENUM, fullName, packageName);
                 outlines.add(adaptor);
             }
 
@@ -150,9 +155,9 @@ public class PluginImpl extends Plugin {
                 if (decl.isLocal())
                     continue;   // local components cannot be referenced from outside, so no need to list.
 
-                List<OutlineAdaptor> list = perSchema.get(decl.getOwnerSchema());
+                PerSchemaOutlineAdaptors list = perSchema.get(decl.getOwnerSchema());
                 if (list == null) {
-                    list = new ArrayList<OutlineAdaptor>();
+                    list = new PerSchemaOutlineAdaptors();
                     perSchema.put(decl.getOwnerSchema(), list);
                 }
 
@@ -172,16 +177,25 @@ public class PluginImpl extends Plugin {
             bindings._comment("\n\n"+opt.getPrologComment()+"\n  ");
 
             // generate listing per schema
-            for (Map.Entry<XSSchema,List<OutlineAdaptor>> e : perSchema.entrySet()) {
+            for (Map.Entry<XSSchema,PerSchemaOutlineAdaptors> e : perSchema.entrySet()) {
+            	PerSchemaOutlineAdaptors ps = e.getValue();
                 Bindings group = bindings.bindings();
                 String tns = e.getKey().getTargetNamespace();
                 if(!tns.equals(""))
                     group._namespace(tns,"tns");
 
                 group.scd("x-schema::"+(tns.equals("")?"":"tns"));
-                group.schemaBindings().map(false);
+                SchemaBindings schemaBindings = group.schemaBindings();
+				schemaBindings.map(false);
+				if (ps.packageNames.size() == 1)
+				{
+					final String packageName = ps.packageNames.iterator().next();
+					if (packageName != null && packageName.length() > 0) {
+						schemaBindings._package().name(packageName);
+					}
+				}
 
-                for (OutlineAdaptor oa : e.getValue()) {
+				for (OutlineAdaptor oa : ps.outlineAdaptors) {
                     Bindings child = group.bindings();
                     oa.buildBindings(child);
                 }
@@ -310,17 +324,33 @@ public class PluginImpl extends Plugin {
         private final XSComponent schemaComponent;
         private final OutlineType outlineType;
         private final String implName;
+        private final String packageName;
 
         public OutlineAdaptor(XSComponent schemaComponent, OutlineType outlineType,
-                              String implName) {
+                              String implName, String packageName) {
             this.schemaComponent = schemaComponent;
             this.outlineType = outlineType;
             this.implName = implName;
+            this.packageName = packageName;
         }
 
         private void buildBindings(Bindings bindings) {
             bindings.scd(schemaComponent.apply(SCD));
             outlineType.bindingsBuilder.build(this, bindings);
         }
+    }
+    
+    private final static class PerSchemaOutlineAdaptors {
+    	
+    	private final List<OutlineAdaptor> outlineAdaptors = new ArrayList<OutlineAdaptor>();
+    	
+    	private final Set<String> packageNames = new HashSet<String>();
+    	
+    	private void add(OutlineAdaptor outlineAdaptor)
+    	{
+    		this.outlineAdaptors.add(outlineAdaptor);
+    		this.packageNames.add(outlineAdaptor.packageName);
+    	}
+    	
     }
 }
