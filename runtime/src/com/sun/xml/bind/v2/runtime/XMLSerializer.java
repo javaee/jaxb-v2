@@ -853,6 +853,7 @@ public final class XMLSerializer extends Coordinator {
     }
 
     public void close() {
+        out = null;
         popCoordinator();
         resetThreadAffinity();
     }
