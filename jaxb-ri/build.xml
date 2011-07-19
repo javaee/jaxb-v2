@@ -674,11 +674,9 @@ Class-Path: ${manifest.classpath}
             description="target for Sun RE builds"
             depends="src-zip,bin-installer,src-installer,licensee-zip" />
 
-
     <target name="project.dtd" description="create DTD for DTD-aware editing">
       <antstructure output="project.dtd"/>
     </target>
-
 
     <target name = "integrate-1.0-compiler"
             description="extract XJC 1.0">
@@ -687,19 +685,16 @@ Class-Path: ${manifest.classpath}
       <delete dir="${xjc10.classes}/META-INF/MANIFEST.MF"/>
     </target>
 
-
-    <target name="integrate-fi">
-      <get src="http://hudson.sfbay/job/fi-1.2/lastSuccessfulBuild/artifact/fi/FastInfoset/dist/FastInfoset.jar"
-           dest="tools/lib/util/FastInfoset.jar" />
-      <get src="http://hudson.sfbay/job/fi-1.2/lastSuccessfulBuild/artifact/fi/FastInfoset/dist/FastInfoset.src.zip"
-           dest="tools/lib/src/FastInfoset.src.zip" />
+    <target name="integrate-zehpyr">
+        <get src="http://hudson.sfbay/job/zephyr/lastSuccessfulBuild/artifact/dist/sjsxp-1_0/sjsxp.jar"
+             dest="tools/lib/util/sjsxp.jar" />
+        <get src="http://hudson.sfbay/job/zephyr/lastSuccessfulBuild/artifact/dist/sjsxp-src-1_0.zip"
+             dest="tools/lib/src/sjsxp-src.zip" />
     </target>
 
-    <target name="integrate-dtdparser">
-      <!--<get src="http://hudson.sfbay/job/dtd-parser/lastSuccessfulBuild/artifact/dtd-parser/dtd-parser/target/distributions/dtd-parser-1.0.zip"
-           dest="tools/lib/rebundle/compiler/dtd-parser-1.0.jar" />-->
-      <get src="http://hudson.sfbay/job/dtd-parser/lastSuccessfulBuild/artifact/dtd-parser/dtd-parser/target/distributions/dtd-parser-1.0-src.zip"
-           dest="tools/lib/src/dtd-parser-1.0-src.zip" />
+    <target name="integrate-package-rename-task">
+        <get src="http://hudson.sfbay/job/package-rename-task/lastSuccessfulBuild/artifact/target/package-rename-task.jar"
+             dest="tools/lib/util/package-rename-task.jar"/>
     </target>
 
     <target name="integrate-stax-ex-hudson"
@@ -710,13 +705,100 @@ Class-Path: ${manifest.classpath}
            dest="tools/lib/util/stax-ex-src.zip" />
     </target>
 
+<!-- mavenized projects -->
     <target name="integrate-api" description="Integrate JAXB 2.1 API from Hudson">
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.1-mirror/lastSuccessfulBuild/artifact/dist/jaxb-api.jar"
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.1-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-${release.spec.version}.jar"
              dest="tools/lib/redist/jaxb-api.jar" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.1-mirror/lastSuccessfulBuild/artifact/dist/jaxb-api-src.zip"
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.1-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-${release.spec.version}-sources.jar"
              dest="tools/lib/redist/jaxb-api-src.zip" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.1-mirror/lastSuccessfulBuild/artifact/dist/jaxb-api-doc.zip"
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.1-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-${release.spec.version}-javadoc.jar"
              dest="tools/lib/redist/jaxb-api-doc.zip" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.1-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-osgi-${release.spec.version}.jar"
+             dest="tools/lib/osgi/jaxb-api-osgi.jar" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.1-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-osgi-${release.spec.version}-sources.jar"
+             dest="tools/lib/osgi/jaxb-api-osgi-sources.jar" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.1-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-osgi-${release.spec.version}-javadoc.jar"
+             dest="tools/lib/osgi/jaxb-api-osgi-javadoc.jar" />
+    </target>
+
+    <target name="integrate-api-maven" description="Integrate JAXB 2.1 API from maven">
+        <property name="mavenrepo.url" value="http://maven.java.net/content/repositories/snapshots/"/>
+        <get src="${mavenrepo.url}/javax/xml/bind/jaxb-api/${release.spec.version}/jaxb-api-${release.spec.version}.jar"
+             dest="tools/lib/redist/jaxb-api.jar" />
+        <get src="${mavenrepo.url}javax/xml/bind/jaxb-api/${release.spec.version}/jaxb-api-${release.spec.version}-sources.jar"
+             dest="tools/lib/redist/jaxb-api-src.zip" />
+        <get src="${mavenrepo.url}javax/xml/bind/jaxb-api/${release.spec.version}/jaxb-api-${release.spec.version}-javadoc.jar"
+             dest="tools/lib/redist/jaxb-api-doc.zip" />
+        <get src="${mavenrepo.url}/javax/xml/bind/jaxb-api-osgi/${release.spec.version}/jaxb-api-osgi-${release.spec.version}.jar"
+             dest="tools/lib/osgi/jaxb-api-osgi.jar" />
+        <get src="${mavenrepo.url}javax/xml/bind/jaxb-api-osgi/${release.spec.version}/jaxb-api-osgi-${release.spec.version}-sources.jar"
+             dest="tools/lib/osgi/jaxb-api-osgi-sources.jar" />
+        <get src="${mavenrepo.url}javax/xml/bind/jaxb-api-osgi/${release.spec.version}/jaxb-api-osgi-${release.spec.version}-javadoc.jar"
+             dest="tools/lib/redist/jaxb-api-osgi-javadoc.jar" />
+    </target>
+
+    <target name="integrate-dtdparser">
+      <get src="http://sysifos-sol.czech.sun.com/hudson/job/dtd-parser/lastSuccessfulBuild/artifact/target/dtd-parser-${dtd-parser.version}.jar"
+           dest="tools/lib/rebundle/compiler/dtd-parser.jar" />
+      <get src="http://sysifos-sol.czech.sun.com/hudson/job/dtd-parser/lastSuccessfulBuild/artifact/target/dtd-parser-${dtd-parser.version}-sources.jar"
+           dest="tools/lib/src/dtd-parser-sources.jar" />
+    </target>
+
+    <target name="integrate-dtdparser-maven">
+      <get src="http://download.java.net/maven/2/com/sun/xml/dtd-parser/dtd-parser/${dtd-parser.version}/dtd-parser-${dtd-parser.version}.jar"
+           dest="tools/lib/rebundle/compiler/dtd-parser.jar" />
+      <get src="http://download.java.net/maven/2/com/sun/xml/dtd-parser/dtd-parser/${dtd-parser.version}/dtd-parser-${dtd-parser.version}-sources.jar"
+           dest="tools/lib/src/dtd-parser-sources.jar" />
+    </target>
+
+    <target name="integrate-rngom">
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/rngom/lastSuccessfulBuild/artifact/target/rngom-${rngom.version}.jar"
+             dest="tools/lib/rebundle/compiler/rngom.jar" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/rngom/lastSuccessfulBuild/artifact/target/rngom-${rngom.version}-sources.jar"
+             dest="tools/lib/src/rngom-sources.jar" />
+    </target>
+
+    <target name="integrate-rngom-maven">
+        <get src="http://download.java.net/maven/2/org/kohsuke/rngom/rngom/${rngom.version}/rngom-${rngom.version}.jar"
+             dest="tools/lib/rebundle/compiler/rngom.jar" />
+        <get src="http://download.java.net/maven/2/org/kohsuke/rngom/rngom/${rngom.version}/rngom-${rngom.version}-sources.jar"
+             dest="tools/lib/src/rngom-sources.jar" />
+    </target>
+
+    <target name="integrate-txw2">
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/txw2/lastSuccessfulBuild/artifact/txw2/runtime/target/txw2-${txw2.version}.jar"
+             dest="tools/lib/rebundle/runtime2/txw2.jar" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/txw2/lastSuccessfulBuild/artifact/txw2/compiler/target/txwc2-${txw2.version}.jar"
+             dest="tools/lib/util/txwc2.jar" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/txw2/lastSuccessfulBuild/artifact/txw2/runtime/target/txw2-${txw2.version}-sources.jar"
+             dest="tools/lib/src/txw2-sources.jar" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/txw2/lastSuccessfulBuild/artifact/txw2/compiler/target/txwc2-${txw2.version}-sources.jar"
+             dest="tools/lib/util/txwc2-sources.jar" />
+    </target>
+
+    <target name="integrate-txw2-maven">
+        <get src="http://download.java.net/maven/2/com/sun/xml/txw2/txw2/${txw2.version}/txw2-${txw2.version}.jar"
+             dest="tools/lib/rebundle/runtime2/txw2.jar" />
+        <get src="http://download.java.net/maven/2/com/sun/xml/txw2/txwc2/${txw2.version}/txwc2-${txw2.version}.jar"
+             dest="tools/lib/util/txwc2.jar" />
+        <get src="http://download.java.net/maven/2/com/sun/xml/txw2/txw2/${txw2.version}/txw2-${txw2.version}-sources.jar"
+             dest="tools/lib/src/txw2-sources.jar" />
+        <get src="http://download.java.net/maven/2/com/sun/xml/txw2/txwc2/${txw2.version}/txwc2-${txw2.version}-sources.jar"
+             dest="tools/lib/util/txwc2-sources.jar" />
+    </target>
+
+    <target name="integrate-fi">
+      <get src="http://hudson-sca.us.oracle.com/job/fi-1.2/lastSuccessfulBuild/artifact/code/fastinfoset/target/FastInfoset-${fi.version}.jar"
+           dest="tools/lib/util/FastInfoset.jar" />
+      <get src="http://hudson-sca.us.oracle.com/job/fi-1.2/lastSuccessfulBuild/artifact/code/fastinfoset/target/FastInfoset-${fi.version}-sources.jar"
+           dest="tools/lib/src/fi-sources.jar" />
+    </target>
+
+    <target name="integrate-fi-maven">
+      <get src="http://download.java.net/maven/2/com/sun/xml/fastinfoset/FastInfoset/${fi.version}/FastInfoset-${fi.version}.jar"
+           dest="tools/lib/util/FastInfoset.jar" />
+      <get src="http://download.java.net/maven/2/com/sun/xml/fastinfoset/FastInfoset/${fi.version}/FastInfoset-${fi.version}-sources.jar"
+           dest="tools/lib/src/fi-sources.jar" />
     </target>
 
     <target name="integrate-xsom">
@@ -726,75 +808,53 @@ Class-Path: ${manifest.classpath}
              dest="tools/lib/src/xsom-sources.jar" />
     </target>
 
-    <target name="integrate-maven-repository-importer">
-        <get src="http://hudson.sfbay/job/maven-repository-importer/lastSuccessfulBuild/artifact/build/maven-repository-importer.jar"
-             dest="tools/lib/util/maven-repository-importer.jar" />
-    </target>
-
-    <target name="integrate-txw2">
-        <get src="http://hudson.sfbay/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2.jar"
-             dest="tools/lib/rebundle/runtime2/txw2.jar" />
-        <get src="http://hudson.sfbay/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txwc2.jar"
-             dest="tools/lib/util/txwc2.jar" />
-        <get src="http://hudson.sfbay/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2-src.zip"
-             dest="tools/lib/src/txw2-src.zip" />
-        <get src="http://hudson.sfbay/job/txw2/lastSuccessfulBuild/artifact/jaxb2-sources/txw2/build/txw2c-src.zip"
-             dest="tools/lib/src/txw2c-src.zip" />
-    </target>
-
-    <target name="integrate-rngom">
-        <get src="http://hudson.sfbay/job/rngom/lastSuccessfulBuild/artifact/rngom/rngom/build/rngom.jar"
-             dest="tools/lib/rebundle/compiler/rngom.jar" />
-        <get src="http://hudson.sfbay/job/rngom/lastSuccessfulBuild/artifact/rngom/rngom/build/rngom-src.zip"
-             dest="tools/lib/src/rngom-src.zip" />
-    </target>
-
-    <target name="integrate-zehpyr">
-        <get src="http://hudson.sfbay/job/zephyr/lastSuccessfulBuild/artifact/dist/sjsxp-1_0/sjsxp.jar"
-             dest="tools/lib/util/sjsxp.jar" />
-        <get src="http://hudson.sfbay/job/zephyr/lastSuccessfulBuild/artifact/dist/sjsxp-src-1_0.zip"
-             dest="tools/lib/src/sjsxp-src.zip" />
-    </target>
-
-    <target name="integrate-istack-commons">
-        <property name="istack.commons.runtime" value="http://hudson.sfbay/job/istack-commons/lastSuccessfulBuild/artifact/runtime/build" />
-        <property name="istack.commons.tools" value="http://hudson.sfbay/job/istack-commons/lastSuccessfulBuild/artifact/tools/build" />
-        <property name="istack.commons.test" value="http://hudson.sfbay/job/istack-commons/lastSuccessfulBuild/artifact/test/build" />
-
-        <get src="${istack.commons.tools}/istack-commons-tools.jar"
-             dest="tools/lib/rebundle/compiler/istack-commons-tools.jar" />
-        <get src="${istack.commons.tools}/istack-commons-tools-src.zip"
-             dest="tools/lib/src/istack-commons-tools-src.zip" />
-
-        <get src="${istack.commons.runtime}/istack-commons-runtime.jar"
-             dest="tools/lib/rebundle/runtime2/istack-commons-runtime.jar" />
-        <get src="${istack.commons.runtime}/istack-commons-runtime-src.zip"
-             dest="tools/lib/src/istack-commons-runtime-src.zip" />
-
-      <get src="${istack.commons.test}/istack-commons-test.jar"
-           dest="tools/lib/util/istack-commons-test.jar" />
-      <get src="${istack.commons.test}/istack-commons-test-src.zip"
-           dest="tools/lib/src/istack-commons-test-src.zip" />
-    </target>
-
-    <target name="integrate-package-rename-task">
-        <get src="http://hudson.sfbay/job/package-rename-task/lastSuccessfulBuild/artifact/target/package-rename-task.jar"
-             dest="tools/lib/util/package-rename-task.jar"/>
+    <target name="integrate-xsom-maven">
+        <get src="http://download.java.net/maven/2/com/sun/xsom/xsom/${xsom.version}/xsom-${xsom.version}.jar" dest="tools/lib/rebundle/compiler/xsom.jar" />
+        <get src="http://download.java.net/maven/2/com/sun/xsom/xsom/${xsom.version}/xsom-${xsom.version}-sources.jar" dest="tools/lib/src/xsom-sources.jar" />
     </target>
 
     <target name="integrate-codemodel">
-        <property name="codemodel-version" value="2.2-SNAPSHOT" />
-        <get src="http://hudson.sfbay/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel-version}.jar"
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel.version}.jar"
              dest="tools/lib/rebundle/compiler/codemodel.jar" />
-        <get src="http://hudson.sfbay/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel-version}.jar"
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel.version}.jar"
              dest="tools/lib/util/codemodel-annotation-compiler.jar" />
-             
-        <get src="http://hudson.sfbay/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel-version}-sources.jar"
-             dest="tools/lib/src/codemodel.src.zip" />
-        <get src="http://hudson.sfbay/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel-version}-sources.jar"
-             dest="tools/lib/src/codemodel-annotation-compiler.src.zip" />
-
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel.version}-sources.jar"
+             dest="tools/lib/src/codemodel-sources.jar" />
+        <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel.version}-sources.jar"
+             dest="tools/lib/util/codemodel-annotation-compiler-sources.jar" />
     </target>
-    
+
+    <target name="integrate-codemodel-maven">
+        <get src="http://download.java.net/maven/2/com/sun/codemodel/codemodel/${codemodel.version}/codemodel-${codemodel.version}.jar" dest="tools/lib/rebundle/compiler/codemodel.jar" />
+        <get src="http://download.java.net/maven/2/com/sun/codemodel/codemodel-annotation-compiler/${codemodel.version}/codemodel-annotation-compiler-${codemodel.version}.jar" dest="tools/lib/util/codemodel-annotation-compiler.jar"/>
+        <get src="http://download.java.net/maven/2/com/sun/codemodel/codemodel/${codemodel.version}/codemodel-${codemodel.version}-sources.jar" dest="tools/lib/src/codemodel-sources.jar" />
+        <get src="http://download.java.net/maven/2/com/sun/codemodel/codemodel-annotation-compiler/${codemodel.version}/codemodel-annotation-compiler-${codemodel.version}-sources.jar" dest="tools/lib/util/codemodel-annotation-compiler-sources.jar"/>
+    </target>
+
+    <target name="integrate-istack-commons">
+        <property name="istack.commons.runtime" value="http://sysifos-sol.czech.sun.com/hudson/job/istack-commons/lastSuccessfulBuild/artifact/runtime/target/" />
+        <property name="istack.commons.tools" value="http://sysifos-sol.czech.sun.com/hudson/job/istack-commons/lastSuccessfulBuild/artifact/tools/target/" />
+        <property name="istack.commons.test" value="http://sysifos-sol.czech.sun.com/hudson/job/istack-commons/lastSuccessfulBuild/artifact/test/target/" />
+
+        <get src="${istack.commons.tools}/istack-commons-tools-${istack-commons.version}.jar" dest="tools/lib/rebundle/compiler/istack-commons-tools.jar" />
+        <get src="${istack.commons.tools}/istack-commons-tools-${istack-commons.version}-sources.jar" dest="tools/lib/src/istack-commons-tools-sources.jar" />
+
+        <get src="${istack.commons.runtime}/istack-commons-runtime-${istack-commons.version}.jar" dest="tools/lib/rebundle/runtime2/istack-commons-runtime.jar" />
+        <get src="${istack.commons.runtime}/istack-commons-runtime-${istack-commons.version}-sources.jar" dest="tools/lib/src/istack-commons-runtime-sources.jar" />
+
+        <get src="${istack.commons.test}/istack-commons-test-${istack-commons.version}.jar" dest="tools/lib/util/istack-commons-test.jar" />
+        <get src="${istack.commons.test}/istack-commons-test-${istack-commons.version}-sources.jar" dest="tools/lib/util/istack-commons-test-sources.jar" />
+    </target>
+
+    <target name="integrate-istack-commons-maven">
+        <get src="http://download.java.net/maven/2/${istack-commons.tools.mvn.path}.jar" dest="tools/lib/rebundle/compiler/istack-commons-tools.jar" />
+        <get src="http://download.java.net/maven/2/${istack-commons.tools.mvn.path}-sources.jar" dest="tools/lib/src/istack-commons-tools-sources.jar" />
+        
+        <get src="http://download.java.net/maven/2/${istack-commons.runtime.mvn.path}.jar" dest="tools/lib/rebundle/runtime2/istack-commons-runtime.jar" />
+        <get src="http://download.java.net/maven/2/${istack-commons.runtime.mvn.path}-sources.jar" dest="tools/lib/src/istack-commons-runtime-sources.jar" />
+        
+        <get src="http://download.java.net/maven/2/${istack-commons.test.mvn.path}.jar" dest="tools/lib/util/istack-commons-test.jar" />
+        <get src="http://download.java.net/maven/2/${istack-commons.test.mvn.path}-sources.jar" dest="tools/lib/util/istack-commons-test-sources.jar" />
+    </target>
     
 </project>
