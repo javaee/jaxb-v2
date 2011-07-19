@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -202,7 +202,9 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> implement
     private void checkOverrideProperties(Property p) {
         ClassBeanInfoImpl bi = this;
         while ((bi = bi.superClazz) != null) {
-            for (Property superProperty : bi.properties) {
+            Property[] props = bi.properties;
+            if (props == null) break;
+            for (Property superProperty : props) {
                 if (superProperty == null) break;
                 String spName = superProperty.getFieldName();
                 if ((spName != null) && (spName.equals(p.getFieldName()))) {
