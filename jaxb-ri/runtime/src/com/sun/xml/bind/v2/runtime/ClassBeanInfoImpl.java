@@ -202,7 +202,9 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> implement
     private void checkOverrideProperties(Property p) {
         ClassBeanInfoImpl bi = this;
         while ((bi = bi.superClazz) != null) {
-            for (Property superProperty : bi.properties) {
+            Property[] props = bi.properties;
+            if (props == null) break;
+            for (Property superProperty : props) {
                 if (superProperty == null) break;
                 String spName = superProperty.getFieldName();
                 if ((spName != null) && (spName.equals(p.getFieldName()))) {
