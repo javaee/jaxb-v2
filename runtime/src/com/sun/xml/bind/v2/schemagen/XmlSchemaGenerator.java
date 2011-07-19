@@ -1139,6 +1139,11 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             ClassInfo ci = null;
             QName targetTagName = null;
 
+            if(t.isNillable() || t.getDefaultValue()!=null) {
+                // can't put those attributes on <element ref>
+                return false;
+            }
+
             if (t.getTarget() instanceof Element) {
                 te = (Element) t.getTarget();
                 targetTagName = te.getElementName();
@@ -1157,11 +1162,6 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                 if (targetTagName.getLocalPart().equals(tn.getLocalPart())) {
                     return true;
                 }
-            }
-
-            if(t.isNillable() || t.getDefaultValue()!=null) {
-                // can't put those attributes on <element ref>
-                return false;
             }
 
             // we have the precise element defined already
