@@ -169,11 +169,23 @@ public abstract class Coordinator implements ErrorHandler, ValidationEventHandle
 
     // this much is necessary to avoid calling get and set twice when we push.
     private static final ThreadLocal<Object[]> activeTable = new ThreadLocal<Object[]>() {
+        @Override
         public Object[] initialValue() {
             return new Object[1];
         }
     };
 
+    @Override
+    @SuppressWarnings("FinalizeDeclaration")
+    protected void finalize() throws Throwable {
+        try {
+            if (activeTable != null) {
+                activeTable.remove();
+            }
+        } finally {
+            super.finalize();
+        }
+    }
 
 //
 //
