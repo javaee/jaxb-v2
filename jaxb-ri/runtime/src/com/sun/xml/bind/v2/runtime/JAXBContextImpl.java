@@ -156,7 +156,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
      * whereas {@link JAXBContextImpl} is.
      * Lazily created.
      */
-    private static SAXTransformerFactory tf;
+    private volatile static SAXTransformerFactory tf;
 
     /**
      * Shared instance of {@link DocumentBuilder}.
@@ -276,7 +276,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
     }
 
     private JAXBContextImpl(JAXBContextBuilder builder) throws JAXBException {
-
+        
         this.defaultNsUri = builder.defaultNsUri;
         this.retainPropertyInfo = builder.retainPropertyInfo;
         this.annotationReader = builder.annotationReader;
@@ -430,7 +430,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
         // no use for them now
         nameBuilder = null;
-        beanInfos = null;
+        beanInfos = null;        
     }
 
     /**
@@ -718,25 +718,28 @@ public final class JAXBContextImpl extends JAXBRIContext {
     public int getNumberOfLocalNames() {
         return nameList.localNames.length;
     }
-
+    
     public int getNumberOfElementNames() {
         return nameList.numberOfElementNames;
     }
-
+    
     public int getNumberOfAttributeNames() {
         return nameList.numberOfAttributeNames;
     }
-
+    
     /**
      * Creates a new identity transformer.
      */
     static Transformer createTransformer() {
         try {
-            synchronized(JAXBContextImpl.class) {
-                if(tf==null)
-                    tf = (SAXTransformerFactory)TransformerFactory.newInstance();
-                return tf.newTransformer();
+            if (tf==null) {
+                synchronized(JAXBContextImpl.class) {
+                    if (tf==null) {
+                        tf = (SAXTransformerFactory)TransformerFactory.newInstance();
+                    }
+                }
             }
+            return tf.newTransformer();
         } catch (TransformerConfigurationException e) {
             throw new Error(e); // impossible
         }
@@ -747,11 +750,14 @@ public final class JAXBContextImpl extends JAXBRIContext {
      */
     public static TransformerHandler createTransformerHandler() {
         try {
-            synchronized(JAXBContextImpl.class) {
-                if(tf==null)
-                    tf = (SAXTransformerFactory)TransformerFactory.newInstance();
-                return tf.newTransformerHandler();
+            if (tf==null) {
+                synchronized(JAXBContextImpl.class) {
+                    if (tf==null) {
+                        tf = (SAXTransformerFactory)TransformerFactory.newInstance();
+                    }
+                }
             }
+            return tf.newTransformerHandler();
         } catch (TransformerConfigurationException e) {
             throw new Error(e); // impossible
         }
@@ -782,8 +788,8 @@ public final class JAXBContextImpl extends JAXBRIContext {
 
     public UnmarshallerImpl createUnmarshaller() {
         return new UnmarshallerImpl(this,null);
-    }
-
+    }    
+        
     public Validator createValidator() {
         throw new UnsupportedOperationException(Messages.NOT_IMPLEMENTED_IN_2_0.format());
     }
@@ -850,7 +856,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
             x.initCause(e[0]);
             throw x;
         }
-    }
+        }
 
     private XmlSchemaGenerator<Type,Class,Field,Method> createSchemaGenerator() {
         RuntimeTypeInfoSet tis;
@@ -1041,7 +1047,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
         Class[] newList = new Class[classes.length+1];
         System.arraycopy(classes,0,newList,0,classes.length);
         newList[classes.length] = clazz;
-
+        
         JAXBContextBuilder builder = new JAXBContextBuilder(this);
         builder.setClasses(newList);
         return builder.build();
@@ -1146,7 +1152,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
             // fool-proof
             if (this.defaultNsUri == null) {
                 this.defaultNsUri = "";
-            }
+            }   
 
             if (this.subclassReplacements == null) {
                 this.subclassReplacements = Collections.emptyMap();
