@@ -151,7 +151,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
      * whereas {@link JAXBContextImpl} is.
      * Lazily created.
      */
-    private static SAXTransformerFactory tf;
+    private volatile static SAXTransformerFactory tf;
 
     /**
      * Shared instance of {@link DocumentBuilder}.
@@ -718,11 +718,14 @@ public final class JAXBContextImpl extends JAXBRIContext {
      */
     static Transformer createTransformer() {
         try {
-            synchronized(JAXBContextImpl.class) {
-                if(tf==null)
-                    tf = (SAXTransformerFactory)TransformerFactory.newInstance();
-                return tf.newTransformer();
+            if (tf==null) {
+                synchronized(JAXBContextImpl.class) {
+                    if (tf==null) {
+                        tf = (SAXTransformerFactory)TransformerFactory.newInstance();
+                    }
+                }
             }
+            return tf.newTransformer();
         } catch (TransformerConfigurationException e) {
             throw new Error(e); // impossible
         }
@@ -733,11 +736,14 @@ public final class JAXBContextImpl extends JAXBRIContext {
      */
     public static TransformerHandler createTransformerHandler() {
         try {
-            synchronized(JAXBContextImpl.class) {
-                if(tf==null)
-                    tf = (SAXTransformerFactory)TransformerFactory.newInstance();
-                return tf.newTransformerHandler();
+            if (tf==null) {
+                synchronized(JAXBContextImpl.class) {
+                    if (tf==null) {
+                        tf = (SAXTransformerFactory)TransformerFactory.newInstance();
+                    }
+                }
             }
+            return tf.newTransformerHandler();
         } catch (TransformerConfigurationException e) {
             throw new Error(e); // impossible
         }
