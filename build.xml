@@ -736,6 +736,10 @@ Class-Path: ${manifest.classpath}
             <fileset dir="${external.dir}/jaxb" includes="**/*.jar">
                 <exclude name="**/jaxb1*.jar*"/>
                 <exclude name="**/bnd*.jar*"/>
+                <exclude name="**/*-sources*.jar*"/>
+                <exclude name="**/*package-rename-task.jar*"/>
+                <exclude name="**/*codemodel-annotation-compiler.jar*"/>
+                <exclude name="**/*junit*.jar"/>
             </fileset>
         </delete>
 
@@ -782,6 +786,12 @@ Class-Path: ${manifest.classpath}
             <arg line="clean install" />
         </exec>
         <copy file="${maven.repo.local}/${stax-ex.mvn.path}" tofile="${jaxb.root}/tools/lib/util/stax-ex.jar"/>
+
+        <echo message="building sjsxp"/>
+        <build.jar.from.srczip jar="${external.dir}/sjsxp/${sjsxp.version}/sjsxp.jar" srczip="tools/lib/src/sjsxp-src.zip" unzipdir="${external.dir}" 
+            srcdir="sjsxp/${sjsxp.version}" cp="${maven.repo.local}/${jsr173api.mvn.path}"/>
+        <mvn.publish.local jar="${external.dir}/sjsxp/${sjsxp.version}/sjsxp.jar" mvngroup="com.sun.xml.stream" mvnartid="sjsxp" mvnversion="${sjsxp.version}"/>
+        <copy file="${maven.repo.local}/${sjsxp.mvn.path}" tofile="${jaxb.root}/tools/lib/util/sjsxp.jar"/>
 
         <echo message="building relaxng-datatype"/>
         <build.jar.from.srczip jar="${external.dir}/rng-datatype/relaxngDatatype.jar" srczip="tools/lib/src/relaxngDatatype-src.zip" unzipdir="${external.dir}" srcdir="rng-datatype"/>
@@ -850,7 +860,10 @@ Class-Path: ${manifest.classpath}
         <copy file="${maven.repo.local}/${msv.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/runtime/msv.jar"/>
 
         <echo message="building istack-commons"/>
-        <build.jar.from.srczip jar="${external.dir}/istack-commons-runtime/istack-commons-runtime.jar" srczip="tools/lib/src/istack-commons-runtime-sources.jar" unzipdir="${external.dir}" srcdir="istack-commons-runtime"/>
+        <build.jar.from.srczip jar="${external.dir}/istack-commons-runtime/istack-commons-runtime.jar" 
+            srczip="tools/lib/src/istack-commons-runtime-sources.jar" unzipdir="${external.dir}" 
+            srcdir="istack-commons-runtime" 
+            cp="${maven.repo.local}/${jsr173api.mvn.path}:${maven.repo.local}/${activation.mvn.path}"/>
         <mvn.publish.local jar="${external.dir}/istack-commons-runtime/istack-commons-runtime.jar" mvngroup="com.sun.istack" mvnartid="istack-commons-runtime" mvnversion="${istack-commons.version}"/>
         <copy file="${maven.repo.local}/${istack-commons.runtime.mvn.path}.jar" tofile="${jaxb.root}/tools/lib/rebundle/runtime2/istack-commons-runtime.jar"/>
 
@@ -894,37 +907,44 @@ Class-Path: ${manifest.classpath}
         <copy file="${maven.repo.local}/${relaxngcc.mvn.path}" tofile="${jaxb.root}/tools/lib/util/relaxngcc.jar"/>
 
         <echo message="building rngom"/>
-        <build.jar.from.srczip jar="${external.dir}/rngom/rngom.jar" srczip="tools/lib/src/rngom-sources.jar" unzipdir="${external.dir}" srcdir="rngom"/>
+        <build.jar.from.srczip jar="${external.dir}/rngom/rngom.jar" srczip="tools/lib/src/rngom-sources.jar" unzipdir="${external.dir}" srcdir="rngom" 
+            cp="${maven.repo.local}/${relaxng-datatype.mvn.path}:${maven.repo.local}/${jsr173api.mvn.path}"/>
         <mvn.publish.local jar="${external.dir}/rngom/rngom.jar" mvngroup="org.kohsuke.rngom" mvnartid="rngom" mvnversion="${rngom.version}"/>
         <copy file="${maven.repo.local}/${rngom.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/rngom.jar"/>
 
         <echo message="building xsom"/>
-        <build.jar.from.srczip jar="${external.dir}/xsom/xsom.jar" srczip="tools/lib/src/xsom-sources.jar" unzipdir="${external.dir}" srcdir="xsom"/>
+        <build.jar.from.srczip jar="${external.dir}/xsom/xsom.jar" srczip="tools/lib/src/xsom-sources.jar" unzipdir="${external.dir}" srcdir="xsom"
+            cp="${maven.repo.local}/${relaxng-datatype.mvn.path}"/>
         <mvn.publish.local jar="${external.dir}/xsom/xsom.jar" mvngroup="com.sun.xsom" mvnartid="xsom" mvnversion="${xsom.version}"/>
         <copy file="${maven.repo.local}/${xsom.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/xsom.jar"/>
 
         <echo message="building txw2"/>
-        <build.jar.from.srczip jar="${external.dir}/txw2/txw2.jar" srczip="tools/lib/src/txw2-sources.jar" unzipdir="${external.dir}" srcdir="txw2"/>
+        <build.jar.from.srczip jar="${external.dir}/txw2/txw2.jar" srczip="tools/lib/src/txw2-sources.jar" unzipdir="${external.dir}" srcdir="txw2"
+            cp="${maven.repo.local}/${jsr173api.mvn.path}"/>
         <mvn.publish.local jar="${external.dir}/txw2/txw2.jar" mvngroup="com.sun.xml.txw2" mvnartid="txw2" mvnversion="${txw2.version}"/>
         <copy file="${maven.repo.local}/${txw2.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/runtime2/txw2.jar"/>
 
         <echo message="building txwc2"/>
-        <build.jar.from.srczip jar="${external.dir}/txwc2/txwc2.jar" srczip="tools/lib/util/txwc2-sources.jar" unzipdir="${external.dir}" srcdir="txwc2" cp="${maven.repo.local}/${rngom.mvn.path}:${maven.repo.local}/${codemodel.mvn.path}:${maven.repo.local}/${xsom.mvn.path}:${maven.repo.local}/${txw2.mvn.path}:${maven.repo.local}/${args4j.mvn.path}"/>
+        <build.jar.from.srczip jar="${external.dir}/txwc2/txwc2.jar" srczip="tools/lib/util/txwc2-sources.jar" unzipdir="${external.dir}" srcdir="txwc2" 
+            cp="${maven.repo.local}/${relaxng-datatype.mvn.path}:${maven.repo.local}/${rngom.mvn.path}:${maven.repo.local}/${codemodel.mvn.path}:${maven.repo.local}/${xsom.mvn.path}:${maven.repo.local}/${txw2.mvn.path}:${maven.repo.local}/${args4j.mvn.path}"/>
         <mvn.publish.local jar="${external.dir}/txwc2/txwc2.jar" mvngroup="com.sun.xml.txw2" mvnartid="txwc2" mvnversion="${txw2.version}"/>
         <copy file="${maven.repo.local}/${txwc2.mvn.path}" tofile="${jaxb.root}/tools/lib/util/txwc2.jar"/>
 
         <echo message="building fi"/>
-        <build.jar.from.srczip jar="${external.dir}/fi/${fi.version}/fi.jar" srczip="tools/lib/src/fi-sources.jar" unzipdir="${external.dir}" srcdir="fi/${fi.version}"/>
+        <build.jar.from.srczip jar="${external.dir}/fi/${fi.version}/fi.jar" srczip="tools/lib/src/fi-sources.jar" unzipdir="${external.dir}" 
+            srcdir="fi/${fi.version}" cp="${maven.repo.local}/${jsr173api.mvn.path}"/>
         <mvn.publish.local jar="${external.dir}/fi/${fi.version}/fi.jar" mvngroup="com.sun.xml.fastinfoset" mvnartid="FastInfoset" mvnversion="${fi.version}"/>
         <copy file="${maven.repo.local}/${fi.mvn.path}" tofile="${jaxb.root}/tools/lib/util/FastInfoset.jar"/>
 
         <echo message="building resolver-comsun"/>
-        <build.jar.from.srczip jar="${external.dir}/resolver-comsun/resolver.jar" srczip="tools/lib/src/resolver-comsun-src.zip" unzipdir="${external.dir}" srcdir="resolver-comsun"/>
+        <build.jar.from.srczip jar="${external.dir}/resolver-comsun/resolver.jar" srczip="tools/lib/src/resolver-comsun-src.zip" unzipdir="${external.dir}" 
+            srcdir="resolver-comsun"/>
         <mvn.publish.local jar="${external.dir}/resolver-comsun/resolver.jar" mvngroup="xml-resolver" mvnartid="xml-resolver-comsun" mvnversion="${resolver-comsun.version}"/>
         <copy file="${maven.repo.local}/${resolver-comsun.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/resolver.jar"/>
 
         <echo message="building jaxb-api"/>
-        <build.jar.from.srczip jar="${external.dir}/jaxb-api/jaxb-api.jar" srczip="tools/lib/redist/jaxb-api-src.zip" unzipdir="${external.dir}" srcdir="jaxb-api" cp="${maven.repo.local}/${activation.mvn.path}:${maven.repo.local}/${jsr173api.mvn.path}"/>
+        <build.jar.from.srczip jar="${external.dir}/jaxb-api/jaxb-api.jar" srczip="tools/lib/redist/jaxb-api-src.zip" unzipdir="${external.dir}" srcdir="jaxb-api" 
+            cp="${maven.repo.local}/${activation.mvn.path}:${maven.repo.local}/${jsr173api.mvn.path}"/>
         <mvn.publish.local jar="${external.dir}/jaxb-api/jaxb-api.jar" mvngroup="javax.xml.bind" mvnartid="jaxb-api" mvnversion="${jaxb-api.version}"/>
         <copy file="${maven.repo.local}/${jaxb-api.mvn.path}" tofile="${jaxb.root}/tools/lib/redist/jaxb-api.jar"/>
 
