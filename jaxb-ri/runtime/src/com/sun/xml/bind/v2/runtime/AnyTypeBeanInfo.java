@@ -155,13 +155,18 @@ final class AnyTypeBeanInfo extends JaxBeanInfo<Object> implements AttributeAcce
         NamespaceContext2 context = target.getNamespaceContext();
         for( int i=0; i<len; i++ ) {
             Attr a = (Attr)al.item(i);
-            if( "xmlns".equals(a.getPrefix()) ) {
+            if ("xmlns".equals(a.getPrefix())) {
                 context.force(a.getValue(), a.getLocalName());
                 continue;
             }
-            if( "xmlns".equals(a.getName()) ) {
-                context.force(a.getValue(), "");
-                continue;
+            if ("xmlns".equals(a.getName())) {
+                if (element instanceof org.w3c.dom.Element) {
+                    context.declareNamespace(a.getValue(), null, false);
+                    continue;
+                } else {
+                    context.force(a.getValue(), "");
+                    continue;
+                }
             }
             String nsUri = a.getNamespaceURI();
             if(nsUri!=null && nsUri.length()>0)
