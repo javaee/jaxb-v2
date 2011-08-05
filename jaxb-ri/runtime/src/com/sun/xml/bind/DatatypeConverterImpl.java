@@ -51,6 +51,8 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 /**
  * This class is the JAXB RI's default implementation of the 
@@ -64,7 +66,7 @@ import javax.xml.namespace.QName;
  * <p>
  * This class is responsible for whitespace normalization.
  *
- * @author <ul><li>Ryan Shoemaker, Sun Microsystems, Inc.</li></ul>
+ * @author <ul><li>Ryan Shoemaker, Martin Grebac</li></ul>
  * @since JAXB1.0
  * @deprecated in JAXB 2.2.4 - use javax.xml.bind.DatatypeConverterImpl instead
  * or let us know why you can't
@@ -623,6 +625,41 @@ public final class DatatypeConverterImpl {
         return ptr;
     }
 
+    public static void _printBase64Binary(byte[] input, int offset, int len, XMLStreamWriter output) throws XMLStreamException {
+        int remaining = len;
+        int i;
+        char[] buf = new char[4];
+        
+        for (i = offset; remaining >= 3; remaining -= 3, i += 3) {
+            buf[0] = encode(input[i] >> 2);
+            buf[1] = encode(
+                    ((input[i] & 0x3) << 4)
+                    | ((input[i + 1] >> 4) & 0xF));
+            buf[2] = encode(
+                    ((input[i + 1] & 0xF) << 2)
+                    | ((input[i + 2] >> 6) & 0x3));
+            buf[3] = encode(input[i + 2] & 0x3F);
+            output.writeCharacters(buf, 0, 4);
+        }
+        // encode when exactly 1 element (left) to encode
+        if (remaining == 1) {
+            buf[0] = encode(input[i] >> 2);
+            buf[1] = encode(((input[i]) & 0x3) << 4);
+            buf[2] = '=';
+            buf[3] = '=';
+            output.writeCharacters(buf, 0, 4);
+        }
+        // encode when exactly 2 elements (left) to encode
+        if (remaining == 2) {
+            buf[0] = encode(input[i] >> 2);
+            buf[1] = encode(((input[i] & 0x3) << 4)
+                    | ((input[i + 1] >> 4) & 0xF));
+            buf[2] = encode((input[i + 1] & 0xF) << 2);
+            buf[3] = '=';
+            output.writeCharacters(buf, 0, 4);
+        }
+    }
+    
     /**
      * Encodes a byte array into another byte array by first doing base64 encoding
      * then encoding the result in ASCII.
