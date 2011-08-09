@@ -415,8 +415,8 @@
 
 <!-- mavenized projects -->
 
-    <property name="mavenrepo.url" value="http://maven.java.net/content/groups/public"/>
-
+    <property name="mavenrepo.url" value="http://maven.java.net/content/repositories/releases"/>
+    
     <target name="integrate-api" description="Integrate JAXB 2.2 API from Hudson">
         <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-${release.spec.version}.jar"
              dest="tools/lib/redist/jaxb-api.jar" />
@@ -487,14 +487,10 @@
     </target>
 
     <target name="integrate-txw2-maven">
-        <get src="http://download.java.net/maven/2/com/sun/xml/txw2/txw2/${txw2.version}/txw2-${txw2.version}.jar"
-             dest="tools/lib/rebundle/runtime2/txw2.jar" />
-        <get src="http://download.java.net/maven/2/com/sun/xml/txw2/txwc2/${txw2.version}/txwc2-${txw2.version}.jar"
-             dest="tools/lib/util/txwc2.jar" />
-        <get src="http://download.java.net/maven/2/com/sun/xml/txw2/txw2/${txw2.version}/txw2-${txw2.version}-sources.jar"
-             dest="tools/lib/src/txw2-sources.jar" />
-        <get src="http://download.java.net/maven/2/com/sun/xml/txw2/txwc2/${txw2.version}/txwc2-${txw2.version}-sources.jar"
-             dest="tools/lib/util/txwc2-sources.jar" />
+        <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/xml/txw2/txw2/${txw2.version}/txw2-${txw2.version}.jar -O tools/lib/rebundle/runtime2/txw2.jar" /></exec>
+        <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/xml/txw2/txwc2/${txw2.version}/txwc2-${txw2.version}.jar -O tools/lib/util/txwc2.jar" /></exec>
+        <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/xml/txw2/txw2/${txw2.version}/txw2-${txw2.version}-sources.jar -O tools/lib/src/txw2-sources.jar" /></exec>
+        <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/xml/txw2/txwc2/${txw2.version}/txwc2-${txw2.version}-sources.jar -O tools/lib/util/txwc2-sources.jar" /></exec>
     </target>
 
     <target name="integrate-fi">
@@ -505,10 +501,8 @@
     </target>
 
     <target name="integrate-fi-maven">
-      <get src="${mavenrepo.url}/com/sun/xml/fastinfoset/FastInfoset/${fi.version}/FastInfoset-${fi.version}.jar"
-           dest="tools/lib/util/FastInfoset.jar" />
-      <get src="${mavenrepo.url}/com/sun/xml/fastinfoset/FastInfoset/${fi.version}/FastInfoset-${fi.version}-sources.jar"
-           dest="tools/lib/src/fi-sources.jar" />
+        <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/xml/fastinfoset/FastInfoset/${fi.version}/FastInfoset-${fi.version}.jar -O tools/lib/util/FastInfoset.jar" /></exec>
+        <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/xml/fastinfoset/FastInfoset/${fi.version}/FastInfoset-${fi.version}-sources.jar -O tools/lib/src/fi-sources.jar" /></exec>
     </target>
 
     <target name="integrate-xsom">
@@ -519,8 +513,8 @@
     </target>
 
     <target name="integrate-xsom-maven">
-        <get src="${mavenrepo.url}/com/sun/xsom/xsom/${xsom.version}/xsom-${xsom.version}.jar" dest="tools/lib/rebundle/compiler/xsom.jar" />
-        <get src="${mavenrepo.url}/com/sun/xsom/xsom/${xsom.version}/xsom-${xsom.version}-sources.jar" dest="tools/lib/src/xsom-sources.jar" />
+        <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/xsom/xsom/${xsom.version}/xsom-${xsom.version}.jar -O tools/lib/rebundle/compiler/xsom.jar"/></exec>
+        <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/xsom/xsom/${xsom.version}/xsom-${xsom.version}-sources.jar -O tools/lib/src/xsom-sources.jar"/></exec>
     </target>
 
     <target name="integrate-codemodel">
