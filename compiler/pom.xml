@@ -44,12 +44,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sun.xml.txw2</groupId>
     <artifactId>txwc2</artifactId>
-    <version>201103-SNAPSHOT</version>
+    <version>20110809</version>
     <name>TXW2 Compiler</name>
     <parent>
         <groupId>com.sun.xml.txw2</groupId>
         <artifactId>txw2-project</artifactId>
-        <version>201103-SNAPSHOT</version>
+        <version>20110809</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <dependencies>

@@ -40,15 +40,13 @@
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sun.xml.txw2</groupId>
     <artifactId>txw2-project</artifactId>
     <name>Typed XML Writer runtime</name>
     <url>http://txw.java.net/</url>
-    <version>201103-SNAPSHOT</version>
+    <version>20110809</version>
     <packaging>pom</packaging>
 
     <parent>
@@ -74,9 +72,9 @@
     </issueManagement>
     
     <scm>
-        <url>http://java.net/projects/jaxb~version2/show/trunk/txw2</url>
-        <connection>scm:svn:https://svn.java.net/svn/jaxb~version2/trunk/txw2</connection>
-        <developerConnection>scm:svn:https://svn.java.net/svn/jaxb~version2/trunk/txw2</developerConnection>
+        <url>http://java.net/projects/jaxb~version2/show/tags/txw2-project-20110809</url>
+        <connection>scm:svn:https://svn.java.net/svn/jaxb~version2/tags/txw2-project-20110809</connection>
+        <developerConnection>scm:svn:https://svn.java.net/svn/jaxb~version2/tags/txw2-project-20110809</developerConnection>
     </scm>
     <organization>
         <name>Oracle</name>
