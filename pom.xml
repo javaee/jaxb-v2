@@ -50,11 +50,13 @@
     <url>http://txw.java.net/</url>
     <version>201103-SNAPSHOT</version>
     <packaging>pom</packaging>
+
     <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>6</version>
+        <groupId>net.java</groupId>
+        <artifactId>jvnet-parent</artifactId>
+        <version>1</version>
     </parent>
+
     <modules>
         <module>compiler</module>
         <module>runtime</module>
@@ -84,7 +86,6 @@
         <developer>
             <id>kohsuke</id>
             <name>Kohsuke Kawaguchi</name>
-            <email>kohsuke.kawaguchi@sun.com</email>
         </developer>
         <developer>
             <id>snajper</id>
@@ -126,20 +127,5 @@
             </plugin>
         </plugins>
     </reporting>
-
-    <repositories>
-        <repository>
-            <id>m2.java.net</id>
-            <url>http://download.java.net/maven/2</url>
-            <layout>default</layout>
-        </repository>
-    </repositories>
-    
-    <distributionManagement>
-        <site>
-            <id>txw-www</id>
-            <url>svn:https://svn.java.net/svn/txw~svn/trunk/www</url>
-        </site>
-    </distributionManagement>
 
 </project>
