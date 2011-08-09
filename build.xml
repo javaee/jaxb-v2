@@ -415,6 +415,8 @@
 
 <!-- mavenized projects -->
 
+    <property name="mavenrepo.url" value="http://maven.java.net/content/groups/public"/>
+
     <target name="integrate-api" description="Integrate JAXB 2.2 API from Hudson">
         <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-${release.spec.version}.jar"
              dest="tools/lib/redist/jaxb-api.jar" />
@@ -431,7 +433,6 @@
     </target>
 
     <target name="integrate-api-maven" description="Integrate JAXB 2.2 API from maven">
-        <property name="mavenrepo.url" value="http://maven.java.net/content/repositories/snapshots/"/>
         <get src="${mavenrepo.url}/javax/xml/bind/jaxb-api/${release.spec.version}/jaxb-api-${release.spec.version}.jar"
              dest="tools/lib/redist/jaxb-api.jar" />
         <get src="${mavenrepo.url}javax/xml/bind/jaxb-api/${release.spec.version}/jaxb-api-${release.spec.version}-sources.jar"
@@ -440,10 +441,10 @@
              dest="tools/lib/redist/jaxb-api-doc.zip" />
         <get src="${mavenrepo.url}/javax/xml/bind/jaxb-api-osgi/${release.spec.version}/jaxb-api-osgi-${release.spec.version}.jar"
              dest="tools/lib/osgi/jaxb-api-osgi.jar" />
-        <get src="${mavenrepo.url}javax/xml/bind/jaxb-api-osgi/${release.spec.version}/jaxb-api-osgi-${release.spec.version}-sources.jar"
+        <get src="${mavenrepo.url}/javax/xml/bind/jaxb-api-osgi/${release.spec.version}/jaxb-api-osgi-${release.spec.version}-sources.jar"
              dest="tools/lib/osgi/jaxb-api-osgi-sources.jar" />
-        <get src="${mavenrepo.url}javax/xml/bind/jaxb-api-osgi/${release.spec.version}/jaxb-api-osgi-${release.spec.version}-javadoc.jar"
-             dest="tools/lib/redist/jaxb-api-osgi-javadoc.jar" />
+        <get src="${mavenrepo.url}/javax/xml/bind/jaxb-api-osgi/${release.spec.version}/jaxb-api-osgi-${release.spec.version}-javadoc.jar"
+             dest="tools/lib/osgi/jaxb-api-osgi-javadoc.jar" />
     </target>
 
     <target name="integrate-dtdparser">
@@ -504,9 +505,9 @@
     </target>
 
     <target name="integrate-fi-maven">
-      <get src="http://download.java.net/maven/2/com/sun/xml/fastinfoset/FastInfoset/${fi.version}/FastInfoset-${fi.version}.jar"
+      <get src="${mavenrepo.url}/com/sun/xml/fastinfoset/FastInfoset/${fi.version}/FastInfoset-${fi.version}.jar"
            dest="tools/lib/util/FastInfoset.jar" />
-      <get src="http://download.java.net/maven/2/com/sun/xml/fastinfoset/FastInfoset/${fi.version}/FastInfoset-${fi.version}-sources.jar"
+      <get src="${mavenrepo.url}/com/sun/xml/fastinfoset/FastInfoset/${fi.version}/FastInfoset-${fi.version}-sources.jar"
            dest="tools/lib/src/fi-sources.jar" />
     </target>
 
@@ -518,8 +519,8 @@
     </target>
 
     <target name="integrate-xsom-maven">
-        <get src="http://download.java.net/maven/2/com/sun/xsom/xsom/${xsom.version}/xsom-${xsom.version}.jar" dest="tools/lib/rebundle/compiler/xsom.jar" />
-        <get src="http://download.java.net/maven/2/com/sun/xsom/xsom/${xsom.version}/xsom-${xsom.version}-sources.jar" dest="tools/lib/src/xsom-sources.jar" />
+        <get src="${mavenrepo.url}/com/sun/xsom/xsom/${xsom.version}/xsom-${xsom.version}.jar" dest="tools/lib/rebundle/compiler/xsom.jar" />
+        <get src="${mavenrepo.url}/com/sun/xsom/xsom/${xsom.version}/xsom-${xsom.version}-sources.jar" dest="tools/lib/src/xsom-sources.jar" />
     </target>
 
     <target name="integrate-codemodel">
