@@ -551,14 +551,14 @@
     </target>
 
     <target name="integrate-istack-commons-maven">
-        <get src="http://download.java.net/maven/2/${istack-commons.tools.mvn.path}.jar" dest="tools/lib/rebundle/compiler/istack-commons-tools.jar" />
-        <get src="http://download.java.net/maven/2/${istack-commons.tools.mvn.path}-sources.jar" dest="tools/lib/src/istack-commons-tools-sources.jar" />
+        <exec executable="wget"><arg line="${mavenrepo.url}/${istack-commons.tools.mvn.path}.jar -O tools/lib/rebundle/compiler/istack-commons-tools.jar" /></exec>
+        <exec executable="wget"><arg line="${mavenrepo.url}/${istack-commons.tools.mvn.path}-sources.jar -O tools/lib/src/istack-commons-tools-sources.jar" /></exec>
         
-        <get src="http://download.java.net/maven/2/${istack-commons.runtime.mvn.path}.jar" dest="tools/lib/rebundle/runtime2/istack-commons-runtime.jar" />
-        <get src="http://download.java.net/maven/2/${istack-commons.runtime.mvn.path}-sources.jar" dest="tools/lib/src/istack-commons-runtime-sources.jar" />
+        <exec executable="wget"><arg line="${mavenrepo.url}/${istack-commons.runtime.mvn.path}.jar -O tools/lib/rebundle/runtime2/istack-commons-runtime.jar" /></exec>
+        <exec executable="wget"><arg line="${mavenrepo.url}/${istack-commons.runtime.mvn.path}-sources.jar -O tools/lib/src/istack-commons-runtime-sources.jar" /></exec>
         
-        <get src="http://download.java.net/maven/2/${istack-commons.test.mvn.path}.jar" dest="tools/lib/util/istack-commons-test.jar" />
-        <get src="http://download.java.net/maven/2/${istack-commons.test.mvn.path}-sources.jar" dest="tools/lib/util/istack-commons-test-sources.jar" />
+        <exec executable="wget"><arg line="${mavenrepo.url}/${istack-commons.test.mvn.path}.jar -O tools/lib/util/istack-commons-test.jar" /></exec>
+        <exec executable="wget"><arg line="${mavenrepo.url}/${istack-commons.test.mvn.path}-sources.jar -O tools/lib/util/istack-commons-test-sources.jar" /></exec>
     </target>
 
     <!-- Source build -->
