@@ -529,10 +529,10 @@
     </target>
 
     <target name="integrate-codemodel-maven">
-        <get src="http://download.java.net/maven/2/com/sun/codemodel/codemodel/${codemodel.version}/codemodel-${codemodel.version}.jar" dest="tools/lib/rebundle/compiler/codemodel.jar" />
-        <get src="http://download.java.net/maven/2/com/sun/codemodel/codemodel-annotation-compiler/${codemodel.version}/codemodel-annotation-compiler-${codemodel.version}.jar" dest="tools/lib/util/codemodel-annotation-compiler.jar"/>
-        <get src="http://download.java.net/maven/2/com/sun/codemodel/codemodel/${codemodel.version}/codemodel-${codemodel.version}-sources.jar" dest="tools/lib/src/codemodel-sources.jar" />
-        <get src="http://download.java.net/maven/2/com/sun/codemodel/codemodel-annotation-compiler/${codemodel.version}/codemodel-annotation-compiler-${codemodel.version}-sources.jar" dest="tools/lib/util/codemodel-annotation-compiler-sources.jar"/>
+        <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/codemodel/codemodel/${codemodel.version}/codemodel-${codemodel.version}.jar -O tools/lib/rebundle/compiler/codemodel.jar" /></exec>
+        <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/codemodel/codemodel-annotation-compiler/${codemodel.version}/codemodel-annotation-compiler-${codemodel.version}.jar -O tools/lib/util/codemodel-annotation-compiler.jar"/></exec>
+        <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/codemodel/codemodel/${codemodel.version}/codemodel-${codemodel.version}-sources.jar -O tools/lib/src/codemodel-sources.jar" /></exec>
+        <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/codemodel/codemodel-annotation-compiler/${codemodel.version}/codemodel-annotation-compiler-${codemodel.version}-sources.jar -O tools/lib/util/codemodel-annotation-compiler-sources.jar"/></exec>
     </target>
 
     <target name="integrate-istack-commons">
