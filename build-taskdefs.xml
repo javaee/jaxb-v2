@@ -149,6 +149,7 @@
                 <arg line="-Dhttp.proxyPort=80"/>
                 <arg line="-Dhttps.proxyHost=www-proxy.us.oracle.com"/>
                 <arg line="-Dhttps.proxyPort=80"/>
+                <arg line="-DuniqueVersion=false"/>
                 <arg line="@{command}"/>
                 <arg line="-Durl=@{repo}"/>
                 <arg line="-DrepositoryId=@{repoid}"/>
