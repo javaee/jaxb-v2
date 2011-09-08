@@ -81,6 +81,7 @@ public final class Ring {
     private final Map<Class,Object> components = new HashMap<Class,Object>();
 
     private static final ThreadLocal<Ring> instances = new ThreadLocal<Ring>() {
+        @Override
         public Ring initialValue() {
             return new Ring();
         }
@@ -125,7 +126,7 @@ public final class Ring {
     /**
      * A {@link Ring} instance is associated with a thread.
      */
-    public static Ring get() {
+    private static Ring get() {
         return instances.get();
     }
 
@@ -133,8 +134,11 @@ public final class Ring {
      * Starts a new scope.
      */
     public static Ring begin() {
-        Ring r = instances.get();
-        instances.set(new Ring());
+        Ring r = null;
+        synchronized (instances) {
+            r = instances.get();
+            instances.set(new Ring());
+        }
         return r;
     }
 
@@ -142,6 +146,9 @@ public final class Ring {
      * Ends a scope.
      */
     public static void end(Ring old) {
-        instances.set(old);
+        synchronized (instances) {
+            instances.remove();
+            instances.set(old);
+        }
     }
 }
