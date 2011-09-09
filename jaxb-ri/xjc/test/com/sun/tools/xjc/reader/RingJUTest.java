@@ -6,7 +6,6 @@ package com.sun.tools.xjc.reader;
 
 import junit.framework.TestCase;
 import junit.textui.TestRunner;
-import com.sun.tools.xjc.reader.Ring;
 
 /**
  *
@@ -19,9 +18,13 @@ public class RingJUTest extends TestCase {
     }
 
     public void test1() throws InterruptedException {
-        Ring r = Ring.begin();
+        Ring r = Ring.get();
+        assertNull(r);
+        r = Ring.begin();
+        assertNull(r);
         Ring.end(r);
         r = Ring.begin();
+        assertNull(r);
         Ring.end(r);
         r = Ring.get();
         assertNull(r);
