@@ -121,7 +121,7 @@ public final class Ring {
     /**
      * A {@link Ring} instance is associated with a thread.
      */
-    private static Ring get() {
+    public static Ring get() {
         return instances.get();
     }
 
