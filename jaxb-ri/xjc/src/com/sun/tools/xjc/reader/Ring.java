@@ -80,12 +80,7 @@ public final class Ring {
 
     private final Map<Class,Object> components = new HashMap<Class,Object>();
 
-    private static final ThreadLocal<Ring> instances = new ThreadLocal<Ring>() {
-        @Override
-        public Ring initialValue() {
-            return new Ring();
-        }
-    };
+    private static final ThreadLocal<Ring> instances = new ThreadLocal<Ring>();
 
     private Ring() {}
 
