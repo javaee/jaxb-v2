@@ -434,6 +434,7 @@ public class XJC2Task extends Task {
 
     private void doXJC() throws BuildException {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
+        AntClassLoader acl = null;
         try {
             if (classpath != null) {
                 for (String pathElement : classpath.list()) {
@@ -445,11 +446,15 @@ public class XJC2Task extends Task {
                 }
             }
             // set the user-specified class loader so that XJC will use it.
-            Thread.currentThread().setContextClassLoader(new AntClassLoader(getProject(),classpath));
+            Thread.currentThread().setContextClassLoader(acl = new AntClassLoader(getProject(),classpath));
             _doXJC();
         } finally {
             // restore the context class loader
             Thread.currentThread().setContextClassLoader(old);
+            // close AntClassLoader
+            if (acl != null) {
+                acl.cleanup();
+            }
         }
     }
 
