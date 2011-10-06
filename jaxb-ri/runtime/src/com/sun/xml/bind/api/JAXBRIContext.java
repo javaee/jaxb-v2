@@ -113,6 +113,49 @@ public abstract class JAXBRIContext extends JAXBContext {
     }
 
     /**
+     * Creates a new {@link JAXBRIContext}.
+     *
+     * <p>
+     * {@link JAXBContext#newInstance(Class[]) JAXBContext.newInstance()} methods may
+     * return other JAXB providers that are not compatible with the JAX-RPC RI.
+     * This method guarantees that the JAX-WS RI will finds the JAXB RI.
+     *
+     * @param classes
+     *      Classes to be bound. See {@link JAXBContext#newInstance(Class[])} for the meaning.
+     * @param typeRefs
+     *      See {@link #TYPE_REFERENCES} for the meaning of this parameter.
+     *      Can be null.
+     * @param subclassReplacements
+     *      See {@link #SUBCLASS_REPLACEMENTS} for the meaning of this parameter.
+     *      Can be null.
+     * @param defaultNamespaceRemap
+     *      See {@link #DEFAULT_NAMESPACE_REMAP} for the meaning of this parameter.
+     *      Can be null (and should be null for ordinary use of JAXB.)
+     * @param c14nSupport
+     *      See {@link #CANONICALIZATION_SUPPORT} for the meaning of this parameter.
+     * @param ar
+     *      See {@link #ANNOTATION_READER} for the meaning of this parameter.
+     *      Can be null.
+     * @param xmlAccessorFactorySupport
+     *      See {@link #XMLACCESSORFACTORY_SUPPORT} for the meaning of this parameter.
+     * @param allNillable
+     *      See {@link #TREAT_EVERYTHING_NILLABLE} for the meaning of this parameter.
+     * @param retainPropertyInfo
+     *      See {@link #RETAIN_REFERENCE_TO_INFO} for the meaning of this parameter.
+     * @param supressAccessorWarnings
+     *      See {@link #SUPRESS_ACCESSOR_WARNINGS} for the meaning of this parameter.
+     */
+    public static JAXBRIContext newInstance(@NotNull Class[] classes,
+       @Nullable Collection<TypeReference> typeRefs,
+       @Nullable Map<Class,Class> subclassReplacements,
+       @Nullable String defaultNamespaceRemap, boolean c14nSupport,
+       @Nullable RuntimeAnnotationReader ar,
+       boolean xmlAccessorFactorySupport, boolean allNillable, boolean retainPropertyInfo, boolean supressAccessorWarnings) throws JAXBException {
+        return ContextFactory.createContext(classes, typeRefs, subclassReplacements,
+                defaultNamespaceRemap, c14nSupport, ar, xmlAccessorFactorySupport, allNillable, retainPropertyInfo, supressAccessorWarnings);
+    }
+
+    /**
      * @deprecated
      *      Compatibility with older versions.
      */
