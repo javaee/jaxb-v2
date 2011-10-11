@@ -854,6 +854,7 @@ public final class XMLSerializer extends Coordinator {
 
     public void close() {
         out = null;
+        clearCurrentProperty();
         popCoordinator();
         resetThreadAffinity();
     }
@@ -1074,6 +1075,15 @@ public final class XMLSerializer extends Coordinator {
         return currentProperty.get();
     }
 
+    /**
+     * Takes care of cleaning the currentProperty. Must be called from the same thread that created the XMLSerializer.
+     */
+    public void clearCurrentProperty() {
+        if (currentProperty != null) {
+            currentProperty.remove();
+        }
+    }
+    
     /**
      * When called from within the realm of the marshaller, this method
      * returns the current {@link XMLSerializer} in charge.
