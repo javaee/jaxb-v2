@@ -76,6 +76,7 @@ import com.sun.xml.bind.v2.runtime.AssociationMap;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 
+import java.io.Closeable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -94,7 +95,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author
  *  <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
-public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements ValidationEventHandler
+public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements ValidationEventHandler, Closeable
 {
     /** Owning {@link JAXBContext} */
     protected final JAXBContextImpl context;
@@ -569,6 +570,10 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
         } finally {
             super.finalize();
         }
+    }
+
+    public void close() throws IOException {
+        ClassFactory.cleanCache();
     }
     
 }
