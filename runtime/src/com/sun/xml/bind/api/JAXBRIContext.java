@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -103,13 +103,56 @@ public abstract class JAXBRIContext extends JAXBContext {
      *      Can be null.
      * @since JAXB 2.1 EA2
      */
-    public static JAXBRIContext newInstance(@NotNull Class[] classes, 
-       @Nullable Collection<TypeReference> typeRefs, 
-       @Nullable Map<Class,Class> subclassReplacements, 
-       @Nullable String defaultNamespaceRemap, boolean c14nSupport, 
+    public static JAXBRIContext newInstance(@NotNull Class[] classes,
+       @Nullable Collection<TypeReference> typeRefs,
+       @Nullable Map<Class,Class> subclassReplacements,
+       @Nullable String defaultNamespaceRemap, boolean c14nSupport,
        @Nullable RuntimeAnnotationReader ar) throws JAXBException {
-        return ContextFactory.createContext(classes, typeRefs, subclassReplacements, 
+        return ContextFactory.createContext(classes, typeRefs, subclassReplacements,
                 defaultNamespaceRemap, c14nSupport, ar, false, false, false, false);
+    }
+
+    /**
+     * Creates a new {@link JAXBRIContext}.
+     *
+     * <p>
+     * {@link JAXBContext#newInstance(Class[]) JAXBContext.newInstance()} methods may
+     * return other JAXB providers that are not compatible with the JAX-RPC RI.
+     * This method guarantees that the JAX-WS RI will finds the JAXB RI.
+     *
+     * @param classes
+     *      Classes to be bound. See {@link JAXBContext#newInstance(Class[])} for the meaning.
+     * @param typeRefs
+     *      See {@link #TYPE_REFERENCES} for the meaning of this parameter.
+     *      Can be null.
+     * @param subclassReplacements
+     *      See {@link #SUBCLASS_REPLACEMENTS} for the meaning of this parameter.
+     *      Can be null.
+     * @param defaultNamespaceRemap
+     *      See {@link #DEFAULT_NAMESPACE_REMAP} for the meaning of this parameter.
+     *      Can be null (and should be null for ordinary use of JAXB.)
+     * @param c14nSupport
+     *      See {@link #CANONICALIZATION_SUPPORT} for the meaning of this parameter.
+     * @param ar
+     *      See {@link #ANNOTATION_READER} for the meaning of this parameter.
+     *      Can be null.
+     * @param xmlAccessorFactorySupport
+     *      See {@link #XMLACCESSORFACTORY_SUPPORT} for the meaning of this parameter.
+     * @param allNillable
+     *      See {@link #TREAT_EVERYTHING_NILLABLE} for the meaning of this parameter.
+     * @param retainPropertyInfo
+     *      See {@link #RETAIN_REFERENCE_TO_INFO} for the meaning of this parameter.
+     * @param supressAccessorWarnings
+     *      See {@link #SUPRESS_ACCESSOR_WARNINGS} for the meaning of this parameter.
+     */
+    public static JAXBRIContext newInstance(@NotNull Class[] classes,
+       @Nullable Collection<TypeReference> typeRefs,
+       @Nullable Map<Class,Class> subclassReplacements,
+       @Nullable String defaultNamespaceRemap, boolean c14nSupport,
+       @Nullable RuntimeAnnotationReader ar,
+       boolean xmlAccessorFactorySupport, boolean allNillable, boolean retainPropertyInfo, boolean supressAccessorWarnings) throws JAXBException {
+        return ContextFactory.createContext(classes, typeRefs, subclassReplacements,
+                defaultNamespaceRemap, c14nSupport, ar, xmlAccessorFactorySupport, allNillable, retainPropertyInfo, supressAccessorWarnings);
     }
 
     /**
@@ -119,7 +162,7 @@ public abstract class JAXBRIContext extends JAXBContext {
     public static JAXBRIContext newInstance(@NotNull Class[] classes,
         @Nullable Collection<TypeReference> typeRefs,
         @Nullable String defaultNamespaceRemap, boolean c14nSupport ) throws JAXBException {
-        return newInstance(classes,typeRefs, Collections.<Class,Class>emptyMap(), 
+        return newInstance(classes,typeRefs, Collections.<Class,Class>emptyMap(),
                 defaultNamespaceRemap,c14nSupport,null);
     }
 
@@ -262,7 +305,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      *      in the {@link JAXBRIContext#newInstance} method.
      *
      * @return null
-     *      if the referenced type is an anonymous and therefore doesn't have a name. 
+     *      if the referenced type is an anonymous and therefore doesn't have a name.
      */
     public abstract QName getTypeName(@NotNull TypeReference tr);
 
@@ -300,7 +343,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @since 2.1.10
      */
     public abstract RuntimeTypeInfoSet getRuntimeTypeInfoSet();
-    
+
     /**
      * Computes a Java identifier from a local name.
      *
@@ -447,7 +490,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      * to specify specific classes that replace the reference to generic classes.
      *
      * <p>
-     * See the release notes for more details about this feature. 
+     * See the release notes for more details about this feature.
      *
      * @since 2.1 EA2
      */
