@@ -572,6 +572,10 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
         }
     }
 
+    /**
+     *  Must be called from same thread which created the UnmarshallerImpl instance.
+     * @throws IOException 
+     */
     public void close() throws IOException {
         ClassFactory.cleanCache();
     }
