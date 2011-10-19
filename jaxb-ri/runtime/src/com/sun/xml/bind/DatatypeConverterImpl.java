@@ -294,7 +294,7 @@ public final class DatatypeConverterImpl {
         if (i == len) {
             return value;
         } else {
-            return false;
+            return null;
         }
 //            throw new IllegalArgumentException("String \"" + literal + "\" is not valid boolean value.");
     }
