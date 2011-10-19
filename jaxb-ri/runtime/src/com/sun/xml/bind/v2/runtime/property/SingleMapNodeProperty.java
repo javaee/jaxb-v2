@@ -181,6 +181,7 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
             super.leaveElement(state, ea);
             try {
                 acc.set(target.get(), map.get());
+                target.remove();
             } catch (AccessorException ex) {
                 handleGenericException(ex,true);
             }
@@ -253,9 +254,7 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
     private static final Receiver keyReceiver = new ReceiverImpl(0);
     private static final Receiver valueReceiver = new ReceiverImpl(1);
 
-
-
-
+    @Override
     public void serializeBody(BeanT o, XMLSerializer w, Object outerPeer) throws SAXException, AccessorException, IOException, XMLStreamException {
         ValueT v = acc.get(o);
         if(v!=null) {

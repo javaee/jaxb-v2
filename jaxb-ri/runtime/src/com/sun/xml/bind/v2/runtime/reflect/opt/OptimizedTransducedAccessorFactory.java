@@ -82,7 +82,7 @@ public abstract class OptimizedTransducedAccessorFactory {
     }
 
     /**
-     * Gets the optimizd {@link TransducedAccessor} if possible.
+     * Gets the optimized {@link TransducedAccessor} if possible.
      *
      * @return null
      *      if for some reason it fails to create an optimized version.
