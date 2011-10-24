@@ -964,7 +964,7 @@ Class-Path: ${manifest.classpath}
         <copy todir="${jaxb.build}">
             <fileset dir="distributions/maven"/>
         </copy>
-        <replace dir="${jaxb.build}" includes="*.pom" token="@VERSION@" value="${release.impl.version}"/>
+        <replace dir="${jaxb.build}" includes="*.pom" token="@VERSION@" value="${release.impl.version}${release.impl.version.suffix}"/>
         <replace dir="${jaxb.build}" includes="*.pom" token="@API_VERSION@" value="${release.spec.version}"/>
         <replace dir="${jaxb.build}" includes="*.pom" token="@FI_VERSION@" value="${fi.version}"/>
         <replace dir="${jaxb.build}" includes="*.pom" token="@ISTACK_COMMONS_VERSION@" value="${istack-commons.version}"/>
