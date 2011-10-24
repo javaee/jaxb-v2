@@ -211,7 +211,7 @@
             <arg value="-quiet"/>
         </javadoc>
         <zip zipfile="${osgi.build}/jaxb-osgi-javadoc.jar">
-            <fileset dir="${jaxb.build}/jaxbosgiapi"/>
+            <fileset dir="${jaxb.build}/jaxbosgisrc"/>
         </zip>
     </target>
 
