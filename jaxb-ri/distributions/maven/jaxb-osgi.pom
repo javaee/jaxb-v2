@@ -96,12 +96,21 @@
         <url>http://java.net/projects/jaxb/sources/version2/show/branches/jaxb-2_2-branch/jaxb-ri</url>
     </scm>
     
-    <dependencies>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api-osgi</artifactId>
-            <version>@API_VERSION@</version>
-        </dependency>
-    </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api-osgi</artifactId>
+                <version>@API_VERSION@</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <type>pom</type>
+                <scope>import</scope>
+                <version>@VERSION@</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

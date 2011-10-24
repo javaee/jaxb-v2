@@ -91,12 +91,24 @@
         <url>http://java.net/projects/jaxb/sources/version2/show/branches/jaxb-2_2-branch/jaxb-ri</url>
     </scm>
 
-    <dependencies>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>@API_VERSION@</version>
-        </dependency>
-    </dependencies>
+    <dependencyManagement>        
+        <dependencies>
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>@API_VERSION@</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.istack</groupId>
+                <artifactId>istack-commons-runtime</artifactId>
+                <version>@ISTACK_COMMONS_VERSION@</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.fastinfoset</groupId>
+                <artifactId>FastInfoset</artifactId>
+                <version>@FI_VERSION@</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

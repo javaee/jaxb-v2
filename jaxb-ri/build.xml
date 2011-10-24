@@ -415,23 +415,8 @@
 
 <!-- mavenized projects -->
 
-    <property name="mavenrepo.url" value="http://maven.java.net/content/repositories/releases"/>
+    <property name="mavenrepo.url" value="https://maven.java.net/content/repositories/releases/"/>
     
-    <target name="integrate-api" description="Integrate JAXB 2.2 API from Hudson">
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-${release.spec.version}.jar"
-             dest="tools/lib/redist/jaxb-api.jar" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-${release.spec.version}-sources.jar"
-             dest="tools/lib/redist/jaxb-api-src.zip" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-${release.spec.version}-javadoc.jar"
-             dest="tools/lib/redist/jaxb-api-doc.zip" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-osgi-${release.spec.version}.jar"
-             dest="tools/lib/osgi/jaxb-api-osgi.jar" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-osgi-${release.spec.version}-sources.jar"
-             dest="tools/lib/osgi/jaxb-api-osgi-sources.jar" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/jaxb-api-2.2-mirror/lastSuccessfulBuild/artifact/target/jaxb-api-osgi-${release.spec.version}-javadoc.jar"
-             dest="tools/lib/osgi/jaxb-api-osgi-javadoc.jar" />
-    </target>
-
     <target name="integrate-api-maven" description="Integrate JAXB 2.2 API from maven">
         <get src="${mavenrepo.url}/javax/xml/bind/jaxb-api/${release.spec.version}/jaxb-api-${release.spec.version}.jar"
              dest="tools/lib/redist/jaxb-api.jar" />
@@ -958,6 +943,8 @@ Class-Path: ${manifest.classpath}
         </copy>
         <replace dir="${jaxb.build}" includes="*.pom" token="@VERSION@" value="${release.impl.version}${release.impl.version.suffix}"/>
         <replace dir="${jaxb.build}" includes="*.pom" token="@API_VERSION@" value="${release.spec.version}"/>
+        <replace dir="${jaxb.build}" includes="*.pom" token="@FI_VERSION@" value="${fi.version}"/>
+        <replace dir="${jaxb.build}" includes="*.pom" token="@ISTACK_COMMONS_VERSION@" value="${istack-commons.version}"/>
         <mvn.publish.remote jar="dist/lib/jaxb-impl.jar" pom="build/jaxb-impl.pom"/>
         <mvn.publish.remote jar="dist/lib/jaxb-impl.src.zip" pom="build/jaxb-impl.pom" classifier="sources"/>
         <mvn.publish.remote jar="dist/lib/jaxb-impl-javadoc.jar" pom="build/jaxb-impl.pom" classifier="javadoc"/>
@@ -979,6 +966,8 @@ Class-Path: ${manifest.classpath}
         </copy>
         <replace dir="${jaxb.build}" includes="*.pom" token="@VERSION@" value="${release.impl.version}"/>
         <replace dir="${jaxb.build}" includes="*.pom" token="@API_VERSION@" value="${release.spec.version}"/>
+        <replace dir="${jaxb.build}" includes="*.pom" token="@FI_VERSION@" value="${fi.version}"/>
+        <replace dir="${jaxb.build}" includes="*.pom" token="@ISTACK_COMMONS_VERSION@" value="${istack-commons.version}"/>
         <mvn.publish.remote jar="dist/lib/jaxb-impl.jar" pom="build/jaxb-impl.pom" 
             repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
             password="${gpg.password}"/>

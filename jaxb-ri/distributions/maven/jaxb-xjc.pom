@@ -91,12 +91,14 @@
         <url>http://java.net/projects/jaxb/sources/version2/show/branches/jaxb-2_2-branch/jaxb-ri</url>
     </scm>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>@VERSION@</version>
-        </dependency>
-    </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>@VERSION@</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>
