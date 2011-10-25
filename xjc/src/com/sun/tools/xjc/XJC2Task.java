@@ -334,6 +334,10 @@ public class XJC2Task extends Task {
         this.options.targetDir = dir;
     }
 
+    public void setEncoding( String encoding ) {
+        this.options.encoding = encoding;
+    }
+
     /** Nested &lt;depends> element. */
     public void addConfiguredDepends( FileSet fs ) {
         addIndividualFilesTo( fs, dependsSet );
