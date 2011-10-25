@@ -75,6 +75,8 @@ import com.sun.tools.xjc.generator.bean.field.FieldRendererFactory;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Util;
 import com.sun.xml.bind.api.impl.NameConverter;
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -112,6 +114,9 @@ public class Options
 
     /** When on, generates content property for types with multiple xs:any derived elements (which is supposed to be correct behaviour) */
     public boolean contentForWildcard;
+
+    /** Encoding to be used by generated java sources, null for platform default. */
+    public String encoding;
 
     /**
      * Check the source schemas with extra scrutiny.
@@ -667,6 +672,20 @@ public class Options
             return 1;
         }
 
+        if (args[i].equals("-encoding")) {
+            encoding = requireArgument("-encoding", args, ++i);
+            try {
+                if (!Charset.isSupported(encoding)) {
+                    throw new BadCommandLineException(
+                        Messages.format(Messages.UNSUPPORTED_ENCODING, encoding));
+                }
+            } catch (IllegalCharsetNameException icne) {
+                throw new BadCommandLineException(
+                    Messages.format(Messages.UNSUPPORTED_ENCODING, encoding));
+            }
+            return 2;
+        }
+
         // see if this is one of the extensions
         for( Plugin plugin : getAllPlugins() ) {
             try {
@@ -875,7 +894,7 @@ public class Options
      * Creates a configured CodeWriter that produces files into the specified directory.
      */
     public CodeWriter createCodeWriter() throws IOException {
-        return createCodeWriter(new FileCodeWriter( targetDir, readOnly ));
+        return createCodeWriter(new FileCodeWriter( targetDir, readOnly, encoding ));
     }
 
     /**
