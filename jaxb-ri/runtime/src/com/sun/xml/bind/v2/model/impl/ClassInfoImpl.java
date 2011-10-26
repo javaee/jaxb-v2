@@ -159,7 +159,7 @@ public class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
      * @see #getFactoryMethod()
      */
     private M factoryMethod = null;
-    
+
     ClassInfoImpl(ModelBuilder<T,C,F,M> builder, Locatable upstream, C clazz) {
         super(builder,upstream);
         this.clazz = clazz;
@@ -208,13 +208,13 @@ public class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
         if (!hasFactoryConstructor(t)){
             if(!nav().hasDefaultConstructor(clazz)){
                 if(nav().isInnerClass(clazz)) {
-                    builder.reportError(new IllegalAnnotationException(
+                builder.reportError(new IllegalAnnotationException(
                         Messages.CANT_HANDLE_INNER_CLASS.format(nav().getClassName(clazz)), this ));
                 } else if (elementName != null) {
                     builder.reportError(new IllegalAnnotationException(
                         Messages.NO_DEFAULT_CONSTRUCTOR.format(nav().getClassName(clazz)), this ));
-                }
             }
+        }
         }
     }        
 
@@ -814,10 +814,6 @@ public class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
                     group = PropertyGroup.MAP;
                 else
                     group = PropertyGroup.ELEMENT;
-            } else if (group.equals(PropertyGroup.ELEMENT)) { // see issue 791 - make sure @XmlElement annotated map property is mapped to map
-                if (nav().isSubClassOf( seed.getRawType(), nav().ref(Map.class)) && !seed.hasAnnotation(XmlJavaTypeAdapter.class)) {
-                    group = PropertyGroup.MAP;
-                }
             }
 
             // group determined by now
@@ -971,7 +967,7 @@ public class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
                 // checking if the method is overriding others isn't free,
                 // so we don't compute it if it's not necessary.
                 isOverriding = (getter!=null && nav().isOverriding(getter,c))
-                            || (setter!=null && nav().isOverriding(setter,c));
+                            && (setter!=null && nav().isOverriding(setter,c));
             }
 
             if((at==XmlAccessType.PROPERTY && !isOverriding)
@@ -1049,19 +1045,19 @@ public class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
             // is this a get method?
             String propName = getPropertyNameFromGetMethod(name);
             if(propName!=null && arity==0) {
-                    getters.put(propName,method);
+                getters.put(propName,method);
                 used = true;
             }
 
             // is this a set method?
             propName = getPropertyNameFromSetMethod(name);
             if(propName!=null && arity==1) {
-                    List<M> propSetters = allSetters.get(propName);
-                    if(null == propSetters){
-                        propSetters = new ArrayList<M>();
-                        allSetters.put(propName, propSetters);
-                    }
-                    propSetters.add(method);
+                List<M> propSetters = allSetters.get(propName);
+                if(null == propSetters){
+                    propSetters = new ArrayList<M>();
+                    allSetters.put(propName, propSetters);
+                }
+                propSetters.add(method);
                 used = true; // used check performed later
             }
 
@@ -1093,7 +1089,7 @@ public class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
             setters.put(e.getKey(),e.getValue().get(0));
         }
     }
-    
+
     /**
      * Checks if the properties in this given super class should be aggregated into this class.
      */
