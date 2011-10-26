@@ -86,12 +86,14 @@ public class OptionsJUTest extends TestCase {
         jcm.build(o.createCodeWriter());
         File cls = new File(o.targetDir, "test/TestClass.java");
         FileInputStream fis = new FileInputStream(cls);
-        byte[] in = new byte[12];
+        //same string in UTF-8 is 1byte shorter on JDK6 than on JDK5
+        //therefore final check is for 'contains' and not for 'endsWith'
+        byte[] in = new byte[13];
         fis.read(in);
         fis.close();
         cls.delete();
         String inStr = new String(in, "UTF-8");
-        assertTrue("Got: '" + inStr + "'", inStr.endsWith("// This f"));
+        assertTrue("Got: '" + inStr + "'", inStr.contains("// This f"));
 
         //test UTF-16
         o.noFileHeader = true;
@@ -99,12 +101,12 @@ public class OptionsJUTest extends TestCase {
         jcm.build(o.createCodeWriter());
         cls = new File(o.targetDir, "test/TestClass.java");
         fis = new FileInputStream(cls);
-        in = new byte[22];
+        in = new byte[26];
         fis.read(in);
         fis.close();
         cls.delete();
         inStr = new String(in, "UTF-16");
-        assertTrue("Got: '" + inStr + "'", inStr.endsWith("package t"));
+        assertTrue("Got: '" + inStr + "'", inStr.contains("package t"));
 
         //test default encoding
         o.noFileHeader = false;
@@ -117,7 +119,7 @@ public class OptionsJUTest extends TestCase {
         fis.read(in);
         fis.close();
         cls.delete();
-        inStr = new String(in, Charset.defaultCharset());
+        inStr = new String(in, Charset.defaultCharset().name());
         assertTrue("Got: '" + inStr + "'", inStr.contains("// This f"));
     }
 
