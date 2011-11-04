@@ -44,8 +44,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import javax.xml.bind.annotation.XmlTransient;
-
 import com.sun.istack.Nullable;
 import com.sun.xml.bind.v2.model.core.ErrorHandler;
 
@@ -163,7 +161,7 @@ public interface AnnotationReader<T,C,F,M> {
      *
      * <p>
      * Depending on the underlying reflection library, you can't always
-     * obtain the {@link Class} object directly (see the APT MirrorTypeException
+     * obtain the {@link Class} object directly (see the Annotation Processing MirrorTypeException
      * for example), so use this method to avoid that.
      *
      * @param name

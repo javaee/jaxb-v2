@@ -58,8 +58,8 @@ import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.ValidatorHandler;
 
-import com.sun.mirror.apt.AnnotationProcessorEnvironment;
-import com.sun.mirror.declaration.TypeDeclaration;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.TypeElement;
 import com.sun.tools.jxc.gen.config.Config;
 import com.sun.tools.jxc.gen.config.Schema;
 import com.sun.tools.xjc.SchemaCache;
@@ -73,10 +73,10 @@ import org.xml.sax.XMLReader;
 
 
 /**
- * This reads the config files passed by the user to apt
+ * This reads the config files passed by the user to annotation processing
  * and obtains a list of classes that need to be included
  * for a particular config from the set of classes passed
- * by the user to apt.
+ * by the user to annotation processing.
  *
  * @author Bhakti Mehta (bhakti.mehta@sun.com)
  */
@@ -86,7 +86,7 @@ public final class ConfigReader  {
      * The set of classes to be passed to XJC
      *
      */
-    private final Set<Reference> classesToBeIncluded = new HashSet<Reference>();;
+    private final Set<Reference> classesToBeIncluded = new HashSet<Reference>();
 
 
     /**
@@ -94,7 +94,7 @@ public final class ConfigReader  {
      */
     private final SchemaOutputResolver schemaOutputResolver;
 
-    private final AnnotationProcessorEnvironment env;
+    private final ProcessingEnvironment env;
 
     /**
      *
@@ -107,7 +107,7 @@ public final class ConfigReader  {
      * @throws IOException
      *     If any IO errors occur.
      */
-    public ConfigReader( AnnotationProcessorEnvironment env, Collection <? extends TypeDeclaration> classes, File xmlFile, ErrorHandler errorHandler)throws SAXException,IOException{
+    public ConfigReader(ProcessingEnvironment env, Collection<? extends TypeElement> classes, File xmlFile, ErrorHandler errorHandler) throws SAXException, IOException {
         this.env = env;
         Config config = parseAndGetConfig(xmlFile,errorHandler);
         checkAllClasses(config,classes);
@@ -119,7 +119,7 @@ public final class ConfigReader  {
 
 
     /**
-     * This creates creates a regular expression
+     * This creates a regular expression
      * for the user pattern , matches the input classes
      * passed by the user and returns the final
      * list of classes that need to be included for a config file
@@ -130,15 +130,15 @@ public final class ConfigReader  {
         return classesToBeIncluded;
     }
 
-    private void checkAllClasses(Config config ,Collection<? extends TypeDeclaration> rootClasses){
+    private void checkAllClasses(Config config, Collection<? extends TypeElement> rootClasses) {
 
         List<Pattern> includeRegexList = config.getClasses().getIncludes();
         List<Pattern>  excludeRegexList = config.getClasses().getExcludes();
 
         OUTER:
-        for (TypeDeclaration typeDecl : rootClasses) {
+        for (TypeElement typeDecl : rootClasses) {
 
-            String qualifiedName = typeDecl.getQualifiedName();
+            String qualifiedName = typeDecl.getQualifiedName().toString();
 
             for (Pattern pattern : excludeRegexList) {
                 boolean match = checkPatternMatch(qualifiedName, pattern);
@@ -201,7 +201,7 @@ public final class ConfigReader  {
      * Parses an xml config file and returns a Config object.
      *
      * @param xmlFile
-     *        The xml config file which is passed by the user to apt
+     *        The xml config file which is passed by the user to annotation processing
      * @return
      *        A non null Config object
      */

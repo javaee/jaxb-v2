@@ -38,13 +38,14 @@
  * holder.
  */
 
-package com.sun.tools.jxc.apt;
+package com.sun.tools.jxc.ap;
 
-import com.sun.mirror.apt.AnnotationProcessorEnvironment;
-import com.sun.mirror.apt.Messager;
 import com.sun.tools.xjc.ErrorReceiver;
-
 import org.xml.sax.SAXParseException;
+
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.tools.Diagnostic;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -62,25 +63,25 @@ final class ErrorReceiverImpl extends ErrorReceiver {
         this(messager,false);
     }
 
-    public ErrorReceiverImpl(AnnotationProcessorEnvironment env) {
+    public ErrorReceiverImpl(ProcessingEnvironment env) {
         this(env.getMessager());
     }
 
     public void error(SAXParseException exception) {
-        messager.printError(exception.getMessage());
-        messager.printError(getLocation(exception));
+        messager.printMessage(Diagnostic.Kind.ERROR, exception.getMessage());
+        messager.printMessage(Diagnostic.Kind.ERROR, getLocation(exception));
         printDetail(exception);
     }
 
     public void fatalError(SAXParseException exception) {
-        messager.printError(exception.getMessage());
-        messager.printError(getLocation(exception));
+        messager.printMessage(Diagnostic.Kind.ERROR, exception.getMessage());
+        messager.printMessage(Diagnostic.Kind.ERROR, getLocation(exception));
         printDetail(exception);
     }
 
     public void warning(SAXParseException exception) {
-        messager.printWarning(exception.getMessage());
-        messager.printWarning(getLocation(exception));
+        messager.printMessage(Diagnostic.Kind.WARNING, exception.getMessage());
+        messager.printMessage(Diagnostic.Kind.WARNING, getLocation(exception));
         printDetail(exception);
     }
 

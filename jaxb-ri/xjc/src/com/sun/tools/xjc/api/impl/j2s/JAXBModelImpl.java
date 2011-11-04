@@ -54,11 +54,10 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 
-import com.sun.mirror.declaration.FieldDeclaration;
-import com.sun.mirror.declaration.MethodDeclaration;
-import com.sun.mirror.declaration.TypeDeclaration;
-import com.sun.mirror.type.TypeMirror;
-import com.sun.mirror.type.PrimitiveType;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 import com.sun.tools.xjc.api.ErrorListener;
 import com.sun.tools.xjc.api.J2SJAXBModel;
 import com.sun.tools.xjc.api.Reference;
@@ -84,42 +83,41 @@ final class JAXBModelImpl implements J2SJAXBModel {
 
     private final List<String> classList = new ArrayList<String>();
 
-    private final TypeInfoSet<TypeMirror,TypeDeclaration,FieldDeclaration,MethodDeclaration> types;
+    private final TypeInfoSet<TypeMirror, TypeElement, VariableElement, ExecutableElement> types;
 
-    private final AnnotationReader<TypeMirror,TypeDeclaration,FieldDeclaration,MethodDeclaration> reader;
+    private final AnnotationReader<TypeMirror, TypeElement, VariableElement, ExecutableElement> reader;
 
     /**
      * Lazily created schema generator.
      */
-    private XmlSchemaGenerator<TypeMirror,TypeDeclaration,FieldDeclaration,MethodDeclaration> xsdgen;
+    private XmlSchemaGenerator<TypeMirror, TypeElement, VariableElement, ExecutableElement> xsdgen;
 
     /**
      * Look up table from an externally visible {@link Reference} object
      * to our internal format.
      */
-    private final Map<Reference,NonElement<TypeMirror,TypeDeclaration>> refMap =
-        new HashMap<Reference, NonElement<TypeMirror,TypeDeclaration>>();
+    private final Map<Reference, NonElement<TypeMirror, TypeElement>> refMap = new HashMap<Reference, NonElement<TypeMirror, TypeElement>>();
 
-    public JAXBModelImpl(TypeInfoSet<TypeMirror, TypeDeclaration, FieldDeclaration, MethodDeclaration> types,
-                         AnnotationReader<TypeMirror, TypeDeclaration, FieldDeclaration, MethodDeclaration> reader,
+    public JAXBModelImpl(TypeInfoSet<TypeMirror, TypeElement, VariableElement, ExecutableElement> types,
+                         AnnotationReader<TypeMirror, TypeElement, VariableElement, ExecutableElement> reader,
                          Collection<Reference> rootClasses,
                          Map<QName, Reference> additionalElementDecls) {
         this.types = types;
         this.reader = reader;
         this.additionalElementDecls = additionalElementDecls;
 
-        Navigator<TypeMirror,TypeDeclaration,FieldDeclaration,MethodDeclaration> navigator = types.getNavigator();
+        Navigator<TypeMirror, TypeElement, VariableElement, ExecutableElement> navigator = types.getNavigator();
 
-        for( ClassInfo<TypeMirror,TypeDeclaration> i : types.beans().values() ) {
+        for (ClassInfo<TypeMirror, TypeElement> i : types.beans().values()) {
             classList.add(i.getName());
         }
 
-        for(ArrayInfo<TypeMirror,TypeDeclaration> a : types.arrays().values()) {
+        for (ArrayInfo<TypeMirror, TypeElement> a : types.arrays().values()) {
             String javaName = navigator.getTypeName(a.getType());
             classList.add(javaName);
         }
 
-        for( EnumLeafInfo<TypeMirror,TypeDeclaration> l : types.enums().values() ) {
+        for (EnumLeafInfo<TypeMirror, TypeElement> l : types.enums().values()) {
             QName tn = l.getTypeName();
             if(tn!=null) {
                 String javaName = navigator.getTypeName(l.getType());
@@ -137,19 +135,19 @@ final class JAXBModelImpl implements J2SJAXBModel {
             Map.Entry<QName, Reference> entry = itr.next();
             if(entry.getValue()==null)      continue;
 
-            NonElement<TypeMirror,TypeDeclaration> xt = getXmlType(entry.getValue());
+            NonElement<TypeMirror, TypeElement> xt = getXmlType(entry.getValue());
 
             assert xt!=null;
             refMap.put(entry.getValue(),xt);
             if(xt instanceof ClassInfo) {
-                ClassInfo<TypeMirror,TypeDeclaration> xct = (ClassInfo<TypeMirror,TypeDeclaration>) xt;
-                Element<TypeMirror,TypeDeclaration> elem = xct.asElement();
+                ClassInfo<TypeMirror, TypeElement> xct = (ClassInfo<TypeMirror, TypeElement>) xt;
+                Element<TypeMirror, TypeElement> elem = xct.asElement();
                 if(elem!=null && elem.getElementName().equals(entry.getKey())) {
                     itr.remove();
                     continue;
                 }
             }
-            ElementInfo<TypeMirror,TypeDeclaration> ei = types.getElementInfo(null,entry.getKey());
+            ElementInfo<TypeMirror, TypeElement> ei = types.getElementInfo(null, entry.getKey());
             if(ei!=null && ei.getContentType()==xt)
                 itr.remove();
         }
@@ -160,7 +158,7 @@ final class JAXBModelImpl implements J2SJAXBModel {
     }
 
     public QName getXmlTypeName(Reference javaType) {
-        NonElement<TypeMirror,TypeDeclaration> ti = refMap.get(javaType);
+        NonElement<TypeMirror, TypeElement> ti = refMap.get(javaType);
 
         if(ti!=null)
             return ti.getTypeName();
@@ -168,14 +166,14 @@ final class JAXBModelImpl implements J2SJAXBModel {
         return null;
     }
 
-    private NonElement<TypeMirror,TypeDeclaration> getXmlType(Reference r) {
+    private NonElement<TypeMirror, TypeElement> getXmlType(Reference r) {
         if(r==null)
             throw new IllegalArgumentException();
 
         XmlJavaTypeAdapter xjta = r.annotations.getAnnotation(XmlJavaTypeAdapter.class);
         XmlList xl = r.annotations.getAnnotation(XmlList.class);
 
-        Ref<TypeMirror, TypeDeclaration> ref = new Ref<TypeMirror, TypeDeclaration>(
+        Ref<TypeMirror, TypeElement> ref = new Ref<TypeMirror, TypeElement>(
             reader,types.getNavigator(),r.type,xjta,xl);
 
         return types.getTypeInfo(ref);
@@ -189,17 +187,18 @@ final class JAXBModelImpl implements J2SJAXBModel {
         getSchemaGenerator().writeEpisodeFile(ResultFactory.createSerializer(output));
     }
 
-    private synchronized XmlSchemaGenerator<TypeMirror, TypeDeclaration, FieldDeclaration, MethodDeclaration> getSchemaGenerator() {
+    private synchronized XmlSchemaGenerator<TypeMirror, TypeElement, VariableElement, ExecutableElement> getSchemaGenerator() {
         if(xsdgen==null) {
-            xsdgen = new XmlSchemaGenerator<TypeMirror,TypeDeclaration,FieldDeclaration,MethodDeclaration>( types.getNavigator(), types );
+            xsdgen = new XmlSchemaGenerator<TypeMirror, TypeElement, VariableElement, ExecutableElement>(types.getNavigator(), types);
 
             for (Map.Entry<QName, Reference> e : additionalElementDecls.entrySet()) {
                 Reference value = e.getValue();
                 if(value!=null) {
-                    NonElement<TypeMirror, TypeDeclaration> typeInfo = refMap.get(value);
+                    NonElement<TypeMirror, TypeElement> typeInfo = refMap.get(value);
                     if(typeInfo==null)
                         throw new IllegalArgumentException(e.getValue()+" was not specified to JavaCompiler.bind");
-                    xsdgen.add(e.getKey(),!(value.type instanceof PrimitiveType),typeInfo);
+                    TypeMirror type = value.type;
+                    xsdgen.add(e.getKey(), !(type != null && type.getKind().isPrimitive()), typeInfo);
                 } else {
                     xsdgen.add(e.getKey(),false,null);
                 }

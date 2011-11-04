@@ -387,7 +387,7 @@ public final class ReflectionNavigator implements Navigator<Type, Class, Field, 
      * This corresponds to the notion of the erasure in JSR-14.
      *
      * <p>
-     * Because of the difference in the way APT and the Java reflection
+     * Because of the difference in the way Annotation Processing and the Java reflection
      * treats primitive type and array type, we can't define this method
      * on {@link Navigator}.
      *

@@ -46,8 +46,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sun.mirror.apt.AnnotationProcessorFactory;
-import com.sun.tools.jxc.apt.SchemaGenerator;
+import javax.annotation.processing.Processor;
+import com.sun.tools.jxc.ap.SchemaGenerator;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.Commandline;
@@ -58,7 +58,7 @@ import org.apache.tools.ant.types.Commandline;
  *
  * @author Kohsuke Kawaguchi
  */
-public class SchemaGenTask extends AptBasedTask {
+public class SchemaGenTask extends ApBasedTask {
     private final List/*<Schema>*/ schemas = new ArrayList();
 
     private File episode;
@@ -89,7 +89,7 @@ public class SchemaGenTask extends AptBasedTask {
         this.episode = f;
     }
 
-    protected AnnotationProcessorFactory createFactory() {
+    protected Processor getProcessor() {
         Map m = new HashMap();
         for (int i = 0; i < schemas.size(); i++) {
             Schema schema = (Schema) schemas.get(i);

@@ -38,25 +38,30 @@
  * holder.
  */
 
-package com.sun.tools.jxc.apt;
+package com.sun.tools.jxc.ap;
 
-import java.io.File;
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
 
 /**
- * Defines constants used in the APT driver.
+ * Message resources.
  *
  * @author Kohsuke Kawaguchi
  */
-public abstract class Const {
-    private Const() {}
+enum Messages {
+    // Accessor
+    NON_EXISTENT_FILE, // 1 arg
+    UNRECOGNIZED_PARAMETER, //1 arg
+    OPERAND_MISSING, // 1 arg
+    ;
 
-    /**
-     * Name of the APT command-line option to take user-specified config files.
-     *
-     * <p>
-     * It can take multiple file names separately by {@link File#pathSeparator}.
-     */
-    public static final String CONFIG_FILE_OPTION = "-Ajaxb.config";
+    private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getPackage().getName() +".MessageBundle");
 
-    public static final String DEBUG_OPTION = "-Ajaxb.debug";
+    public String toString() {
+        return format();
+    }
+
+    public String format( Object... args ) {
+        return MessageFormat.format( rb.getString(name()), args );
+    }
 }
