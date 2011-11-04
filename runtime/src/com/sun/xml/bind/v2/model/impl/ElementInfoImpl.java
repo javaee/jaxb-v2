@@ -278,7 +278,7 @@ class ElementInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M> implements ElementI
             else {
                 XmlAttachmentRef xsa = reader().getMethodAnnotation(XmlAttachmentRef.class,m,this);
                 if(xsa!=null) {
-                    TODO.prototype("in APT swaRefAdapter isn't avaialble, so this returns null");
+                    TODO.prototype("in Annotation Processing swaRefAdapter isn't avaialble, so this returns null");
                     a = new Adapter<T,C>(owner.nav.asDecl(SwaRefAdapter.class),owner.nav);
                 }
             }

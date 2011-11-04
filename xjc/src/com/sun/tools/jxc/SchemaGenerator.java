@@ -40,6 +40,18 @@
 
 package com.sun.tools.jxc;
 
+import com.sun.tools.jxc.ap.Options;
+import com.sun.tools.xjc.BadCommandLineException;
+import com.sun.tools.xjc.api.util.ApClassLoader;
+import com.sun.tools.xjc.api.util.ToolsJarNotFoundException;
+import com.sun.xml.bind.util.Which;
+
+import javax.tools.DiagnosticCollector;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
+import javax.xml.bind.JAXBContext;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -47,18 +59,11 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.xml.bind.JAXBContext;
-
-import com.sun.mirror.apt.AnnotationProcessorFactory;
-import com.sun.tools.jxc.apt.Options;
-import com.sun.tools.xjc.BadCommandLineException;
-import com.sun.tools.xjc.api.util.APTClassLoader;
-import com.sun.tools.xjc.api.util.ToolsJarNotFoundException;
-import com.sun.xml.bind.util.Which;
 
 /**
  * CLI entry-point to the schema generator.
@@ -77,7 +82,7 @@ public class SchemaGenerator {
         try {
             ClassLoader cl = SchemaGenerator.class.getClassLoader();
             if(cl==null)    cl = ClassLoader.getSystemClassLoader();
-            ClassLoader classLoader = new APTClassLoader(cl,packagePrefixes);
+            ClassLoader classLoader = new ApClassLoader(cl, packagePrefixes);
             return run(args, classLoader);
         } catch( ToolsJarNotFoundException e) {
             System.err.println(e.getMessage());
@@ -92,10 +97,10 @@ public class SchemaGenerator {
         "com.sun.tools.jxc.",
         "com.sun.tools.xjc.",
         "com.sun.istack.tools.",
-        "com.sun.tools.apt.",
         "com.sun.tools.javac.",
         "com.sun.tools.javadoc.",
-        "com.sun.mirror."
+        "javax.annotation.processing.",
+        "javax.lang.model."
     };
 
     /**
@@ -103,8 +108,8 @@ public class SchemaGenerator {
      *
      * @param classLoader
      *      the schema generator will run in this classLoader.
-     *      It needs to be able to load APT and JAXB RI classes. Note that
-     *      JAXB RI classes refer to APT classes. Must not be null.
+     *      It needs to be able to load annotation processing and JAXB RI classes. Note that
+     *      JAXB RI classes refer to annotation processing classes. Must not be null.
      *
      * @return
      *      exit code. 0 if success.
@@ -131,7 +136,7 @@ public class SchemaGenerator {
                 System.out.println(Messages.FULLVERSION.format());
                 return -1;
             }
-            
+
         }
 
         try {
@@ -180,12 +185,12 @@ public class SchemaGenerator {
         aptargs.addAll(options.arguments);
 
         String[] argsarray = aptargs.toArray(new String[aptargs.size()]);
-        return (Integer)mainMethod.invoke(null,new Object[]{argsarray,options.episodeFile});
+        return (Integer) mainMethod.invoke(null, argsarray, options.episodeFile);
     }
 
     /**
      * Computes the file system path of <tt>jaxb-api.jar</tt> so that
-     * APT will see them in the <tt>-cp</tt> option.
+     * Annotation Processing will see them in the <tt>-cp</tt> option.
      *
      * <p>
      * In Java, you can't do this reliably (for that matter there's no guarantee
@@ -211,7 +216,7 @@ public class SchemaGenerator {
             if (f.exists() && f.getName().endsWith(".jar")) { // see 6510966
                 return f;
             }
-            f = new File(new URL(jarFileUrl).getFile()); 
+            f = new File(new URL(jarFileUrl).getFile());
             if (f.exists() && f.getName().endsWith(".jar")) { // this is here for potential backw. compatibility issues
                 return f;
             }
@@ -240,15 +245,23 @@ public class SchemaGenerator {
     }
 
     public static final class Runner {
-        public static int main(String[] args, File episode) throws Exception {
-            ClassLoader cl = Runner.class.getClassLoader();
-            Class apt = cl.loadClass("com.sun.tools.apt.Main");
-            Method processMethod = apt.getMethod("process",AnnotationProcessorFactory.class, String[].class);
+        public static boolean main(String[] args, File episode) throws Exception {
 
-            com.sun.tools.jxc.apt.SchemaGenerator r = new com.sun.tools.jxc.apt.SchemaGenerator();
+            JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+            DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
+            StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
+            JavaCompiler.CompilationTask task = compiler.getTask(
+                    null,
+                    fileManager,
+                    diagnostics,
+                    Arrays.asList(args),
+                    null,
+                    null);
+            com.sun.tools.jxc.ap.SchemaGenerator r = new com.sun.tools.jxc.ap.SchemaGenerator();
             if(episode!=null)
                 r.setEpisodeFile(episode);
-            return (Integer) processMethod.invoke(null, r, args);
+            task.setProcessors(Collections.singleton(r));
+            return task.call();
         }
     }
 }

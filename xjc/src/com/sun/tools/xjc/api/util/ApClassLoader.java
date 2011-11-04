@@ -51,13 +51,13 @@ import java.net.MalformedURLException;
 import com.sun.istack.Nullable;
 
 /**
- * {@link ClassLoader} that loads APT and specified classes
+ * {@link ClassLoader} that loads Annotation Processing and specified classes
  * both into the same classloader, so that they can reference each other.
  *
  * @author Bhakti Mehta
  * @since 2.0 beta
  */
-public final class APTClassLoader extends URLClassLoader {
+public final class ApClassLoader extends URLClassLoader {
     /**
      * List of package prefixes we want to mask the
      * parent classLoader from loading
@@ -71,7 +71,7 @@ public final class APTClassLoader extends URLClassLoader {
      * @param parent
      *      The parent class loader to delegate to. Null to indicate bootstrap classloader.
      */
-    public APTClassLoader(@Nullable ClassLoader parent, String[] packagePrefixes) throws ToolsJarNotFoundException {
+    public ApClassLoader(@Nullable ClassLoader parent, String[] packagePrefixes) throws ToolsJarNotFoundException {
         super(getToolsJar(parent),parent);
         if(getURLs().length==0)
             // if tools.jar was found in our classloader, no need to create
@@ -140,8 +140,7 @@ public final class APTClassLoader extends URLClassLoader {
     private static URL[] getToolsJar(@Nullable ClassLoader parent) throws ToolsJarNotFoundException {
 
         try {
-            Class.forName("com.sun.tools.javac.Main",false,parent);
-            Class.forName("com.sun.tools.apt.Main",false,parent);
+            Class.forName("com.sun.tools.javac.Main", false, parent);
             return new URL[0];
             // we can already load them in the parent class loader.
             // so no need to look for tools.jar.

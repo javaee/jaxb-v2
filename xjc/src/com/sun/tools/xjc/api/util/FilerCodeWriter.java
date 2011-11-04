@@ -40,17 +40,17 @@
 
 package com.sun.tools.xjc.api.util;
 
-import java.io.File;
+import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JPackage;
-import com.sun.mirror.apt.Filer;
+import javax.annotation.processing.Filer;
 
-import static com.sun.mirror.apt.Filer.Location.CLASS_TREE;
-import static com.sun.mirror.apt.Filer.Location.SOURCE_TREE;
+import static javax.tools.StandardLocation.CLASS_PATH;
+import static javax.tools.StandardLocation.SOURCE_PATH;
 
 /**
  * {@link CodeWriter} that generates source code to {@link Filer}.
@@ -66,16 +66,16 @@ public final class FilerCodeWriter extends CodeWriter {
     }
 
     public OutputStream openBinary(JPackage pkg, String fileName) throws IOException {
-        Filer.Location loc;
+        StandardLocation loc;
         if(fileName.endsWith(".java")) {
-            // APT doesn't do the proper Unicode escaping on Java source files,
+            // Annotation Processing doesn't do the proper Unicode escaping on Java source files,
             // so we can't rely on Filer.createSourceFile.
-            loc = SOURCE_TREE;
+            loc = SOURCE_PATH;
         } else {
             // put non-Java files directly to the output folder
-            loc = CLASS_TREE;
+            loc = CLASS_PATH;
         }
-        return filer.createBinaryFile(loc,pkg.name(),new File(fileName));
+        return filer.createResource(loc, pkg.name(), fileName).openOutputStream();
     }
 
     public Writer openSource(JPackage pkg, String fileName) throws IOException {
@@ -87,7 +87,7 @@ public final class FilerCodeWriter extends CodeWriter {
 
         name = name.substring(0,name.length()-5);   // strip ".java"
 
-        return filer.createSourceFile(name);
+        return filer.createSourceFile(name).openWriter();
     }
 
     public void close() {

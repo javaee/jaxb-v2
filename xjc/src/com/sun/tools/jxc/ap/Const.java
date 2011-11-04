@@ -38,30 +38,34 @@
  * holder.
  */
 
-package com.sun.tools.jxc.apt;
+package com.sun.tools.jxc.ap;
 
-import java.text.MessageFormat;
-import java.util.ResourceBundle;
+import java.io.File;
 
 /**
- * Message resources.
+ * Defines constants used in the Annotation Processing driver.
  *
  * @author Kohsuke Kawaguchi
  */
-enum Messages {
-    // Accessor
-    NON_EXISTENT_FILE, // 1 arg
-    UNRECOGNIZED_PARAMETER, //1 arg
-    OPERAND_MISSING, // 1 arg
-    ;
+public enum Const {
 
-    private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getPackage().getName() +".MessageBundle");
+    /**
+     * Name of the annotation processing command-line option to take user-specified config files.
+     * <p/>
+     * <p/>
+     * It can take multiple file names separately by {@link File#pathSeparator}.
+     */
+    CONFIG_FILE_OPTION("jaxb.config"),
 
-    public String toString() {
-        return format();
+    DEBUG_OPTION("jaxb.debug");
+
+    private String value;
+
+    private Const(String value) {
+        this.value = value;
     }
 
-    public String format( Object... args ) {
-        return MessageFormat.format( rb.getString(name()), args );
+    public String getValue() {
+        return value;
     }
 }

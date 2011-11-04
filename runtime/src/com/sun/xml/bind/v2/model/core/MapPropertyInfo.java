@@ -73,7 +73,7 @@ import javax.xml.namespace.QName;
  * The alternative was to implicitly assume an adapter, and have internal representation of
  * the Entry class ready.
  * But the fact that the key type and the value type changes with the parameterization makes
- * it very difficult to have such a class (especially inside APT, where we can't even generate
+ * it very difficult to have such a class (especially inside Annotation Processing, where we can't even generate
  * classes.)
  *
  * @author Kohsuke Kawaguchi

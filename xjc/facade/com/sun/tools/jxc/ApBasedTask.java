@@ -40,38 +40,36 @@
 
 package com.sun.tools.jxc;
 
-import java.lang.reflect.Method;
-
-import com.sun.mirror.apt.AnnotationProcessorFactory;
-
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Javac;
 import org.apache.tools.ant.taskdefs.compilers.DefaultCompilerAdapter;
 import org.apache.tools.ant.types.Commandline;
 
+import javax.annotation.processing.Processor;
+import javax.tools.DiagnosticCollector;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
+import java.util.Arrays;
+import java.util.Collections;
+
 /**
- * Base class for tasks that eventually invoke APT.
+ * Base class for tasks that eventually invoke annotation processing.
  *
  * @author Kohsuke Kawaguchi
  */
-public abstract class AptBasedTask extends Javac {
-
-    public AptBasedTask() {
-        setExecutable("apt");
-    }
+public abstract class ApBasedTask extends Javac {
 
     /**
-     * Implemented by the derived class to set up command line switches passed to Apt.
+     * Implemented by the derived class to set up command line switches passed to annotation processing.
      */
     protected abstract void setupCommandlineSwitches(Commandline cmd);
 
-    /**
-     * Common parts between {@link InternalAptAdapter} and {@link ExternalAptAdapter}.
-     */
-    private abstract class AptAdapter extends DefaultCompilerAdapter {
-        protected AptAdapter() {
-            setJavac(AptBasedTask.this);
+    private abstract class ApAdapter extends DefaultCompilerAdapter {
+        protected ApAdapter() {
+            setJavac(ApBasedTask.this);
         }
 
         protected Commandline setupModernJavacCommandlineSwitches(Commandline cmd) {
@@ -82,41 +80,39 @@ public abstract class AptBasedTask extends Javac {
     }
 
     /**
-     * Adapter to invoke Apt internally.
+     * Adapter to invoke Ap internally.
      */
-    private final class InternalAptAdapter extends AptAdapter {
+    private final class InternalApAdapter extends ApAdapter {
+
         public boolean execute() throws BuildException {
-            Commandline cmd = setupModernJavacCommand();
-
             try {
-                Class apt = Class.forName ("com.sun.tools.apt.Main");
-                Method process;
-                try {
-                    process = apt.getMethod ("process",
-                                        new Class [] {AnnotationProcessorFactory.class,String[].class});
-                } catch (NoSuchMethodException e) {
-                    throw new BuildException("JDK 1.5.0_01 or later is necessary",e, location);
-                }
-
-                int result = ((Integer) process.invoke(null,
-                        new Object[] {createFactory(),cmd.getArguments()}))
-                    .intValue ();
-                return result == 0;
+                JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+                DiagnosticCollector diagnostics = new DiagnosticCollector();
+                StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
+                JavaCompiler.CompilationTask task = compiler.getTask(
+                        null,
+                        fileManager,
+                        diagnostics,
+                        Arrays.asList(setupModernJavacCommand().getArguments()),
+                        null,
+                        null);
+                task.setProcessors(Collections.singleton(getProcessor()));
+                return task.call().booleanValue();
             } catch (BuildException e) {
                 throw e;
             } catch (Exception ex) {
-                throw new BuildException("Error starting apt",ex, location);
+                throw new BuildException("Error starting ap", ex, location);
             }
         }
     }
 
     /**
-     * Creates a facotry that does the actual job.
+     * Creates a factory that does the actual job.
      */
-    protected abstract AnnotationProcessorFactory createFactory();
+    protected abstract Processor getProcessor();
 
 //    /**
-//     * Adapter to invoke Apt externally.
+//     * Adapter to invoke annotation processing externally.
 //     */
 //    private final class ExternalAptAdapter extends AptAdapter {
 //        public boolean execute() throws BuildException {
@@ -138,14 +134,13 @@ public abstract class AptBasedTask extends Javac {
             }
         }
 
-        AptAdapter apt;
+        ApAdapter ap = new InternalApAdapter();
 //        if(isForkedJavac())
-//            apt = new ExternalAptAdapter();
+//            ap = new ExternalApAdapter();
 //        else
-            apt = new InternalAptAdapter();
 
         // compile
-        if (!apt.execute()) {
+        if (!ap.execute()) {
             if (failOnError) {
                 throw new BuildException(getFailedMessage(), getLocation());
             } else {

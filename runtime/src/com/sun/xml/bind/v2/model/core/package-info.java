@@ -45,7 +45,7 @@
  * <p>
  * Interfaces in this package are parameterized to work with arbitrary Java reflection library.
  * This is necessary because the RI needs to work with both the runtime reflection library
- * ({@link java.lang.reflect}) and the APT.
+ * ({@link java.lang.reflect}) and the Annotation Processing.
  *
  * <p>
  * The meaning of parameterizations are as follows:

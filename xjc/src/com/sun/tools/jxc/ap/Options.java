@@ -38,7 +38,7 @@
  * holder.
  */
 
-package com.sun.tools.jxc.apt;
+package com.sun.tools.jxc.ap;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -113,7 +113,7 @@ public class Options  {
                 throw new BadCommandLineException(
                         (Messages.OPERAND_MISSING.format(args[i])));
             classpath = args[++i];
-            
+
             return 1;
         }
 

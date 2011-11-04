@@ -59,7 +59,7 @@ import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 
 /**
  * Common {@link ElementPropertyInfo} implementation used for both
- * APT and runtime.
+ * Annotation Processing and runtime.
  * 
  * @author Kohsuke Kawaguchi
  */
