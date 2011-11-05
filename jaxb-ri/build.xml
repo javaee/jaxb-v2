@@ -754,9 +754,8 @@
         <exec executable="ant" dir="${jaxb.root}" failonerror="true" newenvironment="false" >
             <arg line="hudson" />
             <arg line="-Dfrom.source=true"/>
-            <arg line="-Dmaven.repo.local=${maven.repo.local} -Djavac.target=1.5 -Djavac.source=1.5" />
+            <arg line="-Dmaven.repo.local=${maven.repo.local}" />
             <arg line="${cpath}"/>
-            <env key="JAVA_HOME" value="${JDK_1.5}" />
         </exec>
 
         <mvn.publish.local jar="${jaxb.root}/dist/lib/jaxb-impl.jar" mvngroup="com.sun.xml.bind" mvnartid="jaxb-impl" mvnversion="${jaxb.version}"/>
@@ -767,10 +766,9 @@
         <exec executable="ant" dir="${jaxb.root}/osgi" failonerror="true" newenvironment="false" >
             <arg line="clean bundle" />
             <arg line="-Dfrom.source=true"/>
-            <arg line="-Dmaven.repo.local=${maven.repo.local} -Djavac.target=1.5 -Djavac.source=1.5" />
+            <arg line="-Dmaven.repo.local=${maven.repo.local}" />
             <arg line="${cpath}"/>
             <arg line="-Dosgi.build.rt=osgi/build"/>
-            <env key="JAVA_HOME" value="${JDK_1.5}" />
         </exec>
         <mvn.publish.local jar="${jaxb.root}/osgi/build/jaxb-osgi.jar" mvngroup="com.sun.xml.bind" mvnartid="jaxb-osgi" mvnversion="${jaxb.version}"/>
 
