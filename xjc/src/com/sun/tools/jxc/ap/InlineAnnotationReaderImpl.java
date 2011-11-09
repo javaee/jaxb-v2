@@ -167,6 +167,13 @@ public final class InlineAnnotationReaderImpl extends AbstractInlineAnnotationRe
                 Collection<? extends TypeMirror> r = me.getTypeMirrors();
                 return r.toArray(new TypeMirror[r.size()]);
             }
+            if( e.getCause() instanceof MirroredTypeException ) {
+                MirroredTypeException me = (MirroredTypeException)e.getCause();
+                TypeMirror tr = me.getTypeMirror();
+                TypeMirror[] trArr = new TypeMirror[1];
+                trArr[0] = tr;
+                return trArr;
+            }
             // impossible
             throw new RuntimeException(e);
         } catch (NoSuchMethodException e) {
