@@ -49,11 +49,12 @@ import org.apache.tools.ant.types.Commandline;
 import javax.annotation.processing.Processor;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
-import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Base class for tasks that eventually invoke annotation processing.
@@ -77,6 +78,38 @@ public abstract class ApBasedTask extends Javac {
             setupCommandlineSwitches(cmd);
             return cmd;
         }
+
+        protected void logAndAddFilesToCompile(Commandline cmd) {
+            attributes.log("Compilation " + cmd.describeArguments(),
+                           Project.MSG_VERBOSE);
+
+            StringBuffer niceSourceList = new StringBuffer("File");
+            if (compileList.length != 1) {
+                niceSourceList.append("s");
+            }
+            niceSourceList.append(" to be compiled:");
+
+            niceSourceList.append(lSep);
+
+            StringBuffer tempbuilder = new StringBuffer();
+            for (int i = 0; i < compileList.length; i++) {
+                String arg = compileList[i].getAbsolutePath();
+                // cmd.createArgument().setValue(arg); --> we don't need compile list withing cmd arguments
+                tempbuilder.append("    ").append(arg).append(lSep);
+                niceSourceList.append(tempbuilder);
+                tempbuilder.setLength(0);
+            }
+
+            attributes.log(niceSourceList.toString(), Project.MSG_VERBOSE);
+        }
+
+        protected List getFilesToCompile() {
+            List files = new ArrayList(compileList.length);
+            for (int i = 0; i < compileList.length; i++) {
+                files.add(compileList[i].getAbsolutePath());
+            }
+            return files;
+        }
     }
 
     /**
@@ -94,7 +127,7 @@ public abstract class ApBasedTask extends Javac {
                         fileManager,
                         diagnostics,
                         Arrays.asList(setupModernJavacCommand().getArguments()),
-                        null,
+                        getFilesToCompile(),
                         null);
                 task.setProcessors(Collections.singleton(getProcessor()));
                 return task.call().booleanValue();
