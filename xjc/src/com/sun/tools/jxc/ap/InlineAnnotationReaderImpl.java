@@ -167,6 +167,8 @@ public final class InlineAnnotationReaderImpl extends AbstractInlineAnnotationRe
                 Collection<? extends TypeMirror> r = me.getTypeMirrors();
                 return r.toArray(new TypeMirror[r.size()]);
             }
+            // *********************** TODO: jdk6 bug. Fixed in java7
+            // According to the javadocs it should throw the MirroredTypesException
             if( e.getCause() instanceof MirroredTypeException ) {
                 MirroredTypeException me = (MirroredTypeException)e.getCause();
                 TypeMirror tr = me.getTypeMirror();
@@ -174,6 +176,7 @@ public final class InlineAnnotationReaderImpl extends AbstractInlineAnnotationRe
                 trArr[0] = tr;
                 return trArr;
             }
+            // *******************************************
             // impossible
             throw new RuntimeException(e);
         } catch (NoSuchMethodException e) {
