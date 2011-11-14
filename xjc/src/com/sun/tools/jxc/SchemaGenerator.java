@@ -152,9 +152,6 @@ public class SchemaGenerator {
             return -1;
         }
 
-        Class schemagenRunner = classLoader.loadClass(Runner.class.getName());
-        Method mainMethod = schemagenRunner.getDeclaredMethod("main",String[].class,File.class);
-
         List<String> aptargs = new ArrayList<String>();
 
         if(hasClass(options.arguments)) {
@@ -187,7 +184,7 @@ public class SchemaGenerator {
         aptargs.addAll(options.arguments);
 
         String[] argsarray = aptargs.toArray(new String[aptargs.size()]);
-        return (Integer) mainMethod.invoke(null, argsarray, options.episodeFile);
+        return compile(argsarray, options.episodeFile) ? 0 : -1;
     }
 
     /**
@@ -246,115 +243,113 @@ public class SchemaGenerator {
         System.out.println(Messages.USAGE.format());
     }
 
-    public static final class Runner {
-        public static boolean main(String[] args, File episode) throws Exception {
+    public static boolean compile(String[] args, File episode) {
 
-            JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-            DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
-            StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
-            JavacOptions options = JavacOptions.parse(compiler, fileManager, args);
-            JavaCompiler.CompilationTask task = compiler.getTask(
-                    null,
-                    fileManager,
-                    diagnostics,
-                    options.getRecognizedOptions(),
-                    options.getFiles(),
-                    null);
-            com.sun.tools.jxc.ap.SchemaGenerator r = new com.sun.tools.jxc.ap.SchemaGenerator();
-            if(episode!=null)
-                r.setEpisodeFile(episode);
-            task.setProcessors(Collections.singleton(r));
-            return task.call();
+        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
+        StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
+        JavacOptions options = JavacOptions.parse(compiler, fileManager, args);
+        JavaCompiler.CompilationTask task = compiler.getTask(
+                null,
+                fileManager,
+                diagnostics,
+                options.getRecognizedOptions(),
+                options.getFiles(),
+                null);
+        com.sun.tools.jxc.ap.SchemaGenerator r = new com.sun.tools.jxc.ap.SchemaGenerator();
+        if(episode!=null)
+            r.setEpisodeFile(episode);
+        task.setProcessors(Collections.singleton(r));
+        return task.call();
+    }
+
+      /**
+          *  @author Peter von der Ahé
+          */
+    private static final class JavacOptions {
+        private final List<String> recognizedOptions;
+        private final List<String> classNames;
+        private final List<String> files;
+        private final List<String> unrecognizedOptions;
+
+        private JavacOptions(List<String> recognizedOptions, List<String> classNames, List<String> files,
+                             List<String> unrecognizedOptions) {
+            this.recognizedOptions = recognizedOptions;
+            this.classNames = classNames;
+            this.files = files;
+            this.unrecognizedOptions = unrecognizedOptions;
         }
 
-          /**
-              *  @author Peter von der Ahé
-              */
-        private static final class JavacOptions {
-            private final List<String> recognizedOptions;
-            private final List<String> classNames;
-            private final List<String> files;
-            private final List<String> unrecognizedOptions;
-
-            private JavacOptions(List<String> recognizedOptions, List<String> classNames, List<String> files,
-                                 List<String> unrecognizedOptions) {
-                this.recognizedOptions = recognizedOptions;
-                this.classNames = classNames;
-                this.files = files;
-                this.unrecognizedOptions = unrecognizedOptions;
-            }
-
-            public static JavacOptions parse(OptionChecker primary, OptionChecker secondary, String... arguments) {
-                List<String> recognizedOptions = new ArrayList<String>();
-                List<String> unrecognizedOptions = new ArrayList<String>();
-                List<String> classNames = new ArrayList<String>();
-                List<String> files = new ArrayList<String>();
-                for (int i = 0; i < arguments.length; i++) {
-                    String argument = arguments[i];
-                    int optionCount = primary.isSupportedOption(argument);
-                    if (optionCount < 0) {
-                        optionCount = secondary.isSupportedOption(argument);
-                    }
-                    if (optionCount < 0) {
-                        File file = new File(argument);
-                        if (file.exists())
-                            files.add(argument);
-                        else if (SourceVersion.isName(argument))
-                            classNames.add(argument);
-                        else
-                            unrecognizedOptions.add(argument);
-                    } else {
-                        for (int j = 0; j < optionCount + 1; j++) {
-                            int index = i + j;
-                            if (index == arguments.length) throw new IllegalArgumentException(argument);
-                            recognizedOptions.add(arguments[index]);
-                        }
-                        i += optionCount;
-                    }
+        public static JavacOptions parse(OptionChecker primary, OptionChecker secondary, String... arguments) {
+            List<String> recognizedOptions = new ArrayList<String>();
+            List<String> unrecognizedOptions = new ArrayList<String>();
+            List<String> classNames = new ArrayList<String>();
+            List<String> files = new ArrayList<String>();
+            for (int i = 0; i < arguments.length; i++) {
+                String argument = arguments[i];
+                int optionCount = primary.isSupportedOption(argument);
+                if (optionCount < 0) {
+                    optionCount = secondary.isSupportedOption(argument);
                 }
-                return new JavacOptions(recognizedOptions, classNames, files, unrecognizedOptions);
+                if (optionCount < 0) {
+                    File file = new File(argument);
+                    if (file.exists())
+                        files.add(argument);
+                    else if (SourceVersion.isName(argument))
+                        classNames.add(argument);
+                    else
+                        unrecognizedOptions.add(argument);
+                } else {
+                    for (int j = 0; j < optionCount + 1; j++) {
+                        int index = i + j;
+                        if (index == arguments.length) throw new IllegalArgumentException(argument);
+                        recognizedOptions.add(arguments[index]);
+                    }
+                    i += optionCount;
+                }
             }
+            return new JavacOptions(recognizedOptions, classNames, files, unrecognizedOptions);
+        }
 
-            /**
-                         * Returns the list of recognized options and their arguments.
-                         *
-                         * @return a list of options
-                         */
-            public List<String> getRecognizedOptions() {
-                return Collections.unmodifiableList(recognizedOptions);
-            }
+        /**
+                     * Returns the list of recognized options and their arguments.
+                     *
+                     * @return a list of options
+                     */
+        public List<String> getRecognizedOptions() {
+            return Collections.unmodifiableList(recognizedOptions);
+        }
 
-            /**
-                         * Returns the list of file names.
-                         *
-                         * @return a list of file names
-                         */
-            public List<String> getFiles() {
-                return Collections.unmodifiableList(files);
-            }
+        /**
+                     * Returns the list of file names.
+                     *
+                     * @return a list of file names
+                     */
+        public List<String> getFiles() {
+            return Collections.unmodifiableList(files);
+        }
 
-            /**
-                         * Returns the list of class names.
-                         *
-                         * @return a list of class names
-                         */
-            public List<String> getClassNames() {
-                return Collections.unmodifiableList(classNames);
-            }
+        /**
+                     * Returns the list of class names.
+                     *
+                     * @return a list of class names
+                     */
+        public List<String> getClassNames() {
+            return Collections.unmodifiableList(classNames);
+        }
 
-            /**
-                         * Returns the list of unrecognized options.
-                         *
-                         * @return a list of unrecognized options
-                         */
-            public List<String> getUnrecognizedOptions() {
-                return Collections.unmodifiableList(unrecognizedOptions);
-            }
+        /**
+                     * Returns the list of unrecognized options.
+                     *
+                     * @return a list of unrecognized options
+                     */
+        public List<String> getUnrecognizedOptions() {
+            return Collections.unmodifiableList(unrecognizedOptions);
+        }
 
-            @Override
-            public String toString() {
-                return String.format("recognizedOptions = %s; classNames = %s; " + "files = %s; unrecognizedOptions = %s", recognizedOptions, classNames, files, unrecognizedOptions);
-            }
+        @Override
+        public String toString() {
+            return String.format("recognizedOptions = %s; classNames = %s; " + "files = %s; unrecognizedOptions = %s", recognizedOptions, classNames, files, unrecognizedOptions);
         }
     }
 }
