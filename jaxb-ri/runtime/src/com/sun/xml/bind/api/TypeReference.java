@@ -42,6 +42,7 @@ package com.sun.xml.bind.api;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Collection;
 
 import javax.xml.namespace.QName;
@@ -125,5 +126,27 @@ public final class TypeReference {
 
         return new TypeReference(tagName,
             Navigator.REFLECTION.getTypeArgument(base,0));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TypeReference that = (TypeReference) o;
+
+        if (!Arrays.equals(annotations, that.annotations)) return false;
+        if (!tagName.equals(that.tagName)) return false;
+        if (!type.equals(that.type)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = tagName.hashCode();
+        result = 31 * result + type.hashCode();
+        result = 31 * result + Arrays.hashCode(annotations);
+        return result;
     }
 }
