@@ -154,10 +154,6 @@ public class SchemaGenerator {
 
         List<String> aptargs = new ArrayList<String>();
 
-        if(hasClass(options.arguments)) {
-            aptargs.add("-XclassesAsDecls");
-        }
-
         if (options.encoding != null) {
             aptargs.add("-encoding");
             aptargs.add(options.encoding);
