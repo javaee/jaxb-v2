@@ -49,6 +49,7 @@ import org.apache.tools.ant.types.Commandline;
 import javax.annotation.processing.Processor;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 import java.util.ArrayList;
@@ -122,13 +123,14 @@ public abstract class ApBasedTask extends Javac {
                 JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
                 DiagnosticCollector diagnostics = new DiagnosticCollector();
                 StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
+                Iterable compilationUnits = fileManager.getJavaFileObjectsFromFiles(getFilesToCompile());
                 JavaCompiler.CompilationTask task = compiler.getTask(
                         null,
                         fileManager,
                         diagnostics,
                         Arrays.asList(setupModernJavacCommand().getArguments()),
-                        getFilesToCompile(),
-                        null);
+                        null,
+                        compilationUnits);
                 task.setProcessors(Collections.singleton(getProcessor()));
                 return task.call().booleanValue();
             } catch (BuildException e) {

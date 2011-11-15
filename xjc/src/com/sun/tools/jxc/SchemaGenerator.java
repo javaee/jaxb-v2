@@ -249,13 +249,17 @@ public class SchemaGenerator {
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
         StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
         JavacOptions options = JavacOptions.parse(compiler, fileManager, args);
+        List<String> unrecognizedOptions = options.getUnrecognizedOptions();
+        if (!unrecognizedOptions.isEmpty())
+            Logger.getLogger(SchemaGenerator.class.getName()).log(Level.WARNING, "Unrecognized options found: " + unrecognizedOptions);
+        Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(options.getFiles());
         JavaCompiler.CompilationTask task = compiler.getTask(
                 null,
                 fileManager,
                 diagnostics,
                 options.getRecognizedOptions(),
-                options.getFiles(),
-                null);
+                options.getClassNames(),
+                compilationUnits);
         com.sun.tools.jxc.ap.SchemaGenerator r = new com.sun.tools.jxc.ap.SchemaGenerator();
         if(episode!=null)
             r.setEpisodeFile(episode);
@@ -269,10 +273,10 @@ public class SchemaGenerator {
     private static final class JavacOptions {
         private final List<String> recognizedOptions;
         private final List<String> classNames;
-        private final List<String> files;
+        private final List<File> files;
         private final List<String> unrecognizedOptions;
 
-        private JavacOptions(List<String> recognizedOptions, List<String> classNames, List<String> files,
+        private JavacOptions(List<String> recognizedOptions, List<String> classNames, List<File> files,
                              List<String> unrecognizedOptions) {
             this.recognizedOptions = recognizedOptions;
             this.classNames = classNames;
@@ -284,7 +288,7 @@ public class SchemaGenerator {
             List<String> recognizedOptions = new ArrayList<String>();
             List<String> unrecognizedOptions = new ArrayList<String>();
             List<String> classNames = new ArrayList<String>();
-            List<String> files = new ArrayList<String>();
+            List<File> files = new ArrayList<File>();
             for (int i = 0; i < arguments.length; i++) {
                 String argument = arguments[i];
                 int optionCount = primary.isSupportedOption(argument);
@@ -294,7 +298,7 @@ public class SchemaGenerator {
                 if (optionCount < 0) {
                     File file = new File(argument);
                     if (file.exists())
-                        files.add(argument);
+                        files.add(file);
                     else if (SourceVersion.isName(argument))
                         classNames.add(argument);
                     else
@@ -325,7 +329,7 @@ public class SchemaGenerator {
                      *
                      * @return a list of file names
                      */
-        public List<String> getFiles() {
+        public List<File> getFiles() {
             return Collections.unmodifiableList(files);
         }
 
