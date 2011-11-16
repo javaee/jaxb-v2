@@ -65,7 +65,7 @@ public class SchemaGeneratorFacade {
                     throw e.getTargetException();
             }
         } catch (UnsupportedClassVersionError e) {
-            System.err.println("schemagen requires JDK 5.0 or later. Please download it from http://java.sun.com/j2se/1.5/");
+            System.err.println("schemagen requires JDK 6.0 or later. Please download it from http://www.oracle.com/technetwork/java/javase/downloads");
         }
     }
 }
