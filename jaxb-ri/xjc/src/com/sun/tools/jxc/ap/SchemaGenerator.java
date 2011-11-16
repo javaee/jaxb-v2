@@ -50,6 +50,7 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
@@ -102,11 +103,11 @@ public class SchemaGenerator extends AbstractProcessor {
         final ErrorReceiverImpl errorListener = new ErrorReceiverImpl(processingEnv);
 
         List<Reference> decls = new ArrayList<Reference>();
-        for (TypeElement d : annotations) {
+        for (Element element : roundEnv.getRootElements()) {
             // simply ignore all the interface definitions,
             // so that users won't have to manually exclude interfaces, which is silly.
-            if (d.getKind().equals(ElementKind.CLASS))
-                decls.add(new Reference(d, processingEnv));
+            if (element.getKind().equals(ElementKind.CLASS))
+                decls.add(new Reference((TypeElement) element, processingEnv));
         }
 
         J2SJAXBModel model = XJC.createJavaCompiler().bind(decls, Collections.<QName, Reference>emptyMap(), null, processingEnv);
@@ -126,7 +127,7 @@ public class SchemaGenerator extends AbstractProcessor {
                             } else {
                                 // use the default
                                 file = new File(suggestedFileName);
-                                out = processingEnv.getFiler().createResource(StandardLocation.CLASS_PATH, "", suggestedFileName)
+                                out = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, "", suggestedFileName)
                                         .openOutputStream();
                                 file = file.getAbsoluteFile();
                             }
