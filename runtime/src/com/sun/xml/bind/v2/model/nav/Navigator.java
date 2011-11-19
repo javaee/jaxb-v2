@@ -412,4 +412,12 @@ public interface Navigator<T,C,F,M> {
      * (static classes.)
      */
     boolean isInnerClass(C clazz);
+
+    /**
+     * Checks if types are the same
+     * @param t1 type
+     * @param t2 type
+     * @return true if types are the same
+     */
+    boolean isSameType(T t1, T t2);
 }

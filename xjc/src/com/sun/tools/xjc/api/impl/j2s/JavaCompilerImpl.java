@@ -118,7 +118,9 @@ public class JavaCompilerImpl implements JavaCompiler {
         }
 
         public void error(IllegalAnnotationException e) {
-            messager.printMessage(Diagnostic.Kind.ERROR, e.toString());
+            String error = e.toString();
+            messager.printMessage(Diagnostic.Kind.ERROR, error);
+            System.err.println(error); //TODO: temporary fix problem with no ouput from messager
         }
     }
 }

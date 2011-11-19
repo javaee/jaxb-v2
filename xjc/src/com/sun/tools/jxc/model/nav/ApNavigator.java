@@ -306,6 +306,11 @@ public class ApNavigator implements Navigator<TypeMirror, TypeElement, VariableE
         return clazz.getEnclosingElement() != null && !clazz.getModifiers().contains(Modifier.STATIC);
     }
 
+    @Override
+    public boolean isSameType(TypeMirror t1, TypeMirror t2) {
+        return env.getTypeUtils().isSameType(t1, t2);
+    }
+
     public boolean isArray(TypeMirror type) {
         return type != null && type.getKind().equals(TypeKind.ARRAY);
     }

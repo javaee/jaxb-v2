@@ -979,7 +979,7 @@ public class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
             || hasAnnotation) {
                 // make sure that the type is consistent
                 if(getter!=null && setter!=null
-                && !nav().getReturnType(getter).equals(nav().getMethodParameters(setter)[0])) {
+                && !nav().isSameType(nav().getReturnType(getter), nav().getMethodParameters(setter)[0])) {
                     // inconsistent
                     builder.reportError(new IllegalAnnotationException(
                         Messages.GETTER_SETTER_INCOMPATIBLE_TYPE.format(
@@ -1081,7 +1081,7 @@ public class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
             T getterType = nav().getReturnType(getter);
             for (M setter : propSetters) {
                 T setterType = nav().getMethodParameters(setter)[0];
-                if (setterType.equals(getterType)) {
+                if (nav().isSameType(setterType, getterType)) {
                     setters.put(propName, setter);
                     break;
                 }
@@ -1298,13 +1298,13 @@ public class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
         String method = t.factoryMethod();
         T fClass = reader().getClassValue(t, "factoryClass");
         if (method.length() > 0){
-            if(fClass.equals(nav().ref(XmlType.DEFAULT.class))){
+            if(nav().isSameType(fClass, nav().ref(XmlType.DEFAULT.class))){
                 fClass = nav().use(clazz);
             }
             for(M m: nav().getDeclaredMethods(nav().asDecl(fClass))){
                 //- Find the zero-arg public static method with the required return type
                 if (nav().getMethodName(m).equals(method) &&
-                    nav().getReturnType(m).equals(nav().use(clazz)) &&
+                    nav().isSameType(nav().getReturnType(m), nav().use(clazz)) &&
                     nav().getMethodParameters(m).length == 0 &&
                     nav().isStaticMethod(m)){
                     factoryMethod = m;
@@ -1315,7 +1315,7 @@ public class ClassInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
                 builder.reportError(new IllegalAnnotationException(
                 Messages.NO_FACTORY_METHOD.format(nav().getClassName(nav().asDecl(fClass)), method), this ));
             }
-        } else if(!fClass.equals(nav().ref(XmlType.DEFAULT.class))){
+        } else if(!nav().isSameType(fClass, nav().ref(XmlType.DEFAULT.class))){
             builder.reportError(new IllegalAnnotationException(
                 Messages.FACTORY_CLASS_NEEDS_FACTORY_METHOD.format(nav().getClassName(nav().asDecl(fClass))), this ));
         }

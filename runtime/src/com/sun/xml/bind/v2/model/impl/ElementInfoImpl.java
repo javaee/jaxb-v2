@@ -307,7 +307,7 @@ class ElementInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M> implements ElementI
 
         // scope
         T s = reader().getClassValue(anno,"scope");
-        if(s.equals(nav().ref(XmlElementDecl.GLOBAL.class)))
+        if(nav().isSameType(s, nav().ref(XmlElementDecl.GLOBAL.class)))
             scope = null;
         else {
             // TODO: what happens if there's an error?
