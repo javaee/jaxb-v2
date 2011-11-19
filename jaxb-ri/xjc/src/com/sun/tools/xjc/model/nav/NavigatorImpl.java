@@ -342,4 +342,9 @@ public final class NavigatorImpl implements Navigator<NType,NClass,Void,Void> {
     public boolean isInnerClass(NClass clazz) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public boolean isSameType(NType t1, NType t2) {
+         throw new UnsupportedOperationException();
+    }
 }

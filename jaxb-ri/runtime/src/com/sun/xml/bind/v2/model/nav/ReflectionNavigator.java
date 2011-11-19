@@ -616,6 +616,11 @@ public final class ReflectionNavigator implements Navigator<Type, Class, Field, 
         return clazz.getEnclosingClass() != null && !Modifier.isStatic(clazz.getModifiers());
     }
 
+    @Override
+    public boolean isSameType(Type t1, Type t2) {
+        return t1.equals(t2);
+    }
+
     /**
      * JDK 5.0 has a bug of creating {@link GenericArrayType} where it shouldn't.
      * fix that manually to work around the problem.

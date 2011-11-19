@@ -1,4 +1,4 @@
-/*
+    /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
@@ -53,6 +53,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic;
 import javax.tools.StandardLocation;
 import javax.xml.bind.SchemaOutputResolver;
@@ -64,6 +65,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -102,15 +104,12 @@ public class SchemaGenerator extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         final ErrorReceiverImpl errorListener = new ErrorReceiverImpl(processingEnv);
 
-        List<Reference> decls = new ArrayList<Reference>();
-        for (Element element : roundEnv.getRootElements()) {
-            // simply ignore all the interface definitions,
-            // so that users won't have to manually exclude interfaces, which is silly.
-            if (element.getKind().equals(ElementKind.CLASS))
-                decls.add(new Reference((TypeElement) element, processingEnv));
-        }
+        List<Reference> classes = new ArrayList<Reference>();
+        // simply ignore all the interface definitions,
+        // so that users won't have to manually exclude interfaces, which is silly.
+        filterClass(classes, roundEnv.getRootElements());
 
-        J2SJAXBModel model = XJC.createJavaCompiler().bind(decls, Collections.<QName, Reference>emptyMap(), null, processingEnv);
+        J2SJAXBModel model = XJC.createJavaCompiler().bind(classes, Collections.<QName, Reference>emptyMap(), null, processingEnv);
         if (model == null)
             return false; // error
 
@@ -147,5 +146,14 @@ public class SchemaGenerator extends AbstractProcessor {
             errorListener.error(e.getMessage(), e);
         }
         return false;
+    }
+
+    private void filterClass(List<Reference> classes, Collection<? extends Element> elements) {
+        for (Element element : elements) {
+            if (element.getKind().equals(ElementKind.CLASS)) {
+                classes.add(new Reference((TypeElement) element, processingEnv));
+                filterClass(classes, ElementFilter.typesIn(element.getEnclosedElements()));
+            }
+        }
     }
 }

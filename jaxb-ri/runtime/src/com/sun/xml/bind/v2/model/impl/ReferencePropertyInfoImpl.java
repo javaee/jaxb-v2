@@ -165,7 +165,8 @@ class ReferencePropertyInfoImpl<T,C,F,M>
             for( XmlElementRef r : ann ) {
                 boolean yield;
                 T type = reader.getClassValue(r,"type");
-                if( type.equals(defaultType) ) type = nav.erasure(getIndividualType());
+                if(nav().isSameType(type, defaultType))
+                    type = nav.erasure(getIndividualType());
                 if(nav.getBaseClass(type,je)!=null)
                     yield = addGenericElement(r);
                 else
@@ -179,7 +180,7 @@ class ReferencePropertyInfoImpl<T,C,F,M>
                 if(last && !yield) {
                     // a reference didn't produce any type.
                     // diagnose the problem
-                    if(type.equals(nav.ref(JAXBElement.class))) {
+                    if(nav().isSameType(type, nav.ref(JAXBElement.class))) {
                         // no XmlElementDecl
                         parent.builder.reportError(new IllegalAnnotationException(
                             Messages.NO_XML_ELEMENT_DECL.format(
@@ -236,7 +237,7 @@ class ReferencePropertyInfoImpl<T,C,F,M>
                 for( XmlElementRef r : ann ) {
                     boolean yield;
                     T type = reader.getClassValue(r,"type");
-                    if (type.equals(defaultType)) {
+                    if (nav().isSameType(type, defaultType)) {
                         type = nav.erasure(getIndividualType());
                     }
                     if (nav.getBaseClass(type,je) != null) {
@@ -249,7 +250,7 @@ class ReferencePropertyInfoImpl<T,C,F,M>
                     if(last && !yield) {
                         // a reference didn't produce any type.
                         // diagnose the problem
-                        if(type.equals(nav.ref(JAXBElement.class))) {
+                        if(nav().isSameType(type, nav.ref(JAXBElement.class))) {
                             // no XmlElementDecl
                             parent.builder.reportError(new IllegalAnnotationException(
                                 Messages.NO_XML_ELEMENT_DECL.format(

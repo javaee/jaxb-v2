@@ -139,7 +139,8 @@ class ElementPropertyInfoImpl<TypeT,ClassDeclT,FieldT,MethodT>
                     // TODO: handle defaulting in names.
                     QName name = calcXmlName(item);
                     TypeT type = reader().getClassValue(item, "type");
-                    if(type.equals(nav().ref(XmlElement.DEFAULT.class))) type = getIndividualType();
+                    if (nav().isSameType(type, nav().ref(XmlElement.DEFAULT.class)))
+                        type = getIndividualType();
                     if((!nav().isPrimitive(type) || isCollection()) && !item.required())
                         isRequired = false;
                     types.add(createTypeRef(name, type, item.nillable(), getDefaultValue(item.defaultValue()) ));

@@ -54,13 +54,18 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.util.ElementFilter;
 import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.namespace.QName;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -110,9 +115,11 @@ public final class AnnotationParser extends AbstractProcessor {
                 }
 
                 try {
+                    Collection<TypeElement> rootElements = new ArrayList<TypeElement>();
+                    filterClass(rootElements, roundEnv.getRootElements());
                     ConfigReader configReader = new ConfigReader(
                             processingEnv,
-                            (Collection<? extends TypeElement>) roundEnv.getRootElements(),
+                            rootElements,
                             configFile,
                             errorListener
                     );
@@ -132,5 +139,14 @@ public final class AnnotationParser extends AbstractProcessor {
             }
         }
         return true;
+    }
+
+    private void filterClass(Collection<TypeElement> rootElements, Collection<? extends Element> elements) {
+        for (Element element : elements) {
+            if (element.getKind().equals(ElementKind.CLASS) || element.getKind().equals(ElementKind.INTERFACE)) {
+                rootElements.add((TypeElement) element);
+                filterClass(rootElements, ElementFilter.typesIn(element.getEnclosedElements()));
+            }
+        }
     }
 }

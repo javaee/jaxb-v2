@@ -210,7 +210,7 @@ abstract class PropertyInfoImpl<T,C,F,M>
         if(jta==null)   return false;
 
         T type = reader().getClassValue(jta,"type");
-        if(declaredType.equals(type))
+        if(nav().isSameType(declaredType, type))
             return true;    // for types explicitly marked in XmlJavaTypeAdapter.type()
         
         T ad = reader().getClassValue(jta,"value");
@@ -270,7 +270,7 @@ abstract class PropertyInfoImpl<T,C,F,M>
     private ID calcId() {
         if(seed.hasAnnotation(XmlID.class)) {
             // check the type
-            if(!getIndividualType().equals(nav().ref(String.class)))
+            if(!nav().isSameType(getIndividualType(), nav().ref(String.class)))
                 parent.builder.reportError(new IllegalAnnotationException(
                     Messages.ID_MUST_BE_STRING.format(getName()), seed )
                 );

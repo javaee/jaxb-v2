@@ -134,7 +134,7 @@ class EnumLeafInfoImpl<T,C,F,M> extends TypeInfoImpl<T,C,F,M>
         // first check if we represent xs:token derived type
         Collection<? extends F> fields = nav().getDeclaredFields(clazz);
         for (F f : fields) {
-            if (nav().getFieldType(f).equals(String.class)) {
+            if (nav().isSameType(nav().getFieldType(f), nav().ref(String.class))) {
                 XmlSchemaType schemaTypeAnnotation = builder.reader.getFieldAnnotation(XmlSchemaType.class, f, this);
                 if (schemaTypeAnnotation != null) {
                     if ("token".equals(schemaTypeAnnotation.name())) {
