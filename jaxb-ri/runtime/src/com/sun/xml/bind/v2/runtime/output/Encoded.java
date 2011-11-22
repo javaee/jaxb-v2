@@ -198,7 +198,7 @@ public final class Encoded {
         add('&',"&amp;",false);
         add('<',"&lt;",false);
         add('>',"&gt;",false);
-        add('"',"&quot;",false);
+        add('"',"&quot;",true);
         add('\t',"&#x9;",true);
         add('\r',"&#xD;",false);
         add('\n',"&#xA;",true);
