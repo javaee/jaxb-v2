@@ -264,7 +264,7 @@ public class SchemaGenerator {
     }
 
       /**
-          *  @author Peter von der Ahé
+          *  @author Peter von der Ahe
           */
     private static final class JavacOptions {
         private final List<String> recognizedOptions;
