@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- *
+ * 
  * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
- *
+ * 
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -11,10 +11,10 @@
  * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- *
+ * 
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at packager/legal/LICENSE.txt.
- *
+ * 
  * GPL Classpath Exception:
  * Oracle designates this particular file as subject to the "Classpath"
  * exception as provided by Oracle in the GPL Version 2 section of the License
@@ -43,6 +43,8 @@ package com.sun.tools.xjc.reader.xmlschema.parser;
 import java.io.File;
 import java.io.IOException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Source;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.validation.SchemaFactory;
@@ -56,6 +58,7 @@ import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
@@ -68,6 +71,8 @@ import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
  * @author Ryan Shoemaker (ryan.shoemaker@sun.com)
  */
 public class SchemaConstraintChecker {
+	
+	private static SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 
     /**
      * @param schemas      Schema files to be checked.
@@ -103,7 +108,7 @@ public class SchemaConstraintChecker {
         }
 
         try {
-            sf.newSchema(getSchemaSource(schemas));
+            sf.newSchema(getSchemaSource(schemas, entityResolver));
         } catch (SAXException e) {
             // TODO: we haven't thrown exceptions from here before. should we just trap them and return false?
             hadErrors = true;
@@ -121,11 +126,19 @@ public class SchemaConstraintChecker {
      * @param schemas array of {@link InputSource InputSource}
      * @return array of {@link Source Source}
      */
-    private static Source[] getSchemaSource(InputSource[] schemas) {
-        SAXSource[] sources = new SAXSource[schemas.length];
-        for (int i = 0; i < schemas.length; i++)
-            sources[i] = new SAXSource(schemas[i]);
-        return sources;
+    private static Source[] getSchemaSource(InputSource[] schemas, EntityResolver entityResolver) throws SAXException {
+    	try {
+	    	XMLReader xmlReader = parserFactory.newSAXParser().getXMLReader();
+	    	xmlReader.setEntityResolver(entityResolver);
+	        SAXSource[] sources = new SAXSource[schemas.length];
+	        for (int i = 0; i < schemas.length; i++)
+	            sources[i] = new SAXSource(xmlReader, schemas[i]);
+	        return sources;
+    	}
+    	catch (ParserConfigurationException e) {
+    		//well, what to do?
+    		throw new SAXException(e);
+    	}
     }
 
     // quick test
