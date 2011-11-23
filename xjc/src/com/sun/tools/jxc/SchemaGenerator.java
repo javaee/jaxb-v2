@@ -242,7 +242,7 @@ public class SchemaGenerator {
         System.out.println(Messages.USAGE.format());
     }
 
-    private static final class Runner {
+    public static final class Runner {
         public static boolean compile(String[] args, File episode) throws Exception {
 
             JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
