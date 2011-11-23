@@ -248,8 +248,11 @@ public final class StructureLoader extends Loader {
         ChildLoader child = childUnmarshallers.get(arg.uri,arg.local);
         if(child==null) {
             if ((beanInfo != null) && (beanInfo.getTypeNames() != null)) {
-                String parentUri = ((QName)beanInfo.getTypeNames().toArray()[0]).getNamespaceURI();
-                child = childUnmarshallers.get(parentUri, arg.local);
+                QName parentQname = (QName)beanInfo.getTypeNames().iterator().next();
+                if (parentQname != null) {
+                    String parentUri = parentQname.getNamespaceURI();
+                    child = childUnmarshallers.get(parentUri, arg.local);
+                }
             }
             if (child == null) {
                 child = catchAll;
