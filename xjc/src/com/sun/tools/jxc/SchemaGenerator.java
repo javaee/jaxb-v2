@@ -152,6 +152,9 @@ public class SchemaGenerator {
             return -1;
         }
 
+        Class schemagenRunner = classLoader.loadClass(Runner.class.getName());
+        Method compileMethod = schemagenRunner.getDeclaredMethod("compile",String[].class,File.class);
+
         List<String> aptargs = new ArrayList<String>();
 
         if (options.encoding != null) {
@@ -180,7 +183,7 @@ public class SchemaGenerator {
         aptargs.addAll(options.arguments);
 
         String[] argsarray = aptargs.toArray(new String[aptargs.size()]);
-        return compile(argsarray, options.episodeFile) ? 0 : -1;
+        return ((Boolean) compileMethod.invoke(null, argsarray, options.episodeFile)) ? 0 : 1;
     }
 
     /**
@@ -239,31 +242,33 @@ public class SchemaGenerator {
         System.out.println(Messages.USAGE.format());
     }
 
-    public static boolean compile(String[] args, File episode) {
+    private static final class Runner {
+        public static boolean compile(String[] args, File episode) throws Exception {
 
-        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
-        StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
-        JavacOptions options = JavacOptions.parse(compiler, fileManager, args);
-        List<String> unrecognizedOptions = options.getUnrecognizedOptions();
-        if (!unrecognizedOptions.isEmpty())
-            Logger.getLogger(SchemaGenerator.class.getName()).log(Level.WARNING, "Unrecognized options found: " + unrecognizedOptions);
-        Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(options.getFiles());
-        JavaCompiler.CompilationTask task = compiler.getTask(
-                null,
-                fileManager,
-                diagnostics,
-                options.getRecognizedOptions(),
-                options.getClassNames(),
-                compilationUnits);
-        com.sun.tools.jxc.ap.SchemaGenerator r = new com.sun.tools.jxc.ap.SchemaGenerator();
-        if(episode!=null)
-            r.setEpisodeFile(episode);
-        task.setProcessors(Collections.singleton(r));
-        return task.call();
+            JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+            DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
+            StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
+            JavacOptions options = JavacOptions.parse(compiler, fileManager, args);
+            List<String> unrecognizedOptions = options.getUnrecognizedOptions();
+            if (!unrecognizedOptions.isEmpty())
+                Logger.getLogger(SchemaGenerator.class.getName()).log(Level.WARNING, "Unrecognized options found: " + unrecognizedOptions);
+            Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(options.getFiles());
+            JavaCompiler.CompilationTask task = compiler.getTask(
+                    null,
+                    fileManager,
+                    diagnostics,
+                    options.getRecognizedOptions(),
+                    options.getClassNames(),
+                    compilationUnits);
+            com.sun.tools.jxc.ap.SchemaGenerator r = new com.sun.tools.jxc.ap.SchemaGenerator();
+            if (episode != null)
+                r.setEpisodeFile(episode);
+            task.setProcessors(Collections.singleton(r));
+            return task.call();
+        }
     }
 
-      /**
+    /**
           *  @author Peter von der Ahe
           */
     private static final class JavacOptions {
