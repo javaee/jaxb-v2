@@ -59,9 +59,9 @@ import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
 import com.sun.xml.bind.v2.util.QNameMap;
 
+import java.util.Iterator;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import sun.java2d.SunGraphicsEnvironment.TTFilter;
 
 /**
  * Loads children of an element.
@@ -248,9 +248,11 @@ public final class StructureLoader extends Loader {
         ChildLoader child = childUnmarshallers.get(arg.uri,arg.local);
         if(child==null) {
             if ((beanInfo != null) && (beanInfo.getTypeNames() != null)) {
-                QName parentQname = (QName)beanInfo.getTypeNames().iterator().next();
-                if (parentQname != null) {
-                    String parentUri = parentQname.getNamespaceURI();
+                Iterator typeNamesIt = beanInfo.getTypeNames().iterator();
+                QName parentQName = null;
+                if ((typeNamesIt != null) && (typeNamesIt.hasNext())) {
+                    parentQName = (QName) typeNamesIt.next();
+                    String parentUri = parentQName.getNamespaceURI();
                     child = childUnmarshallers.get(parentUri, arg.local);
                 }
             }
