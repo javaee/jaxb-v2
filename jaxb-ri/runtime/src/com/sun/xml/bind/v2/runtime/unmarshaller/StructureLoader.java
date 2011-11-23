@@ -61,6 +61,7 @@ import com.sun.xml.bind.v2.util.QNameMap;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import sun.java2d.SunGraphicsEnvironment.TTFilter;
 
 /**
  * Loads children of an element.
@@ -246,10 +247,16 @@ public final class StructureLoader extends Loader {
     public void childElement(UnmarshallingContext.State state, TagName arg) throws SAXException {
         ChildLoader child = childUnmarshallers.get(arg.uri,arg.local);
         if(child==null) {
-            child = catchAll;
-            if(child==null) {
-                super.childElement(state,arg);
-                return;
+            if ((beanInfo != null) && (beanInfo.getTypeNames() != null)) {
+                String parentUri = ((QName)beanInfo.getTypeNames().toArray()[0]).getNamespaceURI();
+                child = childUnmarshallers.get(parentUri, arg.local);
+            }
+            if (child == null) {
+                child = catchAll;
+                if(child==null) {
+                    super.childElement(state,arg);
+                    return;
+                }
             }
         }
 
