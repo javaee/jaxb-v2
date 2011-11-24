@@ -124,6 +124,10 @@
                 <arg line="-Dfile=@{jar}" />
                 <arg line="-DgroupId=@{mvngroup}" />
                 <arg line="-DartifactId=@{mvnartid}" />
+                <arg line="-Dhttp.proxyHost=${mvnProxyHost}" />
+                <arg line="-Dhttp.proxyPort=${mvnProxyPort}" />
+                <arg line="-Dhttps.proxyHost=${mvnProxyHost}" />
+                <arg line="-Dhttps.proxyPort=${mvnProxyPort}" />
                 <arg line="-Dpackaging=jar" />
                 <arg line="-Dversion=@{mvnversion}" />
                 <arg line="-Dclassifier=@{mvnclassifier}" />
