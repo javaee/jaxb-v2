@@ -312,21 +312,17 @@ public final class SimpleTypeBuilder extends BindingComponent {
         }
 
         public TypeUse unionSimpleType(XSUnionSimpleType type) {
-            TypeUse r = CBuiltinLeafInfo.STRING;
-            if (isCollection(type)) {
-                r = TypeUseFactory.makeCollection(r);
-            }
-            return r;
-        }
-
-        private boolean isCollection(XSUnionSimpleType type) {
-            for (int i = 0; i < type.getMemberSize(); i++) {
-                XSSimpleType t = type.getMember(i);
-                if (t.getVariety() == XSVariety.LIST || (t.getVariety() == XSVariety.UNION && isCollection(t.getBaseUnionType()))) {
-                    return true;
+            boolean isCollection = false;
+            for( int i=0; i<type.getMemberSize(); i++ )
+                if(type.getMember(i).getVariety()==XSVariety.LIST || type.getMember(i).getVariety()==XSVariety.UNION) {
+                    isCollection = true;
+                    break;
                 }
-            }
-            return false;
+
+            TypeUse r = CBuiltinLeafInfo.STRING;
+            if(isCollection)
+                r = TypeUseFactory.makeCollection(r);
+            return r;
         }
 
         public TypeUse restrictionSimpleType(XSRestrictionSimpleType type) {
