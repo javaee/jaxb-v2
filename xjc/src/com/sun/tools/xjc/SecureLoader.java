@@ -85,5 +85,19 @@ class SecureLoader {
                     });
         }
     }
+
+    static void setContextClassLoader(final ClassLoader cl) {
+        if (System.getSecurityManager() == null) {
+            Thread.currentThread().setContextClassLoader(cl);
+        } else {
+            java.security.AccessController.doPrivileged(
+                    new java.security.PrivilegedAction() {
+                        public java.lang.Object run() {
+                            Thread.currentThread().setContextClassLoader(cl);
+                            return null;
+                        }
+                    });
+        }
+    }
     
 }
