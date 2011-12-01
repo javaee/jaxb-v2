@@ -253,9 +253,8 @@ public class Driver {
 
         // set up the context class loader so that the user-specified classes
         // can be loaded from there
-        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(
-            opt.getUserClassLoader(contextClassLoader));
+        final ClassLoader contextClassLoader = SecureLoader.getContextClassLoader();
+        SecureLoader.setContextClassLoader(opt.getUserClassLoader(contextClassLoader));
 
         // parse a grammar file
         //-----------------------------------------
