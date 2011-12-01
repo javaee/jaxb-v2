@@ -51,7 +51,7 @@ import java.net.URL;
 public class Which {
 
     public static String which( Class clazz ) {
-        return which( clazz.getName(), clazz.getClassLoader() );
+        return which( clazz.getName(), SecureLoader.getClassClassLoader(clazz));
     }
 
     /**
@@ -66,7 +66,7 @@ public class Which {
         String classnameAsResource = classname.replace('.', '/') + ".class";
 
         if(loader == null) {
-            loader = ClassLoader.getSystemClassLoader();
+            loader = SecureLoader.getSystemClassLoader();
         }
         
         URL it = loader.getResource(classnameAsResource);

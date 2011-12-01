@@ -139,7 +139,7 @@ public class ProxyGroup {
             neighbors[i*2+0] = maskSatellite[i];
             
             try {
-                neighbors[i*2+1] = face.getClassLoader().loadClass(
+                neighbors[i*2+1] = SecureLoader.getClassClassLoader(face).loadClass(
                     facePackage+getShortName(maskSatellite[i]));
             } catch (ClassNotFoundException e) {
                 throw new NoClassDefFoundError(e.getMessage());
@@ -195,7 +195,7 @@ public class ProxyGroup {
                 // SDO -- use proxy cache
                 Class proxy = (Class) maskToProxyMap.get(mask);
                 if (proxy == null) {
-                    proxy = Proxy.getProxyClass(mask.getClassLoader(),
+                    proxy = Proxy.getProxyClass(SecureLoader.getClassClassLoader(mask),
                                         new Class[] { mask } );
                     maskToProxyMap.put(mask, proxy);
                 }

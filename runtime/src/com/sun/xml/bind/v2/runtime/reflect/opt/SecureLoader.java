@@ -37,44 +37,53 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-package com.sun.tools.xjc;
-
-import java.io.IOException;
-import com.sun.istack.tools.ProtectedTask;
-import org.apache.tools.ant.BuildException;
+package com.sun.xml.bind.v2.runtime.reflect.opt;
 
 /**
- * Captures the properties and then delegate to XJC1 or XJC2 by looking at
- * the source attribute.
- *
- * @author Bhakti Mehta
+ * Class defined for safe calls of getClassLoader methods of any kind (context/system/class
+ * classloader. This MUST be package private and defined in every package which 
+ * uses such invocations.
+ * @author snajper
  */
-public class XJCTask extends ProtectedTask {
+class SecureLoader {
 
-    private String source = "2.0";
-
-    /**
-     * The version of the compiler to run
-     */
-    public void setSource(String version) {
-        if(version.equals("1.0") || version.equals("2.0")) {
-            this.source = version;
-            return;
+    static ClassLoader getContextClassLoader() {
+        if (System.getSecurityManager() == null) {
+            return Thread.currentThread().getContextClassLoader();
+        } else {
+            return (ClassLoader) java.security.AccessController.doPrivileged(
+                    new java.security.PrivilegedAction() {
+                        public java.lang.Object run() {
+                            return Thread.currentThread().getContextClassLoader();
+                        }
+                    });
         }
-        throw new BuildException("Illegal version "+version);
     }
 
-
-    protected ClassLoader createClassLoader() throws ClassNotFoundException, IOException {
-        return ClassLoaderBuilder.createProtectiveClassLoader(SecureLoader.getClassClassLoader(XJCTask.class), source);
+    static ClassLoader getClassClassLoader(final Class c) {
+        if (System.getSecurityManager() == null) {
+            return c.getClassLoader();
+        } else {
+            return (ClassLoader) java.security.AccessController.doPrivileged(
+                    new java.security.PrivilegedAction() {
+                        public java.lang.Object run() {
+                            return c.getClassLoader();
+                        }
+                    });
+        }
     }
 
-    protected String getCoreClassName() {
-        if (source.equals("2.0"))
-            return "com.sun.tools.xjc.XJC2Task";
-        else
-            return "com.sun.tools.xjc.XJCTask";
+    static ClassLoader getSystemClassLoader() {
+        if (System.getSecurityManager() == null) {
+            return ClassLoader.getSystemClassLoader();
+        } else {
+            return (ClassLoader) java.security.AccessController.doPrivileged(
+                    new java.security.PrivilegedAction() {
+                        public java.lang.Object run() {
+                            return ClassLoader.getSystemClassLoader();
+                        }
+                    });
+        }
     }
+    
 }
-

@@ -75,7 +75,7 @@ class AccessorInjector {
             return null;
 
         try {
-            ClassLoader cl = beanClass.getClassLoader();
+            ClassLoader cl = SecureLoader.getClassClassLoader(beanClass);
             if(cl==null)    return null;    // how do I inject classes to this "null" class loader? for now, back off.
 
             Class c = null;
@@ -126,5 +126,5 @@ class AccessorInjector {
         return ClassTailor.tailor(resource,templateClassName,newClassName,replacements);
     }
 
-    private static final ClassLoader CLASS_LOADER = AccessorInjector.class.getClassLoader();
+    private static final ClassLoader CLASS_LOADER = SecureLoader.getClassClassLoader(AccessorInjector.class);    
 }

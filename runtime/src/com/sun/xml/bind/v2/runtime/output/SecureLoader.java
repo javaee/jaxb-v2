@@ -37,23 +37,53 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-package com.sun.xml.bind.v2.util;
-
-import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
+package com.sun.xml.bind.v2.runtime.output;
 
 /**
- *
+ * Class defined for safe calls of getClassLoader methods of any kind (context/system/class
+ * classloader. This MUST be package private and defined in every package which 
+ * uses such invocations.
  * @author snajper
  */
-public class ClassLoaderRetriever {
+class SecureLoader {
 
-    public static ClassLoader getClassLoader() {
-        ClassLoader cl = UnmarshallerImpl.class.getClassLoader();
-        if (cl == null) {
-            cl = Thread.currentThread().getContextClassLoader();
+    static ClassLoader getContextClassLoader() {
+        if (System.getSecurityManager() == null) {
+            return Thread.currentThread().getContextClassLoader();
+        } else {
+            return (ClassLoader) java.security.AccessController.doPrivileged(
+                    new java.security.PrivilegedAction() {
+                        public java.lang.Object run() {
+                            return Thread.currentThread().getContextClassLoader();
+                        }
+                    });
         }
-        return cl;
+    }
+
+    static ClassLoader getClassClassLoader(final Class c) {
+        if (System.getSecurityManager() == null) {
+            return c.getClassLoader();
+        } else {
+            return (ClassLoader) java.security.AccessController.doPrivileged(
+                    new java.security.PrivilegedAction() {
+                        public java.lang.Object run() {
+                            return c.getClassLoader();
+                        }
+                    });
+        }
+    }
+
+    static ClassLoader getSystemClassLoader() {
+        if (System.getSecurityManager() == null) {
+            return ClassLoader.getSystemClassLoader();
+        } else {
+            return (ClassLoader) java.security.AccessController.doPrivileged(
+                    new java.security.PrivilegedAction() {
+                        public java.lang.Object run() {
+                            return ClassLoader.getSystemClassLoader();
+                        }
+                    });
+        }
     }
     
 }

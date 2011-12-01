@@ -97,7 +97,7 @@ public final class ClassTailor {
     public static byte[] tailor( Class templateClass, String newClassName, String... replacements ) {
         String vmname = toVMClassName(templateClass);
         return tailor(
-            templateClass.getClassLoader().getResourceAsStream(vmname+".class"),
+            SecureLoader.getClassClassLoader(templateClass).getResourceAsStream(vmname+".class"),
             vmname, newClassName, replacements );
     }
 

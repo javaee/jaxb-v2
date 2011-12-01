@@ -66,7 +66,7 @@ public class XJCFacade {
         }
 
         try {
-            ClassLoader cl = ClassLoaderBuilder.createProtectiveClassLoader(XJCFacade.class.getClassLoader(), v);
+            ClassLoader cl = ClassLoaderBuilder.createProtectiveClassLoader(SecureLoader.getClassClassLoader(XJCFacade.class), v);
 
             Class driver = cl.loadClass("com.sun.tools.xjc.Driver");
             Method mainMethod = driver.getDeclaredMethod("main", new Class[]{String[].class});

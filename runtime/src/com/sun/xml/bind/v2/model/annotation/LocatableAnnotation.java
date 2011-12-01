@@ -75,7 +75,7 @@ public class LocatableAnnotation implements InvocationHandler, Locatable, Locati
 
         // otherwise take the slow route
 
-        ClassLoader cl = LocatableAnnotation.class.getClassLoader();
+        ClassLoader cl = SecureLoader.getClassClassLoader(LocatableAnnotation.class);
 
         try {
             Class loadableT = Class.forName(type.getName(), false, cl);
