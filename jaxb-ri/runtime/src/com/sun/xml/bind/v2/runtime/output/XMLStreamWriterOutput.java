@@ -48,8 +48,8 @@ import javax.xml.stream.XMLStreamWriter;
 
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
-import com.sun.xml.bind.v2.util.ClassLoaderRetriever;
 
+import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerImpl;
 import org.xml.sax.SAXException;
 
 /**
@@ -177,7 +177,7 @@ public class XMLStreamWriterOutput extends XmlOutputAbstractImpl {
 
     private static Class initFIStAXWriterClass() {
         try {
-            ClassLoader loader = ClassLoaderRetriever.getClassLoader();
+            ClassLoader loader = getClassLoader();
             Class llfisw = Class.forName("org.jvnet.fastinfoset.stax.LowLevelFastInfosetStreamWriter", true, loader);
             Class sds = loader.loadClass("com.sun.xml.fastinfoset.stax.StAXDocumentSerializer");
             // Check if StAXDocumentSerializer implements LowLevelFastInfosetStreamWriter
@@ -194,7 +194,7 @@ public class XMLStreamWriterOutput extends XmlOutputAbstractImpl {
         try {
             if (FI_STAX_WRITER_CLASS == null)
                 return null;
-            ClassLoader loader = ClassLoaderRetriever.getClassLoader();
+            ClassLoader loader = getClassLoader();
             Class c = Class.forName("com.sun.xml.bind.v2.runtime.output.FastInfosetStreamWriterOutput", true, loader);
             return c.getConstructor(FI_STAX_WRITER_CLASS, JAXBContextImpl.class);
         } catch (Throwable e) {
@@ -210,7 +210,7 @@ public class XMLStreamWriterOutput extends XmlOutputAbstractImpl {
 
     private static Class initStAXExWriterClass() {
         try {
-            ClassLoader loader = ClassLoaderRetriever.getClassLoader();
+            ClassLoader loader = getClassLoader();
             return Class.forName("org.jvnet.staxex.XMLStreamWriterEx",true,loader);
         } catch (Throwable e) {
             return null;
@@ -219,11 +219,20 @@ public class XMLStreamWriterOutput extends XmlOutputAbstractImpl {
 
     private static Constructor<? extends XmlOutput> initStAXExOutputClass() {
         try {
-            ClassLoader loader = ClassLoaderRetriever.getClassLoader();
+            ClassLoader loader = getClassLoader();
             Class c = Class.forName("com.sun.xml.bind.v2.runtime.output.StAXExStreamWriterOutput",true, loader);
             return c.getConstructor(STAXEX_WRITER_CLASS);
         } catch (Throwable e) {
             return null;
         }
     }
+    
+    private static ClassLoader getClassLoader() {
+        ClassLoader cl = SecureLoader.getClassClassLoader(UnmarshallerImpl.class);
+        if (cl == null) {
+            cl = SecureLoader.getContextClassLoader();
+        }
+        return cl;
+    }
+    
 }

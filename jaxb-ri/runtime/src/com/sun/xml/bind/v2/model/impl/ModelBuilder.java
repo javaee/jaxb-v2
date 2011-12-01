@@ -169,10 +169,11 @@ public class ModelBuilder<T,C,F,M> {
         } catch (NoSuchMethodError e) {
             // this is not a 2.1 API. Where is it being loaded from?
             Messages res;
-            if(XmlSchema.class.getClassLoader()==null)
+            if (SecureLoader.getClassClassLoader(XmlSchema.class) == null) {
                 res = Messages.INCOMPATIBLE_API_VERSION_MUSTANG;
-            else
+            } else {
                 res = Messages.INCOMPATIBLE_API_VERSION;
+            }
 
             throw new LinkageError( res.format(
                 Which.which(XmlSchema.class),

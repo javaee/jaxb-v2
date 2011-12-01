@@ -561,9 +561,9 @@ public final class ReflectionNavigator implements Navigator<Type, Class, Field, 
 
     public Class findClass(String className, Class referencePoint) {
         try {
-            ClassLoader cl = referencePoint.getClassLoader();
+            ClassLoader cl = SecureLoader.getClassClassLoader(referencePoint);
             if (cl == null) {
-                cl = ClassLoader.getSystemClassLoader();
+                cl = SecureLoader.getSystemClassLoader();
             }
             return cl.loadClass(className);
         } catch (ClassNotFoundException e) {

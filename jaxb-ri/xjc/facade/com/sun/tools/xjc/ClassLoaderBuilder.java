@@ -72,7 +72,7 @@ class ClassLoaderBuilder {
 
         boolean mustang = false;
 
-        if(JAXBContext.class.getClassLoader()==null) {
+        if (SecureLoader.getClassClassLoader(JAXBContext.class) == null) {
             // JAXB API is loaded from the bootstrap. We need to override one with ours
             mustang = true;
 

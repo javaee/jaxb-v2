@@ -51,8 +51,8 @@ public class SchemaGeneratorFacade {
 
     public static void main(String[] args) throws Throwable {
         try {
-            ClassLoader cl = SchemaGeneratorFacade.class.getClassLoader();
-            if(cl==null)    cl = ClassLoader.getSystemClassLoader();
+            ClassLoader cl = SecureLoader.getClassClassLoader(SchemaGeneratorFacade.class);
+            if(cl==null)    cl = SecureLoader.getSystemClassLoader();
 
             Class driver = cl.loadClass("com.sun.tools.jxc.SchemaGenerator");
             Method mainMethod = driver.getDeclaredMethod("main", new Class[]{String[].class});

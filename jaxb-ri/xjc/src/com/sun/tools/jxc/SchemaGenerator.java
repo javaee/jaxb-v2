@@ -61,7 +61,6 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -82,8 +81,10 @@ public class SchemaGenerator {
 
     public static int run(String[] args) throws Exception {
         try {
-            ClassLoader cl = SchemaGenerator.class.getClassLoader();
-            if(cl==null)    cl = ClassLoader.getSystemClassLoader();
+            ClassLoader cl = SecureLoader.getClassClassLoader(SchemaGenerator.class);
+            if (cl==null) {
+                cl = SecureLoader.getSystemClassLoader();
+            }
             ClassLoader classLoader = new ApClassLoader(cl, packagePrefixes);
             return run(args, classLoader);
         } catch( ToolsJarNotFoundException e) {
@@ -251,7 +252,7 @@ public class SchemaGenerator {
             JavacOptions options = JavacOptions.parse(compiler, fileManager, args);
             List<String> unrecognizedOptions = options.getUnrecognizedOptions();
             if (!unrecognizedOptions.isEmpty())
-                Logger.getLogger(SchemaGenerator.class.getName()).log(Level.WARNING, "Unrecognized options found: " + unrecognizedOptions);
+                Logger.getLogger(SchemaGenerator.class.getName()).log(Level.WARNING, "Unrecognized options found: {0}", unrecognizedOptions);
             Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(options.getFiles());
             JavaCompiler.CompilationTask task = compiler.getTask(
                     null,

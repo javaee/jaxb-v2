@@ -113,7 +113,7 @@ public final class InlineAnnotationReaderImpl extends AbstractInlineAnnotationRe
             try {
                 String fullName = ((TypeElement) m.getAnnotationType().asElement()).getQualifiedName().toString();
                 Class<? extends Annotation> type =
-                    getClass().getClassLoader().loadClass(fullName).asSubclass(Annotation.class);
+                    SecureLoader.getClassClassLoader(getClass()).loadClass(fullName).asSubclass(Annotation.class);
                 Annotation annotation = decl.getAnnotation(type);
                 if(annotation!=null)
                     r.add( LocatableAnnotation.create(annotation,srcPos) );

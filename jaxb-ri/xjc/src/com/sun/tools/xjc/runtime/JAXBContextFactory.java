@@ -111,7 +111,7 @@ public class JAXBContextFactory {
                 name = name.substring(0,name.length()-DOT_OBJECT_FACTORY.length())+IMPL_DOT_OBJECT_FACTORY;
 
                 try {
-                    c = c.getClassLoader().loadClass(name);
+                    c = SecureLoader.getClassClassLoader(c).loadClass(name);
                 } catch (ClassNotFoundException e) {
                     throw new JAXBException(e);
                 }
