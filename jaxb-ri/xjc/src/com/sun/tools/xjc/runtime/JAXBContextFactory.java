@@ -111,7 +111,7 @@ public class JAXBContextFactory {
                 name = name.substring(0,name.length()-DOT_OBJECT_FACTORY.length())+IMPL_DOT_OBJECT_FACTORY;
 
                 try {
-                    c = SecureLoader.getClassClassLoader(c).loadClass(name);
+                    c = getClassClassLoader(c).loadClass(name);
                 } catch (ClassNotFoundException e) {
                     throw new JAXBException(e);
                 }
@@ -168,4 +168,18 @@ public class JAXBContextFactory {
         // delegate to the JAXB provider in the system
         return JAXBContext.newInstance(classes.toArray(new Class[classes.size()]),properties);
     }
+    
+    private static ClassLoader getClassClassLoader(final Class c) {
+        if (System.getSecurityManager() == null) {
+            return c.getClassLoader();
+        } else {
+            return (ClassLoader) java.security.AccessController.doPrivileged(
+                    new java.security.PrivilegedAction() {
+                        public java.lang.Object run() {
+                            return c.getClassLoader();
+                        }
+                    });
+        }
+    }
+
 }
