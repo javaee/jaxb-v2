@@ -66,6 +66,8 @@ import com.sun.xml.xsom.XSSchemaSet;
 import com.sun.xml.xsom.parser.JAXPParser;
 import com.sun.xml.xsom.parser.XMLParser;
 import com.sun.xml.xsom.parser.XSOMParser;
+import java.net.URI;
+import java.net.URISyntaxException;
 import javax.xml.XMLConstants;
 
 import org.kohsuke.rngom.ast.builder.SchemaBuilder;
@@ -396,6 +398,13 @@ public final class ModelLoader {
         // find <xsd:schema>s and parse them individually
         for( InputSource grammar : opt.getGrammars() ) {
             Document wsdlDom = forest.get( grammar.getSystemId() );
+            if (wsdlDom == null) {
+                String systemId = Options.normalizeSystemId(grammar.getSystemId());
+                if (forest.get(systemId) != null) {
+                    grammar.setSystemId(systemId);
+                    wsdlDom = forest.get( grammar.getSystemId() );
+                }
+            }
 
             NodeList schemas = wsdlDom.getElementsByTagNameNS(XMLConstants.W3C_XML_SCHEMA_NS_URI,"schema");
             for( int i=0; i<schemas.getLength(); i++ )

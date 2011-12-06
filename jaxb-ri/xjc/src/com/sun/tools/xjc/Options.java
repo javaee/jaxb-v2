@@ -75,6 +75,8 @@ import com.sun.tools.xjc.generator.bean.field.FieldRendererFactory;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Util;
 import com.sun.xml.bind.api.impl.NameConverter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.util.Locale;
@@ -1048,4 +1050,14 @@ public class Options
     public static String getBuildID() {
         return Messages.format(Messages.BUILD_ID);
     }
+    
+    public static String normalizeSystemId(String systemId) {
+        try {
+            systemId = new URI(systemId).normalize().toString();
+        } catch (URISyntaxException e) {
+            // leave the system ID untouched. In my experience URI is often too strict
+        }
+        return systemId;
+    }
+    
 }
