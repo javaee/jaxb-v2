@@ -51,6 +51,7 @@ import javax.xml.bind.JAXBContext;
 
 import com.sun.istack.tools.MaskingClassLoader;
 import com.sun.istack.tools.ParallelWorldClassLoader;
+import com.sun.tools.xjc.SecureLoader;
 
 /**
  * Creates a class loader configured to run XJC 1.0/2.0 safely without
