@@ -37,53 +37,59 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package com.sun.tools.jxc;
+
+package com.sun.tools.xjc;
+
+import com.sun.tools.xjc.SecureLoader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
- * Class defined for safe calls of getClassLoader methods of any kind (context/system/class
- * classloader. This MUST be package private and defined in every package which 
- * uses such invocations.
- * @author snajper
+ * A shabby driver to invoke XJC1 or XJC2 depending on the command line switch.
+ *
+ * <p>
+ * This class is compiled with -source 1.2 so that we can report a nice user-friendly
+ * "you require Tiger" error message.
+ *
+ * @author Kohsuke Kawaguchi
  */
-class SecureLoader {
+public class XJCFacade {
 
-    static ClassLoader getContextClassLoader() {
-        if (System.getSecurityManager() == null) {
-            return Thread.currentThread().getContextClassLoader();
-        } else {
-            return (ClassLoader) java.security.AccessController.doPrivileged(
-                    new java.security.PrivilegedAction() {
-                        public java.lang.Object run() {
-                            return Thread.currentThread().getContextClassLoader();
-                        }
-                    });
+    public static void main(String[] args) throws Throwable {
+        String v = "2.0";      // by default, we go 2.0
+
+        for( int i=0; i<args.length; i++ ) {
+            if(args[i].equals("-source")) {
+                if(i+1<args.length) {
+                    v = parseVersion(args[i+1]);
+                }
+            }
+        }
+
+        try {
+            ClassLoader cl = ClassLoaderBuilder.createProtectiveClassLoader(SecureLoader.getClassClassLoader(XJCFacade.class), v);
+
+            Class driver = cl.loadClass("com.sun.tools.xjc.Driver");
+            Method mainMethod = driver.getDeclaredMethod("main", new Class[]{String[].class});
+            try {
+                mainMethod.invoke(null,new Object[]{args});
+            } catch (IllegalAccessException e) {
+                throw e;
+            } catch (InvocationTargetException e) {
+                if(e.getTargetException()!=null)
+                    throw e.getTargetException();
+            }
+        } catch (UnsupportedClassVersionError e) {
+            System.err.println("XJC requires JDK 5.0 or later. Please download it from http://java.sun.com/j2se/1.5/");
         }
     }
 
-    static ClassLoader getClassClassLoader(final Class c) {
-        if (System.getSecurityManager() == null) {
-            return c.getClassLoader();
-        } else {
-            return (ClassLoader) java.security.AccessController.doPrivileged(
-                    new java.security.PrivilegedAction() {
-                        public java.lang.Object run() {
-                            return c.getClassLoader();
-                        }
-                    });
-        }
+    private static String parseVersion(String version) {
+        if(version.equals("1.0"))
+            return version;
+        // if we don't recognize the version number, we'll go to 2.0 RI
+        // anyway. It's easier to report an error message there,
+        // than in here.
+        return "2.0";
     }
-
-    static ClassLoader getSystemClassLoader() {
-        if (System.getSecurityManager() == null) {
-            return ClassLoader.getSystemClassLoader();
-        } else {
-            return (ClassLoader) java.security.AccessController.doPrivileged(
-                    new java.security.PrivilegedAction() {
-                        public java.lang.Object run() {
-                            return ClassLoader.getSystemClassLoader();
-                        }
-                    });
-        }
-    }
-    
 }

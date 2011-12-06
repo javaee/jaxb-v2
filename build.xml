@@ -196,7 +196,6 @@
           <zip zipfile="${jaxb.dist}/lib/jaxb-xjc.src.zip">
             <fileset dir="tmp_xjc" excludes="purify.xsl"/>
             <fileset dir="${xjc.gensrc}"/>
-            <fileset dir="${xjc.root}/facade"/>
             <zipfileset src="${jaxb.libs}/src/dtd-parser-sources.jar" />
             <zipfileset src="${jaxb.libs}/src/codemodel-sources.jar" />
             <zipfileset src="${jaxb.libs}/src/resolver-comsun-src.zip" />

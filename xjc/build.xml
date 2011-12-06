@@ -180,13 +180,6 @@
             <classpath refid="javac.classpath" />
         </javac>
         
-        <javac srcdir="${xjc.root}/facade" destdir="${xjc.classes}"
-               debug="${compile.debug}" optimize="${compile.optimize}"
-               source="1.2" target="1.2">
-            <compilerarg line="${xjc.compilerarg}"/>
-            <classpath refid="javac.classpath" />
-        </javac>
-
         <copy toDir="${xjc.classes}">
           <fileset dir="${xjc.src}" includes="**/*.purified.rng" />
           <fileset dir="${xjc.src}" includes="**/dtd/bindinfo/bindingfile.rng" />
