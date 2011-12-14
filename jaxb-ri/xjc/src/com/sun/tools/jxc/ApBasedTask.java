@@ -102,14 +102,6 @@ public abstract class ApBasedTask extends Javac {
 
             attributes.log(niceSourceList.toString(), Project.MSG_VERBOSE);
         }
-
-        protected List getFilesToCompile() {
-            List files = new ArrayList(compileList.length);
-            for (int i = 0; i < compileList.length; i++) {
-                files.add(compileList[i].getAbsolutePath());
-            }
-            return files;
-        }
     }
 
     /**
@@ -122,7 +114,7 @@ public abstract class ApBasedTask extends Javac {
                 JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
                 DiagnosticCollector diagnostics = new DiagnosticCollector();
                 StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
-                Iterable compilationUnits = fileManager.getJavaFileObjectsFromFiles(getFilesToCompile());
+                Iterable compilationUnits = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(compileList));
                 JavaCompiler.CompilationTask task = compiler.getTask(
                         null,
                         fileManager,
