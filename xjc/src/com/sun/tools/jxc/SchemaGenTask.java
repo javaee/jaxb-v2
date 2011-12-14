@@ -64,7 +64,7 @@ public class SchemaGenTask extends ApBasedTask {
     private File episode;
 
     protected void setupCommandlineSwitches(Commandline cmd) {
-        cmd.createArgument().setValue("-nocompile");
+        cmd.createArgument().setValue("-proc:only");
     }
 
     protected String getCompilationMessage() {
