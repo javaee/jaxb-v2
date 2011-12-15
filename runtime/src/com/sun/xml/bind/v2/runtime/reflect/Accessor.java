@@ -405,7 +405,7 @@ public abstract class Accessor<BeanT, ValueT> implements Receiver {
     }
 
     /**
-     * A version of {@link GetterSetterReflection} thaat doesn't have any setter.
+     * A version of {@link GetterSetterReflection} that doesn't have any setter.
      * <p/>
      * <p/>
      * This provides a user-friendly error message.

@@ -71,10 +71,12 @@ import com.sun.xml.bind.api.ClassResolver;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
 import com.sun.xml.bind.unmarshaller.Messages;
+import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.runtime.AssociationMap;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 
+import java.io.Closeable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -93,7 +95,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author
  *  <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
-public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements ValidationEventHandler
+public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements ValidationEventHandler, Closeable
 {
     /** Owning {@link JAXBContext} */
     protected final JAXBContextImpl context;
@@ -102,7 +104,6 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
      * schema which will be used to validate during calls to unmarshal
      */
     private Schema schema;
-
 
     public final UnmarshallingContext coordinator;
 
@@ -560,4 +561,23 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
     public UnmarshallingContext getContext() {
         return coordinator;
     }
+    
+    @Override
+    @SuppressWarnings("FinalizeDeclaration")
+    protected void finalize() throws Throwable {
+        try {
+            ClassFactory.cleanCache();
+        } finally {
+            super.finalize();
+        }
+    }
+
+    /**
+     *  Must be called from same thread which created the UnmarshallerImpl instance.
+     * @throws IOException 
+     */
+    public void close() throws IOException {
+        ClassFactory.cleanCache();
+    }
+    
 }

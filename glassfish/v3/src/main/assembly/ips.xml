@@ -1,0 +1,36 @@
+<assembly>
+  <id>project</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <fileSets>
+     <fileSet>
+      <directory>src/main/resources</directory>
+      <includes>
+        <include>*.txt</include>
+      </includes>
+      <outputDirectory></outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>target/assembly</directory>
+      <includes>
+        <include>*.py</include>
+      </includes>
+      <outputDirectory></outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>target/assembly</directory>
+      <includes>
+        <include>jaxb-osgi.jar</include>
+      </includes>
+      <outputDirectory>glassfish/modules</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>target/assembly</directory>
+      <includes>
+        <include>jaxb-api-osgi.jar</include>
+      </includes>
+      <outputDirectory>glassfish/modules/endorsed</outputDirectory>
+    </fileSet>
+   </fileSets>
+</assembly>

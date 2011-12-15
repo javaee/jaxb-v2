@@ -108,4 +108,10 @@ public interface PackageOutline {
      */
     public XmlNsForm getElementFormDefault();
 
+    /**
+     * The attribute form default for this package.
+     * <p>
+     * The value is computed by examining what would yield the smallest generated code.
+     */
+    public XmlNsForm getAttributeFormDefault();
 }

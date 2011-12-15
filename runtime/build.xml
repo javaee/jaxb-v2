@@ -225,23 +225,18 @@
         </copy>
     </target>
 
-  <target name="j2se-integration" depends="compile">
-    <package-rename srcdir="${runtime.src}"             destdir="j2se-integration/runtime/src" />
-    <package-rename srcdir="${runtime.root}/build/src"  destdir="j2se-integration/runtime/src" />
-  </target>
-
     <!-- generate javadoc -->
     <target name="javadoc">
         <mkdir dir="${runtime.root}/build/api" />
         <javadoc
             destdir="${runtime.root}/build/api"
-            use="true"
+            use="true" defaultexcludes="yes"
             author="false"
             version="false"
             windowtitle="JAXB RI runtime"
             useexternalfile="true"
-            access="package">
-            <fileset dir="${runtime.src}" includes="**/*.java"/>
+            access="public">
+            <fileset dir="${runtime.src}" includes="com/sun/xml/bind/*.java, com/sun/xml/bind/annotation/*.java, com/sun/xml/bind/api/*.java "/>
             <classpath refid="javac.classpath"/>
             <arg value="-quiet"/>
         </javadoc>

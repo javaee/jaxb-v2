@@ -42,11 +42,15 @@ package com.sun.xml.bind.v2.schemagen.episode;
 
 import com.sun.xml.txw2.TypedXmlWriter;
 import com.sun.xml.txw2.annotation.XmlAttribute;
+import com.sun.xml.txw2.annotation.XmlElement;
 
 /**
  * @author Kohsuke Kawaguchi
  */
 public interface SchemaBindings extends TypedXmlWriter {
-    @XmlAttribute
-    void map(boolean value);
+	@XmlAttribute
+	void map(boolean value);
+
+	@XmlElement("package")
+	Package _package();
 }

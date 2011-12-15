@@ -41,7 +41,7 @@
 
 -->
 
-<project name="osgi" basedir=".." default="bundle">
+<project name="osgi" basedir=".." default="dist">
 
     <description>
       OSGi Sub-Project
@@ -56,6 +56,8 @@
 
     <taskdef name="manifestreader" classname="manifestreader.ManifestReader" classpath="${osgi.build}/../ant" />
 
+    <target name="dist" depends="bundle, javadoc, sources"/>
+    
     <target name="bundle"
             description="create OSGi bundle for GlassFish V3"
 	    depends="clean">
@@ -63,17 +65,9 @@
         <taskdef resource="aQute/bnd/ant/taskdef.properties"
                  classpath="${jaxb.root}/tools/lib/util/bnd-0.0.249.jar"/>
 
-        <mkdir dir="${osgi.build.api}"/>
         <mkdir dir="${osgi.build.rt}"/>
 
         <copy file="${osgi.root}/jaxb.bnd" todir="${osgi.build.rt}">
-            <filterset>
-                <filter token="RELEASE_IMPL_VERSION" value="${release.impl.version}"/>
-                <filter token="RELEASE_SPEC_VERSION" value="${release.spec.version}"/>
-            </filterset>
-        </copy>
-
-        <copy file="${osgi.root}/jaxb-api.bnd" todir="${osgi.build.api}">
             <filterset>
                 <filter token="RELEASE_IMPL_VERSION" value="${release.impl.version}"/>
                 <filter token="RELEASE_SPEC_VERSION" value="${release.spec.version}"/>
@@ -105,25 +99,11 @@
         <!-- The bnd task does not recognize when input files have changed, -->
         <!-- hence we delete the output file to ensure a rebuild            -->
         <delete file="${osgi.build.rt}/jaxb-bnd.jar" quiet="true"/>
-        <delete file="${osgi.build.api}/jaxb-api-bnd.jar" quiet="true"/>
-
-        <bnd classpath="${jaxb.dist}/lib/jaxb-api.jar"
-                  failok="false"
-                  output="${osgi.build.api}/jaxb-api-bnd.jar"
-                  exceptions="true"
-                  files="${osgi.build.api}/jaxb-api.bnd"/>
 
 	<bnd classpath="${jaxb.dist}/lib/jaxb-impl.jar, ${osgi.build}/jaxb-xjc, ${osgi.build}/fastinfoset, ${jaxb.libs.util}/stax-ex.jar"
              failok="false"
              output="${osgi.build.rt}/jaxb-bnd.jar"
              files="${osgi.build.rt}/jaxb.bnd"/>
-            <!--Readd the JAXB 1.0 files -->
-            <!-- <unjar src="${osgi.build.rt}/jaxb-bnd.jar"
-                   dest="${osgi.build.rt}">
-                <patternset>
-                    <include name="META-INF/MANIFEST.MF"/>
-                </patternset>
-            </unjar> -->
 
         <manifestreader fileName="${osgi.build.rt}/jaxb-bnd.jar">
             <property name="jaxb.Ant-Version" value="Ant-Version" />
@@ -186,7 +166,6 @@
             <attribute name="Implementation-Version" value="${jaxb.Implementation-Version}"/>
         </manifest>
 
-
         <jar destfile="${osgi.build}/jaxb-osgi.jar"
              manifest="${osgi.build.rt}/META-INF/MANIFEST.MF">
             <zipfileset src="${osgi.build.rt}/jaxb-bnd.jar"/>
@@ -207,16 +186,40 @@
                 <include name="org/jvnet/fastinfoset/stax/**"/>
              </zipfileset>
         </jar>
-        <move  file="${osgi.build.api}/jaxb-api-bnd.jar" tofile="${osgi.build}/jaxb-api-osgi.jar"/>
-
-        <property name="apiosgisrc_path" value="${osgi.root}/build/jaxb-api-osgi-sources.jar"/>
-        <delete file="${apiosgisrc_path}" quiet="true"/>
-        <copy file="${jaxb.dist}/lib/jaxb-api-src.zip" tofile="${apiosgisrc_path}"/>
-
+        
     </target>
 
     <target name="clean">
         <delete dir="${osgi.build}" quiet="true"/>
+    </target>
+
+    <path id="javac.classpath">
+        <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
+        <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
+        <fileset dir="${jaxb.libs.util}" includes="*.jar" excludes="ant.jar"/>
+    </path>
+
+    <target name="javadoc">
+        <unzip src="${jaxb.dist}/lib/jaxb-impl.src.zip" dest="${jaxb.build}/jaxbosgisrc"/>
+        <unzip src="${jaxb.dist}/lib/jaxb-xjc.src.zip" dest="${jaxb.build}/jaxbosgisrc"/>
+        <mkdir dir="${jaxb.build}/jaxbosgiapi"/>
+        <javadoc destdir="${jaxb.build}/jaxbosgiapi" use="true" defaultexcludes="yes"
+            author="false" version="false" windowtitle="JAXB RI" useexternalfile="true" access="public">
+            <fileset dir="${jaxb.build}/jaxbosgisrc" includes="com/sun/xml/bind/*.java, com/sun/xml/bind/annotation/*.java, com/sun/xml/bind/api/*.java,
+                com/sun/tools/xjc/*.java, com/sun/tools/jxc/*.java, com/sun/tools/xjc/api/*.java"/>
+            <classpath refid="javac.classpath"/>
+            <arg value="-quiet"/>
+        </javadoc>
+        <zip zipfile="${osgi.build}/jaxb-osgi-javadoc.jar">
+            <fileset dir="${jaxb.build}/jaxbosgisrc"/>
+        </zip>
+    </target>
+
+    <target name="sources">
+        <jar destfile="${osgi.build}/jaxb-osgi-sources.jar">
+            <zipfileset src="${jaxb.dist}/lib/jaxb-impl.src.zip"/>
+            <zipfileset src="${jaxb.dist}/lib/jaxb-xjc.src.zip"/>
+        </jar>
     </target>
 
 </project>

@@ -86,7 +86,7 @@ import org.xml.sax.helpers.LocatorImpl;
  *
  * <p>
  * A {@link Model} is a schema language neutral representation of the
- * result of a scehma parsing. The back-end then works against this model
+ * result of a schema parsing. The back-end then works against this model
  * to turn this into a series of Java source code.
  *
  * @author Kohsuke Kawaguchi

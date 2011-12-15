@@ -141,6 +141,9 @@ public abstract class Coordinator implements ErrorHandler, ValidationEventHandle
      * Sohuld be called at the end of the episode to avoid memory leak.
      */
     protected final void resetThreadAffinity() {
+        if (activeTable != null) {
+            activeTable.remove();
+        }
         if(debugTableNPE)
             guyWhoSetTheTableToNull = new Exception(); // remember that we set it to null 
         table = null;
@@ -169,11 +172,11 @@ public abstract class Coordinator implements ErrorHandler, ValidationEventHandle
 
     // this much is necessary to avoid calling get and set twice when we push.
     private static final ThreadLocal<Object[]> activeTable = new ThreadLocal<Object[]>() {
+        @Override
         public Object[] initialValue() {
             return new Object[1];
         }
     };
-
 
 //
 //

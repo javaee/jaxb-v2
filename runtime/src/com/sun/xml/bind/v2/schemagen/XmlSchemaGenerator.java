@@ -271,6 +271,12 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
             if(generateSwaRefAdapter(p))
                 n.useSwaRef = true;
+
+            MimeType mimeType = p.getExpectedMimeType();
+            if( mimeType != null ) {
+                n.useMimeNs = true;
+            }
+
         }
 
         // recurse on baseTypes to make sure that we can refer to them in the schema
@@ -543,6 +549,12 @@ public final class XmlSchemaGenerator<T,C,F,M> {
          * statement.
          */
         private boolean useSwaRef;
+        
+        /** 
+         * Import for mime namespace needs to be generated.
+         * See #856
+         */
+        private boolean useMimeNs;
 
         public Namespace(String uri) {
             this.uri = uri;
@@ -619,6 +631,9 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                 if(useSwaRef)
                     schema._namespace(WellKnownNamespace.SWA_URI,"swaRef");
 
+                if(useMimeNs)
+                    schema._namespace(WellKnownNamespace.XML_MIME_URI,"xmime");
+
                 attributeFormDefault = Form.get(types.getAttributeFormDefault(uri));
                 attributeFormDefault.declare("attributeFormDefault",schema);
 
@@ -665,6 +680,9 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                 }
                 if(useSwaRef) {
                     schema._import().namespace(WellKnownNamespace.SWA_URI).schemaLocation("http://ws-i.org/profiles/basic/1.1/swaref.xsd");
+                }
+                if(useMimeNs) {
+                    schema._import().namespace(WellKnownNamespace.XML_MIME_URI).schemaLocation("http://www.w3.org/2005/05/xmlmime");
                 }
 
                 // then write each component
@@ -1139,6 +1157,11 @@ public final class XmlSchemaGenerator<T,C,F,M> {
             ClassInfo ci = null;
             QName targetTagName = null;
 
+            if(t.isNillable() || t.getDefaultValue()!=null) {
+                // can't put those attributes on <element ref>
+                return false;
+            }
+
             if (t.getTarget() instanceof Element) {
                 te = (Element) t.getTarget();
                 targetTagName = te.getElementName();
@@ -1157,11 +1180,6 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                 if (targetTagName.getLocalPart().equals(tn.getLocalPart())) {
                     return true;
                 }
-            }
-
-            if(t.isNillable() || t.getDefaultValue()!=null) {
-                // can't put those attributes on <element ref>
-                return false;
             }
 
             // we have the precise element defined already

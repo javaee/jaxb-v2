@@ -1,0 +1,16 @@
+<sample since="1.0">
+    <title>modify-marshal (formerly SampleApp2)</title>
+    <description><![CDATA[
+        This sample application demonstrates how to modify a java content tree 
+        and marshal it back to XML data.
+    ]]></description>
+        
+    <project>
+        <xjc schema="po.xsd" package="primer.po"/>
+        
+        <javadoc/>
+        
+        <java mainClass="Main"/>
+    </project>
+    
+</sample>

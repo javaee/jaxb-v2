@@ -49,6 +49,7 @@ import java.util.ResourceBundle;
 enum Messages {
     // AnnotationParser
     DUPLICATE_ANNOTATIONS,
+    CLASS_NOT_FOUND
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());

@@ -125,6 +125,7 @@ public final class ModelLoader {
         this.errorReceiver = new ErrorReceiverFilter(er);
     }
 
+    @SuppressWarnings("CallToThreadDumpStack")
     private Model load() {
         Model grammar;
 

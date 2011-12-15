@@ -125,6 +125,9 @@ class Messages
     static final String UNRECOGNIZED_PARAMETER = // 1 arg
         "Driver.UnrecognizedParameter";
 
+    static final String UNSUPPORTED_ENCODING = // 1 arg
+            "Driver.UnsupportedEncoding";
+
     static final String MISSING_GRAMMAR = // 0 args
         "Driver.MissingGrammar";
         

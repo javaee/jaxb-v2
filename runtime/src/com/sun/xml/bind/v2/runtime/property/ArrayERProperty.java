@@ -171,7 +171,7 @@ abstract class ArrayERProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,Li
     }
 
     /**
-     * Serializses the items of the list.
+     * Serializes the items of the list.
      * This method is invoked after the necessary wrapper tag is produced (if necessary.)
      *
      * @param list
@@ -180,7 +180,7 @@ abstract class ArrayERProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,Li
     protected abstract void serializeListBody(BeanT o, XMLSerializer w, ListT list) throws IOException, XMLStreamException, SAXException, AccessorException;
 
     /**
-     * Creates the unmarshaller to unmarshal the body.
+     * Creates the unmarshaler to unmarshal the body.
      */
     protected abstract void createBodyUnmarshaller(UnmarshallerChain chain, QNameMap<ChildLoader> loaders);
 
