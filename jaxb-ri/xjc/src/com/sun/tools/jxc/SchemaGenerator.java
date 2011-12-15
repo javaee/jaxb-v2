@@ -85,9 +85,9 @@ public class SchemaGenerator {
             if (cl==null) {
                 cl = SecureLoader.getSystemClassLoader();
             }
-            ClassLoader classLoader = new ApClassLoader(cl, packagePrefixes);
-            return run(args, classLoader);
-        } catch( ToolsJarNotFoundException e) {
+//            ClassLoader classLoader = new ApClassLoader(cl, packagePrefixes); // todo: check if can be removed
+            return run(args, cl);
+        } catch(Exception e) {
             System.err.println(e.getMessage());
             return -1;
         }
