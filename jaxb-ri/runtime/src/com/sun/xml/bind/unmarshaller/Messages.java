@@ -99,9 +99,10 @@ public class Messages
         
     public static final String UNEXPECTED_ROOT_ELEMENT = // 1 arg
         "SAXUnmarshallerHandlerImpl.UnexpectedRootElement";
-        
-    public static final String UNEXPECTED_ROOT_ELEMENT2 = // 3 arg
-        "SAXUnmarshallerHandlerImpl.UnexpectedRootElement2";
+
+    // Usage not found. TODO Remove
+    // public static final String UNEXPECTED_ROOT_ELEMENT2 = // 3 arg
+    //    "SAXUnmarshallerHandlerImpl.UnexpectedRootElement2";
         
     public static final String UNDEFINED_PREFIX = // 1 arg
         "Util.UndefinedPrefix";

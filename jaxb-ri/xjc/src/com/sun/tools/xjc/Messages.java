@@ -82,15 +82,17 @@ class Messages
     
     static final String NON_EXISTENT_DIR = // 1 arg
         "Driver.NonExistentDir";
-        
-    static final String MISSING_RUNTIME_PACKAGENAME = // 0 args
-        "Driver.MissingRuntimePackageName";
+
+    // Usage not found. TODO Remove
+    // static final String MISSING_RUNTIME_PACKAGENAME = // 0 args
+    //     "Driver.MissingRuntimePackageName";
 
     static final String MISSING_MODE_OPERAND = // 0 args
-        "Driver.MissingModeOperand";
+            "Driver.MissingModeOperand";
 
-    static final String MISSING_COMPATIBILITY_OPERAND = // 0 args
-        "Driver.MissingCompatibilityOperand";
+    // Usage not found. TODO Remove
+    // static final String MISSING_COMPATIBILITY_OPERAND = // 0 args
+    //     "Driver.MissingCompatibilityOperand";
     
     static final String MISSING_PROXY = // 0 args
         "Driver.MISSING_PROXY";

@@ -102,10 +102,11 @@ public class Messages
     
     /**
      * @deprecated
-     *  use {@link com.sun.xml.bind.v2.runtime.XMLSerializer#reportMissingObjectError(String)} 
+     *  use {@link com.sun.xml.bind.v2.runtime.XMLSerializer#reportMissingObjectError(String)}
+     * Usage not found. TODO Remove
      */
-    public static final String ERR_MISSING_OBJECT2 = // 1 arg
-        "SAXMarshaller.MissingObject2";
+    // public static final String ERR_MISSING_OBJECT2 = // 1 arg
+    //    "SAXMarshaller.MissingObject2";
     
     /**
      * @deprecated only used from 1.0
