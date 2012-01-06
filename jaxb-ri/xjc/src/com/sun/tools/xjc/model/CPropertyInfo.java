@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -44,7 +44,6 @@ import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
@@ -52,11 +51,9 @@ import javax.xml.namespace.QName;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JJavaName;
 import com.sun.codemodel.JType;
-import com.sun.tools.xjc.Plugin;
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
-import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.RuntimeUtil;
@@ -120,7 +117,7 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
     protected CPropertyInfo(String name, boolean collection, XSComponent source,
                             CCustomizations customizations, Locator locator) {
         this.publicName = name;
-        String n = NameConverter.standard.toVariableName(name);
+        String n = parent.model.getNameConverter().toVariableName(name);
         if(!JJavaName.isJavaIdentifier(n))
             n = '_'+n;  // avoid colliding with the reserved names like 'abstract'.
         this.privateName = n;
