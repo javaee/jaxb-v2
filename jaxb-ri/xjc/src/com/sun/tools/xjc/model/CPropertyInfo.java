@@ -54,6 +54,7 @@ import com.sun.codemodel.JType;
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
+import com.sun.tools.xjc.reader.Ring;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.RuntimeUtil;
@@ -117,7 +118,16 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
     protected CPropertyInfo(String name, boolean collection, XSComponent source,
                             CCustomizations customizations, Locator locator) {
         this.publicName = name;
-        String n = parent.model.getNameConverter().toVariableName(name);
+        String n = null;
+
+        Model m = Ring.get(Model.class);
+        if (m != null) {
+            n = m.getNameConverter().toVariableName(name);
+        } else {
+            n = NameConverter.standard.toVariableName(name);
+        }
+        
+        String n = 
         if(!JJavaName.isJavaIdentifier(n))
             n = '_'+n;  // avoid colliding with the reserved names like 'abstract'.
         this.privateName = n;
