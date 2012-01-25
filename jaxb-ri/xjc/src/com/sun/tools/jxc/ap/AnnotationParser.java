@@ -143,7 +143,8 @@ public final class AnnotationParser extends AbstractProcessor {
 
     private void filterClass(Collection<TypeElement> rootElements, Collection<? extends Element> elements) {
         for (Element element : elements) {
-            if (element.getKind().equals(ElementKind.CLASS) || element.getKind().equals(ElementKind.INTERFACE)) {
+            if (element.getKind().equals(ElementKind.CLASS) || element.getKind().equals(ElementKind.INTERFACE) ||
+                    element.getKind().equals(ElementKind.ENUM)) {
                 rootElements.add((TypeElement) element);
                 filterClass(rootElements, ElementFilter.typesIn(element.getEnclosedElements()));
             }
