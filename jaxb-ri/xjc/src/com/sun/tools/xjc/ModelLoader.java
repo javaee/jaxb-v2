@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -62,12 +62,11 @@ import com.sun.tools.xjc.reader.xmlschema.parser.IncorrectNamespaceURIChecker;
 import com.sun.tools.xjc.reader.xmlschema.parser.SchemaConstraintChecker;
 import com.sun.tools.xjc.reader.xmlschema.parser.XMLSchemaInternalizationLogic;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
+import com.sun.xml.bind.v2.util.XmlFactory;
 import com.sun.xml.xsom.XSSchemaSet;
 import com.sun.xml.xsom.parser.JAXPParser;
 import com.sun.xml.xsom.parser.XMLParser;
 import com.sun.xml.xsom.parser.XSOMParser;
-import java.net.URI;
-import java.net.URISyntaxException;
 import javax.xml.XMLConstants;
 
 import org.kohsuke.rngom.ast.builder.SchemaBuilder;
@@ -313,7 +312,7 @@ public final class ModelLoader {
         throws SAXException {
 
         // parse into DOM forest
-        DOMForest forest = new DOMForest(logic);
+        DOMForest forest = new DOMForest(logic, opt);
 
         forest.setErrorHandler(errorReceiver);
         if(opt.entityResolver!=null)
@@ -358,7 +357,7 @@ public final class ModelLoader {
      */
     public XSSchemaSet loadXMLSchema() throws SAXException {
 
-        if( opt.strictCheck && !SchemaConstraintChecker.check(opt.getGrammars(),errorReceiver,opt.entityResolver)) {
+        if( opt.strictCheck && !SchemaConstraintChecker.check(opt.getGrammars(),errorReceiver,opt.entityResolver, opt.disableXmlSecurity)) {
             // schema error. error should have been reported
             return null;
         }
@@ -480,7 +479,7 @@ public final class ModelLoader {
         // check if the schema contains external binding files. If so, speculation is a failure.
 
         XMLParser parser = new XMLParser() {
-            private final JAXPParser base = new JAXPParser();
+            private final JAXPParser base = new JAXPParser(XmlFactory.createParserFactory(opt.disableXmlSecurity));
 
             public void parse(InputSource source, ContentHandler handler,
                 ErrorHandler errorHandler, EntityResolver entityResolver ) throws SAXException, IOException {

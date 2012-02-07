@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -42,8 +42,6 @@ package com.sun.tools.jxc;
 
 import com.sun.tools.jxc.ap.Options;
 import com.sun.tools.xjc.BadCommandLineException;
-import com.sun.tools.xjc.api.util.ApClassLoader;
-import com.sun.tools.xjc.api.util.ToolsJarNotFoundException;
 import com.sun.xml.bind.util.Which;
 
 import javax.lang.model.SourceVersion;
@@ -85,26 +83,12 @@ public class SchemaGenerator {
             if (cl==null) {
                 cl = SecureLoader.getSystemClassLoader();
             }
-//            ClassLoader classLoader = new ApClassLoader(cl, packagePrefixes); // todo: check if can be removed
             return run(args, cl);
         } catch(Exception e) {
             System.err.println(e.getMessage());
             return -1;
         }
     }
-
-    /**
-     * List of package prefixes we want to load in the same package
-     */
-    private static final String[] packagePrefixes = {
-        "com.sun.tools.jxc.",
-        "com.sun.tools.xjc.",
-        "com.sun.istack.tools.",
-        "com.sun.tools.javac.",
-        "com.sun.tools.javadoc.",
-        "javax.annotation.processing.",
-        "javax.lang.model."
-    };
 
     /**
      * Runs the schema generator.
@@ -225,18 +209,6 @@ public class SchemaGenerator {
             Logger.getLogger(SchemaGenerator.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
-    }
-
-    /**
-     * Returns true if the list of arguments have an argument
-     * that looks like a class name.
-     */
-    private static boolean hasClass(List<String> args) {
-        for (String arg : args) {
-            if(!arg.endsWith(".java"))
-                return true;
-        }
-        return false;
     }
 
     private static void usage( ) {

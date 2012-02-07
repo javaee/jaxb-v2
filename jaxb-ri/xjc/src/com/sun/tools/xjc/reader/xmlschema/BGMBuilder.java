@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -72,6 +72,7 @@ import com.sun.tools.xjc.reader.xmlschema.bindinfo.BindInfo;
 import com.sun.tools.xjc.util.CodeModelClassFactory;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
 import com.sun.xml.bind.api.impl.NameConverter;
+import com.sun.xml.bind.v2.util.XmlFactory;
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSAttributeUse;
 import com.sun.xml.xsom.XSComponent;
@@ -243,7 +244,7 @@ public class BGMBuilder extends BindingComponent {
         }
 
         // obtain the name conversion mode
-        if(globalBinding.nameConverter!=null)
+        if (globalBinding.nameConverter!=null)
             model.setNameConverter(globalBinding.nameConverter);
 
         // attach global conversions to the appropriate simple types
@@ -513,8 +514,10 @@ public class BGMBuilder extends BindingComponent {
      */
     public Transformer getIdentityTransformer() {
         try {
-            if(identityTransformer==null)
-                identityTransformer = TransformerFactory.newInstance().newTransformer();
+            if(identityTransformer==null) {
+                TransformerFactory tf = XmlFactory.createTransformerFactory(model.options.disableXmlSecurity);
+                identityTransformer = tf.newTransformer();
+            }
             return identityTransformer;
         } catch (TransformerConfigurationException e) {
             throw new Error(e); // impossible

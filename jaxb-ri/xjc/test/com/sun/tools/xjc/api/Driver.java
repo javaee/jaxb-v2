@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -54,6 +54,7 @@ import com.sun.codemodel.writer.SingleStreamCodeWriter;
 import com.sun.tools.xjc.ConsoleErrorReporter;
 import com.sun.xml.bind.v2.WellKnownNamespace;
 
+import com.sun.xml.bind.v2.util.XmlFactory;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.opts.BooleanOption;
@@ -103,16 +104,14 @@ public class Driver {
         ErrorReceiverImpl er = new ErrorReceiverImpl();
         compiler.setErrorListener(er);
 
-//        XMLInputFactory xif = new MXParserFactory();  // BEA's RI
-        XMLInputFactory xif = new com.sun.xml.stream.ZephyrParserFactory();
+        XMLInputFactory xif = XMLInputFactory.newFactory();
 
         for (File value : files) {
             String url = value.toURL().toString();
 
             if (value.getName().toLowerCase().endsWith(".wsdl")) {
                 // read it as WSDL.
-                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                dbf.setNamespaceAware(true);
+                DocumentBuilderFactory dbf = XmlFactory.createDocumentBuilderFactory(false);
                 Document dom = dbf.newDocumentBuilder().parse(value);
                 compiler.parseSchema(url,
                         findSchemas(dom.getDocumentElement()));
@@ -171,16 +170,6 @@ public class Driver {
         for( String s : model.getClassList() )
             System.out.println("  "+s);
         System.out.println();
-
-//        System.out.println("--- XML type -> Java type ---");
-//        for( Map.Entry<QName,String> e : model.getXmlTypeNameToJavaTypeNameMap().entrySet() )
-//            System.out.println("  "+e.getKey()+"->"+e.getValue());
-//        System.out.println();
-//
-//        System.out.println("--- Java type -> XML type ---");
-//        for( Map.Entry<String,QName> e : model.getJavaTypeNameToXmlTypeNameMap().entrySet() )
-//            System.out.println("  "+e.getKey()+"->"+e.getValue());
-//        System.out.println();
 
         for( Mapping m  : model.getMappings() ) {
             System.out.println(m.getElement()+"<->"+m.getType());

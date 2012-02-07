@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -55,7 +55,6 @@ public abstract class Util {
      */
     public static Logger getClassLogger() {
         try {
-//            StackTraceElement[] trace = Thread.currentThread().getStackTrace();
             StackTraceElement[] trace = new Exception().getStackTrace();
             return Logger.getLogger(trace[1].getClassName());
         } catch( SecurityException _ ) {

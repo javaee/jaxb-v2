@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -38,11 +38,6 @@
  * holder.
  */
 
-/*
- * SAX2DOMEx.java
- *
- * Created on February 22, 2002, 1:55 PM
- */
 package com.sun.xml.bind.marshaller;
 
 import java.util.Stack;
@@ -53,6 +48,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import com.sun.xml.bind.util.Which;
 import com.sun.istack.FinalArrayList;
 
+import com.sun.xml.bind.v2.util.XmlFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -105,9 +101,19 @@ public class SAX2DOMEx implements ContentHandler {
     /**
      * Creates a fresh empty DOM document and adds nodes under this document.
      */
+    public SAX2DOMEx(DocumentBuilderFactory f) throws ParserConfigurationException {        
+        f.setValidating(false);
+        document = f.newDocumentBuilder().newDocument();
+        node = document;
+        nodeStack.push(document);
+    }
+
+    /**
+     * Creates a fresh empty DOM document and adds nodes under this document.
+     * @deprecated 
+     */
     public SAX2DOMEx() throws ParserConfigurationException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
+        DocumentBuilderFactory factory = XmlFactory.createDocumentBuilderFactory(false);
         factory.setValidating(false);
 
         document = factory.newDocumentBuilder().newDocument();
@@ -158,7 +164,7 @@ public class SAX2DOMEx implements ContentHandler {
     public void startElement(String namespace, String localName, String qName, Attributes attrs) {
         Node parent = nodeStack.peek();
 
-        // some broken DOM implementatino (we confirmed it with SAXON)
+        // some broken DOM implementation (we confirmed it with SAXON)
         // return null from this method.
         Element element = document.createElementNS(namespace, qName);
 

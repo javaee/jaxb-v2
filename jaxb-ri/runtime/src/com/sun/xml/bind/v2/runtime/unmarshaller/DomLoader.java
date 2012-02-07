@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -40,7 +40,6 @@
 
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
-import com.sun.xml.bind.v2.WellKnownNamespace;
 import javax.xml.bind.annotation.DomHandler;
 import javax.xml.transform.Result;
 import javax.xml.transform.sax.TransformerHandler;
@@ -62,8 +61,9 @@ public class DomLoader<ResultT extends Result> extends Loader {
      * This instance is created for each unmarshalling episode.
      */
     private final class State {
+        
         /** This handler will receive SAX events. */
-        private final TransformerHandler handler = JAXBContextImpl.createTransformerHandler();
+        private TransformerHandler handler = null;
 
         /** {@link #handler} will produce this result. */
         private final ResultT result;
@@ -72,6 +72,7 @@ public class DomLoader<ResultT extends Result> extends Loader {
         int depth = 1;
 
         public State( UnmarshallingContext context ) throws SAXException {
+            handler = JAXBContextImpl.createTransformerHandler(context.getJAXBContext().disableSecurityProcessing);
             result = dom.createUnmarshaller(context);
 
             handler.setResult(result);

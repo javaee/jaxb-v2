@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -65,7 +65,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -78,7 +77,7 @@ import java.util.StringTokenizer;
  * @author Bhakti Mehta (bhakti.mehta@sun.com)
  */
 @SupportedAnnotationTypes("javax.xml.bind.annotation.*")
-@SupportedOptions("jaxb.config") // Const.CONFIG_FILE_OPTION.getValue()
+@SupportedOptions("jaxb.config")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public final class AnnotationParser extends AbstractProcessor {
 

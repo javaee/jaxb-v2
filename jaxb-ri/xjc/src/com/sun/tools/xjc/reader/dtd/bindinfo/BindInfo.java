@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -67,6 +67,8 @@ import com.sun.tools.xjc.util.CodeModelClassFactory;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
 import com.sun.tools.xjc.util.ForkContentHandler;
 
+import com.sun.xml.bind.v2.util.XmlFactory;
+import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -316,9 +318,9 @@ public class BindInfo
             //              /-> extensionChecker -> validator
             //   parser-> -<
             //              \-> DOM builder
-            SAXParserFactory pf = SAXParserFactory.newInstance();
-            pf.setNamespaceAware(true);
-            DOMBuilder builder = new DOMBuilder();
+            SAXParserFactory pf = XmlFactory.createParserFactory(model.options.disableXmlSecurity);
+            DocumentBuilderFactory domFactory = XmlFactory.createDocumentBuilderFactory(model.options.disableXmlSecurity);
+            DOMBuilder builder = new DOMBuilder(domFactory);
 
             ErrorReceiverFilter controller = new ErrorReceiverFilter(receiver);
             validator.setErrorHandler(controller);

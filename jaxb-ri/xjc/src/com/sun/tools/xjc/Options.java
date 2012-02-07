@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -119,6 +119,15 @@ public class Options
 
     /** Encoding to be used by generated java sources, null for platform default. */
     public String encoding;
+
+    /**
+     * If true XML security features when parsing XML documents will be disabled.
+     * The default value is false. 
+     *
+     * Boolean
+     * @since 2.2.6
+     */
+    public boolean disableXmlSecurity;
 
     /**
      * Check the source schemas with extra scrutiny.
@@ -555,6 +564,10 @@ public class Options
         }
         if (args[i].equals("-enableIntrospection")) {
             enableIntrospection = true;
+            return 1;
+        }
+        if (args[i].equals("-disableXmlSecurity")) {
+            disableXmlSecurity = true;
             return 1;
         }
         if (args[i].equals("-contentForWildcard")) {

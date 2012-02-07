@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -68,6 +68,7 @@ import com.sun.tools.xjc.reader.internalizer.SCDBasedBindingSet;
 import com.sun.tools.xjc.reader.xmlschema.parser.LSInputSAXWrapper;
 import com.sun.tools.xjc.reader.xmlschema.parser.XMLSchemaInternalizationLogic;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
+import com.sun.xml.bind.v2.util.XmlFactory;
 import com.sun.xml.xsom.XSSchemaSet;
 
 import org.w3c.dom.Element;
@@ -211,7 +212,7 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
     }
 
     public void resetSchema() {
-        forest = new DOMForest(new XMLSchemaInternalizationLogic());
+        forest = new DOMForest(new XMLSchemaInternalizationLogic(), opts);
         forest.setErrorHandler(this);
         forest.setEntityResolver(opts.entityResolver);
     }
@@ -231,7 +232,7 @@ public final class SchemaCompilerImpl extends ErrorReceiver implements SchemaCom
 
         if (!NO_CORRECTNESS_CHECK) {
             // correctness check
-            SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            SchemaFactory sf = XmlFactory.createSchemaFactory(XMLConstants.W3C_XML_SCHEMA_NS_URI, opts.disableXmlSecurity);
 
             // fix for https://jaxb.dev.java.net/issues/show_bug.cgi?id=795
             // taken from SchemaConstraintChecker, TODO XXX FIXME UGLY

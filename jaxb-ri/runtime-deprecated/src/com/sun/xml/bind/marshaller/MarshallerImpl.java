@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -65,6 +65,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.LocatorImpl;
 
 import com.sun.xml.bind.serializer.XMLSerializable;
+import com.sun.xml.bind.v2.util.XmlFactory;
 
 /**
  * Implementation of {@link Marshaller} interface for JAXB RI.
@@ -100,8 +101,7 @@ public class MarshallerImpl extends AbstractMarshallerImpl
 
             if (node == null) {
                 try {
-                    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                    dbf.setNamespaceAware(true);
+                    DocumentBuilderFactory dbf = XmlFactory.createDocumentBuilderFactory(false);
                     DocumentBuilder db = dbf.newDocumentBuilder();
                     Document doc = db.newDocument();
                     ((DOMResult) result).setNode(doc);

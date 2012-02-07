@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -62,6 +62,7 @@ import com.sun.xml.bind.v2.ContextFactory;
 import com.sun.xml.bind.v2.model.annotation.RuntimeAnnotationReader;
 import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfoSet;
+import java.util.HashMap;
 
 /**
  * {@link JAXBContext} enhanced with JAXB RI specific functionalities.
@@ -108,7 +109,7 @@ public abstract class JAXBRIContext extends JAXBContext {
        @Nullable Map<Class,Class> subclassReplacements,
        @Nullable String defaultNamespaceRemap, boolean c14nSupport,
        @Nullable RuntimeAnnotationReader ar) throws JAXBException {
-        return ContextFactory.createContext(classes, typeRefs, subclassReplacements,
+        return newInstance(classes, typeRefs, subclassReplacements,
                 defaultNamespaceRemap, c14nSupport, ar, false, false, false, false);
     }
 
@@ -150,9 +151,21 @@ public abstract class JAXBRIContext extends JAXBContext {
        @Nullable Map<Class,Class> subclassReplacements,
        @Nullable String defaultNamespaceRemap, boolean c14nSupport,
        @Nullable RuntimeAnnotationReader ar,
-       boolean xmlAccessorFactorySupport, boolean allNillable, boolean retainPropertyInfo, boolean supressAccessorWarnings) throws JAXBException {
-        return ContextFactory.createContext(classes, typeRefs, subclassReplacements,
-                defaultNamespaceRemap, c14nSupport, ar, xmlAccessorFactorySupport, allNillable, retainPropertyInfo, supressAccessorWarnings);
+       boolean xmlAccessorFactorySupport, 
+       boolean allNillable, 
+       boolean retainPropertyInfo, 
+       boolean supressAccessorWarnings) throws JAXBException {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        if (typeRefs != null) properties.put(JAXBRIContext.TYPE_REFERENCES, typeRefs);
+        if (subclassReplacements != null) properties.put(JAXBRIContext.SUBCLASS_REPLACEMENTS, subclassReplacements);
+        if (defaultNamespaceRemap != null) properties.put(JAXBRIContext.DEFAULT_NAMESPACE_REMAP, defaultNamespaceRemap);
+        if (ar != null) properties.put(JAXBRIContext.ANNOTATION_READER, ar);
+        properties.put(JAXBRIContext.CANONICALIZATION_SUPPORT, Boolean.valueOf(c14nSupport));
+        properties.put(JAXBRIContext.XMLACCESSORFACTORY_SUPPORT, Boolean.valueOf(xmlAccessorFactorySupport));
+        properties.put(JAXBRIContext.TREAT_EVERYTHING_NILLABLE, Boolean.valueOf(allNillable));
+        properties.put(JAXBRIContext.RETAIN_REFERENCE_TO_INFO, Boolean.valueOf(retainPropertyInfo));
+        properties.put(JAXBRIContext.SUPRESS_ACCESSOR_WARNINGS, Boolean.valueOf(supressAccessorWarnings));
+        return (JAXBRIContext) ContextFactory.createContext(classes, properties);
     }
 
     /**
@@ -422,7 +435,6 @@ public abstract class JAXBRIContext extends JAXBContext {
         return Navigator.REFLECTION.getBaseClass(type,baseType);
     }
 
-
     /**
      * The property that you can specify to {@link JAXBContext#newInstance}
      * to reassign the default namespace URI to something else at the runtime.
@@ -456,6 +468,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      * and {@link Marshaller#setProperty(String, Object)}
      * to enable the c14n marshalling support in the {@link JAXBContext}.
      *
+     * Boolean
      * @see C14nSupport_ArchitectureDocument
      * @since 2.0 EA2
      */
@@ -466,6 +479,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      * to allow unmarshaller to honor <tt>xsi:nil</tt> anywhere, even if they are
      * not specifically allowed by the schema.
      *
+     * Boolean
      * @since 2.1.3
      */
     public static final String TREAT_EVERYTHING_NILLABLE = "com.sun.xml.bind.treatEverythingNillable";
@@ -507,6 +521,7 @@ public abstract class JAXBRIContext extends JAXBContext {
     /**
      * Retains references to PropertyInfos.
      *
+     * Boolean
      * @since 2.1.10
      */
     public static final String RETAIN_REFERENCE_TO_INFO = "retainReferenceToInfo";
@@ -514,6 +529,7 @@ public abstract class JAXBRIContext extends JAXBContext {
     /**
      * Supress security warnings when trying to access fields through reflection.
      *
+     * Boolean
      * @since 2.1.14, 2.2.2
      */
     public static final String SUPRESS_ACCESSOR_WARNINGS = "supressAccessorWarnings";
@@ -521,8 +537,17 @@ public abstract class JAXBRIContext extends JAXBContext {
     /**
      * Improves handling of xsi:type used on leaf properties.
      *
+     * Boolean
      * @since 2.2.3
      */
     public static final String IMPROVED_XSI_TYPE_HANDLING = "com.sun.xml.bind.improvedXsiTypeHandling";
 
+    /**
+     * If true XML security features when parsing XML documents will be disabled.
+     * The default value is false. 
+     *
+     * Boolean
+     * @since 2.2.6
+     */
+    public static final String DISABLE_XML_SECURITY  = "com.sun.xml.bind.disableXmlSecurity";
 }

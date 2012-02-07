@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -72,9 +72,9 @@ import com.sun.istack.XMLStreamReaderToContentHandler;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.reader.Const;
-import com.sun.tools.xjc.reader.xmlschema.parser.SchemaConstraintChecker;
 import com.sun.tools.xjc.util.ErrorReceiverFilter;
 import com.sun.xml.bind.marshaller.DataWriter;
+import com.sun.xml.bind.v2.util.XmlFactory;
 import com.sun.xml.xsom.parser.JAXPParser;
 import com.sun.xml.xsom.parser.XMLParser;
 
@@ -141,7 +141,8 @@ public final class DOMForest {
     private final SAXParserFactory parserFactory;    
     private final DocumentBuilder documentBuilder;
     
-    
+    private final Options options;
+            
     public DOMForest(
         SAXParserFactory parserFactory, DocumentBuilder documentBuilder,
         InternalizationLogic logic ) {
@@ -149,16 +150,18 @@ public final class DOMForest {
         this.parserFactory = parserFactory;
         this.documentBuilder = documentBuilder;
         this.logic = logic;
+        this.options = null;
     }
 
-    public DOMForest( InternalizationLogic logic ) {
+    public DOMForest( InternalizationLogic logic, Options opt ) {
+
+        if (opt == null) throw new AssertionError("Options object null");
+        this.options = opt;
+        
         try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(true);
+            DocumentBuilderFactory dbf = XmlFactory.createDocumentBuilderFactory(opt.disableXmlSecurity);
             this.documentBuilder = dbf.newDocumentBuilder();
-                
-            this.parserFactory = SAXParserFactory.newInstance();
-            this.parserFactory.setNamespaceAware(true);
+            this.parserFactory = XmlFactory.createParserFactory(opt.disableXmlSecurity);
         } catch( ParserConfigurationException e ) {
             throw new AssertionError(e);
         }
@@ -240,7 +243,11 @@ public final class DOMForest {
      */
     public boolean checkSchemaCorrectness(ErrorReceiver errorHandler) {
         try {
-            SchemaFactory sf = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
+            boolean disableXmlSecurity = false;
+            if (options != null) {
+                disableXmlSecurity = options.disableXmlSecurity;
+            }
+            SchemaFactory sf = XmlFactory.createSchemaFactory(W3C_XML_SCHEMA_NS_URI, disableXmlSecurity);
             ErrorReceiverFilter filter = new ErrorReceiverFilter(errorHandler);
             sf.setErrorHandler(filter);
             Set<String> roots = getRootDocuments();
@@ -439,7 +446,7 @@ public final class DOMForest {
      *      components are built.
      */
     public SCDBasedBindingSet transform(boolean enableSCD) {
-        return Internalizer.transform(this,enableSCD);
+        return Internalizer.transform(this, enableSCD, options.disableXmlSecurity);
     }
 
     /**
@@ -504,10 +511,12 @@ public final class DOMForest {
         ContentHandlerNamespacePrefixAdapter reader = new ContentHandlerNamespacePrefixAdapter(new XMLFilterImpl() {
             // XMLReader that uses XMLParser to parse. We need to use XMLFilter to indrect
             // handlers, since SAX allows handlers to be changed while parsing.
+            @Override
             public void parse(InputSource input) throws SAXException, IOException {
                 createParser().parse(input, this, this, this);
             }
 
+            @Override
             public void parse(String systemId) throws SAXException, IOException {
                 parse(new InputSource(systemId));
             }
@@ -524,10 +533,8 @@ public final class DOMForest {
      * instead of the original documents.
      */
     public XMLParser createParser() {
-        return new DOMForestParser(this,new JAXPParser());
-    }
-    
-    
+        return new DOMForestParser(this, new JAXPParser(XmlFactory.createParserFactory(options.disableXmlSecurity)));
+    }    
     
     public EntityResolver getEntityResolver() {
         return entityResolver;
@@ -567,7 +574,12 @@ public final class DOMForest {
     public void dump( OutputStream out ) throws IOException {
         try {
             // create identity transformer
-            Transformer it = TransformerFactory.newInstance().newTransformer();
+            boolean disableXmlSecurity = false;
+            if (options != null) {
+                disableXmlSecurity = options.disableXmlSecurity;
+            }
+            TransformerFactory tf = XmlFactory.createTransformerFactory(disableXmlSecurity);
+            Transformer it = tf.newTransformer();
 
             for (Map.Entry<String, Document> e : core.entrySet()) {
                 out.write( ("---<< "+e.getKey()+'\n').getBytes() );

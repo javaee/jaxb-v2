@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -65,6 +65,7 @@ import com.sun.tools.xjc.model.CBuiltinLeafInfo;
 import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.model.TypeUseFactory;
 
+import com.sun.xml.bind.v2.util.XmlFactory;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
@@ -101,8 +102,8 @@ public class BIUserConversion implements BIConversion
 
     private static Element parse(String text) {
         try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(true);
+            //this is parsing well known schemas, do not configure secure processing - always true
+            DocumentBuilderFactory dbf = XmlFactory.createDocumentBuilderFactory(false);
             InputSource is = new InputSource(new StringReader(text));
             return dbf.newDocumentBuilder().parse(is).getDocumentElement();
         } catch (SAXException x) {
@@ -146,7 +147,7 @@ public class BIUserConversion implements BIConversion
             // no package name is specified.
             try {
                 t = JPrimitiveType.parse(owner.codeModel,type);
-            } catch( IllegalArgumentException e ) {
+            } catch( IllegalArgumentException ex ) {
                 // otherwise treat it as a class name in the current package
                 type = owner.getTargetPackage().name()+'.'+type;
             }
@@ -157,8 +158,8 @@ public class BIUserConversion implements BIConversion
                 JDefinedClass cls = owner.codeModel._class(type);
                 cls.hide();
                 t = cls;
-            } catch( JClassAlreadyExistsException e ) {
-                t = e.getExistingClass();
+            } catch( JClassAlreadyExistsException ex ) {
+                t = ex.getExistingClass();
             }
         }
 
@@ -183,7 +184,7 @@ public class BIUserConversion implements BIConversion
             try {
                 JPackage pkg = owner.getTargetPackage();
                 adapter = pkg._class("Adapter"+id);
-            } catch (JClassAlreadyExistsException e) {
+            } catch (JClassAlreadyExistsException ex) {
                 // try another name in search for an unique name.
                 // this isn't too efficient, but we expect people to usually use
                 // a very small number of adapters.

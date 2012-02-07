@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -49,6 +49,8 @@ import javax.xml.transform.sax.SAXResult;
 
 import com.sun.xml.bind.marshaller.SAX2DOMEx;
 
+import com.sun.xml.bind.v2.util.XmlFactory;
+import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.Locator;
@@ -91,12 +93,14 @@ final class DomHandlerEx implements DomHandler<DomHandlerEx.DomAndLocation,DomHa
 
         ResultImpl() {
             try {
-                s2d = new SAX2DOMEx();
+                DocumentBuilderFactory factory = XmlFactory.createDocumentBuilderFactory(false); // safe - only used for BI
+                s2d = new SAX2DOMEx(factory);
             } catch (ParserConfigurationException e) {
                 throw new AssertionError(e);    // impossible
             }
 
             XMLFilterImpl f = new XMLFilterImpl() {
+                @Override
                 public void setDocumentLocator(Locator locator) {
                     super.setDocumentLocator(locator);
                     location = new LocatorImpl(locator);

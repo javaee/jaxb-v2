@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -198,7 +198,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
             final Node node = ((DOMResult) result).getNode();
 
             if (node == null) {
-                Document doc = JAXBContextImpl.createDom();
+                Document doc = JAXBContextImpl.createDom(getContext().disableSecurityProcessing);
                 ((DOMResult) result).setNode(doc);
                 return new SAXOutput(new SAX2DOMEx(doc));
             } else {
