@@ -561,34 +561,6 @@
         <mvn.publish.local jar="${external.dir}/dtd-parser/dtd-parser.jar" mvngroup="com.sun.xml.dtd-parser" mvnartid="dtd-parser" mvnversion="${dtd-parser.version}"/>
         <copy file="${maven.repo.local}/${dtd-parser.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/dtd-parser.jar"/>
 
-        <echo message="building activation"/>
-        <unzip src="tools/lib/src/activation-src.zip" dest="${external.dir}"/>
-        <delete>
-            <fileset dir="${external.dir}/activation" includes="**/*.jar"/>
-        </delete>
-        <exec executable="ant" dir="${external.dir}/activation" failonerror="true" newenvironment="true" >
-            <arg line="-Djavac.target=1.5"/>
-            <arg line="-Djavac.source=1.5"/>
-            <arg line="dist"/>
-            <env key="JAVA_HOME" value="${JDK_1.5}" />
-        </exec>
-        <mvn.publish.local jar="${external.dir}/activation/activation.jar" mvngroup="javax.activation" mvnartid="activation" mvnversion="${activation.version}"/>
-        <copy file="${maven.repo.local}/${activation.mvn.path}" tofile="${jaxb.root}/tools/lib/redist/activation.jar"/>
-
-        <echo message="building jsr173api"/>
-        <unzip src="tools/lib/src/jsr173api-src.zip" dest="${external.dir}"/>
-        <delete>
-            <fileset dir="${external.dir}/jsr173api" includes="**/*.jar"/>
-        </delete>
-        <exec executable="ant" dir="${external.dir}/jsr173api" failonerror="true" newenvironment="true" >
-            <arg line="-Djavac.target=1.5"/>
-            <arg line="-Djavac.source=1.5"/>
-            <arg line="dist"/>
-            <env key="JAVA_HOME" value="${JDK_1.5}" />
-        </exec>
-        <mvn.publish.local jar="${external.dir}/jsr173api/jsr173_1.0_api.jar" mvngroup="javax.xml" mvnartid="jsr173" mvnversion="${jsr173api.version}"/>
-        <copy file="${maven.repo.local}/${jsr173api.mvn.path}" tofile="${jaxb.root}/tools/lib/redist/jsr173_1.0_api.jar"/>
-
         <echo message="building stax-ex"/>
         <unzip src="tools/lib/util/stax-ex-src.zip" dest="${external.dir}/stax-ex"/>
         <delete>
@@ -741,12 +713,12 @@
         <copy file="${maven.repo.local}/${resolver-comsun.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/resolver.jar"/>
 
         <echo message="building jaxb-api"/>
-        <build.jar.from.srczip jar="${external.dir}/jaxb-api/jaxb-api.jar" srczip="tools/lib/redist/jaxb-api-src.zip" unzipdir="${external.dir}" srcdir="jaxb-api" cp="${maven.repo.local}/${activation.mvn.path}:${maven.repo.local}/${jsr173api.mvn.path}"/>
+        <build.jar.from.srczip jar="${external.dir}/jaxb-api/jaxb-api.jar" srczip="tools/lib/redist/jaxb-api-src.zip" unzipdir="${external.dir}" srcdir="jaxb-api"/>
         <mvn.publish.local jar="${external.dir}/jaxb-api/jaxb-api.jar" mvngroup="javax.xml.bind" mvnartid="jaxb-api" mvnversion="${jaxb-api.version}"/>
         <copy file="${maven.repo.local}/${jaxb-api.mvn.path}" tofile="${jaxb.root}/tools/lib/redist/jaxb-api.jar"/>
 
         <echo message="building jaxb-api-osgi"/>
-        <build.jar.from.srczip jar="${external.dir}/jaxb-api-osgi/jaxb-api-osgi.jar" srczip="tools/lib/osgi/jaxb-api-osgi-sources.jar" unzipdir="${external.dir}" srcdir="jaxb-api-osgi" cp="${maven.repo.local}/${activation.mvn.path}:${maven.repo.local}/${jsr173api.mvn.path}"/>
+        <build.jar.from.srczip jar="${external.dir}/jaxb-api-osgi/jaxb-api-osgi.jar" srczip="tools/lib/osgi/jaxb-api-osgi-sources.jar" unzipdir="${external.dir}" srcdir="jaxb-api-osgi"/>
         <mvn.publish.local jar="${external.dir}/jaxb-api-osgi/jaxb-api-osgi.jar" mvngroup="javax.xml.bind" mvnartid="jaxb-api-osgi" mvnversion="${jaxb-api.version}"/>
         <copy file="${maven.repo.local}/${jaxb-api-osgi.mvn.path}" tofile="${jaxb.root}/tools/lib/osgi/jaxb-api-osgi.jar"/>
 
@@ -761,7 +733,7 @@
         <mvn.publish.local jar="${jaxb.root}/dist/lib/jaxb-xjc.jar" mvngroup="com.sun.xml.bind" mvnartid="jaxb-xjc" mvnversion="${jaxb.version}"/>
         <mvn.publish.local jar="${jaxb.root}/dist/lib/jaxb1-impl.jar" mvngroup="com.sun.xml.bind" mvnartid="jaxb1-impl" mvnversion="${jaxb.version}"/>
 
-        <property name="cpath" value="-Dcpath.fromsource=${maven.repo.local}/com/sun/codemodel/codemodel-annotation-compiler/2.1-SNAPSHOT/codemodel-annotation-compiler-2.1-SNAPSHOT.jar:${maven.repo.local}/${relaxngcc.mvn.path}:${maven.repo.local}/${fi.mvn.path}:${maven.repo.local}/${jsr173api.mvn.path}:${maven.repo.local}/${activation.mvn.path}:${maven.repo.local}/${stax-ex.mvn.path}:${maven.repo.local}/${resolver.mvn.path}"/>
+        <property name="cpath" value="-Dcpath.fromsource=${maven.repo.local}/com/sun/codemodel/codemodel-annotation-compiler/2.1-SNAPSHOT/codemodel-annotation-compiler-2.1-SNAPSHOT.jar:${maven.repo.local}/${relaxngcc.mvn.path}:${maven.repo.local}/${fi.mvn.path}:${maven.repo.local}/${stax-ex.mvn.path}:${maven.repo.local}/${resolver.mvn.path}"/>
         <exec executable="ant" dir="${jaxb.root}/osgi" failonerror="true" newenvironment="false" >
             <arg line="clean bundle" />
             <arg line="-Dfrom.source=true"/>
@@ -819,7 +791,7 @@
               <sequential>
                   <createManifest file="${runtime.root}/build/manifest.rt" extensionName="com.sun.xml.bind" />
                   <manifest mode="update" file="${runtime.root}/build/manifest.rt">
-                    <attribute name="Class-Path" value="jaxb-api.jar activation.jar jsr173_1.0_api.jar jaxb1-impl.jar" /> <!-- added for JES4 script compatibility -->
+                    <attribute name="Class-Path" value="jaxb-api.jar jaxb1-impl.jar" /> <!-- added for JES4 script compatibility -->
                   </manifest>
                   <jar jarfile="${jaxb.dist}/lib/jaxb-impl.jar"
                        manifest="${runtime.root}/build/manifest.rt"
@@ -860,7 +832,7 @@
 
                        and yes, it's OK to have new lines and spaces inbetween.
                   -->
-                  <property name="manifest.classpath" value="jaxb-api.jar jaxb-impl.jar jsr173_1.0_api.jar activation.jar" />
+                  <property name="manifest.classpath" value="jaxb-api.jar jaxb-impl.jar" />
                   <echo file="${xjc.root}/manifest.xjc" append="true"
 >Main-Class: com.sun.tools.xjc.XJCFacade
 Class-Path: ${manifest.classpath}
