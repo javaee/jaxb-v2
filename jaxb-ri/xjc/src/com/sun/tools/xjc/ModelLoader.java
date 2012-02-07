@@ -425,6 +425,13 @@ public final class ModelLoader {
         return BGMBuilder.build(xs, codeModel, errorReceiver, opt);
     }
 
+    /**
+     * Potentially problematic - make sure the parser instance passed is initialized
+     * with proper security feature.
+     * 
+     * @param parser
+     * @return 
+     */
     public XSOMParser createXSOMParser(XMLParser parser) {
         // set up other parameters to XSOMParser
         XSOMParser reader = new XSOMParser(new XMLSchemaParser(parser));
