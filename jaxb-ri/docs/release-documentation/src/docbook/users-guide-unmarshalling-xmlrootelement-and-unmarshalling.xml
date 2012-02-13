@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+
+The contents of this file are subject to the terms of either the GNU
+General Public License Version 2 only ("GPL") or the Common Development
+and Distribution License("CDDL") (collectively, the "License").  You
+may not use this file except in compliance with the License.  You can
+obtain a copy of the License at
+http://glassfish.java.net/public/CDDL+GPL_1_1.html
+or packager/legal/LICENSE.txt.  See the License for the specific
+language governing permissions and limitations under the License.
+
+When distributing the software, include this License Header Notice in each
+file and include the License file at packager/legal/LICENSE.txt.
+
+GPL Classpath Exception:
+Oracle designates this particular file as subject to the "Classpath"
+exception as provided by Oracle in the GPL Version 2 section of the License
+file that accompanied this code.
+
+Modifications:
+If applicable, add the following below the License Header, with the fields
+enclosed by brackets [] replaced by your own identifying information:
+"Portions Copyright [year] [name of copyright owner]"
+
+Contributor(s):
+If you wish your version of this file to be governed by only the CDDL or
+only the GPL Version 2, indicate your decision by adding "[Contributor]
+elects to include this software in this distribution under the [CDDL or GPL
+Version 2] license."  If you don't indicate a single choice of license, a
+recipient has the option to distribute your version of this file under
+either the CDDL, the GPL Version 2 or to extend the choice of license to
+its licensees as provided above.  However, if you add GPL Version 2 code
+and therefore, elected the GPL Version 2 license, then the option applies
+only if the new code is made subject to such option by the copyright
+holder.
+
+        -->
+<!DOCTYPE book [
+<!ENTITY % ents SYSTEM "docbook.ent">
+%ents;
+]>
+<section version="5.0" xml:id="unmarshalling-xmlrootelement-and-unmarshalling"
+         xml:lang="en" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns3="http://www.w3.org/2000/svg"
+         xmlns:ns="http://docbook.org/ns/docbook"
+         xmlns:m="http://www.w3.org/1998/Math/MathML">
+    <title><literal>@XmlRootElement</literal> and unmarshalling</title>
+
+    <para>Classes with <link
+    xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//4.1XmlRootElement.html"><literal>XmlRootElement</literal></link> can be unmarshalled from XML elements
+    simply by invoking the unmarshal method that takes one parameter. This is
+    the simplest mode of unmarshalling.</para>
+
+    <para>Unmarshalling with <literal>@XmlRootElement</literal></para>
+
+    <informalexample>
+        <programlisting language="java"><![CDATA[@XmlRootElement
+class Foo {
+  @XmlAttribute
+  String name;
+  @XmlElement
+  String content;
+}
+
+Unmarshaller u = ...;
+Foo foo = (Foo)u.unmarshal(new File("foo.xml"));]]></programlisting>
+    </informalexample>
+
+    <example>
+        <title>foo.xml</title>
+
+        <programlisting language="xml"><![CDATA[<foo name="something">
+  <content>abc</content>
+</foo>]]></programlisting>
+    </example>
+
+    <para>However, sometimes you may need to unmarshal an instance of a type
+    that does not have an <link
+    xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//4.1XmlRootElement.html"><literal>XmlRootElement</literal></link> . For example, you might dynamically
+    find out at the runtime that a certain element has a certain type. For
+    example, the following document illustrates an XML instance where the
+    content of <literal>&lt;someOtherTagName&gt;</literal> element is represented by the
+    <literal>Foo</literal> class.</para>
+
+    <example>
+        <title>foo2.xml</title>
+
+        <programlisting language="xml"><![CDATA[<someOtherTagName name="something">
+  <content>abc</content>
+</someOtherTagName>]]></programlisting>
+    </example>
+
+    <para>To unmarshal this into a <literal>Foo</literal> class, use the version of
+    the <literal>unmarshal</literal> method that takes the 'expectedType' argument,
+    as follows:</para>
+
+    <example>
+        <title>Unmarshalling into a known type</title>
+
+        <programlisting language="java"><![CDATA[Unmarshaller u = ...;
+JAXBElement<Foo> root = u.unmarshal(new StreamSource(new File("foo.xml")),Foo.class);
+Foo foo = root.getValue();]]></programlisting>
+    </example>
+
+    <para>To reduce the number of the <literal>unmarshal</literal> methods, this
+    two-argument version is not defined for every single-argument version. So
+    as in this example, you might need to perform additional wrapping of the
+    input parameter.</para>
+
+    <para>This instructs JAXB that the caller is expecting to unmarshal
+    <literal>Foo</literal> instance. JAXB returns a <literal>JAXBElement</literal> of
+    <literal>Foo</literal>, and this <literal>JAXBElement</literal> captures the tag name
+    of the root element.</para>
+</section>

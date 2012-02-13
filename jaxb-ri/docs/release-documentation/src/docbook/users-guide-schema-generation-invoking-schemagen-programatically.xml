@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+
+The contents of this file are subject to the terms of either the GNU
+General Public License Version 2 only ("GPL") or the Common Development
+and Distribution License("CDDL") (collectively, the "License").  You
+may not use this file except in compliance with the License.  You can
+obtain a copy of the License at
+http://glassfish.java.net/public/CDDL+GPL_1_1.html
+or packager/legal/LICENSE.txt.  See the License for the specific
+language governing permissions and limitations under the License.
+
+When distributing the software, include this License Header Notice in each
+file and include the License file at packager/legal/LICENSE.txt.
+
+GPL Classpath Exception:
+Oracle designates this particular file as subject to the "Classpath"
+exception as provided by Oracle in the GPL Version 2 section of the License
+file that accompanied this code.
+
+Modifications:
+If applicable, add the following below the License Header, with the fields
+enclosed by brackets [] replaced by your own identifying information:
+"Portions Copyright [year] [name of copyright owner]"
+
+Contributor(s):
+If you wish your version of this file to be governed by only the CDDL or
+only the GPL Version 2, indicate your decision by adding "[Contributor]
+elects to include this software in this distribution under the [CDDL or GPL
+Version 2] license."  If you don't indicate a single choice of license, a
+recipient has the option to distribute your version of this file under
+either the CDDL, the GPL Version 2 or to extend the choice of license to
+its licensees as provided above.  However, if you add GPL Version 2 code
+and therefore, elected the GPL Version 2 license, then the option applies
+only if the new code is made subject to such option by the copyright
+holder.
+
+        -->
+<!DOCTYPE book [
+<!ENTITY % ents SYSTEM "docbook.ent">
+%ents;
+]>
+<section version="5.0"
+         xml:id="schema-generation-invoking-schemagen-programatically"
+         xml:lang="en" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns3="http://www.w3.org/2000/svg"
+         xmlns:ns="http://docbook.org/ns/docbook"
+         xmlns:m="http://www.w3.org/1998/Math/MathML">
+    <title>Invoking schemagen programatically</title>
+
+    <para>Schemagen tools by default come in as CLI, ant task, and Maven
+    plugin. These interfaces allow you to invoke schemagen functionality from
+    your program.</para>
+
+    <section xml:id="At_runtime">
+        <title>At runtime</title>
+
+        <para>If the classes you'd like to generate schema from are already
+        available as <literal>java.lang.Class</literal> objects (meaning they are
+        already loaded and resolved in the current JVM), then the easiest way
+        to generate a schema is to use the JAXB API:</para>
+
+        <example>
+            <title>Generate schema at runtime</title>
+
+            <programlisting language="java"><![CDATA[File baseDir = new File(".");
+
+class MySchemaOutputResolver extends SchemaOutputResolver {
+    public Result createOutput( String namespaceUri, String suggestedFileName ) throws IOException {
+        return new StreamResult(new File(baseDir,suggestedFileName));
+    }
+}
+
+JAXBContext context = JAXBContext.newInstance(Foo.class, Bar.class, ...);
+context.generateSchema(new MySchemaOutputResolver());]]></programlisting>
+        </example>
+    </section>
+
+    <section xml:id="CLI_interface">
+        <title>CLI interface</title>
+
+        <para>The <link
+        xlink:href="http://fisheye5.cenqua.com/browse/jaxb2-sources/jaxb-ri/xjc/src/com/sun/tools/jxc/SchemaGenerator.java?r=jaxb-2_1-branch">CLI
+        interface (<code>public static int
+        com.sun.tools.jxc.SchemaGenerator.run(String[])</code>)</link> is the
+        easiest API to access. You can pass in all the schemagen command-line
+        arguments as a string array, and get the exit code as an int value.
+        Messages are sent to <literal>System.err</literal> and
+        <literal>System.out</literal>.</para>
+    </section>
+
+    <section xml:id="Ant_interface">
+        <title>Ant interface</title>
+
+        <para>Ant task can be invoked very easily from a non-Ant program. The
+        schemagen ant task is defined in <link
+        xlink:href="http://fisheye5.cenqua.com/browse/jaxb2-sources/jaxb-ri/xjc/facade/com/sun/tools/jxc/SchemaGenTask.java?r=jaxb-2_1-branch">the
+        SchemaGenTask class</link>,</para>
+
+        <para>For more about invoking an Ant task programatically, see the
+        article <link
+        xlink:href="http://www.fawcette.com/javapro/2004_06/magazine/features/kgauthier/">"Keep
+        the Ant, Hold the XML"</link>.</para>
+    </section>
+
+    <section xml:id="Native_Java_API">
+        <title>Native Java API</title>
+
+        <para>The above two interfaces are built on top of externally
+        committed contracts, so they'll evolve only in a compatibile way. The
+        downside is that the amount of control you can exercise over them
+        would be limited.</para>
+
+        <para>So yet another approach to invoke schemagen is to use JAXB RI's
+        internal interfaces. But be warned that those interfaces are subject
+        to change in the future versions, despite our best effort to preserve
+        them. This is the API that the JAX-WS RI uses to generate schema
+        inside WSDL when they generate WSDL, so does some other web services
+        toolkits that work with the JAXB RI.</para>
+
+        <para>Most of those interfaces are defined and well-documented in
+        <link
+        xlink:href="http://fisheye5.cenqua.com/browse/jaxb2-sources/jaxb-ri/xjc/src/com/sun/tools/xjc/api">the
+        com.sun.tools.xjc.api package</link>. You can see how the schemagen
+        tools are eventually calling into this API at <link
+        xlink:href="http://fisheye5.cenqua.com/browse/jaxb2-sources/jaxb-ri/xjc/src/com/sun/tools/jxc/apt/SchemaGenerator.java?r=jaxb-2_1-branch">the
+        implementaion of SchemaGenerator class</link>.</para>
+    </section>
+</section>
