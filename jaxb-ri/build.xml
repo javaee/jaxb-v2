@@ -1029,7 +1029,7 @@ Class-Path: ${manifest.classpath}
             <fileset dir="${jaxb.dist}/samples" />
         </copy>
 
-        <zip destfile="${jaxb.build}/jaxb-ri-${release.impl.version}${release.impl.version.suffix}.src.zip">
+        <zip destfile="${jaxb.build}/jaxb-ri-${release.impl.version}.src.zip">
             <zipfileset dir="${exported.dir}" />
         </zip>
     </target>
@@ -1045,7 +1045,7 @@ Class-Path: ${manifest.classpath}
 
         <antcall target="release.src.zip" />
 
-        <copy file="${jaxb.build}/jaxb-ri-${release.impl.version}${release.impl.version.suffix}.src.zip" todir="${www.upload.dir}" />
+        <copy file="${jaxb.build}/jaxb-ri-${release.impl.version}.src.zip" todir="${www.upload.dir}" />
         <copy file="${jaxb.build}/JAXB2_${DSTAMP}.jar" todir="${www.upload.dir}" />
 
         <copy todir="${www.upload.dir}/docs">
@@ -1060,11 +1060,11 @@ Class-Path: ${manifest.classpath}
         </taskdef>
 
         <soimp  dir="${www.upload.dir}"
-                repository="${www.repository.url}/${release.impl.version}${release.impl.version.suffix}"
+                repository="${www.repository.url}/${release.impl.version}"
                 username="${jaxb.scm.username}"
                 password="${jaxb.scm.password}"
                 create="true"
-                commitMessage="JAXB-${release.impl.version}${release.impl.version.suffix}" />
+                commitMessage="JAXB-${release.impl.version}" />
     </target>
         
 </project>
