@@ -15,7 +15,7 @@
 
     <properties>
         <jaxb.version>${release.impl.version}${release.impl.version.suffix}</jaxb.version>
-        <jaxb.bin>JAXB2_${dstamp}.jar</jaxb.bin>
+        <jaxb.bin>jaxb-ri-${release.impl.version}.zip</jaxb.bin>
         <jaxb.src>jaxb-ri-${jaxb.version}.src.zip</jaxb.src>
     </properties>
 
