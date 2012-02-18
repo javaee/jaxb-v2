@@ -3,7 +3,7 @@
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
 
     The contents of this file are subject to the terms of either the GNU
     General Public License Version 2 only ("GPL") or the Common Development
@@ -147,20 +147,7 @@
         </zip>
         <zip zipfile="${jaxb.dist}/lib/jaxb-xjc-javadoc.jar">
             <fileset dir="${xjc.root}/build/javadoc"/>
-        </zip>
-        
-        <unzip src="${jaxb.dist}/lib/jaxb1-impl-src.zip" dest="${jaxb.build}/jaxb1src"/>
-        <mkdir dir="${jaxb.build}/jaxb1api" />
-        <javadoc destdir="${jaxb.build}/jaxb1api" use="true" defaultexcludes="yes"
-            author="false" version="false" windowtitle="JAXB 1 RI runtime"
-            useexternalfile="true" access="public">
-            <fileset dir="${jaxb.build}/jaxb1src" includes="com/sun/xml/bind/*.java"/>
-            <classpath refid="javac.classpath"/>
-            <arg value="-quiet"/>
-        </javadoc>
-        <zip zipfile="${jaxb.dist}/lib/jaxb1-impl-javadoc.jar">
-            <fileset dir="${jaxb.build}/jaxb1api"/>
-        </zip>
+        </zip>        
     </target>
 
     <target name="src-zip" depends="init-standalone,dist"
@@ -205,66 +192,20 @@
             <zipfileset src="${jaxb.libs}/src/istack-commons-tools-sources.jar"/>
           </zip>
         </sequential>
-        <sequential>
-              <mkdir dir="${jaxb.root}/build/jaxb-1-impl-src"/>
-              <unzip dest="${jaxb.root}/build/jaxb-1-impl-src">
-                <fileset dir="${jaxb.libs.src}" includes="iso-relax-src.zip"/>
-                <fileset dir="${jaxb.libs.src}" includes="msv-src.zip"/>
-                <fileset dir="${jaxb.libs.src}" includes="relangDatatype-src.zip"/>
-                <fileset dir="${jaxb.libs.src}" includes="xsdlib-src.zip"/>
-              </unzip>
-              <zip zipfile="${jaxb.dist}/lib/jaxb1-impl-src.zip">
-                  <fileset dir="${jaxb.root}/build/jaxb-1-impl-src"/>
-                  <fileset dir="${runtime-deprecated.src}"/>
-              </zip>
-              <delete dir="${jaxb.root}/build/jaxb-1-impl-src"/>
-        </sequential>
       </parallel>
       <delete dir="tmp" />
       <delete dir="tmp_xjc" />
+      <ant dir="osgi" target="javadoc"/>
+      <ant dir="osgi" target="sources"/>
     </target>
 
-    <target name="hudson" depends="clean, dist-zip-with-src, test, bin-installer" description="Target to be invoked on Hudson"/>
+    <target name="hudson" depends="clean, dist-zip-with-src, test" description="Target to be invoked on Hudson"/>
 
-  <target name="licensee-zip"
-          description="licensee bundle. Dumbed down version of the workspace bundle">
-    <mkdir dir="build"/>
-    <zip zipfile="build/jaxb-ri.licensee.zip">
-      <fileset dir="." excludes="dist/**, **/build/**, sandbox/**" />
-    </zip>
-  </target>
-
-    <target name="bin-installer"
-            description="generate the binary distribution installer with the license click-through"
-            depends="dist">
-
-        <tstamp />
-
-        <property name="bin.installer.stage" value="${jaxb.root}/build/bin-installer" />
-        <property name="bin.installer.className" value="JAXB2_${DSTAMP}" />
-        <property name="bin.installer.jar" value="${jaxb.root}/build/${bin.installer.className}.jar" />
-
-        <mkdir dir="${bin.installer.stage}"/>
-        <zip destfile="${bin.installer.stage}/package.zip">
-            <zipfileset dir="${jaxb.dist}" prefix="jaxb-ri-${DSTAMP}" />
+    <target name="licensee-zip"
+              description="licensee bundle. Dumbed down version of the workspace bundle">
+        <zip zipfile="jaxb-ri.licensee.zip">
+            <fileset dir="." excludes="dist/**, **/build/**, sandbox/**, *.zip" />
         </zip>
-
-        <!-- build installer -->
-        <ant dir="tools/installer" />
-        <ant dir="tools/installer-builder" />
-
-        <taskdef name="installerBuilder" classname="com.sun.tools.xjc.installer.builder.BuilderTask">
-            <classpath>
-                <fileset dir="${jaxb.libs.util}" includes="*.jar" excludes="istack-commons-tools.jar" />
-            </classpath>
-        </taskdef>
-
-        <installerBuilder
-          jarFile="${bin.installer.jar}"
-          licenseFile="${jaxb.root}/docs/release-documentation/src/main/resources/license.txt"
-          zipFile="${bin.installer.stage}/package.zip" />
-
-        <echo>binary installer produced at ${bin.installer.jar}</echo>
     </target>
 
     <patternset id="src-includes"
@@ -272,79 +213,6 @@
         <include name="**/*.java"/>
         <include name="**/*.properties"/>
     </patternset>
-
-    <target name="src-installer"
-            description="generate the source code distribution installer with the license click-through"
-            depends="dist">
-
-        <tstamp />
-
-        <property name="src.installer.stage" value="${jaxb.root}/build/src-installer" />
-        <property name="src.installer.className" value="JAXB2_src_${DSTAMP}" />
-        <property name="src.installer.class" value="${jaxb.root}/build/${src.installer.className}.jar" />
-        <property name="src.installer.tmp" value="${jaxb.root}/build/src-tmp" />
-
-        <!-- create jaxb-src.zip -->
-        <mkdir dir="${src.installer.stage}"/>
-        <zip destfile="${src.installer.stage}/package.zip" duplicate="fail" whenempty="fail">
-            <zipfileset src="${jaxb.libs.redist}/jaxb-api-src.zip" prefix="jaxb-ri-${DSTAMP}/src" />
-            <zipfileset dir="${xjc.src}" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
-                <patternset refid="src-includes"/>
-            </zipfileset>
-            <zipfileset dir="${xjc.gensrc}" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
-                <patternset refid="src-includes"/>
-            </zipfileset>
-            <zipfileset dir="${runtime.root}/arch-doc" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
-                <patternset refid="src-includes"/>
-            </zipfileset>
-            <zipfileset dir="${runtime.src}" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
-                <patternset refid="src-includes"/>
-            </zipfileset>
-            <zipfileset dir="runtime/build/src" prefix="jaxb-ri-${DSTAMP}/src" defaultexcludes="true" >
-                <patternset refid="src-includes"/>
-            </zipfileset>
-            <zipfileset dir="${jaxb.root}" includes="src-installer-build.xml"
-                fullpath="jaxb-ri-${DSTAMP}/build.xml"/>
-            <!-- additional jar files -->
-            <zipfileset dir="${jaxb.libs.runtime}" includes="*.jar" prefix="jaxb-ri-${DSTAMP}/lib" />
-            <zipfileset dir="${jaxb.libs.runtime2}" includes="*.jar" prefix="jaxb-ri-${DSTAMP}/lib" />
-            <zipfileset dir="${jaxb.libs.compiler}" includes="*.jar" prefix="jaxb-ri-${DSTAMP}/lib" excludes="relaxngDatatype.jar" />
-            <zipfileset dir="${jaxb.libs}/redist"  includes="*.jar" prefix="jaxb-ri-${DSTAMP}/lib" />
-            <zipfileset dir="${jaxb.libs}/src" prefix="jaxb-ri-${DSTAMP}/lib">
-                <include name="xsom-sources.jar"/>
-            </zipfileset>
-        </zip>
-
-        <!-- test the generated source bundle -->
-        <delete dir="${src.installer.tmp}" failonerror="false" />
-        <mkdir dir="${src.installer.tmp}" />
-        <unzip dest="${src.installer.tmp}" src="${src.installer.stage}/package.zip"/>
-        <ant dir="${src.installer.tmp}/jaxb-ri-${DSTAMP}" inheritAll="false" inheritRefs="false"/>
-
-        <!-- delete the srctmp dir -->
-        <delete dir="${src.installer.tmp}"/>
-
-        <!-- build installer -->
-        <ant dir="tools/installer" />
-        <ant dir="tools/installer-builder" />
-
-        <taskdef name="installerBuilder" classname="com.sun.tools.xjc.installer.builder.BuilderTask">
-            <classpath>
-                <fileset dir="${jaxb.libs.util}" includes="*.jar" excludes="istack-commons-tools.jar" />
-            </classpath>
-        </taskdef>
-
-        <installerBuilder
-          classFile="${src.installer.class}"
-          licenseFile="${jaxb.root}/docs/release-documentation/src/main/resources/license.txt"
-          zipFile="${src.installer.stage}/package.zip" />
-
-        <echo>source installer produced at ${src.installer.class}</echo>
-    </target>
-
-    <target name="installers"
-            depends="bin-installer,src-installer"
-            description="build both the binary and the source installer" />
 
     <!-- clean all of the builds -->
     <target name="clean"
@@ -360,6 +228,8 @@
           <delete dir="j2se-integration" />
           <delete dir="${jaxb.root}">
               <include name="jaxb-ri.zip"/>
+              <include name="jaxb-ri-*.zip"/>
+              <include name="jaxb-ri.*.zip"/>
           </delete>
 
           <!-- clean sub-projects -->
@@ -382,13 +252,6 @@
       <condition property="is.unix">
         <os family="unix"/>
       </condition>
-    </target>
-
-    <target name = "integrate-1.0-compiler"
-            description="extract XJC 1.0">
-      <mkdir dir="${xjc10.classes}"/>
-      <unjar src="${jaxb.libs.compiler10}/jaxb1-xjc.jar" dest="${xjc10.classes}"/>
-      <delete dir="${xjc10.classes}/META-INF/MANIFEST.MF"/>
     </target>
 
     <target name="integrate-stax-ex-hudson"
@@ -733,7 +596,6 @@
 
         <mvn.publish.local jar="${jaxb.root}/dist/lib/jaxb-impl.jar" mvngroup="com.sun.xml.bind" mvnartid="jaxb-impl" mvnversion="${jaxb.version}"/>
         <mvn.publish.local jar="${jaxb.root}/dist/lib/jaxb-xjc.jar" mvngroup="com.sun.xml.bind" mvnartid="jaxb-xjc" mvnversion="${jaxb.version}"/>
-        <mvn.publish.local jar="${jaxb.root}/dist/lib/jaxb1-impl.jar" mvngroup="com.sun.xml.bind" mvnartid="jaxb1-impl" mvnversion="${jaxb.version}"/>
 
         <property name="cpath" value="-Dcpath.fromsource=${maven.repo.local}/com/sun/codemodel/codemodel-annotation-compiler/2.1-SNAPSHOT/codemodel-annotation-compiler-2.1-SNAPSHOT.jar:${maven.repo.local}/${relaxngcc.mvn.path}:${maven.repo.local}/${fi.mvn.path}:${maven.repo.local}/${stax-ex.mvn.path}:${maven.repo.local}/${resolver.mvn.path}"/>
         <exec executable="ant" dir="${jaxb.root}/osgi" failonerror="true" newenvironment="false" >
@@ -770,7 +632,7 @@
        
     <!-- generate a distribution -->
     <target name="dist"
-            depends="compile, integrate-1.0-compiler"
+            depends="compile"
             description="create a distribution in jaxb-ri/dist">
         <mkdir dir="${jaxb.dist}" />
         <mkdir dir="${jaxb.dist}/bin" />
@@ -793,7 +655,7 @@
               <sequential>
                   <createManifest file="${runtime.root}/build/manifest.rt" extensionName="com.sun.xml.bind" />
                   <manifest mode="update" file="${runtime.root}/build/manifest.rt">
-                    <attribute name="Class-Path" value="jaxb-api.jar jaxb1-impl.jar" /> <!-- added for JES4 script compatibility -->
+                    <attribute name="Class-Path" value="jaxb-api.jar" /> <!-- added for JES4 script compatibility -->
                   </manifest>
                   <jar jarfile="${jaxb.dist}/lib/jaxb-impl.jar"
                        manifest="${runtime.root}/build/manifest.rt"
@@ -805,25 +667,6 @@
                       <zipgroupfileset dir="${jaxb.libs.runtime2}" includes="*.jar" />
                   </jar>
               </sequential>
-
-              <!-- JAXB 1.0 runtime jar -->
-              <!-- generate jaxb1-impl.jar for 1.0 runtime -->
-              <!-- include the contents of the old jaxb-libs.jar -->
-              <sequential>
-                  <createManifest file="${runtime.root}/build/manifest.rt1" extensionName="com.sun.xml.bind" />
-                  <mkdir dir="${jaxb.root}/build/jaxb-1-impl-rejar"/>
-                  <unzip dest="${jaxb.root}/build/jaxb-1-impl-rejar">
-                    <fileset dir="${jaxb.libs.runtime}" includes="*.jar" />
-                  </unzip>
-                  <jar jarfile="${jaxb.dist}/lib/jaxb1-impl.jar"
-                       manifest="${runtime.root}/build/manifest.rt1">
-                      <!-- can't use zipgroupfileset because of the duplicate version.properties -->
-                      <fileset dir="${jaxb.root}/build/jaxb-1-impl-rejar"/>
-                      <fileset dir="${runtime-deprecated.classes}"/>
-                  </jar>
-                  <delete dir="${jaxb.root}/build/jaxb-1-impl-rejar"/>
-              </sequential>
-
 
               <!-- generate jaxb-xjc.jar: xjc, and schemagen subprojects -->
               <sequential>
@@ -856,8 +699,6 @@ Class-Path: ${manifest.classpath}
                       <fileset dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
                       <fileset dir="${xjc.classes}"/>
                       <metainf dir="${xjc.src}/META-INF" />
-                      <!-- bundle the 1.0 compiler in the side directory -->
-                      <zipfileset dir="${xjc10.classes}/.." />
                   </jar>
                   <delete dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
               </sequential>
@@ -901,6 +742,8 @@ Class-Path: ${manifest.classpath}
           </fileset>
         </copy>
 
+        <ant dir="osgi" target="bundle"/>
+
     </target>
 
     <target name="push-snapshot-to-maven">
@@ -918,9 +761,6 @@ Class-Path: ${manifest.classpath}
         <mvn.publish.remote jar="dist/lib/jaxb-xjc.jar" pom="build/jaxb-xjc.pom"/>
         <mvn.publish.remote jar="dist/lib/jaxb-xjc.src.zip" pom="build/jaxb-xjc.pom" classifier="sources"/>
         <mvn.publish.remote jar="dist/lib/jaxb-xjc-javadoc.jar" pom="build/jaxb-xjc.pom" classifier="javadoc"/>
-        <mvn.publish.remote jar="dist/lib/jaxb1-impl.jar" pom="build/jaxb1-impl.pom"/>
-        <mvn.publish.remote jar="dist/lib/jaxb1-impl-src.zip" pom="build/jaxb1-impl.pom" classifier="sources"/>
-        <mvn.publish.remote jar="dist/lib/jaxb1-impl-javadoc.jar" pom="build/jaxb1-impl.pom" classifier="javadoc"/>
         <mvn.publish.remote jar="${osgi.build}/jaxb-osgi.jar" pom="build/jaxb-osgi.pom"/>
         <mvn.publish.remote jar="${osgi.build}/jaxb-osgi-sources.jar" pom="build/jaxb-osgi.pom" classifier="sources"/>
         <mvn.publish.remote jar="${osgi.build}/jaxb-osgi-javadoc.jar" pom="build/jaxb-osgi.pom" classifier="javadoc"/>
@@ -954,16 +794,6 @@ Class-Path: ${manifest.classpath}
         <mvn.publish.remote jar="dist/lib/jaxb-xjc-javadoc.jar" pom="build/jaxb-xjc.pom" classifier="javadoc" 
             repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
             password="${gpg.password}"/>
-            
-        <mvn.publish.remote jar="dist/lib/jaxb1-impl.jar" pom="build/jaxb1-impl.pom" 
-            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
-            password="${gpg.password}"/>
-        <mvn.publish.remote jar="dist/lib/jaxb1-impl-src.zip" pom="build/jaxb1-impl.pom" classifier="sources" 
-            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
-            password="${gpg.password}"/>
-        <mvn.publish.remote jar="dist/lib/jaxb1-impl-javadoc.jar" pom="build/jaxb1-impl.pom" classifier="javadoc" 
-            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
-            password="${gpg.password}"/>
 
         <mvn.publish.remote jar="${osgi.build}/jaxb-osgi.jar" pom="build/jaxb-osgi.pom" 
             repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
@@ -979,6 +809,9 @@ Class-Path: ${manifest.classpath}
     <target name="dist-zip" depends="dist" description="run dist then package the image to jaxb-ri.zip">
         <zip destfile="${jaxb.root}/jaxb-ri.zip">
             <zipfileset dir="${jaxb.dist}" prefix="jaxb-ri" />
+        </zip>
+        <zip destfile="${jaxb.root}/jaxb-ri-${release.impl.version}.zip">
+            <zipfileset dir="${jaxb.dist}" prefix="jaxb-ri-${release.impl.version}" />
         </zip>
     </target>
 
@@ -1046,7 +879,8 @@ Class-Path: ${manifest.classpath}
         <antcall target="release.src.zip" />
 
         <copy file="${jaxb.build}/jaxb-ri-${release.impl.version}.src.zip" todir="${www.upload.dir}" />
-        <copy file="${jaxb.build}/JAXB2_${DSTAMP}.jar" todir="${www.upload.dir}" />
+        <copy file="${jaxb.build}/jaxb-ri-${release.impl.version}.zip" todir="${www.upload.dir}" />
+        <copy file="${jaxb.build}/jaxb-ri.licensee.zip" todir="${www.upload.dir}" />
 
         <copy todir="${www.upload.dir}/docs">
             <fileset dir="${jaxb.dist}/docs" />
