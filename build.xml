@@ -255,13 +255,13 @@
 
         <taskdef name="installerBuilder" classname="com.sun.tools.xjc.installer.builder.BuilderTask">
             <classpath>
-                <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
+                <fileset dir="${jaxb.libs.util}" includes="*.jar" excludes="istack-commons-tools.jar" />
             </classpath>
         </taskdef>
 
         <installerBuilder
           jarFile="${bin.installer.jar}"
-          licenseFile="${jaxb.root}/docs/license.txt"
+          licenseFile="${jaxb.root}/docs/release-documentation/src/main/resources/license.txt"
           zipFile="${bin.installer.stage}/package.zip" />
 
         <echo>binary installer produced at ${bin.installer.jar}</echo>
@@ -330,13 +330,13 @@
 
         <taskdef name="installerBuilder" classname="com.sun.tools.xjc.installer.builder.BuilderTask">
             <classpath>
-                <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
+                <fileset dir="${jaxb.libs.util}" includes="*.jar" excludes="istack-commons-tools.jar" />
             </classpath>
         </taskdef>
 
         <installerBuilder
           classFile="${src.installer.class}"
-          licenseFile="${jaxb.root}/docs/license.txt"
+          licenseFile="${jaxb.root}/docs/release-documentation/src/main/resources/license.txt"
           zipFile="${src.installer.stage}/package.zip" />
 
         <echo>source installer produced at ${src.installer.class}</echo>
@@ -373,6 +373,8 @@
           <ant dir="reflection"         target="clean" />
           <ant dir="osgi"               target="clean" />
         </parallel>
+
+        <antcall target="docs.clean" />
     </target>
 
 
@@ -911,11 +913,7 @@ Class-Path: ${manifest.classpath}
         </parallel>
 
         <unzip src="${jaxb.libs.redist}/jaxb-api-doc.zip" dest="${jaxb.dist}/docs/api"/>
-        <generate-docs dest="${jaxb.dist}/docs">
-          <source>
-            <fileset dir="${jaxb.docs}"/>
-          </source>
-        </generate-docs>
+        <antcall target="docs" />
 
         <antcall target="process-sample.notinwspack"/>
         <!-- copy samples -->
@@ -1010,6 +1008,91 @@ Class-Path: ${manifest.classpath}
         <zip destfile="${jaxb.root}/jaxb-ri.zip">
             <zipfileset dir="${jaxb.dist}" prefix="jaxb-ri" />
         </zip>
+    </target>
+
+    <condition property="mvn.exec" value="mvn.bat" else="mvn">
+        <os family="windows"/>
+    </condition>
+
+    <target name="docs">
+        <sequential>
+            <exec executable="${mvn.exec}" failonerror="true">
+                <arg line="-f"/>
+                <arg line="${jaxb.docs}/pom.xml"/>
+                <arg line="clean"/>
+                <arg line="package"/>
+            </exec>
+        </sequential>
+
+        <copy todir="${jaxb.dist}/docs/">
+            <fileset dir="${jaxb.docs}/release-documentation/target/docbook/" excludes="*.fo" />
+        </copy>
+    </target>
+
+    <target name="docs.clean">
+        <sequential>
+            <exec executable="${mvn.exec}" failonerror="true">
+                <arg line="-f"/>
+                <arg line="${jaxb.docs}/pom.xml"/>
+                <arg line="clean"/>
+            </exec>
+        </sequential>
+    </target>
+
+    <target name="release.src.zip">
+        <property name="exported.dir" value="${jaxb.build}/src-exported/" />
+
+        <delete dir="${exported.dir}" />
+
+        <exec executable="svn">
+            <arg line="export . ${exported.dir}"/>
+        </exec>
+
+        <mkdir dir="${exported.dir}/dist" />
+        <copy todir="${exported.dir}/dist/docs">
+            <fileset dir="${jaxb.dist}/docs" />
+        </copy>
+
+        <copy todir="${exported.dir}/dist/samples">
+            <fileset dir="${jaxb.dist}/samples" />
+        </copy>
+
+        <zip destfile="${jaxb.build}/jaxb-ri-${release.impl.version}.src.zip">
+            <zipfileset dir="${exported.dir}" />
+        </zip>
+    </target>
+
+    <target name="www.release" if="jaxb.scm.username">
+        <tstamp />
+
+        <!-- Assumes hudson target has been already invoked -->
+        <property name="www.upload.dir" value="${jaxb.build}/www" />
+
+        <delete dir="${www.upload.dir}" />
+        <mkdir dir="${www.upload.dir}" />
+
+        <antcall target="release.src.zip" />
+
+        <copy file="${jaxb.build}/jaxb-ri-${release.impl.version}.src.zip" todir="${www.upload.dir}" />
+        <copy file="${jaxb.build}/JAXB2_${DSTAMP}.jar" todir="${www.upload.dir}" />
+
+        <copy todir="${www.upload.dir}/docs">
+            <fileset dir="${jaxb.dist}/docs" />
+        </copy>
+
+        <copy file="${basedir}/docs/www/target/index.html" tofile="${www.upload.dir}/index.html" />
+
+        <taskdef name="soimp" classname="com.sun.istack.tools.soimp.Soimp">
+            <classpath refid="javac.classpath">
+            </classpath>
+        </taskdef>
+
+        <soimp  dir="${www.upload.dir}"
+                repository="${www.repository.url}/${release.impl.version}"
+                username="${jaxb.scm.username}"
+                password="${jaxb.scm.password}"
+                create="true"
+                commitMessage="JAXB-${release.impl.version}" />
     </target>
         
 </project>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+
+The contents of this file are subject to the terms of either the GNU
+General Public License Version 2 only ("GPL") or the Common Development
+and Distribution License("CDDL") (collectively, the "License").  You
+may not use this file except in compliance with the License.  You can
+obtain a copy of the License at
+http://glassfish.java.net/public/CDDL+GPL_1_1.html
+or packager/legal/LICENSE.txt.  See the License for the specific
+language governing permissions and limitations under the License.
+
+When distributing the software, include this License Header Notice in each
+file and include the License file at packager/legal/LICENSE.txt.
+
+GPL Classpath Exception:
+Oracle designates this particular file as subject to the "Classpath"
+exception as provided by Oracle in the GPL Version 2 section of the License
+file that accompanied this code.
+
+Modifications:
+If applicable, add the following below the License Header, with the fields
+enclosed by brackets [] replaced by your own identifying information:
+"Portions Copyright [year] [name of copyright owner]"
+
+Contributor(s):
+If you wish your version of this file to be governed by only the CDDL or
+only the GPL Version 2, indicate your decision by adding "[Contributor]
+elects to include this software in this distribution under the [CDDL or GPL
+Version 2] license."  If you don't indicate a single choice of license, a
+recipient has the option to distribute your version of this file under
+either the CDDL, the GPL Version 2 or to extend the choice of license to
+its licensees as provided above.  However, if you add GPL Version 2 code
+and therefore, elected the GPL Version 2 license, then the option applies
+only if the new code is made subject to such option by the copyright
+holder.
+
+        -->
+<!DOCTYPE book [
+<!ENTITY % ents SYSTEM "docbook.ent">
+%ents;
+]>
+<section version="5.0"
+         xml:id="other-miscellaneous-topics-contributing-to-this-guide"
+         xml:lang="en" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns3="http://www.w3.org/2000/svg"
+         xmlns:ns="http://docbook.org/ns/docbook"
+         xmlns:m="http://www.w3.org/1998/Math/MathML">
+    <title>Contributing to this Guide</title>
+
+    <para>This document is maintained by people in the community. If you'd
+    like to have the edit access to this document, please let us know so that
+    we can discuss it.</para>
+
+    <para>The master source of this document is written in <link
+    xlink:href="http://fisheye5.cenqua.com/browse/jaxb/unofficial-guide/docs">HTML</link>
+    + <link
+    xlink:href="http://fisheye5.cenqua.com/browse/jaxb/unofficial-guide/tags">a
+    set of custom tags</link>. The use of custom tags allow us to ensure a
+    consistent look&amp;feel, and take care of other mandane tasks like
+    assigning chapter/section numbers and generating permalinks. The
+    technology is based on <link
+    xlink:href="http://commons.apache.org/jelly/">Jelly</link>, so more custom
+    tags can be added to perform additional processing and the possibility is
+    endless.</para>
+
+    <para>Once you have the commit access, you can update the documents and
+    run the build script to generate the final HTMLs to verify the result.
+    When you feel satisfied, commit the changes. The repository is polled
+    every hour, so your change will be eventually picked up and published, but
+    you can also force the update by sending an e-mail to
+    <email>hudson-jaxb-unofficial-guide at hudson.sfbay.sun.com</email>.</para>
+
+    <para>The general mode of operation is that:</para>
+
+    <itemizedlist>
+        <listitem>
+            <para>When you are answering forum questions, ask yourself if the
+            content should instead go to the user's guide. You can then post
+            the pointer to the document (trigging a posting by e-mail is handy
+            in this case.)</para>
+        </listitem>
+
+        <listitem>
+            <para>It's OK to have TBDs and TODOs. This is an incremental
+            effort. Having something is better than not having
+            anything.</para>
+        </listitem>
+
+        <listitem>
+            <para>Try not to change section titles, as they are used for
+            permalinks.</para>
+        </listitem>
+    </itemizedlist>
+</section>

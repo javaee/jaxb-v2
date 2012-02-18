@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+
+The contents of this file are subject to the terms of either the GNU
+General Public License Version 2 only ("GPL") or the Common Development
+and Distribution License("CDDL") (collectively, the "License").  You
+may not use this file except in compliance with the License.  You can
+obtain a copy of the License at
+http://glassfish.java.net/public/CDDL+GPL_1_1.html
+or packager/legal/LICENSE.txt.  See the License for the specific
+language governing permissions and limitations under the License.
+
+When distributing the software, include this License Header Notice in each
+file and include the License file at packager/legal/LICENSE.txt.
+
+GPL Classpath Exception:
+Oracle designates this particular file as subject to the "Classpath"
+exception as provided by Oracle in the GPL Version 2 section of the License
+file that accompanied this code.
+
+Modifications:
+If applicable, add the following below the License Header, with the fields
+enclosed by brackets [] replaced by your own identifying information:
+"Portions Copyright [year] [name of copyright owner]"
+
+Contributor(s):
+If you wish your version of this file to be governed by only the CDDL or
+only the GPL Version 2, indicate your decision by adding "[Contributor]
+elects to include this software in this distribution under the [CDDL or GPL
+Version 2] license."  If you don't indicate a single choice of license, a
+recipient has the option to distribute your version of this file under
+either the CDDL, the GPL Version 2 or to extend the choice of license to
+its licensees as provided above.  However, if you add GPL Version 2 code
+and therefore, elected the GPL Version 2 license, then the option applies
+only if the new code is made subject to such option by the copyright
+holder.
+
+        -->
+<!DOCTYPE book [
+<!ENTITY % ents SYSTEM "docbook.ent">
+%ents;
+]>
+<section version="5.0"
+         xml:id="deployment-migrating-jaxb-1-0-applications-to-jaxb-2-x"
+         xml:lang="en" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns3="http://www.w3.org/2000/svg"
+         xmlns:ns="http://docbook.org/ns/docbook"
+         xmlns:m="http://www.w3.org/1998/Math/MathML">
+    <title>Migrating JAXB 1.0 applications to JAXB 2.x</title>
+
+    <para>While it's always possible to keep your JAXB 1.0 applications as-is
+    and run them on the JAXB 2.x runtime, or have some parts of your
+    application use JAXB 1.0 while others use 2.x, there are situations where
+    you might prefer to migrate your existing applications from JAXB 1.0 to
+    JAXB 2.x.</para>
+
+    <para>Common reasons why people would like to migrate includes:</para>
+
+    <itemizedlist>
+        <listitem>
+            <para>Taking advantage of the flexible, robust unmarshalling in
+            JAXB 2.0</para>
+        </listitem>
+
+        <listitem>
+            <para>Exposing the JAXB-bound objects through JAX-WS as web
+            services</para>
+        </listitem>
+    </itemizedlist>
+
+    <section xml:id="Typical_migration_work">
+        <title>Typical migration work</title>
+
+        <para>This section outlines how the typical migration work
+        proceeds:</para>
+
+        <orderedlist>
+            <listitem>
+                <para>Replace the invocation of XJC 1.0.x with XJC 2.x. Both
+                the CLI and ant task syntax are backward-compatible to make
+                this easier.</para>
+            </listitem>
+
+            <listitem>
+                <para>Re-compile your schema with XJC 2.x. This will generate
+                a new and different set of classes and methods.</para>
+            </listitem>
+
+            <listitem>
+                <para>Update your application code that deals with the
+                generated code to use the newer classes and methods. This step
+                is mostly straight-forward but may be time consuming,
+                especially if your project is big.</para>
+            </listitem>
+
+            <listitem>
+                <para>Remove the JAXB 1.0.x runtime from your application, and
+                place in JAXB 2.x runtime instead. See the list for <link
+                xlink:href="http://java.sun.com/webservices/docs/1.5/jaxb/ReleaseNotes.html">what
+                jars were used in 1.0</link> and <link
+                xlink:href="https://jaxb.dev.java.net/nonav/2.1.3/docs/ReleaseNotes.html">what
+                are used in 2.0</link>.</para>
+            </listitem>
+        </orderedlist>
+
+        <para>The classes generated from JAXB 2.x tends to be <link
+        xlink:href="http://weblogs.java.net/blog/kohsuke/archive/2005/08/a_story_of_migr.html">a
+        lot more compact</link>.</para>
+
+        <para>JAXB RI 2.x ships many of the same samples that JAXB RI 1.0.x
+        shipped, except that they are updated to work with JAXB 2.0. So
+        comparing those samples may help you better understand what this type
+        of migration involves.</para>
+    </section>
+
+    <section xml:id="Other_Miscellaneous_Notes">
+        <title>Other Miscellaneous Notes</title>
+
+        <itemizedlist>
+            <listitem>
+                <para>JAXB 2.x requires JavaSE 5 or above, whereas JAXB 1.0
+                runs on JavaSE 1.3 or above.</para>
+            </listitem>
+
+            <listitem>
+                <para>The <literal>javax.xml.bind</literal> interfaces remain the
+                same. So the part of the code that deals with those interfaces
+                may remain the same.</para>
+            </listitem>
+
+            <listitem>
+                <para>JAXB 1.0 unmarshaller was a lot more draconian to the
+                errors in the input document than 2.0 is. In a sense, you can
+                think of the 1.0 unmarshaller as equivalent to the 2.0
+                unmarshaller + validator. If your application was relying on
+                this behaivior, you may want to enable validation in 2.0 by
+                using <literal>Unmarshaller.setSchema</literal>.</para>
+            </listitem>
+
+            <listitem>
+                <para>JAXB 2.x by default creates plain Java beans, whereas in
+                1.0 it created separated interfaces and implementations. Many
+                people find beans to be easier to work with, but you can use
+                the following customization to tell JAXB 2.x to generate
+                interfaces and implementations in a similar fashion. <example>
+                        <title>Interface/Implementation customization</title>
+
+                        <programlisting language="xml"><![CDATA[<jxb:bindings version="2.1"
+              xmlns:jxb="http://java.sun.com/xml/ns/jaxb">
+  <jxb:globalBindings generateValueClass="false" />
+</jxb:bindings>]]></programlisting>
+                    </example></para>
+            </listitem>
+
+            <listitem>
+                <para>When creating instances of the generated classes, JAXB
+                1.0 required that you do so through
+                <literal>ObjectFactory</literal>, like <code>new
+                ObjectFactory().createAbc()</code>. With 2.0, you can simply
+                do <code>new Abc()</code>. This no longer throws
+                <literal>JAXBException</literal>s, either.</para>
+            </listitem>
+
+            <listitem>
+                <para>Binding customization syntax of 2.0 is backward
+                compatible with 1.0. However, there are several customizations
+                that were previously allowed in 1.0 but not in 2.0, such as
+                using class customizations on model groups.</para>
+            </listitem>
+        </itemizedlist>
+    </section>
+</section>

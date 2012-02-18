@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+
+The contents of this file are subject to the terms of either the GNU
+General Public License Version 2 only ("GPL") or the Common Development
+and Distribution License("CDDL") (collectively, the "License").  You
+may not use this file except in compliance with the License.  You can
+obtain a copy of the License at
+http://glassfish.java.net/public/CDDL+GPL_1_1.html
+or packager/legal/LICENSE.txt.  See the License for the specific
+language governing permissions and limitations under the License.
+
+When distributing the software, include this License Header Notice in each
+file and include the License file at packager/legal/LICENSE.txt.
+
+GPL Classpath Exception:
+Oracle designates this particular file as subject to the "Classpath"
+exception as provided by Oracle in the GPL Version 2 section of the License
+file that accompanied this code.
+
+Modifications:
+If applicable, add the following below the License Header, with the fields
+enclosed by brackets [] replaced by your own identifying information:
+"Portions Copyright [year] [name of copyright owner]"
+
+Contributor(s):
+If you wish your version of this file to be governed by only the CDDL or
+only the GPL Version 2, indicate your decision by adding "[Contributor]
+elects to include this software in this distribution under the [CDDL or GPL
+Version 2] license."  If you don't indicate a single choice of license, a
+recipient has the option to distribute your version of this file under
+either the CDDL, the GPL Version 2 or to extend the choice of license to
+its licensees as provided above.  However, if you add GPL Version 2 code
+and therefore, elected the GPL Version 2 license, then the option applies
+only if the new code is made subject to such option by the copyright
+holder.
+
+        -->
+<!DOCTYPE book [
+<!ENTITY % ents SYSTEM "docbook.ent">
+%ents;
+]>
+<section version="5.0"
+         xml:id="annotating-your-classes-xml-layout-and-in-memory-data-layout"
+         xml:lang="en" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns3="http://www.w3.org/2000/svg"
+         xmlns:ns="http://docbook.org/ns/docbook"
+         xmlns:m="http://www.w3.org/1998/Math/MathML">
+    <title>XML layout and in-memory data layout</title>
+
+    <para>Your program sometimes needs to have a different in-memory data
+    structure from its XML representation. JAXB has a few different ways to
+    achieve this.</para>
+
+    <section xml:id="XmlJavaTypeAdapter">
+        <title>XmlJavaTypeAdapter</title>
+
+        <para><link
+        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlJavaTypeAdapter.html"><literal>XmlJavaTypeAdapter</literal></link> allows you to de-couple the
+        in-memory representation and the XML representation by introducing an
+        intermediate representation. The basic model is as follows:</para>
+
+        <informalexample>
+            <programlisting language=""><![CDATA[In-memory objects  <===>  Intermediate objects   <===>
+XML
+                  adapter                         JAXB]]></programlisting>
+        </informalexample>
+
+        <para>Your adapter code will be responsible for converting in-memory
+        objects to/from intermediate objects. Intermediate objects are then
+        bound to XML by following the standard JAXB rules. See <link
+        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlAdapter.html"><literal>XmlAdapter</literal></link> for a general description of how
+        adapters works.</para>
+
+        <para>Adapters extend from the <link
+        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlAdapter.html"><literal>XmlAdapter</literal></link> class and provide two methods
+        "unmarshal" and "marshal" that converts values in both directions, and
+        then the <link
+        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlJavaTypeAdapter.html"><literal>XmlJavaTypeAdapter</literal></link> annotation is used to tell
+        JAXB where and what adapters kick in.</para>
+
+        <para>(TODO: more info about XmlJavaTypeAdapter needed)</para>
+
+        <orderedlist>
+            <listitem>
+                <para>adapting a class</para>
+            </listitem>
+
+            <listitem>
+                <para>adapting a property</para>
+            </listitem>
+
+            <listitem>
+                <para>adapting an external class</para>
+            </listitem>
+
+            <listitem>
+                <para>adapting a collection and its effect</para>
+            </listitem>
+
+            <listitem>
+                <para>adapting and using interfaces</para>
+            </listitem>
+        </orderedlist>
+    </section>
+
+    <section xml:id="Using_XmlJavaTypeAdapter_for_element_attribute_values">
+        <title>Using XmlJavaTypeAdapter for element/attribute values</title>
+
+        <para>One of the common use cases of <link
+        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlJavaTypeAdapter.html"><literal>XmlJavaTypeAdapter</literal></link> is to map a "value object" to
+        a string in XML. The following example illustrates how to do this, by
+        using <literal>java.awt.Color</literal> as an example.</para>
+
+        <example>
+            <title>Mapping Color to #RRGGBB</title>
+
+            <programlisting language="java"><![CDATA[@XmlRootElement
+class Box {
+  @XmlJavaTypeAdapter(ColorAdapter.class)
+  @XmlElement
+  Color fill;
+}
+
+class ColorAdapter extends XmlAdapter<String,Color> {
+  public Color unmarshal(String s) {
+    return Color.decode(s);
+  }
+  public String marshal(Color c) {
+    return "#"+Integer.toHexString(c.getRGB());
+  }
+}]]></programlisting>
+        </example>
+
+        <para>This maps to the following XML representation:</para>
+
+        <example>
+            <title>Box instance</title>
+
+            <programlisting language="xml"><![CDATA[<box>
+  <fill>#112233</fill>
+</box>]]></programlisting>
+        </example>
+
+        <para>Since <link
+        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlJavaTypeAdapter.html"><literal>XmlJavaTypeAdapter</literal></link> is on a field, this adapter
+        only kicks in for this particular field. If you have many
+        <literal>Color</literal> fields and would like them all to use the same
+        adapter, you can move the annotation to a package:</para>
+
+        <example>
+            <title>package-info.java</title>
+
+            <programlisting language="java"><![CDATA[@XmlJavaTypeAdapter(type=Color.class,value=ColorAdapter.class)
+package foo;]]></programlisting>
+        </example>
+
+        <example>
+            <title>Box.java</title>
+
+            <programlisting language="java"><![CDATA[@XmlRootElement
+class Box {
+  @XmlElement Color fill;
+  @XmlElement Color border;
+}]]></programlisting>
+        </example>
+
+        <para>This causes all the fields in the classes in the
+        <literal>foo</literal> package to use the same specified adapter.</para>
+
+        <para>Also see the <literal>DatatypeConverter</literal> class that defines a
+        series of basic conversion routines that you may find useful.</para>
+    </section>
+
+    <section xml:id="Pair_property">
+        <title>Pair property</title>
+
+        <para>Another useful technique is to define two properties, one for
+        JAXB and the other for your application. See the following
+        example:</para>
+
+        <example>
+            <title>Pair property sample</title>
+
+            <programlisting language="java"><![CDATA[@XmlRootElement
+class Person {
+  private int age;
+
+  // This public property is for users
+  @XmlTransient
+  public int getAge() {
+    return age;
+  }
+  public void setAge(int age) {
+    this.age = age;
+  }
+
+  // This property is for JAXB
+  @XmlAttribute(name="age")
+  private String getAge_() {
+    if(age==-1)  return "dead";
+    else         return String.valueOf(age);
+  }
+  private void setAge_(String v) throws NumberFormatException {
+    if(v.equals("dead"))   this.age=-1;
+    else                   this.age=Integer.parseInt(age);
+}]]></programlisting>
+        </example>
+
+        <para>The main "<literal>age</literal>" property is public, but marked as <link
+        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//3.4.2XmlTransient.html"><literal>XmlTransient</literal></link> , so it's exposed in your program,
+        but JAXB will not map this to XML. There's another private "<literal>age_</literal>"
+        property. Since this is marked with <link
+        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//3.4.2XmlAttribute.html"><literal>XmlAttribute</literal></link> , this is what JAXB is going to use
+        to map to the attribute. The getter and setter methods on this
+        property will handle the conversion between the in-memory
+        representation and the XML representation.</para>
+    </section>
+</section>

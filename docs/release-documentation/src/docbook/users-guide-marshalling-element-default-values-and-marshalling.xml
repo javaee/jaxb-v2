@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+
+The contents of this file are subject to the terms of either the GNU
+General Public License Version 2 only ("GPL") or the Common Development
+and Distribution License("CDDL") (collectively, the "License").  You
+may not use this file except in compliance with the License.  You can
+obtain a copy of the License at
+http://glassfish.java.net/public/CDDL+GPL_1_1.html
+or packager/legal/LICENSE.txt.  See the License for the specific
+language governing permissions and limitations under the License.
+
+When distributing the software, include this License Header Notice in each
+file and include the License file at packager/legal/LICENSE.txt.
+
+GPL Classpath Exception:
+Oracle designates this particular file as subject to the "Classpath"
+exception as provided by Oracle in the GPL Version 2 section of the License
+file that accompanied this code.
+
+Modifications:
+If applicable, add the following below the License Header, with the fields
+enclosed by brackets [] replaced by your own identifying information:
+"Portions Copyright [year] [name of copyright owner]"
+
+Contributor(s):
+If you wish your version of this file to be governed by only the CDDL or
+only the GPL Version 2, indicate your decision by adding "[Contributor]
+elects to include this software in this distribution under the [CDDL or GPL
+Version 2] license."  If you don't indicate a single choice of license, a
+recipient has the option to distribute your version of this file under
+either the CDDL, the GPL Version 2 or to extend the choice of license to
+its licensees as provided above.  However, if you add GPL Version 2 code
+and therefore, elected the GPL Version 2 license, then the option applies
+only if the new code is made subject to such option by the copyright
+holder.
+
+        -->
+<!DOCTYPE book [
+<!ENTITY % ents SYSTEM "docbook.ent">
+%ents;
+]>
+<section version="5.0"
+         xml:id="marshalling-element-default-values-and-marshalling"
+         xml:lang="en" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns3="http://www.w3.org/2000/svg"
+         xmlns:ns="http://docbook.org/ns/docbook"
+         xmlns:m="http://www.w3.org/1998/Math/MathML">
+    <title>Element default values and marshalling</title>
+
+    <para>Because of a "strange" way element default values in XML Schema
+    work, people often get confused about its behavior. This section describes
+    how this works.</para>
+
+    <para>When a class has an element property with the default value, and if
+    a value is null, then the marshaller will not produce the corresponding
+    element in XML:</para>
+
+    <example>
+        <title>Element defaults and XML</title>
+
+        <programlisting language="java"><![CDATA[@XmlRootElement
+class Foo {
+  @XmlElement(defaultValue="value") public String a=null;
+}
+
+marshaller.marshal(new Foo(),System.out);]]></programlisting>
+    </example>
+
+    <example>
+        <title>Marshalling output from above</title>
+
+        <programlisting language="xml"><![CDATA[<foo />]]></programlisting>
+    </example>
+
+    <para>This is consistent with the XML Schema spec, where it essentially
+    states that the element defaults do not kick in when the element is
+    absent. Attribute default values do not have this problem, so if you can
+    change the schema, changing it to an attribute is usually a better idea.
+    Alternatively, depending on your expectation, setting the field to a
+    default value in Java may achieve what you are looking for.</para>
+
+    <example>
+        <title>Possible changes</title>
+
+        <programlisting language="java"><![CDATA[@XmlRootElement
+class Foo {
+  @XmlElement public String a="value";
+}
+@XmlRootElement
+class Bar {
+  @XmlAttribute public String a;
+}
+
+marshaller.marshal(new Foo(),System.out);
+marshaller.marshal(new Bar(),System.out);]]></programlisting>
+    </example>
+
+    <example>
+        <title>Marshalling output from above</title>
+
+        <programlisting language="xml"><![CDATA[<foo>
+    <a>value</a>
+</foo>
+
+<bar/>]]></programlisting>
+    </example>
+
+    <para>Also, see <xref
+    linkend="unmarshalling-element-default-values-and-unmarshalling"
+    xrefstyle="select:title" />.</para>
+</section>

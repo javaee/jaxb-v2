@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+
+The contents of this file are subject to the terms of either the GNU
+General Public License Version 2 only ("GPL") or the Common Development
+and Distribution License("CDDL") (collectively, the "License").  You
+may not use this file except in compliance with the License.  You can
+obtain a copy of the License at
+http://glassfish.java.net/public/CDDL+GPL_1_1.html
+or packager/legal/LICENSE.txt.  See the License for the specific
+language governing permissions and limitations under the License.
+
+When distributing the software, include this License Header Notice in each
+file and include the License file at packager/legal/LICENSE.txt.
+
+GPL Classpath Exception:
+Oracle designates this particular file as subject to the "Classpath"
+exception as provided by Oracle in the GPL Version 2 section of the License
+file that accompanied this code.
+
+Modifications:
+If applicable, add the following below the License Header, with the fields
+enclosed by brackets [] replaced by your own identifying information:
+"Portions Copyright [year] [name of copyright owner]"
+
+Contributor(s):
+If you wish your version of this file to be governed by only the CDDL or
+only the GPL Version 2, indicate your decision by adding "[Contributor]
+elects to include this software in this distribution under the [CDDL or GPL
+Version 2] license."  If you don't indicate a single choice of license, a
+recipient has the option to distribute your version of this file under
+either the CDDL, the GPL Version 2 or to extend the choice of license to
+its licensees as provided above.  However, if you add GPL Version 2 code
+and therefore, elected the GPL Version 2 license, then the option applies
+only if the new code is made subject to such option by the copyright
+holder.
+
+        -->
+<!DOCTYPE book [
+<!ENTITY % ents SYSTEM "docbook.ent">
+%ents;
+]>
+<section version="5.0"
+         xml:id="other-miscellaneous-topics-designing-a-client-server-protocol-in-xml"
+         xml:lang="en" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns3="http://www.w3.org/2000/svg"
+         xmlns:ns="http://docbook.org/ns/docbook"
+         xmlns:m="http://www.w3.org/1998/Math/MathML">
+    <title>Designing a client/server protocol in XML</title>
+
+    <para>Occasionally, people try to define a custom protocol that allows
+    multiple XML requests/responses to be sent over a single transport channel
+    (<link
+    xlink:href="http://forums.java.net/jive/thread.jspa?threadID=27577">example</link>.)
+    This section discusses the non-trivial interaction between XML and
+    sockets, and how you can design a protocol correctly.</para>
+
+    <para>XML1.0 requires a conforming parser to read the entire data till end
+    of the stream (because a parser needs to handle documents like
+    <literal>&lt;root/&gt;&lt;!-- post root comment --&gt;</literal>). As a result,
+    a naive attempt to keep one <literal>OutputStream</literal> open and marshal
+    objects multiple times fails.</para>
+
+    <example>
+        <title>One easy way to work around this limitation is to design your
+        protocol so that the data on the wire will look like the
+        following:</title>
+
+        <programlisting language="xml"><![CDATA[<conversation>
+  <!-- message 1 -->
+  <message>
+    ...
+  </message>
+
+  <!-- message 2 -->
+  <message>
+    ...
+  </message>
+
+  ...
+</conversation>]]></programlisting>
+    </example>
+
+    <para>The <literal>&lt;conversation&gt;</literal> start tag is sent immediately after the
+    socket is opened. This works as a container to send multiple "messages",
+    and this is also an excellent opportunity to do the hand-shaking (e.g.,
+    <literal>protocol-version='1.0'</literal> attribute.) Once the
+    <literal>&lt;conversation&gt;</literal> tag is written, multiple messages can be marshalled
+    as a tree into the channel, possibly with a large time lag in between. You
+    can use the JAXB marshaller to produce such message. When the sender wants
+    to disconnect the channel, it can do so by sending the
+    <literal>&lt;/conversation&gt;</literal> end tag, followed by the socket
+    disconnection.</para>
+
+    <para>Of course, you can choose any tag names freely, and each message can
+    have different tag names.</para>
+
+    <para>The receiver would use the StAX API and use
+    <literal>XMLStreamReader</literal> to read this stream. You'd have to use this
+    to process the first <literal>&lt;conversation&gt;</literal> start tag. After that, every
+    time you call a JAXB unmarshaller, you'll get the next message.</para>
+
+    <para>For the concrete code, see the <literal>xml-channel</literal> example in
+    the JAXB RI distribution.</para>
+</section>

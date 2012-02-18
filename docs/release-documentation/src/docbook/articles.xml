@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+
+The contents of this file are subject to the terms of either the GNU
+General Public License Version 2 only ("GPL") or the Common Development
+and Distribution License("CDDL") (collectively, the "License").  You
+may not use this file except in compliance with the License.  You can
+obtain a copy of the License at
+http://glassfish.java.net/public/CDDL+GPL_1_1.html
+or packager/legal/LICENSE.txt.  See the License for the specific
+language governing permissions and limitations under the License.
+
+When distributing the software, include this License Header Notice in each
+file and include the License file at packager/legal/LICENSE.txt.
+
+GPL Classpath Exception:
+Oracle designates this particular file as subject to the "Classpath"
+exception as provided by Oracle in the GPL Version 2 section of the License
+file that accompanied this code.
+
+Modifications:
+If applicable, add the following below the License Header, with the fields
+enclosed by brackets [] replaced by your own identifying information:
+"Portions Copyright [year] [name of copyright owner]"
+
+Contributor(s):
+If you wish your version of this file to be governed by only the CDDL or
+only the GPL Version 2, indicate your decision by adding "[Contributor]
+elects to include this software in this distribution under the [CDDL or GPL
+Version 2] license."  If you don't indicate a single choice of license, a
+recipient has the option to distribute your version of this file under
+either the CDDL, the GPL Version 2 or to extend the choice of license to
+its licensees as provided above.  However, if you add GPL Version 2 code
+and therefore, elected the GPL Version 2 license, then the option applies
+only if the new code is made subject to such option by the copyright
+holder.
+
+        -->
+<!DOCTYPE book [
+<!ENTITY % ents SYSTEM "docbook.ent">
+%ents;
+]>
+<chapter version="5.0" xml:id="articles" xml:lang="en"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns3="http://www.w3.org/2000/svg"
+         xmlns:ns="http://docbook.org/ns/docbook"
+         xmlns:m="http://www.w3.org/1998/Math/MathML">
+    <title>Related Articles</title>
+
+    <section>
+        <title>Introductory</title>
+
+        <itemizedlist>
+            <listitem>
+                <para><link
+                xlink:href="http://blogs.sun.com/CoreJavaTechTips/entry/exchanging_data_with_xml_and">Exchanging
+                Data with XML and JAXB, Part I</link> and <link
+                xlink:href="http://blogs.sun.com/CoreJavaTechTips/entry/exchanging_data_with_xml_and1">Part
+                II</link> by Jennie Hall</para>
+            </listitem>
+
+            <listitem>
+                <para><link
+                xlink:href="http://jaxb.java.net/twiki/bin/view/Javawsxml/JaxbExistingClassExistingSchemaHowTo">JaxbExistingClassExistingSchemaHowTo</link></para>
+            </listitem>
+        </itemizedlist>
+    </section>
+
+    <section>
+        <title>Blogs</title>
+
+        <itemizedlist>
+            <listitem>
+                <para><link
+                xlink:href="http://blogs.sun.com/PavelBucek/">Pavel Bucek's
+                blog</link></para>
+            </listitem>
+
+            <listitem>
+                <para><link xlink:href="http://blogs.sun.com/mgrebac/">Martin
+                Grebac's blog</link></para>
+            </listitem>
+
+            <listitem>
+                <para><link xlink:href="http://www.java.net/blog/108">Kohsuke
+                Kawaguchi's blog</link></para>
+            </listitem>
+
+            <listitem>
+                <para><link xlink:href="http://lexicore.blogspot.com/">Aleksei
+                Valikov's blog</link></para>
+            </listitem>
+        </itemizedlist>
+    </section>
+
+    <section>
+        <title>Interesting articles</title>
+
+        <itemizedlist>
+            <listitem>
+                <para><link
+                xlink:href="http://weblogs.java.net/blog/richunger/archive/2005/06/bean_browsing_w_1.html">JXPath
+                and JAXB</link></para>
+            </listitem>
+
+            <listitem>
+                <para><link
+                xlink:href="http://www.devx.com/xml/Article/28784/0/page/4">JAXB
+                1.0.5 and RELAX NG support</link></para>
+            </listitem>
+
+            <listitem>
+                <para><link
+                xlink:href="http://weblogs.java.net/blog/kohsuke/archive/2005/09/using_jaxb_20s.html">Using
+                XmlJavaTypeAdapter</link></para>
+            </listitem>
+
+            <listitem>
+                <para><link
+                xlink:href="http://weblogs.java.net/blog/kohsuke/archive/2005/09/using_fastinfos.html">Using
+                FastInfoset with JAXB</link></para>
+            </listitem>
+
+            <listitem>
+                <para><link
+                xlink:href="http://weblogs.java.net/blog/kohsuke/archive/2005/08/introducing_jax.html">Introducing
+                jaxb2-reflection project</link></para>
+            </listitem>
+
+            <listitem>
+                <para><link
+                xlink:href="http://weblogs.java.net/blog/kohsuke/archive/2005/08/pluggable_ididr.html">Pluggable
+                ID/IDREF handling</link></para>
+            </listitem>
+
+            <listitem>
+                <para><link
+                xlink:href="http://weblogs.java.net/blog/kohsuke/archive/2005/06/writing_a_plugi.html">Writing
+                a JAXB plugin</link></para>
+            </listitem>
+
+            <listitem>
+                <para><link
+                xlink:href="http://www.jroller.com/gmazza/entry/customizing_jaxb_artifacts">Customizing
+                generated JAXB classes during the WSDL-to-Java
+                process</link></para>
+            </listitem>
+
+            <listitem>
+                <para><link
+                xlink:href="http://weblogs.java.net/blog/kohsuke/archive/2005/10/101_ways_to_mar.html">101
+                ways to marshal objects with JAXB</link></para>
+            </listitem>
+
+            <listitem>
+                <para><link
+                xlink:href="http://weblogs.java.net/blog/kohsuke/archive/2006/01/xinclude_and_ja.html">JAXB
+                and XInclude</link></para>
+            </listitem>
+
+            <listitem>
+                <para><link
+                xlink:href="http://amazing-development.com/archives/2005/12/08/xml-with-schema-and-xinclude-in-java/">JAXB
+                and XInclude - Alternative to XIncluder</link></para>
+            </listitem>
+
+            <listitem>
+                <para><link
+                xlink:href="http://weblogs.java.net/blog/kohsuke/archive/2006/03/why_does_jaxb_p.html">Why
+                does JAXB put @XmlRootElement sometimes but not
+                always?</link></para>
+            </listitem>
+
+            <listitem>
+                <para><link
+                xlink:href="http://weblogs.java.net/blog/kohsuke/archive/2006/03/handling_union.html">Handling
+                Union in JAXB</link></para>
+            </listitem>
+
+            <listitem>
+                <para><link
+                xlink:href="http://weblogs.java.net/blog/kohsuke/archive/2006/03/canonicalizatio.html">Canonicalization
+                support in the JAXB RI</link></para>
+            </listitem>
+
+            <listitem>
+                <para><link
+                xlink:href="http://weblogs.java.net/blog/kohsuke/archive/2006/03/simple_and_bett.html">Simpler
+                and better binding mode for JAXB 2.0</link></para>
+            </listitem>
+
+            <listitem>
+                <para><link
+                xlink:href="http://weblogs.java.net/blog/kohsuke/archive/2006/03/how_do_i_map_xs.html">How
+                do I map xs:date to java.util.Date?</link></para>
+            </listitem>
+
+            <listitem>
+                <para><link
+                xlink:href="http://weblogs.java.net/blog/kohsuke/archive/2006/04/why_doesnt_jaxb.html">Why
+                doesn't JAXB find my subclass?</link></para>
+            </listitem>
+
+            <listitem>
+                <para><link
+                xlink:href="http://weblogs.java.net/blog/kohsuke/archive/2005/05/compiling_mathm_1.html">Detailed
+                instructions to resolve a property name
+                collision</link></para>
+            </listitem>
+
+            <listitem>
+                <para><link
+                xlink:href="http://www.jroller.com/gmazza/entry/kohmori_reports_now_using_jaxb">Kohmori
+                Reports now using JAXB!</link></para>
+            </listitem>
+        </itemizedlist>
+    </section>
+</chapter>
