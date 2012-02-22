@@ -104,7 +104,7 @@ public class Driver {
         ErrorReceiverImpl er = new ErrorReceiverImpl();
         compiler.setErrorListener(er);
 
-        XMLInputFactory xif = XMLInputFactory.newFactory();
+        XMLInputFactory xif = XMLInputFactory.newInstance();
 
         for (File value : files) {
             String url = value.toURL().toString();
