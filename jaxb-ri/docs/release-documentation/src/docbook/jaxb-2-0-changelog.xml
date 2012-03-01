@@ -52,6 +52,40 @@ holder.
 <para>Please refer to the 
   <xref linkend="jaxb-1-0-x-changelog" xrefstyle="select:title"/> for older
   releases.</para>
+<section xml:id="a-2-2-5">
+<title>Changes between 2.2.4-1 to 2.2.5</title>
+<programlisting>
+    * [JAXB-415] - Marshaller.marshall throws NPE if an adapter adapts a non-null bound value to null.
+    * [JAXB-488] - compatibility issue with JAXB 2.0
+    * [JAXB-608] - javax.xml.bind.DatatypeConverter.parseBoolean incorrect
+    * [JAXB-616] - XMLCatalog not used from xjc/xjctask when strict validation is enabled
+    * [JAXB-617] - setting Marshaller CharacterEncodingHandler with utf-8 does not work
+    * [JAXB-790] - Whitespace processing for xs:anyURI type
+    * [JAXB-794] - Classes annotated with @XmlTransient are still mapped to XML
+    * [JAXB-795] - Catalog passed to XJC is not used during the schema correctness check
+    * [JAXB-814] - Failing with 'no-arg default constructor' on @XmlTransient 
+    * [JAXB-825] - Attribute with default generates different types for get and set methods
+    * [JAXB-831] - Memory leak in com.sun.xml.bind.v2.ClassFactory
+    * [JAXB-834] - Cannot use binding file on Windows
+    * [JAXB-836] - CLONE -Marshaller.marshall throws NPE if an adapter adapts a non-null bound value to null.
+    * [JAXB-837] - XJC generated code misses out some fields from XML
+    * [JAXB-843] - Marshaller holds reference after marshalling for the writer that was used to marshal into
+    * [JAXB-844] - Memory Leak in com.sun.xml.bind.v2.runtime.Coordinator
+    * [JAXB-847] - DataTypeConverterImpl patch causes corrupted stream generation in some cases
+    * [JAXB-849] - JAXB:Invalid boolean values added to lists as 'false'
+    * [JAXB-856] - xs:import namespace="http://www.w3.org/2005/05/xmlmime" is not generated
+    * [JAXB-858] - xjc generates no JAXBElement for nillable element with required attribute 
+    * [JAXB-859] - Corrupt license file in the distribution
+    * [JAXB-860] - NullPointerException com.sun.xml.bind.v2.runtime.ClassBeanInfoImpl.checkOverrideProperties(ClassBeanInfoImpl.java:205)
+    * [JAXB-867] - jax-ws / jax-b / glassfish 3.1.1 web services fail to send data from beans based on variable name.
+    * [JAXB-868] - Escape policy for quote (") is different when the serialization is performed to OutputStream or Writer
+    * [JAXB-869] - Multiple <any /> elements on a schema : second element is not loaded
+    * [JAXB-882] - Marshalling Objects extending JAXBElement linked by @XmlElementRef
+    * [JAXB-445] - Generated episode bindings should contain target package name
+    * [JAXB-499] - Umbrella issue for all XJC related encoding issues wrt xjc itself and maven plugins/ant tasks
+    * [JAXB-839] - More Schema Annotations/Documentation to Javadoc
+</programlisting>
+</section>
 <section xml:id="a-2-2-4u1">
 <title>Changes between 2.2.4 to 2.2.4-1</title>
 <itemizedlist>
