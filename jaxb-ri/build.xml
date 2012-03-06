@@ -450,7 +450,6 @@
         <unzip src="tools/lib/util/javacc-src.zip" dest="${external.dir}"/>
         <exec executable="ant" dir="${external.dir}/javacc" failonerror="true" newenvironment="true" >
             <arg line="jar" />
-            <env key="JAVA_HOME" value="${JDK_1.5}" />
         </exec>
         <mvn.publish.local jar="${external.dir}/javacc/bin/lib/javacc.jar" mvngroup="javacc" mvnartid="javacc" mvnversion="${javacc.version}"/>
 
@@ -461,7 +460,6 @@
         </delete>
         <exec executable="ant" dir="${external.dir}/isorelax" failonerror="true" newenvironment="true" >
             <arg line="release" />
-            <env key="JAVA_HOME" value="${JDK_1.5}" />
         </exec>
         <mvn.publish.local jar="${external.dir}/isorelax/isorelax.jar" mvngroup="isorelax" mvnartid="isorelax" mvnversion="${isorelax.version}"/>
         <copy file="${maven.repo.local}/${isorelax.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/runtime/isorelax.jar"/>
@@ -478,7 +476,6 @@
             <arg line="-DrelaxngDatatype.jar=relaxng-datatype.jar"/>
             <arg line="-Dmaven.repo.local=${maven.repo.local}"/>
             <arg line="dist"/>
-            <env key="JAVA_HOME" value="${JDK_1.5}" />
         </exec>
         <mvn.publish.local jar="${external.dir}/xsdlib/dist/xsdlib.jar" mvngroup="com.sun.msv.datatype.xsd" mvnartid="xsdlib" mvnversion="${xsdlib.version}"/>
         <copy file="${maven.repo.local}/${xsdlib.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/runtime/xsdlib.jar"/>
@@ -498,7 +495,6 @@
             <arg line="-Dfrom.source=true"/>
             <arg line="-Dcpath.fromsource=relaxng-datatype.jar:xsdlib.jar:isorelax.jar:resolver.jar"/>
             <arg line="dist"/>
-            <env key="JAVA_HOME" value="${JDK_1.5}" />
         </exec>
         <mvn.publish.local jar="${external.dir}/msv/msv/dist/msv.jar" mvngroup="com.sun.msv" mvnartid="msv" mvnversion="${msv.version}"/>
         <copy file="${maven.repo.local}/${msv.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/runtime/msv.jar"/>
