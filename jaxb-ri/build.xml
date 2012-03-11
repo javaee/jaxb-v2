@@ -875,8 +875,8 @@ Class-Path: ${manifest.classpath}
         <antcall target="release.src.zip" />
 
         <copy file="${jaxb.build}/jaxb-ri-${release.impl.version}.src.zip" todir="${www.upload.dir}" />
-        <copy file="${jaxb.build}/jaxb-ri-${release.impl.version}.zip" todir="${www.upload.dir}" />
-        <copy file="${jaxb.build}/jaxb-ri.licensee.zip" todir="${www.upload.dir}" />
+        <copy file="${basedir}/jaxb-ri-${release.impl.version}.zip" todir="${www.upload.dir}" />
+        <!--copy file="${jaxb.build}/jaxb-ri.licensee.zip" todir="${www.upload.dir}" /-->
 
         <copy todir="${www.upload.dir}/docs">
             <fileset dir="${jaxb.dist}/docs" />
@@ -884,7 +884,7 @@ Class-Path: ${manifest.classpath}
 
         <copy file="${basedir}/docs/www/target/index.html" tofile="${www.upload.dir}/index.html" />
 
-        <taskdef name="soimp" classname="com.sun.istack.tools.soimp.Soimp">
+        <taskdef name="soimp" classname="com.sun.istack.soimp.Soimp">
             <classpath refid="javac.classpath">
             </classpath>
         </taskdef>
@@ -894,6 +894,7 @@ Class-Path: ${manifest.classpath}
                 username="${jaxb.scm.username}"
                 password="${jaxb.scm.password}"
                 create="true"
+                additionalOptions="--no-auth-cache"
                 commitMessage="JAXB-${release.impl.version}" />
     </target>
         
