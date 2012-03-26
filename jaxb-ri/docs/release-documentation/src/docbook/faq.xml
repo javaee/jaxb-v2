@@ -249,8 +249,7 @@ holder.
                         <programlisting><![CDATA[$JAXB_HOME/lib/activation.jar
 $JAXB_HOME/lib/jaxb-api.jar
 $JAXB_HOME/lib/jaxb-impl.jar
-$JAXB_HOME/lib/jsr173_1.0_api
-$JAXB_HOME/lib/jaxb1-impl.jar (Only required when deploying JAXB 1.0 apps)]]></programlisting>
+$JAXB_HOME/lib/jsr173_1.0_api]]></programlisting>
                     </informalexample>
                 </answer>
             </qandaentry>
@@ -368,7 +367,7 @@ Implementation-Vendor: Oracle Corporation
 Implementation-Vendor-Id: com.sun
 Extension-Name: com.sun.xml.bind
 Build-Id: 02/09/2012 01:42PM (hudson)
-Class-Path: jaxb-api.jar activation.jar jsr173_1.0_api.jar jaxb1-impl.jar]]></programlisting>
+Class-Path: jaxb-api.jar activation.jar jsr173_1.0_api.jar]]></programlisting>
                     </informalexample>
                 </answer>
             </qandaentry>

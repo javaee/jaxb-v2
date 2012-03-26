@@ -100,17 +100,6 @@ holder.
 
                     <row>
                         <entry><emphasis
-                        role="bold">Runtime</emphasis></entry>
-
-                        <entry><para>Jars required to deploy an older JAXB 1.0
-                        client</para></entry>
-
-                        <entry><para>Runtime +
-                        <filename>jaxb1-impl.jar</filename></para></entry>
-                    </row>
-
-                    <row>
-                        <entry><emphasis
                         role="bold">Compiler</emphasis></entry>
 
                         <entry><para>Jars required at your development

@@ -300,8 +300,6 @@ public final class JAXBContextImpl extends JAXBRIContext {
         }
         this.fastBoot = fastB;
 
-        System.arraycopy(classes,0,this.classes,0,classes.length);
-
         RuntimeTypeInfoSet typeSet = getTypeInfoSet();
 
         // at least prepare the empty table so that we don't have to check for null later

@@ -64,7 +64,6 @@ CLASSPATH=`tr '\n' ':' <<EOF
 $WEBSERVICES_LIB/jaxb/lib/jaxb-api.jar
 $WEBSERVICES_LIB/jaxb/lib/jaxb-xjc.jar
 $WEBSERVICES_LIB/jaxb/lib/jaxb-impl.jar
-$WEBSERVICES_LIB/jaxb/lib/jaxb1-impl.jar
 EOF`
 
 if [ -n "$JAVA_HOME" ]
