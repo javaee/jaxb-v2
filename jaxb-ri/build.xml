@@ -461,7 +461,7 @@
             <arg line="release" />
         </exec>
         <mvn.publish.local jar="${external.dir}/isorelax/isorelax.jar" mvngroup="isorelax" mvnartid="isorelax" mvnversion="${isorelax.version}"/>
-        <copy file="${maven.repo.local}/${isorelax.mvn.path}" tofile="/tools/lib/util/isorelax.jar"/>
+        <copy file="${maven.repo.local}/${isorelax.mvn.path}" tofile="${jaxb.root}/tools/lib/util/isorelax.jar"/>
 
 
         <echo message="building xsdlib"/>
