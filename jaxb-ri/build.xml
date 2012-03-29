@@ -336,10 +336,14 @@
     </target>
 
     <target name="integrate-txw2-maven">
-        <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/xml/txw2/txw2/${txw2.version}/txw2-${txw2.version}.jar -O tools/lib/rebundle/runtime2/txw2.jar" /></exec>
-        <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/xml/txw2/txwc2/${txw2.version}/txwc2-${txw2.version}.jar -O tools/lib/util/txwc2.jar" /></exec>
-        <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/xml/txw2/txw2/${txw2.version}/txw2-${txw2.version}-sources.jar -O tools/lib/src/txw2-sources.jar" /></exec>
-        <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/xml/txw2/txwc2/${txw2.version}/txwc2-${txw2.version}-sources.jar -O tools/lib/util/txwc2-sources.jar" /></exec>
+        <get src="${mavenrepo.url}/com/sun/xml/txw2/txw2/${txw2.version}/txw2-${txw2.version}.jar" 
+             dest="tools/lib/rebundle/runtime2/txw2.jar" />
+        <get src="${mavenrepo.url}/com/sun/xml/txw2/txwc2/${txw2.version}/txwc2-${txw2.version}.jar"
+             dest="tools/lib/util/txwc2.jar"/>
+        <get src="${mavenrepo.url}/com/sun/xml/txw2/txw2/${txw2.version}/txw2-${txw2.version}-sources.jar"
+             dest="tools/lib/src/txw2-sources.jar" />
+        <get src="${mavenrepo.url}/com/sun/xml/txw2/txwc2/${txw2.version}/txwc2-${txw2.version}-sources.jar"
+             dest="tools/lib/util/txwc2-sources.jar" />
     </target>
 
     <target name="integrate-fi">
@@ -400,14 +404,20 @@
     </target>
 
     <target name="integrate-istack-commons-maven">
-        <exec executable="wget"><arg line="${mavenrepo.url}/${istack-commons.tools.mvn.path}.jar -O tools/lib/rebundle/compiler/istack-commons-tools.jar" /></exec>
-        <exec executable="wget"><arg line="${mavenrepo.url}/${istack-commons.tools.mvn.path}-sources.jar -O tools/lib/src/istack-commons-tools-sources.jar" /></exec>
+        <get src="${mavenrepo.url}/${istack-commons.tools.mvn.path}.jar"
+             dest="tools/lib/rebundle/compiler/istack-commons-tools.jar"/>
+        <get src="${mavenrepo.url}/${istack-commons.tools.mvn.path}-sources.jar"
+             dest="tools/lib/src/istack-commons-tools-sources.jar" />
         
-        <exec executable="wget"><arg line="${mavenrepo.url}/${istack-commons.runtime.mvn.path}.jar -O tools/lib/rebundle/runtime2/istack-commons-runtime.jar" /></exec>
-        <exec executable="wget"><arg line="${mavenrepo.url}/${istack-commons.runtime.mvn.path}-sources.jar -O tools/lib/src/istack-commons-runtime-sources.jar" /></exec>
+        <get src="${mavenrepo.url}/${istack-commons.runtime.mvn.path}.jar"
+             dest="tools/lib/rebundle/runtime2/istack-commons-runtime.jar" />
+        <get src="${mavenrepo.url}/${istack-commons.runtime.mvn.path}-sources.jar"
+             dest="tools/lib/src/istack-commons-runtime-sources.jar" />
         
-        <exec executable="wget"><arg line="${mavenrepo.url}/${istack-commons.test.mvn.path}.jar -O tools/lib/util/istack-commons-test.jar" /></exec>
-        <exec executable="wget"><arg line="${mavenrepo.url}/${istack-commons.test.mvn.path}-sources.jar -O tools/lib/util/istack-commons-test-sources.jar" /></exec>
+        <get src="${mavenrepo.url}/${istack-commons.test.mvn.path}.jar"
+             dest="tools/lib/util/istack-commons-test.jar" />
+        <get src="${mavenrepo.url}/${istack-commons.test.mvn.path}-sources.jar"
+             dest="tools/lib/util/istack-commons-test-sources.jar" />
     </target>
 
     <!-- Source build -->
