@@ -473,7 +473,6 @@
         <mvn.publish.local jar="${external.dir}/isorelax/isorelax.jar" mvngroup="isorelax" mvnartid="isorelax" mvnversion="${isorelax.version}"/>
         <copy file="${maven.repo.local}/${isorelax.mvn.path}" tofile="${jaxb.root}/tools/lib/util/isorelax.jar"/>
 
-
         <echo message="building xsdlib"/>
         <unzip src="tools/lib/src/xsdlib-src.zip" dest="${external.dir}"/>
         <delete>
@@ -489,27 +488,6 @@
         </exec>
         <mvn.publish.local jar="${external.dir}/xsdlib/dist/xsdlib.jar" mvngroup="com.sun.msv.datatype.xsd" mvnartid="xsdlib" mvnversion="${xsdlib.version}"/>
         <copy file="${maven.repo.local}/${xsdlib.mvn.path}" tofile="${jaxb.root}/tools/lib/util/xsdlib.jar"/>
-
-      <!--
-              <echo message="building msv"/>
-              <unzip src="tools/lib/src/msv-src.zip" dest="${external.dir}"/>
-              <delete>
-                  <fileset dir="${external.dir}/msv/" includes="**/*.jar"/>
-              </delete>
-              <copy file="${maven.repo.local}/${relaxng-datatype.mvn.path}" tofile="${external.dir}/msv/msv/relaxng-datatype.jar"/>
-              <copy file="${maven.repo.local}/${xsdlib.mvn.path}" tofile="${external.dir}/msv/msv/xsdlib.jar"/>
-              <copy file="${maven.repo.local}/${isorelax.mvn.path}" tofile="${external.dir}/msv/msv/isorelax.jar"/>
-              <copy file="${maven.repo.local}/${resolver.mvn.path}" tofile="${external.dir}/msv/msv/resolver.jar"/>
-              <exec executable="ant" dir="${external.dir}/msv/msv" failonerror="true" newenvironment="true" >
-                  <arg line="-Djavac.target=1.5"/>
-                  <arg line="-Djavac.source=1.5"/>
-                  <arg line="-Dfrom.source=true"/>
-                  <arg line="-Dcpath.fromsource=relaxng-datatype.jar:xsdlib.jar:isorelax.jar:resolver.jar"/>
-                  <arg line="dist"/>
-              </exec>
-              <mvn.publish.local jar="${external.dir}/msv/msv/dist/msv.jar" mvngroup="com.sun.msv" mvnartid="msv" mvnversion="${msv.version}"/>
-              <copy file="${maven.repo.local}/${msv.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/runtime/msv.jar"/>
-      -->
 
         <echo message="building istack-commons"/>
         <build.jar.from.srczip jar="${external.dir}/istack-commons-runtime/istack-commons-runtime.jar" srczip="tools/lib/src/istack-commons-runtime-sources.jar" unzipdir="${external.dir}" srcdir="istack-commons-runtime"/>
@@ -546,11 +524,10 @@
         <copy file="${maven.repo.local}/${relaxng-datatype.mvn.path}" tofile="${external.dir}/relaxngcc/lib/relaxng-datatype.jar"/>
         <copy file="${maven.repo.local}/${xsdlib.mvn.path}" tofile="${external.dir}/relaxngcc/lib/xsdlib.jar"/>
         <copy file="${maven.repo.local}/${isorelax.mvn.path}" tofile="${external.dir}/relaxngcc/lib/isorelax.jar"/>
-        <copy file="${maven.repo.local}/${msv.mvn.path}" tofile="${external.dir}/relaxngcc/lib/msv.jar"/>
         <subant buildpath="${external.dir}/relaxngcc" target="jar">
             <property name="javac.source" value="1.4"/>
             <property name="javac.target" value="1.5"/>
-            <property name="cpath.fromsource" value="lib/relaxng-datatype.jar:lib/xsdlib.jar:lib/isorelax.jar:lib/msv.jar"/>
+            <property name="cpath.fromsource" value="lib/relaxng-datatype.jar:lib/xsdlib.jar:lib/isorelax.jar"/>
         </subant>
         <mvn.publish.local jar="${external.dir}/relaxngcc/relaxngcc.jar" mvngroup="com.sun.xml" mvnartid="relaxngcc" mvnversion="${relaxngcc.version}"/>
         <copy file="${maven.repo.local}/${relaxngcc.mvn.path}" tofile="${jaxb.root}/tools/lib/util/relaxngcc.jar"/>
