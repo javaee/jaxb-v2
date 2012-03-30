@@ -609,7 +609,7 @@
             <arg line="${cpath}"/>
             <arg line="-Dosgi.build.rt=osgi/build"/>
         </exec>
-        <mvn.publish.local jar="${jaxb.root}/osgi/build/jaxb-osgi.jar" mvngroup="com.sun.xml.bind" mvnartid="jaxb-osgi" mvnversion="${jaxb.version}"/>
+        <mvn.publish.local jar="${osgi.dist}/jaxb-osgi.jar" mvngroup="com.sun.xml.bind" mvnartid="jaxb-osgi" mvnversion="${jaxb.version}"/>
 
     </target>
 
