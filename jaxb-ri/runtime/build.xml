@@ -54,12 +54,14 @@
   
     <!-- import build properties -->
     <property file="${basedir}/build.properties" />
+    <property environment="env"/>
 
   <!-- classpath -->
   <path id="javac.classpath">
     <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
     <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
     <fileset dir="${jaxb.libs.util}" includes="*.jar" excludes="ant.jar"/>
+    <pathelement location="${env.JAVA_HOME}/lib/tools.jar"/>
   </path>
   
   <path id="txw.classpath">
@@ -236,7 +238,8 @@
             windowtitle="JAXB RI runtime"
             useexternalfile="true"
             access="public">
-            <fileset dir="${runtime.src}" includes="com/sun/xml/bind/*.java, com/sun/xml/bind/annotation/*.java, com/sun/xml/bind/api/*.java "/>
+            <fileset dir="${runtime.src}" includes="com/sun/xml/bind/**/*.java"/>
+            <fileset dir="${runtime.root}/build/src" includes="**/*.java"/>
             <classpath refid="javac.classpath"/>
             <arg value="-quiet"/>
         </javadoc>

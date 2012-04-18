@@ -53,6 +53,7 @@
 
     <!-- import build properties -->
     <property file="${basedir}/build.properties" />
+    <property environment="env"/>
 
     <taskdef name="manifestreader" classname="manifestreader.ManifestReader" classpath="${osgi.build}/../ant" />
 
@@ -192,9 +193,10 @@
     </target>
 
     <path id="javac.classpath">
-        <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
+        <fileset dir="${jaxb.libs.redist}" includes="**/*.jar"/>
         <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
-        <fileset dir="${jaxb.libs.util}" includes="*.jar" excludes="ant.jar"/>
+        <fileset dir="${jaxb.libs.util}" includes="**/*.jar"/>
+        <pathelement location="${env.JAVA_HOME}/lib/tools.jar"/>
     </path>
 
     <target name="javadoc">
@@ -203,8 +205,7 @@
         <mkdir dir="${jaxb.build}/jaxbosgiapi"/>
         <javadoc destdir="${jaxb.build}/jaxbosgiapi" use="true" defaultexcludes="yes"
             author="false" version="false" windowtitle="JAXB RI" useexternalfile="true" access="public">
-            <fileset dir="${jaxb.build}/jaxbosgisrc" includes="com/sun/xml/bind/*.java, com/sun/xml/bind/annotation/*.java, com/sun/xml/bind/api/*.java,
-                com/sun/tools/xjc/*.java, com/sun/tools/jxc/*.java, com/sun/tools/xjc/api/*.java"/>
+            <fileset dir="${jaxb.build}/jaxbosgisrc" includes="com/sun/xml/bind/**/*.java, com/sun/tools/**/*.java"/>
             <classpath refid="javac.classpath"/>
             <arg value="-quiet"/>
         </javadoc>
