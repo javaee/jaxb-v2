@@ -765,9 +765,9 @@ Class-Path: ${manifest.classpath}
         <mvn.publish.remote jar="dist/lib/jaxb-xjc.jar" pom="build/jaxb-xjc.pom"/>
         <mvn.publish.remote jar="dist/lib/jaxb-xjc.src.zip" pom="build/jaxb-xjc.pom" classifier="sources"/>
         <mvn.publish.remote jar="dist/lib/jaxb-xjc-javadoc.jar" pom="build/jaxb-xjc.pom" classifier="javadoc"/>
-        <mvn.publish.remote jar="${osgi.build}/jaxb-osgi.jar" pom="build/jaxb-osgi.pom"/>
-        <mvn.publish.remote jar="${osgi.build}/jaxb-osgi-sources.jar" pom="build/jaxb-osgi.pom" classifier="sources"/>
-        <mvn.publish.remote jar="${osgi.build}/jaxb-osgi-javadoc.jar" pom="build/jaxb-osgi.pom" classifier="javadoc"/>
+        <mvn.publish.remote jar="${osgi.dist}/jaxb-osgi.jar" pom="build/jaxb-osgi.pom"/>
+        <mvn.publish.remote jar="${osgi.dist}/jaxb-osgi-sources.jar" pom="build/jaxb-osgi.pom" classifier="sources"/>
+        <mvn.publish.remote jar="${osgi.dist}/jaxb-osgi-javadoc.jar" pom="build/jaxb-osgi.pom" classifier="javadoc"/>
     </target>
 
     <target name="push-release-to-maven">
@@ -799,13 +799,13 @@ Class-Path: ${manifest.classpath}
             repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
             password="${gpg.password}"/>
 
-        <mvn.publish.remote jar="${osgi.build}/jaxb-osgi.jar" pom="build/jaxb-osgi.pom" 
+        <mvn.publish.remote jar="${osgi.dist}/jaxb-osgi.jar" pom="build/jaxb-osgi.pom"
             repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
             password="${gpg.password}"/>
-        <mvn.publish.remote jar="${osgi.build}/jaxb-osgi-sources.jar" pom="build/jaxb-osgi.pom" classifier="sources" 
+        <mvn.publish.remote jar="${osgi.dist}/jaxb-osgi-sources.jar" pom="build/jaxb-osgi.pom" classifier="sources"
             repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
             password="${gpg.password}"/>
-        <mvn.publish.remote jar="${osgi.build}/jaxb-osgi-javadoc.jar" pom="build/jaxb-osgi.pom" classifier="javadoc" 
+        <mvn.publish.remote jar="${osgi.dist}/jaxb-osgi-javadoc.jar" pom="build/jaxb-osgi.pom" classifier="javadoc"
             repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
             password="${gpg.password}"/>
     </target>
