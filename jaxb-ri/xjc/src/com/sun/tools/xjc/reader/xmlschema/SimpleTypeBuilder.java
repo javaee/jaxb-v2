@@ -683,7 +683,7 @@ public final class SimpleTypeBuilder extends BindingComponent {
 
                 if (mem!=null) {
                     name = mem.name;
-                    if (mdoc != null) {
+                    if (mdoc == null) {
                         mdoc = mem.javadoc;
                     }
                 }
