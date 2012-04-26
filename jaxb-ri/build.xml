@@ -67,6 +67,9 @@
 
     <!-- initialize build properties -->
     <property file="${basedir}/build.properties" />
+    <property name="mvn.extra.args" value=""/>
+    <property name="java.net.staging.repo" value="https://maven.java.net/service/local/staging/deploy/maven2/"/>
+    <property name="mvn.proxy.args" value="-Dhttps.proxyHost=www-proxy.us.oracle.com -Dhttps.proxyPort=80 -Dhttp.proxyHost=www-proxy.us.oracle.com -Dhttp.proxyPort=80"/>
 
     <import file="build-taskdefs.xml" />
 
@@ -808,6 +811,7 @@ Class-Path: ${manifest.classpath}
         <mvn.publish.remote jar="${osgi.dist}/jaxb-osgi-javadoc.jar" pom="build/jaxb-osgi.pom" classifier="javadoc"
             repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
             password="${gpg.password}"/>
+        <mvn.close.repo repo="${java.net.staging.repo}" extra-args="-f build/jaxb-impl.pom -Dauto=true -Dnexus.password=${gpg.password} -Dnexus.url=https://maven.java.net/ ${mvn.proxy.args}"/>
     </target>
     
     <target name="dist-zip" depends="dist" description="run dist then package the image to jaxb-ri.zip">
@@ -905,5 +909,20 @@ Class-Path: ${manifest.classpath}
                 additionalOptions="--no-auth-cache"
                 commitMessage="JAXB-${release.impl.version}" />
     </target>
-        
+
+    <macrodef name="mvn.close.repo">
+      <attribute name="repoid" default="jvnet-nexus-staging"/>
+      <attribute name="repo" default="${maven.repo.local}"/>
+      <attribute name="extra-args" default=""/>
+      <sequential>
+        <exec executable="${mvn.exec}" failonerror="true">
+          <arg line="${mvn.extra.args}"/>
+          <arg line="nexus:staging-close"/>
+          <arg line="-DrepositoryId=@{repoid}"/>
+          <arg line="-Dgpg.passphrase=@{password}"/>
+          <arg line="@{extra-args}"/>
+        </exec>
+      </sequential>
+    </macrodef>
+
 </project>
