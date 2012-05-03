@@ -48,7 +48,6 @@ import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -79,7 +78,6 @@ import java.util.Set;
  * @author Kohsuke Kawaguchi
  */
 @SupportedAnnotationTypes("*")
-@SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class SchemaGenerator extends AbstractProcessor {
 
     /**
@@ -155,5 +153,13 @@ public class SchemaGenerator extends AbstractProcessor {
                 filterClass(classes, ElementFilter.typesIn(element.getEnclosedElements()));
             }
         }
+    }
+
+    @Override
+    public SourceVersion getSupportedSourceVersion() {
+        if (SourceVersion.latest().compareTo(SourceVersion.RELEASE_6) > 0)
+            return SourceVersion.valueOf("RELEASE_7");
+        else
+            return SourceVersion.RELEASE_6;
     }
 }
