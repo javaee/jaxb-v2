@@ -106,7 +106,6 @@
         <ant dir="runtime"             target="compile" />
         <ant dir="runtime-fi"          target="compile" />
         <ant dir="runtime-staxex"      target="compile" />
-        <ant dir="runtime-deprecated"  target="compile" />
         <ant dir="xjc"                 target="compile" />
         <ant dir="tools"               target="compile" />
     </target>
@@ -239,7 +238,6 @@
           <ant dir="runtime"            target="clean" />
           <ant dir="runtime-fi"         target="clean" />
           <ant dir="runtime-staxex"     target="clean" />
-          <ant dir="runtime-deprecated" target="clean" />
           <ant dir="xjc"                target="clean" />
           <ant dir="tools"              target="clean"/>
           <ant dir="apgen"              target="clean" />
