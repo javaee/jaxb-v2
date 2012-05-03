@@ -257,6 +257,14 @@
       </condition>
     </target>
 
+    <target name="integrate-stax-ex"
+            description="integrate stax-ex from maven">
+      <get src="${mavenrepo.url}/org/jvnet/staxex/stax-ex/${stax-ex.version}/stax-ex-${stax-ex.version}.jar"
+           dest="tools/lib/util/stax-ex.jar" />
+      <get src="${mavenrepo.url}/org/jvnet/staxex/stax-ex/${stax-ex.version}/stax-ex-${stax-ex.version}-sources.jar"
+           dest="tools/lib/util/stax-ex-src.zip" />
+    </target>
+
     <target name="integrate-stax-ex-hudson"
             description="integrate the last successful stax-ex Hudson build">
       <get src="http://hudson.sfbay/job/stax-ex/lastSuccessfulBuild/artifact/stax-ex/stax-ex/target/stax-ex.jar"
@@ -265,14 +273,14 @@
            dest="tools/lib/util/stax-ex-src.zip" />
     </target>
 
-    <target name="integrate-zehpyr">
+    <target name="integrate-zehpyr-hudson">
         <get src="http://hudson.sfbay/job/zephyr/lastSuccessfulBuild/artifact/dist/sjsxp-1_0/sjsxp.jar"
              dest="tools/lib/util/sjsxp.jar" />
         <get src="http://hudson.sfbay/job/zephyr/lastSuccessfulBuild/artifact/dist/sjsxp-src-1_0.zip"
              dest="tools/lib/src/sjsxp-src.zip" />
     </target>
 
-    <target name="integrate-xsdlib">
+    <target name="integrate-xsdlib-hudson">
         <property name="xsdlib-version" value="2009.2-SNAPSHOT" />
         <get src="http://sysifos-sol.czech.sun.com/hudson/job/msv/lastSuccessfulBuild/artifact/trunk/xsdlib/target/xsdlib-${xsdlib-version}.jar"
              dest="tools/lib/util/xsdlib.jar" />
@@ -284,7 +292,7 @@
 
     <property name="mavenrepo.url" value="https://maven.java.net/content/repositories/releases/"/>
     
-    <target name="integrate-api-maven" description="Integrate JAXB 2.2 API from maven">
+    <target name="integrate-api" description="Integrate JAXB 2.2 API from maven">
         <get src="${mavenrepo.url}/javax/xml/bind/jaxb-api/${release.spec.version}/jaxb-api-${release.spec.version}.jar"
              dest="tools/lib/redist/jaxb-api.jar" />
         <get src="${mavenrepo.url}javax/xml/bind/jaxb-api/${release.spec.version}/jaxb-api-${release.spec.version}-sources.jar"
@@ -299,35 +307,35 @@
              dest="tools/lib/osgi/jaxb-api-osgi-javadoc.jar" />
     </target>
 
-    <target name="integrate-dtdparser">
+    <target name="integrate-dtdparser-hudson">
       <get src="http://sysifos-sol.czech.sun.com/hudson/job/dtd-parser/lastSuccessfulBuild/artifact/target/dtd-parser-${dtd-parser.version}.jar"
            dest="tools/lib/rebundle/compiler/dtd-parser.jar" />
       <get src="http://sysifos-sol.czech.sun.com/hudson/job/dtd-parser/lastSuccessfulBuild/artifact/target/dtd-parser-${dtd-parser.version}-sources.jar"
            dest="tools/lib/src/dtd-parser-sources.jar" />
     </target>
 
-    <target name="integrate-dtdparser-maven">
+    <target name="integrate-dtdparser">
       <get src="http://download.java.net/maven/2/com/sun/xml/dtd-parser/dtd-parser/${dtd-parser.version}/dtd-parser-${dtd-parser.version}.jar"
            dest="tools/lib/rebundle/compiler/dtd-parser.jar" />
       <get src="http://download.java.net/maven/2/com/sun/xml/dtd-parser/dtd-parser/${dtd-parser.version}/dtd-parser-${dtd-parser.version}-sources.jar"
            dest="tools/lib/src/dtd-parser-sources.jar" />
     </target>
 
-    <target name="integrate-rngom">
+    <target name="integrate-rngom-hudson">
         <get src="http://sysifos-sol.czech.sun.com/hudson/job/rngom/lastSuccessfulBuild/artifact/target/rngom-${rngom.version}.jar"
              dest="tools/lib/rebundle/compiler/rngom.jar" />
         <get src="http://sysifos-sol.czech.sun.com/hudson/job/rngom/lastSuccessfulBuild/artifact/target/rngom-${rngom.version}-sources.jar"
              dest="tools/lib/src/rngom-sources.jar" />
     </target>
 
-    <target name="integrate-rngom-maven">
+    <target name="integrate-rngom">
         <get src="http://download.java.net/maven/2/org/kohsuke/rngom/rngom/${rngom.version}/rngom-${rngom.version}.jar"
              dest="tools/lib/rebundle/compiler/rngom.jar" />
         <get src="http://download.java.net/maven/2/org/kohsuke/rngom/rngom/${rngom.version}/rngom-${rngom.version}-sources.jar"
              dest="tools/lib/src/rngom-sources.jar" />
     </target>
 
-    <target name="integrate-txw2">
+    <target name="integrate-txw2-hudson">
         <get src="http://sysifos-sol.czech.sun.com/hudson/job/txw2/lastSuccessfulBuild/artifact/txw2/runtime/target/txw2-${txw2.version}.jar"
              dest="tools/lib/rebundle/runtime2/txw2.jar" />
         <get src="http://sysifos-sol.czech.sun.com/hudson/job/txw2/lastSuccessfulBuild/artifact/txw2/compiler/target/txwc2-${txw2.version}.jar"
@@ -338,7 +346,7 @@
              dest="tools/lib/util/txwc2-sources.jar" />
     </target>
 
-    <target name="integrate-txw2-maven">
+    <target name="integrate-txw2">
         <get src="${mavenrepo.url}/com/sun/xml/txw2/txw2/${txw2.version}/txw2-${txw2.version}.jar" 
              dest="tools/lib/rebundle/runtime2/txw2.jar" />
         <get src="${mavenrepo.url}/com/sun/xml/txw2/txwc2/${txw2.version}/txwc2-${txw2.version}.jar"
@@ -349,31 +357,31 @@
              dest="tools/lib/util/txwc2-sources.jar" />
     </target>
 
-    <target name="integrate-fi">
+    <target name="integrate-fi-hudson">
       <get src="http://hudson-sca.us.oracle.com/job/fi-1.2/lastSuccessfulBuild/artifact/code/fastinfoset/target/FastInfoset-${fi.version}.jar"
            dest="tools/lib/util/FastInfoset.jar" />
       <get src="http://hudson-sca.us.oracle.com/job/fi-1.2/lastSuccessfulBuild/artifact/code/fastinfoset/target/FastInfoset-${fi.version}-sources.jar"
            dest="tools/lib/src/fi-sources.jar" />
     </target>
 
-    <target name="integrate-fi-maven">
+    <target name="integrate-fi">
         <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/xml/fastinfoset/FastInfoset/${fi.version}/FastInfoset-${fi.version}.jar -O tools/lib/util/FastInfoset.jar" /></exec>
         <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/xml/fastinfoset/FastInfoset/${fi.version}/FastInfoset-${fi.version}-sources.jar -O tools/lib/src/fi-sources.jar" /></exec>
     </target>
 
-    <target name="integrate-xsom">
+    <target name="integrate-xsom-hudson">
         <get src="http://sysifos-sol.czech.sun.com/hudson/job/xsom/lastSuccessfulBuild/artifact/target/xsom-${xsom.version}.jar"
              dest="tools/lib/rebundle/compiler/xsom.jar" />
         <get src="http://sysifos-sol.czech.sun.com/hudson/job/xsom/lastSuccessfulBuild/artifact/target/xsom-${xsom.version}-sources.jar"
              dest="tools/lib/src/xsom-sources.jar" />
     </target>
 
-    <target name="integrate-xsom-maven">
+    <target name="integrate-xsom">
         <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/xsom/xsom/${xsom.version}/xsom-${xsom.version}.jar -O tools/lib/rebundle/compiler/xsom.jar"/></exec>
         <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/xsom/xsom/${xsom.version}/xsom-${xsom.version}-sources.jar -O tools/lib/src/xsom-sources.jar"/></exec>
     </target>
 
-    <target name="integrate-codemodel">
+    <target name="integrate-codemodel-hudson">
         <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel.version}.jar"
              dest="tools/lib/rebundle/compiler/codemodel.jar" />
         <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel.version}.jar"
@@ -384,14 +392,14 @@
              dest="tools/lib/util/codemodel-annotation-compiler-sources.jar" />
     </target>
 
-    <target name="integrate-codemodel-maven">
+    <target name="integrate-codemodel">
         <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/codemodel/codemodel/${codemodel.version}/codemodel-${codemodel.version}.jar -O tools/lib/rebundle/compiler/codemodel.jar" /></exec>
         <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/codemodel/codemodel-annotation-compiler/${codemodel.version}/codemodel-annotation-compiler-${codemodel.version}.jar -O tools/lib/util/codemodel-annotation-compiler.jar"/></exec>
         <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/codemodel/codemodel/${codemodel.version}/codemodel-${codemodel.version}-sources.jar -O tools/lib/src/codemodel-sources.jar" /></exec>
         <exec executable="wget"><arg line="${mavenrepo.url}/com/sun/codemodel/codemodel-annotation-compiler/${codemodel.version}/codemodel-annotation-compiler-${codemodel.version}-sources.jar -O tools/lib/util/codemodel-annotation-compiler-sources.jar"/></exec>
     </target>
 
-    <target name="integrate-istack-commons">
+    <target name="integrate-istack-commons-hudson">
         <property name="istack.commons.runtime" value="http://sysifos-sol.czech.sun.com/hudson/job/istack-commons/lastSuccessfulBuild/artifact/runtime/target/" />
         <property name="istack.commons.tools" value="http://sysifos-sol.czech.sun.com/hudson/job/istack-commons/lastSuccessfulBuild/artifact/tools/target/" />
         <property name="istack.commons.test" value="http://sysifos-sol.czech.sun.com/hudson/job/istack-commons/lastSuccessfulBuild/artifact/test/target/" />
@@ -406,7 +414,7 @@
         <get src="${istack.commons.test}/istack-commons-test-${istack-commons.version}-sources.jar" dest="tools/lib/util/istack-commons-test-sources.jar" />
     </target>
 
-    <target name="integrate-istack-commons-maven">
+    <target name="integrate-istack-commons">
         <get src="${mavenrepo.url}/${istack-commons.tools.mvn.path}.jar"
              dest="tools/lib/rebundle/compiler/istack-commons-tools.jar"/>
         <get src="${mavenrepo.url}/${istack-commons.tools.mvn.path}-sources.jar"
@@ -439,14 +447,8 @@
         <copy file="${maven.repo.local}/${dtd-parser.mvn.path}" tofile="${jaxb.root}/tools/lib/rebundle/compiler/dtd-parser.jar"/>
 
         <echo message="building stax-ex"/>
-        <unzip src="tools/lib/util/stax-ex-src.zip" dest="${external.dir}/stax-ex"/>
-        <delete>
-            <fileset dir="${external.dir}/stax-ex/" includes="**/*.jar"/>
-        </delete>
-        <exec executable="mvn" failonerror="true" >
-            <arg line="-f ${external.dir}/stax-ex/pom.xml -Dmaven.repo.local=${maven.repo.local}" />
-            <arg line="clean install" />
-        </exec>
+        <build.jar.from.srczip jar="${external.dir}/stax-ex/stax-ex.jar" srczip="tools/lib/util/stax-ex-src.zip" unzipdir="${external.dir}" srcdir="stax-ex"/>
+        <mvn.publish.local jar="${external.dir}/stax-ex/stax-ex.jar" mvngroup="org.jvnet.staxex" mvnartid="stax-ex" mvnversion="${stax-ex.version}"/>
         <copy file="${maven.repo.local}/${stax-ex.mvn.path}" tofile="${jaxb.root}/tools/lib/util/stax-ex.jar"/>
 
         <echo message="building relaxng-datatype"/>
