@@ -52,6 +52,16 @@ holder.
 <para>Please refer to the 
   <xref linkend="jaxb-1-0-x-changelog" xrefstyle="select:title"/> for older
   releases.</para>
+<section xml:id="a-2-2-5u1">
+<title>Changes between 2.2.5 to 2.2.5-1</title>
+<itemizedlist>
+<listitem>
+<para>
+      JAX_WS-1059 - wsimport Ant tasks causes NoClassDefFoundError
+    </para>
+</listitem>
+</itemizedlist>
+</section>
 <section xml:id="a-2-2-4u1">
 <title>Changes between 2.2.4 to 2.2.4-1</title>
 <itemizedlist>
