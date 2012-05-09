@@ -149,9 +149,9 @@ PersonEx p = (PersonEx)u.unmarshal(new StringReader("<person />"));]]></programl
 
         <para>If you have a type hierarchy and would like to insert your class
         in the middle, you can use the combination of <link
-        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//1.6.1XmlTransient.html"><literal>XmlTransient</literal></link>
+        xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//1.6.1XmlTransient.html"><literal>XmlTransient</literal></link>
         and <literal>@implClass</literal> of <link
-        xlink:href="https://jaxb.dev.java.net/nonav/2.0/binding-customization/http.java.sun.com.xml.n/element/class.html"><literal>&lt;class&gt;</literal></link>
+        xlink:href="http://jaxb.java.net/nonav/2.0/binding-customization/http.java.sun.com.xml.n/element/class.html"><literal>&lt;class&gt;</literal></link>
         customization. See the following example:</para>
 
         <example>
@@ -194,7 +194,7 @@ PersonEx p = (PersonEx)u.unmarshal(new StringReader("<person />"));]]></programl
 
         <para>You'll then manually write <literal>MyVehicle</literal> class that
         extends from <literal>Vehicle</literal>. Annotate this class with <link
-        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//1.6.1XmlTransient.html"><literal>XmlTransient</literal></link>
+        xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//1.6.1XmlTransient.html"><literal>XmlTransient</literal></link>
         to achieve the desired effect.</para>
     </section>
 </section>

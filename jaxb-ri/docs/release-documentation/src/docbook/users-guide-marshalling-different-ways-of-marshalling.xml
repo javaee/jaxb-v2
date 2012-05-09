@@ -237,7 +237,7 @@ o = dr.getDocument();]]></programlisting>
         is much more efficient than first marshalling to
         <literal>ByteArrayOutputStream</literal> and then read it back into these
         DOMs. The same mechanism can be used to marshal to <link
-        xlink:href="http://fi.dev.java.net/">FastInfoset</link> or send the
+        xlink:href="http://fi.java.net/">FastInfoset</link> or send the
         marshaled document to an XSLT engine (<literal>TransformerHandler</literal>.)</para>
 
         <para>The other interesting connector is <literal>JAXBSource</literal>,

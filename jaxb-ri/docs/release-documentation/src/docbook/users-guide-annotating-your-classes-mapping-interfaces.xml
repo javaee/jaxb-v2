@@ -62,7 +62,7 @@ holder.
 
         <para>When your interface is implemented by a large number of
         sub-classes, consider using <link
-        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//3.2.1XmlRootElement.html"><literal>XmlRootElement</literal></link> annotation like this:</para>
+        xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//3.2.1XmlRootElement.html"><literal>XmlRootElement</literal></link> annotation like this:</para>
 
         <example>
             <title>XmlRootElement for open-ended interfaces</title>
@@ -115,7 +115,7 @@ class Lion implements Animal { ... }]]></programlisting>
 
             <listitem>
                 <para>Every reference to interface needs to have the <link
-                xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//3.2.1XmlElementRef.html"><literal>XmlElementRef</literal></link> annotation. The
+                xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//3.2.1XmlElementRef.html"><literal>XmlElementRef</literal></link> annotation. The
                 <code>type=Object.class</code> portion tells JAXB that the
                 greatest common base type of all implementations would be
                 <literal>java.lang.Object</literal>.</para>
@@ -161,7 +161,7 @@ class Zoo {
         <para>When you use interfaces just to hide your implementation classes
         from exposure, and when there's 1-to-1 (or close to 1-on-1)
         relationship between a class and an interface, <link
-        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlJavaTypeAdapter.html"><literal>XmlJavaTypeAdapter</literal></link> can be used like below.</para>
+        xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlJavaTypeAdapter.html"><literal>XmlJavaTypeAdapter</literal></link> can be used like below.</para>
 
         <example>
             <title>XmlJavaTypeAdapter for interfaces</title>
@@ -323,7 +323,7 @@ class Somewhere {
         <para>If the use of interface is very little and there's 1-to-1 (or
         close to) relationship between interfaces and implementations, then
         you might find <link
-        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//3.2.3XmlElement.html"><literal>XmlElement</literal></link> to be the least amount of work.</para>
+        xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//3.2.3XmlElement.html"><literal>XmlElement</literal></link> to be the least amount of work.</para>
 
         <example>
             <title>XmlElement for interfaces</title>
@@ -358,7 +358,7 @@ class Somewhere {
         this crosses module boundaries.</para>
 
         <para>Like the <link
-        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlJavaTypeAdapter.html"><literal>XmlJavaTypeAdapter</literal></link> approach, this can be used
+        xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlJavaTypeAdapter.html"><literal>XmlJavaTypeAdapter</literal></link> approach, this can be used
         even when there are multiple implementations, provided that they share
         the common ancestor.</para>
 

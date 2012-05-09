@@ -143,7 +143,7 @@ marshaller.marshal(new JAXBElement(new QName("root"),HashMap.class,m),System.out
         </example>
 
         <para>This issue has been recorded as <link
-        xlink:href="https://jaxb.dev.java.net/issues/show_bug.cgi?id=223">#223</link>
+        xlink:href="http://jaxb.java.net/issues/show_bug.cgi?id=223">#223</link>
         and the fix needs to happen in later versions of the JAXB spec.</para>
 
         <para>In the mean time, such top-level objects have to be first

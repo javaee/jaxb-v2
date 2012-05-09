@@ -104,7 +104,7 @@ holder.
                 place in JAXB 2.x runtime instead. See the list for <link
                 xlink:href="http://java.sun.com/webservices/docs/1.5/jaxb/ReleaseNotes.html">what
                 jars were used in 1.0</link> and <link
-                xlink:href="https://jaxb.dev.java.net/nonav/2.1.3/docs/ReleaseNotes.html">what
+                xlink:href="http://jaxb.java.net/nonav/2.1.3/docs/ReleaseNotes.html">what
                 are used in 2.0</link>.</para>
             </listitem>
         </orderedlist>

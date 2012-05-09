@@ -62,29 +62,29 @@ holder.
         <programlisting language="xml"><![CDATA[<dependency>
   <groupId>com.sun.xml.bind</groupId>
   <artifactId>jaxb-impl</artifactId>
-  <version>2.1.8</version>
+  <version>&jaxb.release.impl.version;</version>
 </dependency>]]></programlisting>
     </example>
 
     <para>This artifact is available in <link
-    xlink:href="https://maven-repository.dev.java.net/">the java.net Maven
+    xlink:href="http://maven-repository.java.net/">the java.net Maven
     repository</link>, so you also need the following <literal>&lt;repository&gt;</literal>
     declaration in your POM:</para>
 
     <informalexample>
         <programlisting language="xml"><![CDATA[<repository>
   <id>java.net</id>
-  <url>http://download.java.net/maven/1</url>
-  <layout>legacy</layout>
+  <url>https://maven.java.net/content/repositories/releases/</url>
+  <layout>default</layout>
 </repository>]]></programlisting>
     </informalexample>
 
     <para>For a list of available artifacts and versions, see <link
-    xlink:href="http://download.java.net/maven/1/com.sun.xml.bind/jars/">this</link>.
+    xlink:href="https://maven.java.net/content/repositories/releases/com/sun/xml/bind/">this</link>.
     In addition to the runtime jar, XJC is available under the artifact Id
     "<literal>jaxb-xjc</literal>".</para>
 
     <para>You can also invoke XJC through a Maven plugin by using <link
-    xlink:href="https://maven-jaxb2-plugin.dev.java.net/">the Maven2 JAXB 2.x
+    xlink:href="https://maven-jaxb2-plugin.java.net/">the Maven2 JAXB 2.x
     plugin</link>.</para>
 </section>

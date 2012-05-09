@@ -111,7 +111,7 @@ class Employee {
         correctly.</para>
 
         <para>The first technique here is the use of <link
-        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//3.5.1XmlTransient.html"><literal>XmlTransient</literal></link> on the parent pointer. This tells
+        xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//3.5.1XmlTransient.html"><literal>XmlTransient</literal></link> on the parent pointer. This tells
         JAXB that you don't need this parent pointer to be represented
         explicitly in XML, because the fact that <literal>employee</literal> is
         always contained inside <literal>department</literal> implies the
@@ -143,7 +143,7 @@ class Employee {
         <literal>@XmlIDREF</literal></title>
 
         <para>When a reference to another object is annotated with <link
-        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//3.5.3XmlIDREF.html"><literal>XmlIDREF</literal></link> , its corresponding XML it will be
+        xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//3.5.3XmlIDREF.html"><literal>XmlIDREF</literal></link> , its corresponding XML it will be
         referenced by <literal>xs:IDREF</literal>, instead of containment. See below
         for an example:</para>
 

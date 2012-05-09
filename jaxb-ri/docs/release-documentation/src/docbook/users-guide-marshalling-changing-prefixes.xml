@@ -59,8 +59,7 @@ holder.
     human readability, you might want to change them to something that makes
     more sense.</para>
 
-    <para>The JAXB RI defines <link
-    xlink:href="https://jaxb-architecture-document.dev.java.net/nonav/doc/index.html?com/sun/xml/bind/marshaller/NamespacePrefixMapper.html"><literal>NamespacePrefixMapper</literal></link> to allow you to do this. See
+    <para>The JAXB RI defines NamespacePrefixMapper to allow you to do this. See
     the <literal>namespace-prefix</literal> sample in the distribution for more
     details.</para>
 </section>

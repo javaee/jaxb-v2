@@ -209,7 +209,7 @@ PUBLIC "http://www.w3.org/1998/Math/MathML" "/path/to/my/mathml.xsd"]]></program
 
                 <listitem>
                     <para>For the <link
-                    xlink:href="https://maven-jaxb2-plugin.dev.java.net/">Maven
+                    xlink:href="https://maven-jaxb2-plugin.java.net/">Maven
                     plugin</link>, use the <literal>&lt;catalog&gt;</literal> element in the
                     configuration: <informalexample>
                             <programlisting language=""><![CDATA[<plugin>

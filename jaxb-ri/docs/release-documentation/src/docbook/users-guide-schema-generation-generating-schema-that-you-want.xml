@@ -57,7 +57,7 @@ holder.
     <para>This section discusses how you can change the generated XML schema.
     For changes that also affect the infoset (such as changing elements to
     attributes, namespaces, etc.), refer to a different section " <link
-    xlink:href="https://jaxb.dev.java.net/guide/annotating-your-classes-xml-layout-and-in-memory-data-layout">XML
+    xlink:href="http://jaxb.java.net/guide/annotating-your-classes-xml-layout-and-in-memory-data-layout">XML
     layout and in-memory data layout</link>."</para>
 
     <section xml:id="Adding_facets_to_datatypes">

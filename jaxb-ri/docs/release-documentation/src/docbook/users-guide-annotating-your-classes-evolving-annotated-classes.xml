@@ -125,8 +125,8 @@ holder.
                 backward and forward semi-compatible. What JAXB really cares
                 is properties' XML names and not Java names, so by using the
                 <literal>name</literal> parameter of <link
-                xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlJavaTypeAdapter.html"><literal>XmlElement</literal></link> , <link
-                xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlJavaTypeAdapter.html"><literal>XmlAttribute</literal></link> et al, you can change Java
+                xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlJavaTypeAdapter.html"><literal>XmlElement</literal></link> , <link
+                xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlJavaTypeAdapter.html"><literal>XmlAttribute</literal></link> et al, you can change Java
                 property names without affecting XML, or change XML without
                 affecting Java properties. These are backward and forward
                 semi-compatible. See below:</para>
@@ -171,7 +171,7 @@ public class Foo {
                 <literal>String</literal> can represent all <literal>int</literal> values,
                 so changing <literal>int</literal> to <literal>String</literal> would be a
                 backward compatible and forward semi-compatible change. <link
-                xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlJavaTypeAdapter.html"><literal>XmlJavaTypeAdapter</literal></link> allows you to make
+                xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlJavaTypeAdapter.html"><literal>XmlJavaTypeAdapter</literal></link> allows you to make
                 changes to Java without affecting XML (or vice versa.)</para>
             </listitem>
         </orderedlist>
@@ -181,8 +181,8 @@ public class Foo {
         <title>Changing class names</title>
 
         <para><link
-        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//3.3.1.4XmlType.html"><literal>XmlType</literal></link> and <link
-        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//3.3.1.4XmlRootElement.html"><literal>XmlRootElement</literal></link> allows you to change a class name
+        xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//3.3.1.4XmlType.html"><literal>XmlType</literal></link> and <link
+        xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//3.3.1.4XmlRootElement.html"><literal>XmlRootElement</literal></link> allows you to change a class name
         without affecting XML.</para>
 
         <example>

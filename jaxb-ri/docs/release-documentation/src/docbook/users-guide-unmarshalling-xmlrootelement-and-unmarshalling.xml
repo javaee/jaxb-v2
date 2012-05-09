@@ -54,7 +54,7 @@ holder.
     <title><literal>@XmlRootElement</literal> and unmarshalling</title>
 
     <para>Classes with <link
-    xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//4.1XmlRootElement.html"><literal>XmlRootElement</literal></link> can be unmarshalled from XML elements
+    xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//4.1XmlRootElement.html"><literal>XmlRootElement</literal></link> can be unmarshalled from XML elements
     simply by invoking the unmarshal method that takes one parameter. This is
     the simplest mode of unmarshalling.</para>
 
@@ -83,7 +83,7 @@ Foo foo = (Foo)u.unmarshal(new File("foo.xml"));]]></programlisting>
 
     <para>However, sometimes you may need to unmarshal an instance of a type
     that does not have an <link
-    xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//4.1XmlRootElement.html"><literal>XmlRootElement</literal></link> . For example, you might dynamically
+    xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//4.1XmlRootElement.html"><literal>XmlRootElement</literal></link> . For example, you might dynamically
     find out at the runtime that a certain element has a certain type. For
     example, the following document illustrates an XML instance where the
     content of <literal>&lt;someOtherTagName&gt;</literal> element is represented by the

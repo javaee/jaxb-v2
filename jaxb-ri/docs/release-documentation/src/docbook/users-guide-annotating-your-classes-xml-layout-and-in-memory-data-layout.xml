@@ -62,7 +62,7 @@ holder.
         <title>XmlJavaTypeAdapter</title>
 
         <para><link
-        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlJavaTypeAdapter.html"><literal>XmlJavaTypeAdapter</literal></link> allows you to de-couple the
+        xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlJavaTypeAdapter.html"><literal>XmlJavaTypeAdapter</literal></link> allows you to de-couple the
         in-memory representation and the XML representation by introducing an
         intermediate representation. The basic model is as follows:</para>
 
@@ -75,14 +75,14 @@ XML
         <para>Your adapter code will be responsible for converting in-memory
         objects to/from intermediate objects. Intermediate objects are then
         bound to XML by following the standard JAXB rules. See <link
-        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlAdapter.html"><literal>XmlAdapter</literal></link> for a general description of how
+        xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlAdapter.html"><literal>XmlAdapter</literal></link> for a general description of how
         adapters works.</para>
 
         <para>Adapters extend from the <link
-        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlAdapter.html"><literal>XmlAdapter</literal></link> class and provide two methods
+        xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlAdapter.html"><literal>XmlAdapter</literal></link> class and provide two methods
         "unmarshal" and "marshal" that converts values in both directions, and
         then the <link
-        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlJavaTypeAdapter.html"><literal>XmlJavaTypeAdapter</literal></link> annotation is used to tell
+        xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlJavaTypeAdapter.html"><literal>XmlJavaTypeAdapter</literal></link> annotation is used to tell
         JAXB where and what adapters kick in.</para>
 
         <para>(TODO: more info about XmlJavaTypeAdapter needed)</para>
@@ -114,7 +114,7 @@ XML
         <title>Using XmlJavaTypeAdapter for element/attribute values</title>
 
         <para>One of the common use cases of <link
-        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlJavaTypeAdapter.html"><literal>XmlJavaTypeAdapter</literal></link> is to map a "value object" to
+        xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlJavaTypeAdapter.html"><literal>XmlJavaTypeAdapter</literal></link> is to map a "value object" to
         a string in XML. The following example illustrates how to do this, by
         using <literal>java.awt.Color</literal> as an example.</para>
 
@@ -149,7 +149,7 @@ class ColorAdapter extends XmlAdapter<String,Color> {
         </example>
 
         <para>Since <link
-        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlJavaTypeAdapter.html"><literal>XmlJavaTypeAdapter</literal></link> is on a field, this adapter
+        xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//adapters/XmlJavaTypeAdapter.html"><literal>XmlJavaTypeAdapter</literal></link> is on a field, this adapter
         only kicks in for this particular field. If you have many
         <literal>Color</literal> fields and would like them all to use the same
         adapter, you can move the annotation to a package:</para>
@@ -214,10 +214,10 @@ class Person {
         </example>
 
         <para>The main "<literal>age</literal>" property is public, but marked as <link
-        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//3.4.2XmlTransient.html"><literal>XmlTransient</literal></link> , so it's exposed in your program,
+        xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//3.4.2XmlTransient.html"><literal>XmlTransient</literal></link> , so it's exposed in your program,
         but JAXB will not map this to XML. There's another private "<literal>age_</literal>"
         property. Since this is marked with <link
-        xlink:href="https://jaxb.dev.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//3.4.2XmlAttribute.html"><literal>XmlAttribute</literal></link> , this is what JAXB is going to use
+        xlink:href="http://jaxb.java.net/nonav/jaxb20-fcs/docs/api/index.html?javax/xml/bind/annotation//3.4.2XmlAttribute.html"><literal>XmlAttribute</literal></link> , this is what JAXB is going to use
         to map to the attribute. The getter and setter methods on this
         property will handle the conversion between the in-memory
         representation and the XML representation.</para>
