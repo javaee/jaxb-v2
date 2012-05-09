@@ -53,8 +53,8 @@ holder.
     <link xlink:href="http://maven-jaxb2-plugin.java.net/">Maven2 plugin for
     JAXB2</link> is hosted at java.net. If you are using Maven, JAXB
     jars are available in 
-    <link xlink:href="http://download.java.net/maven/2/">the java.net maven
-    repository</link>.</para>
+    <link xlink:href="https://maven.java.net/content/repositories/releases/">the java.net maven
+    repository</link>. This repository is synced with maven central, so usually you find all JAXB releases in maven central after ~ 1 day after java.net release.</para>
 </section>
 <section xml:id="section-2873137906334116">
 <title>JAXB Workshop</title>
