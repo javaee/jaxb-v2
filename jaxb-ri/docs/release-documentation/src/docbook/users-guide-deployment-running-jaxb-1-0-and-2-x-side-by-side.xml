@@ -54,16 +54,10 @@ holder.
          xmlns:m="http://www.w3.org/1998/Math/MathML">
     <title>Running JAXB 1.0 and 2.x side by side</title>
 
-    <para>You can always run an application X that uses JAXB 1.0 and another
-    application Y that uses JAXB 2.x side by side, in the same classloader. To
-    do this, remove the runtime jars from JAXB 1.0 from X, and instead use
-    <filename>jaxb-impl.jar</filename> and <filename>jaxb1-mpl.jar</filename> from JAXB 2.0.x.
-    Those two jars are designed to be compatible with earlier 1.0 versions of
-    the runtime.</para>
+    <para>You should still be able to use the legacy compatible jaxb1-impl.jar: 
+    <filename>http://search.maven.org/remotecontent?filepath=com/sun/xml/bind/jaxb1-impl/2.2.5-1/jaxb1-impl-2.2.5-1.jar</filename>
+    with your application. Note however that this jar is no longer distributed with JAXB 2.2.x releases and this 
+    functionality is no longer supported.
+    </para>
 
-    <para>When you have a runtime from 1.0 in your classpath before 2.0.x, a
-    user reported that you'll get <literal>java.lang.NoSuchMethodError:
-    com.sun.xml.bind.WhiteSpaceProcessor.isWhiteSpace(Ljava/lang/CharSequence;)Z</literal>.
-    Starting with JAXB 2.1.6 the runtime will diagnose this error nicely, but
-    if you are using earlier versions, check your classpath.</para>
 </section>

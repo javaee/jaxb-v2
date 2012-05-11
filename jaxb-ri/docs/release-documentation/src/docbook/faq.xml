@@ -62,35 +62,9 @@ holder.
                 <question>
                     <para>Which version of J2SE does JAXB 2.0 require?</para>
                 </question>
-
+                
                 <answer>
-                    <para>J2SE 5.0. JAXB 2.0 relies heavily on the new
-                    language features available in J2SE 5.0.</para>
-                </answer>
-            </qandaentry>
-
-            <qandaentry>
-                <question>
-                    <para>Does JAXB 2.0 contain JAXB 1.0?</para>
-                </question>
-
-                <answer>
-                    <para>Yes. The JAXB 2.0 release contains the necessary
-                    compile-time and runtime libraries for JAXB 1.0.x
-                    applications.</para>
-                </answer>
-            </qandaentry>
-
-            <qandaentry>
-                <question>
-                    <para>Can the JAXB 2.0 xjc compiler generate JAXB 1.0
-                    code?</para>
-                </question>
-
-                <answer>
-                    <para>Yes. See the <xref linkend="tools-xjc"
-                    xrefstyle="select:title" /> for a description of the
-                    <option>-source</option> switch.</para>
+                    <para>J2SE 6.0</para>
                 </answer>
             </qandaentry>
 
@@ -101,16 +75,15 @@ holder.
                 </question>
 
                 <answer>
-                    <para>Yes. You just need to make sure that you deploy the
-                    <filename>jaxb1-impl.jar</filename> with your
-                    application.</para>
+                    <para>This is no longer supported. However, you should be able to deploy 
+                    <filename>http://search.maven.org/remotecontent?filepath=com/sun/xml/bind/jaxb1-impl/2.2.5-1/jaxb1-impl-2.2.5-1.jar</filename> with your
+                    with your application application.</para>
                 </answer>
             </qandaentry>
 
             <qandaentry>
                 <question>
-                    <para>What if I want to port my JAXB 1.0.x application to
-                    JAXB 2.0?</para>
+                    <para>What if I want to port my JAXB 1.0.x application to JAXB 2.0?</para>
                 </question>
 
                 <answer>
@@ -243,13 +216,12 @@ holder.
                 </question>
 
                 <answer>
-                    <para>For JAXB 2.0:</para>
+                    <para>For JAXB 2.2.x:</para>
 
                     <informalexample>
-                        <programlisting><![CDATA[$JAXB_HOME/lib/activation.jar
+                        <programlisting><![CDATA[
 $JAXB_HOME/lib/jaxb-api.jar
-$JAXB_HOME/lib/jaxb-impl.jar
-$JAXB_HOME/lib/jsr173_1.0_api]]></programlisting>
+$JAXB_HOME/lib/jaxb-impl.jar]]></programlisting>
                     </informalexample>
                 </answer>
             </qandaentry>
@@ -367,7 +339,7 @@ Implementation-Vendor: Oracle Corporation
 Implementation-Vendor-Id: com.sun
 Extension-Name: com.sun.xml.bind
 Build-Id: 02/09/2012 01:42PM (hudson)
-Class-Path: jaxb-api.jar activation.jar jsr173_1.0_api.jar]]></programlisting>
+Class-Path: jaxb-api.jar]]></programlisting>
                     </informalexample>
                 </answer>
             </qandaentry>
