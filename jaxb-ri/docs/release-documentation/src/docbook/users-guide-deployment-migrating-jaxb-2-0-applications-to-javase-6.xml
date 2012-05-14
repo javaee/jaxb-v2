@@ -133,7 +133,7 @@ holder.
                 directory which contains the <filename>jaxb-api.jar</filename> only. The 
                 directory must not contain any other jaxb artifacts 
                 (like jaxb-impl.jar or jaxb-xjc.jar). This allows you use to use 
-                different version of JAXB without modifying the JRE.
+                different version of JAXB without modifying the JRE.</para>
             </listitem>
 
         </orderedlist>
