@@ -186,6 +186,7 @@
         <copy todir="${osgi.dist}">
             <fileset dir="${jaxb.libs.osgi}" includes="*.jar"/>
         </copy>
+        <antcall target="test"/>
     </target>
 
     <target name="clean">
@@ -221,4 +222,28 @@
         </jar>
     </target>
 
+    <target name="test">
+      <mkdir dir="${jaxb.root}/build/test/classes"/>
+      <mkdir dir="${jaxb.root}/build/test/results"/>
+
+      <javac srcdir="${osgi.root}/test" destdir="${jaxb.root}/build/test/classes"
+        debug="true" optimize="true"
+      	source="1.5" target="1.5"
+        deprecation="${compile.deprecation}"
+        classpathref="javac.classpath" />
+
+      <echo>running JUnit</echo>
+      <junit printsummary="yes" fork="no" haltonerror="yes" haltonfailure="yes">
+
+        <classpath>
+          <path refid="javac.classpath" />
+          <pathelement location="${jaxb.root}/build/test/classes"/>
+        </classpath>
+        <sysproperty key="osgi.dist" value="${osgi.dist}"/>
+        <batchtest todir="${jaxb.root}/build/test/results">
+            <formatter usefile="true" type="xml"/>
+            <fileset dir="${jaxb.root}/build/test/classes" includes="**/OSGiBundleVersionTest.class" />
+        </batchtest>
+      </junit>
+    </target>
 </project>
