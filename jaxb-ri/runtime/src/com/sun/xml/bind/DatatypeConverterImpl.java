@@ -952,7 +952,8 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
 
     @Deprecated
     public boolean parseBoolean(String lexicalXSDBoolean) {
-        return _parseBoolean(lexicalXSDBoolean);
+        Boolean b = _parseBoolean(lexicalXSDBoolean);
+        return (b == null) ? false : b.booleanValue();
     }
 
     @Deprecated
