@@ -219,6 +219,8 @@
         <jar destfile="${osgi.dist}/jaxb-osgi-sources.jar">
             <zipfileset src="${jaxb.dist}/lib/jaxb-impl.src.zip"/>
             <zipfileset src="${jaxb.dist}/lib/jaxb-xjc.src.zip"/>
+            <zipfileset src="${jaxb.libs.src}/fi-sources.jar"/>
+            <zipfileset src="${jaxb.libs.util}/stax-ex-src.zip"/>
         </jar>
     </target>
 
