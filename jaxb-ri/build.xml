@@ -887,7 +887,7 @@ Class-Path: ${manifest.classpath}
         <antcall target="release.src.zip" />
 
         <copy file="${jaxb.build}/jaxb-ri-${release.impl.version}${release.impl.version.suffix}.src.zip" todir="${www.upload.dir}" />
-        <copy file="${basedir}/jaxb-ri-${release.impl.version}${release.impl.version.suffix}.zip" todir="${www.upload.dir}" />
+        <copy file="${basedir}/jaxb-ri-${release.impl.version}.zip" todir="${www.upload.dir}" />
         <!--copy file="${jaxb.build}/jaxb-ri.licensee.zip" todir="${www.upload.dir}" /-->
 
         <copy todir="${www.upload.dir}/docs">
