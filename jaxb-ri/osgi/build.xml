@@ -152,12 +152,12 @@
             <!-- adding com/sun/msv/datatype/xsd to Export-package -->
             <!-- adding com.sun.msv.grammar,com.sun.msv.grammar.trex,com.sun.msv.reader,com.sun.msv.reader.trex.ng,com.sun.msv.reader.util,com.sun.msv.util,com.sun.msv.verifier,com.sun.msv.verifier.regexp  to Export-package (fabians request for woodstock) -->
 
-            <attribute name="Export-Package" value="${jaxb.Export-Package}"/>
+            <attribute name="Export-Package" value="${jaxb.Export-Package},com.sun.msv.datatype.xsd,com.sun.msv.grammar,com.sun.msv.grammar.trex,com.sun.msv.reader,com.sun.msv.reader.trex.ng,com.sun.msv.reader.util,com.sun.msv.util,com.sun.msv.verifier,com.sun.msv.verifier.regexp"/>
             <attribute name="Extension-Name" value="${jaxb.Extension-Name}"/>
             <attribute name="Implementation-Title" value="${jaxb.Implementation-Title}"/>
             <attribute name="Implementation-Vendor" value="${jaxb.Implementation-Vendor}"/>
             <attribute name="Implementation-Vendor-Id" value="${jaxb.Implementation-Vendor-Id}"/>
-            <attribute name="Import-Package" value="${jaxb.Import-Package},com.sun.org.apache.xerces.internal.impl.xpath.regex;resolution:=optional,com.sun.msv.datatype.xsd,com.sun.msv.grammar,com.sun.msv.grammar.trex,com.sun.msv.reader,com.sun.msv.reader.trex.ng,com.sun.msv.reader.util,com.sun.msv.util,com.sun.msv.verifier,com.sun.msv.verifier.regexp"/>
+            <attribute name="Import-Package" value="${jaxb.Import-Package},com.sun.org.apache.xerces.internal.impl.xpath.regex;resolution:=optional"/>
             <attribute name="Manifest-Version" value="${jaxb.Manifest-Version}"/>
             <attribute name="Originally-Created-By" value="${jaxb.Originally-Created-By}"/>
             <attribute name="Private-Package" value="${jaxb.Private-Package}"/>
