@@ -280,9 +280,9 @@
 
     <target name="integrate-xsdlib-hudson">
         <property name="xsdlib-version" value="2009.2-SNAPSHOT" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/msv/lastSuccessfulBuild/artifact/trunk/xsdlib/target/xsdlib-${xsdlib-version}.jar"
+        <get src="http://sysifos-sol.cz.oracle.com/hudson/job/msv/lastSuccessfulBuild/artifact/trunk/xsdlib/target/xsdlib-${xsdlib-version}.jar"
              dest="tools/lib/util/xsdlib.jar" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/msv/lastSuccessfulBuild/artifact/trunk/xsdlib/target/xsdlib-fullsrc.zip"
+        <get src="http://sysifos-sol.cz.oracle.com/hudson/job/msv/lastSuccessfulBuild/artifact/trunk/xsdlib/target/xsdlib-fullsrc.zip"
              dest="tools/lib/src/xsdlib-src.zip" />
     </target>
 
@@ -306,9 +306,9 @@
     </target>
 
     <target name="integrate-dtdparser-hudson">
-      <get src="http://sysifos-sol.czech.sun.com/hudson/job/dtd-parser/lastSuccessfulBuild/artifact/target/dtd-parser-${dtd-parser.version}.jar"
+      <get src="http://sysifos-sol.cz.oracle.com/hudson/job/dtd-parser/lastSuccessfulBuild/artifact/target/dtd-parser-${dtd-parser.version}.jar"
            dest="tools/lib/rebundle/compiler/dtd-parser.jar" />
-      <get src="http://sysifos-sol.czech.sun.com/hudson/job/dtd-parser/lastSuccessfulBuild/artifact/target/dtd-parser-${dtd-parser.version}-sources.jar"
+      <get src="http://sysifos-sol.cz.oracle.com/hudson/job/dtd-parser/lastSuccessfulBuild/artifact/target/dtd-parser-${dtd-parser.version}-sources.jar"
            dest="tools/lib/src/dtd-parser-sources.jar" />
     </target>
 
@@ -320,9 +320,9 @@
     </target>
 
     <target name="integrate-rngom-hudson">
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/rngom/lastSuccessfulBuild/artifact/target/rngom-${rngom.version}.jar"
+        <get src="http://sysifos-sol.cz.oracle.com/hudson/job/rngom/lastSuccessfulBuild/artifact/target/rngom-${rngom.version}.jar"
              dest="tools/lib/rebundle/compiler/rngom.jar" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/rngom/lastSuccessfulBuild/artifact/target/rngom-${rngom.version}-sources.jar"
+        <get src="http://sysifos-sol.cz.oracle.com/hudson/job/rngom/lastSuccessfulBuild/artifact/target/rngom-${rngom.version}-sources.jar"
              dest="tools/lib/src/rngom-sources.jar" />
     </target>
 
@@ -334,13 +334,13 @@
     </target>
 
     <target name="integrate-txw2-hudson">
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/txw2/lastSuccessfulBuild/artifact/txw2/runtime/target/txw2-${txw2.version}.jar"
+        <get src="http://sysifos-sol.cz.oracle.com/hudson/job/txw2/lastSuccessfulBuild/artifact/txw2/runtime/target/txw2-${txw2.version}.jar"
              dest="tools/lib/rebundle/runtime2/txw2.jar" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/txw2/lastSuccessfulBuild/artifact/txw2/compiler/target/txwc2-${txw2.version}.jar"
+        <get src="http://sysifos-sol.cz.oracle.com/hudson/job/txw2/lastSuccessfulBuild/artifact/txw2/compiler/target/txwc2-${txw2.version}.jar"
              dest="tools/lib/util/txwc2.jar" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/txw2/lastSuccessfulBuild/artifact/txw2/runtime/target/txw2-${txw2.version}-sources.jar"
+        <get src="http://sysifos-sol.cz.oracle.com/hudson/job/txw2/lastSuccessfulBuild/artifact/txw2/runtime/target/txw2-${txw2.version}-sources.jar"
              dest="tools/lib/src/txw2-sources.jar" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/txw2/lastSuccessfulBuild/artifact/txw2/compiler/target/txwc2-${txw2.version}-sources.jar"
+        <get src="http://sysifos-sol.cz.oracle.com/hudson/job/txw2/lastSuccessfulBuild/artifact/txw2/compiler/target/txwc2-${txw2.version}-sources.jar"
              dest="tools/lib/util/txwc2-sources.jar" />
     </target>
 
@@ -368,9 +368,9 @@
     </target>
 
     <target name="integrate-xsom-hudson">
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/xsom/lastSuccessfulBuild/artifact/target/xsom-${xsom.version}.jar"
+        <get src="http://sysifos-sol.cz.oracle.com/hudson/job/xsom/lastSuccessfulBuild/artifact/target/xsom-${xsom.version}.jar"
              dest="tools/lib/rebundle/compiler/xsom.jar" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/xsom/lastSuccessfulBuild/artifact/target/xsom-${xsom.version}-sources.jar"
+        <get src="http://sysifos-sol.cz.oracle.com/hudson/job/xsom/lastSuccessfulBuild/artifact/target/xsom-${xsom.version}-sources.jar"
              dest="tools/lib/src/xsom-sources.jar" />
     </target>
 
@@ -380,13 +380,13 @@
     </target>
 
     <target name="integrate-codemodel-hudson">
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel.version}.jar"
+        <get src="http://sysifos-sol.cz.oracle.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel.version}.jar"
              dest="tools/lib/rebundle/compiler/codemodel.jar" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel.version}.jar"
+        <get src="http://sysifos-sol.cz.oracle.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel.version}.jar"
              dest="tools/lib/util/codemodel-annotation-compiler.jar" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel.version}-sources.jar"
+        <get src="http://sysifos-sol.cz.oracle.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel/target/codemodel-${codemodel.version}-sources.jar"
              dest="tools/lib/src/codemodel-sources.jar" />
-        <get src="http://sysifos-sol.czech.sun.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel.version}-sources.jar"
+        <get src="http://sysifos-sol.cz.oracle.com/hudson/job/codemodel/lastSuccessfulBuild/artifact/codemodel/codemodel-annotation-compiler/target/codemodel-annotation-compiler-${codemodel.version}-sources.jar"
              dest="tools/lib/util/codemodel-annotation-compiler-sources.jar" />
     </target>
 
@@ -398,9 +398,9 @@
     </target>
 
     <target name="integrate-istack-commons-hudson">
-        <property name="istack.commons.runtime" value="http://sysifos-sol.czech.sun.com/hudson/job/istack-commons/lastSuccessfulBuild/artifact/runtime/target/" />
-        <property name="istack.commons.tools" value="http://sysifos-sol.czech.sun.com/hudson/job/istack-commons/lastSuccessfulBuild/artifact/tools/target/" />
-        <property name="istack.commons.test" value="http://sysifos-sol.czech.sun.com/hudson/job/istack-commons/lastSuccessfulBuild/artifact/test/target/" />
+        <property name="istack.commons.runtime" value="http://sysifos-sol.cz.oracle.com/hudson/job/istack-commons/lastSuccessfulBuild/artifact/runtime/target/" />
+        <property name="istack.commons.tools" value="http://sysifos-sol.cz.oracle.com/hudson/job/istack-commons/lastSuccessfulBuild/artifact/tools/target/" />
+        <property name="istack.commons.test" value="http://sysifos-sol.cz.oracle.com/hudson/job/istack-commons/lastSuccessfulBuild/artifact/test/target/" />
 
         <get src="${istack.commons.tools}/istack-commons-tools-${istack-commons.version}.jar" dest="tools/lib/rebundle/compiler/istack-commons-tools.jar" />
         <get src="${istack.commons.tools}/istack-commons-tools-${istack-commons.version}-sources.jar" dest="tools/lib/src/istack-commons-tools-sources.jar" />
