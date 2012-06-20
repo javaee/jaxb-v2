@@ -109,8 +109,14 @@ public class ContextFactory {
             supressAccessorWarnings = false;
 
         Boolean improvedXsiTypeHandling = getPropertyValue(properties, JAXBRIContext.IMPROVED_XSI_TYPE_HANDLING, Boolean.class);
-        if(improvedXsiTypeHandling == null)
-            improvedXsiTypeHandling = true;
+        if (improvedXsiTypeHandling == null) {
+            String improvedXsiSystemProperty = Util.getSystemProperty(JAXBRIContext.IMPROVED_XSI_TYPE_HANDLING);
+            if (improvedXsiSystemProperty == null) {
+                improvedXsiTypeHandling = true;
+            } else {
+                improvedXsiTypeHandling = Boolean.valueOf(improvedXsiSystemProperty);
+            }
+        }
 
         Boolean xmlAccessorFactorySupport = getPropertyValue(properties,
            JAXBRIContext.XMLACCESSORFACTORY_SUPPORT,Boolean.class);
