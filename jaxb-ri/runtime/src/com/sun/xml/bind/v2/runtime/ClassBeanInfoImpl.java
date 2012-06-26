@@ -206,10 +206,11 @@ public final class ClassBeanInfoImpl<BeanT> extends JaxBeanInfo<BeanT> implement
             Property[] props = bi.properties;
             if (props == null) break;
             for (Property superProperty : props) {
-                if (superProperty == null) break;
-                String spName = superProperty.getFieldName();
-                if ((spName != null) && (spName.equals(p.getFieldName()))) {
-                    superProperty.setHiddenByOverride(true);
+                if (superProperty != null) {
+                    String spName = superProperty.getFieldName();
+                    if ((spName != null) && (spName.equals(p.getFieldName()))) {
+                        superProperty.setHiddenByOverride(true);
+                    }
                 }
             }
         }
