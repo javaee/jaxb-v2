@@ -926,7 +926,7 @@ Class-Path: ${manifest.classpath}
     </macrodef>
 
   <target name="useAPISnapshots">
-      <replace file="${basedir}/project.properties" token="release.spec.version=2.2.7" value="release.spec.version=2.3-SNAPSHOT"/>
+      <replace file="${basedir}/build.properties" token="release.spec.version=2.2.7" value="release.spec.version=2.3-SNAPSHOT"/>
   </target>
 
 </project>
