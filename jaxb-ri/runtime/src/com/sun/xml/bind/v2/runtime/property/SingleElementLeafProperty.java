@@ -47,6 +47,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.stream.XMLStreamException;
 
 import com.sun.xml.bind.api.AccessorException;
+import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.core.PropertyKind;
 import com.sun.xml.bind.v2.model.runtime.RuntimeElementPropertyInfo;
 import com.sun.xml.bind.v2.model.runtime.RuntimeTypeRef;
@@ -79,6 +80,7 @@ final class SingleElementLeafProperty<BeanT> extends PropertyImpl<BeanT> {
     private final String defaultValue;
     private final TransducedAccessor<BeanT> xacc;
     private final boolean improvedXsiTypeHandling;
+    private final boolean idRef;
 
     public SingleElementLeafProperty(JAXBContextImpl context, RuntimeElementPropertyInfo prop) {
         super(context, prop);
@@ -93,6 +95,7 @@ final class SingleElementLeafProperty<BeanT> extends PropertyImpl<BeanT> {
         assert xacc != null;
 
         improvedXsiTypeHandling = context.improvedXsiTypeHandling;
+        idRef = ref.getSource().id() == ID.IDREF;
     }
 
     public void reset(BeanT o) throws AccessorException {
@@ -144,6 +147,8 @@ final class SingleElementLeafProperty<BeanT> extends PropertyImpl<BeanT> {
         if (value == null) // value is not null
             return false;
         if (value.getClass().equals(valueTypeClass)) // value represented by different class
+            return false;
+        if (idRef) // IDREF
             return false;
         if (valueTypeClass.isPrimitive()) // is not primitive
             return false;
