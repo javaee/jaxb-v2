@@ -76,6 +76,14 @@
             </filterset>
         </copy>
 
+      <mkdir dir="${osgi.build}/extra"/>
+      <copy file="${osgi.root}/jaxb-extra.bnd" todir="${osgi.build}/extra">
+        <filterset>
+          <filter token="RELEASE_IMPL_VERSION" value="${release.impl.version}"/>
+          <filter token="RELEASE_SPEC_VERSION" value="${release.spec.version}"/>
+        </filterset>
+      </copy>
+
         <!-- JAXB 1.0 uses its own classloader and should be ignored by bnd. -->
         <!-- Since bnd insists on processing the entire jar, we need to remove JAXB 1.0 classes first. -->
         <mkdir dir="${osgi.build}/jaxb-xjc"/>
@@ -101,37 +109,19 @@
         <!-- The bnd task does not recognize when input files have changed, -->
         <!-- hence we delete the output file to ensure a rebuild            -->
         <delete file="${osgi.build.rt}/jaxb-bnd.jar" quiet="true"/>
+        <delete file="${osgi.build}/extra/jaxb-extra-bnd.jar" quiet="true"/>
+
+  <bnd classpath="${jaxb.libs.util}/xsdlib.jar"
+           failok="false"
+           output="${osgi.build}/extra/jaxb-extra-bnd.jar"
+           files="${osgi.build}/extra/jaxb-extra.bnd"/>
 
 	<bnd classpath="${jaxb.dist}/lib/jaxb-impl.jar, ${osgi.build}/jaxb-xjc, ${osgi.build}/fastinfoset, ${jaxb.libs.util}/stax-ex.jar"
              failok="false"
              output="${osgi.build.rt}/jaxb-bnd.jar"
              files="${osgi.build.rt}/jaxb.bnd"/>
-
-        <manifestreader fileName="${osgi.build.rt}/jaxb-bnd.jar">
-            <property name="jaxb.Ant-Version" value="Ant-Version" />
-            <property name="jaxb.Bnd-LastModified" value="Bnd-LastModified" />
-            <property name="jaxb.Build-Id" value="Build-Id" />
-            <property name="jaxb.Bundle-ManifestVersion" value="Bundle-ManifestVersion" />
-            <property name="jaxb.Bundle-Name" value="Bundle-Name" />
-            <property name="jaxb.Bundle-SymbolicName" value="Bundle-SymbolicName" />
-            <property name="jaxb.Bundle-Version" value="Bundle-Version" />
-            <property name="jaxb.Class-Path" value="Class-Path" />
-            <property name="jaxb.Created-By" value="Created-By" />
-            <property name="jaxb.Export-Package" value="Export-Package" />
-            <property name="jaxb.Extension-Name" value="Extension-Name" />
-            <property name="jaxb.Implementation-Title" value="Implementation-Title" />
-            <property name="jaxb.Implementation-Vendor" value="Implementation-Vendor" />
-            <property name="jaxb.Implementation-Vendor-Id" value="Implementation-Vendor-Id" />
-            <property name="jaxb.Implementation-Version" value="Implementation-Version" />
-            <property name="jaxb.Import-Package" value="Import-Package" />
-            <property name="jaxb.Manifest-Version" value="Manifest-Version" />
-            <property name="jaxb.Originally-Created-By" value="Originally-Created-By" />
-            <property name="jaxb.Private-Package" value="Private-Package" />
-            <property name="jaxb.Specification-Title" value="Specification-Title" />
-            <property name="jaxb.Specification-Vendor" value="Specification-Vendor" />
-            <property name="jaxb.Specification-Version" value="Specification-Version" />
-            <property name="jaxb.Tool" value="Tool" />
-        </manifestreader>
+      
+      <readManifest file="${osgi.build.rt}/jaxb-bnd.jar"/>
 
         <mkdir dir="${osgi.build.rt}/META-INF/" />
 
@@ -149,10 +139,7 @@
             <attribute name="Class-Path" value="${jaxb.Class-Path}"/>
             <attribute name="Created-By" value="${jaxb.Created-By}"/>
 
-            <!-- adding com/sun/msv/datatype/xsd to Export-package -->
-            <!-- adding com.sun.msv.grammar,com.sun.msv.grammar.trex,com.sun.msv.reader,com.sun.msv.reader.trex.ng,com.sun.msv.reader.util,com.sun.msv.util,com.sun.msv.verifier,com.sun.msv.verifier.regexp  to Export-package (fabians request for woodstock) -->
-
-            <attribute name="Export-Package" value="${jaxb.Export-Package},com.sun.msv.datatype.xsd,com.sun.msv.grammar,com.sun.msv.grammar.trex,com.sun.msv.reader,com.sun.msv.reader.trex.ng,com.sun.msv.reader.util,com.sun.msv.util,com.sun.msv.verifier,com.sun.msv.verifier.regexp"/>
+            <attribute name="Export-Package" value="${jaxb.Export-Package}"/>
             <attribute name="Extension-Name" value="${jaxb.Extension-Name}"/>
             <attribute name="Implementation-Title" value="${jaxb.Implementation-Title}"/>
             <attribute name="Implementation-Vendor" value="${jaxb.Implementation-Vendor}"/>
@@ -173,7 +160,6 @@
              manifest="${osgi.build.rt}/META-INF/MANIFEST.MF">
             <zipfileset src="${osgi.build.rt}/jaxb-bnd.jar"/>
             <zipfileset src="${jaxb.dist}/lib/jaxb-xjc.jar">
-                <include name="1.0/**"/>
                 <include name="com/sun/tools/xjc/*Task*"/>
                 <include name="com/sun/tools/jxc/*Task*"/>
                 <include name="com/sun/istack/tools/*Task*"/>
@@ -184,6 +170,43 @@
                 <include name="org/jvnet/fastinfoset/stax/**"/>
              </zipfileset>
         </jar>
+
+      <!--extra-->
+      <readManifest file="${osgi.build}/extra/jaxb-extra-bnd.jar"/>
+
+      <mkdir dir="${osgi.build}/extra/META-INF/" />
+
+      <manifest file="${osgi.build}/extra/META-INF/MANIFEST.MF">
+        <attribute name="Ant-Version" value="${jaxb.Ant-Version}"/>
+        <attribute name="Bnd-LastModified" value="${jaxb.Bnd-LastModified}"/>
+        <attribute name="Build-Id" value="${jaxb.Build-Id}"/>
+        <attribute name="Bundle-ManifestVersion" value="${jaxb.Bundle-ManifestVersion}"/>
+        <attribute name="Bundle-Name" value="${jaxb.Bundle-Name}"/>
+        <attribute name="Bundle-SymbolicName" value="${jaxb.Bundle-SymbolicName}"/>
+        <attribute name="Bundle-Version" value="${release.impl.version}"/>
+        <attribute name="Class-Path" value="${jaxb.Class-Path}"/>
+        <attribute name="Created-By" value="${jaxb.Created-By}"/>
+        <attribute name="Export-Package" value="${jaxb.Export-Package}"/>
+        <attribute name="Extension-Name" value="${jaxb.Extension-Name}"/>
+        <attribute name="Implementation-Title" value="${jaxb.Implementation-Title}"/>
+        <attribute name="Implementation-Vendor" value="${jaxb.Implementation-Vendor}"/>
+        <attribute name="Implementation-Vendor-Id" value="${jaxb.Implementation-Vendor-Id}"/>
+        <attribute name="Import-Package" value="${jaxb.Import-Package}"/>
+        <attribute name="Manifest-Version" value="${jaxb.Manifest-Version}"/>
+        <attribute name="Originally-Created-By" value="${jaxb.Originally-Created-By}"/>
+        <attribute name="Private-Package" value="${jaxb.Private-Package}"/>
+        <attribute name="Specification-Title" value="${jaxb.Specification-Title}"/>
+        <attribute name="Specification-Vendor" value="${jaxb.Specification-Vendor}"/>
+        <attribute name="Specification-Version" value="${jaxb.Specification-Version}"/>
+        <attribute name="Tool" value="${jaxb.Tool}"/>
+        <attribute name="Implementation-Version" value="${jaxb.Implementation-Version}"/>
+      </manifest>
+
+
+      <jar destfile="${osgi.dist}/jaxb-osgi-extra.jar"
+              manifest="${osgi.build}/extra/META-INF/MANIFEST.MF">
+        <zipfileset src="${jaxb.libs.util}/xsdlib.jar"/>
+      </jar>
         <copy todir="${osgi.dist}">
             <fileset dir="${jaxb.libs.osgi}" includes="*.jar"/>
         </copy>
@@ -249,4 +272,37 @@
         </batchtest>
       </junit>
     </target>
+
+  <!-- task that read properties from manifest file -->
+  <macrodef name="readManifest">
+    <attribute name="file"/>
+    <sequential>
+      <manifestreader fileName="@{file}">
+        <property name="jaxb.Ant-Version" value="Ant-Version" />
+        <property name="jaxb.Bnd-LastModified" value="Bnd-LastModified" />
+        <property name="jaxb.Build-Id" value="Build-Id" />
+        <property name="jaxb.Bundle-ManifestVersion" value="Bundle-ManifestVersion" />
+        <property name="jaxb.Bundle-Name" value="Bundle-Name" />
+        <property name="jaxb.Bundle-SymbolicName" value="Bundle-SymbolicName" />
+        <property name="jaxb.Bundle-Version" value="Bundle-Version" />
+        <property name="jaxb.Class-Path" value="Class-Path" />
+        <property name="jaxb.Created-By" value="Created-By" />
+        <property name="jaxb.Export-Package" value="Export-Package" />
+        <property name="jaxb.Extension-Name" value="Extension-Name" />
+        <property name="jaxb.Implementation-Title" value="Implementation-Title" />
+        <property name="jaxb.Implementation-Vendor" value="Implementation-Vendor" />
+        <property name="jaxb.Implementation-Vendor-Id" value="Implementation-Vendor-Id" />
+        <property name="jaxb.Implementation-Version" value="Implementation-Version" />
+        <property name="jaxb.Import-Package" value="Import-Package" />
+        <property name="jaxb.Manifest-Version" value="Manifest-Version" />
+        <property name="jaxb.Originally-Created-By" value="Originally-Created-By" />
+        <property name="jaxb.Private-Package" value="Private-Package" />
+        <property name="jaxb.Specification-Title" value="Specification-Title" />
+        <property name="jaxb.Specification-Vendor" value="Specification-Vendor" />
+        <property name="jaxb.Specification-Version" value="Specification-Version" />
+        <property name="jaxb.Tool" value="Tool" />
+      </manifestreader>
+    </sequential>
+  </macrodef>
+
 </project>

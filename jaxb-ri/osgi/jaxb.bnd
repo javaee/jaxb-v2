@@ -37,10 +37,6 @@ Export-Package: \
   org.jvnet.staxex;version=@STAX-EX_VERSION@, \
   *
 Import-Package: \
-  com.sun.mirror.apt, \
-  com.sun.mirror.declaration, \
-  com.sun.mirror.type, \
-  com.sun.mirror.util, \
   javax.activation, \
   javax.imageio, \
   javax.imageio.stream, \

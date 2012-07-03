@@ -1,0 +1,11 @@
+Bundle-SymbolicName: com.sun.xml.bind.extra
+Bundle-Name: jaxb-extra
+Export-Package: \
+  com.sun.msv.*;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.*;version=@RELEASE_IMPL_VERSION@, \
+  *
+Import-Package: \
+  org.relaxng.datatype, \
+  org.apache.xerces.impl.xpath.regex;resolution:=optional, \
+  *
+Private-Package: *
