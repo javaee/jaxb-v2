@@ -771,6 +771,10 @@ Class-Path: ${manifest.classpath}
         <mvn.publish.remote jar="${osgi.dist}/jaxb-osgi.jar" pom="build/jaxb-osgi.pom"/>
         <mvn.publish.remote jar="${osgi.dist}/jaxb-osgi-sources.jar" pom="build/jaxb-osgi.pom" classifier="sources"/>
         <mvn.publish.remote jar="${osgi.dist}/jaxb-osgi-javadoc.jar" pom="build/jaxb-osgi.pom" classifier="javadoc"/>
+      <!--extra-osgi-->
+        <mvn.publish.remote jar="${osgi.dist}/jaxb-extra-osgi.jar" pom="build/jaxb-extra-osgi.pom"/>
+        <mvn.publish.remote jar="${osgi.dist}/jaxb-extra-osgi-sources.jar" pom="build/jaxb-extra-osgi.pom" classifier="sources"/>
+        <mvn.publish.remote jar="${osgi.dist}/jaxb-extra-osgi-javadoc.jar" pom="build/jaxb-extra-osgi.pom" classifier="javadoc"/>
     </target>
 
     <target name="push-release-to-maven">
@@ -805,16 +809,23 @@ Class-Path: ${manifest.classpath}
         <mvn.publish.remote jar="${osgi.dist}/jaxb-osgi.jar" pom="build/jaxb-osgi.pom"
             repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
             password="${gpg.password}"/>
-        <mvn.publish.remote jar="${osgi.dist}/jaxb-extra-osgi.jar" pom="build/jaxb-extra-osgi.pom"
-            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
-            password="${gpg.password}"/>
         <mvn.publish.remote jar="${osgi.dist}/jaxb-osgi-sources.jar" pom="build/jaxb-osgi.pom" classifier="sources"
             repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
             password="${gpg.password}"/>
         <mvn.publish.remote jar="${osgi.dist}/jaxb-osgi-javadoc.jar" pom="build/jaxb-osgi.pom" classifier="javadoc"
             repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
             password="${gpg.password}"/>
-        <mvn.close.repo repo="${java.net.staging.repo}" extra-args="-f build/jaxb-impl.pom -Dauto=true -Dnexus.username=${nexus.username} -Dnexus.password=${nexus.password} -Dnexus.url=https://maven.java.net/ ${mvn.proxy.args}"/>
+      <!--extra-osgi-->
+        <mvn.publish.remote jar="${osgi.dist}/jaxb-extra-osgi.jar" pom="build/jaxb-extra-osgi.pom"
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
+            password="${gpg.password}"/>
+        <mvn.publish.remote jar="${osgi.dist}/jaxb-extra-osgi-sources.jar" pom="build/jaxb-extra-osgi.pom" classifier="sources"
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
+            password="${gpg.password}"/>
+        <mvn.publish.remote jar="${osgi.dist}/jaxb-extra-osgi-javadoc.jar" pom="build/jaxb-extra-osgi.pom" classifier="javadoc"
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
+            password="${gpg.password}"/>
+      <mvn.close.repo repo="${java.net.staging.repo}" extra-args="-f build/jaxb-impl.pom -Dauto=true -Dnexus.username=${nexus.username} -Dnexus.password=${nexus.password} -Dnexus.url=https://maven.java.net/ ${mvn.proxy.args}"/>
     </target>
     
     <target name="dist-zip" depends="dist" description="run dist then package the image to jaxb-ri.zip">
