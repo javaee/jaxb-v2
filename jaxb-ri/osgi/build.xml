@@ -203,7 +203,7 @@
       </manifest>
 
 
-      <jar destfile="${osgi.dist}/jaxb-osgi-extra.jar"
+      <jar destfile="${osgi.dist}/jaxb-extra-osgi.jar"
               manifest="${osgi.build}/extra/META-INF/MANIFEST.MF">
         <zipfileset src="${jaxb.libs.util}/xsdlib.jar"/>
       </jar>
