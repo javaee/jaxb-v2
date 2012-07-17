@@ -203,7 +203,7 @@
       </manifest>
 
 
-      <jar destfile="${osgi.dist}/jaxb-osgi-extra.jar"
+      <jar destfile="${osgi.dist}/jaxb-extra-osgi.jar"
               manifest="${osgi.build}/extra/META-INF/MANIFEST.MF">
         <zipfileset src="${jaxb.libs.util}/xsdlib.jar"/>
       </jar>
@@ -237,6 +237,19 @@
         <zip zipfile="${osgi.dist}/jaxb-osgi-javadoc.jar">
             <fileset dir="${jaxb.build}/jaxbosgisrc"/>
         </zip>
+
+        <unzip src="${jaxb.libs.src}/xsdlib-src.zip" dest="${jaxb.build}/jaxb.extra.osgi.src"/>
+        <mkdir dir="${jaxb.build}/jaxb.extra.osgi.api"/>
+        <javadoc destdir="${jaxb.build}/jaxb.extra.osgi.api" use="true" defaultexcludes="yes"
+                 author="false" version="false" windowtitle="JAXB RI" useexternalfile="true" access="public">
+          <fileset dir="${jaxb.build}/jaxb.extra.osgi.src"
+                   includes="xsdlib/src/**/*.java, xsdlib/src-apache/**/*.java"/>
+          <classpath refid="javac.classpath"/>
+          <arg value="-quiet"/>
+        </javadoc>
+        <zip zipfile="${osgi.dist}/jaxb-extra-osgi-javadoc.jar">
+          <fileset dir="${jaxb.build}/jaxb.extra.osgi.api"/>
+        </zip>
     </target>
 
     <target name="sources">
@@ -245,6 +258,10 @@
             <zipfileset src="${jaxb.dist}/lib/jaxb-xjc.src.zip"/>
             <zipfileset src="${jaxb.libs.src}/fi-sources.jar"/>
             <zipfileset src="${jaxb.libs.util}/stax-ex-src.zip"/>
+        </jar>
+
+        <jar destfile="${osgi.dist}/jaxb-extra-osgi-sources.jar">
+            <zipfileset src="${jaxb.libs.src}/xsdlib-src.zip"/>
         </jar>
     </target>
 

@@ -62,6 +62,10 @@ public class OSGiBundleVersionTest extends TestCase {
         for (File f : new File(osgiFolder).listFiles(new FF())) {
             System.out.println("Checking: " + f.getAbsolutePath());
             Manifest mf = new JarFile(f).getManifest();
+            if (mf == null) {
+                System.out.println("No manifest file");
+                continue;
+            }
             String version = mf.getMainAttributes().getValue("Bundle-Version");
             if (version == null) {
                 System.out.println("no 'Bundle-Version' version for: " + f.getName());
