@@ -230,8 +230,10 @@
     </path>
 
     <target name="javadoc">
+        <unzip src="${jaxb.dist}/lib/jaxb-core.src.zip" dest="${jaxb.build}/jaxbosgisrc"/>
         <unzip src="${jaxb.dist}/lib/jaxb-impl.src.zip" dest="${jaxb.build}/jaxbosgisrc"/>
         <unzip src="${jaxb.dist}/lib/jaxb-xjc.src.zip" dest="${jaxb.build}/jaxbosgisrc"/>
+        <unzip src="${jaxb.dist}/lib/jaxb-jxc.src.zip" dest="${jaxb.build}/jaxbosgisrc"/>
         <mkdir dir="${jaxb.build}/jaxbosgiapi"/>
         <javadoc destdir="${jaxb.build}/jaxbosgiapi" use="true" defaultexcludes="yes"
             author="false" version="false" windowtitle="JAXB RI" useexternalfile="true" access="public">

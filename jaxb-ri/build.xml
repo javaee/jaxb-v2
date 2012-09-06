@@ -169,6 +169,7 @@
         <sequential> <!--core-->
           <zip zipfile="${jaxb.dist}/lib/jaxb-core.src.zip">
             <fileset dir="${core.src}"/>
+            <fileset dir="${core.gensrc}"/>
           </zip>
         </sequential>
         <sequential> <!--runtime-->

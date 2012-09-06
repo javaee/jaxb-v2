@@ -281,7 +281,7 @@
         deprecation="${compile.deprecation}" >
 
         <classpath>
-          <path refid="javac.classpath" />
+          <path refid="core.javac.classpath" />
           <pathelement path="${runtime.classes}" />
         </classpath>
       </javac>
@@ -290,7 +290,7 @@
       <junit printsummary="yes" fork="no" haltonerror="yes" haltonfailure="yes">
 
         <classpath>
-          <path refid="javac.classpath" />
+          <path refid="core.javac.classpath" />
           <pathelement path="${runtime.classes}"/>
           <pathelement path="${runtime.test.classes}"/>
         </classpath>
