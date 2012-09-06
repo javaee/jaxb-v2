@@ -195,7 +195,6 @@
           </replace>
           <zip zipfile="${jaxb.dist}/lib/jaxb-xjc.src.zip">
             <fileset dir="tmp_xjc" excludes="purify.xsl"/>
-            <fileset dir="${xjc.gensrc}"/>
             <zipfileset src="${jaxb.libs}/src/dtd-parser-sources.jar" />
             <zipfileset src="${jaxb.libs}/src/codemodel-sources.jar" />
             <zipfileset src="${jaxb.libs}/src/resolver-comsun-src.zip" />
@@ -210,7 +209,7 @@
           <copy todir="tmp_jxc">
             <fileset dir="${jxc.src}"/>
           </copy>
-          <replace dir="tmp_xjc/com/sun/tools/jxc" includes="MessageBundle*.properties">
+          <replace dir="tmp_jxc/com/sun/tools/jxc" includes="MessageBundle*.properties">
             <replacefilter token="@@BUILD_VERSION@@" value="${build.version}"/>
             <replacefilter token="@@BUILD_FULL_VERSION@@" value="${build.full.version}"/>
           </replace>
@@ -223,6 +222,7 @@
       </parallel>
       <delete dir="tmp" />
       <delete dir="tmp_xjc" />
+      <delete dir="tmp_jxc" />
       <ant dir="osgi" target="javadoc"/>
       <ant dir="osgi" target="sources"/>
     </target>
