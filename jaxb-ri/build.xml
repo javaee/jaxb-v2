@@ -823,12 +823,23 @@ Class-Path: ${manifest.classpath}
         <replace dir="${jaxb.build}" includes="*.pom" token="@API_VERSION@" value="${release.spec.version}"/>
         <replace dir="${jaxb.build}" includes="*.pom" token="@FI_VERSION@" value="${fi.version}"/>
         <replace dir="${jaxb.build}" includes="*.pom" token="@ISTACK_COMMONS_VERSION@" value="${istack-commons.version}"/>
+        <!--core-->
+        <mvn.publish.remote jar="dist/lib/jaxb-core.jar" pom="build/jaxb-core.pom"/>
+        <mvn.publish.remote jar="dist/lib/jaxb-core.src.zip" pom="build/jaxb-core.pom" classifier="sources"/>
+        <mvn.publish.remote jar="dist/lib/jaxb-core-javadoc.jar" pom="build/jaxb-core.pom" classifier="javadoc"/>
+        <!--impl-->
         <mvn.publish.remote jar="dist/lib/jaxb-impl.jar" pom="build/jaxb-impl.pom"/>
         <mvn.publish.remote jar="dist/lib/jaxb-impl.src.zip" pom="build/jaxb-impl.pom" classifier="sources"/>
         <mvn.publish.remote jar="dist/lib/jaxb-impl-javadoc.jar" pom="build/jaxb-impl.pom" classifier="javadoc"/>
+        <!--jxc-->
+        <mvn.publish.remote jar="dist/lib/jaxb-jxc.jar" pom="build/jaxb-jxc.pom"/>
+        <mvn.publish.remote jar="dist/lib/jaxb-jxc.src.zip" pom="build/jaxb-jxc.pom" classifier="sources"/>
+        <mvn.publish.remote jar="dist/lib/jaxb-jxc-javadoc.jar" pom="build/jaxb-jxc.pom" classifier="javadoc"/>
+        <!--xjc-->
         <mvn.publish.remote jar="dist/lib/jaxb-xjc.jar" pom="build/jaxb-xjc.pom"/>
         <mvn.publish.remote jar="dist/lib/jaxb-xjc.src.zip" pom="build/jaxb-xjc.pom" classifier="sources"/>
         <mvn.publish.remote jar="dist/lib/jaxb-xjc-javadoc.jar" pom="build/jaxb-xjc.pom" classifier="javadoc"/>
+
         <mvn.publish.remote jar="${osgi.dist}/jaxb-osgi.jar" pom="build/jaxb-osgi.pom"/>
         <mvn.publish.remote jar="${osgi.dist}/jaxb-osgi-sources.jar" pom="build/jaxb-osgi.pom" classifier="sources"/>
         <mvn.publish.remote jar="${osgi.dist}/jaxb-osgi-javadoc.jar" pom="build/jaxb-osgi.pom" classifier="javadoc"/>
@@ -847,23 +858,44 @@ Class-Path: ${manifest.classpath}
         <replace dir="${jaxb.build}" includes="*.pom" token="@API_VERSION@" value="${release.spec.version}"/>
         <replace dir="${jaxb.build}" includes="*.pom" token="@FI_VERSION@" value="${fi.version}"/>
         <replace dir="${jaxb.build}" includes="*.pom" token="@ISTACK_COMMONS_VERSION@" value="${istack-commons.version}"/>
-        <mvn.publish.remote jar="dist/lib/jaxb-impl.jar" pom="build/jaxb-impl.pom" 
+        <!--core-->
+        <mvn.publish.remote jar="dist/lib/jaxb-core.jar" pom="build/jaxb-core.pom"
             repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
             password="${gpg.password}"/>
-        <mvn.publish.remote jar="dist/lib/jaxb-impl.src.zip" pom="build/jaxb-impl.pom" classifier="sources" 
+        <mvn.publish.remote jar="dist/lib/jaxb-core.src.zip" pom="build/jaxb-core.pom" classifier="sources"
             repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
             password="${gpg.password}"/>
-        <mvn.publish.remote jar="dist/lib/jaxb-impl-javadoc.jar" pom="build/jaxb-impl.pom" classifier="javadoc" 
+        <mvn.publish.remote jar="dist/lib/jaxb-core-javadoc.jar" pom="build/jaxb-core.pom" classifier="javadoc"
             repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
             password="${gpg.password}"/>
-            
-        <mvn.publish.remote jar="dist/lib/jaxb-xjc.jar" pom="build/jaxb-xjc.pom" 
+        <!--impl-->
+        <mvn.publish.remote jar="dist/lib/jaxb-impl.jar" pom="build/jaxb-impl.pom"
             repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
             password="${gpg.password}"/>
-        <mvn.publish.remote jar="dist/lib/jaxb-xjc.src.zip" pom="build/jaxb-xjc.pom" classifier="sources" 
+        <mvn.publish.remote jar="dist/lib/jaxb-impl.src.zip" pom="build/jaxb-impl.pom" classifier="sources"
             repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
             password="${gpg.password}"/>
-        <mvn.publish.remote jar="dist/lib/jaxb-xjc-javadoc.jar" pom="build/jaxb-xjc.pom" classifier="javadoc" 
+        <mvn.publish.remote jar="dist/lib/jaxb-impl-javadoc.jar" pom="build/jaxb-impl.pom" classifier="javadoc"
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
+            password="${gpg.password}"/>
+        <!--jxc    -->
+        <mvn.publish.remote jar="dist/lib/jaxb-jxc.jar" pom="build/jaxb-jxc.pom"
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
+            password="${gpg.password}"/>
+        <mvn.publish.remote jar="dist/lib/jaxb-jxc.src.zip" pom="build/jaxb-jxc.pom" classifier="sources"
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
+            password="${gpg.password}"/>
+        <mvn.publish.remote jar="dist/lib/jaxb-jxc-javadoc.jar" pom="build/jaxb-jxc.pom" classifier="javadoc"
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
+            password="${gpg.password}"/>
+        <!--xjc    -->
+        <mvn.publish.remote jar="dist/lib/jaxb-xjc.jar" pom="build/jaxb-xjc.pom"
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
+            password="${gpg.password}"/>
+        <mvn.publish.remote jar="dist/lib/jaxb-xjc.src.zip" pom="build/jaxb-xjc.pom" classifier="sources"
+            repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
+            password="${gpg.password}"/>
+        <mvn.publish.remote jar="dist/lib/jaxb-xjc-javadoc.jar" pom="build/jaxb-xjc.pom" classifier="javadoc"
             repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
             password="${gpg.password}"/>
 

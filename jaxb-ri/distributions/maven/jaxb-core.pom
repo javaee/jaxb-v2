@@ -56,8 +56,8 @@
   <version>@VERSION@</version>
   <packaging>jar</packaging>
 
-  <name>JAXB XJC</name>
-  <description>JAXB (JSR 222) reference implementation - Schema compiler (core classes)</description>
+  <name>JAXB CORE</name>
+  <description>JAXB (JSR 222) reference implementation - core classes</description>
   <url>http://jaxb.java.net/</url>
 
   <organization>
