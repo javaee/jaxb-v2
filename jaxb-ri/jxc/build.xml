@@ -140,7 +140,17 @@
     </target>
 
     <!-- generate javadoc -->
-    <target name="javadoc">
+  <path id="javadoc.classpath">
+    <pathelement path="${jxc.classes}"/>
+    <pathelement path="${core.classes}"/>
+    <pathelement path="${runtime.classes}"/>
+    <pathelement path="${xjc.classes}" />
+    <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
+    <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
+    <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
+  </path>
+
+  <target name="javadoc">
         <mkdir dir="${jxc.root}/build/api" />
         <javadoc
             destdir="${jxc.root}/build/api"
@@ -152,7 +162,7 @@
             access="public">
             <fileset dir="${jxc.src}" includes="com/sun/xml/bind/**/*.java"/>
             <fileset dir="${jxc.root}/build/src" includes="**/*.java"/>
-            <classpath refid="javac.classpath"/>
+            <classpath refid="javadoc.classpath"/>
             <arg value="-quiet"/>
         </javadoc>
         <!-- javadoc should copy those files, but it doesn't seem to do that -->

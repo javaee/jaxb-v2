@@ -129,6 +129,8 @@
 
   <path id="javadoc.classpath">
     <pathelement path="${core.classes}"/>
+    <pathelement path="${runtime.classes}"/>
+    <pathelement path="${xjc.classes}" />
     <pathelement path="${schemagen.classes}"/>
     <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
     <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
@@ -148,6 +150,8 @@
              windowtitle="jaxb-core"
              doctitle="jaxb-core"
              access="public">
+      <fileset dir="${core.src}" includes="**/*.java"/>
+      <fileset dir="${core.root}/build/src" includes="**/*.java"/>
       <classpath refid="javadoc.classpath"/>
       <arg value="-quiet"/>
     </javadoc>

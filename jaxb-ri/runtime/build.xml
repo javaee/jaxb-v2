@@ -232,7 +232,15 @@
     </target>
 
     <!-- generate javadoc -->
-    <target name="javadoc">
+  <path id="javadoc.classpath">
+    <pathelement path="${core.classes}"/>
+    <pathelement path="${runtime.classes}"/>
+    <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
+    <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
+    <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
+  </path>
+
+  <target name="javadoc">
         <mkdir dir="${runtime.root}/build/api" />
         <javadoc
             destdir="${runtime.root}/build/api"
@@ -244,7 +252,7 @@
             access="public">
             <fileset dir="${runtime.src}" includes="com/sun/xml/bind/**/*.java"/>
             <fileset dir="${runtime.root}/build/src" includes="**/*.java"/>
-            <classpath refid="javac.classpath"/>
+            <classpath refid="javadoc.classpath"/>
             <arg value="-quiet"/>
         </javadoc>
         <!-- javadoc should copy those files, but it doesn't seem to do that -->

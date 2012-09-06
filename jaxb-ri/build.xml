@@ -149,7 +149,7 @@
         <ant dir="xjc"     target="javadoc" />
         <ant dir="jxc"     target="javadoc" />
         <zip zipfile="${jaxb.dist}/lib/jaxb-core-javadoc.jar">
-            <fileset dir="${core.root}/build/api"/>
+            <fileset dir="${core.root}/build/javadoc"/>
         </zip>
         <zip zipfile="${jaxb.dist}/lib/jaxb-impl-javadoc.jar">
             <fileset dir="${runtime.root}/build/api"/>
@@ -158,7 +158,7 @@
             <fileset dir="${xjc.root}/build/javadoc"/>
         </zip>        
         <zip zipfile="${jaxb.dist}/lib/jaxb-jxc-javadoc.jar">
-            <fileset dir="${jxc.root}/build/javadoc"/>
+            <fileset dir="${jxc.root}/build/api"/>
         </zip>
     </target>
 
