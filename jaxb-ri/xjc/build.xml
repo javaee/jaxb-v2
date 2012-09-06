@@ -55,8 +55,7 @@
 
     <!-- libraries that are referenced when compiling Java source files -->
     <path id="javac.classpath">
-      <pathelement path="${runtime.classes}" />
-      <pathelement path="${schemagen.classes}" />
+      <pathelement path="${core.classes}"/>
       <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
       <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
       <!-- XJCTask depends on Ant. -->
@@ -86,96 +85,19 @@
       </taskdef>
     </target>
 
-    <!-- check if RelaxNGCC needs to be run -->
-    <target name="ngcc-check">
-      <condition property="ngcc.notrequired">
-        <uptodate
-          targetfile="${xjc.src}/com/sun/tools/jxc/gen/config/Config.java">
-          <srcfiles dir="${xjc.src}/com/sun/tools/jxc/gen/config" includes="config.rng"/>
-        </uptodate>
-      </condition>
-    </target>
-
-    <!-- run RELAXNGCC -->
-    <target name="ngcc" 
-            unless="ngcc.notrequired" 
-            depends="ngcc-check">
-      <mkdir dir="${xjc.gensrc}"/>
-
-      <delete dir="${xjc.gensrc}/com/sun/tools/jxc/gen/config" />
-      <mkdir  dir="${xjc.gensrc}/com/sun/tools/jxc/gen/config"/>
-      <java classname="relaxngcc.RelaxNGCC" fork="true">
-        <classpath refid="javac.classpath" />
-        <classpath path="${jaxb.libs.util}/relaxngcc.jar"/>
-
-        <!-- enable debug statements -->
-        <!--arg value="-d"/-->
-
-        <!-- specify output directory -->
-        <arg value="--target"/>
-        <arg path="${xjc.gensrc}/com/sun/tools/jxc/gen/config" />
-
-        <!-- source file -->
-        <arg path="${xjc.src}/com/sun/tools/jxc/gen/config/config.rng"/>
-      </java>
-      <licence licence="${jaxb.root}/licenceheader.txt">
-        <fileset dir="${xjc.gensrc}" includes="com/sun/tools/jxc/**/*.java"/>
-      </licence>
-    </target>
-
-  <target name="annotation-writers-check">
-      <available property="writers.not.required" file="${xjc.gensrc}/com/sun/tools/xjc/generator/annotation/ri/OverrideAnnotationOfWriter.java"/>
-  </target>
-  
-  <target name="annotation-writers" depends="annotation-writers-check"
-          description="generate CodeModel typed annotation writers"
-          unless="writers.not.required">
-     <taskdef name="cac" classname="com.sun.codemodel.ac.ACTask">
-       <classpath>
-         <pathelement path="${jaxb.libs.compiler}/codemodel.jar" />
-         <pathelement path="${jaxb.libs.util}/codemodel-annotation-compiler.jar" />
-         <pathelement path="${jaxb.libs.compiler}/istack-commons-tools.jar" />
-       </classpath>
-     </taskdef>
-     
-     <property name="jaxb-api.path" value="${jaxb.libs.redist}/jaxb-api.jar"/>
-     <mkdir dir="${xjc.gensrc}"/>
-     <cac destdir="${xjc.gensrc}"
-       package="com.sun.tools.xjc.generator.annotation.spec">
-       <classes includes="javax.xml.bind.annotation.*"
-                excludes="javax.xml.bind.annotation.XmlJavaTypeAdapter" />
-       <classes includes="javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter" />
-       <classpath>
-         <pathelement path="${jaxb-api.path}"/>
-       </classpath>
-       <endorse path="${jaxb-api.path}"/>
-     </cac>
-     <cac destdir="${xjc.gensrc}"
-       package="com.sun.tools.xjc.generator.annotation.ri">
-       <classes includes="com.sun.xml.bind.annotation.*"/>
-       <classpath>
-         <pathelement path="${runtime.classes}"/>
-       </classpath>
-     </cac>
-      <licence licence="${jaxb.root}/licenceheader.txt">
-        <fileset dir="${xjc.gensrc}" includes="com/sun/tools/xjc/generator/annotation/ri/*.java"/>
-        <fileset dir="${xjc.gensrc}" includes="com/sun/tools/xjc/generator/annotation/spec/*.java"/>
-      </licence>
-  </target>
-    
      <!-- compile Java source files -->
+     <!--dependent on 'core' compile-->
     <target name="compile"
-            depends="init, ngcc, annotation-writers"
+            depends="init"
             description="compile all xjc src into jaxb-ri/xjc/build/classes">
-        <!-- no way to 'depend' on codemodel and runtime targets, so just -->
-        <!-- call the targets to make sure they are up to date            -->
-        <ant target="compile" antfile="${runtime.root}/build.xml" />
+
+        <ant target="compile-annotation-writers" antfile="${core.root}/build.xml" />
 
         <mkdir dir="${xjc.classes}" />
 
-        <javac srcdir="${xjc.src}:${xjc.gensrc}" destdir="${xjc.classes}"
+        <javac srcdir="${xjc.src}" destdir="${xjc.classes}"
             debug="${compile.debug}" optimize="${compile.optimize}"
-            source="1.5" target="1.5"
+            source="1.6" target="1.6"
             deprecation="${compile.deprecation}" >
             <compilerarg value="-XDignore.symbol.file=true"/>
             <classpath refid="javac.classpath" />
@@ -187,9 +109,6 @@
           <fileset dir="${xjc.src}" includes="**/*.xsd" />
         </copy>
         
-        <!-- always delete these prop files so that the latest build id can be set -->
-        <delete file="${xjc.classes}/com/sun/tools/xjc/MessageBundle*.properties"/>
-
         <copy toDir="${xjc.classes}">
           <fileset dir="${xjc.src}" includes="**/*.properties" />
           <filterset begintoken="@@" endtoken="@@">
@@ -212,10 +131,9 @@
 	    description="compile xjc/test">
         <javac srcdir="${xjc.test}" destdir="${xjc.classes}"
             debug="${compile.debug}" optimize="${compile.optimize}"
-        	source="1.5" target="1.5">
+        	source="1.6" target="1.6">
             <classpath refid="javac.classpath" />
             <classpath path="${xjc.classes}" />
-            <classpath path="${runtime.classes}"/>
             <classpath path="${spec.classes}"/>
             <classpath>
               <fileset dir="${jaxb.libs.util}" includes="*.jar" />
@@ -247,8 +165,7 @@
     
     <path id="javadoc.classpath">
         <pathelement path="${xjc.classes}" />
-        <pathelement path="${runtime.classes}" />
-        <pathelement path="${schemagen.classes}" />
+        <pathelement path="${core.classes}" />
         <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
         <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
         <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
@@ -258,7 +175,7 @@
             description="generate javadoc for xjc into jaxb-ri/xjc/docs/api">
       <mkdir dir="${xjc.root}/build/javadoc" />
       <javadoc sourcepath="${xjc.src}"
-            packagenames="com.sun.tools.xjc, com.sun.tools.jxc, com.sun.tools.xjc.api"
+            packagenames="com.sun.tools.xjc, com.sun.tools.xjc.api"
             destdir="${xjc.root}/build/javadoc"
             use="true" defaultexcludes="yes"
             author="false"
@@ -275,14 +192,8 @@
     <!-- remove all intermediate files -->
     <target name="clean"
             description="clean jaxb-ri/xjc/build">
-      <!-- delete all RelaxNGCC-generated files -->
-      <delete failonerror="false">
-        <fileset dir="${xjc.src}/com/sun/tools/jxc/gen/config" includes="**/*.java"/>
-      </delete>
 
       <delete dir="${xjc.root}/build" />
-
-      <delete file="${xjc.root}/manifest.xjc" />
     </target>
 
 </project>

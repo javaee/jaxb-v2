@@ -56,7 +56,7 @@
         <mkdir dir="${root}/build/classes" />
         <javac srcdir="${root}/src" destdir="${root}/build/classes"
             debug="${compile.debug}" optimize="${compile.optimize}"
-        	source="1.5" target="1.5">
+        	source="1.6" target="1.6">
             <classpath>
       			<fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
       			<fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>

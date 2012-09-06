@@ -46,7 +46,6 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
 import com.sun.tools.xjc.model.CElementInfo;
 import com.sun.tools.xjc.model.Model;
-import com.sun.xml.bind.v2.ContextFactory;
 
 /**
  * {@link ObjectFactoryGenerator} used when we generate
@@ -68,7 +67,7 @@ public final class DualObjectFactoryGenerator extends ObjectFactoryGenerator {
 
         // put the marker so that we can detect missing jaxb.properties
         publicOFG.getObjectFactory().field(JMod.PRIVATE|JMod.STATIC|JMod.FINAL,
-                Void.class, ContextFactory.USE_JAXB_PROPERTIES, JExpr._null());
+                Void.class, "_useJAXBProperties", JExpr._null());
     }
 
     void populate(CElementInfo ei) {

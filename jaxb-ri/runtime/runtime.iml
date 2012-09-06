@@ -2,8 +2,8 @@
 <module relativePaths="false" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/build/classes" />
-    <exclude-output />
     <output-test url="file://$MODULE_DIR$/build/test" />
+    <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/arch-doc" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/build/src" isTestSource="false" />
@@ -13,9 +13,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="util" level="project" />
-    <orderEntry type="library" exported="" name="runtime" level="project" />
-    <orderEntryProperties />
+    <orderEntry type="module" module-name="core" />
+    <orderEntry type="library" name="jaxb-api-osgi" level="project" />
+    <orderEntry type="module" module-name="apgen" />
   </component>
   <component name="copyright">
     <Base>

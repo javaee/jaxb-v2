@@ -43,12 +43,12 @@ package com.sun.tools.xjc.model;
 import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JType;
+import com.sun.xml.bind.v2.model.util.ArrayInfoUtil;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.xml.bind.v2.model.core.ArrayInfo;
-import com.sun.xml.bind.v2.model.impl.ArrayInfoImpl;
 import com.sun.xml.xsom.XSComponent;
 
 import org.xml.sax.Locator;
@@ -72,7 +72,7 @@ public final class CArrayInfo extends AbstractCTypeInfoImpl implements ArrayInfo
         super(model,source,customizations);
         this.itemType = itemType;
         assert itemType.getTypeName()!=null;
-        this.typeName = ArrayInfoImpl.calcArrayTypeName(itemType.getTypeName());
+        this.typeName = ArrayInfoUtil.calcArrayTypeName(itemType.getTypeName());
     }
 
     public CNonElement getItemType() {

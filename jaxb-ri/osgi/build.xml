@@ -90,13 +90,18 @@
         <unjar src="${jaxb.dist}/lib/jaxb-xjc.jar"
                dest="${osgi.build}/jaxb-xjc">
             <patternset>
-                <exclude name="1.0/**"/>
                 <exclude name="com/sun/tools/xjc/*Task*"/>
-                <exclude name="com/sun/tools/jxc/*Task*"/>
                 <exclude name="com/sun/istack/tools/*Task*"/>
-		<exclude name="org/kohsuke/**"/>
+		            <exclude name="org/kohsuke/**"/>
             </patternset>
         </unjar>
+
+      <!--todo: CHECK THIS UNJAR - this depends on jaxb-impl not xjc-->
+        <unjar src="${jaxb.dist}/lib/jaxb-core.jar"
+               dest="${osgi.build}/jaxb-xjc"/>
+
+        <unjar src="${jaxb.dist}/lib/jaxb-jxc.jar"
+               dest="${osgi.build}/jaxb-xjc"/>
 
         <unjar src="${jaxb.libs.util}/FastInfoset.jar"
                dest="${osgi.build}/fastinfoset">
@@ -271,7 +276,7 @@
 
       <javac srcdir="${osgi.root}/test" destdir="${jaxb.root}/build/test/classes"
         debug="true" optimize="true"
-      	source="1.5" target="1.5"
+      	source="1.6" target="1.6"
         deprecation="${compile.deprecation}"
         classpathref="javac.classpath" />
 

@@ -103,10 +103,12 @@
             depends="init-standalone"
             description="compile runtime, and xjc sub-projects">
         <ant dir="apgen"               target="compile" />
+        <ant dir="core"                target="compile" />
         <ant dir="runtime"             target="compile" />
         <ant dir="runtime-fi"          target="compile" />
         <ant dir="runtime-staxex"      target="compile" />
         <ant dir="xjc"                 target="compile" />
+        <ant dir="jxc"                 target="compile" />
         <ant dir="tools"               target="compile" />
     </target>
 
@@ -142,21 +144,34 @@
     </path>
 
     <target name="javadoc">
+        <ant dir="core"     target="javadoc" />
         <ant dir="runtime" target="javadoc" />
         <ant dir="xjc"     target="javadoc" />
+        <ant dir="jxc"     target="javadoc" />
+        <zip zipfile="${jaxb.dist}/lib/jaxb-core-javadoc.jar">
+            <fileset dir="${core.root}/build/api"/>
+        </zip>
         <zip zipfile="${jaxb.dist}/lib/jaxb-impl-javadoc.jar">
             <fileset dir="${runtime.root}/build/api"/>
         </zip>
         <zip zipfile="${jaxb.dist}/lib/jaxb-xjc-javadoc.jar">
             <fileset dir="${xjc.root}/build/javadoc"/>
         </zip>        
+        <zip zipfile="${jaxb.dist}/lib/jaxb-jxc-javadoc.jar">
+            <fileset dir="${jxc.root}/build/javadoc"/>
+        </zip>
     </target>
 
     <target name="src-zip" depends="init-standalone,dist"
             description="source zip files for JAXB RI jar files into the dist dir.">
         <mkdir dir="tmp"/>
       <parallel>
-        <sequential>
+        <sequential> <!--core-->
+          <zip zipfile="${jaxb.dist}/lib/jaxb-core.src.zip">
+            <fileset dir="${core.src}"/>
+          </zip>
+        </sequential>
+        <sequential> <!--runtime-->
           <zip zipfile="${jaxb.dist}/lib/jaxb-impl.src.zip">
             <fileset dir="${runtime.src}"/>
             <fileset dir="${runtime-fi.src}"/>
@@ -166,16 +181,12 @@
             <zipfileset src="${jaxb.libs}/src/istack-commons-runtime-sources.jar"/>
           </zip>
         </sequential>
-        <sequential>
+        <sequential> <!--xjc-->
           <mkdir dir="tmp_xjc" />
           <copy todir="tmp_xjc">
             <fileset dir="${xjc.src}"/>
           </copy>
           <replace dir="tmp_xjc/com/sun/tools/xjc" includes="MessageBundle*.properties">
-            <replacefilter token="@@BUILD_VERSION@@" value="${build.version}"/>
-            <replacefilter token="@@BUILD_FULL_VERSION@@" value="${build.full.version}"/>
-          </replace>
-          <replace dir="tmp_xjc/com/sun/tools/jxc" includes="MessageBundle*.properties">
             <replacefilter token="@@BUILD_VERSION@@" value="${build.version}"/>
             <replacefilter token="@@BUILD_FULL_VERSION@@" value="${build.full.version}"/>
           </replace>
@@ -194,6 +205,21 @@
             <zipfileset src="${jaxb.libs}/src/istack-commons-tools-sources.jar"/>
           </zip>
         </sequential>
+        <sequential> <!--jxc-->
+          <mkdir dir="tmp_jxc" />
+          <copy todir="tmp_jxc">
+            <fileset dir="${jxc.src}"/>
+          </copy>
+          <replace dir="tmp_xjc/com/sun/tools/jxc" includes="MessageBundle*.properties">
+            <replacefilter token="@@BUILD_VERSION@@" value="${build.version}"/>
+            <replacefilter token="@@BUILD_FULL_VERSION@@" value="${build.full.version}"/>
+          </replace>
+          <zip zipfile="${jaxb.dist}/lib/jaxb-jxc.src.zip">
+            <fileset dir="tmp_jxc" excludes="purify.xsl"/>
+            <fileset dir="${jxc.gensrc}"/>
+          </zip>
+        </sequential>
+
       </parallel>
       <delete dir="tmp" />
       <delete dir="tmp_xjc" />
@@ -235,10 +261,12 @@
           </delete>
 
           <!-- clean sub-projects -->
+          <ant dir="core"               target="clean" />
           <ant dir="runtime"            target="clean" />
           <ant dir="runtime-fi"         target="clean" />
           <ant dir="runtime-staxex"     target="clean" />
           <ant dir="xjc"                target="clean" />
+          <ant dir="jxc"                target="clean" />
           <ant dir="tools"              target="clean"/>
           <ant dir="apgen"              target="clean" />
           <ant dir="reflection"         target="clean" />
@@ -483,8 +511,8 @@
         </delete>
         <copy file="${maven.repo.local}/${relaxng-datatype.mvn.path}" tofile="${external.dir}/xsdlib/relaxng-datatype.jar"/>
         <exec executable="ant" dir="${external.dir}/xsdlib" failonerror="true" newenvironment="false" >
-            <arg line="-Djavac.target=1.5"/>
-            <arg line="-Djavac.source=1.5"/>
+            <arg line="-Djavac.target=1.6"/>
+            <arg line="-Djavac.source=1.6"/>
             <arg line="-DrelaxngDatatype.jar=relaxng-datatype.jar"/>
             <arg line="-Dmaven.repo.local=${maven.repo.local}"/>
             <arg line="dist"/>
@@ -502,8 +530,8 @@
         <copy file="${maven.repo.local}/${isorelax.mvn.path}" tofile="${external.dir}/msv/msv/isorelax.jar"/>
         <copy file="${maven.repo.local}/${resolver.mvn.path}" tofile="${external.dir}/msv/msv/resolver.jar"/>
         <exec executable="ant" dir="${external.dir}/msv/msv" failonerror="true" newenvironment="true" >
-            <arg line="-Djavac.target=1.5"/>
-            <arg line="-Djavac.source=1.5"/>
+            <arg line="-Djavac.target=1.6"/>
+            <arg line="-Djavac.source=1.6"/>
             <arg line="-Dfrom.source=true"/>
             <arg line="-Dcpath.fromsource=relaxng-datatype.jar:xsdlib.jar:isorelax.jar:resolver.jar"/>
             <arg line="dist"/>
@@ -547,8 +575,8 @@
         <copy file="${maven.repo.local}/${isorelax.mvn.path}" tofile="${external.dir}/relaxngcc/lib/isorelax.jar"/>
         <copy file="${maven.repo.local}/${msv.mvn.path}" tofile="${external.dir}/relaxngcc/lib/msv.jar"/>
         <subant buildpath="${external.dir}/relaxngcc" target="jar">
-            <property name="javac.source" value="1.4"/>
-            <property name="javac.target" value="1.5"/>
+            <property name="javac.source" value="1.6"/>
+            <property name="javac.target" value="1.6"/>
             <property name="cpath.fromsource" value="lib/relaxng-datatype.jar:lib/xsdlib.jar:lib/isorelax.jar:lib/msv.jar"/>
         </subant>
         <mvn.publish.local jar="${external.dir}/relaxngcc/relaxngcc.jar" mvngroup="com.sun.xml" mvnartid="relaxngcc" mvnversion="${relaxngcc.version}"/>
@@ -657,12 +685,34 @@
                 </copy>
             </sequential>
 
+          <!-- generate jaxb-core.jar -->
+          <sequential>
+            <createManifest file="${core.root}/build/manifest.core" extensionName="com.sun.xml.bind.core" />
+            <manifest mode="update" file="${core.root}/build/manifest.core">
+              <attribute name="Class-Path" value="jaxb-api.jar" />
+            </manifest>
+
+            <mkdir dir="${jaxb.root}/build/jaxb-core-rejar"/>
+            <unzip dest="${jaxb.root}/build/jaxb-core-rejar">
+              <fileset dir="${jaxb.libs.compiler}" includes="*.jar" />
+            </unzip>
+
+            <jar jarfile="${jaxb.dist}/lib/jaxb-core.jar"
+                 manifest="${core.root}/build/manifest.core"
+                 duplicate="fail">
+              <!-- can't use zipgroupfileset because of the duplicate LICENSE.txt -->
+              <fileset dir="${jaxb.root}/build/jaxb-core-rejar"/>
+              <fileset dir="${core.classes}"/>
+            </jar>
+            <delete dir="${jaxb.root}/build/jaxb-core-rejar"/>
+          </sequential>
+
               <!-- JAXB 2.0 runtime jar-->
               <!-- generate jaxb-impl.jar for 2.0 runtime -->
               <sequential>
                   <createManifest file="${runtime.root}/build/manifest.rt" extensionName="com.sun.xml.bind" />
                   <manifest mode="update" file="${runtime.root}/build/manifest.rt">
-                    <attribute name="Class-Path" value="jaxb-api.jar" /> <!-- added for JES4 script compatibility -->
+                    <attribute name="Class-Path" value="jaxb-api.jar jaxb-core.jar" /> <!-- added for JES4 script compatibility -->
                   </manifest>
                   <jar jarfile="${jaxb.dist}/lib/jaxb-impl.jar"
                        manifest="${runtime.root}/build/manifest.rt"
@@ -675,17 +725,17 @@
                   </jar>
               </sequential>
 
-              <!-- generate jaxb-xjc.jar: xjc, and schemagen subprojects -->
+              <!-- generate jaxb-xjc.jar -->
               <sequential>
-                  <createManifest file="${xjc.root}/manifest.xjc" extensionName="com.sun.tools.xjc" />
+                  <createManifest file="${xjc.root}/build/manifest.xjc" extensionName="com.sun.tools.xjc" />
 
                   <!-- the manifest classpath isn't quite like any of the path structures
                        supported by Ant, so build the list the old fashioned way.
 
                        and yes, it's OK to have new lines and spaces inbetween.
                   -->
-                  <property name="manifest.classpath" value="jaxb-api.jar jaxb-impl.jar" />
-                  <echo file="${xjc.root}/manifest.xjc" append="true"
+                  <property name="manifest.classpath" value="jaxb-api.jar jaxb-core.jar" />
+                  <echo file="${xjc.root}/build/manifest.xjc" append="true"
 >Main-Class: com.sun.tools.xjc.XJCFacade
 Class-Path: ${manifest.classpath}
 
@@ -695,19 +745,29 @@ Class-Path: ${manifest.classpath}
                     <mapper type="glob" from="*.java" to="*.java_" />
                   </copy>
 
-                  <mkdir dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
-                  <unzip dest="${jaxb.root}/build/jaxb-xjc-rejar">
-                    <fileset dir="${jaxb.libs.compiler}" includes="*.jar" />
-                  </unzip>
                   <jar jarfile="${jaxb.dist}/lib/jaxb-xjc.jar"
-                       manifest="${xjc.root}/manifest.xjc"
+                       manifest="${xjc.root}/build/manifest.xjc"
                        duplicate="fail">
-                      <!-- can't use zipgroupfileset because of the duplicate LICENSE.txt -->
-                      <fileset dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
                       <fileset dir="${xjc.classes}"/>
                       <metainf dir="${xjc.src}/META-INF" />
                   </jar>
-                  <delete dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
+              </sequential>
+
+              <!-- generate jaxb-jxc.jar -->
+              <sequential>
+                  <createManifest file="${jxc.root}/build/manifest.jxc" extensionName="com.sun.tools.jxc" />
+
+                  <property name="manifest.classpath" value="jaxb-xjc.jar" />
+                  <echo file="${xjc.root}/manifest.jxc" append="true"
+>Main-Class: com.sun.tools.jxc.SchemaGeneratorFacade
+Class-Path: ${manifest.classpath}
+
+</echo>
+                  <jar jarfile="${jaxb.dist}/lib/jaxb-jxc.jar"
+                       manifest="${jxc.root}/build/manifest.jxc"
+                       duplicate="fail">
+                      <fileset dir="${jxc.classes}"/>
+                  </jar>
               </sequential>
 
               <!-- copy bin scripts -->

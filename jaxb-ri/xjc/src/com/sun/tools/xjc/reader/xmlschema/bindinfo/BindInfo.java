@@ -61,6 +61,10 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import com.sun.codemodel.JDocComment;
+import com.sun.xml.bind.util.ImplementationContainer;
+import com.sun.xml.bind.util.ImplementationFactory;
+import com.sun.xml.bind.v2.WellKnownNamespace;
+import com.sun.xml.bind.v2.runtime.JaxbContext;
 import com.sun.tools.xjc.SchemaCache;
 import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.model.CPluginCustomization;
@@ -69,8 +73,6 @@ import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.xml.bind.annotation.XmlLocation;
 import com.sun.xml.bind.marshaller.MinimumEscapeHandler;
-import com.sun.xml.bind.v2.WellKnownNamespace;
-import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.xsom.XSComponent;
 
 import org.w3c.dom.Element;
@@ -84,7 +86,7 @@ import org.xml.sax.Locator;
  * @author
  *     Kohsuke Kawaguchi (kohsuke,kawaguchi@sun.com)
  */
-@XmlRootElement(namespace=WellKnownNamespace.XML_SCHEMA,name="annotation")
+@XmlRootElement(namespace= WellKnownNamespace.XML_SCHEMA,name="annotation")
 @XmlType(namespace=WellKnownNamespace.XML_SCHEMA,name="foobar")
 public final class BindInfo implements Iterable<BIDeclaration> {
 
@@ -326,33 +328,37 @@ public final class BindInfo implements Iterable<BIDeclaration> {
     /**
      * Lazily prepared {@link JAXBContext}.
      */
-    private static JAXBContextImpl customizationContext;
+    private static volatile JaxbContext customizationContext;
 
-    public static JAXBContextImpl getJAXBContext() {
-        synchronized(AnnotationParserFactoryImpl.class) {
-            try {
-                if(customizationContext==null)
-                    customizationContext = new JAXBContextImpl.JAXBContextBuilder().setClasses(
-                        new Class[] {
-                            BindInfo.class, // for xs:annotation
-                            BIClass.class,
-                            BIConversion.User.class,
-                            BIConversion.UserAdapter.class,
-                            BIDom.class,
-                            BIFactoryMethod.class,
-                            BIInlineBinaryData.class,
-                            BIXDom.class,
-                            BIXSubstitutable.class,
-                            BIEnum.class,
-                            BIEnumMember.class,
-                            BIGlobalBinding.class,
-                            BIProperty.class,
-                            BISchemaBinding.class
-                        }).build();
-                return customizationContext;
-            } catch (JAXBException e) {
-                throw new AssertionError(e);
+    public static JaxbContext getJAXBContext() {
+        try {
+            if (customizationContext == null) {
+                synchronized (BindInfo.class) {
+                    if (customizationContext == null) {
+                        ImplementationFactory implFactory = ImplementationContainer.getInstance().getImplementationFactory();
+                        customizationContext = implFactory.getJaxbContextBuilder().setClasses(
+                                new Class[]{
+                                        BindInfo.class, // for xs:annotation
+                                        BIClass.class,
+                                        BIConversion.User.class,
+                                        BIConversion.UserAdapter.class,
+                                        BIDom.class,
+                                        BIFactoryMethod.class,
+                                        BIInlineBinaryData.class,
+                                        BIXDom.class,
+                                        BIXSubstitutable.class,
+                                        BIEnum.class,
+                                        BIEnumMember.class,
+                                        BIGlobalBinding.class,
+                                        BIProperty.class,
+                                        BISchemaBinding.class
+                                }).build();
+                    }
+                }
             }
+            return customizationContext;
+        } catch (JAXBException e) {
+            throw new AssertionError(e);
         }
     }
 

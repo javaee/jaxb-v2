@@ -48,7 +48,7 @@
   <target name="build">
     <!-- compile -->
     <mkdir dir="build"/>
-    <javac srcdir="src" destdir="build" source="1.5" target="1.5">
+    <javac srcdir="src" destdir="build" source="1.6" target="1.6">
       <classpath>
         <fileset dir="lib" includes="**/*.jar"/>
       </classpath>

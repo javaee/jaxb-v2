@@ -86,6 +86,7 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import com.sun.istack.NotNull;
 import com.sun.istack.Pool;
+import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.Bridge;
 import com.sun.xml.bind.api.BridgeContext;
@@ -96,7 +97,6 @@ import com.sun.xml.bind.api.RawAccessor;
 import com.sun.xml.bind.api.TypeReference;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.bind.util.Which;
-import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.model.annotation.RuntimeAnnotationReader;
 import com.sun.xml.bind.v2.model.annotation.RuntimeInlineAnnotationReader;
 import com.sun.xml.bind.v2.model.core.Adapter;
@@ -139,7 +139,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * This class provides the implementation of JAXBContext.
  *
  */
-public final class JAXBContextImpl extends JAXBRIContext {
+public final class JAXBContextImpl extends JAXBRIContext implements JaxbContext {
 
     /**
      * All the bridge classes.
@@ -1061,7 +1061,7 @@ public final class JAXBContextImpl extends JAXBRIContext {
         }
     };
 
-    public static class JAXBContextBuilder {
+    public static class JAXBContextBuilder implements JaxbContextBuilder {
 
         private boolean retainPropertyInfo = false;
         private boolean supressAccessorWarnings = false;

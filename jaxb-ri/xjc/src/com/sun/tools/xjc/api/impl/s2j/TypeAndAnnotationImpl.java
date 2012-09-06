@@ -46,6 +46,7 @@ import javax.xml.bind.annotation.XmlList;
 import com.sun.codemodel.JAnnotatable;
 import com.sun.codemodel.JPrimitiveType;
 import com.sun.codemodel.JType;
+import com.sun.xml.bind.util.ImplementationContainer;
 import com.sun.tools.xjc.api.TypeAndAnnotation;
 import com.sun.tools.xjc.generator.annotation.spec.XmlJavaTypeAdapterWriter;
 import com.sun.tools.xjc.model.CAdapter;
@@ -53,7 +54,6 @@ import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.model.nav.NType;
 import static com.sun.tools.xjc.outline.Aspect.EXPOSED;
 import com.sun.tools.xjc.outline.Outline;
-import com.sun.xml.bind.v2.runtime.SwaRefAdapter;
 
 /**
  * {@link TypeAndAnnotation} implementation.
@@ -96,7 +96,7 @@ final class TypeAndAnnotationImpl implements TypeAndAnnotation {
         CAdapter adapterUse = typeUse.getAdapterUse();
         if(adapterUse!=null) {
             // ugly, ugly hack
-            if(adapterUse.getAdapterIfKnown()== SwaRefAdapter.class) {
+            if(adapterUse.getAdapterIfKnown() == ImplementationContainer.getInstance().getImplementationFactory().getSwaRefAdapter()) {
                 programElement.annotate(XmlAttachmentRef.class);
             } else {
                 // [RESULT]

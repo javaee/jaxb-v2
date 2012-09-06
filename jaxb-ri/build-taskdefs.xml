@@ -91,7 +91,7 @@
             <mkdir dir="${build.dir}" />
 
             <mkdir dir="@{unzipdir}/@{srcdir}" />
-            <javac srcdir="@{unzipdir}/@{srcdir}" debug="true" destdir="${build.dir}" source="1.5" target="1.5" classpath="@{cp}"/>
+            <javac srcdir="@{unzipdir}/@{srcdir}" debug="true" destdir="${build.dir}" source="1.6" target="1.6" classpath="@{cp}"/>
 
             <jar jarfile="@{jar}" compress="false">
                 <fileset dir="${build.dir}" />

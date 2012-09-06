@@ -81,7 +81,7 @@ import com.sun.xml.bind.WhiteSpaceProcessor;
  *
  * @author Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-public class ModelBuilder<T,C,F,M> {
+public class ModelBuilder<T,C,F,M> implements ModelBuilderI<T,C,F,M> {
 
     /**
      * {@link TypeInfo}s that are built will go into this set.
@@ -431,5 +431,15 @@ public class ModelBuilder<T,C,F,M> {
 
     public boolean isReplaced(C sc) {
         return subclassReplacements.containsKey(sc);
+    }
+
+    @Override
+    public Navigator<T, C, F, M> getNavigator() {
+        return nav;
+    }
+
+    @Override
+    public AnnotationReader<T, C, F, M> getReader() {
+        return reader;
     }
 }

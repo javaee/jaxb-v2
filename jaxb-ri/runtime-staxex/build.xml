@@ -70,7 +70,7 @@
 
         <javac srcdir="${runtime-staxex.src}" destdir="${runtime-staxex.classes}"
             debug="${compile.debug}" optimize="${compile.optimize}"
-        	source="1.5" target="1.5"
+        	source="1.6" target="1.6"
             deprecation="${compile.deprecation}" >
             <classpath refid="javac.classpath" />
         </javac>

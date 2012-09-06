@@ -22,8 +22,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="library" name="runtime" level="project" />
-    <orderEntryProperties />
+    <orderEntry type="module" module-name="core" />
   </component>
   <component name="copyright">
     <Base>

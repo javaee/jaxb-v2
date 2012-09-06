@@ -95,7 +95,7 @@
         <dependencies>
             <dependency>
                 <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-impl</artifactId>
+                <artifactId>jaxb-core</artifactId>
                 <version>@VERSION@</version>
             </dependency>
         </dependencies>

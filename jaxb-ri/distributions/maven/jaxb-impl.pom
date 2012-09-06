@@ -95,13 +95,8 @@
         <dependencies>
             <dependency>
                 <groupId>javax.xml.bind</groupId>
-                <artifactId>jaxb-api</artifactId>
+                <artifactId>jaxb-core</artifactId>
                 <version>@API_VERSION@</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.istack</groupId>
-                <artifactId>istack-commons-runtime</artifactId>
-                <version>@ISTACK_COMMONS_VERSION@</version>
             </dependency>
             <dependency>
                 <groupId>com.sun.xml.fastinfoset</groupId>

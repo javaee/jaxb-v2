@@ -49,8 +49,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.List;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -69,8 +67,6 @@ import com.sun.xml.bind.v2.runtime.reflect.opt.OptimizedAccessorFactory;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Receiver;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
-import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
-import com.sun.istack.Nullable;
 
 import org.xml.sax.SAXException;
 
