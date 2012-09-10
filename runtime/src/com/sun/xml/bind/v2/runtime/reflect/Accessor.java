@@ -199,6 +199,15 @@ public abstract class Accessor<BeanT, ValueT> implements Receiver {
     }
 
     /**
+     * Checks if it is not builtin jaxb class
+     * @param clazz to be checked
+     * @return true if it is NOT builtin class
+     */
+    public boolean isValueTypeAbstractable(Class clazz) {
+        return !nonAbstractableClasses.contains(clazz);
+    }
+
+    /**
      * Wraps this  {@link Accessor} into another {@link Accessor}
      * and performs the type adaption as necessary.
      */
