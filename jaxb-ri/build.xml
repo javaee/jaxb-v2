@@ -704,6 +704,7 @@
               <!-- can't use zipgroupfileset because of the duplicate LICENSE.txt -->
               <fileset dir="${jaxb.root}/build/jaxb-core-rejar"/>
               <fileset dir="${core.classes}"/>
+              <zipgroupfileset dir="${jaxb.libs.runtime2}" includes="*.jar" />
             </jar>
             <delete dir="${jaxb.root}/build/jaxb-core-rejar"/>
           </sequential>
@@ -722,7 +723,6 @@
                       <fileset dir="${runtime-fi.classes}"/>
                       <fileset dir="${runtime-staxex.classes}"/>
                       <fileset dir="${runtime.src}" includes="META-INF/**/*" />
-                      <zipgroupfileset dir="${jaxb.libs.runtime2}" includes="*.jar" />
                   </jar>
               </sequential>
 
@@ -735,7 +735,7 @@
 
                        and yes, it's OK to have new lines and spaces inbetween.
                   -->
-                  <property name="manifest.classpath" value="jaxb-api.jar jaxb-core.jar" />
+                  <property name="manifest.classpath" value="jaxb-api.jar jaxb-core.jar jaxb-impl.jar" />
                   <echo file="${xjc.root}/build/manifest.xjc" append="true"
 >Main-Class: com.sun.tools.xjc.XJCFacade
 Class-Path: ${manifest.classpath}
@@ -758,7 +758,7 @@ Class-Path: ${manifest.classpath}
               <sequential>
                   <createManifest file="${jxc.root}/build/manifest.jxc" extensionName="com.sun.tools.jxc" />
 
-                  <property name="manifest.classpath" value="jaxb-xjc.jar" />
+                  <property name="manifest.classpath" value="jaxb-core.jar jaxb-xjc.jar jaxb-impl.jar" />
                   <echo file="${xjc.root}/manifest.jxc" append="true"
 >Main-Class: com.sun.tools.jxc.SchemaGeneratorFacade
 Class-Path: ${manifest.classpath}
