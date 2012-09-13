@@ -85,17 +85,55 @@
       </taskdef>
     </target>
 
+    <target name="annotation-writers-check">
+        <available property="writers.not.required" file="${xjc.gensrc}/com/sun/tools/xjc/generator/annotation/ri/OverrideAnnotationOfWriter.java"/>
+    </target>
+
+    <target name="annotation-writers" depends="annotation-writers-check"
+            description="generate CodeModel typed annotation writers"
+            unless="writers.not.required">
+       <taskdef name="cac" classname="com.sun.codemodel.ac.ACTask">
+         <classpath>
+           <pathelement path="${jaxb.libs.compiler}/codemodel.jar" />
+           <pathelement path="${jaxb.libs.util}/codemodel-annotation-compiler.jar" />
+           <pathelement path="${jaxb.libs.compiler}/istack-commons-tools.jar" />
+         </classpath>
+       </taskdef>
+
+       <property name="jaxb-api.path" value="${jaxb.libs.redist}/jaxb-api.jar"/>
+       <mkdir dir="${xjc.gensrc}"/>
+       <cac destdir="${xjc.gensrc}"
+         package="com.sun.tools.xjc.generator.annotation.spec">
+         <classes includes="javax.xml.bind.annotation.*"
+                  excludes="javax.xml.bind.annotation.XmlJavaTypeAdapter" />
+         <classes includes="javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter" />
+         <classpath>
+           <pathelement path="${jaxb-api.path}"/>
+         </classpath>
+         <endorse path="${jaxb-api.path}"/>
+       </cac>
+       <cac destdir="${xjc.gensrc}"
+         package="com.sun.tools.xjc.generator.annotation.ri">
+         <classes includes="com.sun.xml.bind.annotation.*"/>
+         <classpath>
+           <pathelement path="${runtime.classes}"/>
+         </classpath>
+       </cac>
+        <licence licence="${jaxb.root}/licenceheader.txt">
+          <fileset dir="${xjc.gensrc}" includes="com/sun/tools/xjc/generator/annotation/ri/*.java"/>
+          <fileset dir="${xjc.gensrc}" includes="com/sun/tools/xjc/generator/annotation/spec/*.java"/>
+        </licence>
+    </target>
+
      <!-- compile Java source files -->
      <!--dependent on 'core' compile-->
     <target name="compile"
-            depends="init"
+            depends="init, annotation-writers"
             description="compile all xjc src into jaxb-ri/xjc/build/classes">
-
-        <ant target="compile-annotation-writers" antfile="${core.root}/build.xml" />
 
         <mkdir dir="${xjc.classes}" />
 
-        <javac srcdir="${xjc.src}" destdir="${xjc.classes}"
+        <javac srcdir="${xjc.src}:${xjc.gensrc}" destdir="${xjc.classes}"
             debug="${compile.debug}" optimize="${compile.optimize}"
             source="1.6" target="1.6"
             deprecation="${compile.deprecation}" >

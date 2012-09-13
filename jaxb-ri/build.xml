@@ -169,7 +169,6 @@
         <sequential> <!--core-->
           <zip zipfile="${jaxb.dist}/lib/jaxb-core.src.zip">
             <fileset dir="${core.src}"/>
-            <fileset dir="${core.gensrc}"/>
           </zip>
         </sequential>
         <sequential> <!--runtime-->
@@ -196,6 +195,7 @@
           </replace>
           <zip zipfile="${jaxb.dist}/lib/jaxb-xjc.src.zip">
             <fileset dir="tmp_xjc" excludes="purify.xsl"/>
+            <fileset dir="${xjc.gensrc}"/>
             <zipfileset src="${jaxb.libs}/src/dtd-parser-sources.jar" />
             <zipfileset src="${jaxb.libs}/src/codemodel-sources.jar" />
             <zipfileset src="${jaxb.libs}/src/resolver-comsun-src.zip" />
@@ -693,20 +693,13 @@
               <attribute name="Class-Path" value="jaxb-api.jar" />
             </manifest>
 
-            <mkdir dir="${jaxb.root}/build/jaxb-core-rejar"/>
-            <unzip dest="${jaxb.root}/build/jaxb-core-rejar">
-              <fileset dir="${jaxb.libs.compiler}" includes="*.jar" />
-            </unzip>
-
             <jar jarfile="${jaxb.dist}/lib/jaxb-core.jar"
                  manifest="${core.root}/build/manifest.core"
                  duplicate="fail">
               <!-- can't use zipgroupfileset because of the duplicate LICENSE.txt -->
-              <fileset dir="${jaxb.root}/build/jaxb-core-rejar"/>
               <fileset dir="${core.classes}"/>
               <zipgroupfileset dir="${jaxb.libs.runtime2}" includes="*.jar" />
             </jar>
-            <delete dir="${jaxb.root}/build/jaxb-core-rejar"/>
           </sequential>
 
               <!-- JAXB 2.0 runtime jar-->
@@ -735,10 +728,9 @@
 
                        and yes, it's OK to have new lines and spaces inbetween.
                   -->
-                  <property name="manifest.classpath" value="jaxb-api.jar jaxb-core.jar jaxb-impl.jar" />
                   <echo file="${xjc.root}/build/manifest.xjc" append="true"
 >Main-Class: com.sun.tools.xjc.XJCFacade
-Class-Path: ${manifest.classpath}
+Class-Path: jaxb-api.jar jaxb-core.jar jaxb-impl.jar
 
 </echo>
                   <copy todir="${xjc.classes}">
@@ -746,22 +738,28 @@ Class-Path: ${manifest.classpath}
                     <mapper type="glob" from="*.java" to="*.java_" />
                   </copy>
 
+                  <mkdir dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
+                  <unzip dest="${jaxb.root}/build/jaxb-xjc-rejar">
+                    <fileset dir="${jaxb.libs.compiler}" includes="*.jar" />
+                  </unzip>
                   <jar jarfile="${jaxb.dist}/lib/jaxb-xjc.jar"
                        manifest="${xjc.root}/build/manifest.xjc"
                        duplicate="fail">
+                      <!-- can't use zipgroupfileset because of the duplicate LICENSE.txt -->
+                      <fileset dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
                       <fileset dir="${xjc.classes}"/>
                       <metainf dir="${xjc.src}/META-INF" />
                   </jar>
+                  <delete dir="${jaxb.root}/build/jaxb-xjc-rejar"/>
               </sequential>
 
               <!-- generate jaxb-jxc.jar -->
               <sequential>
                   <createManifest file="${jxc.root}/build/manifest.jxc" extensionName="com.sun.tools.jxc" />
 
-                  <property name="manifest.classpath" value="jaxb-core.jar jaxb-xjc.jar jaxb-impl.jar" />
-                  <echo file="${xjc.root}/manifest.jxc" append="true"
+                  <echo file="${jxc.root}/build/manifest.jxc" append="true"
 >Main-Class: com.sun.tools.jxc.SchemaGeneratorFacade
-Class-Path: ${manifest.classpath}
+Class-Path: jaxb-api.jar jaxb-core.jar jaxb-xjc.jar jaxb-impl.jar
 
 </echo>
                   <jar jarfile="${jaxb.dist}/lib/jaxb-jxc.jar"

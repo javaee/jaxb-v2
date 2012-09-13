@@ -117,21 +117,10 @@
 
   </target>
 
-  <target name="compile-annotation-writers" depends="annotation-writers">
-    <javac srcdir="${core.gensrc}" destdir="${core.classes}"
-           debug="${compile.debug}" optimize="${compile.optimize}"
-           source="1.6" target="1.6"
-           deprecation="${compile.deprecation}">
-      <compilerarg value="-XDignore.symbol.file=true"/>
-      <classpath refid="javac.classpath"/>
-    </javac>
-  </target>
-
   <path id="javadoc.classpath">
     <pathelement path="${core.classes}"/>
     <pathelement path="${runtime.classes}"/>
     <pathelement path="${xjc.classes}" />
-    <pathelement path="${schemagen.classes}"/>
     <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
     <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
     <fileset dir="${jaxb.libs.util}" includes="*.jar"/>
@@ -161,47 +150,4 @@
           description="clean jaxb-ri/core/build">
     <delete dir="${core.root}/build"/>
   </target>
-
-  <target name="annotation-writers-check">
-    <available property="writers.not.required"
-               file="${core.gensrc}/com/sun/tools/xjc/generator/annotation/ri/OverrideAnnotationOfWriter.java"/>
-  </target>
-
-  <target name="annotation-writers" depends="annotation-writers-check"
-          description="generate CodeModel typed annotation writers"
-          unless="writers.not.required">
-    <taskdef name="cac" classname="com.sun.codemodel.ac.ACTask">
-      <classpath>
-        <pathelement path="${jaxb.libs.compiler}/codemodel.jar"/>
-        <pathelement path="${jaxb.libs.util}/codemodel-annotation-compiler.jar"/>
-        <pathelement path="${jaxb.libs.compiler}/istack-commons-tools.jar"/>
-      </classpath>
-    </taskdef>
-
-    <property name="jaxb-api.path" value="${jaxb.libs.redist}/jaxb-api.jar"/>
-    <mkdir dir="${core.gensrc}"/>
-    <cac destdir="${core.gensrc}"
-         package="com.sun.tools.xjc.generator.annotation.spec">
-      <classes includes="javax.xml.bind.annotation.*"
-               excludes="javax.xml.bind.annotation.XmlJavaTypeAdapter"/>
-      <classes includes="javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter"/>
-      <classpath>
-        <pathelement path="${jaxb-api.path}"/>
-      </classpath>
-      <endorse path="${jaxb-api.path}"/>
-    </cac>
-    <cac destdir="${core.gensrc}"
-         package="com.sun.tools.xjc.generator.annotation.ri">
-      <classes includes="com.sun.xml.bind.annotation.*"/>
-      <classpath>
-        <pathelement path="${core.classes}"/>
-      </classpath>
-    </cac>
-    <licence licence="${jaxb.root}/licenceheader.txt">
-      <fileset dir="${core.gensrc}" includes="com/sun/tools/xjc/generator/annotation/ri/*.java"/>
-      <fileset dir="${core.gensrc}" includes="com/sun/tools/xjc/generator/annotation/spec/*.java"/>
-    </licence>
-  </target>
-
-
 </project>

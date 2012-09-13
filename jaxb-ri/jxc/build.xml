@@ -173,6 +173,10 @@
 
   <target name="clean"
           description="clean jaxb-ri/jxc/build">
+    <!-- delete all RelaxNGCC-generated files -->
+    <delete failonerror="false">
+      <fileset dir="${xjc.src}/com/sun/tools/jxc/gen/config" includes="**/*.java"/>
+    </delete>
     <delete dir="${jxc.root}/build"/>
   </target>
 
