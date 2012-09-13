@@ -8,9 +8,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="codemodel" level="project" />
-    <orderEntry type="library" name="txw2" level="project" />
     <orderEntry type="library" name="istack-commons-runtime" level="project" />
+    <orderEntry type="library" name="txw2" level="project" />
   </component>
 </module>
 

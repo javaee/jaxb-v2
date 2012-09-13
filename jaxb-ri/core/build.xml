@@ -140,7 +140,6 @@
              doctitle="jaxb-core"
              access="public">
       <fileset dir="${core.src}" includes="**/*.java"/>
-      <fileset dir="${core.root}/build/src" includes="**/*.java"/>
       <classpath refid="javadoc.classpath"/>
       <arg value="-quiet"/>
     </javadoc>

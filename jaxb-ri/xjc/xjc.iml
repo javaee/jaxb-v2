@@ -16,6 +16,8 @@
     <orderEntry type="library" name="rngom" level="project" />
     <orderEntry type="library" name="ant" level="project" />
     <orderEntry type="library" name="istack-commons-tools" level="project" />
+    <orderEntry type="library" name="codemodel" level="project" />
+    <orderEntry type="library" name="relaxngDatatype" level="project" />
   </component>
 </module>
 

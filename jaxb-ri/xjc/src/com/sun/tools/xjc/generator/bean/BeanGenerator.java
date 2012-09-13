@@ -58,6 +58,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAttachmentRef;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlMimeType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 import com.sun.codemodel.ClassType;
@@ -112,6 +114,7 @@ import com.sun.tools.xjc.outline.FieldOutline;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.outline.PackageOutline;
 import com.sun.tools.xjc.util.CodeModelClassFactory;
+import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.xsom.XmlString;
 import com.sun.istack.NotNull;
 import com.sun.tools.xjc.model.CReferencePropertyInfo;

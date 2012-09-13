@@ -222,6 +222,8 @@
             windowtitle="XJC"
             doctitle="XJC"
             access="public">
+        <fileset dir="${xjc.src}" includes="**/*.java"/>
+        <fileset dir="${xjc.root}/build/src" includes="**/*.java"/>
         <classpath refid="javadoc.classpath" />
         <arg value="-quiet"/>
       </javadoc>
