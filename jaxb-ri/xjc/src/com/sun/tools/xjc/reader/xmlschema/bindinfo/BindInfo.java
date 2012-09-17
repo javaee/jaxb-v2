@@ -50,6 +50,7 @@ import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlMixed;
@@ -61,10 +62,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import com.sun.codemodel.JDocComment;
-import com.sun.xml.bind.util.ImplementationContainer;
-import com.sun.xml.bind.util.ImplementationFactory;
 import com.sun.xml.bind.v2.WellKnownNamespace;
-import com.sun.xml.bind.v2.runtime.JaxbContext;
 import com.sun.tools.xjc.SchemaCache;
 import com.sun.tools.xjc.model.CCustomizations;
 import com.sun.tools.xjc.model.CPluginCustomization;
@@ -328,35 +326,33 @@ public final class BindInfo implements Iterable<BIDeclaration> {
     /**
      * Lazily prepared {@link JAXBContext}.
      */
-    private static volatile JaxbContext customizationContext;
+    private static volatile Unmarshaller customizationUnmarshaller;
 
-    public static JaxbContext getJAXBContext() {
+    public static Unmarshaller getCustomizationUnmarshaller() {
         try {
-            if (customizationContext == null) {
+            if (customizationUnmarshaller == null) {
                 synchronized (BindInfo.class) {
-                    if (customizationContext == null) {
-                        ImplementationFactory implFactory = ImplementationContainer.getInstance().getImplementationFactory();
-                        customizationContext = implFactory.getJaxbContextBuilder().setClasses(
-                                new Class[]{
-                                        BindInfo.class, // for xs:annotation
-                                        BIClass.class,
-                                        BIConversion.User.class,
-                                        BIConversion.UserAdapter.class,
-                                        BIDom.class,
-                                        BIFactoryMethod.class,
-                                        BIInlineBinaryData.class,
-                                        BIXDom.class,
-                                        BIXSubstitutable.class,
-                                        BIEnum.class,
-                                        BIEnumMember.class,
-                                        BIGlobalBinding.class,
-                                        BIProperty.class,
-                                        BISchemaBinding.class
-                                }).build();
+                    if (customizationUnmarshaller == null) {
+                        customizationUnmarshaller = JAXBContext.newInstance(new Class[]{
+                                BindInfo.class, // for xs:annotation
+                                BIClass.class,
+                                BIConversion.User.class,
+                                BIConversion.UserAdapter.class,
+                                BIDom.class,
+                                BIFactoryMethod.class,
+                                BIInlineBinaryData.class,
+                                BIXDom.class,
+                                BIXSubstitutable.class,
+                                BIEnum.class,
+                                BIEnumMember.class,
+                                BIGlobalBinding.class,
+                                BIProperty.class,
+                                BISchemaBinding.class
+                        }).createUnmarshaller();
                     }
                 }
             }
-            return customizationContext;
+            return customizationUnmarshaller;
         } catch (JAXBException e) {
             throw new AssertionError(e);
         }

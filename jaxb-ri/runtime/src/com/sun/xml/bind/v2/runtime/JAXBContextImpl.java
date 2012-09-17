@@ -139,7 +139,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * This class provides the implementation of JAXBContext.
  *
  */
-public final class JAXBContextImpl extends JAXBRIContext implements JaxbContext {
+public final class JAXBContextImpl extends JAXBRIContext {
 
     /**
      * All the bridge classes.
@@ -1061,7 +1061,7 @@ public final class JAXBContextImpl extends JAXBRIContext implements JaxbContext 
         }
     };
 
-    public static class JAXBContextBuilder implements JaxbContextBuilder {
+    public static class JAXBContextBuilder {
 
         private boolean retainPropertyInfo = false;
         private boolean supressAccessorWarnings = false;

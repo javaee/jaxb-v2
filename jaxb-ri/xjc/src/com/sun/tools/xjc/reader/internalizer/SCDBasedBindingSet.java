@@ -232,7 +232,7 @@ public final class SCDBasedBindingSet {
     public void apply(XSSchemaSet schema, ErrorReceiver errorReceiver) {
         if(topLevel!=null) {
             this.errorReceiver = errorReceiver;
-            Unmarshaller u = BindInfo.getJAXBContext().createUnmarshaller();
+            Unmarshaller u =  BindInfo.getCustomizationUnmarshaller();
             this.unmarshaller = u.getUnmarshallerHandler();
             ValidatorHandler v = BindInfo.bindingFileSchema.newValidator();
             v.setErrorHandler(errorReceiver);

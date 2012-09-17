@@ -82,7 +82,6 @@ import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 import com.sun.codemodel.fmt.JStaticJavaFile;
-import com.sun.xml.bind.util.ImplementationContainer;
 import com.sun.tools.xjc.AbortException;
 import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.api.SpecVersion;
@@ -115,6 +114,7 @@ import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.outline.PackageOutline;
 import com.sun.tools.xjc.util.CodeModelClassFactory;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
+import com.sun.xml.bind.v2.runtime.SwaRefAdapterMarker;
 import com.sun.xml.xsom.XmlString;
 import com.sun.istack.NotNull;
 import com.sun.tools.xjc.model.CReferencePropertyInfo;
@@ -788,7 +788,7 @@ public final class BeanGenerator implements Outline {
     public final void generateAdapterIfNecessary(CPropertyInfo prop, JAnnotatable field) {
         CAdapter adapter = prop.getAdapter();
         if (adapter != null) {
-            if (adapter.getAdapterIfKnown() == ImplementationContainer.getInstance().getImplementationFactory().getSwaRefAdapter()) {
+            if (adapter.getAdapterIfKnown() == SwaRefAdapterMarker.class) {
                 field.annotate(XmlAttachmentRef.class);
             } else {
                 // [RESULT]
