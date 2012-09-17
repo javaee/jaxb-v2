@@ -326,14 +326,14 @@ public final class BindInfo implements Iterable<BIDeclaration> {
     /**
      * Lazily prepared {@link JAXBContext}.
      */
-    private static volatile Unmarshaller customizationUnmarshaller;
+    private static volatile JAXBContext customizationContext;
 
-    public static Unmarshaller getCustomizationUnmarshaller() {
+    public static JAXBContext getCustomizationContext() {
         try {
-            if (customizationUnmarshaller == null) {
+            if (customizationContext == null) {
                 synchronized (BindInfo.class) {
-                    if (customizationUnmarshaller == null) {
-                        customizationUnmarshaller = JAXBContext.newInstance(new Class[]{
+                    if (customizationContext == null) {
+                        customizationContext = JAXBContext.newInstance(
                                 BindInfo.class, // for xs:annotation
                                 BIClass.class,
                                 BIConversion.User.class,
@@ -347,12 +347,19 @@ public final class BindInfo implements Iterable<BIDeclaration> {
                                 BIEnumMember.class,
                                 BIGlobalBinding.class,
                                 BIProperty.class,
-                                BISchemaBinding.class
-                        }).createUnmarshaller();
+                                BISchemaBinding.class);
                     }
                 }
             }
-            return customizationUnmarshaller;
+            return customizationContext;
+        } catch (JAXBException e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    public static Unmarshaller getCustomizationUnmarshaller() {
+        try {
+            return getCustomizationContext().createUnmarshaller();
         } catch (JAXBException e) {
             throw new AssertionError(e);
         }
