@@ -730,7 +730,7 @@
                   -->
                   <echo file="${xjc.root}/build/manifest.xjc" append="true"
 >Main-Class: com.sun.tools.xjc.XJCFacade
-Class-Path: jaxb-api.jar jaxb-core.jar jaxb-impl.jar
+Class-Path: jaxb-api.jar jaxb-core.jar
 
 </echo>
                   <copy todir="${xjc.classes}">
