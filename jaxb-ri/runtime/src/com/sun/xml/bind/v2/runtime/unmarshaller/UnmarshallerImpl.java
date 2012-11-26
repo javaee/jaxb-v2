@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -75,8 +75,11 @@ import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.runtime.AssociationMap;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
+import com.sun.xml.bind.v2.util.XmlFactory;
 
 import java.io.Closeable;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -95,7 +98,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author
  *  <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
-public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements ValidationEventHandler, Closeable
+ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements ValidationEventHandler, Closeable
 {
     /** Owning {@link JAXBContext} */
     protected final JAXBContextImpl context;
@@ -131,10 +134,43 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
         return getUnmarshallerHandler(true,null);
     }
 
+    private XMLReader reader = null;
+
+    /**
+     * Obtains a configured XMLReader.
+     * 
+     * This method is used when the client-specified
+     * {@link SAXSource} object doesn't have XMLReader.
+     * 
+     * {@link Unmarshaller} is not re-entrant, so we will
+     * only use one instance of XMLReader.
+     * 
+     * Overriden in order to fix potential security issue.
+     */
+     @Override
+    protected XMLReader getXMLReader() throws JAXBException {
+         if (reader == null) {
+             try {
+                 SAXParserFactory parserFactory = XmlFactory.createParserFactory(context.disableSecurityProcessing);
+                 // there is no point in asking a validation because 
+                 // there is no guarantee that the document will come with
+                 // a proper schemaLocation.
+                 parserFactory.setValidating(false);
+                 reader = parserFactory.newSAXParser().getXMLReader();
+             } catch (ParserConfigurationException e) {
+                 throw new JAXBException(e);
+             } catch (SAXException e) {
+                 throw new JAXBException(e);
+             }
+         }
+         return reader;
+     }
+    
     private SAXConnector getUnmarshallerHandler( boolean intern, JaxBeanInfo expectedType ) {
-        XmlVisitor h = createUnmarshallerHandler(null,false,expectedType);
-        if(intern)
+        XmlVisitor h = createUnmarshallerHandler(null, false, expectedType);
+        if (intern) {
             h = new InterningXmlVisitor(h);
+        }
         return new SAXConnector(h,null);
     }
 
@@ -157,11 +193,13 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
         XmlVisitor unmarshaller = coordinator;
 
         // delegate to JAXP 1.3 for validation if the client provided a schema
-        if (schema != null)
+        if (schema != null) {
             unmarshaller = new ValidatingUnmarshaller(schema,unmarshaller);
+        }
 
-        if(attachmentUnmarshaller!=null && attachmentUnmarshaller.isXOPPackage())
+        if(attachmentUnmarshaller!=null && attachmentUnmarshaller.isXOPPackage()) {
             unmarshaller = new MTOMDecorator(this,unmarshaller,attachmentUnmarshaller);
+        }
 
         return unmarshaller;
     }
@@ -177,8 +215,9 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
         }
 
         try {
-            if( reader.getFeature("http://xml.org/sax/features/string-interning") )
+            if (reader.getFeature("http://xml.org/sax/features/string-interning")) {
                 return false;   // no need for intern
+            }
         } catch (SAXException e) {
             // unrecognized/unsupported
         }
@@ -191,8 +230,9 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
     }
 
     protected <T> JAXBElement<T> unmarshal( XMLReader reader, InputSource source, Class<T> expectedType ) throws JAXBException {
-        if(expectedType==null)
+        if(expectedType==null) {
             throw new IllegalArgumentException();
+        }
         return (JAXBElement)unmarshal0(reader,source,getBeanInfo(expectedType));
     }
 
@@ -237,40 +277,44 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
 
     @Override
     public <T> JAXBElement<T> unmarshal( Source source, Class<T> expectedType ) throws JAXBException {
-        if(source instanceof SAXSource) {
-            SAXSource ss = (SAXSource)source;
+        if (source instanceof SAXSource) {
+            SAXSource ss = (SAXSource) source;
 
-            XMLReader reader = ss.getXMLReader();
-            if( reader == null )
-                reader = getXMLReader();
+            XMLReader locReader = ss.getXMLReader();
+            if (locReader == null) {
+                locReader = getXMLReader();
+            }
 
-            return unmarshal( reader, ss.getInputSource(), expectedType );
+            return unmarshal(locReader, ss.getInputSource(), expectedType);
         }
-        if(source instanceof StreamSource) {
-            return unmarshal( getXMLReader(), streamSourceToInputSource((StreamSource)source), expectedType );
+        if (source instanceof StreamSource) {
+            return unmarshal(getXMLReader(), streamSourceToInputSource((StreamSource) source), expectedType);
         }
-        if(source instanceof DOMSource)
-            return unmarshal( ((DOMSource)source).getNode(), expectedType );
+        if (source instanceof DOMSource) {
+            return unmarshal(((DOMSource) source).getNode(), expectedType);
+        }
 
         // we don't handle other types of Source
         throw new IllegalArgumentException();
     }
 
     public Object unmarshal0( Source source, JaxBeanInfo expectedType ) throws JAXBException {
-        if(source instanceof SAXSource) {
-            SAXSource ss = (SAXSource)source;
+        if (source instanceof SAXSource) {
+            SAXSource ss = (SAXSource) source;
 
-            XMLReader reader = ss.getXMLReader();
-            if( reader == null )
-                reader = getXMLReader();
+            XMLReader locReader = ss.getXMLReader();
+            if (locReader == null) {
+                locReader = getXMLReader();
+            }
 
-            return unmarshal0( reader, ss.getInputSource(), expectedType );
+            return unmarshal0(locReader, ss.getInputSource(), expectedType);
         }
-        if(source instanceof StreamSource) {
-            return unmarshal0( getXMLReader(), streamSourceToInputSource((StreamSource)source), expectedType );
+        if (source instanceof StreamSource) {
+            return unmarshal0(getXMLReader(), streamSourceToInputSource((StreamSource) source), expectedType);
         }
-        if(source instanceof DOMSource)
-            return unmarshal0( ((DOMSource)source).getNode(), expectedType );
+        if (source instanceof DOMSource) {
+            return unmarshal0(((DOMSource) source).getNode(), expectedType);
+        }
 
         // we don't handle other types of Source
         throw new IllegalArgumentException();
@@ -298,8 +342,9 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
 
     @Override
     public <T> JAXBElement<T> unmarshal(Node node, Class<T> expectedType) throws JAXBException {
-        if(expectedType==null)
+        if (expectedType == null) {
             throw new IllegalArgumentException();
+        }
         return (JAXBElement)unmarshal0(node,getBeanInfo(expectedType));
     }
 
@@ -320,14 +365,13 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
             InterningXmlVisitor handler = new InterningXmlVisitor(createUnmarshallerHandler(null,false,expectedType));
             scanner.setContentHandler(new SAXConnector(handler,scanner));
 
-            if(node.getNodeType() == Node.ELEMENT_NODE)
+            if(node.getNodeType() == Node.ELEMENT_NODE) {
                 scanner.scan((Element)node);
-            else
-            if(node.getNodeType() == Node.DOCUMENT_NODE)
+            } else if(node.getNodeType() == Node.DOCUMENT_NODE) {
                 scanner.scan((Document)node);
-            else
-                // no other type of input is supported
+            } else {
                 throw new IllegalArgumentException("Unexpected node type: "+node);
+            }
 
             Object retVal = handler.getContext().getResult();
             handler.getContext().clearResult();
@@ -344,8 +388,9 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
 
     @Override
     public <T> JAXBElement<T> unmarshal(XMLStreamReader reader, Class<T> expectedType) throws JAXBException {
-        if(expectedType==null)
+        if (expectedType==null) {
             throw new IllegalArgumentException();
+        }
         return (JAXBElement)unmarshal0(reader,getBeanInfo(expectedType));
     }
 
@@ -379,8 +424,9 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
 
     @Override
     public <T> JAXBElement<T> unmarshal(XMLEventReader reader, Class<T> expectedType) throws JAXBException {
-        if(expectedType==null)
+        if(expectedType==null) {
             throw new IllegalArgumentException();
+        }
         return (JAXBElement)unmarshal0(reader,getBeanInfo(expectedType));
     }
 
@@ -408,8 +454,9 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
             // Quick hack until SJSXP fixes 6270116
             boolean isZephyr = reader.getClass().getName().equals("com.sun.xml.stream.XMLReaderImpl");
             XmlVisitor h = createUnmarshallerHandler(null,false,expectedType);
-            if(!isZephyr)
+            if(!isZephyr) {
                 h = new InterningXmlVisitor(h);
+            }
             new StAXEventConnector(reader,h).bridge();
             return h.getContext().getResult();
         } catch (XMLStreamException e) {
@@ -429,10 +476,12 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
         // So we unwrap them here. But we don't want to unwrap too eagerly, because
         // that could throw away some meaningful exception information.
         Throwable ne = e.getNestedException();
-        if(ne instanceof JAXBException)
+        if(ne instanceof JAXBException) {
             return (JAXBException)ne;
-        if(ne instanceof SAXException)
+        }
+        if(ne instanceof SAXException) {
             return new UnmarshalException(ne);
+        }
         return new UnmarshalException(e);
     }
 
@@ -505,20 +554,22 @@ public final class UnmarshallerImpl extends AbstractUnmarshallerImpl implements 
 
     @Override
     public <A extends XmlAdapter> void setAdapter(Class<A> type, A adapter) {
-        if(type==null)
+        if (type==null) {
             throw new IllegalArgumentException();
+        }
         coordinator.putAdapter(type,adapter);
     }
 
     @Override
     public <A extends XmlAdapter> A getAdapter(Class<A> type) {
-        if(type==null)
+        if(type==null) {
             throw new IllegalArgumentException();
-        if(coordinator.containsAdapter(type))
-            // so as not to create a new instance when this method is called
+        }
+        if(coordinator.containsAdapter(type)) {
             return coordinator.getAdapter(type);
-        else
+        } else {
             return null;
+        }
     }
 
     // opening up for public use
