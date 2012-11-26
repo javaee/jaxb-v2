@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -92,7 +92,7 @@ public abstract class AbstractReferenceFinderImpl extends XMLFilterImpl {
 
         String relativeRef = findExternalResource(namespaceURI, localName, atts);
         if (relativeRef == null) {
-            return; // non found
+            return; // not found
         }
         try {
             // absolutize URL.
@@ -112,7 +112,9 @@ public abstract class AbstractReferenceFinderImpl extends XMLFilterImpl {
 
             // then parse this schema as well,
             // but don't mark this document as a root.
-            parent.parse(ref, false);
+            if (parent != null) { // this is there to allow easier testing
+                parent.parse(ref, false);
+            }
         } catch (URISyntaxException e) {
             String msg = e.getMessage();
             if (new File(relativeRef).exists()) {
