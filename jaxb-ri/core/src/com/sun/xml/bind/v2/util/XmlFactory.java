@@ -63,7 +63,7 @@ import org.xml.sax.SAXNotSupportedException;
  */
 public class XmlFactory {
 
-    public static final Logger logger = Logger.getLogger(XmlFactory.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(XmlFactory.class.getName());
 
     /**
      * If true XML security features when parsing XML documents will be disabled.
@@ -81,8 +81,6 @@ public class XmlFactory {
         return !(DISABLE_SECURE_PROCESSING || runtimeSetting);
     }
 
-    public static Exception er = new Exception();
-
     /**
      * Returns properly configured (e.g. security features) schema factory 
      * - namespaceAware == true
@@ -91,17 +89,19 @@ public class XmlFactory {
     public static SchemaFactory createSchemaFactory(final String language, boolean disableSecureProcessing) throws IllegalStateException {
         try {
             SchemaFactory factory = SchemaFactory.newInstance(language);
-            if (logger.isLoggable(Level.FINE)) logger.log(Level.FINE, "SchemaFactory instance: {0}", factory);
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.log(Level.FINE, "SchemaFactory instance: {0}", factory);
+            }
             factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, xmlFeatureValue(disableSecureProcessing));
             return factory;
         } catch (SAXNotRecognizedException ex) {
-            logger.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
             throw new IllegalStateException(ex);
         } catch (SAXNotSupportedException ex) {
-            logger.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
             throw new IllegalStateException(ex);
         } catch (AbstractMethodError er) {
-            logger.log(Level.SEVERE, null, er);
+            LOGGER.log(Level.SEVERE, null, er);
             throw new IllegalStateException(Messages.INVALID_JAXP_IMPLEMENTATION.format(), er);
         }
     }
@@ -114,21 +114,23 @@ public class XmlFactory {
     public static SAXParserFactory createParserFactory(boolean disableSecureProcessing) throws IllegalStateException {
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
-            if (logger.isLoggable(Level.FINE)) logger.log(Level.FINE, "SAXParserFactory instance: {0}", factory);
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.log(Level.FINE, "SAXParserFactory instance: {0}", factory);
+            }
             factory.setNamespaceAware(true);
             factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, xmlFeatureValue(disableSecureProcessing));
             return factory;
         } catch (ParserConfigurationException ex) {
-            logger.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
             throw new IllegalStateException( ex);
         } catch (SAXNotRecognizedException ex) {
-            logger.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
             throw new IllegalStateException( ex);
         } catch (SAXNotSupportedException ex) {
-            logger.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
             throw new IllegalStateException( ex);
         } catch (AbstractMethodError er) {
-            logger.log(Level.SEVERE, null, er);
+            LOGGER.log(Level.SEVERE, null, er);
             throw new IllegalStateException(Messages.INVALID_JAXP_IMPLEMENTATION.format(), er);
         }
     }
@@ -140,14 +142,16 @@ public class XmlFactory {
     public static XPathFactory createXPathFactory(boolean disableSecureProcessing) throws IllegalStateException {
         try {
             XPathFactory factory = XPathFactory.newInstance();
-            if (logger.isLoggable(Level.FINE)) logger.log(Level.FINE, "XPathFactory instance: {0}", factory);
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.log(Level.FINE, "XPathFactory instance: {0}", factory);
+            }
             factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, xmlFeatureValue(disableSecureProcessing));
             return factory;
         } catch (XPathFactoryConfigurationException ex) {
-            logger.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
             throw new IllegalStateException( ex);
         } catch (AbstractMethodError er) {
-            logger.log(Level.SEVERE, null, er);
+            LOGGER.log(Level.SEVERE, null, er);
             throw new IllegalStateException(Messages.INVALID_JAXP_IMPLEMENTATION.format(), er);
         }
     }
@@ -159,14 +163,16 @@ public class XmlFactory {
     public static TransformerFactory createTransformerFactory(boolean disableSecureProcessing) throws IllegalStateException {
         try {
             TransformerFactory factory = TransformerFactory.newInstance();
-            if (logger.isLoggable(Level.FINE)) logger.log(Level.FINE, "TransformerFactory instance: {0}", factory);
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.log(Level.FINE, "TransformerFactory instance: {0}", factory);
+            }
             factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, xmlFeatureValue(disableSecureProcessing));
             return factory;
         } catch (TransformerConfigurationException ex) {
-            logger.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
             throw new IllegalStateException( ex);
         } catch (AbstractMethodError er) {
-            logger.log(Level.SEVERE, null, er);
+            LOGGER.log(Level.SEVERE, null, er);
             throw new IllegalStateException(Messages.INVALID_JAXP_IMPLEMENTATION.format(), er);
         }
     }
@@ -179,15 +185,17 @@ public class XmlFactory {
     public static DocumentBuilderFactory createDocumentBuilderFactory(boolean disableSecureProcessing) throws IllegalStateException {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            if (logger.isLoggable(Level.FINE)) logger.log(Level.FINE, "DocumentBuilderFactory instance: {0}", factory);
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.log(Level.FINE, "DocumentBuilderFactory instance: {0}", factory);
+            }
             factory.setNamespaceAware(true);
             factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, xmlFeatureValue(disableSecureProcessing));
             return factory;
         } catch (ParserConfigurationException ex) {
-            logger.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
             throw new IllegalStateException( ex);
         } catch (AbstractMethodError er) {
-            logger.log(Level.SEVERE, null, er);
+            LOGGER.log(Level.SEVERE, null, er);
             throw new IllegalStateException(Messages.INVALID_JAXP_IMPLEMENTATION.format(), er);
         }
     }
