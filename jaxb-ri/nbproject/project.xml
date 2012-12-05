@@ -58,6 +58,8 @@
                 <root id="src.classes6.dir"/>
                 <root id="src.classes7.dir"/>
                 <root id="src.classes8.dir"/>
+                <root id="src.classes9.dir"/>
+                <root id="src.classes10.dir"/>
                 <root id="src.src.dir"/>
                 <root id="src.src2.dir"/>
                 <root id="src.src3.dir"/>
@@ -71,6 +73,8 @@
                 <root id="src.src10.dir"/>
                 <root id="src.src11.dir"/>
                 <root id="src.arch-doc.dir"/>
+                <root id="src.core.dir"/>
+                <root id="src.jxc.dir"/>
             </source-roots>
             <test-roots>
                 <root id="test.test.dir"/>
