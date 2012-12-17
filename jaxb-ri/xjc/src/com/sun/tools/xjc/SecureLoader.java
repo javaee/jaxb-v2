@@ -99,5 +99,19 @@ class SecureLoader {
                     });
         }
     }
-    
+
+    static ClassLoader getParentClassLoader(final ClassLoader cl) {
+        if (System.getSecurityManager() == null) {
+            return cl.getParent();
+        } else {
+            return java.security.AccessController.doPrivileged(
+                    new java.security.PrivilegedAction<ClassLoader>() {
+                        public ClassLoader run() {
+                            return cl.getParent();
+                        }
+                    });
+        }
+    }
+
+
 }

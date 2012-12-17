@@ -105,8 +105,6 @@ class ClassLoaderBuilder {
                 cl = new ParallelWorldClassLoader(cl,"");
         }
 
-        SecureLoader.setContextClassLoader(cl); // later ContextFinder will use it to load JAXB impl
-
         return cl;
     }
 
