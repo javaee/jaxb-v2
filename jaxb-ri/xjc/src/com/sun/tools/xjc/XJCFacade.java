@@ -40,7 +40,6 @@
 
 package com.sun.tools.xjc;
 
-import com.sun.tools.xjc.SecureLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -80,7 +79,7 @@ public class XJCFacade {
                     throw e.getTargetException();
             }
         } catch (UnsupportedClassVersionError e) {
-            System.err.println("XJC requires JDK 5.0 or later. Please download it from http://java.sun.com/j2se/1.5/");
+            System.err.println("XJC requires JDK 6.0 or later. Please download it from http://www.oracle.com/technetwork/java/javase/downloads");
         }
     }
 

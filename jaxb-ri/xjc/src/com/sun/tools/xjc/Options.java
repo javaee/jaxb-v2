@@ -483,7 +483,9 @@ public class Options
      * Gets a classLoader that can load classes specified via the
      * -classpath option.
      */
-    public URLClassLoader getUserClassLoader( ClassLoader parent ) {
+    public ClassLoader getUserClassLoader( ClassLoader parent ) {
+        if (classpaths.isEmpty())
+            return parent;
         return new URLClassLoader(
                 classpaths.toArray(new URL[classpaths.size()]),parent);
     }

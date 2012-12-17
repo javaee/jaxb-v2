@@ -51,7 +51,6 @@ import javax.xml.bind.JAXBContext;
 
 import com.sun.istack.tools.MaskingClassLoader;
 import com.sun.istack.tools.ParallelWorldClassLoader;
-import com.sun.tools.xjc.SecureLoader;
 
 /**
  * Creates a class loader configured to run XJC 1.0/2.0 safely without
@@ -77,7 +76,7 @@ class ClassLoaderBuilder {
             // JAXB API is loaded from the bootstrap. We need to override one with ours
             mustang = true;
 
-            List mask = new ArrayList(Arrays.asList(maskedPackages));
+            List<String> mask = new ArrayList<String>(Arrays.asList(maskedPackages));
             mask.add("javax.xml.bind.");
 
             cl = new MaskingClassLoader(cl,mask);
@@ -95,7 +94,7 @@ class ClassLoaderBuilder {
         // so that the XJC2 classes in the parent class loader
         //  won't interfere with loading XJC1 classes in a child class loader
 
-        if (v.equals("1.0")) {
+        if ("1.0".equals(v)) {
             if(!mustang)
                 // if we haven't used Masking ClassLoader, do so now.
                 cl = new MaskingClassLoader(cl,toolPackages);
@@ -105,6 +104,8 @@ class ClassLoaderBuilder {
                 // the whole RI needs to be loaded in a separate class loader
                 cl = new ParallelWorldClassLoader(cl,"");
         }
+
+        SecureLoader.setContextClassLoader(cl); // later ContextFinder will use it to load JAXB impl
 
         return cl;
     }

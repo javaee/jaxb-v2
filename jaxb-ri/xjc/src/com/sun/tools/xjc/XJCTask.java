@@ -42,7 +42,6 @@ package com.sun.tools.xjc;
 
 import java.io.IOException;
 import com.sun.istack.tools.ProtectedTask;
-import com.sun.tools.xjc.SecureLoader;
 import org.apache.tools.ant.BuildException;
 
 /**

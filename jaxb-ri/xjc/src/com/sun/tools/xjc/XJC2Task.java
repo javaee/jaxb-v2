@@ -450,7 +450,7 @@ public class XJC2Task extends Task {
                 }
             }
             // set the user-specified class loader so that XJC will use it.
-            SecureLoader.setContextClassLoader(acl = new AntClassLoader(getProject(),classpath));
+            SecureLoader.setContextClassLoader(acl = new AntClassLoader(old, getProject(),classpath, false));
             _doXJC();
         } finally {
             // restore the context class loader
