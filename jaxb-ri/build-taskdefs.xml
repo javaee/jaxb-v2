@@ -49,6 +49,10 @@
     <property file="${basedir}/build.properties"/>
     <import file="build.xml"/>
 
+    <condition property="mvn.exec" value="mvn.bat" else="mvn">
+        <os family="windows"/>
+    </condition>
+
   <macrodef name="generate-docs">
     <element name="source" />
     <attribute name="dest" />
@@ -118,7 +122,7 @@
        <attribute name="extra-args" default="" />
        <attribute name="generatepom" default="true" />
        <sequential>
-            <exec executable="mvn" failonerror="true" >
+            <exec executable="${mvn.exec}" failonerror="true" >
                 <arg line="-Dmaven.repo.local=${maven.repo.local}" />
                 <arg line="install:install-file" />
                 <arg line="-Dfile=@{jar}" />
@@ -138,6 +142,34 @@
        </sequential>
     </macrodef>
 
+    <macrodef name="mvn.install.local">
+       <attribute name="jar"/>
+       <attribute name="pom"/>
+<!--       <attribute name="mvngroup"/>
+       <attribute name="mvnartid"/>
+       <attribute name="mvnversion"/>-->
+       <attribute name="classifier" default="" />
+       <attribute name="extra-args" default="" />
+       <attribute name="generatepom" default="true" />
+       <sequential>
+            <exec executable="${mvn.exec}" failonerror="true" >
+                <arg line="-Dmaven.repo.local=/home/lukas/.m2/repository" />
+                <arg line="install:install-file" />
+                <arg line="-Dfile=@{jar}" />
+                <arg line="-DpomFile=@{pom}" />
+<!--                <arg line="-DgroupId=@{mvngroup}" />
+                <arg line="-DartifactId=@{mvnartid}" />
+                <arg line="-Dpackaging=jar" />
+                <arg line="-Dversion=@{mvnversion}" />-->
+                <arg line="-Dclassifier=@{classifier}" />
+                <arg line="-DgeneratePom=@{generatepom}" />
+                <arg line="-DlocalRepositoryPath=/home/lukas/.m2/repository" />
+<!--                <arg line="-DlocalRepositoryPath=${maven.repo.local}" />-->
+                <arg line="@{extra-args}" />
+            </exec>
+       </sequential>
+    </macrodef>
+
     <macrodef name="mvn.publish.remote">
        <attribute name="jar"/>
        <attribute name="pom"/>
@@ -148,7 +180,7 @@
        <attribute name="password" default=""/>
        <attribute name="extra-args" default="" />
        <sequential>
-            <exec executable="mvn" failonerror="true" >
+            <exec executable="${mvn.exec}" failonerror="true" >
                 <arg line="-Dhttp.proxyHost=www-proxy.us.oracle.com"/>
                 <arg line="-Dhttp.proxyPort=80"/>
                 <arg line="-Dhttps.proxyHost=www-proxy.us.oracle.com"/>

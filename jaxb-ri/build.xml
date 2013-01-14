@@ -559,7 +559,7 @@
         <delete>
             <fileset dir="${external.dir}/args4j" includes="**/*.jar"/>
         </delete>
-        <exec executable="mvn" failonerror="true" >
+        <exec executable="${mvn.exec}" failonerror="true" >
             <arg line="-f ${external.dir}/args4j/pom.xml -Dmaven.repo.local=${maven.repo.local}" />
             <arg line="clean install" />
         </exec>
@@ -847,6 +847,41 @@ Class-Path: jaxb-api.jar jaxb-core.jar jaxb-xjc.jar jaxb-impl.jar
         <mvn.publish.remote jar="${osgi.dist}/jaxb-extra-osgi-javadoc.jar" pom="build/jaxb-extra-osgi.pom" classifier="javadoc"/>
     </target>
 
+    <target name="install-snapshot-to-local">
+        <delete dir="${jaxb.build}" includes="*.pom"/>
+        <copy todir="${jaxb.build}">
+            <fileset dir="distributions/maven"/>
+        </copy>
+        <replace dir="${jaxb.build}" includes="*.pom" token="@VERSION@" value="${release.impl.version}${release.impl.version.suffix}"/>
+        <replace dir="${jaxb.build}" includes="*.pom" token="@API_VERSION@" value="${release.spec.version}"/>
+        <replace dir="${jaxb.build}" includes="*.pom" token="@FI_VERSION@" value="${fi.version}"/>
+        <replace dir="${jaxb.build}" includes="*.pom" token="@ISTACK_COMMONS_VERSION@" value="${istack-commons.version}"/>
+        <mvn.install.local jar="dist/lib/jaxb-core.jar" pom="build/jaxb-core.pom"/>
+        <mvn.install.local jar="dist/lib/jaxb-core.src.zip" pom="build/jaxb-core.pom" classifier="sources"/>
+        <mvn.install.local jar="dist/lib/jaxb-core-javadoc.jar" pom="build/jaxb-core.pom" classifier="javadoc"/>
+        <mvn.install.local jar="dist/lib/jaxb-impl.jar" pom="build/jaxb-impl.pom"/>
+        <mvn.install.local jar="dist/lib/jaxb-impl.src.zip" pom="build/jaxb-impl.pom" classifier="sources"/>
+        <mvn.install.local jar="dist/lib/jaxb-impl-javadoc.jar" pom="build/jaxb-impl.pom" classifier="javadoc"/>
+        <mvn.install.local jar="dist/lib/jaxb-xjc.jar" pom="build/jaxb-xjc.pom"/>
+        <mvn.install.local jar="dist/lib/jaxb-xjc.src.zip" pom="build/jaxb-xjc.pom" classifier="sources"/>
+        <mvn.install.local jar="dist/lib/jaxb-xjc-javadoc.jar" pom="build/jaxb-xjc.pom" classifier="javadoc"/>
+        <mvn.install.local jar="dist/lib/jaxb-jxc.jar" pom="build/jaxb-jxc.pom"/>
+        <mvn.install.local jar="dist/lib/jaxb-jxc.src.zip" pom="build/jaxb-jxc.pom" classifier="sources"/>
+        <mvn.install.local jar="dist/lib/jaxb-jxc-javadoc.jar" pom="build/jaxb-jxc.pom" classifier="javadoc"/>
+<!--        <mvn.install.local jar="dist/lib/jaxb1-impl.jar" pom="build/jaxb1-impl.pom"/>
+        <mvn.install.local jar="dist/lib/jaxb1-impl-src.zip" pom="build/jaxb1-impl.pom" classifier="sources"/>
+        <mvn.install.local jar="dist/lib/jaxb1-impl-javadoc.jar" pom="build/jaxb1-impl.pom" classifier="javadoc"/>-->
+<!--        <mvn.install.local jar="tools/lib/redist/jaxb-api.jar" pom="tools/lib/redist/jaxb-api-pom.xml"/>
+        <mvn.install.local jar="tools/lib/redist/jaxb-api-src.zip" pom="tools/lib/redist/jaxb-api-pom.xml" classifier="sources"/>
+        <mvn.install.local jar="tools/lib/redist/jaxb-api-doc.zip" pom="tools/lib/redist/jaxb-api-pom.xml" classifier="javadoc"/>
+        <mvn.install.local jar="tools/lib/osgi/jaxb-api-osgi.jar" pom="tools/lib/osgi/jaxb-api-osgi-pom.xml"/>
+        <mvn.install.local jar="tools/lib/osgi/jaxb-api-osgi-sources.jar" pom="tools/lib/osgi/jaxb-api-osgi-pom.xml" classifier="sources"/>
+        <mvn.install.local jar="tools/lib/osgi/jaxb-api-osgi-javadoc.jar" pom="tools/lib/osgi/jaxb-api-osgi-pom.xml" classifier="javadoc"/>-->
+        <mvn.install.local jar="${osgi.build}/jaxb-osgi.jar" pom="build/jaxb-osgi.pom"/>
+        <mvn.install.local jar="${osgi.build}/jaxb-osgi-sources.jar" pom="build/jaxb-osgi.pom" classifier="sources"/>
+        <mvn.install.local jar="${osgi.build}/jaxb-osgi-javadoc.jar" pom="build/jaxb-osgi.pom" classifier="javadoc"/>
+    </target>
+
     <target name="push-release-to-maven">
         <delete dir="${jaxb.build}" includes="*.pom"/>
         <copy todir="${jaxb.build}">
@@ -927,10 +962,6 @@ Class-Path: jaxb-api.jar jaxb-core.jar jaxb-xjc.jar jaxb-impl.jar
             <zipfileset dir="${jaxb.dist}" prefix="jaxb-ri-${release.impl.version}" />
         </zip>
     </target>
-
-    <condition property="mvn.exec" value="mvn.bat" else="mvn">
-        <os family="windows"/>
-    </condition>
 
     <target name="docs">
         <sequential>
