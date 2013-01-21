@@ -58,7 +58,7 @@ public class XJCTask extends ProtectedTask {
      * The version of the compiler to run
      */
     public void setSource(String version) {
-        if(version.equals("1.0") || version.equals("2.0")) {
+        if (version.equals("2.0")) {
             this.source = version;
             return;
         }
@@ -71,10 +71,7 @@ public class XJCTask extends ProtectedTask {
     }
 
     protected String getCoreClassName() {
-        if (source.equals("2.0"))
-            return "com.sun.tools.xjc.XJC2Task";
-        else
-            return "com.sun.tools.xjc.XJCTask";
+        return "com.sun.tools.xjc.XJC2Task";
     }
 }
 

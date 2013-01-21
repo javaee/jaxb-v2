@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -206,8 +206,9 @@ public final class DOMForest {
      */
     private String getPath(String key) {
         key = key.substring(5); // skip 'file:'
-        while(key.length()>0 && key.charAt(0)=='/')
+        while(key.length()>0 && key.charAt(0)=='/') {
             key = key.substring(1);
+        }
         return key;
     }
 
@@ -488,16 +489,16 @@ public final class DOMForest {
             sf.newSchema(sources.toArray(new SAXSource[0]));
         } catch (SAXException e) {
             // error should have been reported.
-        } catch (RuntimeException e) {
+        } catch (RuntimeException re) {
             // JAXP RI isn't very trustworthy when it comes to schema error check,
             // and we know some cases where it just dies with NPE. So handle it gracefully.
             // this masks a bug in the JAXP RI, but we need a release that we have to make.
             try {
                 sf.getErrorHandler().warning(
                     new SAXParseException(Messages.format(
-                        Messages.ERR_GENERAL_SCHEMA_CORRECTNESS_ERROR,e.getMessage()),
-                        null,null,-1,-1,e));
-            } catch (SAXException _) {
+                        Messages.ERR_GENERAL_SCHEMA_CORRECTNESS_ERROR,re.getMessage()),
+                        null,null,-1,-1,re));
+            } catch (SAXException e) {
                 // ignore
             }
         }
@@ -571,6 +572,7 @@ public final class DOMForest {
      * 
      * This is a debug method. As such, error handling is sloppy.
      */
+    @SuppressWarnings("CallToThreadDumpStack")
     public void dump( OutputStream out ) throws IOException {
         try {
             // create identity transformer
