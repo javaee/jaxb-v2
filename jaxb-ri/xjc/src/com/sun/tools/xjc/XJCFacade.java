@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -37,7 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
 package com.sun.tools.xjc;
 
 import java.io.Closeable;
@@ -49,8 +48,8 @@ import java.net.URLClassLoader;
  * A shabby driver to invoke XJC1 or XJC2 depending on the command line switch.
  *
  * <p>
- * This class is compiled with -source 1.2 so that we can report a nice user-friendly
- * "you require Tiger" error message.
+ * This class is compiled with -source 1.2 so that we can report a nice
+ * user-friendly "you require Tiger" error message.
  *
  * @author Kohsuke Kawaguchi
  */
@@ -61,10 +60,10 @@ public class XJCFacade {
     public static void main(String[] args) throws Throwable {
         String v = "2.0";      // by default, we go 2.0
 
-        for( int i=0; i<args.length; i++ ) {
-            if(args[i].equals("-source")) {
-                if(i+1<args.length) {
-                    v = parseVersion(args[i+1]);
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equals("-source")) {
+                if (i + 1 < args.length) {
+                    v = parseVersion(args[i + 1]);
                 }
             }
         }
@@ -76,10 +75,11 @@ public class XJCFacade {
             Class<?> driver = cl.loadClass("com.sun.tools.xjc.Driver");
             Method mainMethod = driver.getDeclaredMethod("main", new Class[]{String[].class});
             try {
-                mainMethod.invoke(null,new Object[]{args});
+                mainMethod.invoke(null, new Object[]{args});
             } catch (InvocationTargetException e) {
-                if(e.getTargetException()!=null)
+                if (e.getTargetException() != null) {
                     throw e.getTargetException();
+                }
             }
         } catch (UnsupportedClassVersionError e) {
             System.err.println(JDK6_REQUIRED);
@@ -111,12 +111,8 @@ public class XJCFacade {
         }
     }
 
-    private static String parseVersion(String version) {
-        if(version.equals("1.0"))
-            return version;
-        // if we don't recognize the version number, we'll go to 2.0 RI
-        // anyway. It's easier to report an error message there,
-        // than in here.
+    public static String parseVersion(String version) {
+        // no other versions supported as of now
         return "2.0";
     }
 }
