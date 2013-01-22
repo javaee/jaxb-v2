@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -58,7 +58,9 @@ import com.sun.xml.bind.v2.runtime.reflect.ListTransducedAccessorImpl;
 import com.sun.xml.bind.v2.runtime.reflect.TransducedAccessor;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import com.sun.xml.bind.v2.runtime.unmarshaller.ChildLoader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.DefaultValueLoaderDecorator;
 import com.sun.xml.bind.v2.runtime.unmarshaller.LeafPropertyLoader;
+import com.sun.xml.bind.v2.runtime.unmarshaller.Loader;
 
 import org.xml.sax.SAXException;
 
@@ -71,6 +73,8 @@ import org.xml.sax.SAXException;
 final class ListElementProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,ListT,ItemT> {
 
     private final Name tagName;
+    private final String defaultValue;
+    
     /**
      * Converts all the values to a list and back.
      */
@@ -84,7 +88,8 @@ final class ListElementProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,L
         RuntimeTypeRef ref = prop.getTypes().get(0);
 
         tagName = grammar.nameBuilder.createElementName(ref.getTagName());
-
+        defaultValue = ref.getDefaultValue();
+        
         // transducer for each item
         Transducer xducer = ref.getTransducer();
         // transduced accessor for the whole thing
@@ -96,7 +101,9 @@ final class ListElementProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,L
     }
 
     public void buildChildElementUnmarshallers(UnmarshallerChain chain, QNameMap<ChildLoader> handlers) {
-        handlers.put(tagName, new ChildLoader(new LeafPropertyLoader(xacc),null));
+        Loader l = new LeafPropertyLoader(xacc);
+        l = new DefaultValueLoaderDecorator(l, defaultValue);
+        handlers.put(tagName, new ChildLoader(l,null));
     }
 
     @Override
