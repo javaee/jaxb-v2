@@ -40,6 +40,7 @@
 
 package com.sun.xml.bind.api.impl;
 
+import javax.lang.model.SourceVersion;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -146,11 +147,6 @@ public interface NameConverter
                     nsUri = nsUri.substring(idx+1);
             }
 
-            // issue 709; s/(.*)#(.*)/\1/
-            idx = nsUri.indexOf("#");
-            if(idx >= 0)
-                nsUri = nsUri.substring(0, idx);
-
             // tokenize string
             ArrayList<String> tokens = tokenize( nsUri, "/: " );
             if( tokens.size() == 0 ) {
@@ -192,7 +188,7 @@ public interface NameConverter
                 token = removeIllegalIdentifierChars( token );
 
                 // this will check for reserved keywords
-                if( !NameUtil.isJavaIdentifier( token.toLowerCase() ) ) {
+                if (SourceVersion.isKeyword(token.toLowerCase())) {
                     token = '_' + token;
                 }
 
@@ -205,19 +201,16 @@ public interface NameConverter
 
 
         private static String removeIllegalIdentifierChars(String token) {
-            StringBuilder newToken = new StringBuilder();
+            StringBuilder newToken = new StringBuilder(token.length() + 1); // max expected length
             for( int i = 0; i < token.length(); i++ ) {
                 char c = token.charAt( i );
-
-                if( i ==0 && !Character.isJavaIdentifierStart( c ) ) {
-                    // prefix an '_' if the first char is illegal
-                    newToken.append('_').append(c);
-                } else if( !Character.isJavaIdentifierPart( c ) ) {
-                    // replace the char with an '_' if it is illegal
-                    newToken.append( '_' );
+                if (i == 0 && !Character.isJavaIdentifierStart(c)) { // c can't be used as FIRST char
+                    newToken.append('_');
+                }
+                if (!Character.isJavaIdentifierPart(c)) { // c can't be used
+                    newToken.append('_');
                 } else {
-                    // add the legal char
-                    newToken.append( c );
+                    newToken.append(c); // c is valid
                 }
             }
             return newToken.toString();
@@ -282,7 +275,7 @@ public interface NameConverter
     public static final NameConverter smart = new Standard() {
         public String toConstantName( String token ) {
             String name = super.toConstantName(token);
-            if( NameUtil.isJavaIdentifier(name) )
+            if(!SourceVersion.isKeyword(name))
                 return name;
             else
                 return '_'+name;
