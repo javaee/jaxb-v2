@@ -247,8 +247,8 @@
             <fileset dir="${jaxb.build}/jaxbosgisrc"/>
         </zip>
 
-        <unjar src="${jaxb.libs.jaxb1}/xsdlib-sources.jar" dest="${jaxb.build}/jaxb.extra.osgi.src/xsdlib/src"/>
-        <unjar src="${jaxb.libs.jaxb1}/msv-core-sources.jar" dest="${jaxb.build}/jaxb.extra.osgi.src/msv/src"/>
+        <unjar src="${jaxb.libs.jaxb1}/xsdlib-sources.jar" dest="${jaxb.build}/jaxb.extra.osgi.src/xsdlib"/>
+        <unjar src="${jaxb.libs.jaxb1}/msv-core-sources.jar" dest="${jaxb.build}/jaxb.extra.osgi.src/msv"/>
         <unzip src="${jaxb.libs.jaxb1}/iso-relax-src.zip" dest="${jaxb.build}/jaxb.extra.osgi.src"/>
         <unzip src="${jaxb.libs.jaxb1}/jaxb1-src.zip" dest="${jaxb.build}/jaxb.extra.osgi.src"/>
         <mkdir dir="${jaxb.build}/jaxb.extra.osgi.api"/>

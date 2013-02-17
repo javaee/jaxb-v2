@@ -506,7 +506,7 @@
         <copy file="${maven.repo.local}/${isorelax.mvn.path}" tofile="${jaxb.root}/tools/lib/util/isorelax.jar"/>
 
         <echo message="building xsdlib"/>
-        <unjar src="${jaxb.libs.jaxb1}/xsdlib-sources.jar" dest="${external.dir}"/>
+        <unjar src="${jaxb.libs.jaxb1}/xsdlib-sources.jar" dest="${external.dir}/xsdlib"/>
         <copy file="${maven.repo.local}/${relaxng-datatype.mvn.path}" tofile="${external.dir}/xsdlib/relaxng-datatype.jar"/>
         <exec executable="ant" dir="${external.dir}/xsdlib" failonerror="true" newenvironment="false" >
             <arg line="-Djavac.target=1.6"/>
@@ -519,12 +519,12 @@
         <copy file="${maven.repo.local}/${xsdlib.mvn.path}" tofile="${jaxb.libs.jaxb1}/xsdlib.jar"/>
 
         <echo message="building msv"/>
-        <unjar src="${jaxb.libs.jaxb1}/msv-core-sources.jar" dest="${external.dir}"/>
+        <unjar src="${jaxb.libs.jaxb1}/msv-core-sources.jar" dest="${external.dir}/msv"/>
         <copy file="${maven.repo.local}/${relaxng-datatype.mvn.path}" tofile="${external.dir}/msv/msv/relaxng-datatype.jar"/>
         <copy file="${maven.repo.local}/${xsdlib.mvn.path}" tofile="${external.dir}/msv/msv/xsdlib.jar"/>
         <copy file="${maven.repo.local}/${isorelax.mvn.path}" tofile="${external.dir}/msv/msv/isorelax.jar"/>
         <copy file="${maven.repo.local}/${resolver.mvn.path}" tofile="${external.dir}/msv/msv/resolver.jar"/>
-        <exec executable="ant" dir="${external.dir}/msv/msv" failonerror="true" newenvironment="true" >
+        <exec executable="ant" dir="${external.dir}/msv" failonerror="true" newenvironment="true" >
             <arg line="-Djavac.target=1.6"/>
             <arg line="-Djavac.source=1.6"/>
             <arg line="-Dfrom.source=true"/>
