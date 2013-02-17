@@ -306,15 +306,15 @@
         <get src="http://hudson.sfbay/job/zephyr/lastSuccessfulBuild/artifact/dist/sjsxp-src-1_0.zip"
              dest="tools/lib/src/sjsxp-src.zip" />
     </target>
-
+<!-- fix links if needed
     <target name="integrate-xsdlib-hudson">
         <property name="xsdlib-version" value="2009.2-SNAPSHOT" />
         <get src="http://sysifos-sol.cz.oracle.com/hudson/job/msv/lastSuccessfulBuild/artifact/trunk/xsdlib/target/xsdlib-${xsdlib-version}.jar"
-             dest="tools/lib/util/xsdlib.jar" />
+             dest="${jaxb.libs.jaxb1}/xsdlib.jar" />
         <get src="http://sysifos-sol.cz.oracle.com/hudson/job/msv/lastSuccessfulBuild/artifact/trunk/xsdlib/target/xsdlib-fullsrc.zip"
-             dest="tools/lib/src/xsdlib-src.zip" />
+             dest="${jaxb.libs.jaxb1}/xsdlib-sources.jar" />
     </target>
-
+-->
 <!-- mavenized projects -->
 
     <property name="mavenrepo.url" value="https://maven.java.net/content/repositories/releases/"/>
@@ -506,10 +506,7 @@
         <copy file="${maven.repo.local}/${isorelax.mvn.path}" tofile="${jaxb.root}/tools/lib/util/isorelax.jar"/>
 
         <echo message="building xsdlib"/>
-        <unzip src="tools/lib/src/xsdlib-src.zip" dest="${external.dir}"/>
-        <delete>
-            <fileset dir="${external.dir}/xsdlib" includes="**/*.jar"/>
-        </delete>
+        <unjar src="${jaxb.libs.jaxb1}/xsdlib-sources.jar" dest="${external.dir}"/>
         <copy file="${maven.repo.local}/${relaxng-datatype.mvn.path}" tofile="${external.dir}/xsdlib/relaxng-datatype.jar"/>
         <exec executable="ant" dir="${external.dir}/xsdlib" failonerror="true" newenvironment="false" >
             <arg line="-Djavac.target=1.6"/>
@@ -519,13 +516,10 @@
             <arg line="dist"/>
         </exec>
         <mvn.publish.local jar="${external.dir}/xsdlib/dist/xsdlib.jar" mvngroup="com.sun.msv.datatype.xsd" mvnartid="xsdlib" mvnversion="${xsdlib.version}"/>
-        <copy file="${maven.repo.local}/${xsdlib.mvn.path}" tofile="${jaxb.root}/tools/lib/util/xsdlib.jar"/>
+        <copy file="${maven.repo.local}/${xsdlib.mvn.path}" tofile="${jaxb.libs.jaxb1}/xsdlib.jar"/>
 
         <echo message="building msv"/>
-        <unzip src="tools/lib/src/msv-src.zip" dest="${external.dir}"/>
-        <delete>
-            <fileset dir="${external.dir}/msv/" includes="**/*.jar"/>
-        </delete>
+        <unjar src="${jaxb.libs.jaxb1}/msv-core-sources.jar" dest="${external.dir}"/>
         <copy file="${maven.repo.local}/${relaxng-datatype.mvn.path}" tofile="${external.dir}/msv/msv/relaxng-datatype.jar"/>
         <copy file="${maven.repo.local}/${xsdlib.mvn.path}" tofile="${external.dir}/msv/msv/xsdlib.jar"/>
         <copy file="${maven.repo.local}/${isorelax.mvn.path}" tofile="${external.dir}/msv/msv/isorelax.jar"/>

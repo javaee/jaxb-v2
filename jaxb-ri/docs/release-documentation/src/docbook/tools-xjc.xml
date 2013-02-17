@@ -3,7 +3,7 @@
 
 DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
 
 The contents of this file are subject to the terms of either the GNU
 General Public License Version 2 only ("GPL") or the Common Development
@@ -351,11 +351,11 @@ xjc schema1.xsd schema2.xsd schema3.xsd -b bindings1.xjb -b bindings2.xjb -b bin
                 </varlistentry>
 
                 <varlistentry>
-                    <term><emphasis role="bold">-target 2.0</emphasis></term>
+                    <term><emphasis role="bold">-target (2.0|2.1)</emphasis></term>
 
                     <listitem>
                         <para>Avoid generating code that relies on any JAXB
-                        2.1 features. This will allow the generated code to
+                        2.1|2.2 features. This will allow the generated code to
                         run with JAXB 2.0 runtime (such as JavaSE 6.)</para>
                     </listitem>
                 </varlistentry>
@@ -560,20 +560,6 @@ xjc schema1.xsd schema2.xsd schema3.xsd -b bindings1.xjb -b bindings2.xjb -b bin
                         JAXB RI to generate **/impl/runtime packages.
                         Therefore, this switch is obsolete and has been
                         removed.</para>
-                    </listitem>
-                </varlistentry>
-
-                <varlistentry>
-                    <term><emphasis role="bold">-source</emphasis></term>
-
-                    <listitem>
-                        <para>The -source compatibility switch was introduced
-                        in the first JAXB 2.0 Early Access release for
-                        convenience reasons. You shall not rely on this
-                        switch, because it might get removed from any future
-                        release of JAXB 2.0. If you need to generate 1.0.x
-                        code, please use an installation of the 1.0.x
-                        codebase.</para>
                     </listitem>
                 </varlistentry>
             </variablelist>

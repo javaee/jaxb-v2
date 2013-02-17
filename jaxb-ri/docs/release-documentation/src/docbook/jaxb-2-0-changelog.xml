@@ -3,7 +3,7 @@
 
 DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
 
 The contents of this file are subject to the terms of either the GNU
 General Public License Version 2 only ("GPL") or the Common Development
@@ -47,11 +47,36 @@ holder.
         
 <section version="5.0" xml:lang="en" xml:id="jaxb-2-0-changelog" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook">
 <title>Changelog</title>
-<para>The JAXB 2.x RI is a major reimplementation to meet the
-  requirements of the 2.x specifications.</para>
-<para>Please refer to the 
-  <xref linkend="jaxb-1-0-x-changelog" xrefstyle="select:title"/> for older
-  releases.</para>
+<para>The JAXB 2.x RI is a major reimplementation to meet the requirements of the 2.x specifications.</para>
+<para>Please refer to the <xref linkend="jaxb-1-0-x-changelog" xrefstyle="select:title"/> for older releases.</para>
+<section xml:id="a-2-2-7">
+    <title>Changes between 2.2.6 to 2.2.7</title>
+    <itemizedlist>
+        <listitem>JAXB 1.0 runtime is restored. It's bundled into the jaxb-extra-osgi.jar now. Required libraries are located in
+            $JAXB_HOME/tools/jaxb1_libs folder.</listitem>
+        <listitem>Implemented -enableExternalEntityProcessing option for XJC. When it's set to TRUE processing of external links is allowed.
+        For security reasons it's disabled by default now. This changes was also added to 2.2.4-3 version.</listitem>
+        <listitem>The processing of -source XJC option is removed. We use 2.0 version of the schema compiler.
+            For generating 1.0.x code, please use an installation of the 1.0.x codebase.</listitem>
+        <!--<listitem>resolver.jar is not bundled by JAXB anymore. Because it's part of JDK and is budled by JAXP team.</listitem>-->
+        <!--<listitem>xjc-split</listitem>, -jaxb-impl.jar should be on classpath -->
+    </itemizedlist>
+</section>
+<section xml:id="a-2-2-6">
+    <title>Changes between 2.2.5-2 to 2.2.6</title>
+    <itemizedlist>
+        <listitem>Project cleaning done:<itemizedlist>
+            <listitem>JAXB 1.0 is not bundled anymore.</listitem>
+            <listitem>Libraries jaxb1-xjc.jar, msv.jar was removed.</listitem>
+            <listitem>Package com/sun/msv/datatype was extracted to jaxb-extra-osgi.jar</listitem>
+        </itemizedlist></listitem>
+        <listitem>Bug fixes: <programlisting>
+            * [JAXB-890] - JAXB Unmarshaller tries to instantiate abstract class ignoring xsi:type if nillable="true".
+            * [JAXB-871] - Disabled fields and multiple-inherence (override once => override for sub-classes).
+            * [JAXB-900] - MarshalException for XmlIDREF used on interfaces.
+        </programlisting></listitem>
+    </itemizedlist>
+</section>
 <section xml:id="a-2-2-5u2">
 <title>Changes between 2.2.5-1 to 2.2.5-2</title>
 <itemizedlist>

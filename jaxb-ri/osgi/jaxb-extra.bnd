@@ -3,6 +3,8 @@ Bundle-Name: jaxb-extra
 Export-Package: \
   com.sun.msv.*;version=@RELEASE_IMPL_VERSION@, \
   com.sun.xml.*;version=@RELEASE_IMPL_VERSION@, \
+  org.iso_relax.*;version=@RELEASE_IMPL_VERSION@, \
+  jp.gr.xml.*;version=@RELEASE_IMPL_VERSION@, \
   *
 Import-Package: \
   org.relaxng.datatype, \

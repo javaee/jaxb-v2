@@ -3,7 +3,7 @@
 
 DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
 
 The contents of this file are subject to the terms of either the GNU
 General Public License Version 2 only ("GPL") or the Common Development
@@ -235,36 +235,15 @@ holder.
                         </row>
 
                         <row>
-                            <entry><para><literal>source</literal></para></entry>
-
-                            <entry><para>Specify which version of the schema
-                            compiler to use. Must be either "1.0", "2.0", or
-                            "2.1". The compiler will parse XML Schema and bind
-                            them according to the rules specified by the given
-                            version of the specification. Note that 2.1 is
-                            backward compatible with 2.0, so these two flags
-                            won't make any difference. You shall not rely on
-                            this attribute, because it might get removed from
-                            any future version of JAXB. For generating 1.0.x
-                            code, please use an installation of the 1.0.x
-                            codebase.</para></entry>
-
-                            <entry><para>No, defaults to "2.1"</para></entry>
-                        </row>
-
-                        <row>
                             <entry><para><literal>target</literal></para></entry>
 
                             <entry><para>Specifies the runtime environment in
-                            which the generated code is supposed to run. This
-                            value must be smaller than the <literal>source</literal>
-                            attribute, if specified (IOW, you can't do
-                            <code>source="1.0" target="2.0"</code>) This allows
-                            more up-to-date versions of XJC to be used for
+                            which the generated code is supposed to run. Expects 2.0 or 2.1 values.
+                            This allows more up-to-date versions of XJC to be used for
                             developing applications that run on earlier JAXB
                             versions.</para></entry>
 
-                            <entry><para>No, defaults to "2.1"</para></entry>
+                            <entry><para>No, defaults to "2.2"</para></entry>
                         </row>
 
                         <row>

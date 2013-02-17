@@ -3,7 +3,7 @@
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
 
     The contents of this file are subject to the terms of either the GNU
     General Public License Version 2 only ("GPL") or the Common Development
@@ -116,7 +116,7 @@
         <delete file="${osgi.build.rt}/jaxb-bnd.jar" quiet="true"/>
         <delete file="${osgi.build}/extra/jaxb-extra-bnd.jar" quiet="true"/>
 
-  <bnd classpath="${jaxb.libs.util}/xsdlib.jar"
+  <bnd classpath="${jaxb.libs.jaxb1}/xsdlib.jar, ${jaxb.libs.jaxb1}/jaxb1.jar, ${jaxb.libs.jaxb1}/msv-core.jar"
            failok="false"
            output="${osgi.build}/extra/jaxb-extra-bnd.jar"
            files="${osgi.build}/extra/jaxb-extra.bnd"/>
@@ -210,7 +210,9 @@
 
       <jar destfile="${osgi.dist}/jaxb-extra-osgi.jar"
               manifest="${osgi.build}/extra/META-INF/MANIFEST.MF">
-        <zipfileset src="${jaxb.libs.util}/xsdlib.jar"/>
+        <zipfileset src="${jaxb.libs.jaxb1}/xsdlib.jar"/>
+        <zipfileset src="${jaxb.libs.jaxb1}/msv-core.jar"/>
+        <zipfileset src="${jaxb.libs.jaxb1}/jaxb1.jar"/>
       </jar>
         <copy todir="${osgi.dist}">
             <fileset dir="${jaxb.libs.osgi}" includes="*.jar"/>
@@ -245,12 +247,15 @@
             <fileset dir="${jaxb.build}/jaxbosgisrc"/>
         </zip>
 
-        <unzip src="${jaxb.libs.src}/xsdlib-src.zip" dest="${jaxb.build}/jaxb.extra.osgi.src"/>
+        <unjar src="${jaxb.libs.jaxb1}/xsdlib-sources.jar" dest="${jaxb.build}/jaxb.extra.osgi.src/xsdlib/src"/>
+        <unjar src="${jaxb.libs.jaxb1}/msv-core-sources.jar" dest="${jaxb.build}/jaxb.extra.osgi.src/msv/src"/>
+        <unzip src="${jaxb.libs.jaxb1}/iso-relax-src.zip" dest="${jaxb.build}/jaxb.extra.osgi.src"/>
+        <unzip src="${jaxb.libs.jaxb1}/jaxb1-src.zip" dest="${jaxb.build}/jaxb.extra.osgi.src"/>
         <mkdir dir="${jaxb.build}/jaxb.extra.osgi.api"/>
         <javadoc destdir="${jaxb.build}/jaxb.extra.osgi.api" use="true" defaultexcludes="yes"
                  author="false" version="false" windowtitle="JAXB RI" useexternalfile="true" access="public">
           <fileset dir="${jaxb.build}/jaxb.extra.osgi.src"
-                   includes="xsdlib/src/**/*.java, xsdlib/src-apache/**/*.java"/>
+                   includes="xsdlib/src/**/*.java, xsdlib/src-apache/**/*.java, isorelax/src/**/*.java, msv/src/**/*.java, jaxb1/src/**/*.java"/>
           <classpath refid="javac.classpath"/>
           <arg value="-quiet"/>
         </javadoc>
@@ -268,7 +273,10 @@
         </jar>
 
         <jar destfile="${osgi.dist}/jaxb-extra-osgi-sources.jar">
-            <zipfileset src="${jaxb.libs.src}/xsdlib-src.zip"/>
+            <zipfileset src="${jaxb.libs.jaxb1}/xsdlib-sources.jar"/>
+            <zipfileset src="${jaxb.libs.jaxb1}/msv-core-sources.jar"/>
+            <zipfileset src="${jaxb.libs.jaxb1}/iso-relax-src.zip"/>
+            <zipfileset src="${jaxb.libs.jaxb1}/jaxb1-src.zip"/>
         </jar>
     </target>
 

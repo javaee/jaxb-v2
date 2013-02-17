@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -176,20 +176,12 @@ public class Options
      */
     public SpecVersion target = SpecVersion.LATEST;
 
-    private boolean is2_2 = true;
 
     public Options() {
-        if (is2_2) {
-            try {
-                Class.forName("javax.xml.bind.JAXBPermission");
-            } catch (ClassNotFoundException cnfe) {
-                is2_2 = false;
-            }
-            if (!is2_2) {
-                target = SpecVersion.V2_1;
-            } else {
-                target = SpecVersion.LATEST;
-            }
+        try {
+            Class.forName("javax.xml.bind.JAXBPermission");
+        } catch (ClassNotFoundException cnfe) {
+            target = SpecVersion.V2_1;
         }
     }
 
@@ -669,16 +661,6 @@ public class Options
             }
             return 2;
         }
-        if (args[i].equals("-source")) {
-            String version = requireArgument("-source",args,++i);
-            //For source 1.0 the 1.0 Driver is loaded
-            //Hence anything other than 2.0 is defaulted to
-            //2.0
-            if( !version.equals("2.0") && !version.equals("2.1") )
-                throw new BadCommandLineException(
-                    Messages.format(Messages.DEFAULT_VERSION));
-            return 2;
-        }
         if( args[i].equals("-Xtest-class-name-allocator") ) {
             classNameAllocator = new ClassNameAllocator() {
                 public String assignClassName(String packageName, String className) {
@@ -1065,7 +1047,7 @@ public class Options
     public static String getBuildID() {
         return Messages.format(Messages.BUILD_ID);
     }
-    
+
     public static String normalizeSystemId(String systemId) {
         try {
             systemId = new URI(systemId).normalize().toString();
