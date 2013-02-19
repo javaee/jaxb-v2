@@ -3,7 +3,7 @@
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
 
     The contents of this file are subject to the terms of either the GNU
     General Public License Version 2 only ("GPL") or the Common Development
@@ -306,16 +306,8 @@
         <get src="http://hudson.sfbay/job/zephyr/lastSuccessfulBuild/artifact/dist/sjsxp-src-1_0.zip"
              dest="tools/lib/src/sjsxp-src.zip" />
     </target>
-<!-- fix links if needed
-    <target name="integrate-xsdlib-hudson">
-        <property name="xsdlib-version" value="2009.2-SNAPSHOT" />
-        <get src="http://sysifos-sol.cz.oracle.com/hudson/job/msv/lastSuccessfulBuild/artifact/trunk/xsdlib/target/xsdlib-${xsdlib-version}.jar"
-             dest="${jaxb.libs.jaxb1}/xsdlib.jar" />
-        <get src="http://sysifos-sol.cz.oracle.com/hudson/job/msv/lastSuccessfulBuild/artifact/trunk/xsdlib/target/xsdlib-fullsrc.zip"
-             dest="${jaxb.libs.jaxb1}/xsdlib-sources.jar" />
-    </target>
--->
-<!-- mavenized projects -->
+
+    <!-- mavenized projects -->
 
     <property name="mavenrepo.url" value="https://maven.java.net/content/repositories/releases/"/>
     
@@ -456,6 +448,15 @@
              dest="tools/lib/util/istack-commons-test.jar" />
         <get src="${mavenrepo.url}/${istack-commons.test.mvn.path}-sources.jar"
              dest="tools/lib/util/istack-commons-test-sources.jar" />
+    </target>
+
+    <target name="integrate-msvxsdlib">
+        <property name="xsdlib-version" value="2013.2.2" />
+        <property name="sonatype.mavenrepo.url" value="https://oss.sonatype.org/content/repositories/releases"/>
+        <get src="${sonatype.mavenrepo.url}/${xsdlib.mvn.path}" dest="tools/jaxb1_libs/xsdlib.jar" />
+        <get src="${sonatype.mavenrepo.url}/${xsdlibsrc.mvn.path}" dest="tools/jaxb1_libs/xsdlib-sources.jar" />
+        <get src="${sonatype.mavenrepo.url}/${msv.mvn.path}" dest="tools/jaxb1_libs/msv-core.jar" />
+        <get src="${sonatype.mavenrepo.url}/${msvsrc.mvn.path}" dest="tools/jaxb1_libs/msv-core-sources.jar" />
     </target>
 
     <!-- Source build -->
