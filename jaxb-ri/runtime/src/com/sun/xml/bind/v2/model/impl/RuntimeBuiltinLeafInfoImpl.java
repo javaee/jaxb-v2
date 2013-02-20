@@ -40,6 +40,10 @@
 
 package com.sun.xml.bind.v2.model.impl;
 
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.MediaTracker;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
