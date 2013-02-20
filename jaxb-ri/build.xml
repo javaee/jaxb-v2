@@ -507,32 +507,15 @@
         <copy file="${maven.repo.local}/${isorelax.mvn.path}" tofile="${jaxb.root}/tools/lib/util/isorelax.jar"/>
 
         <echo message="building xsdlib"/>
-        <unjar src="${jaxb.libs.jaxb1}/xsdlib-sources.jar" dest="${external.dir}/xsdlib"/>
-        <copy file="${maven.repo.local}/${relaxng-datatype.mvn.path}" tofile="${external.dir}/xsdlib/relaxng-datatype.jar"/>
-        <exec executable="ant" dir="${external.dir}/xsdlib" failonerror="true" newenvironment="false" >
-            <arg line="-Djavac.target=1.6"/>
-            <arg line="-Djavac.source=1.6"/>
-            <arg line="-DrelaxngDatatype.jar=relaxng-datatype.jar"/>
-            <arg line="-Dmaven.repo.local=${maven.repo.local}"/>
-            <arg line="dist"/>
-        </exec>
-        <mvn.publish.local jar="${external.dir}/xsdlib/dist/xsdlib.jar" mvngroup="com.sun.msv.datatype.xsd" mvnartid="xsdlib" mvnversion="${xsdlib.version}"/>
+        <build.jar.from.srczip jar="${external.dir}/xsdlib/xsdlib.jar" srczip="tools/jaxb1_libs/xsdlib-sources.jar" unzipdir="${external.dir}" srcdir="xsdlib" cp="${maven.repo.local}/${relaxng-datatype.mvn.path}:${ant.home}/lib/xercesImpl.jar"/>
+        <mvn.publish.local jar="${external.dir}/xsdlib/xsdlib.jar" mvngroup="net.java.dev.msv" mvnartid="xsdlib" mvnversion="${xsdlib.version}"/>
         <copy file="${maven.repo.local}/${xsdlib.mvn.path}" tofile="${jaxb.libs.jaxb1}/xsdlib.jar"/>
 
         <echo message="building msv"/>
         <unjar src="${jaxb.libs.jaxb1}/msv-core-sources.jar" dest="${external.dir}/msv"/>
-        <copy file="${maven.repo.local}/${relaxng-datatype.mvn.path}" tofile="${external.dir}/msv/relaxng-datatype.jar"/>
-        <copy file="${maven.repo.local}/${xsdlib.mvn.path}" tofile="${external.dir}/msv/xsdlib.jar"/>
-        <copy file="${maven.repo.local}/${isorelax.mvn.path}" tofile="${external.dir}/msv/isorelax.jar"/>
-        <copy file="${maven.repo.local}/${resolver.mvn.path}" tofile="${external.dir}/msv/resolver.jar"/>
-        <exec executable="ant" dir="${external.dir}/msv" failonerror="true" newenvironment="true" >
-            <arg line="-Djavac.target=1.6"/>
-            <arg line="-Djavac.source=1.6"/>
-            <arg line="-Dfrom.source=true"/>
-            <arg line="-Dcpath.fromsource=relaxng-datatype.jar:xsdlib.jar:isorelax.jar:resolver.jar"/>
-            <arg line="dist"/>
-        </exec>
-        <mvn.publish.local jar="${external.dir}/msv/dist/msv.jar" mvngroup="com.sun.msv" mvnartid="msv" mvnversion="${msv.version}"/>
+        <build.jar.from.srczip jar="${external.dir}/msv/msv-core.jar" srczip="tools/jaxb1_libs/msv-core-sources.jar" unzipdir="${external.dir}" srcdir="msv" 
+                               cp="${maven.repo.local}/${relaxng-datatype.mvn.path}:${maven.repo.local}/${xsdlib.mvn.path}:${maven.repo.local}/${isorelax.mvn.path}:${maven.repo.local}/${resolver.mvn.path}"/>
+        <mvn.publish.local jar="${external.dir}/msv/msv-core.jar" mvngroup="net.java.dev.msv" mvnartid="msv-core" mvnversion="${msv.version}"/>
 
         <echo message="building istack-commons"/>
         <build.jar.from.srczip jar="${external.dir}/istack-commons-runtime/istack-commons-runtime.jar" srczip="tools/lib/src/istack-commons-runtime-sources.jar" unzipdir="${external.dir}" srcdir="istack-commons-runtime"/>
