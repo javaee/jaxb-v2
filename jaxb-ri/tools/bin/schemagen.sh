@@ -1,7 +1,7 @@
 #!/bin/sh
 # DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 #
-# Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
 #
 # The contents of this file are subject to the terms of either the GNU
 # General Public License Version 2 only ("GPL") or the Common Development
@@ -77,9 +77,9 @@ fi
 
 # add the api jar file
 if [ -z "$LOCALCLASSPATH" ] ; then
-    LOCALCLASSPATH="$JAXB_HOME"/lib/jaxb-api.jar:"$JAXB_HOME"/lib/jaxb-xjc.jar
+    LOCALCLASSPATH="$JAXB_HOME"/lib/jaxb-api.jar:"$JAXB_HOME"/lib/jaxb-core.jar:"$JAXB_HOME"/lib/jaxb-xjc.jar:"$JAXB_HOME"/lib/jaxb-jxc.jar:"$JAXB_HOME"/lib/jaxb-impl.jar
 else
-    LOCALCLASSPATH="$JAXB_HOME"/lib/jaxb-api.jar:"$JAXB_HOME"/lib/jaxb-xjc.jar:"$LOCALCLASSPATH"
+    LOCALCLASSPATH="$JAXB_HOME"/lib/jaxb-api.jar:"$JAXB_HOME"/lib/jaxb-core.jar:"$JAXB_HOME"/lib/jaxb-xjc.jar:"$JAXB_HOME"/lib/jaxb-jxc.jar:"$JAXB_HOME"/lib/jaxb-impl.jar:"$LOCALCLASSPATH"
 fi
 
 

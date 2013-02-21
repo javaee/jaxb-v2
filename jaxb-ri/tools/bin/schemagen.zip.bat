@@ -3,7 +3,7 @@
 REM
 REM DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 REM
-REM Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+REM Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
 REM
 REM The contents of this file are subject to the terms of either the GNU
 REM General Public License Version 2 only ("GPL") or the Common Development
@@ -66,7 +66,7 @@ set JAVA=%JAVA_HOME%\bin\java
 goto LAUNCHSCHEMAGEN
 
 :LAUNCHSCHEMAGEN
-"%JAVA%" %SCHEMAGEN_OPTS% -cp "%WEBSERVICES_LIB%\jaxb2\lib\jaxb-api.jar;%WEBSERVICES_LIB%\jaxb2\lib\jaxb-impl.jar;%WEBSERVICES_LIB%\jaxb2\lib\jaxb-xjc.jar;%WEBSERVICES_LIB%\jaxp\lib\jsr173_api.jar;%WEBSERVICES_LIB%\jaf\lib\activation.jar;%WEBSERVICES_LIB%\jaxp\lib\resolver.jar" com.sun.tools.jxc.SchemaGeneratorFacade %*
+"%JAVA%" %SCHEMAGEN_OPTS% -cp "%WEBSERVICES_LIB%\jaxb2\lib\jaxb-api.jar;%WEBSERVICES_LIB%\jaxb2\lib\jaxb-core.jar;%WEBSERVICES_LIB%\jaxb2\lib\jaxb-xjc.jar;%WEBSERVICES_LIB%\jaxb2\lib\jaxb-jxc.jar;%WEBSERVICES_LIB%\jaxb2\lib\jaxb-impl.jar;%WEBSERVICES_LIB%\jaxp\lib\jsr173_api.jar;%WEBSERVICES_LIB%\jaf\lib\activation.jar;%WEBSERVICES_LIB%\jaxp\lib\resolver.jar" com.sun.tools.jxc.SchemaGeneratorFacade %*
 goto END
 
 :END

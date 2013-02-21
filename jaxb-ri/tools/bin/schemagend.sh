@@ -1,7 +1,7 @@
 #!/bin/sh +x
 # DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 #
-# Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
 #
 # The contents of this file are subject to the terms of either the GNU
 # General Public License Version 2 only ("GPL") or the Common Development
@@ -87,4 +87,4 @@ then
 fi
 
 
-exec "$JAVA" $DEBUG_OPTS $SCHEMAGEN_OPTS -cp "$JAXB_HOME"/dist/lib/jaxb-xjc.jar com.sun.tools.jxc.SchemaGeneratorFacade "$@"
+exec "$JAVA" $DEBUG_OPTS $SCHEMAGEN_OPTS -cp "$JAXB_HOME"/dist/lib/jaxb-core.jar:$JAXB_HOME"/dist/lib/jaxb-xjc.jar:$JAXB_HOME"/dist/lib/jaxb-jxc.jar:$JAXB_HOME"/dist/lib/jaxb-impl.jar com.sun.tools.jxc.SchemaGeneratorFacade "$@"
