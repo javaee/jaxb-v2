@@ -315,7 +315,9 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
 
             // invoke set when possible (see Issue 488)
             try {
-                acc.set(bean,collection);
+                if (acc.isAdapted()) {
+                    acc.set(bean,collection);
+                }
             } catch (AccessorException ae) {
                 if(acc.isAdapted()) throw ae;
             }
