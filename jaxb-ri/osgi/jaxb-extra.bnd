@@ -7,7 +7,20 @@ Export-Package: \
   jp.gr.xml.*;version=@RELEASE_IMPL_VERSION@, \
   *
 Import-Package: \
-  org.relaxng.datatype, \
-  org.apache.xerces.impl.xpath.regex;resolution:=optional, \
-  *
+javax.xml.namespace;resolution:=optional, \
+javax.xml.parsers;resolution:=optional, \
+javax.xml.transform;resolution:=optional, \
+javax.xml.transform.dom;resolution:=optional, \
+javax.xml.transform.sax;resolution:=optional, \
+javax.xml.xpath;resolution:=optional, \
+org.apache.xerces.impl.xpath.regex;resolution:=optional, \
+com.sun.org.apache.xml.internal.resolver.tools;resolution:=optional, \
+com.sun.org.apache.xml.internal.resolver;resolution:=optional, \
+org.relaxng.datatype;resolution:=optional, \
+org.relaxng.datatype.helpers;resolution:=optional, \
+org.w3c.dom;resolution:=optional, \
+org.w3c.dom.ls;resolution:=optional, \
+org.xml.sax;resolution:=optional, \
+org.xml.sax.ext;resolution:=optional, \
+org.xml.sax.helpers;resolution:=optional
 Private-Package: *

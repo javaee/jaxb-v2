@@ -84,15 +84,13 @@
         </filterset>
       </copy>
 
-        <!-- JAXB 1.0 uses its own classloader and should be ignored by bnd. -->
-        <!-- Since bnd insists on processing the entire jar, we need to remove JAXB 1.0 classes first. -->
         <mkdir dir="${osgi.build}/jaxb-xjc"/>
         <unjar src="${jaxb.dist}/lib/jaxb-xjc.jar"
                dest="${osgi.build}/jaxb-xjc">
             <patternset>
                 <exclude name="com/sun/tools/xjc/*Task*"/>
                 <exclude name="com/sun/istack/tools/*Task*"/>
-		            <exclude name="org/kohsuke/**"/>
+        		<exclude name="org/kohsuke/**"/>
             </patternset>
         </unjar>
 
@@ -116,15 +114,16 @@
         <delete file="${osgi.build.rt}/jaxb-bnd.jar" quiet="true"/>
         <delete file="${osgi.build}/extra/jaxb-extra-bnd.jar" quiet="true"/>
 
-  <bnd classpath="${jaxb.libs.jaxb1}/xsdlib.jar, ${jaxb.libs.jaxb1}/jaxb1.jar, ${jaxb.libs.jaxb1}/msv-core.jar"
+  <bnd classpath="${jaxb.libs.jaxb1}/xsdlib.jar, ${jaxb.libs.jaxb1}/jaxb1_libs.jar, ${jaxb.libs.jaxb1}/msv-core.jar"
            failok="false"
            output="${osgi.build}/extra/jaxb-extra-bnd.jar"
            files="${osgi.build}/extra/jaxb-extra.bnd"/>
 
-	<bnd classpath="${jaxb.dist}/lib/jaxb-impl.jar, ${osgi.build}/jaxb-xjc, ${osgi.build}/fastinfoset, ${jaxb.libs.util}/stax-ex.jar"
-             failok="false"
-             output="${osgi.build.rt}/jaxb-bnd.jar"
-             files="${osgi.build.rt}/jaxb.bnd"/>
+  <bnd classpath="${jaxb.dist}/lib/jaxb-impl.jar, ${osgi.build}/jaxb-xjc, ${osgi.build}/fastinfoset, ${jaxb.libs.util}/stax-ex.jar,
+        ${jaxb.libs.jaxb1}/jaxb1.jar"
+           failok="false"
+           output="${osgi.build.rt}/jaxb-bnd.jar"
+           files="${osgi.build.rt}/jaxb.bnd"/>
       
       <readManifest file="${osgi.build.rt}/jaxb-bnd.jar"/>
 
@@ -212,7 +211,7 @@
               manifest="${osgi.build}/extra/META-INF/MANIFEST.MF">
         <zipfileset src="${jaxb.libs.jaxb1}/xsdlib.jar"/>
         <zipfileset src="${jaxb.libs.jaxb1}/msv-core.jar"/>
-        <zipfileset src="${jaxb.libs.jaxb1}/jaxb1.jar"/>
+        <zipfileset src="${jaxb.libs.jaxb1}/jaxb1_libs.jar"/>
       </jar>
         <copy todir="${osgi.dist}">
             <fileset dir="${jaxb.libs.osgi}" includes="*.jar"/>
@@ -270,13 +269,13 @@
             <zipfileset src="${jaxb.dist}/lib/jaxb-xjc.src.zip"/>
             <zipfileset src="${jaxb.libs.src}/fi-sources.jar"/>
             <zipfileset src="${jaxb.libs.util}/stax-ex-src.zip"/>
+            <zipfileset src="${jaxb.libs.jaxb1}/jaxb1-src.zip"/>
         </jar>
 
         <jar destfile="${osgi.dist}/jaxb-extra-osgi-sources.jar">
             <zipfileset src="${jaxb.libs.jaxb1}/xsdlib-sources.jar"/>
             <zipfileset src="${jaxb.libs.jaxb1}/msv-core-sources.jar"/>
             <zipfileset src="${jaxb.libs.jaxb1}/iso-relax-src.zip"/>
-            <zipfileset src="${jaxb.libs.jaxb1}/jaxb1-src.zip"/>
         </jar>
     </target>
 

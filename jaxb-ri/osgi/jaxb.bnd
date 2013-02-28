@@ -2,68 +2,75 @@ Bundle-SymbolicName: com.sun.xml.bind
 Bundle-Name: jaxb
 Export-Package: \
   com.sun.codemodel;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.codemodel.writer;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.codemodel.*;version=@RELEASE_IMPL_VERSION@, \
   com.sun.istack;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.istack.localization;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.istack.tools;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.tools.xjc;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.tools.xjc.api;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.tools.xjc.api.util;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.tools.xjc.reader;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.tools.xjc.reader.internalizer;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.tools.xjc.util;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.istack.*;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.tools.*;version=@RELEASE_IMPL_VERSION@, \
   com.sun.xml.bind;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.xml.bind.api;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.xml.bind.api.impl;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.xml.bind.marshaller;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.xml.bind.unmarshaller;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.xml.bind.util;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.xml.bind.v2.model.nav;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.xml.bind.v2.runtime;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.xml.bind.v2.runtime.output;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.xml.bind.v2.runtime.reflect;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.xml.bind.v2.runtime.unmarshaller;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.xml.bind.v2.schemagen;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.xml.bind.v2.util;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.xml.bind.validator;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.bind.*;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.dtdparser;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.dtdparser.*;version=@RELEASE_IMPL_VERSION@, \
   com.sun.xml.fastinfoset;version=1.2.8, \
   com.sun.xml.fastinfoset.*;version=1.2.8, \
   com.sun.xml.txw2;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.xml.txw2.annotation;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.xml.txw2.output;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.txw2.*;version=@RELEASE_IMPL_VERSION@, \
   com.sun.xml.xsom;version=@RELEASE_IMPL_VERSION@, \
-  com.sun.xml.xsom.parser;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.xsom.*;version=@RELEASE_IMPL_VERSION@, \
   org.jvnet.fastinfoset;version=1.0, \
   org.jvnet.staxex;version=@STAX-EX_VERSION@, \
+  org.kohsuke.rngom.*;version=@RELEASE_IMPL_VERSION@, \
+  org.relaxng.datatype;version=@RELEASE_IMPL_VERSION@, \
+  org.relaxng.datatype.*;version=@RELEASE_IMPL_VERSION@, \
   *
 Import-Package: \
-  javax.activation, \
-  javax.imageio, \
-  javax.imageio.stream, \
-  javax.swing, \
-  javax.swing.border, \
-  javax.swing.tree, \
-  javax.xml.bind;version=@RELEASE_SPEC_VERSION@, \
-  javax.xml.bind.annotation;version=@RELEASE_SPEC_VERSION@, \
-  javax.xml.bind.annotation.adapters;version=@RELEASE_SPEC_VERSION@, \
-  javax.xml.bind.attachment;version=@RELEASE_SPEC_VERSION@, \
-  javax.xml.bind.helpers;version=@RELEASE_SPEC_VERSION@, \
-  javax.xml.datatype, \
-  javax.xml.namespace, \
-  javax.xml.parsers, \
-  javax.xml.stream, \
-  javax.xml.stream.events, \
-  javax.xml.stream.util, \
-  javax.xml.transform, \
-  javax.xml.transform.dom, \
-  javax.xml.transform.sax, \
-  javax.xml.transform.stream, \
-  javax.xml.validation, \
-  javax.xml.xpath, \
-  org.w3c.dom, \
-  org.w3c.dom.ls, \
-  org.xml.sax, \
-  org.xml.sax.ext, \
-  org.xml.sax.helpers, \
-  sun.nio.cs
+  com.sun.msv.grammar;resolution:=optional, \
+  com.sun.msv.grammar.trex;resolution:=optional, \
+  com.sun.msv.grammar.util;resolution:=optional, \
+  com.sun.msv.util;resolution:=optional, \
+  com.sun.msv.verifier;resolution:=optional, \
+  com.sun.msv.verifier.regexp;resolution:=optional, \
+  com.sun.org.apache.xml.internal.resolver;resolution:=optional, \
+  com.sun.org.apache.xml.internal.resolver.tools;resolution:=optional, \
+  com.sun.source.tree;resolution:=optional, \
+  com.sun.source.util;resolution:=optional, \
+  javax.activation;resolution:=optional, \
+  javax.annotation.processing;resolution:=optional, \
+  javax.imageio;resolution:=optional, \
+  javax.imageio.stream;resolution:=optional, \
+  javax.lang.model;resolution:=optional, \
+  javax.lang.model.element;resolution:=optional, \
+  javax.lang.model.type;resolution:=optional, \
+  javax.lang.model.util;resolution:=optional, \
+  javax.swing;resolution:=optional, \
+  javax.swing.border;resolution:=optional, \
+  javax.swing.tree;resolution:=optional, \
+  javax.tools;resolution:=optional, \
+  javax.xml.bind;version=@RELEASE_SPEC_VERSION@;resolution:=optional, \
+  javax.xml.bind.annotation;version=@RELEASE_SPEC_VERSION@;resolution:=optional, \
+  javax.xml.bind.annotation.adapters;version=@RELEASE_SPEC_VERSION@;resolution:=optional, \
+  javax.xml.bind.attachment;version=@RELEASE_SPEC_VERSION@;resolution:=optional, \
+  javax.xml.bind.helpers;version=@RELEASE_SPEC_VERSION;resolution:=optional, \
+  javax.xml.datatype;resolution:=optional, \
+  javax.xml.namespace;resolution:=optional, \
+  javax.xml.parsers;resolution:=optional, \
+  javax.xml.stream;resolution:=optional, \
+  javax.xml.stream.events;resolution:=optional, \
+  javax.xml.stream.util;resolution:=optional, \
+  javax.xml.transform;resolution:=optional, \
+  javax.xml.transform.dom;resolution:=optional, \
+  javax.xml.transform.sax;resolution:=optional, \
+  javax.xml.transform.stream;resolution:=optional, \
+  javax.xml.validation;resolution:=optional, \
+  javax.xml.xpath;resolution:=optional, \
+  org.apache.tools.ant;resolution:=optional, \
+  org.apache.tools.ant.taskdefs;resolution:=optional, \
+  org.apache.tools.ant.taskdefs.compilers;resolution:=optional, \
+  org.apache.tools.ant.types;resolution:=optional, \
+  org.iso_relax.verifier.impl;resolution:=optional, \
+  org.w3c.dom;resolution:=optional, \
+  org.w3c.dom.ls;resolution:=optional, \
+  org.xml.sax;resolution:=optional, \
+  org.xml.sax.ext;resolution:=optional, \
+  org.xml.sax.helpers;resolution:=optional, \
+  sun.nio.cs;resolution:=optional
 Private-Package: *
