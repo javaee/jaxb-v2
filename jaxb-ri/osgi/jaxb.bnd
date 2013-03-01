@@ -49,7 +49,7 @@ Import-Package: \
   javax.xml.bind.annotation;version=@RELEASE_SPEC_VERSION@;resolution:=optional, \
   javax.xml.bind.annotation.adapters;version=@RELEASE_SPEC_VERSION@;resolution:=optional, \
   javax.xml.bind.attachment;version=@RELEASE_SPEC_VERSION@;resolution:=optional, \
-  javax.xml.bind.helpers;version=@RELEASE_SPEC_VERSION;resolution:=optional, \
+  javax.xml.bind.helpers;version=@RELEASE_SPEC_VERSION@;resolution:=optional, \
   javax.xml.datatype;resolution:=optional, \
   javax.xml.namespace;resolution:=optional, \
   javax.xml.parsers;resolution:=optional, \
