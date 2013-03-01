@@ -95,7 +95,9 @@
             <mkdir dir="${build.dir}" />
 
             <mkdir dir="@{unzipdir}/@{srcdir}" />
-            <javac srcdir="@{unzipdir}/@{srcdir}" debug="true" destdir="${build.dir}" source="1.6" target="1.6" classpath="@{cp}"/>
+            <javac srcdir="@{unzipdir}/@{srcdir}" debug="true" destdir="${build.dir}" source="1.6" target="1.6" classpath="@{cp}">
+                <compilerarg value="-XDignore.symbol.file=true"/>
+            </javac>
 
             <jar jarfile="@{jar}" compress="false">
                 <fileset dir="${build.dir}" />
