@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -43,10 +43,14 @@ import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMod;
+import com.sun.istack.tools.DefaultAuthenticator;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.charset.Charset;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import junit.framework.TestCase;
 
 /**
@@ -123,6 +127,68 @@ public class OptionsJUTest extends TestCase {
         assertTrue("Got: '" + inStr + "'", inStr.contains("// This f"));
     }
 
+    public void testProxySettings() throws Exception {
+        Options opts = new Options();
+        File grammar = File.createTempFile("jaxbproxytest", "xsd");
+        grammar.deleteOnExit();
+
+        try {
+            opts.parseArguments(new String[]{"-httpproxy", "www.proxy", grammar.getAbsolutePath()});
+            assertEquals("www.proxy", getField("proxyHost", opts));
+            assertEquals("80", getField("proxyPort", opts));
+            assertNull(opts.proxyAuth);
+        } catch (BadCommandLineException ex) {
+            Logger.getLogger(OptionsJUTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        } finally {
+            if (opts.proxyAuth != null) {
+                DefaultAuthenticator.reset();
+            }
+        }
+        opts = new Options();
+        try {
+            opts.parseArguments(new String[]{"-httpproxy", "www.proxy1:4321", grammar.getAbsolutePath()});
+            assertEquals("www.proxy1", getField("proxyHost", opts));
+            assertEquals("4321", getField("proxyPort", opts));
+            assertNull(opts.proxyAuth);
+        } catch (BadCommandLineException ex) {
+            Logger.getLogger(OptionsJUTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        } finally {
+            if (opts.proxyAuth != null) {
+                DefaultAuthenticator.reset();
+            }
+        }
+        opts = new Options();
+        try {
+            opts.parseArguments(new String[]{"-httpproxy", "user:pwd@www.proxy3:7890", grammar.getAbsolutePath()});
+            assertEquals("www.proxy3", getField("proxyHost", opts));
+            assertEquals("7890", getField("proxyPort", opts));
+            assertEquals("user:pwd", opts.proxyAuth);
+        } catch (BadCommandLineException ex) {
+            Logger.getLogger(OptionsJUTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        } finally {
+            if (opts.proxyAuth != null) {
+                DefaultAuthenticator.reset();
+            }
+        }
+        opts = new Options();
+        try {
+            opts.parseArguments(new String[]{"-httpproxy", "duke:s@cr@t@proxy98", grammar.getAbsolutePath()});
+            assertEquals("proxy98", getField("proxyHost", opts));
+            assertEquals("80", getField("proxyPort", opts));
+            assertEquals("duke:s@cr@t", opts.proxyAuth);
+        } catch (BadCommandLineException ex) {
+            Logger.getLogger(OptionsJUTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        } finally {
+            if (opts.proxyAuth != null) {
+                DefaultAuthenticator.reset();
+            }
+        }
+    }
+
     private static void delDirs(File... dirs) {
         for (File dir : dirs) {
             if (!dir.exists()) {
@@ -137,5 +203,24 @@ public class OptionsJUTest extends TestCase {
                 dir.delete();
             }
         }
+    }
+
+    private String getField(String fieldName, Object instance) {
+        Field f = null;
+        boolean reset = false;
+        try {
+            f = Options.class.getDeclaredField(fieldName);
+            if (!f.isAccessible()) {
+                f.setAccessible(reset = true);
+            }
+            return (String) f.get(instance);
+        } catch (Exception ex) {
+            Logger.getLogger(OptionsJUTest.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (reset && f != null) {
+                f.setAccessible(false);
+            }
+        }
+        return null;
     }
 }

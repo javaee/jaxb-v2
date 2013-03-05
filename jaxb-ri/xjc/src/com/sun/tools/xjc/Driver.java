@@ -53,6 +53,7 @@ import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.writer.ZipCodeWriter;
 import com.sun.istack.NotNull;
 import com.sun.istack.Nullable;
+import com.sun.istack.tools.DefaultAuthenticator;
 import com.sun.tools.xjc.generator.bean.BeanGenerator;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.outline.Outline;
@@ -238,8 +239,14 @@ public class Driver {
         try {
             opt.parseArguments(args);
         } catch (WeAreDone e) {
+            if (opt.proxyAuth != null) {
+                DefaultAuthenticator.reset();
+            }
             return -1;
         } catch(BadCommandLineException e) {
+            if (opt.proxyAuth != null) {
+                DefaultAuthenticator.reset();
+            }
             e.initOptions(opt);
             throw e;
         }
@@ -415,6 +422,10 @@ public class Driver {
                 // quit without filling the user's screen
                 listener.message(Messages.format(Messages.STACK_OVERFLOW));
                 return -1;
+            }
+        } finally {
+            if (opt.proxyAuth != null) {
+                DefaultAuthenticator.reset();
             }
         }
     }

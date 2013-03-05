@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -55,6 +55,7 @@ import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.writer.FilterCodeWriter;
+import com.sun.istack.tools.DefaultAuthenticator;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Util;
 import com.sun.tools.xjc.util.ForkEntityResolver;
@@ -460,6 +461,9 @@ public class XJC2Task extends Task {
             // close AntClassLoader
             if (acl != null) {
                 acl.cleanup();
+            }
+            if (options.proxyAuth != null) {
+                DefaultAuthenticator.reset();
             }
         }
     }

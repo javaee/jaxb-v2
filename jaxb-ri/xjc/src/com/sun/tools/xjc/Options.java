@@ -60,13 +60,13 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JPackage;
+import com.sun.codemodel.JResourceFile;
 import com.sun.codemodel.writer.FileCodeWriter;
 import com.sun.codemodel.writer.PrologCodeWriter;
+import com.sun.istack.tools.DefaultAuthenticator;
 import com.sun.org.apache.xml.internal.resolver.CatalogManager;
 import com.sun.org.apache.xml.internal.resolver.tools.CatalogResolver;
 import com.sun.tools.xjc.api.ClassNameAllocator;
@@ -229,8 +229,7 @@ public class Options
     // Proxy setting.
     private String proxyHost = null;
     private String proxyPort = null;
-    private String proxyUser = null;
-    private String proxyPassword = null;
+    public String proxyAuth = null;
 
     /**
      * {@link Plugin}s that are enabled in this compilation.
@@ -715,18 +714,29 @@ public class Options
     }
 
     private void parseProxy(String text) throws BadCommandLineException {
-        // syntax is [user[:password]@]proxyHost:proxyPort
-        String token = "([^@:]+)";
-        Pattern p = Pattern.compile("(?:"+token+"(?:\\:"+token+")?\\@)?"+token+"(?:\\:"+token+")");
+        int i = text.lastIndexOf('@');
+        int j = text.lastIndexOf(':');
 
-        Matcher matcher = p.matcher(text);
-        if(!matcher.matches())
-            throw new BadCommandLineException(Messages.format(Messages.ILLEGAL_PROXY,text));
-
-        proxyUser = matcher.group(1);
-        proxyPassword = matcher.group(2);
-        proxyHost = matcher.group(3);
-        proxyPort = matcher.group(4);
+        if (i > 0) {
+            proxyAuth = text.substring(0, i);
+            if (j > i) {
+                proxyHost = text.substring(i + 1, j);
+                proxyPort = text.substring(j + 1);
+            } else {
+                proxyHost = text.substring(i + 1);
+                proxyPort = "80";
+            }
+        } else {
+            //no auth info
+            if (j < 0) {
+                //no port
+                proxyHost = text;
+                proxyPort = "80";
+            } else {
+                proxyHost = text.substring(0, j);
+                proxyPort = text.substring(j + 1);
+            }
+        }
         try {
             Integer.valueOf(proxyPort);
         } catch (NumberFormatException e) {
@@ -823,11 +833,9 @@ public class Options
                 throw new BadCommandLineException(
                     Messages.format(Messages.MISSING_PROXYPORT));
             }
-            if(proxyUser!=null)
-                System.setProperty("http.proxyUser", proxyUser);
-            if(proxyPassword!=null)
-                System.setProperty("http.proxyPassword", proxyPassword);
-
+            if (proxyAuth != null) {
+                DefaultAuthenticator.getAuthenticator().setProxyAuth(proxyAuth);
+            }
         }
 
         if (grammars.isEmpty())
