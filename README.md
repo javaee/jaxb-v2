@@ -9,7 +9,7 @@ terms of <a href="http://oracle.com/technetwork/goto/oca">OCA</a>.
 
 ### More Info
 
-Follow <a href="http://twitter.com/gf_metro">@gf_metro</a> (TBD) on Twitter to get JAXB and wider Metro (WSIT, JAX-WS, ...) related updates. See the Metro 
+Follow <a href="http://twitter.com/gfmetro">@gfmetro</a> (TBD) on Twitter to get JAXB and wider Metro (WSIT, JAX-WS, ...) related updates. See the Metro 
 website at http://metro.java.net to access Metro documentation and release information. 
 
 If you run into any issues 
