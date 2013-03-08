@@ -272,6 +272,7 @@
           <ant dir="apgen"              target="clean" />
           <ant dir="reflection"         target="clean" />
           <ant dir="osgi"               target="clean" />
+          <ant dir="samples"            target="clean" />
         </parallel>
 
         <antcall target="docs.clean" />
