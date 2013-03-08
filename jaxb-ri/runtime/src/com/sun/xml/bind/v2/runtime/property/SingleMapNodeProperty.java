@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -157,6 +157,7 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
 
         private ThreadLocal<BeanT> target = new ThreadLocal<BeanT>();
         private ThreadLocal<ValueT> map = new ThreadLocal<ValueT>();
+        private int depthCounter = 0; // needed to clean ThreadLocals
 
         @Override
         public void startElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
@@ -164,6 +165,7 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
             try {
                 target.set((BeanT)state.prev.target);
                 map.set(acc.get(target.get()));
+                depthCounter++;
                 if(map.get() == null) {
                     map.set(ClassFactory.create(mapImplClass));
                 }
@@ -181,6 +183,10 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
             super.leaveElement(state, ea);
             try {
                 acc.set(target.get(), map.get());
+                if (--depthCounter == 0) {
+                    target.remove();
+                    map.remove();
+                }
             } catch (AccessorException ex) {
                 handleGenericException(ex,true);
             }
@@ -253,9 +259,7 @@ final class SingleMapNodeProperty<BeanT,ValueT extends Map> extends PropertyImpl
     private static final Receiver keyReceiver = new ReceiverImpl(0);
     private static final Receiver valueReceiver = new ReceiverImpl(1);
 
-
-
-
+    @Override
     public void serializeBody(BeanT o, XMLSerializer w, Object outerPeer) throws SAXException, AccessorException, IOException, XMLStreamException {
         ValueT v = acc.get(o);
         if(v!=null) {
