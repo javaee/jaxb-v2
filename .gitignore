@@ -1,0 +1,16 @@
+/jaxb-ri/dist/
+/jaxb-ri/apgen/build/
+/jaxb-ri/runtime-fi/build/
+/jaxb-ri/runtime-staxex/build/
+/jaxb-ri/runtime-deprecated/build/
+/jaxb-ri/tools/jing-rnc-driver/build/
+/jaxb-ri/tools/pretty-printer/build/
+/jaxb-ri/tools/xmllint/build/
+/jaxb-ri/xjc/build/
+/jaxb-ri/xjc/manifest.xjc
+/jaxb-ri/runtime/build/
+/jaxb-ri/tools/source-tidy/*.class
+/jaxb-ri/tools/lib/util/pretty-printer.jar
+/jaxb-ri/tools/lib/util/jing-rnc-driver.jar
+/jaxb-ri/*.zip
+*.class
