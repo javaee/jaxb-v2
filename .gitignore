@@ -21,4 +21,5 @@
 /jaxb-ri/*.zip
 *.class
 !/jaxb-ri/osgi/ant/manifestreader/ManifestReader*
+/jaxb-ri/nbproject/private/
 /.idea/
