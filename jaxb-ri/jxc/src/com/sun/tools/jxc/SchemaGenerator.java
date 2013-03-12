@@ -166,11 +166,14 @@ public class SchemaGenerator {
     private static String setClasspath(String givenClasspath) {
         StringBuilder cp = new StringBuilder();
         appendPath(cp, givenClasspath);
-        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        if (contextClassLoader instanceof URLClassLoader) {
-            for (URL url : ((URLClassLoader) contextClassLoader).getURLs()) {
-                appendPath(cp, url.getPath());
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        while (cl != null) {
+            if (cl instanceof URLClassLoader) {
+                for (URL url : ((URLClassLoader) cl).getURLs()) {
+                    appendPath(cp, url.getPath());
+                }
             }
+            cl = cl.getParent();
         }
 
         appendPath(cp, findJaxbApiJar());
