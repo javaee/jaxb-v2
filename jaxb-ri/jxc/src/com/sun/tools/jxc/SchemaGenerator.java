@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -58,7 +58,9 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -147,18 +149,8 @@ public class SchemaGenerator {
             aptargs.add(options.encoding);
         }
 
-        // make jaxb-api.jar visible to classpath
-        File jaxbApi = findJaxbApiJar();
-        if(jaxbApi!=null) {
-            if(options.classpath!=null) {
-                options.classpath = options.classpath+File.pathSeparatorChar+jaxbApi;
-            } else {
-                options.classpath = jaxbApi.getPath();
-            }
-        }
-
         aptargs.add("-cp");
-        aptargs.add(options.classpath);
+        aptargs.add(setClasspath(options.classpath)); // set original classpath + jaxb-api to be visible to annotation processor
 
         if(options.targetDir!=null) {
             aptargs.add("-d");
@@ -169,6 +161,28 @@ public class SchemaGenerator {
 
         String[] argsarray = aptargs.toArray(new String[aptargs.size()]);
         return ((Boolean) compileMethod.invoke(null, argsarray, options.episodeFile)) ? 0 : 1;
+    }
+
+    private static String setClasspath(String givenClasspath) {
+        StringBuilder cp = new StringBuilder();
+        appendPath(cp, givenClasspath);
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        if (contextClassLoader instanceof URLClassLoader) {
+            for (URL url : ((URLClassLoader) contextClassLoader).getURLs()) {
+                appendPath(cp, url.getPath());
+            }
+        }
+
+        appendPath(cp, findJaxbApiJar());
+        return cp.toString();
+    }
+
+    private static void appendPath(StringBuilder cp, String url) {
+        if (url == null || url.trim().isEmpty())
+            return;
+        if (cp.length() != 0)
+            cp.append(File.pathSeparatorChar);
+        cp.append(url);
     }
 
     /**
@@ -182,7 +196,7 @@ public class SchemaGenerator {
      * @return
      *      null if failed to locate it.
      */
-    private static File findJaxbApiJar() {
+    private static String findJaxbApiJar() {
         String url = Which.which(JAXBContext.class);
         if(url==null)       return null;    // impossible, but hey, let's be defensive
 
@@ -197,11 +211,11 @@ public class SchemaGenerator {
         try {
             File f = new File(new URL(jarFileUrl).toURI());
             if (f.exists() && f.getName().endsWith(".jar")) { // see 6510966
-                return f;
+                return f.getPath();
             }
             f = new File(new URL(jarFileUrl).getFile());
             if (f.exists() && f.getName().endsWith(".jar")) { // this is here for potential backw. compatibility issues
-                return f;
+                return f.getPath();
             }
         } catch (URISyntaxException ex) {
             Logger.getLogger(SchemaGenerator.class.getName()).log(Level.SEVERE, null, ex);

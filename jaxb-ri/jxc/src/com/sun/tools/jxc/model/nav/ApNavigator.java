@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -178,11 +178,6 @@ public class ApNavigator implements Navigator<TypeMirror, TypeElement, VariableE
     }
 
     public boolean isSubClassOf(TypeMirror sub, TypeMirror sup) {
-        if(sup==DUMMY)
-        // see ref(). if the sub type is known to Annotation Processing,
-        // its base class must be known. Thus if the sup is DUMMY,
-        // it cannot possibly be the super type.
-            return false;
         return env.getTypeUtils().isSubtype(sub,sup);
     }
 
@@ -202,16 +197,7 @@ public class ApNavigator implements Navigator<TypeMirror, TypeElement, VariableE
         if(c.isPrimitive())
             return getPrimitive(c);
         TypeElement t = env.getElementUtils().getTypeElement(getSourceClassName(c));
-        // Annotation Processing only operates on a set of classes used in the compilation,
-        // and it won't recognize additional classes (even if they are visible from javac)
-        // and return null.
-        //
-        // this is causing a problem where we check if a type is collection.
-        // so until the problem is fixed in Annotation Processing, work around the issue
-        // by returning a dummy token
-        // TODO: check if this is still valid
-        if(t==null)
-            return DUMMY;
+        // if t is NULL - the class is not on the classpath of annotation processor
         return env.getTypeUtils().getDeclaredType(t);
     }
 
@@ -373,21 +359,6 @@ public class ApNavigator implements Navigator<TypeMirror, TypeElement, VariableE
             return getVoidType();
         return env.getTypeUtils().getPrimitiveType(primitives.get(primitiveType));
     }
-
-    /**
-     * see {@link #ref(Class)}.
-     */
-    private static final TypeMirror DUMMY = new TypeMirror() {
-        @Override
-        public <R, P> R accept(TypeVisitor<R, P> v, P p) {
-            throw new IllegalStateException();
-        }
-
-        @Override
-        public TypeKind getKind() {
-            throw new IllegalStateException();
-        }
-    };
 
     public Location getClassLocation(TypeElement typeElement) {
         Trees trees = Trees.instance(env);
