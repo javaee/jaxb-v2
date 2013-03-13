@@ -930,7 +930,7 @@ Class-Path: jaxb-api.jar jaxb-core.jar jaxb-xjc.jar jaxb-impl.jar
         <mvn.publish.remote jar="${osgi.dist}/jaxb-extra-osgi-javadoc.jar" pom="build/jaxb-extra-osgi.pom" classifier="javadoc"
             repo="https://maven.java.net/service/local/staging/deploy/maven2/" repoid="jvnet-nexus-staging" command="gpg:sign-and-deploy-file"
             password="${gpg.password}"/>
-      <mvn.close.repo repo="${java.net.staging.repo}" extra-args="-f build/jaxb-impl.pom -Dauto=true -Dnexus.username=${nexus.username} -Dnexus.password=${nexus.password} -Dnexus.url=https://maven.java.net/ ${mvn.proxy.args}"/>
+      <!--mvn.close.repo repo="${java.net.staging.repo}" extra-args="-f build/jaxb-impl.pom -Dauto=true -Dnexus.username=${nexus.username} -Dnexus.password=${nexus.password} -Dnexus.url=https://maven.java.net/ ${mvn.proxy.args}"/-->
     </target>
     
     <target name="dist-zip" depends="dist" description="run dist then package the image to jaxb-ri.zip">
