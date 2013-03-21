@@ -28,7 +28,7 @@
     <fileSet>
       <directory>target/assembly</directory>
       <includes>
-        <include>jaxb-api-osgi.jar</include>
+        <include>jaxb-api.jar</include>
       </includes>
       <outputDirectory>glassfish/modules/endorsed</outputDirectory>
     </fileSet>

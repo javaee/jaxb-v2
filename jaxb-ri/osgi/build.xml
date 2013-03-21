@@ -213,10 +213,10 @@
         <zipfileset src="${jaxb.libs.jaxb1}/msv-core.jar"/>
         <zipfileset src="${jaxb.libs.jaxb1}/jaxb1_libs.jar"/>
       </jar>
-        <copy todir="${osgi.dist}">
-            <fileset dir="${jaxb.libs.osgi}" includes="*.jar"/>
-        </copy>
-        <antcall target="test"/>
+      <copy todir="${osgi.dist}">
+          <fileset dir="${jaxb.libs.redist}" includes="*.jar"/>
+      </copy>
+      <antcall target="test"/>
     </target>
 
     <target name="clean">

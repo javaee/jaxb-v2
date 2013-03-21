@@ -319,12 +319,6 @@
              dest="tools/lib/redist/jaxb-api-src.zip" />
         <get src="${mavenrepo.url}javax/xml/bind/jaxb-api/${release.spec.version}/jaxb-api-${release.spec.version}-javadoc.jar"
              dest="tools/lib/redist/jaxb-api-doc.zip" />
-        <get src="${mavenrepo.url}/javax/xml/bind/jaxb-api-osgi/${release.spec.version}/jaxb-api-osgi-${release.spec.version}.jar"
-             dest="tools/lib/osgi/jaxb-api-osgi.jar" />
-        <get src="${mavenrepo.url}/javax/xml/bind/jaxb-api-osgi/${release.spec.version}/jaxb-api-osgi-${release.spec.version}-sources.jar"
-             dest="tools/lib/osgi/jaxb-api-osgi-sources.jar" />
-        <get src="${mavenrepo.url}/javax/xml/bind/jaxb-api-osgi/${release.spec.version}/jaxb-api-osgi-${release.spec.version}-javadoc.jar"
-             dest="tools/lib/osgi/jaxb-api-osgi-javadoc.jar" />
     </target>
 
     <target name="integrate-dtdparser-hudson">
@@ -597,11 +591,6 @@
         <mvn.publish.local jar="${external.dir}/jaxb-api/jaxb-api.jar" mvngroup="javax.xml.bind" mvnartid="jaxb-api" mvnversion="${jaxb-api.version}"/>
         <copy file="${maven.repo.local}/${jaxb-api.mvn.path}" tofile="${jaxb.root}/tools/lib/redist/jaxb-api.jar"/>
 
-        <echo message="building jaxb-api-osgi"/>
-        <build.jar.from.srczip jar="${external.dir}/jaxb-api-osgi/jaxb-api-osgi.jar" srczip="tools/lib/osgi/jaxb-api-osgi-sources.jar" unzipdir="${external.dir}" srcdir="jaxb-api-osgi"/>
-        <mvn.publish.local jar="${external.dir}/jaxb-api-osgi/jaxb-api-osgi.jar" mvngroup="javax.xml.bind" mvnartid="jaxb-api-osgi" mvnversion="${jaxb-api.version}"/>
-        <copy file="${maven.repo.local}/${jaxb-api-osgi.mvn.path}" tofile="${jaxb.root}/tools/lib/osgi/jaxb-api-osgi.jar"/>
-
         <exec executable="ant" dir="${jaxb.root}" failonerror="true" newenvironment="false" >
             <arg line="hudson" />
             <arg line="-Dfrom.source=true"/>
@@ -852,10 +841,7 @@ Class-Path: jaxb-api.jar jaxb-core.jar jaxb-xjc.jar jaxb-impl.jar
         <mvn.install.local jar="dist/lib/jaxb1-impl-javadoc.jar" pom="build/jaxb1-impl.pom" classifier="javadoc"/>-->
 <!--        <mvn.install.local jar="tools/lib/redist/jaxb-api.jar" pom="tools/lib/redist/jaxb-api-pom.xml"/>
         <mvn.install.local jar="tools/lib/redist/jaxb-api-src.zip" pom="tools/lib/redist/jaxb-api-pom.xml" classifier="sources"/>
-        <mvn.install.local jar="tools/lib/redist/jaxb-api-doc.zip" pom="tools/lib/redist/jaxb-api-pom.xml" classifier="javadoc"/>
-        <mvn.install.local jar="tools/lib/osgi/jaxb-api-osgi.jar" pom="tools/lib/osgi/jaxb-api-osgi-pom.xml"/>
-        <mvn.install.local jar="tools/lib/osgi/jaxb-api-osgi-sources.jar" pom="tools/lib/osgi/jaxb-api-osgi-pom.xml" classifier="sources"/>
-        <mvn.install.local jar="tools/lib/osgi/jaxb-api-osgi-javadoc.jar" pom="tools/lib/osgi/jaxb-api-osgi-pom.xml" classifier="javadoc"/>-->
+        <mvn.install.local jar="tools/lib/redist/jaxb-api-doc.zip" pom="tools/lib/redist/jaxb-api-pom.xml" classifier="javadoc"/>-->
         <mvn.install.local jar="${osgi.build}/jaxb-osgi.jar" pom="build/jaxb-osgi.pom"/>
         <mvn.install.local jar="${osgi.build}/jaxb-osgi-sources.jar" pom="build/jaxb-osgi.pom" classifier="sources"/>
         <mvn.install.local jar="${osgi.build}/jaxb-osgi-javadoc.jar" pom="build/jaxb-osgi.pom" classifier="javadoc"/>
