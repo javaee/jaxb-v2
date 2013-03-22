@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -293,6 +293,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
     public void add( ElementInfo<T,C> elem ) {
         assert elem!=null;
 
+        @SuppressWarnings("UnusedAssignment")
         boolean nillable = false; // default value
 
         QName name = elem.getElementName();
@@ -1177,9 +1178,8 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                 return true;
             }
 
-            // there's a circular reference from an anonymous subtype to a global element
             if ((ci != null) && ((targetTagName != null) && (te.getScope() == null))) {
-                if (targetTagName.getLocalPart().equals(tn.getLocalPart())) {
+                if (targetTagName.equals(tn)) {
                     return true;
                 }
             }
