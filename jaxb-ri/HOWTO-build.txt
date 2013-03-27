@@ -37,5 +37,5 @@
 # holder.
 #
 
-Two words. "ant dist"
+Three words. "mvn clean install"
 

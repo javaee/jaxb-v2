@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+Copyright (c) 2013 Oracle and/or its affiliates. All rights reserved.
+
+The contents of this file are subject to the terms of either the GNU
+General Public License Version 2 only ("GPL") or the Common Development
+and Distribution License("CDDL") (collectively, the "License").  You
+may not use this file except in compliance with the License.  You can
+obtain a copy of the License at
+http://glassfish.java.net/public/CDDL+GPL_1_1.html
+or packager/legal/LICENSE.txt.  See the License for the specific
+language governing permissions and limitations under the License.
+
+When distributing the software, include this License Header Notice in each
+file and include the License file at packager/legal/LICENSE.txt.
+
+GPL Classpath Exception:
+Oracle designates this particular file as subject to the "Classpath"
+exception as provided by Oracle in the GPL Version 2 section of the License
+file that accompanied this code.
+
+Modifications:
+If applicable, add the following below the License Header, with the fields
+enclosed by brackets [] replaced by your own identifying information:
+"Portions Copyright [year] [name of copyright owner]"
+
+Contributor(s):
+If you wish your version of this file to be governed by only the CDDL or
+only the GPL Version 2, indicate your decision by adding "[Contributor]
+elects to include this software in this distribution under the [CDDL or GPL
+Version 2] license."  If you don't indicate a single choice of license, a
+recipient has the option to distribute your version of this file under
+either the CDDL, the GPL Version 2 or to extend the choice of license to
+its licensees as provided above.  However, if you add GPL Version 2 code
+and therefore, elected the GPL Version 2 license, then the option applies
+only if the new code is made subject to such option by the copyright
+holder.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.sun.xml.bind.mvn</groupId>
+        <artifactId>jaxb-parent</artifactId>
+        <version>2.2.8-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <groupId>com.sun.xml.bind</groupId>
+    <artifactId>jaxb-ri</artifactId>
+
+    <packaging>pom</packaging>
+    <name>JAXB RI</name>
+    <description>JAXB RI standalone zipped bundle</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-xjc</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-jxc</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-release-documentation</artifactId>
+            <version>${project.version}</version>
+            <type>zip</type>
+            <classifier>docbook</classifier>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-samples</artifactId>
+            <version>${project.version}</version>
+            <type>zip</type>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <id>copy-resources</id>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/filtered</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/src/main/resources</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>jaxb-ri</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <descriptors>
+                                <descriptor>src/main/assembly/assembly.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>stage</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>${project.artifactId}</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>zip</type>
+                                    <outputDirectory>${project.build.directory}/stage</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+    </profiles>
+
+</project>

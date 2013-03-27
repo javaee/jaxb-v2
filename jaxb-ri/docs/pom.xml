@@ -3,7 +3,7 @@
 
 DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
 
 The contents of this file are subject to the terms of either the GNU
 General Public License Version 2 only ("GPL") or the Common Development
@@ -44,48 +44,23 @@ holder.
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.sun.xml.bind</groupId>
-    <artifactId>docs</artifactId>
-    <version>2.2.5-SNAPSHOT</version>
+    <parent>
+        <groupId>com.sun.xml.bind.mvn</groupId>
+        <artifactId>jaxb-parent</artifactId>
+        <version>2.2.8-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>jaxb-docs-parent</artifactId>
     <packaging>pom</packaging>
-    <name>JAXB Documentation</name>
+    <name>JAXB Documentation parent</name>
+    <description>JAXB Documentation parent.</description>
 
     <modules>
         <module>release-documentation</module>
         <module>www</module>
+        <module>../samples</module>
     </modules>
-
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>properties-maven-plugin</artifactId>
-                    <version>1.0-alpha-2</version>
-                    <executions>
-                        <execution>
-                            <phase>initialize</phase>
-                            <goals>
-                                <goal>read-project-properties</goal>
-                            </goals>
-                            <configuration>
-                                <files>
-                                    <file>${project.basedir}/../../build.properties</file>
-                                </files>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
-
-    <scm>
-        <connection>scm:svn:https://svn.java.net/svn/jaxb~version2/branches/jaxb-2_2-branch/jaxb-ri/docs</connection>
-        <developerConnection>scm:svn:https://svn.java.net/svn/jaxb~version2/branches/jaxb-2_2-branch/jaxb-ri/docs</developerConnection>
-    </scm>
 
 </project>
