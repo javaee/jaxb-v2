@@ -1,0 +1,63 @@
+Bundle-SymbolicName: com.sun.xml.bind
+Bundle-Name: jaxb
+Export-Package: \
+  com.sun.codemodel;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.codemodel.*;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.istack;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.istack.*;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.msv.*;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.tools.*;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.bind;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.bind.*;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.dtdparser;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.dtdparser.*;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.fastinfoset;version=1.2.8, \
+  com.sun.xml.fastinfoset.*;version=1.2.8, \
+  com.sun.xml.txw2;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.txw2.*;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.util;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.xsom;version=@RELEASE_IMPL_VERSION@, \
+  com.sun.xml.xsom.*;version=@RELEASE_IMPL_VERSION@, \
+  jp.gr.xml.*;version=@RELEASE_IMPL_VERSION@, \
+  org.iso_relax.*;version=@RELEASE_IMPL_VERSION@, \
+  org.jvnet.fastinfoset;version=1.0, \
+  org.jvnet.staxex;version=1.2, \
+  org.kohsuke.rngom.*;version=@RELEASE_IMPL_VERSION@, \
+  org.relaxng.datatype;version=@RELEASE_IMPL_VERSION@, \
+  org.relaxng.datatype.*;version=@RELEASE_IMPL_VERSION@, \
+  *
+Import-Package: \
+  com.sun.mirror.apt, \
+  com.sun.mirror.declaration, \
+  com.sun.mirror.type, \
+  com.sun.mirror.util, \
+  javax.activation, \
+  javax.imageio, \
+  javax.imageio.stream, \
+  javax.swing, \
+  javax.swing.border, \
+  javax.swing.tree, \
+  javax.xml.bind;version=@RELEASE_SPEC_VERSION@, \
+  javax.xml.bind.annotation;version=@RELEASE_SPEC_VERSION@, \
+  javax.xml.bind.annotation.adapters;version=@RELEASE_SPEC_VERSION@, \
+  javax.xml.bind.attachment;version=@RELEASE_SPEC_VERSION@, \
+  javax.xml.bind.helpers;version=@RELEASE_SPEC_VERSION@, \
+  javax.xml.datatype, \
+  javax.xml.namespace, \
+  javax.xml.parsers, \
+  javax.xml.stream, \
+  javax.xml.stream.events, \
+  javax.xml.stream.util, \
+  javax.xml.transform, \
+  javax.xml.transform.dom, \
+  javax.xml.transform.sax, \
+  javax.xml.transform.stream, \
+  javax.xml.validation, \
+  javax.xml.xpath, \
+  org.w3c.dom, \
+  org.w3c.dom.ls, \
+  org.xml.sax, \
+  org.xml.sax.ext, \
+  org.xml.sax.helpers, \
+  sun.nio.cs
+Private-Package: *
