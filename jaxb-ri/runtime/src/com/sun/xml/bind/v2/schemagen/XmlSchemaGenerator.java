@@ -1178,7 +1178,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                 return true;
             }
 
-            if ((ci != null) && ((targetTagName != null) && (te.getScope() == null))) {
+            if ((ci != null) && ((targetTagName != null) && (te.getScope() == null) && (targetTagName.getNamespaceURI() == null))) {
                 if (targetTagName.equals(tn)) {
                     return true;
                 }
