@@ -1,8 +1,14 @@
 /jaxb-ri/dist/
+/jaxb-ri/build/
 /jaxb-ri/apgen/build/
+/jaxb-ri/docs/
+/jaxb-ri/core/build/
+/jaxb-ri/jxc/build/
+/jaxb-ri/osgi/build/
 /jaxb-ri/runtime-fi/build/
 /jaxb-ri/runtime-staxex/build/
 /jaxb-ri/runtime-deprecated/build/
+/jaxb-ri/samples/
 /jaxb-ri/tools/jing-rnc-driver/build/
 /jaxb-ri/tools/pretty-printer/build/
 /jaxb-ri/tools/xmllint/build/
@@ -13,4 +19,6 @@
 /jaxb-ri/tools/lib/util/pretty-printer.jar
 /jaxb-ri/tools/lib/util/jing-rnc-driver.jar
 /jaxb-ri/*.zip
+/jaxb-ri/nbproject/private/
 *.class
+.DS_Store
