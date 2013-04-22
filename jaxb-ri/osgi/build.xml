@@ -82,7 +82,7 @@
         <!-- The bnd task does not recognize when input files have changed, -->
         <!-- hence we delete the output file to ensure a rebuild            -->
         <delete file="${osgi.build}/jaxb-bnd.jar" quiet="true"/>
-        <bnd classpath="${jaxb.dist}/lib/jaxb-api.jar, ${jaxb.dist}/..//tools/lib/rebundle/runtime/xsdlib.jar, ${jaxb.dist}/lib/jaxb-impl.jar, ${osgi.build}/jaxb-xjc"
+        <bnd classpath="${jaxb.dist}/lib/jaxb-api.jar, ${jaxb.dist}/../tools/lib/rebundle/runtime/xsdlib.jar, ${jaxb.dist}/lib/jaxb-impl.jar, ${osgi.build}/jaxb-xjc"
              failok="false"
              output="${osgi.build}/jaxb-bnd.jar"
              files="${osgi.build}/jaxb.bnd"/>
@@ -94,7 +94,8 @@
                 <include name="META-INF/MANIFEST.MF"/>
             </patternset>
         </unjar>
-        <jar destfile="${osgi.build}/jaxb-osgi.jar"
+        <mkdir dir="${osgi.dist}"/>
+        <jar destfile="${osgi.dist}/jaxb-osgi.jar"
              manifest="${osgi.build}/META-INF/MANIFEST.MF">
             <zipfileset src="${osgi.build}/jaxb-bnd.jar"/>
             <zipfileset src="${jaxb.dist}/lib/jaxb1-impl.jar"/>
@@ -103,6 +104,40 @@
             </zipfileset>
         </jar>
     </target>
+
+    <path id="javac.classpath">
+        <fileset dir="${jaxb.libs.redist}" includes="**/*.jar"/>
+        <fileset dir="${jaxb.libs.rebundle}" includes="**/*.jar"/>
+        <fileset dir="${jaxb.libs.util}" includes="**/*.jar"/>
+        <pathelement location="${env.JAVA_HOME}/lib/tools.jar"/>
+    </path>
+
+
+    <target name="javadoc">
+        <unzip src="${jaxb.dist}/lib/jaxb-impl.src.zip" dest="${jaxb.build}/jaxbosgisrc"/>
+        <unzip src="${jaxb.dist}/lib/jaxb-xjc.src.zip" dest="${jaxb.build}/jaxbosgisrc"/>
+        <mkdir dir="${jaxb.build}/jaxbosgiapi"/>
+        <javadoc destdir="${jaxb.build}/jaxbosgiapi" use="true" defaultexcludes="yes"
+                 author="false" version="false" windowtitle="JAXB RI" useexternalfile="true" access="public">
+            <fileset dir="${jaxb.build}/jaxbosgisrc" includes="com/sun/xml/bind/**/*.java, com/sun/tools/**/*.java"/>
+            <classpath refid="javac.classpath"/>
+            <arg value="-quiet"/>
+        </javadoc>
+        <zip zipfile="${osgi.dist}/jaxb-osgi-javadoc.jar">
+            <fileset dir="${jaxb.build}/jaxbosgisrc"/>
+        </zip>
+    </target>
+
+    <target name="sources">
+        <jar destfile="${osgi.dist}/jaxb-osgi-sources.jar">
+            <zipfileset src="${jaxb.dist}/lib/jaxb-impl.src.zip"/>
+            <zipfileset src="${jaxb.dist}/lib/jaxb1-impl-src.zip"/>
+            <zipfileset src="${jaxb.dist}/lib/jaxb-xjc.src.zip"/>
+            <zipfileset src="${jaxb.libs.src}/FastInfoset.src.zip"/>
+            <zipfileset src="${jaxb.libs.util}/stax-ex-src.zip"/>
+        </jar>
+    </target>
+
 
     <target name="clean">
         <delete dir="${osgi.build}" quiet="true"/>

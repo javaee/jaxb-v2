@@ -46,7 +46,11 @@
     Common task/macro definitions.
   </description>
 
-  <!-- architecture document generator -->
+    <condition property="mvn.exec" value="mvn.bat" else="mvn">
+        <os family="windows"/>
+    </condition>
+
+    <!-- architecture document generator -->
   <macrodef name="arch-doc">
     <element name="params"/>
     <attribute name="title"/>
@@ -141,5 +145,33 @@
       </prename>
     </sequential>
   </macrodef>
+
+    <macrodef name="mvn.publish.remote">
+        <attribute name="jar"/>
+        <attribute name="pom"/>
+        <attribute name="command" default="deploy:deploy-file"/>
+        <attribute name="classifier" default="" />
+        <attribute name="repo" default="https://maven.java.net/content/repositories/snapshots/" />
+        <attribute name="repoid" default="jvnet-nexus-snapshots" />
+        <attribute name="password" default=""/>
+        <attribute name="extra-args" default="" />
+        <sequential>
+            <exec executable="${mvn.exec}" failonerror="true" >
+                <arg line="-Dhttp.proxyHost=www-proxy.us.oracle.com"/>
+                <arg line="-Dhttp.proxyPort=80"/>
+                <arg line="-Dhttps.proxyHost=www-proxy.us.oracle.com"/>
+                <arg line="-Dhttps.proxyPort=80"/>
+                <arg line="-DuniqueVersion=false"/>
+                <arg line="@{command}"/>
+                <arg line="-Durl=@{repo}"/>
+                <arg line="-DrepositoryId=@{repoid}"/>
+                <arg line="-DpomFile=@{pom}"/>
+                <arg line="-Dfile=@{jar}"/>
+                <arg line="-Dclassifier=@{classifier}"/>
+                <arg line="-Dgpg.passphrase=@{password}"/>
+                <arg line="@{extra-args}" />
+            </exec>
+        </sequential>
+    </macrodef>
 
 </project>
