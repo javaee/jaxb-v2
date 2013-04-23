@@ -138,6 +138,17 @@
 
     <import file="build-taskdefs.xml" />
 
+    <target name="javadoc">
+        <ant dir="runtime" target="javadoc" />
+        <ant dir="xjc"     target="javadoc" />
+        <zip zipfile="${jaxb.dist}/lib/jaxb-impl-javadoc.jar">
+            <fileset dir="${runtime.root}/build/api"/>
+        </zip>
+        <zip zipfile="${jaxb.dist}/lib/jaxb-xjc-javadoc.jar">
+            <fileset dir="${xjc.root}/build/javadoc"/>
+        </zip>
+    </target>
+
     <target name="init-standalone">
         <!-- this property is used by "xjc -version" and is also set in each of the
              generated ObjectFactory classes.  It should be set via the RE build
@@ -427,7 +438,7 @@ Class-Path: ${manifest.classpath}
         </zip>
     </target>
 
-    <target name="dist-zip-with-src" depends="src-zip, dist-zip"/>
+    <target name="dist-zip-with-src" depends="src-zip, javadoc, dist-zip"/>
 
     <target name="src-zip" depends="init-standalone,dist"
             description="source zip files for JAXB RI jar files into the dist dir.">
