@@ -78,24 +78,19 @@ holder.
 
         <itemizedlist>
             <listitem>
-                <para><link
-                xlink:href="http://blogs.sun.com/PavelBucek/">Pavel Bucek's
-                blog</link></para>
+                <para><link xlink:href="https://blogs.oracle.com/mgrebac/">Martin Grebac's blog</link></para>
             </listitem>
 
             <listitem>
-                <para><link xlink:href="http://blogs.sun.com/mgrebac/">Martin
-                Grebac's blog</link></para>
+                <para><link xlink:href="https://blogs.oracle.com/yaroska/">Iaroslav Savytskyi's blog </link></para>
             </listitem>
 
             <listitem>
-                <para><link xlink:href="http://www.java.net/blog/108">Kohsuke
-                Kawaguchi's blog</link></para>
+                <para><link xlink:href="http://www.java.net/blog/108">Kohsuke Kawaguchi's blog</link></para>
             </listitem>
 
             <listitem>
-                <para><link xlink:href="http://lexicore.blogspot.com/">Aleksei
-                Valikov's blog</link></para>
+                <para><link xlink:href="http://lexicore.blogspot.com/">Aleksei Valikov's blog</link></para>
             </listitem>
         </itemizedlist>
     </section>

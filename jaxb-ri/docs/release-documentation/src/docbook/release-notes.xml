@@ -88,23 +88,25 @@ holder.
                         <entry><emphasis
                         role="bold">Runtime</emphasis></entry>
 
-                        <entry><para>Jars required to deploy a JAXB 2.x
-                        client</para></entry>
-
-                        <entry><para><filename>jaxb-api.jar</filename>,
-                        <filename>jaxb-impl.jar</filename>,
-                        <filename>jsr173_1.0_api.jar</filename>,
-                        <filename>activation.jar</filename></para></entry>
+                        <entry><para>Jars required to deploy a JAXB 2.x client</para></entry>
+                        <entry><para>
+                            <filename>jaxb-api.jar</filename>(in <b>endorsed</b> dir),
+                            <filename>jaxb-core.jar</filename>,
+                            <filename>jaxb-impl.jar</filename>,
+                        </para></entry>
                     </row>
 
                     <row>
-                        <entry><emphasis
-                        role="bold">Compiler</emphasis></entry>
+                        <entry><emphasis role="bold">Compiler</emphasis></entry>
 
-                        <entry><para>Jars required at your development
-                        environment (but not runtime)</para></entry>
+                        <entry><para>Jars required at your development environment (but not runtime)</para></entry>
 
-                        <entry><para><filename>jaxb-xjc.jar</filename></para></entry>
+                        <entry><para>
+                            <filename>jaxb-core.jar</filename>
+                            <filename>jaxb-xjc.jar</filename>
+                            <filename>jaxb-jxc.jar</filename>
+                            <filename>jaxb-impl.jar</filename>
+                        </para></entry>
                     </row>
                 </tbody>
             </tgroup>

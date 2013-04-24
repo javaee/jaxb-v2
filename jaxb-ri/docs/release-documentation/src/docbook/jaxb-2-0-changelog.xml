@@ -70,6 +70,20 @@ holder.
             implementation (e.g. EclipseLink MOXy). While using XJC be aware of having any runtime JAXB implementation (respectively
             jaxb-impl.jar) on classpath.
         </listitem>
+        <listitem>Bug fixes:<programlisting>
+            * [JAXB-452] - Embedded DOM Elements may lose locally defined namespace prefixes
+            * [JAXB-915] - Cannot generate java classes from xjc
+            * [JAXB-919] - xjc - proxy authentication fails
+            * [JAXB-922] - JAXB samples fail
+            * [JAXB-939] - '#' at the end of a namespace : different of behavior, sometimes a underscore is added,
+                sometimes not.
+            * [JAXB-940] - wrong default value for &quot;target&quot; parameter for xjc ant task
+            * [JAXB-948] - JAXB differences in JDK 7 in
+                com/sun/xml/internal/bind/v2/runtime/reflect/Lister.java#Lister.CollectionLister.endPacking
+        </programlisting></listitem>
+        <listitem>Improvement:<programlisting>
+            * [JAXB-912] - XJC split
+        </programlisting></listitem>
     </itemizedlist>
 </section>
 <section xml:id="a-2-2-6">
@@ -131,7 +145,8 @@ holder.
     * [JAXB-856] - xs:import namespace="http://www.w3.org/2005/05/xmlmime" is not generated
     * [JAXB-858] - xjc generates no JAXBElement for nillable element with required attribute 
     * [JAXB-859] - Corrupt license file in the distribution
-    * [JAXB-860] - NullPointerException com.sun.xml.bind.v2.runtime.ClassBeanInfoImpl.checkOverrideProperties(ClassBeanInfoImpl.java:205)
+    * [JAXB-860] - NullPointerException
+        com.sun.xml.bind.v2.runtime.ClassBeanInfoImpl.checkOverrideProperties(ClassBeanInfoImpl.java:205)
     * [JAXB-867] - jax-ws / jax-b / glassfish 3.1.1 web services fail to send data from beans based on variable name.
     * [JAXB-868] - Escape policy for quote (") is different when the serialization is performed to OutputStream or Writer
     * [JAXB-869] - Multiple <any /> elements on a schema : second element is not loaded

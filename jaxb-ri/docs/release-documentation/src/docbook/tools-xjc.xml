@@ -83,11 +83,9 @@ holder.
         </itemizedlist>
 
         <section xml:id="section-445618689309685">
-            <title>Execute the <filename>jaxb-xjc.jar</filename> JAR
-            File</title>
+            <title>Execute the <filename>jaxb-xjc.jar</filename> JAR File </title>
 
-            <para>If all else fails, you should be able to execute the
-            <literal>jaxb-xjc.jar</literal> file:</para>
+            <para>If all else fails, you should be able to execute the <literal>jaxb-xjc.jar</literal> file:</para>
 
             <itemizedlist>
                 <listitem>
@@ -104,9 +102,13 @@ holder.
                 </listitem>
             </itemizedlist>
 
-            <para>This is equivalent of running <command>xjc.sh</command> or
-            <command>xjc.bat</command>, and it allows you to set the JVM
-            parameters.</para>
+            <para>
+                This is equivalent of running <command>xjc.sh</command> or<command>xjc.bat</command>, and it allows you to set the JVM
+                parameters.
+            </para><para>
+                Be aware of having <filename>jaxb-impl.jar</filename> (or any other JAXB runtime implementation, e.g. EclipseLink MOXy)
+                on the classpath.
+            </para>
         </section>
     </section>
 
