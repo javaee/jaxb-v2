@@ -65,8 +65,7 @@ holder.
         <title><trademark>Java</trademark> 2 Platform, Standard Edition (<trademark>J2SE</trademark>)
         Requirements</title>
 
-        <para>This release of the JAXB Reference Implementation requires J2SE
-        5.0 or higher.</para>
+        <para>This release of the JAXB Reference Implementation requires Java SE 6 or higher.</para>
     </section>
 
     <section xml:id="jars">

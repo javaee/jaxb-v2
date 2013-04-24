@@ -64,7 +64,7 @@ holder.
                 </question>
                 
                 <answer>
-                    <para>J2SE 6.0</para>
+                    <para>Java SE 6.0 or higher.</para>
                 </answer>
             </qandaentry>
 
