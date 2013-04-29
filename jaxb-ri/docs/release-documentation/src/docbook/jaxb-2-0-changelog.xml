@@ -49,9 +49,8 @@ holder.
 <title>Changelog</title>
 <para>The JAXB 2.x RI is a major reimplementation to meet the
   requirements of the 2.x specifications.</para>
-<para>Please refer to the 
-  <xref linkend="jaxb-1-0-x-changelog" xrefstyle="select:title"/> for older
-  releases.</para>
+<para>Please refer to the <link xlink:href="https://jaxb.java.net/nonav/2.0.1/docs/changelog.html">jaxb-1-0-x-changelog</link>
+  for older releases.</para>
 <section xml:id="a-2-2-5u2">
 <title>Changes between 2.2.5-1 to 2.2.5-2</title>
 <itemizedlist>
