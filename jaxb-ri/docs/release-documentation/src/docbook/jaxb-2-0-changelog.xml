@@ -48,8 +48,10 @@ holder.
 <section version="5.0" xml:lang="en" xml:id="jaxb-2-0-changelog" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook">
 <title>Changelog</title>
 <para>The JAXB 2.x RI is a major reimplementation to meet the requirements of the 2.x specifications.</para>
-<para>Please refer to the <xref linkend="jaxb-1-0-x-changelog" xrefstyle="select:title"/> for older releases.</para>
-<section xml:id="a-2-2-7">
+<para>
+    Please refer to the <link xlink:href="https://jaxb.java.net/nonav/2.0.1/docs/changelog.html">jaxb-1-0-x-changelog</link>
+    for older releases.
+</para><section xml:id="a-2-2-7">
     <title>Changes between 2.2.6 to 2.2.7</title>
     <itemizedlist>
         <listitem>JAXB 1.0 runtime is restored. It's bundled into the jaxb-extra-osgi.jar now. Required libraries are located in
