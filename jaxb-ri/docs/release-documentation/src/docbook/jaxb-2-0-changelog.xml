@@ -54,14 +54,38 @@ holder.
 </para><section xml:id="a-2-2-7">
     <title>Changes between 2.2.6 to 2.2.7</title>
     <itemizedlist>
-        <listitem>JAXB 1.0 runtime is restored. It's bundled into the jaxb-extra-osgi.jar now. Required libraries are located in
-            $JAXB_HOME/tools/jaxb1_libs folder.</listitem>
-        <listitem>Implemented -enableExternalEntityProcessing option for XJC. When it's set to TRUE processing of external links is allowed.
-        For security reasons it's disabled by default now. This changes was also added to 2.2.4-3 version.</listitem>
-        <listitem>The processing of -source XJC option is removed. We use 2.0 version of the schema compiler.
-            For generating 1.0.x code, please use an installation of the 1.0.x codebase.</listitem>
-        <!--<listitem>resolver.jar is not bundled by JAXB anymore. Because it's part of JDK and is budled by JAXP team.</listitem>-->
-        <!--<listitem>xjc-split</listitem>, -jaxb-impl.jar should be on classpath -->
+        <listitem>
+            JAXB 1.0 runtime is restored. It's bundled into the jaxb-extra-osgi.jar now. Required libraries are located in
+            $JAXB_HOME/tools/jaxb1_libs folder.
+        </listitem>
+        <listitem>
+            The processing of -source XJC option is removed. We use 2.0 version of the schema compiler.
+            For generating 1.0.x code, please use an installation of the 1.0.x codebase.
+        </listitem>
+        <listitem>
+            resolver.jar is not bundled by JAXB anymore. It's already part of JDK.
+            If you are using JDK which doesn't contain it - you have to download it manually
+            (e.g. from maven: com.sun.org.apache.xml.internal:resolver).
+        </listitem>
+        <listitem>
+            JAXB project was split into several modules: core, impl, xjc and jxc. So now it is possible to use XJC with other JAXB runtime
+            implementation (e.g. EclipseLink MOXy). While using XJC be aware of having any runtime JAXB implementation (respectively
+            jaxb-impl.jar) on classpath.
+        </listitem>
+        <listitem>Bug fixes:<programlisting>
+            * [JAXB-452] - Embedded DOM Elements may lose locally defined namespace prefixes
+            * [JAXB-915] - Cannot generate java classes from xjc
+            * [JAXB-919] - xjc - proxy authentication fails
+            * [JAXB-922] - JAXB samples fail
+            * [JAXB-939] - '#' at the end of a namespace : different of behavior, sometimes a underscore is added,
+            sometimes not.
+            * [JAXB-940] - wrong default value for &quot;target&quot; parameter for xjc ant task
+            * [JAXB-948] - JAXB differences in JDK 7 in
+            com/sun/xml/internal/bind/v2/runtime/reflect/Lister.java#Lister.CollectionLister.endPacking
+        </programlisting></listitem>
+        <listitem>Improvement:<programlisting>
+            * [JAXB-912] - XJC split
+        </programlisting></listitem>
     </itemizedlist>
 </section>
 <section xml:id="a-2-2-6">
