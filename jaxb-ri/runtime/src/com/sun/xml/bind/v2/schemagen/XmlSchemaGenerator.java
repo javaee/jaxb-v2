@@ -1152,7 +1152,7 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
             // there's a circular reference from an anonymous subtype to a global element
             if ((ci != null) && ((targetTagName != null) && (te.getScope() == null))) {
-                if (targetTagName.getLocalPart().equals(tn.getLocalPart())) {
+                if (targetTagName.equals(tn)) {
                     return true;
                 }
             }
