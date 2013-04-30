@@ -1,7 +1,6 @@
 /jaxb-ri/dist/
 /jaxb-ri/build/
 /jaxb-ri/apgen/build/
-/jaxb-ri/docs/
 /jaxb-ri/core/build/
 /jaxb-ri/jxc/build/
 /jaxb-ri/osgi/build/
