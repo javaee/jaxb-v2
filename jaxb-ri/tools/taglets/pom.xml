@@ -66,7 +66,7 @@
   </distributionManagement>
 
   <build>
-    <directory>${basedir}/build</directory>
+    <directory>${project.basedir}/build</directory>
     <sourceDirectory>src</sourceDirectory>
 
     <plugins>
