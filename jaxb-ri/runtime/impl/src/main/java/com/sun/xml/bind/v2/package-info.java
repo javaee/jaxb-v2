@@ -196,6 +196,3 @@
  */
 package com.sun.xml.bind.v2;
 
-import javax.xml.bind.JAXBContext;
-
-import com.sun.xml.bind.v2.runtime.JAXBContextImpl;

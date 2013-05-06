@@ -320,6 +320,36 @@ holder.
                         <templateFile>tools/config/copyright.txt</templateFile>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>findbugs-maven-plugin</artifactId>
+                    <version>2.5.2</version>
+                    <configuration>
+                        <skip>${findbugs.skip}</skip>
+                        <threshold>${findbugs.threshold}</threshold>
+                        <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+                        <excludeFilterFile>
+                            exclude-common.xml,${findbugs.exclude}
+                        </excludeFilterFile>
+                        <fork>true</fork>
+                        <jvmArgs>-Xms64m -Xmx256m</jvmArgs>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.glassfish.findbugs</groupId>
+                            <artifactId>findbugs</artifactId>
+                            <version>1.0</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.7</version>
+                    <configuration>
+                        <retryFailedDeploymentCount>10</retryFailedDeploymentCount>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -409,7 +439,7 @@ holder.
             </activation>
             <modules>
                 <module>docs</module>
-                <!--<module>bundles</module>-->
+                <module>bundles</module>
             </modules>
         </profile>
         <profile>

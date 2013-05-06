@@ -103,6 +103,15 @@ holder.
                                     <exclude>javax.activation:activation</exclude>
                                 </excludes>
                             </artifactSet>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.sun.tools.jxc.SchemaGeneratorFacade</mainClass>
+                                    <manifestEntries>
+                                        <Class-Path>jaxb-core.jar jaxb-impl.jar jaxb-xjc.jar</Class-Path>
+                                        <Version>${version}</Version>
+                                    </manifestEntries>
+                                </transformer>
+                            </transformers>
                         </configuration>
                     </execution>
                 </executions>

@@ -91,6 +91,15 @@ holder.
                                     <exclude>com.sun.org.apache.xml.internal:resolver</exclude>
                                 </excludes>
                             </artifactSet>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.sun.tools.xjc.XJCFacade</mainClass>
+                                    <manifestEntries>
+                                        <Class-Path>jaxb-core.jar jaxb-impl.jar</Class-Path>
+                                        <Version>${version}</Version>
+                                    </manifestEntries>
+                                </transformer>
+                            </transformers>
                         </configuration>
                     </execution>
                 </executions>

@@ -45,35 +45,38 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
 
-    <id>zip-bundle</id>
-    <includeBaseDirectory>false</includeBaseDirectory>
+    <id>jar-with-manifest</id>
 
     <formats>
-        <format>dir</format>
+        <format>jar</format>
     </formats>
 
-    <dependencySets>
-        <dependencySet>
-            <unpack>true</unpack>
-            <useProjectArtifact>true</useProjectArtifact>
-            <useTransitiveDependencies>true</useTransitiveDependencies>
-            <useTransitiveFiltering>true</useTransitiveFiltering>
-            <outputDirectory>/</outputDirectory>
-            <directoryMode>0755</directoryMode>
-            <fileMode>0644</fileMode>
-            <includes>
-                <include>net.java.dev.msv:msv-core</include>
-                <include>net.java.dev.msv:xsdlib</include>
-                <include>com.sun.xml.bind.jaxb:isorelax</include>
-            </includes>
-            <excludes>
-                <exclude>net.java.dev.msv:msv-testharness</exclude>
-                <exclude>org.apache.ant:ant</exclude>
-                <exclude>org.apache.ant:ant-launcher</exclude>
-                <exclude>xerces:xercesImpl</exclude>
-                <exclude>xml-apis:xml-apis</exclude>
-                <exclude>relaxngDatatype:relaxngDatatype</exclude>
-            </excludes>
-        </dependencySet>
-    </dependencySets>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <moduleSets>
+        <moduleSet>
+            <sources>
+                <includeModuleDirectory>false</includeModuleDirectory>
+                <fileSets>
+                    <fileSet>
+                        <directory>src/main/java/</directory>
+                    </fileSet>
+                    <fileSet>
+                        <directory>src/main/resources/</directory>
+                    </fileSet>
+                    <fileSet>
+                        <directory>target/generated-sources/rsrc-gen</directory>
+                    </fileSet>
+                    <fileSet>
+                        <directory>target/generated-sources/renamed-sources</directory>
+                    </fileSet>
+                    <fileSet>
+                        <directory>target/classes</directory>
+                        <includes>
+                            <include>com/sun/xml/ws/util/version.properties</include>
+                        </includes>
+                    </fileSet>
+                </fileSets>
+            </sources>
+        </moduleSet>
+    </moduleSets>
 </assembly>
