@@ -56,6 +56,10 @@ holder.
     <name>JAXB bundles</name>
     <description>JAXB bundles module.</description>
 
+    <properties>
+        <findbugs.skip>true</findbugs.skip>
+    </properties>
+
     <modules>
         <module>core</module>
         <module>runtime</module>
