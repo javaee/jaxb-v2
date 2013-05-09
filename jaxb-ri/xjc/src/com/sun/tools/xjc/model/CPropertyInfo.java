@@ -44,6 +44,7 @@ import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -57,7 +58,6 @@ import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.xml.bind.api.impl.NameConverter;
-import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.RuntimeUtil;
 import com.sun.xml.xsom.XSComponent;
@@ -306,7 +306,7 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
             // this is anonymous type. can't have @XmlSchemaType
             return false;
 
-        if(!typeName.getNamespaceURI().equals(WellKnownNamespace.XML_SCHEMA))
+        if(!XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(typeName.getNamespaceURI()))
             // if we put application-defined type name, it will be undefined
             // by the time we generate a schema.
             return false;
