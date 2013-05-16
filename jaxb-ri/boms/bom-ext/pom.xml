@@ -177,7 +177,7 @@
         <xsom.version>20110809</xsom.version>
         <codemodel.version>2.6</codemodel.version>
         <rngom.version>20100718</rngom.version>
-        <msv.version>2013.2.5</msv.version>
+        <msv.version>2013.5.1</msv.version>
         <!-- don't forget to check if isorelax.version is valid -> used in osgi -->
         <relaxngDatatype.version>20020414</relaxngDatatype.version>
         <isorelax.version>20090621</isorelax.version>
