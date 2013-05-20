@@ -60,7 +60,6 @@ import com.sun.istack.Nullable;
 import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.bind.v2.ContextFactory;
 import com.sun.xml.bind.v2.model.annotation.RuntimeAnnotationReader;
-import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimeTypeInfoSet;
 import java.util.HashMap;
 
@@ -432,7 +431,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @since 2.0 FCS
      */
     public static @Nullable Type getBaseType(@NotNull Type type, @NotNull Class baseType) {
-        return Navigator.REFLECTION.getBaseClass(type,baseType);
+        return Utils.REFLECTION_NAVIGATOR.getBaseClass(type, baseType);
     }
 
     /**

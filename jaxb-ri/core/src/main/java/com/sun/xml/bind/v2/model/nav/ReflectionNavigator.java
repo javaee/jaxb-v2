@@ -54,22 +54,27 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import com.sun.xml.bind.v2.runtime.Location;
+import sun.reflect.misc.ReflectUtil;
 
 /**
  * {@link Navigator} implementation for {@code java.lang.reflect}.
  *
  */
-public final class ReflectionNavigator implements Navigator<Type, Class, Field, Method> {
+/*package*/final class ReflectionNavigator implements Navigator<Type, Class, Field, Method> {
 
-    /**
-     * Singleton.
-     *
-     * Use {@link Navigator#REFLECTION}
-     */
-    ReflectionNavigator() {
+//  ----------  Singleton -----------------
+    private static final ReflectionNavigator INSTANCE = new ReflectionNavigator();
+
+    /*package*/static ReflectionNavigator getInstance() {
+        return INSTANCE;
     }
 
+    private ReflectionNavigator() {
+    }
+//  ---------------------------------------
+
     public Class getSuperClass(Class clazz) {
+        ReflectUtil.checkPackageAccess(clazz);
         if (clazz == Object.class) {
             return null;
         }
@@ -79,6 +84,7 @@ public final class ReflectionNavigator implements Navigator<Type, Class, Field, 
         }
         return sc;
     }
+
     private static final TypeVisitor<Type, Class> baseClassFinder = new TypeVisitor<Type, Class>() {
 
         public Type onClass(Class c, Class sup) {
@@ -276,10 +282,12 @@ public final class ReflectionNavigator implements Navigator<Type, Class, Field, 
     }
 
     public Collection<? extends Field> getDeclaredFields(Class clazz) {
+        ReflectUtil.checkPackageAccess(clazz);
         return Arrays.asList(clazz.getDeclaredFields());
     }
 
     public Field getDeclaredField(Class clazz, String fieldName) {
+        ReflectUtil.checkPackageAccess(clazz);
         try {
             return clazz.getDeclaredField(fieldName);
         } catch (NoSuchFieldException e) {
@@ -288,6 +296,7 @@ public final class ReflectionNavigator implements Navigator<Type, Class, Field, 
     }
 
     public Collection<? extends Method> getDeclaredMethods(Class clazz) {
+        ReflectUtil.checkPackageAccess(clazz);
         return Arrays.asList(clazz.getDeclaredMethods());
     }
 
@@ -511,7 +520,7 @@ public final class ReflectionNavigator implements Navigator<Type, Class, Field, 
             c.getDeclaredConstructor();
             return true;
         } catch (NoSuchMethodException e) {
-            return false;
+            return false; // todo: do this WITHOUT exception throw
         }
     }
 
@@ -532,6 +541,7 @@ public final class ReflectionNavigator implements Navigator<Type, Class, Field, 
     }
 
     public Field[] getEnumConstants(Class clazz) {
+        ReflectUtil.checkPackageAccess(clazz);
         try {
             Object[] values = clazz.getEnumConstants();
             Field[] fields = new Field[values.length];
@@ -559,13 +569,15 @@ public final class ReflectionNavigator implements Navigator<Type, Class, Field, 
         }
     }
 
-    public Class findClass(String className, Class referencePoint) {
+    @Override
+    public Class loadObjectFactory(Class referencePoint, String pkg) {
+        ReflectUtil.checkPackageAccess(referencePoint);
+        ClassLoader cl= SecureLoader.getClassClassLoader(referencePoint);
+        if (cl == null)
+            cl = SecureLoader.getSystemClassLoader();
+
         try {
-            ClassLoader cl = SecureLoader.getClassClassLoader(referencePoint);
-            if (cl == null) {
-                cl = SecureLoader.getSystemClassLoader();
-            }
-            return cl.loadClass(className);
+            return cl.loadClass(pkg + ".ObjectFactory");
         } catch (ClassNotFoundException e) {
             return null;
         }

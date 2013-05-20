@@ -54,7 +54,6 @@ import com.sun.xml.bind.WhiteSpaceProcessor;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.v2.model.core.ID;
 import com.sun.xml.bind.v2.model.impl.RuntimeModelBuilder;
-import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.model.runtime.RuntimeNonElementRef;
 import com.sun.xml.bind.v2.model.runtime.RuntimePropertyInfo;
 import com.sun.xml.bind.v2.runtime.Name;
@@ -159,8 +158,7 @@ public abstract class TransducedAccessor<BeanT> {
 
         if(prop.isCollection()) {
             return new ListTransducedAccessorImpl(xducer,prop.getAccessor(),
-                    Lister.create(Navigator.REFLECTION.erasure(prop.getRawType()),prop.id(),
-                    prop.getAdapter()));
+                    Lister.create(Utils.REFLECTION_NAVIGATOR.erasure(prop.getRawType()), prop.id(), prop.getAdapter()));
         }
 
         if(prop.id()==ID.IDREF)

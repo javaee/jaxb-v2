@@ -45,7 +45,6 @@ import java.lang.reflect.Type;
 import com.sun.codemodel.JType;
 import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
-import com.sun.xml.bind.v2.model.nav.Navigator;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -84,6 +83,6 @@ class EagerNType implements NType {
     }
 
     public String fullName() {
-        return Navigator.REFLECTION.getTypeName(t);
+        return Utils.REFLECTION_NAVIGATOR.getTypeName(t);
     }
 }

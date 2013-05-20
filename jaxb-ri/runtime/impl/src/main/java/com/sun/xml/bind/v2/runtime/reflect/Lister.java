@@ -66,7 +66,6 @@ import com.sun.xml.bind.v2.ClassFactory;
 import com.sun.xml.bind.v2.TODO;
 import com.sun.xml.bind.v2.model.core.Adapter;
 import com.sun.xml.bind.v2.model.core.ID;
-import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
 import com.sun.xml.bind.v2.runtime.unmarshaller.Patcher;
 import com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext;
@@ -131,7 +130,7 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
     public static <BeanT,PropT,ItemT,PackT>
         Lister<BeanT,PropT,ItemT,PackT> create(Type fieldType,ID idness, Adapter<Type,Class> adapter) {
 
-        Class rawType = Navigator.REFLECTION.erasure(fieldType);
+        Class rawType = (Class) Utils.REFLECTION_NAVIGATOR.erasure(fieldType);
         Class itemType;
 
         Lister l;
@@ -140,9 +139,9 @@ public abstract class Lister<BeanT,PropT,ItemT,PackT> {
             l = getArrayLister(itemType);
         } else
         if( Collection.class.isAssignableFrom(rawType) ) {
-            Type bt = Navigator.REFLECTION.getBaseClass(fieldType,Collection.class);
+            Type bt = Utils.REFLECTION_NAVIGATOR.getBaseClass(fieldType,Collection.class);
             if(bt instanceof ParameterizedType)
-                itemType = Navigator.REFLECTION.erasure(((ParameterizedType)bt).getActualTypeArguments()[0]);
+                itemType = (Class) Utils.REFLECTION_NAVIGATOR.erasure(((ParameterizedType)bt).getActualTypeArguments()[0]);
             else
                 itemType = Object.class;
             l = new CollectionLister(getImplClass(rawType));

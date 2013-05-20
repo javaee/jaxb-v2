@@ -47,8 +47,6 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import com.sun.xml.bind.v2.model.nav.Navigator;
-
 /**
  * A reference to a JAXB-bound type.
  *
@@ -120,12 +118,11 @@ public final class TypeReference {
         // if we are to reinstitute this check, check JAXB annotations only 
         // assert annotations.length==0;   // not designed to work with adapters.
 
-        Type base = Navigator.REFLECTION.getBaseClass(type, Collection.class);
+        Type base = Utils.REFLECTION_NAVIGATOR.getBaseClass(type, Collection.class);
         if(base==null)
             return this;    // not a collection
 
-        return new TypeReference(tagName,
-            Navigator.REFLECTION.getTypeArgument(base,0));
+        return new TypeReference(tagName, Utils.REFLECTION_NAVIGATOR.getTypeArgument(base,0));
     }
 
     @Override
