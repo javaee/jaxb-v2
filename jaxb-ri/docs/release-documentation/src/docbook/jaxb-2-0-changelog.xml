@@ -410,7 +410,7 @@ holder.
 </listitem>
 <listitem>
 <para>
-      <link xlink:href="http://jaxb.java.net/issues/buglist.cgi?component=jaxb&amp;issue_status=RESOLVED&amp;issue_status=VERIFIED&amp;issue_status=CLOSED&amp;resolution=FIXED&amp;resolution=WONTFIX&amp;resolution=DUPLICATE&amp;resolution=WORKSFORME&amp;priority=P1&amp;priority=P2&amp;priority=P3&amp;target_milestone=2.1.14&amp;target_milestone=2.2.2&amp;email1=&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=exact&amp;emailreporter2=1&amp;issueidtype=include&amp;issue_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;short_desc=&amp;short_desc_type=fulltext&amp;long_desc=&amp;long_desc_type=fulltext&amp;issue_file_loc=&amp;issue_file_loc_type=fulltext&amp;status_whiteboard=&amp;status_whiteboard_type=fulltext&amp;keywords=&amp;keywords_type=anytokens&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time&amp;Submit+query=Submit+query">Fixes
+      <link xlink:href="http://jaxb.java.net/issues/buglist.cgi?component=jaxb&amp;issue_status=RESOLVED&amp;issue_status=VERIFIED&amp;issue_statu">Fixes
       to bugs reported in java.net</link>
     </para>
 </listitem>
@@ -438,7 +438,7 @@ holder.
 </listitem>
 <listitem>
 <para>
-      <link xlink:href="http://jaxb.java.net/issues/buglist.cgi?component=jaxb&amp;issue_status=RESOLVED&amp;issue_status=VERIFIED&amp;issue_status=CLOSED&amp;resolution=FIXED&amp;resolution=WONTFIX&amp;resolution=DUPLICATE&amp;resolution=WORKSFORME&amp;priority=P1&amp;priority=P2&amp;priority=P3&amp;target_milestone=2.1.13&amp;target_milestone=2.2.1&amp;email1=&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=exact&amp;emailreporter2=1&amp;issueidtype=include&amp;issue_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;short_desc=&amp;short_desc_type=fulltext&amp;long_desc=&amp;long_desc_type=fulltext&amp;issue_file_loc=&amp;issue_file_loc_type=fulltext&amp;status_whiteboard=&amp;status_whiteboard_type=fulltext&amp;keywords=&amp;keywords_type=anytokens&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time&amp;Submit+query=Submit+query">Fixes
+      <link xlink:href="https://java.net/jira/secure/ReleaseNote.jspa?projectId=10198&amp;version=10781">Fixes
       to bugs reported in java.net</link>
     </para>
 </listitem>
@@ -455,7 +455,7 @@ holder.
 </listitem>
 <listitem>
 <para>
-      <link xlink:href="http://jaxb.java.net/issues/buglist.cgi?Submit+query=Submit+query&amp;component=jaxb&amp;issue_status=RESOLVED&amp;issue_status=VERIFIED&amp;issue_status=CLOSED&amp;target_milestone=2.2&amp;email1=&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=exact&amp;emailreporter2=1&amp;issueidtype=include&amp;issue_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;issue_file_loc=&amp;issue_file_loc_type=substring&amp;status_whiteboard=&amp;status_whiteboard_type=substring&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time">Fixes
+      <link xlink:href="https://java.net/jira/secure/ReleaseNote.jspa?projectId=10198&amp;version=10780">Fixes
       to bugs reported in java.net</link>
     </para>
 </listitem>
@@ -466,7 +466,7 @@ holder.
 <itemizedlist>
 <listitem>
 <para>
-      <link xlink:href="http://jaxb.java.net/issues/buglist.cgi?Submit+query=Submit+query&amp;component=jaxb&amp;issue_status=RESOLVED&amp;issue_status=VERIFIED&amp;issue_status=CLOSED&amp;target_milestone=2.1.13&amp;email1=&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=exact&amp;emailreporter2=1&amp;issueidtype=include&amp;issue_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;issue_file_loc=&amp;issue_file_loc_type=substring&amp;status_whiteboard=&amp;status_whiteboard_type=substring&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time">Fixes
+      <link xlink:href="https://java.net/jira/secure/ReleaseNote.jspa?projectId=10198&amp;version=10770">Fixes
       to bugs reported in java.net</link>
     </para>
 </listitem>
@@ -482,17 +482,17 @@ holder.
 </listitem>
 <listitem>
 <para>
-      <link xlink:href="https://jersey.dev.java.net/issues/show_bug.cgi?id=113">https://jersey.dev.java.net/issues/show_bug.cgi?id=113</link>
+      <link xlink:href="https://java.net/jira/browse/JERSEY-113">https://java.net/jira/browse/JERSEY-113</link>
     </para>
 </listitem>
 <listitem>
 <para>
-      <link xlink:href="https://jersey.dev.java.net/issues/show_bug.cgi?id=272">https://jersey.dev.java.net/issues/show_bug.cgi?id=272</link>
+      <link xlink:href="https://java.net/jira/browse/JERSEY-272">https://java.net/jira/browse/JERSEY-272</link>
     </para>
 </listitem>
 <listitem>
 <para>
-      <link xlink:href="http://jaxb.java.net/issues/buglist.cgi?Submit+query=Submit+query&amp;component=jaxb&amp;issue_status=RESOLVED&amp;issue_status=VERIFIED&amp;issue_status=CLOSED&amp;target_milestone=2.1.12&amp;email1=&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=exact&amp;emailreporter2=1&amp;issueidtype=include&amp;issue_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;issue_file_loc=&amp;issue_file_loc_type=substring&amp;status_whiteboard=&amp;status_whiteboard_type=substring&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time">Fixes
+      <link xlink:href="https://java.net/jira/secure/ReleaseNote.jspa?projectId=10198&amp;version=10769">Fixes
       to bugs reported in java.net</link>
     </para>
 </listitem>
@@ -514,7 +514,7 @@ holder.
 <itemizedlist>
 <listitem>
 <para>
-      <link xlink:href="http://jaxb.java.net/issues/buglist.cgi?Submit+query=Submit+query&amp;component=jaxb&amp;issue_status=RESOLVED&amp;issue_status=VERIFIED&amp;issue_status=CLOSED&amp;target_milestone=2.1.10&amp;email1=&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=exact&amp;emailreporter2=1&amp;issueidtype=include&amp;issue_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;issue_file_loc=&amp;issue_file_loc_type=substring&amp;status_whiteboard=&amp;status_whiteboard_type=substring&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time">Fixes
+      <link xlink:href="https://java.net/jira/secure/ReleaseNote.jspa?projectId=10198&amp;version=10767">Fixes
       to bugs reported in java.net</link>
     </para>
 </listitem>
@@ -525,7 +525,7 @@ holder.
 <itemizedlist>
 <listitem>
 <para>
-      <link xlink:href="http://jaxb.java.net/issues/buglist.cgi?Submit+query=Submit+query&amp;component=jaxb&amp;issue_status=RESOLVED&amp;issue_status=VERIFIED&amp;issue_status=CLOSED&amp;target_milestone=2.1.9&amp;email1=&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=exact&amp;emailreporter2=1&amp;issueidtype=include&amp;issue_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;issue_file_loc=&amp;issue_file_loc_type=substring&amp;status_whiteboard=&amp;status_whiteboard_type=substring&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time">Fixes
+      <link xlink:href="https://java.net/jira/secure/ReleaseNote.jspa?projectId=10198&amp;version=10779">Fixes
       to bugs reported in java.net</link>
     </para>
 </listitem>
@@ -536,7 +536,7 @@ holder.
 <itemizedlist>
 <listitem>
 <para>
-      <link xlink:href="http://jaxb.java.net/issues/buglist.cgi?Submit+query=Submit+query&amp;component=jaxb&amp;issue_status=RESOLVED&amp;issue_status=VERIFIED&amp;issue_status=CLOSED&amp;target_milestone=2.1.8&amp;email1=&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=exact&amp;emailreporter2=1&amp;issueidtype=include&amp;issue_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;issue_file_loc=&amp;issue_file_loc_type=substring&amp;status_whiteboard=&amp;status_whiteboard_type=substring&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time">Fixes
+      <link xlink:href="https://java.net/jira/secure/ReleaseNote.jspa?projectId=10198&amp;version=10778">Fixes
       to bugs reported in java.net</link>
     </para>
 </listitem>
@@ -554,7 +554,7 @@ holder.
 </listitem>
 <listitem>
 <para>
-      <link xlink:href="http://jaxb.java.net/issues/buglist.cgi?Submit+query=Submit+query&amp;component=jaxb&amp;issue_status=RESOLVED&amp;issue_status=VERIFIED&amp;issue_status=CLOSED&amp;target_milestone=2.1.7&amp;email1=&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=exact&amp;emailreporter2=1&amp;issueidtype=include&amp;issue_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;issue_file_loc=&amp;issue_file_loc_type=substring&amp;status_whiteboard=&amp;status_whiteboard_type=substring&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time">Fixes
+      <link xlink:href="https://java.net/jira/secure/ReleaseNote.jspa?projectId=10198&amp;version=10777">Fixes
       to bugs reported in java.net</link>
     </para>
 </listitem>
@@ -565,7 +565,7 @@ holder.
 <itemizedlist>
 <listitem>
 <para>
-      <link xlink:href="http://jaxb.java.net/issues/buglist.cgi?Submit+query=Submit+query&amp;component=jaxb&amp;issue_status=RESOLVED&amp;issue_status=VERIFIED&amp;issue_status=CLOSED&amp;target_milestone=2.1.6&amp;email1=&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=exact&amp;emailreporter2=1&amp;issueidtype=include&amp;issue_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;issue_file_loc=&amp;issue_file_loc_type=substring&amp;status_whiteboard=&amp;status_whiteboard_type=substring&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time">Fixes
+      <link xlink:href="https://java.net/jira/secure/ReleaseNote.jspa?projectId=10198&amp;version=10776">Fixes
       to bugs reported in java.net</link>
     </para>
 </listitem>
@@ -576,7 +576,7 @@ holder.
 <itemizedlist>
 <listitem>
 <para>
-      <link xlink:href="http://jaxb.java.net/issues/buglist.cgi?Submit+query=Submit+query&amp;component=jaxb&amp;issue_status=RESOLVED&amp;issue_status=VERIFIED&amp;issue_status=CLOSED&amp;target_milestone=2.1.5&amp;email1=&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=exact&amp;emailreporter2=1&amp;issueidtype=include&amp;issue_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;issue_file_loc=&amp;issue_file_loc_type=substring&amp;status_whiteboard=&amp;status_whiteboard_type=substring&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time">Fixes
+      <link xlink:href="https://java.net/jira/secure/ReleaseNote.jspa?projectId=10198&amp;version=10775">Fixes
       to bugs reported in java.net</link>
     </para>
 </listitem>
@@ -587,7 +587,7 @@ holder.
 <itemizedlist>
 <listitem>
 <para>
-      <link xlink:href="http://jaxb.java.net/issues/buglist.cgi?Submit+query=Submit+query&amp;component=jaxb&amp;issue_status=RESOLVED&amp;issue_status=VERIFIED&amp;issue_status=CLOSED&amp;target_milestone=2.1.4&amp;email1=&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=exact&amp;emailreporter2=1&amp;issueidtype=include&amp;issue_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;issue_file_loc=&amp;issue_file_loc_type=substring&amp;status_whiteboard=&amp;status_whiteboard_type=substring&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time">Fixes
+      <link xlink:href="https://java.net/jira/secure/ReleaseNote.jspa?projectId=10198&amp;version=10774">Fixes
       to bugs reported in java.net</link>
     </para>
 </listitem>
@@ -598,7 +598,7 @@ holder.
 <itemizedlist>
 <listitem>
 <para>
-      <link xlink:href="http://jaxb.java.net/issues/buglist.cgi?Submit+query=Submit+query&amp;component=jaxb&amp;issue_status=RESOLVED&amp;issue_status=VERIFIED&amp;issue_status=CLOSED&amp;target_milestone=2.1.3&amp;email1=&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=exact&amp;emailreporter2=1&amp;issueidtype=include&amp;issue_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;issue_file_loc=&amp;issue_file_loc_type=substring&amp;status_whiteboard=&amp;status_whiteboard_type=substring&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time">Fixes
+      <link xlink:href="https://java.net/jira/secure/ReleaseNote.jspa?projectId=10198&amp;version=10773">Fixes
       to bugs reported in java.net</link>
     </para>
 </listitem>
@@ -609,7 +609,7 @@ holder.
 <itemizedlist>
 <listitem>
 <para>
-      <link xlink:href="http://jaxb.java.net/issues/buglist.cgi?Submit+query=Submit+query&amp;component=jaxb&amp;issue_status=RESOLVED&amp;issue_status=VERIFIED&amp;issue_status=CLOSED&amp;target_milestone=2.1.2&amp;email1=&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=exact&amp;emailreporter2=1&amp;issueidtype=include&amp;issue_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;issue_file_loc=&amp;issue_file_loc_type=substring&amp;status_whiteboard=&amp;status_whiteboard_type=substring&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time">Fixes
+      <link xlink:href="https://java.net/jira/secure/ReleaseNote.jspa?projectId=10198&amp;version=10772">Fixes
       to bugs reported in java.net</link>
     </para>
 </listitem>
@@ -621,7 +621,7 @@ holder.
 <itemizedlist>
 <listitem>
 <para>
-      <link xlink:href="http://jaxb.java.net/issues/buglist.cgi?Submit+query=Submit+query&amp;component=jaxb&amp;issue_status=RESOLVED&amp;issue_status=VERIFIED&amp;issue_status=CLOSED&amp;target_milestone=2.1.1&amp;email1=&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=exact&amp;emailreporter2=1&amp;issueidtype=include&amp;issue_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;issue_file_loc=&amp;issue_file_loc_type=substring&amp;status_whiteboard=&amp;status_whiteboard_type=substring&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time">Fixes
+      <link xlink:href="https://java.net/jira/secure/ReleaseNote.jspa?projectId=10198&amp;version=10766">Fixes
       to bugs reported in java.net</link>
     </para>
 </listitem>
@@ -633,37 +633,14 @@ holder.
 </itemizedlist>
 </section>
 <section xml:id="a-2-1">
-<title>Notable Changes between 2.1 Eary Access 2 to 2.1 First
+<title>Notable Changes between 2.1 Early Access 2 to 2.1 First
   Customer Ship (FCS)</title>
 <itemizedlist>
 <listitem>
 <para>
-      <link xlink:href="http://jaxb.java.net/issues/buglist.cgi?Submit+query=Submit+query&amp;component=jaxb&amp;issue_status=RESOLVED&amp;issue_status=VERIFIED&amp;issue_status=CLOSED&amp;target_milestone=2.1&amp;email1=&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=exact&amp;emailreporter2=1&amp;issueidtype=include&amp;issue_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;issue_file_loc=&amp;issue_file_loc_type=substring&amp;status_whiteboard=&amp;status_whiteboard_type=substring&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time">Fixes
+      <link xlink:href="https://java.net/jira/secure/ReleaseNote.jspa?projectId=10198&amp;version=10795">Fixes
       to bugs reported in java.net</link>
     </para>
-</listitem>
-</itemizedlist>
-</section>
-<section xml:id="a-2-1ea2">
-<title>Notable Changes between 2.1 Eary Access to 2.1 Early Access
-  2</title>
-<itemizedlist>
-<listitem>
-<para>
-      <link xlink:href="http://jaxb.java.net/issues/buglist.cgi?Submit+query=Submit+query&amp;component=jaxb&amp;issue_status=RESOLVED&amp;issue_status=VERIFIED&amp;issue_status=CLOSED&amp;target_milestone=2.1%20EA2&amp;email1=&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=exact&amp;emailreporter2=1&amp;issueidtype=include&amp;issue_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;issue_file_loc=&amp;issue_file_loc_type=substring&amp;status_whiteboard=&amp;status_whiteboard_type=substring&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time">Fixes
-      to bugs reported in java.net</link>
-    </para>
-</listitem>
-<listitem>
-<para>
-    <xref linkend="a-2-0-3" xrefstyle="select:title"/>
-    
-    <itemizedlist>
-<listitem>
-<para>
-        <link xlink:href="http://jaxb.java.net/issues/buglist.cgi?Submit+query=Submit+query&amp;component=jaxb&amp;issue_status=RESOLVED&amp;issue_status=VERIFIED&amp;issue_status=CLOSED&amp;target_milestone=2.0.4&amp;email1=&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=exact&amp;emailreporter2=1&amp;issueidtype=include&amp;issue_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;issue_file_loc=&amp;issue_file_loc_type=substring&amp;status_whiteboard=&amp;status_whiteboard_type=substring&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time">Fixes
-        to bugs reported in java.net</link>
-      </para>
 </listitem>
 <listitem>
 <para>
@@ -687,27 +664,13 @@ holder.
       </para>
 </listitem>
 </itemizedlist>
-</para>
-</listitem>
-</itemizedlist>
-</section>
-<section xml:id="a-2-1ea">
-<title>Notable Changes between 2.0.2 to 2.1 Early Access</title>
-<itemizedlist>
-<listitem>
-<para>
-      <link xlink:href="http://jaxb.java.net/issues/buglist.cgi?Submit+query=Submit+query&amp;component=jaxb&amp;issue_status=RESOLVED&amp;issue_status=VERIFIED&amp;issue_status=CLOSED&amp;target_milestone=2.1%20EA1&amp;email1=&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=exact&amp;emailreporter2=1&amp;issueidtype=include&amp;issue_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;issue_file_loc=&amp;issue_file_loc_type=substring&amp;status_whiteboard=&amp;status_whiteboard_type=substring&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time">Fixes
-      to bugs reported in java.net</link>
-    </para>
-</listitem>
-</itemizedlist>
 </section>
 <section xml:id="a-2-0-3">
 <title>Notable Changes between 2.0.2 to 2.0.3</title>
 <itemizedlist>
 <listitem>
 <para>
-      <link xlink:href="http://jaxb.java.net/issues/buglist.cgi?Submit+query=Submit+query&amp;component=jaxb&amp;issue_status=RESOLVED&amp;issue_status=VERIFIED&amp;issue_status=CLOSED&amp;target_milestone=2.0.3&amp;email1=&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=exact&amp;emailreporter2=1&amp;issueidtype=include&amp;issue_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;issue_file_loc=&amp;issue_file_loc_type=substring&amp;status_whiteboard=&amp;status_whiteboard_type=substring&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time">Fixes
+      <link xlink:href="https://java.net/jira/secure/ReleaseNote.jspa?projectId=10198&amp;version=10759">Fixes
       to bugs reported in java.net</link>
     </para>
 </listitem>
@@ -724,7 +687,7 @@ holder.
 <itemizedlist>
 <listitem>
 <para>
-      <link xlink:href="http://jaxb.java.net/issues/buglist.cgi?Submit+query=Submit+query&amp;component=jaxb&amp;issue_status=RESOLVED&amp;issue_status=VERIFIED&amp;issue_status=CLOSED&amp;target_milestone=2.0.2&amp;email1=&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=exact&amp;emailreporter2=1&amp;issueidtype=include&amp;issue_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;issue_file_loc=&amp;issue_file_loc_type=substring&amp;status_whiteboard=&amp;status_whiteboard_type=substring&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time">Fixes
+      <link xlink:href="https://java.net/jira/secure/ReleaseNote.jspa?projectId=10198&amp;version=10758">Fixes
       to bugs reported in java.net</link>
     </para>
 </listitem>
@@ -756,7 +719,7 @@ holder.
 <itemizedlist>
 <listitem>
 <para>
-      <link xlink:href="http://jaxb.java.net/issues/buglist.cgi?Submit+query=Submit+query&amp;component=jaxb&amp;issue_status=RESOLVED&amp;issue_status=VERIFIED&amp;issue_status=CLOSED&amp;target_milestone=2.0.1&amp;email1=&amp;emailtype1=exact&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=exact&amp;emailreporter2=1&amp;issueidtype=include&amp;issue_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;issue_file_loc=&amp;issue_file_loc_type=substring&amp;status_whiteboard=&amp;status_whiteboard_type=substring&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time">Fixes
+      <link xlink:href="https://java.net/jira/secure/ReleaseNote.jspa?projectId=10198&amp;version=10757">Fixes
       to bugs reported in java.net</link>
     </para>
 </listitem>

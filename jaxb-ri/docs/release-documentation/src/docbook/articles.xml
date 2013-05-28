@@ -3,7 +3,7 @@
 
 DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
 
 The contents of this file are subject to the terms of either the GNU
 General Public License Version 2 only ("GPL") or the Common Development
@@ -60,15 +60,10 @@ holder.
         <itemizedlist>
             <listitem>
                 <para><link
-                xlink:href="http://blogs.sun.com/CoreJavaTechTips/entry/exchanging_data_with_xml_and">Exchanging
+                xlink:href="https://blogs.oracle.com/CoreJavaTechTips/entry/exchanging_data_with_xml_and">Exchanging
                 Data with XML and JAXB, Part I</link> and <link
-                xlink:href="http://blogs.sun.com/CoreJavaTechTips/entry/exchanging_data_with_xml_and1">Part
+                xlink:href="https://blogs.oracle.com/CoreJavaTechTips/entry/exchanging_data_with_xml_and1">Part
                 II</link> by Jennie Hall</para>
-            </listitem>
-
-            <listitem>
-                <para><link
-                xlink:href="http://jaxb.java.net/twiki/bin/view/Javawsxml/JaxbExistingClassExistingSchemaHowTo">JaxbExistingClassExistingSchemaHowTo</link></para>
             </listitem>
         </itemizedlist>
     </section>
@@ -77,14 +72,9 @@ holder.
         <title>Blogs</title>
 
         <itemizedlist>
+ 
             <listitem>
-                <para><link
-                xlink:href="http://blogs.sun.com/PavelBucek/">Pavel Bucek's
-                blog</link></para>
-            </listitem>
-
-            <listitem>
-                <para><link xlink:href="http://blogs.sun.com/mgrebac/">Martin
+                <para><link xlink:href="https://blogs.oracle.com/mgrebac/">Martin
                 Grebac's blog</link></para>
             </listitem>
 
@@ -144,13 +134,6 @@ holder.
                 <para><link
                 xlink:href="http://weblogs.java.net/blog/kohsuke/archive/2005/06/writing_a_plugi.html">Writing
                 a JAXB plugin</link></para>
-            </listitem>
-
-            <listitem>
-                <para><link
-                xlink:href="http://www.jroller.com/gmazza/entry/customizing_jaxb_artifacts">Customizing
-                generated JAXB classes during the WSDL-to-Java
-                process</link></para>
             </listitem>
 
             <listitem>

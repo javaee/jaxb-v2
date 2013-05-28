@@ -3,7 +3,7 @@
 
 DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
 
 The contents of this file are subject to the terms of either the GNU
 General Public License Version 2 only ("GPL") or the Common Development
@@ -162,7 +162,7 @@ holder.
             </orderedlist>
 
             <para>For more information about this process, see the the <link
-            xlink:href="http://java.sun.com/webservices/tutorial.html">Java
+            xlink:href="http://docs.oracle.com/javaee/6/tutorial/doc/gijti.html">Java
             WSDP Tutorial</link> and the extensive <xref
             linkend="jaxb-2-0-sample-apps" xrefstyle="select:title" />
             documentation.</para>
@@ -185,9 +185,7 @@ holder.
 
             <variablelist>
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/catalog-resolver"><application>catalog
-                    resolver</application></link></term>
+                    <term><literal>samples/catalog-resolver</literal></term>
 
                     <listitem>
                         <para>This example demonstrates how to use the
@@ -197,8 +195,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/character-escape"><application>character-escape</application></link></term>
+                    <term><literal>samples/character-escape</literal></term>
 
                     <listitem>
                         <para>This example shows how you can use the new JAXB
@@ -210,8 +207,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/class-resolver"><application>ClassResolver</application></link></term>
+                    <term><literal>samples/class-resolver</literal></term>
 
                     <listitem>
                         <para>This little DI-container-by-JAXB example
@@ -222,9 +218,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/create-marshal"><application>create-marshal
-                    (formerly SampleApp3)</application></link></term>
+                    <term><literal>samples/create-marshal</literal></term>
 
                     <listitem>
                         <para>This sample application demonstrates how to use
@@ -236,9 +230,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/cycle-recovery"><application>Application-driven
-                    cycle handling</application></link></term>
+                    <term><literal>samples/cycle-recovery</literal></term>
 
                     <listitem>
                         <para>JAXB RI's vendor extension
@@ -249,9 +241,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/datatypeconverter"><application>datatypeconverter
-                    (formerly SampleApp7)</application></link></term>
+                    <term><literal>samples/datatypeconverter</literal></term>
 
                     <listitem>
                         <para>This sample application is very similar to the
@@ -264,8 +254,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/dtd"><application>dtd</application></link></term>
+                    <term><literal>samples/dtd</literal></term>
 
                     <listitem>
                         <para>This sample application illustrate some of the
@@ -277,8 +266,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/element-substitution"><application>element-substitution</application></link></term>
+                    <term><literal>samples/element-substitution</literal></term>
 
                     <listitem>
                         <para>This sample application illustrates how W3C XML
@@ -291,9 +279,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/external-customize"><application>external-customize
-                    (formerly SampleApp8)</application></link></term>
+                    <term><literal>samples/external-customize</literal></term>
 
                     <listitem>
                         <para>This sample application is identical to the
@@ -306,9 +292,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/fix-collides"><application>fix-collides
-                    (formerly part of SampleApp9)</application></link></term>
+                    <term><literal>samples/fix-collides</literal></term>
 
                     <listitem>
                         <para>Another binding customization example that
@@ -322,9 +306,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/inline-customize"><application>inline-customize
-                    (formerly SampleApp6)</application></link></term>
+                    <term><literal>samples/inline-customize</literal></term>
 
                     <listitem>
                         <para>This sample application demonstrates how to
@@ -334,9 +316,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/j2s-create-marshal"><application>Java
-                    to Schema Binding</application></link></term>
+                    <term><literal>samples/j2s-crete-marshal</literal></term>
 
                     <listitem>
                         <para>This sample application demonstrates
@@ -347,10 +327,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/j2s-xmlAccessorOrder"><application>Ordering
-                    Properties and Fieldes in Java to Schema
-                    Bindings</application></link></term>
+                    <term><literal>samples/j2s-xmlAccessorOrder</literal></term>
 
                     <listitem>
                         <para>This sample application demonstrates the use of
@@ -363,10 +340,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/j2s-xmlAdapter"><application>Adapters
-                    for custom marshaling/unmarshaling XML
-                    content</application></link></term>
+                    <term><literal>samples/j2s-xmlAdapter</literal></term>
 
                     <listitem>
                         <para>This sample application demonstrates the use of
@@ -378,10 +352,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/j2s-xmlAttribute"><literal>@XmlAttribute</literal>
-                    used to define properties and fields as XML Attributes
-                    </link></term>
+                    <term><literal>samples/j2s-xmlAttribute</literal></term>
 
                     <listitem>
                         <para>This sample application demonstrates the use of
@@ -392,10 +363,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/j2s-xmlRootElement"><application>Defining
-                    XML elements via
-                    <literal>@XmlRootElement</literal></application></link></term>
+                    <term><literal>samples/j2s-xmlRootElement</literal></term>
 
                     <listitem>
                         <para>This sample application demonstrates the use of
@@ -405,11 +373,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/j2s-xmlSchemaType">Annotation
-                    <literal>@XmlSchemaType</literal> is used to customize the
-                    mapping of a property or field to an XML built-in type.
-                    </link></term>
+                    <term><literal>samples/j2s-xmlSchematType</literal></term>
 
                     <listitem>
                         <para>This sample application demonstrates the use of
@@ -420,10 +384,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/j2s-xmlType"><application>Ordering
-                    Properties and Fieldes in Java to Schema
-                    Bindings</application></link></term>
+                    <term><literal>samples/j2s-xmlType</literal></term>
 
                     <listitem>
                         <para>This sample application demonstrates the use of
@@ -436,8 +397,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/locator-support"><application>locator-support</application></link></term>
+                    <term><literal>samples/locator-support</literal></term>
 
                     <listitem>
                         <para>This sample shows how to use the new
@@ -453,9 +413,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/modify-marshal"><application>modify-marshal
-                    (formerly SampleApp2)</application></link></term>
+                    <term><literal>samples/modify-marshal</literal></term>
 
                     <listitem>
                         <para>This sample application demonstrates how to
@@ -465,8 +423,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/namespace-prefix"><application>namespace-prefix</application></link></term>
+                    <term><literal>samples/namespace-prefix</literal></term>
 
                     <listitem>
                         <para>This sample application demonstrates how to use
@@ -478,8 +435,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/partial-unmarshalling"><application>partial-unmarshalling</application></link></term>
+                    <term><literal>samples/partial-unmarshalling</literal></term>
 
                     <listitem>
                         <para>In this example, the input document will be
@@ -489,9 +445,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/pull-parser"><application>pull
-                    parser based unmarshalling</application></link></term>
+                    <term><literal>samples/pull-parser</literal></term>
 
                     <listitem>
                         <para>This sample app demonstrates how a pull-parser
@@ -501,9 +455,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/streaming-unmarshalling"><application>Streaming
-                    Unmarshalling w/o StAX</application></link></term>
+                    <term><literal>samples/streaming-unmarshalling</literal></term>
 
                     <listitem>
                         <para>This example illustrates a different approach to
@@ -513,9 +465,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/synchronized-methods"><application>Generating
-                    synchronized methods</application></link></term>
+                    <term><literal>samples/synchronized-methods</literal></term>
 
                     <listitem>
                         <para>This sample shows how to use the new
@@ -528,9 +478,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/type-substitution"><application>Type
-                    substitutoin support</application></link></term>
+                    <term><literal>samples/type-substitution</literal></term>
 
                     <listitem>
                         <para>This sample app demonstrates type substitution
@@ -540,9 +488,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/ubl"><application>Universal
-                    Business Language (UBL)</application></link></term>
+                    <term><literal>samples/ubl</literal></term>
 
                     <listitem>
                         <para>This project processes a UBL (Universal Business
@@ -552,10 +498,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/unmarshal-read"><application>Using
-                    unmarshaller (formerly
-                    SampleApp1)</application></link></term>
+                    <term><literal>samples/unmarshal-read</literal></term>
 
                     <listitem>
                         <para>This sample application demonstrates how to
@@ -565,10 +508,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/unmarshal-validate"><application>validating
-                    unmarshaller (formerly
-                    SampleApp4)</application></link></term>
+                    <term><literal>samples/unmarshal-validate</literal></term>
 
                     <listitem>
                         <para>This sample application demonstrates how to
@@ -578,9 +518,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/updateablePartialBind"><application>Updateable
-                    Partial Binding using Binder</application></link></term>
+                    <term><literal>samples/updateablePartialBind</literal></term>
 
                     <listitem>
                         <para>This sample application demonstrates how to
@@ -591,9 +529,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/vendor-extensions"><application>RI-specific
-                    customizations</application></link></term>
+                    <term><literal>samples/vendor-extensions</literal></term>
 
                     <listitem>
                         <para>This example demonstrates how to use
@@ -605,9 +541,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/xml-channel"><application>XML
-                    message passing via socket</application></link></term>
+                    <term><literal>samples/xml-channel</literal></term>
 
                     <listitem>
                         <para>This example demonstrates how one can use one
@@ -618,9 +552,7 @@ holder.
                 </varlistentry>
 
                 <varlistentry>
-                    <term><link
-                    xlink:href="../samples/xml-stylesheet"><application>Marshalling
-                    output customization</application></link></term>
+                    <term><literal>samples/xml-stylesheet</literal></term>
 
                     <listitem>
                         <para>A common customization need for the marshalling

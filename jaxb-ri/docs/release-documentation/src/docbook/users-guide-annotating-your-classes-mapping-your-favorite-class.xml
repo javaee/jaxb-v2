@@ -3,7 +3,7 @@
 
 DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
 
 The contents of this file are subject to the terms of either the GNU
 General Public License Version 2 only ("GPL") or the Common Development
@@ -143,7 +143,7 @@ marshaller.marshal(new JAXBElement(new QName("root"),HashMap.class,m),System.out
         </example>
 
         <para>This issue has been recorded as <link
-        xlink:href="http://jaxb.java.net/issues/show_bug.cgi?id=223">#223</link>
+        xlink:href="https://java.net/jira/browse/JAXB-223">#223</link>
         and the fix needs to happen in later versions of the JAXB spec.</para>
 
         <para>In the mean time, such top-level objects have to be first

@@ -488,7 +488,7 @@ xjc schema1.xsd schema2.xsd schema3.xsd -b bindings1.xjb -b bindings2.xjb -b bin
                     <listitem>
                         <para>This feature causes all of the generated code to
                         have <link
-                        xlink:href="http://java.sun.com/javaee/5/docs/api/jaxb-2-0-overview?javax/annotation/Generated.html">
+                        xlink:href="http://docs.oracle.com/javaee/5/api/javax/annotation/Generated.html">
                         <literal>@Generated</literal> </link> annotation.</para>
                     </listitem>
                 </varlistentry>

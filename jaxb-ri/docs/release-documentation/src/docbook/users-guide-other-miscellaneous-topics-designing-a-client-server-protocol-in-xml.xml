@@ -3,7 +3,7 @@
 
 DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
 
 The contents of this file are subject to the terms of either the GNU
 General Public License Version 2 only ("GPL") or the Common Development
@@ -55,9 +55,7 @@ holder.
     <title>Designing a client/server protocol in XML</title>
 
     <para>Occasionally, people try to define a custom protocol that allows
-    multiple XML requests/responses to be sent over a single transport channel
-    (<link
-    xlink:href="http://forums.java.net/jive/thread.jspa?threadID=27577">example</link>.)
+    multiple XML requests/responses to be sent over a single transport channel.
     This section discusses the non-trivial interaction between XML and
     sockets, and how you can design a protocol correctly.</para>
 

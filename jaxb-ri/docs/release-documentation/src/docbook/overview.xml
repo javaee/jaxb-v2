@@ -116,7 +116,7 @@ holder.
 
             <listitem>
                 <para><link
-                xlink:href="../../nonav/docs/api/jaxb-2-0-overview">Javadoc
+                xlink:href="api/">Javadoc
                 API documentation (javax.xml.bind.*)</link></para>
             </listitem>
 
@@ -152,7 +152,7 @@ holder.
             <listitem>
                 <para>Additional copyright notices and license terms
                 applicable to portions of the software are set forth in the
-                <link xlink:href="ThirdPartyLicenseReadme.txt">3rd Party
+                <link xlink:href="ThirdPartyLicense.txt">3rd Party
                 License README</link></para>
             </listitem>
         </itemizedlist>

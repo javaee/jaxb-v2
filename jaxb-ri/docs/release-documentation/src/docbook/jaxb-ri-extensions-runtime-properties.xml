@@ -3,7 +3,7 @@
 
 DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
 
 The contents of this file are subject to the terms of either the GNU
 General Public License Version 2 only ("GPL") or the Common Development
@@ -410,7 +410,7 @@ public abstract class NamespacePrefixMapper {
             Note that the "<literal>jaxb.formatted.output</literal>" property
             needs to be set to "true" for the formatting/indentation of the
             output to occur. See the API documentation for <link
-            xlink:href="../../doc/api/javax/xml/bind/Marshaller.html">
+            xlink:href="api/javax/xml/bind/Marshaller.html">
             <literal>javax.xml.bind.Marshaller</literal> </link> interface for
             details of this property.</para>
         </section>
@@ -510,9 +510,9 @@ public abstract class NamespacePrefixMapper {
             <para>This experimental JAXB RI 1.0.x property has been adopted as
             a standard in JAXB 2.0. The 2.0 RI will continue to support this
             property, but client code should be using the <link
-            xlink:href="api/Marshaller.html#JAXB_FRAGMENT">Marshaller.JAXB_FRAGMENT</link>
+            xlink:href="api/javax/xml/bind/Marshaller.html#JAXB_FRAGMENT">Marshaller.JAXB_FRAGMENT</link>
             property instead. Please refer to the <link
-            xlink:href="api/Marshaller.html#supportedProps">Marshaller
+            xlink:href="api/javax/xml/bind/Marshaller.html#supportedProps">Marshaller
             javadoc</link> for a complete description of the behavior.</para>
 
             <para>In JAXB 2.0, calling:</para>

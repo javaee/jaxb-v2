@@ -3,7 +3,7 @@
 
 DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
 
 The contents of this file are subject to the terms of either the GNU
 General Public License Version 2 only ("GPL") or the Common Development
@@ -205,18 +205,13 @@ class Bar {
         <title>Use the CycleRecoverable interface</title>
 
         <para>Starting 2.1 EA2, the JAXB RI exposes <link
-        xlink:href="http://fisheye5.cenqua.com/browse/jaxb2-sources/jaxb-ri/runtime/src/com/sun/xml/bind/CycleRecoverable.java?r=jaxb-2_1-branch"><literal>CycleRecoverable</literal></link> interface. Applications can
+        xlink:href="https://java.net/projects/jaxb/sources/version2/content/trunk/jaxb-ri/runtime/src/com/sun/xml/bind/CycleRecoverable.java"><literal>CycleRecoverable</literal></link> interface. Applications can
         choose to implement this interface in some of its objects. When a
         cyclic reference is detected during marshalling, and if the object
         that formed a cycle implements this interface, then the method on this
         interface is called to allow an application to nominate its
         replacement to be written to XML. In this way, the application can
         recover from a cycle gracefully.</para>
-
-        <para>See <link
-        xlink:href="http://forums.java.net/jive/thread.jspa?threadID=13670&amp;start=15#158545">a
-        posting from <literal>gadams00</literal></link> for a complete illustration
-        of this feature.</para>
 
         <para>This technique allows you to cope with a situation where you
         cannot easily determine upfront as to where a cycle might happen. On
