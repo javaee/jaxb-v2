@@ -58,6 +58,10 @@ holder.
     <name>JAXB Runtime</name>
     <description>JAXB (JSR 222) Reference Implementation</description>
 
+    <properties>
+        <findbugs.exclude>${project.basedir}/exclude.xml</findbugs.exclude>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -275,15 +275,19 @@ public final class UnmarshallingContext extends Coordinator
             return UnmarshallingContext.this;
         }
 
+        @SuppressWarnings("LeakingThisInConstructor")
         private State(State prev) {
             this.prev = prev;
-            if(prev!=null)
+            if (prev!=null) {
                 prev.next = this;
+            }
         }
 
         private void push() {
-            if(next==null)
+            if (next==null) {
+                assert current == this;
                 allocateMoreStates();
+            }
             State n = next;
             n.numNsDecl = nsLen;
             current = n;
@@ -394,10 +398,11 @@ public final class UnmarshallingContext extends Coordinator
     private void allocateMoreStates() {
         // this method should be used only when we run out of a state.
         assert current.next==null;
-
+            
         State s = current;
-        for( int i=0; i<8; i++ )
+        for (int i=0; i<8; i++) {
             s = new State(s);
+        }
     }
 
     public void clearStates() {
@@ -451,6 +456,7 @@ public final class UnmarshallingContext extends Coordinator
         }
     }
 
+    @Override
     public void startDocument(LocatorEx locator, NamespaceContext nsContext) throws SAXException {
         if(locator!=null)
             this.locator = locator;
@@ -474,6 +480,7 @@ public final class UnmarshallingContext extends Coordinator
         idResolver.startDocument(this);
     }
 
+    @Override
     public void startElement(TagName tagName) throws SAXException {
         pushCoordinator();
         try {
@@ -501,6 +508,7 @@ public final class UnmarshallingContext extends Coordinator
         current.loader.startElement(current,tagName);
     }
 
+    @Override
     public void text(CharSequence pcdata) throws SAXException {
         State cur = current;
         pushCoordinator();
@@ -517,6 +525,7 @@ public final class UnmarshallingContext extends Coordinator
         }
     }
 
+    @Override
     public final void endElement(TagName tagName) throws SAXException {
         pushCoordinator();
         try {
@@ -541,6 +550,7 @@ public final class UnmarshallingContext extends Coordinator
         }
     }
 
+    @Override
     public void endDocument() throws SAXException {
         runPatchers();
         idResolver.endDocument();
@@ -560,6 +570,7 @@ public final class UnmarshallingContext extends Coordinator
      * You should be always calling this through {@link TextPredictor}.
      */
     @Deprecated
+    @Override
     public boolean expectText() {
         return current.loader.expectText;
     }
@@ -568,10 +579,12 @@ public final class UnmarshallingContext extends Coordinator
      * You should be always getting {@link TextPredictor} from {@link XmlVisitor}.
      */
     @Deprecated
+    @Override
     public TextPredictor getPredictor() {
         return this;
     }
 
+    @Override
     public UnmarshallingContext getContext() {
         return this;
     }
@@ -665,6 +678,7 @@ public final class UnmarshallingContext extends Coordinator
                     event.getLinkedException() ) );
     }
 
+    @Override
     public boolean handleEvent(ValidationEvent event) {
         try {
             // if the handler says "abort", we will not return the object.
@@ -695,6 +709,7 @@ public final class UnmarshallingContext extends Coordinator
         handleEvent(new ValidationEventImpl(ValidationEvent.ERROR,msg,locator.getLocation()));
     }
 
+    @Override
     protected ValidationEventLocator getLocation() {
         return locator.getLocation();
     }
@@ -816,6 +831,7 @@ public final class UnmarshallingContext extends Coordinator
     private String[] nsBind = new String[16];
     private int nsLen=0;
 
+    @Override
     public void startPrefixMapping( String prefix, String uri ) {
         if(nsBind.length==nsLen) {
             // expand the buffer
@@ -826,6 +842,7 @@ public final class UnmarshallingContext extends Coordinator
         nsBind[nsLen++] = prefix;
         nsBind[nsLen++] = uri;
     }
+    @Override
     public void endPrefixMapping( String prefix ) {
         nsLen-=2;
     }
@@ -883,6 +900,7 @@ public final class UnmarshallingContext extends Coordinator
 
     //  NamespaceContext2 implementation
     //
+    @Override
     public Iterator<String> getPrefixes(String uri) {
         // TODO: could be implemented much faster
         // wrap it into unmodifiable list so that the remove method
@@ -914,6 +932,7 @@ public final class UnmarshallingContext extends Coordinator
         return a;
     }
 
+    @Override
     public String getPrefix(String uri) {
         if( uri==null )
             throw new IllegalArgumentException();
@@ -934,6 +953,7 @@ public final class UnmarshallingContext extends Coordinator
         return null;
     }
 
+    @Override
     public String getNamespaceURI(String prefix) {
         if (prefix == null)
             throw new IllegalArgumentException();
@@ -1074,6 +1094,7 @@ public final class UnmarshallingContext extends Coordinator
             return getInstance().getJAXBContext().getValidRootNames();
         }
 
+        @Override
         public void receive(State state, Object o) {
              if(state.backup!=null) {
                 ((JAXBElement<Object>)state.backup).setValue(o);
@@ -1110,6 +1131,7 @@ public final class UnmarshallingContext extends Coordinator
             state.loader = new XsiNilLoader(context.expectedType.getLoader(null,true));
         }
 
+        @Override
         public void receive(State state, Object o) {
             JAXBElement e = (JAXBElement)state.target;
             e.setValue(o);
