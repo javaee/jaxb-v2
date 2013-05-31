@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -50,6 +50,8 @@ import com.sun.xml.bind.v2.util.XmlFactory;
 import javax.xml.XMLConstants;
 import org.xml.sax.SAXException;
 
+import static com.sun.xml.bind.v2.util.XmlFactory.allowFileAccess;
+
 /**
  * Wraps a JAXP {@link Schema} object and lazily instantiate it.
  *
@@ -74,7 +76,7 @@ public final class SchemaCache {
                 try {
                     // do not disable secure processing - these are well-known schemas
                     SchemaFactory sf = XmlFactory.createSchemaFactory(XMLConstants.W3C_XML_SCHEMA_NS_URI, false);
-                    schema = sf.newSchema(source);
+                    schema = allowFileAccess(sf, false).newSchema(source);
                 } catch (SAXException e) {
                     // we make sure that the schema is correct before we ship.
                     throw new AssertionError(e);

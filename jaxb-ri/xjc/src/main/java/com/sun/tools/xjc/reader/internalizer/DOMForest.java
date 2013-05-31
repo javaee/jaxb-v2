@@ -40,18 +40,21 @@
 
 package com.sun.tools.xjc.reader.internalizer;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.sun.istack.NotNull;
+import com.sun.istack.XMLStreamReaderToContentHandler;
+import com.sun.tools.xjc.ErrorReceiver;
+import com.sun.tools.xjc.Options;
+import com.sun.tools.xjc.reader.Const;
+import com.sun.tools.xjc.util.ErrorReceiverFilter;
+import com.sun.xml.bind.marshaller.DataWriter;
+import com.sun.xml.bind.v2.util.XmlFactory;
+import com.sun.xml.xsom.parser.JAXPParser;
+import com.sun.xml.xsom.parser.XMLParser;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.*;
+import org.xml.sax.helpers.XMLFilterImpl;
 
-import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -66,27 +69,13 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.validation.SchemaFactory;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.util.*;
 
-import com.sun.istack.NotNull;
-import com.sun.istack.XMLStreamReaderToContentHandler;
-import com.sun.tools.xjc.ErrorReceiver;
-import com.sun.tools.xjc.Options;
-import com.sun.tools.xjc.reader.Const;
-import com.sun.tools.xjc.util.ErrorReceiverFilter;
-import com.sun.xml.bind.marshaller.DataWriter;
-import com.sun.xml.bind.v2.util.XmlFactory;
-import com.sun.xml.xsom.parser.JAXPParser;
-import com.sun.xml.xsom.parser.XMLParser;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLFilterImpl;
+import static com.sun.xml.bind.v2.util.XmlFactory.allowFileAccess;
+import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
 
 /**
@@ -486,7 +475,7 @@ public final class DOMForest {
         }
 
         try {
-            sf.newSchema(sources.toArray(new SAXSource[0]));
+            allowFileAccess(sf, options.disableXmlSecurity).newSchema(sources.toArray(new SAXSource[0]));
         } catch (SAXException e) {
             // error should have been reported.
         } catch (RuntimeException re) {

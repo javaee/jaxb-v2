@@ -174,7 +174,7 @@
         <fastinfoset.version>1.2.13</fastinfoset.version>
         <junit.version>4.11</junit.version>
         <staxex.version>1.7.1</staxex.version>
-        <xsom.version>20110809</xsom.version>
+        <xsom.version>20130531</xsom.version>
         <codemodel.version>2.6</codemodel.version>
         <rngom.version>20100718</rngom.version>
         <msv.version>2013.5.1</msv.version>

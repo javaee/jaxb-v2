@@ -8,7 +8,7 @@
 /jaxb-ri/tools/lib/util/jing-rnc-driver.jar
 *.class
 /jaxb-ri/nbproject/private/
-/.idea/
+.idea
 .DS_Store
 /jaxb-ri/bundles/core/target/
 /jaxb-ri/bundles/jxc/target/
@@ -25,4 +25,5 @@
 /jaxb-ri/runtime/staxex/target/
 /jaxb-ri/samples/target/
 /jaxb-ri/xjc/target/
+*.iml
 

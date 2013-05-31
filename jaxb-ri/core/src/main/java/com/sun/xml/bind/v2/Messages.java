@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -55,6 +55,8 @@ public enum Messages {
     NO_DEFAULT_CONSTRUCTOR_IN_INNER_CLASS, // 1 arg
     INVALID_TYPE_IN_MAP, // 0args
     INVALID_JAXP_IMPLEMENTATION, // 1 arg
+    JAXP_SUPPORTED_PROPERTY, // 1 arg
+    JAXP_UNSUPPORTED_PROPERTY, // 1 arg
     ;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());
