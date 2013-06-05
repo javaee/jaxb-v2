@@ -47,7 +47,7 @@ holder.
     <parent>
         <groupId>com.sun.xml.bind.mvn</groupId>
         <artifactId>jaxb-parent</artifactId>
-        <version>2.2.8-SNAPSHOT</version>
+        <version>2.2.8-b02</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -66,8 +66,55 @@ holder.
         </dependency>
     </dependencies>
 
+    <properties>
+        <generated.sources.dir>${project.build.directory}/generated-sources</generated.sources.dir>
+    </properties>
+
     <build>
         <plugins>
+
+            <plugin> <!-- want to unpack sources from individual modules -->
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-sources</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.glassfish.jaxb</groupId>
+                                    <artifactId>jaxb-runtime</artifactId>
+                                    <classifier>sources</classifier>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${generated.sources.dir}</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <artifactId>maven-shade-plugin</artifactId>
                 <executions>
@@ -96,6 +143,4 @@ holder.
             </plugin>
         </plugins>
     </build>
-
-
 </project>
