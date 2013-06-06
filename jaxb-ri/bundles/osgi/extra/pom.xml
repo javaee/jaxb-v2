@@ -72,6 +72,25 @@ holder.
 
     <build>
         <plugins>
+<!--    Can be used to build everything from sources
+            <plugin>
+                <groupId>org.glassfish.build</groupId>
+                <artifactId>glassfishbuild-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-sources</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>unpack-sources</goal>
+                        </goals>
+                        <configuration>
+                            <attachSources>true</attachSources>
+                            <excludeTransitive>true</excludeTransitive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+-->
             <plugin> <!-- want to unpack sources from individual modules -->
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
