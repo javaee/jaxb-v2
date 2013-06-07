@@ -68,6 +68,7 @@ holder.
 
     <properties>
         <generated.sources.dir>${project.build.directory}/generated-sources</generated.sources.dir>
+        <findbugs.exclude>${project.basedir}/exclude.xml</findbugs.exclude>
     </properties>
 
     <build>
