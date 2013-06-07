@@ -60,6 +60,10 @@ holder.
         <!--todo: finish me-->
     </description>
 
+    <properties>
+        <findbugs.exclude>${project.basedir}/exclude.xml</findbugs.exclude>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
