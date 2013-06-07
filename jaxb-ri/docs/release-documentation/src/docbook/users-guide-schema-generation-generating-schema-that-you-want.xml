@@ -63,7 +63,7 @@ holder.
         <title>Adding facets to datatypes</title>
 
         <para>As of JAXB 2.1.4, currently no support for this, although there
-        has been several discussions in the users alias</link>.</para>
+        has been several discussions in the users alias.</para>
 
         <para>The JAXB project is currently lacking resources to attack this
         problem, and therefore looking for volunteers to work on this project.
