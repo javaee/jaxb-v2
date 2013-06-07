@@ -62,79 +62,26 @@
         If you are not sure - DON'T USE THIS BOM. Use com.sun.xml.bind:jaxb-bom instead.
     </description>
 
+    <properties>
+        <txw2.version>20110809</txw2.version>
+        <xsom.version>20130531</xsom.version>
+        <codemodel.version>2.6</codemodel.version>
+        <rngom.version>20100718</rngom.version>
+        <dtd-parser.version>1.1</dtd-parser.version>
+        <ant.version>1.9.0</ant.version>
+        <msv.version>2013.5.1</msv.version>
+        <!-- don't forget to check if isorelax.version is valid -> used in osgi -->
+        <relaxngDatatype.version>20020414</relaxngDatatype.version>
+        <isorelax.version>20090621</isorelax.version>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
-            <!-- JAXB -->
-            <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-impl</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-core</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-xjc</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-jxc</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
             <!-- Dependencies -->
-            <dependency>
-                <groupId>com.sun.istack</groupId>
-                <artifactId>istack-commons-runtime</artifactId>
-                <version>${istack.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.xml.bind</groupId>
-                <artifactId>jaxb-api</artifactId>
-                <version>${jaxb-api.version}</version>
-            </dependency>
             <dependency>
                 <groupId>com.sun.xml.txw2</groupId>
                 <artifactId>txw2</artifactId>
                 <version>${txw2.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.xml.fastinfoset</groupId>
-                <artifactId>FastInfoset</artifactId>
-                <version>${fastinfoset.version}</version>
-                <exclusions>
-                    <!-- part of JDK 6+ -->
-                    <exclusion>
-                        <artifactId>jsr173_api</artifactId>
-                        <groupId>javax.xml.bind</groupId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.jvnet.staxex</groupId>
-                <artifactId>stax-ex</artifactId>
-                <version>${staxex.version}</version>
-                <exclusions>
-                    <!-- part of JDK 6+ -->
-                    <exclusion>
-                        <groupId>javax.activation</groupId>
-                        <artifactId>activation</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>stax-api</artifactId>
-                        <groupId>javax.xml.stream</groupId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>com.sun.xsom</groupId>
@@ -168,12 +115,6 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>args4j</groupId>
-                <artifactId>args4j</artifactId>
-                <version>${args4j.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
                 <groupId>net.java.dev.msv</groupId>
                 <artifactId>msv-core</artifactId>
                 <version>${msv.version}</version>
@@ -195,25 +136,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <properties>
-        <dtd-parser.version>1.1</dtd-parser.version>
-        <jaxb-api.version>2.2.9</jaxb-api.version>
-        <args4j.version>1.0</args4j.version>
-        <ant.version>1.9.0</ant.version>
-        <istack.version>2.17</istack.version>
-        <txw2.version>20110809</txw2.version>
-        <!-- don't forget to check if relaxngDatatype.version is valid -> used in osgi -->
-        <fastinfoset.version>1.2.13</fastinfoset.version>
-        <junit.version>4.11</junit.version>
-        <staxex.version>1.7.1</staxex.version>
-        <xsom.version>20130531</xsom.version>
-        <codemodel.version>2.6</codemodel.version>
-        <rngom.version>20100718</rngom.version>
-        <msv.version>2013.5.1</msv.version>
-        <!-- don't forget to check if isorelax.version is valid -> used in osgi -->
-        <relaxngDatatype.version>20020414</relaxngDatatype.version>
-        <isorelax.version>20090621</isorelax.version>
-    </properties>
-
 </project>

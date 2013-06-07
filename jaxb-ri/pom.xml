@@ -139,12 +139,40 @@ holder.
     </pluginRepositories>
 
     <properties>
+        <junit.version>4.11</junit.version>
+        <args4j.version>1.0</args4j.version>
+
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <javadoc.links.dir>${project.parent.basedir}/tools/javadoc-link</javadoc.links.dir>
         <findbugs.skip>false</findbugs.skip>
         <findbugs.threshold>High</findbugs.threshold>
-        <findbugs.exclude />
+        <findbugs.exclude/>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>args4j</groupId>
+                <artifactId>args4j</artifactId>
+                <version>${args4j.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- JDK dependencies -->
+            <dependency>
+                <groupId>com.sun</groupId>
+                <artifactId>tools</artifactId>
+                <version>1.6</version>
+                <scope>system</scope>
+                <systemPath>${tools.jar}</systemPath>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <pluginManagement>
@@ -301,7 +329,8 @@ holder.
                     <artifactId>glassfish-copyright-maven-plugin</artifactId>
                     <version>1.29</version>
                     <configuration>
-                        <templateFile>src/main/resources/copyright.txt</templateFile>    <!--todo: fix me-->
+                        <templateFile>src/main/resources/copyright.txt</templateFile>
+                        <!--todo: fix me-->
                         <excludeFile>src/main/resources/copyright-exclude</excludeFile>
                         <!--svn|mercurial|git - defaults to svn-->
                         <scm>git</scm>
@@ -666,18 +695,4 @@ holder.
             </build>
         </profile>
     </profiles>
-
-    <dependencyManagement>
-        <dependencies>
-            <!-- JDK dependencies -->
-            <dependency>
-                <groupId>com.sun</groupId>
-                <artifactId>tools</artifactId>
-                <version>1.6</version>
-                <scope>system</scope>
-                <systemPath>${tools.jar}</systemPath>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
 </project>

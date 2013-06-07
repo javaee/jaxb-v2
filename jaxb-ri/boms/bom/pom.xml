@@ -60,6 +60,13 @@
     <name>JAXB BOM</name>
     <description>JAXB Bill of Materials (BOM)</description>
 
+    <properties>
+        <jaxb-api.version>2.2.9</jaxb-api.version>
+        <istack.version>2.17</istack.version>
+        <fastinfoset.version>1.2.13</fastinfoset.version>
+        <staxex.version>1.7.1</staxex.version>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <!-- new -->
@@ -84,6 +91,28 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <!--OLD-->
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-xjc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-jxc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <!-- OSGI -->
             <dependency>
                 <groupId>com.sun.xml.bind</groupId>
@@ -94,6 +123,47 @@
                 <groupId>com.sun.xml.bind</groupId>
                 <artifactId>jaxb-extra-osgi</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+
+            <!-- Dependencies -->
+
+            <dependency> <!--JAXB-API-->
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${jaxb-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.istack</groupId>
+                <artifactId>istack-commons-runtime</artifactId>
+                <version>${istack.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.fastinfoset</groupId>
+                <artifactId>FastInfoset</artifactId>
+                <version>${fastinfoset.version}</version>
+                <exclusions>
+                    <!-- part of JDK 6+ -->
+                    <exclusion>
+                        <artifactId>jsr173_api</artifactId>
+                        <groupId>javax.xml.bind</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.jvnet.staxex</groupId>
+                <artifactId>stax-ex</artifactId>
+                <version>${staxex.version}</version>
+                <exclusions>
+                    <!-- part of JDK 6+ -->
+                    <exclusion>
+                        <groupId>javax.activation</groupId>
+                        <artifactId>activation</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>stax-api</artifactId>
+                        <groupId>javax.xml.stream</groupId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
         </dependencies>
