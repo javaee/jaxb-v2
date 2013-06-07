@@ -112,11 +112,29 @@
                 <groupId>com.sun.xml.fastinfoset</groupId>
                 <artifactId>FastInfoset</artifactId>
                 <version>${fastinfoset.version}</version>
+                <exclusions>
+                    <!-- part of JDK 6+ -->
+                    <exclusion>
+                        <artifactId>jsr173_api</artifactId>
+                        <groupId>javax.xml.bind</groupId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.jvnet.staxex</groupId>
                 <artifactId>stax-ex</artifactId>
                 <version>${staxex.version}</version>
+                <exclusions>
+                    <!-- part of JDK 6+ -->
+                    <exclusion>
+                        <groupId>javax.activation</groupId>
+                        <artifactId>activation</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>stax-api</artifactId>
+                        <groupId>javax.xml.stream</groupId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>com.sun.xsom</groupId>
