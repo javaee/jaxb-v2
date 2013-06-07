@@ -383,6 +383,7 @@ holder.
                         <requireMavenVersion>
                             <version>[3.0.3,)</version>
                         </requireMavenVersion>
+                        <DependencyConvergence/>
                     </rules>
                 </configuration>
             </plugin>
