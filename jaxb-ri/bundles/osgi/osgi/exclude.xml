@@ -42,4 +42,12 @@
 
 <FindBugsFilter>
 
+    <!-- This is too often pattern in jaxb, no need to depend on explicit excludes here. -->
+    <Match>
+        <Or>
+            <Bug pattern="ES_COMPARING_STRINGS_WITH_EQ"/>
+            <Bug pattern="ES_COMPARING_PARAMETER_STRING_WITH_EQ"/>
+        </Or>
+    </Match>
+    
 </FindBugsFilter>
