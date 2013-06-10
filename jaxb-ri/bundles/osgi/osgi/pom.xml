@@ -59,27 +59,27 @@ holder.
 
     <dependencies>
         <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>jaxb-core</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>jaxb-xjc</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jaxb-impl</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>jaxb-jxc</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.sun.xml.bind</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>jaxb1-impl</artifactId>
             <version>${project.version}</version>
             <optional>true</optional>
@@ -136,8 +136,8 @@ holder.
                                     com.sun.xml.dtdparser.*;version=${dtd-parser.version},
                                     com.sun.xml.fastinfoset;version=${fastinfoset.version},
                                     com.sun.xml.fastinfoset.*;version=${fastinfoset.version},
-                                    com.sun.xml.txw2;version=${txw2.version},
-                                    com.sun.xml.txw2.*;version=${txw2.version},
+                                    com.sun.xml.txw2;version=${project.osgi.version},
+                                    com.sun.xml.txw2.*;version=${project.osgi.version},
                                     com.sun.xml.xsom;version=${xsom.version},
                                     com.sun.xml.xsom.*;version=${xsom.version},
                                     org.jvnet.fastinfoset;version=${fastinfoset.version},
@@ -160,7 +160,7 @@ holder.
                     <useDefaultManifestFile>true</useDefaultManifestFile>
                 </configuration>
             </plugin>
-
+            
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
@@ -168,7 +168,7 @@ holder.
                     <skip>${findbugs.skip}</skip>
                     <threshold>${findbugs.threshold}</threshold>
                     <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
-                    <!-- Use all excludes used for rebundled artifacts -->
+                    <!-- Use all excludes used for rebundled artifacts --> 
                     <excludeFilterFile>
                         exclude-common.xml,
                         ${project.basedir}/exclude.xml,

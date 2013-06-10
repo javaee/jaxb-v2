@@ -63,7 +63,7 @@ holder.
 
     <dependencies>
         <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>jaxb-core</artifactId>
         </dependency>
         <dependency>

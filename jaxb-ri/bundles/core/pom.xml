@@ -63,6 +63,12 @@ holder.
             <artifactId>jaxb-core</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>txw2</artifactId>
+            <optional>true</optional>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <properties>
@@ -91,7 +97,7 @@ holder.
                                     <outputDirectory>${generated.sources.dir}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
-                                    <groupId>com.sun.xml.txw2</groupId>
+                                    <groupId>org.glassfish.jaxb</groupId>
                                     <artifactId>txw2</artifactId>
                                     <classifier>sources</classifier>
                                     <overWrite>false</overWrite>

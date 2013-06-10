@@ -27,3 +27,11 @@
 /jaxb-ri/xjc/target/
 *.iml
 
+/jaxb-ri/txw/runtime/target/
+/jaxb-ri/txw/compiler/target/
+/jaxb-ri/target/
+/jaxb-ri/txw/target/
+/jaxb-ri/runtime/target/
+/jaxb-ri/docs/target/
+/jaxb-ri/bundles/target/
+/jaxb-ri/bundles/osgi/target/

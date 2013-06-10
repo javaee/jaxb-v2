@@ -66,15 +66,15 @@ holder.
 
     <dependencies>
         <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>jaxb-xjc</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>jaxb-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>jaxb-runtime</artifactId>
         </dependency>
         <dependency>

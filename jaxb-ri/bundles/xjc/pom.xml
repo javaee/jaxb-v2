@@ -173,7 +173,7 @@ holder.
                                 <excludes>
                                     <exclude>org.glassfish.jaxb:jaxb-core</exclude>
                                     <exclude>javax.xml.bind:jaxb-api</exclude>
-                                    <exclude>com.sun.xml.txw2:txw2</exclude>
+                                    <exclude>org.glassfish.jaxb:txw2</exclude>
                                     <exclude>javax.xml.stream:stax-api</exclude>
                                     <exclude>com.sun.istack:istack-commons-runtime</exclude>
                                     <exclude>com.sun.org.apache.xml.internal:resolver</exclude>

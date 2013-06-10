@@ -163,7 +163,6 @@ holder.
                 <groupId>args4j</groupId>
                 <artifactId>args4j</artifactId>
                 <version>${args4j.version}</version>
-                <scope>test</scope>
             </dependency>
             <!-- JDK dependencies -->
             <dependency>
@@ -220,8 +219,9 @@ holder.
                                 <Implementation-Version>${project.version}</Implementation-Version>
                                 <Implementation-Vendor>Oracle</Implementation-Vendor>
                                 <Implementation-Vendor-Id>com.oracle</Implementation-Vendor-Id>
+                                <Git-Revision>${buildNumber}</Git-Revision>
+                                <Git-Url>${project.scm.connection}</Git-Url>
                                 <Build-Id>${project.version}</Build-Id>
-                                <!--TODO: add GIT revision-->
                                 <Build-Version>JAXB RI ${project.version}</Build-Version>
                                 <Major-Version>${project.osgi.version}</Major-Version>
                             </manifestEntries>
@@ -275,8 +275,9 @@ holder.
                                 <Implementation-Version>${project.version}</Implementation-Version>
                                 <Implementation-Vendor>Oracle</Implementation-Vendor>
                                 <Implementation-Vendor-Id>com.oracle</Implementation-Vendor-Id>
+                                <Git-Revision>${buildNumber}</Git-Revision>
+                                <Git-Url>${project.scm.connection}</Git-Url>
                                 <Build-Id>${project.version}</Build-Id>
-                                <!--todo: add git revision-->
                                 <Build-Version>JAXB RI ${project.version}</Build-Version>
                                 <Major-Version>${project.osgi.version}</Major-Version>
                             </manifestEntries>
@@ -295,8 +296,9 @@ holder.
                                 <Implementation-Version>${project.version}</Implementation-Version>
                                 <Implementation-Vendor>Oracle</Implementation-Vendor>
                                 <Implementation-Vendor-Id>com.oracle</Implementation-Vendor-Id>
+                                <Git-Revision>${buildNumber}</Git-Revision>
+                                <Git-Url>${project.scm.connection}</Git-Url>
                                 <Build-Id>${project.version}</Build-Id>
-                                <!--todo: add git revision-->
                                 <Build-Version>JAXB RI ${project.version}</Build-Version>
                                 <Major-Version>${project.osgi.version}</Major-Version>
                             </manifestEntries>
@@ -394,6 +396,14 @@ holder.
                     <artifactId>maven-gpg-plugin</artifactId>
                     <version>1.4</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+                    <version>1.1</version>
+                    <configuration>
+                        <locale>en-US</locale>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -458,12 +468,29 @@ holder.
                     </reportPlugins>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>create-buildnumber</id>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                        <configuration>
+                            <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+                            <revisionOnScmFailure>unknown</revisionOnScmFailure>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
     <modules>
         <module>boms/bom</module>
         <module>boms/bom-ext</module>
+        <module>txw</module>
         <module>core</module>
         <module>runtime</module>
         <module>xjc</module>

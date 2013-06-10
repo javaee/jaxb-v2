@@ -133,7 +133,7 @@ holder.
                                     <exclude>com.sun.xml.fastinfoset:FastInfoset</exclude>
                                     <exclude>org.jvnet.staxex:stax-ex</exclude>
                                     <exclude>javax.activation:activation</exclude>
-                                    <exclude>com.sun.xml.txw2:txw2</exclude>
+                                    <exclude>org.glassfish.jaxb:txw2</exclude>
                                     <exclude>com.sun.istack:istack-commons-runtime</exclude>
                                 </excludes>
                             </artifactSet>

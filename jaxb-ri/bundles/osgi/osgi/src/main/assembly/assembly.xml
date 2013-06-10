@@ -62,15 +62,14 @@
             <directoryMode>0755</directoryMode>
             <fileMode>0644</fileMode>
             <includes>
-                <include>org.glassfish.jaxb:jaxb-core</include>
-                <include>org.glassfish.jaxb:jaxb-xjc</include>
-                <include>org.glassfish.jaxb:jaxb-runtime</include>
-                <include>org.glassfish.jaxb:jaxb-jxc</include>
+                <include>com.sun.xml.bind:jaxb-core</include>
+                <include>com.sun.xml.bind:jaxb-xjc</include>
+                <include>com.sun.xml.bind:jaxb-impl</include>
+                <include>com.sun.xml.bind:jaxb-jxc</include>
                 <include>com.sun.xml.bind:jaxb1-impl</include>
             </includes>
             <excludes>
                 <exclude>javax.xml.bind:jaxb-api</exclude>
-                <exclude>javax.xml.stream:stax-api</exclude>
                 <exclude>net.java.dev.msv:msv-core</exclude>
                 <exclude>net.java.dev.msv:xsdlib</exclude>
                 <exclude>com.sun.xml.bind.jaxb:isorelax</exclude>

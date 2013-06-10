@@ -63,8 +63,9 @@ holder.
             <artifactId>jaxb-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.sun.xml.txw2</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>txw2</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.istack</groupId>

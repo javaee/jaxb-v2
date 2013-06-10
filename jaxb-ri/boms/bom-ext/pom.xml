@@ -63,7 +63,6 @@
     </description>
 
     <properties>
-        <txw2.version>20110809</txw2.version>
         <xsom.version>20130531</xsom.version>
         <codemodel.version>2.6</codemodel.version>
         <rngom.version>20100718</rngom.version>
@@ -78,11 +77,6 @@
     <dependencyManagement>
         <dependencies>
             <!-- Dependencies -->
-            <dependency>
-                <groupId>com.sun.xml.txw2</groupId>
-                <artifactId>txw2</artifactId>
-                <version>${txw2.version}</version>
-            </dependency>
             <dependency>
                 <groupId>com.sun.xsom</groupId>
                 <artifactId>xsom</artifactId>
