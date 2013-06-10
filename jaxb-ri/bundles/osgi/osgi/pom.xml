@@ -161,6 +161,26 @@ holder.
                     <useDefaultManifestFile>true</useDefaultManifestFile>
                 </configuration>
             </plugin>
+            
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <configuration>
+                    <skip>${findbugs.skip}</skip>
+                    <threshold>${findbugs.threshold}</threshold>
+                    <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+                    <!-- Use all excludes used for rebundled artifacts --> 
+                    <excludeFilterFile>
+                        exclude-common.xml,
+                        ${project.basedir}/exclude.xml,
+                        ${project.basedir}/../../../runtime/impl/exclude-runtime.xml,
+                        ${project.basedir}/../../../jxc/exclude-jxc.xml
+                    </excludeFilterFile>
+                    <fork>true</fork>
+                    <jvmArgs>-Xms64m -Xmx256m</jvmArgs>
+                </configuration>
+            </plugin>
+            
         </plugins>
     </build>
 

@@ -102,9 +102,6 @@
                 <include>com.sun.xml.bind:jaxb-impl</include>
                 <include>com.sun.xml.bind:jaxb-jxc</include>
             </includes>
-            <excludes>
-                <exclude>com.sun.org.apache.xml.internal:resolver</exclude>
-            </excludes>
         </dependencySet>
         <dependencySet>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>

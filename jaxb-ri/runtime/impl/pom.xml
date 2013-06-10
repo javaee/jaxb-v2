@@ -59,7 +59,7 @@ holder.
     <description>JAXB (JSR 222) Reference Implementation</description>
 
     <properties>
-        <findbugs.exclude>${project.basedir}/exclude.xml</findbugs.exclude>
+        <findbugs.exclude>${project.basedir}/exclude-runtime.xml</findbugs.exclude>
     </properties>
 
     <dependencies>

@@ -61,7 +61,7 @@ holder.
     </description>
 
     <properties>
-        <findbugs.exclude>${project.basedir}/exclude.xml</findbugs.exclude>
+        <findbugs.exclude>${project.basedir}/exclude-jxc.xml</findbugs.exclude>
     </properties>
 
     <dependencies>

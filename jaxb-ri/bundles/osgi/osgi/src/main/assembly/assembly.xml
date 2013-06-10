@@ -71,13 +71,8 @@
             <excludes>
                 <exclude>javax.xml.bind:jaxb-api</exclude>
                 <exclude>javax.xml.stream:stax-api</exclude>
-                <exclude>javax.activation:activation</exclude>
-                <exclude>com.sun.org.apache.xml.internal:resolver</exclude>
                 <exclude>net.java.dev.msv:msv-core</exclude>
                 <exclude>net.java.dev.msv:xsdlib</exclude>
-                <exclude>net.java.dev.msv:msv-testharness</exclude>
-                <exclude>xerces:xercesImpl</exclude>
-                <exclude>xml-apis:xml-apis</exclude>
                 <exclude>com.sun.xml.bind.jaxb:isorelax</exclude>
             </excludes>
         </dependencySet>

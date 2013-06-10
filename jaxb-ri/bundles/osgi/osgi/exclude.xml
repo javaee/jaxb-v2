@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
@@ -41,31 +40,6 @@
 
 -->
 
-<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+<FindBugsFilter>
 
-    <id>zip-bundle</id>
-    <includeBaseDirectory>false</includeBaseDirectory>
-
-    <formats>
-        <format>dir</format>
-    </formats>
-
-    <dependencySets>
-        <dependencySet>
-            <unpack>true</unpack>
-            <useProjectArtifact>true</useProjectArtifact>
-            <useTransitiveDependencies>true</useTransitiveDependencies>
-            <useTransitiveFiltering>true</useTransitiveFiltering>
-            <outputDirectory>/</outputDirectory>
-            <directoryMode>0755</directoryMode>
-            <fileMode>0644</fileMode>
-            <includes>
-                <include>net.java.dev.msv:msv-core</include>
-                <include>net.java.dev.msv:xsdlib</include>
-                <include>com.sun.xml.bind.jaxb:isorelax</include>
-            </includes>
-        </dependencySet>
-    </dependencySets>
-</assembly>
+</FindBugsFilter>
