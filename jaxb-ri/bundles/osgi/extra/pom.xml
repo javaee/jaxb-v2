@@ -46,9 +46,8 @@ holder.
 
     <parent>
         <groupId>com.sun.xml.bind.mvn</groupId>
-        <artifactId>jaxb-parent</artifactId>
+        <artifactId>jaxb-osgi</artifactId>
         <version>2.2.8-SNAPSHOT</version>
-        <relativePath>../../../pom.xml</relativePath>
     </parent>
 
     <groupId>com.sun.xml.bind</groupId>
@@ -129,25 +128,25 @@ holder.
             <id>release-profile</id>
             <build>
                 <plugins>
-        <!--    Can be used to build everything from sources
-                    <plugin>
-                        <groupId>org.glassfish.build</groupId>
-                        <artifactId>glassfishbuild-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>unpack-sources</id>
-                                <phase>process-resources</phase>
-                                <goals>
-                                    <goal>unpack-sources</goal>
-                                </goals>
-                                <configuration>
-                                    <attachSources>true</attachSources>
-                                    <excludeTransitive>true</excludeTransitive>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-        -->
+                    <!--    Can be used to build everything from sources
+                                <plugin>
+                                    <groupId>org.glassfish.build</groupId>
+                                    <artifactId>glassfishbuild-maven-plugin</artifactId>
+                                    <executions>
+                                        <execution>
+                                            <id>unpack-sources</id>
+                                            <phase>process-resources</phase>
+                                            <goals>
+                                                <goal>unpack-sources</goal>
+                                            </goals>
+                                            <configuration>
+                                                <attachSources>true</attachSources>
+                                                <excludeTransitive>true</excludeTransitive>
+                                            </configuration>
+                                        </execution>
+                                    </executions>
+                                </plugin>
+                    -->
                     <plugin> <!-- want to unpack sources from individual modules -->
                         <artifactId>maven-dependency-plugin</artifactId>
                         <executions>
@@ -203,7 +202,7 @@ holder.
                             </execution>
                         </executions>
                     </plugin>
-              </plugins>
+                </plugins>
             </build>
         </profile>
     </profiles>

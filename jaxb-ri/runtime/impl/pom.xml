@@ -46,9 +46,8 @@ holder.
 
     <parent>
         <groupId>com.sun.xml.bind.mvn</groupId>
-        <artifactId>jaxb-parent</artifactId>
+        <artifactId>jaxb-runtime-parent</artifactId>
         <version>2.2.8-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <groupId>org.glassfish.jaxb</groupId>

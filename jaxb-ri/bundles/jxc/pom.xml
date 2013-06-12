@@ -46,9 +46,8 @@ holder.
 
     <parent>
         <groupId>com.sun.xml.bind.mvn</groupId>
-        <artifactId>jaxb-parent</artifactId>
+        <artifactId>jaxb-bundles</artifactId>
         <version>2.2.8-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <groupId>com.sun.xml.bind</groupId>
@@ -153,8 +152,9 @@ holder.
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>com.sun.tools.jxc.SchemaGeneratorFacade</mainClass>
                                     <manifestEntries>
-                                        <Class-Path>jaxb-core.jar jaxb-impl.jar jaxb-xjc.jar</Class-Path>
-                                        <Version>${project.version}</Version>
+                                        <Class-Path>jaxb-core-${project.version}.jar jaxb-impl-${project.version}.jar
+                                            jaxb-xjc-${project.version}.jar
+                                        </Class-Path>
                                     </manifestEntries>
                                 </transformer>
                             </transformers>

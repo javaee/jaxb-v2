@@ -91,37 +91,18 @@ holder.
                 <filtering>true</filtering>
             </resource>
         </resources>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.4</version>
-                    <configuration>
-                        <archive>
-                            <manifestEntries>
-                                <Specification-Title>Java Architecture for XML Binding</Specification-Title>
-                                <Specification-Version>2.2</Specification-Version>
-                                <Implementation-Title>JAXB Implementation</Implementation-Title>
-                                <Implementation-Version>${project.version}</Implementation-Version>
-                                <Implementation-Vendor>Oracle</Implementation-Vendor>
-                                <Implementation-Vendor-Id>com.oracle</Implementation-Vendor-Id>
-                                <Build-Id>${project.version}</Build-Id>
-                                <!--TODO: add GIT revision-->
-                                <Build-Version>JAXB RI ${project.version}</Build-Version>
-                                <Major-Version>${project.osgi.version}</Major-Version>
-                                <manifest>
-                                    <mainClass>com.sun.tools.jxc.SchemaGeneratorFacade</mainClass>
-                                </manifest>
-                                <manifestEntries>
-                                    <Class-Path>jaxb-core.jar jaxb-xjc.jar jaxb-impl.jar</Class-Path>
-                                    <Extension-Name>com.sun.tools.jxc</Extension-Name>
-                                </manifestEntries>
-                            </manifestEntries>
-                        </archive>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+        <plugins>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.sun.tools.jxc.SchemaGeneratorFacade</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
 </project>

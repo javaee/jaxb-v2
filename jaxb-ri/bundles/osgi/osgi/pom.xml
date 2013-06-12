@@ -46,9 +46,8 @@ holder.
 
     <parent>
         <groupId>com.sun.xml.bind.mvn</groupId>
-        <artifactId>jaxb-parent</artifactId>
+        <artifactId>jaxb-osgi</artifactId>
         <version>2.2.8-SNAPSHOT</version>
-        <relativePath>../../../pom.xml</relativePath>
     </parent>
 
     <groupId>com.sun.xml.bind</groupId>
@@ -161,7 +160,7 @@ holder.
                     <useDefaultManifestFile>true</useDefaultManifestFile>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
@@ -169,7 +168,7 @@ holder.
                     <skip>${findbugs.skip}</skip>
                     <threshold>${findbugs.threshold}</threshold>
                     <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
-                    <!-- Use all excludes used for rebundled artifacts --> 
+                    <!-- Use all excludes used for rebundled artifacts -->
                     <excludeFilterFile>
                         exclude-common.xml,
                         ${project.basedir}/exclude.xml,
@@ -180,7 +179,7 @@ holder.
                     <jvmArgs>-Xms64m -Xmx256m</jvmArgs>
                 </configuration>
             </plugin>
-            
+
         </plugins>
     </build>
 
