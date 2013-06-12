@@ -143,10 +143,12 @@ holder.
         <args4j.version>1.0</args4j.version>
 
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
-        <javadoc.links.dir>${project.parent.basedir}/tools/javadoc-link</javadoc.links.dir>
+        <!-- This will work ONLY if mvn is run from root folder. In case of runing from submodules - fail :( -->
+        <javadoc.links.dir>${user.dir}/tools/javadoc-link</javadoc.links.dir>
         <findbugs.skip>false</findbugs.skip>
         <findbugs.threshold>High</findbugs.threshold>
         <findbugs.exclude/>
+        <skipSources>true</skipSources>
     </properties>
 
     <dependencyManagement>
@@ -482,7 +484,42 @@ holder.
             </modules>
         </profile>
         <profile>
+            <id>sources-profile</id>
+            <properties>
+                <skipSources>false</skipSources>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>release-profile</id>
+            <properties>
+                <skipSources>false</skipSources>
+            </properties>
             <build>
                 <plugins>
                     <plugin>

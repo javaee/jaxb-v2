@@ -81,6 +81,7 @@ holder.
                             <goal>unpack</goal>
                         </goals>
                         <configuration>
+                            <skip>${skipSources}</skip>
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.glassfish.jaxb</groupId>

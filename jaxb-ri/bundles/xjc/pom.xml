@@ -85,6 +85,7 @@ holder.
                             <goal>unpack</goal>
                         </goals>
                         <configuration>
+                            <skip>${skipSources}</skip>
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.glassfish.jaxb</groupId>
@@ -182,7 +183,7 @@ holder.
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>com.sun.tools.xjc.XJCFacade</mainClass>
                                     <manifestEntries>
-                                        <Class-Path>jaxb-core-${project.version}.jar jaxb-impl-${project.version}.jar</Class-Path>
+                                        <Class-Path>jaxb-core.jar jaxb-impl.jar</Class-Path>
                                     </manifestEntries>
                                 </transformer>
                             </transformers>
