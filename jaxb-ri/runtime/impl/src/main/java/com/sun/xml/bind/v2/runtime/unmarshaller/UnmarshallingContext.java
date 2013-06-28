@@ -66,6 +66,7 @@ import com.sun.istack.NotNull;
 import com.sun.istack.Nullable;
 import com.sun.istack.SAXParseException2;
 import com.sun.xml.bind.IDResolver;
+import com.sun.xml.bind.Util;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.ClassResolver;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
@@ -74,6 +75,8 @@ import com.sun.xml.bind.v2.runtime.AssociationMap;
 import com.sun.xml.bind.v2.runtime.Coordinator;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -90,6 +93,8 @@ import org.xml.sax.helpers.LocatorImpl;
  */
 public final class UnmarshallingContext extends Coordinator
     implements NamespaceContext, ValidationEventHandler, ErrorHandler, XmlVisitor, XmlVisitor.TextPredictor {
+
+    private static final Logger logger = Util.getClassLogger();
 
     /**
      * Root state.
@@ -284,16 +289,23 @@ public final class UnmarshallingContext extends Coordinator
         }
 
         private void push() {
+            if (logger.isLoggable(Level.FINEST)) {
+                logger.log(Level.FINEST, "State.push");
+            }
             if (next==null) {
                 assert current == this;
                 allocateMoreStates();
             }
+            nil = false;
             State n = next;
             n.numNsDecl = nsLen;
             current = n;
         }
 
         private void pop() {
+            if (logger.isLoggable(Level.FINEST)) {
+                logger.log(Level.FINEST, "State.pop");
+            }
             assert prev!=null;
             loader = null;
             nil = false;
