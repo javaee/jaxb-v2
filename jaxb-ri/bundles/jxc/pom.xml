@@ -140,6 +140,8 @@ holder.
                                     <exclude>org.kohsuke.rngom:rngom</exclude>
                                     <exclude>com.sun.xml.dtd-parser:dtd-parser</exclude>
                                     <exclude>com.sun.istack:istack-commons-tools</exclude>
+                                    <exclude>org.apache.ant:ant</exclude>
+                                    <exclude>org.apache.ant:ant-launcher</exclude>
                                     <exclude>com.sun.org.apache.xml.internal:resolver</exclude>
                                     <exclude>org.glassfish.jaxb:txw2</exclude>
                                     <exclude>javax.xml.stream:stax-api</exclude>

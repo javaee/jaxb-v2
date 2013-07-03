@@ -66,6 +66,9 @@
                 <include>net.java.dev.msv:xsdlib</include>
                 <include>com.sun.xml.bind.jaxb:isorelax</include>
             </includes>
+            <excludes>
+                <exclude>relaxngDatatype:relaxngDatatype</exclude>
+            </excludes>
         </dependencySet>
     </dependencySets>
 </assembly>
