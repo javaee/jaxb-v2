@@ -214,7 +214,7 @@ holder.
                         <archive>
                             <manifestEntries>
                                 <Specification-Title>Java Architecture for XML Binding</Specification-Title>
-                                <Specification-Version>2.2</Specification-Version>
+                                <Specification-Version>${jaxb-api.majorVersion}.${jaxb-api.minorVersion}</Specification-Version>
                                 <Implementation-Title>JAXB Implementation</Implementation-Title>
                                 <Implementation-Version>${project.version}</Implementation-Version>
                                 <Implementation-Vendor>Oracle</Implementation-Vendor>
@@ -223,7 +223,7 @@ holder.
                                 <Git-Url>${project.scm.connection}</Git-Url>
                                 <Build-Id>${project.version}</Build-Id>
                                 <Build-Version>JAXB RI ${project.version}</Build-Version>
-                                <Major-Version>${project.osgi.version}</Major-Version>
+                                <Major-Version>${jaxb.majorVersion}.${jaxb.minorVersion}.${jaxb.incrementalVersion}</Major-Version>
                             </manifestEntries>
                             <manifest>
                                 <addClasspath>true</addClasspath>
@@ -270,7 +270,7 @@ holder.
                         <archive>
                             <manifestEntries>
                                 <Specification-Title>Java Architecture for XML Binding</Specification-Title>
-                                <Specification-Version>2.2</Specification-Version>
+                                <Specification-Version>${jaxb-api.majorVersion}.${jaxb-api.minorVersion}</Specification-Version>
                                 <Implementation-Title>JAXB Implementation</Implementation-Title>
                                 <Implementation-Version>${project.version}</Implementation-Version>
                                 <Implementation-Vendor>Oracle</Implementation-Vendor>
@@ -279,7 +279,7 @@ holder.
                                 <Git-Url>${project.scm.connection}</Git-Url>
                                 <Build-Id>${project.version}</Build-Id>
                                 <Build-Version>JAXB RI ${project.version}</Build-Version>
-                                <Major-Version>${project.osgi.version}</Major-Version>
+                                <Major-Version>${jaxb.majorVersion}.${jaxb.minorVersion}.${jaxb.incrementalVersion}</Major-Version>
                             </manifestEntries>
                         </archive>
                     </configuration>
@@ -291,7 +291,7 @@ holder.
                         <archive>
                             <manifestEntries>
                                 <Specification-Title>Java Architecture for XML Binding</Specification-Title>
-                                <Specification-Version>2.2</Specification-Version>
+                                <Specification-Version>${jaxb-api.majorVersion}.${jaxb-api.minorVersion}</Specification-Version>
                                 <Implementation-Title>JAXB Implementation</Implementation-Title>
                                 <Implementation-Version>${project.version}</Implementation-Version>
                                 <Implementation-Vendor>Oracle</Implementation-Vendor>
@@ -300,7 +300,7 @@ holder.
                                 <Git-Url>${project.scm.connection}</Git-Url>
                                 <Build-Id>${project.version}</Build-Id>
                                 <Build-Version>JAXB RI ${project.version}</Build-Version>
-                                <Major-Version>${project.osgi.version}</Major-Version>
+                                <Major-Version>${jaxb.majorVersion}.${jaxb.minorVersion}.${jaxb.incrementalVersion}</Major-Version>
                             </manifestEntries>
                         </archive>
                     </configuration>
@@ -329,7 +329,30 @@ holder.
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>1.7</version>
+                    <version>1.8</version>
+                    <executions>
+                        <execution>
+                            <id>jaxb.version</id>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>parse-version</goal>
+                            </goals>
+                            <configuration>
+                                <propertyPrefix>jaxb</propertyPrefix>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>jaxb-api.version</id>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>parse-version</goal>
+                            </goals>
+                            <configuration>
+                                <propertyPrefix>jaxb-api</propertyPrefix>
+                                <versionString>${jaxb-api.version}</versionString>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.glassfish.copyright</groupId>
@@ -409,6 +432,10 @@ holder.
 
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <version>1.0.1</version>
                 <executions>
@@ -430,27 +457,6 @@ holder.
                         <DependencyConvergence/>
                     </rules>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.glassfish.hk2</groupId>
-                <artifactId>osgiversion-maven-plugin</artifactId>
-                <executions>
-                    <!-- Since we don't want qualifier like b05 or SNAPSHOT to appear
-                    in package version attribute, we use the following goal to
-                    populate a project property with an OSGi version which is
-                    equivalent to maven version without qualifier and then use that
-                    property in osgi.bundle while exporting. -->
-                    <execution>
-                        <id>compute-osgi-version</id>
-                        <goals>
-                            <goal>compute-osgi-version</goal>
-                        </goals>
-                        <configuration>
-                            <dropVersionComponent>qualifier</dropVersionComponent>
-                            <versionPropertyName>project.osgi.version</versionPropertyName>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-site-plugin</artifactId>
