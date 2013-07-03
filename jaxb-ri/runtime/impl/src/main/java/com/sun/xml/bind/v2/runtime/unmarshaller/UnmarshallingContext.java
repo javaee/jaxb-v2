@@ -1309,7 +1309,7 @@ public final class UnmarshallingContext extends Coordinator
 
         if (errorsCounter >= 0) {
             --errorsCounter;
-            if (errorsCounter == 0)
+            if (errorsCounter == 0) // it's possible to miss this because of concurrency. If required add synchronization here
                 handleEvent(new ValidationEventImpl(ValidationEvent.WARNING, Messages.ERRORS_LIMIT_EXCEEDED.format(),
                         getLocator().getLocation(), null), true);
         }
