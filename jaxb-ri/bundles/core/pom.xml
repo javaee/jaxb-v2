@@ -144,11 +144,18 @@ holder.
                         </goals>
                         <configuration>
                             <artifactSet>
+                                <includes>
+                                    <include>org.glassfish.jaxb:jaxb-core</include>
+                                    <include>com.sun.istack:istack-commons-runtime</include>
+                                    <include>org.glassfish.jaxb:txw2</include>
+                                </includes>
+<!--
                                 <excludes>
                                     <exclude>javax.xml.bind:jaxb-api</exclude>
                                     <exclude>javax.xml.stream:stax-api</exclude>
                                     <exclude>relaxngDatatype:relaxngDatatype</exclude>
                                 </excludes>
+-->
                             </artifactSet>
                         </configuration>
                     </execution>

@@ -125,6 +125,10 @@ holder.
                         </goals>
                         <configuration>
                             <artifactSet>
+                                <includes>
+                                    <include>org.glassfish.jaxb:jaxb-runtime</include>
+                                </includes>
+<!--
                                 <excludes>
                                     <exclude>javax.xml.bind:jaxb-api</exclude>
                                     <exclude>org.glassfish.jaxb:jaxb-core</exclude>
@@ -136,6 +140,7 @@ holder.
                                     <exclude>org.glassfish.jaxb:txw2</exclude>
                                     <exclude>com.sun.istack:istack-commons-runtime</exclude>
                                 </excludes>
+-->
                             </artifactSet>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
