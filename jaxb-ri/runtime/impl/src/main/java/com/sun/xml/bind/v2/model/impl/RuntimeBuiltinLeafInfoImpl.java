@@ -975,7 +975,7 @@ public abstract class RuntimeBuiltinLeafInfoImpl<T> extends BuiltinLeafInfoImpl<
         m.put(DatatypeConstants.DATETIME,   "%Y-%M-%DT%h:%m:%s"+ "%z");
         m.put(DatatypeConstants.DATE,       "%Y-%M-%D" +"%z");
         m.put(DatatypeConstants.TIME,       "%h:%m:%s"+ "%z");
-        m.put(DatatypeConstants.GMONTH,     "--%M--%z");
+        m.put(DatatypeConstants.GMONTH,     "--%M%z"); //  E2-12 Error. http://www.w3.org/2001/05/xmlschema-errata#e2-12
         m.put(DatatypeConstants.GDAY,       "---%D" + "%z");
         m.put(DatatypeConstants.GYEAR,      "%Y" + "%z");
         m.put(DatatypeConstants.GYEARMONTH, "%Y-%M" + "%z");
