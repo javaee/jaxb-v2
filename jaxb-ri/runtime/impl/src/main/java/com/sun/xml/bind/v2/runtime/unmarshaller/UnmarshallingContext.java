@@ -492,8 +492,6 @@ public final class UnmarshallingContext extends Coordinator
         isUnmarshalInProgress = true;
         nsLen=0;
 
-        setThreadAffinity();
-
         if(expectedType!=null)
             root.loader = EXPECTED_TYPE_ROOT_LOADER;
         else
@@ -584,8 +582,6 @@ public final class UnmarshallingContext extends Coordinator
 
         // at the successful completion, scope must be all closed
         assert root==current;
-
-        resetThreadAffinity();
     }
 
     /**
