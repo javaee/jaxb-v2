@@ -146,12 +146,6 @@ holder.
                             </descriptors>
                         </configuration>
                     </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
                     <execution>
                         <id>make-assembly-src</id>
                         <phase>package</phase>
@@ -191,13 +185,7 @@ holder.
                             </artifactItems>
                         </configuration>
                     </execution>
-                </executions>
-            </plugin>
-
-            <plugin> <!-- want to unpack sources from individual modules -->
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
+                    <execution> <!-- want to unpack sources from individual modules -->
                         <id>unpack-sources</id>
                         <phase>prepare-package</phase>
                         <goals>
