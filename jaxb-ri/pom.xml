@@ -427,6 +427,16 @@ holder.
                         <locale>en-US</locale>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>org.glassfish.build</groupId>
+                    <artifactId>gfnexus-maven-plugin</artifactId>
+                    <version>0.11</version>
+                    <configuration>
+                        <referenceCoordinates>org.glassfish.main.distributions:nucleus-new:${project.version}:zip</referenceCoordinates>
+                        <stagingProfile>org.glassfish</stagingProfile>
+                        <promotionProfile>glassfish-weekly-build</promotionProfile>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -489,6 +499,10 @@ holder.
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.glassfish.build</groupId>
+                <artifactId>gfnexus-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
