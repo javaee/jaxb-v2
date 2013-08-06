@@ -40,9 +40,9 @@
 
 package com.sun.xml.bind.v2.util;
 
-import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
@@ -61,7 +61,7 @@ public class EditDistance {
      * Weak results cache to avoid additional computations.
      * Because of high complexity caching is required.
      */
-    private static final WeakHashMap<AbstractMap.SimpleEntry<String,String>, Integer> CACHE = new WeakHashMap<AbstractMap.SimpleEntry<String, String>, Integer>();
+    private static final WeakHashMap<SimpleEntry<String,String>, Integer> CACHE = new WeakHashMap<SimpleEntry<String, String>, Integer>();
 
     /**
      * Computes the edit distance between two strings.
@@ -71,7 +71,7 @@ public class EditDistance {
      */
     public static int editDistance( String a, String b ) {
         // let's check cache
-        AbstractMap.SimpleEntry<String,String> entry = new AbstractMap.SimpleEntry<String, String>(a, b); // using this class to avoid creation of my own which will handle PAIR of values
+        SimpleEntry<String,String> entry = new SimpleEntry<String, String>(a, b); // using this class to avoid creation of my own which will handle PAIR of values
         Integer result = null;
         if (CACHE.containsKey(entry))
             result = CACHE.get(entry); // looks like we have it
@@ -154,5 +154,63 @@ public class EditDistance {
             }
         }
         return cost[a.length()];
+    }
+
+    /**
+     * Code is taken from java.util.AbstractMap.SimpleEntry because in jdk1.5 AbstractMap.SimpleEntry is not yet public
+     * @param <K>
+     * @param <V>
+     */
+    private static class SimpleEntry<K,V> {
+        K key;
+        V value;
+
+        public SimpleEntry(K key, V value) {
+            this.key   = key;
+            this.value = value;
+        }
+
+        public SimpleEntry(Map.Entry<K,V> e) {
+            this.key   = e.getKey();
+            this.value = e.getValue();
+        }
+
+        public K getKey() {
+            return key;
+        }
+
+        public V getValue() {
+            return value;
+        }
+
+        public V setValue(V value) {
+            V oldValue = this.value;
+            this.value = value;
+            return oldValue;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            SimpleEntry that = (SimpleEntry) o;
+
+            if (key != null ? !key.equals(that.key) : that.key != null) return false;
+            if (value != null ? !value.equals(that.value) : that.value != null) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = key != null ? key.hashCode() : 0;
+            result = 31 * result + (value != null ? value.hashCode() : 0);
+            return result;
+        }
+
+        public String toString() {
+            return key + "=" + value;
+        }
     }
 }
