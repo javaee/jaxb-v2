@@ -98,16 +98,21 @@ public abstract class AbstractReferenceFinderImpl extends XMLFilterImpl {
             // absolutize URL.
             String lsi = locator.getSystemId();
             String ref;
-            if (lsi.startsWith("jar:")) {
-                int bangIdx = lsi.indexOf('!');
-                if (bangIdx > 0) {
-                    ref = lsi.substring(0, bangIdx + 1)
-                            + new URI(lsi.substring(bangIdx + 1)).resolve(new URI(relativeRef)).toString();
+            URI relRefURI = new URI(relativeRef);
+            if (relRefURI.isAbsolute())
+                ref = relativeRef;
+            else {
+                if (lsi.startsWith("jar:")) {
+                    int bangIdx = lsi.indexOf('!');
+                    if (bangIdx > 0) {
+                        ref = lsi.substring(0, bangIdx + 1)
+                                + new URI(lsi.substring(bangIdx + 1)).resolve(new URI(relativeRef)).toString();
+                    } else {
+                        ref = relativeRef;
+                    }
                 } else {
-                    ref = relativeRef;
+                    ref = new URI(lsi).resolve(new URI(relativeRef)).toString();
                 }
-            } else {
-                ref = new URI(lsi).resolve(new URI(relativeRef)).toString();
             }
 
             // then parse this schema as well,
@@ -141,4 +146,4 @@ public abstract class AbstractReferenceFinderImpl extends XMLFilterImpl {
         super.setDocumentLocator(locator);
         this.locator = locator;
     }
-};
+}

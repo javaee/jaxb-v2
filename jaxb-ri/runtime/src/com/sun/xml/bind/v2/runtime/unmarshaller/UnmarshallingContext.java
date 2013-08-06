@@ -50,6 +50,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBElement;
@@ -96,6 +98,7 @@ public final class UnmarshallingContext extends Coordinator
      */
     private final State root;
 
+    private static final Logger logger = Logger.getLogger(UnmarshallingContext.class.getName());
     /**
      * The currently active state.
      */
@@ -190,6 +193,14 @@ public final class UnmarshallingContext extends Coordinator
      * For backward compatibility, when null, use thread context classloader.
      */
     public @Nullable ClassLoader classLoader;
+
+    /**
+     * The variable introduced to avoid reporting n^10 similar errors.
+     * After error is reported counter is decremented. When it became 0 - errors should not be reported any more.
+     *
+     * volatile is required to ensure that concurrent threads will see changed value
+     */
+    private static volatile int errorsCounter = 10;
 
     /**
      * State information for each element.
@@ -1249,5 +1260,28 @@ public final class UnmarshallingContext extends Coordinator
         return null;
     }
 
+    /**
+     * Based on current {@link Logger} {@link Level} and errorCounter value determines if error should be reported.
+     *
+     * If the method called and return true it is expected that error will be reported. And that's why
+     * errorCounter is automatically decremented during the check.
+     *
+     * NOT THREAD SAFE!!! In case of heave concurrency access several additional errors could be reported. It's not expected to be the
+     * problem. Otherwise add synchronization here.
+     *
+     * @return true in case if {@link Level#FINEST} is set OR we haven't exceed errors reporting limit.
+     */
+    public boolean shouldErrorBeReported() throws SAXException {
+        if (logger.isLoggable(Level.FINEST))
+            return true;
+
+        if (errorsCounter >= 0) {
+            --errorsCounter;
+            if (errorsCounter == 0)
+                handleEvent(new ValidationEventImpl(ValidationEvent.WARNING, Messages.ERRORS_LIMIT_EXCEEDED.format(),
+                        getLocator().getLocation(), null), true);
+        }
+        return errorsCounter >= 0;
+    }
 }
 
