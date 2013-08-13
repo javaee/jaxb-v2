@@ -147,7 +147,9 @@ holder.
         <javadoc.links.dir>${user.dir}/tools/javadoc-link</javadoc.links.dir>
         <findbugs.skip>false</findbugs.skip>
         <findbugs.threshold>High</findbugs.threshold>
+        <findbugs.common>exclude-common.xml</findbugs.common>
         <findbugs.exclude/>
+        <findbugs.version>2.5.2</findbugs.version>
         <skipSources>true</skipSources>
     </properties>
 
@@ -386,7 +388,7 @@ holder.
                         <threshold>${findbugs.threshold}</threshold>
                         <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
                         <excludeFilterFile>
-                            exclude-common.xml,${findbugs.exclude}
+                            ${findbugs.common},${findbugs.exclude}
                         </excludeFilterFile>
                         <fork>true</fork>
                         <jvmArgs>-Xms64m -Xmx256m</jvmArgs>
@@ -395,7 +397,7 @@ holder.
                         <dependency>
                             <groupId>org.glassfish.findbugs</groupId>
                             <artifactId>findbugs</artifactId>
-                            <version>1.0</version>
+                            <version>1.2</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -483,10 +485,13 @@ holder.
                         <plugin>
                             <groupId>org.codehaus.mojo</groupId>
                             <artifactId>findbugs-maven-plugin</artifactId>
+                            <version>${findbugs.version}</version>
                             <configuration>
                                 <skip>${findbugs.skip}</skip>
                                 <threshold>${findbugs.threshold}</threshold>
-                                <excludeFilterFile>${findbugs.exclude}</excludeFilterFile>
+                                <excludeFilterFile>
+                                    ${findbugs.common},${findbugs.exclude}
+                                </excludeFilterFile>
                             </configuration>
                         </plugin>
                     </reportPlugins>
