@@ -32,7 +32,7 @@ cleanup()
 
 edit_poms()
 {
-	TMPFILE=`mktemp` || cleanup
+	TMPFILE=`mktemp $TMPDIR/${RELEASE_VERSION}` || cleanup
 	find \
 		$SCRIPT_DIR/../ \
 		-name pom.xml \
@@ -149,7 +149,7 @@ echo "RELEASE_VERSION = ${RELEASE_VERSION}"
 ${GIT} clean -d -f -x
 
 edit_poms
-#push_changes
-#checkout_tag
+push_changes
+checkout_tag
 
 exit 0
