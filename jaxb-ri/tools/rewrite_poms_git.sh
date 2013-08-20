@@ -32,7 +32,7 @@ cleanup()
 
 edit_poms()
 {
-	TMPFILE=`mktemp $TMPDIR/${RELEASE_VERSION}` || cleanup
+	TMPFILE=`mktemp $TMPDIR/${RELEASE_VERSION}.XXXXXXXX` || cleanup
 	find \
 		$SCRIPT_DIR/../ \
 		-name pom.xml \
