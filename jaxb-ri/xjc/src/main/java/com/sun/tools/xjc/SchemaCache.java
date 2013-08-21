@@ -76,7 +76,7 @@ public final class SchemaCache {
                 try {
                     // do not disable secure processing - these are well-known schemas
                     SchemaFactory sf = XmlFactory.createSchemaFactory(XMLConstants.W3C_XML_SCHEMA_NS_URI, false);
-                    schema = allowExternalAccess(sf, false).newSchema(source);
+                    schema = allowExternalAccess(sf, "file", false).newSchema(source);
                 } catch (SAXException e) {
                     // we make sure that the schema is correct before we ship.
                     throw new AssertionError(e);

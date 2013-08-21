@@ -206,11 +206,6 @@ public class XmlFactory {
         }
     }
 
-    public static SchemaFactory allowExternalAccess(SchemaFactory sf, boolean disableSecureProcessing) {
-        return allowExternalAccess(sf, "file", disableSecureProcessing);
-
-    }
-
     public static SchemaFactory allowExternalAccess(SchemaFactory sf, String value, boolean disableSecureProcessing) {
 
         // if xml security (feature secure processing) disabled, nothing to do, no restrictions applied
