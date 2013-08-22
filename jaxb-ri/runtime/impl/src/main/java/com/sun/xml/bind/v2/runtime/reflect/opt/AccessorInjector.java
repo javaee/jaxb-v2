@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -78,19 +78,15 @@ class AccessorInjector {
             ClassLoader cl = SecureLoader.getClassClassLoader(beanClass);
             if(cl==null)    return null;    // how do I inject classes to this "null" class loader? for now, back off.
 
-            Class c = null;
-            synchronized (AccessorInjector.class) {
-                c = Injector.find(cl,newClassName);
-                if(c==null) {
-                    byte[] image = tailor(templateClassName,newClassName,replacements);
-    //                try {
-    //                    new FileOutputStream("debug.class").write(image);
-    //                } catch (IOException e) {
-    //                    e.printStackTrace();
-    //                }
-                    if(image==null)
-                        return null;
-                    c = Injector.inject(cl,newClassName,image);
+            Class c = Injector.find(cl,newClassName);
+            if (c==null) {
+                byte[] image = tailor(templateClassName,newClassName,replacements);
+                if (image==null) {
+                    return null;
+                }
+                c = Injector.inject(cl,newClassName,image);
+                if (c == null) {
+                    Injector.find(cl, newClassName);
                 }
             }
             return c;
@@ -126,5 +122,19 @@ class AccessorInjector {
         return ClassTailor.tailor(resource,templateClassName,newClassName,replacements);
     }
 
-    private static final ClassLoader CLASS_LOADER = SecureLoader.getClassClassLoader(AccessorInjector.class);    
+    private static final ClassLoader CLASS_LOADER = SecureLoader.getClassClassLoader(AccessorInjector.class);
+    
+    private class ClassWithinClassloader {
+        private ClassLoader cl;
+        private String className;
+
+        private ClassWithinClassloader() {}
+        
+        private ClassWithinClassloader(ClassLoader cl, String className) {
+            this.cl = cl;
+            this.className = className;
+        }
+
+    }
+
 }
