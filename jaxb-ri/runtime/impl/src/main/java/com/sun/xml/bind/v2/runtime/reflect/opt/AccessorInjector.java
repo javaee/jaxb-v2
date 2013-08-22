@@ -124,17 +124,4 @@ class AccessorInjector {
 
     private static final ClassLoader CLASS_LOADER = SecureLoader.getClassClassLoader(AccessorInjector.class);
     
-    private class ClassWithinClassloader {
-        private ClassLoader cl;
-        private String className;
-
-        private ClassWithinClassloader() {}
-        
-        private ClassWithinClassloader(ClassLoader cl, String className) {
-            this.cl = cl;
-            this.className = className;
-        }
-
-    }
-
 }
