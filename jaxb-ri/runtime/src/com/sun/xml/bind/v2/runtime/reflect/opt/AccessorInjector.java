@@ -122,6 +122,6 @@ class AccessorInjector {
         return ClassTailor.tailor(resource,templateClassName,newClassName,replacements);
     }
 
-    private static final ClassLoader CLASS_LOADER = SecureLoader.getClassClassLoader(AccessorInjector.class);
+    private static final ClassLoader CLASS_LOADER = AccessorInjector.class.getClassLoader();
     
 }
