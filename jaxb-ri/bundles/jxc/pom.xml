@@ -130,7 +130,6 @@ holder.
                                 <includes>
                                     <include>org.glassfish.jaxb:jaxb-jxc</include>
                                 </includes>
-<!--
                                 <excludes>
                                     <exclude>org.glassfish.jaxb:jaxb-core</exclude>
                                     <exclude>org.glassfish.jaxb:jaxb-xjc</exclude>
@@ -154,7 +153,6 @@ holder.
                                     <exclude>org.jvnet.staxex:stax-ex</exclude>
                                     <exclude>javax.activation:activation</exclude>
                                 </excludes>
--->
                             </artifactSet>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">

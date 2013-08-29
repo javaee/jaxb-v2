@@ -179,7 +179,7 @@ holder.
                                     <include>org.kohsuke.rngom:rngom</include>
                                     <include>relaxngDatatype:relaxngDatatype</include>
                                 </includes>
-<!--
+
                                 <excludes>
                                     <exclude>org.glassfish.jaxb:jaxb-core</exclude>
                                     <exclude>javax.xml.bind:jaxb-api</exclude>
@@ -190,7 +190,7 @@ holder.
                                     <exclude>org.apache.ant:ant-launcher</exclude>
                                     <exclude>com.sun.org.apache.xml.internal:resolver</exclude>
                                 </excludes>
--->
+
                             </artifactSet>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
