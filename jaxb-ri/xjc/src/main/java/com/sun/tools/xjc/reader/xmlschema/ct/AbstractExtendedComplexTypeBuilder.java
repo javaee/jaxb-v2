@@ -56,6 +56,7 @@ import com.sun.xml.xsom.XSParticle;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.visitor.XSTermFunction;
+import javax.xml.namespace.QName;
 
 import org.kohsuke.rngom.nc.ChoiceNameClass;
 import org.kohsuke.rngom.nc.NameClass;
@@ -80,14 +81,17 @@ abstract class AbstractExtendedComplexTypeBuilder extends CTBuilder {
      * Computes a name class that represents everything in a given content model.
      */
     protected final XSTermFunction<NameClass> contentModelNameClassBuilder = new XSTermFunction<NameClass>() {
+        @Override
         public NameClass wildcard(XSWildcard wc) {
             return WildcardNameClassBuilder.build(wc);
         }
 
+        @Override
         public NameClass modelGroupDecl(XSModelGroupDecl decl) {
             return modelGroup(decl.getModelGroup());
         }
 
+        @Override
         public NameClass modelGroup(XSModelGroup group) {
             NameClass nc = NameClass.NULL;
             for( int i=0; i<group.getSize(); i++ )
@@ -231,7 +235,7 @@ abstract class AbstractExtendedComplexTypeBuilder extends CTBuilder {
      * Gets a {@link SimpleNameClass} from the name of a {@link XSDeclaration}.
      */
     private NameClass getNameClass(XSDeclaration decl) {
-        return new SimpleNameClass(decl.getTargetNamespace(), decl.getName());
+        return new SimpleNameClass(new QName(decl.getTargetNamespace(), decl.getName()));
     }
 
 }
