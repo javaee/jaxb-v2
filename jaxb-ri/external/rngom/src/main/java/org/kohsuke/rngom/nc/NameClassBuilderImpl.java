@@ -41,6 +41,7 @@ public class NameClassBuilderImpl<
     A extends Annotations<E,L,CL>,
     CL extends CommentList<L>> implements NameClassBuilder<NameClass,E,L,A,CL> {
     
+    @Override
     public NameClass makeChoice(List<NameClass> nameClasses, L loc, A anno) {
         NameClass result = nameClasses.get(0);
         for (int i = 1; i < nameClasses.size(); i++) {
@@ -49,10 +50,16 @@ public class NameClassBuilderImpl<
         return result;
     }
 
+    @Override
     public NameClass makeName(String ns, String localName, String prefix, L loc, A anno) {
-      return new SimpleNameClass(ns, localName, prefix);
+        if (prefix == null) {
+            return new SimpleNameClass(ns, localName);
+        } else {
+            return new SimpleNameClass(ns, localName, prefix);
+        }
     }
 
+    @Override
     public NameClass makeNsName(String ns, L loc, A anno) {
       return new NsNameClass(ns);
     }
