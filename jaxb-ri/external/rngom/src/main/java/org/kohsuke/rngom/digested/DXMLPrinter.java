@@ -1,5 +1,27 @@
+/*
+ * Copyright (C) 2004-2011
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 package org.kohsuke.rngom.digested;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -487,16 +509,18 @@ public class DXMLPrinter {
         Parseable p;
 
         ErrorHandler eh = new DefaultHandler() {
+            @Override
             public void error(SAXParseException e) throws SAXException {
                 throw e;
             }
         };
 
         // the error handler passed to Parseable will receive parsing errors.
+        String path = new File(args[0]).toURL().toString();
         if (args[0].endsWith(".rng")) {
-            p = new SAXParseable(new InputSource(args[0]), eh);
+            p = new SAXParseable(new InputSource(path), eh);
         } else {
-            p = new CompactParseable(new InputSource(args[0]), eh);
+            p = new CompactParseable(new InputSource(path), eh);
         }
 
         // the error handler passed to CheckingSchemaBuilder will receive additional
@@ -509,6 +533,7 @@ public class DXMLPrinter {
             DGrammarPattern grammar = (DGrammarPattern) p.parse(sb);
             OutputStream out = new FileOutputStream(args[1]);
             XMLOutputFactory factory = XMLOutputFactory.newInstance();
+            factory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.TRUE);
             XMLStreamWriter output = factory.createXMLStreamWriter(out);
             DXMLPrinter printer = new DXMLPrinter(output);
             printer.printDocument(grammar);
