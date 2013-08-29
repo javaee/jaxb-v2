@@ -65,7 +65,6 @@
     <properties>
         <xsom.version>20130531</xsom.version>
         <codemodel.version>2.6</codemodel.version>
-        <rngom.version>20100718</rngom.version>
         <dtd-parser.version>1.1</dtd-parser.version>
         <ant.version>1.9.0</ant.version>
         <msv.version>2013.6.1</msv.version>
@@ -86,11 +85,6 @@
                 <groupId>com.sun.codemodel</groupId>
                 <artifactId>codemodel</artifactId>
                 <version>${codemodel.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.kohsuke.rngom</groupId>
-                <artifactId>rngom</artifactId>
-                <version>${rngom.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.sun.xml.dtd-parser</groupId>

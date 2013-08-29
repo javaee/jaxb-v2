@@ -523,6 +523,7 @@ holder.
     <modules>
         <module>boms/bom</module>
         <module>boms/bom-ext</module>
+        <module>external</module>
         <module>txw</module>
         <module>core</module>
         <module>runtime</module>

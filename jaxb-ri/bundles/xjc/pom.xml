@@ -116,7 +116,7 @@ holder.
                                     <outputDirectory>${generated.sources.dir}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
-                                    <groupId>org.kohsuke.rngom</groupId>
+                                    <groupId>com.sun.xml.bind.external</groupId>
                                     <artifactId>rngom</artifactId>
                                     <classifier>sources</classifier>
                                     <overWrite>false</overWrite>
@@ -176,7 +176,7 @@ holder.
                                     <include>com.sun.istack:istack-commons-tools</include>
                                     <include>com.sun.xml.dtd-parser:dtd-parser</include>
                                     <include>com.sun.xsom:xsom</include>
-                                    <include>org.kohsuke.rngom:rngom</include>
+                                    <include>com.sun.xml.bind.external:rngom</include>
                                     <include>relaxngDatatype:relaxngDatatype</include>
                                 </includes>
 

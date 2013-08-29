@@ -65,8 +65,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.kohsuke.rngom</groupId>
+            <groupId>com.sun.xml.bind.external</groupId>
             <artifactId>rngom</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

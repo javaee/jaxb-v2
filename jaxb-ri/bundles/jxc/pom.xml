@@ -141,6 +141,7 @@ holder.
 
                                     <exclude>com.sun.codemodel:codemodel</exclude>
                                     <exclude>org.kohsuke.rngom:rngom</exclude>
+                                    <exclude>com.sun.xml.bind.external:rngom</exclude>
                                     <exclude>com.sun.xml.dtd-parser:dtd-parser</exclude>
                                     <exclude>com.sun.istack:istack-commons-tools</exclude>
                                     <exclude>org.apache.ant:ant</exclude>
