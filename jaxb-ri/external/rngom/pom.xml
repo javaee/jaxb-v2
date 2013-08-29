@@ -80,5 +80,11 @@
         </plugins>
     </build>
 
+    <dependencies>
+        <dependency>
+            <groupId>relaxngDatatype</groupId>
+            <artifactId>relaxngDatatype</artifactId>
+        </dependency>
+    </dependencies>
 </project>
 
