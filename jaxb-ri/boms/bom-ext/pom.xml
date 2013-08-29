@@ -75,6 +75,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.sun.xml.bind.external</groupId>
+                <artifactId>rngom</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!-- Dependencies -->
             <dependency>
                 <groupId>com.sun.xsom</groupId>
