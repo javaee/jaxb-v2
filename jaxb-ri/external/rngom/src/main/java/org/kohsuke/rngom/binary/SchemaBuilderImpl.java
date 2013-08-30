@@ -743,16 +743,6 @@ public class SchemaBuilderImpl implements SchemaBuilder, ElementAnnotationBuilde
         }
     }
 
-    private void warning(SAXParseException message) throws BuildException {
-        try {
-            if (eh != null) {
-                eh.warning(message);
-            }
-        } catch (SAXException e) {
-            throw new BuildException(e);
-        }
-    }
-
     private void error(String key, Locator loc) throws BuildException {
         error(new SAXParseException(localizer.message(key), loc));
     }
