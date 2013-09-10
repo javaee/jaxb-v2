@@ -439,7 +439,7 @@ holder.
                 <plugin>
                     <groupId>org.glassfish.build</groupId>
                     <artifactId>gfnexus-maven-plugin</artifactId>
-                    <version>0.12</version>
+                    <version>0.14</version>
                     <configuration>
                         <stagingRepos>
                             <stagingRepo>
