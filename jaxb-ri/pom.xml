@@ -439,7 +439,7 @@ holder.
                 <plugin>
                     <groupId>org.glassfish.build</groupId>
                     <artifactId>gfnexus-maven-plugin</artifactId>
-                    <version>0.14</version>
+                    <version>0.16</version>
                     <configuration>
                         <stagingRepos>
                             <stagingRepo>
@@ -452,6 +452,7 @@ holder.
                             </stagingRepo>
                         </stagingRepos>
                         <promotionProfile>metro</promotionProfile>
+                        <message>JAXB-${project.version}</message>
                     </configuration>
                 </plugin>
             </plugins>
