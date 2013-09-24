@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -40,53 +40,49 @@
 package jaxb.osgi.test;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import junit.framework.TestCase;
+import org.junit.Ignore;
 
 /**
  *
  * @author lukas
  */
+@Ignore
 public class OSGiBundleVersionTest extends TestCase {
 
     public OSGiBundleVersionTest(String name) {
         super(name);
     }
 
-    public void testBundleVersion() throws IOException {
-        String osgiFolder = System.getProperty("osgi.dist");
-        assertNotNull("osgi.dist not set", osgiFolder);
-        for (File f : new File(osgiFolder).listFiles(new FF())) {
-            System.out.println("Checking: " + f.getAbsolutePath());
-            Manifest mf = new JarFile(f).getManifest();
-            if (mf == null) {
-                System.out.println("No manifest file");
-                continue;
-            }
-            String version = mf.getMainAttributes().getValue("Bundle-Version");
-            if (version == null) {
-                System.out.println("no 'Bundle-Version' version for: " + f.getName());
-                continue;
-            }
-            assertNotNull(version);
-            String[] v = version.split("\\.");
-            assertTrue("only <X.Y.Z> is allowed but was: <" + version + ">", v.length <= 3);
-            for (String s : v) {
-                try {
-                    Integer.parseInt(s);
-                } catch (Throwable t) {
-                    fail("'" + s + "' is not a number");
-                }
+    public void testJaxbOsgiBundleVersion() throws IOException {
+        String osgiJar = System.getProperty("osgi.dist");
+        assertNotNull("osgi.dist not set", osgiJar);
+        checkVersion(new File(osgiJar, "jaxb-osgi.jar"));
+    }
+
+    public void testJaxbExtraOsgiBundleVersion() throws IOException {
+        String osgiJar = System.getProperty("osgi.dist");
+        assertNotNull("osgi.dist not set", osgiJar);
+        checkVersion(new File(osgiJar, "jaxb-extra-osgi.jar"));
+    }
+
+    private void checkVersion(File f) throws IOException {
+        System.out.println("Checking: " + f.getAbsolutePath());
+        Manifest mf = new JarFile(f).getManifest();
+        String version = mf.getMainAttributes().getValue("Bundle-Version");
+        assertNotNull(version);
+        String[] v = version.split("\\.");
+        assertTrue("only <X.Y.Z> is allowed but was: <" + version + ">", v.length <= 3);
+        for (String s : v) {
+            try {
+                Integer.parseInt(s);
+            } catch (Throwable t) {
+                fail("'" + s + "' is not a number");
             }
         }
     }
 
-    private class FF implements FileFilter {
-        public boolean accept(File pathname) {
-            return pathname.isFile() && pathname.getName().endsWith(".jar");
-        }
-    }
 }

@@ -151,6 +151,7 @@ holder.
         <findbugs.exclude/>
         <findbugs.version>2.5.2</findbugs.version>
         <skipSources>true</skipSources>
+        <netbeans.hint.jdkPlatform>JDK_1.6</netbeans.hint.jdkPlatform>
     </properties>
 
     <dependencyManagement>

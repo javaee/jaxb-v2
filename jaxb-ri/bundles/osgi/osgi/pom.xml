@@ -148,6 +148,58 @@ holder.
                                     org.relaxng.datatype.*;version=${relaxngDatatype.version}
                                 </Export-Package>
                                 <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+                                <Import-Package>
+                                    javax.xml.bind;version=${jaxb-api.version},
+                                    javax.xml.bind.annotation;version=${jaxb-api.version},
+                                    javax.xml.bind.annotation.adapters;version=${jaxb-api.version},
+                                    javax.xml.bind.attachment;version=${jaxb-api.version},
+                                    javax.xml.bind.helpers;version=${jaxb-api.version},
+                                    com.sun.msv.grammar;resolution:=optional,
+                                    com.sun.msv.grammar.trex;resolution:=optional,
+                                    com.sun.msv.grammar.util;resolution:=optional,
+                                    com.sun.msv.util;resolution:=optional,
+                                    com.sun.msv.verifier;resolution:=optional,
+                                    com.sun.msv.verifier.regexp;resolution:=optional,
+                                    com.sun.org.apache.xml.internal.resolver;resolution:=optional,
+                                    com.sun.org.apache.xml.internal.resolver.tools;resolution:=optional,
+                                    com.sun.source.tree;resolution:=optional,
+                                    com.sun.source.util;resolution:=optional,
+                                    javax.activation;resolution:=optional,
+                                    javax.annotation.processing;resolution:=optional,
+                                    javax.imageio;resolution:=optional,
+                                    javax.imageio.stream;resolution:=optional,
+                                    javax.lang.model;resolution:=optional,
+                                    javax.lang.model.element;resolution:=optional,
+                                    javax.lang.model.type;resolution:=optional,
+                                    javax.lang.model.util;resolution:=optional,
+                                    javax.swing;resolution:=optional,
+                                    javax.swing.border;resolution:=optional,
+                                    javax.swing.tree;resolution:=optional,
+                                    javax.tools;resolution:=optional,
+                                    javax.xml.datatype;resolution:=optional,
+                                    javax.xml.namespace;resolution:=optional,
+                                    javax.xml.parsers;resolution:=optional,
+                                    javax.xml.stream;resolution:=optional,
+                                    javax.xml.stream.events;resolution:=optional,
+                                    javax.xml.stream.util;resolution:=optional,
+                                    javax.xml.transform;resolution:=optional,
+                                    javax.xml.transform.dom;resolution:=optional,
+                                    javax.xml.transform.sax;resolution:=optional,
+                                    javax.xml.transform.stream;resolution:=optional,
+                                    javax.xml.validation;resolution:=optional,
+                                    javax.xml.xpath;resolution:=optional,
+                                    org.apache.tools.ant;resolution:=optional,
+                                    org.apache.tools.ant.taskdefs;resolution:=optional,
+                                    org.apache.tools.ant.taskdefs.compilers;resolution:=optional,
+                                    org.apache.tools.ant.types;resolution:=optional,
+                                    org.iso_relax.verifier.impl;resolution:=optional,
+                                    org.w3c.dom;resolution:=optional,
+                                    org.w3c.dom.ls;resolution:=optional,
+                                    org.xml.sax;resolution:=optional,
+                                    org.xml.sax.ext;resolution:=optional,
+                                    org.xml.sax.helpers;resolution:=optional,
+                                    sun.nio.cs;resolution:=optional
+                                </Import-Package>
                             </instructions>
                         </configuration>
                     </execution>
@@ -181,25 +233,25 @@ holder.
             </plugin>
 
             <!--    Can be used to build everything from sources
-              <plugin>
-                  <groupId>org.glassfish.build</groupId>
-                  <artifactId>glassfishbuild-maven-plugin</artifactId>
-                  <executions>
-                      <execution>
-                          <id>unpack-sources</id>
-                          <phase>process-resources</phase>
-                          <goals>
-                              <goal>unpack-sources</goal>
-                          </goals>
-                          <configuration>
-                              <attachSources>true</attachSources>
-                              <excludes>*.java</excludes>
-                              <excludeTransitive>true</excludeTransitive>
-                          </configuration>
-                      </execution>
-                  </executions>
-              </plugin>
-        -->
+                  <plugin>
+                      <groupId>org.glassfish.build</groupId>
+                      <artifactId>glassfishbuild-maven-plugin</artifactId>
+                      <executions>
+                          <execution>
+                              <id>unpack-sources</id>
+                              <phase>process-resources</phase>
+                              <goals>
+                                  <goal>unpack-sources</goal>
+                              </goals>
+                              <configuration>
+                                  <attachSources>true</attachSources>
+                                  <excludes>*.java</excludes>
+                                  <excludeTransitive>true</excludeTransitive>
+                              </configuration>
+                          </execution>
+                      </executions>
+                  </plugin>
+            -->
 
             <plugin> <!-- want to unpack sources from individual modules -->
                 <artifactId>maven-dependency-plugin</artifactId>

@@ -56,17 +56,10 @@ holder.
     <name>JAXB OSGI parent</name>
     <description>Parent module of JAXB OSGI bundle</description>
 
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-
     <modules>
         <module>extra</module>
         <module>osgi</module>
+        <module>tests</module>
     </modules>
 
 </project>

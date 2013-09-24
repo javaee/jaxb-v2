@@ -36,3 +36,4 @@
 /jaxb-ri/bundles/target/
 /jaxb-ri/bundles/osgi/target/
 /jaxb-ri/external/rngom/target/
+/jaxb-ri/bundles/osgi/tests/target/
