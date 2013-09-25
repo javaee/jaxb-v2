@@ -52,6 +52,7 @@ holder.
 
     <artifactId>tests</artifactId>
     <name>tests</name>
+    <description>Tests for JAXB RI OSGi bundles</description>
 
     <properties>
         <exam.version>3.0.0.M3</exam.version>
@@ -172,7 +173,6 @@ holder.
                         <jaxb.impl.version>${project.version}</jaxb.impl.version>
                         <mvn.repo>${user.home}/.m2/repository</mvn.repo>
                         <osgi.dist>${project.build.directory}/testedBundles</osgi.dist>
-                        <glassfish.version>4.0-b72</glassfish.version>
                     </systemProperties>
                 </configuration>
             </plugin>
