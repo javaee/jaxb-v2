@@ -36,3 +36,7 @@
 /jaxb-ri/bundles/target/
 /jaxb-ri/bundles/osgi/target/
 /jaxb-ri/external/rngom/target/
+/jaxb-ri/bundles/osgi/tests/target/
+/jaxb-ri/codemodel/target/
+/jaxb-ri/codemodel/codemodel-annotation-compiler/target/
+/jaxb-ri/codemodel/codemodel/target/

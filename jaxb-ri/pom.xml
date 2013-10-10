@@ -151,6 +151,7 @@ holder.
         <findbugs.exclude/>
         <findbugs.version>2.5.2</findbugs.version>
         <skipSources>true</skipSources>
+        <netbeans.hint.jdkPlatform>JDK_1.6</netbeans.hint.jdkPlatform>
     </properties>
 
     <dependencyManagement>
@@ -171,6 +172,12 @@ holder.
                 <groupId>xmlunit</groupId>
                 <artifactId>xmlunit</artifactId>
                 <version>1.3</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.javaparser</groupId>
+                <artifactId>javaparser</artifactId>
+                <version>1.0.8</version>
                 <scope>test</scope>
             </dependency>
             <!-- JDK dependencies -->
@@ -532,6 +539,7 @@ holder.
         <module>boms/bom</module>
         <module>boms/bom-ext</module>
         <module>external</module>
+        <module>codemodel</module>
         <module>txw</module>
         <module>core</module>
         <module>runtime</module>

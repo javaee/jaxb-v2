@@ -109,7 +109,7 @@ holder.
                                     <outputDirectory>${generated.sources.dir}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
-                                    <groupId>com.sun.codemodel</groupId>
+                                    <groupId>org.glassfish.jaxb</groupId>
                                     <artifactId>codemodel</artifactId>
                                     <classifier>sources</classifier>
                                     <overWrite>false</overWrite>
@@ -172,7 +172,7 @@ holder.
                             <artifactSet>
                                 <includes>
                                     <include>org.glassfish.jaxb:jaxb-xjc</include>
-                                    <include>com.sun.codemodel:codemodel</include>
+                                    <include>org.glassfish.jaxb:codemodel</include>
                                     <include>com.sun.istack:istack-commons-tools</include>
                                     <include>com.sun.xml.dtd-parser:dtd-parser</include>
                                     <include>com.sun.xsom:xsom</include>

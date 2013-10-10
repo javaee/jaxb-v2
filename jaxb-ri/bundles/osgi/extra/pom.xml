@@ -111,6 +111,10 @@ holder.
                                     org.iso_relax.*;version=${isorelax.version}
                                 </Export-Package>
                                 <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+                                <Import-Package>
+                                    org.relaxng.datatype;version=${relaxngDatatype.version},
+                                    org.relaxng.datatype.*;version=${relaxngDatatype.version}
+                                </Import-Package>
                             </instructions>
                         </configuration>
                     </execution>
