@@ -51,7 +51,7 @@ holder.
     </parent>
 
     <artifactId>tests</artifactId>
-    <name>tests</name>
+    <name>JAXB OSGi Tests</name>
     <description>Tests for JAXB RI OSGi bundles</description>
 
     <properties>
