@@ -125,8 +125,8 @@ holder.
                         <configuration>
                             <instructions>
                                 <Export-Package>
-                                    com.sun.codemodel;version=${codemodel.version},
-                                    com.sun.codemodel.*;version=${codemodel.version},
+                                    com.sun.codemodel;version=${jaxb.osgiVersion},
+                                    com.sun.codemodel.*;version=${jaxb.osgiVersion},
                                     com.sun.istack;version=${istack.version},
                                     com.sun.istack.*;version=${istack.version},
                                     com.sun.tools.*;version=${jaxb.osgiVersion},
