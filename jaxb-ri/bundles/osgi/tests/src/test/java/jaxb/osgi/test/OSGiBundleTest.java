@@ -89,17 +89,11 @@ public class OSGiBundleTest {
                         "http://maven.java.net/content/repositories/snapshots/"),
                 localRepository(System.getProperty("mvn.repo")),
                 mavenBundle().groupId("org.osgi").artifactId("org.osgi.compendium").version("4.3.0"),
-                systemPackage("com.sun.nio"),
-                systemPackage("sun.nio.cs"),
-                systemPackage("sun.rmi.rmic"),
-                systemPackage("sun.misc"),
-                systemPackage("com.ibm.security.util"),
-                systemPackage("com.ibm.security.x509"),
-                systemPackage("com.sun.net.httpserver"),
-                systemPackage("com.sun.tools.javac"),
-                systemPackage("sun.tools.javac"),
+                //JDK internal dependencies
                 systemPackage("com.sun.org.apache.xml.internal.resolver"),
                 systemPackage("com.sun.org.apache.xml.internal.resolver.tools"),
+                systemPackage("com.sun.source.tree"),
+                systemPackage("com.sun.source.util"),
                 //JAXB APIs
                 mavenBundle("javax.xml.bind", "jaxb-api", JAXB_SPEC_VERSION),
                 //JAXB OSGi bundles

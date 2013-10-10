@@ -159,6 +159,7 @@ holder.
                         <configuration>
                             <outputDirectory>${project.build.directory}/testedBundles</outputDirectory>
                             <stripVersion>true</stripVersion>
+                            <includeArtifactIds>jaxb-osgi,jaxb-extra-osgi</includeArtifactIds>
                         </configuration>
                     </execution>
                 </executions>
