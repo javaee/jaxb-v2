@@ -142,6 +142,7 @@ public class OSGiBundleTest {
         Assert.assertEquals("Class '" + c.getName() + "' was loaded by '"
                 + b.getSymbolicName() + "', expected was '" + bundle + "'",
                 bundle, b.getSymbolicName());
+        Assert.assertEquals("Bundle '" + bundle + "' is not running", Bundle.ACTIVE, b.getState());
     }
 
 }
