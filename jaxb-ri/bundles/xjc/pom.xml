@@ -67,6 +67,12 @@ holder.
             <artifactId>jaxb-xjc</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>codemodel</artifactId>
+            <optional>true</optional>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <properties>
