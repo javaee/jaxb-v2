@@ -39,6 +39,7 @@
  */
 package jaxb.osgi.test;
 
+import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
@@ -87,7 +88,7 @@ public class OSGiBundleTest {
                         //                "http://repository.springsource.com/maven/bundles/release",
                         //                "http://repository.springsource.com/maven/bundles/external",
                         "http://maven.java.net/content/repositories/snapshots/"),
-                localRepository(System.getProperty("mvn.repo")),
+                localRepository(getLocalRepository()),
                 mavenBundle().groupId("org.osgi").artifactId("org.osgi.compendium").version("4.3.0"),
                 //JDK internal dependencies
                 systemPackage("com.sun.org.apache.xml.internal.resolver"),
@@ -145,4 +146,12 @@ public class OSGiBundleTest {
         Assert.assertEquals("Bundle '" + bundle + "' is not running", Bundle.ACTIVE, b.getState());
     }
 
+    private static String getLocalRepository() {
+        String path = System.getProperty("maven.repo.local");
+        return (path != null && path.trim().length() > 0)
+                ? path
+                : System.getProperty("user.home") + File.separator
+                    + ".m2" + File.separator
+                    + "repository";
+    }
 }

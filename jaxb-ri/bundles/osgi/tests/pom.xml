@@ -172,7 +172,6 @@ holder.
                     <systemProperties>
                         <jaxb.spec.version>${jaxb-api.version}</jaxb.spec.version>
                         <jaxb.impl.version>${project.version}</jaxb.impl.version>
-                        <mvn.repo>${user.home}/.m2/repository</mvn.repo>
                         <osgi.dist>${project.build.directory}/testedBundles</osgi.dist>
                     </systemProperties>
                 </configuration>
