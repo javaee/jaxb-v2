@@ -139,7 +139,7 @@ holder.
                                     <exclude>com.sun.xsom:xsom</exclude>
                                     <exclude>relaxngDatatype:relaxngDatatype</exclude>
 
-                                    <exclude>com.sun.codemodel:codemodel</exclude>
+                                    <exclude>org.glassfish.jaxb:codemodel</exclude>
                                     <exclude>org.kohsuke.rngom:rngom</exclude>
                                     <exclude>com.sun.xml.bind.external:rngom</exclude>
                                     <exclude>com.sun.xml.dtd-parser:dtd-parser</exclude>

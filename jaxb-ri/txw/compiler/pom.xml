@@ -75,8 +75,9 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.sun.codemodel</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>codemodel</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ant</groupId>

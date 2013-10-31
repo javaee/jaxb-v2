@@ -64,7 +64,6 @@
 
     <properties>
         <xsom.version>20130531</xsom.version>
-        <codemodel.version>2.6</codemodel.version>
         <dtd-parser.version>1.1</dtd-parser.version>
         <ant.version>1.9.0</ant.version>
         <msv.version>2013.6.1</msv.version>
@@ -85,11 +84,6 @@
                 <groupId>com.sun.xsom</groupId>
                 <artifactId>xsom</artifactId>
                 <version>${xsom.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.codemodel</groupId>
-                <artifactId>codemodel</artifactId>
-                <version>${codemodel.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.sun.xml.dtd-parser</groupId>
