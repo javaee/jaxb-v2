@@ -54,7 +54,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import com.sun.xml.bind.v2.runtime.Location;
-import sun.reflect.misc.ReflectUtil;
 
 /**
  * {@link Navigator} implementation for {@code java.lang.reflect}.
@@ -74,7 +73,6 @@ import sun.reflect.misc.ReflectUtil;
 //  ---------------------------------------
 
     public Class getSuperClass(Class clazz) {
-        ReflectUtil.checkPackageAccess(clazz);
         if (clazz == Object.class) {
             return null;
         }
@@ -282,12 +280,10 @@ import sun.reflect.misc.ReflectUtil;
     }
 
     public Collection<? extends Field> getDeclaredFields(Class clazz) {
-        ReflectUtil.checkPackageAccess(clazz);
         return Arrays.asList(clazz.getDeclaredFields());
     }
 
     public Field getDeclaredField(Class clazz, String fieldName) {
-        ReflectUtil.checkPackageAccess(clazz);
         try {
             return clazz.getDeclaredField(fieldName);
         } catch (NoSuchFieldException e) {
@@ -296,7 +292,6 @@ import sun.reflect.misc.ReflectUtil;
     }
 
     public Collection<? extends Method> getDeclaredMethods(Class clazz) {
-        ReflectUtil.checkPackageAccess(clazz);
         return Arrays.asList(clazz.getDeclaredMethods());
     }
 
@@ -541,7 +536,6 @@ import sun.reflect.misc.ReflectUtil;
     }
 
     public Field[] getEnumConstants(Class clazz) {
-        ReflectUtil.checkPackageAccess(clazz);
         try {
             Object[] values = clazz.getEnumConstants();
             Field[] fields = new Field[values.length];
@@ -571,7 +565,6 @@ import sun.reflect.misc.ReflectUtil;
 
     @Override
     public Class loadObjectFactory(Class referencePoint, String pkg) {
-        ReflectUtil.checkPackageAccess(referencePoint);
         ClassLoader cl= SecureLoader.getClassClassLoader(referencePoint);
         if (cl == null)
             cl = SecureLoader.getSystemClassLoader();
