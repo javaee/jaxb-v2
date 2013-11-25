@@ -47,7 +47,7 @@ holder.
     <parent>
         <groupId>com.sun.xml.bind.mvn</groupId>
         <artifactId>jaxb-osgi</artifactId>
-        <version>2.2.8-SNAPSHOT</version>
+        <version>2.2.8-b130911.1802</version>
     </parent>
 
     <groupId>com.sun.xml.bind</groupId>
@@ -129,21 +129,21 @@ holder.
                                     com.sun.codemodel.*;version=${codemodel.version},
                                     com.sun.istack;version=${istack.version},
                                     com.sun.istack.*;version=${istack.version},
-                                    com.sun.tools.*;version=${project.osgi.version},
-                                    com.sun.xml.bind;version=${project.osgi.version},
-                                    com.sun.xml.bind.*;version=${project.osgi.version},
+                                    com.sun.tools.*;version=${jaxb.osgiVersion},
+                                    com.sun.xml.bind;version=${jaxb.osgiVersion},
+                                    com.sun.xml.bind.*;version=${jaxb.osgiVersion},
                                     com.sun.xml.dtdparser;version=${dtd-parser.version},
                                     com.sun.xml.dtdparser.*;version=${dtd-parser.version},
                                     com.sun.xml.fastinfoset;version=${fastinfoset.version},
                                     com.sun.xml.fastinfoset.*;version=${fastinfoset.version},
-                                    com.sun.xml.txw2;version=${project.osgi.version},
-                                    com.sun.xml.txw2.*;version=${project.osgi.version},
+                                    com.sun.xml.txw2;version=${jaxb.osgiVersion},
+                                    com.sun.xml.txw2.*;version=${jaxb.osgiVersion},
                                     com.sun.xml.xsom;version=${xsom.version},
                                     com.sun.xml.xsom.*;version=${xsom.version},
                                     org.jvnet.fastinfoset;version=${fastinfoset.version},
                                     org.jvnet.fastinfoset.*;version=${fastinfoset.version},
                                     org.jvnet.staxex;version=${stax-ex.version},
-                                    org.kohsuke.rngom.*;version=${rngom.version},
+                                    org.kohsuke.rngom.*;version=${jaxb.osgiVersion},
                                     org.relaxng.datatype;version=${relaxngDatatype.version},
                                     org.relaxng.datatype.*;version=${relaxngDatatype.version}
                                 </Export-Package>

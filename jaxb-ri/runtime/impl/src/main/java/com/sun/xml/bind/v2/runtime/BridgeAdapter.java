@@ -103,13 +103,11 @@ final class BridgeAdapter<OnWire,InMemory> extends InternalBridge<InMemory> {
 
     private OnWire adaptM(Marshaller m,InMemory v) throws JAXBException {
         XMLSerializer serializer = ((MarshallerImpl)m).serializer;
-        serializer.setThreadAffinity();
         serializer.pushCoordinator();
         try {
             return _adaptM(serializer, v);
         } finally {
             serializer.popCoordinator();
-            serializer.resetThreadAffinity();
         }
     }
 
@@ -147,7 +145,6 @@ final class BridgeAdapter<OnWire,InMemory> extends InternalBridge<InMemory> {
     private @NotNull InMemory adaptU(Unmarshaller _u, OnWire v) throws JAXBException {
         UnmarshallerImpl u = (UnmarshallerImpl) _u;
         XmlAdapter<OnWire,InMemory> a = u.coordinator.getAdapter(adapter);
-        u.coordinator.setThreadAffinity();
         u.coordinator.pushCoordinator();
         try {
             return a.unmarshal(v);
@@ -155,7 +152,6 @@ final class BridgeAdapter<OnWire,InMemory> extends InternalBridge<InMemory> {
             throw new UnmarshalException(e);
         } finally {
             u.coordinator.popCoordinator();
-            u.coordinator.resetThreadAffinity();
         }
     }
 

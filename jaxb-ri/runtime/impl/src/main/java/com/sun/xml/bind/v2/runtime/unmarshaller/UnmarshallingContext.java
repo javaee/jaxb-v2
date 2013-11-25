@@ -50,6 +50,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBElement;
@@ -66,6 +68,7 @@ import com.sun.istack.NotNull;
 import com.sun.istack.Nullable;
 import com.sun.istack.SAXParseException2;
 import com.sun.xml.bind.IDResolver;
+import com.sun.xml.bind.Util;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.ClassResolver;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
@@ -74,6 +77,8 @@ import com.sun.xml.bind.v2.runtime.AssociationMap;
 import com.sun.xml.bind.v2.runtime.Coordinator;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -90,6 +95,8 @@ import org.xml.sax.helpers.LocatorImpl;
  */
 public final class UnmarshallingContext extends Coordinator
     implements NamespaceContext, ValidationEventHandler, ErrorHandler, XmlVisitor, XmlVisitor.TextPredictor {
+
+    private static final Logger logger = Logger.getLogger(UnmarshallingContext.class.getName());
 
     /**
      * Root state.
@@ -192,6 +199,14 @@ public final class UnmarshallingContext extends Coordinator
     public @Nullable ClassLoader classLoader;
 
     /**
+     * The variable introduced to avoid reporting n^10 similar errors.
+     * After error is reported counter is decremented. When it became 0 - errors should not be reported any more.
+     *
+     * volatile is required to ensure that concurrent threads will see changed value
+     */
+    private static volatile int errorsCounter = 10;
+
+    /**
      * State information for each element.
      */
     public final class State {
@@ -284,16 +299,23 @@ public final class UnmarshallingContext extends Coordinator
         }
 
         private void push() {
+            if (logger.isLoggable(Level.FINEST)) {
+                logger.log(Level.FINEST, "State.push");
+            }
             if (next==null) {
                 assert current == this;
                 allocateMoreStates();
             }
+            nil = false;
             State n = next;
             n.numNsDecl = nsLen;
             current = n;
         }
 
         private void pop() {
+            if (logger.isLoggable(Level.FINEST)) {
+                logger.log(Level.FINEST, "State.pop");
+            }
             assert prev!=null;
             loader = null;
             nil = false;
@@ -470,8 +492,6 @@ public final class UnmarshallingContext extends Coordinator
         isUnmarshalInProgress = true;
         nsLen=0;
 
-        setThreadAffinity();
-
         if(expectedType!=null)
             root.loader = EXPECTED_TYPE_ROOT_LOADER;
         else
@@ -562,8 +582,6 @@ public final class UnmarshallingContext extends Coordinator
 
         // at the successful completion, scope must be all closed
         assert root==current;
-
-        resetThreadAffinity();
     }
 
     /**
@@ -1270,5 +1288,28 @@ public final class UnmarshallingContext extends Coordinator
         return null;
     }
 
+    /**
+     * Based on current {@link Logger} {@link Level} and errorCounter value determines if error should be reported.
+     *
+     * If the method called and return true it is expected that error will be reported. And that's why
+     * errorCounter is automatically decremented during the check.
+     *
+     * NOT THREAD SAFE!!! In case of heave concurrency access several additional errors could be reported. It's not expected to be the
+     * problem. Otherwise add synchronization here.
+     *
+     * @return true in case if {@link Level#FINEST} is set OR we haven't exceed errors reporting limit.
+     */
+    public boolean shouldErrorBeReported() throws SAXException {
+        if (logger.isLoggable(Level.FINEST))
+            return true;
+
+        if (errorsCounter >= 0) {
+            --errorsCounter;
+            if (errorsCounter == 0) // it's possible to miss this because of concurrency. If required add synchronization here
+                handleEvent(new ValidationEventImpl(ValidationEvent.WARNING, Messages.ERRORS_LIMIT_EXCEEDED.format(),
+                        getLocator().getLocation(), null), true);
+        }
+        return errorsCounter >= 0;
+    }
 }
 
