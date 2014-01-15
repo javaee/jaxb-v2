@@ -47,7 +47,7 @@ holder.
     <parent>
         <groupId>com.sun.xml.bind.mvn</groupId>
         <artifactId>jaxb-docs-parent</artifactId>
-        <version>2.2.9-b140115.2001</version>
+        <version>2.2.9-SNAPSHOT</version>
     </parent>
 
     <artifactId>jaxb-www</artifactId>
