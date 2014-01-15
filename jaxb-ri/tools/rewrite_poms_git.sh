@@ -1,5 +1,16 @@
 #!/bin/bash
 
+if [ "$#" -eq 1 ]; then
+    CURRENT_VERSION=$1
+fi
+
+if [ "$#" -eq 0 ]; then
+    echo "No version specified, reading release version from pom file"
+    CURRENT_VERSION=`cat pom.xml | grep '<version' -m 1 | cut -d ">" -f 2 | cut -d "<" -f 1 | cut -d "-" -f 1`
+fi
+
+echo "Major release version found: $CURRENT_VERSION"  
+
 SCRIPT_DIR=$(cd $(dirname $0); pwd -P)
 
 cd $SCRIPT_DIR/../.. || {
@@ -14,8 +25,6 @@ command -v git > /dev/null 2>&1 || {
 
 GIT=$(command -v git 2>&1)
 LAST_GIT_COMMIT=$(${GIT} rev-parse --short HEAD) || exit 1
-
-CURRENT_VERSION=2.2.8
 
 DATESTAMP=`date +%y%m%d.%H%M`
 BUILD_NUMBER=b${DATESTAMP}
