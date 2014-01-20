@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -304,21 +304,10 @@ public class ModelBuilder<T,C,F,M> implements ModelBuilderI<T,C,F,M> {
         String pkg = nav.getPackageName(clazz);
         if (!registries.containsKey(pkg)) {
             // insert the package's object factory
-            C c = loadObjectFactory(clazz, pkg);
+            C c = nav.loadObjectFactory(clazz, pkg);
             if (c != null)
                 addRegistry(c, p);
         }
-    }
-
-    private C loadObjectFactory(C clazz, String pkg) {
-        C c;
-        try {
-            c = nav.findClass(pkg + ".ObjectFactory", clazz);
-        } catch (SecurityException ignored) {
-            // treat SecurityException in same way as ClassNotFoundException in this case
-            c = null;
-        }
-        return c;
     }
 
     /**
