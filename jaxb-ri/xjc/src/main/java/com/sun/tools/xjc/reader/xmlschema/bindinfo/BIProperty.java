@@ -483,25 +483,22 @@ public final class BIProperty extends AbstractDeclarationImpl {
             r = ct.get(getBuilder().model);
         } else {
             FieldRendererFactory frf = getBuilder().fieldRendererFactory;
-
-            if(prop.isOptionalPrimitive()) {
+            // according to the spec we should bahave as in jaxb1. So we ignore possiblity that property could be nullable
+            switch(opm) {
                 // the property type can be primitive type if we are to ignore absence
-                switch(opm) {
                 case PRIMITIVE:
                     r = frf.getRequiredUnboxed();
                     break;
                 case WRAPPER:
                     // force the wrapper type
-                    r = frf.getSingle();
+                    r = prop.isOptionalPrimitive() ? frf.getSingle() : frf.getDefault();
                     break;
                 case ISSET:
-                    r = frf.getSinglePrimitiveAccess();
+                    r = prop.isOptionalPrimitive() ? frf.getSinglePrimitiveAccess() : frf.getDefault();
                     break;
                 default:
                     throw new Error();
-                }
-            } else {
-                r = frf.getDefault();
+
             }
         }
         if(opm==OptionalPropertyMode.ISSET) {
