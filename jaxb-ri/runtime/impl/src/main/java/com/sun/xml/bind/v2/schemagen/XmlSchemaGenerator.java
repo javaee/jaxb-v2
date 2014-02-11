@@ -1085,18 +1085,22 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                                 }
 
                                 Collection<TypeInfo> refs = propInfo.ref();
-                                TypeInfo ti;
-                                if ((refs != null) && (!refs.isEmpty()) && (elemName != null)
-                                        && ((ti = refs.iterator().next()) == null || ti instanceof ClassInfoImpl)) {
-                                    ClassInfoImpl cImpl = (ClassInfoImpl)ti;
-                                    if ((cImpl != null) && (cImpl.getElementName() != null)) {
-                                        e.ref(new QName(cImpl.getElementName().getNamespaceURI(), tn.getLocalPart()));
-                                    } else {
-                                        e.ref(new QName("", tn.getLocalPart()));
+                                if ((refs != null) && (!refs.isEmpty()) && (elemName != null)){
+                                    ClassInfoImpl cImpl = null;
+                                    for (TypeInfo ref : refs) {
+                                       if (ref  == null || ref instanceof ClassInfoImpl) {
+                                           if (elemName.equals(((ClassInfoImpl)ref).getElementName())) {
+                                               cImpl = (ClassInfoImpl) ref;
+                                               break;
+                                           }
+                                       }
                                     }
-                                } else {
+                                    if (cImpl != null)
+                                        e.ref(new QName(cImpl.getElementName().getNamespaceURI(), tn.getLocalPart()));
+                                    else
+                                        e.ref(new QName("", tn.getLocalPart()));
+                                } else
                                     e.ref(tn);
-                                }
                             }
                         } else {
                             e.name(tn.getLocalPart());
