@@ -1058,17 +1058,23 @@ public final class XmlSchemaGenerator<T,C,F,M> {
                                     elemName = te.getElementName();
                                 }
 
-                                Collection refs = propInfo.ref();
+                                Collection<TypeInfo> refs = propInfo.ref();
                                 if ((refs != null) && (!refs.isEmpty()) && (elemName != null)) {
-                                    ClassInfoImpl cImpl = (ClassInfoImpl)refs.iterator().next();
-                                    if ((cImpl != null) && (cImpl.getElementName() != null)) {
-                                        e.ref(new QName(cImpl.getElementName().getNamespaceURI(), tn.getLocalPart()));
-                                    } else {
-                                        e.ref(new QName("", tn.getLocalPart()));
+                                    ClassInfoImpl cImpl = null;
+                                    for (TypeInfo ref : refs) {
+                                        if (ref == null || ref instanceof ClassInfoImpl) {
+                                            if (elemName.equals(((ClassInfoImpl) ref).getElementName())) {
+                                                cImpl = (ClassInfoImpl) ref;
+                                                break;
+                                            }
+                                        }
                                     }
-                                } else {
+                                    if (cImpl != null)
+                                        e.ref(new QName(cImpl.getElementName().getNamespaceURI(), tn.getLocalPart()));
+                                    else
+                                        e.ref(new QName("", tn.getLocalPart()));
+                                } else
                                     e.ref(tn);
-                                }
                             }
                         } else {
                             e.name(tn.getLocalPart());
