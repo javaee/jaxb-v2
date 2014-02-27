@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -351,9 +351,8 @@ class StAXStreamConnector extends StAXConnector {
 
     private static Class initFIStAXReaderClass() {
         try {
-            ClassLoader cl = getClassLoader();
-            Class fisr = cl.loadClass("org.jvnet.fastinfoset.stax.FastInfosetStreamReader");
-            Class sdp = cl.loadClass("com.sun.xml.fastinfoset.stax.StAXDocumentParser");
+            Class<?> fisr = Class.forName("org.jvnet.fastinfoset.stax.FastInfosetStreamReader");
+            Class<?> sdp = Class.forName("com.sun.xml.fastinfoset.stax.StAXDocumentParser");
             // Check if StAXDocumentParser implements FastInfosetStreamReader
             if (fisr.isAssignableFrom(sdp))
                 return sdp;
@@ -369,7 +368,7 @@ class StAXStreamConnector extends StAXConnector {
             if (FI_STAX_READER_CLASS == null)
                 return null;
             
-            Class c = getClassLoader().loadClass(
+            Class c = Class.forName(
                     "com.sun.xml.bind.v2.runtime.unmarshaller.FastInfosetConnector");                
             return c.getConstructor(FI_STAX_READER_CLASS,XmlVisitor.class);
         } catch (Throwable e) {
@@ -385,7 +384,7 @@ class StAXStreamConnector extends StAXConnector {
 
     private static Class initStAXExReader() {
         try {
-            return getClassLoader().loadClass("org.jvnet.staxex.XMLStreamReaderEx");
+            return Class.forName("org.jvnet.staxex.XMLStreamReaderEx");
         } catch (Throwable e) {
             return null;
         }
@@ -393,19 +392,11 @@ class StAXStreamConnector extends StAXConnector {
 
     private static Constructor<? extends StAXConnector> initStAXExConnector() {
         try {
-            Class c = getClassLoader().loadClass("com.sun.xml.bind.v2.runtime.unmarshaller.StAXExConnector");
+            Class c = Class.forName("com.sun.xml.bind.v2.runtime.unmarshaller.StAXExConnector");
             return c.getConstructor(STAX_EX_READER_CLASS,XmlVisitor.class);
         } catch (Throwable e) {
             return null;
         }
     }
 
-    private static ClassLoader getClassLoader() {
-        ClassLoader cl = SecureLoader.getClassClassLoader(UnmarshallerImpl.class);
-        if (cl == null) {
-            cl = SecureLoader.getContextClassLoader();
-        }
-        return cl;
-    }
-        
 }
