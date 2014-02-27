@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -91,8 +91,6 @@ class Internalizer {
 
     private static final String WSDL_NS = "http://schemas.xmlsoap.org/wsdl/";
     
-    private static XPathFactory xpf = null;
-    
     private final XPath xpath;
 
     /**
@@ -114,12 +112,7 @@ class Internalizer {
         this.errorHandler = forest.getErrorHandler();
         this.forest = forest;
         this.enableSCD = enableSCD;
-        synchronized (this) {
-            if (xpf == null) {
-                xpf = XmlFactory.createXPathFactory(disableSecureProcessing);
-            }
-        }
-        xpath = xpf.newXPath();
+        xpath = XmlFactory.createXPathFactory(disableSecureProcessing).newXPath();
     }
     
     /**
@@ -184,7 +177,6 @@ class Internalizer {
                 continue;
             if( a.getLocalName().equals("multiple") ) //
                 continue;
-
 
             // TODO: flag error for this undefined attribute
         }
