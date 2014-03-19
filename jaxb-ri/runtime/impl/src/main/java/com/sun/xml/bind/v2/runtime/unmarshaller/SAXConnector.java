@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -159,17 +159,7 @@ public final class SAXConnector implements UnmarshallerHandler {
         if( qname==null || qname.length()==0 )
             qname=local;
 
-
-        boolean ignorable = true;
-        StructureLoader sl;
-
-        // not null only if element content is processed (StructureLoader is used)
-        // ugly
-        if((sl = this.context.getStructureLoader()) != null) {
-            ignorable = ((ClassBeanInfoImpl)sl.getBeanInfo()).hasElementOnlyContentModel();
-        }
-
-        processText(ignorable);
+        processText(this.context.getCurrentState().isMixed());
 
         tagName.uri = uri;
         tagName.local = local;
@@ -183,7 +173,7 @@ public final class SAXConnector implements UnmarshallerHandler {
         if (logger.isLoggable(Level.FINER)) {
             logger.log(Level.FINER, "SAXConnector.startElement: {0}:{1}:{2}", new Object[]{uri, localName, qName});
         }
-        processText(false);
+        processText(this.context.getCurrentState().isMixed());
         tagName.uri = uri;
         tagName.local = localName;
         tagName.qname = qName;
@@ -218,8 +208,8 @@ public final class SAXConnector implements UnmarshallerHandler {
         // nop
     }
 
-    private void processText( boolean ignorable ) throws SAXException {
-        if( predictor.expectText() && (!ignorable || !WhiteSpaceProcessor.isWhiteSpace(buffer)))
+    private void processText( boolean isMixed ) throws SAXException {
+        if( predictor.expectText() && (isMixed || !WhiteSpaceProcessor.isWhiteSpace(buffer)))
             next.text(buffer);
         buffer.setLength(0);
     }

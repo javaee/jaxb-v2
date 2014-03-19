@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -113,7 +113,7 @@ abstract class ArrayERProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,Li
             UnmarshallingContext context = state.getContext();
             context.startScope(1);
             // inherit the target so that our children can access its target
-            state.target = state.prev.target;
+            state.setTarget(state.getPrev().getTarget());
 
             // start it now, so that even if there's no children we can still return empty collection
             context.getScope(0).start(acc,lister);
@@ -131,8 +131,8 @@ abstract class ArrayERProperty<BeanT,ListT,ItemT> extends ArrayProperty<BeanT,Li
                 super.childElement(state,ea);
                 return;
             }
-            state.loader = child.loader;
-            state.receiver = child.receiver;
+            state.setLoader(child.loader);
+            state.setReceiver(child.receiver);
         }
 
         @Override

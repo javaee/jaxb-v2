@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -70,9 +70,9 @@ public final class LeafPropertyXsiLoader extends Loader {
 
     @Override
     public void startElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
-        state.loader = selectLoader(state, ea);
-
-        state.loader.startElement(state, ea);
+        final Loader loader = selectLoader(state, ea);
+        state.setLoader(loader);
+        loader.startElement(state, ea);
     }
 
     protected Loader selectLoader(UnmarshallingContext.State state, TagName ea) throws SAXException {
