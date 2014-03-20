@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -112,7 +112,7 @@ public final class Scope<BeanT,PropT,ItemT,PackT> {
     public void add( Accessor<BeanT,PropT> acc, Lister<BeanT,PropT,ItemT,PackT> lister, ItemT value) throws SAXException{
         try {
             if(!hasStarted()) {
-                this.bean = (BeanT)context.getCurrentState().target;
+                this.bean = (BeanT)context.getCurrentState().getTarget();
                 this.acc = acc;
                 this.lister = lister;
                 this.pack = lister.startPacking(bean,acc);
@@ -136,7 +136,7 @@ public final class Scope<BeanT,PropT,ItemT,PackT> {
     public void start( Accessor<BeanT,PropT> acc, Lister<BeanT,PropT,ItemT,PackT> lister) throws SAXException{
         try {
             if(!hasStarted()) {
-                this.bean = (BeanT)context.getCurrentState().target;
+                this.bean = (BeanT)context.getCurrentState().getTarget();
                 this.acc = acc;
                 this.lister = lister;
                 this.pack = lister.startPacking(bean,acc);

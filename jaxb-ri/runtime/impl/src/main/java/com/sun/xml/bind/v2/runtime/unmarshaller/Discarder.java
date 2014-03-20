@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -59,8 +59,8 @@ public final class Discarder extends Loader {
 
     @Override
     public void childElement(UnmarshallingContext.State state, TagName ea) {
-        state.target = null;
+        state.setTarget(null);
         // registering this allows the discarder to process the whole subtree.
-        state.loader = this;
+        state.setLoader(this);
     }
 }

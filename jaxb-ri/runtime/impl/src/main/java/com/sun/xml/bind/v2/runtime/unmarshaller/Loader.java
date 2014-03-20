@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -103,8 +103,8 @@ public abstract class Loader {
     public void childElement(UnmarshallingContext.State state, TagName ea) throws SAXException {
         // notify the error, then recover by ignoring the whole element.
         reportUnexpectedChildElement(ea, true);
-        state.loader = Discarder.INSTANCE;
-        state.receiver = null;
+        state.setLoader(Discarder.INSTANCE);
+        state.setReceiver(null);
     }
 
     @SuppressWarnings({"StringEquality"})
@@ -210,10 +210,10 @@ public abstract class Loader {
             UnmarshallingContext context = state.getContext();
             Unmarshaller.Listener listener = context.parent.getListener();
             if(beanInfo.hasBeforeUnmarshalMethod()) {
-                beanInfo.invokeBeforeUnmarshalMethod(context.parent, child, state.prev.target);
+                beanInfo.invokeBeforeUnmarshalMethod(context.parent, child, state.getPrev().getTarget());
             }
             if(listener!=null) {
-                listener.beforeUnmarshal(child, state.prev.target);
+                listener.beforeUnmarshal(child, state.getPrev().getTarget());
             }
         }
     }
@@ -230,10 +230,10 @@ public abstract class Loader {
             UnmarshallingContext context = state.getContext();
             Unmarshaller.Listener listener = context.parent.getListener();
             if(beanInfo.hasAfterUnmarshalMethod()) {
-                beanInfo.invokeAfterUnmarshalMethod(context.parent, child, state.target);
+                beanInfo.invokeAfterUnmarshalMethod(context.parent, child, state.getTarget());
             }
             if(listener!=null)
-                listener.afterUnmarshal(child, state.target);
+                listener.afterUnmarshal(child, state.getTarget());
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -77,7 +77,7 @@ public class XsiNilLoader extends ProxyLoader {
                 onNil(state);
                 boolean hasOtherAttributes = (ea.atts.getLength() - 1) > 0;
                 // see issues 6759703 and 565 - need to preserve attributes even if the element is nil; only when the type is stored in JAXBElement
-                if (!(hasOtherAttributes && (state.prev.target instanceof JAXBElement))) {
+                if (!(hasOtherAttributes && (state.getPrev().getTarget() instanceof JAXBElement))) {
                     return Discarder.INSTANCE;
                 }
             }
@@ -111,8 +111,8 @@ public class XsiNilLoader extends ProxyLoader {
         @Override
         protected void onNil(UnmarshallingContext.State state) throws SAXException {
             try {
-                acc.set(state.prev.target,null);
-                state.prev.nil = true;
+                acc.set(state.getPrev().getTarget(),null);
+                state.getPrev().setNil(true);
             } catch (AccessorException e) {
                 handleGenericException(e,true);
             }
@@ -128,7 +128,7 @@ public class XsiNilLoader extends ProxyLoader {
         @Override
         protected void onNil(UnmarshallingContext.State state) {
             // let the receiver add this to the lister
-            state.target = null;
+            state.setTarget(null);
         }
     }
 }
