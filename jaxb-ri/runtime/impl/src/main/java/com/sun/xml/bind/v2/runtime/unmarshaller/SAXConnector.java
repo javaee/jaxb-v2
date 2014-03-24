@@ -159,7 +159,7 @@ public final class SAXConnector implements UnmarshallerHandler {
         if( qname==null || qname.length()==0 )
             qname=local;
 
-        processText(this.context.getCurrentState().isMixed());
+        processText();
 
         tagName.uri = uri;
         tagName.local = local;
@@ -173,7 +173,7 @@ public final class SAXConnector implements UnmarshallerHandler {
         if (logger.isLoggable(Level.FINER)) {
             logger.log(Level.FINER, "SAXConnector.startElement: {0}:{1}:{2}", new Object[]{uri, localName, qName});
         }
-        processText(this.context.getCurrentState().isMixed());
+        processText();
         tagName.uri = uri;
         tagName.local = localName;
         tagName.qname = qName;
@@ -208,8 +208,8 @@ public final class SAXConnector implements UnmarshallerHandler {
         // nop
     }
 
-    private void processText( boolean isMixed ) throws SAXException {
-        if( predictor.expectText() && (isMixed || !WhiteSpaceProcessor.isWhiteSpace(buffer)))
+    private void processText() throws SAXException {
+        if (predictor.expectText())
             next.text(buffer);
         buffer.setLength(0);
     }

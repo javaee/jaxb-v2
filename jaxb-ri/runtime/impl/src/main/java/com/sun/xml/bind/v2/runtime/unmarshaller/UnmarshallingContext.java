@@ -69,6 +69,7 @@ import com.sun.istack.Nullable;
 import com.sun.istack.SAXParseException2;
 import com.sun.xml.bind.IDResolver;
 import com.sun.xml.bind.Util;
+import com.sun.xml.bind.WhiteSpaceProcessor;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.ClassResolver;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
@@ -578,16 +579,16 @@ public final class UnmarshallingContext extends Coordinator
 
     @Override
     public void text(CharSequence pcdata) throws SAXException {
-        State cur = current;
         pushCoordinator();
         try {
-            if(cur.elementDefaultValue!=null) {
-                if(pcdata.length()==0) {
+            if (current.elementDefaultValue != null) {
+                if (pcdata.length() == 0) {
                     // send the default value into the unmarshaller instead
-                    pcdata = cur.elementDefaultValue;
+                    pcdata = current.elementDefaultValue;
                 }
             }
-            cur.loader.text(cur,pcdata);
+            if (pcdata.length() == 0 /*empty tags*/ || current.isMixed() || !WhiteSpaceProcessor.isWhiteSpace(pcdata))
+                current.loader.text(current, pcdata);
         } finally {
             popCoordinator();
         }
