@@ -69,7 +69,6 @@ import com.sun.istack.Nullable;
 import com.sun.istack.SAXParseException2;
 import com.sun.xml.bind.IDResolver;
 import com.sun.xml.bind.Util;
-import com.sun.xml.bind.WhiteSpaceProcessor;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.ClassResolver;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
@@ -587,8 +586,7 @@ public final class UnmarshallingContext extends Coordinator
                     pcdata = current.elementDefaultValue;
                 }
             }
-            if (pcdata.length() == 0 /*empty tags*/ || current.isMixed() || !WhiteSpaceProcessor.isWhiteSpace(pcdata))
-                current.loader.text(current, pcdata);
+            current.loader.text(current, pcdata);
         } finally {
             popCoordinator();
         }
