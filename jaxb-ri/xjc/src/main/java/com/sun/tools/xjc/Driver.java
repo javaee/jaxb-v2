@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -46,6 +46,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Iterator;
 
 import com.sun.codemodel.CodeWriter;
@@ -79,14 +81,12 @@ import org.xml.sax.SAXParseException;
  */
 public class Driver {
 
+    private static final String SYSTEM_PROXY_PROPERTY = "java.net.useSystemProxies";
+
     public static void main(final String[] args) throws Exception {
         // use the platform default proxy if available.
         // see sun.net.spi.DefaultProxySelector for details.
-        try {
-            System.setProperty("java.net.useSystemProxies","true");
-        } catch (SecurityException e) {
-            // failing to set this property isn't fatal
-        }
+        setupProxies();
 
         if( Util.getSystemProperty(Driver.class,"noThreadSwap")!=null )
             _main(args);    // for the ease of debugging
@@ -115,6 +115,27 @@ public class Driver {
                 throw (Exception)ex[0];
             else
                 throw (Error)ex[0];
+        }
+    }
+
+    /**
+     * Set useSystemProxies if needed
+     */
+    private static void setupProxies() {
+        Object setProperty = AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            @Override
+            public Object run() {
+                return System.getProperty(SYSTEM_PROXY_PROPERTY);
+            }
+        });
+        if (setProperty == null) {
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                @Override
+                public Void run() {
+                    System.setProperty(SYSTEM_PROXY_PROPERTY, "true");
+                    return null;
+                }
+            });
         }
     }
 
