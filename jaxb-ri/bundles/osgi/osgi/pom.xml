@@ -198,7 +198,8 @@ holder.
                                     com.sun.msv.util;version=${msv.version};resolution:=optional,
                                     com.sun.msv.verifier;version=${msv.version};resolution:=optional,
                                     com.sun.msv.verifier.regexp;version=${msv.version};resolution:=optional,
-                                    org.iso_relax.verifier.impl;version=${isorelax.version};resolution:=optional
+                                    org.iso_relax.verifier.impl;version=${isorelax.version};resolution:=optional,
+                                    javax.xml.soap;resolution:=optional
                                 </Import-Package>
                             </instructions>
                         </configuration>
