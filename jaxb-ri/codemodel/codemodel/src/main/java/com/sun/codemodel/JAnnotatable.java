@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -63,6 +63,14 @@ public interface JAnnotatable {
      *          The annotation class to annotate the program element with
      */
     JAnnotationUse annotate(Class <? extends Annotation> clazz);
+
+    /**
+     * Removes annotation from this program element.
+     *
+     * @param annotation
+     *          The annotation to be removed from the program element
+     */
+    boolean removeAnnotation(JAnnotationUse annotation);
 
     /**
      * Adds an annotation to this program element

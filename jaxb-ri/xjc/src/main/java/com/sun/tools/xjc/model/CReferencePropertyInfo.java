@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -184,6 +184,11 @@ public final class CReferencePropertyInfo extends CPropertyInfo implements Refer
 
     public <V> V accept(CPropertyVisitor<V> visitor) {
         return visitor.onReference(this);
+    }
+
+    @Override
+    public <R, P> R accept(CPropertyVisitor2<R, P> visitor, P p) {
+        return visitor.visit(this, p);
     }
 
     public CAdapter getAdapter() {
