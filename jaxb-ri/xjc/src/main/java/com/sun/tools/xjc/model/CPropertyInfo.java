@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -57,7 +57,6 @@ import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.xml.bind.api.impl.NameConverter;
-import com.sun.xml.bind.v2.WellKnownNamespace;
 import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.RuntimeUtil;
 import com.sun.xml.xsom.XSComponent;
@@ -304,6 +303,8 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
     }
 
     public abstract <V> V accept( CPropertyVisitor<V> visitor );
+
+    public abstract <R, P> R accept( CPropertyVisitor2<R, P> visitor, P p );
 
     /**
      * Checks if the given {@link TypeUse} would need an explicit {@link XmlSchemaType}

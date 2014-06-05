@@ -43,16 +43,49 @@ package com.sun.tools.xjc.model;
 /**
  * Visitor for {@link CPropertyInfo}.
  *
- * Ideally it should be defined on the runtime core model, but the runtime is on diet.
- * Hence it's defined here.
+ * The number 2 signals number of arguments.
  *
- * @see CPropertyInfo#accept(CPropertyVisitor)
+ * @param <R> the return type of this visitor's methods.  Use {@link
+ *            Void} for visitors that do not need to return results.
+ * @param <P> the type of the additional parameter to this visitor's
+ *            methods.  Use {@code Void} for visitors that do not need an
+ *            additional parameter.
  *
- * @author Kohsuke Kawaguchi
+ * @see CPropertyInfo#accept(CPropertyVisitor2, Object)
+ *
+ * @author Marcel Valovy
  */
-public interface CPropertyVisitor<V> {
-    V onElement( CElementPropertyInfo p );
-    V onAttribute( CAttributePropertyInfo p );
-    V onValue( CValuePropertyInfo p );
-    V onReference( CReferencePropertyInfo p );
+public interface CPropertyVisitor2<R, P> {
+
+    /**
+     * Visits a CElementPropertyInfo type.
+     * @param t the type to visit
+     * @param p a visitor-specified parameter
+     * @return  a visitor-specified result
+     */
+    R visit(CElementPropertyInfo t, P p);
+
+    /**
+     * Visits a CAttributePropertyInfo type.
+     * @param t the type to visit
+     * @param p a visitor-specified parameter
+     * @return  a visitor-specified result
+     */
+    R visit(CAttributePropertyInfo t, P p);
+
+    /**
+     * Visits a CValuePropertyInfo type.
+     * @param t the type to visit
+     * @param p a visitor-specified parameter
+     * @return  a visitor-specified result
+     */
+    R visit(CValuePropertyInfo t, P p);
+
+    /**
+     * Visits a CReferencePropertyInfo type.
+     * @param t the type to visit
+     * @param p a visitor-specified parameter
+     * @return  a visitor-specified result
+     */
+    R visit(CReferencePropertyInfo t, P p);
 }
