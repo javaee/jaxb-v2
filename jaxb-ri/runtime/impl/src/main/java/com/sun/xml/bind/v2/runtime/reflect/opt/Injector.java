@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -52,9 +52,10 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.sun.xml.bind.Util;
 import com.sun.xml.bind.v2.runtime.reflect.Accessor;
+import com.sun.xml.bind.Util;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 
 /**
  * A {@link ClassLoader} used to "inject" optimized accessor classes
@@ -161,26 +162,31 @@ final class Injector {
     private static final Method findLoadedClass;
 
     static {
-        try {
-            defineClass = ClassLoader.class.getDeclaredMethod("defineClass", String.class, byte[].class, Integer.TYPE, Integer.TYPE);
-            resolveClass = ClassLoader.class.getDeclaredMethod("resolveClass", Class.class);
-            findLoadedClass = ClassLoader.class.getDeclaredMethod("findLoadedClass", String.class);
-        } catch (NoSuchMethodException e) {
-            // impossible
-            throw new NoSuchMethodError(e.getMessage());
-        }
-        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+        defineClass = getMethod(ClassLoader.class, "defineClass", String.class, byte[].class, Integer.TYPE, Integer.TYPE);
+        resolveClass = getMethod(ClassLoader.class, "resolveClass", Class.class);
+        findLoadedClass = getMethod(ClassLoader.class, "findLoadedClass", String.class);
+    }
 
-            @Override
-            public Void run() {
-                // TODO: check security implication
-                // do these setAccessible allow anyone to call these methods freely?s
-                defineClass.setAccessible(true);
-                resolveClass.setAccessible(true);
-                findLoadedClass.setAccessible(true);
-                return null;
+    private static Method getMethod(final Class<?> c, final String methodname, final Class<?>... params) {
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<Method>() {
+                @Override
+                public Method run() throws Exception {
+                    Method m = c.getDeclaredMethod(methodname, params);
+                    // TODO: check security implication
+                    // do these setAccessible allow anyone to call these methods freely?s
+                    m.setAccessible(true);
+                    return m;
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            if (e.getCause() instanceof NoSuchMethodException) {
+                // impossible
+                throw new NoSuchMethodError(e.getMessage());
+            } else {
+                throw new Error(e);
             }
-        });
+        }
     }
 
     private Injector(ClassLoader parent) {
