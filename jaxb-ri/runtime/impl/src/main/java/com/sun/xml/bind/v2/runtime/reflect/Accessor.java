@@ -45,8 +45,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -248,14 +246,7 @@ public abstract class Accessor<BeanT, ValueT> implements Receiver {
                     // attempt to make it accessible, but do so in the security context of the calling application.
                     // don't do this in the doPrivilege block, as that would create a security hole for anyone
                     // to make any field accessible.
-                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                        @Override
-                        public Object run() {
-                            FieldReflection.this.f.setAccessible(true);
-                            return null;
-                        }
-                    });
-
+                    f.setAccessible(true);
                 } catch (SecurityException e) {
                     if ((!accessWarned) && (!supressAccessorWarnings)) {
                         // this happens when we don't have enough permission.
