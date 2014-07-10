@@ -601,7 +601,7 @@ import com.sun.xml.bind.v2.runtime.Location;
         return method.isBridge();
     }
 
-    public boolean isOverriding(Method method, Class base) {
+    public boolean isOverriding(Method method, final Class base) {
         // this isn't actually correct,
         // as the JLS considers
         // class Derived extends Base<Integer> {
@@ -614,28 +614,28 @@ import com.sun.xml.bind.v2.runtime.Location;
 
         final String name = method.getName();
         final Class[] params = method.getParameterTypes();
-        final Class finalBase = base;
 
-        while (base != null) {
-            Method declaredMethod = AccessController.doPrivileged(new PrivilegedAction<Method>() {
-                @Override
-                public Method run() {
-                    try {
-                        return finalBase.getDeclaredMethod(name, params);
-                    } catch (NoSuchMethodException ignored) {
-                        // recursively go into the base class
-                        return null;
+        return AccessController.doPrivileged(
+                new PrivilegedAction<Boolean>() {
+
+                    @Override
+                    public Boolean run() {
+                        Class clazz = base;
+                        while (clazz != null) {
+                            try {
+                                Method m = clazz.getDeclaredMethod(name, params);
+                                if (m != null) {
+                                    return Boolean.TRUE;
+                                }
+                            } catch (NoSuchMethodException ignored) {
+                                // recursively go into the base class
+                            }
+                            clazz = clazz.getSuperclass();
+                        }
+                        return Boolean.FALSE;
                     }
                 }
-            });
-            if (declaredMethod != null) {
-                return true;
-            }
-
-            base = base.getSuperclass();
-        }
-
-        return false;
+        );
     }
 
     public boolean isInterface(Class clazz) {
