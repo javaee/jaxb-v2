@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -73,11 +73,7 @@ public class Options  {
     public void parseArguments(String[] args) throws BadCommandLineException {
         for (int i = 0 ; i <args.length; i++) {
             if (args[i].charAt(0)== '-') {
-                int j = parseArgument(args,i);
-                if(j==0)
-                    throw new BadCommandLineException(
-                            Messages.UNRECOGNIZED_PARAMETER.format(args[i]));
-                i += j;
+                i += parseArgument(args, i);
             } else {
                 arguments.add(args[i]);
             }
@@ -105,11 +101,8 @@ public class Options  {
         }
 
         if (args[i].equals(DISABLE_XML_SECURITY)) {
-            if (i == args.length - 1)
-                throw new BadCommandLineException(
-                        (Messages.OPERAND_MISSING.format(args[i])));
             disableXmlSecurity = true;
-            return 1;
+            return 0;
         }
 
         if (args[i].equals("-encoding")) {
@@ -129,8 +122,8 @@ public class Options  {
             return 1;
         }
 
-        return 0;
-
+        throw new BadCommandLineException(
+                Messages.UNRECOGNIZED_PARAMETER.format(args[i]));
     }
 
     /**
