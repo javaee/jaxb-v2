@@ -52,10 +52,9 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import com.sun.xml.bind.v2.runtime.reflect.Accessor;
+
 import com.sun.xml.bind.Util;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
+import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 
 /**
  * A {@link ClassLoader} used to "inject" optimized accessor classes
@@ -162,30 +161,30 @@ final class Injector {
     private static final Method findLoadedClass;
 
     static {
-        defineClass = getMethod(ClassLoader.class, "defineClass", String.class, byte[].class, Integer.TYPE, Integer.TYPE);
-        resolveClass = getMethod(ClassLoader.class, "resolveClass", Class.class);
-        findLoadedClass = getMethod(ClassLoader.class, "findLoadedClass", String.class);
+        Method[] m = AccessController.doPrivileged(
+                new PrivilegedAction<Method[]>() {
+                    @Override
+                    public Method[] run() {
+                        return new Method[]{
+                                getMethod(ClassLoader.class, "defineClass", String.class, byte[].class, Integer.TYPE, Integer.TYPE),
+                                getMethod(ClassLoader.class, "resolveClass", Class.class),
+                                getMethod(ClassLoader.class, "findLoadedClass", String.class)
+                        };
+                    }
+                }
+        );
+        defineClass = m[0];
+        resolveClass = m[1];
+        findLoadedClass = m[2];
     }
 
     private static Method getMethod(final Class<?> c, final String methodname, final Class<?>... params) {
         try {
-            return AccessController.doPrivileged(new PrivilegedExceptionAction<Method>() {
-                @Override
-                public Method run() throws Exception {
-                    Method m = c.getDeclaredMethod(methodname, params);
-                    // TODO: check security implication
-                    // do these setAccessible allow anyone to call these methods freely?s
-                    m.setAccessible(true);
-                    return m;
-                }
-            });
-        } catch (PrivilegedActionException e) {
-            if (e.getCause() instanceof NoSuchMethodException) {
-                // impossible
-                throw new NoSuchMethodError(e.getMessage());
-            } else {
-                throw new Error(e);
-            }
+            Method m = c.getDeclaredMethod(methodname, params);
+            m.setAccessible(true);
+            return m;
+        } catch (NoSuchMethodException e) {
+            throw new NoSuchMethodError(e.getMessage());
         }
     }
 
