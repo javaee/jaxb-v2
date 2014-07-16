@@ -445,7 +445,7 @@ holder.
                 <plugin>
                     <groupId>org.glassfish.build</groupId>
                     <artifactId>gfnexus-maven-plugin</artifactId>
-                    <version>0.16</version>
+                    <version>0.17</version>
                     <configuration>
                         <stagingRepos>
                             <stagingRepo>
