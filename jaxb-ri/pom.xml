@@ -544,6 +544,7 @@ holder.
         <module>runtime</module>
         <module>xjc</module>
         <module>jxc</module>
+        <module>bundles</module>
     </modules>
 
     <profiles>
@@ -556,7 +557,6 @@ holder.
             </activation>
             <modules>
                 <module>docs</module>
-                <module>bundles</module>
             </modules>
         </profile>
         <profile>
