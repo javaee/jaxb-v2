@@ -40,16 +40,14 @@
 
 package com.sun.xml.bind.v2.runtime;
 
-import java.io.IOException;
-
-import javax.xml.stream.XMLStreamException;
-
 import com.sun.istack.FinalArrayList;
 import com.sun.istack.SAXException2;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
 
 /**
  * Receives SAX2 events and send the equivalent events to
@@ -105,17 +103,18 @@ final class ContentHandlerAdaptor extends DefaultHandler {
                 serializer.startElementForce(namespaceURI,localName,p,null);
             else
                 serializer.startElement(namespaceURI,localName, p,null);
-            
+
             // declare namespace events
-            for( int i=0; i<prefixMap.size(); i+=2 ) {
+            for (int i = 0; i < prefixMap.size(); i += 2) {
                 // forcibly set this binding, instead of using declareNsUri.
                 // this guarantees that namespaces used in DOM will show up
                 // as-is in the marshalled output (instead of reassigned to something else,
                 // which may happen if you'd use declareNsUri.)
                 serializer.getNamespaceContext().force(
-                    prefixMap.get(i+1), prefixMap.get(i) );
+                        prefixMap.get(i + 1), prefixMap.get(i));
             }
-            // make sure namespaces needed by attributes are bound 
+
+            // make sure namespaces needed by attributes are bound
             for( int i=0; i<len; i++ ) {
                 String qname = atts.getQName(i);
                 if(qname.startsWith("xmlns") || atts.getURI(i).length() == 0)
@@ -145,7 +144,7 @@ final class ContentHandlerAdaptor extends DefaultHandler {
 
     private String getPrefix(String qname) {
         int idx = qname.indexOf(':');
-        String prefix = (idx==-1)?qname:qname.substring(0,idx);
+        String prefix = (idx == -1) ? "" : qname.substring(0, idx);
         return prefix;
     }
 
