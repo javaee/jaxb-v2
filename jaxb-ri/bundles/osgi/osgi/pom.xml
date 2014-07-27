@@ -336,6 +336,52 @@ holder.
                         </configuration>
                     </execution>
                 </executions>
+              </plugin>
+
+            <plugin>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>com.sun.xml.bind:jaxb-core</include>
+                                    <include>com.sun.xml.bind:jaxb-xjc</include>
+                                    <include>com.sun.xml.bind:jaxb-impl</include>
+                                    <include>com.sun.xml.bind:jaxb-jxc</include>
+                                    <include>com.sun.xml.bind:jaxb1-impl</include>
+                                    <include>org.jvnet.staxex:stax-ex</include>
+                                    <include>com.sun.xml.fastinfoset:FastInfoSet</include>
+                                </includes>
+                                <excludes>
+                                    <exclude>org.glassfish.jaxb:jaxb-runtime</exclude>
+                                    <exclude>org.glassfish.jaxb:jaxb-core</exclude>
+                                    <exclude>javax.xml.bind:jaxb-api</exclude>
+                                    <exclude>org.glassfish.jaxb:txw2</exclude>
+                                    <exclude>com.sun.istack:istack-commons-runtime</exclude>
+                                    <exclude>net.java.dev.msv:msv-core</exclude>
+                                    <exclude>net.java.dev.msv:xsdlib</exclude>
+                                    <exclude>relaxngDatatype:relaxngDatatype</exclude>
+                                    <exclude>com.sun.xml.bind.jaxb:isorelax</exclude>
+                                </excludes>
+                            </artifactSet>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <manifestEntries>
+                                        <Major-Version>${jaxb.majorVersion}.${jaxb.minorVersion}.${jaxb.incrementalVersion}</Major-Version>
+                                        <Specification-Version>${jaxb-api.majorVersion}.${jaxb-api.minorVersion}</Specification-Version>
+                                        <Git-Revision>${buildNumber}</Git-Revision>
+                                    </manifestEntries>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
