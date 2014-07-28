@@ -203,6 +203,40 @@ holder.
                         </configuration>
                     </execution>
                 </executions>
+              </plugin>
+
+            <plugin>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>net.java.dev.msv:msv-core</include>
+                                    <include>net.java.dev.msv:xsdlib</include>
+                                    <include>com.sun.xml.bind.jaxb:isorelax</include>
+                                </includes>
+                                <excludes>
+                                    <exclude>relaxngDatatype:relaxngDatatype</exclude>
+                                </excludes>
+                            </artifactSet>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <manifestEntries>
+                                        <Major-Version>${jaxb.majorVersion}.${jaxb.minorVersion}.${jaxb.incrementalVersion}</Major-Version>
+                                        <Specification-Version>${jaxb-api.majorVersion}.${jaxb-api.minorVersion}</Specification-Version>
+                                        <Git-Revision>${buildNumber}</Git-Revision>
+                                    </manifestEntries>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
