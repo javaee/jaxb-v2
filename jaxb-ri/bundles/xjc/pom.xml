@@ -288,6 +288,7 @@ holder.
                         <configuration>
                             <instructions>
                                 <Export-Package>*</Export-Package>
+                                <Import-Package>*, com.sun.org.apache.xml.internal.resolver;resolution:=optional,com.sun.org.apache.xml.internal.resolver.tools;resolution:=optional</Import-Package>
                             </instructions>
                         </configuration>
                     </execution>
