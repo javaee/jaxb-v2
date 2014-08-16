@@ -46,7 +46,7 @@ import java.util.ResourceBundle;
 /**
  * Formats error messages.
  *
- * @since JAXB2.1.10
+ * @since JAXB 2.1.10
  */
 
 enum Messages {
