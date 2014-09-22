@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -47,25 +47,25 @@ import java.io.Writer;
 /**
  * {@link Writer} that escapes characters that are unsafe
  * as Javadoc comments.
- * 
+ *
  * Such characters include '&lt;' and '&amp;'.
- * 
+ *
  * <p>
  * Note that this class doesn't escape other Unicode characters
  * that are typically unsafe. For example, &#x611B; (A kanji
  * that means "love") can be considered as unsafe because
  * javac with English Windows cannot accept this character in the
  * source code.
- * 
+ *
  * <p>
  * If the application needs to escape such characters as well, then
  * they are on their own.
- * 
+ *
  * @author
  * 	Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 public class JavadocEscapeWriter extends FilterWriter {
-    
+
     public JavadocEscapeWriter( Writer next ) {
         super(next);
     }
@@ -77,9 +77,12 @@ public class JavadocEscapeWriter extends FilterWriter {
         if(ch=='&')
             out.write("&amp;");
         else
+        if(ch=='>')
+            out.write("&gt;");
+        else
             out.write(ch);
     }
-    
+
     public void write(char[] buf, int off, int len) throws IOException {
         for( int i=0; i<len; i++ )
             write(buf[off+i]);
@@ -92,7 +95,7 @@ public class JavadocEscapeWriter extends FilterWriter {
     public void write(String buf, int off, int len) throws IOException {
         write( buf.toCharArray(), off, len );
     }
-    
+
     public void write(String buf) throws IOException {
         write( buf.toCharArray(), 0, buf.length() );
     }
