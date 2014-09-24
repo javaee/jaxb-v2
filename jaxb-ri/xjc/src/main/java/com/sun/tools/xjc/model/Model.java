@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -40,20 +40,6 @@
 
 package com.sun.tools.xjc.model;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlNsForm;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.namespace.QName;
-import javax.xml.transform.Result;
-
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
@@ -76,10 +62,22 @@ import com.sun.xml.bind.v2.model.nav.Navigator;
 import com.sun.xml.bind.v2.util.FlattenIterator;
 import com.sun.xml.xsom.XSComponent;
 import com.sun.xml.xsom.XSSchemaSet;
-
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.LocatorImpl;
+
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.namespace.QName;
+import javax.xml.transform.Result;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Root of the object model that represents the code that needs to be generated.
@@ -107,7 +105,7 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void>, CCustom
      * The element mappings.
      */
     private final Map<NClass/*scope*/,Map<QName,CElementInfo>> elementMappings =
-        new HashMap<NClass,Map<QName,CElementInfo>>();
+            new LinkedHashMap<NClass, Map<QName, CElementInfo>>();
 
     private final Iterable<? extends CElementInfo> allElements =
         new Iterable<CElementInfo>() {
@@ -147,11 +145,11 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void>, CCustom
      * stores the root object of the parse schema model.
      * Otherwise null.
      *
-     * @sine 2.1.1
+     * @since 2.1.1
      */
     public final XSSchemaSet schemaComponent;
 
-    private CCustomizations gloablCustomizations = new CCustomizations();
+    private CCustomizations globalCustomizations = new CCustomizations();
 
     /**
      * @param nc
@@ -167,13 +165,13 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void>, CCustom
         this.defaultSymbolSpace = new SymbolSpace(codeModel);
         defaultSymbolSpace.setType(codeModel.ref(Object.class));
 
-        elementMappings.put(null,new HashMap<QName,CElementInfo>());
+        elementMappings.put(null, new LinkedHashMap<QName, CElementInfo>());
 
         if(opts.automaticNameConflictResolution)
             allocator = new AutoClassNameAllocator(allocator);
         this.allocator = new ClassNameAllocatorWrapper(allocator);
         this.schemaComponent = schemaComponent;
-        this.gloablCustomizations.setParent(this,this);
+        this.globalCustomizations.setParent(this, this);
     }
 
     public void setNameConverter(NameConverter nameConverter) {
@@ -335,7 +333,7 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void>, CCustom
      * global element declarations to its representation class.
      *
      * <p>
-     * For other schema languages, it should follow the appendicies in
+     * For other schema languages, it should follow the appendices in
      * WSDL (but in practice no one would use WSDL with a schema language
      * other than XML Schema, so it doesn't really matter.)
      *
@@ -439,7 +437,7 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void>, CCustom
      * Gets the global customizations.
      */
     public CCustomizations getCustomizations() {
-        return gloablCustomizations;
+        return globalCustomizations;
     }
 
     /**
@@ -481,7 +479,7 @@ public final class Model implements TypeInfoSet<NType,NClass,Void,Void>, CCustom
 
         Map<QName,CElementInfo> m = elementMappings.get(clazz);
         if(m==null)
-            elementMappings.put(clazz,m=new HashMap<QName,CElementInfo>());
+            elementMappings.put(clazz, m = new LinkedHashMap<QName, CElementInfo>());
         m.put(ei.getElementName(),ei);
     }
 

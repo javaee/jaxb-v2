@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -45,20 +45,24 @@ import javax.xml.namespace.QName;
 import com.sun.codemodel.JClass;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
-import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIClass;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIEnum;
 import com.sun.xml.xsom.XSComponent;
 
 /**
- * Refernece to an existing class.
+ * Reference to an existing class.
  *
  * @author Kohsuke Kawaguchi
  */
 public final class CClassRef extends AbstractCElement implements NClass, CClass {
 
     private final String fullyQualifiedClassName;
+
+    /**
+     * Cached for both performance and single identity.
+     */
+    private JClass clazz;
 
     /**
      *
@@ -94,11 +98,6 @@ public final class CClassRef extends AbstractCElement implements NClass, CClass 
     public NType getType() {
         return this;
     }
-
-    /**
-     * Cached for both performance and single identity.
-     */
-    private JClass clazz;
 
     public JClass toType(Outline o, Aspect aspect) {
         if(clazz==null)

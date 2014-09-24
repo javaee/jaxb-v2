@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -57,7 +57,7 @@ import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 import com.sun.tools.xjc.generator.annotation.spec.XmlAccessorTypeWriter;
 import com.sun.tools.xjc.model.CClassInfo;
-import com.sun.tools.xjc.outline.Aspect;
+import com.sun.tools.xjc.model.Aspect;
 import com.sun.tools.xjc.outline.Outline;
 
 /**

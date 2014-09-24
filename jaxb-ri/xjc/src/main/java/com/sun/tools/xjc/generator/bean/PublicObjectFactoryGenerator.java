@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -43,7 +43,7 @@ package com.sun.tools.xjc.generator.bean;
 import com.sun.codemodel.JPackage;
 import com.sun.tools.xjc.model.CElementInfo;
 import com.sun.tools.xjc.model.Model;
-import com.sun.tools.xjc.outline.Aspect;
+import com.sun.tools.xjc.model.Aspect;
 
 /**
  * Generates public ObjectFactory.

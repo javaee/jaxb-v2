@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -78,8 +78,8 @@ import com.sun.tools.xjc.model.CTypeInfo;
 import com.sun.tools.xjc.model.CTypeRef;
 import com.sun.tools.xjc.model.CValuePropertyInfo;
 import com.sun.tools.xjc.model.nav.NClass;
-import com.sun.tools.xjc.outline.Aspect;
-import static com.sun.tools.xjc.outline.Aspect.IMPLEMENTATION;
+import com.sun.tools.xjc.model.Aspect;
+import static com.sun.tools.xjc.model.Aspect.IMPLEMENTATION;
 import com.sun.tools.xjc.outline.ClassOutline;
 import com.sun.tools.xjc.outline.FieldAccessor;
 import com.sun.tools.xjc.outline.FieldOutline;

@@ -56,10 +56,19 @@ holder.
     <name>JAXB OSGI parent</name>
     <description>Parent module of JAXB OSGI bundle</description>
 
-    <modules>
-        <module>extra</module>
-        <module>osgi</module>
-        <module>tests</module>
-    </modules>
-
+    <profiles>
+        <profile>
+            <id>default-profile</id>
+            <activation>
+                <property>
+                    <name>!dev</name>
+                </property>
+            </activation>
+            <modules>
+                <module>extra</module>
+                <module>osgi</module>
+                <module>tests</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>

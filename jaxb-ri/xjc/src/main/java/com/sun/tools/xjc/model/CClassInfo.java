@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -60,7 +60,6 @@ import com.sun.istack.Nullable;
 import com.sun.tools.xjc.Language;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
-import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.reader.Ring;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
@@ -72,7 +71,7 @@ import com.sun.xml.xsom.XSComponent;
 import org.xml.sax.Locator;
 
 /**
- * Mutable {@link ClassInfo} represenatation.
+ * Mutable {@link ClassInfo} representation.
  *
  * <p>
  * Schema parsers build these objects.

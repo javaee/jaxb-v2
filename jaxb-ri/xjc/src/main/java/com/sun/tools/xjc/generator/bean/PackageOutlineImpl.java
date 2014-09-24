@@ -64,7 +64,7 @@ import com.sun.tools.xjc.model.CTypeRef;
 import com.sun.tools.xjc.model.CValuePropertyInfo;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.outline.PackageOutline;
-import com.sun.tools.xjc.outline.Aspect;
+import com.sun.tools.xjc.model.Aspect;
 
 /**
  * {@link PackageOutline} enhanced with schema2java specific
