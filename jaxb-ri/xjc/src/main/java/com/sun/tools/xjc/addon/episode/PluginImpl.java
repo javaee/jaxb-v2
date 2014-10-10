@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -40,24 +40,15 @@
 
 package com.sun.tools.xjc.addon.episode;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.sun.tools.xjc.BadCommandLineException;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.Plugin;
 import com.sun.tools.xjc.outline.ClassOutline;
-import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.outline.EnumOutline;
+import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.reader.Const;
+import com.sun.xml.bind.v2.schemagen.episode.Bindings;
+import com.sun.xml.bind.v2.schemagen.episode.SchemaBindings;
 import com.sun.xml.txw2.TXW;
 import com.sun.xml.txw2.output.StreamSerializer;
 import com.sun.xml.xsom.XSAnnotation;
@@ -80,12 +71,20 @@ import com.sun.xml.xsom.XSSimpleType;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.XSXPath;
 import com.sun.xml.xsom.visitor.XSFunction;
-import com.sun.xml.bind.v2.schemagen.episode.Bindings;
-import com.sun.xml.bind.v2.schemagen.episode.SchemaBindings;
-
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Creates the episode file,
@@ -121,7 +120,7 @@ public class PluginImpl extends Plugin {
         try {
             // reorganize qualifying components by their namespaces to
             // generate the list nicely
-            Map<XSSchema, PerSchemaOutlineAdaptors> perSchema = new HashMap<XSSchema,PerSchemaOutlineAdaptors>();
+            Map<XSSchema, PerSchemaOutlineAdaptors> perSchema = new LinkedHashMap<XSSchema, PerSchemaOutlineAdaptors>();
             boolean hasComponentInNoNamespace = false;
 
             // Combine classes and enums into a single list
@@ -187,10 +186,9 @@ public class PluginImpl extends Plugin {
                 group.scd("x-schema::"+(tns.equals("")?"":"tns"));
                 SchemaBindings schemaBindings = group.schemaBindings();
 				schemaBindings.map(false);
-				if (ps.packageNames.size() == 1)
-				{
-					final String packageName = ps.packageNames.iterator().next();
-					if (packageName != null && packageName.length() > 0) {
+                if (ps.packageNames.size() == 1) {
+                    final String packageName = ps.packageNames.iterator().next();
+                    if (packageName != null && packageName.length() > 0) {
 						schemaBindings._package().name(packageName);
 					}
 				}
@@ -300,7 +298,6 @@ public class PluginImpl extends Plugin {
             CLASS(new BindingsBuilder() {
                 public void build(OutlineAdaptor adaptor, Bindings bindings) {
                     bindings.klass().ref(adaptor.implName);
-
                 }
             }),
             ENUM(new BindingsBuilder() {
@@ -319,7 +316,7 @@ public class PluginImpl extends Plugin {
                 void build(OutlineAdaptor adaptor, Bindings bindings);
             }
 
-        };
+        }
 
         private final XSComponent schemaComponent;
         private final OutlineType outlineType;
@@ -345,11 +342,10 @@ public class PluginImpl extends Plugin {
     	private final List<OutlineAdaptor> outlineAdaptors = new ArrayList<OutlineAdaptor>();
     	
     	private final Set<String> packageNames = new HashSet<String>();
-    	
-    	private void add(OutlineAdaptor outlineAdaptor)
-    	{
-    		this.outlineAdaptors.add(outlineAdaptor);
-    		this.packageNames.add(outlineAdaptor.packageName);
+
+        private void add(OutlineAdaptor outlineAdaptor) {
+            this.outlineAdaptors.add(outlineAdaptor);
+            this.packageNames.add(outlineAdaptor.packageName);
     	}
     	
     }
