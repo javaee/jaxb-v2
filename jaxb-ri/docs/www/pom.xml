@@ -54,12 +54,6 @@ holder.
     <packaging>pom</packaging>
     <name>JAXB WWW Help files</name>
 
-    <properties>
-        <jaxb.version>${release.impl.version}${release.impl.version.suffix}</jaxb.version>
-        <jaxb.bin>jaxb-ri-${release.impl.version}.zip</jaxb.bin>
-        <jaxb.src>jaxb-ri-${jaxb.version}.src.zip</jaxb.src>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
