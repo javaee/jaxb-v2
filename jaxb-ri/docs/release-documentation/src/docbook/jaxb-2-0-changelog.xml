@@ -131,7 +131,7 @@ holder.
                 </programlisting>
             </para></listitem>
             <listitem><para>
-                From now JAXB RI project uses GIT SVC. You can get our sources from:
+                From now JAXB RI project uses GIT VCS. You can get our sources from:
                 <programlisting>
                     Java.net:   git clone git://java.net/jaxb~v2
                     GitHub:     git clone https://github.com/gf-metro/jaxb.git
