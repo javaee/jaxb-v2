@@ -77,7 +77,10 @@ holder.
                         <link xlink:href="https://java.net/jira/browse/JAXB-973">JAXB-973</link>: generated code should be
                         compilable with <literal>'-Xdoclint:all'</literal>
                     </para></listitem>
-                    <listitem><para>XJC generates ordered ObjectFactories, <literal>@XmlSeeAlso</literal> annotations and episode files</para></listitem>
+                    <listitem><para>
+                        <link xlink:href="https://java.net/jira/browse/JAXB-598">JAXB-598</link>: XJC generates ordered
+                        ObjectFactories, <literal>@XmlSeeAlso</literal> annotations and episode files.
+                    </para></listitem>
                 </itemizedlist>
             </para></listitem>
         </itemizedlist>
@@ -127,6 +130,7 @@ holder.
                         &lt;groupId&gt;org.glassfish.jaxb&lt;/groupId&gt;
                         &lt;artifactId&gt;jaxb-bom&lt;/artifactId&gt;
                         &lt;version&gt;2.2.8&lt;/version&gt;
+                        &lt;type&gt;pom&lt;/type&gt;
                     &lt;/dependency&gt;
                 </programlisting>
             </para></listitem>
