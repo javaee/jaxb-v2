@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -45,20 +45,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ServiceLoader;
 import java.util.Set;
 
 import com.sun.codemodel.CodeWriter;
@@ -122,7 +118,7 @@ public class Options
 
     /**
      * If true XML security features when parsing XML documents will be disabled.
-     * The default value is false. 
+     * The default value is false.
      *
      * Boolean
      * @since 2.2.6
@@ -369,9 +365,7 @@ public class Options
      */
     public List<Plugin> getAllPlugins() {
         if(allPlugins==null) {
-            allPlugins = new ArrayList<Plugin>();
-            ClassLoader ucl = getUserClassLoader(SecureLoader.getClassClassLoader(getClass()));
-            allPlugins.addAll(Arrays.asList(findServices(Plugin.class,ucl)));
+            allPlugins = findServices(Plugin.class);
         }
 
         return allPlugins;
@@ -937,121 +931,18 @@ public class Options
     }
 
     /**
-     * If a plugin failed to load, report.
-     */
-    private static String pluginLoadFailure;
-
-    /**
      * Looks for all "META-INF/services/[className]" files and
      * create one instance for each class name found inside this file.
      */
-    private static <T> T[] findServices( Class<T> clazz, ClassLoader classLoader ) {
-        // if true, print debug output
-        final boolean debug = com.sun.tools.xjc.util.Util.getSystemProperty(Options.class,"findServices")!=null;
-
-        // if we are running on Mustang or Dolphin, use ServiceLoader
-        // so that we can take advantage of JSR-277 module system.
-        try {
-            Class<?> serviceLoader = Class.forName("java.util.ServiceLoader");
-            if(debug)
-                System.out.println("Using java.util.ServiceLoader");
-            Iterable<T> itr = (Iterable<T>)serviceLoader.getMethod("load",Class.class,ClassLoader.class).invoke(null,clazz,classLoader);
-            List<T> r = new ArrayList<T>();
-            for (T t : itr)
-                r.add(t);
-            return r.toArray((T[])Array.newInstance(clazz,r.size()));
-        } catch (ClassNotFoundException e) {
-            // fall through
-        } catch (IllegalAccessException e) {
-            Error x = new IllegalAccessError();
-            x.initCause(e);
-            throw x;
-        } catch (InvocationTargetException e) {
-            Throwable x = e.getTargetException();
-            if (x instanceof RuntimeException)
-                throw (RuntimeException) x;
-            if (x instanceof Error)
-                throw (Error) x;
-            throw new Error(x);
-        } catch (NoSuchMethodException e) {
-            Error x = new NoSuchMethodError();
-            x.initCause(e);
-            throw x;
-        }
-
-        String serviceId = "META-INF/services/" + clazz.getName();
-
-        // used to avoid creating the same instance twice
-        Set<String> classNames = new HashSet<String>();
-
-        if(debug) {
-            System.out.println("Looking for "+serviceId+" for add-ons");
-        }
-
-        // try to find services in CLASSPATH
-        try {
-            Enumeration<URL> e = classLoader.getResources(serviceId);
-            if(e==null) return (T[])Array.newInstance(clazz,0);
-
-            ArrayList<T> a = new ArrayList<T>();
-            while(e.hasMoreElements()) {
-                URL url = e.nextElement();
-                BufferedReader reader=null;
-
-                if(debug) {
-                    System.out.println("Checking "+url+" for an add-on");
-                }
-
-                try {
-                    reader = new BufferedReader(new InputStreamReader(url.openStream()));
-                    String impl;
-                    while((impl = reader.readLine())!=null ) {
-                        // try to instanciate the object
-                        impl = impl.trim();
-                        if(classNames.add(impl)) {
-                            Class implClass = classLoader.loadClass(impl);
-                            if(!clazz.isAssignableFrom(implClass)) {
-                                pluginLoadFailure = impl+" is not a subclass of "+clazz+". Skipping";
-                                if(debug)
-                                    System.out.println(pluginLoadFailure);
-                                continue;
-                            }
-                            if(debug) {
-                                System.out.println("Attempting to instanciate "+impl);
-                            }
-                            a.add(clazz.cast(implClass.newInstance()));
-                        }
-                    }
-                    reader.close();
-                } catch( Exception ex ) {
-                    // let it go.
-                    StringWriter w = new StringWriter();
-                    ex.printStackTrace(new PrintWriter(w));
-                    pluginLoadFailure = w.toString();
-                    if(debug) {
-                        System.out.println(pluginLoadFailure);
-                    }
-                    if( reader!=null ) {
-                        try {
-                            reader.close();
-                        } catch( IOException ex2 ) {
-                            // ignore
-                        }
-                    }
-                }
-            }
-
-            return a.toArray((T[])Array.newInstance(clazz,a.size()));
-        } catch( Throwable e ) {
-            // ignore any error
-            StringWriter w = new StringWriter();
-            e.printStackTrace(new PrintWriter(w));
-            pluginLoadFailure = w.toString();
-            if(debug) {
-                System.out.println(pluginLoadFailure);
-            }
-            return (T[])Array.newInstance(clazz,0);
-        }
+    private static <T> List<T> findServices( Class<T> clazz) {
+        // TCCL allows user plugins to be loaded even if xjc is in jdk
+        // We have to use our SecureLoader to obtain it because we are trying to avoid SecurityException
+        final ClassLoader tccl = SecureLoader.getContextClassLoader();
+        final ServiceLoader<T> sl = ServiceLoader.load(clazz, tccl);
+        final List<T> result = new ArrayList<T>();
+        for (T t : sl)
+            result.add(t);
+        return result;
     }
 
     // this is a convenient place to expose the build version to xjc plugins
