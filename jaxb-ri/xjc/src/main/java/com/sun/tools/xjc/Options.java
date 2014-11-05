@@ -45,9 +45,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -931,18 +935,47 @@ public class Options
     }
 
     /**
+     * If a plugin failed to load, report.
+     */
+    private String pluginLoadFailure;
+
+    /**
      * Looks for all "META-INF/services/[className]" files and
      * create one instance for each class name found inside this file.
      */
-    private static <T> List<T> findServices( Class<T> clazz) {
-        // TCCL allows user plugins to be loaded even if xjc is in jdk
-        // We have to use our SecureLoader to obtain it because we are trying to avoid SecurityException
-        final ClassLoader tccl = SecureLoader.getContextClassLoader();
-        final ServiceLoader<T> sl = ServiceLoader.load(clazz, tccl);
+    private <T> List<T> findServices( Class<T> clazz) {
         final List<T> result = new ArrayList<T>();
-        for (T t : sl)
-            result.add(t);
+        final boolean debug = getDebugPropertyValue();
+        try {
+            // TCCL allows user plugins to be loaded even if xjc is in jdk
+            // We have to use our SecureLoader to obtain it because we are trying to avoid SecurityException
+            final ClassLoader tccl = SecureLoader.getContextClassLoader();
+            final ServiceLoader<T> sl = ServiceLoader.load(clazz, tccl);
+            for (T t : sl)
+                result.add(t);
+        } catch( Throwable e ) {
+            // ignore any error
+            StringWriter w = new StringWriter();
+            e.printStackTrace(new PrintWriter(w));
+            pluginLoadFailure = w.toString();
+            if(debug)
+                System.out.println(pluginLoadFailure);
+        }
         return result;
+    }
+
+    private static boolean getDebugPropertyValue() {
+        final String debugPropertyName = Options.class.getName() + ".findServices";
+        if (System.getSecurityManager() != null) {
+            return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+                @Override
+                public Boolean run() {
+                    return Boolean.getBoolean(debugPropertyName);
+                }
+            });
+        } else {
+            return Boolean.getBoolean(debugPropertyName);
+        }
     }
 
     // this is a convenient place to expose the build version to xjc plugins
