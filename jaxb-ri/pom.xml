@@ -150,7 +150,11 @@ holder.
         <findbugs.exclude/>
         <findbugs.version>2.5.2</findbugs.version>
         <skipSources>true</skipSources>
+        <skipOsgiTests>true</skipOsgiTests>
         <netbeans.hint.jdkPlatform>JDK_1.6</netbeans.hint.jdkPlatform>
+        <felix.junit4osgi>1.0.0</felix.junit4osgi>
+        <felix.osgi.core>1.2.0</felix.osgi.core>
+        <surefire.plugin>2.13</surefire.plugin>
     </properties>
 
     <dependencyManagement>
@@ -216,11 +220,6 @@ holder.
                     <artifactId>maven-bundle-plugin</artifactId>
                     <version>2.3.7</version>
                     <extensions>true</extensions>
-                </plugin>
-                <plugin>
-                    <groupId>org.glassfish.hk2</groupId>
-                    <artifactId>osgiversion-maven-plugin</artifactId>
-                    <version>2.1.14</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
@@ -555,8 +554,12 @@ holder.
                     <name>!dev</name>
                 </property>
             </activation>
+            <properties>
+                <skipOsgiTests>false</skipOsgiTests>
+            </properties>
             <modules>
                 <module>docs</module>
+                <module>tools/osgi_tests</module>
             </modules>
         </profile>
         <profile>

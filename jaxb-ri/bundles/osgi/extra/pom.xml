@@ -63,6 +63,11 @@ holder.
             <artifactId>msv-core</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <properties>
@@ -231,9 +236,35 @@ holder.
                                         <Major-Version>${jaxb.majorVersion}.${jaxb.minorVersion}.${jaxb.incrementalVersion}</Major-Version>
                                         <Specification-Version>${jaxb-api.majorVersion}.${jaxb-api.minorVersion}</Specification-Version>
                                         <Git-Revision>${buildNumber}</Git-Revision>
+                                        <Class-Path/>
                                     </manifestEntries>
                                 </transformer>
                             </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.plugin}</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <phase>integration-test</phase>
+                        <configuration>
+                            <skip>false</skip>
+                            <systemProperties>
+                                <jaxb.spec.version>${jaxb-api.version}</jaxb.spec.version>
+                                <osgi.dist>${project.build.directory}/${project.build.finalName}</osgi.dist>
+                            </systemProperties>
                         </configuration>
                     </execution>
                 </executions>
