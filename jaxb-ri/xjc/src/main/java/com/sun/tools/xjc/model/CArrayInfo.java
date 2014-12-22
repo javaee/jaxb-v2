@@ -43,6 +43,7 @@ package com.sun.tools.xjc.model;
 import javax.xml.namespace.QName;
 
 import com.sun.codemodel.JType;
+import com.sun.tools.xjc.outline.Aspect;
 import com.sun.xml.bind.v2.model.util.ArrayInfoUtil;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;

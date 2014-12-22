@@ -58,6 +58,7 @@ import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.REPEAT
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
 import com.sun.tools.xjc.model.nav.NavigatorImpl;
+import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIInlineBinaryData;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIFactoryMethod;

@@ -49,6 +49,7 @@ import com.sun.codemodel.JClass;
 import com.sun.codemodel.JExpression;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
+import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.xml.bind.v2.model.annotation.Locatable;
 import com.sun.xml.bind.v2.model.core.EnumLeafInfo;

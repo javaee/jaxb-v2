@@ -38,7 +38,7 @@
  * holder.
  */
 
-package com.sun.tools.xjc.model;
+package com.sun.tools.xjc.outline;
 
 import com.sun.tools.xjc.generator.bean.ImplStructureStrategy;
 
@@ -50,6 +50,8 @@ import com.sun.tools.xjc.generator.bean.ImplStructureStrategy;
  * This is an enumeration of all possible aspects.
  *
  * @author Kohsuke Kawaguchi
+ *
+ * TODO: move this to the model package. We cannot do this before JAXB3 because of old plugins
  */
 public enum Aspect {
     /**

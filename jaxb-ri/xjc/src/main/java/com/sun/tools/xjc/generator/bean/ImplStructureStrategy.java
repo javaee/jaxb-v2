@@ -57,7 +57,7 @@ import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 import com.sun.tools.xjc.generator.annotation.spec.XmlAccessorTypeWriter;
 import com.sun.tools.xjc.model.CClassInfo;
-import com.sun.tools.xjc.model.Aspect;
+import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
 
 /**

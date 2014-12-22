@@ -55,7 +55,7 @@ import com.sun.tools.xjc.generator.bean.MethodWriter;
 import com.sun.tools.xjc.model.CElement;
 import com.sun.tools.xjc.model.CPropertyInfo;
 import com.sun.tools.xjc.model.CReferencePropertyInfo;
-import com.sun.tools.xjc.model.Aspect;
+import com.sun.tools.xjc.outline.Aspect;
 import com.sun.xml.bind.api.impl.NameConverter;
 import java.io.Serializable;
 import java.util.Set;

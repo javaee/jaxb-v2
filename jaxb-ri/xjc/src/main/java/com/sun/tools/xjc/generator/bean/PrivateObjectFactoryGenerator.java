@@ -47,7 +47,7 @@ import com.sun.codemodel.JPackage;
 import com.sun.codemodel.fmt.JPropertyFile;
 import com.sun.tools.xjc.model.CElementInfo;
 import com.sun.tools.xjc.model.Model;
-import com.sun.tools.xjc.model.Aspect;
+import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.runtime.JAXBContextFactory;
 
 /**

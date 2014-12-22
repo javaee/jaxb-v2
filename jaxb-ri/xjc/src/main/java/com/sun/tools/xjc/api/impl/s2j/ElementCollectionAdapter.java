@@ -55,7 +55,7 @@ import com.sun.codemodel.JForEach;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 import com.sun.tools.xjc.model.CElementInfo;
-import static com.sun.tools.xjc.model.Aspect.EXPOSED;
+import static com.sun.tools.xjc.outline.Aspect.EXPOSED;
 import com.sun.tools.xjc.outline.FieldAccessor;
 import com.sun.tools.xjc.outline.FieldOutline;
 

@@ -44,6 +44,7 @@ import com.sun.codemodel.JClass;
 import com.sun.codemodel.JType;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
+import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
 import com.sun.xml.bind.v2.model.core.TypeInfo;
 
@@ -59,7 +60,7 @@ public interface CTypeInfo extends TypeInfo<NType,NClass>, CCustomizable {
      * Returns the {@link JClass} that represents the class being bound,
      * under the given {@link Outline}.
      *
-     * @see NType#toType(Outline, Aspect)
+     * @see NType#toType(Outline, com.sun.tools.xjc.outline.Aspect)
      */
     JType toType(Outline o, Aspect aspect);
 }

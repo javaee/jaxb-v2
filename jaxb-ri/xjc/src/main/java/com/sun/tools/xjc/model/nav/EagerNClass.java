@@ -45,7 +45,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.sun.codemodel.JClass;
-import com.sun.tools.xjc.model.Aspect;
+import com.sun.tools.xjc.outline.Aspect;
 import com.sun.tools.xjc.outline.Outline;
 
 /**
