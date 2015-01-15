@@ -3,7 +3,7 @@
 
 DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2012-2015 Oracle and/or its affiliates. All rights reserved.
 
 The contents of this file are subject to the terms of either the GNU
 General Public License Version 2 only ("GPL") or the Common Development
@@ -51,7 +51,39 @@ holder.
 <para>
     Please refer to the <link xlink:href="https://jaxb.java.net/nonav/2.0.1/docs/changelog.html">jaxb-1-0-x-changelog</link>
     for older releases.
-</para><section xml:id="a-2-2-8">
+</para>
+    <section xml:id="a-2-2-10">
+    <title>Changes between 2.2.9 to 2.2.10</title>
+    <itemizedlist>
+        <listitem><para>Bug fixes:
+            <itemizedlist>
+                <listitem><para>Fixed for preserving whitespaces within xsd:any mixed element</para></listitem>
+                <listitem><para>Security fixes</para></listitem>
+                <listitem><para>Fixed circular dependency between SAAJ and JAXB; stax-ex changed not to use SAAJ-API</para></listitem>
+                <listitem><para>Fixed catalog logging. Allow user to disable usage of system proxies. Force CatalogResolver to set verbosity level.</para></listitem>
+                <listitem><para>Fixed stream handling</para></listitem>
+                <listitem><para>Fixed EnvelopeFactory</para></listitem>
+            </itemizedlist>
+        </para></listitem>
+    </itemizedlist>
+    </section>
+    <section xml:id="a-2-2-9">
+        <title>Changes between 2.2.8 to 2.2.9</title>
+        <itemizedlist>
+            <listitem><para>Bug fixes:
+                <itemizedlist>
+                    <listitem><para>Security fixes.</para></listitem>
+                    <listitem>
+                        <link xlink:href="https://java.net/jira/browse/JAXB-926">JAXB-926</link>
+                        - Fixed optional property behavior for PRIMITIVE value.
+                    </listitem>
+                    <listitem><para>Fixed wrong ref element generation</para></listitem>
+                    <listitem><para>Fixed OSGi bug: <literal>NoClassDefFoundError javax/xml/soap/soapelement</literal></para></listitem>
+                </itemizedlist>
+            </para></listitem>
+        </itemizedlist>
+    </section>
+    <section xml:id="a-2-2-8">
     <title>Changes between 2.2.7 to 2.2.8</title>
     <itemizedlist>
         <listitem>
