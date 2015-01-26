@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -39,8 +39,10 @@
  */
 package com.sun.xml.bind.v2.util;
 
-import com.sun.xml.bind.Util;
 import com.sun.xml.bind.v2.Messages;
+
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.XMLConstants;
@@ -56,8 +58,6 @@ import javax.xml.xpath.XPathFactoryConfigurationException;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
-
-import static com.sun.xml.bind.Util.getSystemProperty;
 
 /**
  * Provides helper methods for creating properly configured XML parser 
@@ -82,7 +82,14 @@ public class XmlFactory {
      */
     private static final String DISABLE_XML_SECURITY  = "com.sun.xml.bind.disableXmlSecurity";
 
-    public static final boolean XML_SECURITY_DISABLED = Boolean.parseBoolean(getSystemProperty(DISABLE_XML_SECURITY));
+    public static final boolean XML_SECURITY_DISABLED = AccessController.doPrivileged(
+            new PrivilegedAction<Boolean>() {
+                @Override
+                public Boolean run() {
+                    return Boolean.getBoolean(DISABLE_XML_SECURITY);
+                }
+            }
+    );
 
     private static boolean isXMLSecurityDisabled(boolean runtimeSetting) {
         return XML_SECURITY_DISABLED || runtimeSetting;

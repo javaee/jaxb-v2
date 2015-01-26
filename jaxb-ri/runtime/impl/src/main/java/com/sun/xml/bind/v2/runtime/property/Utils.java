@@ -53,6 +53,9 @@ import java.util.logging.Logger;
 
 /**
  * Utils class.
+ *
+ * WARNING: If you are doing any changes don't forget to change other Utils classes in different packages.
+ *
  * Has *package private* access to avoid inappropriate usage.
  */
 final class Utils {
@@ -66,17 +69,21 @@ final class Utils {
 
     static { // we statically initializing REFLECTION_NAVIGATOR property
         try {
-            Class refNav = Class.forName("com.sun.xml.bind.v2.model.nav.ReflectionNavigator");
-            //noinspection unchecked
-            final Method getInstance = refNav.getDeclaredMethod("getInstance");
+            final Class refNav = Class.forName("com.sun.xml.bind.v2.model.nav.ReflectionNavigator");
 
             // requires accessClassInPackage privilege
-            AccessController.doPrivileged(
-                    new PrivilegedAction<Object>() {
+            final Method getInstance = AccessController.doPrivileged(
+                    new PrivilegedAction<Method>() {
                         @Override
-                        public Object run() {
-                            getInstance.setAccessible(true);
-                            return null;
+                        public Method run() {
+                            try {
+                                Method getInstance = refNav.getDeclaredMethod("getInstance");
+                                getInstance.setAccessible(true);
+                                return getInstance;
+                            } catch (NoSuchMethodException e) {
+                                e.printStackTrace();
+                                throw new IllegalStateException("ReflectionNavigator.getInstance can't be found");
+                            }
                         }
                     }
             );
@@ -89,9 +96,6 @@ final class Utils {
         } catch (InvocationTargetException e) {
             e.printStackTrace();
             throw new IllegalStateException("ReflectionNavigator.getInstance throws the exception");
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-            throw new IllegalStateException("ReflectionNavigator.getInstance can't be found");
         } catch (IllegalAccessException e) {
             e.printStackTrace();
             throw new IllegalStateException("ReflectionNavigator.getInstance method is inaccessible");
