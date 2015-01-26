@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2013-2014 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -81,7 +81,6 @@ final class Utils {
                                 getInstance.setAccessible(true);
                                 return getInstance;
                             } catch (NoSuchMethodException e) {
-                                e.printStackTrace();
                                 throw new IllegalStateException("ReflectionNavigator.getInstance can't be found");
                             }
                         }
@@ -91,13 +90,10 @@ final class Utils {
             //noinspection unchecked
             REFLECTION_NAVIGATOR = (Navigator<Type, Class, Field, Method>) getInstance.invoke(null);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
             throw new IllegalStateException("Can't find ReflectionNavigator class");
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
             throw new IllegalStateException("ReflectionNavigator.getInstance throws the exception");
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
             throw new IllegalStateException("ReflectionNavigator.getInstance method is inaccessible");
         } catch (SecurityException e) {
             LOGGER.log(Level.FINE, "Unable to access ReflectionNavigator.getInstance", e);
