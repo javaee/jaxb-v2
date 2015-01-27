@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sun.codemodel.JDefinedClass;
+import com.sun.tools.xjc.model.CCustomizable;
 import com.sun.tools.xjc.model.CEnumLeafInfo;
 import com.sun.istack.NotNull;
 
@@ -55,7 +56,7 @@ import com.sun.istack.NotNull;
  *
  * @author Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-public abstract class EnumOutline {
+public abstract class EnumOutline implements CustomizableOutline {
 
     /**
      * This {@link EnumOutline} holds information about this {@link CEnumLeafInfo}.
@@ -88,5 +89,15 @@ public abstract class EnumOutline {
     protected EnumOutline(CEnumLeafInfo target, JDefinedClass clazz) {
         this.target = target;
         this.clazz = clazz;
+    }
+
+    @Override
+    public JDefinedClass getImplClass() {
+        return clazz;
+    }
+
+    @Override
+    public CCustomizable getTarget() {
+        return target;
     }
 }
