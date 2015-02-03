@@ -155,6 +155,7 @@ holder.
         <felix.junit4osgi>1.0.0</felix.junit4osgi>
         <felix.osgi.core>1.2.0</felix.osgi.core>
         <surefire.plugin>2.13</surefire.plugin>
+        <jmockit.version>1.14</jmockit.version>
     </properties>
 
     <dependencyManagement>
@@ -165,6 +166,12 @@ holder.
                 <version>${args4j.version}</version>
             </dependency>
             <!-- Test -->
+            <dependency>
+                <groupId>org.jmockit</groupId>
+                <artifactId>jmockit</artifactId>
+                <version>${jmockit.version}</version>
+                <scope>test</scope>
+            </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>

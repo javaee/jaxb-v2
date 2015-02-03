@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -40,64 +40,38 @@
 
 package com.sun.tools.xjc.addon.code_injector;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import com.sun.istack.NotNull;
 import com.sun.tools.xjc.Options;
-import com.sun.tools.xjc.Plugin;
-import com.sun.tools.xjc.model.CPluginCustomization;
 import com.sun.tools.xjc.outline.CustomizableOutline;
 import com.sun.tools.xjc.outline.Outline;
-import com.sun.tools.xjc.util.DOMUtils;
-
+import mockit.Deencapsulation;
+import mockit.Expectations;
+import mockit.Mocked;
+import mockit.integration.junit4.JMockit;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.xml.sax.ErrorHandler;
 
+import java.util.Collection;
+import java.util.Collections;
+
 /**
- * Entry point of a plugin.
- *
- * See the javadoc of {@link Plugin} for what those methods mean.
- *
- * @author Kohsuke Kawaguchi
+ * @author yaroska
  */
-public class PluginImpl extends Plugin {
-    public String getOptionName() {
-        return "Xinject-code";
-    }
 
-    public List<String> getCustomizationURIs() {
-        return Collections.singletonList(Const.NS);
-    }
+@RunWith(JMockit.class)
+public class PluginImplTest {
 
-    public boolean isCustomizationTagName(String nsUri, String localName) {
-        return Const.NS.equals(nsUri) && "code".equals(localName);
-    }
+    @Test
+    public void pluginRunTest(final @Mocked Outline model, @Mocked Options opt, @Mocked ErrorHandler errorHandler) {
 
-    public String getUsage() {
-        return "  -Xinject-code      :  inject specified Java code fragments into the generated code";
-    }
+        new Expectations() {{
+            Collection<? extends CustomizableOutline> target = Collections.emptyList();
+            model.getClasses(); result = target;
+            Deencapsulation.invoke(PluginImpl.class, "checkAndInject", target);
+            model.getEnums(); result = target;
+            Deencapsulation.invoke(PluginImpl.class, "checkAndInject", target);
+        }};
 
-    // meat of the processing
-    public boolean run(@NotNull Outline model, Options opt, ErrorHandler errorHandler) {
-        checkAndInject(model.getClasses());
-        checkAndInject(model.getEnums());
-        return true;
-    }
-
-    private static void checkAndInject(Collection<? extends CustomizableOutline> outlines) {
-        for (CustomizableOutline co : outlines) {
-            CPluginCustomization c = co.getTarget().getCustomizations().find(Const.NS, "code");
-            if(c==null)
-                continue;   // no customization --- nothing to inject here
-
-            c.markAsAcknowledged();
-            // TODO: ideally you should validate this DOM element to make sure
-            // that there's no typo/etc. JAXP 1.3 can do this very easily.
-            String codeFragment = DOMUtils.getElementText(c.element);
-
-            // inject the specified code fragment into the implementation class.
-            co.getImplClass().direct(codeFragment);
-        }
+        new PluginImpl().run(model, opt, errorHandler);
     }
 }
