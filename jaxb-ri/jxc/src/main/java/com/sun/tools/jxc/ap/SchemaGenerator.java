@@ -1,7 +1,7 @@
-    /*
+/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -102,12 +102,12 @@ public class SchemaGenerator extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         final ErrorReceiverImpl errorListener = new ErrorReceiverImpl(processingEnv);
 
-        List<Reference> classes = new ArrayList<Reference>();
+        List<Reference> classesToBeBound = new ArrayList<Reference>();
         // simply ignore all the interface definitions,
         // so that users won't have to manually exclude interfaces, which is silly.
-        filterClass(classes, roundEnv.getRootElements());
+        filterClass(classesToBeBound, roundEnv.getRootElements());
 
-        J2SJAXBModel model = JXC.createJavaCompiler().bind(classes, Collections.<QName, Reference>emptyMap(), null, processingEnv);
+        J2SJAXBModel model = JXC.createJavaCompiler().bind(classesToBeBound, Collections.<QName, Reference>emptyMap(), null, processingEnv);
         if (model == null)
             return false; // error
 
@@ -146,11 +146,17 @@ public class SchemaGenerator extends AbstractProcessor {
         return false;
     }
 
-    private void filterClass(List<Reference> classes, Collection<? extends Element> elements) {
+    /**
+     * Filter classes (note that enum is kind of class) from elements tree
+     * @param result list of found classes
+     * @param elements tree to be filtered
+     */
+    private void filterClass(List<Reference> result, Collection<? extends Element> elements) {
         for (Element element : elements) {
-            if (element.getKind().equals(ElementKind.CLASS)) {
-                classes.add(new Reference((TypeElement) element, processingEnv));
-                filterClass(classes, ElementFilter.typesIn(element.getEnclosedElements()));
+            final ElementKind kind = element.getKind();
+            if (ElementKind.CLASS.equals(kind) || ElementKind.ENUM.equals(kind)) {
+                result.add(new Reference((TypeElement) element, processingEnv));
+                filterClass(result, ElementFilter.typesIn(element.getEnclosedElements()));
             }
         }
     }
