@@ -48,6 +48,8 @@ do
         s)  MAVEN_SETTINGS="${OPTARG:?}" ;;
         m)  SOURCES_VERSION="${OPTARG:?}" ;;
         w)  WORKROOT="${OPTARG:?}" ;;
+        u)  WWW_SVN_USER="${OPTARG:?}" ;;
+        p)  WWW_SVN_PASSWORD="${OPTARG:?}" ;;
         d)  debug=true ;;
         h)
             echo "Usage: release.sh [-r RELEASE_VERSION] --mandatory, the release version string, for example 2.2.11"
@@ -56,6 +58,8 @@ do
             echo "                   [-w WORKROOT] -- optional, default is current dir (`pwd`)"
             echo "                   [-m SOURCES_VERSION] -- optional, version in pom.xml need to be repaced with \$RELEASE_VERSION, default is \${RELEASE_VERSION}-SNAPSHOT"
             echo "                   [-s MAVEN_SETTINGS] --optional, alternative maven settings.xml"
+            echo "                   [-u WWW_SVN_USER] --optional, the svn scm username for commit the www docs, if not specified it uses cached credential"
+            echo "                   [-p WWW_SVN_PASSWORD] --optional the svn scm password for commit the www docs"
             echo "                   [-d] -- debug mode"
             exit ;;
         "?")
@@ -137,7 +141,8 @@ git checkout -b $RELEASE_BRANCH $GIT_VERSION || {
     echo "ERROR: fail to checkout $GIT_VRSION to branch $RELEASE_BRANCH"
     exit 1
 }
-
+GIT_SHA=`git rev-parse --short HEAD`
+echo "INFO: release JAXB RI $RELEASE_VERSION base on git sha $GIT_SHA"
 SOURCES_VERSION=${SOURCES_VERSION:-"${RELEASE_VERSION}-SNAPSHOT"}
 echo "INFO: Replacing project version $SOURCES_VERSION in sources with new release version $RELEASE_VERSION"
 ./jaxb-ri/tools/set_pom_version.sh $SOURCES_VERSION $RELEASE_VERSION
@@ -148,11 +153,12 @@ git commit -a -m "release version $RELEASE_VERSION" || {
   
 if [ "$debug" = "true" ]; then
     echo "DEBUG: build while no deploy"
-
-    mvn -C -B -f jaxb-ri/pom.xml $MAVEN_LOCAL_REPO -DskipTests=true -Dgpg.passphrase=jaxbgpgpassword -DretryFailedDeploymentCount=10 -Prelease-profile,jvnet-release -DaltDeploymentRepository=jvnet-nexus-staging::default::https://maven.java.net/service/local/staging/deploy/maven2/ clean install
+    echo "INFO: mvn $MAVEN_SETTINGS -C -B -f jaxb-ri/pom.xml $MAVEN_LOCAL_REPO -DskipTests=true -Prelease-profile,release-sign-artifacts clean install"
+    mvn $MAVEN_SETTINGS -C -B -f jaxb-ri/pom.xml $MAVEN_LOCAL_REPO -DskipTests=true -Prelease-profile,release-sign-artifacts clean install
 else
     echo "INFO: Build and Deploy ..."
-    mvn -C -B -f jaxb-ri/pom.xml $MAVEN_LOCAL_REPO -DskipTests=true -Dgpg.passphrase=jaxbgpgpassword -DretryFailedDeploymentCount=10 -Prelease-profile,jvnet-release -DaltDeploymentRepository=jvnet-nexus-staging::default::https://maven.java.net/service/local/staging/deploy/maven2/ clean install deploy
+    echo "INFO: mvn $MAVEN_SETTINGS -C -B -f jaxb-ri/pom.xml $MAVEN_LOCAL_REPO -DskipTests=true -Prelease-profile,release-sign-artifacts clean install deploy"
+    mvn $MAVEN_SETTINGS -C -B -f jaxb-ri/pom.xml $MAVEN_LOCAL_REPO -DskipTests=true -Prelease-profile,release-sign-artifacts clean install deploy
 fi
 if [ $? -ne 0 ]; then
       exit 1
@@ -174,26 +180,33 @@ echo "INFO: Updating www docs ..."
 if [ -d "www" ]; then
     rm -rf www
 fi
+echo "INFO: svn checkout --non-interactive --depth=empty https://svn.java.net/svn/jaxb~www/trunk/www"
 svn checkout --non-interactive --depth=empty https://svn.java.net/svn/jaxb~www/trunk/www
 # create www release folder and copy the built out docs
-cd www
+cd www || exit 1
 mkdir -p $RELEASE_VERSION
+echo "INFO: cp $WORKROOT/jaxb-ri/jaxb-ri/docs/www/target/index.html $RELEASE_VERSION/"
 cp $WORKROOT/jaxb-ri/jaxb-ri/docs/www/target/index.html $RELEASE_VERSION/
 mkdir -p $RELEASE_VERSION/docs
+echo "INFO: cp -r $WORKROOT/jaxb-ri/jaxb-ri/docs/release-documentation/target/docbook/* $RELEASE_VERSION/docs"
 cp -r $WORKROOT/jaxb-ri/jaxb-ri/docs/release-documentation/target/docbook/* $RELEASE_VERSION/docs
+echo "INFO: cp ${WORKROOT}/jaxb-ri/jaxb-ri/bundles/ri/target/jaxb-ri.zip ${RELEASE_VERSION}/jaxb-ri-${RELEASE_VERSION}.zip"
 cp ${WORKROOT}/jaxb-ri/jaxb-ri/bundles/ri/target/jaxb-ri.zip ${RELEASE_VERSION}/jaxb-ri-${RELEASE_VERSION}.zip
 cd $WORKROOT/jaxb-ri/jaxb-ri
 # clean the jaxb build workspace and zip the src
+echo "INFO: Generating the source zip ..."
 mvn $MAVEN_SETTINGS  $MAVEN_LOCAL_REPO clean
 zip -r -q ../jaxb-ri-${RELEASE_VERSION}.src.zip *
 cd ..
 cp jaxb-ri-${RELEASE_VERSION}.src.zip jaxb-ri.licensee.zip
 svn export https://svn.java.net/svn/jaxb~www/trunk/www/release-scripts/TLDA_SCSL_Licensees_License_Notice
 cp ./TLDA_SCSL_Licensees_License_Notice ./TLDA_SCSL_Licensees_License_Notice.txt
-zip -u -q jaxb-ri.licensee.zip TLDA_SCSL_Licensees_License_Notice.txt
+zip -u -q jaxb-ri.licensee.zip TLDA_SCSL_Licensees_License_Notice.txt || exit 1
 
 cd ${WORKROOT}/www
+echo "INFO: cp ${WORKROOT}/jaxb-ri/jaxb-ri-${RELEASE_VERSION}.src.zip ${RELEASE_VERSION}/"
 cp ${WORKROOT}/jaxb-ri/jaxb-ri-${RELEASE_VERSION}.src.zip ${RELEASE_VERSION}/
+echo "INFO: cp ${WORKROOT}/jaxb-ri/jaxb-ri.licensee.zip ${RELEASE_VERSION}/"
 cp ${WORKROOT}/jaxb-ri/jaxb-ri.licensee.zip ${RELEASE_VERSION}/
 svn add --non-interactive $RELEASE_VERSION
 
@@ -237,10 +250,15 @@ sed -i "$line a\
 $appendLine" __modules/left_sidebar.htmlx
 sed -i -e "s#<li> <a href=\"http://jaxb.java.net/nonav/.*/docs/\">Latest release notes</a>#<li> <a href=\"http://jaxb.java.net/nonav/$RELEASE_VERSION/docs/\">Latest release notes</a>#" -e "s#<li> <a href=\"http://jaxb.java.net/nonav/.*/docs/api/\">Javadoc</a></li>#<li> <a href=\"http://jaxb.java.net/nonav/$RELEASE_VERSION/docs/api/\">Javadoc</a></li>#" __modules/left_sidebar.htmlx
 
+if [ -n "$WWW_SVN_USER"  -a -n "$WWW_SVN_PASSWORD" ]; then
+    AUTH="--username $WWW_SVN_USER --password $WWW_SVN_PASSWORD --no-auth-cache"
+else
+    AUTH=""
+fi
 if [ "$debug" = "true" ]; then
     echo "DEBUG: debug only, not commit the docs."
-    echo "DEBUG: svn --username jaxbrobot --password jaxbrobotheslo --non-interactive --no-auth-cache commit -m \"JAXB  release $RELEASE_VERSION\""
+    echo "DEBUG: svn $AUTH --non-interactive --no-auth-cache commit -m \"JAXB release $RELEASE_VERSION\""
 else
     echo "INFO: commit the updated docs"
-    svn --username jaxbrobot --password jaxbrobotheslo --non-interactive --no-auth-cache commit -m "JAXB $RELEASE_VERSION" .
+    svn $AUTH --non-interactive --no-auth-cache commit -m "JAXB release $RELEASE_VERSION" . || exit 1
 fi
