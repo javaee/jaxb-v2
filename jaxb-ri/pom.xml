@@ -3,7 +3,7 @@
 
 DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright (c) 2013-2014 Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2013-2015 Oracle and/or its affiliates. All rights reserved.
 
 The contents of this file are subject to the terms of either the GNU
 General Public License Version 2 only ("GPL") or the Common Development
@@ -608,6 +608,30 @@ holder.
             </properties>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <version>1.4</version>
+                        <executions>
+                          <execution>
+                            <id>enforce-no-snapshots</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <requireReleaseDeps>
+                                        <message>No SNAPSHOT dependency allowed!</message>
+                                    </requireReleaseDeps>
+                                    <requireReleaseVersion>
+                                        <message>release version no SNAPSHOT Allowed!</message>
+                                    </requireReleaseVersion>
+                                </rules>
+                                <fail>true</fail>
+                            </configuration>
+                          </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <artifactId>maven-site-plugin</artifactId>
                         <configuration>
