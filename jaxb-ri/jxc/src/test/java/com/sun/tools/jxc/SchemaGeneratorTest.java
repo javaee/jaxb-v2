@@ -54,6 +54,13 @@ import org.junit.runner.RunWith;
 /**
  * @author aefimov
  */
+
+/**
+ * To reproduce fail behaviour on all platforms the Java OS specific URL processing layer
+ * should be emulated. This task requires a complex investigation and development of OS
+ * specific test framework. Before it is done this test will reproduce the problem only
+ * on Windows based platforms. On all other platforms the test will pass.
+*/
 @RunWith(JMockit.class)
 public final class SchemaGeneratorTest {
 
