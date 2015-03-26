@@ -62,42 +62,33 @@ import org.junit.runner.RunWith;
 public final class ApNavigatorTest {
 
     @Test
-    public void testgetEnumConstantsOrder(@Mocked final ProcessingEnvironment env,
+    public void testgetEnumConstantsOrder(
+            @Mocked final ProcessingEnvironment env,
             @Mocked final TypeElement clazz,
             @Mocked final VariableElement enumElement1,
             @Mocked final VariableElement enumElement2,
             @Mocked final VariableElement enumElement3,
-            @Mocked final VariableElement enumElement4
-    ) throws Exception {
+            @Mocked final VariableElement enumElement4 ) throws Exception {
+
         new Expectations() {
             {
                 //The primitiveType is irrelevant for getEnumConstants() operations
-                env.getTypeUtils().getPrimitiveType(TypeKind.BYTE);
-                result = (PrimitiveType) null;
+                env.getTypeUtils().getPrimitiveType(TypeKind.BYTE); result = (PrimitiveType) null;
                 //enumElements needs to return ENUM_CONSTANT for getEnumConstants() to work properly
-                enumElement1.getKind();
-                result = ElementKind.ENUM_CONSTANT;
-                enumElement2.getKind();
-                result = ElementKind.ENUM_CONSTANT;
-                enumElement3.getKind();
-                result = ElementKind.ENUM_CONSTANT;
-                enumElement4.getKind();
-                result = ElementKind.ENUM_CONSTANT;
+                enumElement1.getKind(); result = ElementKind.ENUM_CONSTANT;
+                enumElement2.getKind(); result = ElementKind.ENUM_CONSTANT;
+                enumElement3.getKind(); result = ElementKind.ENUM_CONSTANT;
+                enumElement4.getKind(); result = ElementKind.ENUM_CONSTANT;
                 //Redefine the hashCode() for test enum's - it will gives us an assurance that
                 // all elements will have predifined order when they will be added to incorrect
                 // HashSet container in getEnumConstants()
-                enumElement1.hashCode();
-                result = 4;
-                enumElement2.hashCode();
-                result = 3;
-                enumElement3.hashCode();
-                result = 2;
-                enumElement4.hashCode();
-                result = 1;
+                enumElement1.hashCode(); result = 4;
+                enumElement2.hashCode(); result = 3;
+                enumElement3.hashCode(); result = 2;
+                enumElement4.hashCode(); result = 1;
                 //We want to return here a predifined clazz members
-                env.getElementUtils().getAllMembers(clazz);
-                result = Arrays.asList(enumElement1, enumElement2,
-                        enumElement3, enumElement4);
+                env.getElementUtils().getAllMembers(clazz); result = Arrays.asList(enumElement1,
+                                                                         enumElement2, enumElement3, enumElement4);
             }
         };
         //Create ApNavigator instance
