@@ -43,7 +43,6 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
-
 import static mockit.Deencapsulation.invoke;
 import mockit.Mock;
 import mockit.MockUp;
@@ -62,6 +61,7 @@ public final class SchemaGeneratorTest {
 
     @Test
     public void setClassPathTest() throws Exception {
+
         // Mocked URL instance that returns incorrect path
         // similar to behaviour on Windows platform
         final URL cUrl = new MockUp<URL>() {
@@ -78,7 +78,7 @@ public final class SchemaGeneratorTest {
             }
         }.getMockInstance();
 
-        // Mocked URLClassLoder that will return mocked URL
+        // Mocked URLClassLoder will return mocked URL
         new MockUp<URLClassLoader>() {
             @Mock
             URL[] getURLs() {
@@ -98,6 +98,7 @@ public final class SchemaGeneratorTest {
         //Invoke the method under test
         String result = invoke(SchemaGenerator.class, "setClasspath", "");
         String sepChar = File.pathSeparator;
+
         // When the URL path problem is fixed the following behaviour is expected:
         // On *nix plarforms the C: path will converted to "test dir path + path separator + C:"
         // On Windows "path separator + C:" will be returned
