@@ -40,12 +40,14 @@
 package com.sun.tools.jxc;
 
 import java.io.File;
-import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+
 import static mockit.Deencapsulation.invoke;
 import mockit.Mock;
 import mockit.MockUp;
+import mockit.NonStrictExpectations;
 import mockit.integration.junit4.JMockit;
 import static org.junit.Assert.assertFalse;
 import org.junit.Test;
@@ -55,27 +57,51 @@ import org.junit.runner.RunWith;
  * @author aefimov
  */
 
-/**
- * To reproduce fail behaviour on all platforms the Java OS specific URL processing layer
- * should be emulated. This task requires a complex investigation and development of OS
- * specific test framework. Before it is done this test will reproduce the problem only
- * on Windows based platforms. On all other platforms the test will pass.
-*/
 @RunWith(JMockit.class)
 public final class SchemaGeneratorTest {
 
     @Test
     public void setClassPathTest() throws Exception {
+        // Mocked URL instance that returns incorrect path
+        // similar to behaviour on Windows platform
+        final URL cUrl = new MockUp<URL>() {
+            String path = "C:";
+
+            @Mock
+            public String getPath() {
+                return "/" + path;
+            }
+
+            @Mock
+            public URI toURI() {
+                return new File(path).toURI();
+            }
+        }.getMockInstance();
+
+        // Mocked URLClassLoder that will return mocked URL
         new MockUp<URLClassLoader>() {
             @Mock
-            URL[] getURLs() throws MalformedURLException {
+            URL[] getURLs() {
                 URL[] urls = {
-                    new File("E:").toURI().toURL(),
-                    new File("C:").toURI().toURL(),};
+                    cUrl
+                };
                 return urls;
             }
         };
+
+        //Mock the 'findJaxbApiJar' in SchemaGenerator class to avoid
+        //additional calls to URL class
+        new NonStrictExpectations(SchemaGenerator.class) {{
+                invoke(SchemaGenerator.class, "findJaxbApiJar"); result = "";
+        }};
+
+        //Invoke the method under test
         String result = invoke(SchemaGenerator.class, "setClasspath", "");
-        assertFalse("Result classpath contains incorrect drive path", (result.contains(";/C:") || result.contains(";/E:")));
+        String sepChar = File.pathSeparator;
+        // When the URL path problem is fixed the following behaviour is expected:
+        // On *nix plarforms the C: path will converted to "test dir path + path separator + C:"
+        // On Windows "path separator + C:" will be returned
+        // "path separator + /C:" should never be returned on any platform
+        assertFalse("Result classpath contains incorrect drive path", result.contains(sepChar+"/C:"));
     }
 }
