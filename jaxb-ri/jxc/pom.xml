@@ -92,6 +92,11 @@ holder.
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency><!-- Ant is provided through transitive dependency from XJC. But to be consistent we have it also here -->
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
