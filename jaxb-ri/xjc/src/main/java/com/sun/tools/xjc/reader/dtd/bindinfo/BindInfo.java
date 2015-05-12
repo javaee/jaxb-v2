@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -41,12 +41,14 @@
 package com.sun.tools.xjc.reader.dtd.bindinfo;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.ValidatorHandler;
 
 import com.sun.codemodel.ClassType;
@@ -304,7 +306,14 @@ public class BindInfo
     /**
      * Lazily parsed schema for the binding file.
      */
-    private static SchemaCache bindingFileSchema = new SchemaCache(BindInfo.class.getResource("bindingfile.xsd"));
+    private static SchemaCache bindingFileSchema = new SchemaCache(newStreamSource("bindingfile.xsd"));
+
+    private static StreamSource newStreamSource(String systemId) {
+        InputStream is = BindInfo.class.getResourceAsStream(systemId);
+        StreamSource schema = new StreamSource(is);
+        schema.setSystemId(systemId);
+        return schema;
+    }
 
     /**
      * Parses an InputSource into dom4j Document.

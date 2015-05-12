@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -40,14 +40,15 @@
 
 package com.sun.tools.xjc;
 
-import java.net.URL;
-
+import javax.xml.transform.Source;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.ValidatorHandler;
 
 import com.sun.xml.bind.v2.util.XmlFactory;
 import javax.xml.XMLConstants;
+
+import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
 
 import static com.sun.xml.bind.v2.util.XmlFactory.allowExternalAccess;
@@ -63,23 +64,32 @@ import static com.sun.xml.bind.v2.util.XmlFactory.allowExternalAccess;
 public final class SchemaCache {
 
     private Schema schema;
+    private Source source;
+    private LSResourceResolver resourceResolver;
 
-    private final URL source;
+    public SchemaCache(Source source) {
+        this(source, null);
+    }
 
-    public SchemaCache(URL source) {
+    public SchemaCache(Source source, LSResourceResolver resourceResolver) {
         this.source = source;
+        this.resourceResolver = resourceResolver;
     }
 
     public ValidatorHandler newValidator() {
-        synchronized(this) {
-            if(schema==null) {
-                try {
-                    // do not disable secure processing - these are well-known schemas
-                    SchemaFactory sf = XmlFactory.createSchemaFactory(XMLConstants.W3C_XML_SCHEMA_NS_URI, false);
-                    schema = allowExternalAccess(sf, "file", false).newSchema(source);
-                } catch (SAXException e) {
-                    // we make sure that the schema is correct before we ship.
-                    throw new AssertionError(e);
+        if(schema==null) {
+            synchronized (this) {
+                if (schema == null) {
+                    try {
+                        // do not disable secure processing - these are well-known schemas
+                        SchemaFactory sf = XmlFactory.createSchemaFactory(XMLConstants.W3C_XML_SCHEMA_NS_URI, false);
+                        SchemaFactory schemaFactory = allowExternalAccess(sf, "file", false);
+                        schemaFactory.setResourceResolver(resourceResolver);
+                        schema = schemaFactory.newSchema(source);
+                    } catch (SAXException e) {
+                        // we make sure that the schema is correct before we ship.
+                        throw new AssertionError(e);
+                    }
                 }
             }
         }
