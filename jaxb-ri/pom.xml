@@ -551,6 +551,7 @@ holder.
         <module>xjc</module>
         <module>jxc</module>
         <module>bundles</module>
+        <module>xsom</module>
     </modules>
 
     <profiles>
