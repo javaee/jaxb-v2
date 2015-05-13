@@ -74,6 +74,12 @@ holder.
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>xsom</artifactId>
+            <optional>true</optional>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
@@ -187,7 +193,7 @@ holder.
                                     <outputDirectory>${generated.sources.dir}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
-                                    <groupId>com.sun.xsom</groupId>
+                                    <groupId>org.glassfish.jaxb</groupId>
                                     <artifactId>xsom</artifactId>
                                     <classifier>sources</classifier>
                                     <overWrite>false</overWrite>
@@ -247,7 +253,7 @@ holder.
                                     <outputDirectory>${generated.classes.dir}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
-                                    <groupId>com.sun.xsom</groupId>
+                                    <groupId>org.glassfish.jaxb</groupId>
                                     <artifactId>xsom</artifactId>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${generated.classes.dir}</outputDirectory>
@@ -362,9 +368,9 @@ holder.
                                 <includes>
                                     <include>org.glassfish.jaxb:jaxb-xjc</include>
                                     <include>org.glassfish.jaxb:codemodel</include>
+                                    <include>org.glassfish.jaxb:xsom</include>
                                     <include>com.sun.istack:istack-commons-tools</include>
                                     <include>com.sun.xml.dtd-parser:dtd-parser</include>
-                                    <include>com.sun.xsom:xsom</include>
                                     <include>com.sun.xml.bind.external:rngom</include>
                                     <include>relaxngDatatype:relaxngDatatype</include>
                                 </includes>

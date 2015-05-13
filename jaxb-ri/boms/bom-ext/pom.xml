@@ -63,7 +63,6 @@
     </description>
 
     <properties>
-        <xsom.version>20140925</xsom.version>
         <dtd-parser.version>1.1</dtd-parser.version>
         <ant.version>1.9.0</ant.version>
         <msv.version>2013.6.1</msv.version>
@@ -80,11 +79,6 @@
                 <version>${project.version}</version>
             </dependency>
             <!-- Dependencies -->
-            <dependency>
-                <groupId>com.sun.xsom</groupId>
-                <artifactId>xsom</artifactId>
-                <version>${xsom.version}</version>
-            </dependency>
             <dependency>
                 <groupId>com.sun.xml.dtd-parser</groupId>
                 <artifactId>dtd-parser</artifactId>

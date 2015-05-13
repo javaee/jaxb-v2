@@ -40,3 +40,14 @@
 /jaxb-ri/codemodel/target/
 /jaxb-ri/codemodel/codemodel-annotation-compiler/target/
 /jaxb-ri/codemodel/codemodel/target/
+/jaxb-ri/tools/osgi_tests/core/target/
+/jaxb-ri/tools/osgi_tests/jxc/target/
+/jaxb-ri/tools/osgi_tests/osgi/target/
+/jaxb-ri/tools/osgi_tests/osgi_extra/target/
+/jaxb-ri/tools/osgi_tests/parent/target/
+/jaxb-ri/tools/osgi_tests/runtime/target/
+/jaxb-ri/tools/osgi_tests/xjc/target/
+/jaxb-ri/boms/bom-ext/target/
+/jaxb-ri/boms/bom/target/
+/jaxb-ri/external/target/
+/jaxb-ri/tools/osgi_tests/target/
