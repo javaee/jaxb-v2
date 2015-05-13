@@ -376,11 +376,14 @@ public final class BindInfo implements Iterable<BIDeclaration> {
     public static SchemaCache bindingFileSchema =
             new SchemaCache(
                     newStreamSource("binding.xsd"),
-                    (LSResourceResolver) (type, namespaceURI, publicId, systemId, baseURI) -> {
-                        // XSOM passes the namespace URI to the publicID parameter.
-                        // we do the same here .
-                        InputStream is = BindInfo.class.getResourceAsStream(systemId);
-                        return new Input(is, publicId, systemId);
+                    new LSResourceResolver() {
+                        @Override
+                        public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, String baseURI) {
+                            // XSOM passes the namespace URI to the publicID parameter.
+                            // we do the same here .
+                            InputStream is = BindInfo.class.getResourceAsStream(systemId);
+                            return new Input(is, publicId, systemId);
+                        }
                     }
             );
 
