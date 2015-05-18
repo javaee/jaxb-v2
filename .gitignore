@@ -51,3 +51,4 @@
 /jaxb-ri/boms/bom/target/
 /jaxb-ri/external/target/
 /jaxb-ri/tools/osgi_tests/target/
+/jaxb-ri/xsom/target/
