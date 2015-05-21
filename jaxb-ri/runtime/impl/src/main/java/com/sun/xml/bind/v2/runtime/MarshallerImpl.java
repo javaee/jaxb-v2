@@ -93,6 +93,9 @@ import com.sun.xml.bind.v2.runtime.output.XmlOutput;
 import com.sun.xml.bind.v2.util.FatalAdapter;
 
 import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -110,6 +113,8 @@ import org.xml.sax.helpers.XMLFilterImpl;
  */
 public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractMarshallerImpl implements ValidationEventHandler
 {
+    private static final Logger LOGGER = Logger.getLogger(MarshallerImpl.class.getName());
+
     /** Indentation string. Default is four whitespaces. */
     private String indent = "    ";
 
@@ -342,12 +347,14 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
                 toBeFlushed.flush();
             } catch (IOException e) {
                 // ignore
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         if(toBeClosed!=null)
             try {
                 toBeClosed.close();
             } catch (IOException e) {
                 // ignore
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         toBeFlushed = null;
         toBeClosed = null;
