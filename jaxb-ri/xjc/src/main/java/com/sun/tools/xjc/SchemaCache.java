@@ -60,6 +60,7 @@ import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
 
 import static com.sun.xml.bind.v2.util.XmlFactory.allowExternalAccess;
+
 /**
  * Wraps a JAXP {@link Schema} object and lazily instantiate it.
  *
@@ -108,7 +109,7 @@ public final class SchemaCache {
                         schema = schemaFactory.newSchema(source);
 
                     } catch (IOException | SAXException e) {
-                        throw new Error(e);
+                        throw new InternalError(e);
                     } finally {
                         if (resourceResolver != null) resourceResolver.closeStreams();
                     }
