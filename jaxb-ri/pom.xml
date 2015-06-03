@@ -118,6 +118,11 @@ holder.
             <layout>default</layout>
         </repository>
         <repository>
+            <id>shapshots.java.net</id>
+            <url>https://maven.java.net/content/repositories/snapshots/</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
             <id>jvnet-nexus-staging</id>
             <url>https://maven.java.net/content/repositories/staging/</url>
             <layout>default</layout>
