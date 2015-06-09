@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -47,7 +47,7 @@ import javax.xml.namespace.QName;
 /**
  * Property that maps to the following schema fragment.
  *
- * <pre><xmp>
+ * <pre>{@code <xmp>
  * <xs:complexType>
  *   <xs:sequence>
  *     <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
@@ -60,7 +60,7 @@ import javax.xml.namespace.QName;
  *     </xs:element>
  *   </xs:sequence>
  * </xs:complexType>
- * </xmp></pre>
+ * </xmp>}</pre>
  *
  * <p>
  * This property is used to represent a default binding of a {@link Map} property.

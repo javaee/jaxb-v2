@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -50,7 +50,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.Locator;
 
 /**
- * &lt;constructor> declaration in the binding file.
+ * {@code <constructor>} declaration in the binding file.
  * 
  * <p>
  * Since JAXB will generate both interfaces and implementations,
@@ -79,7 +79,7 @@ public class BIConstructor
             throw new AssertionError("this error should be catched by the validator");
     }
     
-    /** &lt;constructor> element in the source binding file. */
+    /** {@code <constructor>} element in the source binding file. */
     private final Element dom;
     
     /** properties specified by @properties. */

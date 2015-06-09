@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -96,7 +96,7 @@ public final class BISchemaBinding extends AbstractDeclarationImpl {
     /**
      * If false, it means not to generate any classes from this namespace.
      * No ObjectFactory, no classes (the only way to bind them is by using
-     * &lt;jaxb:class ref="..."/>)
+     * {@code <jaxb:class ref="..."/>})
      */
     @XmlAttribute(name="map")
     public boolean map = true;

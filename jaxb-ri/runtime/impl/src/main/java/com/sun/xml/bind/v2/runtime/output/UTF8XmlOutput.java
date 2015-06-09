@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -93,9 +93,9 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     protected int octetBufferIndex;
 
     /**
-     * Set to true to indicate that we need to write '>'
+     * Set to true to indicate that we need to write {@code '>'}
      * to close a start tag. Deferring the write of this char
-     * allows us to write "/>" for empty elements.
+     * allows us to write {@code "/>"} for empty elements.
      */
     protected boolean closeStartTagPending = false;
 
@@ -144,7 +144,7 @@ public class UTF8XmlOutput extends XmlOutputAbstractImpl {
     }
 
     /**
-     * Writes '>' to close the start tag, if necessary.
+     * Writes {@code '>'} to close the start tag, if necessary.
      */
     protected final void closeStartTag() throws IOException {
         if(closeStartTagPending) {

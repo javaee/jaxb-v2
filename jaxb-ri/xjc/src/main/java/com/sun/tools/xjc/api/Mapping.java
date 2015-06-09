@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -78,7 +78,7 @@ public interface Mapping {
      * Returns the fully-qualified name of the java class for the type of this element.
      *
      * TODO: does this method returns the name of the wrapper bean when it's qualified
-     * for the wrapper style? Seems no (consider &lt;xs:element name='foo' type='xs:long' />),
+     * for the wrapper style? Seems no (consider {@code <xs:element name='foo' type='xs:long' />}),
      * but then how does JAX-RPC captures that bean?
      *
      * @return

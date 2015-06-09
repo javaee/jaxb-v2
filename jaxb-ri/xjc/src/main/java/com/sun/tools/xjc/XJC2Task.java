@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -114,7 +114,7 @@ public class XJC2Task extends Task {
     private final ArrayList<File> producesSet = new ArrayList<File>();
 
     /**
-     * Set to true once the &lt;produces> element is used.
+     * Set to true once the {@code <produces>} element is used.
      * This flag is used to issue a suggestion to users.
      */
     private boolean producesSpecified = false;
@@ -149,7 +149,7 @@ public class XJC2Task extends Task {
         }
     }
 
-    /** Nested &lt;schema> element. */
+    /** Nested {@code <schema>} element. */
     public void addConfiguredSchema( FileSet fs ) {
         for (InputSource value : toInputSources(fs))
             options.addGrammar(value);
@@ -157,12 +157,12 @@ public class XJC2Task extends Task {
         addIndividualFilesTo( fs, dependsSet );
     }
 
-    /** Nested &lt;classpath> element. */
+    /** Nested {@code <classpath>} element. */
     public void setClasspath( Path cp ) {
         classpath.createPath().append(cp);
     }
 
-    /** Nested &lt;classpath> element. */
+    /** Nested {@code <classpath>} element. */
     public Path createClasspath() {
         return classpath.createPath();
     }
@@ -201,7 +201,7 @@ public class XJC2Task extends Task {
         }
     }
 
-    /** Nested &lt;binding> element. */
+    /** Nested {@code <binding>} element. */
     public void addConfiguredBinding( FileSet fs ) {
         for (InputSource is : toInputSources(fs))
             options.addBindFile(is);
@@ -339,12 +339,12 @@ public class XJC2Task extends Task {
         this.options.encoding = encoding;
     }
 
-    /** Nested &lt;depends> element. */
+    /** Nested {@code <depends>} element. */
     public void addConfiguredDepends( FileSet fs ) {
         addIndividualFilesTo( fs, dependsSet );
     }
 
-    /** Nested &lt;produces> element. */
+    /** Nested {@code <produces>} element. */
     public void addConfiguredProduces( FileSet fs ) {
         producesSpecified = true;
         if( !fs.getDir(getProject()).exists() ) {

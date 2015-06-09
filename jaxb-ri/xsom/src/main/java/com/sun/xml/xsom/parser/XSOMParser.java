@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -230,7 +230,7 @@ public final class XSOMParser {
     }
     /**
      * Set an entity resolver that is used to resolve things
-     * like &lt;xsd:import> and &lt;xsd:include>.
+     * like {@code <xsd:import>} and {@code <xsd:include>}.
      */
     public void setEntityResolver( EntityResolver resolver ) {
         this.entityResolver = resolver;
@@ -254,7 +254,7 @@ public final class XSOMParser {
      * 
      * <p>
      * For each annotation, new instance of this class will be
-     * created and used to parse &lt;xs:annotation>.
+     * created and used to parse {@code <xs:annotation>}.
      */
     public void setAnnotationParser( final Class annParser ) {
         setAnnotationParser( new AnnotationParserFactory() {

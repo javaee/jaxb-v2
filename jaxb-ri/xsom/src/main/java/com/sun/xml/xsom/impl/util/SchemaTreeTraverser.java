@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -91,8 +91,8 @@ import java.util.Iterator;
  *
  * <h2>Usage of this class</h2>
  *
- * <ol> <li>Create a new instance.</li> <li>Call {@link
- * #visit(com.sun.xml.xsom.XSSchemaSet)} function on your schema set.>/li>
+ * <ol> <li>Create a new instance.</li> <li>Call {@link #visit(XSSchemaSet)}
+ * function on your schema set.</li>
  * <li>Retrieve the model using {@link #getModel()}. </li></ol>
  *
  * Every node in the resulting tree is a {@link SchemaTreeTraverser.SchemaTreeNode},

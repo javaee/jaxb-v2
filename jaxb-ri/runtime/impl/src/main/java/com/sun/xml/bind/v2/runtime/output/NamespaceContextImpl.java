@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -381,8 +381,8 @@ public final class NamespaceContextImpl implements NamespaceContext2 {
      * This model of namespace declarations maintain the following invariants.
      *
      * <ul>
-     *  <li>If a non-empty prefix is declared, it will never be reassigned to different namespace URIs.
-     *  <li>
+     *  <li>If a non-empty prefix is declared, it will never be reassigned to different namespace URIs.</li>
+     * </ul>
      */
     public final class Element {
 

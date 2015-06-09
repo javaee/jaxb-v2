@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2005-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2005-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -108,11 +108,11 @@ import java.util.Map;
  *
  * <p>The resulting document will look like this:</p>
  *
- * <pre>
- * &lt;?xml version="1.0" standalone="yes"?>
- *
- * &lt;greeting>Hello, world!&lt;/greeting>
- * </pre>
+ * <pre>{@code
+ *  <?xml version="1.0" standalone="yes"?>
+ * 
+ * <greeting>Hello, world!</greeting>
+ * }</pre>
  *
  * <p>In fact, there is an even simpler convenience method,
  * <var>dataElement</var>, designed for writing elements that
@@ -142,9 +142,9 @@ import java.util.Map;
  *
  * <p>you will end up with</p>
  *
- * <pre>
- * &lt;item>1&lt;/item>&lt;item>3&lt;/item>&lt;item>3&lt;/item>
- * </pre>
+ * <pre>{@code
+ * <item>1</item><item>3</item><item>3</item>
+ * }</pre>
  *
  * <p>You need to invoke one of the <var>characters</var> methods
  * explicitly to add newlines or indentation.  Alternatively, you
@@ -171,11 +171,11 @@ import java.util.Map;
  *
  * <p>The resulting document will look like this:</p>
  *
- * <pre>
- * &lt;?xml version="1.0" standalone="yes"?>
+ * <pre>{@code
+ * <?xml version="1.0" standalone="yes"?>
  *
- * &lt;_NS1:foo xmlns:_NS1="http://www.foo.com/ns/"/>
- * </pre>
+ * <_NS1:foo xmlns:_NS1="http://www.foo.com/ns/"/>
+ * }</pre>
  *
  * <p>In many cases, document authors will prefer to choose their
  * own prefixes rather than using the (ugly) default names.  The
@@ -183,7 +183,7 @@ import java.util.Map;
  *
  * <ol>
  * <li>the qualified name</li>
- * <li>the {@link #setPrefix setPrefix} method.</li>
+ * <li>the {@link #startPrefixMapping(String, String)} method.</li>
  * </ol>
  *
  * <p>Whenever the XML writer finds a new Namespace URI, it checks
@@ -203,11 +203,11 @@ import java.util.Map;
  *
  * <p>The resulting document will look like this:</p>
  *
- * <pre>
- * &lt;?xml version="1.0" standalone="yes"?>
+ * <pre>{@code
+ * <?xml version="1.0" standalone="yes"?>
  *
- * &lt;foo:foo xmlns:foo="http://www.foo.com/ns/"/>
- * </pre>
+ * <foo:foo xmlns:foo="http://www.foo.com/ns/"/>
+ * }</pre>
  *
  * <p>The default Namespace simply uses an empty string as the prefix:</p>
  *
@@ -220,28 +220,28 @@ import java.util.Map;
  *
  * <p>The resulting document will look like this:</p>
  *
- * <pre>
- * &lt;?xml version="1.0" standalone="yes"?>
+ * <pre>{@code
+ * <?xml version="1.0" standalone="yes"?>
  *
- * &lt;foo xmlns="http://www.foo.com/ns/"/>
- * </pre>
+ * <foo xmlns="http://www.foo.com/ns/"/>
+ * }</pre>
  *
  * <p>By default, the XML writer will not declare a Namespace until
  * it is actually used.  Sometimes, this approach will create
  * a large number of Namespace declarations, as in the following
  * example:</p>
  *
- * <pre>
- * &lt;xml version="1.0" standalone="yes"?>
+ * <pre>{@code
+ * <xml version="1.0" standalone="yes"?>
  *
- * &lt;rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
- *  &lt;rdf:Description about="http://www.foo.com/ids/books/12345">
- *   &lt;dc:title xmlns:dc="http://www.purl.org/dc/">A Dark Night&lt;/dc:title>
- *   &lt;dc:creator xmlns:dc="http://www.purl.org/dc/">Jane Smith&lt;/dc:title>
- *   &lt;dc:date xmlns:dc="http://www.purl.org/dc/">2000-09-09&lt;/dc:title>
- *  &lt;/rdf:Description>
- * &lt;/rdf:RDF>
- * </pre>
+ * <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+ *  <rdf:Description about="http://www.foo.com/ids/books/12345">
+ *   <dc:title xmlns:dc="http://www.purl.org/dc/">A Dark Night</dc:title>
+ *   <dc:creator xmlns:dc="http://www.purl.org/dc/">Jane Smith</dc:title>
+ *   <dc:date xmlns:dc="http://www.purl.org/dc/">2000-09-09</dc:title>
+ *  </rdf:Description>
+ * </rdf:RDF>
+ * }</pre>
  *
  * <p>The "rdf" prefix is declared only once, because the RDF Namespace
  * is used by the root element and can be inherited by all of its
@@ -259,16 +259,16 @@ import java.util.Map;
  * descendants:</p>
  *
  * <pre>
- * &lt;xml version="1.0" standalone="yes"?>
+ * {@code <xml version="1.0" standalone="yes"?>
  *
- * &lt;rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ * <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
  *             xmlns:dc="http://www.purl.org/dc/">
- *  &lt;rdf:Description about="http://www.foo.com/ids/books/12345">
- *   &lt;dc:title>A Dark Night&lt;/dc:title>
- *   &lt;dc:creator>Jane Smith&lt;/dc:title>
- *   &lt;dc:date>2000-09-09&lt;/dc:title>
- *  &lt;/rdf:Description>
- * &lt;/rdf:RDF>
+ *  <rdf:Description about="http://www.foo.com/ids/books/12345">
+ *   <dc:title>A Dark Night</dc:title>
+ *   <dc:creator>Jane Smith</dc:title>
+ *   <dc:date>2000-09-09</dc:title>
+ *  </rdf:Description>
+ * </rdf:RDF>}
  * </pre>
  *
  * <p>This approach is also useful for declaring Namespace prefixes
@@ -403,7 +403,7 @@ public class XMLWriter extends XMLFilterImpl implements LexicalHandler
 
     /**
      * Set whether the writer should print out the XML declaration
-     * (&lt;?xml version='1.0' ... ?>).
+     * ({@code <?xml version='1.0' ... ?>}).
      * <p>
      * This option is set to true by default. 
      */

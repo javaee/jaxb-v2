@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -73,9 +73,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * marshaller.marshal(new Foo());
  * </pre>
  * and you get:
- * <pre><xmp>
+ * <pre>{@code <xmp>
  * <foo><x>0</x></foo>
- * </xmp></pre>
+ * </xmp>}</pre>
  *
  * <p>
  * By creating a side boolean field/property that has this annotation,
@@ -96,14 +96,14 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  * marshaller.marshal(f);
  *
- * <xmp>
+ * {@code <xmp>
  * <foo/>
- * </xmp>
+ * </xmp>}
  *
  * f.xIsPresent = true;
- * <xmp>
+ * {@code <xmp>
  * <foo><x>5</x></foo>
- * </xmp>
+ * </xmp>}
  * </pre>
  *
  * <p>

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -68,7 +68,7 @@ public class RuntimeUtil {
      * Map from {@link Class} objects representing primitive types
      * to {@link Class} objects representing their boxed types.
      * <p>
-     * e.g., int -> Integer.
+     * e.g., {@code int -> Integer}.
      */
     public static final Map<Class,Class> boxToPrimitive;
 

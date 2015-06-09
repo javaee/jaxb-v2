@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -60,7 +60,7 @@ public enum EnumMemberMode {
     ;
 
     /**
-     * The mode will change to this when there's &lt;jaxb:enum> customization.
+     * The mode will change to this when there's {@code <jaxb:enum>} customization.
      */
     public EnumMemberMode getModeWithEnum() {
         if(this==SKIP)  return ERROR;

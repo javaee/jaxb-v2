@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -238,7 +238,7 @@ public final class NavigatorImpl implements Navigator<NType,NClass,Void,Void> {
 
     /**
      * Creates a {@link NType} representation for a parameterized type
-     * {@code RawType&lt;ParamType1,ParamType2,...> }.
+     * {@code RawType<ParamType1,ParamType2,...> }.
      */
     public static NType createParameterizedType( NClass rawType, NType... args ) {
         return new NParameterizedType(rawType,args);

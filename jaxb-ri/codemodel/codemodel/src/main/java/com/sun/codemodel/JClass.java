@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -117,7 +117,7 @@ public abstract class JClass extends JType
      * 
      * <p>
      * For example, if this {@link JClass} represents 
-     * <code>Set&lt;T></code>, this method returns an array
+     * {@code Set<T>}, this method returns an array
      * that contains single {@link JTypeVar} for 'T'.
      */
     public JTypeVar[] typeParams() {
@@ -199,17 +199,17 @@ public abstract class JClass extends JType
      *
      * <p>
      * For example, given the following
-     * <pre><xmp>
+     * <pre>{@code<xmp>
      * interface Foo<T> extends List<List<T>> {}
      * interface Bar extends Foo<String> {}
-     * </xmp></pre>
+     * </xmp>}</pre>
      * This method works like this:
-     * <pre><xmp>
+     * <pre>{@code<xmp>
      * getBaseClass( Bar, List ) = List<List<String>
      * getBaseClass( Bar, Foo  ) = Foo<String>
      * getBaseClass( Foo<? extends Number>, Collection ) = Collection<List<? extends Number>>
      * getBaseClass( ArrayList<? extends BigInteger>, List ) = List<? extends BigInteger>
-     * </xmp></pre>
+     * </xmp>}</pre>
      *
      * @param baseType
      *      The class whose parameterization we are interested in.
@@ -256,7 +256,7 @@ public abstract class JClass extends JType
      * a type argument.
      * 
      * <p>
-     * <code>.narrow(X)</code> builds <code>Set&lt;X></code> from <code>Set</code>.
+     * {@code .narrow(X)} builds {@code Set<X>} from {@code Set}.
      */
     public JClass narrow( Class<?> clazz ) {
         return narrow(owner().ref(clazz));
@@ -274,7 +274,7 @@ public abstract class JClass extends JType
      * a type argument.
      * 
      * <p>
-     * <code>.narrow(X)</code> builds <code>Set&lt;X></code> from <code>Set</code>.
+     * {@code .narrow(X)} builds {@code Set<X>} from {@code Set}.
      */
     public JClass narrow( JClass clazz ) {
         return new JNarrowedClass(this,clazz);
@@ -319,10 +319,10 @@ public abstract class JClass extends JType
      * Substitutes the type variables with their actual arguments.
      * 
      * <p>
-     * For example, when this class is Map&lt;String,Map&lt;V>>,
+     * For example, when this class is {@code Map<String,Map<V>>},
      * (where V then doing
      * substituteParams( V, Integer ) returns a {@link JClass}
-     * for <code>Map&lt;String,Map&lt;Integer>></code>.
+     * for {@code Map<String,Map<Integer>>}.
      * 
      * <p>
      * This method needs to work recursively.

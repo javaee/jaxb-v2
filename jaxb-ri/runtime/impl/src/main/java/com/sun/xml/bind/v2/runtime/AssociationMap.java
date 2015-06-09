@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -81,7 +81,7 @@ public final class AssociationMap<XmlNode> {
     private final Map<Object,Entry<XmlNode>> byPeer = new IdentityHashMap<Object,Entry<XmlNode>>();
     private final Set<XmlNode> usedNodes = new HashSet<XmlNode>();
 
-    /** Records the new element&lt;->inner peer association. */
+    /** Records the new {@code element <->inner} peer association. */
     public void addInner( XmlNode element, Object inner ) {
         Entry<XmlNode> e = byElement.get(element);
         if(e!=null) {
@@ -105,7 +105,7 @@ public final class AssociationMap<XmlNode> {
         }
     }
     
-    /** Records the new element&lt;->outer peer association. */
+    /** Records the new {@code element <-> outer} peer association. */
     public void addOuter( XmlNode element, Object outer ) {
         Entry<XmlNode> e = byElement.get(element);
         if(e!=null) {

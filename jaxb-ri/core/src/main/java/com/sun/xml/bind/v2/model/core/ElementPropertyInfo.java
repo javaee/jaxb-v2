@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -66,14 +66,14 @@ public interface ElementPropertyInfo<T,C> extends PropertyInfo<T,C> {
      * However, in a general case an element property can be heterogeneous,
      * meaning you can put different types in it, each with a different tag name
      * (and a few other settings.)
-     * <pre>
+     * <pre>{@code
      * // list can contain String or Integer.
      * &#64;XmlElements({
      *   &#64;XmlElement(name="a",type=String.class),
      *   &#64;XmlElement(name="b",type=Integer.class),
      * })
-     * List&lt;Object> abc;
-     * </pre>
+     * List<Object> abc;
+     * }</pre>
      * <p>
      * In this case this method returns a list of two {@link TypeRef}s.
      *

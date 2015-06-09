@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2011
+ * Copyright (C) 2004-2015
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -87,11 +87,11 @@ public interface SchemaBuilder<
      * @param parent
      *      The parent scope. null if there's no parent scope.
      *      For example, if the complete document looks like the following:
-     *      <pre><xmp>
+     *      {@code<pre><xmp>
      *      <grammar>
      *        <start><element name="root"><empty/></element></start>
      *      </grammar>
-     *      </xmp></pre>
+     *      </xmp></pre>}
      *      Then when the outer-most {@link Grammar} is created, it will
      *      receive the <tt>null</tt> parent.
      */
@@ -102,12 +102,12 @@ public interface SchemaBuilder<
      *
      * such as,
      *
-     * <pre><xmp>
+     * {@code<pre><xmp>
      * <element name="foo">     <!-- this becomes 'P' -->
      *   <foreign:annotation /> <!-- this becomes 'A' -->
      *   ...
      * </element>
-     * </xmp></pre>
+     * </xmp></pre>}
      */
     P annotate(P p, A anno) throws BuildException;
 
@@ -116,12 +116,12 @@ public interface SchemaBuilder<
      *
      * such as,
      *
-     * <pre><xmp>
+     * {@code<pre><xmp>
      * <element name="foo">
      *   <empty />              <!-- this becomes 'P' -->
      *   <foreign:annotation /> <!-- this becomes 'E' -->
      * </element>
-     * </xmp></pre>
+     * </xmp></pre>}
      */
     P annotateAfter(P p, E e) throws BuildException;
 

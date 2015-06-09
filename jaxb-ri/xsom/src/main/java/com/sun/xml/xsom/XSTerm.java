@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -54,11 +54,11 @@ import com.sun.xml.xsom.visitor.XSTermFunctionWithParam;
  * boolean isXXX() {
  *     return this instanceof XXX;
  * }
+ * </pre>
  * <pre>
- * 
  * and a set of cast functions (<code>asXXX</code>), which are
  * essentially:
- * 
+ * </pre>
  * <pre>
  * XXX asXXX() {
  *     if(isXXX())  return (XXX)this;

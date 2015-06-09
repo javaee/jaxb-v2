@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -60,8 +60,8 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * Checks if binding declarations are placed where they are allowed.
  * 
  * <p>
- * For example, if a &lt;jaxb:property> customization is given under
- * the &lt;xs:simpleContent> element, this class raises an error.
+ * For example, if a {@code <jaxb:property>} customization is given under
+ * the {@code <xs:simpleContent>} element, this class raises an error.
  * 
  * <p>
  * our main checkpoint of misplaced customizations are in BGMBuilder.
@@ -75,7 +75,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * 
  * <p>
  * For example, a property customization is allowed on a complex type
- * schema component, but it's only allowed on the &lt;complexType>
+ * schema component, but it's only allowed on the {@code <complexType>}
  * element. The spec team informed us that they would consider resolving
  * this discrepancy in favor of RI, but meanwhile we need to detect
  * errors correctly.
@@ -109,9 +109,9 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * of that type.
  * 
  * <p>
- * For simple types, customizations are allowed only under the &lt;xs:simpleType>
+ * For simple types, customizations are allowed only under the {@code <xs:simpleType>}
  * element, and for complex types they are allowed only under the
- * &lt;xs:cimplexType> element.
+ * {@code <xs:cimplexType>} element.
  * 
  * <p>
  * So the bottom line is that it would be suffice if we just make sure 

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 1997-2011 Sun Microsystems, Inc. All rights reserved.
+ * Copyright 1997-2015 Sun Microsystems, Inc. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -303,11 +303,10 @@ public final class JAnnotationUse extends JAnnotationValue {
       * Adds a member value pair to this annotation
       *  This can be used for e.g to specify
       * <pre>
-      *        &#64;XmlCollectionItem(type=Integer.class);
-      * <pre>
-      * For adding a value of Class<? extends Annotation>
-      * @link
-      * #annotationParam(java.lang.String, java.lang.Class<? extends java.lang.annotation.Annotation>)
+      *        {@code @XmlCollectionItem(type=Integer.class);}
+      * </pre>
+      * For adding a value of {@code Class<? extends Annotation>}
+      * {@link #annotationParam(String, Class)}
       * @param name
       *        The simple name for this annotation param
       *

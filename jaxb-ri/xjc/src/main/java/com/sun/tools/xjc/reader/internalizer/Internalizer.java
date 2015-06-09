@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -94,7 +94,7 @@ class Internalizer {
     private final XPath xpath;
 
     /**
-     * Internalize all &lt;jaxb:bindings> customizations in the given forest.
+     * Internalize all {@code <jaxb:bindings>} customizations in the given forest.
      *
      * @return
      *      if the SCD support is enabled, the return bindings need to be applied
@@ -157,7 +157,7 @@ class Internalizer {
     }
     
     /**
-     * Validates attributes of a &lt;jaxb:bindings> element.
+     * Validates attributes of a {@code <jaxb:bindings>} element.
      */
     private void validate( Element bindings ) {
         NamedNodeMap atts = bindings.getAttributes();
@@ -192,7 +192,7 @@ class Internalizer {
      *      the user starts specifying targets via SCD (in that case
      *      this inherited target is just not going to be used.)
      * @param inheritedSCD
-     *      If the ancestor &lt;bindings> node specifies @scd to
+     *      If the ancestor {@code <bindings>} node specifies @scd to
      *      specify the target via SCD, then this parameter represents that context.
      */
     private void buildTargetNodeMap( Element bindings, @NotNull Node inheritedTarget,
@@ -456,11 +456,11 @@ class Internalizer {
      * Moves the "decl" node under the "target" node.
      * 
      * @param decl
-     *      A JAXB customization element (e.g., &lt;jaxb:class>)
+     *      A JAXB customization element (e.g., {@code <jaxb:class>})
      * 
      * @param target
      *      XML Schema element under which the declaration should move.
-     *      For example, &lt;xs:element>
+     *      For example, {@code <xs:element>}
      */
     private void moveUnder( Element decl, Element target ) {
         Element realTarget = forest.logic.refineTarget(target);

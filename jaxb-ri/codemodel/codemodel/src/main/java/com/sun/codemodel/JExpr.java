@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -288,7 +288,7 @@ public abstract class JExpr {
      * <p>
      * This method can be used as a short-cut to create a JExpression.
      * For example, instead of <code>_a.gt(_b)</code>, you can write
-     * it as: <code>JExpr.direct("a>b")</code>.
+     * it as: {@code JExpr.direct("a>b")}.
      * 
      * <p>
      * Be warned that there is a danger in using this method,

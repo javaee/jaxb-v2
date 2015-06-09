@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -285,12 +285,12 @@ public abstract class JAXBRIContext extends JAXBContext {
      * add element declarations to the generate schema.
      * For example, if the JAX-RPC passes in the following entry:
      *
-     * {foo}bar -> DeclaredType for java.lang.String
+     * {@code {foo}bar -> DeclaredType for java.lang.String}
      *
      * then JAXB generates the following element declaration (in the schema
      * document for the namespace "foo")"
      *
-     * &lt;xs:element name="bar" type="xs:string" />
+     * {@code <xs:element name="bar" type="xs:string" />}
      *
      * This can be used for generating schema components necessary for WSDL.
      *
@@ -409,17 +409,17 @@ public abstract class JAXBRIContext extends JAXBContext {
      *
      * <p>
      * For example, given the following
-     * <pre><xmp>
+     * <pre>{@code <xmp>
      * interface Foo<T> extends List<List<T>> {}
      * interface Bar extends Foo<String> {}
-     * </xmp></pre>
+     * </xmp>}</pre>
      * This method works like this:
-     * <pre><xmp>
+     * <pre>{@code <xmp>
      * getBaseClass( Bar, List ) = List<List<String>
      * getBaseClass( Bar, Foo  ) = Foo<String>
      * getBaseClass( Foo<? extends Number>, Collection ) = Collection<List<? extends Number>>
      * getBaseClass( ArrayList<? extends BigInteger>, List ) = List<? extends BigInteger>
-     * </xmp></pre>
+     * </xmp>}</pre>
      *
      * @param type
      *      The type that derives from {@code baseType}
@@ -451,7 +451,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      * to put additional JAXB type references into the {@link JAXBContext}.
      *
      * <p>
-     * The value of the property is {@link Collection}&lt;{@link TypeReference}>.
+     * The value of the property is {@link Collection}{@code <}{@link TypeReference}{@code >}.
      * Those {@link TypeReference}s can then be used to create {@link Bridge}s.
      *
      * <p>
@@ -468,7 +468,7 @@ public abstract class JAXBRIContext extends JAXBContext {
      * to enable the c14n marshalling support in the {@link JAXBContext}.
      *
      * Boolean
-     * @see C14nSupport_ArchitectureDocument
+     * See C14nSupport_ArchitectureDocument in JAXB Architecture Document
      * @since 2.0 EA2
      */
     public static final String CANONICALIZATION_SUPPORT = "com.sun.xml.bind.c14n";

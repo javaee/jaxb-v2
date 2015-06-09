@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -51,6 +51,7 @@ import java.util.StringTokenizer;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.UnmarshalException;
+import javax.xml.bind.UnmarshallerHandler;
 import javax.xml.bind.ValidationEvent;
 
 import org.xml.sax.Attributes;
@@ -67,8 +68,7 @@ import com.sun.xml.bind.util.AttributesImpl;
  * This object converts SAX events into unmarshaller events and
  * cooridnates the entire unmarshalling process.
  *
- * @author
- *  <a href="mailto:kohsuke.kawaguchi@sun.com>Kohsuke KAWAGUCHI</a>
+ * @author Kohsuke KAWAGUCHI
  * @since JAXB1.0
  * @deprecated in JAXB1.0.1
  */

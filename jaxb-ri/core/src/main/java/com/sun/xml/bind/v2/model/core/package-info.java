@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -51,25 +51,25 @@
  * The meaning of parameterizations are as follows:
  *
  * <dl>
- *  <dt><b>T</b>
+ *  <dt><b>T</b></dt>
  *  <dd>Represents an use of type, such as {@code int}, {@code Foo[]}, or {@code List<Foo>}.
- *      Corresponds to {@link Type}.
- *
- *  <dt><b>C</b>
+ *      Corresponds to {@link java.lang.reflect.Type}.</dd>
+*
+ *  <dt><b>C</b></dt>
  *  <dd>Represents a declaration of a type (that is, class, interface, enum, or annotation.)
  *      This doesn't include {@code int}, {@code Foo[]}, or {@code List<Foo>}, because
  *      they don't have corresponding declarations.
- *      Corresponds to {@link Class} (roughly).
+ *      Corresponds to {@link java.lang.Class} (roughly).</dd>
  *
- *  <dt><b>F</b>
+ *  <dt><b>F</b></dt>
  *  <dd>Represents a field.
- *      Corresponds to {@link Field}.
+ *      Corresponds to {@link java.lang.reflect.Field}.</dd>
  *
- *  <dt><b>M</b>
+ *  <dt><b>M</b></dt>
  *  <dd>Represents a method.
- *      Corresponds to {@link Method}.
+ *      Corresponds to {@link java.lang.reflect.Method}.</dd>
  *
- * <dt>
+ * </dl>
  */ 
 @XmlSchema(namespace="http://jaxb.dev.java.net/xjc/model",elementFormDefault=QUALIFIED)
 package com.sun.xml.bind.v2.model.core;

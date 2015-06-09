@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -44,6 +44,7 @@ import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.UnmarshallerHandler;
+import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.helpers.AbstractUnmarshallerImpl;
 
 import org.w3c.dom.Document;
@@ -68,8 +69,7 @@ import com.sun.xml.bind.validator.ValidatingUnmarshaller;
  * This class can be extended by the generated code to provide
  * type-safe unmarshall methods.
  *
- * @author
- *  <a href="mailto:kohsuke.kawaguchi@sun.com>Kohsuke KAWAGUCHI</a>
+ * @author Kohsuke KAWAGUCHI
  * @since JAXB1.0
  * @deprecated in JAXB1.0.1
  */

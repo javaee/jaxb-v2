@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2011
+ * Copyright (C) 2004-2015
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -101,7 +101,7 @@ public abstract class NameClass implements ParsedNameClass, Serializable {
      * Internally, this instance is also used for:
      * <ol>
      *  <li>Used to recover from errors during parsing.
-     *  <li>Mark element patterns with &lt;notAllowed/> content model.
+     *  <li>Mark element patterns with {@code <notAllowed/>} content model.
      * </ol>
      */
     public static final NameClass NULL = new NullNameClass();

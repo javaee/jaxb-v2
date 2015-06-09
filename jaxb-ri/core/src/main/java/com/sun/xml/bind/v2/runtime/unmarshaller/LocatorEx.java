@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -48,8 +48,9 @@ import org.xml.sax.Locator;
 import org.w3c.dom.Node;
 
 /**
- * Object that returns the current location that the {@link XmlVisitor} is parsing.
+ * Object that returns the current location that the com.sun.xml.bind.v2.runtime.unmarshaller.XmlVisitor [1] is parsing.
  *
+ * [1] com.sun.xml.bind.v2.runtime.unmarshaller.XmlVisitor is part of JAXB RI
  * @author Kohsuke Kawaguchi
  */
 public interface LocatorEx extends Locator {

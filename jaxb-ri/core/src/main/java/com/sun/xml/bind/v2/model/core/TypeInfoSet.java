@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -168,7 +168,7 @@ public interface TypeInfoSet<T,C,F,M> {
      *      A map from namespace URI to the value of the location.
      *      If the entry is missing, that means a schema should be generated for that namespace.
      *      If the value is "", that means the schema location is implied
-     *      (&lt;xs:schema namespace="..."/> w/o schemaLocation.) 
+     *      ({@code <xs:schema namespace="..."/>} w/o schemaLocation.)
      */
     Map<String,String> getSchemaLocations();
 

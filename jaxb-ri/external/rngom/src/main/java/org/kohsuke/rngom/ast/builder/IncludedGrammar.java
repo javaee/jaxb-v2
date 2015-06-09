@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2011
+ * Copyright (C) 2004-2015
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,9 +27,9 @@ import org.kohsuke.rngom.ast.om.ParsedElementAnnotation;
 import org.kohsuke.rngom.parse.Parseable;
 
 /**
- * {@link Scope} for &lt;grammar> element of the &lt;include>d grammar.
+ * {@link Scope} for {@code<grammar>} element of the {@code<include>}d grammar.
  * <p>
- * This object builds &lt;define>s in the included grammar that
+ * This object builds {@code<define>}s in the included grammar that
  * override the definitions in the original grammar.
  */
 public interface IncludedGrammar<

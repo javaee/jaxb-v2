@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -45,6 +45,8 @@ import java.util.Collection;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
+import javax.xml.bind.annotation.XmlInlineBinaryData;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
@@ -52,6 +54,7 @@ import javax.xml.namespace.QName;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JJavaName;
 import com.sun.codemodel.JType;
+import com.sun.tools.xjc.Plugin;
 import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
 import com.sun.tools.xjc.model.nav.NClass;
 import com.sun.tools.xjc.model.nav.NType;
@@ -61,6 +64,7 @@ import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.RuntimeUtil;
 import com.sun.xml.xsom.XSComponent;
 
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
 
 /**
@@ -96,7 +100,7 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
     public String javadoc="";
 
     /**
-     * Property with {@link @XmlInlineBinaryData}.
+     * Property with {@link XmlInlineBinaryData}.
      */
     public boolean inlineBinaryData;
 

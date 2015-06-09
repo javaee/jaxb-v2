@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -75,7 +75,7 @@ import org.xml.sax.Locator;
  *
  * <p>
  * As an NType, it represents the Java representation of this element
- * (either JAXBElement&lt;T> or Foo).
+ * (either {@code JAXBElement<T>} or Foo).
  *
  * @author Kohsuke Kawaguchi
  */
@@ -85,7 +85,7 @@ public final class CElementInfo extends AbstractCElement
     private final QName tagName;
 
     /**
-     * Represents {@code JAXBElement&lt;ContentType>}.
+     * Represents {@code JAXBElement<ContentType>}.
      */
     private NType type;
 

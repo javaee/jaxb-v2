@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -59,11 +59,10 @@ import com.sun.xml.bind.TypeRegistry;
  *
  * <p>
  * Errors detected by the ContentHandlerEx-derived classes should
- * be either thrown as {@link UnrepotedException} or reported through
+ * be either thrown as {@link UnreportedException} or reported through
  * the handleEvent method of this interface.
  *
- * @author
- *  <a href="mailto:kohsuke.kawaguchi@sun.com>Kohsuke KAWAGUCHI</a>
+ * @author Kohsuke KAWAGUCHI
  * @since JAXB1.0
  * @deprecated in JAXB1.0.1
  */
@@ -94,10 +93,6 @@ public interface UnmarshallingContext extends
      * <p>
      * This method will also fire the leaveChild event with the
      * associated memento.
-     * 
-     * @return
-     *      The new content handler. This method DOES NOT return
-     *      the previous content handler.
      */
     void popContentHandler() throws UnreportedException;
     

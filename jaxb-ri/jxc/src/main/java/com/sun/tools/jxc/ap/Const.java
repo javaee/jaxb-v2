@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -51,8 +51,8 @@ public enum Const {
 
     /**
      * Name of the annotation processing command-line option to take user-specified config files.
-     * <p/>
-     * <p/>
+     * <p>
+     * <p>
      * It can take multiple file names separately by {@link File#pathSeparator}.
      */
     CONFIG_FILE_OPTION("jaxb.config"),

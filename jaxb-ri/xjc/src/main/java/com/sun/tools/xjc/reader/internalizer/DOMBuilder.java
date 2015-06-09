@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -55,7 +55,7 @@ import org.xml.sax.Locator;
  * Builds DOM while keeping the location information.
  * 
  * <p>
- * This class also looks for outer most &lt;jaxb:bindings>
+ * This class also looks for outer most {@code <jaxb:bindings>}
  * customizations.
  * 
  * @author

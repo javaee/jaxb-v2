@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -77,7 +77,7 @@ public interface JavaCompiler {
      *      Those {@link Reference}s must be included in the <tt>rootTypes</tt> parameter.
      *      In this map, a {@link Reference} can be null, in which case the element name is
      *      declared to have an empty complex type.
-     *      (&lt;xs:element name='foo'>&lt;xs:complexType/>&lt;/xs:element>)
+     *      ({@code <xs:element name='foo'><xs:complexType/></xs:element>})
      *      This parameter can be null, in which case the method behaves as if the empty map is given.
      *
      * @param defaultNamespaceRemap

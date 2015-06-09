@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -64,6 +64,7 @@ import org.xml.sax.SAXParseException;
  *  <li>manage mapping between namespace URIs and prefixes.
  * 
  *  <li>TODO: provide support for interleaving.
+ * </ol>
  * <p><b>
  *     Auto-generated, do not edit.
  * </b></p>
@@ -84,7 +85,7 @@ public class NGCCRuntime implements ContentHandler, NGCCEventSource {
      * or the reset method is called. You can't replace the root
      * handler while parsing is in progress.
      * <p>
-     * Usually a generated class that corresponds to the &lt;start>
+     * Usually a generated class that corresponds to the {@code <start>}
      * pattern will be used as the root handler, but any NGCCHandler
      * can be a root handler.
      * 

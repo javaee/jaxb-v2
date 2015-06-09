@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -64,6 +64,7 @@ import org.xml.sax.SAXParseException;
  *  <li>manage mapping between namespace URIs and prefixes.
  * 
  *  <li>TODO: provide support for interleaving.
+ *  </ol>
  * 
  * @version $Id: NGCCRuntime.java,v 1.15 2002/09/29 02:55:48 okajima Exp $
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
@@ -82,7 +83,7 @@ public class NGCCRuntime implements ContentHandler, NGCCEventSource {
      * or the reset method is called. You can't replace the root
      * handler while parsing is in progress.
      * <p>
-     * Usually a generated class that corresponds to the &lt;start>
+     * Usually a generated class that corresponds to the {@code <start>}
      * pattern will be used as the root handler, but any NGCCHandler
      * can be a root handler.
      * 
@@ -192,8 +193,8 @@ public class NGCCRuntime implements ContentHandler, NGCCEventSource {
      * </xmp>
      * 
      * Then this first space needs to be ignored (for otherwise, we will
-     * end up treating this space as the match to &lt;text/> and won't
-     * be able to process &lt;bar>.)
+     * end up treating this space as the match to {@code <text/>} and won't
+     * be able to process {@code <bar>}.)
      * 
      * Now assume the following instance:
      * <xmp>
@@ -208,7 +209,7 @@ public class NGCCRuntime implements ContentHandler, NGCCEventSource {
      * easy solution is to use the type of next event. If a text is
      * followed by a start tag, it follows from the constraint on
      * RELAX NG that that text must be either whitespaces or a match
-     * to &lt;text/>.
+     * to {@code <text/>}.
      * 
      * <p>
      * On the contrary, if a text is followed by a end tag, then it
@@ -223,9 +224,9 @@ public class NGCCRuntime implements ContentHandler, NGCCEventSource {
      * <p>
      * TODO: according to the constraint of RELAX NG, if characters
      * follow an end tag, then they must be either whitespaces or
-     * must match to &lt;text/>.
+     * must match to {@code <text/>}.
      * 
-     * @param   possiblyWhitespace
+     * @param ignorable
      *      True if the buffered character can be ignorabale. False if
      *      it needs to be consumed.
      */

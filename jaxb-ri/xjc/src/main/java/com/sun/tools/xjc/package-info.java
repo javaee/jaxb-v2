@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -46,7 +46,7 @@
  *
  *
  * <h2>XJC Architecture Diagram</h2>
- * {@DotDiagram
+ * {@code DotDiagram
      digraph G {
          rankdir=TB;
 
@@ -93,13 +93,13 @@
  *   and CodeModel.
  * </dl>
  *
- * {@DotDiagram
+ * {@code DotDiagram
  *   digraph G {
  *      rankdir = LR;
  *      schema -> reader -> model -> backend -> outline;
  *   }
  * }
  *
- * @ArchitectureDocument
+ * ArchitectureDocument (JAXB Architecture Document project)
  */
 package com.sun.tools.xjc;

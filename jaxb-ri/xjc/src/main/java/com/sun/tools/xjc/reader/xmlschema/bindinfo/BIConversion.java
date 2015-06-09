@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -130,7 +130,7 @@ public abstract class BIConversion extends AbstractDeclarationImpl {
     }
 
     /**
-     * User-specified &lt;javaType> customization.
+     * User-specified {@code <javaType>} customization.
      *
      * The parse/print methods are allowed to be null,
      * and their default values are determined based on the

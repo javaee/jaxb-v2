@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -48,8 +48,9 @@ import javax.xml.bind.annotation.XmlRegistry;
  * Represents the information in a class with {@link XmlRegistry} annotaion.
  *
  * <p>
- * This interface is only meant to be used as a return type from {@link com.sun.xml.bind.v2.model.impl.ModelBuilder}.
+ * This interface is only meant to be used as a return type from com.sun.xml.bind.v2.model.impl.ModelBuilder [1].
  *
+ * [1] com.sun.xml.bind.v2.model.impl.ModelBuilder is part of JAXB RI
  * @author Kohsuke Kawaguchi
  */
 public interface RegistryInfo<T,C> {

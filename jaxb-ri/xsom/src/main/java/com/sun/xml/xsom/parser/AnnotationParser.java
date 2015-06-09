@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -45,23 +45,23 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 
 /**
- * Used to parse &lt;xs:annotation>.
+ * Used to parse {@code <xs:annotation>}.
  * 
  * @author Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 public abstract class AnnotationParser {
     /**
-     * Called every time a new &lt;xs:annotation> element
+     * Called every time a new {@code <xs:annotation>} element
      * is found.
      * 
-     * The sub-tree rooted at &lt;xs:annotation> will be
+     * The sub-tree rooted at {@code <xs:annotation>} will be
      * sent to this ContentHandler as if it is a whole document.
      * 
      * @param context
      *      indicates the schema component that owns this annotation.
      *      Always non-null.
      * @param parentElementName
-     *      local name of the element that contains &lt;xs:annotation>.
+     *      local name of the element that contains {@code <xs:annotation>}.
      *      (e.g., "element", "attribute", ... )
      * @param errorHandler
      *      The error handler that the client application specifies.
@@ -85,7 +85,7 @@ public abstract class AnnotationParser {
      * @param existing
      *      An annotation object which was returned from another
      *      AnnotationParser before. Sometimes, one schema component
-     *      can have multiple &lt:xs:annotation> elements and
+     *      can have multiple {@code <xs:annotation>} elements and
      *      this parameter is used to merge all those annotations
      *      together. If there is no existing object, null will be
      *      passed.

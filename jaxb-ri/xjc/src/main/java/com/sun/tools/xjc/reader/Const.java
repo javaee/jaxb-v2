@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -74,7 +74,7 @@ public class Const {
      * Attribute name of the expected media type.
      *
      * @see WellKnownNamespace#XML_MIME_URI
-     * @see http://www.w3.org/TR/xml-media-types/
+     * See http://www.w3.org/TR/xml-media-types/
      */
     public static final String EXPECTED_CONTENT_TYPES = "expectedContentTypes";
 }

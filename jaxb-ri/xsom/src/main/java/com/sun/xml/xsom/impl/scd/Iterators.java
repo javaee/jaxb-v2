@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -112,7 +112,7 @@ public class Iterators {
     }
 
     /**
-     * For each U, apply U->Iterator&lt;T> function and then iterate all
+     * For each U, apply {@code U->Iterator<T>} function and then iterate all
      * the resulting T.
      */
     public static abstract class Map<T,U> extends ReadOnly<T> {

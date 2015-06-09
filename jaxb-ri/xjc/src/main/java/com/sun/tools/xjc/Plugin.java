@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -111,7 +111,7 @@ public abstract class Plugin {
      * Since options can appear in no particular order,
      * XJC allows sub-options of a plugin to show up before
      * the option that activates a plugin (one that's returned
-     * by {@link #getOptionName().)
+     * by {@link #getOptionName()}.
      *
      * But nevertheless a {@link Plugin} needs to be activated
      * to participate in further processing.

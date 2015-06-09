@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -60,7 +60,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
 public class XMLSchemaInternalizationLogic implements InternalizationLogic {
 
     /**
-     * This filter looks for &lt;xs:import> and &lt;xs:include>
+     * This filter looks for {@code <xs:import> and <xs:include>}
      * and parses those documents referenced by them.
      */
     private static final class ReferenceFinder extends AbstractReferenceFinderImpl {

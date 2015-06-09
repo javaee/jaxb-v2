@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2012
+ * Copyright (C) 2004-2015
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -114,7 +114,7 @@ public class DDataPattern extends DPattern {
     }
 
     /**
-     * Gets the pattern that reprsents the &lt;except> child of this data pattern.
+     * Gets the pattern that reprsents the {@code<except>} child of this data pattern.
      *
      * @return null if not exist.
      */

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -86,7 +86,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
     
 
     /**
-     * Gets the name converter that will govern the XML->Java
+     * Gets the name converter that will govern the {@code XML -> Java}
      * name conversion process for this compilation.
      *
      * <p>
@@ -273,14 +273,14 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
     private BISerializable serializable = null;
 
     /**
-     * If &lt;xjc:superClass> extension is specified,
+     * If {@code <xjc:superClass>} extension is specified,
      * returns the specified root class. Otherwise null.
      */
     @XmlElement(namespace=Const.XJC_EXTENSION_URI)
     ClassNameBean superClass = null;
 
     /**
-     * If &lt;xjc:superInterface> extension is specified,
+     * If {@code <xjc:superInterface>} extension is specified,
      * returns the specified root class. Otherwise null.
      */
     @XmlElement(namespace=Const.XJC_EXTENSION_URI)
@@ -503,7 +503,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
     }
 
     /**
-     * Global &lt;jaxb:javaType>.
+     * Global {@code <jaxb:javaType>}.
      */
     static final class GlobalStandardConversion extends BIConversion.User {
         @XmlAttribute
@@ -527,7 +527,7 @@ public final class BIGlobalBinding extends AbstractDeclarationImpl {
     }
 
     /**
-     * Global &lt;xjc:javaType>.
+     * Global {@code <xjc:javaType>}.
      */
     static final class GlobalVendorConversion extends BIConversion.UserAdapter {
         @XmlAttribute

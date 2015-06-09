@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -91,11 +91,12 @@ public final class Util {
     /**
      * Calculate the normalized form of the given uriPath.
      *
-     * For example:
+     * For example: {@code
      *    /a/b/c/ -> /a/b/c/
      *    /a/b/c  -> /a/b/
      *    /a/     -> /a/
      *    /a      -> /
+     *    }
      *
      * @param uriPath path of a URI (as returned by java.net.URI#getPath()
      * @return the normalized uri path

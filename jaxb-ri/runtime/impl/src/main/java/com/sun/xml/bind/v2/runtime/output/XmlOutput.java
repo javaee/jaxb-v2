@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -173,7 +173,7 @@ public interface XmlOutput {
      *
      * @param value
      *      this string can contain characters that might need escaping
-     *      (such as '&amp;' or '>')
+     *      (such as {@code '&amp;' or '>'})
      * @param needsSeparatingWhitespace
      */
     public void text( String value, boolean needsSeparatingWhitespace ) throws IOException, SAXException, XMLStreamException;
@@ -183,7 +183,7 @@ public interface XmlOutput {
      *
      * @param value
      *      this string can contain characters that might need escaping
-     *      (such as '&amp;' or '>')
+     *      (such as {@code '&amp;' or '>'})
      * @param needsSeparatingWhitespace
      */
     public void text( Pcdata value, boolean needsSeparatingWhitespace ) throws IOException, SAXException, XMLStreamException;

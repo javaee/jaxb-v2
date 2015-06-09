@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -68,8 +68,7 @@ import org.xml.sax.Locator;
  * The structure of the generated class needs to precisely
  * follow the JAXB spec.
  * 
- * @author
- *    <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ * @author Kohsuke KAWAGUCHI
  */
 public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, CNonElement
 {
@@ -98,7 +97,7 @@ public final class CEnumLeafInfo implements EnumLeafInfo<NType,NClass>, NClass, 
      *
      * <p>
      * To parse XML into a constant, we use the base type
-     * to do lexical -> value, then use a map to pick up the right one.
+     * to do {@code lexical -> value}, then use a map to pick up the right one.
      *
      * <p>
      * Hence this also represents the type of the Java value.

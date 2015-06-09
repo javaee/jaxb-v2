@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -52,8 +52,7 @@ import com.sun.msv.grammar.Grammar;
  * 
  * Implementation of this interface is provided by the generated code.
  *
- * @author
- *  <a href="mailto:kohsuke.kawaguchi@sun.com>Kohsuke KAWAGUCHI</a>
+ * @author Kohsuke KAWAGUCHI
  * @since JAXB1.0
  * @deprecated in JAXB1.0.1
  */

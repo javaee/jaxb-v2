@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -108,7 +108,7 @@ public class SchemaGenTask extends ApBasedTask {
 
 
     /**
-     * Nested schema element to specify the namespace -> file name mapping.
+     * Nested schema element to specify the {@code namespace -> file name} mapping.
      */
     public class Schema {
         private String namespace;

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -87,7 +87,7 @@ public interface ElementInfo<T,C> extends Element<T,C> {
     T getContentInMemoryType();
 
     /**
-     * Returns the representation for {@link JAXBElement}&lt;<i>contentInMemoryType</i>&gt;.
+     * Returns the representation for {@link JAXBElement}<i>{@code <contentInMemoryType>}</i>;.
      *
      * <p>
      * This returns the signature in Java and thus isn't affected by the adapter.
@@ -95,9 +95,9 @@ public interface ElementInfo<T,C> extends Element<T,C> {
     T getType();
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
-     * {@link ElementInfo} can only substitute {@link ElementInfo}. 
+     * {@link ElementInfo} can only substitute {@link ElementInfo}.
      */
     ElementInfo<T,C> getSubstitutionHead();
 

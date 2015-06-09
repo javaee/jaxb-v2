@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -135,7 +135,7 @@ public interface XSSchema extends XSComponent
     /**
      * Sine an {@link XSSchema} is not necessarily defined in
      * one schema document (for example one schema can span across
-     * many documents through &lt;xs:include>s.),
+     * many documents through {@code <xs:include>s}.),
      * so this method always returns null.
      *
      * @deprecated

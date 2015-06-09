@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -49,7 +49,7 @@ import com.sun.tools.xjc.generator.bean.field.FieldRenderer;
 import org.w3c.dom.Element;
 
 /**
- * Particles in the &lt;content> declaration in the binding file.
+ * Particles in the {@code <content>} declaration in the binding file.
  * 
  */
 public class BIContent
@@ -115,7 +115,7 @@ public class BIContent
     /**
      * Gets the type of this property, if any.
      * <p>
-     * &lt;element-ref> particle doesn't have the type.
+     * {@code <element-ref>} particle doesn't have the type.
      * 
      * @return
      *      null if none is specified.

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -93,15 +93,15 @@ import org.xml.sax.SAXException;
  *
  * <p>This code will produce the following document:</p>
  *
- * <pre>
- * &lt;?xml version="1.0" standalone="yes"?>
+ * <pre>{@code
+ * <?xml version="1.0" standalone="yes"?>
  *
- * &lt;Person>
- *   &lt;name>Jane Smith&lt;/name>
- *   &lt;date-of-birth>1965-05-23&lt;/date-of-birth>
- *   &lt;citizenship>US&lt;/citizenship>
- * &lt;/Person>
- * </pre>
+ * <Person>
+ *   <name>Jane Smith</name>
+ *   <date-of-birth>1965-05-23</date-of-birth>
+ *   <citizenship>US</citizenship>
+ * </Person>
+ * }</pre>
  *
  * <p>This class inherits from {@link XMLWriter},
  * and provides all of the same support for Namespaces.</p>

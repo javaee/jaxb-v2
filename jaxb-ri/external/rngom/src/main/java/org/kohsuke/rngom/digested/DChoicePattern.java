@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2011
+ * Copyright (C) 2004-2015
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 package org.kohsuke.rngom.digested;
 
 /**
- * &lt;choice> pattern.
+ * {@code<choice>} pattern.
  *
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */

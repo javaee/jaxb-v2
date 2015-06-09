@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -58,15 +58,15 @@
  *
  * <dl>
  *  <dt>Source location information
- *  <dd>{@link Locator} object that can be used to tell where the model components
+ *  <dd>{@link org.xml.sax.Locator} object that can be used to tell where the model components
  *      are created from in terms of the source file. Useful for error reporting.
  *
  *  <dt>Source schema component
- *  <dd>{@link XSComponent} object from which the model components are created from.
- *      See {@link CCustomizable#getSchemaComponent()} for example.
+ *  <dd>{@link com.sun.xml.xsom.XSComponent} object from which the model components are created from.
+ *      See {@link com.sun.tools.xjc.model.CCustomizable#getSchemaComponent()} for example.
  *
  *  <dt>Plugin customizations
- *  <dd>See {@link CCustomizable}.
+ *  <dd>See {@link com.sun.tools.xjc.model.CCustomizable}.
  * </dl>
  */
 package com.sun.tools.xjc.model;

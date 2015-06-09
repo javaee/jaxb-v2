@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -47,6 +47,7 @@ import javax.xml.bind.helpers.ValidationEventImpl;
 
 import com.sun.xml.bind.validator.Locator;
 
+import com.sun.xml.bind.validator.ValidatingUnmarshaller;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -54,7 +55,7 @@ import org.xml.sax.SAXParseException;
  * An ErrorHandler that accepts a SAXParseException from the ValidatingUnmarshaller, 
  * creates a ValidationEvent, and passes it onto the client app's ValidationEventHandler.
  *
- * @see com.sun.xml.bind.v2.runtime.ValidatingUnmarshaller
+ * @see ValidatingUnmarshaller
  * @since 1.0
  */
 public class ErrorHandlerToEventHandler implements org.xml.sax.ErrorHandler {

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -63,8 +63,6 @@ public class AccessorFactoryImpl implements InternalAccessorFactory {
      * @param field the field within the class to be accessed.
      * @param readOnly  the isStatic value of the field's modifier.
      * @return Accessor the accessor for this field
-     *
-     * @throws JAXBException reports failures of the method.
      */
     public Accessor createFieldAccessor(Class bean, Field field, boolean readOnly) {
         return readOnly
@@ -80,8 +78,6 @@ public class AccessorFactoryImpl implements InternalAccessorFactory {
      * @param readOnly  the isStatic value of the field's modifier.
      * @param supressWarning supress security warning about accessing fields through reflection
      * @return Accessor the accessor for this field
-     *
-     * @throws JAXBException reports failures of the method.
      */
     public Accessor createFieldAccessor(Class bean, Field field, boolean readOnly, boolean supressWarning) {
         return readOnly
@@ -96,8 +92,6 @@ public class AccessorFactoryImpl implements InternalAccessorFactory {
      * @param getter the getter method to be accessed. The value can be null.
      * @param setter the setter method to be accessed. The value can be null.
      * @return Accessor the accessor for these methods
-     *
-     * @throws JAXBException reports failures of the method.
      */
     public Accessor createPropertyAccessor(Class bean, Method getter, Method setter) {    
         if (getter == null) {

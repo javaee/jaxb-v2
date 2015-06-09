@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -52,7 +52,7 @@ import java.io.Writer;
  *
  * <p>
  * Note that this class doesn't escape other Unicode characters
- * that are typically unsafe. For example, &#x611B; (A kanji
+ * that are typically unsafe. For example, {@code &#x611B;} (A kanji
  * that means "love") can be considered as unsafe because
  * javac with English Windows cannot accept this character in the
  * source code.

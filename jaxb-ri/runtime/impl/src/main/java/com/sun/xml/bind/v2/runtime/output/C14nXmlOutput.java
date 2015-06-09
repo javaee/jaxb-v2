@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -53,7 +53,7 @@ import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
 /**
  * {@link XmlOutput} that generates canonical XML.
  *
- * @see com.sun.xml.bind.api.C14nSupport_ArchitectureDocument
+ * See com.sun.xml.bind.api.C14nSupport_ArchitectureDocument which is part of jaxb-architecture-document project.
  * @author Kohsuke Kawaguchi
  */
 public class C14nXmlOutput extends UTF8XmlOutput {
@@ -83,7 +83,9 @@ public class C14nXmlOutput extends UTF8XmlOutput {
      * (AKA attribute wildcard.)
      *
      * As long as this map is empty, there's no need for sorting.
-     * see {@link com.sun.xml.bind.api.C14nSupport_ArchitectureDocument} for more details.
+     * see com.sun.xml.bind.api.C14nSupport_ArchitectureDocument [1] for more details.
+     *
+     * [1] com.sun.xml.bind.api.C14nSupport_ArchitectureDocument is part of jaxb-architecture-document project.
      */
     private final FinalArrayList<DynamicAttribute> otherAttributes = new FinalArrayList<DynamicAttribute>();
 

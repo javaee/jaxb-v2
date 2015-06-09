@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -54,17 +54,17 @@ import com.sun.tools.xjc.model.TypeUse;
 import org.w3c.dom.Element;
 
 /**
- * &lt;enumeration> declaration in the binding file.
+ * {@code <enumeration>} declaration in the binding file.
  */
 public final class BIEnumeration implements BIConversion
 {
-    /** Creates an object from &lt;enumeration> declaration. */
+    /** Creates an object from {@code <enumeration>} declaration. */
     private BIEnumeration( Element _e, TypeUse _xducer ) {
         this.e = _e;
         this.xducer = _xducer;
     }
     
-    /** &lt;enumeration> element in DOM. */
+    /** {@code <enumeration>} element in DOM. */
     private final Element e;
     
     private final TypeUse xducer;

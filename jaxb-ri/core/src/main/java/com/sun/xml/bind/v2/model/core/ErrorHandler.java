@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -44,19 +44,19 @@ import com.sun.xml.bind.v2.runtime.IllegalAnnotationException;
 
 /**
  * listen to static errors found during building a JAXB model from a set of classes.
- * Implemented by the client of {@link com.sun.xml.bind.v2.model.impl.ModelBuilder}.
+ * Implemented by the client of com.sun.xml.bind.v2.model.impl.ModelBuilder[1].
  *
  * <p>
  * All the static errors have to be reported while constructing a
- * model, not when a model is used (IOW, until the {@link com.sun.xml.bind.v2.model.impl.ModelBuilder#link} completes.
- * Internally, {@link com.sun.xml.bind.v2.model.impl.ModelBuilder} wraps an {@link ErrorHandler} and all the model
+ * model, not when a model is used (IOW, until the com.sun.xml.bind.v2.model.impl.ModelBuilder#link completes.
+ * Internally, com.sun.xml.bind.v2.model.impl.ModelBuilder wraps an {@link ErrorHandler} and all the model
  * components should report errors through it.
  *
  * <p>
  * {@link IllegalAnnotationException} is a checked exception to remind
  * the model classes to report it rather than to throw it.
  *
- * @see com.sun.xml.bind.v2.model.impl.ModelBuilder
+ * [1] com.sun.xml.bind.v2.model.impl.ModelBuilder - is part of JAXB RI
  * @author Kohsuke Kawaguchi
  */
 public interface ErrorHandler {

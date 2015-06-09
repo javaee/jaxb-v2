@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -135,14 +135,14 @@ public class ACTask extends Task {
     }
 
     /**
-     * Nested &lt;classpath> element.
+     * Nested {@code <classpath>} element.
      */
     public void setClasspath(Path cp) {
         classpath.createPath().append(cp);
     }
 
     /**
-     * Nested &lt;classpath> element.
+     * Nested {@code <classpath>} element.
      */
     public Path createClasspath() {
         return classpath.createPath();
@@ -157,7 +157,7 @@ public class ACTask extends Task {
     }
 
     /**
-     * Nested &lt;classes> elements.
+     * Nested {@code <classes>} elements.
      */
     public static class Classes {
 
@@ -230,7 +230,7 @@ public class ACTask extends Task {
     }
 
     /**
-     * Nested &lt;endorse> elements.
+     * Nested {@code <endorse>} elements.
      */
     public static class Endorse {
 

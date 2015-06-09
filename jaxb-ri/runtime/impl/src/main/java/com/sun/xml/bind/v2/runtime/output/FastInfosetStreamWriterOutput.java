@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -57,7 +57,7 @@ import org.jvnet.fastinfoset.VocabularyApplicationData;
 import org.xml.sax.SAXException;
 
 /**
- * {@link XmlOutput} for {@link LowLevelStAXDocumentSerializer}.
+ * {@link XmlOutput} for {@link StAXDocumentSerializer}.
  * <p>
  * This class is responsible for managing the indexing of elements, attributes
  * and local names that are known to JAXB by way of the JAXBContext (generated
@@ -114,7 +114,7 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
         /**
          * Create a new set of tables for a JAXB context.
          * <p>
-         * @param content the JAXB context.
+         * @param context the JAXB context.
          * @param initialIndexOffset the initial index offset to calculate
          *                           the maximum possible index
          *
@@ -139,7 +139,7 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
         /**
          * Clear or reset the tables.
          * <p>
-         * @param initialIndexOffset the initial index offset to calculate
+         * @param intialIndexOffset the initial index offset to calculate
          *                           the maximum possible index
          */
         public void clearOrResetTables(int intialIndexOffset) {
@@ -217,7 +217,7 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
      * Holder of JAXB contexts -> tables.
      * <p>
      * An instance will be registered with the 
-     * {@link LowLevelStAXDocumentSerializer}.
+     * {@link StAXDocumentSerializer}.
      */
     final static class AppData implements VocabularyApplicationData {
         final Map<JAXBContext, TablesPerJAXBContext> contexts =
