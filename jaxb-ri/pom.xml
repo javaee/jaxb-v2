@@ -153,12 +153,13 @@ holder.
         <findbugs.threshold>High</findbugs.threshold>
         <findbugs.common>exclude-common.xml</findbugs.common>
         <findbugs.exclude/>
-        <findbugs.version>2.5.2</findbugs.version>
+        <findbugs.version>3.0.1</findbugs.version>
         <skipSources>true</skipSources>
         <skipOsgiTests>true</skipOsgiTests>
         <netbeans.hint.jdkPlatform>JDK_1.6</netbeans.hint.jdkPlatform>
         <felix.junit4osgi>1.0.0</felix.junit4osgi>
         <felix.osgi.core>1.2.0</felix.osgi.core>
+        <felix.junit4osgi>1.0.0</felix.junit4osgi>
         <surefire.plugin>2.13</surefire.plugin>
         <jmockit.version>1.14</jmockit.version>
     </properties>

@@ -110,6 +110,7 @@ holder.
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-junit4osgi-plugin</artifactId>
+                <version>${felix.junit4osgi}</version>
                 <executions>
                     <execution>
                         <goals>
