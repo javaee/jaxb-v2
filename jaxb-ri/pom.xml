@@ -151,7 +151,6 @@ holder.
         <javadoc.links.dir>${user.dir}/tools/javadoc-link</javadoc.links.dir>
         <findbugs.skip>false</findbugs.skip>
         <findbugs.threshold>High</findbugs.threshold>
-        <findbugs.common>exclude-common.xml</findbugs.common>
         <findbugs.exclude/>
         <findbugs.version>3.0.1</findbugs.version>
         <skipSources>true</skipSources>
@@ -413,7 +412,7 @@ holder.
                         <threshold>${findbugs.threshold}</threshold>
                         <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
                         <excludeFilterFile>
-                            ${findbugs.common},${findbugs.exclude}
+                            ${findbugs.exclude}
                         </excludeFilterFile>
                         <fork>true</fork>
                         <jvmArgs>-Xms64m -Xmx256m</jvmArgs>
@@ -516,7 +515,7 @@ holder.
                                 <skip>${findbugs.skip}</skip>
                                 <threshold>${findbugs.threshold}</threshold>
                                 <excludeFilterFile>
-                                    ${findbugs.common},${findbugs.exclude}
+                                    ${findbugs.exclude}
                                 </excludeFilterFile>
                             </configuration>
                         </plugin>
