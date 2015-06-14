@@ -84,6 +84,11 @@
             <email>valikov@gmx.net</email>
         </developer>
     </developers>
+
+    <properties>
+        <findbugs.exclude>${project.basedir}/exclude-xsom.xml</findbugs.exclude>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>relaxngDatatype</groupId>

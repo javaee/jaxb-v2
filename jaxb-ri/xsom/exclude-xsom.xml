@@ -2,7 +2,7 @@
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 2013 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2015 Oracle and/or its affiliates. All rights reserved.
 
     The contents of this file are subject to the terms of either the GNU
     General Public License Version 2 only ("GPL") or the Common Development
@@ -47,42 +47,20 @@
             <!-- Performance -->
             <Bug pattern="ES_COMPARING_STRINGS_WITH_EQ"/>
             <Bug pattern="ES_COMPARING_PARAMETER_STRING_WITH_EQ"/>
-            
+
             <!-- 3rd party code -->
             <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
             <Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR"/>
             <Bug pattern="BC_UNCONFIRMED_CAST_OF_RETURN_VALUE"/>
             <Bug pattern="BC_UNCONFIRMED_CAST"/>
-            
-        </Or>    
+
+        </Or>
     </Match>
-    
+
     <!-- Generated -->
     <Match>
         <Or>
-            <Class name="org.kohsuke.rngom.parse.compact.CompactSyntaxTokenManager"/>
-            <Class name="org.kohsuke.rngom.parse.compact.CompactSyntaxConstants"/>
-            <Class name="org.kohsuke.rngom.parse.compact.CompactSyntax"/>
-            <Class name="org.kohsuke.rngom.parse.compact.ParseException"/>
-            <Class name="org.kohsuke.rngom.parse.compact.TokenMgrError"/>
-            <Class name="org.kohsuke.rngom.parse.compact.JavaCharStream"/>
-            <Class name="org.kohsuke.rngom.parse.compact.UCode_UCodeESC_CharStream"/>
+            <Class name="com.sun.xml.xsom.impl.scd.SimpleCharStream"/>
         </Or>
     </Match>
-    
-    <!-- Supposed to be used elsewhere -->
-    <Match>
-        <Bug pattern="URF_UNREAD_FIELD"/>
-        <Class name="org.kohsuke.rngom.digested.DPattern"/>
-    </Match>
-
-    <!-- Potentially allowed to be subclassed or instantiated -->
-    <Match>
-        <Or>
-            <Class name="org.kohsuke.rngom.digested.DXMLPrinter$XMLWriterException"/>
-            <Class name="org.kohsuke.rngom.digested.DDataPattern$Param"/>
-        </Or>
-        <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>        
-    </Match>
-
 </FindBugsFilter>
