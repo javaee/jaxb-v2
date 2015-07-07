@@ -43,7 +43,6 @@ package com.sun.tools.jxc;
 import com.sun.tools.jxc.ap.Options;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -58,7 +57,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.ValidatorHandler;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -198,14 +196,8 @@ public final class ConfigReader  {
     /**
      * Lazily parsed schema for the binding file.
      */
-    private static SchemaCache configSchema = new SchemaCache(newStreamSource("config.xsd"));
+    private static SchemaCache configSchema = new SchemaCache("config.xsd", Config.class);
 
-    private static StreamSource newStreamSource(String systemId) {
-        InputStream is = Config.class.getResourceAsStream(systemId);
-        StreamSource schema = new StreamSource(is);
-        schema.setSystemId(systemId);
-        return schema;
-    }
 
     /**
      * Parses an xml config file and returns a Config object.

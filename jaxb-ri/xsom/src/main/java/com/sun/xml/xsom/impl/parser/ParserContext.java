@@ -54,6 +54,7 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -97,23 +98,18 @@ public class ParserContext {
         this.owner = owner;
         this.parser = parser;
 
-        try {
-            InputStream is = ParserContext.class.getResourceAsStream("datatypes.xsd");
+        try (InputStream is = ParserContext.class.getResourceAsStream("datatypes.xsd")) {
             InputSource source = new InputSource(is);
             source.setSystemId("datatypes.xsd");
             parse(source);
 
             SchemaImpl xs = (SchemaImpl)
-                schemaSet.getSchema("http://www.w3.org/2001/XMLSchema");
+                    schemaSet.getSchema("http://www.w3.org/2001/XMLSchema");
             xs.addSimpleType(schemaSet.anySimpleType,true);
             xs.addComplexType(schemaSet.anyType,true);
-        } catch( SAXException e ) {
+        } catch( SAXException | IOException e ) {
             // this must be a bug of XSOM
-            if(e.getException()!=null)
-                e.getException().printStackTrace();
-            else
-                e.printStackTrace();
-            throw new InternalError();
+            throw new InternalError(e.getMessage());
         }
     }
 
