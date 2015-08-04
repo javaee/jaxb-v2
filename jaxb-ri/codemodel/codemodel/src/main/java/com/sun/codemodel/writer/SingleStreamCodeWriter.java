@@ -44,6 +44,8 @@ import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JPackage;
@@ -67,7 +69,11 @@ public class SingleStreamCodeWriter extends CodeWriter {
      *      This stream will be closed at the end of the code generation.
      */
     public SingleStreamCodeWriter( OutputStream os ) {
-        out = new PrintStream(os);
+        try {
+            out = new PrintStream(os, false, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new InternalError(e);
+        }
     }
 
     public OutputStream openBinary(JPackage pkg, String fileName) throws IOException {

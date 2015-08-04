@@ -49,6 +49,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.Iterator;
 import java.util.List;
@@ -117,8 +118,8 @@ public final class JStaticJavaFile extends JResourceFile {
     protected  void build(OutputStream os) throws IOException {
         InputStream is = source.openStream();
         
-        BufferedReader r = new BufferedReader(new InputStreamReader(is));
-        PrintWriter w = new PrintWriter(new BufferedWriter(new OutputStreamWriter(os)));
+        BufferedReader r = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+        PrintWriter w = new PrintWriter(new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8)));
         LineFilter filter = createLineFilter();
         int lineNumber=1;
         

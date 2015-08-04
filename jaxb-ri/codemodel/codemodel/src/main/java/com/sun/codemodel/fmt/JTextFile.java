@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 
 import com.sun.codemodel.JResourceFile;
 
@@ -67,7 +68,7 @@ public class JTextFile extends JResourceFile
     }
     
     public void build( OutputStream out ) throws IOException {
-        Writer w = new OutputStreamWriter(out);
+        Writer w = new OutputStreamWriter(out, StandardCharsets.UTF_8);
         w.write(contents);
         w.close();
     }

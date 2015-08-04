@@ -45,6 +45,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
 
 import com.sun.codemodel.util.EncoderFactory;
 import com.sun.codemodel.util.UnicodeEscapeWriter;
@@ -99,7 +100,7 @@ public abstract class CodeWriter {
     public Writer openSource( JPackage pkg, String fileName ) throws IOException {
         final OutputStreamWriter bw = encoding != null
                 ? new OutputStreamWriter(openBinary(pkg,fileName), encoding)
-                : new OutputStreamWriter(openBinary(pkg,fileName));
+                : new OutputStreamWriter(openBinary(pkg,fileName), StandardCharsets.UTF_8);
 
         // create writer
         try {
