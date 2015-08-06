@@ -51,6 +51,7 @@ package com.sun.xml.bind.marshaller;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -378,7 +379,7 @@ public class XMLWriter extends XMLFilterImpl
     public void setOutput (Writer writer,String _encoding)
     {
         if (writer == null) {
-            output = new OutputStreamWriter(System.out);
+            output = new OutputStreamWriter(System.out, StandardCharsets.UTF_8);
         } else {
             output = writer;
         }
