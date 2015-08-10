@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -286,35 +286,31 @@ class Surrogate {
 	 *           error() will return a descriptive result object
 	 */
 	public int generate(int uc, int len, CharBuffer dst) {
-	    if (uc <= 0xffff) {
-		if (Surrogate.is(uc)) {
-		    error = CoderResult.malformedForLength(len);
-		    return -1;
+		if (uc <= 0xffff) {
+			if (Surrogate.is(uc)) {
+				error = CoderResult.malformedForLength(len);
+				return -1;
+			}
+			if (dst.remaining() < 1) {
+				error = CoderResult.OVERFLOW;
+				return -1;
+			}
+			dst.put((char) uc);
+			error = null;
+			return 1;
 		}
-		if (dst.remaining() < 1) {
-		    error = CoderResult.OVERFLOW;
-		    return -1;
+		if (uc <= Surrogate.UCS4_MAX) {
+			if (dst.remaining() < 2) {
+				error = CoderResult.OVERFLOW;
+				return -1;
+			}
+			dst.put(Surrogate.high(uc));
+			dst.put(Surrogate.low(uc));
+			error = null;
+			return 2;
 		}
-		dst.put((char)uc);
-		error = null;
-		return 1;
-	    }
-	    if (uc < Surrogate.UCS4_MIN) {
-		error = CoderResult.malformedForLength(len);
+		error = CoderResult.unmappableForLength(len);
 		return -1;
-	    }
-	    if (uc <= Surrogate.UCS4_MAX) {
-		if (dst.remaining() < 2) {
-		    error = CoderResult.OVERFLOW;
-		    return -1;
-		}
-		dst.put(Surrogate.high(uc));
-		dst.put(Surrogate.low(uc));
-		error = null;
-		return 2;
-	    }
-	    error = CoderResult.unmappableForLength(len);
-	    return -1;
 	}
 
 	/**
@@ -334,37 +330,33 @@ class Surrogate {
 	 *           error() will return a descriptive result object
 	 */
 	public int generate(int uc, int len, char[] da, int dp, int dl) {
-	    if (uc <= 0xffff) {
-		if (Surrogate.is(uc)) {
-		    error = CoderResult.malformedForLength(len);
-		    return -1;
+		if (uc <= 0xffff) {
+			if (Surrogate.is(uc)) {
+				error = CoderResult.malformedForLength(len);
+				return -1;
+			}
+			if (dl - dp < 1) {
+				error = CoderResult.OVERFLOW;
+				return -1;
+			}
+			da[dp] = (char) uc;
+			error = null;
+			return 1;
 		}
-		if (dl - dp < 1) {
-		    error = CoderResult.OVERFLOW;
-		    return -1;
+		if (uc <= Surrogate.UCS4_MAX) {
+			if (dl - dp < 2) {
+				error = CoderResult.OVERFLOW;
+				return -1;
+			}
+			da[dp] = Surrogate.high(uc);
+			da[dp + 1] = Surrogate.low(uc);
+			error = null;
+			return 2;
 		}
-		da[dp] = (char)uc;
-		error = null;
-		return 1;
-	    }
-	    if (uc < Surrogate.UCS4_MIN) {
-		error = CoderResult.malformedForLength(len);
+		error = CoderResult.unmappableForLength(len);
 		return -1;
-	    }
-	    if (uc <= Surrogate.UCS4_MAX) {
-		if (dl - dp < 2) {
-		    error = CoderResult.OVERFLOW;
-		    return -1;
-		}
-		da[dp] = Surrogate.high(uc);
-		da[dp + 1] = Surrogate.low(uc);
-		error = null;
-		return 2;
-	    }
-	    error = CoderResult.unmappableForLength(len);
-	    return -1;
 	}
 
-    }
+	}
 
 }

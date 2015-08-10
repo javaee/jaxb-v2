@@ -129,7 +129,7 @@ public final class DatatypeConverterImpl implements DatatypeConverterInterface {
     }
 
     public static long _parseLong(CharSequence s) {
-        return Long.valueOf(removeOptionalPlus(WhiteSpaceProcessor.trim(s)).toString());
+        return Long.parseLong(removeOptionalPlus(WhiteSpaceProcessor.trim(s)).toString());
     }
 
     public static short _parseShort(CharSequence s) {

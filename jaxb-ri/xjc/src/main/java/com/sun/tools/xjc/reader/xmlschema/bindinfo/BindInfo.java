@@ -368,6 +368,6 @@ public final class BindInfo implements Iterable<BIDeclaration> {
     /**
      * Lazily parsed schema for the binding file.
      */
-    public static SchemaCache bindingFileSchema = new SchemaCache("binding.xsd", BindInfo.class, true);
+    public static final SchemaCache bindingFileSchema = new SchemaCache("binding.xsd", BindInfo.class, true);
 }
 

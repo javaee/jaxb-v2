@@ -157,32 +157,6 @@ class Internalizer {
     }
     
     /**
-     * Validates attributes of a {@code <jaxb:bindings>} element.
-     */
-    private void validate( Element bindings ) {
-        NamedNodeMap atts = bindings.getAttributes();
-        for( int i=0; i<atts.getLength(); i++ ) {
-            Attr a = (Attr)atts.item(i);
-            if( a.getNamespaceURI()!=null )
-                continue;   // all foreign namespace OK.
-            if( a.getLocalName().equals("node") )
-                continue;
-            if( a.getLocalName().equals("schemaLocation"))
-                continue;
-            if( a.getLocalName().equals("scd") )
-                continue;
-
-            // enhancements
-            if( a.getLocalName().equals("required") ) //
-                continue;
-            if( a.getLocalName().equals("multiple") ) //
-                continue;
-
-            // TODO: flag error for this undefined attribute
-        }
-    }
-    
-    /**
      * Determines the target node of the "bindings" element
      * by using the inherited target node, then put
      * the result into the "result" map and the "scd" map.
@@ -201,8 +175,9 @@ class Internalizer {
         // start by the inherited target
         Node target = inheritedTarget;
         ArrayList<Node> targetMultiple = null;
-        
-        validate(bindings); // validate this node
+
+        // validate this node ?
+        // validate(bindings);
 
         boolean required = true;
         boolean multiple = false;

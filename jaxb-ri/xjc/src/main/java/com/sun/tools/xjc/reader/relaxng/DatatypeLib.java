@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -40,6 +40,7 @@
 
 package com.sun.tools.xjc.reader.relaxng;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,11 +60,11 @@ final class DatatypeLib {
      * Datatype library's namespace URI.
      */
     public final String nsUri;
+    private final Map<String,TypeUse> types;
 
-    private final Map<String,TypeUse> types = new HashMap<String,TypeUse>();
-
-    public DatatypeLib(String nsUri) {
+    public DatatypeLib(String nsUri, Map<String,TypeUse> types) {
         this.nsUri = nsUri;
+        this.types = Collections.unmodifiableMap(types);
     }
 
     /**
@@ -76,16 +77,21 @@ final class DatatypeLib {
     /**
      * Datatype library for the built-in type.
      */
-    public static final DatatypeLib BUILTIN = new DatatypeLib("");
+    public static final DatatypeLib BUILTIN;
 
     /**
      * Datatype library for XML Schema datatypes.
      */
-    public static final DatatypeLib XMLSCHEMA = new DatatypeLib(WellKnownNamespaces.XML_SCHEMA_DATATYPES);
+    public static final DatatypeLib XMLSCHEMA =
+            new DatatypeLib(
+                    WellKnownNamespaces.XML_SCHEMA_DATATYPES,
+                    SimpleTypeBuilder.builtinConversions);
 
     static {
-        BUILTIN.types.put("token",CBuiltinLeafInfo.TOKEN);
-        BUILTIN.types.put("string",CBuiltinLeafInfo.STRING);
-        XMLSCHEMA.types.putAll(SimpleTypeBuilder.builtinConversions);
+        Map<String,TypeUse> builtinTypes = new HashMap<>();
+        builtinTypes.put("token", CBuiltinLeafInfo.TOKEN);
+        builtinTypes.put("string", CBuiltinLeafInfo.STRING);
+
+        BUILTIN = new DatatypeLib("", builtinTypes);
     }
 }

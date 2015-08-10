@@ -155,7 +155,7 @@ public final class SimpleTypeBuilder extends BindingComponent {
     private XSSimpleType initiatingType;
 
     /** {@link TypeUse}s for the built-in types. Read-only. */
-    public static final Map<String,TypeUse> builtinConversions = new HashMap<String,TypeUse>();
+    public static final Map<String,TypeUse> builtinConversions;
 
 
     /**
@@ -891,7 +891,7 @@ public final class SimpleTypeBuilder extends BindingComponent {
         // note that although xs:token and xs:normalizedString are not
         // specified in the spec, they need to be here because they
         // have different whitespace normalization semantics.
-        Map<String,TypeUse> m = builtinConversions;
+        Map<String,TypeUse> m = new HashMap<String,TypeUse>();
 
         // TODO: this is so dumb
         m.put("string",         CBuiltinLeafInfo.STRING);
@@ -926,6 +926,8 @@ public final class SimpleTypeBuilder extends BindingComponent {
         m.put("normalizedString",CBuiltinLeafInfo.NORMALIZED_STRING);
         m.put("ID",             CBuiltinLeafInfo.ID);
         m.put("IDREF",          CBuiltinLeafInfo.IDREF);
+
+        builtinConversions = Collections.unmodifiableMap(m);
         // TODO: handling dateTime, time, and date type
 //        String[] names = {
 //            "date", "dateTime", "time", "hexBinary" };
