@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -45,7 +45,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.CharsetEncoder;
-import java.nio.charset.StandardCharsets;
 
 import com.sun.codemodel.util.EncoderFactory;
 import com.sun.codemodel.util.UnicodeEscapeWriter;
@@ -100,7 +99,7 @@ public abstract class CodeWriter {
     public Writer openSource( JPackage pkg, String fileName ) throws IOException {
         final OutputStreamWriter bw = encoding != null
                 ? new OutputStreamWriter(openBinary(pkg,fileName), encoding)
-                : new OutputStreamWriter(openBinary(pkg,fileName), StandardCharsets.UTF_8);
+                : new OutputStreamWriter(openBinary(pkg,fileName));
 
         // create writer
         try {

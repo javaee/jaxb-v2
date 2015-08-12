@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -49,7 +49,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.Iterator;
 import java.util.List;
@@ -118,8 +117,8 @@ public final class JStaticJavaFile extends JResourceFile {
     protected  void build(OutputStream os) throws IOException {
         InputStream is = source.openStream();
         
-        BufferedReader r = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-        PrintWriter w = new PrintWriter(new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8)));
+        BufferedReader r = new BufferedReader(new InputStreamReader(is));
+        PrintWriter w = new PrintWriter(new BufferedWriter(new OutputStreamWriter(os)));
         LineFilter filter = createLineFilter();
         int lineNumber=1;
         

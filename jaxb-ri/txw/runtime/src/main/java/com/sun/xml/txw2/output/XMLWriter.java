@@ -57,7 +57,6 @@ import org.xml.sax.helpers.XMLFilterImpl;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -391,7 +390,7 @@ public class XMLWriter extends XMLFilterImpl implements LexicalHandler
     public void setOutput (Writer writer,String _encoding)
     {
         if (writer == null) {
-            output = new OutputStreamWriter(System.out, StandardCharsets.UTF_8);
+            output = new OutputStreamWriter(System.out);
         } else {
             output = writer;
         }

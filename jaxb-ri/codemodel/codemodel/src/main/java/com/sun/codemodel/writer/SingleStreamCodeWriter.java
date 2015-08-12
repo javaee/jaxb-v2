@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -44,8 +44,6 @@ import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JPackage;
@@ -69,11 +67,7 @@ public class SingleStreamCodeWriter extends CodeWriter {
      *      This stream will be closed at the end of the code generation.
      */
     public SingleStreamCodeWriter( OutputStream os ) {
-        try {
-            out = new PrintStream(os, false, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new InternalError(e);
-        }
+        out = new PrintStream(os);
     }
 
     public OutputStream openBinary(JPackage pkg, String fileName) throws IOException {
