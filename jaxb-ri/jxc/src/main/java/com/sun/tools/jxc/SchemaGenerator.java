@@ -263,7 +263,12 @@ public class SchemaGenerator {
             if (episode != null)
                 r.setEpisodeFile(episode);
             task.setProcessors(Collections.singleton(r));
-            return task.call();
+            boolean res = task.call();
+            //Print compiler generated messages
+            for( Diagnostic<? extends JavaFileObject> d : diagnostics.getDiagnostics() ) {
+                 System.err.println(d.toString());
+            }
+            return res;
         }
     }
 
