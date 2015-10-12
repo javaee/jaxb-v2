@@ -45,6 +45,7 @@ import com.sun.tools.xjc.BadCommandLineException;
 import com.sun.xml.bind.util.Which;
 
 import javax.lang.model.SourceVersion;
+import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
@@ -60,7 +61,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -197,8 +197,8 @@ public class SchemaGenerator {
     }
 
     /**
-     * Computes the file system path of <tt>jaxb-api.jar</tt> so that
-     * Annotation Processing will see them in the <tt>-cp</tt> option.
+     * Computes the file system path of {@code jaxb-api.jar} so that
+     * Annotation Processing will see them in the {@code -cp} option.
      *
      * <p>
      * In Java, you can't do this reliably (for that matter there's no guarantee

@@ -52,7 +52,7 @@ import java.io.Writer;
  *
  * <p>
  * Note that this class doesn't escape other Unicode characters
- * that are typically unsafe. For example, {@code &#x611B;} (A kanji
+ * that are typically unsafe. For example, 愛 (A kanji
  * that means "love") can be considered as unsafe because
  * javac with English Windows cannot accept this character in the
  * source code.

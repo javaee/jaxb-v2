@@ -72,10 +72,8 @@ public enum PropertyKind {
     public final boolean isOrdered;
 
     /**
-     * com.sun.xml.bind.v2.runtime.property.PropertyFactory [1] benefits from having index numbers assigned to
+     * {@link com.sun.xml.bind.v2.runtime.property.PropertyFactory} benefits from having index numbers assigned to
      * {@link #ELEMENT}, {@link #REFERENCE}, and {@link #MAP} in this order.
-     *
-     * [1] com.sun.xml.bind.v2.runtime.property.PropertyFactory is part of JAXB RI
      */
     public final int propertyIndex;
 

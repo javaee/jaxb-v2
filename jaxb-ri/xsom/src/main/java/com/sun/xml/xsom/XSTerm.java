@@ -55,10 +55,10 @@ import com.sun.xml.xsom.visitor.XSTermFunctionWithParam;
  *     return this instanceof XXX;
  * }
  * </pre>
- * <pre>
+ *
  * and a set of cast functions (<code>asXXX</code>), which are
  * essentially:
- * </pre>
+ *
  * <pre>
  * XXX asXXX() {
  *     if(isXXX())  return (XXX)this;

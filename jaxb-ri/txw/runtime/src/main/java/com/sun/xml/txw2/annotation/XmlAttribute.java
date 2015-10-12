@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2005-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2005-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -52,12 +52,12 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * Specifies that the invocation of the method will produce an attribute.
  *
  * <p>
- * The method signature has to match the form <tt>R foo(DT1,DT2,..)</tt>
+ * The method signature has to match the form {@code R foo(DT1,DT2,..)}
  *
  * <p>
- * R is either <tt>void</tt> or the type to which the interface that declares
+ * R is either {@code void} or the type to which the interface that declares
  * this method is assignable. In the case of the latter, the method will return
- * <tt>this</tt> object, allowing you to chain the multiple attribute method
+ * {@code this} object, allowing you to chain the multiple attribute method
  * invocations like {@link StringBuffer}.
  *
  * <p>

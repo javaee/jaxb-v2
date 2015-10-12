@@ -47,7 +47,7 @@ import javax.xml.namespace.QName;
 /**
  * Property that maps to the following schema fragment.
  *
- * <pre>{@code <xmp>
+ * <pre>{@code
  * <xs:complexType>
  *   <xs:sequence>
  *     <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
@@ -60,7 +60,7 @@ import javax.xml.namespace.QName;
  *     </xs:element>
  *   </xs:sequence>
  * </xs:complexType>
- * </xmp>}</pre>
+ * }</pre>
  *
  * <p>
  * This property is used to represent a default binding of a {@link Map} property.

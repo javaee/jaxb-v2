@@ -87,13 +87,13 @@ public interface SchemaBuilder<
      * @param parent
      *      The parent scope. null if there's no parent scope.
      *      For example, if the complete document looks like the following:
-     *      {@code<pre><xmp>
+     *      <pre>{@code
      *      <grammar>
      *        <start><element name="root"><empty/></element></start>
      *      </grammar>
-     *      </xmp></pre>}
+     *      }</pre>
      *      Then when the outer-most {@link Grammar} is created, it will
-     *      receive the <tt>null</tt> parent.
+     *      receive the {@code null} parent.
      */
     Grammar<P,E,L,A,CL> makeGrammar(Scope<P,E,L,A,CL> parent);
 
@@ -102,12 +102,12 @@ public interface SchemaBuilder<
      *
      * such as,
      *
-     * {@code<pre><xmp>
+     * <pre>{@code
      * <element name="foo">     <!-- this becomes 'P' -->
      *   <foreign:annotation /> <!-- this becomes 'A' -->
      *   ...
      * </element>
-     * </xmp></pre>}
+     * }</pre>
      */
     P annotate(P p, A anno) throws BuildException;
 
@@ -116,12 +116,12 @@ public interface SchemaBuilder<
      *
      * such as,
      *
-     * {@code<pre><xmp>
+     * <pre>{@code
      * <element name="foo">
      *   <empty />              <!-- this becomes 'P' -->
      *   <foreign:annotation /> <!-- this becomes 'E' -->
      * </element>
-     * </xmp></pre>}
+     * }</pre>
      */
     P annotateAfter(P p, E e) throws BuildException;
 

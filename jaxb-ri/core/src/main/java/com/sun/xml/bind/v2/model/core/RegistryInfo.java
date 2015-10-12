@@ -48,9 +48,9 @@ import javax.xml.bind.annotation.XmlRegistry;
  * Represents the information in a class with {@link XmlRegistry} annotaion.
  *
  * <p>
- * This interface is only meant to be used as a return type from com.sun.xml.bind.v2.model.impl.ModelBuilder [1].
+ * This interface is only meant to be used as a return type from
+ * {@link com.sun.xml.bind.v2.model.impl.ModelBuilder}.
  *
- * [1] com.sun.xml.bind.v2.model.impl.ModelBuilder is part of JAXB RI
  * @author Kohsuke Kawaguchi
  */
 public interface RegistryInfo<T,C> {

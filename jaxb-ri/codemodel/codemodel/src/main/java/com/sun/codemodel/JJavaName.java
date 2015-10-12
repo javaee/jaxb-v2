@@ -100,8 +100,8 @@ public class JJavaName {
      *      ("my_children","MyChildren","myChildren", and "MY-CHILDREN", "CODE003-children" respectively)
      *      <p>
      *      Although this method only works for English words, it handles non-English
-     *      words gracefully (by just returning it as-is.) For example, {@code &#x65E5;&#x672C;&#x8A9E;}
-     *      will be returned as-is without modified, not {@code "&#x65E5;&#x672C;&#x8A9E;s"}
+     *      words gracefully (by just returning it as-is.) For example, "日本語"
+     *      will be returned as-is without modified, not "日本語s"
      *      <p>
      *      This method doesn't handle suffixes very well. For example, passing
      *      "person56" will return "person56s", not "people56".

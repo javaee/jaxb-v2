@@ -122,7 +122,7 @@ public interface ElementPropertyInfo<T,C> extends PropertyInfo<T,C> {
      * If {@link #isCollection()}==false, this property is always false.
      *
      * <p>
-     * When this flag is true, <tt>getTypes().size()==1</tt> always holds.
+     * When this flag is true, {@code getTypes().size()==1} always holds.
      */
     boolean isValueList();
 

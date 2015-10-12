@@ -48,9 +48,9 @@ import org.xml.sax.Locator;
 import org.w3c.dom.Node;
 
 /**
- * Object that returns the current location that the com.sun.xml.bind.v2.runtime.unmarshaller.XmlVisitor [1] is parsing.
+ * Object that returns the current location that the {@link com.sun.xml.bind.v2.runtime.unmarshaller.XmlVisitor}
+ * is parsing.
  *
- * [1] com.sun.xml.bind.v2.runtime.unmarshaller.XmlVisitor is part of JAXB RI
  * @author Kohsuke Kawaguchi
  */
 public interface LocatorEx extends Locator {

@@ -306,7 +306,7 @@ public final class JAnnotationUse extends JAnnotationValue {
       *        {@code @XmlCollectionItem(type=Integer.class);}
       * </pre>
       * For adding a value of {@code Class<? extends Annotation>}
-      * {@link #annotationParam(String, Class)}
+      * {@link #annotationParam(java.lang.String, java.lang.Class)}
       * @param name
       *        The simple name for this annotation param
       *

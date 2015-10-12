@@ -66,7 +66,7 @@ public abstract class JClass extends JType
      * @return
      *	name of this class, without any qualification.
      *	For example, this method returns "String" for
-     *  <code>java.lang.String</code>.
+     *  {@code java.lang.String}.
      */
     abstract public String name();
 	
@@ -77,7 +77,7 @@ public abstract class JClass extends JType
     abstract public JPackage _package();
 
     /**
-     * Returns the class in which this class is nested, or <tt>null</tt> if
+     * Returns the class in which this class is nested, or {@code null} if
      * this is a top-level class.
      */
     public JClass outer() {
@@ -149,7 +149,7 @@ public abstract class JClass extends JType
     /**
      * @deprecated calling this method from {@link JClass}
      * would be meaningless, since it's always guaranteed to
-     * return <tt>this</tt>.
+     * return {@code this}.
      */
     public JClass boxify() { return this; }
 
@@ -199,17 +199,17 @@ public abstract class JClass extends JType
      *
      * <p>
      * For example, given the following
-     * <pre>{@code<xmp>
+     * <pre>{@code
      * interface Foo<T> extends List<List<T>> {}
      * interface Bar extends Foo<String> {}
-     * </xmp>}</pre>
+     * }</pre>
      * This method works like this:
-     * <pre>{@code<xmp>
+     * <pre>{@code
      * getBaseClass( Bar, List ) = List<List<String>
      * getBaseClass( Bar, Foo  ) = Foo<String>
      * getBaseClass( Foo<? extends Number>, Collection ) = Collection<List<? extends Number>>
      * getBaseClass( ArrayList<? extends BigInteger>, List ) = List<? extends BigInteger>
-     * </xmp>}</pre>
+     * }</pre>
      *
      * @param baseType
      *      The class whose parameterization we are interested in.

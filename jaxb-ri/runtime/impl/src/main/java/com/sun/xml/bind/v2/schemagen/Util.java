@@ -90,13 +90,13 @@ public final class Util {
 
     /**
      * Calculate the normalized form of the given uriPath.
-     *
-     * For example: {@code
+     * <p>
+     * For example: <pre>{@code
      *    /a/b/c/ -> /a/b/c/
      *    /a/b/c  -> /a/b/
      *    /a/     -> /a/
      *    /a      -> /
-     *    }
+     *    }</pre>
      *
      * @param uriPath path of a URI (as returned by java.net.URI#getPath()
      * @return the normalized uri path

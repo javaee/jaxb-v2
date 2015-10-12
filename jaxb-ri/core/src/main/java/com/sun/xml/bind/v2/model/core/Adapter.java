@@ -61,7 +61,7 @@ public class Adapter<TypeT,ClassDeclT> {
 
     /**
      * The type that the JAXB can handle natively.
-     * The <tt>Default</tt> parameter of <tt>{@code XmlAdapter<Default,Custom>}</tt>.
+     * The {@code Default} parameter of {@code XmlAdapter<Default,Custom>}.
      *
      * Always non-null.
      */
@@ -69,7 +69,7 @@ public class Adapter<TypeT,ClassDeclT> {
 
     /**
      * The type that is stored in memory.
-     * The <tt>Custom</tt> parameter of <tt>{@code XmlAdapter<Default,Custom>}</tt>.
+     * The {@code Custom} parameter of {@code XmlAdapter<Default,Custom>}.
      */
     public final TypeT customType;
 

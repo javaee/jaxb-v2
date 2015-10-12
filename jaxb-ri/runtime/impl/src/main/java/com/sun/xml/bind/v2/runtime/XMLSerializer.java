@@ -507,7 +507,7 @@ public final class XMLSerializer extends Coordinator {
      * When a cycle is found, this method tries to recover from it.
      *
      * @return
-     *      the object that should be marshalled instead of the given <tt>obj</tt>,
+     *      the object that should be marshalled instead of the given {@code obj},
      *      or null if the error is found and we need to avoid marshalling this object
      *      to prevent infinite recursion. When this method returns null, the error
      *      has already been reported.

@@ -160,8 +160,8 @@ public class Options
 
     /**
      * this switch determines how carefully the compiler will follow
-     * the compatibility rules in the spec. Either <code>STRICT</code>
-     * or <code>EXTENSION</code>.
+     * the compatibility rules in the spec. Either {@code STRICT}
+     * or {@code EXTENSION}.
      */
     public int compatibilityMode = STRICT;
 
@@ -202,7 +202,7 @@ public class Options
     public EntityResolver entityResolver = null;
 
     /**
-     * Type of input schema language. One of the <code>SCHEMA_XXX</code>
+     * Type of input schema language. One of the {@code SCHEMA_XXX}
      * constants.
      */
     private Language schemaLanguage = null;
@@ -481,7 +481,7 @@ public class Options
 
 
     /**
-     * Parses an option <code>args[i]</code> and return
+     * Parses an option {@code args[i]} and return
      * the number of tokens consumed.
      *
      * @return
@@ -857,7 +857,7 @@ public class Options
     }
 
     /**
-     * Finds the <tt>META-INF/sun-jaxb.episode</tt> file to add as a binding customization.
+     * Finds the {@code META-INF/sun-jaxb.episode} file to add as a binding customization.
      */
     public void scanEpisodeFile(File jar) throws BadCommandLineException {
         try {

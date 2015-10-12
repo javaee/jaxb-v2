@@ -144,7 +144,7 @@ public interface JClassContainer {
      * Gets the nearest package parent.
      *
      * <p>
-     * If <tt>this.isPackage()</tt>, then return <tt>this</tt>.
+     * If {@code this.isPackage()}, then return {@code this}.
      */
     public JPackage getPackage();
 

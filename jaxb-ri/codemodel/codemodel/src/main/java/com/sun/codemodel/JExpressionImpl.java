@@ -55,7 +55,7 @@ public abstract class JExpressionImpl implements JExpression
     }
 
     /**
-     * Logical not <tt>'!x'</tt>.
+     * Logical not {@code '!x'}.
      */
     public final JExpression not() {
         return JOp.not(this);
