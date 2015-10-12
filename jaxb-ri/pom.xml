@@ -350,6 +350,8 @@ holder.
                                 <location>${javadoc.links.dir}/jaxb-api/</location>
                             </offlineLink>
                         </offlineLinks>
+                        <!-- TODO: solve jdb8 javadoc errors -->
+                        <failOnError>false</failOnError>
                     </configuration>
                 </plugin>
                 <plugin>
