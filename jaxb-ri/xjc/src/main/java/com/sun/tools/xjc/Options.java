@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -577,14 +577,6 @@ public class Options
             schemaLanguage = Language.DTD;
             return 1;
         }
-        if (args[i].equals("-relaxng")) {
-            schemaLanguage = Language.RELAXNG;
-            return 1;
-        }
-        if (args[i].equals("-relaxng-compact")) {
-            schemaLanguage = Language.RELAXNG_COMPACT;
-            return 1;
-        }
         if (args[i].equals("-xmlschema")) {
             schemaLanguage = Language.XMLSCHEMA;
             return 1;
@@ -884,10 +876,6 @@ public class Options
         if ((grammars != null) && (grammars.size() > 0)) {
             String name = grammars.get(0).getSystemId().toLowerCase();
 
-            if (name.endsWith(".rng"))
-                return Language.RELAXNG;
-            if (name.endsWith(".rnc"))
-                return Language.RELAXNG_COMPACT;
             if (name.endsWith(".dtd"))
                 return Language.DTD;
             if (name.endsWith(".wsdl"))
