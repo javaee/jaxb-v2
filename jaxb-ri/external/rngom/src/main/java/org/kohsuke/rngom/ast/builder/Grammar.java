@@ -26,8 +26,8 @@ import org.kohsuke.rngom.ast.om.ParsedPattern;
 import org.kohsuke.rngom.ast.om.ParsedElementAnnotation;
 
 /**
- * {@link Scope} for {@code<grammar>} element that serves as a container
- * of {@code<define>}s.
+ * {@link Scope} for {@code <grammar>} element that serves as a container
+ * of {@code <define>}s.
  */
 public interface Grammar<
     P extends ParsedPattern,

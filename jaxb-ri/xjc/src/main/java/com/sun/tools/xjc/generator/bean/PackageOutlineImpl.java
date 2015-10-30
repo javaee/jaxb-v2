@@ -92,7 +92,7 @@ public final class PackageOutlineImpl implements PackageOutline {
      * <p>
      * Null if no default
      *
-     * @see #calcDefaultValues() .
+     * @see #calcDefaultValues()
      */
     public String getMostUsedNamespaceURI() {
         return mostUsedNamespaceURI;

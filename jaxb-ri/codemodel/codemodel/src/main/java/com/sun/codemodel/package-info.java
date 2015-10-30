@@ -50,25 +50,6 @@
  * then writing it out as text files that is Java source files.
  * The AST looks like this:
  *
- * {@code DotDiagram
-    digraph G {
-        cls1 [label="JDefinedClass"];
-        cls2 [label="JDefinedClass"];
-        JCodeModel -> cls1 [label="generated class"];
-        JCodeModel -> cls2 [label="generated class"];
-
-        m1 [label="JMethod"];
-        m2 [label="JMethod"];
-
-        cls1 -> m1;
-        cls1 -> m2;
-        cls1 -> JField;
-
-        m1 -> JVar [label="method parameter"];
-        m1 -> JBlock [label="code"];
-    }
- * }
- *
  * <p>
  * You bulid this tree mostly from top-down. So, you first create
  * a new {@link JDefinedClass} from {@link JCodeModel}, then you
@@ -122,7 +103,6 @@
  * pre-encoding tokens (like 'public') to the target encoding,
  * and consider exploting the subtree equivalence.
  *
- * {@code ArchitectureDocument}
  */
 package com.sun.codemodel;
 

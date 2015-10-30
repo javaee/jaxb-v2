@@ -468,7 +468,6 @@ public abstract class JAXBRIContext extends JAXBContext {
      * to enable the c14n marshalling support in the {@link JAXBContext}.
      *
      * Boolean
-     * See C14nSupport_ArchitectureDocument in JAXB Architecture Document
      * @since 2.0 EA2
      */
     public static final String CANONICALIZATION_SUPPORT = "com.sun.xml.bind.c14n";

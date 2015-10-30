@@ -44,28 +44,6 @@
  * <p>
  * This module contains the code that implements the schema compiler 'XJC'.
  *
- *
- * <h2>XJC Architecture Diagram</h2>
- * {@code DotDiagram
-     digraph G {
-         rankdir=TB;
-
-         // data
-         node [shape=box]; // style=filled,color=lightpink];
-         schema -> "DOM forest" [label="DOMForest.parse()"];
-         "DOM forest" -> "schema OM" [label="SOM specific parser"];
-         "schema OM" -> model [label="language specific builder"];
-
-         model -> codeModel [label="BeanGenerator.generate()"];
-         codeModel -> "Java source files" [label="JCodeModel.build()"];
-         model -> outline [label="BeanGenerator.generate()"];
-
-         edge [style=dotted,label="associate"]
-         outline -> codeModel;
-         outline -> model;
-       }
- * }
- *
  * <h2>Overview</h2>
  * <p>
  * XJC consists of the following major components.
@@ -93,13 +71,5 @@
  *   and CodeModel.
  * </dl>
  *
- * {@code DotDiagram
- *   digraph G {
- *      rankdir = LR;
- *      schema -> reader -> model -> backend -> outline;
- *   }
- * }
- *
- * ArchitectureDocument (JAXB Architecture Document project)
  */
 package com.sun.tools.xjc;

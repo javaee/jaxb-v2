@@ -58,7 +58,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
 public class RELAXNGInternalizationLogic implements InternalizationLogic {
 
     /**
-     * This filter looks for {@code <xs:import> and {@code <xs:include>}
+     * This filter looks for {@code <xs:import>} and {@code <xs:include>}
      * and parses those documents referenced by them.
      */
     private static final class ReferenceFinder extends AbstractReferenceFinderImpl {

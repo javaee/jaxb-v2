@@ -114,7 +114,7 @@ public class DDataPattern extends DPattern {
     }
 
     /**
-     * Gets the pattern that reprsents the {@code<except>} child of this data pattern.
+     * Gets the pattern that reprsents the {@code <except>} child of this data pattern.
      *
      * @return null if not exist.
      */

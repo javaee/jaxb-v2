@@ -157,42 +157,6 @@
  * The following picture illustrates how the {@link javax.xml.bind.JAXBContext#newInstance(Class[])} method
  * triggers activities.
  *
- * {@code SequenceDiagram
-     boxwid=1.2;
-
-     pobject(U,"user");
-     object(A,"JAXB API");
-     object(CF,"ContextFactory");
-     pobject(JC);
-     step();
-
-     message(U,A,"JAXBContext.newInstance()");
-     active(A);
-     message(A,A,"locate JAXB RI 2.0");
-     active(A);
-     step();
-     inactive(A);
-
-     message(A,CF,"createContext");
-     active(CF);
-
-     create_message(CF,JC,"c:JAXBContextImpl");
-     active(JC);
-
-     message(JC,JC,"build runtime model");
-     message(JC,JC,"build JaxBeanInfos");
-     inactive(JC);
-
-     rmessage(A,U,"return c");
-     inactive(CF);
-     inactive(A);
-
-     complete(JC);
-     complete(CF);
-     complete(A);
- * }
- *
- * It's part of ArchitectureDocument.
  */
 package com.sun.xml.bind.v2;
 

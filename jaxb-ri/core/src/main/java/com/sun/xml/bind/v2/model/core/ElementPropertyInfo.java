@@ -66,14 +66,14 @@ public interface ElementPropertyInfo<T,C> extends PropertyInfo<T,C> {
      * However, in a general case an element property can be heterogeneous,
      * meaning you can put different types in it, each with a different tag name
      * (and a few other settings.)
-     * <pre>{@code
+     * <pre><code>
      * // list can contain String or Integer.
-     * &#64;XmlElements({
-     *   &#64;XmlElement(name="a",type=String.class),
-     *   &#64;XmlElement(name="b",type=Integer.class),
+     * {@literal @}XmlElements({
+     *   {@literal @}XmlElement(name="a",type=String.class),
+     *   {@literal @}XmlElement(name="b",type=Integer.class),
      * })
-     * List<Object> abc;
-     * }</pre>
+     * {@literal List<Object>} abc;
+     * </code></pre>
      * <p>
      * In this case this method returns a list of two {@link TypeRef}s.
      *

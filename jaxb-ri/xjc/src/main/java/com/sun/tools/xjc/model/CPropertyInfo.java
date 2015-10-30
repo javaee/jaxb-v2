@@ -100,7 +100,7 @@ public abstract class CPropertyInfo implements PropertyInfo<NType,NClass>, CCust
     public String javadoc="";
 
     /**
-     * Property with {@link XmlInlineBinaryData}.
+     * Property annotated with {@link javax.xml.bind.annotation.XmlInlineBinaryData}.
      */
     public boolean inlineBinaryData;
 

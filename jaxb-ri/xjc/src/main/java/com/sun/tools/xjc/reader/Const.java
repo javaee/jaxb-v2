@@ -74,7 +74,7 @@ public class Const {
      * Attribute name of the expected media type.
      *
      * @see WellKnownNamespace#XML_MIME_URI
-     * See http://www.w3.org/TR/xml-media-types/
+     * @see <a href="http://www.w3.org/TR/xml-media-types/">http://www.w3.org/TR/xml-media-types/</a>
      */
     public static final String EXPECTED_CONTENT_TYPES = "expectedContentTypes";
 }

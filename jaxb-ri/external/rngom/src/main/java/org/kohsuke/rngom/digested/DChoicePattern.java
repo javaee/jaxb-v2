@@ -22,7 +22,7 @@
 package org.kohsuke.rngom.digested;
 
 /**
- * {@code<choice>} pattern.
+ * {@code <choice>} pattern.
  *
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */

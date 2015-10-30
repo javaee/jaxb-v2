@@ -27,9 +27,9 @@ import org.kohsuke.rngom.ast.om.ParsedElementAnnotation;
 import org.kohsuke.rngom.parse.Parseable;
 
 /**
- * {@link Scope} for {@code<grammar>} element of the {@code<include>}d grammar.
+ * {@link Scope} for {@code <grammar>} element of the {@code <include>}d grammar.
  * <p>
- * This object builds {@code<define>}s in the included grammar that
+ * This object builds {@code <define>}s in the included grammar that
  * override the definitions in the original grammar.
  */
 public interface IncludedGrammar<

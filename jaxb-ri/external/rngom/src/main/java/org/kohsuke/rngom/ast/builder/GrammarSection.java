@@ -26,7 +26,7 @@ import org.kohsuke.rngom.ast.om.ParsedElementAnnotation;
 import org.kohsuke.rngom.ast.om.ParsedPattern;
 
 /**
- * The container that can have {@code<define>} elements.
+ * The container that can have {@code <define>} elements.
  * <p>
  * {@link Div}, {@link Grammar}, {@link Include}, or {@link IncludedGrammar}.
  */
@@ -58,7 +58,7 @@ public interface GrammarSection<
      * Called when a pattern is defined.
      *
      * @param name
-     *      Name of the pattern. For the definition by a {@code<start/>} element,
+     *      Name of the pattern. For the definition by a {@code <start/>} element,
      *      this parameter is the same as {@link #START}.
      *      to test if it's a named pattern definition or the start pattern definition.
      * @param combine
@@ -80,11 +80,11 @@ public interface GrammarSection<
     void topLevelComment(CL comments) throws BuildException;
 
     /**
-     * Called when {@code<div>} is found.
+     * Called when {@code <div>} is found.
      *
      * @return
      *      the returned {@link Div} object will receive callbacks for structures
-     *      inside the {@code<div>} element.
+     *      inside the {@code <div>} element.
      */
     Div<P,E,L,A,CL> makeDiv();
 

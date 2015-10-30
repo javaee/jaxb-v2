@@ -173,7 +173,7 @@ public interface XmlOutput {
      *
      * @param value
      *      this string can contain characters that might need escaping
-     *      (such as {@code '&amp;' or '>'})
+     *      (such as {@code '&' or '>'})
      * @param needsSeparatingWhitespace
      */
     public void text( String value, boolean needsSeparatingWhitespace ) throws IOException, SAXException, XMLStreamException;
@@ -183,7 +183,7 @@ public interface XmlOutput {
      *
      * @param value
      *      this string can contain characters that might need escaping
-     *      (such as {@code '&amp;' or '>'})
+     *      (such as {@code '&' or '>'})
      * @param needsSeparatingWhitespace
      */
     public void text( Pcdata value, boolean needsSeparatingWhitespace ) throws IOException, SAXException, XMLStreamException;

@@ -26,7 +26,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * {@code<grammar>} pattern, which is a collection of named patterns.
+ * {@code <grammar>} pattern, which is a collection of named patterns.
  *
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */

@@ -87,7 +87,7 @@ public interface ElementInfo<T,C> extends Element<T,C> {
     T getContentInMemoryType();
 
     /**
-     * Returns the representation for {@link JAXBElement}<i>{@code <contentInMemoryType>}</i>;.
+     * Returns the representation for {@link JAXBElement}<i>{@code <contentInMemoryType>}</i>.
      *
      * <p>
      * This returns the signature in Java and thus isn't affected by the adapter.
