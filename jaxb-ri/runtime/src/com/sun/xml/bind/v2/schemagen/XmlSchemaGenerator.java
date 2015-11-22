@@ -1044,8 +1044,36 @@ public final class XmlSchemaGenerator<T,C,F,M> {
 
                         QName tn = t.getTagName();
 
-                        if(canBeDirectElementRef(t,tn) || (!tn.getNamespaceURI().equals(uri) && tn.getNamespaceURI().length()>0)) {
-                            e.ref(tn);
+                        PropertyInfo propInfo = t.getSource();
+                        TypeInfo parentInfo = (propInfo == null) ? null : propInfo.parent();
+
+                        if (canBeDirectElementRef(t, tn, parentInfo)) {
+                            if ((!t.getTarget().isSimpleType()) && (t.getTarget() instanceof ClassInfo) && collisionChecker.findDuplicate((ClassInfo<T, C>) t.getTarget())) {
+                                e.ref(new QName(uri, tn.getLocalPart()));
+                            } else {
+
+                                QName elemName = null;
+                                if (t.getTarget() instanceof Element) {
+                                    Element te = (Element) t.getTarget();
+                                    elemName = te.getElementName();
+                                }
+
+                                Collection refs = propInfo.ref();
+                                if ((refs != null) && (!refs.isEmpty()) && (elemName != null)) {
+                                    ClassInfoImpl cImpl = (ClassInfoImpl)refs.iterator().next();
+                                    if ((cImpl != null) && (cImpl.getElementName() != null)) {
+                                        if (tn.getNamespaceURI() != null && tn.getNamespaceURI().trim().length() != 0) {
+                                            e.ref(new QName(tn.getNamespaceURI(), tn.getLocalPart()));
+                                        } else {
+                                            e.ref(new QName(cImpl.getElementName().getNamespaceURI(), tn.getLocalPart()));
+                                        }
+                                    } else {
+                                        e.ref(new QName("", tn.getLocalPart()));
+                                    }
+                                } else {
+                                    e.ref(tn);
+                                }
+                            }
                         } else {
                             e.name(tn.getLocalPart());
                             writeTypeRef(e,t, "type");
@@ -1103,20 +1131,43 @@ public final class XmlSchemaGenerator<T,C,F,M> {
          *
          * This is possible if we already have such declaration to begin with.
          */
-        private boolean canBeDirectElementRef(TypeRef<T, C> t, QName tn) {
-            if(t.isNillable() || t.getDefaultValue()!=null)
+        private boolean canBeDirectElementRef(TypeRef<T, C> t, QName tn, TypeInfo parentInfo) {
+            Element te = null;
+            ClassInfo ci = null;
+            QName targetTagName = null;
+
+            if(t.isNillable() || t.getDefaultValue()!=null) {
                 // can't put those attributes on <element ref>
                 return false;
+            }
 
-            if(t.getTarget() instanceof Element) {
-                Element te = (Element) t.getTarget();
-                QName targetTagName = te.getElementName();
+            if (t.getTarget() instanceof Element) {
+                te = (Element) t.getTarget();
+                targetTagName = te.getElementName();
+                if (te instanceof ClassInfo) {
+                    ci = (ClassInfo)te;
+                }
+            }
+
+            String nsUri = tn.getNamespaceURI();
+            if ((!nsUri.equals(uri) && nsUri.length()>0) && (!((parentInfo instanceof ClassInfo) && (((ClassInfo)parentInfo).getTypeName() == null)))) {
+                return true;
+            }
+
+            // there's a circular reference from an anonymous subtype to a global element
+            if ((ci != null) && ((targetTagName != null) && (te.getScope() == null))) {
+                if (targetTagName.getLocalPart().equals(tn.getLocalPart())) {
+                    return true;
+                }
+            }
+
+            // we have the precise element defined already
+            if (te != null) { // it is instanceof Element
                 return targetTagName!=null && targetTagName.equals(tn);
             }
 
             return false;
         }
-
 
         /**
          * Generate an attribute for the specified property on the specified complexType
