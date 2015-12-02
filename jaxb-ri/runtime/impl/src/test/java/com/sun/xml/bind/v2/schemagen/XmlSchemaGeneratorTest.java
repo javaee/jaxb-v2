@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2016 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -40,9 +40,18 @@
 
 package com.sun.xml.bind.v2.schemagen;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.SchemaOutputResolver;
+import javax.xml.transform.Result;
+import javax.xml.transform.stream.StreamResult;
 
 import junit.framework.TestCase;
 import junit.textui.TestRunner;
@@ -50,6 +59,35 @@ import junit.textui.TestRunner;
 public class XmlSchemaGeneratorTest extends TestCase {
     public static void main(String[] args) {
         TestRunner.run(XmlSchemaGeneratorTest.class);
+    }
+    
+    public void test2() throws Exception {
+        try {
+            JAXBContext context = JAXBContext.newInstance(NSParent.class);
+            MySchemaOutputResolver resolver = new MySchemaOutputResolver();
+            context.generateSchema(resolver);
+            assertTrue(checkNamespaces());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private static boolean checkNamespaces() throws Exception {
+        FileInputStream schema1 = new FileInputStream("schema1.xsd");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(schema1));
+        String line;
+
+        try {
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+                if (line.contains("ref=\"ns1:myRef\"")) {
+                    return true;
+                }
+            }
+        } finally {
+            reader.close();
+        }
+        return false;
     }
 
     public void test1() throws Exception {
@@ -126,5 +164,13 @@ public class XmlSchemaGeneratorTest extends TestCase {
         }
 
         return (base.resolve(relative)).equals(uri);
+    }
+
+    static class MySchemaOutputResolver extends SchemaOutputResolver {
+
+        @Override
+        public Result createOutput(String arg0, String arg1) throws IOException {
+            return new StreamResult(new File(arg1));
+        }
     }
 }
