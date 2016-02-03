@@ -2,14 +2,14 @@
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 2005-2016 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2016 Oracle and/or its affiliates. All rights reserved.
 
     The contents of this file are subject to the terms of either the GNU
     General Public License Version 2 only ("GPL") or the Common Development
     and Distribution License("CDDL") (collectively, the "License").  You
     may not use this file except in compliance with the License.  You can
     obtain a copy of the License at
-    https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+    http://glassfish.java.net/public/CDDL+GPL_1_1.html
     or packager/legal/LICENSE.txt.  See the License for the specific
     language governing permissions and limitations under the License.
 
@@ -40,44 +40,13 @@
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<FindBugsFilter>
 
-    <parent>
-        <groupId>com.sun.xml.bind.mvn</groupId>
-        <artifactId>jaxb-txw-parent</artifactId>
-        <version>2.3.0-SNAPSHOT</version>
-    </parent>
+    <!--
+    This requires quite a lot of testing to fix it properly ...
+    -->
+    <Match>
+        <Bug pattern="DM_DEFAULT_ENCODING"/>
+    </Match>
 
-    <groupId>org.glassfish.jaxb</groupId>
-    <artifactId>txw2</artifactId>
-    <packaging>jar</packaging>
-    <name>TXW2 Runtime</name>
-
-    <description>
-        TXW is a library that allows you to write XML documents.
-    </description>
-
-    <properties>
-        <findbugs.exclude>${project.basedir}/exclude-txw-runtime.xml</findbugs.exclude>
-    </properties>
-
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <archive>
-                        <manifestEntries>
-                            <Implementation-Title>TXW Runtime</Implementation-Title>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
-</project>
-
+</FindBugsFilter>

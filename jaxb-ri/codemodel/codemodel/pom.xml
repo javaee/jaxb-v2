@@ -54,6 +54,10 @@
     <name>Codemodel Core</name>
     <description>The core functionality of the CodeModel java source code generation library</description>
 
+    <properties>
+        <findbugs.exclude>${project.basedir}/exclude-codemodel.xml</findbugs.exclude>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
