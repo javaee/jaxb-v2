@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2016 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -81,13 +81,13 @@ public final class BIInterface
      * Gets the names of interfaces/classes that implement
      * this interface.
      */
-    public String[] members() { return members; }
+    public String[] members() { return members.clone(); }
     
     
     private final String[] fields;
     
     /** Gets the names of fields in this interface. */
-    public String[] fields() { return fields; }
+    public String[] fields() { return fields.clone(); }
     
     
     /** Gets the location where this declaration is declared. */
