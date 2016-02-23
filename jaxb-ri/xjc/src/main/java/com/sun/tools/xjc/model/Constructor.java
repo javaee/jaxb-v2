@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2016 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -73,7 +73,7 @@ public class Constructor
 {
     // Since Constructor is typically built when there is no FieldItem
     // nor FieldUse, we need to rely on Strings.
-    public Constructor( String[] _fields ) { this.fields = _fields; }
+    public Constructor( String[] _fields ) { this.fields = _fields.clone(); }
     
     /** array of field names to be initialized. */
     public final String[] fields;
