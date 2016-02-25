@@ -56,7 +56,7 @@ public class Which {
 
     /**
      * Search the specified classloader for the given classname.
-     *
+     * Then give the return value.
      * @param classname the fully qualified name of the class to search for
      * @param loader the classloader to search
      * @return the source location of the resource, or null if it wasn't found
