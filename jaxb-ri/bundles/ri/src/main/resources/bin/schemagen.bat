@@ -3,7 +3,7 @@
 REM
 REM DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 REM
-REM Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
+REM Copyright (c) 1997-2016 Oracle and/or its affiliates. All rights reserved.
 REM
 REM The contents of this file are subject to the terms of either the GNU
 REM General Public License Version 2 only ("GPL") or the Common Development
@@ -67,21 +67,21 @@ goto SETCLASSPATH
 :SETCLASSPATH
 if "%CLASSPATH%" == "" goto NOUSERCLASSPATH
 set LOCALCLASSPATH=%JAXB_HOME%\lib\jaxb-core.jar;%JAXB_HOME%\lib\jaxb-xjc.jar;%JAXB_HOME%\lib\jaxb-jxc.jar;%JAXB_HOME%\lib\jaxb-impl.jar;%CLASSPATH%
-goto LAUNCHSCHEMAGEN
+goto PREPARE_OPTS
 
 :NOUSERCLASSPATH
 set LOCALCLASSPATH=%JAXB_HOME%\lib\jaxb-core.jar;%JAXB_HOME%\lib\jaxb-xjc.jar;%JAXB_HOME%\lib\jaxb-jxc.jar;%JAXB_HOME%\lib\jaxb-impl.jar
-goto LAUNCHSCHEMAGEN
+goto PREPARE_OPTS
+
+rem Extend schemagen options with options specific to modular JDK
+:PREPARE_OPTS
+set RUN_OPTS=%SCHEMAGEN_OPTS%
+%JAVA% -cp "%JAXB_HOME%\lib\jaxb-core.jar" com.sun.xml.bind.util.ModuleHelper
+if %ERRORLEVEL% == 0 goto LAUNCHSCHEMAGEN
+set RUN_OPTS=-addmods java.xml.bind %RUN_OPTS%
 
 :LAUNCHSCHEMAGEN
-if not "%SCHEMAGEN_OPTS%" == "" goto LAUNCHSCHEMAGENWITHOPTS
-%JAVA% -cp %LOCALCLASSPATH% com.sun.tools.jxc.SchemaGeneratorFacade %*
-goto END
-
-:LAUNCHSCHEMAGENWITHOPTS
-%JAVA% %SCHEMAGEN_OPTS% -cp %LOCALCLASSPATH% com.sun.tools.jxc.SchemaGeneratorFacade %*
-goto END
-
+%JAVA% %RUN_OPTS% -cp %LOCALCLASSPATH% com.sun.tools.jxc.SchemaGeneratorFacade %*
 
 :END
 %COMSPEC% /C exit %ERRORLEVEL%

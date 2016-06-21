@@ -40,22 +40,23 @@
 
 package com.sun.xml.bind.util;
 
-public class ModularChecker {
+public class ModuleHelper {
     public static void main(String [] args) {
         System.exit(isModular ? 1 : 0);
     }
 
     // Indicates if JDK runtime is modular
-    private static boolean isModular;
+    private final static boolean isModular;
 
     // Check JDK runtime for modules support
     static {
-        isModular = true;
+        boolean noException = true;
         try {
             Class.forName( "java.lang.reflect.Module" );
-        } catch(Throwable t) {
-            isModular = false;
+        } catch(ClassNotFoundException ex) {
+            noException = false;
         }
+        isModular = noException;
     }
 
     // Returns true if executing on modular JDK runtime
