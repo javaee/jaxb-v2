@@ -42,6 +42,7 @@ package com.sun.tools.jxc;
 
 import com.sun.tools.jxc.ap.Options;
 import com.sun.tools.xjc.BadCommandLineException;
+import com.sun.xml.bind.util.ModuleHelper;
 import com.sun.xml.bind.util.Which;
 
 import javax.lang.model.SourceVersion;
@@ -154,6 +155,11 @@ public class SchemaGenerator {
 
         aptargs.add("-cp");
         aptargs.add(setClasspath(options.classpath)); // set original classpath + jaxb-api to be visible to annotation processor
+
+        if (ModuleHelper.isModularJDK()) {
+            aptargs.add("-addmods");
+            aptargs.add("java.xml.bind");
+        }
 
         if(options.targetDir!=null) {
             aptargs.add("-d");

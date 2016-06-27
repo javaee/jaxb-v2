@@ -1,7 +1,7 @@
 #!/bin/sh
 # DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 #
-# Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 1997-2016 Oracle and/or its affiliates. All rights reserved.
 #
 # The contents of this file are subject to the terms of either the GNU
 # General Public License Version 2 only ("GPL") or the Common Development
@@ -83,4 +83,12 @@ else
     JAVA=java
 fi
 
-exec "$JAVA" $XJC_OPTS -jar "$JAXB_HOME/lib/jaxb-xjc.jar" "$@"
+# Extend xjc options with options specific to modular JDK
+RUN_OPTS="$XJC_OPTS"
+"$JAVA" -cp "$JAXB_HOME/lib/jaxb-core.jar" com.sun.xml.bind.util.ModuleHelper
+if [ $? -ne 0 ]
+then
+    RUN_OPTS="-addmods java.xml.bind $RUN_OPTS"
+fi
+
+exec "$JAVA" $RUN_OPTS -jar "$JAXB_HOME/lib/jaxb-xjc.jar" "$@"

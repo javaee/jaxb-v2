@@ -1,7 +1,7 @@
 #!/bin/sh
 # DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 #
-# Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 1997-2016 Oracle and/or its affiliates. All rights reserved.
 #
 # The contents of this file are subject to the terms of either the GNU
 # General Public License Version 2 only ("GPL") or the Common Development
@@ -45,13 +45,13 @@
 if [ -z "$JAXB_HOME" ]
 then
     # search the installation directory
-    
+
     PRG=$0
     progname=`basename $0`
     saveddir=`pwd`
-    
+
     cd `dirname $PRG`
-    
+
     while [ -h "$PRG" ] ; do
         ls=`ls -ld "$PRG"`
         link=`expr "$ls" : '.*-> \(.*\)$'`
@@ -61,13 +61,13 @@ then
             PRG="`dirname $PRG`/$link"
         fi
     done
-    
+
     JAXB_HOME=`dirname "$PRG"`/..
-    
+
     # make it fully qualified
     cd "$saveddir"
     JAXB_HOME=`cd "$JAXB_HOME" && pwd`
-    
+
     cd $saveddir
 fi
 
@@ -103,5 +103,12 @@ then
     JAXB_HOME="`cygpath -w "$JAXB_HOME"`"
 fi
 
+# Extend schemagen options with options specific to modular JDK
+RUN_OPTS="$SCHEMAGEN_OPTS"
+"$JAVA" -cp "$LOCALCLASSPATH" com.sun.xml.bind.util.ModuleHelper
+if [ $? -ne 0 ]
+then
+    RUN_OPTS="-addmods java.xml.bind $RUN_OPTS"
+fi
 
-exec "$JAVA" $SCHEMAGEN_OPTS -cp "$LOCALCLASSPATH" com.sun.tools.jxc.SchemaGeneratorFacade "$@"
+exec "$JAVA" $RUN_OPTS -cp "$LOCALCLASSPATH" com.sun.tools.jxc.SchemaGeneratorFacade "$@"
