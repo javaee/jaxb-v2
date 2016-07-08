@@ -75,6 +75,8 @@ import com.sun.tools.xjc.generator.bean.field.FieldRendererFactory;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Util;
 import com.sun.xml.bind.api.impl.NameConverter;
+import com.sun.xml.bind.util.ModuleHelper;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
@@ -429,7 +431,7 @@ public class Options
         }
     }
 
-    
+
     private InputSource absolutize(InputSource is) {
         // absolutize all the system IDs in the input, so that we can map system IDs to DOM trees.
         try {
@@ -750,7 +752,7 @@ public class Options
      * and add them as {@link InputSource} to the specified list.
      *
      * @param suffix
-     *      If the given token is a directory name, we do a recusive search
+     *      If the given token is a directory name, we do a recursive search
      *      and find all files that have the given suffix.
      */
     private void addFile(String name, List<InputSource> target, String suffix) throws BadCommandLineException {
@@ -777,6 +779,65 @@ public class Options
      * Adds a new catalog file.
      */
     public void addCatalog(File catalogFile) throws IOException {
+        // Analyze java runtime
+        if (ModuleHelper.isModularJDK()) {
+            // Modular runtime (JDK9+)
+            usePublicCatalogAPI(catalogFile);
+        } else {
+            // JDK8 or earlier runtime
+            useInternalCatalogAPI(catalogFile);
+        }
+    }
+
+    // Since javax.xml.catalog is unmodifiable we need to track catalog
+    // URLs added and create new catalog each time addCatalog is called
+    private ArrayList<String> catalogUrls = new ArrayList<String>();
+
+    /**
+     * Instantiate catalog resolver using new catalog API (javax.xml.catalog.*) added in
+     * JDK9.
+     * Usage of new API removes dependency on internal API (com.sun.org.apache.xml.internal)
+     * for modular runtime.
+     */
+    private void usePublicCatalogAPI(File catalogFile) throws IOException {
+        String newUrl = catalogFile.getPath();
+        if (!catalogUrls.contains(newUrl))
+            catalogUrls.add(newUrl);
+
+        // Create javax.xml.CatalogResolver with use of reflection API:
+        //      CatalogFeatures cf = CatalogFeatures.builder()
+        //        .with(Feature.RESOLVE, "continue")
+        //        .build();
+        //      entityResolver  = CatalogManager.catalogResolver(f, catalogUrlsArray);
+        try {
+            Class<?> catalogManagerCls = Class.forName("javax.xml.catalog.CatalogManager");
+            Class<?> catalogFeaturesCls = Class.forName("javax.xml.catalog.CatalogFeatures");
+            Class<?> featureCls = Class.forName("javax.xml.catalog.CatalogFeatures$Feature");
+            Enum RESOLVE = Enum.valueOf((Class<Enum>) featureCls, "RESOLVE");
+            Class<?> builderCls = Class.forName("javax.xml.catalog.CatalogFeatures$Builder");
+            Method builderMethod = catalogFeaturesCls.getMethod("builder");
+            Method withMethod = builderCls.getMethod("with", featureCls, String.class);
+            Method buildMethod = builderCls.getMethod("build");
+            Method catalogResolverMethod = catalogManagerCls.getMethod("catalogResolver", catalogFeaturesCls, String[].class);
+
+            // Invoke static method CatalogFeatures.builder()
+            Object m = builderMethod.invoke(null);
+            // Invoke .with on Builder instance
+            m = withMethod.invoke(m, RESOLVE, "continue");
+            // Invoke .build on Builder instance
+            m = buildMethod.invoke(m);
+            // Invoke CatalogManager.catalogResolver
+            entityResolver = (EntityResolver) catalogResolverMethod.invoke(null, m, catalogUrls.toArray(new String[0]));
+        } catch(Exception e) {
+            entityResolver = null;
+        }
+    }
+
+    /**
+     * Instantiate JDK8 and earlier catalog resolver if it wasn't done before.
+     * Use created or existed resolver to parse new catalog file.
+     */
+    private void useInternalCatalogAPI(File catalogFile) throws IOException {
         if(entityResolver==null) {
             final CatalogManager staticManager = CatalogManager.getStaticManager();
             // hack to force initialization so catalog manager system properties take effect
@@ -979,5 +1040,5 @@ public class Options
         }
         return systemId;
     }
-    
+
 }
