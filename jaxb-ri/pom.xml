@@ -149,6 +149,7 @@ holder.
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <!-- This will work ONLY if mvn is run from root folder. In case of runing from submodules - fail :( -->
         <javadoc.links.dir>${user.dir}/tools/javadoc-link</javadoc.links.dir>
+        <glassfish.findbugs.version>1.7</glassfish.findbugs.version>
         <findbugs.skip>false</findbugs.skip>
         <findbugs.threshold>High</findbugs.threshold>
         <findbugs.exclude/>
@@ -423,7 +424,7 @@ holder.
                         <dependency>
                             <groupId>org.glassfish.findbugs</groupId>
                             <artifactId>findbugs</artifactId>
-                            <version>1.2</version>
+                            <version>${glassfish.findbugs.version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>
