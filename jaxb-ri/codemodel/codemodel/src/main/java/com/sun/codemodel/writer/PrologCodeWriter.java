@@ -77,6 +77,7 @@ public class PrologCodeWriter extends FilterCodeWriter {
     }
     
     
+    @Override
     public Writer openSource(JPackage pkg, String fileName) throws IOException {
         Writer w = super.openSource(pkg,fileName);
         

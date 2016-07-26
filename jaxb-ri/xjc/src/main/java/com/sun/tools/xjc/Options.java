@@ -37,7 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
 package com.sun.tools.xjc;
 
 import java.io.BufferedReader;
@@ -84,6 +83,7 @@ import java.nio.charset.IllegalCharsetNameException;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.lang.model.SourceVersion;
 
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -279,6 +279,11 @@ public class Options
      * Used to detect if two {@link Plugin}s try to overwrite {@link #nameConverter}.
      */
     private Plugin nameConverterOwner = null;
+
+    /**
+     * Java module name in {@code module-info.java}.
+     */
+    private String javaModule = null;
 
     /**
      * Gets the active {@link FieldRendererFactory} that shall be used to build {@link Model}.
@@ -481,6 +486,13 @@ public class Options
                 classpaths.toArray(new URL[classpaths.size()]),parent);
     }
 
+    /**
+     * Gets Java module name option.
+     * @return Java module name option or {@code null} if this option was not set.
+     */
+    public String getModuleName() {
+        return javaModule;
+    }
 
     /**
      * Parses an option {@code args[i]} and return
@@ -523,6 +535,14 @@ public class Options
                 // there won't be any package to annotate, so disable them
                 // automatically as a usability feature
                 packageLevelAnnotations = false;
+            }
+            return 2;
+        }
+        if (args[i].equals("-m")) {
+            javaModule = requireArgument("-m", args, ++i);
+            if (!SourceVersion.isName(javaModule)) {
+                throw new BadCommandLineException(Messages.format(
+                        Messages.INVALID_JAVA_MODULE_NAME, javaModule));
             }
             return 2;
         }

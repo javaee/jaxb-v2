@@ -94,6 +94,9 @@ public class Messages
     // static final String MISSING_COMPATIBILITY_OPERAND = // 0 args
     //     "Driver.MissingCompatibilityOperand";
     
+    static final String INVALID_JAVA_MODULE_NAME = // 1 arg
+        "Driver.INVALID_JAVA_MODULE_NAME";
+
     static final String MISSING_PROXY = // 0 args
         "Driver.MISSING_PROXY";
 

@@ -617,7 +617,7 @@ public class XJC2Task extends Task {
 
         @Override
         public OutputStream openBinary(JPackage pkg, String fileName) throws IOException {
-            if(pkg.isUnnamed())
+            if(pkg == null || pkg.isUnnamed())
                 log( "generating " + fileName, Project.MSG_VERBOSE );
             else
                 log( "generating " +

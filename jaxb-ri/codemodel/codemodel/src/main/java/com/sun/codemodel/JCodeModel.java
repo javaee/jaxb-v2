@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2016 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -54,7 +54,6 @@ import java.util.Map;
 import com.sun.codemodel.writer.FileCodeWriter;
 import com.sun.codemodel.writer.ProgressCodeWriter;
 
-
 /**
  * Root of the code DOM.
  *
@@ -95,10 +94,13 @@ import com.sun.codemodel.writer.ProgressCodeWriter;
 public final class JCodeModel {
     
     /** The packages that this JCodeWriter contains. */
-    private HashMap<String,JPackage> packages = new HashMap<String,JPackage>();
-    
+    private final HashMap<String,JPackage> packages = new HashMap<>();
+
+    /** Java module in {@code module-info.java} file. */
+    private JModule module;
+
     /** All JReferencedClasses are pooled here. */
-    private final HashMap<Class<?>,JReferencedClass> refClasses = new HashMap<Class<?>,JReferencedClass>();
+    private final HashMap<Class<?>,JReferencedClass> refClasses = new HashMap<>();
 
     
     /** Obtains a reference to the special "null" type. */
@@ -136,7 +138,7 @@ public final class JCodeModel {
     public JCodeModel() {}
     
     /**
-     * Add a package to the list of packages to be generated
+     * Add a package to the list of packages to be generated.
      *
      * @param name
      *        Name of the package. Use "" to indicate the root package.
@@ -151,7 +153,32 @@ public final class JCodeModel {
         }
         return p;
     }
-    
+
+    /**
+     * Creates and returns Java module to be generated.
+     * @param name The Name of Java module.
+     * @return New Java module.
+     */
+    public JModule _moduleInfo(final String name) {
+        return module = new JModule(name);
+    }
+
+    /**
+     * Returns existing Java module to be generated.
+     * @return Java module or {@code null} if Java module was not created yet.
+     */
+    public JModule _getModuleInfo() {
+        return module;
+    }
+
+    /**
+     * Checks whether Java module exists.
+     * @return {@code true} if Java module exists of {@code false} otherwise.
+     */
+    public boolean _isModuleInfo() {
+        return module != null;
+    }
+
     public final JPackage rootPackage() {
         return _package("");
     }
@@ -307,8 +334,12 @@ public final class JCodeModel {
     public void build( CodeWriter source, CodeWriter resource ) throws IOException {
         JPackage[] pkgs = packages.values().toArray(new JPackage[packages.size()]);
         // avoid concurrent modification exception
-        for( JPackage pkg : pkgs )
+        for( JPackage pkg : pkgs ) {
             pkg.build(source,resource);
+        }
+        if (module != null) {
+            module.build(source);
+        }
         source.close();
         resource.close();
     }

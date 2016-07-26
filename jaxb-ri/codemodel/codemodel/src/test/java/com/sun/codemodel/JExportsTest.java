@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2016 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -37,57 +37,47 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
+package com.sun.codemodel;
 
-package com.sun.codemodel.writer;
-
-import java.io.FilterOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import com.sun.codemodel.CodeWriter;
-import com.sun.codemodel.JPackage;
+import org.junit.Test;
+import com.sun.codemodel.JModuleDirective.Type;
+import static com.sun.codemodel.JModuleTest.EOL;
+import static com.sun.codemodel.JModuleTest.PKG_NAME;
+import static com.sun.codemodel.JModuleTest.normalizeWhiteSpaces;
+import static org.junit.Assert.*;
 
 /**
- * Writes all the files into a zip file.
- * 
- * @author
- * 	Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
+ * Test Java module {@code exports} directive.
+ * @author kratz
  */
-public class ZipCodeWriter extends CodeWriter {
+public class JExportsTest extends JTestModuleDirective {
+
     /**
-     * @param target
-     *      Zip file will be written to this stream.
+     * Test of getType method to make sure that it returns ExportsDirective.
      */
-    public ZipCodeWriter( OutputStream target ) {
-        zip = new ZipOutputStream(target);
-        // nullify the close method.
-        filter = new FilterOutputStream(zip){
-            @Override
-            public void close() {}
-        };
-    }
-    
-    private final ZipOutputStream zip;
-    
-    private final OutputStream filter;
-        
-    @Override
-    public OutputStream openBinary(JPackage pkg, String fileName) throws IOException {
-        final String name = pkg == null || pkg.isUnnamed() ? fileName : toDirName(pkg)+fileName;
-        zip.putNextEntry(new ZipEntry(name));
-        return filter;
+    @Test
+    public void testGetType() {
+        final JExportsDirective instance = new JExportsDirective(PKG_NAME);
+        assertEquals(Type.ExportsDirective, instance.getType());
     }
 
-    /** Converts a package name to the directory name. */
-    private static String toDirName( JPackage pkg ) {
-        return pkg.name().replace('.','/')+'/';
-    }
-
-    @Override
-    public void close() throws IOException {
-        zip.close();
+    /**
+     * Test of generate method.
+     */
+    @Test
+    public void testGenerate() {
+        final JExportsDirective instance = new JExportsDirective(PKG_NAME);
+        instance.generate(jf);
+        final String output = normalizeWhiteSpaces(out.toString());
+        final StringBuilder sb = new StringBuilder(24);
+        sb.append("exports");
+        sb.append(' ');
+        sb.append(PKG_NAME);
+        sb.append(';').append(EOL);
+        //System.out.println("LEN: " + sb.length());
+        final String check = normalizeWhiteSpaces(sb.toString());
+        //System.out.println("OUT: \""+output+"\" -- CHK: \""+check+"\"");
+        assertEquals(check, output);
     }
 
 }

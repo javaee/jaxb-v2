@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2016 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -117,12 +117,16 @@ import com.sun.xml.bind.v2.model.core.PropertyInfo;
 import com.sun.xml.bind.v2.runtime.SwaRefAdapterMarker;
 import com.sun.xml.xsom.XmlString;
 import com.sun.istack.NotNull;
+import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.model.CReferencePropertyInfo;
 
 /**
  * Generates fields and accessors.
  */
 public final class BeanGenerator implements Outline {
+
+    /** JAXB module name. JAXB dependency is mandatory in generated Java module. */
+    private static final String JAXB_PACKAGE = "java.xml.bind";
 
     /** Simplifies class/interface creation and collision detection. */
     private final CodeModelClassFactory codeModelClassFactory;
@@ -269,6 +273,8 @@ public final class BeanGenerator implements Outline {
         for (CElementInfo ei : model.getAllElements()) {
             getPackageContext(ei._package()).objectFactoryGenerator().populate(ei);
         }
+
+        generateModuleInfo(codeModel, model.options);
 
         if (model.options.debugMode) {
             generateClassList();
@@ -846,4 +852,26 @@ public final class BeanGenerator implements Outline {
     private String getShortName(String name) {
         return name.substring(name.lastIndexOf('.') + 1);
     }
+
+    /**
+     * Generates Java Module from model packages.
+     * Packages must already contain classes.
+     * @param codeModel Generated Java code model.
+     * @param options Command line options.
+     */
+    private static void generateModuleInfo(
+            final JCodeModel codeModel, final Options options) {
+        final String moduleName = options.getModuleName();
+        if (moduleName != null) {
+            codeModel._moduleInfo(moduleName);
+            for (Iterator<JPackage> i = codeModel.packages(); i.hasNext();) {
+                final JPackage pkg = i.next();
+                if (pkg.hasClasses()) {
+                    codeModel._getModuleInfo()._exports(pkg);
+                }
+                codeModel._getModuleInfo()._requires(JAXB_PACKAGE);
+            }
+        }
+    }
+
 }
