@@ -642,7 +642,7 @@ public class Options
         if( args[i].equals("-catalog") ) {
             // use Sun's "XML Entity and URI Resolvers" by Norman Walsh
             // to resolve external entities.
-            // http://www.sun.com/xml/developers/resolver/
+            // https://xerces.apache.org/xml-commons/components/resolver/resolver-article.html
 
             File catalogFile = new File(requireArgument("-catalog",args,++i));
             try {
