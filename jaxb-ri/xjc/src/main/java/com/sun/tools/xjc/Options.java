@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2016 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -76,6 +76,7 @@ import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Util;
 import com.sun.xml.bind.api.impl.NameConverter;
 import com.sun.xml.bind.util.ModuleHelper;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -800,15 +801,35 @@ public class Options
      * for modular runtime.
      */
     private void usePublicCatalogAPI(File catalogFile) throws IOException {
-        String newUrl = catalogFile.getPath();
-        if (!catalogUrls.contains(newUrl))
-            catalogUrls.add(newUrl);
+        // Set entityResolver to null if new catalog API is not available on JDK9+ runtime
+        entityResolver = null;
+        if (catalogResolverMethod != null) {
+            String newUrl = catalogFile.getPath();
+            if (!catalogUrls.contains(newUrl)) {
+                catalogUrls.add(newUrl);
+            }
+            try {
+                entityResolver = (EntityResolver) catalogResolverMethod.invoke(null,
+                                 catalogFeatures, catalogUrls.toArray(new String[0]));
+            } catch (Exception ex) {
+            }
+        }
+    }
 
-        // Create javax.xml.CatalogResolver with use of reflection API:
-        //      CatalogFeatures cf = CatalogFeatures.builder()
-        //        .with(Feature.RESOLVE, "continue")
-        //        .build();
-        //      entityResolver  = CatalogManager.catalogResolver(f, catalogUrlsArray);
+     // Cached CatalogManager.catalogResolver method
+    private static Method catalogResolverMethod;
+
+    // Cached CatalogFeatures object
+    private static Object catalogFeatures;
+
+    // Cache CatalogFeatures instance method for future usages.
+    // The catalog features settings is never changed and can be reused too.
+    // Resolve feature is set to "continue" value for backward compatibility.
+    // CatalogFeatures instantiation code without use of reflection:
+    //   CatalogFeatures cf = CatalogFeatures.builder()
+    //        .with(Feature.RESOLVE, "continue")
+    //        .build();
+    static {
         try {
             Class<?> catalogManagerCls = Class.forName("javax.xml.catalog.CatalogManager");
             Class<?> catalogFeaturesCls = Class.forName("javax.xml.catalog.CatalogFeatures");
@@ -818,18 +839,17 @@ public class Options
             Method builderMethod = catalogFeaturesCls.getMethod("builder");
             Method withMethod = builderCls.getMethod("with", featureCls, String.class);
             Method buildMethod = builderCls.getMethod("build");
-            Method catalogResolverMethod = catalogManagerCls.getMethod("catalogResolver", catalogFeaturesCls, String[].class);
-
             // Invoke static method CatalogFeatures.builder()
-            Object m = builderMethod.invoke(null);
+            Object f = builderMethod.invoke(null);
             // Invoke .with on Builder instance
-            m = withMethod.invoke(m, RESOLVE, "continue");
+            f = withMethod.invoke(f, RESOLVE, "continue");
             // Invoke .build on Builder instance
-            m = buildMethod.invoke(m);
-            // Invoke CatalogManager.catalogResolver
-            entityResolver = (EntityResolver) catalogResolverMethod.invoke(null, m, catalogUrls.toArray(new String[0]));
-        } catch(Exception e) {
-            entityResolver = null;
+            catalogResolverMethod = catalogManagerCls.getMethod("catalogResolver", catalogFeaturesCls, String[].class);
+            // Cache catalogResolver method
+            catalogFeatures = buildMethod.invoke(f);
+        } catch (Exception e) {
+            catalogResolverMethod = null;
+            catalogFeatures = null;
         }
     }
 
