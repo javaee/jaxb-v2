@@ -157,7 +157,7 @@ public class SchemaGenerator {
         aptargs.add(setClasspath(options.classpath)); // set original classpath + jaxb-api to be visible to annotation processor
 
         if (ModuleHelper.isModularJDK()) {
-            aptargs.add("-addmods");
+            aptargs.add("--add-modules");
             aptargs.add("java.xml.bind");
         }
 
