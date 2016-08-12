@@ -108,7 +108,7 @@ RUN_OPTS="$SCHEMAGEN_OPTS"
 "$JAVA" -cp "$LOCALCLASSPATH" com.sun.xml.bind.util.ModuleHelper
 if [ $? -ne 0 ]
 then
-    RUN_OPTS="-addmods java.xml.bind $RUN_OPTS"
+    RUN_OPTS="--add-modules java.xml.bind $RUN_OPTS"
 fi
 
 exec "$JAVA" $RUN_OPTS -cp "$LOCALCLASSPATH" com.sun.tools.jxc.SchemaGeneratorFacade "$@"

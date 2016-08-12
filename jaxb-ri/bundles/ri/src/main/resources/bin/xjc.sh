@@ -88,7 +88,7 @@ RUN_OPTS="$XJC_OPTS"
 "$JAVA" -cp "$JAXB_HOME/lib/jaxb-core.jar" com.sun.xml.bind.util.ModuleHelper
 if [ $? -ne 0 ]
 then
-    RUN_OPTS="-addmods java.xml.bind $RUN_OPTS"
+    RUN_OPTS="--add-modules java.xml.bind $RUN_OPTS"
 fi
 
 exec "$JAVA" $RUN_OPTS -jar "$JAXB_HOME/lib/jaxb-xjc.jar" "$@"

@@ -69,7 +69,7 @@ rem Extend xjc options with options specific to modular JDK
 set RUN_OPTS=%XJC_OPTS%
 %JAVA% -cp "%JAXB_HOME%\lib\jaxb-core.jar" com.sun.xml.bind.util.ModuleHelper
 if %ERRORLEVEL% == 0 goto LAUNCHXJC
-set RUN_OPTS=-addmods java.xml.bind %RUN_OPTS%
+set RUN_OPTS=--add-modules java.xml.bind %RUN_OPTS%
 
 :LAUNCHXJC
 %JAVA% %RUN_OPTS% -jar "%JAXB_HOME%\lib\jaxb-xjc.jar" %*
