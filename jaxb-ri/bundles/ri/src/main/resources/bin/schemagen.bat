@@ -78,7 +78,7 @@ rem Extend schemagen options with options specific to modular JDK
 set RUN_OPTS=%SCHEMAGEN_OPTS%
 %JAVA% -cp "%JAXB_HOME%\lib\jaxb-core.jar" com.sun.xml.bind.util.ModuleHelper
 if %ERRORLEVEL% == 0 goto LAUNCHSCHEMAGEN
-set RUN_OPTS=-addmods java.xml.bind %RUN_OPTS%
+set RUN_OPTS=--add-modules java.xml.bind %RUN_OPTS%
 
 :LAUNCHSCHEMAGEN
 %JAVA% %RUN_OPTS% -cp %LOCALCLASSPATH% com.sun.tools.jxc.SchemaGeneratorFacade %*
