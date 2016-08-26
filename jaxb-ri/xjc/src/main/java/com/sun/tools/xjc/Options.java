@@ -540,10 +540,6 @@ public class Options
         }
         if (args[i].equals("-m")) {
             javaModule = requireArgument("-m", args, ++i);
-            if (!SourceVersion.isName(javaModule)) {
-                throw new BadCommandLineException(Messages.format(
-                        Messages.INVALID_JAVA_MODULE_NAME, javaModule));
-            }
             return 2;
         }
         if (args[i].equals("-debug")) {
