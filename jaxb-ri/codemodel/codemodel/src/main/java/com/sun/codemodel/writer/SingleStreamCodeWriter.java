@@ -70,21 +70,24 @@ public class SingleStreamCodeWriter extends CodeWriter {
         out = new PrintStream(os);
     }
 
+    @Override
     public OutputStream openBinary(JPackage pkg, String fileName) throws IOException {
-        String pkgName = pkg.name();
-        if(pkgName.length()!=0)     pkgName += '.';
-        
+        final String name = pkg != null && pkg.name().length() > 0
+                ? pkg.name() + '.' + fileName : fileName;
+
         out.println(
-            "-----------------------------------" + pkgName+fileName +
+            "-----------------------------------" + name +
             "-----------------------------------");
             
         return new FilterOutputStream(out) {
+            @Override
             public void close() {
                 // don't let this stream close
             }
         };
     }
 
+    @Override
     public void close() throws IOException {
         out.close();
     }

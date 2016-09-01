@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2016 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -123,6 +123,9 @@ import com.sun.tools.xjc.model.CReferencePropertyInfo;
  * Generates fields and accessors.
  */
 public final class BeanGenerator implements Outline {
+
+    /** JAXB module name. JAXB dependency is mandatory in generated Java module. */
+    private static final String JAXB_PACKAGE = "java.xml.bind";
 
     /** Simplifies class/interface creation and collision detection. */
     private final CodeModelClassFactory codeModelClassFactory;
@@ -268,6 +271,10 @@ public final class BeanGenerator implements Outline {
         // create factories for the impl-less elements
         for (CElementInfo ei : model.getAllElements()) {
             getPackageContext(ei._package()).objectFactoryGenerator().populate(ei);
+        }
+
+        if (model.options.getModuleName() != null) {
+            codeModel._prepareModuleInfo(model.options.getModuleName(), JAXB_PACKAGE);
         }
 
         if (model.options.debugMode) {
@@ -846,4 +853,5 @@ public final class BeanGenerator implements Outline {
     private String getShortName(String name) {
         return name.substring(name.lastIndexOf('.') + 1);
     }
+
 }

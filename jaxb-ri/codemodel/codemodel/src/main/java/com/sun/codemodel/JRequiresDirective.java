@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2016 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -37,57 +37,69 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-package com.sun.codemodel.writer;
-
-import java.io.FilterOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import com.sun.codemodel.CodeWriter;
-import com.sun.codemodel.JPackage;
+package com.sun.codemodel;
 
 /**
- * Writes all the files into a zip file.
- * 
- * @author
- * 	Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
+ * Represents a Java module {@code requires} directive.
+ * For example {@code "requires foo.bar;"} or {@code "requires public foo.baz;"}.
+ * @author Tomas Kraus
  */
-public class ZipCodeWriter extends CodeWriter {
+public class JRequiresDirective extends JModuleDirective {
+
+    /** Public readability modifier. */
+    final boolean isPublic;
+
+    /** Static modifier. */
+    final boolean isStatic;
+
     /**
-     * @param target
-     *      Zip file will be written to this stream.
+     * Creates an instance of Java module {@code requires} directive.
+     * @param name name of required module or service.
+     * @param isPublic Use {@code public} modifier.
+     * @param isStatic Use {@code static} modifier.
+     * @throws IllegalArgumentException if the name argument is {@code null}.
      */
-    public ZipCodeWriter( OutputStream target ) {
-        zip = new ZipOutputStream(target);
-        // nullify the close method.
-        filter = new FilterOutputStream(zip){
-            @Override
-            public void close() {}
-        };
-    }
-    
-    private final ZipOutputStream zip;
-    
-    private final OutputStream filter;
-        
-    @Override
-    public OutputStream openBinary(JPackage pkg, String fileName) throws IOException {
-        final String name = pkg == null || pkg.isUnnamed() ? fileName : toDirName(pkg)+fileName;
-        zip.putNextEntry(new ZipEntry(name));
-        return filter;
+    JRequiresDirective(final String name, final boolean isPublic, final boolean isStatic) {
+        super(name);
+        this.isPublic = isPublic;
+        this.isStatic = isStatic;
     }
 
-    /** Converts a package name to the directory name. */
-    private static String toDirName( JPackage pkg ) {
-        return pkg.name().replace('.','/')+'/';
+    /**
+     * Gets the type of this module directive.
+     * @return type of this module directive. Will always return {@code Type.RequiresDirective}.
+     */
+    @Override
+    public Type getType() {
+        return Type.RequiresDirective;
     }
 
+    /**
+     * Print source code of {@code requires} module directive modifiers:
+     * {@code public} and {@code static} keywords for module dependency.
+     * @param f Java code formatter.
+     */
+    protected void generateModifiers(final JFormatter f) {
+        if (isPublic) {
+            f.p("public");
+        }
+        if (isStatic) {
+            f.p("static");
+        }
+    }
+
+    /**
+     * Print source code of this module directive.
+     * @param f Java code formatter.
+     * @return provided instance of Java code formatter.
+     */
     @Override
-    public void close() throws IOException {
-        zip.close();
+    public JFormatter generate(final JFormatter f) {
+        f.p("requires");
+        generateModifiers(f);
+        f.p(name);
+        f.p(';').nl();
+        return f;
     }
 
 }

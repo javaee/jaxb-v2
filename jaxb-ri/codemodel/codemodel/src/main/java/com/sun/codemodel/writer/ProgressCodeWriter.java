@@ -66,18 +66,21 @@ public class ProgressCodeWriter extends FilterCodeWriter {
 
     private final PrintStream progress;
     
+    @Override
     public OutputStream openBinary(JPackage pkg, String fileName) throws IOException {
         report(pkg, fileName);
         return super.openBinary(pkg,fileName);
     }
 
+    @Override
     public Writer openSource(JPackage pkg, String fileName) throws IOException {
         report(pkg, fileName);
         return super.openSource(pkg,fileName);
     }
     
     private void report(JPackage pkg, String fileName) {
-        if(pkg.isUnnamed()) progress.println(fileName);
+        if(pkg == null || pkg.isUnnamed())
+            progress.println(fileName);
         else
             progress.println(
                 pkg.name().replace('.',File.separatorChar)

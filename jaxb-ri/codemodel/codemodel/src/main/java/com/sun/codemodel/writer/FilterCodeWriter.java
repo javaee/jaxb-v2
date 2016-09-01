@@ -59,14 +59,17 @@ public class FilterCodeWriter extends CodeWriter {
         this.core = core;
     }
 
+    @Override
     public OutputStream openBinary( JPackage pkg, String fileName ) throws IOException {
         return core.openBinary(pkg, fileName);
     }
 
+    @Override
     public Writer openSource( JPackage pkg, String fileName ) throws IOException {
         return core.openSource(pkg, fileName);
     }
 
+    @Override
     public void close() throws IOException {
         core.close();
     }

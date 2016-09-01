@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2016 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -37,57 +37,45 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
+package com.sun.codemodel;
 
-package com.sun.codemodel.writer;
-
-import java.io.FilterOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import com.sun.codemodel.CodeWriter;
-import com.sun.codemodel.JPackage;
-
+// TODO: Implement "[to ModuleName {, ModuleName}]".
+// Only minimal form of exports directive is needed now so it was not implemented in full form.
 /**
- * Writes all the files into a zip file.
- * 
- * @author
- * 	Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
+ * Represents a Java module {@code exports} directive.
+ * For example {@code "exports foo.bar;"}.
+ * @author Tomas Kraus
  */
-public class ZipCodeWriter extends CodeWriter {
+
+public class JExportsDirective extends JModuleDirective {
+
     /**
-     * @param target
-     *      Zip file will be written to this stream.
+     * Creates an instance of Java module {@code exports} directive.
+     * @param name name of package to be exported in this directive.
+     * @throws IllegalArgumentException if the name argument is {@code null}.
      */
-    public ZipCodeWriter( OutputStream target ) {
-        zip = new ZipOutputStream(target);
-        // nullify the close method.
-        filter = new FilterOutputStream(zip){
-            @Override
-            public void close() {}
-        };
-    }
-    
-    private final ZipOutputStream zip;
-    
-    private final OutputStream filter;
-        
-    @Override
-    public OutputStream openBinary(JPackage pkg, String fileName) throws IOException {
-        final String name = pkg == null || pkg.isUnnamed() ? fileName : toDirName(pkg)+fileName;
-        zip.putNextEntry(new ZipEntry(name));
-        return filter;
+    JExportsDirective(final String name) {
+        super(name);
     }
 
-    /** Converts a package name to the directory name. */
-    private static String toDirName( JPackage pkg ) {
-        return pkg.name().replace('.','/')+'/';
+    /**
+     * Gets the type of this module directive.
+     * @return type of this module directive. Will always return {@code Type.ExportsDirective}.
+     */
+    @Override
+    public Type getType() {
+        return Type.ExportsDirective;
     }
 
+    /**
+     * Print source code of this module directive.
+     * @param f Java code formatter.
+     * @return provided instance of Java code formatter.
+     */
     @Override
-    public void close() throws IOException {
-        zip.close();
+    public JFormatter generate(final JFormatter f) {
+        f.p("exports").p(name).p(';').nl();
+        return f;
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2016 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -37,57 +37,64 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
+package com.sun.codemodel;
 
-package com.sun.codemodel.writer;
-
-import java.io.FilterOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import com.sun.codemodel.CodeWriter;
-import com.sun.codemodel.JPackage;
+import java.io.CharArrayWriter;
+import java.io.PrintWriter;
+import org.junit.After;
+import org.junit.Before;
 
 /**
- * Writes all the files into a zip file.
- * 
- * @author
- * 	Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
+ * Common Java module directive testing code.
+ * @author Tomas Kraus
  */
-public class ZipCodeWriter extends CodeWriter {
+public abstract class JTestModuleDirective {
+
+    /** Character array writer used to verify code generation output. */
+    protected CharArrayWriter out;
+
+    /** Java formatter used to generate code output. */
+    protected JFormatter jf;
+
     /**
-     * @param target
-     *      Zip file will be written to this stream.
+     * Initialize test.
      */
-    public ZipCodeWriter( OutputStream target ) {
-        zip = new ZipOutputStream(target);
-        // nullify the close method.
-        filter = new FilterOutputStream(zip){
-            @Override
-            public void close() {}
-        };
-    }
-    
-    private final ZipOutputStream zip;
-    
-    private final OutputStream filter;
-        
-    @Override
-    public OutputStream openBinary(JPackage pkg, String fileName) throws IOException {
-        final String name = pkg == null || pkg.isUnnamed() ? fileName : toDirName(pkg)+fileName;
-        zip.putNextEntry(new ZipEntry(name));
-        return filter;
+    @Before
+    public void setUp() {
+        openOutput();
     }
 
-    /** Converts a package name to the directory name. */
-    private static String toDirName( JPackage pkg ) {
-        return pkg.name().replace('.','/')+'/';
+    /**
+     * Cleanup test.
+     */
+    @After
+    public void tearDown() {
+        closeOutput();
     }
 
-    @Override
-    public void close() throws IOException {
-        zip.close();
+    /**
+     * Open Java formatting output for this test.
+     */
+    protected void openOutput() {
+        out = new CharArrayWriter();
+        jf = new JFormatter(new PrintWriter(out));
+    }
+
+    /**
+     * Close Java formatting output for this test.
+     */
+    protected void closeOutput() {
+        jf.close();
+        out.close();
+    }
+
+    /**
+     * Reopen Java formatting output for this test.
+     * Used to reset output content during tests.
+     */
+    protected void reopenOutput() {
+        closeOutput();
+        openOutput();
     }
 
 }

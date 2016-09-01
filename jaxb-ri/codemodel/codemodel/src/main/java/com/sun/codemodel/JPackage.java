@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2014 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2016 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -349,6 +349,15 @@ public final class JPackage implements JDeclaration, JGenerable, JClassContainer
         return classes.values().iterator();
     }
     
+    /**
+     * Checks if this package contains any classes.
+     * @return {@code true} if this package contains any classes
+     *         or {@code false} otherwise.
+     */
+    public boolean hasClasses() {
+        return !classes.isEmpty();
+    }
+
     /**
      * Checks if a given name is already defined as a class/interface
      */
