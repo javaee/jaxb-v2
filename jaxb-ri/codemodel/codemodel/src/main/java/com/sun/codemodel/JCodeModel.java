@@ -172,11 +172,30 @@ public final class JCodeModel {
     }
 
     /**
-     * Checks whether Java module exists.
-     * @return {@code true} if Java module exists of {@code false} otherwise.
+     * Creates Java module instance and adds existing packages with classes to the Java module info.
+     * Used to initialize and build Java module instance with existing packages content.
+     * @param name The Name of Java module.
+     * @param requires Requires directives to add.
+     * @throws IllegalStateException when Java module instance was not initialized.
      */
-    public boolean _isModuleInfo() {
-        return module != null;
+    public void _prepareModuleInfo(final String name, final String ...requires) {
+        _moduleInfo(name);
+        _updateModuleInfo(requires);
+    }
+
+    /**
+     * Adds existing packages with classes to the Java module info.
+     * Java module instance must exist before calling this method.
+     * Used to update Java module instance with existing packages content after it was prepared on client side.
+     * @param requires Requires directives to add.
+     * @throws IllegalStateException when Java module instance was not initialized.
+     */
+    public void _updateModuleInfo(final String ...requires) {
+        if (module == null) {
+            throw new IllegalStateException("Java module instance was not initialized yet.");
+        }
+        module._exports(packages.values(), false);
+        module._requires(requires);
     }
 
     public final JPackage rootPackage() {

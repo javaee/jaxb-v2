@@ -45,7 +45,9 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -103,6 +105,20 @@ public class JModule {
     }
 
     /**
+     * Adds packages to the list of Java module exports.
+     * @param pkgs Collection of packages to be added.
+     * @param addEmpty Adds also packages without any classes when {@code true}.
+     */
+    public void _exports(final Collection<JPackage> pkgs, final boolean addEmpty) {
+        for (Iterator<JPackage> i = pkgs.iterator(); i.hasNext();) {
+            final JPackage pkg = i.next();
+            if (addEmpty || pkg.hasClasses()) {
+                _exports(pkg);
+            }
+        }
+    }
+
+    /**
      * Adds a module to the list of Java module requirements.
      * The module name shall not be {@code null} or empty {@code String}.
      * @param name Name of required Java module.
@@ -120,6 +136,29 @@ public class JModule {
      */
     public void _requires(final String name) {
         directives.add(new JRequiresDirective(name, false, false));
+    }
+
+    /**
+     * Adds all modules to the list of Java module requirements.
+     * The module name shall not be {@code null} or empty {@code String}.
+     * @param names Names of required Java module.
+     * @param isPublic Use {@code public} modifier.
+     * @param isStatic Use {@code static} modifier.
+     */
+    public void _requires(final boolean isPublic, final boolean isStatic, final String ...names) {
+        if (names != null) {
+            for (final String reqName : names) {
+                _requires(reqName, isPublic, isStatic);
+            }
+        }
+    }
+
+    /**
+     * Adds all modules to the list of Java module requirements without {@code public} and {@code static} modifiers.
+     * @param names Names of required Java module.
+     */
+    public void _requires(final String ...names) {
+        _requires(false, false, names);
     }
 
     /**
