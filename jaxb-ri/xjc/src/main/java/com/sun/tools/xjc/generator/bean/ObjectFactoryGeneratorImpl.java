@@ -244,8 +244,12 @@ abstract class ObjectFactoryGeneratorImpl extends ObjectFactoryGenerator {
 
         m.javadoc()
             .append("Create an instance of ")
-            .append(exposedElementType)
-            .append("}");
+            .append(exposedElementType);
+        m.javadoc().addParam($value)
+            .append("Java instance representing xml element's value.");
+        m.javadoc().addReturn()
+            .append("the new instance of ")
+            .append(exposedElementType);
 
         XmlElementDeclWriter xemw = m.annotate2(XmlElementDeclWriter.class);
         xemw.namespace(namespaceURI).name(localPart);
