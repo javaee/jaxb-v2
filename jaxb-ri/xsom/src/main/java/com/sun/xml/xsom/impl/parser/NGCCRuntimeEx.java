@@ -462,9 +462,14 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
 //
 
 
-    /** Parses UName under the given context. */
-    public UName parseUName( String qname ) throws SAXException {
-        int idx = qname.indexOf(':');
+    /**
+     * Parses UName under the given context.
+     * @param qname Attribute name.
+     * @return New {@link UName} instance based on attribute name.
+     */
+    public UName parseUName(final String qname ) throws SAXException {
+        final String name = qname.trim();
+        int idx = name.indexOf(':');
         if(idx<0) {
             String uri = resolveNamespacePrefix("");
             
@@ -473,9 +478,9 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
                 uri = currentSchema.getTargetNamespace();
             
             // this is guaranteed to resolve
-            return new UName(uri,qname,qname);
+            return new UName(uri,name,name);
         } else {
-            String prefix = qname.substring(0,idx);
+            String prefix = name.substring(0,idx);
             String uri = currentContext.resolveNamespacePrefix(prefix);
             if(uri==null) {
                 // prefix failed to resolve.
@@ -483,7 +488,7 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
                     Messages.ERR_UNDEFINED_PREFIX,prefix));
                 uri="undefined"; // replace with a dummy
             }
-            return new UName( uri, qname.substring(idx+1), qname );
+            return new UName( uri, name.substring(idx+1), name );
         }
     }
 
