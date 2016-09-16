@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2016 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -48,7 +48,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.net.URL;
 import java.text.ParseException;
 import java.util.Iterator;
 import java.util.List;
@@ -60,7 +59,7 @@ import com.sun.codemodel.JTypeVar;
 
 /**
  * Statically generated Java soruce file.
- * 
+ *
  * <p>
  * This {@link JResourceFile} implementation will generate a Java source
  * file by copying the source code from a resource.
@@ -75,36 +74,31 @@ import com.sun.codemodel.JTypeVar;
  * <p>
  * Note that because we don't parse the static Java source code,
  * the returned {@link JClass} object doesn't respond to methods like
- * "isInterface" or "_extends",  
- * 
+ * "isInterface" or "_extends",
+ *
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 public final class JStaticJavaFile extends JResourceFile {
-    
+
     private final JPackage pkg;
     private final String className;
-    private final URL source;
+    private final ResourceLoader source;
     private final JStaticClass clazz;
     private final LineFilter filter;
-    
-    public JStaticJavaFile(JPackage _pkg, String className, String _resourceName) {
-        this( _pkg, className,
-            SecureLoader.getClassClassLoader(JStaticJavaFile.class).getResource(_resourceName), null );
-    }
-    
-    public JStaticJavaFile(JPackage _pkg, String _className, URL _source, LineFilter _filter ) {
-        super(_className+".java");
-        if(_source==null)   throw new NullPointerException();
+
+    public JStaticJavaFile(JPackage _pkg, String _className, Class<?> loadingClass, LineFilter _filter) {
+        super(_className + ".java");
+        if (loadingClass == null) throw new NullPointerException();
         this.pkg = _pkg;
         this.clazz = new JStaticClass();
         this.className = _className;
-        this.source = _source;
+        this.source = new ResourceLoader(_className, loadingClass);
         this.filter = _filter;
     }
-    
+
     /**
-     * Returns a class object that represents a statically generated code. 
+     * Returns a class object that represents a statically generated code.
      */
     public final JClass getJClass() {
         return clazz;
@@ -115,14 +109,13 @@ public final class JStaticJavaFile extends JResourceFile {
     }
 
     protected  void build(OutputStream os) throws IOException {
-        InputStream is = source.openStream();
-        
-        BufferedReader r = new BufferedReader(new InputStreamReader(is));
-        PrintWriter w = new PrintWriter(new BufferedWriter(new OutputStreamWriter(os)));
-        LineFilter filter = createLineFilter();
         int lineNumber=1;
-        
-        try {
+        try (
+                InputStream is = source.getResourceAsStream();
+                BufferedReader r = new BufferedReader(new InputStreamReader(is));
+                PrintWriter w = new PrintWriter(new BufferedWriter(new OutputStreamWriter(os)));
+        ) {
+            LineFilter filter = createLineFilter();
             String line;
             while((line=r.readLine())!=null) {
                 line = filter.process(line);
@@ -133,11 +126,8 @@ public final class JStaticJavaFile extends JResourceFile {
         } catch( ParseException e ) {
             throw new IOException("unable to process "+source+" line:"+lineNumber+"\n"+e.getMessage());
         }
-        
-        w.close();
-        r.close();
     }
-    
+
     /**
      * Creates a {@link LineFilter}.
      * <p>
@@ -149,7 +139,7 @@ public final class JStaticJavaFile extends JResourceFile {
         LineFilter f = new LineFilter() {
             public String process(String line) {
                 if(!line.startsWith("package ")) return line;
-                
+
                 // replace package decl
                 if( pkg.isUnnamed() )
                     return null;
@@ -162,7 +152,7 @@ public final class JStaticJavaFile extends JResourceFile {
         else
             return f;
     }
-    
+
     /**
      * Filter that alters the Java source code.
      * <p>
@@ -178,13 +168,13 @@ public final class JStaticJavaFile extends JResourceFile {
          *      null to strip the line off. Otherwise the returned
          *      String will be written out. Do not add '\n' at the end
          *      of this string.
-         * 
+         *
          * @exception ParseException
          *      when for some reason there's an error in the line.
          */
         String process(String line) throws ParseException;
     }
-    
+
     /**
      * A {@link LineFilter} that combines two {@link LineFilter}s.
      */
@@ -200,12 +190,12 @@ public final class JStaticJavaFile extends JResourceFile {
             return second.process(line);
         }
     }
-    
-    
+
+
     private class JStaticClass extends JClass {
 
         private final JTypeVar[] typeParams;
-        
+
         JStaticClass() {
             super(pkg.owner());
             // TODO: allow those to be specified
@@ -215,7 +205,7 @@ public final class JStaticJavaFile extends JResourceFile {
         public String name() {
             return className;
         }
-        
+
         public String fullName() {
             if(pkg.isUnnamed())
                 return className;
@@ -250,5 +240,32 @@ public final class JStaticJavaFile extends JResourceFile {
         protected JClass substituteParams(JTypeVar[] variables, List<JClass> bindings) {
             return this;
         }
-    };
+    }
+
+    static class ResourceLoader {
+        Class<?> loadingClass;
+        String shortName;
+
+        ResourceLoader(String shortName, Class<?> loadingClass) {
+            this.loadingClass = loadingClass;
+            this.shortName = shortName;
+        }
+
+        InputStream getResourceAsStream() {
+            // some people didn't like our jars to contain files with .java extension,
+            // so when we build jars, we'' use ".java_". But when we run from the workspace,
+            // we want the original source code to be used, so we check both here.
+            // see bug 6211503.
+            InputStream stream = loadingClass.getResourceAsStream(shortName + ".java");
+            if (stream == null) {
+                stream = loadingClass.getResourceAsStream(shortName + ".java_");
+            }
+            if (stream == null) {
+                throw new InternalError("Unable to load source code of " + loadingClass.getName() + " as a resource");
+            }
+            return stream;
+        }
+
+    }
+
 }

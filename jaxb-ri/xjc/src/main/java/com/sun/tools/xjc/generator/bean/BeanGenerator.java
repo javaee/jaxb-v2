@@ -43,7 +43,6 @@ package com.sun.tools.xjc.generator.bean;
 import static com.sun.tools.xjc.outline.Aspect.EXPOSED;
 
 import java.io.Serializable;
-import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -155,7 +154,7 @@ public final class BeanGenerator implements Outline {
     /**
      * Generates beans into code model according to the BGM,
      * and produces the reflection model.
-     * 
+     *
      * @param _errorReceiver
      *      This object will receive all the errors discovered
      *      during the back-end stage.
@@ -247,7 +246,7 @@ public final class BeanGenerator implements Outline {
                             JExpr.lit(model.serialVersionUID));
                 }
             }
-            
+
             CClassInfoParent base = cc.target.parent();
             if ((base != null) && (base instanceof CClassInfo)) {
                 String pkg = base.getOwnerPackage().name();
@@ -256,7 +255,7 @@ public final class BeanGenerator implements Outline {
                     getErrorReceiver().error(cc.target.getLocator(), Messages.ERR_KEYNAME_COLLISION.format(shortName));
                 }
             }
-            
+
         }
 
         // fill in implementation classes
@@ -508,7 +507,7 @@ public final class BeanGenerator implements Outline {
 
     /**
      * Generates the body of a class.
-     * 
+     *
      */
     private void generateClassBody(ClassOutlineImpl cc) {
         CClassInfo target = cc.target;
@@ -634,7 +633,7 @@ public final class BeanGenerator implements Outline {
         return new EnumOutline(e, type) {
 
             @Override
-            public 
+            public
             @NotNull
             Outline parent() {
                 return BeanGenerator.this;
@@ -770,7 +769,7 @@ public final class BeanGenerator implements Outline {
     /**
      * Determines the FieldRenderer used for the given FieldUse,
      * then generates the field declaration and accessor methods.
-     * 
+     *
      * The <code>fields</code> map will be updated with the newly
      * created FieldRenderer.
      */
@@ -831,26 +830,13 @@ public final class BeanGenerator implements Outline {
     }
 
     public JClass generateStaticClass(Class src, JPackage out) {
-        String shortName = getShortName(src.getName());
-
-        // some people didn't like our jars to contain files with .java extension,
-        // so when we build jars, we'' use ".java_". But when we run from the workspace,
-        // we want the original source code to be used, so we check both here.
-        // see bug 6211503.
-        URL res = src.getResource(shortName + ".java");
-        if (res == null) {
-            res = src.getResource(shortName + ".java_");
-        }
-        if (res == null) {
-            throw new InternalError("Unable to load source code of " + src.getName() + " as a resource");
-        }
-
-        JStaticJavaFile sjf = new JStaticJavaFile(out, shortName, res, null);
+        JStaticJavaFile sjf = new JStaticJavaFile(out, getShortName(src), src, null);
         out.addResourceFile(sjf);
         return sjf.getJClass();
     }
 
-    private String getShortName(String name) {
+    private String getShortName(Class src) {
+        String name = src.getName();
         return name.substring(name.lastIndexOf('.') + 1);
     }
 
