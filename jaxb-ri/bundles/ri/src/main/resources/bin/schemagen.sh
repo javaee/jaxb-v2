@@ -45,13 +45,13 @@
 if [ -z "$JAXB_HOME" ]
 then
     # search the installation directory
-
+    
     PRG=$0
     progname=`basename $0`
     saveddir=`pwd`
-
+    
     cd `dirname $PRG`
-
+    
     while [ -h "$PRG" ] ; do
         ls=`ls -ld "$PRG"`
         link=`expr "$ls" : '.*-> \(.*\)$'`
@@ -61,13 +61,13 @@ then
             PRG="`dirname $PRG`/$link"
         fi
     done
-
+    
     JAXB_HOME=`dirname "$PRG"`/..
-
+    
     # make it fully qualified
     cd "$saveddir"
     JAXB_HOME=`cd "$JAXB_HOME" && pwd`
-
+    
     cd $saveddir
 fi
 
@@ -103,12 +103,5 @@ then
     JAXB_HOME="`cygpath -w "$JAXB_HOME"`"
 fi
 
-# Extend schemagen options with options specific to modular JDK
-RUN_OPTS="$SCHEMAGEN_OPTS"
-"$JAVA" -cp "$LOCALCLASSPATH" com.sun.xml.bind.util.ModuleHelper
-if [ $? -ne 0 ]
-then
-    RUN_OPTS="--add-modules java.xml.bind $RUN_OPTS"
-fi
 
-exec "$JAVA" $RUN_OPTS -cp "$LOCALCLASSPATH" com.sun.tools.jxc.SchemaGeneratorFacade "$@"
+exec "$JAVA" $SCHEMAGEN_OPTS -cp "$LOCALCLASSPATH" com.sun.tools.jxc.SchemaGeneratorFacade "$@"

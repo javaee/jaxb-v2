@@ -67,21 +67,21 @@ goto SETCLASSPATH
 :SETCLASSPATH
 if "%CLASSPATH%" == "" goto NOUSERCLASSPATH
 set LOCALCLASSPATH=%JAXB_HOME%\lib\jaxb-core.jar;%JAXB_HOME%\lib\jaxb-xjc.jar;%JAXB_HOME%\lib\jaxb-jxc.jar;%JAXB_HOME%\lib\jaxb-impl.jar;%CLASSPATH%
-goto PREPARE_OPTS
+goto LAUNCHSCHEMAGEN
 
 :NOUSERCLASSPATH
 set LOCALCLASSPATH=%JAXB_HOME%\lib\jaxb-core.jar;%JAXB_HOME%\lib\jaxb-xjc.jar;%JAXB_HOME%\lib\jaxb-jxc.jar;%JAXB_HOME%\lib\jaxb-impl.jar
-goto PREPARE_OPTS
-
-rem Extend schemagen options with options specific to modular JDK
-:PREPARE_OPTS
-set RUN_OPTS=%SCHEMAGEN_OPTS%
-%JAVA% -cp "%JAXB_HOME%\lib\jaxb-core.jar" com.sun.xml.bind.util.ModuleHelper
-if %ERRORLEVEL% == 0 goto LAUNCHSCHEMAGEN
-set RUN_OPTS=--add-modules java.xml.bind %RUN_OPTS%
+goto LAUNCHSCHEMAGEN
 
 :LAUNCHSCHEMAGEN
-%JAVA% %RUN_OPTS% -cp %LOCALCLASSPATH% com.sun.tools.jxc.SchemaGeneratorFacade %*
+if not "%SCHEMAGEN_OPTS%" == "" goto LAUNCHSCHEMAGENWITHOPTS
+%JAVA% -cp %LOCALCLASSPATH% com.sun.tools.jxc.SchemaGeneratorFacade %*
+goto END
+
+:LAUNCHSCHEMAGENWITHOPTS
+%JAVA% %SCHEMAGEN_OPTS% -cp %LOCALCLASSPATH% com.sun.tools.jxc.SchemaGeneratorFacade %*
+goto END
+
 
 :END
 %COMSPEC% /C exit %ERRORLEVEL%
