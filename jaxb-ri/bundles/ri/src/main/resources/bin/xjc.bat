@@ -58,21 +58,14 @@ goto END
 if not "%JAVA_HOME%" == "" goto USE_JAVA_HOME
 
 set JAVA=java
-goto PREPARE_OPTS
+goto LAUNCHXJC
 
 :USE_JAVA_HOME
 set JAVA="%JAVA_HOME%\bin\java"
-goto PREPARE_OPTS
-
-rem Extend xjc options with options specific to modular JDK
-:PREPARE_OPTS
-set RUN_OPTS=%XJC_OPTS%
-%JAVA% -cp "%JAXB_HOME%\lib\jaxb-core.jar" com.sun.xml.bind.util.ModuleHelper
-if %ERRORLEVEL% == 0 goto LAUNCHXJC
-set RUN_OPTS=--add-modules java.xml.bind %RUN_OPTS%
+goto LAUNCHXJC
 
 :LAUNCHXJC
-%JAVA% %RUN_OPTS% -jar "%JAXB_HOME%\lib\jaxb-xjc.jar" %*
+%JAVA% %XJC_OPTS% -jar "%JAXB_HOME%\lib\jaxb-xjc.jar" %*
 
 :END
 %COMSPEC% /C exit %ERRORLEVEL%

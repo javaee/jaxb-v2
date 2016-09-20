@@ -74,8 +74,6 @@ import com.sun.tools.xjc.generator.bean.field.FieldRendererFactory;
 import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.reader.Util;
 import com.sun.xml.bind.api.impl.NameConverter;
-import com.sun.xml.bind.util.ModuleHelper;
-import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
@@ -83,7 +81,6 @@ import java.nio.charset.IllegalCharsetNameException;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.lang.model.SourceVersion;
 
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -793,86 +790,9 @@ public class Options
 
     /**
      * Adds a new catalog file.
-     */
-    public void addCatalog(File catalogFile) throws IOException {
-        // Analyze java runtime
-        if (ModuleHelper.isModularJDK()) {
-            // Modular runtime (JDK9+)
-            usePublicCatalogAPI(catalogFile);
-        } else {
-            // JDK8 or earlier runtime
-            useInternalCatalogAPI(catalogFile);
-        }
-    }
-
-    // Since javax.xml.catalog is unmodifiable we need to track catalog
-    // URLs added and create new catalog each time addCatalog is called
-    private ArrayList<String> catalogUrls = new ArrayList<String>();
-
-    /**
-     * Instantiate catalog resolver using new catalog API (javax.xml.catalog.*) added in
-     * JDK9.
-     * Usage of new API removes dependency on internal API (com.sun.org.apache.xml.internal)
-     * for modular runtime.
-     */
-    private void usePublicCatalogAPI(File catalogFile) throws IOException {
-        // Set entityResolver to null if new catalog API is not available on JDK9+ runtime
-        entityResolver = null;
-        if (catalogResolverMethod != null) {
-            String newUrl = catalogFile.getPath();
-            if (!catalogUrls.contains(newUrl)) {
-                catalogUrls.add(newUrl);
-            }
-            try {
-                entityResolver = (EntityResolver) catalogResolverMethod.invoke(null,
-                                 catalogFeatures, catalogUrls.toArray(new String[0]));
-            } catch (Exception ex) {
-            }
-        }
-    }
-
-     // Cached CatalogManager.catalogResolver method
-    private static Method catalogResolverMethod;
-
-    // Cached CatalogFeatures object
-    private static Object catalogFeatures;
-
-    // Cache CatalogFeatures instance method for future usages.
-    // The catalog features settings is never changed and can be reused too.
-    // Resolve feature is set to "continue" value for backward compatibility.
-    // CatalogFeatures instantiation code without use of reflection:
-    //   CatalogFeatures cf = CatalogFeatures.builder()
-    //        .with(Feature.RESOLVE, "continue")
-    //        .build();
-    static {
-        try {
-            Class<?> catalogManagerCls = Class.forName("javax.xml.catalog.CatalogManager");
-            Class<?> catalogFeaturesCls = Class.forName("javax.xml.catalog.CatalogFeatures");
-            Class<?> featureCls = Class.forName("javax.xml.catalog.CatalogFeatures$Feature");
-            Enum RESOLVE = Enum.valueOf((Class<Enum>) featureCls, "RESOLVE");
-            Class<?> builderCls = Class.forName("javax.xml.catalog.CatalogFeatures$Builder");
-            Method builderMethod = catalogFeaturesCls.getMethod("builder");
-            Method withMethod = builderCls.getMethod("with", featureCls, String.class);
-            Method buildMethod = builderCls.getMethod("build");
-            // Invoke static method CatalogFeatures.builder()
-            Object f = builderMethod.invoke(null);
-            // Invoke .with on Builder instance
-            f = withMethod.invoke(f, RESOLVE, "continue");
-            // Invoke .build on Builder instance
-            catalogResolverMethod = catalogManagerCls.getMethod("catalogResolver", catalogFeaturesCls, String[].class);
-            // Cache catalogResolver method
-            catalogFeatures = buildMethod.invoke(f);
-        } catch (Exception e) {
-            catalogResolverMethod = null;
-            catalogFeatures = null;
-        }
-    }
-
-    /**
-     * Instantiate JDK8 and earlier catalog resolver if it wasn't done before.
      * Use created or existed resolver to parse new catalog file.
      */
-    private void useInternalCatalogAPI(File catalogFile) throws IOException {
+    public void addCatalog(File catalogFile) throws IOException {
         if(entityResolver==null) {
             final CatalogManager staticManager = CatalogManager.getStaticManager();
             // hack to force initialization so catalog manager system properties take effect

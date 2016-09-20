@@ -61,7 +61,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -82,6 +81,10 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.xml.catalog.CatalogFeatures;
+import javax.xml.catalog.CatalogFeatures.Feature;
+import javax.xml.catalog.CatalogManager;
 
 /**
  * Global options.
@@ -790,63 +793,27 @@ public class Options
      * Adds a new catalog file.
      */
     public void addCatalog(File catalogFile) throws IOException {
-        //TODO remove reflection for Java9 version
-        // Set entityResolver to null if new catalog API is not available on JDK9+ runtime
-        entityResolver = null;
-        if (catalogResolverMethod != null) {
-            String newUrl = catalogFile.getPath();
-            if (!catalogUrls.contains(newUrl)) {
-                catalogUrls.add(newUrl);
-            }
-            try {
-                entityResolver = (EntityResolver) catalogResolverMethod.invoke(null,
-                        catalogFeatures, catalogUrls.toArray(new String[0]));
-            } catch (Exception ex) {
-            }
+        String newUrl = catalogFile.getPath();
+        if (!catalogUrls.contains(newUrl)) {
+            catalogUrls.add(newUrl);
+        }
+        try {
+            entityResolver = CatalogManager.catalogResolver(catalogFeatures,
+                                catalogUrls.toArray(new String[0]));
+        } catch (Exception ex) {
+            entityResolver = null;
         }
     }
 
     // Since javax.xml.catalog is unmodifiable we need to track catalog
     // URLs added and create new catalog each time addCatalog is called
-    private ArrayList<String> catalogUrls = new ArrayList<String>();
+    private final ArrayList<String> catalogUrls = new ArrayList<String>();
 
-     // Cached CatalogManager.catalogResolver method
-    private static Method catalogResolverMethod;
-
-    // Cached CatalogFeatures object
-    private static Object catalogFeatures;
-
-    // Cache CatalogFeatures instance method for future usages.
-    // The catalog features settings is never changed and can be reused too.
+    // Cache CatalogFeatures instance for future usages.
     // Resolve feature is set to "continue" value for backward compatibility.
-    // CatalogFeatures instantiation code without use of reflection:
-    //   CatalogFeatures cf = CatalogFeatures.builder()
-    //        .with(Feature.RESOLVE, "continue")
-    //        .build();
-    static {
-        try {
-            Class<?> catalogManagerCls = Class.forName("javax.xml.catalog.CatalogManager");
-            Class<?> catalogFeaturesCls = Class.forName("javax.xml.catalog.CatalogFeatures");
-            Class<?> featureCls = Class.forName("javax.xml.catalog.CatalogFeatures$Feature");
-            Enum RESOLVE = Enum.valueOf((Class<Enum>) featureCls, "RESOLVE");
-            Class<?> builderCls = Class.forName("javax.xml.catalog.CatalogFeatures$Builder");
-            Method builderMethod = catalogFeaturesCls.getMethod("builder");
-            Method withMethod = builderCls.getMethod("with", featureCls, String.class);
-            Method buildMethod = builderCls.getMethod("build");
-            // Invoke static method CatalogFeatures.builder()
-            Object f = builderMethod.invoke(null);
-            // Invoke .with on Builder instance
-            f = withMethod.invoke(f, RESOLVE, "continue");
-            // Invoke .build on Builder instance
-            catalogResolverMethod = catalogManagerCls.getMethod("catalogResolver", catalogFeaturesCls, String[].class);
-            // Cache catalogResolver method
-            catalogFeatures = buildMethod.invoke(f);
-        } catch (Exception e) {
-            catalogResolverMethod = null;
-            catalogFeatures = null;
-        }
-    }
-
+    private static CatalogFeatures catalogFeatures = CatalogFeatures.builder()
+                                                    .with(Feature.RESOLVE, "continue")
+                                                    .build();
     /**
      * Parses arguments and fill fields of this object.
      *
