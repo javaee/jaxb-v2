@@ -3,7 +3,7 @@
 
 DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright (c) 2013-2016 Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2013-2017 Oracle and/or its affiliates. All rights reserved.
 
 The contents of this file are subject to the terms of either the GNU
 General Public License Version 2 only ("GPL") or the Common Development
@@ -143,7 +143,7 @@ holder.
     </pluginRepositories>
 
     <properties>
-        <junit.version>4.11</junit.version>
+        <junit.version>4.12</junit.version>
         <args4j.version>1.0</args4j.version>
 
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
@@ -156,11 +156,10 @@ holder.
         <findbugs.version>3.0.1</findbugs.version>
         <skipSources>true</skipSources>
         <skipOsgiTests>true</skipOsgiTests>
-        <netbeans.hint.jdkPlatform>JDK_1.6</netbeans.hint.jdkPlatform>
+        <netbeans.hint.jdkPlatform>JDK_1.7</netbeans.hint.jdkPlatform>
         <felix.junit4osgi>1.0.0</felix.junit4osgi>
         <felix.osgi.core>1.4.0</felix.osgi.core>
-        <surefire.plugin>2.13</surefire.plugin>
-        <jmockit.version>1.14</jmockit.version>
+        <jmockit.version>1.30</jmockit.version>
     </properties>
 
     <dependencyManagement>
@@ -195,6 +194,24 @@ holder.
                 <version>1.0.8</version>
                 <scope>test</scope>
             </dependency>
+            <!-- JDK dependencies -->
+            <dependency>
+                <!-- required by com.sun.tools.jxc.model.nav.ApNavigator (com.sun.source.*) -->
+                <groupId>com.sun</groupId>
+                <artifactId>tools</artifactId>
+                <version>1.7</version>
+                <scope>system</scope>
+                <systemPath>${tools.jar}</systemPath>
+            </dependency>
+            <dependency>
+                <!-- required by com.sun.tools.xjc.Options on JDK < 9
+                (com.sun.org.apache.xml.internal.resolver.CatalogManager
+                 com.sun.org.apache.xml.internal.resolver.tools.CatalogResolver) -->
+                <groupId>com.sun.org.apache.xml.internal</groupId>
+                <artifactId>resolver</artifactId>
+                <version>20050927</version>
+                <optional>true</optional>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -224,6 +241,13 @@ holder.
                     <artifactId>maven-bundle-plugin</artifactId>
                     <version>3.2.0</version>
                     <extensions>true</extensions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>biz.aQute.bnd</groupId>
+                            <artifactId>biz.aQute.bndlib</artifactId>
+                            <version>3.3.0</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
@@ -270,16 +294,23 @@ holder.
                 </plugin>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.5.1</version>
+                    <version>3.6.0</version>
                     <configuration>
-                        <source>1.8</source>
-                        <target>1.8</target>
+                        <source>1.7</source>
+                        <target>1.7</target>
                         <fork>true</fork>
-                        <compilerArguments>
-                            <endorseddirs>${endorsed.dir}</endorseddirs>
-                            <XDignore.symbol.file/>
-                        </compilerArguments>
+                        <compilerArgs>
+                            <arg>-Xlint:all</arg>
+                            <!--<XDignore.symbol.file/>-->
+                        </compilerArgs>
+                        <jdkToolchain>
+                            <version>1.7</version>
+                        </jdkToolchain>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.19.1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-source-plugin</artifactId>
@@ -554,6 +585,93 @@ holder.
     </modules>
 
     <profiles>
+        <profile>
+            <id>default-tools.jar</id>
+            <activation>
+                <file>
+                    <exists>${java.home}/../lib/tools.jar</exists>
+                </file>
+            </activation>
+            <properties>
+                <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
+            </properties>
+        </profile>
+        <profile>
+            <id>endorsed-dirs</id>
+            <activation>
+                <jdk>[1.7,9)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <compilerArgs>
+                                <arg>-Djava.endorsed.dirs=${endorsed.dir}</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>jdk9-setup</id>
+            <activation>
+                <jdk>9</jdk>
+            </activation>
+            <modules>
+                <module>jaxb-jxc-jdk9</module>
+                <module>jaxb-xjc-jdk9</module>
+            </modules>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.felix</groupId>
+                            <artifactId>maven-bundle-plugin</artifactId>
+                            <configuration>
+                                <instructions>
+                                    <_failok>true</_failok>
+                                </instructions>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-compile</id>
+                                <configuration>
+                                    <jdkToolchain>
+                                        <version>9</version>
+                                    </jdkToolchain>
+                                    <release>9</release>
+                                    <source>9</source>
+                                    <target>9</target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>base-compile</id>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <jdkToolchain>
+                                        <version>1.7</version>
+                                    </jdkToolchain>
+                                    <excludes>
+                                        <exclude>module-info.java</exclude>
+                                    </excludes>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>default-profile</id>
             <activation>

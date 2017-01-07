@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2015-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -44,9 +44,9 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import static mockit.Deencapsulation.invoke;
+import mockit.Expectations;
 import mockit.Mock;
 import mockit.MockUp;
-import mockit.NonStrictExpectations;
 import mockit.integration.junit4.JMockit;
 import static org.junit.Assert.assertFalse;
 import org.junit.Test;
@@ -91,7 +91,7 @@ public final class SchemaGeneratorTest {
 
         //Mock the 'findJaxbApiJar' in SchemaGenerator class to avoid
         //additional calls to URL class
-        new NonStrictExpectations(SchemaGenerator.class) {{
+        new Expectations(SchemaGenerator.class) {{
                 invoke(SchemaGenerator.class, "findJaxbApiJar"); result = "";
         }};
 

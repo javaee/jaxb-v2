@@ -3,7 +3,7 @@
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 2013-2015 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2013-2017 Oracle and/or its affiliates. All rights reserved.
 
     The contents of this file are subject to the terms of either the GNU
     General Public License Version 2 only ("GPL") or the Common Development
@@ -48,8 +48,7 @@
     <parent>
         <groupId>net.java</groupId>
         <artifactId>jvnet-parent</artifactId>
-        <version>4</version>
-        <relativePath/>
+        <version>5</version>
     </parent>
 
     <groupId>org.glassfish.jaxb</groupId>
@@ -62,7 +61,7 @@
 
     <properties>
         <jaxb-api.version>2.3.0-SNAPSHOT</jaxb-api.version>
-        <istack.version>3.0.2-SNAPSHOT</istack.version>
+        <istack.version>3.0.4</istack.version>
         <fastinfoset.version>1.2.13</fastinfoset.version>
         <stax-ex.version>1.7.8</stax-ex.version>
     </properties>

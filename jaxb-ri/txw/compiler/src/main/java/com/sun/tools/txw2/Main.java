@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2005-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2005-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -205,16 +205,10 @@ public class Main {
             ns.write(opts);
             opts.codeModel.build(opts.codeWriter);
             return 0;
-        } catch (IOException e) {
-            opts.errorListener.error(new SAXParseException(e.getMessage(),null,e));
-            return 1;
-        } catch (IllegalSchemaException e) {
-            opts.errorListener.error(new SAXParseException(e.getMessage(),null,e));
-            return 1;
         } catch (SAXParseException e) {
             opts.errorListener.error(e);
             return 1;
-        } catch (SAXException e) {
+        } catch (IOException | IllegalSchemaException | SAXException e) {
             opts.errorListener.error(new SAXParseException(e.getMessage(),null,e));
             return 1;
         }
@@ -223,13 +217,14 @@ public class Main {
 
     /**
      * Gets the version number of TXW.
+     * @return TXW version
      */
     public static String getVersion() {
         try {
             Properties p = new Properties();
             p.load(Main.class.getResourceAsStream("version.properties"));
             return p.get("version").toString();
-        } catch( Throwable _ ) {
+        } catch( Throwable t ) {
             return "unknown";
         }
     }

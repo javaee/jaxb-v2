@@ -52,3 +52,5 @@
 /jaxb-ri/external/target/
 /jaxb-ri/tools/osgi_tests/target/
 /jaxb-ri/xsom/target/
+/jaxb-ri/jaxb-xjc-jdk9/target/
+/jaxb-ri/jaxb-jxc-jdk9/target/
