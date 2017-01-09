@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -85,7 +85,7 @@ public class ElementDecl extends DeclarationImpl implements XSElementDecl, Ref.T
         this.substHead = _substHead;
         this.substDisallowed = _substDisallowed;
         this.substExcluded = _substExcluded;
-        this.idConstraints = Collections.unmodifiableList((List<? extends XSIdentityConstraint>)idConstraints);
+        this.idConstraints = (List<XSIdentityConstraint>) Collections.unmodifiableList((List<? extends XSIdentityConstraint>)idConstraints);
 
         for (IdentityConstraintImpl idc : idConstraints)
             idc.setParent(this);
@@ -95,42 +95,52 @@ public class ElementDecl extends DeclarationImpl implements XSElementDecl, Ref.T
     }
     
     private XmlString defaultValue;
+    @Override
     public XmlString getDefaultValue() { return defaultValue; }
     
     private XmlString fixedValue;
+    @Override
     public XmlString getFixedValue() { return fixedValue; }
 
     private boolean nillable;
+    @Override
     public boolean isNillable() { return nillable; }
     
     private boolean _abstract;
+    @Override
     public boolean isAbstract() { return _abstract; }
     
     private Ref.Type type;
+    @Override
     public XSType getType() { return type.getType(); }
     
     private Ref.Element substHead;
+    @Override
     public XSElementDecl getSubstAffiliation() {
         if(substHead==null)     return null;
         return substHead.get();
     }
     
     private int substDisallowed;
+    @Override
     public boolean isSubstitutionDisallowed( int method ) {
         return (substDisallowed&method)!=0;
     }
     
     private int substExcluded;
+    @Override
     public boolean isSubstitutionExcluded( int method ) {
         return (substExcluded&method)!=0;
     }
 
     private final List<XSIdentityConstraint> idConstraints;
+    @Override
     public List<XSIdentityConstraint> getIdentityConstraints() {
         return idConstraints;
     }
 
     private Boolean form;
+    @Override
     public Boolean getForm() {
         return form;
     }
@@ -139,6 +149,7 @@ public class ElementDecl extends DeclarationImpl implements XSElementDecl, Ref.T
     /**
      * @deprecated 
      */
+    @Override
     public XSElementDecl[] listSubstitutables() {
         Set<? extends XSElementDecl> s = getSubstitutables();
         return s.toArray(new XSElementDecl[s.size()]);
@@ -150,6 +161,7 @@ public class ElementDecl extends DeclarationImpl implements XSElementDecl, Ref.T
     /** Unmodifieable view of {@link #substitutables}. */
     private Set<XSElementDecl> substitutablesView = null;
     
+    @Override
     public Set<? extends XSElementDecl> getSubstitutables() {
         if( substitutables==null ) {
             // if the field is null by the time this method
@@ -209,42 +221,57 @@ public class ElementDecl extends DeclarationImpl implements XSElementDecl, Ref.T
         }
     }
     
+    @Override
     public boolean canBeSubstitutedBy(XSElementDecl e) {
         return getSubstitutables().contains(e);
     }
 
+    @Override
     public boolean isWildcard()                 { return false; }
+    @Override
     public boolean isModelGroupDecl()           { return false; }
+    @Override
     public boolean isModelGroup()               { return false; }
+    @Override
     public boolean isElementDecl()              { return true; }
 
+    @Override
     public XSWildcard asWildcard()              { return null; }
+    @Override
     public XSModelGroupDecl asModelGroupDecl()  { return null; }
+    @Override
     public XSModelGroup asModelGroup()          { return null; }
+    @Override
     public XSElementDecl asElementDecl()        { return this; }
 
 
 
     
+    @Override
     public void visit( XSVisitor visitor ) {
         visitor.elementDecl(this);
     }
+    @Override
     public void visit( XSTermVisitor visitor ) {
         visitor.elementDecl(this);
     }
+    @Override
     public Object apply( XSTermFunction function ) {
         return function.elementDecl(this);
     }
 
+    @Override
     public <T,P> T apply(XSTermFunctionWithParam<T, P> function, P param) {
         return function.elementDecl(this,param);
     }
 
+    @Override
     public Object apply( XSFunction function ) {
         return function.elementDecl(this);
     }
     
     
     // Ref.Term implementation
+    @Override
     public XSTerm getTerm() { return this; }
 }
