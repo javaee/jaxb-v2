@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -49,18 +49,22 @@ import javax.xml.bind.annotation.XmlRegistry;
  *
  * <p>
  * This interface is only meant to be used as a return type from
- * {@link com.sun.xml.bind.v2.model.impl.ModelBuilder}.
+ * {@link com.sun.xml.bind.v2.model.impl.ModelBuilderI}.
  *
  * @author Kohsuke Kawaguchi
+ * @param <T>
+ * @param <C>
  */
 public interface RegistryInfo<T,C> {
     /**
      * Returns all the references to other types in this registry.
+     * @return 
      */
     Set<TypeInfo<T,C>> getReferences();
 
     /**
      * Returns the class with {@link XmlRegistry}.
+     * @return 
      */
     C getClazz();
 }

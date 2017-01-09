@@ -362,7 +362,6 @@ holder.
                         <dependencySourceExcludes>
                             <dependencySourceExclude>com.sun.xml:*</dependencySourceExclude>
                         </dependencySourceExcludes>
-                        <additionalJOption>-J-Djava.endorsed.dirs=${endorsed.dir}</additionalJOption>
                         <offlineLinks>
                             <offlineLink>
                                 <url>http://docs.oracle.com/javase/6/docs/api/</url>
@@ -373,8 +372,6 @@ holder.
                                 <location>${javadoc.links.dir}/jaxb-api/</location>
                             </offlineLink>
                         </offlineLinks>
-                        <!-- TODO: solve jdb8 javadoc errors -->
-                        <failOnError>false</failOnError>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -609,6 +606,12 @@ holder.
                             <compilerArgs>
                                 <arg>-Djava.endorsed.dirs=${endorsed.dir}</arg>
                             </compilerArgs>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <additionalJOption>-J-Djava.endorsed.dirs=${endorsed.dir}</additionalJOption>
                         </configuration>
                     </plugin>
                 </plugins>
