@@ -548,4 +548,14 @@ public abstract class JAXBRIContext extends JAXBContext {
      * @since 2.2.6
      */
     public static final String DISABLE_XML_SECURITY  = "com.sun.xml.bind.disableXmlSecurity";
+
+    /**
+     * If true, despite of the specification, unmarshall child element with parent namespace, if child namespace is not specified. 
+     * The default value is false. 
+     *
+     * Boolean
+     * @since 2.3.0
+     */
+    public static final String BACKUP_WITH_PARENT_NAMESPACE = "com.sun.xml.bind.backupWithParentNamespace";
+
 }
