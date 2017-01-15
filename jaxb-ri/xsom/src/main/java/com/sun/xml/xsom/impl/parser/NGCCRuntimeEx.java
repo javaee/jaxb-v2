@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2016 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -49,7 +49,6 @@ import com.sun.xml.xsom.impl.UName;
 import com.sun.xml.xsom.impl.Const;
 import com.sun.xml.xsom.impl.parser.state.NGCCRuntime;
 import com.sun.xml.xsom.impl.parser.state.Schema;
-import com.sun.xml.xsom.impl.util.Uri;
 import com.sun.xml.xsom.parser.AnnotationParser;
 import org.relaxng.datatype.ValidationContext;
 import org.xml.sax.Attributes;
@@ -63,8 +62,10 @@ import org.xml.sax.helpers.LocatorImpl;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Stack;
+import java.util.regex.Pattern;
 
 /**
  * NGCCRuntime extended with various utility methods for
@@ -165,12 +166,15 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
 
 
     /* registers a patcher that will run after all the parsing has finished. */
+    @Override
     public void addPatcher( Patch patcher ) {
         parser.patcherManager.addPatcher(patcher);
     }
+    @Override
     public void addErrorChecker( Patch patcher ) {
         parser.patcherManager.addErrorChecker(patcher);
     }
+    @Override
     public void reportError( String msg, Locator loc ) throws SAXException {
         parser.patcherManager.reportError(msg,loc);
     }
@@ -203,8 +207,15 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
             EntityResolver er = parser.getEntityResolver();
             String systemId = null;
 
-            if (relativeUri!=null)
-                systemId = Uri.resolve(baseUri,relativeUri);
+            if (relativeUri!=null) {
+                if (isAbsolute(relativeUri)) {
+                    systemId = relativeUri;
+                }
+                if (baseUri == null || !isAbsolute(baseUri)) {
+                    throw new IOException("Unable to resolve relative URI " + relativeUri + " because base URI is not absolute: " + baseUri);
+                }
+                systemId = new URL(new URL(baseUri), relativeUri).toString();
+            }
 
             if (er!=null) {
                 InputSource is = er.resolveEntity(namespaceURI,systemId);
@@ -232,7 +243,20 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
         }
     }
 
-    /** Includes the specified schema. */
+    private static final Pattern P = Pattern.compile(".*[/#?].*");
+
+    private static boolean isAbsolute(String uri) {
+        int i = uri.indexOf(':');
+        if (i < 0) {
+            return false;
+        }
+        return !P.matcher(uri.substring(0, i)).matches();
+    }
+
+    /**
+     * Includes the specified schema.
+     * @param schemaLocation
+     * @throws org.xml.sax.SAXException */
     public void includeSchema( String schemaLocation ) throws SAXException {
         NGCCRuntimeEx runtime = new NGCCRuntimeEx(parser,chameleonMode,this);
         runtime.currentSchema = this.currentSchema;
@@ -250,7 +274,11 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
             true, currentSchema.getTargetNamespace(), getLocator() );
     }
 
-    /** Imports the specified schema. */
+    /**
+     * Imports the specified schema.
+     * @param ns
+     * @param schemaLocation
+     * @throws org.xml.sax.SAXException */
     public void importSchema( String ns, String schemaLocation ) throws SAXException {
         NGCCRuntimeEx newRuntime = new NGCCRuntimeEx(parser,false,this);
         InputSource source = resolveRelativeURL(ns,schemaLocation);
@@ -332,9 +360,13 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
     /**
      * Parses the specified entity.
      *
+     * @param source
      * @param importLocation
      *      The source location of the import/include statement.
      *      Used for reporting errors.
+     * @param includeMode
+     * @param expectedNamespace
+     * @throws org.xml.sax.SAXException
      */
     public void parseEntity( InputSource source, boolean includeMode, String expectedNamespace, Locator importLocation )
             throws SAXException {
@@ -357,6 +389,7 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
 
     /**
      * Creates a new instance of annotation parser.
+     * @return
      */
     public AnnotationParser createAnnotationParser() {
         if(parser.getAnnotationParserFactory()==null)
@@ -366,14 +399,15 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
     }
 
     /**
-     * Gets the element name that contains the annotation element.
-     * This method works correctly only when called by the annotation handler.
+     * Gets the element name that contains the annotation element.This method works correctly only when called by the annotation handler.
+     * @return
      */
     public String getAnnotationContextElementName() {
         return elementNames.get( elementNames.size()-2 );
     }
 
-    /** Creates a copy of the current locator object. */
+    /** Creates a copy of the current locator object.
+     * @return  */
     public Locator copyLocator() {
         return new LocatorImpl(getLocator());
     }
@@ -412,6 +446,7 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
             this.uri = _uri;
         }
 
+        @Override
         public String resolveNamespacePrefix(String p) {
             if(p.equals(prefix))    return uri;
             if(previous==null)      return null;
@@ -423,14 +458,18 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
         private final Context previous;
 
         // XSDLib don't use those methods, so we cut a corner here.
+        @Override
         public String getBaseUri() { return null; }
+        @Override
         public boolean isNotation(String arg0) { return false; }
+        @Override
         public boolean isUnparsedEntity(String arg0) { return false; }
     }
 
     private Context currentContext=null;
 
-    /** Returns an immutable snapshot of the current context. */
+    /** Returns an immutable snapshot of the current context.
+     * @return  */
     public ValidationContext createValidationContext() {
         return currentContext;
     }
@@ -461,6 +500,7 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
      * Parses UName under the given context.
      * @param qname Attribute name.
      * @return New {@link UName} instance based on attribute name.
+     * @throws org.xml.sax.SAXException
      */
     public UName parseUName(final String qname ) throws SAXException {
         int idx = qname.indexOf(':');
