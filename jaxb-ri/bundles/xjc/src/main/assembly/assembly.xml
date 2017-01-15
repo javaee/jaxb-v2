@@ -65,6 +65,9 @@
                 <include>com.sun.xml.bind.external:rngom</include>
                 <include>relaxngDatatype:relaxngDatatype</include>
             </includes>
+            <excludes>
+                <exclude>*:*:*:sources:*</exclude>
+            </excludes>
             <unpack>true</unpack>
         </dependencySet>
         <dependencySet>
@@ -72,6 +75,9 @@
             <includes>
                 <include>org.glassfish.jaxb:jaxb-xjc-jdk9</include>
             </includes>
+            <excludes>
+                <exclude>*:*:*:sources:*</exclude>
+            </excludes>
             <unpack>true</unpack>
             <unpackOptions>
                 <excludes>

@@ -3,7 +3,7 @@
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 2016 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2016-2017 Oracle and/or its affiliates. All rights reserved.
 
     The contents of this file are subject to the terms of either the GNU
     General Public License Version 2 only ("GPL") or the Common Development
@@ -53,29 +53,31 @@
 
     <includeBaseDirectory>false</includeBaseDirectory>
 
-    <fileSets>
-        <fileSet>
-            <directory>${project.build.directory}/generated-sources</directory>
-            <outputDirectory>/</outputDirectory>
-        </fileSet>
-    </fileSets>
-
-    <moduleSets>
-        <moduleSet>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>.</outputDirectory>
             <includes>
-                <include>org.glassfish.jaxb:jaxb-xjc-jdk9</include>
+                <include>org.glassfish.jaxb:jaxb-xjc:jar:sources</include>
+                <include>org.glassfish.jaxb:codemodel:jar:sources</include>
+                <include>org.glassfish.jaxb:xsom:jar:sources</include>
+                <include>com.sun.istack:istack-commons-tools:jar:sources</include>
+                <include>com.sun.xml.dtd-parser:dtd-parser:jar:sources</include>
+                <include>com.sun.xml.bind.external:rngom:jar:sources</include>
+                <include>relaxngDatatype:relaxngDatatype:jar:sources</include>
             </includes>
-            <sources>
-                <includeModuleDirectory>false</includeModuleDirectory>
-                <fileSets>
-                    <fileSet>
-                        <directory>${project.build.sourceDirectory}</directory>
-                        <outputDirectory>META-INF/versions/9</outputDirectory>
-                    </fileSet>
-                </fileSets>
-            </sources>
-        </moduleSet>
-    </moduleSets>
-
-
+            <unpack>true</unpack>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>META-INF/versions/9</outputDirectory>
+            <includes>
+                <include>org.glassfish.jaxb:jaxb-xjc-jdk9:jar:sources</include>
+            </includes>
+            <unpack>true</unpack>
+            <unpackOptions>
+                <excludes>
+                    <exclude>META-INF/**</exclude>
+                </excludes>
+            </unpackOptions>
+        </dependencySet>
+    </dependencySets>
 </assembly>

@@ -68,6 +68,13 @@ holder.
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-jxc</artifactId>
+            <version>${project.version}</version>
+            <classifier>sources</classifier>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
@@ -89,6 +96,13 @@ holder.
                 <dependency>
                     <groupId>org.glassfish.jaxb</groupId>
                     <artifactId>jaxb-jxc-jdk9</artifactId>
+                    <optional>true</optional>
+                    <version>${project.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.glassfish.jaxb</groupId>
+                    <artifactId>jaxb-jxc-jdk9</artifactId>
+                    <classifier>sources</classifier>
                     <optional>true</optional>
                     <version>${project.version}</version>
                 </dependency>
@@ -183,7 +197,7 @@ holder.
                     <useDefaultManifestFile>true</useDefaultManifestFile>
                 </configuration>
             </plugin>-->
-            <plugin>
+<!--            <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
@@ -224,7 +238,7 @@ holder.
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

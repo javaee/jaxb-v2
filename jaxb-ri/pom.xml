@@ -143,6 +143,8 @@ holder.
     </pluginRepositories>
 
     <properties>
+        <!-- for now we need tools.jar to be able to build the project -->
+        <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
         <junit.version>4.12</junit.version>
         <args4j.version>1.0</args4j.version>
 
@@ -582,17 +584,6 @@ holder.
     </modules>
 
     <profiles>
-        <profile>
-            <id>default-tools.jar</id>
-            <activation>
-                <file>
-                    <exists>${java.home}/../lib/tools.jar</exists>
-                </file>
-            </activation>
-            <properties>
-                <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
-            </properties>
-        </profile>
         <profile>
             <id>endorsed-dirs</id>
             <activation>

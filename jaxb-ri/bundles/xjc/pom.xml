@@ -86,6 +86,52 @@ holder.
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-xjc</artifactId>
+            <version>${project.version}</version>
+            <classifier>sources</classifier>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>codemodel</artifactId>
+            <version>${project.version}</version>
+            <classifier>sources</classifier>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>xsom</artifactId>
+            <version>${project.version}</version>
+            <classifier>sources</classifier>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.istack</groupId>
+            <artifactId>istack-commons-tools</artifactId>
+            <version>${istack.version}</version>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>relaxngDatatype</groupId>
+            <artifactId>relaxngDatatype</artifactId>
+            <version>${relaxngDatatype.version}</version>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind.external</groupId>
+            <artifactId>rngom</artifactId>
+            <version>${project.version}</version>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.dtd-parser</groupId>
+            <artifactId>dtd-parser</artifactId>
+            <version>${dtd-parser.version}</version>
+            <classifier>sources</classifier>
+        </dependency>
     </dependencies>
 
     <properties>
@@ -103,8 +149,13 @@ holder.
                 <dependency>
                     <groupId>org.glassfish.jaxb</groupId>
                     <artifactId>jaxb-xjc-jdk9</artifactId>
-                    <optional>true</optional>
                     <version>${project.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.glassfish.jaxb</groupId>
+                    <artifactId>jaxb-xjc-jdk9</artifactId>
+                    <version>${project.version}</version>
+                    <classifier>sources</classifier>
                 </dependency>
             </dependencies>
         </profile>
@@ -203,7 +254,7 @@ holder.
                     </execution>
                 </executions>
             </plugin>-->
-            <plugin>
+<!--            <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
@@ -266,7 +317,7 @@ holder.
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
-                    </execution>
+                    </execution>-->
                     <!--<execution>
                         <id>unpack-classes</id>
                         <phase>process-resources</phase>
@@ -321,8 +372,8 @@ holder.
                             </artifactItems>
                         </configuration>
                     </execution>-->
-                </executions>
-            </plugin>
+<!--                </executions>
+            </plugin>-->
 
             <plugin>
                 <groupId>org.apache.felix</groupId>

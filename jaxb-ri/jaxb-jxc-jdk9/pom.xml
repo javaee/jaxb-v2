@@ -62,5 +62,9 @@ holder.
         </dependency>
     </dependencies>
 
+    <properties>
+        <netbeans.hint.jdkPlatform>JDK_9</netbeans.hint.jdkPlatform>
+    </properties>
+
 </project>
 
