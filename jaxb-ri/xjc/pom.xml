@@ -134,23 +134,24 @@ holder.
         <plugins>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.sun.tools.xjc.XJCFacade</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-source-plugin</artifactId>
-                <configuration>
-                    <skipSource>${skipSources}</skipSource>
-                </configuration>
                 <executions>
                     <execution>
+                        <id>default-jar</id>
                         <goals>
-                            <goal>jar-no-fork</goal>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <mainClass>com.sun.tools.xjc.XJCFacade</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>                    
+                    </execution>
+                    <execution>
+                        <id>package-test-jar</id>
+                        <goals>
+                            <goal>test-jar</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -188,28 +189,6 @@ holder.
                                 <resource>
                                     <directory>src/main/java/com/sun/tools/xjc/runtime</directory>
                                     <filtering>false</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>add-resource</goal>
-                        </goals>
-                        <configuration>
-                            <resources>
-                                <resource>
-                                    <directory>${project.build.outputDirectory}</directory>
-                                    <includes>
-                                        <include>**/*.properties</include>
-                                    </includes>
                                 </resource>
                             </resources>
                         </configuration>

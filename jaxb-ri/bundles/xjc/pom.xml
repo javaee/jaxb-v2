@@ -54,7 +54,7 @@ holder.
     <groupId>com.sun.xml.bind</groupId>
     <artifactId>jaxb-xjc</artifactId>
 
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <name>Old JAXB XJC</name>
     <description>
         Old JAXB Binding Compiler. Contains source code needed for binding customization files into java sources.
@@ -72,65 +72,19 @@ holder.
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>codemodel</artifactId>
-            <optional>true</optional>
             <version>${project.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>xsom</artifactId>
-            <optional>true</optional>
             <version>${project.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-xjc</artifactId>
-            <version>${project.version}</version>
-            <classifier>sources</classifier>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>codemodel</artifactId>
-            <version>${project.version}</version>
-            <classifier>sources</classifier>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>xsom</artifactId>
-            <version>${project.version}</version>
-            <classifier>sources</classifier>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.istack</groupId>
-            <artifactId>istack-commons-tools</artifactId>
-            <version>${istack.version}</version>
-            <classifier>sources</classifier>
-        </dependency>
-        <dependency>
-            <groupId>relaxngDatatype</groupId>
-            <artifactId>relaxngDatatype</artifactId>
-            <version>${relaxngDatatype.version}</version>
-            <classifier>sources</classifier>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind.external</groupId>
-            <artifactId>rngom</artifactId>
-            <version>${project.version}</version>
-            <classifier>sources</classifier>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.dtd-parser</groupId>
-            <artifactId>dtd-parser</artifactId>
-            <version>${dtd-parser.version}</version>
-            <classifier>sources</classifier>
         </dependency>
     </dependencies>
 
@@ -150,14 +104,70 @@ holder.
                     <groupId>org.glassfish.jaxb</groupId>
                     <artifactId>jaxb-xjc-jdk9</artifactId>
                     <version>${project.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.glassfish.jaxb</groupId>
-                    <artifactId>jaxb-xjc-jdk9</artifactId>
-                    <version>${project.version}</version>
-                    <classifier>sources</classifier>
+                    <optional>true</optional>
                 </dependency>
             </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack-sources-jdk9</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>${skipSources}</skip>
+                                    <excludes>META-INF/**</excludes>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.glassfish.jaxb</groupId>
+                                            <artifactId>jaxb-xjc-jdk9</artifactId>
+                                            <classifier>sources</classifier>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${generated.sources.dir}/META-INF/versions/9</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>unpack-classes-jdk9</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>false</skip>
+                                    <excludes>META-INF/**</excludes>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.glassfish.jaxb</groupId>
+                                            <artifactId>jaxb-xjc-jdk9</artifactId>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${generated.classes.dir}/META-INF/versions/9</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <sourceFileExcludes>
+                                <sourceFileExclude>META-INF/versions/**</sourceFileExclude>
+                            </sourceFileExcludes>
+                            <additionalJOptions>
+                                <additionalJOption>--add-modules</additionalJOption>
+                                <additionalJOption>java.activation</additionalJOption>
+                            </additionalJOptions>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
         <profile>
             <id>default-profile</id>
@@ -204,7 +214,7 @@ holder.
                     </execution>
                 </executions>
             </plugin>
-<!--            <plugin>
+            <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-junit4osgi-plugin</artifactId>
                 <version>${felix.junit4osgi}</version>
@@ -253,8 +263,8 @@ holder.
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>-->
-<!--            <plugin>
+            </plugin>
+            <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
@@ -317,8 +327,8 @@ holder.
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
-                    </execution>-->
-                    <!--<execution>
+                    </execution>
+                    <execution>
                         <id>unpack-classes</id>
                         <phase>process-resources</phase>
                         <goals>
@@ -371,9 +381,9 @@ holder.
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
-                    </execution>-->
-<!--                </executions>
-            </plugin>-->
+                    </execution>
+                </executions>
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.felix</groupId>
@@ -395,12 +405,14 @@ holder.
                 </executions>
             </plugin>
 
-            <!--<plugin>
+            <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
-                    <useDefaultManifestFile>true</useDefaultManifestFile>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
                 </configuration>
-            </plugin>-->
+            </plugin>
 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -436,7 +448,7 @@ holder.
                 </executions>
             </plugin>
 
-           <!-- <plugin>
+            <plugin>
                 <artifactId>maven-shade-plugin</artifactId>
                 <executions>
                     <execution>
@@ -482,62 +494,6 @@ holder.
                                     </manifestEntries>
                                 </transformer>
                             </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>-->
-
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>make-assembly-src</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>src/main/assembly/assembly-src.xml</descriptor>
-                            </descriptors>
-                            <appendAssemblyId>true</appendAssemblyId>
-                           <!-- <archive>
-                                <manifest>
-                                    <mainClass>com.sun.tools.xjc.XJCFacade</mainClass>
-                                </manifest>
-                                <manifestEntries>
-                                    <Class-Path>jaxb-core.jar jaxb-impl.jar</Class-Path>
-                                    <Major-Version>${jaxb.majorVersion}.${jaxb.minorVersion}.${jaxb.incrementalVersion}</Major-Version>
-                                    <Specification-Version>${jaxb-api.majorVersion}.${jaxb-api.minorVersion}</Specification-Version>
-                                    <Git-Revision>${buildNumber}</Git-Revision>
-                                    <Multi-Release>true</Multi-Release>
-                                </manifestEntries>
-                            </archive>-->
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>src/main/assembly/assembly.xml</descriptor>
-                            </descriptors>
-                            <appendAssemblyId>false</appendAssemblyId>
-                            <archive>
-                                <manifest>
-                                    <mainClass>com.sun.tools.xjc.XJCFacade</mainClass>
-                                </manifest>
-                                <manifestEntries>
-                                    <Class-Path>jaxb-core.jar jaxb-impl.jar</Class-Path>
-                                    <Major-Version>${jaxb.majorVersion}.${jaxb.minorVersion}.${jaxb.incrementalVersion}</Major-Version>
-                                    <Specification-Version>${jaxb-api.majorVersion}.${jaxb-api.minorVersion}</Specification-Version>
-                                    <Git-Revision>${buildNumber}</Git-Revision>
-                                    <Multi-Release>true</Multi-Release>
-                                </manifestEntries>
-                            </archive>
                         </configuration>
                     </execution>
                 </executions>

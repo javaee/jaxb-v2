@@ -67,7 +67,6 @@ holder.
         <module>xjc</module>
         <module>jxc</module>
         <module>ri</module>
-        <!--TODO JDK9-->
-        <!--<module>osgi</module>-->
+        <module>osgi</module>
     </modules>
 </project>

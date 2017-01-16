@@ -127,6 +127,14 @@ holder.
             <url>https://maven.java.net/content/repositories/staging/</url>
             <layout>default</layout>
         </repository>
+        <repository>
+            <id>netbeans</id>
+            <name>Repository hosting NetBeans modules</name>
+            <url>http://bits.netbeans.org/nexus/content/groups/netbeans</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -143,8 +151,6 @@ holder.
     </pluginRepositories>
 
     <properties>
-        <!-- for now we need tools.jar to be able to build the project -->
-        <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
         <junit.version>4.12</junit.version>
         <args4j.version>1.0</args4j.version>
 
@@ -199,11 +205,10 @@ holder.
             <!-- JDK dependencies -->
             <dependency>
                 <!-- required by com.sun.tools.jxc.model.nav.ApNavigator (com.sun.source.*) -->
-                <groupId>com.sun</groupId>
-                <artifactId>tools</artifactId>
-                <version>1.7</version>
-                <scope>system</scope>
-                <systemPath>${tools.jar}</systemPath>
+                <groupId>org.netbeans.external</groupId>
+                <artifactId>javac-api-nb-7.0-b07</artifactId>
+                <version>RELEASE712</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <!-- required by com.sun.tools.xjc.Options on JDK < 9
@@ -221,6 +226,7 @@ holder.
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-shade-plugin</artifactId>
                     <version>2.4.3</version>
                     <configuration>
@@ -228,12 +234,14 @@ holder.
                     </configuration>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>2.4.1</version>
+                    <version>3.0.0</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>2.5</version>
+                    <version>3.0.2</version>
                     <configuration>
                         <escapeString>\</escapeString>
                     </configuration>
@@ -252,8 +260,9 @@ holder.
                     </dependencies>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.4</version>
+                    <version>3.0.2</version>
                     <configuration>
                         <archive>
                             <manifestEntries>
@@ -276,8 +285,9 @@ holder.
                     </configuration>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>2.8</version>
+                    <version>3.0.0</version>
                     <executions>
                         <execution>
                             <id>prepare-endorsed</id>
@@ -295,6 +305,7 @@ holder.
                     </executions>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.6.0</version>
                     <configuration>
@@ -311,12 +322,14 @@ holder.
                     </configuration>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.19.1</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>2.2.1</version>
+                    <version>3.0.1</version>
                     <configuration>
                         <archive>
                             <manifestEntries>
@@ -336,8 +349,9 @@ holder.
                     </configuration>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.3</version>
+                    <version>3.0.0</version>
                     <configuration>
                         <archive>
                             <manifestEntries>
@@ -357,6 +371,7 @@ holder.
                     </configuration>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>2.10.4</version>
                     <configuration>
@@ -379,7 +394,7 @@ holder.
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>1.8</version>
+                    <version>1.12</version>
                     <executions>
                         <execution>
                             <id>jaxb.version</id>
@@ -450,8 +465,9 @@ holder.
                     </dependencies>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>2.7</version>
+                    <version>2.8.2</version>
                     <configuration>
                         <retryFailedDeploymentCount>10</retryFailedDeploymentCount>
                     </configuration>
@@ -462,17 +478,19 @@ holder.
                     <version>1.0-alpha-2</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>3.2</version>
+                    <version>3.6</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
-                    <version>1.4</version>
+                    <version>1.6</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>buildnumber-maven-plugin</artifactId>
-                    <version>1.1</version>
+                    <version>1.4</version>
                     <configuration>
                         <locale>en-US</locale>
                     </configuration>
@@ -496,6 +514,11 @@ holder.
                         <message>JAXB-${project.version}</message>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>1.4.1</version>
+                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -505,8 +528,8 @@ holder.
                 <artifactId>build-helper-maven-plugin</artifactId>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>1.4</version>
                 <executions>
                     <execution>
                         <id>enforce-versions</id>
@@ -521,13 +544,14 @@ holder.
                             <version>[1.7,)</version>
                         </requireJavaVersion>
                         <requireMavenVersion>
-                            <version>[3.0.3,)</version>
+                            <version>[3.3.9,)</version>
                         </requireMavenVersion>
                         <DependencyConvergence/>
                     </rules>
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <configuration>
                     <reportPlugins>
@@ -592,6 +616,7 @@ holder.
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
                         <configuration>
                             <compilerArgs>
@@ -600,6 +625,7 @@ holder.
                         </configuration>
                     </plugin>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
                             <additionalJOption>-J-Djava.endorsed.dirs=${endorsed.dir}</additionalJOption>
@@ -617,6 +643,9 @@ holder.
                 <module>jaxb-jxc-jdk9</module>
                 <module>jaxb-xjc-jdk9</module>
             </modules>
+            <properties>
+                <skipOsgiTests>true</skipOsgiTests>
+            </properties>
             <build>
                 <pluginManagement>
                     <plugins>
@@ -673,9 +702,9 @@ holder.
                     <name>!dev</name>
                 </property>
             </activation>
-            <properties>
+<!--            <properties>
                 <skipOsgiTests>false</skipOsgiTests>
-            </properties>
+            </properties>-->
             <modules>
                 <module>docs</module>
                 <module>tools/osgi_tests</module>
@@ -725,32 +754,34 @@ holder.
                         <artifactId>maven-enforcer-plugin</artifactId>
                         <version>1.4</version>
                         <executions>
-                          <execution>
-                            <id>enforce-no-snapshots</id>
-                            <goals>
-                                <goal>enforce</goal>
-                            </goals>
-                            <configuration>
-                                <rules>
-                                    <requireReleaseDeps>
-                                        <message>No SNAPSHOT dependency allowed!</message>
-                                    </requireReleaseDeps>
-                                    <requireReleaseVersion>
-                                        <message>release version no SNAPSHOT Allowed!</message>
-                                    </requireReleaseVersion>
-                                </rules>
-                                <fail>true</fail>
-                            </configuration>
-                          </execution>
+                            <execution>
+                                <id>enforce-no-snapshots</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <requireReleaseDeps>
+                                            <message>No SNAPSHOT dependency allowed!</message>
+                                        </requireReleaseDeps>
+                                        <requireReleaseVersion>
+                                            <message>release version no SNAPSHOT Allowed!</message>
+                                        </requireReleaseVersion>
+                                    </rules>
+                                    <fail>true</fail>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-site-plugin</artifactId>
                         <configuration>
                             <skipDeploy>true</skipDeploy>
                         </configuration>
                     </plugin>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
                         <executions>
                             <execution>
@@ -762,6 +793,7 @@ holder.
                         </executions>
                     </plugin>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <executions>
                             <execution>
@@ -773,6 +805,7 @@ holder.
                         </executions>
                     </plugin>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
                         <executions>
                             <execution>
@@ -785,6 +818,7 @@ holder.
                         </executions>
                     </plugin>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-deploy-plugin</artifactId>
                         <inherited>true</inherited>
                         <configuration>

@@ -94,8 +94,8 @@ holder.
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.sun</groupId>
-            <artifactId>tools</artifactId>
+            <groupId>org.netbeans.external</groupId>
+            <artifactId>javac-api-nb-7.0-b07</artifactId>
         </dependency>
     </dependencies>
 
@@ -111,24 +111,19 @@ holder.
         <plugins>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.sun.tools.jxc.SchemaGeneratorFacade</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-source-plugin</artifactId>
-                <configuration>
-                    <skipSource>${skipSources}</skipSource>
-                </configuration>
                 <executions>
                     <execution>
+                        <id>default-jar</id>
                         <goals>
-                            <goal>jar-no-fork</goal>
+                            <goal>jar</goal>
                         </goals>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <mainClass>com.sun.tools.jxc.SchemaGeneratorFacade</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>                    
                     </execution>
                 </executions>
             </plugin>
@@ -146,28 +141,6 @@ holder.
                                 <resource>
                                     <directory>src/main/resources</directory>
                                     <filtering>true</filtering>
-                                    <includes>
-                                        <include>**/*.properties</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>add-resource</goal>
-                        </goals>
-                        <configuration>
-                            <resources>
-                                <resource>
-                                    <directory>${project.build.outputDirectory}</directory>
                                     <includes>
                                         <include>**/*.properties</include>
                                     </includes>

@@ -93,7 +93,8 @@ holder.
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <workingDirectory>target/test-out</workingDirectory>
-                    <forkMode>pertest</forkMode>
+                    <forkCount>1</forkCount>
+                    <reuseForks>false</reuseForks>
                 </configuration>
             </plugin>
         </plugins>
