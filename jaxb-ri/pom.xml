@@ -206,8 +206,8 @@ holder.
             <dependency>
                 <!-- required by com.sun.tools.jxc.model.nav.ApNavigator (com.sun.source.*) -->
                 <groupId>org.netbeans.external</groupId>
-                <artifactId>javac-api-nb-7.0-b07</artifactId>
-                <version>RELEASE712</version>
+                <artifactId>nb-javac-api</artifactId>
+                <version>RELEASE82</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
