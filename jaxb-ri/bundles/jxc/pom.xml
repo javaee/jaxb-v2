@@ -68,13 +68,6 @@ holder.
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-jxc</artifactId>
-            <version>${project.version}</version>
-            <classifier>sources</classifier>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
@@ -96,13 +89,6 @@ holder.
                 <dependency>
                     <groupId>org.glassfish.jaxb</groupId>
                     <artifactId>jaxb-jxc-jdk9</artifactId>
-                    <optional>true</optional>
-                    <version>${project.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.glassfish.jaxb</groupId>
-                    <artifactId>jaxb-jxc-jdk9</artifactId>
-                    <classifier>sources</classifier>
                     <optional>true</optional>
                     <version>${project.version}</version>
                 </dependency>
@@ -394,6 +380,22 @@ holder.
                                 <jaxb.spec.version>${jaxb-api.version}</jaxb.spec.version>
                                 <osgi.dist>${project.build.directory}/${project.build.finalName}</osgi.dist>
                             </systemProperties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                        <configuration>
+                            <skipSource>${skipSources}</skipSource>
                         </configuration>
                     </execution>
                 </executions>
