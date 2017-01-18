@@ -114,17 +114,17 @@ holder.
     <repositories>
         <repository>
             <id>releases.java.net</id>
-            <url>https://maven.java.net/content/repositories/releases/</url>
+            <url>http://maven.java.net/content/repositories/releases/</url>
             <layout>default</layout>
         </repository>
         <repository>
             <id>shapshots.java.net</id>
-            <url>https://maven.java.net/content/repositories/snapshots/</url>
+            <url>http://maven.java.net/content/repositories/snapshots/</url>
             <layout>default</layout>
         </repository>
         <repository>
             <id>jvnet-nexus-staging</id>
-            <url>https://maven.java.net/content/repositories/staging/</url>
+            <url>http://maven.java.net/content/repositories/staging/</url>
             <layout>default</layout>
         </repository>
         <repository>
@@ -140,12 +140,12 @@ holder.
     <pluginRepositories>
         <pluginRepository>
             <id>releases.java.net</id>
-            <url>https://maven.java.net/content/repositories/releases/</url>
+            <url>http://maven.java.net/content/repositories/releases/</url>
             <layout>default</layout>
         </pluginRepository>
         <pluginRepository>
             <id>jvnet-nexus-staging</id>
-            <url>https://maven.java.net/content/repositories/staging/</url>
+            <url>http://maven.java.net/content/repositories/staging/</url>
             <layout>default</layout>
         </pluginRepository>
     </pluginRepositories>
