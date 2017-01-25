@@ -100,10 +100,6 @@ holder.
         </dependency>
     </dependencies>
 
-    <properties>
-        <generated.sources.dir>${project.build.directory}/generated-sources</generated.sources.dir>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
@@ -146,21 +142,6 @@ holder.
                             </descriptors>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>make-assembly-src</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <skipAssembly>${skipSources}</skipAssembly>
-                            <finalName>jaxb-ri-src</finalName>
-                            <appendAssemblyId>false</appendAssemblyId>
-                            <descriptors>
-                                <descriptor>src/main/assembly/assembly-src.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -181,53 +162,6 @@ holder.
                                     <version>${project.version}</version>
                                     <type>zip</type>
                                     <outputDirectory>${project.build.directory}/stage</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                    <execution> <!-- want to unpack sources from individual modules -->
-                        <id>unpack-sources</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <skip>${skipSources}</skip>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>com.sun.xml.bind</groupId>
-                                    <artifactId>jaxb-core</artifactId>
-                                    <classifier>sources</classifier>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.sun.xml.bind</groupId>
-                                    <artifactId>jaxb-xjc</artifactId>
-                                    <classifier>sources</classifier>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.sun.xml.bind</groupId>
-                                    <artifactId>jaxb-impl</artifactId>
-                                    <classifier>sources</classifier>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.sun.xml.bind</groupId>
-                                    <artifactId>jaxb-jxc</artifactId>
-                                    <classifier>sources</classifier>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>javax.xml.bind</groupId>
-                                    <artifactId>jaxb-api</artifactId>
-                                    <classifier>sources</classifier>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
