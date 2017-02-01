@@ -99,7 +99,9 @@ holder.
                         <configuration>
                             <compilerArgs>
                                 <arg>--add-modules</arg>
-                                <arg>java.xml</arg>
+                                <arg>java.xml.bind</arg>
+                                <arg>--upgrade-module-path</arg>
+                                <arg>${endorsed.dir}</arg>
                             </compilerArgs>
                         </configuration>
                     </execution>
@@ -118,6 +120,10 @@ holder.
                     <dependenciesToScan>
                         <dependency>${project.groupId}:jaxb-xjc</dependency>
                     </dependenciesToScan>
+                    <argLine>
+                        --add-modules java.xml.bind
+                        --upgrade-module-path ${endorsed.dir}
+                    </argLine>
                 </configuration>
             </plugin>
         </plugins>

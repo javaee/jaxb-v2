@@ -215,7 +215,9 @@ holder.
                                 <configuration>
                                     <compilerArgs>
                                         <arg>--add-modules</arg>
-                                        <arg>java.activation</arg>
+                                        <arg>java.xml.bind</arg>
+                                        <arg>--upgrade-module-path</arg>
+                                        <arg>${endorsed.dir}</arg>
                                     </compilerArgs>
                                 </configuration>
                             </execution>

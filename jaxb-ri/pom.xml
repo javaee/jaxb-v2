@@ -288,21 +288,6 @@ holder.
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>3.0.0</version>
-                    <executions>
-                        <execution>
-                            <id>prepare-endorsed</id>
-                            <phase>validate</phase>
-                            <goals>
-                                <goal>copy-dependencies</goal>
-                            </goals>
-                            <configuration>
-                                <skip>${maven.endorsed.skip}</skip>
-                                <outputDirectory>${endorsed.dir}</outputDirectory>
-                                <silent>false</silent>
-                                <includeArtifactIds>jaxb-api</includeArtifactIds>
-                            </configuration>
-                        </execution>
-                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -523,6 +508,25 @@ holder.
         </pluginManagement>
 
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>prepare-endorsed</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${maven.endorsed.skip}</skip>
+                            <outputDirectory>${endorsed.dir}</outputDirectory>
+                            <silent>false</silent>
+                            <includeArtifactIds>jaxb-api</includeArtifactIds>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>

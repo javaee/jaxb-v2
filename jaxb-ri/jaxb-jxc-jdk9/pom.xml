@@ -66,5 +66,26 @@ holder.
         <netbeans.hint.jdkPlatform>JDK_9</netbeans.hint.jdkPlatform>
     </properties>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <configuration>
+                            <compilerArgs>
+                                <arg>--add-modules</arg>
+                                <arg>java.xml.bind</arg>
+                                <arg>--upgrade-module-path</arg>
+                                <arg>${endorsed.dir}</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
 
