@@ -258,21 +258,6 @@ holder.
                             </sources>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>add-manifest</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>add-resource</goal>
-                        </goals>
-                        <configuration>
-                            <resources>
-                                <resource>
-                                    <directory>${project.basedir}/target/classes/META-INF</directory>
-                                    <targetPath>META-INF</targetPath>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
 
