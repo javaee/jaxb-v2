@@ -54,6 +54,7 @@ holder.
     <groupId>org.glassfish.jaxb</groupId>
     <artifactId>jaxb-xjc-jdk9</artifactId>
     <packaging>jar</packaging>
+    <name>JAXB XJC (jdk9)</name>
 
     <dependencies>
         <dependency>
@@ -124,6 +125,13 @@ holder.
                         --add-modules java.xml.bind
                         --upgrade-module-path ${endorsed.dir}
                     </argLine>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <show>package</show>
                 </configuration>
             </plugin>
         </plugins>

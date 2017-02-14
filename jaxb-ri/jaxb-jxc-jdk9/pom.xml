@@ -54,6 +54,7 @@ holder.
     <groupId>org.glassfish.jaxb</groupId>
     <artifactId>jaxb-jxc-jdk9</artifactId>
     <packaging>jar</packaging>
+    <name>JAXB JXC (jdk9)</name>
 
     <dependencies>
         <dependency>
