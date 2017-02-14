@@ -114,21 +114,128 @@ holder.
             </plugin>
 
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
+                <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
-                    <appendAssemblyId>false</appendAssemblyId>
-                    <descriptors>
-                        <descriptor>src/main/assembly/assembly.xml</descriptor>
-                    </descriptors>
-                    <finalName>classes</finalName>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
                 </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <configuration>
+                    <skip>${findbugs.skip}</skip>
+                    <threshold>${findbugs.threshold}</threshold>
+                    <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+                    <!-- Use all excludes used for rebundled artifacts --> 
+                    <excludeFilterFile>
+                        exclude-common.xml,
+                        ${project.basedir}/exclude.xml,
+                        ${project.basedir}/../../../runtime/impl/exclude-runtime.xml,
+                        ${project.basedir}/../../../jxc/exclude-jxc.xml
+                    </excludeFilterFile>
+                    <fork>true</fork>
+                    <jvmArgs>-Xms64m -Xmx256m</jvmArgs>
+                </configuration>
+            </plugin>
+
+            <!--    Can be used to build everything from sources
+                  <plugin>
+                      <groupId>org.glassfish.build</groupId>
+                      <artifactId>glassfishbuild-maven-plugin</artifactId>
+                      <executions>
+                          <execution>
+                              <id>unpack-sources</id>
+                              <phase>process-resources</phase>
+                              <goals>
+                                  <goal>unpack-sources</goal>
+                              </goals>
+                              <configuration>
+                                  <attachSources>true</attachSources>
+                                  <excludes>*.java</excludes>
+                                  <excludeTransitive>true</excludeTransitive>
+                              </configuration>
+                          </execution>
+                      </executions>
+                  </plugin>
+            -->
+
+            <plugin> <!-- want to unpack sources from individual modules -->
+                <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>make-assembly</id>
+                        <id>get-binary-dependencies</id>
                         <phase>prepare-package</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>unpack-dependencies</goal>
                         </goals>
+                <configuration>
+                    <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                    <includeArtifactIds>jaxb-core,jaxb-impl,jaxb1-impl,jaxb-jxc,jaxb-xjc</includeArtifactIds>
+                </configuration>
+                    </execution>
+                <execution>
+                        <id>unpack-sources</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${skipSources}</skip>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.sun.xml.bind</groupId>
+                                    <artifactId>jaxb-core</artifactId>
+                                    <classifier>sources</classifier>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.sun.xml.bind</groupId>
+                                    <artifactId>jaxb-xjc</artifactId>
+                                    <classifier>sources</classifier>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.sun.xml.bind</groupId>
+                                    <artifactId>jaxb-impl</artifactId>
+                                    <classifier>sources</classifier>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.sun.xml.bind</groupId>
+                                    <artifactId>jaxb-jxc</artifactId>
+                                    <classifier>sources</classifier>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.sun.xml.bind</groupId>
+                                    <artifactId>jaxb1-impl</artifactId>
+                                    <classifier>sources</classifier>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jvnet.staxex</groupId>
+                                    <artifactId>stax-ex</artifactId>
+                                    <classifier>sources</classifier>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.sun.xml.fastinfoset</groupId>
+                                    <artifactId>FastInfoset</artifactId>
+                                    <classifier>sources</classifier>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -228,122 +335,6 @@ holder.
             </plugin>
 
             <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-                    </archive>
-                </configuration>
-            </plugin>
-            
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>findbugs-maven-plugin</artifactId>
-                <configuration>
-                    <skip>${findbugs.skip}</skip>
-                    <threshold>${findbugs.threshold}</threshold>
-                    <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
-                    <!-- Use all excludes used for rebundled artifacts --> 
-                    <excludeFilterFile>
-                        exclude-common.xml,
-                        ${project.basedir}/exclude.xml,
-                        ${project.basedir}/../../../runtime/impl/exclude-runtime.xml,
-                        ${project.basedir}/../../../jxc/exclude-jxc.xml
-                    </excludeFilterFile>
-                    <fork>true</fork>
-                    <jvmArgs>-Xms64m -Xmx256m</jvmArgs>
-                </configuration>
-            </plugin>
-
-            <!--    Can be used to build everything from sources
-                  <plugin>
-                      <groupId>org.glassfish.build</groupId>
-                      <artifactId>glassfishbuild-maven-plugin</artifactId>
-                      <executions>
-                          <execution>
-                              <id>unpack-sources</id>
-                              <phase>process-resources</phase>
-                              <goals>
-                                  <goal>unpack-sources</goal>
-                              </goals>
-                              <configuration>
-                                  <attachSources>true</attachSources>
-                                  <excludes>*.java</excludes>
-                                  <excludeTransitive>true</excludeTransitive>
-                              </configuration>
-                          </execution>
-                      </executions>
-                  </plugin>
-            -->
-
-            <plugin> <!-- want to unpack sources from individual modules -->
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>unpack-sources</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <skip>${skipSources}</skip>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>com.sun.xml.bind</groupId>
-                                    <artifactId>jaxb-core</artifactId>
-                                    <classifier>sources</classifier>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.sun.xml.bind</groupId>
-                                    <artifactId>jaxb-xjc</artifactId>
-                                    <classifier>sources</classifier>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.sun.xml.bind</groupId>
-                                    <artifactId>jaxb-impl</artifactId>
-                                    <classifier>sources</classifier>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.sun.xml.bind</groupId>
-                                    <artifactId>jaxb-jxc</artifactId>
-                                    <classifier>sources</classifier>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.sun.xml.bind</groupId>
-                                    <artifactId>jaxb1-impl</artifactId>
-                                    <classifier>sources</classifier>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.jvnet.staxex</groupId>
-                                    <artifactId>stax-ex</artifactId>
-                                    <classifier>sources</classifier>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.sun.xml.fastinfoset</groupId>
-                                    <artifactId>FastInfoset</artifactId>
-                                    <classifier>sources</classifier>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <executions>
@@ -400,6 +391,7 @@ holder.
                                         <Specification-Version>${jaxb-api.majorVersion}.${jaxb-api.minorVersion}</Specification-Version>
                                         <Git-Revision>${buildNumber}</Git-Revision>
                                         <Class-Path>jaxb-api.jar jaxb-extra-osgi.jar</Class-Path>
+                                        <Multi-Release>true</Multi-Release>
                                     </manifestEntries>
                                 </transformer>
                             </transformers>
