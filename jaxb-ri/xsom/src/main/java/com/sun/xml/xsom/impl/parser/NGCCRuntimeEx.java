@@ -255,6 +255,7 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
 
     /**
      * Includes the specified schema.
+     *
      * @param schemaLocation
      * @throws org.xml.sax.SAXException */
     public void includeSchema( String schemaLocation ) throws SAXException {
@@ -276,6 +277,7 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
 
     /**
      * Imports the specified schema.
+     *
      * @param ns
      * @param schemaLocation
      * @throws org.xml.sax.SAXException */
@@ -389,7 +391,8 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
 
     /**
      * Creates a new instance of annotation parser.
-     * @return
+     *
+     * @return Annotation parser
      */
     public AnnotationParser createAnnotationParser() {
         if(parser.getAnnotationParserFactory()==null)
@@ -400,14 +403,18 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
 
     /**
      * Gets the element name that contains the annotation element.This method works correctly only when called by the annotation handler.
-     * @return
+     *
+     * @return Element name
      */
     public String getAnnotationContextElementName() {
         return elementNames.get( elementNames.size()-2 );
     }
 
-    /** Creates a copy of the current locator object.
-     * @return  */
+    /**
+     * Creates a copy of the current locator object.
+     *
+     * @return Locator copy
+     */
     public Locator copyLocator() {
         return new LocatorImpl(getLocator());
     }
@@ -469,7 +476,9 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
     private Context currentContext=null;
 
     /** Returns an immutable snapshot of the current context.
-     * @return  */
+     *
+     * @return Snapshot of current context
+     */
     public ValidationContext createValidationContext() {
         return currentContext;
     }
