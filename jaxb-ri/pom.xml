@@ -407,7 +407,7 @@ holder.
                 <plugin>
                     <groupId>org.glassfish.copyright</groupId>
                     <artifactId>glassfish-copyright-maven-plugin</artifactId>
-                    <version>1.29</version>
+                    <version>1.40</version>
                     <configuration>
                         <templateFile>src/main/resources/copyright.txt</templateFile>
                         <!--todo: fix me-->
