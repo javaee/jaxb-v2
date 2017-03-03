@@ -40,90 +40,11 @@
 
 package com.sun.tools.jxc;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.processing.Processor;
-import com.sun.tools.jxc.ap.SchemaGenerator;
-
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.types.Commandline;
-
-
 /**
  * Ant task to invoke the schema generator.
  *
  * @author Kohsuke Kawaguchi
  */
-public class SchemaGenTask extends ApBasedTask {
-    private final List<Schema>/*<Schema>*/ schemas = new ArrayList<Schema>();
+public class SchemaGenTask extends SchemaGenBase {
 
-    private File episode;
-
-    protected void setupCommandlineSwitches(Commandline cmd) {
-        cmd.createArgument().setValue("-proc:only");
-    }
-
-    protected String getCompilationMessage() {
-        return "Generating schema from ";
-    }
-
-    protected String getFailedMessage() {
-        return "schema generation failed";
-    }
-
-    public Schema createSchema() {
-        Schema s = new Schema();
-        schemas.add(s);
-        return s;
-    }
-
-    /**
-     * Sets the episode file to be generated.
-     * Null to not to generate one, which is the default behavior.
-     */
-    public void setEpisode(File f) {
-        this.episode = f;
-    }
-
-    protected Processor getProcessor() {
-        Map<String, File> m = new HashMap<String, File>();
-        for (Schema schema : schemas) {
-
-            if (m.containsKey(schema.namespace)) {
-                throw new BuildException("the same namespace is specified twice");
-            }
-            m.put(schema.namespace, schema.file);
-
-        }
-
-        SchemaGenerator r = new SchemaGenerator(m);
-        if(episode!=null)
-            r.setEpisodeFile(episode);
-        return r;
-    }
-
-
-    /**
-     * Nested schema element to specify the {@code namespace -> file name} mapping.
-     */
-    public class Schema {
-        private String namespace;
-        private File file;
-
-        public void setNamespace(String namespace) {
-            this.namespace = namespace;
-        }
-
-        public void setFile(String fileName) {
-            // resolve the file name relative to the @dest, or otherwise the project base dir.
-            File dest = getDestdir();
-            if(dest==null)
-                dest = getProject().getBaseDir();
-            this.file = new File(dest,fileName);
-        }
-    }
 }
