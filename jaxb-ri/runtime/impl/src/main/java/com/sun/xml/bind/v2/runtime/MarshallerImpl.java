@@ -451,6 +451,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         if(encoding.equals("UTF-8")) {
             Encoded[] table = context.getUTF8NameTable();
             final UTF8XmlOutput out;
+            CharacterEscapeHandler escapeHandler = createEscapeHandler(encoding);
             if(isFormattedOutput())
                 out = new IndentingUTF8XmlOutput(os, indent, table, escapeHandler);
             else {
