@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -50,7 +50,6 @@ import org.apache.tools.ant.types.Path;
  * @author Yan Gao
  */
 public class SchemaGenTask extends SchemaGenBase {
-  String PARAM_SEPARATOR = " ";
 
   @Override
   protected void setupForkCommand(String className) {
@@ -73,28 +72,28 @@ public class SchemaGenTask extends SchemaGenBase {
       getCommandline().createModulepath(getProject()).add(getModulepath());
     }
     if (getModulesourcepath() != null && getModulesourcepath().size() > 0) {
-      getCommandline().createVmArgument().setLine("--module-source-path" + PARAM_SEPARATOR + getModulesourcepath().toString());
+      getCommandline().createVmArgument().setLine("--module-source-path " + getModulesourcepath().toString());
     }
     if (getUpgrademodulepath() != null && getUpgrademodulepath().size() > 0) {
       getCommandline().createUpgrademodulepath(getProject()).add(getUpgrademodulepath());
     }
     if (getAddmodules() != null && getAddmodules().length() > 0) {
-      getCommandline().createVmArgument().setLine("--add-modules" + PARAM_SEPARATOR + getAddmodules());
+      getCommandline().createVmArgument().setLine("--add-modules " + getAddmodules());
     }
     if (getAddreads() != null && getAddreads().length() > 0) {
-      getCommandline().createVmArgument().setLine("--add-reads" + PARAM_SEPARATOR + getAddreads());
+      getCommandline().createVmArgument().setLine("--add-reads " + getAddreads());
     }
     if (getAddexports() != null && getAddexports().length() > 0) {
-      getCommandline().createVmArgument().setLine("--add-exports" + PARAM_SEPARATOR + getAddexports());
+      getCommandline().createVmArgument().setLine("--add-exports " + getAddexports());
     }
     if (getAddopens() != null && getAddopens().length() > 0) {
-      getCommandline().createVmArgument().setLine("--add-opens" + PARAM_SEPARATOR + getAddopens());
+      getCommandline().createVmArgument().setLine("--add-opens " + getAddopens());
     }
     if (getPatchmodule() != null && getPatchmodule().length() > 0) {
-      getCommandline().createVmArgument().setLine("--patch-module" + PARAM_SEPARATOR + getPatchmodule());
+      getCommandline().createVmArgument().setLine("--patch-module " + getPatchmodule());
     }
     if (getLimitmodules() != null && getLimitmodules().length() > 0) {
-      getCommandline().createVmArgument().setLine("--limit-modules" + PARAM_SEPARATOR + getLimitmodules());
+      getCommandline().createVmArgument().setLine("--limit-modules " + getLimitmodules());
     }
 
     getCommandline().setClassname(className);

@@ -189,7 +189,7 @@ public class OptionsJUTest extends TestCase {
         }
     }
 
-    private static void delDirs(File... dirs) {
+    public static void delDirs(File... dirs) {
         for (File dir : dirs) {
             if (!dir.exists()) {
                 continue;
