@@ -81,10 +81,6 @@ public class XJC2Task extends XJCBase {
     if (getUpgrademodulepath() != null && getUpgrademodulepath().size() > 0) {
       getCommandline().createUpgrademodulepath(getProject()).add(getUpgrademodulepath());
     }
-//    if (getModulesourcepath() != null && getModulesourcepath().length() > 0) {
-//      getCommandline().createVmArgument().setLine("--module-source-path " +
-//          getModulesourcepath());
-//    }
     if (getAddmodules() != null && getAddmodules().length() > 0) {
       getCommandline().createVmArgument().setLine("--add-modules " + getAddmodules());
     }

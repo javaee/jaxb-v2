@@ -46,7 +46,7 @@ import java.io.IOException;
 
 /**
  * @author Yan GAO.
- *         Copyright (c) 2017, @COPYRIGHT_CURRENTYEAR, Oracle and/or its affiliates.
+ *         Copyright (c) 2017 Oracle and/or its affiliates.
  *         All rights reserved.
  */
 public class SchemaTaskTest extends SchemaAntTaskTestBase {

@@ -72,7 +72,7 @@ import org.xml.sax.SAXParseException;
 
 /**
  * @author Yan GAO.
- *         Copyright (c) 2017, @COPYRIGHT_CURRENTYEAR, Oracle and/or its affiliates.
+ *         Copyright (c) 2017 Oracle and/or its affiliates.
  *         All rights reserved.
  */
 public class XJCBase extends MatchingTask {
@@ -89,13 +89,6 @@ public class XJCBase extends MatchingTask {
   public Path getModulepath() {
     return this.modulepath;
   }
-//  private String modulesourcepath = null;
-//  public void setModulesourcepath(String msp) {
-//    this.modulesourcepath = msp;
-//  }
-//  public String getModulesourcepath() {
-//    return this.modulesourcepath;
-//  }
   private Path upgrademodulepath = null;
   public void setUpgrademodulepath(Path ump) {
     this.upgrademodulepath = ump;
