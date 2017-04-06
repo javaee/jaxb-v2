@@ -278,11 +278,11 @@ holder.
                                 </Export-Package>
                                 <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                                 <Import-Package>
-                                    javax.xml.bind;version=${jaxb-api.version},
-                                    javax.xml.bind.annotation;version=${jaxb-api.version},
-                                    javax.xml.bind.annotation.adapters;version=${jaxb-api.version},
-                                    javax.xml.bind.attachment;version=${jaxb-api.version},
-                                    javax.xml.bind.helpers;version=${jaxb-api.version},
+                                    javax.xml.bind;version=${jaxb-api-osgi.version},
+                                    javax.xml.bind.annotation;version=${jaxb-api-osgi.version},
+                                    javax.xml.bind.annotation.adapters;version=${jaxb-api-osgi.version},
+                                    javax.xml.bind.attachment;version=${jaxb-api-osgi.version},
+                                    javax.xml.bind.helpers;version=${jaxb-api-osgi.version},
                                     javax.activation,
                                     javax.annotation.processing,
                                     javax.imageio,
