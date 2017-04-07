@@ -46,22 +46,26 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 
+/**
+ *
+ * @author Yan GAO (gaoyan.gao@oracle.com)
+ */
 @XmlRootElement
 @XmlType(name="TrackingOrderType")
 public class MyTrackingOrder {
-  String trackingDuration;
+    String trackingDuration;
   
-  @XmlSchemaType(name="date")
-  XMLGregorianCalendar shipDate;
-  @XmlElement XMLGregorianCalendar orderDate;
-  @XmlElement XMLGregorianCalendar deliveryDate;
+    @XmlSchemaType(name="date")
+    XMLGregorianCalendar shipDate;
+    @XmlElement XMLGregorianCalendar orderDate;
+    @XmlElement XMLGregorianCalendar deliveryDate;
     
-  @XmlSchemaType(name="duration")
-  public String getTrackingDuration(){
-    return trackingDuration;
-  }
-  public void setTrackingDuration( String d){
-    trackingDuration = d;
-  }
+    @XmlSchemaType(name="duration")
+    public String getTrackingDuration(){
+        return trackingDuration;
+    }
+    public void setTrackingDuration( String d){
+        trackingDuration = d;
+    }
 }
 

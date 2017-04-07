@@ -44,6 +44,7 @@ import junit.framework.TestCase;
 import java.io.*;
 
 /**
+ *
  * @author Yan GAO.
  *         Copyright (c) 2017 Oracle and/or its affiliates.
  *         All rights reserved.
@@ -63,7 +64,6 @@ public abstract class XjcAntTaskTestBase extends TestCase {
     projectDir = new File(System.getProperty("java.io.tmpdir"), getClass().getSimpleName() + "-" + getName());
     if (projectDir.exists() && projectDir.isDirectory()) {
       OptionsJUTest.delDirs(projectDir);
-      projectDir = new File(System.getProperty("java.io.tmpdir"), getClass().getSimpleName() + "-" + getName());
     }
     srcDir = new File(projectDir, "src");
     buildDir = new File(projectDir, "build");

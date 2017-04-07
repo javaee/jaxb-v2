@@ -47,8 +47,7 @@ import org.apache.tools.ant.BuildException;
  *
  * See the accompanied document for the usage.
  *
- * @author
- *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
+ * @author Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 public class XJC2Task extends XJCBase {
     @Override

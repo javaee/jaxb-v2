@@ -45,40 +45,39 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
- * @author Yan GAO.
- *         Copyright (c) 2017 Oracle and/or its affiliates.
- *         All rights reserved.
+ * @author Yan GAO (gaoyan.gao@oracle.com)
  */
 public class SchemaTaskTest extends SchemaAntTaskTestBase {
 
-  private File pkg;
-  private File metainf;
+    private File pkg;
+    private File metainf;
 
-  @Override
-  public String getBuildScript() {
-    return "schemagen.xml";
-  }
+    @Override
+    public String getBuildScript() {
+        return "schemagen.xml";
+    }
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-    pkg = new File(srcDir, "test");
-    metainf = new File(buildDir, "META-INF");
-    assertTrue(pkg.mkdirs());
-    assertTrue(metainf.mkdirs());
-  }
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        pkg = new File(srcDir, "test");
+        metainf = new File(buildDir, "META-INF");
+        assertTrue(pkg.mkdirs());
+        assertTrue(metainf.mkdirs());
+    }
 
-  @Override
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-  public void testFork() throws FileNotFoundException, IOException {
-    copy(pkg,  "MyTrackingOrder.java", SchemaTaskTest.class.getResourceAsStream("resources/MyTrackingOrder.java_"));
-    assertEquals(0, AntExecutor.exec(script, "schemagen-fork"));
-  }
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
 
-  public void testAddmodules() throws IOException {
-    copy(pkg,  "MyTrackingOrder.java", SchemaTaskTest.class.getResourceAsStream("resources/MyTrackingOrder.java_"));
-    assertEquals(0, AntExecutor.exec(script, "schemagen-addmodules"));
-  }
+    public void testFork() throws FileNotFoundException, IOException {
+        copy(pkg, "MyTrackingOrder.java", SchemaTaskTest.class.getResourceAsStream("resources/MyTrackingOrder.java_"));
+        assertEquals(0, AntExecutor.exec(script, "schemagen-fork"));
+    }
+
+    public void testAddmodules() throws IOException {
+        copy(pkg, "MyTrackingOrder.java", SchemaTaskTest.class.getResourceAsStream("resources/MyTrackingOrder.java_"));
+        assertEquals(0, AntExecutor.exec(script, "schemagen-addmodules"));
+    }
 }

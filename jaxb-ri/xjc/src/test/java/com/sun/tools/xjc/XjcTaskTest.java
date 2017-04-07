@@ -45,42 +45,41 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
- * @author Yan GAO.
- *         Copyright (c) 2017 Oracle and/or its affiliates.
- *         All rights reserved.
+ * @author Yan GAO (gaoyan.gao@oracle.com)
  */
 public class XjcTaskTest extends XjcAntTaskTestBase {
-  private File schema;
-  private File pkg;
-  private File metainf;
+    private File schema;
+    private File pkg;
+    private File metainf;
 
-  @Override
-  public String getBuildScript() {
-    return "xjc.xml";
-  }
-
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-    pkg = new File(srcDir, "test");
-    metainf = new File(buildDir, "META-INF");
-    schema = copy(projectDir, "simple.xsd", XjcTaskTest.class.getResourceAsStream("resources/simple.xsd"));
-    assertTrue(pkg.mkdirs());
-    assertTrue(metainf.mkdirs());
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    if (tryDelete) {
-      schema.delete();
+    @Override
+    public String getBuildScript() {
+        return "xjc.xml";
     }
-    super.tearDown();
-  }
-  public void testFork() throws FileNotFoundException, IOException {
-    assertEquals(0, AntExecutor.exec(script, "xjc-fork"));
-  }
 
-  public void testAddmodules() throws IOException {
-    assertEquals(0, AntExecutor.exec(script, "xjc-addmodules"));
-  }
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        pkg = new File(srcDir, "test");
+        metainf = new File(buildDir, "META-INF");
+        schema = copy(projectDir, "simple.xsd", XjcTaskTest.class.getResourceAsStream("resources/simple.xsd"));
+        assertTrue(pkg.mkdirs());
+        assertTrue(metainf.mkdirs());
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        if (tryDelete) {
+            schema.delete();
+        }
+        super.tearDown();
+    }
+
+    public void testFork() throws FileNotFoundException, IOException {
+        assertEquals(0, AntExecutor.exec(script, "xjc-fork"));
+    }
+
+    public void testAddmodules() throws IOException {
+        assertEquals(0, AntExecutor.exec(script, "xjc-addmodules"));
+    }
 }

@@ -79,6 +79,10 @@ holder.
             <artifactId>jaxb-runtime</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.sun.istack</groupId>
+            <artifactId>istack-commons-runtime</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.jmockit</groupId>
             <artifactId>jmockit</artifactId>
             <scope>test</scope>
@@ -87,6 +91,11 @@ holder.
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>txw2</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency><!-- Ant is provided through transitive dependency from XJC. But to be consistent we have it also here -->
             <groupId>org.apache.ant</groupId>
@@ -137,18 +146,28 @@ holder.
                             <excludeTransitive>true</excludeTransitive>
                             <artifactItems>
                                 <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>jaxb-xjc</artifactId>
+                                    <type>jar</type>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>jaxb-core</artifactId>
+                                    <type>jar</type>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>txw2</artifactId>
+                                    <type>jar</type>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>jaxb-runtime</artifactId>
+                                    <type>jar</type>
+                                </artifactItem>
+                                <artifactItem>
                                     <groupId>com.sun.istack</groupId>
-                                    <artifactId>istack-commons-tools</artifactId>
-                                    <type>jar</type>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>javax.xml.bind</groupId>
-                                    <artifactId>jaxb-api</artifactId>
-                                    <type>jar</type>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.sun.xml.bind</groupId>
-                                    <artifactId>jaxb-osgi</artifactId>
+                                    <artifactId>istack-commons-runtime</artifactId>
                                     <type>jar</type>
                                 </artifactItem>
                             </artifactItems>
