@@ -93,10 +93,6 @@ holder.
             <artifactId>rngom</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.sun.xml.dtd-parser</groupId>
-            <artifactId>dtd-parser</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.sun.istack</groupId>
             <artifactId>istack-commons-tools</artifactId>
         </dependency>
@@ -110,18 +106,8 @@ holder.
             <version>20020414</version>
         </dependency>
         <dependency>
-            <groupId>args4j</groupId>
-            <artifactId>args4j</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.apache.ant</groupId>
             <artifactId>ant</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.org.apache.xml.internal</groupId>
-            <artifactId>resolver</artifactId>
             <scope>provided</scope>
         </dependency>
     </dependencies>
