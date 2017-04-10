@@ -61,6 +61,7 @@
 
     <properties>
         <jaxb-api.version>2.3.0-b170330.1426</jaxb-api.version>
+        <jaxb-api-osgi.version>2.3</jaxb-api-osgi.version>
         <istack.version>3.0.5</istack.version>
         <fastinfoset.version>1.2.13</fastinfoset.version>
         <stax-ex.version>1.7.8</stax-ex.version>
