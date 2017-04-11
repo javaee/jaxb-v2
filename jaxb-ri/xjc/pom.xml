@@ -106,6 +106,15 @@ holder.
             <artifactId>istack-commons-tools</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.sun.istack</groupId>
+            <artifactId>istack-commons-runtime</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>relaxngDatatype</groupId>
+            <artifactId>relaxngDatatype</artifactId>
+            <version>20020414</version>
+        </dependency>
+        <dependency>
             <groupId>args4j</groupId>
             <artifactId>args4j</artifactId>
             <scope>test</scope>
@@ -134,6 +143,84 @@ holder.
             </resource>
         </resources>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-ant</id>
+                        <phase>process-test-sources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib/ant</outputDirectory>
+                            <includeArtifactIds>ant,ant-launcher,ant-nodeps,cobertura</includeArtifactIds>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-lib</id>
+                        <phase>process-test-sources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib/</outputDirectory>
+                            <excludeTransitive>true</excludeTransitive>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.sun.istack</groupId>
+                                    <artifactId>istack-commons-tools</artifactId>
+                                    <type>jar</type>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>jaxb-core</artifactId>
+                                    <type>jar</type>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>codemodel</artifactId>
+                                    <type>jar</type>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.sun.istack</groupId>
+                                    <artifactId>istack-commons-runtime</artifactId>
+                                    <type>jar</type>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>xsom</artifactId>
+                                    <type>jar</type>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>relaxngDatatype</groupId>
+                                    <artifactId>relaxngDatatype</artifactId>
+                                    <type>jar</type>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>com.sun.xml.bind.external</groupId>
+                                    <artifactId>rngom</artifactId>
+                                    <type>jar</type>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <java.io.tmpdir>${project.build.directory}/test-antprojects</java.io.tmpdir>
+                        <bin.folder>${project.build.directory}</bin.folder>
+                        <jaxb-api.version>${jaxb-api.version}</jaxb-api.version>
+                    </systemPropertyVariables>
+                    <forkCount>1</forkCount>
+                    <reuseForks>false</reuseForks>
+                </configuration>
+            </plugin>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <executions>

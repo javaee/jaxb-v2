@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2017 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -38,53 +38,48 @@
  * holder.
  */
 
-package com.sun.tools.xjc.api;
+package com.sun.tools.xjc;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
- * Represents the spec version constant.
- *
- * @author Kohsuke Kawaguchi
+ * @author Yan GAO (gaoyan.gao@oracle.com)
  */
-public enum SpecVersion {
-    V2_0, V2_1, V2_2;
+public class XjcTaskTest extends XjcAntTaskTestBase {
+    private File schema;
+    private File pkg;
+    private File metainf;
 
-    /**
-     * Returns true if this version is equal or later than the given one.
-     */
-    public boolean isLaterThan(SpecVersion t) {
-        return this.ordinal()>=t.ordinal();
+    @Override
+    public String getBuildScript() {
+        return "xjc.xml";
     }
 
-    /**
-     * Parses "2.0", "2.1", and "2.2" into the {@link SpecVersion} object.
-     *
-     * @return null for parsing failure.
-     */
-    public static SpecVersion parse(String token) {
-        if(token.equals("2.0"))
-            return V2_0;
-        if(token.equals("2.1"))
-            return V2_1;
-        if(token.equals("2.2"))
-            return V2_2;
-        return null;
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        pkg = new File(srcDir, "test");
+        metainf = new File(buildDir, "META-INF");
+        schema = copy(projectDir, "simple.xsd", XjcTaskTest.class.getResourceAsStream("resources/simple.xsd"));
+        assertTrue(pkg.mkdirs());
+        assertTrue(metainf.mkdirs());
     }
 
-    /**
-     * Gives the String representation of the {@link SpecVersion}
-     */
-    public String getVersion(){
-        switch(this){
-            case V2_0:
-                return "2.0";
-            case V2_1:
-                return "2.1";
-            case V2_2:
-                return "2.2";
-            default:
-                return null;
+    @Override
+    protected void tearDown() throws Exception {
+        if (tryDelete) {
+            schema.delete();
         }
+        super.tearDown();
     }
 
-    public static final SpecVersion LATEST = V2_2;
+    public void testFork() throws FileNotFoundException, IOException {
+        assertEquals(0, AntExecutor.exec(script, "xjc-fork"));
+    }
+
+    public void testAddmodules() throws IOException {
+        assertEquals(0, AntExecutor.exec(script, "xjc-addmodules"));
+    }
 }
