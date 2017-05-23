@@ -40,21 +40,22 @@
 
 package com.sun.xml.bind.v2.runtime.output;
 
+import com.sun.xml.bind.marshaller.NoEscapeHandler;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.Name;
 import com.sun.xml.bind.v2.runtime.XMLSerializer;
-import javax.xml.stream.XMLStreamException;
-
 import com.sun.xml.bind.v2.runtime.unmarshaller.Base64Data;
 import com.sun.xml.fastinfoset.EncodingConstants;
 import com.sun.xml.fastinfoset.stax.StAXDocumentSerializer;
+import org.jvnet.fastinfoset.VocabularyApplicationData;
+import org.xml.sax.SAXException;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.WeakHashMap;
-import javax.xml.bind.JAXBContext;
-import org.jvnet.fastinfoset.VocabularyApplicationData;
-import org.xml.sax.SAXException;
 
 /**
  * {@link XmlOutput} for {@link StAXDocumentSerializer}.
@@ -235,7 +236,7 @@ public final class FastInfosetStreamWriterOutput extends XMLStreamWriterOutput {
     
     public FastInfosetStreamWriterOutput(StAXDocumentSerializer out,
             JAXBContextImpl context) {
-        super(out);
+        super(out, NoEscapeHandler.theInstance);
         
         this.fiout = out;
         this.localNames = context.getUTF8NameTable();

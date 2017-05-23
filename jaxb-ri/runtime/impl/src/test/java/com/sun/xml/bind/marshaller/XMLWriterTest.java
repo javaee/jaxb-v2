@@ -40,15 +40,14 @@
 
 package com.sun.xml.bind.marshaller;
 
-import java.io.StringReader;
-import java.io.StringWriter;
-
-import javax.xml.parsers.SAXParserFactory;
-
 import junit.framework.TestCase;
 import junit.textui.TestRunner;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.AttributesImpl;
+
+import javax.xml.parsers.SAXParserFactory;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 /**
  * Manual test of XMLWriter.

@@ -180,7 +180,7 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
 
     @Override
     public void marshal(Object obj, XMLStreamWriter writer) throws JAXBException {
-        write(obj, XMLStreamWriterOutput.create(writer,context), new StAXPostInitAction(writer,serializer));
+        write(obj, XMLStreamWriterOutput.create(writer,context, escapeHandler), new StAXPostInitAction(writer,serializer));
     }
 
     @Override
@@ -385,6 +385,15 @@ public /*to make unit tests happy*/ final class MarshallerImpl extends AbstractM
         serializer.reconcileID();   // extra check
     }
 
+
+    /**
+     * Returns escape handler provided with JAXB context parameters.
+     *
+     * @return escape handler
+     */
+    CharacterEscapeHandler getEscapeHandler() {
+        return escapeHandler;
+    }
 
     //
     //
