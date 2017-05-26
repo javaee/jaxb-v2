@@ -265,7 +265,7 @@ public class XMLStreamWriterOutput extends XmlOutputAbstractImpl {
             }
 
             if (lastEscaped != limit) {
-                out.write(ch, lastEscaped, length);
+                out.write(ch, lastEscaped, length - lastEscaped);
             }
         }
     }
