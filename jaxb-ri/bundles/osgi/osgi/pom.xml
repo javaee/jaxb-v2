@@ -93,7 +93,7 @@ holder.
         </dependency>
         <dependency>
             <groupId>com.sun.xml.fastinfoset</groupId>
-            <artifactId>FastInfoSet</artifactId>
+            <artifactId>FastInfoset</artifactId>
             <version>${fastinfoset.version}</version>
             <optional>true</optional>
         </dependency>
