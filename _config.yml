@@ -1,0 +1,17 @@
+theme: jekyll-theme-architect
+
+title: [JAXB]
+description: [Java Architecture for XML Binding]
+
+# sidebar links url
+links:
+  source: https://github.com/javaee/jaxb-v2
+  #download: download
+  mailinglist: https://javaee.groups.io/g/metro
+  #javadocs:
+  userguide: doc/user-guide/index.html
+  
+  #faq:
+  #mailinglist:
+  #hide_issuetracker: true #set explicitly to 'true' if you don't want to have the issue tracker link displayed
+
