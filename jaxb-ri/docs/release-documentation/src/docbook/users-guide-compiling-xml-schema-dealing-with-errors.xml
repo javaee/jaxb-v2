@@ -1,45 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+    DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2012-2017 Oracle and/or its affiliates. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 2 only ("GPL") or the Common Development
-and Distribution License("CDDL") (collectively, the "License").  You
-may not use this file except in compliance with the License.  You can
-obtain a copy of the License at
-http://glassfish.java.net/public/CDDL+GPL_1_1.html
-or packager/legal/LICENSE.txt.  See the License for the specific
-language governing permissions and limitations under the License.
+    The contents of this file are subject to the terms of either the GNU
+    General Public License Version 2 only ("GPL") or the Common Development
+    and Distribution License("CDDL") (collectively, the "License").  You
+    may not use this file except in compliance with the License.  You can
+    obtain a copy of the License at
+    https://oss.oracle.com/licenses/CDDL+GPL-1.1
+    or LICENSE.txt.  See the License for the specific
+    language governing permissions and limitations under the License.
 
-When distributing the software, include this License Header Notice in each
-file and include the License file at packager/legal/LICENSE.txt.
+    When distributing the software, include this License Header Notice in each
+    file and include the License file at LICENSE.txt.
 
-GPL Classpath Exception:
-Oracle designates this particular file as subject to the "Classpath"
-exception as provided by Oracle in the GPL Version 2 section of the License
-file that accompanied this code.
+    GPL Classpath Exception:
+    Oracle designates this particular file as subject to the "Classpath"
+    exception as provided by Oracle in the GPL Version 2 section of the License
+    file that accompanied this code.
 
-Modifications:
-If applicable, add the following below the License Header, with the fields
-enclosed by brackets [] replaced by your own identifying information:
-"Portions Copyright [year] [name of copyright owner]"
+    Modifications:
+    If applicable, add the following below the License Header, with the fields
+    enclosed by brackets [] replaced by your own identifying information:
+    "Portions Copyright [year] [name of copyright owner]"
 
-Contributor(s):
-If you wish your version of this file to be governed by only the CDDL or
-only the GPL Version 2, indicate your decision by adding "[Contributor]
-elects to include this software in this distribution under the [CDDL or GPL
-Version 2] license."  If you don't indicate a single choice of license, a
-recipient has the option to distribute your version of this file under
-either the CDDL, the GPL Version 2 or to extend the choice of license to
-its licensees as provided above.  However, if you add GPL Version 2 code
-and therefore, elected the GPL Version 2 license, then the option applies
-only if the new code is made subject to such option by the copyright
-holder.
+    Contributor(s):
+    If you wish your version of this file to be governed by only the CDDL or
+    only the GPL Version 2, indicate your decision by adding "[Contributor]
+    elects to include this software in this distribution under the [CDDL or GPL
+    Version 2] license."  If you don't indicate a single choice of license, a
+    recipient has the option to distribute your version of this file under
+    either the CDDL, the GPL Version 2 or to extend the choice of license to
+    its licensees as provided above.  However, if you add GPL Version 2 code
+    and therefore, elected the GPL Version 2 license, then the option applies
+    only if the new code is made subject to such option by the copyright
+    holder.
 
-        -->
+-->
+
 <!DOCTYPE book [
 <!ENTITY % ents SYSTEM "docbook.ent">
 %ents;
@@ -157,9 +158,8 @@ file:/C:/kohsuke/Sun/JAXB/jaxb-unit/schemas/individual/MathML2/presentation/scri
 <xs:groupref="Presentation-expr.class"/>]]></programlisting>
         </example>
 
-        <para>Another way to fix this problem is to use <link
-        xlink:href="http://weblogs.java.net/blog/kohsuke/archive/2006/03/simple_and_bett.html">the
-        simpler and better binding mode</link> in XJC, which is a JAXB RI
+        <para>Another way to fix this problem is to use the
+        simpler and better binding mode in XJC, which is a JAXB RI
         vendor extension.</para>
     </section>
 
@@ -181,19 +181,16 @@ file:/C:/kohsuke/Sun/JAXB/jaxb-unit/schemas/individual/MathML2/presentation/scri
         <para>There are two approaches to fix this problem. If the collision
         is coming from two different schemas with different target namespaces,
         then you can easily avoid the collision by compiling them into
-        different Java packages. To do this, use <link
-        xlink:href="http://jaxb.java.net/nonav/2.0/binding-customization/http.java.sun.com.xml.n/element/schemabindings.html"><literal>&lt;schemabindings&gt;</literal></link>
+        different Java packages. To do this, use <literal>&lt;schemabindings&gt;</literal>
         customization on two schemas and specify the package name.</para>
 
-        <para>Another way to fix this problem is to use <link
-        xlink:href="http://jaxb.java.net/nonav/2.0/binding-customization/http.java.sun.com.xml.n/element/factorymethod.html"><literal>&lt;factoryMethod&gt;</literal></link>
+        <para>Another way to fix this problem is to use <literal>&lt;factoryMethod&gt;</literal>
         customization on two conflicting elements/types to specify different
         factory method names. This can be used in all cases, but if you have a
         large number of conflicts, you'll have to specify this customization
         one by one.</para>
 
-        <para>Notice that <link
-        xlink:href="http://jaxb.java.net/nonav/2.0/binding-customization/http.java.sun.com.xml.n/element/class.html"><literal>&lt;class&gt;</literal></link>
+        <para>Notice that <literal>&lt;class&gt;</literal>
         customization doesn't affect the <literal>ObjectFactory</literal> method
         name by itself.</para>
     </section>
