@@ -85,7 +85,7 @@ holder.
             <version>${project.version}</version>
             <optional>true</optional>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>org.jvnet.staxex</groupId>
             <artifactId>stax-ex</artifactId>
             <version>${stax-ex.version}</version>
@@ -96,7 +96,7 @@ holder.
             <artifactId>FastInfoset</artifactId>
             <version>${fastinfoset.version}</version>
             <optional>true</optional>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -275,9 +275,7 @@ holder.
                                     com.sun.xml.dtdparser;version=${dtd-parser.version},
                                     com.sun.xml.dtdparser.*;version=${dtd-parser.version},
                                     com.sun.xml.fastinfoset;version=${fastinfoset.version},
-                                    com.sun.xml.fastinfoset.sax;version=${fastinfoset.version},
-                                    com.sun.xml.fastinfoset.stax;version=${fastinfoset.version},
-                                    com.sun.xml.fastinfoset.vocab;version=${fastinfoset.version},
+                                    com.sun.xml.fastinfoset.*;version=${fastinfoset.version},
                                     com.sun.xml.txw2;version=${jaxb.osgiVersion},
                                     com.sun.xml.txw2.*;version=${jaxb.osgiVersion},
                                     com.sun.xml.xsom;version=${jaxb.osgiVersion},
@@ -383,7 +381,7 @@ holder.
                                     <include>com.sun.xml.bind:jaxb-jxc</include>
                                     <include>com.sun.xml.bind:jaxb1-impl</include>
                                     <include>org.jvnet.staxex:stax-ex</include>
-                                    <include>com.sun.xml.fastinfoset:FastInfoSet</include>
+                                    <include>com.sun.xml.fastinfoset:FastInfoset</include>
                                 </includes>
                                 <excludes>
                                     <exclude>org.glassfish.jaxb:jaxb-runtime</exclude>
