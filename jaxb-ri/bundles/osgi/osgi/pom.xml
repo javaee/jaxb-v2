@@ -85,18 +85,6 @@ holder.
             <version>${project.version}</version>
             <optional>true</optional>
         </dependency>
-<!--        <dependency>
-            <groupId>org.jvnet.staxex</groupId>
-            <artifactId>stax-ex</artifactId>
-            <version>${stax-ex.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.fastinfoset</groupId>
-            <artifactId>FastInfoset</artifactId>
-            <version>${fastinfoset.version}</version>
-            <optional>true</optional>
-        </dependency>-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
