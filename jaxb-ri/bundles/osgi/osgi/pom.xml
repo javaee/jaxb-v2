@@ -86,6 +86,16 @@ holder.
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>org.jvnet.staxex</groupId>
+            <artifactId>stax-ex</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.fastinfoset</groupId>
+            <artifactId>FastInfoset</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
@@ -173,7 +183,7 @@ holder.
                         </goals>
                 <configuration>
                     <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                    <includeArtifactIds>jaxb-core,jaxb-impl,jaxb1-impl,jaxb-jxc,jaxb-xjc</includeArtifactIds>
+                    <includeArtifactIds>jaxb-core,jaxb-impl,jaxb1-impl,jaxb-jxc,jaxb-xjc,stax-ex,FastInfoset</includeArtifactIds>
                 </configuration>
                     </execution>
                 <execution>
