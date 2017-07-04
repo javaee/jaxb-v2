@@ -1,5 +1,46 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML><HEAD>
+<!--
+
+    DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+    Copyright (c) 2017 Oracle and/or its affiliates. All rights reserved.
+
+    The contents of this file are subject to the terms of either the GNU
+    General Public License Version 2 only ("GPL") or the Common Development
+    and Distribution License("CDDL") (collectively, the "License").  You
+    may not use this file except in compliance with the License.  You can
+    obtain a copy of the License at
+    https://oss.oracle.com/licenses/CDDL+GPL-1.1
+    or LICENSE.txt.  See the License for the specific
+    language governing permissions and limitations under the License.
+
+    When distributing the software, include this License Header Notice in each
+    file and include the License file at LICENSE.txt.
+
+    GPL Classpath Exception:
+    Oracle designates this particular file as subject to the "Classpath"
+    exception as provided by Oracle in the GPL Version 2 section of the License
+    file that accompanied this code.
+
+    Modifications:
+    If applicable, add the following below the License Header, with the fields
+    enclosed by brackets [] replaced by your own identifying information:
+    "Portions Copyright [year] [name of copyright owner]"
+
+    Contributor(s):
+    If you wish your version of this file to be governed by only the CDDL or
+    only the GPL Version 2, indicate your decision by adding "[Contributor]
+    elects to include this software in this distribution under the [CDDL or GPL
+    Version 2] license."  If you don't indicate a single choice of license, a
+    recipient has the option to distribute your version of this file under
+    either the CDDL, the GPL Version 2 or to extend the choice of license to
+    its licensees as provided above.  However, if you add GPL Version 2 code
+    and therefore, elected the GPL Version 2 license, then the option applies
+    only if the new code is made subject to such option by the copyright
+    holder.
+
+-->
 
 <STYLE TYPE="text/css">
 body
@@ -1219,66 +1260,126 @@ address
 	 </DL> 
          <P>The formatting specification documentation conventions and summary of work in this area for this package is found in the <a href="fs/index.html">formatting specification index file</a>.</P>
 
-
-<h2>D. 5  &nbsp;Other Document Samples</h2>
-<p>The business transactions represented here focus on Order Management and are intended to be examples of how these documents can be used.  These samples were manually created by business experts and are only meant to show some possible ways to use these documents.  These are not the only way to create UBL compliant documents.   
-<p>There are two sets of examples.  
-<ul>
-	<li> The first example "Buying Office Supplies" goes through the process of ordering items from an office supply and the following transactions.  <br><img src="xml/stationery.gif" alt="">
-	<li> The second example "Buying Joinery", goes through purchasing items in the UK from Specialist Windows, PLC, and the following transactions.<br><img src="xml/joinery.gif" alt="">
-
-</ul>
-
-<h4>Example One Buying Office Supplies</h4>
-<DL>
-	<DT>The buyer, Bill's Microdevices, orders several different items from an office supply store. He knows the supplier's codes for the items and the price.</DT>
-
-<DD><A
-		  HREF="xml/OfficeSupplyOrderInstance.xml">Office Supply Order - XML instance</A>, <a href="xml/OfficeSupplyOrderInstance.pdf">Office Supply Order - printed version</a></DD>
-
-
-<DT>The seller, Joes Office Supply, replies with an Order Response (simple) so as to indicate the acceptance of the order. At the same time, the seller gives his reference number of the order, i.e. the sales order in his system, and also tells the buyer whom to contact if he has any queries.</DT>
-
-<DD><A
-		  HREF="xml/OfficeSupplyOrderRespSimInstance.xml">Office Supply Order Response - XML instance (simple)</A>, <a href="xml/OfficeSupplyOrderRespSimInstance.pdf">Office Supply Order Response - printed version</a></DD>
-
-
-<DT>The seller advises the buyer of the despatch of the items ordered.  The Despatch Advice travels with the delivery; a paper copy is signed and returned as proof of receipt. Hence the UBL Receipt Advice is not used.</DT>
-<DD><A
-		  HREF="xml/OfficeSupplyDespatchAdviceInstance.xml">Office Supply Despatch Advice - XML Instance</A>, <a href="xml/OfficeSupplyDespatchAdviceInstance.pdf">Office Supply Despatch Advice - printed version</a></DD>
-
-
-<DT>The Seller raises the Invoice automatically when the despatch occurs, and the resolution of any shortages etc would be handled post-invoicing. The Invoice show the tax amount The Seller notes that payment is due within 30 days of Invoice.</DT>
-<DD><A
-		  HREF="xml/OfficeSupplyInvoiceInstance.xml">Office Supply Invoice - XML Instance</A>, <a href="xml/OfficeSupplyInvoiceInstance.pdf">Office Supply Invoice - printed version</a></DD>
-
-</DL>
-
-<h4>Example Two Buying Joinery</h4>
-
-<DL>
-	<DT>The buyer, Jerry Builders, PLC. in the UK, orders a number of windows, a door set and some lengths of timber for delivery to a building site. He knows the supplier's codes for the items and that he must also specify a number of physical attributes to get the precise item that he wants. Some windows are asymmetric and are 'handed' left or right: most door sets are handed as they are hinged on one side. The wood and its finish, the 'fittings' are the handles, stays etc. Items can be glazed in different ways. Loose timber is coded according to its cross section and the length must be specified.  While the buyer knows these things from the catalogue he does not know the current prices or any discount rate he may get.</DT>
-
-<DD><A
-		  HREF="xml/JoineryOrderInstance1.xml">Joinery Order - XML Instance</A>, <A
-		  HREF="xml/JoineryOrderInstance1.pdf">Joinery Order - printed version</A></DD>
-<DT>The seller, Specialist Windows PLC, replies with an Order Response (complex) so as to indicate the unit price of each item and to inform the buyer of the trade discount that he will be given. At the same time, the seller gives his reference number of the order, i.e. the identity of the order in his system, and also tells the buyer whom to contact if he has any queries.</DT>
-<DD><A
-		  HREF="xml/JoineryOrderResponseInstance1.xml">Joinery Order Response - XML Instance</A>, <A
-		  HREF="xml/JoineryOrderResponseInstance1.pdf">Joinery Order Response - printed version</A></DD>
-
-<DT>The seller advises the buyer of the despatch of the items ordered, which will in fact be delivered on two pallets identified as "A" and "B" (i.e. transportation units). The Despatch Advice lists the items in order line sequence and refers to the pallet on which the item is delivered.</DT>
-<DD><A
-		  HREF="xml/JoineryDespatchAdviceInstance1.xml">Joinery Despatch Advice - XML Instance</A>, <A
-		  HREF="xml/JoineryDespatchAdviceInstance1.pdf">Joinery Despatch Advice - printed version</A></DD>
-
-<DT>The Despatch Advice travels with the delivery; a paper copy is signed and returned as proof of receipt. Hence the UBL Receipt Advice is not used.
-<BR>The Seller raises the Invoice automatically when the despatch occurs, and the resolution of any shortages would be handled post-invoicing. The Invoice has to show the tax point date, the VAT (Value Added Tax) category to which the item belongs and also to show the VAT rate and total for each tax category on the invoice. VAT is also applied to charges such as the delivery surcharge. In order to encourage speedy payment of the amount due, the Seller offers a discount for prompt settlement, which the buyer can deduct if paying within 30 days. (Note that VAT regulations assume it will be taken and so the tax is calculated on the trade discounted total of line items plus any charges and less the settlement discount amount.)</DT>
-<DD><A
-		  HREF="xml/JoineryInvoiceInstance1.xml">Joinery Invoice - XML Instance</A>, <A
-		  HREF="xml/JoineryInvoiceInstance1.pdf">Joinery Invoice - printed version</A></DD>
-<DT>This scenario is based on the products, product identification, business requirements and practices of a real UK joinery manufacturer and sales company. It operated its own specialised transport fleet delivering all over the United Kingdom and to offshore islands.</DT>
-</DL>
+
+
+<h2>D. 5  &nbsp;Other Document Samples</h2>
+
+<p>The business transactions represented here focus on Order Management and are intended to be examples of how these documents can be used.  These samples were manually created by business experts and are only meant to show some possible ways to use these documents.  These are not the only way to create UBL compliant documents.   
+
+<p>There are two sets of examples.  
+
+<ul>
+
+	<li> The first example "Buying Office Supplies" goes through the process of ordering items from an office supply and the following transactions.  <br><img src="xml/stationery.gif" alt="">
+
+	<li> The second example "Buying Joinery", goes through purchasing items in the UK from Specialist Windows, PLC, and the following transactions.<br><img src="xml/joinery.gif" alt="">
+
+
+
+</ul>
+
+
+
+<h4>Example One Buying Office Supplies</h4>
+
+<DL>
+
+	<DT>The buyer, Bill's Microdevices, orders several different items from an office supply store. He knows the supplier's codes for the items and the price.</DT>
+
+
+
+<DD><A
+
+		  HREF="xml/OfficeSupplyOrderInstance.xml">Office Supply Order - XML instance</A>, <a href="xml/OfficeSupplyOrderInstance.pdf">Office Supply Order - printed version</a></DD>
+
+
+
+
+
+<DT>The seller, Joes Office Supply, replies with an Order Response (simple) so as to indicate the acceptance of the order. At the same time, the seller gives his reference number of the order, i.e. the sales order in his system, and also tells the buyer whom to contact if he has any queries.</DT>
+
+
+
+<DD><A
+
+		  HREF="xml/OfficeSupplyOrderRespSimInstance.xml">Office Supply Order Response - XML instance (simple)</A>, <a href="xml/OfficeSupplyOrderRespSimInstance.pdf">Office Supply Order Response - printed version</a></DD>
+
+
+
+
+
+<DT>The seller advises the buyer of the despatch of the items ordered.  The Despatch Advice travels with the delivery; a paper copy is signed and returned as proof of receipt. Hence the UBL Receipt Advice is not used.</DT>
+
+<DD><A
+
+		  HREF="xml/OfficeSupplyDespatchAdviceInstance.xml">Office Supply Despatch Advice - XML Instance</A>, <a href="xml/OfficeSupplyDespatchAdviceInstance.pdf">Office Supply Despatch Advice - printed version</a></DD>
+
+
+
+
+
+<DT>The Seller raises the Invoice automatically when the despatch occurs, and the resolution of any shortages etc would be handled post-invoicing. The Invoice show the tax amount The Seller notes that payment is due within 30 days of Invoice.</DT>
+
+<DD><A
+
+		  HREF="xml/OfficeSupplyInvoiceInstance.xml">Office Supply Invoice - XML Instance</A>, <a href="xml/OfficeSupplyInvoiceInstance.pdf">Office Supply Invoice - printed version</a></DD>
+
+
+
+</DL>
+
+
+
+<h4>Example Two Buying Joinery</h4>
+
+
+
+<DL>
+
+	<DT>The buyer, Jerry Builders, PLC. in the UK, orders a number of windows, a door set and some lengths of timber for delivery to a building site. He knows the supplier's codes for the items and that he must also specify a number of physical attributes to get the precise item that he wants. Some windows are asymmetric and are 'handed' left or right: most door sets are handed as they are hinged on one side. The wood and its finish, the 'fittings' are the handles, stays etc. Items can be glazed in different ways. Loose timber is coded according to its cross section and the length must be specified.  While the buyer knows these things from the catalogue he does not know the current prices or any discount rate he may get.</DT>
+
+
+
+<DD><A
+
+		  HREF="xml/JoineryOrderInstance1.xml">Joinery Order - XML Instance</A>, <A
+
+		  HREF="xml/JoineryOrderInstance1.pdf">Joinery Order - printed version</A></DD>
+
+<DT>The seller, Specialist Windows PLC, replies with an Order Response (complex) so as to indicate the unit price of each item and to inform the buyer of the trade discount that he will be given. At the same time, the seller gives his reference number of the order, i.e. the identity of the order in his system, and also tells the buyer whom to contact if he has any queries.</DT>
+
+<DD><A
+
+		  HREF="xml/JoineryOrderResponseInstance1.xml">Joinery Order Response - XML Instance</A>, <A
+
+		  HREF="xml/JoineryOrderResponseInstance1.pdf">Joinery Order Response - printed version</A></DD>
+
+
+
+<DT>The seller advises the buyer of the despatch of the items ordered, which will in fact be delivered on two pallets identified as "A" and "B" (i.e. transportation units). The Despatch Advice lists the items in order line sequence and refers to the pallet on which the item is delivered.</DT>
+
+<DD><A
+
+		  HREF="xml/JoineryDespatchAdviceInstance1.xml">Joinery Despatch Advice - XML Instance</A>, <A
+
+		  HREF="xml/JoineryDespatchAdviceInstance1.pdf">Joinery Despatch Advice - printed version</A></DD>
+
+
+
+<DT>The Despatch Advice travels with the delivery; a paper copy is signed and returned as proof of receipt. Hence the UBL Receipt Advice is not used.
+
+<BR>The Seller raises the Invoice automatically when the despatch occurs, and the resolution of any shortages would be handled post-invoicing. The Invoice has to show the tax point date, the VAT (Value Added Tax) category to which the item belongs and also to show the VAT rate and total for each tax category on the invoice. VAT is also applied to charges such as the delivery surcharge. In order to encourage speedy payment of the amount due, the Seller offers a discount for prompt settlement, which the buyer can deduct if paying within 30 days. (Note that VAT regulations assume it will be taken and so the tax is calculated on the trade discounted total of line items plus any charges and less the settlement discount amount.)</DT>
+
+<DD><A
+
+		  HREF="xml/JoineryInvoiceInstance1.xml">Joinery Invoice - XML Instance</A>, <A
+
+		  HREF="xml/JoineryInvoiceInstance1.pdf">Joinery Invoice - printed version</A></DD>
+
+<DT>This scenario is based on the products, product identification, business requirements and practices of a real UK joinery manufacturer and sales company. It operated its own specialised transport fleet delivering all over the United Kingdom and to offshore islands.</DT>
+
+</DL>
+
 
 <P><BR></P>
 <ADDRESS>Last modified 18 February 2003/5:29pm CST<BR>Copyright &copy; 2003 OASIS</ADDRESS> 
