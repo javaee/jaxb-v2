@@ -80,7 +80,7 @@ fi
 export PATH=$JAVA_HOME/bin:$M2_HOME/bin:$PATH
 export TMPDIR=${TMPDIR:-/tmp}
 
-PROXYURL=www-proxy.us.oracle.com
+PROXYURL=www-proxy.uk.oracle.com
 PROXYPORT=80
 
 export http_proxy=$PROXYURL:$PROXYPORT
@@ -129,7 +129,7 @@ if [ -e jaxb-ri ] ; then
 fi
 
 echo "INFO: Cloning jaxb-ri git repository"
-git clone git@orahub.oraclecorp.com:fmw-infra-metro/jaxb-ri.git || {
+git clone git@git@github.com:javaee/jaxb-v2.git || {
     echo "fail to clone the git repository"
     exit 1
 }
@@ -241,24 +241,24 @@ EOF
 fi
 
 # modify www/__modules/left_sidebar.htmlx
-echo "INFO: add $RELEASE_VERSION to the left side bar"
-svn --non-interactive update -q __modules
-line=`sed -n '/       <li> <a href=\"#\">Download<\/a>/=' __modules/left_sidebar.htmlx`
-line=`expr $line + 1`
-appendLine="\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <li><a href=\"http://jaxb.java.net/$RELEASE_VERSION/\">$RELEASE_VERSION</a><\/li>"
-sed -i "$line a\
-$appendLine" __modules/left_sidebar.htmlx
-sed -i -e "s#<li> <a href=\"http://jaxb.java.net/nonav/.*/docs/\">Latest release notes</a>#<li> <a href=\"http://jaxb.java.net/nonav/$RELEASE_VERSION/docs/\">Latest release notes</a>#" -e "s#<li> <a href=\"http://jaxb.java.net/nonav/.*/docs/api/\">Javadoc</a></li>#<li> <a href=\"http://jaxb.java.net/nonav/$RELEASE_VERSION/docs/api/\">Javadoc</a></li>#" __modules/left_sidebar.htmlx
-
-if [ -n "$WWW_SVN_USER"  -a -n "$WWW_SVN_PASSWORD" ]; then
-    AUTH="--username $WWW_SVN_USER --password $WWW_SVN_PASSWORD --no-auth-cache"
-else
-    AUTH=""
-fi
-if [ "$debug" = "true" ]; then
-    echo "DEBUG: debug only, not commit the docs."
-    echo "DEBUG: svn $AUTH --non-interactive --no-auth-cache commit -m \"JAXB release $RELEASE_VERSION\""
-else
-    echo "INFO: commit the updated docs"
-    svn $AUTH --non-interactive --no-auth-cache commit -m "JAXB release $RELEASE_VERSION" . || exit 1
-fi
+# echo "INFO: add $RELEASE_VERSION to the left side bar"
+# svn --non-interactive update -q __modules
+# line=`sed -n '/       <li> <a href=\"#\">Download<\/a>/=' __modules/left_sidebar.htmlx`
+# line=`expr $line + 1`
+# appendLine="\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <li><a href=\"http://jaxb.java.net/$RELEASE_VERSION/\">$RELEASE_VERSION</a><\/li>"
+# sed -i "$line a\
+# $appendLine" __modules/left_sidebar.htmlx
+# sed -i -e "s#<li> <a href=\"http://jaxb.java.net/nonav/.*/docs/\">Latest release notes</a>#<li> <a href=\"http://jaxb.java.net/nonav/$RELEASE_VERSION/docs/\">Latest release notes</a>#" -e "s#<li> <a href=\"http://jaxb.java.net/nonav/.*/docs/api/\">Javadoc</a></li>#<li> <a href=\"http://jaxb.java.net/nonav/$RELEASE_VERSION/docs/api/\">Javadoc</a></li>#" __modules/left_sidebar.htmlx
+#
+# if [ -n "$WWW_SVN_USER"  -a -n "$WWW_SVN_PASSWORD" ]; then
+#     AUTH="--username $WWW_SVN_USER --password $WWW_SVN_PASSWORD --no-auth-cache"
+# else
+#     AUTH=""
+# fi
+# if [ "$debug" = "true" ]; then
+#     echo "DEBUG: debug only, not commit the docs."
+#     echo "DEBUG: svn $AUTH --non-interactive --no-auth-cache commit -m \"JAXB release $RELEASE_VERSION\""
+# else
+#     echo "INFO: commit the updated docs"
+#     svn $AUTH --non-interactive --no-auth-cache commit -m "JAXB release $RELEASE_VERSION" . || exit 1
+# fi
