@@ -952,5 +952,18 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <!-- lukas: FIX-ME in java.net:parent -->
+            <id>jvnet-release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.10.4</version>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
