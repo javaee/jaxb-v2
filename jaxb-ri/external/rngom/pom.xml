@@ -57,7 +57,7 @@
     <name>RNGOM</name>
 
     <description>
-        RNGOM is a RelaxNG Object model library (XSOM for RelaxNG). Sources from http://rngom.java.net, version 20050510.
+        RNGOM is a RelaxNG Object model library (XSOM for RelaxNG).
     </description>
 
     <properties>

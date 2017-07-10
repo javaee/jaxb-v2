@@ -213,7 +213,7 @@ public class ProxyGroup {
     			"either (1) compiling all the schemas at the same time or (2) " +
     			"reuse the same runtime by using the -use-runtime option." +
     			"\n" +
-    			"See the jaxb mailing list archive at http://jaxb.dev.java.net for" + 
+    			"See the jaxb mailing list archive at https://javaee.groups.io/g/metro for" +
                         "details on this issue."
     		);
     	}

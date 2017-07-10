@@ -61,13 +61,13 @@
     <licenses>
         <license>
             <name>CDDL v1.1 / GPL v2 dual license</name>
-            <url>http://glassfish.java.net/public/CDDL+GPL_1_1.html</url>
+            <url>https://oss.oracle.com/licenses/CDDL+GPL-1.1</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
     <issueManagement>
         <system>JIRA</system>
-        <url>http://java.net/jira/browse/XSOM</url>
+        <url>https://github.com/javaee/jaxb-v2/issues</url>
     </issueManagement>
     <organization>
         <name>Oracle</name>

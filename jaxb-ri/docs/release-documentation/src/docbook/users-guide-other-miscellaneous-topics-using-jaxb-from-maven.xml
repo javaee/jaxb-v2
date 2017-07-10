@@ -68,7 +68,7 @@
     </example>
 
     <para>This artifact is available in <link
-    xlink:href="http://maven-repository.java.net/">the java.net Maven
+    xlink:href="http://maven.java.net/">the java.net Maven
     repository</link>, so you also need the following <literal>&lt;repository&gt;</literal>
     declaration in your POM:</para>
 

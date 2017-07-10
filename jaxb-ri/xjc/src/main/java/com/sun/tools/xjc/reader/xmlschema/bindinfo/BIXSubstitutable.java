@@ -49,7 +49,7 @@ import com.sun.tools.xjc.reader.Const;
  * Forces a non-collapsing behavior to allow extension schemas
  * to perform element substitutions.
  *
- * See https://jaxb.dev.java.net/issues/show_bug.cgi?id=289
+ * See https://github.com/javaee/jaxb-v2/issues/289
  *
  * @author Kohsuke Kawaguchi
  * @since 2.1.1

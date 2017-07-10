@@ -45,7 +45,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 /**
  * {@link XmlAdapter} useful for mapping interfaces.
  *
- * See <a href="https://jaxb.dev.java.net/guide/Mapping_interfaces.html">The JAXB user's guide</a>
+ * See <a href="https://javaee.github.io/jaxb-v2/doc/user-guide/ch03.html#annotating-your-classes-mapping-interfaces">The JAXB user's guide</a>
  * for more about this adapter class.
  *
  * @author Kohsuke Kawaguchi
