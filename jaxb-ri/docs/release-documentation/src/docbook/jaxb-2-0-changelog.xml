@@ -53,6 +53,19 @@
     <para>
         Please refer to the jaxb-1-0-x-changelog for older releases.
     </para>
+    <section xml:id="a-2-3-0">
+        <title>Changes between 2.2.11 and 2.3.0</title>
+        <itemizedlist>
+            <listitem><para>Adopt Java SE 9:
+                <itemizedlist>
+                    <listitem><para>JAXB api can now be loaded as a module.</para></listitem>
+                    <listitem><para>JAXB RI is able to run on Java SE 9 from the classpath.</para></listitem>
+                    <listitem><para>Addes support for java.util.ServiceLoader mechanism.</para></listitem>
+                    <listitem><para>Security fixes</para></listitem>
+                </itemizedlist>
+            </para></listitem>
+        </itemizedlist>
+    </section>
     <section xml:id="a-2-2-11">
         <title>Changes between 2.2.10 to 2.2.11</title>
         <itemizedlist>

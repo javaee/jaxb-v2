@@ -70,7 +70,7 @@
             Requirements
         </title>
 
-        <para>This release of the JAXB Reference Implementation requires Java SE 6 or higher.</para>
+        <para>This release of the JAXB Reference Implementation requires Java SE 7 or higher.</para>
     </section>
 
     <section xml:id="jars">

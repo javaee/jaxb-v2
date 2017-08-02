@@ -106,6 +106,10 @@
                     <entry><para>JDK8 first release</para></entry>
                     <entry>JAXB RI 2.2.8 (b130911.1802)</entry> <!--TODO: add link to 2.2.8 release-->
                 </row>
+                <row>
+                    <entry><para>JDK9 first release</para></entry>
+                    <entry>JAXB RI 2.3.0 (b170531.0717)</entry> <!--TODO: add link to 2.3.0 release-->
+                </row>
             </tbody>
         </tgroup>
     </informaltable>
