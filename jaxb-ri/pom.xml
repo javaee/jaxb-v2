@@ -361,7 +361,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.10.4</version>
+                    <version>3.0.0-M1</version>
                     <configuration>
                         <aggregate>false</aggregate>
                         <dependencySourceExcludes>
@@ -504,7 +504,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>1.4.1</version>
+                    <version>3.0.0-M1</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -677,7 +677,6 @@
                                     <jdkToolchain>
                                         <version>9</version>
                                     </jdkToolchain>
-                                    <release>9</release>
                                     <source>9</source>
                                     <target>9</target>
                                 </configuration>
@@ -758,7 +757,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-enforcer-plugin</artifactId>
-                        <version>1.4</version>
+                        <version>3.0.0-M1</version>
                         <executions>
                             <execution>
                                 <id>enforce-no-snapshots</id>
@@ -960,7 +959,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.10.4</version>
+                        <version>3.0.0-M1</version>
                     </plugin>
                 </plugins>
             </build>
