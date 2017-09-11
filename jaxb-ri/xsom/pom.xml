@@ -3,19 +3,19 @@
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 2010-2015 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2010-2017 Oracle and/or its affiliates. All rights reserved.
 
     The contents of this file are subject to the terms of either the GNU
     General Public License Version 2 only ("GPL") or the Common Development
     and Distribution License("CDDL") (collectively, the "License").  You
     may not use this file except in compliance with the License.  You can
     obtain a copy of the License at
-    http://glassfish.java.net/public/CDDL+GPL_1_1.html
-    or packager/legal/LICENSE.txt.  See the License for the specific
+    https://oss.oracle.com/licenses/CDDL+GPL-1.1
+    or LICENSE.txt.  See the License for the specific
     language governing permissions and limitations under the License.
 
     When distributing the software, include this License Header Notice in each
-    file and include the License file at packager/legal/LICENSE.txt.
+    file and include the License file at LICENSE.txt.
 
     GPL Classpath Exception:
     Oracle designates this particular file as subject to the "Classpath"
@@ -40,6 +40,7 @@
     holder.
 
 -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -60,13 +61,13 @@
     <licenses>
         <license>
             <name>CDDL v1.1 / GPL v2 dual license</name>
-            <url>http://glassfish.java.net/public/CDDL+GPL_1_1.html</url>
+            <url>https://oss.oracle.com/licenses/CDDL+GPL-1.1</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
     <issueManagement>
         <system>JIRA</system>
-        <url>http://java.net/jira/browse/XSOM</url>
+        <url>https://github.com/javaee/jaxb-v2/issues</url>
     </issueManagement>
     <organization>
         <name>Oracle</name>
@@ -87,6 +88,8 @@
 
     <properties>
         <findbugs.exclude>${project.basedir}/exclude-xsom.xml</findbugs.exclude>
+        <copyright.template.file>${project.basedir}/copyright.txt</copyright.template.file>
+        <copyright.exclude.file>${project.basedir}/copyright-exclude</copyright.exclude.file>
     </properties>
 
     <dependencies>
@@ -124,22 +127,6 @@
                 <version>2.14</version>
                 <configuration>
                     <argLine>${proxyArgLine}</argLine>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.glassfish.copyright</groupId>
-                <artifactId>glassfish-copyright-maven-plugin</artifactId>
-                <configuration>
-                    <templateFile>copyright.txt</templateFile>
-                    <excludeFile>copyright-exclude</excludeFile>
-                    <!-- skip files not under SCM-->
-                    <scmOnly>true</scmOnly>
-                    <!-- turn off warnings -->
-                    <warn>true</warn>
-                    <!-- for use with repair -->
-                    <update>false</update>
-                    <!-- check that year is correct -->
-                    <ignoreYear>false</ignoreYear>
                 </configuration>
             </plugin>
         </plugins>

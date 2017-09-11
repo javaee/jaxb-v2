@@ -13,7 +13,7 @@ Please note:
     schema - for a complete discussion of the differences, please refer to the
     JAXB interest archive:
     
-    https://jaxb.dev.java.net/servlets/ReadMsg?list=users&msgId=12061
+    https://javaee.groups.io/g/metro
     
     Support for type substitution will be available in the next public release of
     the JAXB RI v1.0.2, which will be part of JWSDP v1.3.
