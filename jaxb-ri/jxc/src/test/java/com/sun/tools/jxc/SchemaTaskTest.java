@@ -72,12 +72,16 @@ public class SchemaTaskTest extends SchemaAntTaskTestBase {
     }
 
     public void testFork() throws FileNotFoundException, IOException {
-        copy(pkg, "MyTrackingOrder.java", SchemaTaskTest.class.getResourceAsStream("resources/MyTrackingOrder.java_"));
-        assertEquals(0, AntExecutor.exec(script, "schemagen-fork"));
+        if (is9()){
+            copy(pkg, "MyTrackingOrder.java", SchemaTaskTest.class.getResourceAsStream("resources/MyTrackingOrder.java_"));
+            assertEquals(0, AntExecutor.exec(script, "schemagen-fork"));
+        }
     }
 
     public void testAddmodules() throws IOException {
-        copy(pkg, "MyTrackingOrder.java", SchemaTaskTest.class.getResourceAsStream("resources/MyTrackingOrder.java_"));
-        assertEquals(0, AntExecutor.exec(script, "schemagen-addmodules"));
+        if (is9()){
+            copy(pkg, "MyTrackingOrder.java", SchemaTaskTest.class.getResourceAsStream("resources/MyTrackingOrder.java_"));
+            assertEquals(0, AntExecutor.exec(script, "schemagen-addmodules"));
+        }
     }
 }
