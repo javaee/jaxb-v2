@@ -76,10 +76,14 @@ public class XjcTaskTest extends XjcAntTaskTestBase {
     }
 
     public void testFork() throws FileNotFoundException, IOException {
-        assertEquals(0, AntExecutor.exec(script, "xjc-fork"));
+        if (is9()){
+           assertEquals(0, AntExecutor.exec(script, "xjc-fork"));
+        }
     }
 
     public void testAddmodules() throws IOException {
-        assertEquals(0, AntExecutor.exec(script, "xjc-addmodules"));
+        if (is9()){
+            assertEquals(0, AntExecutor.exec(script, "xjc-addmodules"));
+        }
     }
 }
