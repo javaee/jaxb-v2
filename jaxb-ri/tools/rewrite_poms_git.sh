@@ -40,7 +40,7 @@
 #
 
 # if option -n ... do not commit
-COMMIT=Y
+COMMIT=N
 while getopts ":n" opt; do
   case $opt in
     n)
@@ -94,6 +94,8 @@ else
   RELEASE_VERSION=${CURRENT_VERSION}-${RELEASE_QUALIFIER}
 fi;
 
+RELEASE_VERSION=2.3.1-SNAPSHOT
+
 RELEASE_TAG=${RELEASE_VERSION}
 
 cleanup()
@@ -122,14 +124,14 @@ edit_poms()
 		fi
 		echo "DONE."
 
-		echo -n "Adding $line to git index..."
-		${GIT} add $line
-		if [ $? -ne 0 ]; then
-			echo "FAILED."
-			echo "git add failed for $line: $!"
-			cleanup
-		fi
-		echo "DONE."
+#		echo -n "Adding $line to git index..."
+#		${GIT} add $line
+#		if [ $? -ne 0 ]; then
+#			echo "FAILED."
+#			echo "git add failed for $line: $!"
+#			cleanup
+#		fi
+#		echo "DONE."
 	done < "$TMPFILE"
 }
 
