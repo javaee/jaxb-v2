@@ -60,7 +60,7 @@
     <description>JAXB Bill of Materials (BOM)</description>
 
     <properties>
-        <jaxb-api.version>2.3.0</jaxb-api.version>
+        <jaxb-api.version>2.3.1-b170921.0414</jaxb-api.version>
         <jaxb-api-osgi.version>2.3</jaxb-api-osgi.version>
         <istack.version>3.0.5</istack.version>
         <fastinfoset.version>1.2.13</fastinfoset.version>
