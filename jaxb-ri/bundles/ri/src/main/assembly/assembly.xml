@@ -101,6 +101,7 @@
                 <include>com.sun.xml.bind:jaxb-xjc</include>
                 <include>com.sun.xml.bind:jaxb-impl</include>
                 <include>com.sun.xml.bind:jaxb-jxc</include>
+                <include>com.sun.xml.bind:jaxb-mod</include>
             </includes>
         </dependencySet>
         <dependencySet>
