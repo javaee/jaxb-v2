@@ -96,6 +96,7 @@
 
     <properties>
         <generated.classes.dir>${project.build.directory}/classes</generated.classes.dir>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
     </properties>
 
     <build>
