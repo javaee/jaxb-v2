@@ -42,7 +42,7 @@
 -->
 
 <xsd:schema xmlns="urn:complex.two"
-            targetNamespace="urn:resolver.two"
+            targetNamespace="urn:complex.two"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
             xmlns:one="urn:complex.one"
             xmlns:tns="urn:complex.two"

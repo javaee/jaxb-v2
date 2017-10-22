@@ -88,10 +88,9 @@ public class ParserContext {
      * Documents that are parsed already. Used to avoid cyclic inclusion/double
      * inclusion of schemas. Set of {@link SchemaDocumentImpl}s.
      *
-     * The actual data structure is map from {@link SchemaDocumentImpl} to itself,
-     * so that we can access the {@link SchemaDocumentImpl} itself.
+     * The actual data structure is map from the canonical format [targetNamespace]|[docuemntId] to the parsed schema.
      */
-    public final Map<SchemaDocumentImpl, SchemaDocumentImpl> parsedDocuments = new HashMap<SchemaDocumentImpl, SchemaDocumentImpl>();
+    private final Map<String, SchemaDocumentImpl> parsedDocuments = new HashMap<String, SchemaDocumentImpl>();
 
 
     public ParserContext( XSOMParser owner, XMLParser parser ) {
@@ -125,9 +124,24 @@ public class ParserContext {
      * Parses a new XML Schema document.
      */
     public void parse( InputSource source ) throws SAXException {
-        newNGCCRuntime().parseEntity(source,false,null,null);
+        NGCCRuntimeEx runtime = new NGCCRuntimeEx(this);
+        runtime.parseEntity(source,false,null,null);
     }
 
+    public boolean hasAlreadyBeenRead(String targetNamespace, String documentId) {
+        return parsedDocuments.containsKey(targetNamespace + '|' + documentId);
+    }
+
+    public Map<String, SchemaDocumentImpl> getSchemaDocuments() {
+        return parsedDocuments;
+    }
+    public SchemaDocumentImpl getSchemaDocument(String targetNamespace, String documentId) {
+        return parsedDocuments.get(targetNamespace + '|' + documentId);
+    }
+
+    public void addSchemaDocument(String targetNamespace, SchemaDocumentImpl document) {
+        parsedDocuments.put(targetNamespace + '|' + document.getSystemId(), document);
+    }
 
     public XSSchemaSet getResult() throws SAXException {
         // run all the patchers
@@ -149,11 +163,6 @@ public class ParserContext {
         if(hadError)    return null;
         else            return schemaSet;
     }
-
-    public NGCCRuntimeEx newNGCCRuntime() {
-        return new NGCCRuntimeEx(this);
-    }
-
 
 
     /** Once an error is detected, this flag is set to true. */
