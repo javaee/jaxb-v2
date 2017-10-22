@@ -222,8 +222,9 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
             }
 
             // do the original dark magic
-
-            String baseUri = getLocator().getSystemId();
+            String baseUri = null;
+            if(getLocator() != null)
+                baseUri = getLocator().getSystemId();
 
 
             // if the base URI is not available, the document systemId is better than nothing.

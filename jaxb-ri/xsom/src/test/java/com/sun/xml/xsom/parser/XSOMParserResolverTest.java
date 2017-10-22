@@ -122,7 +122,7 @@ public class XSOMParserResolverTest {
         parser.setEntityResolver(resolver);
 
         // the first include is that using the systemId of resource One.xsd
-        when(resolver.resolveEntity((String) isNull(), eq(resourceOne.toExternalForm()))).thenAnswer(new InputSourceMockAnswer());
+        when(resolver.resolveEntity((String) isNull(), eq(resourceOne.toExternalForm()))).thenAnswer(new InputSourceMockAnswer(resourceOne));
 
         // create input sources with resource url as systemId
         parser.parse(new InputSource(resourceOne.toExternalForm()));
@@ -150,7 +150,7 @@ public class XSOMParserResolverTest {
         parser.setEntityResolver(resolver);
 
         // the first include is that using the systemId of resource One.xsd
-        when(resolver.resolveEntity((String) isNull(), eq(TNS_ONE + ":One.xsd"))).thenAnswer(new InputSourceMockAnswer());
+        when(resolver.resolveEntity((String) isNull(), eq(TNS_ONE + ":One.xsd"))).thenAnswer(new InputSourceMockAnswer(resourceOne));
 
         // create input sources with resource url as systemId
         parser.parse(new InputSource(resourceOne.toExternalForm()));

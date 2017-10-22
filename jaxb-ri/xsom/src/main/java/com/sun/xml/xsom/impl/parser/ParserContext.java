@@ -45,6 +45,7 @@ import com.sun.xml.xsom.impl.ElementDecl;
 import com.sun.xml.xsom.impl.SchemaImpl;
 import com.sun.xml.xsom.impl.SchemaSetImpl;
 import com.sun.xml.xsom.parser.AnnotationParserFactory;
+import com.sun.xml.xsom.parser.SchemaDocument;
 import com.sun.xml.xsom.parser.XMLParser;
 import com.sun.xml.xsom.parser.XSOMParser;
 import org.xml.sax.EntityResolver;
@@ -56,19 +57,16 @@ import org.xml.sax.SAXParseException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Provides context information to be used by {@link NGCCRuntimeEx}s.
- * 
+ *
  * <p>
  * This class does the actual processing for {@link XSOMParser},
  * but to hide the details from the public API, this class in
  * a different package.
- * 
+ *
  * @author Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 public class ParserContext {
@@ -90,7 +88,7 @@ public class ParserContext {
      *
      * The actual data structure is map from the canonical format [targetNamespace]|[docuemntId] to the parsed schema.
      */
-    private final Map<String, SchemaDocumentImpl> parsedDocuments = new HashMap<String, SchemaDocumentImpl>();
+    private final Map<ParsedKey, SchemaDocumentImpl> parsedDocuments = new HashMap<ParsedKey, SchemaDocumentImpl>();
 
 
     public ParserContext( XSOMParser owner, XMLParser parser ) {
@@ -129,18 +127,19 @@ public class ParserContext {
     }
 
     public boolean hasAlreadyBeenRead(String targetNamespace, String documentId) {
-        return parsedDocuments.containsKey(targetNamespace + '|' + documentId);
+        return parsedDocuments.containsKey(new ParsedKey(targetNamespace, documentId));
     }
 
-    public Map<String, SchemaDocumentImpl> getSchemaDocuments() {
-        return parsedDocuments;
-    }
-    public SchemaDocumentImpl getSchemaDocument(String targetNamespace, String documentId) {
-        return parsedDocuments.get(targetNamespace + '|' + documentId);
+    public Set<SchemaDocument> getSchemaDocuments() {
+        return Collections.unmodifiableSet(new HashSet<SchemaDocument>(parsedDocuments.values()));
     }
 
-    public void addSchemaDocument(String targetNamespace, SchemaDocumentImpl document) {
-        parsedDocuments.put(targetNamespace + '|' + document.getSystemId(), document);
+    SchemaDocumentImpl getSchemaDocument(String targetNamespace, String documentId) {
+        return parsedDocuments.get(new ParsedKey(targetNamespace, documentId));
+    }
+
+    void addSchemaDocument(String targetNamespace, SchemaDocumentImpl document) {
+        parsedDocuments.put(new ParsedKey(targetNamespace, document.getSystemId()), document);
     }
 
     public XSSchemaSet getResult() throws SAXException {
@@ -233,4 +232,40 @@ public class ParserContext {
             setErrorFlag();
         }
     };
+
+    private final class ParsedKey {
+
+        private String namespace;
+
+        private String documentId;
+
+        public ParsedKey(String namespace, String documentId) {
+            this.namespace = namespace;
+            this.documentId = documentId;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof ParsedKey)) return false;
+            ParsedKey that = (ParsedKey) o;
+            return Objects.equals(namespace, that.namespace) &&
+                    Objects.equals(documentId, that.documentId);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(namespace, documentId);
+        }
+
+        @Override
+        public String toString() {
+            final StringBuffer sb = new StringBuffer("Key {")
+                    .append(" namespace [ ").append(namespace).append(" ]")
+                    .append(", documentId [ ").append(documentId).append(" ] }");
+            return sb.toString();
+        }
+
+    }
+
 }

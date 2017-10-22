@@ -222,7 +222,7 @@ public final class XSOMParser {
      *      can be empty but never null.
      */
     public Set<SchemaDocument> getDocuments() {
-        return new HashSet<SchemaDocument>(context.getSchemaDocuments().values());
+        return context.getSchemaDocuments();
     }
     
     public EntityResolver getEntityResolver() {

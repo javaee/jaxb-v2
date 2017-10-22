@@ -54,7 +54,7 @@ public class InputSourceMockAnswer implements Answer<InputSource> {
 
     private String publicId;
 
-    public InputSourceMockAnswer() {
+    private InputSourceMockAnswer() {
     }
 
     public InputSourceMockAnswer(URL answerWith) {
