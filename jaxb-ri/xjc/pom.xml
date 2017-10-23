@@ -72,7 +72,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jaxb-core</artifactId>
+            <artifactId>jaxb-runtime</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jmockit</groupId>
@@ -174,11 +174,12 @@
                                     <artifactId>istack-commons-tools</artifactId>
                                     <type>jar</type>
                                 </artifactItem>
-                                <artifactItem>
+                              <!--  <artifactItem>
                                     <groupId>${project.groupId}</groupId>
                                     <artifactId>jaxb-core</artifactId>
                                     <type>jar</type>
                                 </artifactItem>
+                              -->
                                 <artifactItem>
                                     <groupId>${project.groupId}</groupId>
                                     <artifactId>codemodel</artifactId>

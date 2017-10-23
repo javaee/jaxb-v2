@@ -65,8 +65,17 @@
 
     <dependencies>
         <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jaxb-core</artifactId>
+            <artifactId>txw2</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.istack</groupId>
+            <artifactId>istack-commons-runtime</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jvnet.staxex</groupId>

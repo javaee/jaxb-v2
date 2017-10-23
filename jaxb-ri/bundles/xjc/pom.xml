@@ -459,7 +459,7 @@
                                 </includes>
 
                                 <excludes>
-                                    <exclude>org.glassfish.jaxb:jaxb-core</exclude>
+                                  <!--  <exclude>org.glassfish.jaxb:jaxb-core</exclude>-->
                                     <exclude>org.glassfish.jaxb:jaxb-xjc-jdk9</exclude>
                                     <exclude>javax.xml.bind:jaxb-api</exclude>
                                     <exclude>org.glassfish.jaxb:txw2</exclude>
@@ -476,7 +476,7 @@
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>com.sun.tools.xjc.XJCFacade</mainClass>
                                     <manifestEntries>
-                                        <Class-Path>jaxb-core.jar jaxb-impl.jar</Class-Path>
+                                        <Class-Path>jaxb-impl.jar</Class-Path>
                                         <Major-Version>${jaxb.majorVersion}.${jaxb.minorVersion}.${jaxb.incrementalVersion}</Major-Version>
                                         <Specification-Version>${jaxb-api.majorVersion}.${jaxb-api.minorVersion}</Specification-Version>
                                         <Git-Revision>${buildNumber}</Git-Revision>

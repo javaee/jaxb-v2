@@ -277,7 +277,7 @@
                                 </includes>
                                 <excludes>
                                     <exclude>javax.xml.bind:jaxb-api</exclude>
-                                    <exclude>org.glassfish.jaxb:jaxb-core</exclude>
+                                   <!-- <exclude>org.glassfish.jaxb:jaxb-core</exclude>-->
                                     <exclude>javax.xml.stream:stax-api</exclude>
                                     <exclude>relaxngDatatype:relaxngDatatype</exclude>
                                     <exclude>com.sun.xml.fastinfoset:FastInfoset</exclude>
@@ -287,7 +287,7 @@
                                     <exclude>com.sun.istack:istack-commons-runtime</exclude>
                                 </excludes>
                             </artifactSet>
-                            <transformers>
+                        <!--    <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
@@ -297,7 +297,7 @@
                                         <Git-Revision>${buildNumber}</Git-Revision>
                                     </manifestEntries>
                                 </transformer>
-                            </transformers>
+                            </transformers>-->
                         </configuration>
                     </execution>
                 </executions>

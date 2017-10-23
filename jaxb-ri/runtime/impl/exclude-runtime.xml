@@ -61,4 +61,7 @@
         <Bug pattern="NP_NULL_ON_SOME_PATH"/>
     </Match>
 
+    <Match>
+        <Bug pattern="DM_DEFAULT_ENCODING"/>
+    </Match>
 </FindBugsFilter>

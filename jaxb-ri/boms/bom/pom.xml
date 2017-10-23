@@ -77,12 +77,13 @@
                 <version>${project.version}</version>
                 <classifier>sources</classifier>
             </dependency>
-            <dependency>
+<!--            <dependency>
                 <groupId>org.glassfish.jaxb</groupId>
                 <artifactId>jaxb-core</artifactId>
                 <version>${project.version}</version>
                 <classifier>sources</classifier>
             </dependency>
+-->
             <dependency>
                 <groupId>org.glassfish.jaxb</groupId>
                 <artifactId>jaxb-xjc</artifactId>
@@ -103,12 +104,13 @@
                 <version>${project.version}</version>
                 <classifier>sources</classifier>
             </dependency>
-            <dependency>
+         <!--   <dependency>
                 <groupId>com.sun.xml.bind</groupId>
                 <artifactId>jaxb-core</artifactId>
                 <version>${project.version}</version>
                 <classifier>sources</classifier>
             </dependency>
+         -->
             <dependency>
                 <groupId>com.sun.xml.bind</groupId>
                 <artifactId>jaxb-xjc</artifactId>
@@ -149,11 +151,12 @@
                 <artifactId>jaxb-runtime</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
+   <!--         <dependency>
                 <groupId>org.glassfish.jaxb</groupId>
                 <artifactId>jaxb-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
+  -->
             <dependency>
                 <groupId>org.glassfish.jaxb</groupId>
                 <artifactId>jaxb-xjc</artifactId>
@@ -171,11 +174,12 @@
                 <artifactId>jaxb-impl</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
+         <!--   <dependency>
                 <groupId>com.sun.xml.bind</groupId>
                 <artifactId>jaxb-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
+         -->
             <dependency>
                 <groupId>com.sun.xml.bind</groupId>
                 <artifactId>jaxb-xjc</artifactId>

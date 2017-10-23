@@ -64,11 +64,12 @@
             <artifactId>jaxb-api</artifactId>
             <optional>true</optional>
         </dependency>
-        <dependency>
+  <!--      <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-core</artifactId>
             <optional>true</optional>
         </dependency>
+  -->
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-xjc</artifactId>
@@ -172,7 +173,7 @@
         </plugins>
     </build>
 
-   <profiles>
+<!--   <profiles>
       <profile>
           <id>jdk9-setup</id>
           <activation>
@@ -188,5 +189,5 @@
           </dependencies>
       </profile>
     </profiles>
-  
+  -->
 </project>
