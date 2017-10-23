@@ -60,12 +60,6 @@
     <description>JAXB OSGI bundle</description>
 
     <dependencies>
-<!--        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jaxb-core</artifactId>
-            <optional>true</optional>
-        </dependency>
--->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>jaxb-xjc</artifactId>
@@ -197,14 +191,6 @@
                         <configuration>
                             <skip>${skipSources}</skip>
                             <artifactItems>
-                               <!-- <artifactItem>
-                                    <groupId>com.sun.xml.bind</groupId>
-                                    <artifactId>jaxb-core</artifactId>
-                                    <classifier>sources</classifier>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
-                                </artifactItem>
-                               -->
                                 <artifactItem>
                                     <groupId>com.sun.xml.bind</groupId>
                                     <artifactId>jaxb-xjc</artifactId>
@@ -376,7 +362,6 @@
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                   <!-- <include>com.sun.xml.bind:jaxb-core</include>-->
                                     <include>com.sun.xml.bind:jaxb-xjc</include>
                                     <include>com.sun.xml.bind:jaxb-impl</include>
                                     <include>com.sun.xml.bind:jaxb-jxc</include>
@@ -386,7 +371,6 @@
                                 </includes>
                                 <excludes>
                                     <exclude>org.glassfish.jaxb:jaxb-runtime</exclude>
-                                   <!-- <exclude>org.glassfish.jaxb:jaxb-core</exclude>-->
                                     <exclude>javax.xml.bind:jaxb-api</exclude>
                                     <exclude>org.glassfish.jaxb:txw2</exclude>
                                     <exclude>com.sun.istack:istack-commons-runtime</exclude>

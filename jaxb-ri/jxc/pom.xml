@@ -71,11 +71,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>jaxb-xjc</artifactId>
         </dependency>
-<!--        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jaxb-core</artifactId>
-        </dependency>
--->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>jaxb-runtime</artifactId>
@@ -152,12 +147,6 @@
                                     <artifactId>jaxb-xjc</artifactId>
                                     <type>jar</type>
                                 </artifactItem>
-                             <!--   <artifactItem>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>jaxb-core</artifactId>
-                                    <type>jar</type>
-                                </artifactItem>
-                             -->
                                 <artifactItem>
                                     <groupId>${project.groupId}</groupId>
                                     <artifactId>txw2</artifactId>
