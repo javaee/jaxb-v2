@@ -6,7 +6,7 @@ description: [Java Architecture for XML Binding]
 # sidebar links url
 links:
   source: https://github.com/javaee/jaxb-v2
-  #download: download
+  download: https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-ri/2.3.0/jaxb-ri-2.3.0.zip
   mailinglist: https://javaee.groups.io/g/metro
   #javadocs:
   userguide: doc/user-guide/index.html

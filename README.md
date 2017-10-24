@@ -29,6 +29,8 @@ terms of [OCA](http://oracle.com/technetwork/goto/oca).
 
 ## Links
 - Please use [Metro and JAXB](https://javaee.groups.io/g/metro) forum for feedback
-- JAXB-RI has a project page on GitHub: [https://github.com/javaee/jaxb-v2](https://github.com/javaee/jaxb-v2)
+- JAXB-RI project home page: [https://javaee.github.io/jaxb-v2/](https://javaee.github.io/jaxb-v2/)
 - [METRO project](https://javaee.github.io/metro)
 - [JSR 222](https://jcp.org/en/jsr/detail?id=222)
+- [Download standalone distribution](https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-ri/2.3.0/jaxb-ri-2.3.0.zip)
+
