@@ -62,10 +62,6 @@ module java.xml.bind.imp {
     requires stax.ex;
     requires istack.commons.runtime;
 
- /*   exports com.sun.istack;
-    exports com.sun.istack.localization;
-    exports com.sun.istack.logging;
-*/
     exports com.sun.xml.bind;
     exports com.sun.xml.bind.annotation;
     exports com.sun.xml.bind.api;
@@ -87,17 +83,6 @@ module java.xml.bind.imp {
     exports com.sun.xml.bind.v2.schemagen.episode;
     exports com.sun.xml.bind.v2.schemagen.xmlschema;
     exports com.sun.xml.bind.v2.util;
- /*   exports com.sun.xml.txw2;
-    exports com.sun.xml.txw2.annotation;
-    exports com.sun.xml.txw2.output;
 
-    exports com.sun.xml.fastinfoset;
-    exports com.sun.xml.fastinfoset.stax;
-    exports com.sun.xml.fastinfoset.vocab;
-    exports org.jvnet.fastinfoset;
-    exports org.jvnet.mimepull;
-    exports org.jvnet.staxex;
-    exports org.jvnet.staxex.util;
-*/
     uses javax.xml.bind.JAXBContextFactory;
 }
