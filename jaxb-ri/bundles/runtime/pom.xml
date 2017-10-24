@@ -87,11 +87,32 @@
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>prepare-endorsed</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>copy-dependencies</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>${maven.endorsed.skip}</skip>
+                                    <outputDirectory>${endorsed.dir}</outputDirectory>
+                                    <silent>false</silent>
+                                    <includeArtifactIds>jaxb-api,txw2,istack-commons-runtime,stax-ex,FastInfoset</includeArtifactIds>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
                             <additionalJOptions>
                                 <additionalJOption>--add-modules</additionalJOption>
                                 <additionalJOption>java.xml.bind</additionalJOption>
+                                <additionalJOption>--module-path</additionalJOption>
+                                <additionalJOption>${endorsed.dir}</additionalJOption>
                             </additionalJOptions>
                         </configuration>
                     </plugin>
