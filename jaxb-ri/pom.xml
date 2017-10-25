@@ -595,7 +595,6 @@
         <module>external</module>
         <module>codemodel</module>
         <module>txw</module>
-       <!-- <module>core</module>-->
         <module>runtime</module>
         <module>xjc</module>
         <module>jxc</module>
