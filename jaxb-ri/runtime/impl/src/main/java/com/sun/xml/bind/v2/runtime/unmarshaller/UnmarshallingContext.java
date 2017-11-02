@@ -68,7 +68,6 @@ import com.sun.istack.NotNull;
 import com.sun.istack.Nullable;
 import com.sun.istack.SAXParseException2;
 import com.sun.xml.bind.IDResolver;
-import com.sun.xml.bind.Util;
 import com.sun.xml.bind.api.AccessorException;
 import com.sun.xml.bind.api.ClassResolver;
 import com.sun.xml.bind.unmarshaller.InfosetScanner;
@@ -77,8 +76,6 @@ import com.sun.xml.bind.v2.runtime.AssociationMap;
 import com.sun.xml.bind.v2.runtime.Coordinator;
 import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
 import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
@@ -199,13 +196,24 @@ public final class UnmarshallingContext extends Coordinator
      */
     public @Nullable ClassLoader classLoader;
 
+    public static volatile int DEFAULT_ERROR_COUNTER = 10;
+
     /**
-     * The variable introduced to avoid reporting n^10 similar errors.
-     * After error is reported counter is decremented. When it became 0 - errors should not be reported any more.
+     * The variable introduced to avoid reporting more than {@value DEFAULT_ERROR_COUNTER} errors.
+     * The default value can be overrode setting the {@link UnmarshallerProperties#ERROR_REPORT_LIMIT} property in the {@link Unmarshaller}.
+     * After error is reported counter is decremented. When it became lower than 0, errors should not be reported any more.
+     * If the {@link UnmarshallingContext#limitErrorReporting} is set to false, this field will be totally ignored.
      *
      * volatile is required to ensure that concurrent threads will see changed value
      */
-    private static volatile int errorsCounter = 10;
+    private volatile int errorsCounter = DEFAULT_ERROR_COUNTER;
+
+    /**
+     * Indicates if it should exist an error reporting limit. Default value is true.
+     * This property can be overrode setting the setting the {@link UnmarshallerProperties#ENABLE_ERROR_REPORT_LIMIT} property in the {@link Unmarshaller}.
+     *
+     */
+    private volatile boolean limitErrorReporting = true;
 
     /**
      * State information for each element.
@@ -1336,8 +1344,16 @@ public final class UnmarshallingContext extends Coordinator
         return null;
     }
 
+    public void setErrorsCounter(int errorsCounter) {
+        this.errorsCounter = errorsCounter;
+    }
+
+    public void setLimitErrorReporting(boolean limitErrorReporting) {
+        this.limitErrorReporting = limitErrorReporting;
+    }
+
     /**
-     * Based on current {@link Logger} {@link Level} and errorCounter value determines if error should be reported.
+     * Based on current {@link UnmarshallingContext#limitErrorReporting} and errorCounter value determines if error should be reported.
      *
      * If the method called and return true it is expected that error will be reported. And that's why
      * errorCounter is automatically decremented during the check.
@@ -1345,19 +1361,19 @@ public final class UnmarshallingContext extends Coordinator
      * NOT THREAD SAFE!!! In case of heave concurrency access several additional errors could be reported. It's not expected to be the
      * problem. Otherwise add synchronization here.
      *
-     * @return true in case if {@link Level#FINEST} is set OR we haven't exceed errors reporting limit.
+     * @return true in case if {@link UnmarshallingContext#limitErrorReporting} OR we haven't exceed errors reporting limit.
      */
     public boolean shouldErrorBeReported() throws SAXException {
-        if (logger.isLoggable(Level.FINEST))
+        if (!limitErrorReporting)
             return true;
 
         if (errorsCounter >= 0) {
             --errorsCounter;
-            if (errorsCounter == 0) // it's possible to miss this because of concurrency. If required add synchronization here
+            if (errorsCounter == -1) // it's possible to miss this because of concurrency. If required add synchronization here
                 handleEvent(new ValidationEventImpl(ValidationEvent.WARNING, Messages.ERRORS_LIMIT_EXCEEDED.format(),
                         getLocator().getLocation(), null), true);
         }
-        return errorsCounter >= 0;
+        return false;
     }
 }
 

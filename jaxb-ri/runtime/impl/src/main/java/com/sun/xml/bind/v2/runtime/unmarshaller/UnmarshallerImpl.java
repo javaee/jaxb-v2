@@ -40,6 +40,9 @@
 
 package com.sun.xml.bind.v2.runtime.unmarshaller;
 
+import static com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerProperties.ENABLE_ERROR_REPORT_LIMIT;
+import static com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallerProperties.ERROR_REPORT_LIMIT;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -510,6 +513,14 @@ import org.xml.sax.helpers.DefaultHandler;
         if(name.equals(ClassLoader.class.getName())) {
             coordinator.classLoader = (ClassLoader)value;
             return;
+        }
+        if(name.equals(ENABLE_ERROR_REPORT_LIMIT)) {
+            coordinator.setLimitErrorReporting((boolean) value);
+            return ;
+        }
+        if(name.equals(ERROR_REPORT_LIMIT)) {
+            coordinator.setErrorsCounter((int)value);
+            return ;
         }
         super.setProperty(name, value);
     }
