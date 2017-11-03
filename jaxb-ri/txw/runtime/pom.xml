@@ -80,5 +80,35 @@
         </plugins>
     </build>
 
+     <profiles>
+        <profile>
+            <id>jdk9-setup</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                  <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>add-jdk9-source</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>add-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>src/main/jdk9</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                         </executions>
+                    </plugin>
+                </plugins>
+            </build>
+      </profile>
+    </profiles>
 </project>
 
