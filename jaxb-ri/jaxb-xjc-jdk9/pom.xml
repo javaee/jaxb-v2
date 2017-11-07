@@ -174,7 +174,7 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>${project.groupId}</groupId>
-                                    <artifactId>jaxb-core</artifactId>
+                                    <artifactId>jaxb-runtime</artifactId>
                                     <type>jar</type>
                                 </artifactItem>
                                 <artifactItem>

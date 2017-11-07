@@ -65,8 +65,17 @@
 
     <dependencies>
         <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jaxb-core</artifactId>
+            <artifactId>txw2</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.istack</groupId>
+            <artifactId>istack-commons-runtime</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jvnet.staxex</groupId>
@@ -109,6 +118,43 @@
             </activation>
             <build>
                 <plugins>
+                   <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>prepare-endorsed</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>copy-dependencies</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>${maven.endorsed.skip}</skip>
+                                    <outputDirectory>${endorsed.dir}</outputDirectory>
+                                    <silent>false</silent>
+                                    <includeArtifactIds>jaxb-api,txw2,istack-commons-runtime,stax-ex,FastInfoset</includeArtifactIds>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                   <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>add-jdk9-source</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>add-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>src/main/jdk9</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
@@ -143,6 +189,8 @@
                             <additionalJOptions>
                                 <additionalJOption>--add-modules</additionalJOption>
                                 <additionalJOption>java.activation</additionalJOption>
+                                <additionalJOption>--module-path</additionalJOption>
+                                <additionalJOption>${endorsed.dir}</additionalJOption>
                             </additionalJOptions>
                         </configuration>
                     </plugin>

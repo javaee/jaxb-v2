@@ -87,11 +87,32 @@
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>prepare-endorsed</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>copy-dependencies</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>${maven.endorsed.skip}</skip>
+                                    <outputDirectory>${endorsed.dir}</outputDirectory>
+                                    <silent>false</silent>
+                                    <includeArtifactIds>jaxb-api,txw2,istack-commons-runtime,stax-ex,FastInfoset</includeArtifactIds>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
                             <additionalJOptions>
                                 <additionalJOption>--add-modules</additionalJOption>
                                 <additionalJOption>java.xml.bind</additionalJOption>
+                                <additionalJOption>--module-path</additionalJOption>
+                                <additionalJOption>${endorsed.dir}</additionalJOption>
                             </additionalJOptions>
                         </configuration>
                     </plugin>
@@ -277,7 +298,6 @@
                                 </includes>
                                 <excludes>
                                     <exclude>javax.xml.bind:jaxb-api</exclude>
-                                    <exclude>org.glassfish.jaxb:jaxb-core</exclude>
                                     <exclude>javax.xml.stream:stax-api</exclude>
                                     <exclude>relaxngDatatype:relaxngDatatype</exclude>
                                     <exclude>com.sun.xml.fastinfoset:FastInfoset</exclude>
@@ -287,17 +307,6 @@
                                     <exclude>com.sun.istack:istack-commons-runtime</exclude>
                                 </excludes>
                             </artifactSet>
-                            <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <manifestEntries>
-                                        <Class-Path>jaxb-core.jar</Class-Path>
-                                        <Major-Version>${jaxb.majorVersion}.${jaxb.minorVersion}.${jaxb.incrementalVersion}</Major-Version>
-                                        <Specification-Version>${jaxb-api.majorVersion}.${jaxb-api.minorVersion}</Specification-Version>
-                                        <Git-Revision>${buildNumber}</Git-Revision>
-                                    </manifestEntries>
-                                </transformer>
-                            </transformers>
                         </configuration>
                     </execution>
                 </executions>

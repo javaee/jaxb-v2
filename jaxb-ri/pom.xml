@@ -487,16 +487,6 @@
                     <artifactId>gfnexus-maven-plugin</artifactId>
                     <version>0.20</version>
                     <configuration>
-                        <stagingRepos>
-                            <stagingRepo>
-                                <ref>org.glassfish.jaxb:jaxb-core:${project.version}:jar</ref>
-                                <profile>org.glassfish.jaxb</profile>
-                            </stagingRepo>
-                            <stagingRepo>
-                                <ref>com.sun.xml.bind:jaxb-core:${project.version}:jar</ref>
-                                <profile>javax.xml.bind</profile>
-                            </stagingRepo>
-                        </stagingRepos>
                         <promotionProfile>metro</promotionProfile>
                         <message>JAXB-${project.version}</message>
                     </configuration>
@@ -605,7 +595,6 @@
         <module>external</module>
         <module>codemodel</module>
         <module>txw</module>
-        <module>core</module>
         <module>runtime</module>
         <module>xjc</module>
         <module>jxc</module>

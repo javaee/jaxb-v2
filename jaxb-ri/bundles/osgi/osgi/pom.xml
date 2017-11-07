@@ -62,11 +62,6 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jaxb-core</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>jaxb-xjc</artifactId>
             <optional>true</optional>
         </dependency>
@@ -184,10 +179,10 @@
                         </goals>
                 <configuration>
                     <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                    <includeArtifactIds>jaxb-core,jaxb-impl,jaxb1-impl,jaxb-jxc,jaxb-xjc,stax-ex,FastInfoset</includeArtifactIds>
+                    <includeArtifactIds>jaxb-impl,jaxb1-impl,jaxb-jxc,jaxb-xjc,stax-ex,FastInfoset</includeArtifactIds>
                 </configuration>
                     </execution>
-                <execution>
+                 <execution>
                         <id>unpack-sources</id>
                         <phase>prepare-package</phase>
                         <goals>
@@ -196,14 +191,7 @@
                         <configuration>
                             <skip>${skipSources}</skip>
                             <artifactItems>
-                                <artifactItem>
-                                    <groupId>com.sun.xml.bind</groupId>
-                                    <artifactId>jaxb-core</artifactId>
-                                    <classifier>sources</classifier>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
+                               <artifactItem>
                                     <groupId>com.sun.xml.bind</groupId>
                                     <artifactId>jaxb-xjc</artifactId>
                                     <classifier>sources</classifier>
@@ -216,6 +204,7 @@
                                     <classifier>sources</classifier>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${generated.sources.dir}</outputDirectory>
+                                    <excludes>module-info.java</excludes>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>com.sun.xml.bind</groupId>
@@ -374,7 +363,6 @@
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                    <include>com.sun.xml.bind:jaxb-core</include>
                                     <include>com.sun.xml.bind:jaxb-xjc</include>
                                     <include>com.sun.xml.bind:jaxb-impl</include>
                                     <include>com.sun.xml.bind:jaxb-jxc</include>
@@ -384,7 +372,6 @@
                                 </includes>
                                 <excludes>
                                     <exclude>org.glassfish.jaxb:jaxb-runtime</exclude>
-                                    <exclude>org.glassfish.jaxb:jaxb-core</exclude>
                                     <exclude>javax.xml.bind:jaxb-api</exclude>
                                     <exclude>org.glassfish.jaxb:txw2</exclude>
                                     <exclude>com.sun.istack:istack-commons-runtime</exclude>
@@ -451,7 +438,9 @@
                         <configuration>
                             <sourceFileExcludes>
                                 <sourceFileExclude>META-INF/versions/**</sourceFileExclude>
+                                <sourceFileExclude>module-info.java</sourceFileExclude>
                             </sourceFileExcludes>
+                            <includeDependencySources>false</includeDependencySources>
                             <additionalJOptions>
                                 <additionalJOption>--add-modules</additionalJOption>
                                 <additionalJOption>java.activation</additionalJOption>

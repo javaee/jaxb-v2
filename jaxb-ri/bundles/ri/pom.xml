@@ -66,11 +66,6 @@
         </dependency>
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-core</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-xjc</artifactId>
             <optional>true</optional>
         </dependency>
@@ -172,21 +167,4 @@
         </plugins>
     </build>
 
-   <profiles>
-      <profile>
-          <id>jdk9-setup</id>
-          <activation>
-              <jdk>[9,)</jdk>
-          </activation>
-          <dependencies>
-            <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-mod</artifactId>
-                <version>${project.version}</version>
-                <optional>true</optional>
-            </dependency>  
-          </dependencies>
-      </profile>
-    </profiles>
-  
 </project>

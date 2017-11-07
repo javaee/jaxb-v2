@@ -319,7 +319,6 @@
                                     <include>org.glassfish.jaxb:jaxb-jxc</include>
                                 </includes>
                                 <excludes>
-                                    <exclude>org.glassfish.jaxb:jaxb-core</exclude>
                                     <exclude>org.glassfish.jaxb:jaxb-xjc-jdk9</exclude>
                                     <exclude>org.glassfish.jaxb:jaxb-xjc</exclude>
                                     <exclude>org.glassfish.jaxb:jaxb-runtime</exclude>
@@ -349,7 +348,7 @@
                                     implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>com.sun.tools.jxc.SchemaGeneratorFacade</mainClass>
                                     <manifestEntries>
-                                        <Class-Path>jaxb-core.jar jaxb-impl.jar jaxb-xjc.jar</Class-Path>
+                                        <Class-Path>jaxb-impl.jar jaxb-xjc.jar</Class-Path>
                                         <Major-Version>${jaxb.majorVersion}.${jaxb.minorVersion}.${jaxb.incrementalVersion}</Major-Version>
                                         <Specification-Version>${jaxb-api.majorVersion}.${jaxb-api.minorVersion}</Specification-Version>
                                         <Git-Revision>${buildNumber}</Git-Revision>

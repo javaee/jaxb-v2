@@ -63,7 +63,6 @@
     </properties>
 
     <modules>
-        <module>core</module>
         <module>runtime</module>
         <module>xjc</module>
         <module>jxc</module>
@@ -71,15 +70,4 @@
         <module>osgi</module>
     </modules>
 
-    <profiles>
-      <profile>
-            <id>jdk9-setup</id>
-            <activation>
-                <jdk>[9,)</jdk>
-            </activation>
-            <modules>
-                <module>mod</module>
-            </modules>
-      </profile>
-    </profiles>
 </project>
