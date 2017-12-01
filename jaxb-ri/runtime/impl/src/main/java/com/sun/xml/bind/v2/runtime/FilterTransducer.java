@@ -62,12 +62,6 @@ public abstract class FilterTransducer<T> implements Transducer<T> {
         this.core = core;
     }
 
-    public final boolean isDefault() {
-        // this must be used as a decorating transducer,
-        // so it may never be default.
-        return false;
-    }
-
     public boolean useNamespace() {
         return core.useNamespace();
     }
