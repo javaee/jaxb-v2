@@ -44,7 +44,6 @@
 module com.sun.tools.rngom {
 
     requires java.xml;
-    requires relaxngDatatype;
     requires java.logging;
 
     exports org.kohsuke.rngom.parse;

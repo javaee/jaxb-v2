@@ -48,7 +48,6 @@ module com.sun.xml.xsom {
 
     requires java.xml;
     requires java.desktop;
-    requires relaxngDatatype;
     requires java.logging;
 
     exports com.sun.xml.xsom;

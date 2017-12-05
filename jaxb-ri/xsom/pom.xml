@@ -205,6 +205,10 @@
                                     <includes>
                                         <include>module-info.java</include>
                                     </includes>
+                                    <compilerArgs>
+                                        <arg>--add-reads</arg>
+                                        <arg>com.sun.tools.rngom=relaxngDatatype</arg>
+                                    </compilerArgs>
                                 </configuration>
                             </execution>
                             <execution>

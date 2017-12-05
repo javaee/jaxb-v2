@@ -57,6 +57,5 @@ module com.sun.tools.xjc {
     requires com.sun.tools.rngom;
     requires com.sun.xml.dtdparser;
     requires com.sun.xml.txw2;
-    requires ant;
 
 }
