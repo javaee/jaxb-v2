@@ -182,5 +182,62 @@
                 <!--</plugins>-->
             <!--</build>-->
         <!--</profile>-->
+
+        <profile>
+            <id>jdk9-setup</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-compile</id>
+                                <configuration>
+                                    <jdkToolchain>
+                                        <version>9</version>
+                                    </jdkToolchain>
+                                    <source>9</source>
+                                    <target>9</target>
+                                    <includes>
+                                        <include>module-info.java</include>
+                                    </includes>
+                                    <compilerArgs>
+                                        <arg>--add-reads</arg>
+                                        <arg>com.sun.tools.rngom=relaxngDatatype</arg>
+                                    </compilerArgs>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>base-compile</id>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <source>1.7</source>
+                                    <target>1.7</target>
+                                    <jdkToolchain>
+                                        <version>1.7</version>
+                                    </jdkToolchain>
+                                    <excludes>
+                                        <exclude>module-info.java</exclude>
+                                    </excludes>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <additionalparam>-Xdoclint:none</additionalparam>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>

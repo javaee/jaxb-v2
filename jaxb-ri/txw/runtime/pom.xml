@@ -88,23 +88,35 @@
             </activation>
             <build>
                 <plugins>
-                  <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>build-helper-maven-plugin</artifactId>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>add-jdk9-source</id>
-                                <phase>generate-sources</phase>
-                                <goals>
-                                    <goal>add-source</goal>
-                                </goals>
+                                <id>default-compile</id>
                                 <configuration>
-                                    <sources>
-                                        <source>src/main/jdk9</source>
-                                    </sources>
+                                    <jdkToolchain>
+                                        <version>9</version>
+                                    </jdkToolchain>
+                                    <source>9</source>
+                                    <target>9</target>
                                 </configuration>
                             </execution>
-                         </executions>
+                            <execution>
+                                <id>base-compile</id>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <jdkToolchain>
+                                        <version>1.7</version>
+                                    </jdkToolchain>
+                                    <excludes>
+                                        <exclude>module-info.java</exclude>
+                                    </excludes>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>

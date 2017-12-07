@@ -114,7 +114,7 @@
         <profile>
             <id>jdk9-setup</id>
             <activation>
-                <jdk>9</jdk>
+                <jdk>[9,)</jdk>
             </activation>
             <build>
                 <plugins>
@@ -137,24 +137,6 @@
                             </execution>
                         </executions>
                     </plugin>
-                   <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>build-helper-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>add-jdk9-source</id>
-                                <phase>generate-sources</phase>
-                                <goals>
-                                    <goal>add-source</goal>
-                                </goals>
-                                <configuration>
-                                    <sources>
-                                        <source>src/main/jdk9</source>
-                                    </sources>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
@@ -162,12 +144,30 @@
                             <execution>
                                 <id>default-compile</id>
                                 <configuration>
-                                    <compilerArgs>
-                                        <arg>--add-modules</arg>
-                                        <arg>java.xml.bind</arg>
-                                        <arg>--upgrade-module-path</arg>
-                                        <arg>${endorsed.dir}</arg>
-                                    </compilerArgs>
+                                    <jdkToolchain>
+                                        <version>9</version>
+                                    </jdkToolchain>
+                                    <source>9</source>
+                                    <target>9</target>
+                                    <includes>
+                                        <include>module-info.java</include>
+                                    </includes>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>base-compile</id>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <source>1.7</source>
+                                    <target>1.7</target>
+                                    <jdkToolchain>
+                                        <version>1.7</version>
+                                    </jdkToolchain>
+                                    <excludes>
+                                        <exclude>module-info.java</exclude>
+                                    </excludes>
                                 </configuration>
                             </execution>
                         </executions>
