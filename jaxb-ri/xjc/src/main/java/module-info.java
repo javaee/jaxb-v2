@@ -46,6 +46,7 @@ module com.sun.tools.xjc {
 
     requires java.logging;
     requires java.compiler;
+    requires jdk.compiler;
     requires java.desktop;
 
     requires com.sun.codemodel;
@@ -57,5 +58,9 @@ module com.sun.tools.xjc {
     requires com.sun.tools.rngom;
     requires com.sun.xml.dtdparser;
     requires com.sun.xml.txw2;
+
+    exports com.sun.tools.xjc;
+    exports com.sun.tools.xjc.api;
+    exports com.sun.tools.xjc.util;
 
 }

@@ -301,10 +301,31 @@
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
                             <additionalJOptions>
+                                <additionalJOption>--module-path</additionalJOption>
+                                <additionalJOption>${project.build.directory}/mods</additionalJOption>
                                 <additionalJOption>--add-modules</additionalJOption>
                                 <additionalJOption>java.activation</additionalJOption>
+                                <additionalJOption>--add-reads</additionalJOption>
+                                <additionalJOption>com.sun.tools.xjc=ant</additionalJOption>
                             </additionalJOptions>
                         </configuration>
+                    </plugin>
+
+                    <!--TODO remove after javadoc-plugin 3.0.0 is released, see https://issues.apache.org/jira/browse/MJAVADOC-498 -->
+                    <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>copy-dependencies</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/mods</outputDirectory>
+                                    <excludeArtifactIds>jmockit</excludeArtifactIds>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>

@@ -146,6 +146,19 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.0.0-M1</version>
+                        <configuration>
+                            <additionalJOptions>
+                                <additionalJOption>--add-reads</additionalJOption>
+                                <!--Dependency for relaxngDatatype is put on classpath by javadoc plugin-->
+                                <!--TODO remove after javadoc-plugin 3.0.0 is released, see https://issues.apache.org/jira/browse/MJAVADOC-498 -->
+                                <additionalJOption>com.sun.tools.rngom=ALL-UNNAMED</additionalJOption>
+                            </additionalJOptions>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
