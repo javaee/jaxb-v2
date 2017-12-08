@@ -107,7 +107,7 @@
                                 </goals>
                                 <configuration>
                                     <skip>${skipSources}</skip>
-                                    <excludes>META-INF/**</excludes>
+                                    <excludes>META-INF/**,**/module-info.java</excludes>
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>org.glassfish.jaxb</groupId>
@@ -127,7 +127,7 @@
                                 </goals>
                                 <configuration>
                                     <skip>false</skip>
-                                    <excludes>META-INF/**</excludes>
+                                    <excludes>META-INF/**,**/module-info.class</excludes>
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>org.glassfish.jaxb</groupId>
@@ -253,6 +253,7 @@
                             <goal>unpack</goal>
                         </goals>
                         <configuration>
+                            <excludes>**/module-info.java</excludes>
                             <skip>${skipSources}</skip>
                             <artifactItems>
                                 <artifactItem>
@@ -272,6 +273,7 @@
                             <goal>unpack</goal>
                         </goals>
                         <configuration>
+                            <excludes>**/module-info.class</excludes>
                             <skip>false</skip>
                             <artifactItems>
                                 <artifactItem>

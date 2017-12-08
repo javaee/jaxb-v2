@@ -231,6 +231,7 @@
                             <goal>unpack</goal>
                         </goals>
                         <configuration>
+                            <excludes>**/module-info.java</excludes>
                             <skip>${skipSources}</skip>
                             <artifactItems>
                                 <artifactItem>
@@ -250,6 +251,7 @@
                             <goal>unpack</goal>
                         </goals>
                         <configuration>
+                            <excludes>**/module-info.class</excludes>
                             <skip>false</skip>
                             <artifactItems>
                                 <artifactItem>

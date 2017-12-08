@@ -279,6 +279,7 @@
                             <goal>unpack</goal>
                         </goals>
                         <configuration>
+                            <excludes>**/module-info.java</excludes>
                             <skip>${skipSources}</skip>
                             <artifactItems>
                                 <artifactItem>
@@ -330,6 +331,13 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${generated.sources.dir}</outputDirectory>
                                 </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.ant</groupId>
+                                    <artifactId>ant</artifactId>
+                                    <classifier>sources</classifier>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
+                                </artifactItem>
                             </artifactItems>
                         </configuration>
                     </execution>
@@ -340,6 +348,7 @@
                             <goal>unpack</goal>
                         </goals>
                         <configuration>
+                            <excludes>**/module-info.class</excludes>
                             <skip>false</skip>
                             <artifactItems>
                                 <artifactItem>
@@ -381,6 +390,12 @@
                                 <artifactItem>
                                     <groupId>com.sun.istack</groupId>
                                     <artifactId>istack-commons-tools</artifactId>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${generated.classes.dir}</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.ant</groupId>
+                                    <artifactId>ant</artifactId>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${generated.classes.dir}</outputDirectory>
                                 </artifactItem>
@@ -447,14 +462,14 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>module-info.java</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
+                                <filters>
+                                    <filter>
+                                        <artifact>*:*</artifact>
+                                        <excludes>
+                                            <exclude>module-info.java</exclude>
+                                        </excludes>
+                                    </filter>
+                                </filters>
                             <artifactSet>
                                 <includes>
                                     <include>org.glassfish.jaxb:jaxb-xjc</include>
