@@ -267,9 +267,6 @@
                             <execution>
                                 <id>default-compile</id>
                                 <configuration>
-                                    <jdkToolchain>
-                                        <version>9</version>
-                                    </jdkToolchain>
                                     <source>9</source>
                                     <target>9</target>
                                     <includes>

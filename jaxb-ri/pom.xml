@@ -297,9 +297,6 @@
                             <arg>-Xlint:all</arg>
                             <!--<XDignore.symbol.file/>-->
                         </compilerArgs>
-                        <jdkToolchain>
-                            <version>1.7</version>
-                        </jdkToolchain>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -656,9 +653,6 @@
                             <execution>
                                 <id>default-compile</id>
                                 <configuration>
-                                    <jdkToolchain>
-                                        <version>9</version>
-                                    </jdkToolchain>
                                     <source>9</source>
                                     <target>9</target>
                                 </configuration>
@@ -669,9 +663,6 @@
                                     <goal>compile</goal>
                                 </goals>
                                 <configuration>
-                                    <jdkToolchain>
-                                        <version>1.7</version>
-                                    </jdkToolchain>
                                     <excludes>
                                         <exclude>module-info.java</exclude>
                                     </excludes>

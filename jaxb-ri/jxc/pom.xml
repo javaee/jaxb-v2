@@ -217,9 +217,6 @@
                             <execution>
                                 <id>default-compile</id>
                                 <configuration>
-                                    <jdkToolchain>
-                                        <version>9</version>
-                                    </jdkToolchain>
                                     <source>9</source>
                                     <target>9</target>
                                     <includes>
@@ -235,9 +232,6 @@
                                 <configuration>
                                     <source>1.7</source>
                                     <target>1.7</target>
-                                    <jdkToolchain>
-                                        <version>1.7</version>
-                                    </jdkToolchain>
                                     <excludes>
                                         <exclude>module-info.java</exclude>
                                     </excludes>
