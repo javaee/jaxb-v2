@@ -258,8 +258,12 @@
                             <additionalJOptions>
                                 <additionalJOption>--module-path</additionalJOption>
                                 <additionalJOption>${project.build.directory}/mods</additionalJOption>
+                                <additionalJOption>--add-modules</additionalJOption>
+                                <additionalJOption>ant</additionalJOption>
                                 <additionalJOption>--add-reads</additionalJOption>
                                 <additionalJOption>com.sun.tools.jxc=ant</additionalJOption>
+                                <additionalJOption>--add-reads</additionalJOption>
+                                <additionalJOption>com.sun.istack.tools=ant</additionalJOption>
                             </additionalJOptions>
                         </configuration>
                     </plugin>

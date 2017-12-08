@@ -272,10 +272,6 @@
                                     <includes>
                                         <include>module-info.java</include>
                                     </includes>
-                                    <compilerArgs>
-                                        <arg>--add-reads</arg>
-                                        <arg>com.sun.tools.xjc=antX</arg>
-                                    </compilerArgs>
                                 </configuration>
                             </execution>
                             <execution>
@@ -301,7 +297,9 @@
                                 <additionalJOption>--module-path</additionalJOption>
                                 <additionalJOption>${project.build.directory}/mods</additionalJOption>
                                 <additionalJOption>--add-modules</additionalJOption>
-                                <additionalJOption>java.activation</additionalJOption>
+                                <additionalJOption>ant</additionalJOption>
+                                <additionalJOption>--add-reads</additionalJOption>
+                                <additionalJOption>com.sun.istack.tools=ant</additionalJOption>
                                 <additionalJOption>--add-reads</additionalJOption>
                                 <additionalJOption>com.sun.tools.xjc=ant</additionalJOption>
                             </additionalJOptions>
