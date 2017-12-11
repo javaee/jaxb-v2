@@ -178,6 +178,7 @@
                             <goal>unpack-dependencies</goal>
                         </goals>
                 <configuration>
+                    <excludes>**/module-info.class</excludes>
                     <outputDirectory>${project.build.outputDirectory}</outputDirectory>
                     <includeArtifactIds>jaxb-impl,jaxb1-impl,jaxb-jxc,jaxb-xjc,stax-ex,FastInfoset</includeArtifactIds>
                 </configuration>
@@ -189,6 +190,7 @@
                             <goal>unpack</goal>
                         </goals>
                         <configuration>
+                            <excludes>**/module-info.java</excludes>
                             <skip>${skipSources}</skip>
                             <artifactItems>
                                <artifactItem>

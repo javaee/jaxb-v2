@@ -331,13 +331,6 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${generated.sources.dir}</outputDirectory>
                                 </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.ant</groupId>
-                                    <artifactId>ant</artifactId>
-                                    <classifier>sources</classifier>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
-                                </artifactItem>
                             </artifactItems>
                         </configuration>
                     </execution>
@@ -390,12 +383,6 @@
                                 <artifactItem>
                                     <groupId>com.sun.istack</groupId>
                                     <artifactId>istack-commons-tools</artifactId>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${generated.classes.dir}</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.ant</groupId>
-                                    <artifactId>ant</artifactId>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${generated.classes.dir}</outputDirectory>
                                 </artifactItem>
