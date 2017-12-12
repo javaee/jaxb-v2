@@ -92,7 +92,7 @@
             <useProjectArtifact>false</useProjectArtifact>
             <useTransitiveDependencies>true</useTransitiveDependencies>
             <useTransitiveFiltering>true</useTransitiveFiltering>
-            <outputDirectory>jaxb-ri/lib</outputDirectory>
+            <outputDirectory>jaxb-ri/mod</outputDirectory>
             <directoryMode>0755</directoryMode>
             <fileMode>0644</fileMode>
             <includes>
@@ -100,17 +100,31 @@
                 <include>org.glassfish.jaxb:jaxb-xjc</include>
                 <include>org.glassfish.jaxb:jaxb-runtime</include>
                 <include>org.glassfish.jaxb:jaxb-jxc</include>
-                <include>com.sun.xml.bind:jaxb-mod</include>
                 <include>org.glassfish.jaxb:codemodel</include>
                 <include>org.glassfish.jaxb:xsom</include>
                 <include>com.sun.xml.bind.external:rngom</include>
                 <include>com.sun.istack:istack-commons-runtime</include>
                 <include>com.sun.istack:istack-commons-tools</include>
                 <include>com.sun.xml.dtd-parser:dtd-parser</include>
-                <include>relaxngDatatype:relaxngDatatype</include>
                 <include>org.jvnet.staxex:stax-ex</include>
                 <include>com.sun.xml.fastinfoset:FastInfoset</include>
                 <include>org.glassfish.jaxb:txw2</include>
+            </includes>
+            <excludes>
+                <exclude>org.apache.ant:ant</exclude>
+            </excludes>
+        </dependencySet>
+        <dependencySet>
+            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+            <useProjectArtifact>false</useProjectArtifact>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <useTransitiveFiltering>true</useTransitiveFiltering>
+            <outputDirectory>jaxb-ri/lib</outputDirectory>
+            <directoryMode>0755</directoryMode>
+            <fileMode>0644</fileMode>
+            <includes>
+                <include>relaxngDatatype:relaxngDatatype</include>
+                <include>org.apache.ant:ant</include>
             </includes>
         </dependencySet>
         <dependencySet>
