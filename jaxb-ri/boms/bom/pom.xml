@@ -65,6 +65,7 @@
         <istack.version>3.0.6</istack.version>
         <fastinfoset.version>1.2.14</fastinfoset.version>
         <stax-ex.version>1.7.9</stax-ex.version>
+        <dtd-parser.version>1.3-SNAPSHOT</dtd-parser.version>
     </properties>
 
     <dependencyManagement>
@@ -127,6 +128,11 @@
                 <artifactId>FastInfoset</artifactId>
                 <version>${fastinfoset.version}</version>
                 <classifier>sources</classifier>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.dtd-parser</groupId>
+                <artifactId>dtd-parser</artifactId>
+                <version>${dtd-parser.version}</version>
             </dependency>
 
 

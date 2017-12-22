@@ -63,7 +63,6 @@
     </description>
 
     <properties>
-        <dtd-parser.version>1.3-SNAPSHOT</dtd-parser.version>
         <ant.version>1.9.7</ant.version>
         <msv.version>2013.6.1</msv.version>
         <!-- don't forget to check if isorelax.version is valid -> used in osgi -->
@@ -79,11 +78,6 @@
                 <version>${project.version}</version>
             </dependency>
             <!-- Dependencies -->
-            <dependency>
-                <groupId>com.sun.xml.dtd-parser</groupId>
-                <artifactId>dtd-parser</artifactId>
-                <version>${dtd-parser.version}</version>
-            </dependency>
             <dependency>
                 <groupId>com.sun.istack</groupId>
                 <artifactId>istack-commons-tools</artifactId>
