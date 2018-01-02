@@ -43,11 +43,11 @@ package com.sun.tools.txw2;
 import com.sun.tools.txw2.builder.relaxng.SchemaBuilderImpl;
 import com.sun.tools.txw2.model.Leaf;
 import com.sun.tools.txw2.model.NodeSet;
-import org.kohsuke.rngom.ast.util.CheckingSchemaBuilder;
-import org.kohsuke.rngom.dt.CascadingDatatypeLibraryFactory;
-import org.kohsuke.rngom.dt.builtin.BuiltinDatatypeLibraryFactory;
-import org.kohsuke.rngom.parse.IllegalSchemaException;
-import org.kohsuke.rngom.parse.Parseable;
+import com.sun.tools.rngom.ast.util.CheckingSchemaBuilder;
+import com.sun.tools.rngom.dt.CascadingDatatypeLibraryFactory;
+import com.sun.tools.rngom.dt.builtin.BuiltinDatatypeLibraryFactory;
+import com.sun.tools.rngom.parse.IllegalSchemaException;
+import com.sun.tools.rngom.parse.Parseable;
 import org.relaxng.datatype.DatatypeLibrary;
 import org.relaxng.datatype.DatatypeLibraryFactory;
 

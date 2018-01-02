@@ -60,27 +60,27 @@
     <!-- Generated -->
     <Match>
         <Or>
-            <Class name="org.kohsuke.rngom.parse.compact.CompactSyntaxTokenManager"/>
-            <Class name="org.kohsuke.rngom.parse.compact.CompactSyntaxConstants"/>
-            <Class name="org.kohsuke.rngom.parse.compact.CompactSyntax"/>
-            <Class name="org.kohsuke.rngom.parse.compact.ParseException"/>
-            <Class name="org.kohsuke.rngom.parse.compact.TokenMgrError"/>
-            <Class name="org.kohsuke.rngom.parse.compact.JavaCharStream"/>
-            <Class name="org.kohsuke.rngom.parse.compact.UCode_UCodeESC_CharStream"/>
+            <Class name="com.sun.tools.rngom.parse.compact.CompactSyntaxTokenManager"/>
+            <Class name="com.sun.tools.rngom.parse.compact.CompactSyntaxConstants"/>
+            <Class name="com.sun.tools.rngom.parse.compact.CompactSyntax"/>
+            <Class name="com.sun.tools.rngom.parse.compact.ParseException"/>
+            <Class name="com.sun.tools.rngom.parse.compact.TokenMgrError"/>
+            <Class name="com.sun.tools.rngom.parse.compact.JavaCharStream"/>
+            <Class name="com.sun.tools.rngom.parse.compact.UCode_UCodeESC_CharStream"/>
         </Or>
     </Match>
     
     <!-- Supposed to be used elsewhere -->
     <Match>
         <Bug pattern="URF_UNREAD_FIELD"/>
-        <Class name="org.kohsuke.rngom.digested.DPattern"/>
+        <Class name="com.sun.tools.rngom.digested.DPattern"/>
     </Match>
 
     <!-- Potentially allowed to be subclassed or instantiated -->
     <Match>
         <Or>
-            <Class name="org.kohsuke.rngom.digested.DXMLPrinter$XMLWriterException"/>
-            <Class name="org.kohsuke.rngom.digested.DDataPattern$Param"/>
+            <Class name="com.sun.tools.rngom.digested.DXMLPrinter$XMLWriterException"/>
+            <Class name="com.sun.tools.rngom.digested.DDataPattern$Param"/>
         </Or>
         <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>        
     </Match>

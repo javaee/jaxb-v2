@@ -42,10 +42,10 @@ package com.sun.tools.txw2.builder.relaxng;
 
 import com.sun.tools.txw2.model.Grammar;
 import com.sun.tools.txw2.model.Leaf;
-import org.kohsuke.rngom.ast.builder.Div;
-import org.kohsuke.rngom.ast.builder.Scope;
-import org.kohsuke.rngom.ast.om.ParsedElementAnnotation;
-import org.kohsuke.rngom.ast.util.LocatorImpl;
+import com.sun.tools.rngom.ast.builder.Div;
+import com.sun.tools.rngom.ast.builder.Scope;
+import com.sun.tools.rngom.ast.om.ParsedElementAnnotation;
+import com.sun.tools.rngom.ast.util.LocatorImpl;
 
 /**
  * @author Kohsuke Kawaguchi

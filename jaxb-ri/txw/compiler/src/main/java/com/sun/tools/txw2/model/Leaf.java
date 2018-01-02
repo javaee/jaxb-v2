@@ -47,7 +47,7 @@ import com.sun.codemodel.JType;
 import com.sun.tools.txw2.model.prop.Prop;
 import com.sun.tools.txw2.model.prop.ValueProp;
 import com.sun.xml.txw2.annotation.XmlValue;
-import org.kohsuke.rngom.ast.om.ParsedPattern;
+import com.sun.tools.rngom.ast.om.ParsedPattern;
 import org.xml.sax.Locator;
 
 import java.util.Iterator;

@@ -40,10 +40,10 @@
 
 package com.sun.tools.txw2.builder.relaxng;
 
-import org.kohsuke.rngom.ast.builder.Annotations;
-import org.kohsuke.rngom.ast.builder.BuildException;
-import org.kohsuke.rngom.ast.om.ParsedElementAnnotation;
-import org.kohsuke.rngom.ast.util.LocatorImpl;
+import com.sun.tools.rngom.ast.builder.Annotations;
+import com.sun.tools.rngom.ast.builder.BuildException;
+import com.sun.tools.rngom.ast.om.ParsedElementAnnotation;
+import com.sun.tools.rngom.ast.util.LocatorImpl;
 
 /**
  * @author Kohsuke Kawaguchi

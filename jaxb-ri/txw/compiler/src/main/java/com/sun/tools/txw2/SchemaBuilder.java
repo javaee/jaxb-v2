@@ -41,7 +41,7 @@
 package com.sun.tools.txw2;
 
 import com.sun.tools.txw2.model.NodeSet;
-import org.kohsuke.rngom.parse.IllegalSchemaException;
+import com.sun.tools.rngom.parse.IllegalSchemaException;
 import org.xml.sax.SAXException;
 
 /**

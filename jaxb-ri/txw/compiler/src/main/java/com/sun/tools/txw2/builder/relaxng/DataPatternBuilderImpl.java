@@ -43,11 +43,11 @@ package com.sun.tools.txw2.builder.relaxng;
 import com.sun.codemodel.JType;
 import com.sun.tools.txw2.model.Data;
 import com.sun.tools.txw2.model.Leaf;
-import org.kohsuke.rngom.ast.builder.BuildException;
-import org.kohsuke.rngom.ast.builder.DataPatternBuilder;
-import org.kohsuke.rngom.ast.om.ParsedElementAnnotation;
-import org.kohsuke.rngom.ast.util.LocatorImpl;
-import org.kohsuke.rngom.parse.Context;
+import com.sun.tools.rngom.ast.builder.BuildException;
+import com.sun.tools.rngom.ast.builder.DataPatternBuilder;
+import com.sun.tools.rngom.ast.om.ParsedElementAnnotation;
+import com.sun.tools.rngom.ast.util.LocatorImpl;
+import com.sun.tools.rngom.parse.Context;
 
 /**
  * @author Kohsuke Kawaguchi

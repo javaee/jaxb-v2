@@ -58,9 +58,9 @@ import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.visitor.XSTermFunction;
 import javax.xml.namespace.QName;
 
-import org.kohsuke.rngom.nc.ChoiceNameClass;
-import org.kohsuke.rngom.nc.NameClass;
-import org.kohsuke.rngom.nc.SimpleNameClass;
+import com.sun.tools.rngom.nc.ChoiceNameClass;
+import com.sun.tools.rngom.nc.NameClass;
+import com.sun.tools.rngom.nc.SimpleNameClass;
 
 /**
  * Binds a complex type derived from another complex type by extension.

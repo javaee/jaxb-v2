@@ -40,11 +40,11 @@
 
 package com.sun.tools.txw2.builder.relaxng;
 
-import org.kohsuke.rngom.ast.builder.BuildException;
-import org.kohsuke.rngom.ast.builder.CommentList;
-import org.kohsuke.rngom.ast.builder.ElementAnnotationBuilder;
-import org.kohsuke.rngom.ast.om.Location;
-import org.kohsuke.rngom.ast.om.ParsedElementAnnotation;
+import com.sun.tools.rngom.ast.builder.BuildException;
+import com.sun.tools.rngom.ast.builder.CommentList;
+import com.sun.tools.rngom.ast.builder.ElementAnnotationBuilder;
+import com.sun.tools.rngom.ast.om.Location;
+import com.sun.tools.rngom.ast.om.ParsedElementAnnotation;
 
 /**
  * @author Kohsuke Kawaguchi

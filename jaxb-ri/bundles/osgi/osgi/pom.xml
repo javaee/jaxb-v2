@@ -274,7 +274,7 @@
                                     org.jvnet.fastinfoset.*;version=${fastinfoset.version},
                                     org.jvnet.staxex;version=${stax-ex.version},
                                     org.jvnet.staxex.util;version=${stax-ex.version},
-                                    org.kohsuke.rngom.*;version=${jaxb.osgiVersion},
+                                    com.sun.tools.rngom.*;version=${jaxb.osgiVersion},
                                     org.relaxng.datatype;version=${relaxngDatatype.version},
                                     org.relaxng.datatype.*;version=${relaxngDatatype.version}
                                 </Export-Package>

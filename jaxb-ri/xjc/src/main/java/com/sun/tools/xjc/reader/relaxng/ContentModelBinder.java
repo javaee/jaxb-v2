@@ -50,14 +50,14 @@ import com.sun.tools.xjc.model.Multiplicity;
 import com.sun.tools.xjc.reader.RawTypeSet;
 import com.sun.xml.bind.v2.model.core.ID;
 
-import org.kohsuke.rngom.digested.DAttributePattern;
-import org.kohsuke.rngom.digested.DChoicePattern;
-import org.kohsuke.rngom.digested.DMixedPattern;
-import org.kohsuke.rngom.digested.DOneOrMorePattern;
-import org.kohsuke.rngom.digested.DOptionalPattern;
-import org.kohsuke.rngom.digested.DPattern;
-import org.kohsuke.rngom.digested.DPatternWalker;
-import org.kohsuke.rngom.digested.DZeroOrMorePattern;
+import com.sun.tools.rngom.digested.DAttributePattern;
+import com.sun.tools.rngom.digested.DChoicePattern;
+import com.sun.tools.rngom.digested.DMixedPattern;
+import com.sun.tools.rngom.digested.DOneOrMorePattern;
+import com.sun.tools.rngom.digested.DOptionalPattern;
+import com.sun.tools.rngom.digested.DPattern;
+import com.sun.tools.rngom.digested.DPatternWalker;
+import com.sun.tools.rngom.digested.DZeroOrMorePattern;
 
 import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.REPEATED_ELEMENT;
 

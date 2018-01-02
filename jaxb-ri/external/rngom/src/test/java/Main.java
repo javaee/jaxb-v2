@@ -19,13 +19,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import org.kohsuke.rngom.ast.builder.BuildException;
-import org.kohsuke.rngom.ast.builder.SchemaBuilder;
-import org.kohsuke.rngom.ast.util.CheckingSchemaBuilder;
-import org.kohsuke.rngom.dump.Dumper;
-import org.kohsuke.rngom.parse.Parseable;
-import org.kohsuke.rngom.parse.compact.CompactParseable;
-import org.kohsuke.rngom.parse.xml.SAXParseable;
+import com.sun.tools.rngom.ast.builder.BuildException;
+import com.sun.tools.rngom.ast.builder.SchemaBuilder;
+import com.sun.tools.rngom.ast.util.CheckingSchemaBuilder;
+import com.sun.tools.rngom.dump.Dumper;
+import com.sun.tools.rngom.parse.Parseable;
+import com.sun.tools.rngom.parse.compact.CompactParseable;
+import com.sun.tools.rngom.parse.xml.SAXParseable;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

@@ -62,15 +62,15 @@ import com.sun.tools.xjc.model.Model;
 import com.sun.tools.xjc.model.TypeUse;
 import com.sun.xml.bind.api.impl.NameConverter;
 
-import org.kohsuke.rngom.digested.DChoicePattern;
-import org.kohsuke.rngom.digested.DDefine;
-import org.kohsuke.rngom.digested.DElementPattern;
-import org.kohsuke.rngom.digested.DPattern;
-import org.kohsuke.rngom.digested.DPatternWalker;
-import org.kohsuke.rngom.digested.DRefPattern;
-import org.kohsuke.rngom.digested.DValuePattern;
-import org.kohsuke.rngom.nc.NameClass;
-import org.kohsuke.rngom.xml.util.WellKnownNamespaces;
+import com.sun.tools.rngom.digested.DChoicePattern;
+import com.sun.tools.rngom.digested.DDefine;
+import com.sun.tools.rngom.digested.DElementPattern;
+import com.sun.tools.rngom.digested.DPattern;
+import com.sun.tools.rngom.digested.DPatternWalker;
+import com.sun.tools.rngom.digested.DRefPattern;
+import com.sun.tools.rngom.digested.DValuePattern;
+import com.sun.tools.rngom.nc.NameClass;
+import com.sun.tools.rngom.xml.util.WellKnownNamespaces;
 
 /**
  * @author Kohsuke Kawaguchi

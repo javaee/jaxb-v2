@@ -48,7 +48,7 @@ import com.sun.tools.xjc.model.CBuiltinLeafInfo;
 import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.reader.xmlschema.SimpleTypeBuilder;
 
-import org.kohsuke.rngom.xml.util.WellKnownNamespaces;
+import com.sun.tools.rngom.xml.util.WellKnownNamespaces;
 
 /**
  * Data-bindable datatype library.

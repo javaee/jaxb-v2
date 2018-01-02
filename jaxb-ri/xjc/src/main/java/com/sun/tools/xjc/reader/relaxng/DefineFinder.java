@@ -43,10 +43,10 @@ package com.sun.tools.xjc.reader.relaxng;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.kohsuke.rngom.digested.DDefine;
-import org.kohsuke.rngom.digested.DGrammarPattern;
-import org.kohsuke.rngom.digested.DPatternWalker;
-import org.kohsuke.rngom.digested.DRefPattern;
+import com.sun.tools.rngom.digested.DDefine;
+import com.sun.tools.rngom.digested.DGrammarPattern;
+import com.sun.tools.rngom.digested.DPatternWalker;
+import com.sun.tools.rngom.digested.DRefPattern;
 
 /**
  * Recursively find all {@link DDefine}s in the grammar.

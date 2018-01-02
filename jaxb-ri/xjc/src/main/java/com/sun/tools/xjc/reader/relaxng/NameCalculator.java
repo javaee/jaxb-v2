@@ -40,7 +40,7 @@
 
 package com.sun.tools.xjc.reader.relaxng;
 
-import org.kohsuke.rngom.digested.DPatternWalker;
+import com.sun.tools.rngom.digested.DPatternWalker;
 
 /**
  * Decides the name for a particle.

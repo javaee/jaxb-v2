@@ -43,8 +43,8 @@ package com.sun.tools.txw2;
 import com.sun.codemodel.writer.FileCodeWriter;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
-import org.kohsuke.rngom.parse.compact.CompactParseable;
-import org.kohsuke.rngom.parse.xml.SAXParseable;
+import com.sun.tools.rngom.parse.compact.CompactParseable;
+import com.sun.tools.rngom.parse.xml.SAXParseable;
 import org.xml.sax.InputSource;
 
 import java.io.File;

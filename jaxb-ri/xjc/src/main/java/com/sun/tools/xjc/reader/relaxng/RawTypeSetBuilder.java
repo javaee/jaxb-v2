@@ -52,12 +52,12 @@ import com.sun.tools.xjc.model.Multiplicity;
 import com.sun.tools.xjc.reader.RawTypeSet;
 import com.sun.xml.bind.v2.model.core.ID;
 
-import org.kohsuke.rngom.digested.DAttributePattern;
-import org.kohsuke.rngom.digested.DElementPattern;
-import org.kohsuke.rngom.digested.DOneOrMorePattern;
-import org.kohsuke.rngom.digested.DPattern;
-import org.kohsuke.rngom.digested.DPatternWalker;
-import org.kohsuke.rngom.digested.DZeroOrMorePattern;
+import com.sun.tools.rngom.digested.DAttributePattern;
+import com.sun.tools.rngom.digested.DElementPattern;
+import com.sun.tools.rngom.digested.DOneOrMorePattern;
+import com.sun.tools.rngom.digested.DPattern;
+import com.sun.tools.rngom.digested.DPatternWalker;
+import com.sun.tools.rngom.digested.DZeroOrMorePattern;
 
 /**
  * Builds {@link RawTypeSet} for RELAX NG.

@@ -44,16 +44,16 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 
-import org.kohsuke.rngom.digested.DAttributePattern;
-import org.kohsuke.rngom.digested.DChoicePattern;
-import org.kohsuke.rngom.digested.DDefine;
-import org.kohsuke.rngom.digested.DListPattern;
-import org.kohsuke.rngom.digested.DMixedPattern;
-import org.kohsuke.rngom.digested.DOneOrMorePattern;
-import org.kohsuke.rngom.digested.DOptionalPattern;
-import org.kohsuke.rngom.digested.DPatternWalker;
-import org.kohsuke.rngom.digested.DRefPattern;
-import org.kohsuke.rngom.digested.DZeroOrMorePattern;
+import com.sun.tools.rngom.digested.DAttributePattern;
+import com.sun.tools.rngom.digested.DChoicePattern;
+import com.sun.tools.rngom.digested.DDefine;
+import com.sun.tools.rngom.digested.DListPattern;
+import com.sun.tools.rngom.digested.DMixedPattern;
+import com.sun.tools.rngom.digested.DOneOrMorePattern;
+import com.sun.tools.rngom.digested.DOptionalPattern;
+import com.sun.tools.rngom.digested.DPatternWalker;
+import com.sun.tools.rngom.digested.DRefPattern;
+import com.sun.tools.rngom.digested.DZeroOrMorePattern;
 
 /**
  * Fumigate the named patterns that can be bound to inheritance.

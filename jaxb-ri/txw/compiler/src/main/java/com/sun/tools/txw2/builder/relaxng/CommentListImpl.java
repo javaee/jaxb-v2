@@ -40,8 +40,8 @@
 
 package com.sun.tools.txw2.builder.relaxng;
 
-import org.kohsuke.rngom.ast.builder.CommentList;
-import org.kohsuke.rngom.ast.util.LocatorImpl;
+import com.sun.tools.rngom.ast.builder.CommentList;
+import com.sun.tools.rngom.ast.util.LocatorImpl;
 
 /**
  * @author Kohsuke Kawaguchi

@@ -338,7 +338,7 @@
                                     <exclude>relaxngDatatype:relaxngDatatype</exclude>
 
                                     <exclude>org.glassfish.jaxb:codemodel</exclude>
-                                    <exclude>org.kohsuke.rngom:rngom</exclude>
+                                    <exclude>com.sun.tools.rngom:rngom</exclude>
                                     <exclude>com.sun.xml.bind.external:rngom</exclude>
                                     <exclude>com.sun.xml.dtd-parser:dtd-parser</exclude>
                                     <exclude>com.sun.istack:istack-commons-tools</exclude>

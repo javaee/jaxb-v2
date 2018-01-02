@@ -45,10 +45,10 @@ import java.util.Iterator;
 import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.visitor.XSWildcardFunction;
 
-import org.kohsuke.rngom.nc.AnyNameExceptNameClass;
-import org.kohsuke.rngom.nc.ChoiceNameClass;
-import org.kohsuke.rngom.nc.NameClass;
-import org.kohsuke.rngom.nc.NsNameClass;
+import com.sun.tools.rngom.nc.AnyNameExceptNameClass;
+import com.sun.tools.rngom.nc.ChoiceNameClass;
+import com.sun.tools.rngom.nc.NameClass;
+import com.sun.tools.rngom.nc.NsNameClass;
 
 /**
  * Builds a name class representation of a wildcard.

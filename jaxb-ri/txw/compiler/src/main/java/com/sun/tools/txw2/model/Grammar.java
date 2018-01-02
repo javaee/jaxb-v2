@@ -40,7 +40,7 @@
 
 package com.sun.tools.txw2.model;
 
-import org.kohsuke.rngom.ast.builder.GrammarSection;
+import com.sun.tools.rngom.ast.builder.GrammarSection;
 
 import java.util.HashMap;
 import java.util.Map;
