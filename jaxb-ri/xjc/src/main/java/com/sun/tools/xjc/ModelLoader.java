@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2017 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2018 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -53,8 +53,6 @@ import com.sun.tools.xjc.reader.internalizer.DOMForestScanner;
 import com.sun.tools.xjc.reader.internalizer.InternalizationLogic;
 import com.sun.tools.xjc.reader.internalizer.SCDBasedBindingSet;
 import com.sun.tools.xjc.reader.internalizer.VersionChecker;
-import com.sun.tools.xjc.reader.relaxng.RELAXNGCompiler;
-import com.sun.tools.xjc.reader.relaxng.RELAXNGInternalizationLogic;
 import com.sun.tools.xjc.reader.xmlschema.BGMBuilder;
 import com.sun.tools.xjc.reader.xmlschema.bindinfo.AnnotationParserFactoryImpl;
 import com.sun.tools.xjc.reader.xmlschema.parser.CustomizationContextChecker;
@@ -69,15 +67,6 @@ import com.sun.xml.xsom.parser.XMLParser;
 import com.sun.xml.xsom.parser.XSOMParser;
 import javax.xml.XMLConstants;
 
-import org.kohsuke.rngom.ast.builder.SchemaBuilder;
-import org.kohsuke.rngom.ast.util.CheckingSchemaBuilder;
-import org.kohsuke.rngom.digested.DPattern;
-import org.kohsuke.rngom.digested.DSchemaBuilderImpl;
-import org.kohsuke.rngom.parse.IllegalSchemaException;
-import org.kohsuke.rngom.parse.Parseable;
-import org.kohsuke.rngom.parse.compact.CompactParseable;
-import org.kohsuke.rngom.parse.xml.SAXParseable;
-import org.kohsuke.rngom.xml.sax.XMLReaderCreator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;

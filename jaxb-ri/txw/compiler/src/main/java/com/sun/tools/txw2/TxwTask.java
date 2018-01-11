@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2005-2017 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2005-2018 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -43,8 +43,8 @@ package com.sun.tools.txw2;
 import com.sun.codemodel.writer.FileCodeWriter;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
-import org.kohsuke.rngom.parse.compact.CompactParseable;
-import org.kohsuke.rngom.parse.xml.SAXParseable;
+import com.sun.tools.rngom.parse.compact.CompactParseable;
+import com.sun.tools.rngom.parse.xml.SAXParseable;
 import org.xml.sax.InputSource;
 
 import java.io.File;

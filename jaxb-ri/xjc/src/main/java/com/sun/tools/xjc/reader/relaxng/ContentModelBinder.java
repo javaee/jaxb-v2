@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2017 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2018 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -50,14 +50,14 @@ import com.sun.tools.xjc.model.Multiplicity;
 import com.sun.tools.xjc.reader.RawTypeSet;
 import com.sun.xml.bind.v2.model.core.ID;
 
-import org.kohsuke.rngom.digested.DAttributePattern;
-import org.kohsuke.rngom.digested.DChoicePattern;
-import org.kohsuke.rngom.digested.DMixedPattern;
-import org.kohsuke.rngom.digested.DOneOrMorePattern;
-import org.kohsuke.rngom.digested.DOptionalPattern;
-import org.kohsuke.rngom.digested.DPattern;
-import org.kohsuke.rngom.digested.DPatternWalker;
-import org.kohsuke.rngom.digested.DZeroOrMorePattern;
+import com.sun.tools.rngom.digested.DAttributePattern;
+import com.sun.tools.rngom.digested.DChoicePattern;
+import com.sun.tools.rngom.digested.DMixedPattern;
+import com.sun.tools.rngom.digested.DOneOrMorePattern;
+import com.sun.tools.rngom.digested.DOptionalPattern;
+import com.sun.tools.rngom.digested.DPattern;
+import com.sun.tools.rngom.digested.DPatternWalker;
+import com.sun.tools.rngom.digested.DZeroOrMorePattern;
 
 import static com.sun.tools.xjc.model.CElementPropertyInfo.CollectionMode.REPEATED_ELEMENT;
 

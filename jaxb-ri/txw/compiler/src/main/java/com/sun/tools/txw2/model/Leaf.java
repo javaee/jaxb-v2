@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2005-2017 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2005-2018 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -47,7 +47,7 @@ import com.sun.codemodel.JType;
 import com.sun.tools.txw2.model.prop.Prop;
 import com.sun.tools.txw2.model.prop.ValueProp;
 import com.sun.xml.txw2.annotation.XmlValue;
-import org.kohsuke.rngom.ast.om.ParsedPattern;
+import com.sun.tools.rngom.ast.om.ParsedPattern;
 import org.xml.sax.Locator;
 
 import java.util.Iterator;

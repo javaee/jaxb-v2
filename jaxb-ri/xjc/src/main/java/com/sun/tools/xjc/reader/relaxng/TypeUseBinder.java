@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2017 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2018 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -44,26 +44,26 @@ import com.sun.tools.xjc.model.CBuiltinLeafInfo;
 import com.sun.tools.xjc.model.TypeUse;
 import com.sun.tools.xjc.model.TypeUseFactory;
 
-import org.kohsuke.rngom.digested.DAttributePattern;
-import org.kohsuke.rngom.digested.DChoicePattern;
-import org.kohsuke.rngom.digested.DContainerPattern;
-import org.kohsuke.rngom.digested.DDataPattern;
-import org.kohsuke.rngom.digested.DElementPattern;
-import org.kohsuke.rngom.digested.DEmptyPattern;
-import org.kohsuke.rngom.digested.DGrammarPattern;
-import org.kohsuke.rngom.digested.DGroupPattern;
-import org.kohsuke.rngom.digested.DInterleavePattern;
-import org.kohsuke.rngom.digested.DListPattern;
-import org.kohsuke.rngom.digested.DMixedPattern;
-import org.kohsuke.rngom.digested.DNotAllowedPattern;
-import org.kohsuke.rngom.digested.DOneOrMorePattern;
-import org.kohsuke.rngom.digested.DOptionalPattern;
-import org.kohsuke.rngom.digested.DPattern;
-import org.kohsuke.rngom.digested.DPatternVisitor;
-import org.kohsuke.rngom.digested.DRefPattern;
-import org.kohsuke.rngom.digested.DTextPattern;
-import org.kohsuke.rngom.digested.DValuePattern;
-import org.kohsuke.rngom.digested.DZeroOrMorePattern;
+import com.sun.tools.rngom.digested.DAttributePattern;
+import com.sun.tools.rngom.digested.DChoicePattern;
+import com.sun.tools.rngom.digested.DContainerPattern;
+import com.sun.tools.rngom.digested.DDataPattern;
+import com.sun.tools.rngom.digested.DElementPattern;
+import com.sun.tools.rngom.digested.DEmptyPattern;
+import com.sun.tools.rngom.digested.DGrammarPattern;
+import com.sun.tools.rngom.digested.DGroupPattern;
+import com.sun.tools.rngom.digested.DInterleavePattern;
+import com.sun.tools.rngom.digested.DListPattern;
+import com.sun.tools.rngom.digested.DMixedPattern;
+import com.sun.tools.rngom.digested.DNotAllowedPattern;
+import com.sun.tools.rngom.digested.DOneOrMorePattern;
+import com.sun.tools.rngom.digested.DOptionalPattern;
+import com.sun.tools.rngom.digested.DPattern;
+import com.sun.tools.rngom.digested.DPatternVisitor;
+import com.sun.tools.rngom.digested.DRefPattern;
+import com.sun.tools.rngom.digested.DTextPattern;
+import com.sun.tools.rngom.digested.DValuePattern;
+import com.sun.tools.rngom.digested.DZeroOrMorePattern;
 
 /**
  * Walks the pattern tree and binds it to a {@link TypeUse}.

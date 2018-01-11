@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2017 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2018 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -43,10 +43,10 @@ package com.sun.tools.xjc.reader.relaxng;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.kohsuke.rngom.digested.DDefine;
-import org.kohsuke.rngom.digested.DGrammarPattern;
-import org.kohsuke.rngom.digested.DPatternWalker;
-import org.kohsuke.rngom.digested.DRefPattern;
+import com.sun.tools.rngom.digested.DDefine;
+import com.sun.tools.rngom.digested.DGrammarPattern;
+import com.sun.tools.rngom.digested.DPatternWalker;
+import com.sun.tools.rngom.digested.DRefPattern;
 
 /**
  * Recursively find all {@link DDefine}s in the grammar.

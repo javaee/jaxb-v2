@@ -46,13 +46,13 @@ module com.sun.tools.rngom {
     requires java.xml;
     requires java.logging;
 
-    exports org.kohsuke.rngom.parse;
-    exports org.kohsuke.rngom.parse.compact;
-    exports org.kohsuke.rngom.parse.xml;
-    exports org.kohsuke.rngom.digested;
-    exports org.kohsuke.rngom.nc;
-    exports org.kohsuke.rngom.xml.sax;
-    exports org.kohsuke.rngom.xml.util;
-    exports org.kohsuke.rngom.ast.builder;
-    exports org.kohsuke.rngom.ast.util;
+    exports com.sun.tools.rngom.parse;
+    exports com.sun.tools.rngom.parse.compact;
+    exports com.sun.tools.rngom.parse.xml;
+    exports com.sun.tools.rngom.digested;
+    exports com.sun.tools.rngom.nc;
+    exports com.sun.tools.rngom.xml.sax;
+    exports com.sun.tools.rngom.xml.util;
+    exports com.sun.tools.rngom.ast.builder;
+    exports com.sun.tools.rngom.ast.util;
 }

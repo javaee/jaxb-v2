@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2005-2017 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2005-2018 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -40,10 +40,10 @@
 
 package com.sun.tools.txw2.builder.relaxng;
 
-import org.kohsuke.rngom.ast.builder.Annotations;
-import org.kohsuke.rngom.ast.builder.BuildException;
-import org.kohsuke.rngom.ast.om.ParsedElementAnnotation;
-import org.kohsuke.rngom.ast.util.LocatorImpl;
+import com.sun.tools.rngom.ast.builder.Annotations;
+import com.sun.tools.rngom.ast.builder.BuildException;
+import com.sun.tools.rngom.ast.om.ParsedElementAnnotation;
+import com.sun.tools.rngom.ast.util.LocatorImpl;
 
 /**
  * @author Kohsuke Kawaguchi

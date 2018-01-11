@@ -3,7 +3,7 @@
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 2013-2017 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2013-2018 Oracle and/or its affiliates. All rights reserved.
 
     The contents of this file are subject to the terms of either the GNU
     General Public License Version 2 only ("GPL") or the Common Development
@@ -274,7 +274,7 @@
                                     org.jvnet.fastinfoset.*;version=${fastinfoset.version},
                                     org.jvnet.staxex;version=${stax-ex.version},
                                     org.jvnet.staxex.util;version=${stax-ex.version},
-                                    org.kohsuke.rngom.*;version=${jaxb.osgiVersion},
+                                    com.sun.tools.rngom.*;version=${jaxb.osgiVersion},
                                     org.relaxng.datatype;version=${relaxngDatatype.version},
                                     org.relaxng.datatype.*;version=${relaxngDatatype.version}
                                 </Export-Package>

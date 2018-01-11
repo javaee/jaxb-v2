@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2017 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2018 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -58,9 +58,9 @@ import com.sun.xml.xsom.XSWildcard;
 import com.sun.xml.xsom.visitor.XSTermFunction;
 import javax.xml.namespace.QName;
 
-import org.kohsuke.rngom.nc.ChoiceNameClass;
-import org.kohsuke.rngom.nc.NameClass;
-import org.kohsuke.rngom.nc.SimpleNameClass;
+import com.sun.tools.rngom.nc.ChoiceNameClass;
+import com.sun.tools.rngom.nc.NameClass;
+import com.sun.tools.rngom.nc.SimpleNameClass;
 
 /**
  * Binds a complex type derived from another complex type by extension.

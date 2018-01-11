@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2005-2017 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2005-2018 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -50,20 +50,20 @@ import com.sun.tools.txw2.model.Empty;
 import com.sun.tools.txw2.model.Leaf;
 import com.sun.tools.txw2.model.List;
 import com.sun.tools.txw2.model.Value;
-import org.kohsuke.rngom.ast.builder.BuildException;
-import org.kohsuke.rngom.ast.builder.DataPatternBuilder;
-import org.kohsuke.rngom.ast.builder.ElementAnnotationBuilder;
-import org.kohsuke.rngom.ast.builder.Grammar;
-import org.kohsuke.rngom.ast.builder.NameClassBuilder;
-import org.kohsuke.rngom.ast.builder.SchemaBuilder;
-import org.kohsuke.rngom.ast.builder.Scope;
-import org.kohsuke.rngom.ast.om.ParsedElementAnnotation;
-import org.kohsuke.rngom.ast.util.LocatorImpl;
-import org.kohsuke.rngom.nc.NameClass;
-import org.kohsuke.rngom.nc.NameClassBuilderImpl;
-import org.kohsuke.rngom.parse.Context;
-import org.kohsuke.rngom.parse.IllegalSchemaException;
-import org.kohsuke.rngom.parse.Parseable;
+import com.sun.tools.rngom.ast.builder.BuildException;
+import com.sun.tools.rngom.ast.builder.DataPatternBuilder;
+import com.sun.tools.rngom.ast.builder.ElementAnnotationBuilder;
+import com.sun.tools.rngom.ast.builder.Grammar;
+import com.sun.tools.rngom.ast.builder.NameClassBuilder;
+import com.sun.tools.rngom.ast.builder.SchemaBuilder;
+import com.sun.tools.rngom.ast.builder.Scope;
+import com.sun.tools.rngom.ast.om.ParsedElementAnnotation;
+import com.sun.tools.rngom.ast.util.LocatorImpl;
+import com.sun.tools.rngom.nc.NameClass;
+import com.sun.tools.rngom.nc.NameClassBuilderImpl;
+import com.sun.tools.rngom.parse.Context;
+import com.sun.tools.rngom.parse.IllegalSchemaException;
+import com.sun.tools.rngom.parse.Parseable;
 
 import javax.xml.namespace.QName;
 
