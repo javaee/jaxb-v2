@@ -199,93 +199,128 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <configuration>
+                            <source>9</source>
+                            <target>9</target>
+                            <includes>
+                                <include>module-info.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>base-compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <source>1.7</source>
+                            <target>1.7</target>
+                            <excludes>
+                                <exclude>module-info.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <forkCount>1</forkCount>
+                    <reuseForks>true</reuseForks>
+                    <argLine>
+                        --upgrade-module-path ${endorsed.dir}
+                        -Djdk.attach.allowAttachSelf
+                    </argLine>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <additionalJOptions>
+                        <additionalJOption>--module-path</additionalJOption>
+                        <additionalJOption>${project.build.directory}/mods</additionalJOption>
+                        <additionalJOption>--add-modules</additionalJOption>
+                        <additionalJOption>ant</additionalJOption>
+                        <additionalJOption>--add-reads</additionalJOption>
+                        <additionalJOption>com.sun.tools.jxc=ant</additionalJOption>
+                        <additionalJOption>--add-reads</additionalJOption>
+                        <additionalJOption>com.sun.istack.tools=ant</additionalJOption>
+                    </additionalJOptions>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/mods</outputDirectory>
+                            <excludeArtifactIds>jmockit</excludeArtifactIds>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>compile-java9</id>
+                        <phase>compile</phase>
+                        <configuration>
+                            <tasks>
+                                <exec executable="java">
+                                    <arg line="--module-path ${project.build.directory}/mods --list-modules"/>
+                                </exec>
+                                <mkdir dir="${project.build.outputDirectory}/META-INF/versions/9" />
+                                <javac srcdir="${mrjar.sourceDirectory}"
+                                       destdir="${project.build.outputDirectory}/META-INF/versions/9"
+                                       classpath="${project.build.outputDirectory}"
+                                       includeantruntime="false"
+                                       source="9"
+                                       target="9">
+                                    <compilerarg line="--module-path ${project.build.directory}/mods" />
+                                    <compilerarg line="--add-modules ant,com.sun.istack.tools,com.sun.tools.xjc" />
+                                    <compilerarg line="--add-reads com.sun.istack.tools=ant" />
+                                </javac>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>update-source-jar</id>
+                        <phase>verify</phase>
+                        <configuration>
+                            <skip>${skipSources}</skip>
+                            <tasks>
+                                <jar destfile="${project.build.directory}/jaxb-jxc-${project.version}-sources.jar" update="true">
+                                    <zipfileset prefix="META-INF/versions" dir="${mrjar.sourceDirectory}"/>
+                                </jar>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>jdk9-setup</id>
-            <activation>
-                <jdk>9</jdk>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>default-compile</id>
-                                <configuration>
-                                    <source>9</source>
-                                    <target>9</target>
-                                    <includes>
-                                        <include>module-info.java</include>
-                                    </includes>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>base-compile</id>
-                                <goals>
-                                    <goal>compile</goal>
-                                </goals>
-                                <configuration>
-                                    <source>1.7</source>
-                                    <target>1.7</target>
-                                    <excludes>
-                                        <exclude>module-info.java</exclude>
-                                    </excludes>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <forkCount>1</forkCount>
-                            <reuseForks>true</reuseForks>
-                            <argLine>
-                                --upgrade-module-path ${endorsed.dir}
-                                -Djdk.attach.allowAttachSelf
-                           </argLine>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <configuration>
-                            <additionalJOptions>
-                                <additionalJOption>--module-path</additionalJOption>
-                                <additionalJOption>${project.build.directory}/mods</additionalJOption>
-                                <additionalJOption>--add-modules</additionalJOption>
-                                <additionalJOption>ant</additionalJOption>
-                                <additionalJOption>--add-reads</additionalJOption>
-                                <additionalJOption>com.sun.tools.jxc=ant</additionalJOption>
-                                <additionalJOption>--add-reads</additionalJOption>
-                                <additionalJOption>com.sun.istack.tools=ant</additionalJOption>
-                            </additionalJOptions>
-                        </configuration>
-                    </plugin>
-
-                    <!--TODO remove after javadoc-plugin 3.0.0 is released, see https://issues.apache.org/jira/browse/MJAVADOC-498 -->
-                    <plugin>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>copy-dependencies</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.build.directory}/mods</outputDirectory>
-                                    <excludeArtifactIds>jmockit</excludeArtifactIds>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

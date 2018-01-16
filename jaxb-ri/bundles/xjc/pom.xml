@@ -100,60 +100,8 @@
             <activation>
                 <jdk>9</jdk>
             </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.glassfish.jaxb</groupId>
-                    <artifactId>jaxb-xjc-jdk9</artifactId>
-                    <version>${project.version}</version>
-                    <optional>true</optional>
-                </dependency>
-            </dependencies>
             <build>
                 <plugins>
-                    <plugin>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>unpack-sources-jdk9</id>
-                                <phase>prepare-package</phase>
-                                <goals>
-                                    <goal>unpack</goal>
-                                </goals>
-                                <configuration>
-                                    <skip>${skipSources}</skip>
-                                    <excludes>META-INF/**</excludes>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>org.glassfish.jaxb</groupId>
-                                            <artifactId>jaxb-xjc-jdk9</artifactId>
-                                            <classifier>sources</classifier>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${generated.sources.dir}/META-INF/versions/9</outputDirectory>
-                                        </artifactItem>
-                                    </artifactItems>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>unpack-classes-jdk9</id>
-                                <phase>process-resources</phase>
-                                <goals>
-                                    <goal>unpack</goal>
-                                </goals>
-                                <configuration>
-                                    <skip>false</skip>
-                                    <excludes>META-INF/**</excludes>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>org.glassfish.jaxb</groupId>
-                                            <artifactId>jaxb-xjc-jdk9</artifactId>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${generated.classes.dir}/META-INF/versions/9</outputDirectory>
-                                        </artifactItem>
-                                    </artifactItems>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
@@ -469,7 +417,6 @@
                                 </includes>
 
                                 <excludes>
-                                    <exclude>org.glassfish.jaxb:jaxb-xjc-jdk9</exclude>
                                     <exclude>javax.xml.bind:jaxb-api</exclude>
                                     <exclude>org.glassfish.jaxb:txw2</exclude>
                                     <exclude>javax.xml.stream:stax-api</exclude>

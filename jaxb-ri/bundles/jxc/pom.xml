@@ -329,7 +329,6 @@
                                     <include>org.glassfish.jaxb:jaxb-jxc</include>
                                 </includes>
                                 <excludes>
-                                    <exclude>org.glassfish.jaxb:jaxb-xjc-jdk9</exclude>
                                     <exclude>org.glassfish.jaxb:jaxb-xjc</exclude>
                                     <exclude>org.glassfish.jaxb:jaxb-runtime</exclude>
                                     <exclude>javax.xml.bind:jaxb-api</exclude>

@@ -171,6 +171,7 @@
         <jmockit.version>1.34</jmockit.version>
         <copyright.template.file>tools/config/copyright.txt</copyright.template.file>
         <copyright.exclude.file>tools/config/copyright-exclude</copyright.exclude.file>
+        <mrjar.sourceDirectory>${project.basedir}/src/main/java-mr</mrjar.sourceDirectory>
     </properties>
 
     <dependencyManagement>
@@ -624,10 +625,6 @@
             <activation>
                 <jdk>9</jdk>
             </activation>
-            <modules>
-                <module>jaxb-jxc-jdk9</module>
-                <module>jaxb-xjc-jdk9</module>
-            </modules>
             <properties>
                 <skipOsgiTests>true</skipOsgiTests>
             </properties>

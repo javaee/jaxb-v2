@@ -3,7 +3,7 @@
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 2013-2017 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2013-2018 Oracle and/or its affiliates. All rights reserved.
 
     The contents of this file are subject to the terms of either the GNU
     General Public License Version 2 only ("GPL") or the Common Development
@@ -319,6 +319,54 @@
                                     <outputDirectory>${project.build.directory}/mods</outputDirectory>
                                     <excludeArtifactIds>jmockit</excludeArtifactIds>
                                 </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.8</version>
+                        <executions>
+                            <execution>
+                                <id>compile-java9</id>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <tasks>
+                                        <exec executable="java">
+                                            <arg line="--module-path ${project.build.directory}/mods --list-modules"/>
+                                        </exec>
+                                        <mkdir dir="${project.build.outputDirectory}/META-INF/versions/9" />
+                                        <javac srcdir="${mrjar.sourceDirectory}"
+                                               destdir="${project.build.outputDirectory}/META-INF/versions/9"
+                                               classpath="${project.build.outputDirectory}"
+                                               includeantruntime="false"
+                                               source="9"
+                                               target="9">
+                                            <compilerarg line="--module-path ${project.build.directory}/mods" />
+                                            <compilerarg line="--add-modules ant,com.sun.istack.tools" />
+                                            <compilerarg line="--add-reads com.sun.istack.tools=ant" />
+                                        </javac>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>update-source-jar</id>
+                                <phase>verify</phase>
+                                <configuration>
+                                    <skip>${skipSources}</skip>
+                                    <tasks>
+                                        <jar destfile="${project.build.directory}/jaxb-xjc-${project.version}-sources.jar" update="true">
+                                            <zipfileset prefix="META-INF/versions" dir="${mrjar.sourceDirectory}"/>
+                                        </jar>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
                             </execution>
                         </executions>
                     </plugin>
