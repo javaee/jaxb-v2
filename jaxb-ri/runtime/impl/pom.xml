@@ -112,16 +112,29 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>prepare-endorsed</id>
+                        <id>prepare-module-path</id>
                         <phase>validate</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
                             <skip>${maven.endorsed.skip}</skip>
-                            <outputDirectory>${endorsed.dir}</outputDirectory>
+                            <outputDirectory>${module.path}</outputDirectory>
                             <silent>false</silent>
-                            <includeArtifactIds>jaxb-api,txw2,istack-commons-runtime,stax-ex,FastInfoset</includeArtifactIds>
+                            <includeArtifactIds>txw2,istack-commons-runtime,stax-ex,FastInfoset</includeArtifactIds>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>prepare-upgrade-module-path</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${maven.endorsed.skip}</skip>
+                            <outputDirectory>${module.path}/api</outputDirectory>
+                            <silent>false</silent>
+                            <includeArtifactIds>jaxb-api</includeArtifactIds>
                         </configuration>
                     </execution>
                 </executions>
@@ -161,7 +174,7 @@
                 <configuration>
                     <argLine>
                         --add-modules java.xml.bind
-                        --upgrade-module-path ${endorsed.dir}
+                        --upgrade-module-path ${module.path}
                     </argLine>
                 </configuration>
             </plugin>
@@ -173,7 +186,7 @@
                         <additionalJOption>--add-modules</additionalJOption>
                         <additionalJOption>java.activation</additionalJOption>
                         <additionalJOption>--module-path</additionalJOption>
-                        <additionalJOption>${endorsed.dir}</additionalJOption>
+                        <additionalJOption>${module.path}</additionalJOption>
                     </additionalJOptions>
                 </configuration>
             </plugin>

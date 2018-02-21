@@ -155,7 +155,7 @@
         <junit.version>4.12</junit.version>
         <args4j.version>1.0</args4j.version>
 
-        <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
+        <module.path>${project.build.directory}/mods</module.path>
         <!-- This will work ONLY if mvn is run from root folder. In case of runing from submodules - fail :( -->
         <javadoc.links.dir>${user.dir}/tools/javadoc-link</javadoc.links.dir>
         <glassfish.findbugs.version>1.7</glassfish.findbugs.version>
@@ -496,14 +496,14 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>prepare-endorsed</id>
+                        <id>prepare-upgrade-module-path</id>
                         <phase>validate</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
                             <skip>${maven.endorsed.skip}</skip>
-                            <outputDirectory>${endorsed.dir}</outputDirectory>
+                            <outputDirectory>${module.path}/api</outputDirectory>
                             <silent>false</silent>
                             <includeArtifactIds>jaxb-api</includeArtifactIds>
                         </configuration>
@@ -619,7 +619,7 @@
 
     <profiles>
         <profile>
-            <id>endorsed-dirs</id>
+            <id>modules-path</id>
             <activation>
                 <jdk>[1.7,9)</jdk>
             </activation>
@@ -630,7 +630,10 @@
                         <artifactId>maven-compiler-plugin</artifactId>
                         <configuration>
                             <compilerArgs>
-                                <arg>-Djava.endorsed.dirs=${endorsed.dir}</arg>
+                                <arg>--upgrade-module-path</arg>
+                                <arg>${module.path}/api</arg>
+                                <arg>--module-path</arg>
+                                <arg>${module.path}</arg>
                             </compilerArgs>
                         </configuration>
                     </plugin>
@@ -638,7 +641,10 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
-                            <additionalJOption>-J-Djava.endorsed.dirs=${endorsed.dir}</additionalJOption>
+                            <additionalJOption>--upgrade-module-path</additionalJOption>
+                            <additionalJOption>${module.path}/api</additionalJOption>
+                            <additionalJOption>--module-path</additionalJOption>
+                            <additionalJOption>${module.path}</additionalJOption>
                         </configuration>
                     </plugin>
                 </plugins>
