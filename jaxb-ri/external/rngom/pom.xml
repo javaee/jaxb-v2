@@ -101,8 +101,8 @@
                             <goal>compile</goal>
                         </goals>
                         <configuration>
-                            <source>1.7</source>
-                            <target>1.7</target>
+                            <source>${base.java.level}</source>
+                            <target>${base.java.level}</target>
                             <excludes>
                                 <exclude>module-info.java</exclude>
                             </excludes>
