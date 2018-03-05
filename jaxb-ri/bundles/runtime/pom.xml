@@ -229,7 +229,6 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <skip>${maven.endorsed.skip}</skip>
                             <outputDirectory>${module.path}</outputDirectory>
                             <silent>false</silent>
                             <includeArtifactIds>txw2,istack-commons-runtime,stax-ex,FastInfoset</includeArtifactIds>
@@ -242,7 +241,6 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <skip>${maven.endorsed.skip}</skip>
                             <outputDirectory>${module.path}/api</outputDirectory>
                             <silent>false</silent>
                             <includeArtifactIds>jaxb-api</includeArtifactIds>

@@ -172,7 +172,8 @@
         <copyright.template.file>tools/config/copyright.txt</copyright.template.file>
         <copyright.exclude.file>tools/config/copyright-exclude</copyright.exclude.file>
         <mrjar.sourceDirectory>${project.basedir}/src/main/java-mr</mrjar.sourceDirectory>
-        <base.java.level>1.7</base.java.level>
+        <base.java.level>7</base.java.level>
+        <upper.java.level>9</upper.java.level>
     </properties>
 
     <dependencyManagement>
@@ -292,8 +293,7 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.6.0</version>
                     <configuration>
-                        <source>1.7</source>
-                        <target>1.7</target>
+                        <release>${base.java.level}</release>
                         <fork>true</fork>
                         <compilerArgs>
                             <arg>-Xlint:all</arg>
@@ -503,7 +503,6 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <skip>${maven.endorsed.skip}</skip>
                             <outputDirectory>${module.path}/api</outputDirectory>
                             <silent>false</silent>
                             <includeArtifactIds>jaxb-api</includeArtifactIds>
@@ -585,8 +584,7 @@
                     <execution>
                         <id>default-compile</id>
                         <configuration>
-                            <source>9</source>
-                            <target>9</target>
+                            <release>${upper.java.level}</release>
                         </configuration>
                     </execution>
                     <execution>
@@ -595,8 +593,7 @@
                             <goal>compile</goal>
                         </goals>
                         <configuration>
-                            <source>${base.java.level}</source>
-                            <target>${base.java.level}</target>
+                            <release>${base.java.level}</release>
                             <excludes>
                                 <exclude>module-info.java</exclude>
                             </excludes>

@@ -79,8 +79,7 @@
                     <execution>
                         <id>default-compile</id>
                         <configuration>
-                            <source>9</source>
-                            <target>9</target>
+                            <release>${upper.java.level}</release>
                             <includes>
                                 <include>module-info.java</include>
                             </includes>
@@ -92,8 +91,7 @@
                             <goal>compile</goal>
                         </goals>
                         <configuration>
-                            <source>1.7</source>
-                            <target>1.7</target>
+                            <release>${base.java.level}</release>
                             <excludes>
                                 <exclude>module-info.java</exclude>
                             </excludes>

@@ -256,8 +256,7 @@
                     <execution>
                         <id>default-compile</id>
                         <configuration>
-                            <source>9</source>
-                            <target>9</target>
+                            <release>${upper.java.level}</release>
                             <includes>
                                 <include>module-info.java</include>
                             </includes>
@@ -269,8 +268,7 @@
                             <goal>compile</goal>
                         </goals>
                         <configuration>
-                            <source>${base.java.level}</source>
-                            <target>${base.java.level}</target>
+                            <release>${base.java.level}</release>
                             <excludes>
                                 <exclude>module-info.java</exclude>
                             </excludes>
@@ -318,19 +316,25 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.8</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant</artifactId>
+                        <version>${ant.version}</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <id>compile-java9</id>
                         <phase>compile</phase>
                         <configuration>
                             <tasks>
-                                <mkdir dir="${project.build.outputDirectory}/META-INF/versions/9" />
+                                <mkdir dir="${project.build.outputDirectory}/META-INF/versions/${upper.java.level}" />
                                 <javac srcdir="${mrjar.sourceDirectory}"
-                                       destdir="${project.build.outputDirectory}/META-INF/versions/9"
+                                       destdir="${project.build.outputDirectory}/META-INF/versions/${upper.java.level}"
                                        classpath="${project.build.outputDirectory}"
                                        includeantruntime="false"
-                                       source="9"
-                                       target="9">
+                                       release="${upper.java.level}">
                                     <compilerarg line="--module-path ${project.build.directory}/mods" />
                                     <compilerarg line="--add-modules ant,com.sun.istack.tools" />
                                     <compilerarg line="--add-reads com.sun.istack.tools=ant" />
