@@ -293,7 +293,8 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.6.0</version>
                     <configuration>
-                        <release>${base.java.level}</release>
+                        <source>1.7</source>
+                        <target>1.7</target>
                         <fork>true</fork>
                         <compilerArgs>
                             <arg>-Xlint:all</arg>
@@ -593,7 +594,8 @@
                             <goal>compile</goal>
                         </goals>
                         <configuration>
-                            <release>${base.java.level}</release>
+                            <source>1.7</source>
+                            <target>1.7</target>
                             <excludes>
                                 <exclude>module-info.java</exclude>
                             </excludes>
