@@ -63,7 +63,7 @@
     </description>
 
     <properties>
-        <ant.version>1.9.7</ant.version>
+        <ant.version>1.10.2</ant.version>
         <msv.version>2013.6.1</msv.version>
         <!-- don't forget to check if isorelax.version is valid -> used in osgi -->
         <relaxngDatatype.version>20020414</relaxngDatatype.version>

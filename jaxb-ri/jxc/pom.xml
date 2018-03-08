@@ -3,7 +3,7 @@
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 2013-2017 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2013-2018 Oracle and/or its affiliates. All rights reserved.
 
     The contents of this file are subject to the terms of either the GNU
     General Public License Version 2 only ("GPL") or the Common Development
@@ -199,93 +199,132 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <configuration>
+                            <release>${upper.java.level}</release>
+                            <includes>
+                                <include>module-info.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>base-compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <!-- TODO find how to include tools.jar on classpath and replace with "release" -->
+                            <source>1.7</source>
+                            <target>1.7</target>
+                            <excludes>
+                                <exclude>module-info.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <forkCount>1</forkCount>
+                    <reuseForks>true</reuseForks>
+                    <argLine>
+                        --module-path ${module.path}
+                        --upgrade-module-path ${module.path}/api
+                        -Djdk.attach.allowAttachSelf
+                    </argLine>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <additionalJOptions>
+                        <additionalJOption>--module-path</additionalJOption>
+                        <additionalJOption>${project.build.directory}/mods</additionalJOption>
+                        <additionalJOption>--add-modules</additionalJOption>
+                        <additionalJOption>ant</additionalJOption>
+                        <additionalJOption>--add-reads</additionalJOption>
+                        <additionalJOption>com.sun.tools.jxc=ant</additionalJOption>
+                        <additionalJOption>--add-reads</additionalJOption>
+                        <additionalJOption>com.sun.istack.tools=ant</additionalJOption>
+                    </additionalJOptions>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/mods</outputDirectory>
+                            <excludeArtifactIds>jmockit</excludeArtifactIds>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant</artifactId>
+                        <version>${ant.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>compile-java9</id>
+                        <phase>compile</phase>
+                        <configuration>
+                            <tasks>
+                                <mkdir dir="${project.build.outputDirectory}/META-INF/versions/${upper.java.level}" />
+                                <javac srcdir="${mrjar.sourceDirectory}"
+                                       destdir="${project.build.outputDirectory}/META-INF/versions/${upper.java.level}"
+                                       classpath="${project.build.outputDirectory}"
+                                       includeantruntime="false"
+                                       release="${upper.java.level}">
+                                    <compilerarg line="--module-path ${project.build.directory}/mods" />
+                                    <compilerarg line="--add-modules ant,com.sun.istack.tools,com.sun.tools.xjc" />
+                                    <compilerarg line="--add-reads com.sun.istack.tools=ant" />
+                                </javac>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>update-source-jar</id>
+                        <phase>verify</phase>
+                        <configuration>
+                            <skip>${skipSources}</skip>
+                            <tasks>
+                                <jar destfile="${project.build.directory}/jaxb-jxc-${project.version}-sources.jar" update="true">
+                                    <zipfileset prefix="META-INF/versions" dir="${mrjar.sourceDirectory}"/>
+                                </jar>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>jdk9-setup</id>
-            <activation>
-                <jdk>9</jdk>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>default-compile</id>
-                                <configuration>
-                                    <source>9</source>
-                                    <target>9</target>
-                                    <includes>
-                                        <include>module-info.java</include>
-                                    </includes>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>base-compile</id>
-                                <goals>
-                                    <goal>compile</goal>
-                                </goals>
-                                <configuration>
-                                    <source>1.7</source>
-                                    <target>1.7</target>
-                                    <excludes>
-                                        <exclude>module-info.java</exclude>
-                                    </excludes>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <forkCount>1</forkCount>
-                            <reuseForks>true</reuseForks>
-                            <argLine>
-                                --upgrade-module-path ${endorsed.dir}
-                                -Djdk.attach.allowAttachSelf
-                           </argLine>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <configuration>
-                            <additionalJOptions>
-                                <additionalJOption>--module-path</additionalJOption>
-                                <additionalJOption>${project.build.directory}/mods</additionalJOption>
-                                <additionalJOption>--add-modules</additionalJOption>
-                                <additionalJOption>ant</additionalJOption>
-                                <additionalJOption>--add-reads</additionalJOption>
-                                <additionalJOption>com.sun.tools.jxc=ant</additionalJOption>
-                                <additionalJOption>--add-reads</additionalJOption>
-                                <additionalJOption>com.sun.istack.tools=ant</additionalJOption>
-                            </additionalJOptions>
-                        </configuration>
-                    </plugin>
-
-                    <!--TODO remove after javadoc-plugin 3.0.0 is released, see https://issues.apache.org/jira/browse/MJAVADOC-498 -->
-                    <plugin>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>copy-dependencies</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.build.directory}/mods</outputDirectory>
-                                    <excludeArtifactIds>jmockit</excludeArtifactIds>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

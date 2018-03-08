@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2017 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2018 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -38,18 +38,26 @@
  * holder.
  */
 
-package com.sun.tools.jxc;
+package com.sun.tools.xjc;
 
 import org.apache.tools.ant.AntClassLoader;
+import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Path;
 
 /**
- * Ant task to invoke the schema generator.
+ * XJC task for Ant.
+ *
+ * See the accompanied document for the usage.
  *
  * @author Yan Gao (gaoyan.gao@oracle.com)
  */
-public class SchemaGenTask extends SchemaGenBase {
+public class XJC2Task extends XJCBase {
+
+    @Override
+    public void execute() throws BuildException {
+        super.execute();
+    }
 
     @Override
     protected void setupForkCommand(String className) {
@@ -66,13 +74,8 @@ public class SchemaGenTask extends SchemaGenBase {
 
         getCommandline().createClasspath(getProject()).append(new Path(getProject(), antcp));
 
-        getCommandline().createVmArgument().setLine("--add-modules java.xml.bind");
-
         if (getModulepath() != null && getModulepath().size() > 0) {
             getCommandline().createModulepath(getProject()).add(getModulepath());
-        }
-        if (getModulesourcepath() != null && getModulesourcepath().size() > 0) {
-            getCommandline().createVmArgument().setLine("--module-source-path " + getModulesourcepath().toString());
         }
         if (getUpgrademodulepath() != null && getUpgrademodulepath().size() > 0) {
             getCommandline().createUpgrademodulepath(getProject()).add(getUpgrademodulepath());

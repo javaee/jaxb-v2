@@ -82,77 +82,6 @@
 
     <profiles>
         <profile>
-            <id>jdk9-setup</id>
-            <activation>
-                <jdk>9</jdk>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.glassfish.jaxb</groupId>
-                    <artifactId>jaxb-jxc-jdk9</artifactId>
-                    <optional>true</optional>
-                    <version>${project.version}</version>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>unpack-sources-jdk9</id>
-                                <phase>process-classes</phase>
-                                <goals>
-                                    <goal>unpack</goal>
-                                </goals>
-                                <configuration>
-                                    <skip>${skipSources}</skip>
-                                    <excludes>META-INF/**,**/module-info.java</excludes>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>org.glassfish.jaxb</groupId>
-                                            <artifactId>jaxb-jxc-jdk9</artifactId>
-                                            <classifier>sources</classifier>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${generated.sources.dir}/META-INF/versions/9</outputDirectory>
-                                        </artifactItem>
-                                    </artifactItems>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>unpack-classes-jdk9</id>
-                                <phase>process-sources</phase>
-                                <goals>
-                                    <goal>unpack</goal>
-                                </goals>
-                                <configuration>
-                                    <skip>false</skip>
-                                    <excludes>META-INF/**,**/module-info.class</excludes>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>org.glassfish.jaxb</groupId>
-                                            <artifactId>jaxb-jxc-jdk9</artifactId>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${generated.classes.dir}/META-INF/versions/9</outputDirectory>
-                                        </artifactItem>
-                                    </artifactItems>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <configuration>
-                            <sourceFileExcludes>
-                                <sourceFileExclude>META-INF/versions/**</sourceFileExclude>
-                            </sourceFileExcludes>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
             <id>default-profile</id>
             <activation>
                 <property>
@@ -184,6 +113,23 @@
 
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <additionalparam>-Xdoclint:none</additionalparam>
+                            <sourceFileExcludes>
+                                <sourceFileExclude>META-INF/versions/**</sourceFileExclude>
+                            </sourceFileExcludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-junit4osgi-plugin</artifactId>
@@ -329,7 +275,6 @@
                                     <include>org.glassfish.jaxb:jaxb-jxc</include>
                                 </includes>
                                 <excludes>
-                                    <exclude>org.glassfish.jaxb:jaxb-xjc-jdk9</exclude>
                                     <exclude>org.glassfish.jaxb:jaxb-xjc</exclude>
                                     <exclude>org.glassfish.jaxb:jaxb-runtime</exclude>
                                     <exclude>javax.xml.bind:jaxb-api</exclude>
