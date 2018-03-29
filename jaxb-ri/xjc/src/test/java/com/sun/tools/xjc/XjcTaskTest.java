@@ -81,6 +81,10 @@ public class XjcTaskTest extends XjcAntTaskTestBase {
         }
     }
 
+    public void testWithoutFork() throws IOException {
+        assertEquals(0, AntExecutor.exec(script, "xjc-no-fork"));
+    }
+
     public void testAddmodules() throws IOException {
         if (is9()){
             assertEquals(0, AntExecutor.exec(script, "xjc-addmodules"));
