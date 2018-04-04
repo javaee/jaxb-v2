@@ -76,12 +76,6 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jaxb1-impl</artifactId>
-            <version>${project.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>org.jvnet.staxex</groupId>
             <artifactId>stax-ex</artifactId>
             <optional>true</optional>
@@ -180,7 +174,7 @@
                 <configuration>
                     <excludes>**/module-info.class</excludes>
                     <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                    <includeArtifactIds>jaxb-impl,jaxb1-impl,jaxb-jxc,jaxb-xjc,stax-ex,FastInfoset</includeArtifactIds>
+                    <includeArtifactIds>jaxb-impl,jaxb-jxc,jaxb-xjc,stax-ex,FastInfoset</includeArtifactIds>
                 </configuration>
                     </execution>
                  <execution>
@@ -211,13 +205,6 @@
                                 <artifactItem>
                                     <groupId>com.sun.xml.bind</groupId>
                                     <artifactId>jaxb-jxc</artifactId>
-                                    <classifier>sources</classifier>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.sun.xml.bind</groupId>
-                                    <artifactId>jaxb1-impl</artifactId>
                                     <classifier>sources</classifier>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${generated.sources.dir}</outputDirectory>
@@ -322,13 +309,6 @@
                                     org.apache.tools.ant.taskdefs;resolution:=optional,
                                     org.apache.tools.ant.taskdefs.compilers;resolution:=optional,
                                     org.apache.tools.ant.types;resolution:=optional,
-                                    com.sun.msv.grammar;version=${msv.version};resolution:=optional,
-                                    com.sun.msv.grammar.trex;version=${msv.version};resolution:=optional,
-                                    com.sun.msv.grammar.util;version=${msv.version};resolution:=optional,
-                                    com.sun.msv.util;version=${msv.version};resolution:=optional,
-                                    com.sun.msv.verifier;version=${msv.version};resolution:=optional,
-                                    com.sun.msv.verifier.regexp;version=${msv.version};resolution:=optional,
-                                    org.iso_relax.verifier.impl;version=${isorelax.version};resolution:=optional
                                 </Import-Package>
                             </instructions>
                         </configuration>
@@ -368,7 +348,6 @@
                                     <include>com.sun.xml.bind:jaxb-xjc</include>
                                     <include>com.sun.xml.bind:jaxb-impl</include>
                                     <include>com.sun.xml.bind:jaxb-jxc</include>
-                                    <include>com.sun.xml.bind:jaxb1-impl</include>
                                     <include>org.jvnet.staxex:stax-ex</include>
                                     <include>com.sun.xml.fastinfoset:FastInfoset</include>
                                 </includes>
@@ -377,10 +356,7 @@
                                     <exclude>javax.xml.bind:jaxb-api</exclude>
                                     <exclude>org.glassfish.jaxb:txw2</exclude>
                                     <exclude>com.sun.istack:istack-commons-runtime</exclude>
-                                    <exclude>net.java.dev.msv:msv-core</exclude>
-                                    <exclude>net.java.dev.msv:xsdlib</exclude>
                                     <exclude>relaxngDatatype:relaxngDatatype</exclude>
-                                    <exclude>com.sun.xml.bind.jaxb:isorelax</exclude>
                                 </excludes>
                             </artifactSet>
                             <transformers>

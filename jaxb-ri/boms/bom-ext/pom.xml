@@ -64,10 +64,8 @@
 
     <properties>
         <ant.version>1.10.2</ant.version>
-        <msv.version>2013.6.1</msv.version>
         <!-- don't forget to check if isorelax.version is valid -> used in osgi -->
         <relaxngDatatype.version>20020414</relaxngDatatype.version>
-        <isorelax.version>20090621</isorelax.version>
     </properties>
 
     <dependencyManagement>
@@ -88,25 +86,10 @@
                 <artifactId>ant</artifactId>
                 <version>${ant.version}</version>
             </dependency>
-            <dependency>
-                <groupId>net.java.dev.msv</groupId>
-                <artifactId>msv-core</artifactId>
-                <version>${msv.version}</version>
-            </dependency>
             <dependency> <!-- xjc dependency... needed to be specified for xjc maven-dependency-plugin -->
                 <groupId>relaxngDatatype</groupId>
                 <artifactId>relaxngDatatype</artifactId>
                 <version>${relaxngDatatype.version}</version>
-            </dependency>
-            <dependency> <!--for osgi sources-->
-                <groupId>net.java.dev.msv</groupId>
-                <artifactId>xsdlib</artifactId>
-                <version>${msv.version}</version>
-            </dependency>
-            <dependency> <!--for osgi sources-->
-                <groupId>com.sun.xml.bind.jaxb</groupId>
-                <artifactId>isorelax</artifactId>
-                <version>${isorelax.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

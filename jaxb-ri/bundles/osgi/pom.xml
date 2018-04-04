@@ -67,7 +67,6 @@
                 </property>
             </activation>
             <modules>
-                <module>extra</module>
                 <module>osgi</module>
                 <module>tests</module>
             </modules>
