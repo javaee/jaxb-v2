@@ -64,7 +64,7 @@
 
     <properties>
         <dtd-parser.version>1.2</dtd-parser.version>
-        <ant.version>1.9.7</ant.version>
+        <ant.version>1.10.2</ant.version>
         <!-- don't forget to check if isorelax.version is valid -> used in osgi -->
         <relaxngDatatype.version>20020414</relaxngDatatype.version>
     </properties>
