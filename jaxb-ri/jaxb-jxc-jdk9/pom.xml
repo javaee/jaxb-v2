@@ -211,6 +211,7 @@
                         --add-reads java.base=java.desktop
                         --add-modules java.xml.bind
                         --upgrade-module-path ${endorsed.dir}
+                        -Djdk.attach.allowAttachSelf
                     </argLine>
                 </configuration>
             </plugin>
