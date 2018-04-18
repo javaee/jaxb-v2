@@ -64,8 +64,8 @@
         <jaxb-api-osgi.version>2.3</jaxb-api-osgi.version>
         <istack.version>3.0.6</istack.version>
         <fastinfoset.version>1.2.14</fastinfoset.version>
-        <stax-ex.version>1.7.9</stax-ex.version>
-        <dtd-parser.version>1.3</dtd-parser.version>
+        <stax-ex.version>1.8</stax-ex.version>
+        <dtd-parser.version>1.4</dtd-parser.version>
     </properties>
 
     <dependencyManagement>
