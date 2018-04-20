@@ -108,6 +108,19 @@
                         </goals>
                         <configuration>
                             <additionalparam>-Xdoclint:none</additionalparam>
+                            <sourceFileExcludes>
+                                <sourceFileExclude>META-INF/versions/**</sourceFileExclude>
+                                <sourceFileExclude>module-info.java</sourceFileExclude>
+                            </sourceFileExcludes>
+                            <includeDependencySources>false</includeDependencySources>
+                            <additionalJOptions>
+                                <additionalJOption>--add-modules</additionalJOption>
+                                <additionalJOption>java.activation,java.xml.bind</additionalJOption>
+                                <additionalJOption>--add-exports</additionalJOption>
+                                <additionalJOption>java.xml/com.sun.org.apache.xml.internal.resolver.tools=ALL-UNNAMED</additionalJOption>
+                                <additionalJOption>--add-exports</additionalJOption>
+                                <additionalJOption>java.xml/com.sun.org.apache.xml.internal.resolver=ALL-UNNAMED</additionalJOption>
+                            </additionalJOptions>
                         </configuration>
                     </execution>
                 </executions>
@@ -366,7 +379,7 @@
                                         <Major-Version>${jaxb.majorVersion}.${jaxb.minorVersion}.${jaxb.incrementalVersion}</Major-Version>
                                         <Specification-Version>${jaxb-api.majorVersion}.${jaxb-api.minorVersion}</Specification-Version>
                                         <Git-Revision>${buildNumber}</Git-Revision>
-                                        <Class-Path>jaxb-api.jar jaxb-extra-osgi.jar</Class-Path>
+                                        <Class-Path>jaxb-api.jar</Class-Path>
                                         <Multi-Release>true</Multi-Release>
                                     </manifestEntries>
                                 </transformer>
