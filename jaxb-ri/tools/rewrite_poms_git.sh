@@ -174,8 +174,8 @@ function commit_changes() {
 push_changes()
 {
 
-        LOCAL_BRANCH=`git branch | grep \* | cut -d ' ' -f2`
-        echo -n "Pushing changes to ${LOCAL_BRANCH} ..."
+	LOCAL_BRANCH=`git branch | grep \* | cut -d ' ' -f2`
+	echo -n "Pushing changes to ${LOCAL_BRANCH} ..."
 	${GIT} push --set-upstream origin ${LOCAL_BRANCH}
 	if [ $? -ne 0 ]; then
 		${GIT} pull --rebase
