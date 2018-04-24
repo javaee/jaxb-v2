@@ -59,6 +59,8 @@ module com.sun.tools.xjc {
     requires com.sun.xml.dtdparser;
     requires com.sun.xml.txw2;
 
+    opens com.sun.tools.xjc.reader.xmlschema.bindinfo to java.xml.bind;
+
     exports com.sun.tools.xjc;
     exports com.sun.tools.xjc.api;
     exports com.sun.tools.xjc.util;
