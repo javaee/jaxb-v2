@@ -84,6 +84,14 @@
         </xjc>
     </target>
 
+    <target name="xjc-no-fork" depends="xjc-init">
+        <echo message="Compiling the schema..."/>
+        <xjc schema="${schema}" package="simple" destdir="${build.dir}" fork="false">
+            <produces dir="${build.dir}/simple" includes="**/*.java"/>
+            <jvmarg line="--add-modules java.activation"/>
+        </xjc>
+    </target>
+
     <target name="xjc-addmodules"/>
 
     <target name="clean">

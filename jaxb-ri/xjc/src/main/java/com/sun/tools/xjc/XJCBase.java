@@ -667,13 +667,15 @@ public class XJCBase extends MatchingTask {
             return;
         }
 
-        boolean ok = false;
         try {
             if (getFork()) {
                 setupCommand();
                 setupForkCommand("com.sun.tools.xjc.XJCFacade");
                 int status = run(getCommandline().getCommandline());
-                ok = (status == 0);
+                if (status != 0) {
+                    log("Command invoked: " + "xjc" + getCommandline().toString());
+                    throw new BuildException("xjc" + " failed", getLocation());
+                }
             } else {
                 if (getCommandline().getVmCommand().size() > 1) {
                     log("JVM args ignored when same JVM is used.", Project.MSG_WARN);
@@ -725,10 +727,6 @@ public class XJCBase extends MatchingTask {
                         throw new BuildException(e);
                     }
                 }
-            }
-            if (!ok) {
-                log("Command invoked: " + "xjc" + getCommandline().toString());
-                throw new BuildException("xjc" + " failed", getLocation());
             }
         } catch (BuildException e) {
             log("failure in the XJC task. Use the Ant -verbose switch for more details");
