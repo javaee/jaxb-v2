@@ -105,10 +105,6 @@
             <artifactId>ant</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.netbeans.external</groupId>
-            <artifactId>nb-javac-api</artifactId>
-        </dependency>
     </dependencies>
 
     <properties>
