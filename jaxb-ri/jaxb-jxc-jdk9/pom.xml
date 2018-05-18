@@ -205,7 +205,7 @@
                     <reuseForks>false</reuseForks>
                     <argLine>
                         --add-reads java.base=java.desktop
-                        --add-modules java.xml.bind
+                        --add-modules java.xml.bind,java.compiler
                         --upgrade-module-path ${endorsed.dir}
                         -Djdk.attach.allowAttachSelf
                     </argLine>
