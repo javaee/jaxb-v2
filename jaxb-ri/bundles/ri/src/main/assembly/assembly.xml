@@ -124,8 +124,10 @@
             <fileMode>0644</fileMode>
             <includes>
                 <include>relaxngDatatype:relaxngDatatype</include>
-                <include>org.apache.ant:ant</include>
             </includes>
+            <excludes>
+                <exclude>org.apache.ant:ant</exclude>
+            </excludes>
         </dependencySet>
         <dependencySet>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
