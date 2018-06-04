@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2017 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2018 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -152,9 +152,6 @@ public final class AnnotationParser extends AbstractProcessor {
 
     @Override
     public SourceVersion getSupportedSourceVersion() {
-        if (SourceVersion.latest().compareTo(SourceVersion.RELEASE_6) > 0)
-            return SourceVersion.valueOf("RELEASE_7");
-        else
-            return SourceVersion.RELEASE_6;
+        return SourceVersion.latestSupported();
     }
 }

@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 #
 # DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 #
-# Copyright (c) 1997-2017 Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 1997-2018 Oracle and/or its affiliates. All rights reserved.
 #
 # The contents of this file are subject to the terms of either the GNU
 # General Public License Version 2 only ("GPL") or the Common Development
@@ -84,4 +84,38 @@ else
     JAVA=java
 fi
 
-exec "$JAVA" $XJC_OPTS -jar "$JAXB_HOME/lib/jaxb-xjc.jar" "$@"
+#JXC module path
+JAXB_PATH=${JAXB_HOME}/mod/jaxb-xjc.jar:\
+${JAXB_HOME}/mod/jaxb-api.jar:\
+${JAXB_HOME}/mod/codemodel.jar:\
+${JAXB_HOME}/mod/jaxb-runtime.jar:\
+${JAXB_HOME}/mod/istack-commons-runtime.jar:\
+${JAXB_HOME}/mod/istack-commons-tools.jar:\
+${JAXB_HOME}/mod/rngom.jar:\
+${JAXB_HOME}/mod/xsom.jar:\
+${JAXB_HOME}/mod/dtd-parser.jar:\
+${JAXB_HOME}/mod/txw2.jar:\
+${JAXB_HOME}/mod/stax-ex.jar:\
+${JAXB_HOME}/mod/FastInfoset.jar:\
+${JAXB_HOME}/mod/javax.activation.jar:\
+${JAXB_HOME}/lib/relaxngDatatype.jar
+
+
+JAVA_VERSION=`${JAVA} -version 2>&1 | head -n 1 | cut -d'"' -f2 | sed -E 's/^(1\.)?([0-9]+).+$/\2/'`
+echo "Java major version: ${JAVA_VERSION}"
+
+# Check if supports module path
+if [[ ${JAVA_VERSION} -lt 9 ]] ;
+then
+  #classpath
+  exec "${JAVA}" -cp "${JAXB_PATH}" ${XJC_OPTS} com.sun.tools.xjc.XJCFacade "$@"
+elif [[ ${JAVA_VERSION} -ge 9 && ${JAVA_VERSION} -le 10 ]] ;
+then
+  #module path + upgrade
+  exec "${JAVA}" --module-path "${JAXB_PATH}" --upgrade-module-path ${JAXB_HOME}/mod/jaxb-api.jar ${XJC_OPTS} -m com.sun.tools.xjc/com.sun.tools.xjc.XJCFacade "$@"
+else
+  #module path
+  exec "${JAVA}" --module-path "${JAXB_PATH}" ${XJC_OPTS} -m com.sun.tools.xjc/com.sun.tools.xjc.XJCFacade "$@"
+fi
+
+

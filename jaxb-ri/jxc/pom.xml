@@ -185,6 +185,9 @@
                         </goals>
                         <configuration>
                             <archive>
+                                <manifestEntries>
+                                    <Multi-Release>true</Multi-Release>
+                                </manifestEntries>
                                 <manifest>
                                     <mainClass>com.sun.tools.jxc.SchemaGeneratorFacade</mainClass>
                                 </manifest>

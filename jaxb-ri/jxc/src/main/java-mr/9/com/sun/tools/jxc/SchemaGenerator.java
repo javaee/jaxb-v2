@@ -54,8 +54,10 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 import javax.xml.bind.JAXBContext;
 import java.io.File;
+import java.lang.module.ModuleReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.module.ModuleFinder;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -63,6 +65,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -152,11 +155,19 @@ public class SchemaGenerator {
             aptargs.add(options.encoding);
         }
 
-        aptargs.add("-cp");
-        aptargs.add(setClasspath(options.classpath)); // set original classpath + jaxb-api to be visible to annotation processor
+        String cp = setClasspath(options.classpath);
+        //can be empty because all is on module path
+        if (cp != null && !cp.isEmpty()) {
+            aptargs.add("-cp");
+            aptargs.add(cp); // set original classpath + jaxb-api to be visible to annotation processor
+        }
 
         aptargs.add("--add-modules");
         aptargs.add("java.xml.bind");
+
+        aptargs.add(systemJaxbModule() ?
+                "--upgrade-module-path" : "--module-path");
+        aptargs.add(findJaxbApiJar());
 
         if(options.targetDir!=null) {
             aptargs.add("-d");
@@ -167,6 +178,11 @@ public class SchemaGenerator {
 
         String[] argsarray = aptargs.toArray(new String[aptargs.size()]);
         return ((Boolean) compileMethod.invoke(null, argsarray, options.episodeFile)) ? 0 : 1;
+    }
+
+    private static boolean systemJaxbModule() {
+        ModuleFinder finder = ModuleFinder.ofSystem();
+        return finder.find("java.xml.bind").isPresent();
     }
 
     private static String setClasspath(String givenClasspath) {
@@ -187,7 +203,6 @@ public class SchemaGenerator {
             cl = cl.getParent();
         }
 
-        appendPath(cp, findJaxbApiJar());
         return cp.toString();
     }
 
