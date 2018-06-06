@@ -161,12 +161,29 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-relaxng-to-mp</id>
+                        <phase>process-test-sources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/mod</outputDirectory>
+                            <includeArtifactIds>relaxngDatatype</includeArtifactIds>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <additionalJOptions>
                         <additionalparam>-Xdoclint:none</additionalparam>
-                        <additionalJOption>--add-reads</additionalJOption>
-                        <additionalJOption>com.sun.xml.xsom=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>--module-path</additionalJOption>
+                        <additionalJOption>${project.build.directory}/mod/</additionalJOption>
                     </additionalJOptions>
                 </configuration>
             </plugin>
