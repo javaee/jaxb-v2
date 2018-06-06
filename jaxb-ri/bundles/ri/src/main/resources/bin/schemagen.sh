@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 #
 # DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 #
-# Copyright (c) 1997-2017 Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 1997-2018 Oracle and/or its affiliates. All rights reserved.
 #
 # The contents of this file are subject to the terms of either the GNU
 # General Public License Version 2 only ("GPL") or the Common Development
@@ -72,31 +72,43 @@ then
     cd $saveddir
 fi
 
-if [ -n "$CLASSPATH" ] ; then
-  LOCALCLASSPATH="$CLASSPATH"
-fi
+#JXC module path
+JAXB_PATH=${JAXB_HOME}/mod/jaxb-api.jar:\
+${JAXB_HOME}/mod/jaxb-jxc.jar:\
+${JAXB_HOME}/mod/jaxb-xjc.jar:\
+${JAXB_HOME}/mod/jaxb-runtime.jar:\
+${JAXB_HOME}/mod/stax-ex.jar:\
+${JAXB_HOME}/mod/istack-commons-runtime.jar:\
+${JAXB_HOME}/mod/istack-commons-tools.jar:\
+${JAXB_HOME}/mod/FastInfoset.jar:\
+${JAXB_HOME}/mod/dtd-parser.jar:\
+${JAXB_HOME}/mod/rngom.jar:\
+${JAXB_HOME}/mod/codemodel.jar:\
+${JAXB_HOME}/mod/xsom.jar:\
+${JAXB_HOME}/mod/txw2.jar:\
+${JAXB_HOME}/lib/relaxngDatatype.jar:\
+${JAXB_HOME}/mod/javax.activation.jar
+
 
 # add the api jar file
-if [ -z "$LOCALCLASSPATH" ] ; then
-    LOCALCLASSPATH="$JAXB_HOME"/lib/jaxb-api.jar:"$JAXB_HOME"/lib/jaxb-core.jar:"$JAXB_HOME"/lib/jaxb-xjc.jar:"$JAXB_HOME"/lib/jaxb-jxc.jar:"$JAXB_HOME"/lib/jaxb-impl.jar
+if [ -n ${CLASSPATH} ] ; then
+    LOCALPATH=${JAXB_PATH}:"${CLASSPATH}"
 else
-    LOCALCLASSPATH="$JAXB_HOME"/lib/jaxb-api.jar:"$JAXB_HOME"/lib/jaxb-core.jar:"$JAXB_HOME"/lib/jaxb-xjc.jar:"$JAXB_HOME"/lib/jaxb-jxc.jar:"$JAXB_HOME"/lib/jaxb-impl.jar:"$LOCALCLASSPATH"
+    LOCALPATH=${JAXB_PATH}
 fi
 
 
 if [ -n "$JAVA_HOME" ]
 then
     JAVA="$JAVA_HOME"/bin/java
-    LOCALCLASSPATH="$JAVA_HOME"/lib/tools.jar:"$LOCALCLASSPATH"
 else
     JAVA=java
     JAVACMD=`which $JAVA`
     BINDIR=`dirname $JAVACMD`
-    LOCALCLASSPATH="$BINDIR"/../lib/tools.jar:"$LOCALCLASSPATH"
 fi
 [ `expr \`uname\` : 'CYGWIN'` -eq 6 ] &&
 {
-    LOCALCLASSPATH=`cygpath -w -p ${LOCALCLASSPATH}`
+    LOCALPATH=`cygpath -w -p ${LOCALPATH}`
 }
 
 if [ `expr \`uname\` : 'CYGWIN'` -eq 6 ]
@@ -104,5 +116,27 @@ then
     JAXB_HOME="`cygpath -w "$JAXB_HOME"`"
 fi
 
+JAVA_VERSION=`${JAVA} -version 2>&1 | head -n 1 | cut -d'"' -f2 | sed -E 's/^(1\.)?([0-9]+).+$/\2/'`
+echo "Java major version: ${JAVA_VERSION}"
 
-exec "$JAVA" $SCHEMAGEN_OPTS -cp "$LOCALCLASSPATH" com.sun.tools.jxc.SchemaGeneratorFacade "$@"
+# Check if supports module path
+if [[ ${JAVA_VERSION} -lt 9 ]] ;
+then
+  #classpath
+  if [ -n "${JAVA_HOME}" ]
+  then
+      LOCALPATH="${JAVA_HOME}"/lib/tools.jar:"${LOCALPATH}"
+  else
+      LOCALPATH="${BINDIR}"/../lib/tools.jar:"${LOCALPATH}"
+  fi
+
+  exec "${JAVA}" ${SCHEMAGEN_OPTS} -cp "${LOCALPATH}" com.sun.tools.jxc.SchemaGeneratorFacade "$@"
+elif [[ ${JAVA_VERSION} -ge 9 && ${JAVA_VERSION} -le 10 ]] ;
+then
+  #module path + upgrade
+  exec "${JAVA}" --upgrade-module-path ${JAXB_HOME}/mod/jaxb-api.jar ${SCHEMAGEN_OPTS} --module-path "${LOCALPATH}" -m com.sun.tools.jxc/com.sun.tools.jxc.SchemaGeneratorFacade "$@"
+else
+  #module path
+  exec "${JAVA}" ${SCHEMAGEN_OPTS} --module-path "${LOCALPATH}" -m com.sun.tools.jxc/com.sun.tools.jxc.SchemaGeneratorFacade "$@"
+fi
+
