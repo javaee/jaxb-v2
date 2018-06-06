@@ -53,6 +53,32 @@
     <para>
         Please refer to the jaxb-1-0-x-changelog for older releases.
     </para>
+    <section xml:id="a-2-4-0">
+        <title>Changes between 2.3.0.1 and 2.4.0</title>
+        <itemizedlist>
+            <listitem><para>JAXB RI is now JPMS modularized:
+                <itemizedlist>
+                    <listitem><para>All modules have native module descriptor.</para></listitem>
+                    <listitem><para>Removed jaxb-core module, which caused split package issue on JPMS.</para></listitem>
+                    <listitem><para>RI binary bundle now has single jar per dependency instead of shaded fat jars.</para></listitem>
+                    <listitem><para>Removed runtime class weaving optimization.</para></listitem>
+                </itemizedlist>
+            </para></listitem>
+        </itemizedlist>
+    </section>
+    <section xml:id="a-2-3-0-1">
+        <title>Changes between 2.3.0 and 2.3.0.1</title>
+        <itemizedlist>
+            <listitem><para>Removed legacy technology dependencies:
+                <itemizedlist>
+                    <listitem><para>com.sun.xml.bind:jaxb1-impl</para></listitem>
+                    <listitem><para>net.java.dev.msv:msv-core</para></listitem>
+                    <listitem><para>net.java.dev.msv:xsdlib</para></listitem>
+                    <listitem><para>com.sun.xml.bind.jaxb:isorelax</para></listitem>
+                </itemizedlist>
+            </para></listitem>
+        </itemizedlist>
+    </section>
     <section xml:id="a-2-3-0">
         <title>Changes between 2.2.11 and 2.3.0</title>
         <itemizedlist>
