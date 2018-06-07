@@ -86,6 +86,17 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>txw2</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.istack</groupId>
+            <artifactId>istack-commons-runtime</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
@@ -194,7 +205,7 @@
                 <configuration>
                     <excludes>**/module-info.class</excludes>
                     <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                    <includeArtifactIds>jaxb-impl,jaxb-jxc,jaxb-xjc,stax-ex,FastInfoset</includeArtifactIds>
+                    <includeArtifactIds>jaxb-impl,jaxb-jxc,jaxb-xjc,stax-ex,FastInfoset,txw2</includeArtifactIds>
                 </configuration>
                     </execution>
                  <execution>
@@ -370,12 +381,12 @@
                                     <include>com.sun.xml.bind:jaxb-jxc</include>
                                     <include>org.jvnet.staxex:stax-ex</include>
                                     <include>com.sun.xml.fastinfoset:FastInfoset</include>
+                                    <include>org.glassfish.jaxb:txw2</include>
+                                    <include>com.sun.istack:istack-commons-runtime</include>
                                 </includes>
                                 <excludes>
                                     <exclude>org.glassfish.jaxb:jaxb-runtime</exclude>
                                     <exclude>javax.xml.bind:jaxb-api</exclude>
-                                    <exclude>org.glassfish.jaxb:txw2</exclude>
-                                    <exclude>com.sun.istack:istack-commons-runtime</exclude>
                                     <exclude>relaxngDatatype:relaxngDatatype</exclude>
                                 </excludes>
                             </artifactSet>
