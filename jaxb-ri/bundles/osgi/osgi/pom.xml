@@ -121,6 +121,13 @@
                                 <additionalJOption>--add-exports</additionalJOption>
                                 <additionalJOption>java.xml/com.sun.org.apache.xml.internal.resolver=ALL-UNNAMED</additionalJOption>
                             </additionalJOptions>
+                            <additionalDependencies>
+                                <additionalDependency>
+                                    <groupId>org.apache.ant</groupId>
+                                    <artifactId>ant</artifactId>
+                                    <version>${ant.version}</version>
+                                </additionalDependency>
+                            </additionalDependencies>
                         </configuration>
                     </execution>
                 </executions>
@@ -411,32 +418,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <sourceFileExcludes>
-                        <sourceFileExclude>META-INF/versions/**</sourceFileExclude>
-                        <sourceFileExclude>module-info.java</sourceFileExclude>
-                    </sourceFileExcludes>
-                    <includeDependencySources>false</includeDependencySources>
-                    <additionalJOptions>
-                        <additionalJOption>--add-modules</additionalJOption>
-                        <additionalJOption>java.activation</additionalJOption>
-                        <additionalJOption>--add-exports</additionalJOption>
-                        <additionalJOption>java.xml/com.sun.org.apache.xml.internal.resolver.tools=ALL-UNNAMED</additionalJOption>
-                        <additionalJOption>--add-exports</additionalJOption>
-                        <additionalJOption>java.xml/com.sun.org.apache.xml.internal.resolver=ALL-UNNAMED</additionalJOption>
-                    </additionalJOptions>
-                    <additionalDependencies>
-                        <additionalDependency>
-                            <groupId>org.apache.ant</groupId>
-                            <artifactId>ant</artifactId>
-                            <version>${ant.version}</version>
-                        </additionalDependency>
-                    </additionalDependencies>
-                </configuration>
             </plugin>
         </plugins>
     </build>
