@@ -69,6 +69,5 @@
         <module>runtime</module>
         <module>xjc</module>
         <module>osgi</module>
-        <module>osgi_extra</module>
     </modules>
 </project>

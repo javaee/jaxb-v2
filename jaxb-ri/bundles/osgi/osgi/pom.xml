@@ -76,12 +76,6 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jaxb1-impl</artifactId>
-            <version>${project.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>org.jvnet.staxex</groupId>
             <artifactId>stax-ex</artifactId>
             <optional>true</optional>
@@ -89,6 +83,17 @@
         <dependency>
             <groupId>com.sun.xml.fastinfoset</groupId>
             <artifactId>FastInfoset</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>txw2</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.istack</groupId>
+            <artifactId>istack-commons-runtime</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -114,6 +119,26 @@
                         </goals>
                         <configuration>
                             <additionalparam>-Xdoclint:none</additionalparam>
+                            <sourceFileExcludes>
+                                <sourceFileExclude>META-INF/versions/**</sourceFileExclude>
+                                <sourceFileExclude>module-info.java</sourceFileExclude>
+                            </sourceFileExcludes>
+                            <includeDependencySources>false</includeDependencySources>
+                            <additionalJOptions>
+                                <additionalJOption>--add-modules</additionalJOption>
+                                <additionalJOption>java.activation,java.xml.bind</additionalJOption>
+                                <additionalJOption>--add-exports</additionalJOption>
+                                <additionalJOption>java.xml/com.sun.org.apache.xml.internal.resolver.tools=ALL-UNNAMED</additionalJOption>
+                                <additionalJOption>--add-exports</additionalJOption>
+                                <additionalJOption>java.xml/com.sun.org.apache.xml.internal.resolver=ALL-UNNAMED</additionalJOption>
+                            </additionalJOptions>
+                            <additionalDependencies>
+                                <additionalDependency>
+                                    <groupId>org.apache.ant</groupId>
+                                    <artifactId>ant</artifactId>
+                                    <version>${ant.version}</version>
+                                </additionalDependency>
+                            </additionalDependencies>
                         </configuration>
                     </execution>
                 </executions>
@@ -180,7 +205,7 @@
                 <configuration>
                     <excludes>**/module-info.class</excludes>
                     <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                    <includeArtifactIds>jaxb-impl,jaxb1-impl,jaxb-jxc,jaxb-xjc,stax-ex,FastInfoset</includeArtifactIds>
+                    <includeArtifactIds>jaxb-impl,jaxb-jxc,jaxb-xjc,stax-ex,FastInfoset,txw2</includeArtifactIds>
                 </configuration>
                     </execution>
                  <execution>
@@ -211,13 +236,6 @@
                                 <artifactItem>
                                     <groupId>com.sun.xml.bind</groupId>
                                     <artifactId>jaxb-jxc</artifactId>
-                                    <classifier>sources</classifier>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${generated.sources.dir}</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.sun.xml.bind</groupId>
-                                    <artifactId>jaxb1-impl</artifactId>
                                     <classifier>sources</classifier>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${generated.sources.dir}</outputDirectory>
@@ -322,13 +340,6 @@
                                     org.apache.tools.ant.taskdefs;resolution:=optional,
                                     org.apache.tools.ant.taskdefs.compilers;resolution:=optional,
                                     org.apache.tools.ant.types;resolution:=optional,
-                                    com.sun.msv.grammar;version=${msv.version};resolution:=optional,
-                                    com.sun.msv.grammar.trex;version=${msv.version};resolution:=optional,
-                                    com.sun.msv.grammar.util;version=${msv.version};resolution:=optional,
-                                    com.sun.msv.util;version=${msv.version};resolution:=optional,
-                                    com.sun.msv.verifier;version=${msv.version};resolution:=optional,
-                                    com.sun.msv.verifier.regexp;version=${msv.version};resolution:=optional,
-                                    org.iso_relax.verifier.impl;version=${isorelax.version};resolution:=optional
                                 </Import-Package>
                             </instructions>
                         </configuration>
@@ -368,19 +379,15 @@
                                     <include>com.sun.xml.bind:jaxb-xjc</include>
                                     <include>com.sun.xml.bind:jaxb-impl</include>
                                     <include>com.sun.xml.bind:jaxb-jxc</include>
-                                    <include>com.sun.xml.bind:jaxb1-impl</include>
                                     <include>org.jvnet.staxex:stax-ex</include>
                                     <include>com.sun.xml.fastinfoset:FastInfoset</include>
+                                    <include>org.glassfish.jaxb:txw2</include>
+                                    <include>com.sun.istack:istack-commons-runtime</include>
                                 </includes>
                                 <excludes>
                                     <exclude>org.glassfish.jaxb:jaxb-runtime</exclude>
                                     <exclude>javax.xml.bind:jaxb-api</exclude>
-                                    <exclude>org.glassfish.jaxb:txw2</exclude>
-                                    <exclude>com.sun.istack:istack-commons-runtime</exclude>
-                                    <exclude>net.java.dev.msv:msv-core</exclude>
-                                    <exclude>net.java.dev.msv:xsdlib</exclude>
                                     <exclude>relaxngDatatype:relaxngDatatype</exclude>
-                                    <exclude>com.sun.xml.bind.jaxb:isorelax</exclude>
                                 </excludes>
                             </artifactSet>
                             <transformers>
@@ -390,7 +397,7 @@
                                         <Major-Version>${jaxb.majorVersion}.${jaxb.minorVersion}.${jaxb.incrementalVersion}</Major-Version>
                                         <Specification-Version>${jaxb-api.majorVersion}.${jaxb-api.minorVersion}</Specification-Version>
                                         <Git-Revision>${buildNumber}</Git-Revision>
-                                        <Class-Path>jaxb-api.jar jaxb-extra-osgi.jar</Class-Path>
+                                        <Class-Path>jaxb-api.jar</Class-Path>
                                         <Multi-Release>true</Multi-Release>
                                     </manifestEntries>
                                 </transformer>
@@ -422,32 +429,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <sourceFileExcludes>
-                        <sourceFileExclude>META-INF/versions/**</sourceFileExclude>
-                        <sourceFileExclude>module-info.java</sourceFileExclude>
-                    </sourceFileExcludes>
-                    <includeDependencySources>false</includeDependencySources>
-                    <additionalJOptions>
-                        <additionalJOption>--add-modules</additionalJOption>
-                        <additionalJOption>java.activation</additionalJOption>
-                        <additionalJOption>--add-exports</additionalJOption>
-                        <additionalJOption>java.xml/com.sun.org.apache.xml.internal.resolver.tools=ALL-UNNAMED</additionalJOption>
-                        <additionalJOption>--add-exports</additionalJOption>
-                        <additionalJOption>java.xml/com.sun.org.apache.xml.internal.resolver=ALL-UNNAMED</additionalJOption>
-                    </additionalJOptions>
-                    <additionalDependencies>
-                        <additionalDependency>
-                            <groupId>org.apache.ant</groupId>
-                            <artifactId>ant</artifactId>
-                            <version>${ant.version}</version>
-                        </additionalDependency>
-                    </additionalDependencies>
-                </configuration>
             </plugin>
         </plugins>
     </build>

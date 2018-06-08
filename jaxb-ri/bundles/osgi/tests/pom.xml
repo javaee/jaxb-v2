@@ -63,10 +63,6 @@
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-osgi</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-extra-osgi</artifactId>
-        </dependency>
     </dependencies>
 
     <profiles>
@@ -87,12 +83,6 @@
                 <dependency>
                     <groupId>org.glassfish.jaxb</groupId>
                     <artifactId>osgi-test-osgi</artifactId>
-                    <version>${project.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.glassfish.jaxb</groupId>
-                    <artifactId>osgi-test-extra_osgi</artifactId>
                     <version>${project.version}</version>
                     <scope>test</scope>
                 </dependency>
