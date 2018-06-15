@@ -43,13 +43,13 @@
  */
 module com.sun.tools.jxc {
 
-    requires java.xml.bind;
+    requires transitive java.xml.bind;
     requires java.compiler;
     requires jdk.compiler;
     requires java.logging;
-    requires com.sun.xml.bind;
-    requires com.sun.tools.xjc;
-    requires com.sun.xml.txw2;
+    requires transitive com.sun.xml.bind;
+    requires transitive com.sun.tools.xjc;
+    requires transitive com.sun.xml.txw2;
 
 
     exports com.sun.tools.jxc;

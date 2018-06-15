@@ -62,6 +62,7 @@ module com.sun.tools.xjc {
     opens com.sun.tools.xjc.reader.xmlschema.bindinfo to java.xml.bind;
 
     exports com.sun.tools.xjc;
+    exports com.sun.tools.xjc.reader;
     exports com.sun.tools.xjc.api;
     exports com.sun.tools.xjc.util;
 
