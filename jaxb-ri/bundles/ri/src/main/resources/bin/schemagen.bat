@@ -3,7 +3,7 @@
 REM
 REM  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 REM
-REM  Copyright (c) 1997-2017 Oracle and/or its affiliates. All rights reserved.
+REM  Copyright (c) 1997-2018 Oracle and/or its affiliates. All rights reserved.
 REM
 REM  The contents of this file are subject to the terms of either the GNU
 REM  General Public License Version 2 only ("GPL") or the Common Development
@@ -80,7 +80,7 @@ goto LAUNCHSCHEMAGEN
 
 :LAUNCHSCHEMAGEN
 rem Set Java Version
-for /f "tokens=3" %%i in ('java -version 2^>^&1 ^| %SystemRoot%\system32\find.exe "java version"') do (
+for /f "tokens=3" %%i in ('java -version 2^>^&1 ^| %SystemRoot%\system32\find.exe "version"') do (
   set JAVA_VERSION1=%%i
 )
 for /f "tokens=1,2 delims=." %%j in ('echo %JAVA_VERSION1:~1,-1%') do (

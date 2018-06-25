@@ -3,7 +3,7 @@
 REM
 REM  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 REM
-REM  Copyright (c) 1997-2017 Oracle and/or its affiliates. All rights reserved.
+REM  Copyright (c) 1997-2018 Oracle and/or its affiliates. All rights reserved.
 REM
 REM  The contents of this file are subject to the terms of either the GNU
 REM  General Public License Version 2 only ("GPL") or the Common Development
@@ -69,7 +69,7 @@ rem JXC module path
 set JAXB_PATH=%JAXB_HOME%/mod/jaxb-xjc.jar;%JAXB_HOME%/mod/jaxb-api.jar;%JAXB_HOME%/mod/codemodel.jar;%JAXB_HOME%/mod/jaxb-runtime.jar;%JAXB_HOME%/mod/istack-commons-runtime.jar;%JAXB_HOME%/mod/istack-commons-tools.jar;%JAXB_HOME%/mod/rngom.jar;%JAXB_HOME%/mod/xsom.jar;%JAXB_HOME%/mod/dtd-parser.jar;%JAXB_HOME%/mod/txw2.jar;%JAXB_HOME%/mod/stax-ex.jar;%JAXB_HOME%/mod/FastInfoset.jar;%JAXB_HOME%/mod/javax.activation.jar;%JAXB_HOME%/lib/relaxngDatatype.jar
 
 rem Set Java Version
-for /f "tokens=3" %%i in ('java -version 2^>^&1 ^| %SystemRoot%\system32\find.exe "java version"') do (
+for /f "tokens=3" %%i in ('java -version 2^>^&1 ^| %SystemRoot%\system32\find.exe "version"') do (
   set JAVA_VERSION1=%%i
 )
 for /f "tokens=1,2 delims=." %%j in ('echo %JAVA_VERSION1:~1,-1%') do (
