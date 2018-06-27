@@ -211,9 +211,6 @@
                         <id>default-compile</id>
                         <configuration>
                             <release>${upper.java.level}</release>
-                            <includes>
-                                <include>module-info.java</include>
-                            </includes>
                         </configuration>
                     </execution>
                     <execution>
