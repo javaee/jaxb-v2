@@ -53,5 +53,7 @@ module com.sun.tools.jxc {
 
 
     exports com.sun.tools.jxc;
+    exports com.sun.tools.jxc.ap;
+    exports com.sun.tools.jxc.model.nav;
     exports com.sun.tools.jxc.api;
 }

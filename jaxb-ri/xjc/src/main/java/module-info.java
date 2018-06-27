@@ -63,6 +63,7 @@ module com.sun.tools.xjc {
 
     exports com.sun.tools.xjc;
     exports com.sun.tools.xjc.reader;
+    exports com.sun.tools.xjc.reader.internalizer;
     exports com.sun.tools.xjc.api;
     exports com.sun.tools.xjc.util;
 
