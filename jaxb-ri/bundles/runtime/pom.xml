@@ -305,7 +305,7 @@
                                 <excludes>
                                     <exclude>javax.xml.bind:jaxb-api</exclude>
                                     <exclude>javax.xml.stream:stax-api</exclude>
-                                    <exclude>relaxngDatatype:relaxngDatatype</exclude>
+                                    <exclude>com.sun.xml.bind.external:relaxng-datatype</exclude>
                                     <exclude>com.sun.xml.fastinfoset:FastInfoset</exclude>
                                     <exclude>org.jvnet.staxex:stax-ex</exclude>
                                     <exclude>javax.activation:activation</exclude>

@@ -49,6 +49,7 @@ module com.sun.tools.xjc {
     requires jdk.compiler;
     requires java.desktop;
 
+    requires com.sun.tools.rngdatatype;
     requires com.sun.codemodel;
     requires java.xml.bind;
     requires com.sun.xml.bind;

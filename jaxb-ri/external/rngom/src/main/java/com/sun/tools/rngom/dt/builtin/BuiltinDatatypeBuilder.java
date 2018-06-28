@@ -21,10 +21,10 @@
  */
 package com.sun.tools.rngom.dt.builtin;
 
-import org.relaxng.datatype.Datatype;
-import org.relaxng.datatype.DatatypeBuilder;
-import org.relaxng.datatype.DatatypeException;
-import org.relaxng.datatype.ValidationContext;
+import com.sun.tools.rngdatatype.Datatype;
+import com.sun.tools.rngdatatype.DatatypeBuilder;
+import com.sun.tools.rngdatatype.DatatypeException;
+import com.sun.tools.rngdatatype.ValidationContext;
 
 import com.sun.tools.rngom.util.Localizer;
 

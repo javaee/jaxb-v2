@@ -23,7 +23,7 @@ package com.sun.tools.rngom.parse.xml;
 
 import org.xml.sax.DTDHandler;
 import org.xml.sax.SAXException;
-import org.relaxng.datatype.ValidationContext;
+import com.sun.tools.rngdatatype.ValidationContext;
 
 import java.util.Hashtable;
 

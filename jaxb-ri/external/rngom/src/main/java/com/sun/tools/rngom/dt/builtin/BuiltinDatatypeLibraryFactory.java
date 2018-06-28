@@ -21,8 +21,8 @@
  */
 package com.sun.tools.rngom.dt.builtin;
 
-import org.relaxng.datatype.DatatypeLibrary;
-import org.relaxng.datatype.DatatypeLibraryFactory;
+import com.sun.tools.rngdatatype.DatatypeLibrary;
+import com.sun.tools.rngdatatype.DatatypeLibraryFactory;
 
 import com.sun.tools.rngom.xml.util.WellKnownNamespaces;
 

@@ -29,7 +29,7 @@ import com.sun.tools.rngom.binary.SchemaPatternBuilder;
 import com.sun.tools.rngom.parse.IllegalSchemaException;
 import com.sun.tools.rngom.parse.host.SchemaBuilderHost;
 import com.sun.tools.rngom.parse.host.ParsedPatternHost;
-import org.relaxng.datatype.DatatypeLibraryFactory;
+import com.sun.tools.rngdatatype.DatatypeLibraryFactory;
 import org.xml.sax.ErrorHandler;
 
 /**

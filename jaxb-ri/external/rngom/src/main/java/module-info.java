@@ -43,6 +43,7 @@
  */
 module com.sun.tools.rngom {
 
+    requires com.sun.tools.rngdatatype;
     requires java.xml;
     requires java.logging;
 

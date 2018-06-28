@@ -22,7 +22,7 @@
 package com.sun.tools.rngom.parse;
 
 import java.util.Enumeration;
-import org.relaxng.datatype.ValidationContext;
+import com.sun.tools.rngdatatype.ValidationContext;
 
 /**
  * Provides contextual information.

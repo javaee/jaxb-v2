@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2017 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -38,38 +38,11 @@
  * holder.
  */
 
-package com.sun.tools.xjc.util;
-
-import java.util.Collections;
-import java.util.Iterator;
-
-import javax.xml.namespace.NamespaceContext;
-
-import com.sun.xml.xsom.XmlString;
-
-import com.sun.tools.rngdatatype.ValidationContext;
-
 /**
- * Take a {@link ValidationContext} and make it look like a {@link NamespaceContext}.
- *
- * @author Kohsuke Kawaguchi
+ *  RelaxNG datatype library.
  */
-public final class NamespaceContextAdapter implements NamespaceContext {
-    private XmlString xstr;
+module com.sun.tools.rngdatatype {
 
-    public NamespaceContextAdapter(XmlString xstr) {
-        this.xstr = xstr;
-    }
-
-    public String getNamespaceURI(String prefix) {
-        return xstr.resolvePrefix(prefix);
-    }
-
-    public String getPrefix(String namespaceURI) {
-        return null;
-    }
-
-    public Iterator getPrefixes(String namespaceURI) {
-        return Collections.EMPTY_LIST.iterator();
-    }
+    exports com.sun.tools.rngdatatype;
+    exports com.sun.tools.rngdatatype.helpers;
 }

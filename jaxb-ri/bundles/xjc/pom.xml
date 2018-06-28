@@ -126,7 +126,7 @@
     </profiles>
     <build>
         <plugins>
-            <plugin> <!-- we don't want to fix javadocs in external libs (e.g. relaxngDatatype) -->
+            <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <executions>
                     <execution>
@@ -229,8 +229,8 @@
                                     <outputDirectory>${generated.sources.dir}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
-                                    <groupId>relaxngDatatype</groupId>
-                                    <artifactId>relaxngDatatype</artifactId>
+                                    <groupId>com.sun.xml.bind.external</groupId>
+                                    <artifactId>relaxng-datatype</artifactId>
                                     <classifier>sources</classifier>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${generated.sources.dir}</outputDirectory>
@@ -289,8 +289,8 @@
                                     <outputDirectory>${generated.classes.dir}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
-                                    <groupId>relaxngDatatype</groupId>
-                                    <artifactId>relaxngDatatype</artifactId>
+                                    <groupId>com.sun.xml.bind.external</groupId>
+                                    <artifactId>relaxng-datatype</artifactId>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${generated.classes.dir}</outputDirectory>
                                 </artifactItem>
@@ -397,7 +397,7 @@
                                     <include>com.sun.istack:istack-commons-tools</include>
                                     <include>com.sun.xml.dtd-parser:dtd-parser</include>
                                     <include>com.sun.xml.bind.external:rngom</include>
-                                    <include>relaxngDatatype:relaxngDatatype</include>
+                                    <include>com.sun.xml.bind.external:relaxng-datatype</include>
                                 </includes>
 
                                 <excludes>

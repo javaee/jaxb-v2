@@ -21,8 +21,8 @@
  */
 package com.sun.tools.rngom.dt;
 
-import org.relaxng.datatype.DatatypeLibrary;
-import org.relaxng.datatype.DatatypeLibraryFactory;
+import com.sun.tools.rngdatatype.DatatypeLibrary;
+import com.sun.tools.rngdatatype.DatatypeLibraryFactory;
 
 /**
  * 

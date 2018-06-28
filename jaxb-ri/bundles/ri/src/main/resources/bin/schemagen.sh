@@ -86,7 +86,7 @@ ${JAXB_HOME}/mod/rngom.jar:\
 ${JAXB_HOME}/mod/codemodel.jar:\
 ${JAXB_HOME}/mod/xsom.jar:\
 ${JAXB_HOME}/mod/txw2.jar:\
-${JAXB_HOME}/lib/relaxngDatatype.jar:\
+${JAXB_HOME}/mod/relaxng-datatype.jar:\
 ${JAXB_HOME}/mod/javax.activation.jar
 
 

@@ -98,7 +98,7 @@ ${JAXB_HOME}/mod/txw2.jar:\
 ${JAXB_HOME}/mod/stax-ex.jar:\
 ${JAXB_HOME}/mod/FastInfoset.jar:\
 ${JAXB_HOME}/mod/javax.activation.jar:\
-${JAXB_HOME}/lib/relaxngDatatype.jar
+${JAXB_HOME}/mod/relaxng-datatype.jar
 
 
 JAVA_VERSION=`${JAVA} -version 2>&1 | head -n 1 | cut -d'"' -f2 | sed -E 's/^(1\.)?([0-9]+).+$/\2/'`

@@ -23,7 +23,7 @@ package com.sun.tools.rngom.binary.visitor;
 
 import com.sun.tools.rngom.binary.Pattern;
 import com.sun.tools.rngom.nc.NameClass;
-import org.relaxng.datatype.Datatype;
+import com.sun.tools.rngdatatype.Datatype;
 
 /**
  * Walks the pattern tree.

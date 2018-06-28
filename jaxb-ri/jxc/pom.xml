@@ -211,6 +211,16 @@
                         <id>default-compile</id>
                         <configuration>
                             <release>${upper.java.level}</release>
+                            <compilerArgs>
+                                <arg>--module-path</arg>
+                                <arg>${project.build.directory}/mods:${project.build.directory}/lib/ant</arg>
+                                <arg>--add-modules</arg>
+                                <arg>ant</arg>
+                                <arg>--add-reads</arg>
+                                <arg>com.sun.tools.jxc=ant</arg>
+                                <arg>--add-reads</arg>
+                                <arg>com.sun.istack.tools=ant</arg>
+                            </compilerArgs>
                         </configuration>
                     </execution>
                     <execution>
@@ -263,7 +273,7 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <phase>compile</phase>
+                        <phase>validate</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>

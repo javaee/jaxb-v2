@@ -23,7 +23,7 @@ package com.sun.tools.rngom.binary;
 
 import com.sun.tools.rngom.binary.visitor.PatternFunction;
 import com.sun.tools.rngom.binary.visitor.PatternVisitor;
-import org.relaxng.datatype.Datatype;
+import com.sun.tools.rngdatatype.Datatype;
 
 public class DataPattern extends StringPattern {
   private Datatype dt;
