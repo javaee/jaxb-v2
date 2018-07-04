@@ -40,7 +40,7 @@
 
 package com.sun.xml.xsom;
 
-import org.relaxng.datatype.ValidationContext;
+import com.sun.tools.rngdatatype.ValidationContext;
 
 /**
  * String with in-scope namespace binding information.

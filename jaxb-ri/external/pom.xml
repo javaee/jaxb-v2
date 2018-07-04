@@ -59,6 +59,7 @@
 
     <modules>
         <module>rngom</module>
+        <module>relaxng-datatype</module>
     </modules>
 
 </project>

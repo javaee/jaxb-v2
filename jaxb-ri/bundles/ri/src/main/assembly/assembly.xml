@@ -110,21 +110,7 @@
                 <include>com.sun.xml.fastinfoset:FastInfoset</include>
                 <include>org.glassfish.jaxb:txw2</include>
                 <include>com.sun.activation:javax.activation</include>
-            </includes>
-            <excludes>
-                <exclude>org.apache.ant:ant</exclude>
-            </excludes>
-        </dependencySet>
-        <dependencySet>
-            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
-            <useProjectArtifact>false</useProjectArtifact>
-            <useTransitiveDependencies>true</useTransitiveDependencies>
-            <useTransitiveFiltering>true</useTransitiveFiltering>
-            <outputDirectory>jaxb-ri/lib</outputDirectory>
-            <directoryMode>0755</directoryMode>
-            <fileMode>0644</fileMode>
-            <includes>
-                <include>relaxngDatatype:relaxngDatatype</include>
+                <include>com.sun.xml.bind.external:relaxng-datatype</include>
             </includes>
             <excludes>
                 <exclude>org.apache.ant:ant</exclude>

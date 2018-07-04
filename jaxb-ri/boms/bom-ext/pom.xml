@@ -64,8 +64,6 @@
 
     <properties>
         <ant.version>1.10.2</ant.version>
-        <!-- don't forget to check if isorelax.version is valid -> used in osgi -->
-        <relaxngDatatype.version>20020414</relaxngDatatype.version>
     </properties>
 
     <dependencyManagement>
@@ -87,9 +85,9 @@
                 <version>${ant.version}</version>
             </dependency>
             <dependency> <!-- xjc dependency... needed to be specified for xjc maven-dependency-plugin -->
-                <groupId>relaxngDatatype</groupId>
-                <artifactId>relaxngDatatype</artifactId>
-                <version>${relaxngDatatype.version}</version>
+                <groupId>com.sun.xml.bind.external</groupId>
+                <artifactId>relaxng-datatype</artifactId>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

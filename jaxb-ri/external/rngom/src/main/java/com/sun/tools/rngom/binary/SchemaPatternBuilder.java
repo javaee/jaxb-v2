@@ -22,7 +22,7 @@
 package com.sun.tools.rngom.binary;
 
 import com.sun.tools.rngom.nc.NameClass;
-import org.relaxng.datatype.Datatype;
+import com.sun.tools.rngdatatype.Datatype;
 import org.xml.sax.Locator;
 
 public class SchemaPatternBuilder extends PatternBuilder {

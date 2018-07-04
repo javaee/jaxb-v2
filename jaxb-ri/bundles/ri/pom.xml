@@ -112,8 +112,8 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>relaxngDatatype</groupId>
-            <artifactId>relaxngDatatype</artifactId>
+            <groupId>com.sun.xml.bind.external</groupId>
+            <artifactId>relaxng-datatype</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -147,8 +147,8 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.sun.activation</groupId>
-            <artifactId>javax.activation</artifactId>
+            <groupId>javax.activation</groupId>
+            <artifactId>javax.activation-api</artifactId>
             <optional>true</optional>
         </dependency>
     </dependencies>

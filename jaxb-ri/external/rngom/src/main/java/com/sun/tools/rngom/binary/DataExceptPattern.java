@@ -23,7 +23,7 @@ package com.sun.tools.rngom.binary;
 
 import com.sun.tools.rngom.binary.visitor.PatternVisitor;
 import com.sun.tools.rngom.binary.visitor.PatternFunction;
-import org.relaxng.datatype.Datatype;
+import com.sun.tools.rngdatatype.Datatype;
 import org.xml.sax.Locator;
 
 public class DataExceptPattern extends DataPattern {

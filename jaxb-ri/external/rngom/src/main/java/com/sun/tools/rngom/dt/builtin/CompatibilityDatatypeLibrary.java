@@ -22,11 +22,11 @@
 package com.sun.tools.rngom.dt.builtin;
 
 import com.sun.tools.rngom.xml.util.WellKnownNamespaces;
-import org.relaxng.datatype.Datatype;
-import org.relaxng.datatype.DatatypeBuilder;
-import org.relaxng.datatype.DatatypeException;
-import org.relaxng.datatype.DatatypeLibrary;
-import org.relaxng.datatype.DatatypeLibraryFactory;
+import com.sun.tools.rngdatatype.Datatype;
+import com.sun.tools.rngdatatype.DatatypeBuilder;
+import com.sun.tools.rngdatatype.DatatypeException;
+import com.sun.tools.rngdatatype.DatatypeLibrary;
+import com.sun.tools.rngdatatype.DatatypeLibraryFactory;
 
 class CompatibilityDatatypeLibrary implements DatatypeLibrary {
     private final DatatypeLibraryFactory factory;

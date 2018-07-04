@@ -48,8 +48,8 @@ import com.sun.tools.rngom.dt.CascadingDatatypeLibraryFactory;
 import com.sun.tools.rngom.dt.builtin.BuiltinDatatypeLibraryFactory;
 import com.sun.tools.rngom.parse.IllegalSchemaException;
 import com.sun.tools.rngom.parse.Parseable;
-import org.relaxng.datatype.DatatypeLibrary;
-import org.relaxng.datatype.DatatypeLibraryFactory;
+import com.sun.tools.rngdatatype.DatatypeLibrary;
+import com.sun.tools.rngdatatype.DatatypeLibraryFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;

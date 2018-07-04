@@ -94,9 +94,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>relaxngDatatype</groupId>
-            <artifactId>relaxngDatatype</artifactId>
-            <version>20020414</version>
+            <groupId>com.sun.xml.bind.external</groupId>
+            <artifactId>relaxng-datatype</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -137,13 +136,6 @@
                         <id>default-compile</id>
                         <configuration>
                             <release>${upper.java.level}</release>
-                            <includes>
-                                <include>module-info.java</include>
-                            </includes>
-                            <compilerArgs>
-                                <arg>--add-reads</arg>
-                                <arg>com.sun.tools.rngom=relaxngDatatype</arg>
-                            </compilerArgs>
                         </configuration>
                     </execution>
                     <execution>
@@ -170,10 +162,6 @@
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/mod</outputDirectory>
-                            <includeArtifactIds>relaxngDatatype</includeArtifactIds>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>

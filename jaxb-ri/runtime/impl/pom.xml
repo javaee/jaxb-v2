@@ -91,8 +91,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.sun.activation</groupId>
-            <artifactId>javax.activation</artifactId>
+            <groupId>javax.activation</groupId>
+            <artifactId>javax.activation-api</artifactId>
         </dependency>
     </dependencies>
 
@@ -149,9 +149,6 @@
                         <id>default-compile</id>
                         <configuration>
                             <release>${upper.java.level}</release>
-                            <includes>
-                                <include>module-info.java</include>
-                            </includes>
                         </configuration>
                     </execution>
                     <execution>
@@ -171,12 +168,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <argLine>
-                        --add-modules java.xml.bind
-                        --upgrade-module-path ${module.path}
-                    </argLine>
-                </configuration>
+
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

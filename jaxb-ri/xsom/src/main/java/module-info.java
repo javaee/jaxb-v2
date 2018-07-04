@@ -46,17 +46,9 @@
  */
 module com.sun.xml.xsom {
 
-    requires java.xml;
+    requires com.sun.tools.rngdatatype;
     requires java.desktop;
     requires java.logging;
-
-    /**
-    * TODO work around and remove dependency. This is automatic module name,
-    * without descriptor or even MANIFEST hint. This dependency was historically extracted from
-    * https://github.com/relaxng/jing-trang/tree/master/mod/datatype/src/main/org/relaxng/datatype
-    * and may cause split package when loaded together with original jing/trang
-    **/
-    requires relaxngDatatype;
 
     exports com.sun.xml.xsom;
     exports com.sun.xml.xsom.util;

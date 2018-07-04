@@ -50,7 +50,7 @@ import com.sun.xml.xsom.impl.Const;
 import com.sun.xml.xsom.impl.parser.state.NGCCRuntime;
 import com.sun.xml.xsom.impl.parser.state.Schema;
 import com.sun.xml.xsom.parser.AnnotationParser;
-import org.relaxng.datatype.ValidationContext;
+import com.sun.tools.rngdatatype.ValidationContext;
 import org.xml.sax.Attributes;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;

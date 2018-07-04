@@ -2,7 +2,7 @@
 #
 # DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 #
-# Copyright (c) 2017 Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 2017-2018 Oracle and/or its affiliates. All rights reserved.
 #
 # The contents of this file are subject to the terms of either the GNU
 # General Public License Version 2 only ("GPL") or the Common Development
@@ -39,13 +39,18 @@
 # holder.
 #
 
+
 # if option -n ... do not commit
 COMMIT=Y
-while getopts ":n" opt; do
+
+while getopts ":nv:" opt; do
   case $opt in
     n)
       COMMIT=N
-      shift
+      ;;
+    v)
+      CUSTOM_VERSION=${OPTARG}
+      echo "Using custom version: ${CUSTOM_VERSION}"
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -78,14 +83,14 @@ BUILD_NUMBER=b${DATESTAMP}
 DEVELOPER_VERSION=${CURRENT_VERSION}-SNAPSHOT
 RELEASE_QUALIFIER=${BUILD_NUMBER}
 
-if [ "$#" -eq 1 ]; then
-  RELEASE_VERSION=$1
-else
+if [ -z CUSTOM_VERSION ]; then
   echo "No version specified, reading release version from pom file"
   RELEASE_VERSION=${CURRENT_VERSION}-${RELEASE_QUALIFIER}
+else
+  RELEASE_VERSION=${CUSTOM_VERSION}
 fi;
 
-echo "Major release version found: $RELEASE_VERSION"
+echo "Release version: ${RELEASE_VERSION}"
 
 RELEASE_TAG=${RELEASE_VERSION}
 

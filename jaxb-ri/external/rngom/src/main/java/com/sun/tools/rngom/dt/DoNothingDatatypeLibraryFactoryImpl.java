@@ -21,14 +21,14 @@
  */
 package com.sun.tools.rngom.dt;
 
-import org.relaxng.datatype.DatatypeLibraryFactory;
-import org.relaxng.datatype.DatatypeLibrary;
-import org.relaxng.datatype.Datatype;
-import org.relaxng.datatype.DatatypeBuilder;
-import org.relaxng.datatype.DatatypeException;
-import org.relaxng.datatype.ValidationContext;
-import org.relaxng.datatype.DatatypeStreamingValidator;
-import org.relaxng.datatype.helpers.StreamingValidatorImpl;
+import com.sun.tools.rngdatatype.DatatypeLibraryFactory;
+import com.sun.tools.rngdatatype.DatatypeLibrary;
+import com.sun.tools.rngdatatype.Datatype;
+import com.sun.tools.rngdatatype.DatatypeBuilder;
+import com.sun.tools.rngdatatype.DatatypeException;
+import com.sun.tools.rngdatatype.ValidationContext;
+import com.sun.tools.rngdatatype.DatatypeStreamingValidator;
+import com.sun.tools.rngdatatype.helpers.StreamingValidatorImpl;
 
 /**
  * {@link DatatypeLibraryFactory} implementation

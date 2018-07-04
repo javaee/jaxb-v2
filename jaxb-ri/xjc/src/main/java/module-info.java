@@ -49,6 +49,7 @@ module com.sun.tools.xjc {
     requires jdk.compiler;
     requires java.desktop;
 
+    requires com.sun.tools.rngdatatype;
     requires com.sun.codemodel;
     requires java.xml.bind;
     requires com.sun.xml.bind;
@@ -62,6 +63,8 @@ module com.sun.tools.xjc {
     opens com.sun.tools.xjc.reader.xmlschema.bindinfo to java.xml.bind;
 
     exports com.sun.tools.xjc;
+    exports com.sun.tools.xjc.reader;
+    exports com.sun.tools.xjc.reader.internalizer;
     exports com.sun.tools.xjc.api;
     exports com.sun.tools.xjc.util;
 
