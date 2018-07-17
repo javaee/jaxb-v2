@@ -268,7 +268,9 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <additionalJOptions>
-                        <additionalJOption>--module-path</additionalJOption>
+                        <!-- javadoc plugin 3.0.1 overrides module-path, by opt/arg files,
+                        but java treats upgrade-module-path as module-path if modules are non-upgradable -->
+                        <additionalJOption>--upgrade-module-path</additionalJOption>
                         <additionalJOption>${project.build.directory}/mods</additionalJOption>
                         <additionalJOption>--add-modules</additionalJOption>
                         <additionalJOption>ant</additionalJOption>
