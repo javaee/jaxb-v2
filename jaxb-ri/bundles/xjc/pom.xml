@@ -135,11 +135,11 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
-                            <additionalparam>-Xdoclint:none</additionalparam>
                             <sourceFileExcludes>
                                 <sourceFileExclude>META-INF/versions/**</sourceFileExclude>
                             </sourceFileExcludes>
                             <additionalJOptions>
+                                <additionalJOption>-Xdoclint:none</additionalJOption>
                                 <additionalJOption>--add-modules</additionalJOption>
                                 <additionalJOption>java.activation</additionalJOption>
                                 <additionalJOption>--add-exports</additionalJOption>
