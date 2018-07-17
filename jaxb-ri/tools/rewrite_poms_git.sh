@@ -42,8 +42,9 @@
 
 # if option -n ... do not commit
 COMMIT=Y
+RELEASE=false
 
-while getopts ":nv:" opt; do
+while getopts ":nv:r" opt; do
   case $opt in
     n)
       COMMIT=N
@@ -51,6 +52,10 @@ while getopts ":nv:" opt; do
     v)
       CUSTOM_VERSION=${OPTARG}
       echo "Using custom version: ${CUSTOM_VERSION}"
+      ;;
+    r)
+      RELEASE=true
+      echo "Using release mode, to append buildnumber remove -r flag."
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -61,6 +66,7 @@ done
 echo "Script will commit changes: [$COMMIT] (pass option -n not to commit)"
 
 CURRENT_VERSION=`cat pom.xml | grep '<version' -m 1 | cut -d ">" -f 2 | cut -d "<" -f 1 | cut -d "-" -f 1`
+echo "Current version: ${CURRENT_VERSION}"
 
 SCRIPT_DIR=$(cd $(dirname $0); pwd -P)
 
@@ -83,14 +89,21 @@ BUILD_NUMBER=b${DATESTAMP}
 DEVELOPER_VERSION=${CURRENT_VERSION}-SNAPSHOT
 RELEASE_QUALIFIER=${BUILD_NUMBER}
 
-if [ -z CUSTOM_VERSION ]; then
+if [ -z "${CUSTOM_VERSION}" ]; then
   echo "No version specified, reading release version from pom file"
-  RELEASE_VERSION=${CURRENT_VERSION}-${RELEASE_QUALIFIER}
+  RELEASE_VERSION=${CURRENT_VERSION}
 else
   RELEASE_VERSION=${CUSTOM_VERSION}
 fi;
 
-echo "Release version: ${RELEASE_VERSION}"
+if [ "${RELEASE}" = true ]; then
+  echo "Release version: ${RELEASE_VERSION}"
+else
+  RELEASE_VERSION="${RELEASE_VERSION}-${RELEASE_QUALIFIER}"
+  echo "Pre-release version: ${RELEASE_VERSION}"
+fi;
+
+
 
 RELEASE_TAG=${RELEASE_VERSION}
 
