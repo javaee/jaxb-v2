@@ -109,7 +109,7 @@
                 <include>org.jvnet.staxex:stax-ex</include>
                 <include>com.sun.xml.fastinfoset:FastInfoset</include>
                 <include>org.glassfish.jaxb:txw2</include>
-                <include>com.sun.activation:javax.activation</include>
+                <include>javax.activation:javax.activation-api</include>
                 <include>com.sun.xml.bind.external:relaxng-datatype</include>
             </includes>
             <excludes>
