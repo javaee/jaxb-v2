@@ -75,7 +75,9 @@ public final class JAnnotationUse extends JAnnotationValue {
     }
 
     public Map<String, JAnnotationValue> getAnnotationMembers() {
-        return Collections.unmodifiableMap(memberValues);
+        return memberValues == null 
+            ? Collections.emptyMap()
+            : Collections.unmodifiableMap(memberValues);
     }
     
     private JCodeModel owner() {
