@@ -74,8 +74,8 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.osgi.core</artifactId>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.core</artifactId>
             <version>${felix.osgi.core}</version>
         </dependency>
     </dependencies>
@@ -106,6 +106,13 @@
                     <archive>
                         <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
                     </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>

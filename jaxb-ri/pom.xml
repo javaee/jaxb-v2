@@ -167,7 +167,7 @@
         <skipOsgiTests>true</skipOsgiTests>
         <netbeans.hint.jdkPlatform>JDK_9</netbeans.hint.jdkPlatform>
         <felix.junit4osgi>1.0.0</felix.junit4osgi>
-        <felix.osgi.core>1.4.0</felix.osgi.core>
+        <felix.osgi.core>6.0.0</felix.osgi.core>
         <jmockit.version>1.34</jmockit.version>
         <copyright.template.file>tools/config/copyright.txt</copyright.template.file>
         <copyright.exclude.file>tools/config/copyright-exclude</copyright.exclude.file>
@@ -867,7 +867,7 @@
                             <version>2.5.2</version>
                         </plugin>
                         <plugin>
-                            <groupId>org.apache.felix</groupId>
+                            <groupId>org.osgi</groupId>
                             <artifactId>maven-bundle-plugin</artifactId>
                         </plugin>
                     </plugins>

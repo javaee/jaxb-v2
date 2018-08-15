@@ -75,8 +75,8 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>org.apache.felix</groupId>
-                    <artifactId>org.osgi.core</artifactId>
+                    <groupId>org.osgi</groupId>
+                    <artifactId>osgi.core</artifactId>
                     <version>${felix.osgi.core}</version>
                     <scope>test</scope>
                 </dependency>
