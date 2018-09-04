@@ -56,10 +56,10 @@
          xmlns:db="http://docbook.org/ns/docbook">
 <title>Deployment</title>
 
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="users-guide-deployment-maven-coordinates.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="users-guide-deployment-jaxb-on-jpms.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="users-guide-deployment-migrating-jaxb-2-0-applications-to-javase-6.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="users-guide-deployment-which-jaxb-ri-is-included-in-which-jdk.xml" />
-<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="users-guide-deployment-running-jaxb-1-0-and-2-x-side-by-side.xml" />
-<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="users-guide-deployment-migrating-jaxb-1-0-applications-to-jaxb-2-x.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="users-guide-deployment-runtime-errors.xml" />
 
 </section>

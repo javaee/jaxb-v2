@@ -53,7 +53,7 @@
          xmlns:ns3="http://www.w3.org/2000/svg"
          xmlns:ns="http://docbook.org/ns/docbook"
          xmlns:m="http://www.w3.org/1998/Math/MathML">
-    <title>Migrating JAXB 2.0 applications to JavaSE 6</title>
+    <title>Older versions of JAXB and JavaSE</title>
 
     <para>JavaSE 6 ships with its own JAXB 2.0 implementation. This
     implementation is based on the JAXB RI, where the only differences

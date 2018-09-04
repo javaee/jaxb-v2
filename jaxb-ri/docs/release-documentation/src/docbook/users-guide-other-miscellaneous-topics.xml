@@ -58,8 +58,6 @@
 
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="users-guide-other-miscellaneous-topics-performance-and-thread-safety.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="users-guide-other-miscellaneous-topics-compiling-dtd.xml" />
-<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="users-guide-other-miscellaneous-topics-using-jaxb-from-maven.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="users-guide-other-miscellaneous-topics-designing-a-client-server-protocol-in-xml.xml" />
-<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="users-guide-other-miscellaneous-topics-jpms-java9.xml" />
 
 </section>

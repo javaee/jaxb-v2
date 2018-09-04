@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+
+    The contents of this file are subject to the terms of either the GNU
+    General Public License Version 2 only ("GPL") or the Common Development
+    and Distribution License("CDDL") (collectively, the "License").  You
+    may not use this file except in compliance with the License.  You can
+    obtain a copy of the License at
+    https://oss.oracle.com/licenses/CDDL+GPL-1.1
+    or LICENSE.txt.  See the License for the specific
+    language governing permissions and limitations under the License.
+
+    When distributing the software, include this License Header Notice in each
+    file and include the License file at LICENSE.txt.
+
+    GPL Classpath Exception:
+    Oracle designates this particular file as subject to the "Classpath"
+    exception as provided by Oracle in the GPL Version 2 section of the License
+    file that accompanied this code.
+
+    Modifications:
+    If applicable, add the following below the License Header, with the fields
+    enclosed by brackets [] replaced by your own identifying information:
+    "Portions Copyright [year] [name of copyright owner]"
+
+    Contributor(s):
+    If you wish your version of this file to be governed by only the CDDL or
+    only the GPL Version 2, indicate your decision by adding "[Contributor]
+    elects to include this software in this distribution under the [CDDL or GPL
+    Version 2] license."  If you don't indicate a single choice of license, a
+    recipient has the option to distribute your version of this file under
+    either the CDDL, the GPL Version 2 or to extend the choice of license to
+    its licensees as provided above.  However, if you add GPL Version 2 code
+    and therefore, elected the GPL Version 2 license, then the option applies
+    only if the new code is made subject to such option by the copyright
+    holder.
+
+-->
+
+<!DOCTYPE book [
+<!ENTITY % ents SYSTEM "docbook.ent">
+%ents;
+]>
+<section version="5.0"
+         xml:id="deployment-maven-coordinates"
+         xml:lang="en" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns3="http://www.w3.org/2000/svg"
+         xmlns:ns="http://docbook.org/ns/docbook"
+         xmlns:m="http://www.w3.org/1998/Math/MathML">
+    <title>Using JAXB with Maven</title>
+
+
+    <section xml:id="Maven_artifacts">
+        <title>Maven coordinates for JAXB artifacts</title>
+        <itemizedlist>
+            <listitem>
+                <para><emphasis role="bold">java.xml.bind:jaxb-api</emphasis> API classes for JAXB.
+                    Required to compile against JAXB.</para>
+            </listitem>
+            <listitem>
+                <para><emphasis role="bold">org.glassfish.jaxb:jaxb-runtime</emphasis> Contains the main runtime used
+                    for serialization and deserialization java objects to/from xml.</para>
+            </listitem>
+            <listitem>
+                <para><emphasis role="bold">org.glassfish.jaxb:jaxb-xjc:</emphasis> Tool to generate JAXB java sources
+                    from XML representation.</para>
+            </listitem>
+            <listitem>
+                <para><emphasis role="bold">org.glassfish.jaxb:jaxb-jxc:</emphasis> Tool to generate XML schema from
+                    JAXB java sources.</para>
+            </listitem>
+            <listitem>
+                <para><emphasis role="bold">com.sun.xml.bind:jaxb-ri:</emphasis> Zip distribution containing tooling scripts
+                    and all dependency jars in one archive.</para>
+            </listitem>
+        </itemizedlist>
+    </section>
+
+    <section xml:id="Api_and_runtime">
+        <title>JAXB API and Runtime</title>
+        <para>
+            Minimum requirement to compile is jaxb-api. If a client application is running on an environment where JAXB
+            runtime is provided, <literal>jaxb-api</literal> is all that is needed.
+                <example><title>API only</title>
+
+                <programlisting language="xml"><![CDATA[
+                <!-- API -->
+                <dependency>
+                    <groupId>javax.xml.bind</groupId>
+                    <artifactId>jaxb-api</artifactId>
+                    <version>${jaxb.version}</version>
+                </dependency>
+             ]]></programlisting>
+            </example></para>
+
+        <para>
+            If client application needs to include the runtime, e.g. running standalone on JavaSE
+            <literal>jaxb-runtime</literal> should be also included.
+            <example><title>API + Runtime</title>
+
+            <programlisting language="xml"><![CDATA[
+                <!-- API -->
+                <dependency>
+                    <groupId>javax.xml.bind</groupId>
+                    <artifactId>jaxb-api</artifactId>
+                    <version>${jaxb.version}</version>
+                </dependency>
+
+                <!-- Runtime -->
+                <dependency>
+                    <groupId>org.glassfish.jaxb</groupId>
+                    <artifactId>jaxb-runtime</artifactId>
+                    <version>${jaxb.version}</version>
+                </dependency>
+    ]]></programlisting>
+        </example></para>
+    </section>
+
+
+    <section xml:id="Jaxb_tooling">
+        <title>Using JAXB tools for java sources and XML schema generation</title>
+
+        <para>
+            To generate JAXB classes from schema community
+            <link xlink:href="https://github.com/highsource/maven-jaxb2-plugin">maven-jaxb2-plugin</link> can be used.
+            <example><title>Using maven-jaxb2-plugin</title>
+
+                <programlisting language="xml"><![CDATA[
+                <build>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.jvnet.jaxb2.maven2</groupId>
+                            <artifactId>maven-jaxb2-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <id>generate</id>
+                                    <goals>
+                                        <goal>generate</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </build>
+    ]]></programlisting>
+            </example></para>
+
+    <para>
+        Alternatively to community plugins, there are tooling artifacts jaxb-xjc and jaxb-jxc,
+        which can be used for
+        java from XML schema generation and vice versa.
+        <example><title>Using JAXB tooling artifacts</title>
+
+            <programlisting language="xml"><![CDATA[
+            <!-- Tooling dependencies -->
+            <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-xjc</artifactId>
+                <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-jxc</artifactId>
+                <version>${jaxb.version}</version>
+            </dependency>
+
+            <!-- Invoke tooling API (Java 11) -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                    <!-- Generate java sources from schema -->
+                    <execution>
+                        <id>xjc</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>--module-path</argument>
+                                <modulepath/>
+                                <argument>-m</argument>
+                                <argument>com.sun.tools.xjc/com.sun.tools.xjc.XJCFacade</argument>
+                                <argument>-p</argument>
+                                <argument>com.example</argument>
+                                <argument>-d</argument>
+                                <argument>${project.build.directory}/generated-sources</argument>
+                                <argument>${project.build.directory}/classes/schema.xsd</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+
+                    <!-- Generate XML Schema from sources -->
+                    <execution>
+                        <id>jxc</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>--module-path</argument> <!-- or -p  -->
+                                <modulepath/>
+                                <argument>-m</argument>
+                                <argument>com.sun.tools.jxc/com.sun.tools.jxc.SchemaGeneratorFacade</argument>
+                                <argument>-d</argument>
+                                <argument>${project.build.directory}/generated-sources</argument>
+                                <argument>${project.build.directory}/classes/com/example/Author.java</argument>
+                                <argument>${project.build.directory}/classes/com/example/Book.java</argument>
+                            </arguments>
+                            <longModulepath>false</longModulepath>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+]]></programlisting>
+        </example>
+    See also <link linkend='schema-generation-invoking-schemagen-programatically'>xml schema compiler usage</link>.</para>
+
+    <para>Where are schemagen and xjc command line scripts available in JavaSE prior to 11?
+        These are included only in the <link linkend="Maven_artifacts">zip distribution.</link></para>
+    </section>
+
+</section>
