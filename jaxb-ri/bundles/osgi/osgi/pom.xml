@@ -299,6 +299,7 @@
                         </goals>
                         <configuration>
                             <instructions>
+                                <Require-Capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version>=1.8))"</Require-Capability>
                                 <Export-Package>
                                     com.sun.codemodel;version=${jaxb.osgiVersion},
                                     com.sun.codemodel.*;version=${jaxb.osgiVersion},
