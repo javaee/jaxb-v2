@@ -115,38 +115,30 @@
     <repositories>
         <repository>
             <id>releases.java.net</id>
-            <url>http://maven.java.net/content/repositories/releases/</url>
+            <url>https://maven.java.net/content/repositories/releases/</url>
             <layout>default</layout>
         </repository>
         <repository>
             <id>shapshots.java.net</id>
-            <url>http://maven.java.net/content/repositories/snapshots/</url>
+            <url>https://maven.java.net/content/repositories/snapshots/</url>
             <layout>default</layout>
         </repository>
         <repository>
             <id>jvnet-nexus-staging</id>
-            <url>http://maven.java.net/content/repositories/staging/</url>
+            <url>https://maven.java.net/content/repositories/staging/</url>
             <layout>default</layout>
-        </repository>
-        <repository>
-            <id>netbeans</id>
-            <name>Repository hosting NetBeans modules</name>
-            <url>http://bits.netbeans.org/nexus/content/groups/netbeans</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
         </repository>
     </repositories>
 
     <pluginRepositories>
         <pluginRepository>
             <id>releases.java.net</id>
-            <url>http://maven.java.net/content/repositories/releases/</url>
+            <url>https://maven.java.net/content/repositories/releases/</url>
             <layout>default</layout>
         </pluginRepository>
         <pluginRepository>
             <id>jvnet-nexus-staging</id>
-            <url>http://maven.java.net/content/repositories/staging/</url>
+            <url>https://maven.java.net/content/repositories/staging/</url>
             <layout>default</layout>
         </pluginRepository>
     </pluginRepositories>
