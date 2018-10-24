@@ -243,6 +243,7 @@ public class Options {
     // Proxy setting.
     private String proxyHost = null;
     private String proxyPort = null;
+    private String nonProxyHosts = null;
     public String proxyAuth = null;
 
     /**
@@ -681,6 +682,10 @@ public class Options {
             proxyPort = requireArgument("-port", args, ++i);
             return 2;
         }
+        if (args[i].equals("-nonProxyHosts")){
+            nonProxyHosts = requireArgument("-nonProxyHosts", args, ++i);
+            return 2;
+        }
         if (args[i].equals("-catalog")) {
             // use Sun's "XML Entity and URI Resolvers" by Norman Walsh
             // to resolve external entities.
@@ -883,6 +888,9 @@ public class Options {
             }
             if (proxyAuth != null) {
                 DefaultAuthenticator.getAuthenticator().setProxyAuth(proxyAuth);
+            }
+            if(nonProxyHosts != null){
+                System.setProperty("http.nonProxyHosts", nonProxyHosts);
             }
         }
 

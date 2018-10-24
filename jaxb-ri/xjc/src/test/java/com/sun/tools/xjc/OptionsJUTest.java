@@ -137,6 +137,7 @@ public class OptionsJUTest extends TestCase {
             opts.parseArguments(new String[]{"-httpproxy", "www.proxy", grammar.getAbsolutePath()});
             assertEquals("www.proxy", getField("proxyHost", opts));
             assertEquals("80", getField("proxyPort", opts));
+            assertNull(getField("nonProxyHosts", opts));
             assertNull(opts.proxyAuth);
         } catch (BadCommandLineException ex) {
             Logger.getLogger(OptionsJUTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -151,6 +152,22 @@ public class OptionsJUTest extends TestCase {
             opts.parseArguments(new String[]{"-httpproxy", "www.proxy1:4321", grammar.getAbsolutePath()});
             assertEquals("www.proxy1", getField("proxyHost", opts));
             assertEquals("4321", getField("proxyPort", opts));
+            assertNull(getField("nonProxyHosts", opts));
+            assertNull(opts.proxyAuth);
+        } catch (BadCommandLineException ex) {
+            Logger.getLogger(OptionsJUTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        } finally {
+            if (opts.proxyAuth != null) {
+                DefaultAuthenticator.reset();
+            }
+        }
+        opts = new Options();
+        try {
+            opts.parseArguments(new String[]{"-httpproxy", "www.proxy2:4321", "-nonProxyHosts", "localhost|*.example.com", grammar.getAbsolutePath()});
+            assertEquals("www.proxy2", getField("proxyHost", opts));
+            assertEquals("4321", getField("proxyPort", opts));
+            assertEquals("localhost|*.example.com",getField("nonProxyHosts", opts));
             assertNull(opts.proxyAuth);
         } catch (BadCommandLineException ex) {
             Logger.getLogger(OptionsJUTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -165,6 +182,7 @@ public class OptionsJUTest extends TestCase {
             opts.parseArguments(new String[]{"-httpproxy", "user:pwd@www.proxy3:7890", grammar.getAbsolutePath()});
             assertEquals("www.proxy3", getField("proxyHost", opts));
             assertEquals("7890", getField("proxyPort", opts));
+            assertNull(getField("nonProxyHosts", opts));
             assertEquals("user:pwd", opts.proxyAuth);
         } catch (BadCommandLineException ex) {
             Logger.getLogger(OptionsJUTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -179,6 +197,7 @@ public class OptionsJUTest extends TestCase {
             opts.parseArguments(new String[]{"-httpproxy", "duke:s@cr@t@proxy98", grammar.getAbsolutePath()});
             assertEquals("proxy98", getField("proxyHost", opts));
             assertEquals("80", getField("proxyPort", opts));
+            assertNull(getField("nonProxyHosts", opts));
             assertEquals("duke:s@cr@t", opts.proxyAuth);
         } catch (BadCommandLineException ex) {
             Logger.getLogger(OptionsJUTest.class.getName()).log(Level.SEVERE, null, ex);
