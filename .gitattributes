@@ -1,2 +1,6 @@
 *.bat text eol=crlf
 *.sh text eol=lf
+
+*.jar binary
+*.vsd binary
+*.sxd binary

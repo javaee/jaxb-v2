@@ -192,7 +192,7 @@ public final class XSOMParser {
      * For example, one can feed XML Schema inside a WSDL document.
      */
     public ContentHandler getParserHandler() {
-        NGCCRuntimeEx runtime = context.newNGCCRuntime();
+        NGCCRuntimeEx runtime = new NGCCRuntimeEx(context);
         Schema s = new Schema(runtime,false,null);
         runtime.setRootHandler(s);
         return runtime;
@@ -222,7 +222,7 @@ public final class XSOMParser {
      *      can be empty but never null.
      */
     public Set<SchemaDocument> getDocuments() {
-        return new HashSet<SchemaDocument>(context.parsedDocuments.keySet());
+        return context.getSchemaDocuments();
     }
     
     public EntityResolver getEntityResolver() {

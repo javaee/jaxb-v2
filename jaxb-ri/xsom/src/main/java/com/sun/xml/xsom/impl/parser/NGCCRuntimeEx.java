@@ -107,10 +107,9 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
     public boolean chameleonMode = false;
 
     /**
-     * URI that identifies the schema document.
-     * Maybe null if the system ID is not available.
+     * The document InputSource that us processed for the schema document.
      */
-    private String documentSystemId;
+    private InputSource documentSource;
 
     /**
      * Keep the local name of elements encountered so far.
@@ -131,7 +130,7 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
      */
     public SchemaDocumentImpl document;
 
-    NGCCRuntimeEx( ParserContext _parser ) {
+    public NGCCRuntimeEx( ParserContext _parser ) {
         this(_parser,false,null);
     }
 
@@ -197,50 +196,95 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
      *      Otherwise it returns null, in which case import/include should be abandoned.
      */
     private InputSource resolveRelativeURL( String namespaceURI, String relativeUri ) throws SAXException {
-        try {
-            String baseUri = getLocator().getSystemId();
-            if(baseUri==null)
-                // if the base URI is not available, the document system ID is
-                // better than nothing.
-                baseUri=documentSystemId;
 
-            EntityResolver er = parser.getEntityResolver();
+        try {
+
+            // if it is a xsd:import with namespace attribute only, it is a publicId lookup
+            if (namespaceURI != null && relativeUri == null) {
+                InputSource source = tryResolveResource(namespaceURI);
+                if (source != null) {
+                    source.setPublicId(namespaceURI);
+                    return source;
+                }
+            }
+
+            // try relativeURI as a publicId lookup, it's totally up to the entity resolver to give us a valid source
+            InputSource source = tryResolveResource(relativeUri);
+            if (source != null) {
+                source.setPublicId(relativeUri);
+                return source;
+            }
+
+            // now we continue as normal to interact with the entity resolver
+            source = tryResolveResource(namespaceURI, relativeUri);
+            if (source != null) {
+                return source;
+            }
+
+            // do the original dark magic
+            String baseUri = null;
+            if(getLocator() != null)
+                baseUri = getLocator().getSystemId();
+
+
+            // if the base URI is not available, the document systemId is better than nothing.
+            if (baseUri == null)
+                baseUri = documentSource.getSystemId();
+
             String systemId = null;
 
-            if (relativeUri!=null) {
+            if (relativeUri != null) {
                 if (isAbsolute(relativeUri)) {
-                    systemId = relativeUri;
+                    systemId = relativeUri; // <- FIXME this assignment is never used as in the original code
                 }
                 if (baseUri == null || !isAbsolute(baseUri)) {
                     throw new IOException("Unable to resolve relative URI " + relativeUri + " because base URI is not absolute: " + baseUri);
                 }
                 systemId = new URL(new URL(baseUri), relativeUri).toString();
+
+                source = tryResolveResource(namespaceURI, systemId);
+
+                if (source != null) {
+                    return source;
+                }
+
+                String normalizedSystemId = URI.create(systemId).normalize().toASCIIString();
+                source = tryResolveResource(namespaceURI, normalizedSystemId);
+
+                if (source != null) {
+                    return source;
+                }
+
+                if (systemId != null)
+                    return new InputSource(systemId);
+
             }
 
-            if (er!=null) {
-                InputSource is = er.resolveEntity(namespaceURI,systemId);
-                if (is == null) {
-                    try {
-                        String normalizedSystemId = URI.create(systemId).normalize().toASCIIString();
-                        is = er.resolveEntity(namespaceURI,normalizedSystemId);
-                    } catch (Exception e) {
-                        // just ignore, this is a second try, return the fallback if this breaks
-                    }
-                }
-                if (is != null) {
-                    return is;
-                }
-            }
+            return null;
 
-            if (systemId!=null)
-                return new InputSource(systemId);
-            else
-                return null;
         } catch (IOException e) {
-            SAXParseException se = new SAXParseException(e.getMessage(),getLocator(),e);
+            SAXParseException se = new SAXParseException(e.getMessage(), getLocator(), e);
             parser.errorHandler.error(se);
             return null;
         }
+
+    }
+
+
+    private InputSource tryResolveResource(String publicId) throws SAXException {
+        return tryResolveResource(publicId, null);
+    }
+
+    private InputSource tryResolveResource(String publicId, String systemId) throws SAXException {
+        try {
+            if (parser.getEntityResolver() != null) {
+                return parser.getEntityResolver().resolveEntity(publicId, systemId);
+            }
+        } catch (IOException e) {
+            SAXParseException se = new SAXParseException(e.getMessage(), getLocator(), e);
+            parser.errorHandler.warning(se);
+        }
+        return null;
     }
 
     private static final Pattern P = Pattern.compile(".*[/#?].*");
@@ -324,39 +368,44 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
      *      needs to be skipped.
      */
     public boolean hasAlreadyBeenRead() {
-        if( documentSystemId!=null ) {
-            if( documentSystemId.startsWith("file:///") )
-                // change file:///abc to file:/abc
-                // JDK File.toURL method produces the latter, but according to RFC
-                // I don't think that's a valid URL. Since two different ways of
-                // producing URLs could produce those two different forms,
-                // we need to canonicalize one to the other.
-                documentSystemId = "file:/"+documentSystemId.substring(8);
+
+        assert document == null : "schema document has already been set, internal implementation issue";
+
+        String id = null;
+        if (documentSource.getSystemId() != null) {
+            id = documentSource.getSystemId();
+        } else if (documentSource.getPublicId() != null) {
+            id = documentSource.getPublicId();
         } else {
-            // if the system Id is not provided, we can't test the identity,
-            // so we have no choice but to read it.
-            // the newly created SchemaDocumentImpl will be unique one
+            // FIXME we really should be blowing up here due to the use of some random InputSource that can't be bothered to supply a document id
         }
 
-        assert document ==null;
-        document = new SchemaDocumentImpl( currentSchema, documentSystemId );
-
-        SchemaDocumentImpl existing = parser.parsedDocuments.get(document);
-        if(existing==null) {
-            parser.parsedDocuments.put(document,document);
+        // referrer namespace not the current if in chameleon mode
+        String namespace;
+        if(chameleonMode) {
+            namespace = referer.currentSchema.getTargetNamespace();
         } else {
-            document = existing;
+            namespace = currentSchema.getTargetNamespace();
         }
 
-        assert document !=null;
+        boolean alreadyRead = parser.hasAlreadyBeenRead(namespace, id);
+        if (alreadyRead) {
+            document = parser.getSchemaDocument(namespace, id);
+        } else {
+            document = new SchemaDocumentImpl(currentSchema, id);
+            parser.addSchemaDocument(namespace, document);
+        }
 
-        if(referer!=null) {
-            assert referer.document !=null : "referer "+referer.documentSystemId+" has docIdentity==null";
+        assert document != null : "schema document was not created";
+
+        if (referer != null) {
+            assert referer.document != null : "referer " + referer.documentSource.getSystemId() + " has docIdentity==null";
             referer.document.references.add(this.document);
             this.document.referers.add(referer.document);
         }
 
-        return existing!=null;
+        return alreadyRead;
+
     }
 
     /**
@@ -373,7 +422,7 @@ public class NGCCRuntimeEx extends NGCCRuntime implements PatcherManager {
     public void parseEntity( InputSource source, boolean includeMode, String expectedNamespace, Locator importLocation )
             throws SAXException {
 
-        documentSystemId = source.getSystemId();
+        documentSource = source;
         try {
             Schema s = new Schema(this,includeMode,expectedNamespace);
             setRootHandler(s);
